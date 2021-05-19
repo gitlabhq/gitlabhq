@@ -13,6 +13,32 @@ function retry() {
   return 1
 }
 
+function bundle_install_script() {
+  local extra_install_args="${1}"
+
+  if [[ "${extra_install_args}" =~ "--without" ]]; then
+    echoerr "The '--without' flag shouldn't be passed as it would replace the default \${BUNDLE_WITHOUT} (currently set to '${BUNDLE_WITHOUT}')."
+    echoerr "Set the 'BUNDLE_WITHOUT' variable instead, e.g. '- export BUNDLE_WITHOUT=\"\${BUNDLE_WITHOUT}:any:other:group:not:to:install\"'."
+    exit 1;
+  fi;
+
+  bundle --version
+  bundle config set path 'vendor'
+  bundle config set clean 'true'
+
+  echo $BUNDLE_WITHOUT
+  bundle config
+
+  run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS} ${extra_install_args} && bundle check"
+
+  if [[ $(bundle info pg) ]]; then
+    # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
+    # job but the `pg` gem needs to be rebuilt since it includes extensions (https://guides.rubygems.org/gems-with-extensions).
+    # Uncomment the following line if multiple versions of PG are tested in the same pipeline.
+    run_timed_command "bundle pristine pg"
+  fi
+}
+
 function setup_db_user_only() {
   source scripts/create_postgres_user.sh
 }

@@ -130,7 +130,7 @@ RSpec.describe Projects::TransferService do
           execute_transfer
 
           expect(project.slack_service.webhook).to eq(group_integration.webhook)
-          expect(Service.count).to eq(3)
+          expect(Integration.count).to eq(3)
         end
       end
 

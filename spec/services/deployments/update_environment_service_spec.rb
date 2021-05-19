@@ -33,7 +33,7 @@ RSpec.describe Deployments::UpdateEnvironmentService do
 
   before do
     allow(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
-    allow(Deployments::ExecuteHooksWorker).to receive(:perform_async)
+    allow(Deployments::HooksWorker).to receive(:perform_async)
     job.success! # Create/Succeed deployment
   end
 
@@ -161,6 +161,7 @@ RSpec.describe Deployments::UpdateEnvironmentService do
         context 'when deployment was created by an external CD system' do
           before do
             deployment.update_column(:deployable_id, nil)
+            deployment.reload
           end
 
           it 'guesses the deployment tier' do

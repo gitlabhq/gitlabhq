@@ -67,11 +67,6 @@ export default {
       required: false,
       default: '',
     },
-    canSetUserAvailability: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     currentClearStatusAfter: {
       type: String,
       required: false,
@@ -292,7 +287,7 @@ export default {
             </button>
           </span>
         </div>
-        <div v-if="canSetUserAvailability" class="form-group">
+        <div class="form-group">
           <div class="gl-display-flex">
             <gl-form-checkbox
               v-model="availability"

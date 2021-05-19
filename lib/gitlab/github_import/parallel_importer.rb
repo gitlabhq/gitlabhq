@@ -40,4 +40,4 @@ module Gitlab
   end
 end
 
-Gitlab::GithubImport::ParallelImporter.prepend_if_ee('::EE::Gitlab::GithubImport::ParallelImporter')
+Gitlab::GithubImport::ParallelImporter.prepend_mod_with('Gitlab::GithubImport::ParallelImporter')

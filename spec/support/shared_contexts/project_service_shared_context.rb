@@ -22,7 +22,7 @@ RSpec.shared_context 'project service activation' do
   end
 
   def click_active_checkbox
-    find('input[name="service[active]"]').click
+    find('label', text: 'Active').click
   end
 
   def click_save_integration

@@ -31,6 +31,7 @@ module Gitlab
           created_at: pipeline.created_at,
           finished_at: pipeline.finished_at,
           duration: pipeline.duration,
+          queued_duration: pipeline.queued_duration,
           variables: pipeline.variables.map(&:hook_attrs)
         }
       end
@@ -59,6 +60,8 @@ module Gitlab
           created_at: build.created_at,
           started_at: build.started_at,
           finished_at: build.finished_at,
+          duration: build.duration,
+          queued_duration: build.queued_duration,
           when: build.when,
           manual: build.action?,
           allow_failure: build.allow_failure,

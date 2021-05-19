@@ -1,4 +1,8 @@
-import { getMappingData, transformForSave } from '~/alerts_settings/utils/mapping_transformations';
+import {
+  getMappingData,
+  setFieldsLabels,
+  transformForSave,
+} from '~/alerts_settings/utils/mapping_transformations';
 import alertFields from '../mocks/alert_fields.json';
 import parsedMapping from '../mocks/parsed_mapping.json';
 
@@ -62,6 +66,35 @@ describe('Mapping Transformation Utilities', () => {
       ];
       const result = transformForSave(mockMappingData);
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('setFieldsLabels', () => {
+    const nonNestedFields = [{ label: 'title' }];
+    const nonNestedFieldsResult = { displayLabel: 'Title', tooltip: undefined };
+
+    const nestedFields = [
+      {
+        label: 'field/subfield',
+      },
+    ];
+    const nestedFieldsResult = { displayLabel: '...Subfield', tooltip: 'field.subfield' };
+
+    const nestedArrayFields = [
+      {
+        label: 'fields[1]/subfield',
+      },
+    ];
+
+    const nestedArrayFieldsResult = { displayLabel: '...Subfield', tooltip: 'fields[1].subfield' };
+
+    it.each`
+      type                     | fields               | result
+      ${'not nested field'}    | ${nonNestedFields}   | ${nonNestedFieldsResult}
+      ${'nested field'}        | ${nestedFields}      | ${nestedFieldsResult}
+      ${'nested inside array'} | ${nestedArrayFields} | ${nestedArrayFieldsResult}
+    `('adds correct displayLabel and tooltip for $type', ({ fields, result }) => {
+      expect(setFieldsLabels(fields)[0]).toMatchObject(result);
     });
   });
 });

@@ -1,0 +1,9 @@
+mutation importGroups($sourceGroupIds: [String!]!) {
+  importGroups(sourceGroupIds: $sourceGroupIds) @client {
+    id
+    progress {
+      id
+      status
+    }
+  }
+}

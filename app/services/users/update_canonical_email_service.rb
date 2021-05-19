@@ -7,7 +7,7 @@ module Users
     INCLUDED_DOMAINS_PATTERN = [/gmail.com/].freeze
 
     def initialize(user:)
-      raise ArgumentError.new("Please provide a user") unless user.is_a?(User)
+      raise ArgumentError, "Please provide a user" unless user.is_a?(User)
 
       @user = user
     end

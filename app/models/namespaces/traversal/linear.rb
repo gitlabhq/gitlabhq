@@ -41,6 +41,7 @@ module Namespaces
       UnboundedSearch = Class.new(StandardError)
 
       included do
+        before_update :lock_both_roots, if: -> { sync_traversal_ids? && parent_id_changed? }
         after_create :sync_traversal_ids, if: -> { sync_traversal_ids? }
         after_update :sync_traversal_ids, if: -> { sync_traversal_ids? && saved_change_to_parent_id? }
 
@@ -52,15 +53,30 @@ module Namespaces
       end
 
       def use_traversal_ids?
-        Feature.enabled?(:use_traversal_ids, root_ancestor, default_enabled: :yaml)
+        return false unless Feature.enabled?(:use_traversal_ids, root_ancestor, default_enabled: :yaml)
+
+        traversal_ids.present?
       end
 
       def self_and_descendants
-        if use_traversal_ids?
-          lineage(self)
-        else
-          super
-        end
+        return super unless use_traversal_ids?
+
+        lineage(top: self)
+      end
+
+      def descendants
+        return super unless use_traversal_ids?
+
+        self_and_descendants.where.not(id: id)
+      end
+
+      def ancestors(hierarchy_order: nil)
+        return super() unless use_traversal_ids?
+        return super() unless Feature.enabled?(:use_traversal_ids_for_ancestors, root_ancestor, default_enabled: :yaml)
+
+        return self.class.none if parent_id.blank?
+
+        lineage(bottom: parent, hierarchy_order: hierarchy_order)
       end
 
       private
@@ -75,6 +91,23 @@ module Namespaces
         Namespace::TraversalHierarchy.for_namespace(root_ancestor).sync_traversal_ids!
       end
 
+      # Lock the root of the hierarchy we just left, and lock the root of the hierarchy
+      # we just joined. In most cases the two hierarchies will be the same.
+      def lock_both_roots
+        parent_ids = [
+          parent_id_was || self.id,
+          parent_id || self.id
+        ].compact
+
+        roots = Gitlab::ObjectHierarchy
+          .new(Namespace.where(id: parent_ids))
+          .base_and_ancestors
+          .reorder(nil)
+          .where(parent_id: nil)
+
+        Namespace.lock.select(:id).where(id: roots).order(id: :asc).load
+      end
+
       # Make sure we drop the STI `type = 'Group'` condition for better performance.
       # Logically equivalent so long as hierarchies remain homogeneous.
       def without_sti_condition
@@ -82,29 +115,29 @@ module Namespaces
       end
 
       # Search this namespace's lineage. Bound inclusively by top node.
-      def lineage(top)
-        raise UnboundedSearch.new('Must bound search by a top') unless top
+      def lineage(top: nil, bottom: nil, hierarchy_order: nil)
+        raise UnboundedSearch, 'Must bound search by either top or bottom' unless top || bottom
 
-        without_sti_condition
-          .traversal_ids_contains(latest_traversal_ids(top))
-      end
+        skope = without_sti_condition
 
-      # traversal_ids are a cached value.
-      #
-      # The traversal_ids value in a loaded object can become stale when compared
-      # to the database value. For example, if you load a hierarchy and then move
-      # a group, any previously loaded descendant objects will have out of date
-      # traversal_ids.
-      #
-      # To solve this problem, we never depend on the object's traversal_ids
-      # value. We always query the database first with a sub-select for the
-      # latest traversal_ids.
-      #
-      # Note that ActiveRecord will cache query results. You can avoid this by
-      # using `Model.uncached { ... }`
-      def latest_traversal_ids(namespace = self)
-        without_sti_condition.where('id = (?)', namespace)
-                .select('traversal_ids as latest_traversal_ids')
+        if top
+          skope = skope.traversal_ids_contains("{#{top.id}}")
+        end
+
+        if bottom
+          skope = skope.where(id: bottom.traversal_ids[0..-1])
+        end
+
+        # The original `with_depth` attribute in ObjectHierarchy increments as you
+        # walk away from the "base" namespace. This direction changes depending on
+        # if you are walking up the ancestors or down the descendants.
+        if hierarchy_order
+          depth_sql = "ABS(#{traversal_ids.count} - array_length(traversal_ids, 1))"
+          skope = skope.select(skope.arel_table[Arel.star], "#{depth_sql} as depth")
+                       .order(depth: hierarchy_order)
+        end
+
+        skope
       end
     end
   end

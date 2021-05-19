@@ -7,9 +7,14 @@ type: reference
 
 # Configure Gitaly Cluster **(FREE SELF)**
 
-In addition to Gitaly Cluster configuration instructions available as part of
-[reference architectures](../reference_architectures/index.md) for installations for more than
-2000 users, advanced configuration instructions are available below.
+Configure Gitaly Cluster using either:
+
+- The Gitaly Cluster configuration instructions available as part of
+  [reference architectures](../reference_architectures/index.md) for installations for more than
+  2000 users.
+- The advanced configuration instructions that follow on this page.
+
+Smaller GitLab installations may need only [Gitaly itself](index.md).
 
 ## Requirements for configuring a Gitaly Cluster
 
@@ -869,6 +874,27 @@ Particular attention should be shown to:
    repository that viewed. If the project is created, and you can see the
    README file, it works!
 
+#### Use TCP for existing GitLab instances
+
+When adding Gitaly Cluster to an existing Gitaly instance, the existing Gitaly storage
+must use a TCP address. If `gitaly_address` is not specified, then a Unix socket is used,
+which will prevent the communication with the cluster.
+
+For example:
+
+```ruby
+git_data_dirs({
+  'default' => { 'gitaly_address' => 'tcp://old-gitaly.internal:8075' },
+  'cluster' => {
+    'gitaly_address' => 'tcp://<load_balancer_server_address>:2305',
+    'gitaly_token' => '<praefect_external_token>'
+  }
+})
+```
+
+See [Mixed Configuration](configure_gitaly.md#mixed-configuration) for further information on
+running multiple Gitaly storages.
+
 ### Grafana
 
 Grafana is included with GitLab, and can be used to monitor your Praefect
@@ -1004,13 +1030,10 @@ replication factor offers better redundancy and distribution of read workload, b
 in a higher storage cost. By default, Praefect replicates repositories to every storage in a
 virtual storage.
 
-### Configure replication factors
+### Configure replication factor
 
 WARNING:
-The feature is not production ready yet. After you set a replication factor, you can't unset it
-without manually modifying database state. Variable replication factor requires you to enable
-repository-specific primaries by configuring the `per_repository` primary election strategy. The election
-strategy is not production ready yet.
+Configurable replication factors require [repository-specific primary nodes](#repository-specific-primary-nodes) to be used.
 
 Praefect supports configuring a replication factor on a per-repository basis, by assigning
 specific storage nodes to host a repository.
@@ -1056,26 +1079,119 @@ You can configure:
   current assignments: gitaly-1, gitaly-2
   ```
 
-## Automatic failover and leader election
+## Automatic failover and primary election strategies
 
-Praefect regularly checks the health of each backend Gitaly node. This
-information can be used to automatically failover to a new primary node if the
-current primary node is found to be unhealthy.
+Praefect regularly checks the health of each Gitaly node. This is used to automatically fail over
+to a newly-elected primary Gitaly node if the current primary node is found to be unhealthy.
 
-- **PostgreSQL (recommended):** Enabled by default, and equivalent to:
-  `praefect['failover_election_strategy'] = sql`. This configuration
-  option allows multiple Praefect nodes to coordinate via the
-  PostgreSQL database to elect a primary Gitaly node. This configuration
-  causes Praefect nodes to elect a new primary, monitor its health,
-  and elect a new primary if the current one has not been reachable in
-  10 seconds by a majority of the Praefect nodes.
+We recommend using [repository-specific primary nodes](#repository-specific-primary-nodes). This is
+[planned to be the only available election strategy](https://gitlab.com/gitlab-org/gitaly/-/issues/3574)
+from GitLab 14.0.
+
+### Repository-specific primary nodes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3492) in GitLab 13.12.
+
+Gitaly Cluster supports electing repository-specific primary Gitaly nodes. Repository-specific
+Gitaly primary nodes are enabled in `/etc/gitlab/gitlab.rb` by setting
+`praefect['failover_election_strategy'] = 'per_repository'`.
+
+Praefect's [deprecated election strategies](#deprecated-election-strategies):
+
+- Elected a primary Gitaly node for each virtual storage, which was used as the primary node for
+  each repository in the virtual storage.
+- Prevented horizontal scaling of a virtual storage. The primary Gitaly node needed a replica of
+  each repository and thus became the bottleneck.
+
+The `per_repository` election strategy solves this problem by electing a primary Gitaly node separately for each
+repository. Combined with [configurable replication factors](#configure-replication-factor), you can
+horizontally scale storage capacity and distribute write load across Gitaly nodes.
+
+Primary elections are run when:
+
+- Praefect starts up.
+- The cluster's consensus of a Gitaly node's health changes.
+
+A Gitaly node is considered:
+
+- Healthy if `>=50%` Praefect nodes have successfully health checked the Gitaly node in the
+  previous ten seconds.
+- Unhealthy otherwise.
+
+During an election run, Praefect elects a new primary Gitaly node for each repository that has
+an unhealthy primary Gitaly node. The election is made:
+
+- Randomly from healthy secondary Gitaly nodes that are the most up to date.
+- Only from Gitaly nodes assigned to the host repository.
+
+If there are no healthy secondary nodes for a repository:
+
+- The unhealthy primary node is demoted and the repository is left without a primary node.
+- Operations that require a primary node fail until a primary is successfully elected.
+
+#### Migrate to repository-specific primary Gitaly nodes
+
+New Gitaly Clusters can start using the `per_repository` election strategy immediately.
+
+To migrate existing clusters:
+
+1. Praefect nodes didn't historically keep database records of every repository stored on the cluster. When
+   the `per_repository` election strategy is configured, Praefect expects to have database records of
+   each repository. A [background migration](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2749) is
+   included in GitLab 13.6 and later to create any missing database records for repositories. Before migrating
+   you should verify the migration has run by checking Praefect's logs:
+
+   Check Praefect's logs for `repository importer finished` message. The `virtual_storages` field contains
+   the names of virtual storages and whether they've had any missing database records created.
+
+   For example, the `default` virtual storage has been successfully migrated:
+
+   ```json
+   {"level":"info","msg":"repository importer finished","pid":19752,"time":"2021-04-28T11:41:36.743Z","virtual_storages":{"default":true}}
+   ```
+
+   If a virtual storage has not been successfully migrated, it would have `false` next to it:
+
+   ```json
+   {"level":"info","msg":"repository importer finished","pid":19752,"time":"2021-04-28T11:41:36.743Z","virtual_storages":{"default":false}}
+   ```
+
+   The migration is ran when Praefect starts up. If the migration is unsuccessful, you can restart
+   a Praefect node to reattempt it. The migration only runs with `sql` election strategy configured.
+
+1. Running two different election strategies side by side can cause a split brain, where different
+   Praefect nodes consider repositories to have different primaries. To avoid this, shut down
+   all Praefect nodes before changing the election strategy.
+
+   Do this by running `gitlab-ctl stop praefect` on the Praefect nodes.
+
+1. On the Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with
+   `praefect['failover_election_strategy'] = 'per_repository'`.
+
+1. Finally, run `gitlab-ctl reconfigure` to reconfigure and restart the Praefect nodes.
+
+### Deprecated election strategies
+
+WARNING:
+The below election strategies are deprecated and are scheduled for removal in GitLab 14.0.
+Migrate to [repository-specific primary nodes](#repository-specific-primary-nodes).
+
+- **PostgreSQL:** Enabled by default until GitLab 14.0, and equivalent to:
+  `praefect['failover_election_strategy'] = 'sql'`.
+
+  This configuration option:
+
+  - Allows multiple Praefect nodes to coordinate via the PostgreSQL database to elect a primary
+    Gitaly node.
+  - Causes Praefect nodes to elect a new primary Gitaly node, monitor its health, and elect a new primary
+    Gitaly node if the current one is not reached within 10 seconds by a majority of the Praefect
+    nodes.
 - **Memory:** Enabled by setting `praefect['failover_election_strategy'] = 'local'`
-  in `/etc/gitlab/gitlab.rb` on the Praefect node. If a sufficient number of health
-  checks fail for the current primary backend Gitaly node, and new primary will
-  be elected. **Do not use with multiple Praefect nodes!** Using with multiple
-  Praefect nodes is likely to result in a split brain.
+  in `/etc/gitlab/gitlab.rb` on the Praefect node.
 
-We are likely to implement support for Consul, and a cloud native, strategy in the future.
+  If a sufficient number of health checks fail for the current primary Gitaly node, a new primary is
+  elected. **Do not use with multiple Praefect nodes!** Using with multiple Praefect nodes is
+  likely to result in a split brain.
 
 ## Primary Node Failure
 
@@ -1285,6 +1401,13 @@ praefect['reconciliation_scheduling_interval'] = '0' # disable the feature
 
 ### Manual reconciliation
 
+WARNING:
+The `reconcile` sub-command is deprecated and scheduled for removal in GitLab 14.0. Use
+[automatic reconciliation](#automatic-reconciliation) instead. Manual reconciliation may
+produce excess replication jobs and is limited in functionality. Manual reconciliation does
+not work when [repository-specific primary nodes](#repository-specific-primary-nodes) are
+enabled.
+
 The Praefect `reconcile` sub-command allows for the manual reconciliation between two Gitaly nodes. The
 command replicates every repository on a later version on the reference storage to the target storage.
 
@@ -1298,6 +1421,25 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 
 ## Migrate to Gitaly Cluster
 
+Whether migrating to Gitaly Cluster because of [NFS support deprecation](index.md#nfs-deprecation-notice)
+or to move from single Gitaly nodes, the basic process involves:
+
+1. Create the required storage.
+1. Create and configure Gitaly Cluster.
+1. [Move the repositories](#move-repositories).
+
+The size of the required storage can vary between instances and depends on the set
+[replication factor](#replication-factor). The migration to Gitaly Cluster might include
+implementing repository storage redundancy.
+
+For a replication factor:
+
+- Of `1`: NFS, Gitaly, and Gitaly Cluster have roughly the same storage requirements.
+- More than `1`: The amount of required storage is `used space * replication factor`. `used space`
+  should include any planned future growth.
+
+### Move Repositories
+
 To migrate to Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be
 moved. There is no automatic migration but the moves can be scheduled with the GitLab API.
 
@@ -1305,7 +1447,7 @@ GitLab repositories can be associated with projects, groups, and snippets. Each 
 have a separate API to schedule the respective repositories to move. To move all repositories
 on a GitLab instance, each of these types must be scheduled to move for each storage.
 
-Each repository is made read only when the move is scheduled. The repository is not writable
+Each repository is made read-only for the duration of the move. The repository is not writable
 until the move has completed.
 
 After creating and configuring Gitaly Cluster:
@@ -1316,11 +1458,11 @@ After creating and configuring Gitaly Cluster:
    so that the Gitaly Cluster receives all new projects. This stops new projects being created
    on existing Gitaly nodes while the migration is in progress.
 1. Schedule repository moves for:
-   - [Projects](#bulk-schedule-projects).
-   - [Snippets](#bulk-schedule-snippets).
-   - [Groups](#bulk-schedule-groups). **(PREMIUM SELF)**
+   - [Projects](#bulk-schedule-project-moves).
+   - [Snippets](#bulk-schedule-snippet-moves).
+   - [Groups](#bulk-schedule-group-moves). **(PREMIUM SELF)**
 
-### Bulk schedule projects
+#### Bulk schedule project moves
 
 1. [Schedule repository storage moves for all projects on a storage shard](../../api/project_repository_storage_moves.md#schedule-repository-storage-moves-for-all-projects-on-a-storage-shard) using the API. For example:
 
@@ -1353,7 +1495,7 @@ After creating and configuring Gitaly Cluster:
 
 1. Repeat for each storage as required.
 
-### Bulk schedule snippets
+#### Bulk schedule snippet moves
 
 1. [Schedule repository storage moves for all snippets on a storage shard](../../api/snippet_repository_storage_moves.md#schedule-repository-storage-moves-for-all-snippets-on-a-storage-shard) using the API. For example:
 
@@ -1378,7 +1520,7 @@ After creating and configuring Gitaly Cluster:
 
 1. Repeat for each storage as required.
 
-### Bulk schedule groups **(PREMIUM SELF)**
+#### Bulk schedule group moves **(PREMIUM SELF)**
 
 1. [Schedule repository storage moves for all groups on a storage shard](../../api/group_repository_storage_moves.md#schedule-repository-storage-moves-for-all-groups-on-a-storage-shard) using the API.
 
@@ -1421,3 +1563,16 @@ Here are common errors and potential causes:
   - **GRPC::Unavailable (14:all SubCons are in TransientFailure...)**
     - Praefect cannot reach one or more of its child Gitaly nodes. Try running
       the Praefect connection checker to diagnose.
+
+### Determine primary Gitaly node
+
+To determine the current primary Gitaly node for a specific Praefect node:
+
+- Use the `Shard Primary Election` [Grafana chart](#grafana) on the [`Gitlab Omnibus - Praefect` dashboard](https://gitlab.com/gitlab-org/grafana-dashboards/-/blob/master/omnibus/praefect.json).
+  This is recommended.
+- If you do not have Grafana set up, use the following command on each host of each
+  Praefect node:
+
+  ```shell
+  curl localhost:9652/metrics | grep gitaly_praefect_primaries`
+  ```

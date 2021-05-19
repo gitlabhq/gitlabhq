@@ -40,7 +40,7 @@ module Projects
       if namespace_id
         # Find matching namespace and check if it allowed
         # for current user if namespace_id passed.
-        unless allowed_namespace?(current_user, namespace_id)
+        unless current_user.can?(:create_projects, project_namespace)
           @project.namespace_id = nil
           deny_namespace
           return @project
@@ -72,7 +72,7 @@ module Projects
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.inspect}: #{e.record.errors.full_messages.join(", ")}"
       fail(error: message)
-    rescue => e
+    rescue StandardError => e
       @project.errors.add(:base, e.message) if @project
       fail(error: e.message)
     end
@@ -82,13 +82,6 @@ module Projects
     def deny_namespace
       @project.errors.add(:namespace, "is not valid")
     end
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def allowed_namespace?(user, namespace_id)
-      namespace = Namespace.find_by(id: namespace_id)
-      current_user.can?(:create_projects, namespace)
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.full_name}\"")
@@ -156,7 +149,7 @@ module Projects
 
     def create_readme
       commit_attrs = {
-        branch_name: @project.default_branch || 'master',
+        branch_name: @project.default_branch_or_main,
         commit_message: 'Initial commit',
         file_path: 'README.md',
         file_content: "# #{@project.name}\n\n#{@project.description}"
@@ -174,7 +167,7 @@ module Projects
         @project.create_or_update_import_data(data: @import_data[:data], credentials: @import_data[:credentials]) if @import_data
 
         if @project.save
-          Service.create_from_active_default_integrations(@project, :project_id, with_templates: true)
+          Integration.create_from_active_default_integrations(@project, :project_id, with_templates: true)
 
           @project.create_labels unless @project.gitlab_project_import?
 
@@ -271,7 +264,7 @@ module Projects
   end
 end
 
-Projects::CreateService.prepend_if_ee('EE::Projects::CreateService')
+Projects::CreateService.prepend_mod_with('Projects::CreateService')
 
 # Measurable should be at the bottom of the ancestor chain, so it will measure execution of EE::Projects::CreateService as well
 Projects::CreateService.prepend(Measurable)

@@ -38,7 +38,7 @@ module Gitlab
 
           if from_address
             add_email_participant
-            send_thank_you_email!
+            send_thank_you_email
           end
         end
 
@@ -77,12 +77,14 @@ module Gitlab
 
         def create_issue!
           @issue = Issues::CreateService.new(
-            project,
-            User.support_bot,
-            title: mail.subject,
-            description: message_including_template,
-            confidential: true,
-            external_author: from_address
+            project: project,
+            current_user: User.support_bot,
+            params: {
+              title: mail.subject,
+              description: message_including_template,
+              confidential: true,
+              external_author: from_address
+            }
           ).execute
 
           raise InvalidIssueError unless @issue.persisted?
@@ -92,8 +94,8 @@ module Gitlab
           end
         end
 
-        def send_thank_you_email!
-          Notify.service_desk_thank_you_email(@issue.id).deliver_later!
+        def send_thank_you_email
+          Notify.service_desk_thank_you_email(@issue.id).deliver_later
         end
 
         def message_including_template

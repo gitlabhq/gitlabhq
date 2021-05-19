@@ -35,4 +35,19 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
   it 'has the right mask for uploads' do
     expect(file_permissions("#{path}/uploads")).to eq(0755) # originally 555
   end
+
+  describe '#gzip' do
+    it 'compresses specified file' do
+      tempfile = Tempfile.new('test', path)
+      filename = File.basename(tempfile.path)
+
+      subject.gzip(dir: path, filename: filename)
+    end
+
+    context 'when exception occurs' do
+      it 'raises an exception' do
+        expect { subject.gzip(dir: path, filename: 'test') }.to raise_error(Gitlab::ImportExport::Error)
+      end
+    end
+  end
 end

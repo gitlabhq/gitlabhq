@@ -36,7 +36,7 @@ from [owasp.org](https://owasp.org/).
 - The GitLab model of sensitivity is centered around public vs. internal vs.
   private projects. Geo replicates them all indiscriminately. "Selective sync"
   exists for files and repositories (but not database content), which would permit
-  only less-sensitive projects to be replicated to a **secondary** node if desired.
+  only less-sensitive projects to be replicated to a **secondary** site if desired.
 - See also: [GitLab data classification policy](https://about.gitlab.com/handbook/engineering/security/data-classification-standard.html).
 
 ### What data backup and retention requirements have been defined for the application?
@@ -48,18 +48,18 @@ from [owasp.org](https://owasp.org/).
 
 ### Who are the application's end‐users?
 
-- **Secondary** nodes are created in regions that are distant (in terms of
-  Internet latency) from the main GitLab installation (the **primary** node). They are
-  intended to be used by anyone who would ordinarily use the **primary** node, who finds
-  that the **secondary** node is closer to them (in terms of Internet latency).
+- **Secondary** sites are created in regions that are distant (in terms of
+  Internet latency) from the main GitLab installation (the **primary** site). They are
+  intended to be used by anyone who would ordinarily use the **primary** site, who finds
+  that the **secondary** site is closer to them (in terms of Internet latency).
 
 ### How do the end‐users interact with the application?
 
-- **Secondary** nodes provide all the interfaces a **primary** node does
+- **Secondary** sites provide all the interfaces a **primary** site does
   (notably a HTTP/HTTPS web application, and HTTP/HTTPS or SSH Git repository
   access), but is constrained to read-only activities. The principal use case is
-  envisioned to be cloning Git repositories from the **secondary** node in favor of the
-  **primary** node, but end-users may use the GitLab web interface to view projects,
+  envisioned to be cloning Git repositories from the **secondary** site in favor of the
+  **primary** site, but end-users may use the GitLab web interface to view projects,
   issues, merge requests, snippets, etc.
 
 ### What security expectations do the end‐users have?
@@ -67,10 +67,10 @@ from [owasp.org](https://owasp.org/).
 - The replication process must be secure. It would typically be unacceptable to
   transmit the entire database contents or all files and repositories across the
   public Internet in plaintext, for instance.
-- **Secondary** nodes must have the same access controls over its content as the
-  **primary** node - unauthenticated users must not be able to gain access to privileged
-  information on the **primary** node by querying the **secondary** node.
-- Attackers must not be able to impersonate the **secondary** node to the **primary** node, and
+- **Secondary** sites must have the same access controls over its content as the
+  **primary** site - unauthenticated users must not be able to gain access to privileged
+  information on the **primary** site by querying the **secondary** site.
+- Attackers must not be able to impersonate the **secondary** site to the **primary** site, and
   thus gain access to privileged information.
 
 ## Administrators
@@ -86,7 +86,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What administrative capabilities does the application offer?
 
-- **Secondary** nodes may be added, modified, or removed by users with
+- **Secondary** sites may be added, modified, or removed by users with
   administrative access.
 - The replication process may be controlled (start/stop) via the Sidekiq
   administrative controls.
@@ -95,9 +95,9 @@ from [owasp.org](https://owasp.org/).
 
 ### What details regarding routing, switching, firewalling, and load‐balancing have been defined?
 
-- Geo requires the **primary** node and **secondary** node to be able to communicate with each
-  other across a TCP/IP network. In particular, the **secondary** nodes must be able to
-  access HTTP/HTTPS and PostgreSQL services on the **primary** node.
+- Geo requires the **primary** site and **secondary** site to be able to communicate with each
+  other across a TCP/IP network. In particular, the **secondary** sites must be able to
+  access HTTP/HTTPS and PostgreSQL services on the **primary** site.
 
 ### What core network devices support the application?
 
@@ -105,9 +105,9 @@ from [owasp.org](https://owasp.org/).
 
 ### What network performance requirements exist?
 
-- Maximum replication speeds between **primary** node and **secondary** node is limited by the
+- Maximum replication speeds between **primary** site and **secondary** site is limited by the
   available bandwidth between sites. No hard requirements exist - time to complete
-  replication (and ability to keep up with changes on the **primary** node) is a function
+  replication (and ability to keep up with changes on the **primary** site) is a function
   of the size of the data set, tolerance for latency, and available network
   capacity.
 
@@ -189,9 +189,9 @@ from [owasp.org](https://owasp.org/).
 ### How will database connection strings, encryption keys, and other sensitive components be stored, accessed, and protected from unauthorized detection?
 
 - There are some Geo-specific values. Some are shared secrets which must be
-  securely transmitted from the **primary** node to the **secondary** node at setup time. Our
-  documentation recommends transmitting them from the **primary** node to the system
-  administrator via SSH, and then back out to the **secondary** node in the same manner.
+  securely transmitted from the **primary** site to the **secondary** site at setup time. Our
+  documentation recommends transmitting them from the **primary** site to the system
+  administrator via SSH, and then back out to the **secondary** site in the same manner.
   In particular, this includes the PostgreSQL replication credentials and a secret
   key (`db_key_base`) which is used to decrypt certain columns in the database.
   The `db_key_base` secret is stored unencrypted on the file system, in
@@ -205,25 +205,25 @@ from [owasp.org](https://owasp.org/).
 - Data is entered via the web application exposed by GitLab itself. Some data is
   also entered using system administration commands on the GitLab servers (e.g.,
   `gitlab-ctl set-primary-node`).
-- **Secondary** nodes also receive inputs via PostgreSQL streaming replication from the **primary** node.
+- **Secondary** sites also receive inputs via PostgreSQL streaming replication from the **primary** site.
 
 ### What data output paths does the application support?
 
-- **Primary** nodes output via PostgreSQL streaming replication to the **secondary** node.
+- **Primary** sites output via PostgreSQL streaming replication to the **secondary** site.
   Otherwise, principally via the web application exposed by GitLab itself, and via
   SSH `git clone` operations initiated by the end-user.
 
 ### How does data flow across the application's internal components?
 
-- **Secondary** nodes and **primary** nodes interact via HTTP/HTTPS (secured with JSON web
+- **Secondary** sites and **primary** sites interact via HTTP/HTTPS (secured with JSON web
   tokens) and via PostgreSQL streaming replication.
-- Within a **primary** node or **secondary** node, the SSOT is the file system and the database
-  (including Geo tracking database on **secondary** node). The various internal components
+- Within a **primary** site or **secondary** site, the SSOT is the file system and the database
+  (including Geo tracking database on **secondary** site). The various internal components
   are orchestrated to make alterations to these stores.
 
 ### What data input validation requirements have been defined?
 
-- **Secondary** nodes must have a faithful replication of the **primary** node's data.
+- **Secondary** sites must have a faithful replication of the **primary** site's data.
 
 ### What data does the application store and how?
 
@@ -231,11 +231,11 @@ from [owasp.org](https://owasp.org/).
 
 ### What data is or may need to be encrypted and what key management requirements have been defined?
 
-- Neither **primary** nodes or **secondary** nodes encrypt Git repository or file system data at
+- Neither **primary** sites or **secondary** sites encrypt Git repository or file system data at
   rest. A subset of database columns are encrypted at rest using the `db_otp_key`.
 - A static secret shared across all hosts in a GitLab deployment.
 - In transit, data should be encrypted, although the application does permit
-  communication to proceed unencrypted. The two main transits are the **secondary** node's
+  communication to proceed unencrypted. The two main transits are the **secondary** site's
   replication process for PostgreSQL, and for Git repositories/files. Both should
   be protected using TLS, with the keys for that managed via Omnibus per existing
   configuration for end-user access to GitLab.
@@ -253,19 +253,19 @@ from [owasp.org](https://owasp.org/).
 
 ### What user privilege levels does the application support?
 
-- Geo adds one type of privilege: **secondary** nodes can access a special Geo API to
+- Geo adds one type of privilege: **secondary** sites can access a special Geo API to
   download files over HTTP/HTTPS, and to clone repositories using HTTP/HTTPS.
 
 ### What user identification and authentication requirements have been defined?
 
-- **Secondary** nodes identify to Geo **primary** nodes via OAuth or JWT authentication
+- **Secondary** sites identify to Geo **primary** sites via OAuth or JWT authentication
   based on the shared database (HTTP access) or a PostgreSQL replication user (for
   database replication). The database replication also requires IP-based access
   controls to be defined.
 
 ### What user authorization requirements have been defined?
 
-- **Secondary** nodes must only be able to *read* data. They are not currently able to mutate data on the **primary** node.
+- **Secondary** sites must only be able to *read* data. They are not currently able to mutate data on the **primary** site.
 
 ### What session management requirements have been defined?
 
@@ -279,9 +279,9 @@ from [owasp.org](https://owasp.org/).
 
 ### What access requirements have been defined for URI and Service calls?
 
-- **Secondary** nodes make many calls to the **primary** node's API. This is how file
+- **Secondary** sites make many calls to the **primary** site's API. This is how file
   replication proceeds, for instance. This endpoint is only accessible with a JWT token.
-- The **primary** node also makes calls to the **secondary** node to get status information.
+- The **primary** site also makes calls to the **secondary** site to get status information.
 
 ## Application Monitoring
 

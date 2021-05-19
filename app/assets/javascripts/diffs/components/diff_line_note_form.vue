@@ -207,14 +207,14 @@ export default {
     </div>
     <note-form
       ref="noteForm"
-      :is-editing="true"
+      :is-editing="false"
       :line-code="line.line_code"
       :line="line"
       :lines="commentLines"
       :help-page-path="helpPagePath"
       :diff-file="diffFile"
       :show-suggest-popover="showSuggestPopover"
-      save-button-title="Comment"
+      :save-button-title="__('Comment')"
       class="diff-comment-form gl-mt-3"
       @handleFormUpdateAddToReview="addToReview"
       @cancelForm="handleCancelCommentForm"

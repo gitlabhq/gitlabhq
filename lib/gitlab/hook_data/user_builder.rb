@@ -50,4 +50,4 @@ module Gitlab
   end
 end
 
-Gitlab::HookData::UserBuilder.prepend_if_ee('EE::Gitlab::HookData::UserBuilder')
+Gitlab::HookData::UserBuilder.prepend_mod_with('Gitlab::HookData::UserBuilder')

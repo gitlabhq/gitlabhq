@@ -6,6 +6,7 @@ module Spam
     DISALLOW = "disallow"
     ALLOW = "allow"
     BLOCK_USER = "block"
+    NOOP = "noop"
 
     SUPPORTED_VERDICTS = {
       BLOCK_USER => {
@@ -19,6 +20,9 @@ module Spam
       },
       ALLOW => {
         priority: 4
+      },
+      NOOP => {
+        priority: 5
       }
     }.freeze
   end

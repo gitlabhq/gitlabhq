@@ -32,4 +32,4 @@ module Boards
   end
 end
 
-Boards::Lists::ListService.prepend_if_ee('EE::Boards::Lists::ListService')
+Boards::Lists::ListService.prepend_mod_with('Boards::Lists::ListService')

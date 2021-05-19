@@ -159,4 +159,4 @@ class ProjectStatistics < ApplicationRecord
   end
 end
 
-ProjectStatistics.prepend_if_ee('EE::ProjectStatistics')
+ProjectStatistics.prepend_mod_with('ProjectStatistics')

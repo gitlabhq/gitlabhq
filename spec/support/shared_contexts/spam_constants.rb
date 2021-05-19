@@ -6,5 +6,6 @@ RSpec.shared_context 'includes Spam constants' do
     stub_const('DISALLOW', Spam::SpamConstants::DISALLOW)
     stub_const('ALLOW', Spam::SpamConstants::ALLOW)
     stub_const('BLOCK_USER', Spam::SpamConstants::BLOCK_USER)
+    stub_const('NOOP', Spam::SpamConstants::NOOP)
   end
 end

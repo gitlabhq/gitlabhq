@@ -2,6 +2,8 @@
 
 class NewIssueWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include NewIssuable
 
   feature_category :issue_tracking
@@ -18,7 +20,7 @@ class NewIssueWorker # rubocop:disable Scalability/IdempotentWorker
     issuable.create_cross_references!(user)
 
     Issues::AfterCreateService
-      .new(issuable.project, user)
+      .new(project: issuable.project, current_user: user)
       .execute(issuable)
   end
 

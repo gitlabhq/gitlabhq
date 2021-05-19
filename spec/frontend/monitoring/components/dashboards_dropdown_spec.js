@@ -6,7 +6,7 @@ import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue'
 
 import { dashboardGitResponse } from '../mock_data';
 
-const defaultBranch = 'master';
+const defaultBranch = 'main';
 const starredDashboards = dashboardGitResponse.filter(({ starred }) => starred);
 const notStarredDashboards = dashboardGitResponse.filter(({ starred }) => !starred);
 

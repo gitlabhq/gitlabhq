@@ -59,7 +59,7 @@ module HasWikiPageMetaAttributes
 
       if conflict.present?
         meta.errors.add(:canonical_slug, 'Duplicate value found')
-        raise CanonicalSlugConflictError.new(meta)
+        raise CanonicalSlugConflictError, meta
       end
 
       meta

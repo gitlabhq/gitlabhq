@@ -33,7 +33,7 @@ compatible.
 
 For GitLab.com, please take into consideration that regular migrations (under `db/migrate`)
 are run before [Canary is deployed](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/#configuration-and-deployment),
-and post-deployment migrations (`db/post_migrate`) are run after the deployment to production has finished.
+and [post-deployment migrations](post_deployment_migrations.md) (`db/post_migrate`) are run after the deployment to production has finished.
 
 ## Schema Changes
 
@@ -113,6 +113,30 @@ it is recommended to use a regular single-transaction migration and the default
 rails schema statement: [`add_index`](https://api.rubyonrails.org/v5.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_index).
 This is a blocking operation, but it doesn't cause problems because the table is not yet used,
 and therefore it does not have any records yet.
+
+## Naming conventions
+
+We keep column names consistent with [ActiveRecord's schema conventions](https://guides.rubyonrails.org/active_record_basics.html#schema-conventions).
+
+Custom index names should follow the pattern `index_#{table_name}_on_#{column_1}_and_#{column_2}_#{condition}`.
+
+Examples:
+
+- `index_services_on_type_and_id_and_template_when_active`
+- `index_projects_on_id_service_desk_enabled`
+- `index_clusters_on_enabled_cluster_type_id_and_created_at`
+
+### Truncate long index names
+
+PostgreSQL [limits the length of identifiers](https://www.postgresql.org/docs/current/limits.html),
+like column or index names. Column names are not usually a problem, but index names tend
+to be longer. Some methods for shortening a name that's too long:
+
+- Prefix it with `i_` instead of `index_`.
+- Skip redundant prefixes. For example,
+  `index_vulnerability_findings_remediations_on_vulnerability_remediation_id` becomes
+  `index_vulnerability_findings_remediations_on_remediation_id`.
+- Instead of columns, specify the purpose of the index, such as `index_users_for_unconfirmation_notification`.
 
 ## Heavy operations in a single transaction
 

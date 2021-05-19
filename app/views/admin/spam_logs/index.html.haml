@@ -1,22 +1,22 @@
 - page_title _("Spam Logs")
-%h3.page-title Spam Logs
+%h3.page-title= _('Spam Logs')
 %hr
 - if @spam_logs.present?
   .table-holder
     %table.table
       %thead
         %tr
-          %th Date
-          %th User
-          %th Source IP
-          %th API?
-          %th Recaptcha verified?
-          %th Type
-          %th Title
-          %th Description
-          %th Primary Action
+          %th= _('Date')
+          %th= _('User')
+          %th= _('Source IP')
+          %th= _('API?')
+          %th= _('Recaptcha verified?')
+          %th= _('Type')
+          %th= _('Title')
+          %th= _('Description')
+          %th= _('Primary Action')
           %th
       = render @spam_logs
   = paginate @spam_logs, theme: 'gitlab'
 - else
-  %h4 There are no Spam Logs
+  %h4= _('There are no Spam Logs')

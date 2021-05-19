@@ -19,7 +19,7 @@ RSpec.describe RebaseWorker, '#perform' do
 
     it 'sets the correct project for running hooks' do
       expect(MergeRequests::RebaseService)
-        .to receive(:new).with(forked_project, merge_request.author).and_call_original
+        .to receive(:new).with(project: forked_project, current_user: merge_request.author).and_call_original
 
       subject.perform(merge_request.id, merge_request.author.id)
     end

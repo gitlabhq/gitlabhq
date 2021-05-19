@@ -1,6 +1,9 @@
+- title = _('Delete Key')
+- aria = { label: title }
+
 - if defined?(text)
-  = button_to text, '#', class: html_class, data: button_data
+  = button_to text, '#', class: html_class, data: button_data, title: title, aria: aria
 - else
-  = button_to '#', class: html_class, data: button_data do
+  = button_to '#', class: html_class, data: button_data, title: title, aria: aria do
     %span.sr-only= _('Delete')
     = sprite_icon('remove')

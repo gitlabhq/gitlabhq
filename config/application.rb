@@ -36,8 +36,6 @@ module Gitlab
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    config.active_record.sqlite3.represent_boolean_as_integer = true
-
     # Sidekiq uses eager loading, but directories not in the standard Rails
     # directories must be added to the eager load paths:
     # https://github.com/mperham/sidekiq/wiki/FAQ#why-doesnt-sidekiq-autoload-my-rails-application-code
@@ -49,6 +47,7 @@ module Gitlab
     config.eager_load_paths.push(*%W[#{config.root}/lib
                                      #{config.root}/app/models/badges
                                      #{config.root}/app/models/hooks
+                                     #{config.root}/app/models/integrations
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/graphql/resolvers/concerns
@@ -57,8 +56,9 @@ module Gitlab
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
+    foss_eager_load_paths = config.eager_load_paths.dup.freeze
     load_paths = lambda do |dir:|
-      ext_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
+      ext_paths = foss_eager_load_paths.each_with_object([]) do |path, memo|
         ext_path = config.root.join(dir, Pathname.new(path).relative_path_from(config.root))
         memo << ext_path.to_s
       end
@@ -85,6 +85,7 @@ module Gitlab
     # Rake tasks ignore the eager loading settings, so we need to set the
     # autoload paths explicitly
     config.autoload_paths = config.eager_load_paths.dup
+    config.autoload_paths.push("#{config.root}/lib/generators")
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -146,6 +147,7 @@ module Gitlab
       encrypted_key
       import_url
       elasticsearch_url
+      elasticsearch_password
       search
       jwt
       otp_attempt
@@ -209,6 +211,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/merge_conflicts.css"
     config.assets.precompile << "page_bundles/merge_requests.css"
     config.assets.precompile << "page_bundles/milestone.css"
+    config.assets.precompile << "page_bundles/new_namespace.css"
     config.assets.precompile << "page_bundles/oncall_schedules.css"
     config.assets.precompile << "page_bundles/pipeline.css"
     config.assets.precompile << "page_bundles/pipeline_schedules.css"

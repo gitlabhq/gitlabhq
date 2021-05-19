@@ -22,7 +22,7 @@ class Email < ApplicationRecord
 
   self.reconfirmable = false # currently email can't be changed, no need to reconfirm
 
-  delegate :username, :can?, to: :user
+  delegate :username, :can?, :pending_invitations, :accept_pending_invitations!, to: :user
 
   def email=(value)
     write_attribute(:email, value.downcase.strip)
@@ -30,10 +30,6 @@ class Email < ApplicationRecord
 
   def unique_email
     self.errors.add(:email, 'has already been taken') if User.exists?(email: self.email)
-  end
-
-  def accept_pending_invitations!
-    user.accept_pending_invitations!
   end
 
   def validate_email_format

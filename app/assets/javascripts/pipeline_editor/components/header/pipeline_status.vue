@@ -5,7 +5,11 @@ import { truncateSha } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import getCommitSha from '~/pipeline_editor/graphql/queries/client/commit_sha.graphql';
 import getPipelineQuery from '~/pipeline_editor/graphql/queries/client/pipeline.graphql';
-import { toggleQueryPollingByVisibility } from '~/pipelines/components/graph/utils';
+import getPipelineEtag from '~/pipeline_editor/graphql/queries/client/pipeline_etag.graphql';
+import {
+  getQueryHeaders,
+  toggleQueryPollingByVisibility,
+} from '~/pipelines/components/graph/utils';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 const POLL_INTERVAL = 10000;
@@ -31,7 +35,13 @@ export default {
     commitSha: {
       query: getCommitSha,
     },
+    pipelineEtag: {
+      query: getPipelineEtag,
+    },
     pipeline: {
+      context() {
+        return getQueryHeaders(this.pipelineEtag);
+      },
       query: getPipelineQuery,
       variables() {
         return {

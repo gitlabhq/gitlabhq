@@ -88,4 +88,4 @@ module Ci
   end
 end
 
-Ci::Metadatable.prepend_if_ee('EE::Ci::Metadatable')
+Ci::Metadatable.prepend_mod_with('Ci::Metadatable')

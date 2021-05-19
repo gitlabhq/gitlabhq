@@ -1,0 +1,10 @@
+!!! 5
+%html{ lang: "en" }
+  = render "layouts/head"
+  %body.login-page.application.navless{ class: user_application_theme, data: { page: body_data_page } }
+    = render "layouts/header/logo_with_title"
+    = render "layouts/broadcast"
+    .container.navless-container.pt-0
+      .content.mw-460.mx-auto
+        = render "layouts/flash"
+        = yield

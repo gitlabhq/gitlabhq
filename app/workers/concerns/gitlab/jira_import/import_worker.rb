@@ -7,6 +7,8 @@ module Gitlab
 
       included do
         include ApplicationWorker
+
+        sidekiq_options retry: 3
         include ProjectImportOptions
         include Gitlab::JiraImport::QueueOptions
       end

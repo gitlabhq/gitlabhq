@@ -221,22 +221,22 @@ export default {
     cancelable: false,
   },
   ref: {
-    name: 'master',
-    path: '/root/ci-mock/tree/master',
+    name: 'main',
+    path: '/root/ci-mock/tree/main',
     tag: false,
     branch: true,
   },
   commit: {
     id: '798e5f902592192afaba73f4668ae30e56eae492',
     short_id: '798e5f90',
-    title: "Merge branch 'new-branch' into 'master'\r",
+    title: "Merge branch 'new-branch' into 'main'\r",
     created_at: '2017-04-13T10:25:17.000+01:00',
     parent_ids: [
       '54d483b1ed156fbbf618886ddf7ab023e24f8738',
       'c8e2d38a6c538822e81c57022a6e3a0cfedebbcc',
     ],
     message:
-      "Merge branch 'new-branch' into 'master'\r\n\r\nAdd new file\r\n\r\nSee merge request !1",
+      "Merge branch 'new-branch' into 'main'\r\n\r\nAdd new file\r\n\r\nSee merge request !1",
     author_name: 'Root',
     author_email: 'admin@example.com',
     authored_date: '2017-04-13T10:25:17.000+01:00',

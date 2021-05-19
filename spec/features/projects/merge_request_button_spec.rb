@@ -7,6 +7,7 @@ RSpec.describe 'Merge Request button' do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
+
   let(:forked_project) { fork_project(project, user, repository: true) }
 
   shared_examples 'Merge request button only shown when allowed' do

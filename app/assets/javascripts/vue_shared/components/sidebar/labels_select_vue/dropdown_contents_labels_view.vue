@@ -83,12 +83,13 @@ export default {
       const highlightedLabel = this.$refs.labelsListContainer.querySelector('.is-focused');
 
       if (highlightedLabel) {
-        const rect = highlightedLabel.getBoundingClientRect();
-        if (rect.bottom > this.$refs.labelsListContainer.clientHeight) {
-          highlightedLabel.scrollIntoView(false);
-        }
-        if (rect.top < 0) {
-          highlightedLabel.scrollIntoView();
+        const container = this.$refs.labelsListContainer.getBoundingClientRect();
+        const label = highlightedLabel.getBoundingClientRect();
+
+        if (label.bottom > container.bottom) {
+          this.$refs.labelsListContainer.scrollTop += label.bottom - container.bottom;
+        } else if (label.top < container.top) {
+          this.$refs.labelsListContainer.scrollTop -= container.top - label.top;
         }
       }
     },
@@ -177,7 +178,7 @@ export default {
           class="labels-fetch-loading gl-align-items-center w-100 h-100"
           size="md"
         />
-        <ul v-else class="list-unstyled mb-0">
+        <ul v-else class="list-unstyled gl-mb-0 gl-word-break-word">
           <label-item
             v-for="(label, index) in visibleLabels"
             :key="label.id"

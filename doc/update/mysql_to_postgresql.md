@@ -4,7 +4,7 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Migrating from MySQL to PostgreSQL
+# Migrating from MySQL to PostgreSQL **(FREE SELF)**
 
 This guide documents how to take a working GitLab instance that uses MySQL and
 migrate it to a PostgreSQL database.

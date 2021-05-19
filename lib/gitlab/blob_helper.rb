@@ -38,7 +38,7 @@ module Gitlab
 
       # If Charlock says its binary
       else
-        detect_encoding[:type] == :binary
+        find_encoding[:type] == :binary
       end
     end
 
@@ -137,23 +137,25 @@ module Gitlab
     end
 
     def ruby_encoding
-      if hash = detect_encoding
+      if hash = find_encoding
         hash[:ruby_encoding]
       end
     end
 
     def encoding
-      if hash = detect_encoding
+      if hash = find_encoding
         hash[:encoding]
       end
     end
 
-    def detect_encoding
-      @detect_encoding ||= CharlockHolmes::EncodingDetector.new.detect(data) if data # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    end
-
     def empty?
       data.nil? || data == ""
+    end
+
+    private
+
+    def find_encoding
+      @find_encoding ||= Gitlab::EncodingHelper.detect_encoding(data) if data # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
   end
 end

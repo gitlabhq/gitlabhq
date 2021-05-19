@@ -78,7 +78,7 @@ module Snippets
       create_commit(snippet)
 
       true
-    rescue => e
+    rescue StandardError => e
       # Restore old attributes but re-assign changes so they're not lost
       unless snippet.previous_changes.empty?
         snippet.previous_changes.each { |attr, value| snippet[attr] = value[0] }

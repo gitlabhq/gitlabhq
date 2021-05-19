@@ -1,0 +1,21 @@
+---
+key_path: counts.ci_runners_group_type_active
+name: "count_active_group_ci_runners"
+description: Total active instance Runners
+product_section: ops
+product_stage: verify
+product_group: group::continuous integration
+product_category: continuous_integration
+value_type: number
+status: implemented
+milestone: "13.12"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58197
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

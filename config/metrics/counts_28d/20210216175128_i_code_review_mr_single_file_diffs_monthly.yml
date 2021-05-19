@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.code_review.i_code_review_mr_single_file_diffs_monthly
-description: Count of unique merge requests per week|month with diffs viewed file
+description: Count of unique merge requests per month with diffs viewed file
   by file
 product_section: dev
 product_stage: create
@@ -12,6 +12,8 @@ time_frame: 28d
 data_source: redis_hll
 distribution:
 - ce
+- ee
 tier:
-- free
-skip_validation: true
+ - free
+ - premium
+ - ultimate

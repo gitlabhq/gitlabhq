@@ -66,7 +66,7 @@ module PagesDomains
         project_id: pages_domain.project_id,
         pages_domain: pages_domain.domain
       )
-    rescue => e
+    rescue StandardError => e
       # getting authorizations is an additional network request which can raise errors
       Gitlab::ErrorTracking.track_exception(e)
     end

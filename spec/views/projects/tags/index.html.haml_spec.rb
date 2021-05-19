@@ -20,12 +20,6 @@ RSpec.describe 'projects/tags/index.html.haml' do
     allow(view).to receive(:current_user).and_return(project.namespace.owner)
   end
 
-  it 'defaults sort dropdown toggle to last updated' do
-    stub_feature_flags(gldropdown_tags: false)
-    render
-    expect(rendered).to have_button('Last updated')
-  end
-
   it 'renders links to the Releases page for tags associated with a release' do
     render
     expect(rendered).to have_link(release.name, href: project_releases_path(project, anchor: release.tag))

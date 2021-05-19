@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe JiraTrackerData do
   describe 'associations' do
-    it { is_expected.to belong_to(:service) }
+    it { is_expected.to belong_to(:integration) }
   end
 
   describe 'deployment_type' do

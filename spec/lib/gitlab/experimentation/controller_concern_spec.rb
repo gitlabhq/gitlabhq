@@ -19,12 +19,15 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
       }
     )
 
+    allow(Gitlab).to receive(:dev_env_or_com?).and_return(is_gitlab_com)
+
     Feature.enable_percentage_of_time(:backwards_compatible_test_experiment_experiment_percentage, enabled_percentage)
     Feature.enable_percentage_of_time(:test_experiment_experiment_percentage, enabled_percentage)
   end
 
   let(:enabled_percentage) { 10 }
   let(:rollout_strategy) { nil }
+  let(:is_gitlab_com) { true }
 
   controller(ApplicationController) do
     include Gitlab::Experimentation::ControllerConcern
@@ -37,17 +40,17 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
   describe '#set_experimentation_subject_id_cookie' do
     let(:do_not_track) { nil }
     let(:cookie) { cookies.permanent.signed[:experimentation_subject_id] }
+    let(:cookie_value) { nil }
 
     before do
       request.headers['DNT'] = do_not_track if do_not_track.present?
+      request.cookies[:experimentation_subject_id] = cookie_value if cookie_value
 
       get :index
     end
 
     context 'cookie is present' do
-      before do
-        cookies[:experimentation_subject_id] = 'test'
-      end
+      let(:cookie_value) { 'test' }
 
       it 'does not change the cookie' do
         expect(cookies[:experimentation_subject_id]).to eq 'test'
@@ -70,6 +73,24 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
       context 'DNT: 1' do
         let(:do_not_track) { '1' }
 
+        it 'does nothing' do
+          expect(cookie).not_to be_present
+        end
+      end
+    end
+
+    context 'when not on gitlab.com' do
+      let(:is_gitlab_com) { false }
+
+      context 'when cookie was set' do
+        let(:cookie_value) { 'test' }
+
+        it 'cookie gets deleted' do
+          expect(cookie).not_to be_present
+        end
+      end
+
+      context 'when no cookie was set before' do
         it 'does nothing' do
           expect(cookie).not_to be_present
         end

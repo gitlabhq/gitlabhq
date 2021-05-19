@@ -19,4 +19,4 @@ module API
   end
 end
 
-API::Entities::UserBasic.prepend_if_ee('EE::API::Entities::UserBasic')
+API::Entities::UserBasic.prepend_mod_with('API::Entities::UserBasic')

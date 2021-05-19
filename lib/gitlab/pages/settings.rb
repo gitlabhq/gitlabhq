@@ -11,10 +11,6 @@ module Gitlab
         super
       end
 
-      def local_store
-        @local_store ||= ::Gitlab::Pages::Stores::LocalStore.new(super)
-      end
-
       private
 
       def disk_access_denied?
@@ -25,7 +21,7 @@ module Gitlab
 
       def report_denied_disk_access
         raise DiskAccessDenied if disk_access_denied?
-      rescue => e
+      rescue StandardError => e
         ::Gitlab::ErrorTracking.track_exception(e)
       end
     end

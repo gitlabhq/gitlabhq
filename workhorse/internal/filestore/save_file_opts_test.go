@@ -57,19 +57,15 @@ func TestSaveFileOptsLocalAndRemote(t *testing.T) {
 
 func TestGetOpts(t *testing.T) {
 	tests := []struct {
-		name                   string
-		multipart              *api.MultipartUploadParams
-		customPutHeaders       bool
-		putHeaders             map[string]string
-		FeatureFlagExtractBase bool
+		name             string
+		multipart        *api.MultipartUploadParams
+		customPutHeaders bool
+		putHeaders       map[string]string
 	}{
 		{
 			name: "Single upload",
 		},
 		{
-			name:                   "Single upload w/ FeatureFlagExtractBase enabled",
-			FeatureFlagExtractBase: true,
-		}, {
 			name: "Multipart upload",
 			multipart: &api.MultipartUploadParams{
 				PartSize:    10,
@@ -98,7 +94,6 @@ func TestGetOpts(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			apiResponse := &api.Response{
-				FeatureFlagExtractBase: test.FeatureFlagExtractBase,
 				RemoteObject: api.RemoteObject{
 					Timeout:          10,
 					ID:               "id",
@@ -114,7 +109,6 @@ func TestGetOpts(t *testing.T) {
 			opts, err := filestore.GetOpts(apiResponse)
 			require.NoError(t, err)
 
-			require.Equal(t, apiResponse.FeatureFlagExtractBase, opts.FeatureFlagExtractBase)
 			require.Equal(t, apiResponse.TempPath, opts.LocalTempPath)
 			require.WithinDuration(t, deadline, opts.Deadline, time.Second)
 			require.Equal(t, apiResponse.RemoteObject.ID, opts.RemoteID)

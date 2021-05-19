@@ -1,121 +1,22 @@
 import { cloneDeep } from 'lodash';
 import { getJSONFixture } from 'helpers/fixtures';
 import {
-  releaseToApiJson,
-  apiJsonToRelease,
   convertGraphQLRelease,
   convertAllReleasesGraphQLResponse,
   convertOneReleaseGraphQLResponse,
 } from '~/releases/util';
 
 const originalAllReleasesQueryResponse = getJSONFixture(
-  'graphql/releases/queries/all_releases.query.graphql.json',
+  'graphql/releases/graphql/queries/all_releases.query.graphql.json',
 );
 const originalOneReleaseQueryResponse = getJSONFixture(
-  'graphql/releases/queries/one_release.query.graphql.json',
+  'graphql/releases/graphql/queries/one_release.query.graphql.json',
+);
+const originalOneReleaseForEditingQueryResponse = getJSONFixture(
+  'graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json',
 );
 
 describe('releases/util.js', () => {
-  describe('releaseToApiJson', () => {
-    it('converts a release JavaScript object into JSON that the Release API can accept', () => {
-      const release = {
-        tagName: 'tag-name',
-        name: 'Release name',
-        description: 'Release description',
-        milestones: ['13.2', '13.3'],
-        assets: {
-          links: [{ url: 'https://gitlab.example.com/link', linkType: 'other' }],
-        },
-      };
-
-      const expectedJson = {
-        tag_name: 'tag-name',
-        ref: null,
-        name: 'Release name',
-        description: 'Release description',
-        milestones: ['13.2', '13.3'],
-        assets: {
-          links: [{ url: 'https://gitlab.example.com/link', link_type: 'other' }],
-        },
-      };
-
-      expect(releaseToApiJson(release)).toEqual(expectedJson);
-    });
-
-    describe('when createFrom is provided', () => {
-      it('adds the provided createFrom ref to the JSON as a "ref" property', () => {
-        const createFrom = 'main';
-
-        const release = {};
-
-        const expectedJson = {
-          ref: createFrom,
-        };
-
-        expect(releaseToApiJson(release, createFrom)).toMatchObject(expectedJson);
-      });
-    });
-
-    describe('release.name', () => {
-      it.each`
-        input                 | output
-        ${null}               | ${null}
-        ${''}                 | ${null}
-        ${' \t\n\r\n'}        | ${null}
-        ${'  Release name  '} | ${'Release name'}
-      `('converts a name like `$input` to `$output`', ({ input, output }) => {
-        const release = { name: input };
-
-        const expectedJson = {
-          name: output,
-        };
-
-        expect(releaseToApiJson(release)).toMatchObject(expectedJson);
-      });
-    });
-
-    describe('when milestones contains full milestone objects', () => {
-      it('converts the milestone objects into titles', () => {
-        const release = {
-          milestones: [{ title: '13.2' }, { title: '13.3' }, '13.4'],
-        };
-
-        const expectedJson = { milestones: ['13.2', '13.3', '13.4'] };
-
-        expect(releaseToApiJson(release)).toMatchObject(expectedJson);
-      });
-    });
-  });
-
-  describe('apiJsonToRelease', () => {
-    it('converts JSON received from the Release API into an object usable by the Vue application', () => {
-      const json = {
-        tag_name: 'tag-name',
-        assets: {
-          links: [
-            {
-              link_type: 'other',
-            },
-          ],
-        },
-      };
-
-      const expectedRelease = {
-        tagName: 'tag-name',
-        assets: {
-          links: [
-            {
-              linkType: 'other',
-            },
-          ],
-        },
-        milestones: [],
-      };
-
-      expect(apiJsonToRelease(json)).toEqual(expectedRelease);
-    });
-  });
-
   describe('convertGraphQLRelease', () => {
     let releaseFromResponse;
     let convertedRelease;
@@ -134,6 +35,26 @@ describe('releases/util.js', () => {
         convertedRelease = convertGraphQLRelease(releaseFromResponse);
 
         expect(convertedRelease.assets.links[0].linkType).toBeUndefined();
+      });
+
+      it('handles assets that have no links', () => {
+        expect(convertedRelease.assets.links[0]).not.toBeUndefined();
+
+        delete releaseFromResponse.assets.links;
+
+        convertedRelease = convertGraphQLRelease(releaseFromResponse);
+
+        expect(convertedRelease.assets.links).toEqual([]);
+      });
+
+      it('handles assets that have no sources', () => {
+        expect(convertedRelease.assets.sources[0]).not.toBeUndefined();
+
+        delete releaseFromResponse.assets.sources;
+
+        convertedRelease = convertGraphQLRelease(releaseFromResponse);
+
+        expect(convertedRelease.assets.sources).toEqual([]);
       });
     });
 
@@ -160,6 +81,33 @@ describe('releases/util.js', () => {
         expect(convertedRelease.commit).toBeUndefined();
       });
     });
+
+    describe('milestones', () => {
+      it("handles releases that don't have any milestone stats", () => {
+        expect(convertedRelease.milestones[0].issueStats).not.toBeUndefined();
+
+        releaseFromResponse.milestones.nodes = releaseFromResponse.milestones.nodes.map((n) => ({
+          ...n,
+          stats: undefined,
+        }));
+
+        convertedRelease = convertGraphQLRelease(releaseFromResponse);
+
+        expect(convertedRelease.milestones[0].issueStats).toEqual({});
+      });
+    });
+
+    describe('evidences', () => {
+      it("handles releases that don't have any evidences", () => {
+        expect(convertedRelease.evidences).not.toBeUndefined();
+
+        delete releaseFromResponse.evidences;
+
+        convertedRelease = convertGraphQLRelease(releaseFromResponse);
+
+        expect(convertedRelease.evidences).toEqual([]);
+      });
+    });
   });
 
   describe('convertAllReleasesGraphQLResponse', () => {
@@ -171,6 +119,14 @@ describe('releases/util.js', () => {
   describe('convertOneReleaseGraphQLResponse', () => {
     it('matches snapshot', () => {
       expect(convertOneReleaseGraphQLResponse(originalOneReleaseQueryResponse)).toMatchSnapshot();
+    });
+  });
+
+  describe('convertOneReleaseForEditingGraphQLResponse', () => {
+    it('matches snapshot', () => {
+      expect(
+        convertOneReleaseGraphQLResponse(originalOneReleaseForEditingQueryResponse),
+      ).toMatchSnapshot();
     });
   });
 });

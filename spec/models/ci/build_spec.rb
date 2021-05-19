@@ -1132,7 +1132,7 @@ RSpec.describe Ci::Build do
       it "executes UPDATE query" do
         recorded = ActiveRecord::QueryRecorder.new { subject }
 
-        expect(recorded.log.select { |l| l.match?(/UPDATE.*ci_builds/) }.count).to eq(1)
+        expect(recorded.log.count { |l| l.match?(/UPDATE.*ci_builds/) }).to eq(1)
       end
     end
 
@@ -1140,7 +1140,7 @@ RSpec.describe Ci::Build do
       it 'does not execute UPDATE query' do
         recorded = ActiveRecord::QueryRecorder.new { subject }
 
-        expect(recorded.log.select { |l| l.match?(/UPDATE.*ci_builds/) }.count).to eq(0)
+        expect(recorded.log.count { |l| l.match?(/UPDATE.*ci_builds/) }).to eq(0)
       end
     end
   end
@@ -1205,7 +1205,7 @@ RSpec.describe Ci::Build do
 
     before do
       allow(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
-      allow(Deployments::ExecuteHooksWorker).to receive(:perform_async)
+      allow(Deployments::HooksWorker).to receive(:perform_async)
     end
 
     it 'has deployments record with created status' do
@@ -1241,7 +1241,7 @@ RSpec.describe Ci::Build do
 
       before do
         allow(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
-        allow(Deployments::ExecuteHooksWorker).to receive(:perform_async)
+        allow(Deployments::HooksWorker).to receive(:perform_async)
       end
 
       it_behaves_like 'avoid deadlock'
@@ -3631,46 +3631,29 @@ RSpec.describe Ci::Build do
     end
 
     let!(:job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 1, options: options) }
+    let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-    context 'when validates for dependencies is enabled' do
-      before do
-        stub_feature_flags(ci_validate_build_dependencies_override: false)
-      end
+    context 'when "dependencies" keyword is not defined' do
+      let(:options) { {} }
 
-      let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
-
-      context 'when "dependencies" keyword is not defined' do
-        let(:options) { {} }
-
-        it { expect(job).to have_valid_build_dependencies }
-      end
-
-      context 'when "dependencies" keyword is empty' do
-        let(:options) { { dependencies: [] } }
-
-        it { expect(job).to have_valid_build_dependencies }
-      end
-
-      context 'when "dependencies" keyword is specified' do
-        let(:options) { { dependencies: ['test'] } }
-
-        it_behaves_like 'validation is active'
-      end
+      it { expect(job).to have_valid_build_dependencies }
     end
 
-    context 'when validates for dependencies is disabled' do
+    context 'when "dependencies" keyword is empty' do
+      let(:options) { { dependencies: [] } }
+
+      it { expect(job).to have_valid_build_dependencies }
+    end
+
+    context 'when "dependencies" keyword is specified' do
       let(:options) { { dependencies: ['test'] } }
 
-      before do
-        stub_feature_flags(ci_validate_build_dependencies_override: true)
-      end
-
-      it_behaves_like 'validation is not active'
+      it_behaves_like 'validation is active'
     end
   end
 
   describe 'state transition when build fails' do
-    let(:service) { ::MergeRequests::AddTodoWhenBuildFailsService.new(project, user) }
+    let(:service) { ::MergeRequests::AddTodoWhenBuildFailsService.new(project: project, current_user: user) }
 
     before do
       allow(::MergeRequests::AddTodoWhenBuildFailsService).to receive(:new).and_return(service)
@@ -4679,25 +4662,30 @@ RSpec.describe Ci::Build do
   end
 
   describe '#execute_hooks' do
+    before do
+      build.clear_memoization(:build_data)
+    end
+
     context 'with project hooks' do
+      let(:build_data) { double(:BuildData, dup: double(:DupedData)) }
+
       before do
         create(:project_hook, project: project, job_events: true)
       end
 
-      it 'execute hooks' do
-        expect_any_instance_of(ProjectHook).to receive(:async_execute)
+      it 'calls project.execute_hooks(build_data, :job_hooks)' do
+        expect(::Gitlab::DataBuilder::Build)
+          .to receive(:build).with(build).and_return(build_data)
+        expect(build.project)
+          .to receive(:execute_hooks).with(build_data.dup, :job_hooks)
 
         build.execute_hooks
       end
     end
 
-    context 'without relevant project hooks' do
-      before do
-        create(:project_hook, project: project, job_events: false)
-      end
-
-      it 'does not execute a hook' do
-        expect_any_instance_of(ProjectHook).not_to receive(:async_execute)
+    context 'without project hooks' do
+      it 'does not call project.execute_hooks' do
+        expect(build.project).not_to receive(:execute_hooks)
 
         build.execute_hooks
       end
@@ -4708,8 +4696,10 @@ RSpec.describe Ci::Build do
         create(:service, active: true, job_events: true, project: project)
       end
 
-      it 'execute services' do
-        expect_any_instance_of(Service).to receive(:async_execute)
+      it 'executes services' do
+        allow_next_found_instance_of(Integration) do |integration|
+          expect(integration).to receive(:async_execute)
+        end
 
         build.execute_hooks
       end
@@ -4720,8 +4710,10 @@ RSpec.describe Ci::Build do
         create(:service, active: true, job_events: false, project: project)
       end
 
-      it 'execute services' do
-        expect_any_instance_of(Service).not_to receive(:async_execute)
+      it 'does not execute services' do
+        allow_next_found_instance_of(Integration) do |integration|
+          expect(integration).not_to receive(:async_execute)
+        end
 
         build.execute_hooks
       end

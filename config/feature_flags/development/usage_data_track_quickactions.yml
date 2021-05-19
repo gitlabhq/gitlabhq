@@ -1,8 +1,0 @@
----
-name: usage_data_track_quickactions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52398
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/321054
-milestone: '13.9'
-type: development
-group: group::project management
-default_enabled: true

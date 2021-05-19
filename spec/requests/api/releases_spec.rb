@@ -18,7 +18,7 @@ RSpec.describe API::Releases do
     project.add_developer(developer)
   end
 
-  describe 'GET /projects/:id/releases' do
+  describe 'GET /projects/:id/releases', :use_clean_rails_redis_caching do
     context 'when there are two releases' do
       let!(:release_1) do
         create(:release,
@@ -129,19 +129,60 @@ RSpec.describe API::Releases do
       expect(json_response.first['upcoming_release']).to eq(false)
     end
 
-    it 'avoids N+1 queries' do
+    it 'avoids N+1 queries', :use_sql_query_cache do
       create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
+      create(:release_link, release: project.releases.first)
 
-      control_count = ActiveRecord::QueryRecorder.new do
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         get api("/projects/#{project.id}/releases", maintainer)
       end.count
 
-      create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
-      create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
+      create_list(:release, 2, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
+      create_list(:release, 2, project: project)
+      create_list(:release_link, 2, release: project.releases.first)
+      create_list(:release_link, 2, release: project.releases.last)
 
       expect do
         get api("/projects/#{project.id}/releases", maintainer)
-      end.not_to exceed_query_limit(control_count)
+      end.not_to exceed_all_query_limit(control_count)
+    end
+
+    it 'serializes releases for the first time and read cached data from the second time' do
+      create_list(:release, 2, project: project)
+
+      expect(API::Entities::Release)
+        .to receive(:represent).with(instance_of(Release), any_args)
+        .twice
+
+      5.times { get api("/projects/#{project.id}/releases", maintainer) }
+    end
+
+    it 'increments the cache key when link is updated' do
+      releases = create_list(:release, 2, project: project)
+
+      expect(API::Entities::Release)
+        .to receive(:represent).with(instance_of(Release), any_args)
+        .exactly(4).times
+
+      2.times { get api("/projects/#{project.id}/releases", maintainer) }
+
+      releases.each { |release| create(:release_link, release: release) }
+
+      3.times { get api("/projects/#{project.id}/releases", maintainer) }
+    end
+
+    it 'increments the cache key when evidence is updated' do
+      releases = create_list(:release, 2, project: project)
+
+      expect(API::Entities::Release)
+        .to receive(:represent).with(instance_of(Release), any_args)
+        .exactly(4).times
+
+      2.times { get api("/projects/#{project.id}/releases", maintainer) }
+
+      releases.each { |release| create(:evidence, release: release) }
+
+      3.times { get api("/projects/#{project.id}/releases", maintainer) }
     end
 
     context 'when tag does not exist in git repository' do
@@ -225,6 +266,20 @@ RSpec.describe API::Releases do
 
           expect(response).to have_gitlab_http_status(:ok)
         end
+      end
+    end
+
+    context 'when releases are public and request user is absent' do
+      let(:project) { create(:project, :repository, :public) }
+
+      it 'returns the releases' do
+        create(:release, project: project, tag: 'v0.1')
+
+        get api("/projects/#{project.id}/releases")
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.count).to eq(1)
+        expect(json_response.first['tag_name']).to eq('v0.1')
       end
     end
   end
@@ -1133,8 +1188,33 @@ RSpec.describe API::Releases do
     end
   end
 
+  describe 'Track API events', :snowplow do
+    context 'when tracking event with labels from User-Agent' do
+      it 'adds the tracked User-Agent to the label of the tracked event' do
+        get api("/projects/#{project.id}/releases", maintainer), headers: { 'User-Agent' => described_class::RELEASE_CLI_USER_AGENT }
+
+        assert_snowplow_event('get_releases', true)
+      end
+
+      it 'skips label when User-Agent is invalid' do
+        get api("/projects/#{project.id}/releases", maintainer), headers: { 'User-Agent' => 'invalid_user_agent' }
+        assert_snowplow_event('get_releases', false)
+      end
+    end
+  end
+
   def initialize_tags
     project.repository.add_tag(maintainer, 'v0.1', commit.id)
     project.repository.add_tag(maintainer, 'v0.2', commit.id)
+  end
+
+  def assert_snowplow_event(action, release_cli, user = maintainer)
+    expect_snowplow_event(
+      category: described_class.name,
+      action: action,
+      project: project,
+      user: user,
+      release_cli: release_cli
+    )
   end
 end

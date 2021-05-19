@@ -8,15 +8,16 @@ module Ci
     # We use a class method here instead of a constant, allowing EE to redefine
     # the returned `Hash` more easily.
     def self.failure_reasons
-      { unknown_failure: 'Unknown pipeline failure!',
-        config_error: 'CI/CD YAML configuration error!',
-        external_validation_failure: 'External pipeline validation failed!',
-        activity_limit_exceeded: 'Pipeline activity limit exceeded!',
-        size_limit_exceeded: 'Pipeline size limit exceeded!',
-        job_activity_limit_exceeded: 'Pipeline job activity limit exceeded!',
-        deployments_limit_exceeded: 'Pipeline deployments limit exceeded!',
-        project_deleted: 'The associated project was deleted',
-        user_blocked: 'The user who created this pipeline is blocked' }
+      { unknown_failure: 'The reason for the pipeline failure is unknown.',
+        config_error: 'The pipeline failed due to an error on the CI/CD configuration file.',
+        external_validation_failure: 'The external pipeline validation failed.',
+        user_not_verified: 'The pipeline failed due to the user not being verified',
+        activity_limit_exceeded: 'The pipeline activity limit was exceeded.',
+        size_limit_exceeded: 'The pipeline size limit was exceeded.',
+        job_activity_limit_exceeded: 'The pipeline job activity limit was exceeded.',
+        deployments_limit_exceeded: 'The pipeline deployments limit was exceeded.',
+        project_deleted: 'The project associated with this pipeline was deleted.',
+        user_blocked: 'The user who created this pipeline is blocked.' }
     end
 
     presents :pipeline
@@ -163,4 +164,4 @@ module Ci
   end
 end
 
-Ci::PipelinePresenter.prepend_if_ee('EE::Ci::PipelinePresenter')
+Ci::PipelinePresenter.prepend_mod_with('Ci::PipelinePresenter')

@@ -217,7 +217,7 @@ RSpec.describe 'Group issues page' do
 
     it 'first pagination item is active' do
       page.within('.gl-pagination') do
-        expect(find('.active')).to have_content('1')
+        expect(find('li.active')).to have_content('1')
       end
     end
   end

@@ -24,11 +24,11 @@ module Gitlab
       end
 
       def name
-        raise NotImplementedError.new
+        raise NotImplementedError
       end
 
       def describe(_object)
-        raise NotImplementedError.new
+        raise NotImplementedError
       end
 
       private
@@ -39,7 +39,7 @@ module Gitlab
 
       def verify(object)
         local?(object) ? verify_local(object) : verify_remote(object)
-      rescue => err
+      rescue StandardError => err
         failure(object, err.inspect)
       end
 
@@ -77,27 +77,27 @@ module Gitlab
 
       # This should return an ActiveRecord::Relation suitable for calling #in_batches on
       def all_relation
-        raise NotImplementedError.new
+        raise NotImplementedError
       end
 
       # Should return true if the object is stored locally
       def local?(_object)
-        raise NotImplementedError.new
+        raise NotImplementedError
       end
 
       # The checksum we expect the object to have
       def expected_checksum(_object)
-        raise NotImplementedError.new
+        raise NotImplementedError
       end
 
       # The freshly-recalculated checksum of the object
       def actual_checksum(_object)
-        raise NotImplementedError.new
+        raise NotImplementedError
       end
 
       # Be sure to perform a hard check of the remote object (don't just check DB value)
       def remote_object_exists?(object)
-        raise NotImplementedError.new
+        raise NotImplementedError
       end
     end
   end

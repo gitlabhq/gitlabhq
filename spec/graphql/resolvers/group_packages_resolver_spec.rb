@@ -8,11 +8,14 @@ RSpec.describe Resolvers::GroupPackagesResolver do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, group: group) }
-  let_it_be(:package) { create(:package, project: project) }
+
+  let(:args) do
+    { sort: :created_desc }
+  end
 
   describe '#resolve' do
-    subject(:packages) { resolve(described_class, ctx: { current_user: user }, obj: group) }
+    subject { resolve(described_class, ctx: { current_user: user }, obj: group, args: args).to_a }
 
-    it { is_expected.to contain_exactly(package) }
+    it_behaves_like 'group and projects packages resolver'
   end
 end

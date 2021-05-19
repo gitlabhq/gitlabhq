@@ -1,49 +1,6 @@
 import { pick } from 'lodash';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
-import {
-  convertObjectPropsToCamelCase,
-  convertObjectPropsToSnakeCase,
-} from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
-
-/**
- * Converts a release object into a JSON object that can sent to the public
- * API to create or update a release.
- * @param {Object} release The release object to convert
- * @param {string} createFrom The ref to create a new tag from, if necessary
- */
-export const releaseToApiJson = (release, createFrom = null) => {
-  const name = release.name?.trim().length > 0 ? release.name.trim() : null;
-
-  // Milestones may be either a list of milestone objects OR just a list
-  // of milestone titles. The API requires only the titles be sent.
-  const milestones = (release.milestones || []).map((m) => m.title || m);
-
-  return convertObjectPropsToSnakeCase(
-    {
-      name,
-      tagName: release.tagName,
-      ref: createFrom,
-      description: release.description,
-      milestones,
-      assets: release.assets,
-    },
-    { deep: true },
-  );
-};
-
-/**
- * Converts a JSON release object returned by the Release API
- * into the structure this Vue application can work with.
- * @param {Object} json The JSON object received from the release API
- */
-export const apiJsonToRelease = (json) => {
-  const release = convertObjectPropsToCamelCase(json, { deep: true });
-
-  release.milestones = release.milestones || [];
-
-  return release;
-};
 
 export const gqClient = createGqClient({}, { fetchPolicy: fetchPolicies.NO_CACHE });
 
@@ -52,24 +9,37 @@ const convertScalarProperties = (graphQLRelease) =>
     'name',
     'tagName',
     'tagPath',
+    'description',
     'descriptionHtml',
     'releasedAt',
     'upcomingRelease',
   ]);
 
-const convertAssets = (graphQLRelease) => ({
-  assets: {
-    count: graphQLRelease.assets.count,
-    sources: [...graphQLRelease.assets.sources.nodes],
-    links: graphQLRelease.assets.links.nodes.map((l) => ({
+const convertAssets = (graphQLRelease) => {
+  let sources = [];
+  if (graphQLRelease.assets.sources?.nodes) {
+    sources = [...graphQLRelease.assets.sources.nodes];
+  }
+
+  let links = [];
+  if (graphQLRelease.assets.links?.nodes) {
+    links = graphQLRelease.assets.links.nodes.map((l) => ({
       ...l,
       linkType: l.linkType?.toLowerCase(),
-    })),
-  },
-});
+    }));
+  }
+
+  return {
+    assets: {
+      count: graphQLRelease.assets.count,
+      sources,
+      links,
+    },
+  };
+};
 
 const convertEvidences = (graphQLRelease) => ({
-  evidences: graphQLRelease.evidences.nodes.map((e) => e),
+  evidences: (graphQLRelease.evidences?.nodes ?? []).map((e) => ({ ...e })),
 });
 
 const convertLinks = (graphQLRelease) => ({
@@ -100,18 +70,19 @@ const convertMilestones = (graphQLRelease) => ({
     ...m,
     webUrl: m.webPath,
     webPath: undefined,
-    issueStats: {
-      total: m.stats.totalIssuesCount,
-      closed: m.stats.closedIssuesCount,
-    },
+    issueStats: m.stats
+      ? {
+          total: m.stats.totalIssuesCount,
+          closed: m.stats.closedIssuesCount,
+        }
+      : {},
     stats: undefined,
   })),
 });
 
 /**
  * Converts a single release object fetched from GraphQL
- * into a release object that matches the shape of the REST API
- * (the same shape that is returned by `apiJsonToRelease` above.)
+ * into a release object that matches the general structure of the REST API
  *
  * @param graphQLRelease The release object returned from a GraphQL query
  */

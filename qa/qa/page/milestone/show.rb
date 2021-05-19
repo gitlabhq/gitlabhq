@@ -30,4 +30,4 @@ module QA
   end
 end
 
-QA::Page::Milestone::Show.prepend_if_ee('QA::EE::Page::Milestone::Show')
+QA::Page::Milestone::Show.prepend_mod_with('Page::Milestone::Show', namespace: QA)

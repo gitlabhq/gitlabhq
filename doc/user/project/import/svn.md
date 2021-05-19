@@ -11,18 +11,16 @@ Subversion (SVN) is a central version control system (VCS) while
 Git is a distributed version control system. There are some major differences
 between the two, for more information consult your favorite search engine.
 
-## Overview
-
 There are two approaches to SVN to Git migration:
 
-1. [Git/SVN Mirror](#smooth-migration-with-a-gitsvn-mirror-using-subgit) which:
-   - Makes the GitLab repository to mirror the SVN project.
-   - Git and SVN repositories are kept in sync; you can use either one.
-   - Smoothens the migration process and allows to manage migration risks.
+- [Git/SVN Mirror](#smooth-migration-with-a-gitsvn-mirror-using-subgit) which:
+  - Makes the GitLab repository to mirror the SVN project.
+  - Git and SVN repositories are kept in sync; you can use either one.
+  - Smoothens the migration process and allows you to manage migration risks.
 
-1. [Cut over migration](#cut-over-migration-with-svn2git) which:
-   - Translates and imports the existing data and history from SVN to Git.
-   - Is a fire and forget approach, good for smaller teams.
+- [Cut over migration](#cut-over-migration-with-svn2git) which:
+  - Translates and imports the existing data and history from SVN to Git.
+  - Is a fire and forget approach, good for smaller teams.
 
 ## Smooth migration with a Git/SVN mirror using SubGit
 
@@ -38,15 +36,15 @@ directly in a file system level.
    follow [this article](http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.html).
 1. Download SubGit from <https://subgit.com/download>.
 1. Unpack the downloaded SubGit zip archive to the `/opt` directory. The `subgit`
-   command will be available at `/opt/subgit-VERSION/bin/subgit`.
+   command is available at `/opt/subgit-VERSION/bin/subgit`.
 
 ### SubGit configuration
 
 The first step to mirror you SVN repository in GitLab is to create a new empty
-project which will be used as a mirror. For Omnibus installations the path to
-the repository will be located at
+project that is used as a mirror. For Omnibus installations the path to
+the repository is
 `/var/opt/gitlab/git-data/repositories/USER/REPO.git` by default. For
-installations from source, the default repository directory will be
+installations from source, the default repository directory is
 `/home/git/repositories/USER/REPO.git`. For convenience, assign this path to a
 variable:
 
@@ -54,7 +52,7 @@ variable:
 GIT_REPO_PATH=/var/opt/gitlab/git-data/repositories/USER/REPOS.git
 ```
 
-SubGit will keep this repository in sync with a remote SVN project. For
+SubGit keeps this repository in sync with a remote SVN project. For
 convenience, assign your remote SVN project URL to a variable:
 
 ```shell
@@ -89,9 +87,9 @@ initial translation of existing SVN revisions into the Git repository:
 subgit install $GIT_REPO_PATH
 ```
 
-After the initial translation is completed, the Git repository and the SVN
-project will be kept in sync by `subgit` - new Git commits will be translated to
-SVN revisions and new SVN revisions will be translated to Git commits. Mirror
+After the initial translation is completed, `subgit` keeps the Git repository and the SVN
+project sync - new Git commits are translated to
+SVN revisions and new SVN revisions are translated to Git commits. Mirror
 works transparently and does not require any special commands.
 
 If you would prefer to perform one-time cut over migration with `subgit`, use
@@ -134,12 +132,12 @@ sudo apt-get install git-core git-svn ruby
 ```
 
 Optionally, prepare an authors file so `svn2git` can map SVN authors to Git authors.
-If you choose not to create the authors file then commits will not be attributed
+If you choose not to create the authors file then commits are not attributed
 to the correct GitLab user. Some users may not consider this a big issue while
-others will want to ensure they complete this step. If you choose to map authors
-you will be required to map every author that is present on changes in the SVN
-repository. If you don't, the conversion will fail and you will have to update
-the author file accordingly. The following command will search through the
+others want to ensure they complete this step. If you choose to map authors,
+you must map every author present on changes in the SVN
+repository. If you don't, the conversion fails and you have to update
+the author file accordingly. The following command searches through the
 repository and output a list of authors.
 
 ```shell
@@ -159,7 +157,7 @@ not nested) the conversion is simple. For a non-standard repository see
 [svn2git documentation](https://github.com/nirvdrum/svn2git). The following
 command will checkout the repository and do the conversion in the current
 working directory. Be sure to create a new directory for each repository before
-running the `svn2git` command. The conversion process will take some time.
+running the `svn2git` command. The conversion process takes some time.
 
 ```shell
 svn2git https://svn.example.com/path/to/repo --authors /path/to/authors.txt
@@ -167,13 +165,13 @@ svn2git https://svn.example.com/path/to/repo --authors /path/to/authors.txt
 
 If your SVN repository requires a username and password add the
 `--username <username>` and `--password <password>` flags to the above command.
-`svn2git` also supports excluding certain file paths, branches, tags, etc. See
+`svn2git` also supports excluding certain file paths, branches, tags, and so on. See
 [svn2git documentation](https://github.com/nirvdrum/svn2git) or run
 `svn2git --help` for full documentation on all of the available options.
 
-Create a new GitLab project, where you will eventually push your converted code.
+Create a new GitLab project, into which you push your converted code.
 Copy the SSH or HTTP(S) repository URL from the project page. Add the GitLab
-repository as a Git remote and push all the changes. This will push all commits,
+repository as a Git remote and push all the changes. This pushes all commits,
 branches and tags.
 
 ```shell

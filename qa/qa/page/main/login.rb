@@ -52,13 +52,17 @@ module QA
           using_wait_time 0 do
             set_initial_password_if_present
 
-            raise 'If an LDAP user is provided, it must be used for sign-in', QA::Resource::User::InvalidUserError if Runtime::User.ldap_user? && user && user.username != Runtime::User.ldap_username
+            if Runtime::User.ldap_user? && user && user.username != Runtime::User.ldap_username
+              raise 'If an LDAP user is provided, it must be used for sign-in', QA::Resource::User::InvalidUserError
+            end
 
             if Runtime::User.ldap_user?
               sign_in_using_ldap_credentials(user: user || Runtime::User)
             else
               sign_in_using_gitlab_credentials(user: user || Runtime::User, skip_page_validation: skip_page_validation)
             end
+
+            set_up_new_password_if_required(user: user, skip_page_validation: skip_page_validation)
           end
         end
 
@@ -70,7 +74,6 @@ module QA
 
           using_wait_time 0 do
             set_initial_password_if_present
-
             sign_in_using_gitlab_credentials(user: admin)
           end
 
@@ -166,6 +169,20 @@ module QA
           end
 
           Page::Main::Menu.validate_elements_present! unless skip_page_validation
+        end
+
+        # Handle request for password change
+        # Happens on clean GDK installations when seeded root admin password is expired
+        #
+        def set_up_new_password_if_required(user:, skip_page_validation:)
+          return unless has_content?('Set up new password')
+
+          Profile::Password.perform do |new_password_page|
+            password = user&.password || Runtime::User.password
+            new_password_page.set_new_password(password, password)
+          end
+
+          sign_in_using_credentials(user: user, skip_page_validation: skip_page_validation)
         end
 
         def set_initial_password_if_present

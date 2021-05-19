@@ -37,6 +37,8 @@ module Issues
     def filter_params(issue)
       super
 
+      params.delete(:issue_type) unless issue_type_allowed?(issue)
+
       moved_issue = params.delete(:moved_issue)
 
       # Setting created_at, updated_at and iid is allowed only for admins and owners or
@@ -75,7 +77,12 @@ module Issues
 
       Milestones::IssuesCountService.new(milestone).delete_cache
     end
+
+    # @param object [Issue, Project]
+    def issue_type_allowed?(object)
+      can?(current_user, :"create_#{params[:issue_type]}", object)
+    end
   end
 end
 
-Issues::BaseService.prepend_if_ee('EE::Issues::BaseService')
+Issues::BaseService.prepend_mod_with('Issues::BaseService')

@@ -1,0 +1,5 @@
+---
+title: Externalise Strings in /application_settings/_gitaly.html.haml
+merge_request: 57976
+author: nuwe1
+type: other

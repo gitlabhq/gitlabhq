@@ -5,12 +5,9 @@ module Banzai
     module References
       class FeatureFlagReferenceFilter < IssuableReferenceFilter
         self.reference_type = :feature_flag
+        self.object_class   = Operations::FeatureFlag
 
-        def self.object_class
-          Operations::FeatureFlag
-        end
-
-        def self.object_sym
+        def object_sym
           :feature_flag
         end
 

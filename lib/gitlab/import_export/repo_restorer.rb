@@ -22,7 +22,7 @@ module Gitlab
         update_importable_repository_info
 
         true
-      rescue => e
+      rescue StandardError => e
         shared.error(e)
         false
       end
@@ -52,4 +52,4 @@ module Gitlab
   end
 end
 
-Gitlab::ImportExport::RepoRestorer.prepend_if_ee('EE::Gitlab::ImportExport::RepoRestorer')
+Gitlab::ImportExport::RepoRestorer.prepend_mod_with('Gitlab::ImportExport::RepoRestorer')

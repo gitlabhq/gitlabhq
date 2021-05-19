@@ -1,0 +1,20 @@
+---
+key_path: counts.package_events_i_package_terraform_module_push_package
+description: Total count of push Terraform Module packages events
+product_section: ops
+product_stage: configure
+product_group: group::configure
+product_category: infrastructure_as_code
+value_type: number
+status: implemented
+milestone: '13.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55018
+time_frame: all
+data_source: redis
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

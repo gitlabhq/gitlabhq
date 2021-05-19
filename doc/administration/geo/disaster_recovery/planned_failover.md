@@ -27,7 +27,7 @@ have a high degree of confidence in being able to perform them accurately.
 
 ## Not all data is automatically replicated
 
-If you are using any GitLab features that Geo [doesn't support](../index.md#limitations),
+If you are using any GitLab features that Geo [doesn't support](../replication/datatypes.md#limitations-on-replicationverification),
 you must make separate provisions to ensure that the **secondary** node has an
 up-to-date copy of any data associated with that feature. This may extend the
 required scheduled maintenance period significantly.
@@ -40,8 +40,7 @@ final transfer inside the maintenance window) will then transfer only the
 
 Repository-centric strategies for using `rsync` effectively can be found in the
 [moving repositories](../../operations/moving_repositories.md) documentation; these strategies can
-be adapted for use with any other file-based data, such as GitLab Pages (to
-be found in `/var/opt/gitlab/gitlab-rails/shared/pages` if using Omnibus).
+be adapted for use with any other file-based data, such as [GitLab Pages](../../pages/index.md#change-storage-path).
 
 ## Preflight checks
 

@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required" : ["modules"],
+  "properties" : {
+    "modules": {
+      "items": { "$ref": "./module.json" }
+    }
+  }
+}

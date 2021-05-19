@@ -1,12 +1,17 @@
+- link = issue_closed_link(@issue, current_user, css_class: 'text-white text-underline')
+
 .detail-page-header
   .detail-page-header-body
     .issuable-status-box.status-box.status-box-issue-closed{ class: issue_status_visibility(issuable, status_box: :closed) }
       = sprite_icon('issue-close', css_class: 'gl-display-block gl-sm-display-none!')
-      .gl-display-none.gl-sm-display-block!
+      .gl-display-none.gl-sm-display-block
         = issue_closed_text(issuable, current_user)
+      - if link
+        %span.text-white.gl-pl-2.gl-sm-display-none
+          = "(#{link})"
     .issuable-status-box.status-box.status-box-open{ class: issue_status_visibility(issuable, status_box: :open) }
       = sprite_icon('issue-open-m', css_class: 'gl-display-block gl-sm-display-none!')
-      %span.gl-display-none.gl-sm-display-block!
+      %span.gl-display-none.gl-sm-display-block
         = _('Open')
 
     .issuable-meta

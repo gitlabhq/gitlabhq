@@ -2,6 +2,8 @@
 
 class WaitForClusterCreationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ClusterQueue
 
   worker_has_external_dependencies!

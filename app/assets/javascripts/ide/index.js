@@ -56,11 +56,12 @@ export function initIde(el, options = {}) {
         webIDEHelpPagePath: el.dataset.webIdeHelpPagePath,
         forkInfo: el.dataset.forkInfo ? JSON.parse(el.dataset.forkInfo) : null,
       });
-      this.setInitialData({
+      this.init({
         clientsidePreviewEnabled: parseBoolean(el.dataset.clientsidePreviewEnabled),
         renderWhitespaceInCode: parseBoolean(el.dataset.renderWhitespaceInCode),
         editorTheme: window.gon?.user_color_scheme || DEFAULT_THEME,
         codesandboxBundlerUrl: el.dataset.codesandboxBundlerUrl,
+        environmentsGuidanceAlertDismissed: !parseBoolean(el.dataset.enableEnvironmentsGuidance),
       });
     },
     beforeDestroy() {
@@ -68,7 +69,7 @@ export function initIde(el, options = {}) {
       this.$emit('destroy');
     },
     methods: {
-      ...mapActions(['setEmptyStateSvgs', 'setLinks', 'setInitialData']),
+      ...mapActions(['setEmptyStateSvgs', 'setLinks', 'init']),
     },
     render(createElement) {
       return createElement(rootComponent);

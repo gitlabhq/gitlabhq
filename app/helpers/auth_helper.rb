@@ -16,7 +16,7 @@ module AuthHelper
     twitter
   ).freeze
   LDAP_PROVIDER = /\Aldap/.freeze
-  TRIAL_REGISTRATION_PROVIDERS = %w(google_oauth2 github).freeze
+  POPULAR_PROVIDERS = %w(google_oauth2 github).freeze
 
   def ldap_enabled?
     Gitlab::Auth::Ldap::Config.enabled?
@@ -116,19 +116,12 @@ module AuthHelper
 
     providers = button_based_providers.map(&:to_s) - disabled_providers
     providers.sort_by do |provider|
-      case provider
-      when 'google_oauth2'
-        0
-      when 'github'
-        1
-      else
-        2
-      end
+      POPULAR_PROVIDERS.index(provider) || POPULAR_PROVIDERS.length
     end
   end
 
-  def trial_enabled_button_based_providers
-    enabled_button_based_providers & TRIAL_REGISTRATION_PROVIDERS
+  def popular_enabled_button_based_providers
+    enabled_button_based_providers & POPULAR_PROVIDERS
   end
 
   def button_based_providers_enabled?
@@ -176,11 +169,23 @@ module AuthHelper
       !current_user
   end
 
+  def auth_app_owner_text(owner)
+    return unless owner
+
+    if owner.is_a?(Group)
+      group_link = link_to(owner.name, group_path(owner))
+      _("This application was created for group %{group_link}.").html_safe % { group_link: group_link }
+    else
+      user_link = link_to(owner.name, user_path(owner))
+      _("This application was created by %{user_link}.").html_safe % { user_link: user_link }
+    end
+  end
+
   extend self
 end
 
-AuthHelper.prepend_if_ee('EE::AuthHelper')
+AuthHelper.prepend_mod_with('AuthHelper')
 
 # The methods added in EE should be available as both class and instance
 # methods, just like the methods provided by `AuthHelper` itself.
-AuthHelper.extend_if_ee('EE::AuthHelper')
+AuthHelper.extend_mod_with('AuthHelper')

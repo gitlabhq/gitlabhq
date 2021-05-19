@@ -6,10 +6,8 @@
 %p= s_('Check the %{docs_link_start}documentation%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
 
 .form-group.gl-mb-3
-  .form-check
-    = f.check_box :lfs_enabled, checked: @group.lfs_enabled?, class: 'form-check-input', data: { qa_selector: 'lfs_checkbox' }
-    = f.label :lfs_enabled, class: 'form-check-label' do
-      %span
-        = _('Allow projects within this group to use Git LFS')
-      %br/
-      %span.text-muted= _('This setting can be overridden in each project.')
+  .gl-form-checkbox.custom-control.custom-checkbox
+    = f.check_box :lfs_enabled, checked: @group.lfs_enabled?, class: 'custom-control-input', data: { qa_selector: 'lfs_checkbox' }
+    = f.label :lfs_enabled, class: 'custom-control-label' do
+      = _('Allow projects within this group to use Git LFS')
+      %p.help-text= _('This setting can be overridden in each project.')

@@ -1,4 +1,4 @@
-import { uniqWith, isEqual } from 'lodash';
+import { isEqual, memoize, uniqWith } from 'lodash';
 import { createSankey } from './dag/drawing_utils';
 
 /*
@@ -170,3 +170,26 @@ export const listByLayers = ({ stages }) => {
     return acc;
   }, []);
 };
+
+export const generateColumnsFromLayersListBare = ({ stages, stagesLookup }, pipelineLayers) => {
+  return pipelineLayers.map((layers, idx) => {
+    /*
+      Look up the groups in each layer,
+      then add each set of layer groups to a stage-like object.
+    */
+
+    const groups = layers.map((id) => {
+      const { stageIdx, groupIdx } = stagesLookup[id];
+      return stages[stageIdx]?.groups?.[groupIdx];
+    });
+
+    return {
+      name: '',
+      id: `layer-${idx}`,
+      status: { action: null },
+      groups: groups.filter(Boolean),
+    };
+  });
+};
+
+export const generateColumnsFromLayersListMemoized = memoize(generateColumnsFromLayersListBare);

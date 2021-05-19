@@ -33,7 +33,7 @@ The following is an example of the Credentials inventory page:
 
 If you see a **Revoke** button, you can revoke that user's PAT. Whether you see a **Revoke** button depends on the token state, and if an expiration date has been set. For more information, see the following table:
 
-| Token state | [Token expiration enforced?](settings/account_and_limit_settings.md#optional-non-enforcement-of-personal-access-token-expiration) | Show Revoke button? | Comments |
+| Token state | [Token expiration enforced?](settings/account_and_limit_settings.md#do-not-enforce-personal-access-token-expiration) | Show Revoke button? | Comments |
 |-------------|------------------------|--------------------|----------------------------------------------------------------------------|
 | Active      | Yes                    | Yes                | Allows administrators to revoke the PAT, such as for a compromised account |
 | Active      | No                     | Yes                | Allows administrators to revoke the PAT, such as for a compromised account |
@@ -56,14 +56,7 @@ The instance then notifies the user.
 ## Review existing GPG keys
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282429) in GitLab 13.10.
-> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/292961) in GitLab 13.11.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-gpg-keys-view).
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292961) in GitLab 13.12.
 
 You can view all existing GPG in your GitLab instance by navigating to the
 credentials inventory GPG Keys tab, as well as the following properties:
@@ -73,22 +66,3 @@ credentials inventory GPG Keys tab, as well as the following properties:
 - Whether the GPG key is [verified or unverified](../project/repository/gpg_signed_commits/index.md)
 
 ![Credentials inventory page - GPG keys](img/credentials_inventory_gpg_keys_v13_10.png)
-
-### Enable or disable the GPG keys view
-
-Enabling or disabling the GPG keys view is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:credential_inventory_gpg_keys)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:credential_inventory_gpg_keys)
-```

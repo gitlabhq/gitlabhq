@@ -3,7 +3,11 @@
 module Ci
   class DropPipelineWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include PipelineQueue
+
+    tags :exclude_from_kubernetes
 
     idempotent!
 

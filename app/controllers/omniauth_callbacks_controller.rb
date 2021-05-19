@@ -289,4 +289,4 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 end
 
-OmniauthCallbacksController.prepend_if_ee('EE::OmniauthCallbacksController')
+OmniauthCallbacksController.prepend_mod_with('OmniauthCallbacksController')

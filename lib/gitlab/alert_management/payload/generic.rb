@@ -27,4 +27,4 @@ module Gitlab
   end
 end
 
-Gitlab::AlertManagement::Payload::Generic.prepend_if_ee('EE::Gitlab::AlertManagement::Payload::Generic')
+Gitlab::AlertManagement::Payload::Generic.prepend_mod_with('Gitlab::AlertManagement::Payload::Generic')

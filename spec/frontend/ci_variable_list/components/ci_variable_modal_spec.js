@@ -226,7 +226,7 @@ describe('Ci variable modal', () => {
         };
         createComponent(mount);
         store.state.variable = validMaskandKeyVariable;
-        store.state.maskableRegex = /^[a-zA-Z0-9_+=/@:-]{8,}$/;
+        store.state.maskableRegex = /^[a-zA-Z0-9_+=/@:.~-]{8,}$/;
       });
 
       it('does not disable the submit button', () => {

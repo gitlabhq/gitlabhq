@@ -1,0 +1,48 @@
+# To use this template, add the following to your .gitlab-ci.yml file:
+#
+# include:
+#   template: DAST-API.gitlab-ci.yml
+#
+# You also need to add a `dast` stage to your `stages:` configuration. A sample configuration for DAST API:
+#
+# stages:
+#   - build
+#   - test
+#   - deploy
+#   - dast
+
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast_api/index.html
+
+# Configure the scanning tool with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html)
+# List of variables available to configure the DAST API scanning tool:
+# https://docs.gitlab.com/ee/user/application_security/dast_api/index.html#available-cicd-variables
+
+variables:
+  # Setting this variable affects all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+  #
+  DAST_API_VERSION: "1"
+  DAST_API_IMAGE: $SECURE_ANALYZERS_PREFIX/api-fuzzing:$DAST_API_VERSION
+
+dast_api:
+  stage: dast
+  image: $DAST_API_IMAGE
+  allow_failure: true
+  rules:
+    - if: $DAST_API_DISABLED
+      when: never
+    - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $CI_COMMIT_BRANCH
+  script:
+    - /peach/analyzer-dast-api
+  artifacts:
+    when: always
+    paths:
+      - gl-assets
+      - gl-dast-api-report.json
+      - gl-*.log
+    reports:
+      dast: gl-dast-api-report.json

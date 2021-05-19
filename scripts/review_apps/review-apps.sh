@@ -261,15 +261,14 @@ function create_application_secret() {
     echoinfo "The 'shared-gitlab-initial-root-password' secret already exists in the ${namespace} namespace."
   fi
 
-  if [ -z "${REVIEW_APPS_EE_LICENSE}" ]; then echo "License not found" && return; fi
+  if [ -z "${REVIEW_APPS_EE_LICENSE_FILE}" ]; then echo "License not found" && return; fi
 
   gitlab_license_shared_secret=$(kubectl get secret --namespace ${namespace} --no-headers -o=custom-columns=NAME:.metadata.name shared-gitlab-license | tail -n 1)
   if [[ "${gitlab_license_shared_secret}" == "" ]]; then
     echoinfo "Creating the 'shared-gitlab-license' secret in the ${namespace} namespace..." true
-    echo "${REVIEW_APPS_EE_LICENSE}" > /tmp/license.gitlab
     kubectl create secret generic --namespace "${namespace}" \
       "shared-gitlab-license" \
-      --from-file=license=/tmp/license.gitlab \
+      --from-file=license="${REVIEW_APPS_EE_LICENSE_FILE}" \
       --dry-run -o json | kubectl apply -f -
   else
     echoinfo "The 'shared-gitlab-license' secret already exists in the ${namespace} namespace."
@@ -281,13 +280,12 @@ function download_chart() {
 
   curl --location -o gitlab.tar.bz2 "https://gitlab.com/gitlab-org/charts/gitlab/-/archive/${GITLAB_HELM_CHART_REF}/gitlab-${GITLAB_HELM_CHART_REF}.tar.bz2"
   tar -xjf gitlab.tar.bz2
-  cd "gitlab-${GITLAB_HELM_CHART_REF}"
 
   echoinfo "Adding the gitlab repo to Helm..."
   helm repo add gitlab https://charts.gitlab.io
 
   echoinfo "Building the gitlab chart's dependencies..."
-  helm dependency build .
+  helm dependency build "gitlab-${GITLAB_HELM_CHART_REF}"
 }
 
 function base_config_changed() {
@@ -310,7 +308,7 @@ function parse_gitaly_image_tag() {
 function deploy() {
   local namespace="${KUBE_NAMESPACE}"
   local release="${CI_ENVIRONMENT_SLUG}"
-  local base_config_file_ref="master"
+  local base_config_file_ref="${CI_DEFAULT_BRANCH}"
   if [[ "$(base_config_changed)" == "true" ]]; then base_config_file_ref="${CI_COMMIT_SHA}"; fi
   local base_config_file="https://gitlab.com/gitlab-org/gitlab/raw/${base_config_file_ref}/scripts/review_apps/base-config.yaml"
 
@@ -333,7 +331,7 @@ HELM_CMD=$(cat << EOF
     --namespace="${namespace}" \
     --install \
     --wait \
-    --timeout 15m \
+    --timeout "${HELM_INSTALL_TIMEOUT:-20m}" \
     --set ci.branch="${CI_COMMIT_REF_NAME}" \
     --set ci.commit.sha="${CI_COMMIT_SHORT_SHA}" \
     --set ci.job.url="${CI_JOB_URL}" \
@@ -360,7 +358,7 @@ HELM_CMD=$(cat << EOF
 EOF
 )
 
-if [ -n "${REVIEW_APPS_EE_LICENSE}" ]; then
+if [ -n "${REVIEW_APPS_EE_LICENSE_FILE}" ]; then
 HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
   --set global.gitlab.license.secret="shared-gitlab-license"
@@ -372,7 +370,7 @@ HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
   --version="${CI_PIPELINE_ID}-${CI_JOB_ID}" \
   -f "${base_config_file}" \
-  "${release}" .
+  "${release}" "gitlab-${GITLAB_HELM_CHART_REF}"
 EOF
 )
 

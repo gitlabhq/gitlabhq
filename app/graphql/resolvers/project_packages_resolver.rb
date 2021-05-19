@@ -1,19 +1,15 @@
 # frozen_string_literal: true
+# rubocop: disable Graphql/ResolverType
 
 module Resolvers
-  class ProjectPackagesResolver < BaseResolver
-    type Types::Packages::PackageType.connection_type, null: true
+  class ProjectPackagesResolver < PackagesBaseResolver
+    # The GraphQL type is defined in the extended class
 
-    def resolve(**args)
+    def resolve(sort:, **filters)
       return unless packages_available?
 
-      ::Packages::PackagesFinder.new(object).execute
-    end
-
-    private
-
-    def packages_available?
-      ::Gitlab.config.packages.enabled
+      ::Packages::PackagesFinder.new(object, filters.merge(SORT_TO_PARAMS_MAP.fetch(sort))).execute
     end
   end
 end
+# rubocop: enable Graphql/ResolverType

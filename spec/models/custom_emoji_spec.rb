@@ -38,7 +38,7 @@ RSpec.describe CustomEmoji do
       new_emoji = build(:custom_emoji, name: old_emoji.name, namespace: old_emoji.namespace, group: group)
 
       expect(new_emoji).not_to be_valid
-      expect(new_emoji.errors.messages).to include(name: ["has already been taken"])
+      expect(new_emoji.errors.messages).to eq(creator: ["can't be blank"], name: ["has already been taken"])
     end
 
     it 'disallows non http and https file value' do

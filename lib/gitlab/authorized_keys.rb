@@ -161,7 +161,7 @@ module Gitlab
     end
 
     def strip(key)
-      key.split(/[ ]+/)[0, 2].join(' ')
+      key.split(/ +/)[0, 2].join(' ')
     end
   end
 end

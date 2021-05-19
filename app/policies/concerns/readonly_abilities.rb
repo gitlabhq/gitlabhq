@@ -13,6 +13,7 @@ module ReadonlyAbilities
     create_merge_request_from
     create_merge_request_in
     award_emoji
+    create_incident
   ].freeze
 
   READONLY_FEATURES = %i[
@@ -49,4 +50,4 @@ module ReadonlyAbilities
   end
 end
 
-ReadonlyAbilities::ClassMethods.prepend_if_ee('EE::ReadonlyAbilities::ClassMethods')
+ReadonlyAbilities::ClassMethods.prepend_mod_with('ReadonlyAbilities::ClassMethods')

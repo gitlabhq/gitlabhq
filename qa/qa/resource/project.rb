@@ -83,7 +83,7 @@ module QA
           end
         end
 
-        Page::Project::NewExperiment.perform(&:click_blank_project_link) if Page::Project::NewExperiment.perform(&:shown?)
+        Page::Project::New.perform(&:click_blank_project_link)
 
         Page::Project::New.perform do |new_page|
           new_page.choose_test_namespace

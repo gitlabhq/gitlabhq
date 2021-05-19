@@ -3,7 +3,7 @@ import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.qu
 import { LOAD_FAILURE } from '../../constants';
 import { reportToSentry } from '../../utils';
 import { listByLayers } from '../parsing_utils';
-import { ONE_COL_WIDTH, UPSTREAM, LAYER_VIEW } from './constants';
+import { ONE_COL_WIDTH, UPSTREAM, LAYER_VIEW, STAGE_VIEW } from './constants';
 import LinkedPipeline from './linked_pipeline.vue';
 import {
   getQueryHeaders,
@@ -30,6 +30,10 @@ export default {
     },
     linkedPipelines: {
       type: Array,
+      required: true,
+    },
+    showLinks: {
+      type: Boolean,
       required: true,
     },
     type: {
@@ -75,6 +79,9 @@ export default {
     },
     graphPosition() {
       return this.isUpstream ? 'left' : 'right';
+    },
+    graphViewType() {
+      return this.currentPipeline?.usesNeeds ? this.viewType : STAGE_VIEW;
     },
     isUpstream() {
       return this.type === UPSTREAM;
@@ -217,8 +224,9 @@ export default {
               :config-paths="configPaths"
               :pipeline="currentPipeline"
               :pipeline-layers="getPipelineLayers(pipeline.id)"
+              :show-links="showLinks"
               :is-linked-pipeline="true"
-              :view-type="viewType"
+              :view-type="graphViewType"
             />
           </div>
         </li>

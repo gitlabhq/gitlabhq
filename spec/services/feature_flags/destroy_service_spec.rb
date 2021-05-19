@@ -8,6 +8,7 @@ RSpec.describe FeatureFlags::DestroyService do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
+
   let(:user) { developer }
   let!(:feature_flag) { create(:operations_feature_flag, project: project) }
 

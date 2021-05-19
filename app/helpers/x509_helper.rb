@@ -13,7 +13,7 @@ module X509Helper
     end
 
     subjects
-  rescue
+  rescue StandardError
     {}
   end
 

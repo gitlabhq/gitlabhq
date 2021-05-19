@@ -15,7 +15,7 @@ describe('Branch divergence graph component', () => {
 
   it('renders ahead and behind count', () => {
     factory({
-      defaultBranch: 'master',
+      defaultBranch: 'main',
       aheadCount: 10,
       behindCount: 10,
       maxCommits: 100,
@@ -27,18 +27,18 @@ describe('Branch divergence graph component', () => {
 
   it('sets title for ahead and behind count', () => {
     factory({
-      defaultBranch: 'master',
+      defaultBranch: 'main',
       aheadCount: 10,
       behindCount: 10,
       maxCommits: 100,
     });
 
-    expect(vm.attributes('title')).toBe('10 commits behind master, 10 commits ahead');
+    expect(vm.attributes('title')).toBe('10 commits behind main, 10 commits ahead');
   });
 
   it('renders distance count', () => {
     factory({
-      defaultBranch: 'master',
+      defaultBranch: 'main',
       aheadCount: 0,
       behindCount: 0,
       distance: 900,
@@ -55,13 +55,13 @@ describe('Branch divergence graph component', () => {
     ${1100}  | ${'999+'}
   `('sets title for $distance as $titleText', ({ distance, titleText }) => {
     factory({
-      defaultBranch: 'master',
+      defaultBranch: 'main',
       aheadCount: 0,
       behindCount: 0,
       distance,
       maxCommits: 100,
     });
 
-    expect(vm.attributes('title')).toBe(`More than ${titleText} commits different with master`);
+    expect(vm.attributes('title')).toBe(`More than ${titleText} commits different with main`);
   });
 });

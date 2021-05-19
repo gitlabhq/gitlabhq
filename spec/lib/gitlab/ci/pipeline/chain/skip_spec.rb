@@ -21,16 +21,24 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip do
     before do
       allow(pipeline).to receive(:git_commit_message)
         .and_return('commit message [ci skip]')
-
-      step.perform!
     end
 
     it 'breaks the chain' do
+      step.perform!
+
       expect(step.break?).to be true
     end
 
     it 'skips the pipeline' do
+      step.perform!
+
       expect(pipeline.reload).to be_skipped
+    end
+
+    it 'calls ensure_project_iid explicitly' do
+      expect(pipeline).to receive(:ensure_project_iid!)
+
+      step.perform!
     end
   end
 

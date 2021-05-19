@@ -154,8 +154,8 @@
         "items": [
           {
             "file": "groovy/src/main/java/com/gitlab/security_products/tests/App.groovy",
-            "start_line": 47,
-            "end_line": 47,
+            "start_line": 29,
+            "end_line": 29,
             "signatures": [
               {
                 "algorithm": "hash",

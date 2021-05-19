@@ -21,8 +21,7 @@ module Gitlab
 
           author_id, author_found = user_finder.author_id_for(note)
 
-          note_body =
-            MarkdownText.format(note.note, note.author, author_found)
+          note_body = MarkdownText.format(note.note, note.author, author_found)
 
           attributes = {
             noteable_type: 'MergeRequest',

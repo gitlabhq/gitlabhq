@@ -39,6 +39,10 @@ module Gitlab
         @file_paths ||= suggestions.map(&:file_path).uniq
       end
 
+      def authors
+        suggestions.map { |suggestion| suggestion.note.author }.uniq
+      end
+
       private
 
       def first_suggestion

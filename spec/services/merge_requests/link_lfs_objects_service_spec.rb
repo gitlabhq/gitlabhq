@@ -18,7 +18,7 @@ RSpec.describe MergeRequests::LinkLfsObjectsService, :sidekiq_inline do
     )
   end
 
-  subject { described_class.new(target_project) }
+  subject { described_class.new(project: target_project) }
 
   shared_examples_for 'linking LFS objects' do
     context 'when source project is the same as target project' do

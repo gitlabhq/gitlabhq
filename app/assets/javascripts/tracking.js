@@ -153,6 +153,21 @@ export default class Tracking {
     return loadEvents;
   }
 
+  static enableFormTracking(config, contexts = []) {
+    if (!this.enabled()) return;
+
+    if (!config?.forms?.whitelist?.length && !config?.fields?.whitelist?.length) {
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      throw new Error('Unable to enable form event tracking without whitelist rules.');
+    }
+
+    contexts.unshift(STANDARD_CONTEXT);
+    const enabler = () => window.snowplow('enableFormTracking', config, contexts);
+
+    if (document.readyState !== 'loading') enabler();
+    else document.addEventListener('DOMContentLoaded', enabler);
+  }
+
   static mixin(opts = {}) {
     return {
       computed: {

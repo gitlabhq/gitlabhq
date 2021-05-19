@@ -24,7 +24,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   BRANCH_SEARCH_LIMIT = 1000
-  COMMIT_DIFFS_PER_PAGE = 75
+  COMMIT_DIFFS_PER_PAGE = 20
 
   feature_category :source_code_management
 
@@ -49,7 +49,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def diff_files
-    render json: { html: view_to_html_string('projects/commit/diff_files', diffs: @diffs, environment: @environment) }
+    render template: 'projects/commit/diff_files', layout: false, locals: { diffs: @diffs, environment: @environment }
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -167,7 +167,7 @@ class Projects::CommitController < Projects::ApplicationController
     @diffs = commit.diffs(opts)
     @notes_count = commit.notes.count
 
-    @environment = EnvironmentsByDeploymentsFinder.new(@project, current_user, commit: @commit, find_latest: true).execute.last
+    @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(@project, current_user, commit: @commit, find_latest: true).execute.last
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

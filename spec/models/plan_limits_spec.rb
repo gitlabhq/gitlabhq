@@ -210,6 +210,7 @@ RSpec.describe PlanLimits do
         ci_active_jobs
         storage_size_limit
         daily_invites
+        web_hook_calls
       ] + disabled_max_artifact_size_columns
     end
 

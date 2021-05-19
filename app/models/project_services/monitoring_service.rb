@@ -4,7 +4,7 @@
 #
 # These services integrate with a deployment solution like Prometheus
 # to provide additional features for environments.
-class MonitoringService < Service
+class MonitoringService < Integration
   default_value_for :category, 'monitoring'
 
   def self.supported_events

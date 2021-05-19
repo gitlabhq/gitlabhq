@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Approval Rules development guide **(FREE)**
 
 This document explains the backend design and flow of all related functionality
-about [merge request approval rules](../user/project/merge_requests/merge_request_approvals.md).
+about [merge request approval rules](../user/project/merge_requests/approvals/index.md).
 
 This should help contributors to understand the code design easier and to also
 help see if there are parts to improve as the feature and its implementation
@@ -87,7 +87,7 @@ The `ApprovalState` model get these records when approval rules are not
 overwritten.
 
 The `protected_branches` attribute is set and used when a rule is scoped to
-protected branches. See [Scoped to Protected Branch doc](../user/project/merge_requests/merge_request_approvals.md#scoped-to-protected-branch)
+protected branches. See [Approvals for protected branches](../user/project/merge_requests/approvals/rules.md#approvals-for-protected-branches)
 for more information about the feature.
 
 ### `ApprovalMergeRequestRule`

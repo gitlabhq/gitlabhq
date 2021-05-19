@@ -7,12 +7,12 @@ RSpec.describe API::PackageFiles do
   let(:project) { create(:project, :public) }
   let(:package) { create(:maven_package, project: project) }
 
-  before do
-    project.add_developer(user)
-  end
-
   describe 'GET /projects/:id/packages/:package_id/package_files' do
     let(:url) { "/projects/#{project.id}/packages/#{package.id}/package_files" }
+
+    before do
+      project.add_developer(user)
+    end
 
     context 'without the need for a license' do
       context 'project is public' do
@@ -74,6 +74,79 @@ RSpec.describe API::PackageFiles do
 
             expect_paginated_array_response([package_file_3.id])
           end
+        end
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/packages/:package_id/package_files/:package_file_id' do
+    let(:package_file_id) { package.package_files.first.id }
+    let(:url) { "/projects/#{project.id}/packages/#{package.id}/package_files/#{package_file_id}" }
+
+    subject(:api_request) { delete api(url, user) }
+
+    context 'project is public' do
+      context 'without user' do
+        let(:user) { nil }
+
+        it 'returns 403 for non authenticated user', :aggregate_failures do
+          expect { api_request }.not_to change { package.package_files.count }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      it 'returns 403 for a user without access to the project', :aggregate_failures do
+        expect { api_request }.not_to change { package.package_files.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'project is private' do
+      let_it_be_with_refind(:project) { create(:project, :private) }
+
+      it 'returns 404 for a user without access to the project', :aggregate_failures do
+        expect { api_request }.not_to change { package.package_files.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns 403 for a user without enough permissions', :aggregate_failures do
+        project.add_developer(user)
+
+        expect { api_request }.not_to change { package.package_files.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      it 'returns 204', :aggregate_failures do
+        project.add_maintainer(user)
+
+        expect { api_request }.to change { package.package_files.count }.by(-1)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      context 'without user' do
+        let(:user) { nil }
+
+        it 'returns 404 for non authenticated user', :aggregate_failures do
+          expect { api_request }.not_to change { package.package_files.count }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'invalid file' do
+        let(:url) { "/projects/#{project.id}/packages/#{package.id}/package_files/999999" }
+
+        it 'returns 404 when the package file does not exist', :aggregate_failures do
+          project.add_maintainer(user)
+
+          expect { api_request }.not_to change { package.package_files.count }
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

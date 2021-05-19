@@ -7,4 +7,4 @@ cloud-native-image:
     GIT_DEPTH: "1"
   script:
     - install_gitlab_gem
-    - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng
+    - CNG_PROJECT_PATH="gitlab-org/build/CNG" ./scripts/trigger-build cng

@@ -2,16 +2,28 @@
 
 module MergeRequests
   class CreateFromIssueService < MergeRequests::CreateService
-    def initialize(project, user, params)
+    # TODO: This constructor does not use the "params:" argument from the superclass,
+    #   but instead has a custom "mr_params:" argument. This is because historically,
+    #   prior to named arguments being introduced to the constructor, it never passed
+    #   along the third positional argument when calling `super`.
+    #   This should be changed, in order to be consistent (all subclasses should pass
+    #   along all of the arguments to the superclass, otherwise it is probably not an
+    #   "is a" relationship). However, we need to be sure that passing the params
+    #   argument to `super` (especially target_project_id) will not cause any unexpected
+    #   behavior in the superclass. Since the addition of the named arguments is
+    #   intended to be a low-risk pure refactor, we will defer this fix
+    #   to this follow-on issue:
+    #   https://gitlab.com/gitlab-org/gitlab/-/issues/328726
+    def initialize(project:, current_user:, mr_params: {})
       # branch - the name of new branch
       # ref    - the source of new branch.
 
-      @branch_name       = params[:branch_name]
-      @issue_iid         = params[:issue_iid]
-      @ref               = params[:ref]
-      @target_project_id = params[:target_project_id]
+      @branch_name       = mr_params[:branch_name]
+      @issue_iid         = mr_params[:issue_iid]
+      @ref               = mr_params[:ref]
+      @target_project_id = mr_params[:target_project_id]
 
-      super(project, user)
+      super(project: project, current_user: current_user)
     end
 
     def execute
@@ -73,11 +85,11 @@ module MergeRequests
     end
 
     def default_branch
-      target_project.default_branch || 'master'
+      target_project.default_branch_or_main
     end
 
     def merge_request
-      MergeRequests::BuildService.new(target_project, current_user, merge_request_params).execute
+      MergeRequests::BuildService.new(project: target_project, current_user: current_user, params: merge_request_params).execute
     end
 
     def merge_request_params

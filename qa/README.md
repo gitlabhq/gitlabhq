@@ -54,9 +54,7 @@ the browser to use. You will need to have Chrome (or Chromium) and
 
 ### Run the end-to-end tests in a local development environment
 
-Follow the GDK instructions to [prepare](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/prepare.md)
-and [install](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/set-up-gdk.md)
-your local GitLab development environment.
+Follow the GDK instructions to [install](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/index.md) your local GitLab development environment.
 
 Once you have GDK running, switch to the `qa` directory. E.g., if you setup
 GDK to develop in the main `gitlab-ce` repo, the GitLab source code will be

@@ -4,6 +4,8 @@ module Deployments
   class UpdateEnvironmentWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     queue_namespace :deployment
     idempotent!
     feature_category :continuous_delivery

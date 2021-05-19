@@ -28,4 +28,4 @@ module Releases
   end
 end
 
-Releases::CreateEvidenceService.prepend_if_ee('EE::Releases::CreateEvidenceService')
+Releases::CreateEvidenceService.prepend_mod_with('Releases::CreateEvidenceService')

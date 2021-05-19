@@ -16,4 +16,4 @@ class ProjectMemberPresenter < MemberPresenter
   end
 end
 
-ProjectMemberPresenter.prepend_if_ee('EE::ProjectMemberPresenter')
+ProjectMemberPresenter.prepend_mod_with('ProjectMemberPresenter')

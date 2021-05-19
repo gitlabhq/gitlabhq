@@ -6,7 +6,7 @@ class MicrosoftTeamsService < ChatNotificationService
   end
 
   def description
-    'Receive event notifications in Microsoft Teams'
+    'Send notifications about project events to Microsoft Teams.'
   end
 
   def self.to_param

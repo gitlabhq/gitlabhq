@@ -8,6 +8,8 @@ module Types
 
       connection_type_class(Types::CountableConnectionType)
 
+      expose_permissions Types::PermissionTypes::Ci::Job
+
       field :id, ::Types::GlobalIDType[::CommitStatus].as('JobID'), null: true,
             description: 'ID of the job.'
       field :pipeline, Types::Ci::PipelineType, null: true,
@@ -23,7 +25,7 @@ module Types
       field :stage, Types::Ci::StageType, null: true,
             description: 'Stage of the job.'
       field :allow_failure, ::GraphQL::BOOLEAN_TYPE, null: false,
-            description: 'Whether this job is allowed to fail.'
+            description: 'Whether the job is allowed to fail.'
       field :duration, GraphQL::INT_TYPE, null: true,
             description: 'Duration of the job in seconds.'
       field :tags, [GraphQL::STRING_TYPE], null: true,
@@ -40,6 +42,12 @@ module Types
             description: 'When a job has finished running.'
       field :scheduled_at, Types::TimeType, null: true,
             description: 'Schedule for the build.'
+
+      # Life-cycle durations:
+      field :queued_duration,
+            type: Types::DurationType,
+            null: true,
+            description: 'How long the job was enqueued before starting.'
 
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
             description: 'Detailed status of the job.'
@@ -63,8 +71,16 @@ module Types
             description: 'Indicates the job can be canceled.'
       field :active, GraphQL::BOOLEAN_TYPE, null: false, method: :active?,
             description: 'Indicates the job is active.'
+      field :stuck, GraphQL::BOOLEAN_TYPE, null: false, method: :stuck?,
+            description: 'Indicates the job is stuck.'
       field :coverage, GraphQL::FLOAT_TYPE, null: true,
             description: 'Coverage level of the job.'
+      field :created_by_tag, GraphQL::BOOLEAN_TYPE, null: false,
+            description: 'Whether the job was created by a tag.'
+      field :manual_job, GraphQL::BOOLEAN_TYPE, null: true,
+            description: 'Whether the job has a manual action.'
+      field :triggered, GraphQL::BOOLEAN_TYPE, null: true,
+            description: 'Whether the job was triggered.'
 
       def pipeline
         Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Pipeline, object.pipeline_id).find
@@ -122,6 +138,18 @@ module Types
 
       def coverage
         object&.coverage
+      end
+
+      def created_by_tag
+        object.tag?
+      end
+
+      def manual_job
+        object.try(:action?)
+      end
+
+      def triggered
+        object.try(:trigger_request)
       end
     end
   end

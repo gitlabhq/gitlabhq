@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::RemoveInaccessibleEpicTodos.prepend_if_ee('EE::Gitlab::BackgroundMigration::RemoveInaccessibleEpicTodos')
+Gitlab::BackgroundMigration::RemoveInaccessibleEpicTodos.prepend_mod_with('Gitlab::BackgroundMigration::RemoveInaccessibleEpicTodos')

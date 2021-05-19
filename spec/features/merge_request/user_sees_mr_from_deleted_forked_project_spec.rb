@@ -15,7 +15,7 @@ RSpec.describe 'Merge request > User sees MR from deleted forked project', :js d
   end
 
   before do
-    MergeRequests::MergeService.new(project, user).execute(merge_request)
+    MergeRequests::MergeService.new(project: project, current_user: user).execute(merge_request)
     forked_project.destroy!
     sign_in(user)
     visit project_merge_request_path(project, merge_request)

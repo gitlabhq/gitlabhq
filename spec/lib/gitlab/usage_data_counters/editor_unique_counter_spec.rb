@@ -28,14 +28,6 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
     it 'does not track edit actions if author is not present' do
       expect(track_action(author: nil)).to be_nil
     end
-
-    context 'when feature flag track_editor_edit_actions is disabled' do
-      it 'does not track edit actions' do
-        stub_feature_flags(track_editor_edit_actions: false)
-
-        expect(track_action(author: user1)).to be_nil
-      end
-    end
   end
 
   context 'for web IDE edit actions' do

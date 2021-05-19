@@ -114,13 +114,13 @@ The current method provides several attributes that are sent on each click event
 
 | category* | label            | action                | property** | value |
 |-------------|------------------|-----------------------|----------|:-----:|
-| [root:index] | main_navigation            | click_navigation_link | `[link_label]`   | - |
-| [groups:boards:show] | toggle_swimlanes | click_toggle_button | - | `[is_active]` |
-| [projects:registry:index] | registry_delete | click_button | - | - |
-| [projects:registry:index] | registry_delete | confirm_deletion | - | - |
-| [projects:blob:show] | congratulate_first_pipeline | click_button | `[human_access]` | - |
-| [projects:clusters:new] | chart_options | generate_link | `[chart_link]` | - |
-| [projects:clusters:new] | chart_options | click_add_label_button | `[label_id]` | - |
+| `[root:index]` | `main_navigation`            | `click_navigation_link` | `[link_label]`   | - |
+| `[groups:boards:show]` | `toggle_swimlanes` | `click_toggle_button` | - | `[is_active]` |
+| `[projects:registry:index]` | `registry_delete` | `click_button` | - | - |
+| `[projects:registry:index]` | `registry_delete` | `confirm_deletion` | - | - |
+| `[projects:blob:show]` | `congratulate_first_pipeline` | `click_button` | `[human_access]` | - |
+| `[projects:clusters:new]` | `chart_options` | `generate_link` | `[chart_link]` | - |
+| `[projects:clusters:new]` | `chart_options` | `click_add_label_button` | `[label_id]` | - |
 
 _* It's ok to omit the category, and use the default._<br>
 _** Property is usually the best place for variable strings._
@@ -131,8 +131,8 @@ _** Property is usually the best place for variable strings._
 
 ```sql
 SELECT
+  session_id,
   event_id,
-  v_tracker,
   event_label,
   event_action,
   event_property,
@@ -427,7 +427,7 @@ https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#test-sn
 
 ### Performance
 
-We use the [AsyncEmitter](https://github.com/snowplow/snowplow/wiki/Ruby-Tracker#52-the-asyncemitter-class) when tracking events, which allows for instrumentation calls to be run in a background thread. This is still an active area of development.
+We use the [AsyncEmitter](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/ruby-tracker/emitters/#the-asyncemitter-class) when tracking events, which allows for instrumentation calls to be run in a background thread. This is still an active area of development.
 
 ## Developing and testing Snowplow
 
@@ -579,6 +579,7 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 | `namespace_id` | **{dotted-circle}** | integer               |                                                               |
 | `environment`  | **{check-circle}**  | string (max 32 chars) | Name of the source environment, such as `production` or `staging`             |
 | `source`       | **{check-circle}**  | string (max 32 chars) | Name of the source application, such as  `gitlab-rails` or `gitlab-javascript` |
+| `plan`         | **{dotted-circle}**  | string (max 32 chars) | Name of the plan for the namespace, such as `free`, `premium`, or `ultimate`. Automatically picked from the `namespace`. |
 | `extra`        | **{dotted-circle}**  | JSON                  | Any additional data associated with the event, in the form of key-value pairs |
 
 ### Default Schema

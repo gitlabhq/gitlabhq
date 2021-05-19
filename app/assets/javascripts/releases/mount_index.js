@@ -15,11 +15,6 @@ export default () => {
       modules: {
         index: createIndexModule(el.dataset),
       },
-      featureFlags: {
-        graphqlReleaseData: Boolean(gon.features?.graphqlReleaseData),
-        graphqlReleasesPage: Boolean(gon.features?.graphqlReleasesPage),
-        graphqlMilestoneStats: Boolean(gon.features?.graphqlMilestoneStats),
-      },
     }),
     render: (h) => h(ReleaseIndexApp),
   });

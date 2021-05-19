@@ -64,7 +64,7 @@ module Gitlab
             description: 'Commands that will be executed when finishing job.',
             inherit: true
 
-          entry :cache, Entry::Cache,
+          entry :cache, Entry::Caches,
             description: 'Cache definition for this job.',
             inherit: true
 
@@ -200,4 +200,4 @@ module Gitlab
   end
 end
 
-::Gitlab::Ci::Config::Entry::Job.prepend_if_ee('::EE::Gitlab::Ci::Config::Entry::Job')
+::Gitlab::Ci::Config::Entry::Job.prepend_mod_with('Gitlab::Ci::Config::Entry::Job')

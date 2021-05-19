@@ -41,7 +41,7 @@
     },
     "avatar_url": { "type": "string" },
     "web_url": { "type": "string" },
-    "created_at": { "type": "date" },
+    "created_at": { "type": "string", "format": "date-time" },
     "bio": { "type": ["string", "null"] },
     "location": { "type": ["string", "null"] },
     "skype": { "type": "string" },
@@ -49,11 +49,11 @@
     "twitter": { "type": "string "},
     "website_url": { "type": "string" },
     "organization": { "type": ["string", "null"] },
-    "last_sign_in_at": { "type": "date" },
-    "confirmed_at": { "type": ["date", "null"] },
+    "last_sign_in_at": { "type": ["string", "null"], "format": "date-time" },
+    "confirmed_at": { "type": ["string", "null"] },
     "color_scheme_id": { "type": "integer" },
     "projects_limit": { "type": "integer" },
-    "current_sign_in_at": { "type": "date" },
+    "current_sign_in_at": { "type": ["string", "null"], "format": "date-time" },
     "identities": {
       "type": "array",
       "items": {

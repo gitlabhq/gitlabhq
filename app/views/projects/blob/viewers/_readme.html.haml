@@ -1,4 +1,4 @@
 = sprite_icon('information-o', css_class: 'gl-vertical-align-middle! gl-mr-2')
 = succeed '.' do
-  To learn more about this project, read
-  = link_to "the wiki", wiki_path(viewer.project.wiki)
+  - link_to_wiki = link_to(_("the wiki"), wiki_path(viewer.project.wiki))
+  = _("To learn more about this project, read %{link_to_wiki}.").html_safe % { link_to_wiki: link_to_wiki }

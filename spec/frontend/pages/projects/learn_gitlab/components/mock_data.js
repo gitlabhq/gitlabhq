@@ -45,3 +45,15 @@ export const testActions = {
     svg: 'http://example.com/images/illustration.svg',
   },
 };
+
+export const testSections = {
+  workspace: {
+    svg: 'workspace.svg',
+  },
+  deploy: {
+    svg: 'deploy.svg',
+  },
+  plan: {
+    svg: 'plan.svg',
+  },
+};

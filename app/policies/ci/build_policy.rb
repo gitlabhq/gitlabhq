@@ -21,7 +21,7 @@ module Ci
     end
 
     # overridden in EE
-    condition(:protected_environment_access) do
+    condition(:protected_environment) do
       false
     end
 
@@ -68,7 +68,10 @@ module Ci
     rule { project_read_build }.enable :read_build_trace
     rule { debug_mode & ~project_update_build }.prevent :read_build_trace
 
-    rule { ~protected_environment_access & (protected_ref | archived) }.policy do
+    # Authorizing the user to access to protected entities.
+    # There is a "jailbreak" mode to exceptionally bypass the authorization,
+    # however, you should NEVER allow it, rather suspect it's a wrong feature/product design.
+    rule { ~can?(:jailbreak) & (archived | protected_ref | protected_environment) }.policy do
       prevent :update_build
       prevent :update_commit_status
       prevent :erase_build
@@ -108,4 +111,4 @@ module Ci
   end
 end
 
-Ci::BuildPolicy.prepend_if_ee('EE::Ci::BuildPolicy')
+Ci::BuildPolicy.prepend_mod_with('Ci::BuildPolicy')

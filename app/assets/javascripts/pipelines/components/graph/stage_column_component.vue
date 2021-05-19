@@ -160,7 +160,10 @@ export default {
           :pipeline-id="pipelineId"
           :stage-name="showStageName ? group.stageName : ''"
           css-class-job-name="gl-build-content"
-          :class="{ 'gl-opacity-3': isFadedOut(group.name) }"
+          :class="[
+            { 'gl-opacity-3': isFadedOut(group.name) },
+            'gl-transition-duration-slow gl-transition-timing-function-ease',
+          ]"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
         />
         <div v-else-if="isParallel(group)" :class="{ 'gl-opacity-3': isFadedOut(group.name) }">

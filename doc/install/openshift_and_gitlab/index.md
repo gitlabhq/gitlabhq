@@ -21,7 +21,7 @@ you can host your own PaaS for free and almost with no hassle.
 
 In this tutorial, we will see how to deploy GitLab in OpenShift using the GitLab
 official Docker image while getting familiar with the web interface and CLI
-tools that will help us achieve our goal.
+tools that help us achieve our goal.
 
 For a video demonstration on installing GitLab on OpenShift, check the article [In 13 minutes from Kubernetes to a complete application development tool](https://about.gitlab.com/blog/2016/11/14/idea-to-production/).
 
@@ -32,7 +32,7 @@ This information is no longer up to date, as the current versions
 have changed and products have been renamed.
 
 OpenShift 3 is not yet deployed on RedHat's offered [Online platform](https://www.openshift.com/),
-so in order to test it, we will use an [all-in-one VirtualBox image](https://www.okd.io/minishift/) that is
+so in order to test it, we use an [all-in-one VirtualBox image](https://www.okd.io/minishift/) that is
 offered by the OpenShift developers and managed by Vagrant. If you haven't done
 already, go ahead and install the following components as they are essential to
 test OpenShift easily:
@@ -65,7 +65,7 @@ the tools needed pre-installed, including Docker, Kubernetes, and OpenShift.
 ### Test OpenShift using Vagrant
 
 As of this writing, the all-in-one VM is at version 1.3, and that's
-what we will use in this tutorial.
+what we use in this tutorial.
 
 In short:
 
@@ -75,7 +75,7 @@ In short:
    vagrant init openshift/origin-all-in-one
    ```
 
-1. This will generate a Vagrantfile based on the all-in-one VM image
+1. This generates a Vagrantfile based on the all-in-one VM image
 1. In the same directory where you generated the Vagrantfile
    enter:
 
@@ -83,7 +83,7 @@ In short:
    vagrant up
    ```
 
-This will download the VirtualBox image and fire up the VM with some preconfigured
+This downloads the VirtualBox image and fire up the VM with some preconfigured
 values as you can see in the Vagrantfile. As you may have noticed, you need
 plenty of RAM (5GB in our example), so make sure you have enough.
 
@@ -91,7 +91,7 @@ Now that OpenShift is set up, let's see how the web console looks like.
 
 ### Explore the OpenShift web console
 
-Once Vagrant finishes its thing with the VM, you will be presented with a
+Once Vagrant finishes its thing with the VM, you are presented with a
 message which has some important information. One of them is the IP address
 of the deployed OpenShift platform and in particular `https://10.2.2.2:8443/console/`.
 Open this link with your browser and accept the self-signed certificate in
@@ -109,7 +109,7 @@ respective pods are there to explore.
 
 ![OpenShift web console](img/openshift-infra-project.png)
 
-We are not going to explore the whole interface, but if you want to learn about
+We are not exploring the whole interface, but if you want to learn about
 the key concepts of OpenShift, read the [core concepts reference](https://docs.okd.io/3.11/architecture/core_concepts/index.html)
 in the official documentation.
 
@@ -193,7 +193,7 @@ The connection to the server 10.2.2.2:8443 was refused - did you specify the rig
 
 In that case, the OpenShift service might not be running, so in order to fix it:
 
-1. SSH into the VM by going to the directory where the Vagrantfile is and then
+1. SSH into the VM by selecting the directory where the Vagrantfile is and then
    run:
 
    ```shell
@@ -201,7 +201,7 @@ In that case, the OpenShift service might not be running, so in order to fix it:
    ```
 
 1. Run `systemctl` and verify by the output that the `openshift` service is not
-   running (it will be in red color). If that's the case start the service with:
+   running (it is in red color). If that's the case start the service with:
 
    ```shell
    sudo systemctl start openshift
@@ -221,7 +221,7 @@ Now that you got a taste of what OpenShift looks like, let's deploy GitLab!
 
 ### Create a new project
 
-First, we will create a new project to host our application. You can do this
+First, create a new project to host our application. You can do this
 either by running the CLI client:
 
 ```shell

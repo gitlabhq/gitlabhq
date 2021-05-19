@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Seed::Deployment do
   let_it_be(:project, refind: true) { create(:project, :repository) }
+
   let(:pipeline) do
     create(:ci_pipeline, project: project,
            sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')

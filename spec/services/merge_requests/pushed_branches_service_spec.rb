@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::PushedBranchesService do
   let(:project) { create(:project) }
-  let!(:service) { described_class.new(project, nil, changes: pushed_branches) }
+  let!(:service) { described_class.new(project: project, current_user: nil, params: { changes: pushed_branches }) }
 
   context 'when branches pushed' do
     let(:pushed_branches) do

@@ -4,9 +4,12 @@ module Ci
   module PipelineArtifacts
     class CoverageReportWorker
       include ApplicationWorker
+
+      sidekiq_options retry: 3
       include PipelineBackgroundQueue
 
       feature_category :code_testing
+      tags :exclude_from_kubernetes
 
       idempotent!
 

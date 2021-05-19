@@ -9,12 +9,16 @@ module Packages
 
     private
 
+    def packages_for_project(project)
+      project.packages.installable
+    end
+
     def packages_visible_to_user(user, within_group:)
       return ::Packages::Package.none unless within_group
       return ::Packages::Package.none unless Ability.allowed?(user, :read_group, within_group)
 
       projects = projects_visible_to_reporters(user, within_group: within_group)
-      ::Packages::Package.for_projects(projects.select(:id))
+      ::Packages::Package.for_projects(projects.select(:id)).installable
     end
 
     def projects_visible_to_user(user, within_group:)
@@ -25,7 +29,7 @@ module Packages
     end
 
     def projects_visible_to_reporters(user, within_group:)
-      if user.is_a?(DeployToken) && Feature.enabled?(:packages_finder_helper_deploy_token)
+      if user.is_a?(DeployToken) && Feature.enabled?(:packages_finder_helper_deploy_token, default_enabled: :yaml)
         user.accessible_projects
       else
         within_group.all_projects
@@ -38,7 +42,7 @@ module Packages
     end
 
     def filter_by_package_type(packages)
-      return packages unless package_type
+      return packages.without_package_type(:terraform_module) unless package_type
       raise InvalidPackageTypeError unless ::Packages::Package.package_types.key?(package_type)
 
       packages.with_package_type(package_type)
@@ -48,6 +52,12 @@ module Packages
       return packages unless params[:package_name].present?
 
       packages.search_by_name(params[:package_name])
+    end
+
+    def filter_by_package_version(packages)
+      return packages unless params[:package_version].present?
+
+      packages.with_version(params[:package_version])
     end
 
     def filter_with_version(packages)

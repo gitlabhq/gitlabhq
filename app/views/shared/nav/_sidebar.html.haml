@@ -11,4 +11,5 @@
       - if sidebar.render_raw_menus_partial
         = render sidebar.render_raw_menus_partial
 
+      = render partial: 'shared/nav/sidebar_hidden_menu_item', collection: sidebar.hidden_menu&.renderable_items
     = render 'shared/sidebar_toggle_button'

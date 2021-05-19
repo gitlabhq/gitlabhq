@@ -6,9 +6,9 @@ module Types
       graphql_name 'EntryType'
       description 'Type of a tree entry'
 
-      value 'tree', value: :tree
-      value 'blob', value: :blob
-      value 'commit', value: :commit
+      value 'tree', description: 'Directory tree type.', value: :tree
+      value 'blob', description: 'File tree type.', value: :blob
+      value 'commit', description: 'Commit tree type.', value: :commit
     end
   end
 end

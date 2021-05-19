@@ -52,7 +52,7 @@ module TestEnv
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3',
-    'add-ipython-files'                  => '93ee732',
+    'add-ipython-files'                  => 'f6b7a70',
     'add-pdf-file'                       => 'e774ebd',
     'squash-large-files'                 => '54cec52',
     'add-pdf-text-binary'                => '79faa7b',
@@ -266,7 +266,7 @@ module TestEnv
     Integer(sleep_time / sleep_interval).times do
       Socket.unix(socket)
       return
-    rescue
+    rescue StandardError
       sleep sleep_interval
     end
 
@@ -612,5 +612,5 @@ end
 
 require_relative('../../../ee/spec/support/helpers/ee/test_env') if Gitlab.ee?
 
-::TestEnv.prepend_if_ee('::EE::TestEnv')
-::TestEnv.extend_if_ee('::EE::TestEnv')
+::TestEnv.prepend_mod_with('TestEnv')
+::TestEnv.extend_mod_with('TestEnv')

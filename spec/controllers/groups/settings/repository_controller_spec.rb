@@ -59,6 +59,8 @@ RSpec.describe Groups::Settings::RepositoryController do
             'username' => deploy_token_params[:username],
             'expires_at' => Time.zone.parse(deploy_token_params[:expires_at]),
             'token' => be_a(String),
+            'expired' => false,
+            'revoked' => false,
             'scopes' => deploy_token_params.inject([]) do |scopes, kv|
               key, value = kv
               key.to_s.start_with?('read_') && value.to_i != 0 ? scopes << key.to_s : scopes

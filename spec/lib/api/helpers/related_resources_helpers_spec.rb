@@ -63,6 +63,12 @@ RSpec.describe API::Helpers::RelatedResourcesHelpers do
       is_expected.to start_with('https://')
     end
 
+    it 'accepts the host if it contains an underscore' do
+      stub_default_url_options(host: 'w_ww.example.com')
+
+      is_expected.to start_with('http://w_ww.example.com/')
+    end
+
     it 'accepts port to be nil' do
       stub_default_url_options(port: nil)
 

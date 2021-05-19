@@ -13,11 +13,11 @@
 
 variables:
   SECURE_BINARIES_ANALYZERS: >-
-    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kubesec,
+    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kubesec, semgrep,
     bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python,
     klar, clair-vulnerabilities-db,
     license-finder,
-    dast
+    dast, api-fuzzing
 
   SECURE_BINARIES_DOWNLOAD_IMAGES: "true"
   SECURE_BINARIES_PUSH_IMAGES: "true"
@@ -134,6 +134,13 @@ secrets:
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "3"
 
+semgrep:
+  extends: .download_images
+  only:
+    variables:
+      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
+          $SECURE_BINARIES_ANALYZERS =~ /\bsemgrep\b/
+
 sobelow:
   extends: .download_images
   only:
@@ -241,3 +248,12 @@ dast:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bdast\b/
+
+api-fuzzing:
+  extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "1"
+  only:
+    variables:
+      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
+          $SECURE_BINARIES_ANALYZERS =~ /\bapi-fuzzing\b/

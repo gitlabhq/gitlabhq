@@ -80,45 +80,6 @@ RSpec.describe SnippetBlobPresenter do
     end
   end
 
-  describe '#plain_data' do
-    let(:blob) { blob_at(file) }
-
-    subject { described_class.new(blob).plain_data }
-
-    context 'when blob is binary' do
-      let(:file) { 'files/images/logo-black.png' }
-
-      it 'returns nil' do
-        expect(subject).to be_nil
-      end
-    end
-
-    context 'when blob is markup' do
-      let(:file) { 'README.md' }
-
-      it 'returns plain content' do
-        expect(subject).to include('<span id="LC1" class="line" lang="markdown">')
-      end
-    end
-
-    context 'when blob has syntax' do
-      let(:file) { 'files/ruby/regex.rb' }
-
-      it 'returns highlighted syntax content' do
-        expect(subject)
-          .to include '<span id="LC1" class="line" lang="ruby"><span class="k">module</span> <span class="nn">Gitlab</span>'
-      end
-    end
-
-    context 'when blob has plain data' do
-      let(:file) { 'LICENSE' }
-
-      it 'returns plain text highlighted content' do
-        expect(subject).to include('<span id="LC1" class="line" lang="plaintext">The MIT License (MIT)</span>')
-      end
-    end
-  end
-
   describe 'route helpers' do
     let_it_be(:project)          { create(:project) }
     let_it_be(:user)             { create(:user) }

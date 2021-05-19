@@ -1,0 +1,29 @@
+#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+
+query getContainerRepositoryTags(
+  $id: ID!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
+  containerRepository(id: $id) {
+    id
+    tags(after: $after, before: $before, first: $first, last: $last) {
+      nodes {
+        digest
+        location
+        path
+        name
+        revision
+        shortRevision
+        createdAt
+        totalSize
+        canDelete
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

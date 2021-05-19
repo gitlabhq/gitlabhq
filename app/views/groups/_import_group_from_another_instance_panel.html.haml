@@ -18,7 +18,8 @@
       = f.text_field :bulk_import_gitlab_url, placeholder: 'https://gitlab.example.com', class: 'gl-form-input col-xs-12 col-sm-8',
         required: true,
         title: s_('GroupsNew|Please fill in GitLab source URL.'),
-        id: 'import_gitlab_url'
+        id: 'import_gitlab_url',
+        data: { qa_selector: 'import_gitlab_url' }
     .form-group.gl-display-flex.gl-flex-direction-column
       = f.label :bulk_import_gitlab_access_token, s_('GroupsNew|Personal access token'), for: 'import_gitlab_token'
       .gl-font-weight-normal
@@ -27,6 +28,7 @@
       = f.text_field :bulk_import_gitlab_access_token, placeholder: s_('GroupsNew|e.g. h8d3f016698e...'), class: 'gl-form-input gl-mt-3 col-xs-12 col-sm-8',
         required: true,
         title: s_('GroupsNew|Please fill in your personal access token.'),
-        id: 'import_gitlab_token'
+        id: 'import_gitlab_token',
+        data: { qa_selector: 'import_gitlab_token' }
   .gl-border-gray-100.gl-border-solid.gl-border-1.gl-bg-gray-10.gl-p-5
-    = f.submit s_('GroupsNew|Connect instance'), class: 'btn gl-button btn-confirm'
+    = f.submit s_('GroupsNew|Connect instance'), class: 'btn gl-button btn-confirm', data: { qa_selector: 'connect_instance_button' }

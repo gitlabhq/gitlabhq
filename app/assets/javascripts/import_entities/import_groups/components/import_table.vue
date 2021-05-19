@@ -1,5 +1,6 @@
 <script>
 import {
+  GlButton,
   GlEmptyState,
   GlDropdown,
   GlDropdownItem,
@@ -8,10 +9,13 @@ import {
   GlLoadingIcon,
   GlSearchBoxByClick,
   GlSprintf,
+  GlSafeHtmlDirective as SafeHtml,
+  GlTooltip,
 } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { s__, __, n__ } from '~/locale';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
-import importGroupMutation from '../graphql/mutations/import_group.mutation.graphql';
+import { STATUSES } from '../../constants';
+import importGroupsMutation from '../graphql/mutations/import_groups.mutation.graphql';
 import setNewNameMutation from '../graphql/mutations/set_new_name.mutation.graphql';
 import setTargetNamespaceMutation from '../graphql/mutations/set_target_namespace.mutation.graphql';
 import availableNamespacesQuery from '../graphql/queries/available_namespaces.query.graphql';
@@ -23,6 +27,7 @@ const DEFAULT_PAGE_SIZE = PAGE_SIZES[0];
 
 export default {
   components: {
+    GlButton,
     GlEmptyState,
     GlDropdown,
     GlDropdownItem,
@@ -31,8 +36,12 @@ export default {
     GlLoadingIcon,
     GlSearchBoxByClick,
     GlSprintf,
+    GlTooltip,
     ImportTableRow,
     PaginationLinks,
+  },
+  directives: {
+    SafeHtml,
   },
 
   props: {
@@ -65,12 +74,28 @@ export default {
   },
 
   computed: {
+    groups() {
+      return this.bulkImportSourceGroups?.nodes ?? [];
+    },
+
+    hasGroupsWithValidationError() {
+      return this.groups.some((g) => g.validation_errors.length);
+    },
+
+    availableGroupsForImport() {
+      return this.groups.filter((g) => g.progress.status === STATUSES.NONE);
+    },
+
+    isImportAllButtonDisabled() {
+      return this.hasGroupsWithValidationError || this.availableGroupsForImport.length === 0;
+    },
+
     humanizedTotal() {
       return this.paginationInfo.total >= 1000 ? __('1000+') : this.paginationInfo.total;
     },
 
     hasGroups() {
-      return this.bulkImportSourceGroups?.nodes?.length > 0;
+      return this.groups.length > 0;
     },
 
     hasEmptyFilter() {
@@ -105,6 +130,10 @@ export default {
   },
 
   methods: {
+    groupsCount(count) {
+      return n__('%d group', '%d groups', count);
+    },
+
     setPage(page) {
       this.page = page;
     },
@@ -123,11 +152,15 @@ export default {
       });
     },
 
-    importGroup(sourceGroupId) {
+    importGroups(sourceGroupIds) {
       this.$apollo.mutate({
-        mutation: importGroupMutation,
-        variables: { sourceGroupId },
+        mutation: importGroupsMutation,
+        variables: { sourceGroupIds },
       });
+    },
+
+    importAllGroups() {
+      this.importGroups(this.availableGroupsForImport.map((g) => g.id));
     },
 
     setPageSize(size) {
@@ -135,12 +168,41 @@ export default {
     },
   },
 
+  gitlabLogo: window.gon.gitlab_logo,
   PAGE_SIZES,
 };
 </script>
 
 <template>
   <div>
+    <h1
+      class="gl-my-0 gl-py-4 gl-font-size-h1 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-display-flex"
+    >
+      <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
+      {{ s__('BulkImport|Import groups from GitLab') }}
+      <div ref="importAllButtonWrapper" class="gl-ml-auto">
+        <gl-button
+          v-if="!$apollo.loading && hasGroups"
+          :disabled="isImportAllButtonDisabled"
+          variant="confirm"
+          @click="importAllGroups"
+        >
+          <gl-sprintf :message="s__('BulkImport|Import %{groups}')">
+            <template #groups>
+              {{ groupsCount(availableGroupsForImport.length) }}
+            </template>
+          </gl-sprintf>
+        </gl-button>
+      </div>
+      <gl-tooltip v-if="isImportAllButtonDisabled" :target="() => $refs.importAllButtonWrapper">
+        <template v-if="hasGroupsWithValidationError">
+          {{ s__('BulkImport|One or more groups has validation errors') }}
+        </template>
+        <template v-else>
+          {{ s__('BulkImport|No groups on this page are available for import') }}
+        </template>
+      </gl-tooltip>
+    </h1>
     <div
       class="gl-py-5 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-display-flex"
     >
@@ -153,7 +215,7 @@ export default {
             <strong>{{ paginationInfo.end }}</strong>
           </template>
           <template #total>
-            <strong>{{ n__('%d group', '%d groups', paginationInfo.total) }}</strong>
+            <strong>{{ groupsCount(paginationInfo.total) }}</strong>
           </template>
           <template #filter>
             <strong>{{ filter }}</strong>
@@ -180,7 +242,7 @@ export default {
         :description="s__('Check your source instance permissions.')"
       />
       <template v-else>
-        <table class="gl-w-full">
+        <table class="gl-w-full" data-qa-selector="import_table">
           <thead class="gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1">
             <th class="gl-py-4 import-jobs-from-col">{{ s__('BulkImport|From source group') }}</th>
             <th class="gl-py-4 import-jobs-to-col">{{ s__('BulkImport|To new group') }}</th>
@@ -196,7 +258,7 @@ export default {
                 :group-path-regex="groupPathRegex"
                 @update-target-namespace="updateTargetNamespace(group.id, $event)"
                 @update-new-name="updateNewName(group.id, $event)"
-                @import-group="importGroup(group.id)"
+                @import-group="importGroups([group.id])"
               />
             </template>
           </tbody>

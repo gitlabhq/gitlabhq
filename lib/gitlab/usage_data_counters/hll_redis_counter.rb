@@ -132,7 +132,7 @@ module Gitlab
           return unless feature_enabled?(event)
 
           Gitlab::Redis::HLL.add(key: redis_key(event, time, context), value: values, expiry: expiry(event))
-        rescue => e
+        rescue StandardError => e
           # Ignore any exceptions unless is dev or test env
           # The application flow should not be blocked by erros in tracking
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
@@ -232,8 +232,8 @@ module Gitlab
 
         # Compose the key in order to store events daily or weekly
         def redis_key(event, time, context = '')
-          raise UnknownEvent.new("Unknown event #{event[:name]}") unless known_events_names.include?(event[:name].to_s)
-          raise UnknownAggregation.new("Use :daily or :weekly aggregation") unless ALLOWED_AGGREGATIONS.include?(event[:aggregation].to_sym)
+          raise UnknownEvent, "Unknown event #{event[:name]}" unless known_events_names.include?(event[:name].to_s)
+          raise UnknownAggregation, "Use :daily or :weekly aggregation" unless ALLOWED_AGGREGATIONS.include?(event[:aggregation].to_sym)
 
           key = apply_slot(event)
           key = apply_time_aggregation(key, time, event)
@@ -277,4 +277,4 @@ module Gitlab
   end
 end
 
-Gitlab::UsageDataCounters::HLLRedisCounter.prepend_if_ee('EE::Gitlab::UsageDataCounters::HLLRedisCounter')
+Gitlab::UsageDataCounters::HLLRedisCounter.prepend_mod_with('Gitlab::UsageDataCounters::HLLRedisCounter')

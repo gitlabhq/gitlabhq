@@ -209,19 +209,26 @@ Feature.disable(:threat_monitoring_alerts)
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3438) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.9.
 
-The policy alert list displays your policy's alert activity. You can sort the list by the
-**Date and time** column, and the **Status** column. Use the selector menu in the **Status** column
-to set the status for each alert:
+The policy alert list displays your policy's alert activity. You can sort the list by these columns:
+
+- Date and time
+- Events
+- Status
+
+You can filter the list with the **Policy Name** filter and the **Status** filter at the top. Use
+the selector menu in the **Status** column to set the status for each alert:
 
 - Unreviewed
 - In review
 - Resolved
 - Dismissed
 
-By default, the list doesn't display resolved or dismissed alerts. To show these alerts, clear the
-checkbox **Hide dismissed alerts**.
+By default, the list doesn't display resolved or dismissed alerts.
 
-![Policy Alert List](img/threat_monitoring_policy_alert_list_v13_11.png)
+![Policy Alert List](img/threat_monitoring_policy_alert_list_v13_12.png)
+
+Clicking an alert's row opens the alert drawer, which shows more information about the alert. A user
+can also create an incident from the alert and update the alert status in the alert drawer.
 
 Clicking an alert's name takes the user to the [alert details page](../../../operations/incident_management/alerts.md#alert-details-page).
 

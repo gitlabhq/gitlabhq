@@ -5,6 +5,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
 import { diffViewerErrors } from '~/ide/constants';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import { sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import notesEventHub from '../../notes/event_hub';
@@ -82,7 +83,7 @@ export default {
   computed: {
     ...mapState('diffs', ['currentDiffFileId', 'codequalityDiff']),
     ...mapGetters(['isNotesFetched']),
-    ...mapGetters('diffs', ['getDiffFileDiscussions']),
+    ...mapGetters('diffs', ['getDiffFileDiscussions', 'isVirtualScrollingEnabled']),
     viewBlobHref() {
       return escape(this.file.view_path);
     },
@@ -148,10 +149,8 @@ export default {
 
       return loggedIn && featureOn;
     },
-    hasCodequalityChanges() {
-      return (
-        this.codequalityDiff?.files && this.codequalityDiff?.files[this.file.file_path]?.length > 0
-      );
+    codequalityDiffForFile() {
+      return this.codequalityDiff?.files?.[this.file.file_path] || [];
     },
   },
   watch: {
@@ -235,15 +234,20 @@ export default {
         eventHub.$emit(event);
       });
     },
-    handleToggle() {
-      const currentCollapsedFlag = this.isCollapsed;
+    handleToggle({ viaUserInteraction = false } = {}) {
+      const collapsingNow = !this.isCollapsed;
+      const contentElement = this.$el.querySelector(`#diff-content-${this.file.file_hash}`);
 
       this.setFileCollapsedByUser({
         filePath: this.file.file_path,
-        collapsed: !currentCollapsedFlag,
+        collapsed: collapsingNow,
       });
 
-      if (!this.hasDiff && currentCollapsedFlag) {
+      if (collapsingNow && viaUserInteraction && contentElement) {
+        scrollToElement(contentElement, { duration: 1 });
+      }
+
+      if (!this.hasDiff && !collapsingNow) {
         this.requestDiff();
       }
     },
@@ -286,6 +290,7 @@ export default {
       'is-active': currentDiffFileId === file.file_hash,
       'comments-disabled': Boolean(file.brokenSymlink),
       'has-body': showBody,
+      'is-virtual-scrolling': isVirtualScrollingEnabled,
     }"
     :data-path="file.new_path"
     class="diff-file file-holder gl-border-none"
@@ -299,10 +304,10 @@ export default {
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
       :show-local-file-reviews="showLocalFileReviews"
-      :has-codequality-changes="hasCodequalityChanges"
+      :codequality-diff="codequalityDiffForFile"
       class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
       :class="hasBodyClasses.header"
-      @toggleFile="handleToggle"
+      @toggleFile="handleToggle({ viaUserInteraction: true })"
       @showForkMessage="showForkMessage"
     />
 

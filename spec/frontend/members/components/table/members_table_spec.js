@@ -1,4 +1,4 @@
-import { GlBadge, GlTable } from '@gitlab/ui';
+import { GlBadge, GlPagination, GlTable } from '@gitlab/ui';
 import {
   getByText as getByTextHelper,
   getByTestId as getByTestIdHelper,
@@ -6,6 +6,7 @@ import {
 } from '@testing-library/dom';
 import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CreatedAt from '~/members/components/table/created_at.vue';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
 import ExpiresAt from '~/members/components/table/expires_at.vue';
@@ -16,7 +17,13 @@ import MembersTable from '~/members/components/table/members_table.vue';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 import * as initUserPopovers from '~/user_popovers';
-import { member as memberMock, directMember, invite, accessRequest } from '../../mock_data';
+import {
+  member as memberMock,
+  directMember,
+  invite,
+  accessRequest,
+  pagination,
+} from '../../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -36,6 +43,7 @@ describe('MembersTable', () => {
               table: { 'data-qa-selector': 'members_list' },
               tr: { 'data-qa-selector': 'member_row' },
             },
+            pagination,
             ...state,
           },
         },
@@ -66,6 +74,8 @@ describe('MembersTable', () => {
     });
   };
 
+  const url = 'https://localhost/foo-bar/-/project_members';
+
   const getByText = (text, options) =>
     createWrapper(getByTextHelper(wrapper.element, text, options));
 
@@ -77,6 +87,14 @@ describe('MembersTable', () => {
     getByTestId(`members-table-row-${memberId}`).find(
       `[data-label="${tableCellLabel}"][role="cell"]`,
     );
+
+  const findPagination = () => extendedWrapper(wrapper.find(GlPagination));
+
+  const expectCorrectLinkToPage2 = () => {
+    expect(findPagination().findByText('2', { selector: 'a' }).attributes('href')).toBe(
+      `${url}?page=2`,
+    );
+  };
 
   afterEach(() => {
     wrapper.destroy();
@@ -218,5 +236,81 @@ describe('MembersTable', () => {
     createComponent();
 
     expect(findTable().find('tbody tr').attributes('data-qa-selector')).toBe('member_row');
+  });
+
+  describe('when required pagination data is provided', () => {
+    beforeEach(() => {
+      delete window.location;
+    });
+
+    it('renders `gl-pagination` component with correct props', () => {
+      window.location = new URL(url);
+
+      createComponent();
+
+      const glPagination = findPagination();
+
+      expect(glPagination.exists()).toBe(true);
+      expect(glPagination.props()).toMatchObject({
+        value: pagination.currentPage,
+        perPage: pagination.perPage,
+        totalItems: pagination.totalItems,
+        prevText: 'Prev',
+        nextText: 'Next',
+        labelNextPage: 'Go to next page',
+        labelPrevPage: 'Go to previous page',
+        align: 'center',
+      });
+    });
+
+    it('uses `pagination.paramName` to generate the pagination links', () => {
+      window.location = new URL(url);
+
+      createComponent({
+        pagination: {
+          currentPage: 1,
+          perPage: 5,
+          totalItems: 10,
+          paramName: 'page',
+        },
+      });
+
+      expectCorrectLinkToPage2();
+    });
+
+    it('removes any url params defined as `null` in the `params` attribute', () => {
+      window.location = new URL(`${url}?search_groups=foo`);
+
+      createComponent({
+        pagination: {
+          currentPage: 1,
+          perPage: 5,
+          totalItems: 10,
+          paramName: 'page',
+          params: { search_groups: null },
+        },
+      });
+
+      expectCorrectLinkToPage2();
+    });
+  });
+
+  describe.each`
+    attribute        | value
+    ${'paramName'}   | ${null}
+    ${'currentPage'} | ${null}
+    ${'perPage'}     | ${null}
+    ${'totalItems'}  | ${0}
+  `('when pagination.$attribute is $value', ({ attribute, value }) => {
+    it('does not render `gl-pagination`', () => {
+      createComponent({
+        pagination: {
+          ...pagination,
+          [attribute]: value,
+        },
+      });
+
+      expect(findPagination().exists()).toBe(false);
+    });
   });
 });

@@ -42,7 +42,7 @@ RSpec.describe API::Services do
     end
   end
 
-  Service.available_services_names.each do |service|
+  Integration.available_services_names.each do |service|
     describe "PUT /projects/:id/services/#{service.dasherize}" do
       include_context service
 
@@ -51,7 +51,7 @@ RSpec.describe API::Services do
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        current_service = project.services.first
+        current_service = project.integrations.first
         events = current_service.event_names.empty? ? ["foo"].freeze : current_service.event_names
         query_strings = []
         events.each do |event|
@@ -66,7 +66,7 @@ RSpec.describe API::Services do
         events.each do |event|
           next if event == "foo"
 
-          expect(project.services.first[event]).not_to eq(current_service[event]),
+          expect(project.integrations.first[event]).not_to eq(current_service[event]),
             "expected #{!current_service[event]} for event #{event} for service #{current_service.title}, got #{current_service[event]}"
         end
       end
@@ -114,19 +114,59 @@ RSpec.describe API::Services do
     describe "GET /projects/:id/services/#{service.dasherize}" do
       include_context service
 
-      # inject some properties into the service
-      let!(:initialized_service) { initialize_service(service) }
+      let!(:initialized_service) { initialize_service(service, active: true) }
+
+      let_it_be(:project2) do
+        create(:project, creator_id: user.id, namespace: user.namespace)
+      end
+
+      def deactive_service!
+        return initialized_service.update!(active: false) unless initialized_service.is_a?(PrometheusService)
+
+        # PrometheusService sets `#active` itself within a `before_save`:
+        initialized_service.manual_configuration = false
+        initialized_service.save!
+      end
 
       it 'returns authentication error when unauthenticated' do
         get api("/projects/#{project.id}/services/#{dashed_service}")
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
-      it "returns all properties of service #{service}" do
+      it "returns all properties of active service #{service}" do
         get api("/projects/#{project.id}/services/#{dashed_service}", user)
 
+        expect(initialized_service).to be_active
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
+      end
+
+      it "returns all properties of inactive service #{service}" do
+        deactive_service!
+
+        get api("/projects/#{project.id}/services/#{dashed_service}", user)
+
+        expect(initialized_service).not_to be_active
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
+      end
+
+      it "returns not found if service does not exist" do
+        get api("/projects/#{project2.id}/services/#{dashed_service}", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Service Not Found')
+      end
+
+      it "returns not found if service exists but is in `Project#disabled_services`" do
+        expect_next_found_instance_of(Project) do |project|
+          expect(project).to receive(:disabled_services).at_least(:once).and_return([service])
+        end
+
+        get api("/projects/#{project.id}/services/#{dashed_service}", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Service Not Found')
       end
 
       it "returns error when authenticated but not a project owner" do

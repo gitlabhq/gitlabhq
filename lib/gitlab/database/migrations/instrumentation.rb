@@ -4,6 +4,9 @@ module Gitlab
   module Database
     module Migrations
       class Instrumentation
+        RESULT_DIR = Rails.root.join('tmp', 'migration-testing').freeze
+        STATS_FILENAME = 'migration-stats.json'
+
         attr_reader :observations
 
         def initialize(observers = ::Gitlab::Database::Migrations::Observers.all_observers)
@@ -21,7 +24,7 @@ module Gitlab
 
           observation.walltime = Benchmark.realtime do
             yield
-          rescue => e
+          rescue StandardError => e
             exception = e
             observation.success = false
           end
@@ -47,7 +50,7 @@ module Gitlab
         def on_each_observer(&block)
           observers.each do |observer|
             yield observer
-          rescue => e
+          rescue StandardError => e
             Gitlab::AppLogger.error("Migration observer #{observer.class} failed with: #{e}")
           end
         end

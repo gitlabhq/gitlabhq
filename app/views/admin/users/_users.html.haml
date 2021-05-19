@@ -7,39 +7,44 @@
     = nav_link(html_options: { class: active_when(params[:filter].nil?) }) do
       = link_to admin_users_path do
         = s_('AdminUsers|Active')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.active_without_ghosts)
+        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.active_without_ghosts)
     = nav_link(html_options: { class: active_when(params[:filter] == 'admins') }) do
       = link_to admin_users_path(filter: "admins") do
         = s_('AdminUsers|Admins')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.admins)
+        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.admins)
     = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_enabled')} filter-two-factor-enabled" }) do
       = link_to admin_users_path(filter: 'two_factor_enabled') do
         = s_('AdminUsers|2FA Enabled')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.with_two_factor)
+        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.with_two_factor)
     = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_disabled')} filter-two-factor-disabled" }) do
       = link_to admin_users_path(filter: 'two_factor_disabled') do
         = s_('AdminUsers|2FA Disabled')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.without_two_factor)
+        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.without_two_factor)
     = nav_link(html_options: { class: active_when(params[:filter] == 'external') }) do
       = link_to admin_users_path(filter: 'external') do
         = s_('AdminUsers|External')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.external)
+        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.external)
     = nav_link(html_options: { class: active_when(params[:filter] == 'blocked') }) do
       = link_to admin_users_path(filter: "blocked") do
         = s_('AdminUsers|Blocked')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked)
+        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.blocked)
+    - if ban_feature_available?
+      = nav_link(html_options: { class: active_when(params[:filter] == 'banned') }) do
+        = link_to admin_users_path(filter: "banned") do
+          = s_('AdminUsers|Banned')
+          %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.banned)
     = nav_link(html_options: { class: "#{active_when(params[:filter] == 'blocked_pending_approval')} filter-blocked-pending-approval" }) do
       = link_to admin_users_path(filter: "blocked_pending_approval"), data: { qa_selector: 'pending_approval_tab' } do
         = s_('AdminUsers|Pending approval')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked_pending_approval)
+        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.blocked_pending_approval)
     = nav_link(html_options: { class: active_when(params[:filter] == 'deactivated') }) do
       = link_to admin_users_path(filter: "deactivated") do
         = s_('AdminUsers|Deactivated')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.deactivated)
+        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.deactivated)
     = nav_link(html_options: { class: active_when(params[:filter] == 'wop') }) do
       = link_to admin_users_path(filter: "wop") do
         = s_('AdminUsers|Without projects')
-        %small.badge.badge-pill= limited_counter_with_delimiter(User.without_projects)
+        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.without_projects)
   .nav-controls
     = render_if_exists 'admin/users/admin_email_users'
     = render_if_exists 'admin/users/admin_export_user_permissions'
@@ -68,7 +73,7 @@
               = link_to admin_users_path(sort: value, filter: params[:filter], search_query: params[:search_query]) do
                 = title
 
-- if Feature.enabled?(:vue_admin_users)
+- if Feature.enabled?(:vue_admin_users, default_enabled: :yaml)
   #js-admin-users-app{ data: admin_users_data_attributes(@users) }
     .gl-spinner-container.gl-my-7
       %span.gl-vertical-align-bottom.gl-spinner.gl-spinner-dark.gl-spinner-lg{ aria: { label: _('Loading') } }
@@ -83,6 +88,6 @@
 
     = render partial: 'admin/users/user', collection: @users
 
-= paginate @users, theme: "gitlab"
+= paginate_collection @users
 
 = render partial: 'admin/users/modals'

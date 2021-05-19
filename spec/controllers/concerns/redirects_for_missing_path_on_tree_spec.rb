@@ -27,7 +27,7 @@ RSpec.describe RedirectsForMissingPathOnTree, type: :controller do
       get :fake, params: { project_id: project.id, ref: 'theref', file_path: long_file_path }
 
       expect(response).to redirect_to project_tree_path(project, 'theref')
-      expect(response.flash[:notice]).to eq(expected_message)
+      expect(controller).to set_flash[:notice].to eq(expected_message)
     end
   end
 end

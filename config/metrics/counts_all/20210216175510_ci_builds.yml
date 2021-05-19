@@ -11,6 +11,8 @@ time_frame: all
 data_source: database
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

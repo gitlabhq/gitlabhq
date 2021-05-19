@@ -141,4 +141,4 @@ module Gitlab
   end
 end
 
-Gitlab::GitAccessSnippet.prepend_if_ee('EE::Gitlab::GitAccessSnippet')
+Gitlab::GitAccessSnippet.prepend_mod_with('Gitlab::GitAccessSnippet')

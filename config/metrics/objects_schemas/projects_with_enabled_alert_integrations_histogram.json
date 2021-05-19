@@ -1,0 +1,7 @@
+{
+  "type": "object",
+  "description": "Histogram (buckets 1 to 100) of projects with at least 1 enabled integration"
+  "propertyNames": {
+    "pattern": "^[1-9][0-9]?0?$"
+  }
+}

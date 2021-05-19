@@ -1,0 +1,5 @@
+---
+title: Set a default region to Workhorse S3 client
+merge_request: 59932
+author:
+type: fixed

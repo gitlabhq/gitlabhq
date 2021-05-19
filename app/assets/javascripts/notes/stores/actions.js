@@ -345,7 +345,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       // this is a temporary solution until we have confidentiality real-time updates
       if (
         confidentialWidget.setConfidentiality &&
-        message.some((m) => m.includes('confidential'))
+        message.some((m) => m.includes('Made this issue confidential'))
       ) {
         confidentialWidget.setConfidentiality();
       }
@@ -468,15 +468,6 @@ const getFetchDataParams = (state) => {
   return { endpoint, options };
 };
 
-export const fetchData = ({ commit, state, getters, dispatch }) => {
-  const { endpoint, options } = getFetchDataParams(state);
-
-  axios
-    .get(endpoint, options)
-    .then(({ data }) => pollSuccessCallBack(data, commit, state, getters, dispatch))
-    .catch(() => Flash(__('Something went wrong while fetching latest comments.')));
-};
-
 export const poll = ({ commit, state, getters, dispatch }) => {
   eTagPoll = new Poll({
     resource: {
@@ -493,7 +484,7 @@ export const poll = ({ commit, state, getters, dispatch }) => {
   if (!Visibility.hidden()) {
     eTagPoll.makeDelayedRequest(2500);
   } else {
-    dispatch('fetchData');
+    eTagPoll.makeRequest();
   }
 
   Visibility.change(() => {

@@ -24,7 +24,7 @@ integrated [Container Registry](../../packages/container_registry.md#use-object-
 
 You can enable a storage-agnostic replication so it
 can be used for cloud or local storage. Whenever a new image is pushed to the
-**primary** site, each **secondary** site will pull it to its own container
+**primary** site, each **secondary** site pulls it to its own container
 repository.
 
 To configure Docker Registry replication:
@@ -70,12 +70,12 @@ We need to make Docker Registry send notification events to the
 
    NOTE:
    If you use an external Registry (not the one integrated with GitLab), you must add
-   these settings to its configuration yourself. In this case, you will also have to specify
+   these settings to its configuration yourself. In this case, you also have to specify
    notification secret in `registry.notification_secret` section of
    `/etc/gitlab/gitlab.rb` file.
 
    NOTE:
-   If you use GitLab HA, you will also have to specify
+   If you use GitLab HA, you also have to specify
    the notification secret in `registry.notification_secret` section of
    `/etc/gitlab/gitlab.rb` file for every web node.
 
@@ -95,11 +95,11 @@ expecting to see the Docker images replicated.
 
 Because we need to allow the **secondary** site to communicate securely with
 the **primary** site Container Registry, we need to have a single key
-pair for all the sites. The **secondary** site will use this key to
+pair for all the sites. The **secondary** site uses this key to
 generate a short-lived JWT that is pull-only-capable to access the
 **primary** site Container Registry.
 
-For each application and Sidekiq node on the **secondary** site: 
+For each application and Sidekiq node on the **secondary** site:
 
 1. SSH into the node and login as the `root` user:
 
@@ -126,5 +126,5 @@ For each application and Sidekiq node on the **secondary** site:
 
 To verify Container Registry replication is working, go to **Admin Area > Geo**
 (`/admin/geo/nodes`) on the **secondary** site.
-The initial replication, or "backfill", will probably still be in progress.
+The initial replication, or "backfill", is probably still in progress.
 You can monitor the synchronization process on each Geo site from the **primary** site's **Geo Nodes** dashboard in your browser.

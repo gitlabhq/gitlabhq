@@ -1,0 +1,5 @@
+---
+title: Initialize int8 migration for ci_job_artifacts
+merge_request: 59786
+author:
+type: other

@@ -6,6 +6,7 @@ RSpec.describe 'User sees user popover', :js do
   include Spec::Support::Helpers::Features::NotesHelpers
 
   let_it_be(:project) { create(:project, :repository) }
+
   let(:user) { project.creator }
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project)

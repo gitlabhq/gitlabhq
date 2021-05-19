@@ -9,7 +9,7 @@ RSpec.describe MergeRequests::PostMergeService do
   let_it_be(:merge_request, reload: true) { create(:merge_request, assignees: [user]) }
   let_it_be(:project) { merge_request.project }
 
-  subject { described_class.new(project, user).execute(merge_request) }
+  subject { described_class.new(project: project, current_user: user).execute(merge_request) }
 
   before do
     project.add_maintainer(user)
@@ -22,7 +22,6 @@ RSpec.describe MergeRequests::PostMergeService do
     it 'refreshes the number of open merge requests for a valid MR', :use_clean_rails_memory_store_caching do
       # Cache the counter before the MR changed state.
       project.open_merge_requests_count
-      merge_request.update!(state: 'merged')
 
       expect { subject }.to change { project.open_merge_requests_count }.from(1).to(0)
     end

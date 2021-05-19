@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "required": [
     "group",
@@ -8,7 +9,7 @@
     "group": { "type": "string" },
     "panels": {
       "type": "array",
-      "items": { "$ref": "panels.json" }
+      "items": { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/panels.json" }
     },
     "has_custom_metrics": { "type": "boolean" }
   },

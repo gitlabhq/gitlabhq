@@ -1,0 +1,5 @@
+---
+title: Fix three N+1s in Releases API entity generation
+merge_request: 60189
+author:
+type: performance

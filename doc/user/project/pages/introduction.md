@@ -129,7 +129,7 @@ See this document for a [step-by-step guide](getting_started/pages_from_scratch.
 
 Remember that GitLab Pages are by default branch/tag agnostic and their
 deployment relies solely on what you specify in `.gitlab-ci.yml`. You can limit
-the `pages` job with the [`only` parameter](../../../ci/yaml/README.md#onlyexcept-basic),
+the `pages` job with the [`only` parameter](../../../ci/yaml/README.md#only--except),
 whenever a new commit is pushed to a branch used specifically for your
 pages.
 
@@ -273,6 +273,10 @@ Sure. All you need to do is download the artifacts archive from the job page.
 Yes. GitLab Pages doesn't care whether you set your project's visibility level
 to private, internal or public.
 
+### Can I create a personal or a group website
+
+Yes. See the documentation about [GitLab Pages domain names, URLs, and base URLs](getting_started_part_one.md).
+
 ### Do I need to create a user/group website before creating a project website?
 
 No, you don't. You can create your project first and access it under
@@ -297,3 +301,27 @@ Files listed under the public directory can be accessed through the Pages URL fo
 A 404 can also be related to incorrect permissions. If [Pages Access Control](pages_access_control.md) is enabled, and a user
 navigates to the Pages URL and receives a 404 response, it is possible that the user does not have permission to view the site.
 To fix this, verify that the user is a member of the project.
+
+For Geo instances, 404 errors on Pages occur after promoting a secondary to a primary.
+Find more details in the [Pages administration documentation](../../../administration/pages/index.md#404-error-after-promoting-a-geo-secondary-to-a-primary-node)
+
+### Cannot play media content on Safari
+
+Safari requires the web server to support the [Range request header](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/CreatingVideoforSafarioniPhone/CreatingVideoforSafarioniPhone.html#//apple_ref/doc/uid/TP40006514-SW6)
+in order to play your media content. For GitLab Pages to serve
+HTTP Range requests, you should use the following two variables in your `.gitlab-ci.yaml` file:
+
+```yaml
+pages:
+  stage: deploy
+  variables:
+    FF_USE_FASTZIP: "true"
+    ARTIFACT_COMPRESSION_LEVEL: "fastest"
+  script:
+    - echo "Deploying pages"
+  artifacts:
+    paths:
+      - public
+```
+
+The `FF_USE_FASTZIP` variable enables the [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) which is needed for [`ARTIFACT_COMPRESSION_LEVEL`](../../../ci/runners/README.md#artifact-and-cache-settings).

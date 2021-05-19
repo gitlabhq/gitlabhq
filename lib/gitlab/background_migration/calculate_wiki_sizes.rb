@@ -9,7 +9,7 @@ module Gitlab
           .where(id: start_id..stop_id)
           .includes(project: [:route, :group, namespace: [:owner]]).find_each do |statistics|
           statistics.refresh!(only: [:wiki_size])
-        rescue => e
+        rescue StandardError => e
           Gitlab::AppLogger.error "Failed to update wiki statistics. id: #{statistics.id} message: #{e.message}"
         end
       end

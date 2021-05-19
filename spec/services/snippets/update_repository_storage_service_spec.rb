@@ -31,7 +31,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageService do
     end
 
     context 'when the move succeeds' do
-      it 'moves the repository to the new storage and unmarks the repository as read only' do
+      it 'moves the repository to the new storage and unmarks the repository as read-only' do
         old_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
           snippet.repository.path_to_repo
         end

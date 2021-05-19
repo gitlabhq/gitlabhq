@@ -71,4 +71,4 @@ class AutocompleteController < ApplicationController
   end
 end
 
-AutocompleteController.prepend_if_ee('EE::AutocompleteController')
+AutocompleteController.prepend_mod_with('AutocompleteController')

@@ -35,8 +35,9 @@ export default {
   inject: {
     newUserListPath: { default: '' },
     newFeatureFlagPath: { default: '' },
-    canUserConfigure: { required: true },
-    featureFlagsLimitExceeded: { required: true },
+    canUserConfigure: {},
+    featureFlagsLimitExceeded: {},
+    featureFlagsLimit: {},
   },
   data() {
     const scope = getParameterByName('scope') || SCOPES.FEATURE_FLAG_SCOPE;

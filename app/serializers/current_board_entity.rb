@@ -7,4 +7,4 @@ class CurrentBoardEntity < Grape::Entity
   expose :hide_closed_list
 end
 
-CurrentBoardEntity.prepend_if_ee('EE::CurrentBoardEntity')
+CurrentBoardEntity.prepend_mod_with('CurrentBoardEntity')

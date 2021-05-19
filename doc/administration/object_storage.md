@@ -595,7 +595,7 @@ with the Fog library that GitLab uses. Symptoms include an error in `production.
 
 If you configure GitLab to use object storage for CI logs and artifacts,
 you can avoid [local disk usage for job logs](job_logs.md#data-flow) by enabling
-[beta incremental logging](job_logs.md#new-incremental-logging-architecture).
+[beta incremental logging](job_logs.md#incremental-logging-architecture).
 
 ### Proxy Download
 

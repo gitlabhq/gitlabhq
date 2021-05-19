@@ -58,4 +58,4 @@ module Banzai
   end
 end
 
-Banzai::IssuableExtractor.prepend_if_ee('EE::Banzai::IssuableExtractor')
+Banzai::IssuableExtractor.prepend_mod_with('Banzai::IssuableExtractor')

@@ -104,7 +104,7 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter do
       let(:pattern) { described_class.object_class.link_reference_pattern }
       let(:parsed) do
         m = pattern.match(url)
-        described_class.identifier(m) if m
+        described_class.new('', project: nil).identifier(m) if m
       end
 
       it 'can parse the reference' do
@@ -119,9 +119,11 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter do
   describe 'static properties' do
     specify do
       expect(described_class).to have_attributes(
-        object_sym: :design,
+        reference_type: :design,
         object_class: ::DesignManagement::Design
       )
+
+      expect(described_class.new('', project: nil).object_sym).to eq :design
     end
   end
 

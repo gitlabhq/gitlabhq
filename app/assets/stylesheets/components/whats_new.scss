@@ -2,6 +2,7 @@
   margin-top: $header-height;
   @include gl-shadow-none;
   overflow-y: hidden;
+  width: 500px;
 
   .gl-infinite-scroll-legend {
     @include gl-display-none;
@@ -54,18 +55,9 @@
 
 .whats-new-item-image {
   border-color: $gray-50;
+  height: 250px;
 }
 
 .whats-new-modal-backdrop {
   z-index: 699;
-}
-
-.whats-new-notification-count {
-  @include gl-bg-gray-900;
-  @include gl-font-sm;
-  @include gl-line-height-normal;
-  @include gl-text-white;
-  @include gl-vertical-align-top;
-  border-radius: 20px;
-  padding: 3px 10px;
 }

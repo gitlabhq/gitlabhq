@@ -105,4 +105,4 @@ class ProjectImportState < ApplicationRecord
   end
 end
 
-ProjectImportState.prepend_if_ee('EE::ProjectImportState')
+ProjectImportState.prepend_mod_with('ProjectImportState')

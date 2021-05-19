@@ -51,4 +51,4 @@ class Identity < ApplicationRecord
   end
 end
 
-Identity.prepend_if_ee('EE::Identity')
+Identity.prepend_mod_with('Identity')

@@ -53,9 +53,11 @@ module Gitlab
     end
 
     def distribution
-      value = ['- ce']
-      value << '- ee' if ee?
-      value.join("\n")
+      (ee? ? ['- ee'] : ['- ce', '- ee']).join("\n")
+    end
+
+    def tier
+      (ee? ? ['#- premium', '- ultimate'] : ['- free', '- premium', '- ultimate']).join("\n")
     end
 
     def milestone

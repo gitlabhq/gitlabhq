@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require_relative '../../../../rubocop/cop/performance/ar_count_each.rb'
+require_relative '../../../../rubocop/cop/performance/ar_count_each'
 
 RSpec.describe RuboCop::Cop::Performance::ARCountEach do
   subject(:cop) { described_class.new }

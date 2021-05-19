@@ -1,9 +1,9 @@
 = sprite_icon('book')
-After you've reviewed these contribution guidelines, you'll be all set to
+= _("After you've reviewed these contribution guidelines, you'll be all set to")
 
 - options = contribution_options(viewer.project)
 - if options.any?
   = succeed '.' do
     = Gitlab::Utils.to_exclusive_sentence(options).html_safe
 - else
-  contribute to this project.
+  = _("contribute to this project.")

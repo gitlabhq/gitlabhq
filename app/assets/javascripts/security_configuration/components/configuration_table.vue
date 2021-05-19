@@ -1,6 +1,7 @@
 <script>
 import { GlLink, GlTable, GlAlert } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
+import ManageViaMR from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_DAST,
@@ -11,8 +12,8 @@ import {
   REPORT_TYPE_API_FUZZING,
   REPORT_TYPE_LICENSE_COMPLIANCE,
 } from '~/vue_shared/security_reports/constants';
-import ManageSast from './manage_sast.vue';
-import { scanners } from './scanners_constants';
+
+import { scanners } from './constants';
 import Upgrade from './upgrade.vue';
 
 const borderClasses = 'gl-border-b-1! gl-border-b-solid! gl-border-gray-100!';
@@ -40,7 +41,7 @@ export default {
     },
     getComponentForItem(item) {
       const COMPONENTS = {
-        [REPORT_TYPE_SAST]: ManageSast,
+        [REPORT_TYPE_SAST]: ManageViaMR,
         [REPORT_TYPE_DAST]: Upgrade,
         [REPORT_TYPE_DAST_PROFILES]: Upgrade,
         [REPORT_TYPE_DEPENDENCY_SCANNING]: Upgrade,
@@ -49,7 +50,6 @@ export default {
         [REPORT_TYPE_API_FUZZING]: Upgrade,
         [REPORT_TYPE_LICENSE_COMPLIANCE]: Upgrade,
       };
-
       return COMPONENTS[item.type];
     },
   },
@@ -95,7 +95,12 @@ export default {
       </template>
 
       <template #cell(manage)="{ item }">
-        <component :is="getComponentForItem(item)" :data-testid="item.type" @error="onError" />
+        <component
+          :is="getComponentForItem(item)"
+          :feature="item"
+          :data-testid="item.type"
+          @error="onError"
+        />
       </template>
     </gl-table>
   </div>

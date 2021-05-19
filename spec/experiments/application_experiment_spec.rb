@@ -25,6 +25,12 @@ RSpec.describe ApplicationExperiment, :experiment do
     described_class.new('namespaced/stub')
   end
 
+  it "doesn't raise an exception without a defined control" do
+    # because we have a default behavior defined
+
+    expect { experiment('namespaced/stub') { } }.not_to raise_error
+  end
+
   describe "enabled" do
     before do
       allow(subject).to receive(:enabled?).and_call_original

@@ -15,7 +15,7 @@ RSpec.describe 'Merge request > User cherry-picks', :js do
 
   context 'Viewing a merged merge request' do
     before do
-      service = MergeRequests::MergeService.new(project, user, sha: merge_request.diff_head_sha)
+      service = MergeRequests::MergeService.new(project: project, current_user: user, params: { sha: merge_request.diff_head_sha })
 
       perform_enqueued_jobs do
         service.execute(merge_request)

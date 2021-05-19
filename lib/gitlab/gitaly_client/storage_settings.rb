@@ -34,7 +34,7 @@ module Gitlab
         return false if rugged_enabled?
 
         !temporarily_allowed?(ALLOW_KEY)
-      rescue
+      rescue StandardError
         false # Err on the side of caution, don't break gitlab for people
       end
 

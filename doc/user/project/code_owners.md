@@ -22,19 +22,19 @@ The GitLab Code Owners feature defines who owns specific
 files or paths in a repository, allowing other users to understand
 who is responsible for each file or path.
 
+As an alternative to using Code Owners for approvals, you can instead
+[configure rules](merge_requests/approvals/rules.md).
+
 ## Why is this useful?
 
 Code Owners allows for a version controlled, single source of
 truth file outlining the exact GitLab users or groups that
-own certain files or paths in a repository. Code Owners can be
-used in the merge request approval process which can streamline
-the process of finding the right reviewers and approvers for a given
-merge request.
-
-In larger organizations or popular open source projects, Code Owners
-can help you understand who to contact if you have
-a question that may not be related to code review or a merge request
-approval.
+own certain files or paths in a repository. In larger organizations
+or popular open source projects, Code Owners can help you understand 
+who to contact if you have a question about a specific portion of
+the codebase. Code Owners can also streamline the merge request approval
+process, identifying the most relevant reviewers and approvers for a
+given change.
 
 ## How to set up Code Owners
 
@@ -76,7 +76,7 @@ The user that would show for `README.md` would be `@user2`.
 After you've added Code Owners to a project, you can configure it to
 be used for merge request approvals:
 
-- As [merge request eligible approvers](merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers).
+- As [merge request eligible approvers](merge_requests/approvals/rules.md#code-owners-as-eligible-approvers).
 - As required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners). **(PREMIUM)**
 
 Developer or higher [permissions](../permissions.md) are required to
@@ -87,9 +87,9 @@ After it's set, Code Owners are displayed in merge request widgets:
 ![MR widget - Code Owners](img/code_owners_mr_widget_v12_4.png)
 
 While you can use the `CODEOWNERS` file in addition to Merge Request
-[Approval Rules](merge_requests/merge_request_approvals.md#approval-rules),
+[Approval Rules](merge_requests/approvals/rules.md),
 you can also use it as the sole driver of merge request approvals
-without using [Approval Rules](merge_requests/merge_request_approvals.md#approval-rules):
+without using [Approval Rules](merge_requests/approvals/rules.md):
 
 1. Create the file in one of the three locations specified above.
 1. Set the code owners as required approvers for
@@ -142,6 +142,10 @@ members of the Group X, given that Project A doesn't belong to the Subgroup Y:
 But you have the option to [invite](members/share_project_with_groups.md)
 the Subgroup Y to the Project A so that their members also become eligible
 Code Owners:
+
+NOTE:
+If you do not invite Subgroup Y to Project A, but make them Code Owners, their approval
+of the merge request becomes optional.
 
 ![Invite subgroup members to become eligible Code Owners](img/code_owners_invite_members_v13_4.png)
 

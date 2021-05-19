@@ -6,7 +6,7 @@ module Packages
 
       def execute
         package =
-          ::Packages::Maven::PackageFinder.new(params[:path], current_user, project: project)
+          ::Packages::Maven::PackageFinder.new(current_user, project, path: params[:path])
                                           .execute
 
         unless Namespace::PackageSetting.duplicates_allowed?(package)

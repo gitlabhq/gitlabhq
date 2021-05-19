@@ -41,6 +41,7 @@ RSpec.describe Packages::Tag, type: :model do
     let_it_be(:tag1) { create(:packages_tag, package: package, name: 'tag1') }
     let_it_be(:tag2) { create(:packages_tag, package: package, name: 'tag2') }
     let_it_be(:tag3) { create(:packages_tag, package: package, name: 'tag3') }
+
     let(:name) { 'tag1' }
 
     subject { described_class.with_name(name) }

@@ -21,13 +21,11 @@ export default {
   props: {
     exportCsvPath: {
       type: String,
-      required: false,
-      default: '',
+      required: true,
     },
     issuableCount: {
       type: Number,
-      required: false,
-      default: 0,
+      required: true,
     },
     modalId: {
       type: String,

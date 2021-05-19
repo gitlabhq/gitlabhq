@@ -84,7 +84,7 @@ RSpec.describe 'create_tokens' do
 
       it 'writes the secrets to secrets.yml' do
         expect(File).to receive(:write).with('config/secrets.yml', any_args) do |filename, contents, options|
-          new_secrets = YAML.load(contents)[Rails.env]
+          new_secrets = YAML.safe_load(contents)[Rails.env]
 
           expect(new_secrets['secret_key_base']).to eq(secrets.secret_key_base)
           expect(new_secrets['otp_key_base']).to eq(secrets.otp_key_base)
@@ -179,7 +179,7 @@ RSpec.describe 'create_tokens' do
 
         it 'uses the file secret' do
           expect(File).to receive(:write) do |filename, contents, options|
-            new_secrets = YAML.load(contents)[Rails.env]
+            new_secrets = YAML.safe_load(contents)[Rails.env]
 
             expect(new_secrets['secret_key_base']).to eq('file_key')
             expect(new_secrets['otp_key_base']).to eq('file_key')

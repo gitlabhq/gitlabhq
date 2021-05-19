@@ -28,7 +28,7 @@ tests access to the GitLab API.
    [assign them to a variable in the user interface](../variables/README.md#project-cicd-variables).
    Then assign that variable to the corresponding variable in your
    `.gitlab-ci.yml` file.
-   
+
 Then, commands in `script:` sections in your `.gitlab-ci.yml` file can access the API at `http://gitlab/api/v4`.
 
 For more information about why `gitlab` is used for the `Host`, see

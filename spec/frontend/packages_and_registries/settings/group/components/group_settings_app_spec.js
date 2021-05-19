@@ -3,6 +3,8 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import DuplicatesSettings from '~/packages_and_registries/settings/group/components/duplicates_settings.vue';
+import GenericSettings from '~/packages_and_registries/settings/group/components/generic_settings.vue';
 import component from '~/packages_and_registries/settings/group/components/group_settings_app.vue';
 import MavenSettings from '~/packages_and_registries/settings/group/components/maven_settings.vue';
 import {
@@ -63,6 +65,8 @@ describe('Group Settings App', () => {
       stubs: {
         GlSprintf,
         SettingsBlock,
+        MavenSettings,
+        GenericSettings,
       },
       mocks: {
         $toast: {
@@ -78,14 +82,17 @@ describe('Group Settings App', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
-  const findSettingsBlock = () => wrapper.find(SettingsBlock);
+  const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findDescription = () => wrapper.find('[data-testid="description"');
-  const findLink = () => wrapper.find(GlLink);
-  const findMavenSettings = () => wrapper.find(MavenSettings);
-  const findAlert = () => wrapper.find(GlAlert);
+  const findLink = () => wrapper.findComponent(GlLink);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findMavenSettings = () => wrapper.findComponent(MavenSettings);
+  const findMavenDuplicatedSettings = () => findMavenSettings().findComponent(DuplicatesSettings);
+  const findGenericSettings = () => wrapper.findComponent(GenericSettings);
+  const findGenericDuplicatedSettings = () =>
+    findGenericSettings().findComponent(DuplicatesSettings);
 
   const waitForApolloQueryAndRender = async () => {
     await waitForPromises();
@@ -93,7 +100,7 @@ describe('Group Settings App', () => {
   };
 
   const emitSettingsUpdate = (override) => {
-    findMavenSettings().vm.$emit('update', {
+    findMavenDuplicatedSettings().vm.$emit('update', {
       mavenDuplicateExceptionRegex: ')',
       ...override,
     });
@@ -152,7 +159,7 @@ describe('Group Settings App', () => {
     it('assigns duplication allowness and exception props', async () => {
       mountComponent();
 
-      expect(findMavenSettings().props('loading')).toBe(true);
+      expect(findMavenDuplicatedSettings().props('loading')).toBe(true);
 
       await waitForApolloQueryAndRender();
 
@@ -161,10 +168,10 @@ describe('Group Settings App', () => {
         mavenDuplicateExceptionRegex,
       } = groupPackageSettingsMock.data.group.packageSettings;
 
-      expect(findMavenSettings().props()).toMatchObject({
-        mavenDuplicatesAllowed,
-        mavenDuplicateExceptionRegex,
-        mavenDuplicateExceptionRegexError: '',
+      expect(findMavenDuplicatedSettings().props()).toMatchObject({
+        duplicatesAllowed: mavenDuplicatesAllowed,
+        duplicateExceptionRegex: mavenDuplicateExceptionRegex,
+        duplicateExceptionRegexError: '',
         loading: false,
       });
     });
@@ -179,6 +186,49 @@ describe('Group Settings App', () => {
 
       expect(mutationResolver).toHaveBeenCalledWith({
         input: { mavenDuplicateExceptionRegex: ')', namespacePath: 'foo_group_path' },
+      });
+    });
+  });
+
+  describe('generic settings', () => {
+    it('exists', () => {
+      mountComponent();
+
+      expect(findGenericSettings().exists()).toBe(true);
+    });
+
+    it('assigns duplication allowness and exception props', async () => {
+      mountComponent();
+
+      expect(findGenericDuplicatedSettings().props('loading')).toBe(true);
+
+      await waitForApolloQueryAndRender();
+
+      const {
+        genericDuplicatesAllowed,
+        genericDuplicateExceptionRegex,
+      } = groupPackageSettingsMock.data.group.packageSettings;
+
+      expect(findGenericDuplicatedSettings().props()).toMatchObject({
+        duplicatesAllowed: genericDuplicatesAllowed,
+        duplicateExceptionRegex: genericDuplicateExceptionRegex,
+        duplicateExceptionRegexError: '',
+        loading: false,
+      });
+    });
+
+    it('on update event calls the mutation', async () => {
+      const mutationResolver = jest.fn().mockResolvedValue(groupPackageSettingsMutationMock());
+      mountComponent({ mutationResolver });
+
+      await waitForApolloQueryAndRender();
+
+      findMavenDuplicatedSettings().vm.$emit('update', {
+        genericDuplicateExceptionRegex: ')',
+      });
+
+      expect(mutationResolver).toHaveBeenCalledWith({
+        input: { genericDuplicateExceptionRegex: ')', namespacePath: 'foo_group_path' },
       });
     });
   });
@@ -200,26 +250,26 @@ describe('Group Settings App', () => {
       });
 
       it('has an optimistic response', async () => {
-        const mavenDuplicateExceptionRegex = 'latest[master]something';
+        const mavenDuplicateExceptionRegex = 'latest[main]something';
         mountComponent();
 
         await waitForApolloQueryAndRender();
 
-        expect(findMavenSettings().props('mavenDuplicateExceptionRegex')).toBe('');
+        expect(findMavenDuplicatedSettings().props('duplicateExceptionRegex')).toBe('');
 
         emitSettingsUpdate({ mavenDuplicateExceptionRegex });
 
         // wait for apollo to update the model with the optimistic response
         await wrapper.vm.$nextTick();
 
-        expect(findMavenSettings().props('mavenDuplicateExceptionRegex')).toBe(
+        expect(findMavenDuplicatedSettings().props('duplicateExceptionRegex')).toBe(
           mavenDuplicateExceptionRegex,
         );
 
         // wait for the call to resolve
         await waitForPromises();
 
-        expect(findMavenSettings().props('mavenDuplicateExceptionRegex')).toBe(
+        expect(findMavenDuplicatedSettings().props('duplicateExceptionRegex')).toBe(
           mavenDuplicateExceptionRegex,
         );
       });
@@ -245,7 +295,7 @@ describe('Group Settings App', () => {
         await waitForApolloQueryAndRender();
 
         // errors are bound to the component
-        expect(findMavenSettings().props('mavenDuplicateExceptionRegexError')).toBe(
+        expect(findMavenDuplicatedSettings().props('duplicateExceptionRegexError')).toBe(
           groupPackageSettingsMutationErrorMock.errors[0].extensions.problems[0].message,
         );
 
@@ -258,7 +308,7 @@ describe('Group Settings App', () => {
         await wrapper.vm.$nextTick();
 
         // errors are reset on mutation call
-        expect(findMavenSettings().props('mavenDuplicateExceptionRegexError')).toBe('');
+        expect(findMavenDuplicatedSettings().props('duplicateExceptionRegexError')).toBe('');
       });
 
       it.each`

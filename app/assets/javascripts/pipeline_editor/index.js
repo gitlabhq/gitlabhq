@@ -6,6 +6,7 @@ import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
 import { CODE_SNIPPET_SOURCE_SETTINGS } from './components/code_snippet_alert/constants';
 import getCommitSha from './graphql/queries/client/commit_sha.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
+import getPipelineEtag from './graphql/queries/client/pipeline_etag.graphql';
 import { resolvers } from './graphql/resolvers';
 import typeDefs from './graphql/typedefs.graphql';
 import PipelineEditorApp from './pipeline_editor_app.vue';
@@ -26,15 +27,23 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     // Add to apollo cache as it can be updated by future queries
     commitSha,
     initialBranchName,
+    pipelineEtag,
     // Add to provide/inject API for static values
     ciConfigPath,
+    ciExamplesHelpPagePath,
+    ciHelpPagePath,
     defaultBranch,
     emptyStateIllustrationPath,
+    helpPaths,
     lintHelpPagePath,
+    needsHelpPagePath,
     newMergeRequestPath,
+    pipelinePagePath,
     projectFullPath,
     projectPath,
     projectNamespace,
+    runnerHelpPagePath,
+    totalBranches,
     ymlHelpPagePath,
   } = el?.dataset;
 
@@ -48,7 +57,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
   Vue.use(VueApollo);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers, { typeDefs }),
+    defaultClient: createDefaultClient(resolvers, { typeDefs, useGet: true }),
   });
   const { cache } = apolloProvider.clients.defaultClient;
 
@@ -66,20 +75,34 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     },
   });
 
+  cache.writeQuery({
+    query: getPipelineEtag,
+    data: {
+      pipelineEtag,
+    },
+  });
+
   return new Vue({
     el,
     apolloProvider,
     provide: {
       ciConfigPath,
+      ciExamplesHelpPagePath,
+      ciHelpPagePath,
+      configurationPaths,
       defaultBranch,
       emptyStateIllustrationPath,
+      helpPaths,
       lintHelpPagePath,
+      needsHelpPagePath,
       newMergeRequestPath,
+      pipelinePagePath,
       projectFullPath,
       projectPath,
       projectNamespace,
+      runnerHelpPagePath,
+      totalBranches: parseInt(totalBranches, 10),
       ymlHelpPagePath,
-      configurationPaths,
     },
     render(h) {
       return h(PipelineEditorApp);

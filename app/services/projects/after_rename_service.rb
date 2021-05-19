@@ -49,10 +49,8 @@ module Projects
     def first_ensure_no_registry_tags_are_present
       return unless project.has_container_registry_tags?
 
-      raise RenameFailedError.new(
-        "Project #{full_path_before} cannot be renamed because images are " \
+      raise RenameFailedError, "Project #{full_path_before} cannot be renamed because images are " \
           "present in its container registry"
-      )
     end
 
     def expire_caches_before_rename
@@ -144,9 +142,9 @@ module Projects
 
       Gitlab::AppLogger.error(error)
 
-      raise RenameFailedError.new(error)
+      raise RenameFailedError, error
     end
   end
 end
 
-Projects::AfterRenameService.prepend_if_ee('EE::Projects::AfterRenameService')
+Projects::AfterRenameService.prepend_mod_with('Projects::AfterRenameService')

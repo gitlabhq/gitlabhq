@@ -23,7 +23,7 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 1. Generate PGBOUNCER_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 pgbouncer`
 
-1. Generate SQL_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 gitlab`. We'll also need to enter the plaintext SQL_USER_PASSWORD later
+1. Generate SQL_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 gitlab`. Enter the plaintext SQL_USER_PASSWORD later.
 
 1. On your database node, ensure the following is set in your `/etc/gitlab/gitlab.rb`
 
@@ -37,7 +37,7 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 1. Run `gitlab-ctl reconfigure`
 
    NOTE:
-   If the database was already running, it will need to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
+   If the database was already running, it needs to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
 
 1. On the node you are running PgBouncer on, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
@@ -68,7 +68,7 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 ## Backups
 
-Do not backup or restore GitLab through a PgBouncer connection: this will cause a GitLab outage.
+Do not backup or restore GitLab through a PgBouncer connection: it causes a GitLab outage.
 
 [Read more about this and how to reconfigure backups](../../raketasks/backup_restore.md#backup-and-restore-for-installations-using-pgbouncer).
 

@@ -131,8 +131,8 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       expect(page).to have_selector(:link_or_button, 'Fork')
       expect(page).to have_selector(:link_or_button, 'Cancel')
       expect(page).to have_content(
-        "You're not allowed to edit files in this project directly. "\
-        "Please fork this project, make your changes there, and submit a merge request."
+        "You can’t edit files directly in this project. "\
+        "Fork this project and submit a merge request with your changes."
       )
     end
 

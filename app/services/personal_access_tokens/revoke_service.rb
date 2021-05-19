@@ -41,4 +41,4 @@ module PersonalAccessTokens
   end
 end
 
-PersonalAccessTokens::RevokeService.prepend_if_ee('EE::PersonalAccessTokens::RevokeService')
+PersonalAccessTokens::RevokeService.prepend_mod_with('PersonalAccessTokens::RevokeService')

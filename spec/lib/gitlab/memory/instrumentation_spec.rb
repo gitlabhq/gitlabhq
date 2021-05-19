@@ -69,10 +69,12 @@ RSpec.describe Gitlab::Memory::Instrumentation do
       end
 
       it 'a hash is returned' do
-        is_expected.to include(
+        result = subject
+        expect(result).to include(
           mem_objects: be > 1000,
           mem_mallocs: be > 1000,
-          mem_bytes: be > 100_000 # 100 items * 100 bytes each
+          mem_bytes: be > 100_000, # 100 items * 100 bytes each
+          mem_total_bytes: eq(result[:mem_bytes] + 40 * result[:mem_objects])
         )
       end
     end

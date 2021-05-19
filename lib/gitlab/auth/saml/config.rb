@@ -30,4 +30,4 @@ module Gitlab
   end
 end
 
-Gitlab::Auth::Saml::Config.prepend_if_ee('::EE::Gitlab::Auth::Saml::Config')
+Gitlab::Auth::Saml::Config.prepend_mod_with('Gitlab::Auth::Saml::Config')

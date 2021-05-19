@@ -13,4 +13,4 @@ module Banzai
   end
 end
 
-Banzai::ReferenceParser::EpicParser.prepend_if_ee('::EE::Banzai::ReferenceParser::EpicParser')
+Banzai::ReferenceParser::EpicParser.prepend_mod_with('Banzai::ReferenceParser::EpicParser')

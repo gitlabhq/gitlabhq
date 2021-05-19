@@ -1,0 +1,5 @@
+---
+title: Add Managed Prometheus deprecation warning
+merge_request: 60560
+author:
+type: deprecated

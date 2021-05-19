@@ -2,19 +2,19 @@
 
 module RuboCop
   module Cop
-    # Cop that blacklists the injecting of EE specific modules before any lines which are not already injecting another module.
+    # Cop that blacklists the injecting of extension specific modules before any lines which are not already injecting another module.
     # It allows multiple module injections as long as they're all at the end.
     class InjectEnterpriseEditionModule < RuboCop::Cop::Cop
-      INVALID_LINE = 'Injecting EE modules must be done on the last line of this file' \
+      INVALID_LINE = 'Injecting extension modules must be done on the last line of this file' \
           ', outside of any class or module definitions'
 
       DISALLOWED_METHOD =
-        'EE modules must be injected using `include_if_ee`, `extend_if_ee`, or `prepend_if_ee`'
+        'EE modules must be injected using `include_mod_with`, `extend_mod_with`, or `prepend_mod_with`'
 
-      INVALID_ARGUMENT = 'EE modules to inject must be specified as a String'
+      INVALID_ARGUMENT = 'extension modules to inject must be specified as a String'
 
       CHECK_LINE_METHODS =
-        Set.new(%i[include_if_ee extend_if_ee prepend_if_ee]).freeze
+        Set.new(%i[include_mod_with extend_mod_with prepend_mod_with]).freeze
 
       DISALLOW_METHODS = Set.new(%i[include extend prepend]).freeze
 
@@ -67,10 +67,10 @@ module RuboCop
       def check_method?(node)
         name = node.children[1]
 
-        if CHECK_LINE_METHODS.include?(name) || DISALLOW_METHODS.include?(name)
+        if DISALLOW_METHODS.include?(name)
           ee_const?(node.children[2])
         else
-          false
+          CHECK_LINE_METHODS.include?(name)
         end
       end
 

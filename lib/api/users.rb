@@ -996,6 +996,30 @@ module API
         present paginate(current_user.emails), with: Entities::Email
       end
 
+      desc "Update a user's credit_card_validation" do
+        success Entities::UserCreditCardValidations
+      end
+      params do
+        requires :user_id, type: String, desc: 'The ID or username of the user'
+        requires :credit_card_validated_at, type: DateTime, desc: 'The time when the user\'s credit card was validated'
+      end
+      put ":user_id/credit_card_validation", feature_category: :users do
+        authenticated_as_admin!
+
+        user = find_user(params[:user_id])
+        not_found!('User') unless user
+
+        attrs = declared_params(include_missing: false)
+
+        service = ::Users::UpsertCreditCardValidationService.new(attrs).execute
+
+        if service.success?
+          present user.credit_card_validation, with: Entities::UserCreditCardValidations
+        else
+          render_api_error!('400 Bad Request', 400)
+        end
+      end
+
       desc "Update the current user's preferences" do
         success Entities::UserPreferences
         detail 'This feature was introduced in GitLab 13.10.'

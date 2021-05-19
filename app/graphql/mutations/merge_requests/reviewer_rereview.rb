@@ -15,7 +15,7 @@ module Mutations
       def resolve(project_path:, iid:, user:)
         merge_request = authorized_find!(project_path: project_path, iid: iid)
 
-        result = ::MergeRequests::RequestReviewService.new(merge_request.project, current_user).execute(merge_request, user)
+        result = ::MergeRequests::RequestReviewService.new(project: merge_request.project, current_user: current_user).execute(merge_request, user)
 
         {
           merge_request: merge_request,

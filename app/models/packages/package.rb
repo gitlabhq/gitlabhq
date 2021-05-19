@@ -6,6 +6,7 @@ class Packages::Package < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
 
   DISPLAYABLE_STATUSES = [:default, :error].freeze
+  INSTALLABLE_STATUSES = [:default].freeze
 
   belongs_to :project
   belongs_to :creator, class_name: 'User'
@@ -47,8 +48,10 @@ class Packages::Package < ApplicationRecord
   validate :package_already_taken, if: :npm?
   validates :name, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
+  validates :name, format: { with: Gitlab::Regex.helm_package_regex }, if: :helm?
   validates :name, format: { with: Gitlab::Regex.npm_package_name_regex }, if: :npm?
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
+  validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
   validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :debian_package?
   validates :name, inclusion: { in: %w[incoming] }, if: :debian_incoming?
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
@@ -56,7 +59,8 @@ class Packages::Package < ApplicationRecord
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
   validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :golang?
-  validates :version, format: { with: Gitlab::Regex.semver_regex }, if: -> { composer_tag_version? || npm? }
+  validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :helm?
+  validates :version, format: { with: Gitlab::Regex.semver_regex }, if: -> { composer_tag_version? || npm? || terraform_module? }
 
   validates :version,
     presence: true,
@@ -70,10 +74,11 @@ class Packages::Package < ApplicationRecord
 
   enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5,
                        composer: 6, generic: 7, golang: 8, debian: 9,
-                       rubygems: 10 }
+                       rubygems: 10, helm: 11, terraform_module: 12 }
 
   enum status: { default: 0, hidden: 1, processing: 2, error: 3 }
 
+  scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
   scope :with_normalized_pypi_name, ->(name) { where("LOWER(regexp_replace(name, '[-_.]+', '-', 'g')) = ?", name.downcase) }
@@ -81,8 +86,10 @@ class Packages::Package < ApplicationRecord
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
+  scope :without_package_type, ->(package_type) { where.not(package_type: package_type) }
   scope :with_status, ->(status) { where(status: status) }
   scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
+  scope :installable, -> { with_status(INSTALLABLE_STATUSES) }
   scope :including_build_info, -> { includes(pipelines: :user) }
   scope :including_project_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }
@@ -110,25 +117,20 @@ class Packages::Package < ApplicationRecord
   scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
   scope :has_version, -> { where.not(version: nil) }
-  scope :processed, -> do
-    where.not(package_type: :nuget).or(
-      where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME)
-    )
-  end
   scope :preload_files, -> { preload(:package_files) }
   scope :last_of_each_version, -> { where(id: all.select('MAX(id) AS id').group(:version)) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
   scope :select_distinct_name, -> { select(:name).distinct }
 
   # Sorting
-  scope :order_created, -> { reorder('created_at ASC') }
-  scope :order_created_desc, -> { reorder('created_at DESC') }
-  scope :order_name, -> { reorder('name ASC') }
-  scope :order_name_desc, -> { reorder('name DESC') }
-  scope :order_version, -> { reorder('version ASC') }
-  scope :order_version_desc, -> { reorder('version DESC') }
-  scope :order_type, -> { reorder('package_type ASC') }
-  scope :order_type_desc, -> { reorder('package_type DESC') }
+  scope :order_created, -> { reorder(created_at: :asc) }
+  scope :order_created_desc, -> { reorder(created_at: :desc) }
+  scope :order_name, -> { reorder(name: :asc) }
+  scope :order_name_desc, -> { reorder(name: :desc) }
+  scope :order_version, -> { reorder(version: :asc) }
+  scope :order_version_desc, -> { reorder(version: :desc) }
+  scope :order_type, -> { reorder(package_type: :asc) }
+  scope :order_type_desc, -> { reorder(package_type: :desc) }
   scope :order_project_name, -> { joins(:project).reorder('projects.name ASC') }
   scope :order_project_name_desc, -> { joins(:project).reorder('projects.name DESC') }
   scope :order_project_path, -> { joins(:project).reorder('projects.path ASC, id ASC') }
@@ -136,14 +138,6 @@ class Packages::Package < ApplicationRecord
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
 
   after_commit :update_composer_cache, on: :destroy, if: -> { composer? }
-
-  def self.for_projects(projects)
-    unless Feature.enabled?(:maven_packages_group_level_improvements, default_enabled: :yaml)
-      return none unless projects.any?
-    end
-
-    where(project_id: projects)
-  end
 
   def self.only_maven_packages_with_path(path, use_cte: false)
     if use_cte && Feature.enabled?(:maven_metadata_by_path_with_optimization_fence, default_enabled: :yaml)

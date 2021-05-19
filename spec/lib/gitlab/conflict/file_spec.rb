@@ -298,12 +298,12 @@ RSpec.describe Gitlab::Conflict::File do
       end
 
       it 'creates context sections of the correct length' do
-        expect(sections[0][:lines].reject(&:type).length).to eq(3)
-        expect(sections[2][:lines].reject(&:type).length).to eq(3)
-        expect(sections[3][:lines].reject(&:type).length).to eq(3)
-        expect(sections[5][:lines].reject(&:type).length).to eq(3)
-        expect(sections[6][:lines].reject(&:type).length).to eq(3)
-        expect(sections[8][:lines].reject(&:type).length).to eq(1)
+        expect(sections[0][:lines].count { |line| line.type.nil? }).to eq(3)
+        expect(sections[2][:lines].count { |line| line.type.nil? }).to eq(3)
+        expect(sections[3][:lines].count { |line| line.type.nil? }).to eq(3)
+        expect(sections[5][:lines].count { |line| line.type.nil? }).to eq(3)
+        expect(sections[6][:lines].count { |line| line.type.nil? }).to eq(3)
+        expect(sections[8][:lines].count { |line| line.type.nil? }).to eq(1)
       end
     end
   end

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::UpdateStatisticsService do
+  using RSpec::Parameterized::TableSyntax
+
   let(:service) { described_class.new(project, nil, statistics: statistics)}
   let(:statistics) { %w(repository_size) }
 
@@ -18,12 +20,46 @@ RSpec.describe Projects::UpdateStatisticsService do
     end
 
     context 'with an existing project' do
-      let(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
 
-      it 'refreshes the project statistics' do
-        expect_any_instance_of(ProjectStatistics).to receive(:refresh!)
-          .with(only: statistics.map(&:to_sym))
-          .and_call_original
+      where(:statistics, :method_caches) do
+        []                                                   | %i(size commit_count)
+        ['repository_size']                                  | [:size]
+        [:repository_size]                                   | [:size]
+        [:lfs_objects_size]                                  | nil
+        [:commit_count]                                      | [:commit_count] # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+        [:repository_size, :commit_count]                    | %i(size commit_count)
+        [:repository_size, :commit_count, :lfs_objects_size] | %i(size commit_count)
+      end
+
+      with_them do
+        it 'refreshes the project statistics' do
+          expect(project.statistics).to receive(:refresh!).with(only: statistics.map(&:to_sym)).and_call_original
+
+          service.execute
+        end
+
+        it 'invalidates the method caches after a refresh' do
+          expect(project.wiki.repository).not_to receive(:expire_method_caches)
+
+          if method_caches.present?
+            expect(project.repository).to receive(:expire_method_caches).with(method_caches).and_call_original
+          else
+            expect(project.repository).not_to receive(:expire_method_caches)
+          end
+
+          service.execute
+        end
+      end
+    end
+
+    context 'with an existing project with a Wiki' do
+      let(:project) { create(:project, :repository, :wiki_enabled) }
+      let(:statistics) { [:wiki_size] }
+
+      it 'invalidates and refreshes Wiki size' do
+        expect(project.statistics).to receive(:refresh!).with(only: statistics).and_call_original
+        expect(project.wiki.repository).to receive(:expire_method_caches).with(%i(size)).and_call_original
 
         service.execute
       end

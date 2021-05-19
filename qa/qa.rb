@@ -8,6 +8,8 @@ require_relative '../lib/gitlab'
 require_relative '../lib/gitlab/utils'
 require_relative '../config/initializers/0_inject_enterprise_edition_module'
 
+require 'chemlab'
+
 module QA
   ##
   # Helper classes to represent frequently used sequences of actions
@@ -65,9 +67,11 @@ module QA
     autoload :ApiFabricator, 'qa/resource/api_fabricator'
     autoload :Base, 'qa/resource/base'
 
+    autoload :GroupBase, 'qa/resource/group_base'
     autoload :Sandbox, 'qa/resource/sandbox'
     autoload :Group, 'qa/resource/group'
     autoload :Issue, 'qa/resource/issue'
+    autoload :ProjectIssueNote, 'qa/resource/project_issue_note'
     autoload :Project, 'qa/resource/project'
     autoload :Label, 'qa/resource/label'
     autoload :MergeRequest, 'qa/resource/merge_request'
@@ -224,6 +228,7 @@ module QA
       autoload :Show, 'qa/page/group/show'
       autoload :Menu, 'qa/page/group/menu'
       autoload :Members, 'qa/page/group/members'
+      autoload :BulkImport, 'qa/page/group/bulk_import'
 
       module Milestone
         autoload :Index, 'qa/page/group/milestone/index'
@@ -260,11 +265,14 @@ module QA
 
     module Project
       autoload :New, 'qa/page/project/new'
-      autoload :NewExperiment, 'qa/page/project/new_experiment'
       autoload :Show, 'qa/page/project/show'
       autoload :Activity, 'qa/page/project/activity'
       autoload :Menu, 'qa/page/project/menu'
       autoload :Members, 'qa/page/project/members'
+
+      module Artifact
+        autoload :Show, 'qa/page/project/artifact/show'
+      end
 
       module Branches
         autoload :Show, 'qa/page/project/branches/show'
@@ -412,12 +420,17 @@ module QA
       end
     end
 
+    module User
+      autoload :Show, 'qa/page/user/show'
+    end
+
     module Issuable
       autoload :New, 'qa/page/issuable/new'
     end
 
     module Alert
       autoload :AutoDevopsAlert, 'qa/page/alert/auto_devops_alert'
+      autoload :FreeTrial, 'qa/page/alert/free_trial'
     end
 
     module Layout
@@ -505,6 +518,7 @@ module QA
       autoload :WikiPageForm, 'qa/page/component/wiki_page_form'
       autoload :AccessTokens, 'qa/page/component/access_tokens'
       autoload :CommitModal, 'qa/page/component/commit_modal'
+      autoload :VisibilitySetting, 'qa/page/component/visibility_setting'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'
@@ -526,6 +540,11 @@ module QA
       module Project
         autoload :Templates, 'qa/page/component/project/templates'
       end
+    end
+
+    module Trials
+      autoload :New, 'qa/page/trials/new'
+      autoload :Select, 'qa/page/trials/select'
     end
 
     module Modal

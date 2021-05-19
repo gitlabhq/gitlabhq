@@ -6,8 +6,8 @@
     "description": { "type": ["string", "null"] },
     "active": {"type": "boolean" },
     "version": { "type": "string" },
-    "created_at": { "type": "date" },
-    "updated_at": { "type": "date" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
     "scopes": { "type": "array", "items": { "$ref": "feature_flag_scope.json" } },
     "strategies": { "type": "array", "items": { "$ref": "operations/strategy.json" } }
   },

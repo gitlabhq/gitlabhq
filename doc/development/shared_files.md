@@ -6,34 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Shared files
 
-Historically, GitLab has been storing shared files in many different
-directories: `public/uploads`, `builds`, `tmp/repositories`, `tmp/rebase` (EE),
-etc. Having so many shared directories makes it difficult to deploy GitLab on
-shared storage (e.g. NFS). Working towards GitLab 9.0 we are consolidating
-these different directories under the `shared` directory.
+Historically, GitLab supported storing files that could be accessed from multiple application
+servers in `shared/`, using a shared storage solution like NFS. Although this is still an option for
+some GitLab installations, it must not be the only file storage option for a given feature. This is
+because [cloud-native GitLab installations do not support it](architecture.md#adapting-existing-and-introducing-new-components).
 
-This means that if GitLab begins storing puppies in some future version
-then we should put them in `shared/puppies`. Temporary puppy files should be
-stored in `shared/tmp`.
-
-In the GitLab application code you can get the full path to the `shared`
-directory with `Gitlab.config.shared.path`.
-
-## What is not a 'shared file'
-
-Files that belong to only one process, or on only one server, should not go in
-`shared`. Examples include PID files and sockets.
-
-## Temporary files and shared storage
-
-Sometimes you create a temporary file on disk with the intention of it becoming
-'official'. For example you might be first streaming an upload from a user to
-disk in a temporary file so you can perform some checks on it. When the checks
-pass, you make the file official. In scenarios like this please follow these
-rules:
-
-- Store the temporary file under `shared/tmp`, i.e. on the same file system you
-  want the official file to be on.
-- Use move/rename operations when operating on the file instead of copy
-  operations where possible, because renaming a file is much faster than
-  copying it.
+Our [uploads documentation](uploads.md) describes how to handle file storage in
+such a way that it supports both options: direct disk access and object storage.

@@ -55,7 +55,7 @@ RSpec.describe Discussions::CaptureDiffNotePositionsService do
 
     context 'and position of the discussion changed on target branch head' do
       it 'diff positions are created for the first notes of the discussions' do
-        MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
+        MergeRequests::MergeToRefService.new(project: project, current_user: merge_request.author).execute(merge_request)
         service.execute
 
         verify_diff_note_position!(first_discussion_note, new_line: first_new_line)

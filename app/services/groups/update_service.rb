@@ -147,4 +147,4 @@ module Groups
   end
 end
 
-Groups::UpdateService.prepend_if_ee('EE::Groups::UpdateService')
+Groups::UpdateService.prepend_mod_with('Groups::UpdateService')

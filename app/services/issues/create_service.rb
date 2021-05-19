@@ -8,7 +8,7 @@ module Issues
       @request = params.delete(:request)
       @spam_params = Spam::SpamActionService.filter_spam_params!(params, @request)
 
-      @issue = BuildService.new(project, current_user, params).execute
+      @issue = BuildService.new(project: project, current_user: current_user, params: params).execute
 
       filter_resolve_discussion_params
 
@@ -75,4 +75,4 @@ module Issues
   end
 end
 
-Issues::CreateService.prepend_ee_mod
+Issues::CreateService.prepend_mod

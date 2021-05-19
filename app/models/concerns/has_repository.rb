@@ -17,7 +17,7 @@ module HasRepository
 
   def valid_repo?
     repository.exists?
-  rescue
+  rescue StandardError
     errors.add(:base, _('Invalid repository path'))
     false
   end
@@ -25,7 +25,7 @@ module HasRepository
   def repo_exists?
     strong_memoize(:repo_exists) do
       repository.exists?
-    rescue
+    rescue StandardError
       false
     end
   end

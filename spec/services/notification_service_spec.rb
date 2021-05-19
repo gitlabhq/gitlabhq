@@ -412,7 +412,7 @@ RSpec.describe NotificationService, :mailer do
           it_should_not_email!
         end
 
-        context 'do exist' do
+        context 'do exist and note not confidential' do
           let!(:issue_email_participant) { issue.issue_email_participants.create!(email: 'service.desk@example.com') }
 
           before do
@@ -421,6 +421,18 @@ RSpec.describe NotificationService, :mailer do
           end
 
           it_should_email!
+        end
+
+        context 'do exist and note is confidential' do
+          let(:note) { create(:note, noteable: issue, project: project, confidential: true) }
+          let!(:issue_email_participant) { issue.issue_email_participants.create!(email: 'service.desk@example.com') }
+
+          before do
+            issue.update!(external_author: 'service.desk@example.com')
+            project.update!(service_desk_enabled: true)
+          end
+
+          it_should_not_email!
         end
       end
 

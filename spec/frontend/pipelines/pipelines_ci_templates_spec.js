@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import PipelinesCiTemplate from '~/pipelines/components/pipelines_list/pipelines_ci_templates.vue';
 
-const addCiYmlPath = "/-/new/master?commit_message='Add%20.gitlab-ci.yml'";
+const addCiYmlPath = "/-/new/main?commit_message='Add%20.gitlab-ci.yml'";
 const suggestedCiTemplates = [
   { name: 'Android', logo: '/assets/illustrations/logos/android.svg' },
   { name: 'Bash', logo: '/assets/illustrations/logos/bash.svg' },

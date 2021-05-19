@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PipelinesEmailService < Service
+class PipelinesEmailService < Integration
   include NotificationBranchSelection
 
   prop_accessor :recipients, :branches_to_be_notified

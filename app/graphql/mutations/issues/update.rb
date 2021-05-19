@@ -31,7 +31,7 @@ module Mutations
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project
 
-        ::Issues::UpdateService.new(project, current_user, args).execute(issue)
+        ::Issues::UpdateService.new(project: project, current_user: current_user, params: args).execute(issue)
 
         {
           issue: issue,
@@ -42,4 +42,4 @@ module Mutations
   end
 end
 
-Mutations::Issues::Update.prepend_if_ee('::EE::Mutations::Issues::Update')
+Mutations::Issues::Update.prepend_mod_with('Mutations::Issues::Update')

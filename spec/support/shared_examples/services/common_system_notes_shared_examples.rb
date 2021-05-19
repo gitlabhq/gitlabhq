@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'system note creation' do |update_params, note_text|
-  subject { described_class.new(project, user).execute(issuable, old_labels: []) }
+  subject { described_class.new(project: project, current_user: user).execute(issuable, old_labels: []) }
 
   before do
     issuable.assign_attributes(update_params)
@@ -18,7 +18,7 @@ RSpec.shared_examples 'system note creation' do |update_params, note_text|
 end
 
 RSpec.shared_examples 'draft notes creation' do |action|
-  subject { described_class.new(project, user).execute(issuable, old_labels: []) }
+  subject { described_class.new(project: project, current_user: user).execute(issuable, old_labels: []) }
 
   it 'creates Draft toggle and title change notes' do
     expect { subject }.to change { Note.count }.from(0).to(2)

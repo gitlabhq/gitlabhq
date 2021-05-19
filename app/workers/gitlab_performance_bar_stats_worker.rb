@@ -3,6 +3,8 @@
 class GitlabPerformanceBarStatsWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   LEASE_KEY = 'gitlab:performance_bar_stats'
   LEASE_TIMEOUT = 600
   WORKER_DELAY = 120
@@ -10,6 +12,7 @@ class GitlabPerformanceBarStatsWorker
   STATS_KEY_EXPIRE = 30.minutes.to_i
 
   feature_category :metrics
+  tags :exclude_from_kubernetes
   idempotent!
 
   def perform(lease_uuid)

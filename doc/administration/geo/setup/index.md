@@ -25,7 +25,7 @@ If you installed GitLab using the Omnibus packages (highly recommended):
 1. [Configure fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md). This step is required and needs to be done on **both** the **primary** and **secondary** nodes.
 1. [Configure GitLab](../replication/configuration.md) to set the **primary** and **secondary** nodes.
 1. Optional: [Configure a secondary LDAP server](../../auth/ldap/index.md) for the **secondary** node. See [notes on LDAP](../index.md#ldap).
-1. [Follow the "Using a Geo Server" guide](../replication/using_a_geo_server.md).
+1. Follow the [Using a Geo Site](../replication/usage.md) guide.
 
 ## Post-installation documentation
 

@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe "User deletes branch", :js do
   let_it_be(:user) { create(:user) }
+
   let(:project) { create(:project, :repository) }
 
   before do

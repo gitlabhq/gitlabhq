@@ -14,7 +14,7 @@ module Gitlab
 
         snowplow.event(category, action, label: label, property: property, value: value, context: contexts)
         product_analytics.event(category, action, label: label, property: property, value: value, context: contexts)
-      rescue => error
+      rescue StandardError => error
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: action)
       end
 

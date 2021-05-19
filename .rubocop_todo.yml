@@ -266,19 +266,6 @@ Performance/CollectionLiteralInLoop:
 Performance/ConstantRegexp:
   Enabled: false
 
-# Offense count: 18
-# Cop supports --auto-correct.
-Performance/Count:
-  Exclude:
-    - 'app/helpers/groups_helper.rb'
-    - 'app/services/merge_requests/add_context_service.rb'
-    - 'ee/lib/gitlab/graphql/aggregations/epics/epic_node.rb'
-    - 'lib/gitlab/sidekiq_status.rb'
-    - 'spec/lib/gitlab/conflict/file_spec.rb'
-    - 'spec/lib/gitlab/git/tree_spec.rb'
-    - 'spec/models/ci/build_spec.rb'
-    - 'spec/support_specs/helpers/active_record/query_recorder_spec.rb'
-
 # Offense count: 14
 # Cop supports --auto-correct.
 # Configuration parameters: SafeMultiline.
@@ -354,8 +341,6 @@ Performance/Sum:
     - 'ee/spec/lib/gitlab/elastic/bulk_indexer_spec.rb'
     - 'lib/api/entities/issuable_time_stats.rb'
     - 'lib/container_registry/tag.rb'
-    - 'lib/declarative_policy/rule.rb'
-    - 'lib/declarative_policy/runner.rb'
     - 'lib/gitlab/ci/reports/test_suite_comparer.rb'
     - 'lib/gitlab/diff/file.rb'
     - 'lib/gitlab/sherlock/transaction.rb'
@@ -613,9 +598,7 @@ Rails/RenderInline:
 # SupportedStyles: conservative, aggressive
 Rails/ShortI18n:
   Exclude:
-    - 'app/models/project_services/chat_message/pipeline_message.rb'
     - 'app/uploaders/content_type_whitelist.rb'
-    - 'spec/views/shared/runners/show.html.haml_spec.rb'
 
 # Offense count: 1144
 # Configuration parameters: ForbiddenMethods, AllowedMethods.
@@ -630,25 +613,10 @@ Rails/SquishedSQLHeredocs:
 
 # Offense count: 44
 # Cop supports --auto-correct.
-Rails/WhereEquals:
-  Enabled: false
-
-# Offense count: 44
-# Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: exists, where
 Rails/WhereExists:
   Enabled: false
-
-# Offense count: 8
-# Cop supports --auto-correct.
-Security/YAMLLoad:
-  Exclude:
-    - 'lib/gitlab/redis/wrapper.rb'
-    - 'lib/system_check/incoming_email/imap_authentication_check.rb'
-    - 'spec/config/mail_room_spec.rb'
-    - 'spec/initializers/secret_token_spec.rb'
-    - 'spec/lib/gitlab/prometheus/additional_metrics_parser_spec.rb'
 
 # Offense count: 240
 # Cop supports --auto-correct.
@@ -851,21 +819,6 @@ Style/NumericLiteralPrefix:
 Style/PercentLiteralDelimiters:
   Enabled: false
 
-# Offense count: 247
-# Cop supports --auto-correct.
-# Configuration parameters: .
-# SupportedStyles: compact, exploded
-Style/RaiseArgs:
-  Enabled: false
-  EnforcedStyle: exploded
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/RedundantBegin:
-  Exclude:
-    - 'app/services/clusters/applications/check_installation_progress_service.rb'
-    - 'lib/gitlab/database/postgres_hll/batch_distinct_counter.rb'
-
 # Offense count: 26
 # Cop supports --auto-correct.
 # Configuration parameters: SafeForConstants.
@@ -878,29 +831,10 @@ Style/RedundantFetchBlock:
     - 'spec/lib/gitlab/null_request_store_spec.rb'
     - 'spec/lib/gitlab/safe_request_store_spec.rb'
 
-# Offense count: 26
-# Cop supports --auto-correct.
-Style/RedundantFileExtensionInRequire:
-  Enabled: false
-
 # Offense count: 206
 # Cop supports --auto-correct.
 Style/RedundantInterpolation:
   Enabled: false
-
-# Offense count: 10
-# Cop supports --auto-correct.
-Style/RedundantRegexpCharacterClass:
-  Exclude:
-    - 'app/models/concerns/taskable.rb'
-    - 'ee/app/models/saml_provider.rb'
-    - 'lib/banzai/filter/markdown_pre_escape_filter.rb'
-    - 'lib/gitlab/authorized_keys.rb'
-    - 'lib/gitlab/fogbugz_import/repository.rb'
-    - 'lib/gitlab/quick_actions/substitution_definition.rb'
-    - 'lib/gitlab/regex.rb'
-    - 'spec/features/merge_request/user_views_open_merge_request_spec.rb'
-    - 'spec/tasks/gitlab/usage_data_rake_spec.rb'
 
 # Offense count: 279
 # Cop supports --auto-correct.
@@ -915,13 +849,6 @@ Style/RedundantSelf:
 # Offense count: 53
 # Cop supports --auto-correct.
 Style/RescueModifier:
-  Enabled: false
-
-# Offense count: 359
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: implicit, explicit
-Style/RescueStandardError:
   Enabled: false
 
 # Offense count: 123

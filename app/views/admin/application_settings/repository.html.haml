@@ -2,17 +2,16 @@
 - page_title _("Repository")
 - @content_class = "limit-container-width" unless fluid_layout
 
-- if Feature.enabled?(:global_default_branch_name, default_enabled: true)
-  %section.settings.as-default-branch-name.no-animate#js-default-branch-name{ class: ('expanded' if expanded_by_default?) }
-    .settings-header
-      %h4
-        = _('Default initial branch name')
-      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
-        = expanded_by_default? ? _('Collapse') : _('Expand')
-      %p
-        = _('Set the default name of the initial branch when creating new repositories through the user interface.')
-    .settings-content
-      = render 'initial_branch_name'
+%section.settings.as-default-branch-name.no-animate#js-default-branch-name{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Default initial branch name')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Set the default name of the initial branch when creating new repositories through the user interface.')
+  .settings-content
+    = render 'initial_branch_name'
 
 %section.settings.as-mirror.no-animate#js-mirror-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header

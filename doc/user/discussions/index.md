@@ -91,7 +91,7 @@ current merge request.
 
 ### Marking a comment or thread as resolved
 
-You can mark a thread as resolved by clicking the **Resolve thread**
+You can mark a thread as resolved by selecting the **Resolve thread**
 button at the bottom of the thread.
 
 !["Resolve thread" button](img/resolve_thread_button_v13_3.png)
@@ -102,8 +102,8 @@ Alternatively, you can mark each comment as resolved individually.
 
 ### Move all unresolved threads in a merge request to an issue
 
-To continue all open threads from a merge request in a new issue, click the
-**Resolve all threads in new issue** button.
+To continue all open threads from a merge request in a new issue, select
+**Resolve all threads in new issue**.
 
 ![Open new issue for all unresolved threads](img/btn_new_issue_for_all_threads.png)
 
@@ -283,85 +283,6 @@ To create a confidential comment, select the **Make this comment confidential** 
 
 ![Confidential comments](img/confidential_comments_v13_9.png)
 
-## Merge request reviews
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab Premium 11.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/28154) to GitLab Free in 13.1.
-
-When looking at a merge request diff, you are able to start a review.
-This allows you to create comments inside a merge request that are **only visible to you** until published,
-in order to allow you to submit them all as a single action.
-
-### Starting a review
-
-To start a review, write a comment on a diff as normal under the **Changes** tab
-in a merge request, and then select **Start a review**.
-
-![Starting a review](img/mr_review_start.png)
-
-After a review is started, any comments that are part of this review are marked `Pending`.
-All comments that are part of a review show two buttons:
-
-- **Finish review**: Submits all comments that are part of the review, making them visible to other users.
-- **Add comment now**: Submits the specific comment as a regular comment instead of as part of the review.
-
-![A comment that is part of a review](img/pending_review_comment.png)
-
-You can use [quick actions](../project/quick_actions.md) inside review comments. The comment shows the actions to perform after publication.
-
-![A review comment with quick actions](img/review_comment_quickactions.png)
-
-To add more comments to a review, start writing a comment as normal and click the **Add to review** button.
-
-![Adding a second comment to a review](img/mr_review_second_comment.png)
-
-This adds the comment to the review.
-
-![Second review comment](img/mr_review_second_comment_added.png)
-
-### Resolving/Unresolving threads
-
-Review comments can also resolve/unresolve [resolvable threads](#resolvable-comments-and-threads).
-When replying to a comment, a checkbox is displayed that you can click to resolve or unresolve
-the thread after publication.
-
-![Resolve checkbox](img/mr_review_resolve.png)
-
-If a particular pending comment resolves or unresolves the thread, this is shown on the pending
-comment itself.
-
-![Resolve status](img/mr_review_resolve2.png)
-
-![Unresolve status](img/mr_review_unresolve.png)
-
-### Adding a new comment
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8225) in GitLab 13.10.
-
-If you have a review in progress, you will be presented with the option to **Add to review**:
-
-![New thread](img/mr_review_new_comment_v13_11.png)
-
-### Submitting a review
-
-If you have any comments that have not been submitted, a bar displays at the
-bottom of the screen with two buttons:
-
-- **Pending comments**: Opens a list of comments ready to be submitted for review.
-- **Submit review**: Publishes all comments. Any quick actions submitted are performed at this time.
-
-Alternatively, to finish the entire review from a pending comment:
-
-- Click the **Submit review** button on the comment.
-- Use the `/submit_review` [quick action](../project/quick_actions.md) in the text of non-review comment.
-
-![Review submission](img/review_preview_v13_11.png)
-
-Submitting the review sends a single email to every notifiable user of the
-merge request with all the comments associated to it.
-
-Replying to this email will, consequentially, create a new comment on the associated merge request.
-
 ## Filtering notes
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26723) in GitLab 11.5.
@@ -382,139 +303,6 @@ After you select one of the filters in a given issue or merge request, GitLab sa
 your preference, so that it persists when you visit the same page again
 from any device you're logged into.
 
-## Suggest Changes
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18008) in GitLab 11.6.
-> - Custom commit messages for suggestions was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9 behind a [feature flag](../feature_flags.md), disabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/297404) in GitLab 13.10.
-
-As a reviewer, you're able to suggest code changes with a
-Markdown syntax in merge request diff threads. Then, the
-merge request author (or other users with appropriate
-[permission](../permissions.md)) is able to apply these
-Suggestions with a click, which generates a commit in
-the merge request authored by the user that applied them.
-
-1. Choose a line of code to be changed, add a new comment, then click
-   on the **Insert suggestion** icon in the toolbar:
-
-   ![Add a new comment](img/suggestion_button_v13_9.png)
-
-1. In the comment, add your suggestion to the pre-populated code block:
-
-   ![Add a suggestion into a code block tagged properly](img/make_suggestion_v13_9.png)
-
-1. Click either **Start a review** or **Add to review** to add your comment to a [review](#merge-request-reviews), or **Add comment now** to add the comment to the thread immediately.
-
-   The Suggestion in the comment can be applied by the merge request author
-   directly from the merge request:
-
-   ![Apply suggestions](img/apply_suggestion_v13_9.png)
-
-1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) in GitLab 13.9,
-   you can opt to add a custom commit message to describe your change. If you don't
-   specify it, the default commit message is used. It is not supported for [batch suggestions](#batch-suggestions).
-
-   ![Custom commit](img/custom_commit_v13_9.png)
-
-After the author applies a Suggestion, it is marked with the **Applied** label,
-the thread is automatically resolved, and GitLab creates a new commit
-and push the suggested change directly into the codebase in the merge request's
-branch. [Developer permission](../permissions.md) is required to do so.
-
-### Multi-line Suggestions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53310) in GitLab 11.10.
-
-Reviewers can also suggest changes to multiple lines with a single Suggestion
-within merge request diff threads by adjusting the range offsets. The
-offsets are relative to the position of the diff thread, and specify the
-range to be replaced by the suggestion when it is applied.
-
-![Multi-line suggestion syntax](img/multi-line-suggestion-syntax.png)
-
-In the example above, the Suggestion covers three lines above and four lines
-below the commented line. When applied, it would replace from 3 lines _above_
-to 4 lines _below_ the commented line, with the suggested change.
-
-![Multi-line suggestion preview](img/multi-line-suggestion-preview.png)
-
-NOTE:
-Suggestions covering multiple lines are limited to 100 lines _above_ and 100
-lines _below_ the commented diff line, allowing up to 200 changed lines per
-suggestion.
-
-### Code block nested in Suggestions
-
-If you need to make a suggestion that involves a
-[fenced code block](../markdown.md#code-spans-and-blocks), wrap your suggestion in four backticks
-instead of the usual three.
-
-![A comment editor with a suggestion with a fenced code block](img/suggestion_code_block_editor_v12_8.png)
-
-![Output of a comment with a suggestion with a fenced code block](img/suggestion_code_block_output_v12_8.png)
-
-### Configure the commit message for applied Suggestions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13086) in GitLab 12.7.
-
-GitLab uses a default commit message
-when applying Suggestions: `Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)`
-
-For example, consider that a user applied 3 suggestions to 2 different files, the default commit message is: **Apply 3 suggestion(s) to 2 file(s)**
-
-These commit messages can be customized to follow any guidelines you might have. To do so, expand the **Merge requests**
-tab within your project's **General** settings and change the
-**Merge suggestions** text:
-
-![Custom commit message for applied Suggestions](img/suggestions_custom_commit_messages_v13_1.jpg)
-
-You can also use following variables besides static text:
-
-| Variable               | Description | Output example |
-|------------------------|-------------|----------------|
-| `%{branch_name}`       | The name of the branch the Suggestion(s) was(were) applied to. | `my-feature-branch` |
-| `%{files_count}`       | The number of file(s) to which Suggestion(s) was(were) applied.| **2** |
-| `%{file_paths}`        | The path(s) of the file(s) Suggestion(s) was(were) applied to. Paths are separated by commas.| `docs/index.md, docs/about.md` |
-| `%{project_path}`      | The project path. | `my-group/my-project` |
-| `%{project_name}`      | The human-readable name of the project. | **My Project** |
-| `%{suggestions_count}` | The number of Suggestions applied.| **3** |
-| `%{username}`          | The username of the user applying Suggestion(s). | `user_1` |
-| `%{user_full_name}`    | The full name of the user applying Suggestion(s). | **User 1** |
-
-For example, to customize the commit message to output
-**Addresses user_1's review**, set the custom text to
-`Addresses %{username}'s review`.
-
-NOTE:
-Custom commit messages for each applied Suggestion is
-introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
-
-### Batch Suggestions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25486) in GitLab 13.1 as an [alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) behind a feature flag, disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/227799) in GitLab 13.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320755) in GitLab 13.11.
-
-You can apply multiple suggestions at once to reduce the number of commits added
-to your branch to address your reviewers' requests.
-
-1. To start a batch of suggestions to apply with a single commit, click **Add suggestion to batch**:
-
-   ![A code change suggestion displayed, with the button to add the suggestion to a batch highlighted.](img/add_first_suggestion_to_batch_v13_1.jpg "Add a suggestion to a batch")
-
-1. Add as many additional suggestions to the batch as you wish:
-
-   ![A code change suggestion displayed, with the button to add an additional suggestion to a batch highlighted.](img/add_another_suggestion_to_batch_v13_1.jpg "Add another suggestion to a batch")
-
-1. To remove suggestions, click **Remove from batch**:
-
-   ![A code change suggestion displayed, with the button to remove that suggestion from its batch highlighted.](img/remove_suggestion_from_batch_v13_1.jpg "Remove a suggestion from a batch")
-
-1. Having added all the suggestions to your liking, when ready, click **Apply suggestions**:
-
-   ![A code change suggestion displayed, with the button to apply the batch of suggestions highlighted.](img/apply_batch_of_suggestions_v13_1.jpg "Apply a batch of suggestions")
-
 ## Start a thread by replying to a standard comment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30299) in GitLab 11.9
@@ -525,7 +313,7 @@ To reply to a standard (non-thread) comment, you can use the **Reply to comment*
 
 The **Reply to comment** button is only displayed if you have permissions to reply to an existing thread, or start a thread from a standard comment.
 
-Clicking on the **Reply to comment** button brings the reply area into focus and you can type your reply.
+Selecting the **Reply to comment** button brings the reply area into focus and you can type your reply.
 
 ![Reply to comment feature](img/reply_to_comment.gif)
 
@@ -542,9 +330,9 @@ not supported yet.
 
 You can assign an issue to a user who made a comment.
 
-In the comment, click the **More Actions** menu and click **Assign to commenting user**.
+In the comment, select the **More Actions** menu, and then select **Assign to commenting user**.
 
-  Click the button again to unassign the commenter.
+Select the button again to unassign the commenter.
 
 ![Assign to commenting user](img/quickly_assign_commenter_v13_1.png)
 

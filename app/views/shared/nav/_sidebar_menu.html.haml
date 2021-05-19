@@ -1,7 +1,7 @@
 = nav_link(**sidebar_menu.all_active_routes, html_options: sidebar_menu.nav_link_html_options) do
   = link_to sidebar_menu.link, **sidebar_menu.container_html_options, data: { qa_selector: 'sidebar_menu_link', qa_menu_item: sidebar_menu.title } do
     - if sidebar_menu.icon_or_image?
-      .nav-icon-container
+      %span.nav-icon-container
         - if sidebar_menu.image_path
           = image_tag(sidebar_menu.image_path, **sidebar_menu.image_html_options)
         - elsif sidebar_menu.sprite_icon
@@ -13,15 +13,15 @@
       %span.badge.badge-pill.count{ **sidebar_menu.pill_html_options }
         = number_with_delimiter(sidebar_menu.pill_count)
 
-  %ul.sidebar-sub-level-items{ class: ('is-fly-out-only' unless sidebar_menu.has_items?) }
+  %ul.sidebar-sub-level-items{ class: ('is-fly-out-only' unless sidebar_menu.has_renderable_items?) }
     = nav_link(**sidebar_menu.all_active_routes, html_options: { class: 'fly-out-top-item' } ) do
-      = link_to sidebar_menu.link, aria: { label: sidebar_menu.title } do
+      = link_to sidebar_menu.link, **sidebar_menu.collapsed_container_html_options do
         %strong.fly-out-top-item-name
           = sidebar_menu.title
         - if sidebar_menu.has_pill?
           %span.badge.badge-pill.count.fly-out-badge{ **sidebar_menu.pill_html_options }
             = number_with_delimiter(sidebar_menu.pill_count)
 
-    - if sidebar_menu.has_renderable_items?
+    - if sidebar_menu.has_items?
       %li.divider.fly-out-top-item
       = render partial: 'shared/nav/sidebar_menu_item', collection: sidebar_menu.renderable_items

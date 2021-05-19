@@ -302,6 +302,9 @@ RSpec.describe Groups::RunnersController do
 
     context 'when user is not an owner' do
       before do
+        # Disable limit checking
+        allow(runner).to receive(:runner_scope).and_return(nil)
+
         group.add_maintainer(user)
       end
 

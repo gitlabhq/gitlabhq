@@ -35,6 +35,7 @@ class Admin::PlanLimitsController < Admin::ApplicationController
       npm_max_file_size
       nuget_max_file_size
       pypi_max_file_size
+      terraform_module_max_file_size
       generic_packages_max_file_size
     ])
   end

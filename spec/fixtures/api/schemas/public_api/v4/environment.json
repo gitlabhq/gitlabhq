@@ -18,7 +18,10 @@
         { "$ref": "deployment.json" }
       ]
     },
-    "state": { "type": "string" }
+    "state": { "type": "string" },
+    "enable_advanced_logs_querying": { "type": "boolean" },
+    "logs_api_path": { "type": "string" },
+    "gitlab_managed_apps_logs_path": { "type": "string" }
   },
   "additionalProperties": false
 }

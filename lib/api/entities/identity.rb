@@ -8,4 +8,4 @@ module API
   end
 end
 
-API::Entities::Identity.prepend_if_ee('EE::API::Entities::Identity')
+API::Entities::Identity.prepend_mod_with('API::Entities::Identity')

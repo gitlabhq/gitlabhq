@@ -109,4 +109,4 @@ module Gitlab
   end
 end
 
-Gitlab::EtagCaching::Router::Restful.prepend_if_ee('EE::Gitlab::EtagCaching::Router::Restful')
+Gitlab::EtagCaching::Router::Restful.prepend_mod_with('Gitlab::EtagCaching::Router::Restful')

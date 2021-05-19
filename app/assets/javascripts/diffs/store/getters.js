@@ -170,3 +170,6 @@ export function suggestionCommitMessage(state, _, rootState) {
       },
     });
 }
+
+export const isVirtualScrollingEnabled = (state) =>
+  !state.viewDiffsFileByFile && window.gon?.features?.diffsVirtualScrolling;

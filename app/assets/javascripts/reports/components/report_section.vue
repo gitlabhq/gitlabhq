@@ -190,10 +190,14 @@ export default {
       <status-icon :status="statusIconName" :size="24" class="align-self-center" />
       <div class="media-body d-flex flex-align-self-center align-items-center">
         <div data-testid="report-section-code-text" class="js-code-text code-text">
-          <div>
-            {{ headerText }}
+          <div class="gl-display-flex gl-align-items-center">
+            <p class="gl-line-height-normal gl-m-0">{{ headerText }}</p>
             <slot :name="slotName"></slot>
-            <popover v-if="hasPopover" :options="popoverOptions" class="gl-ml-2" />
+            <popover
+              v-if="hasPopover"
+              :options="popoverOptions"
+              class="gl-ml-2 gl-display-inline-flex"
+            />
           </div>
           <slot name="sub-heading"></slot>
         </div>

@@ -1,0 +1,63 @@
+- breadcrumb_title runner.short_sha
+- page_title "##{runner.id} (#{runner.short_sha})"
+
+%h2.page-title
+  = s_('Runners|Runner #%{runner_id}' % { runner_id: runner.id })
+  = render 'shared/runners/runner_type_badge', runner: runner
+
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th= s_('Runners|Property Name')
+        %th= s_('Runners|Value')
+    %tr
+      %td= s_('Runners|Active')
+      %td= runner.active? ? _('Yes') : _('No')
+    %tr
+      %td= s_('Runners|Protected')
+      %td= runner.ref_protected? ? _('Yes') : _('No')
+    %tr
+      %td= s_('Runners|Can run untagged jobs')
+      %td= runner.run_untagged? ? _('Yes') : _('No')
+    - unless runner.group_type?
+      %tr
+        %td= s_('Runners|Locked to this project')
+        %td= runner.locked? ? _('Yes') : _('No')
+    %tr
+      %td= s_('Runners|Tags')
+      %td
+        - runner.tag_list.sort.each do |tag|
+          %span.badge.badge-primary
+            = tag
+    %tr
+      %td= s_('Runners|Name')
+      %td= runner.name
+    %tr
+      %td= s_('Runners|Version')
+      %td= runner.version
+    %tr
+      %td= s_('Runners|IP Address')
+      %td= runner.ip_address
+    %tr
+      %td= s_('Runners|Revision')
+      %td= runner.revision
+    %tr
+      %td= s_('Runners|Platform')
+      %td= runner.platform
+    %tr
+      %td= s_('Runners|Architecture')
+      %td= runner.architecture
+    %tr
+      %td= s_('Runners|Description')
+      %td= runner.description
+    %tr
+      %td= s_('Runners|Maximum job timeout')
+      %td= runner.maximum_timeout_human_readable
+    %tr
+      %td= s_('Runners|Last contact')
+      %td
+        - if runner.contacted_at
+          = time_ago_with_tooltip runner.contacted_at
+        - else
+          = s_('Never')

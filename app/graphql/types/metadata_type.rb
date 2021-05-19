@@ -10,5 +10,7 @@ module Types
           description: 'Version.'
     field :revision, GraphQL::STRING_TYPE, null: false,
           description: 'Revision.'
+    field :kas, ::Types::Metadata::KasType, null: false,
+          description: 'Metadata about KAS.'
   end
 end

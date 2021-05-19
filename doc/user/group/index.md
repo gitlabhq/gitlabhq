@@ -216,9 +216,8 @@ There are two different ways to add a new project to a group:
 
 ### Specify who can add projects to a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2534) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
-> - Brought to [GitLab Starter](https://about.gitlab.com/pricing/) in 10.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) to [GitLab Free](https://about.gitlab.com/pricing/) in 11.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2534) in GitLab Premium 10.5.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) to GitLab Free in 11.10.
 
 By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group.
 
@@ -233,7 +232,7 @@ To change this setting globally, see [Default project creation protection](../ad
 
 ## Group activity analytics **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab [Starter](https://about.gitlab.com/pricing/) 12.10 as
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as
 a [beta feature](https://about.gitlab.com/handbook/product/#beta).
 
 For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
@@ -262,7 +261,7 @@ In GitLab 13.11, you can [replace this form with a modal window](#share-a-group-
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
 you can share a group with another group. Members get direct access
-to the shared group. This is not valid for inherited members.
+to the shared group. This includes members who inherited group membership from a parent group.
 
 To share a given group, for example, `Frontend` with another group, for example,
 `Engineering`:
@@ -577,7 +576,8 @@ To disable group mentions:
 
 ## Enable delayed project removal **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+> - [Inheritance and enforcement added](https://gitlab.com/gitlab-org/gitlab/-/issues/321724) in GitLab 13.11.
 
 By default, projects in a group are deleted immediately.
 Optionally, on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
@@ -591,10 +591,11 @@ To enable delayed deletion of projects:
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
 1. Check **Enable delayed project removal**.
+1. Optional. To prevent subgroups from changing this setting, select **Enforce for all subgroups**.
 1. Select **Save changes**.
 
 NOTE:
-The group setting for delayed deletion is not inherited by subgroups and has to be individually defined for each group.
+In GitLab 13.11 and above the group setting for delayed project removal is inherited by subgroups. As discussed in [Cascading settings](../../development/cascading_settings.md) inheritance can be overridden, unless enforced by an ancestor.
 
 ## Prevent project forking outside group **(PREMIUM)**
 
@@ -617,7 +618,7 @@ To enable prevent project forking:
 
 ## Group push rules **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in GitLab 12.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
 
 Group push rules allow group maintainers to set
@@ -643,9 +644,6 @@ The group's new subgroups have push rules set for them based on either:
   and issues) of group members. **(PREMIUM)**
 - [Issue analytics](issues_analytics/index.md): View a bar chart of your group's number of issues per month. **(PREMIUM)**
 - Use GitLab as a [dependency proxy](../packages/dependency_proxy/index.md) for upstream Docker images.
-- [DORA4 Project Analytics API](../../api/dora4_group_analytics.md): View deployment frequency analytics.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291747) in GitLab Ultimate 13.9 as a
-  [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta). **(ULTIMATE SELF)**
 - [Epics](epics/index.md): Track groups of issues that share a theme. **(ULTIMATE)**
 - [Security Dashboard](../application_security/security_dashboard/index.md): View the vulnerabilities of all
   the projects in a group and its subgroups. **(ULTIMATE)**

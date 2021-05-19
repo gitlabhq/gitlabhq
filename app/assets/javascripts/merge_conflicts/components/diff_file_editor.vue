@@ -1,4 +1,5 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { mapActions } from 'vuex';
 import { deprecatedCreateFlash as flash } from '~/flash';
@@ -7,6 +8,9 @@ import { __ } from '~/locale';
 import { INTERACTIVE_RESOLVE_MODE } from '../constants';
 
 export default {
+  components: {
+    GlButton,
+  },
   props: {
     file: {
       type: Object,
@@ -100,21 +104,21 @@ export default {
 };
 </script>
 <template>
-  <div v-show="file.showEditor" class="diff-editor-wrap">
-    <div v-if="file.promptDiscardConfirmation" class="discard-changes-alert-wrap">
-      <div class="discard-changes-alert">
-        {{ __('Are you sure you want to discard your changes?') }}
-        <div class="discard-actions">
-          <button
-            class="btn btn-sm btn-danger-secondary gl-button"
-            @click="acceptDiscardConfirmation(file)"
-          >
-            {{ __('Discard changes') }}
-          </button>
-          <button class="btn btn-default btn-sm gl-button" @click="cancelDiscardConfirmation(file)">
-            {{ __('Cancel') }}
-          </button>
-        </div>
+  <div v-show="file.showEditor">
+    <div v-if="file.promptDiscardConfirmation" class="discard-changes-alert">
+      {{ __('Are you sure you want to discard your changes?') }}
+      <div class="gl-ml-3 gl-display-inline-block">
+        <gl-button
+          size="small"
+          variant="danger"
+          category="secondary"
+          @click="acceptDiscardConfirmation(file)"
+        >
+          {{ __('Discard changes') }}
+        </gl-button>
+        <gl-button size="small" @click="cancelDiscardConfirmation(file)">
+          {{ __('Cancel') }}
+        </gl-button>
       </div>
     </div>
     <div :class="classObject" class="editor-wrap">

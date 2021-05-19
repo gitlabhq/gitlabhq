@@ -158,4 +158,4 @@ class MergeRequestPollWidgetEntity < Grape::Entity
   end
 end
 
-MergeRequestPollWidgetEntity.prepend_if_ee('EE::MergeRequestPollWidgetEntity')
+MergeRequestPollWidgetEntity.prepend_mod_with('MergeRequestPollWidgetEntity')

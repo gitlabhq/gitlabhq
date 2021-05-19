@@ -2,10 +2,10 @@
 
 module Issues
   class ZoomLinkService < Issues::BaseService
-    def initialize(issue, user)
-      super(issue.project, user)
+    def initialize(project:, current_user:, params:)
+      super
 
-      @issue = issue
+      @issue = params.fetch(:issue)
       @added_meeting = ZoomMeeting.canonical_meeting(@issue)
     end
 

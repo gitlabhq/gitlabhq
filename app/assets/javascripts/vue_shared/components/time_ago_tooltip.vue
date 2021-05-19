@@ -15,7 +15,7 @@ export default {
   mixins: [timeagoMixin],
   props: {
     time: {
-      type: String,
+      type: [String, Number],
       required: true,
     },
     tooltipPlacement: {

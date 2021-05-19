@@ -1,6 +1,9 @@
-mutation epicSetSubscription($input: EpicSetSubscriptionInput!) {
-  updateIssuableSubscription: epicSetSubscription(input: $input) {
-    epic {
+mutation epicSetSubscription($fullPath: ID!, $iid: ID!, $subscribedState: Boolean!) {
+  updateIssuableSubscription: epicSetSubscription(
+    input: { groupPath: $fullPath, iid: $iid, subscribedState: $subscribedState }
+  ) {
+    issuable: epic {
+      id
       subscribed
     }
     errors

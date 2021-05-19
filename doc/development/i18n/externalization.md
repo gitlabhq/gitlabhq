@@ -19,7 +19,7 @@ All `rake` commands described on this page must be run on a GitLab instance, usu
 ## Setting up GitLab Development Kit (GDK)
 
 In order to be able to work on the [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss)
-project you must download and configure it through [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/set-up-gdk.md).
+project you must download and configure it through [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/set-up-gdk.md).
 
 After you have the GitLab project ready, you can start working on the translation.
 
@@ -491,6 +491,48 @@ To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`) inst
   // => 'In < 1 hour'
   ```
 
+### Numbers
+
+Different locales may use different number formats. To support localization of numbers, we use `formatNumber`,
+which leverages [`toLocaleString()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString).
+
+`formatNumber` formats numbers as strings using the current user locale by default.
+
+- In JavaScript
+
+```javascript
+import { formatNumber } from '~/locale';
+
+// Assuming "User Preferences > Language" is set to "English":
+
+const tenThousand = formatNumber(10000); // "10,000" (uses comma as decimal symbol in English locale)
+const fiftyPercent = formatNumber(0.5, { style: 'percent' }) // "50%" (other options are passed to toLocaleString)
+```
+
+- In Vue templates
+
+```html
+<script>
+import { formatNumber } from '~/locale';
+
+export default {
+  //...
+  methods: {
+    // ...
+    formatNumber,
+  },
+}
+</script>
+<template>
+<div class="my-number">
+  {{ formatNumber(10000) }} <!-- 10,000 -->
+</div>
+<div class="my-percent">
+  {{ formatNumber(0.5,  { style: 'percent' }) }} <!-- 50% -->
+</div>
+</template>
+```
+
 ### Dates / times
 
 - In JavaScript:
@@ -752,6 +794,10 @@ The `locale/zh_TW/gitlab.po` has variables that are used in the translation that
 aren't in the message with ID `1 pipeline`.
 
 ## Adding a new language
+
+A new language should only be added as an option in User Preferences once at least 10% of the
+strings have been translated and approved. Even though a larger number of strings may have been
+translated, only the approved translations display in the GitLab UI.
 
 NOTE:
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221012) in GitLab 13.3:

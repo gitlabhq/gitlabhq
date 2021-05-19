@@ -25,6 +25,7 @@ You can find Repository Analytics in the project's sidebar. To access the page, 
 
 NOTE:
 Without a Git commit in the default branch, the menu item won't be visible.
+Commits in a project's [wiki](../project/wiki/index.md#track-wiki-events) are not included in the analysis.
 
 ### Charts
 

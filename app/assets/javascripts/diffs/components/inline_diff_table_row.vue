@@ -177,7 +177,6 @@ export default {
       <a
         v-if="line.new_line"
         ref="lineNumberRefNew"
-        data-qa-selector="new_diff_line_link"
         :data-linenumber="line.new_line"
         :href="line.lineHref"
         @click="setHighlightedRow(line.lineCode)"

@@ -345,17 +345,10 @@ RSpec.describe TodoService do
 
     describe '#destroy_target' do
       it 'refreshes the todos count cache for users with todos on the target' do
-        create(:todo, state: :pending, target: issue, user: john_doe, author: john_doe, project: issue.project)
+        create(:todo, state: :pending, target: issue, user: author, author: author, project: issue.project)
+        create(:todo, state: :done, target: issue, user: assignee, author: assignee, project: issue.project)
 
-        expect_next(Users::UpdateTodoCountCacheService, [john_doe]).to receive(:execute)
-
-        service.destroy_target(issue) { issue.destroy! }
-      end
-
-      it 'does not refresh the todos count cache for users with only done todos on the target' do
-        create(:todo, :done, target: issue, user: john_doe, author: john_doe, project: issue.project)
-
-        expect(Users::UpdateTodoCountCacheService).not_to receive(:new)
+        expect_next(Users::UpdateTodoCountCacheService, [author.id, assignee.id]).to receive(:execute)
 
         service.destroy_target(issue) { issue.destroy! }
       end
@@ -1101,7 +1094,7 @@ RSpec.describe TodoService do
   it 'updates cached counts when a todo is created' do
     issue = create(:issue, project: project, assignees: [john_doe], author: author)
 
-    expect_next(Users::UpdateTodoCountCacheService, [john_doe]).to receive(:execute)
+    expect_next(Users::UpdateTodoCountCacheService, [john_doe.id]).to receive(:execute)
 
     service.new_issue(issue, author)
   end

@@ -42,44 +42,20 @@ RSpec.describe Gitlab::Middleware::RackMultipartTempfileFactory do
   context 'for a multipart request' do
     let(:env) { Rack::MockRequest.env_for('/', multipart_fixture) }
 
-    context 'when the environment variable is enabled' do
-      before do
-        stub_env('GITLAB_TEMPFILE_IMMEDIATE_UNLINK', '1')
-      end
+    it 'immediately unlinks the temporary file' do
+      tempfile = Tempfile.new('foo')
 
-      it 'immediately unlinks the temporary file' do
-        tempfile = Tempfile.new('foo')
+      expect(tempfile.path).not_to be(nil)
+      expect(Rack::Multipart::Parser::TEMPFILE_FACTORY).to receive(:call).and_return(tempfile)
+      expect(tempfile).to receive(:unlink).and_call_original
 
-        expect(tempfile.path).not_to be(nil)
-        expect(Rack::Multipart::Parser::TEMPFILE_FACTORY).to receive(:call).and_return(tempfile)
-        expect(tempfile).to receive(:unlink).and_call_original
+      subject.call(env)
 
-        subject.call(env)
-
-        expect(tempfile.path).to be(nil)
-      end
-
-      it 'processes the request as normal' do
-        expect(subject.call(env)).to eq([200, { 'Content-Type' => 'image/jpeg' }, [file_contents]])
-      end
+      expect(tempfile.path).to be(nil)
     end
 
-    context 'when the environment variable is disabled' do
-      it 'does not immediately unlink the temporary file' do
-        tempfile = Tempfile.new('foo')
-
-        expect(tempfile.path).not_to be(nil)
-        expect(Rack::Multipart::Parser::TEMPFILE_FACTORY).to receive(:call).and_return(tempfile)
-        expect(tempfile).not_to receive(:unlink).and_call_original
-
-        subject.call(env)
-
-        expect(tempfile.path).not_to be(nil)
-      end
-
-      it 'processes the request as normal' do
-        expect(subject.call(env)).to eq([200, { 'Content-Type' => 'image/jpeg' }, [file_contents]])
-      end
+    it 'processes the request as normal' do
+      expect(subject.call(env)).to eq([200, { 'Content-Type' => 'image/jpeg' }, [file_contents]])
     end
   end
 

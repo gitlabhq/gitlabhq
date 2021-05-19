@@ -5,6 +5,9 @@ module Ci
   # Data will be removed after transitioning from running to any state.
   class BuildRunnerSession < ApplicationRecord
     extend Gitlab::Ci::Model
+    include IgnorableColumns
+
+    ignore_columns :build_id_convert_to_bigint, remove_with: '14.1', remove_after: '2021-07-22'
 
     TERMINAL_SUBPROTOCOL = 'terminal.gitlab.com'
     DEFAULT_SERVICE_NAME = 'build'

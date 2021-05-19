@@ -153,7 +153,7 @@ class Feature
         definition.deep_symbolize_keys!
 
         self.new(path, definition).tap(&:validate!)
-      rescue => e
+      rescue StandardError => e
         raise Feature::InvalidFeatureFlagError, "Invalid definition for `#{path}`: #{e.message}"
       end
 
@@ -185,4 +185,4 @@ class Feature
   end
 end
 
-Feature::Definition.prepend_if_ee('EE::Feature::Definition')
+Feature::Definition.prepend_mod_with('Feature::Definition')

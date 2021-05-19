@@ -20,13 +20,13 @@ module Spam
         created_at: DateTime.current,
         author: owner_name,
         author_email: owner_email,
-        referrer: options[:referrer]
+        referer: options[:referer]
       }
 
       begin
         is_spam, is_blatant = akismet_client.check(options[:ip_address], options[:user_agent], params)
         is_spam || is_blatant
-      rescue => e
+      rescue StandardError => e
         Gitlab::AppLogger.error("Unable to connect to Akismet: #{e}, skipping check")
         false
       end
@@ -66,7 +66,7 @@ module Spam
       begin
         akismet_client.public_send(type, options[:ip_address], options[:user_agent], params) # rubocop:disable GitlabSecurity/PublicSend
         true
-      rescue => e
+      rescue StandardError => e
         Gitlab::AppLogger.error("Unable to connect to Akismet: #{e}, skipping!")
         false
       end

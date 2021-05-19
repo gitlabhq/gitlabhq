@@ -54,8 +54,8 @@ describe('ProjectsPipelinesChartsApp', () => {
       expect(findGlTabs().exists()).toBe(true);
 
       expect(findGlTabAtIndex(0).attributes('title')).toBe('Pipelines');
-      expect(findGlTabAtIndex(1).attributes('title')).toBe('Deployments');
-      expect(findGlTabAtIndex(2).attributes('title')).toBe('Lead Time');
+      expect(findGlTabAtIndex(1).attributes('title')).toBe('Deployment frequency');
+      expect(findGlTabAtIndex(2).attributes('title')).toBe('Lead time');
     });
 
     it('renders the pipeline charts', () => {
@@ -75,7 +75,7 @@ describe('ProjectsPipelinesChartsApp', () => {
       setWindowLocation(`${TEST_HOST}/gitlab-org/gitlab-test/-/pipelines/charts`);
 
       mergeUrlParams.mockImplementation(({ chart }, path) => {
-        expect(chart).toBe('deployments');
+        expect(chart).toBe('deployment-frequency');
         expect(path).toBe(window.location.pathname);
         chartsPath = `${path}?chart=${chart}`;
         return chartsPath;
@@ -114,12 +114,12 @@ describe('ProjectsPipelinesChartsApp', () => {
 
   describe('when provided with a query param', () => {
     it.each`
-      chart            | tab
-      ${'lead-time'}   | ${'2'}
-      ${'deployments'} | ${'1'}
-      ${'pipelines'}   | ${'0'}
-      ${'fake'}        | ${'0'}
-      ${''}            | ${'0'}
+      chart                     | tab
+      ${'lead-time'}            | ${'2'}
+      ${'deployment-frequency'} | ${'1'}
+      ${'pipelines'}            | ${'0'}
+      ${'fake'}                 | ${'0'}
+      ${''}                     | ${'0'}
     `('shows the correct tab for URL parameter "$chart"', ({ chart, tab }) => {
       setWindowLocation(`${TEST_HOST}/gitlab-org/gitlab-test/-/pipelines/charts?chart=${chart}`);
       getParameterValues.mockImplementation((name) => {
@@ -152,7 +152,7 @@ describe('ProjectsPipelinesChartsApp', () => {
 
       getParameterValues.mockImplementationOnce((name) => {
         expect(name).toBe('chart');
-        return ['deployments'];
+        return ['deployment-frequency'];
       });
 
       popstateHandler();

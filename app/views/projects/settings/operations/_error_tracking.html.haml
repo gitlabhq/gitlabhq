@@ -9,8 +9,8 @@
     %button.gl-button.btn.btn-default.js-settings-toggle{ type: 'button' }
       = _('Expand')
     %p
-      = _('To link Sentry to GitLab, enter your Sentry URL and Auth Token.')
-      = link_to _('More information'), help_page_path('operations/error_tracking'), target: '_blank', rel: 'noopener noreferrer'
+      = _('Link Sentry to GitLab to discover and view the errors your application generates.')
+      = link_to _('Learn more.'), help_page_path('operations/error_tracking'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     .js-error-tracking-form{ data: { list_projects_endpoint: project_error_tracking_projects_path(@project, format: :json),
         operations_settings_endpoint: project_settings_operations_path(@project),

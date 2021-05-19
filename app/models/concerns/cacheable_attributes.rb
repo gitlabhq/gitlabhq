@@ -53,7 +53,7 @@ module CacheableAttributes
       return cached_record if cached_record.present?
 
       current_without_cache.tap { |current_record| current_record&.cache! }
-    rescue => e
+    rescue StandardError => e
       if Rails.env.production?
         Gitlab::AppLogger.warn("Cached record for #{name} couldn't be loaded, falling back to uncached record: #{e}")
       else
@@ -66,7 +66,7 @@ module CacheableAttributes
     def expire
       Gitlab::SafeRequestStore.delete(request_store_cache_key)
       cache_backend.delete(cache_key)
-    rescue
+    rescue StandardError
       # Gracefully handle when Redis is not available. For example,
       # omnibus may fail here during gitlab:assets:compile.
     end

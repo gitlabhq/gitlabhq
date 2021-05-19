@@ -1,16 +1,20 @@
-@mixin spinner-color($color) {
+/**
+* Do not use these spinner mixins. Rely on GitLab UI
+* GlLoadingIcon component instead.
+*/
+@mixin spinner-color-deprecated($color) {
   border-color: rgba($color, 0.25);
   border-top-color: $color;
 }
 
-@mixin spinner-size($size, $border-width) {
+@mixin spinner-size-deprecated($size, $border-width) {
   width: $size;
   height: $size;
   border-width: $border-width;
   @include webkit-prefix(transform-origin, 50% 50% calc((#{$size} / 2) + #{$border-width}));
 }
 
-@keyframes spinner-rotate {
+@keyframes spinner-rotate-deprecated {
   0% {
     transform: rotate(0);
   }
@@ -20,47 +24,16 @@
   }
 }
 
-@mixin spinner($size: 16px, $border-width: 2px, $color: $gray-700) {
+@mixin spinner-deprecated($size: 16px, $border-width: 2px, $color: $gray-700) {
   border-radius: 50%;
   position: relative;
   margin: 0 auto;
-  animation-name: spinner-rotate;
+  animation-name: spinner-rotate-deprecated;
   animation-duration: 0.6s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   border-style: solid;
   display: inline-flex;
-  @include spinner-size($size, $border-width);
-  @include spinner-color($color);
-}
-
-.spinner {
-  @include spinner;
-
-  &.spinner-md {
-    @include spinner-size(32px, 3px);
-  }
-
-  &.spinner-lg {
-    @include spinner-size(64px, 4px);
-  }
-
-  &.spinner-dark {
-    @include spinner-color($gray-700);
-  }
-
-  &.spinner-light {
-    @include spinner-color($white);
-  }
-}
-
-.btn {
-  .spinner,
-  .gl-spinner {
-    vertical-align: text-bottom;
-  }
-}
-
-.spin {
-  animation: spinner-rotate 2s infinite linear;
+  @include spinner-size-deprecated($size, $border-width);
+  @include spinner-color-deprecated($color);
 }

@@ -10,7 +10,7 @@ module Gitlab
 
       def restore
         @project.statistics.refresh!
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       end

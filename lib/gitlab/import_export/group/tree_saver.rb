@@ -25,7 +25,7 @@ module Gitlab
           json_writer.write_relation_array('groups', '_all', all_groups)
 
           true
-        rescue => e
+        rescue StandardError => e
           @shared.error(e)
           false
         ensure

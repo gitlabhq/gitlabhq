@@ -49,7 +49,7 @@ module Gitlab
       # Static tags that are set on application start
       def extra_tags_from_env
         Gitlab::Json.parse(ENV.fetch('GITLAB_SENTRY_EXTRA_TAGS', '{}')).to_hash
-      rescue => e
+      rescue StandardError => e
         Gitlab::AppLogger.debug("GITLAB_SENTRY_EXTRA_TAGS could not be parsed as JSON: #{e.class.name}: #{e.message}")
 
         {}

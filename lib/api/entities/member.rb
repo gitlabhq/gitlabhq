@@ -11,4 +11,4 @@ module API
   end
 end
 
-API::Entities::Member.prepend_if_ee('EE::API::Entities::Member', with_descendants: true)
+API::Entities::Member.prepend_mod_with('API::Entities::Member', with_descendants: true)

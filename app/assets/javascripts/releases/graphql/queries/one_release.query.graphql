@@ -1,0 +1,9 @@
+#import "../fragments/release.fragment.graphql"
+
+query oneRelease($fullPath: ID!, $tagName: String!) {
+  project(fullPath: $fullPath) {
+    release(tagName: $tagName) {
+      ...Release
+    }
+  }
+}

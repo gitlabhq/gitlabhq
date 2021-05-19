@@ -6,6 +6,7 @@ RSpec.describe Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver do
   include GraphqlHelpers
 
   let_it_be(:admin_user) { create(:user, :admin) }
+
   let(:current_user) { admin_user }
 
   describe '#resolve' do

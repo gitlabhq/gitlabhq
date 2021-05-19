@@ -1,0 +1,5 @@
+---
+title: Expose enable_advanced_logs_querying in Environments API
+merge_request: 59772
+author:
+type: changed

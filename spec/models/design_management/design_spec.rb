@@ -512,7 +512,7 @@ RSpec.describe DesignManagement::Design do
   end
 
   describe '#to_reference' do
-    let(:namespace) { build(:namespace, path: 'sample-namespace') }
+    let(:namespace) { build(:namespace, id: non_existing_record_id, path: 'sample-namespace') }
     let(:project)   { build(:project, name: 'sample-project', namespace: namespace) }
     let(:group)     { create(:group, name: 'Group', path: 'sample-group') }
     let(:issue)     { build(:issue, iid: 1, project: project) }

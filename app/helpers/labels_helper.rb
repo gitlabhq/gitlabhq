@@ -275,4 +275,4 @@ module LabelsHelper
   end
 end
 
-LabelsHelper.prepend_if_ee('EE::LabelsHelper')
+LabelsHelper.prepend_mod_with('LabelsHelper')

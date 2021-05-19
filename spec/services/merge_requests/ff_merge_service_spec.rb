@@ -23,7 +23,7 @@ RSpec.describe MergeRequests::FfMergeService do
 
   describe '#execute' do
     context 'valid params' do
-      let(:service) { described_class.new(project, user, valid_merge_params) }
+      let(:service) { described_class.new(project: project, current_user: user, params: valid_merge_params) }
 
       def execute_ff_merge
         perform_enqueued_jobs do
@@ -92,7 +92,7 @@ RSpec.describe MergeRequests::FfMergeService do
     end
 
     context 'error handling' do
-      let(:service) { described_class.new(project, user, valid_merge_params.merge(commit_message: 'Awesome message')) }
+      let(:service) { described_class.new(project: project, current_user: user, params: valid_merge_params.merge(commit_message: 'Awesome message')) }
 
       before do
         allow(Gitlab::AppLogger).to receive(:error)

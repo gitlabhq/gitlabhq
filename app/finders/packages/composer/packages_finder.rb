@@ -9,7 +9,7 @@ module Packages
       end
 
       def execute
-        packages_for_group_projects.composer.preload_composer
+        packages_for_group_projects(installable_only: true).composer.preload_composer
       end
     end
   end

@@ -54,7 +54,7 @@ class FileMover
     updated_text = to_model.read_attribute(update_field)
                            .gsub(temp_file_uploader.markdown_link, uploader.markdown_link)
     to_model.update_attribute(update_field, updated_text)
-  rescue
+  rescue StandardError
     revert
     false
   end

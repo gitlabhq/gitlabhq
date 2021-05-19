@@ -118,6 +118,8 @@ To distinguish queries from mutations and fragments, the following naming conven
 - `add_user.mutation.graphql` for mutations;
 - `basic_user.fragment.graphql` for fragments.
 
+If you are using queries for the [CustomersDot GraphQL endpoint](https://gitlab.com/gitlab-org/gitlab/-/blob/be78ccd832fd40315c5e63bb48ee1596ae146f56/app/controllers/customers_dot/proxy_controller.rb), end the filename with `.customer.query.graphql`, `.customer.mutation.graphql`, or `.customer.fragment.graphql`.
+
 ### Fragments
 
 [Fragments](https://graphql.org/learn/queries/#fragments) are a way to make your complex GraphQL queries more readable and re-usable. Here is an example of GraphQL fragment:
@@ -780,7 +782,7 @@ While the Apollo client has support for simple polling, for performance reasons,
 
 Once the backend is set up, there are a few changes to make on the frontend.
 
-First, get your resource Etag path from the backend. In the example of the pipelines graph, this is called the `graphql_resource_etag`. This will be used to create new headers to add to the Apollo context:
+First, get your resource ETag path from the backend. In the example of the pipelines graph, this is called the `graphql_resource_etag`. This will be used to create new headers to add to the Apollo context:
 
 ```javascript
 /* pipelines/components/graph/utils.js */
@@ -815,7 +817,7 @@ apollo: {
 },
 ```
 
-Then, because Etags depend on the request being a `GET` instead of GraphQL's usual `POST`, but our default link library does not support `GET` we need to let our defaut Apollo client know to use a different library.
+Then, because ETags depend on the request being a `GET` instead of GraphQL's usual `POST`, but our default link library does not support `GET` we need to let our default Apollo client know to use a different library.
 
 ```javascript
 /* componentMountIndex.js */

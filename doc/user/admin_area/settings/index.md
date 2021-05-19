@@ -72,7 +72,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | Option | Description |
 | ------ | ----------- |
 | [Spam and Anti-bot Protection](../../../integration/recaptcha.md) | Enable reCAPTCHA or Akismet and set IP limits. For reCAPTCHA, we currently only support [v2](https://developers.google.com/recaptcha/docs/versions). |
-| [Abuse reports](../abuse_reports.md) | Set notification email for abuse reports. |
+| [Abuse reports](../review_abuse_reports.md) | Set notification email for abuse reports. |
 
 ## Metrics and profiling
 
@@ -91,6 +91,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | ------ | ----------- |
 | Performance optimization | [Write to "authorized_keys" file](../../../administration/operations/fast_ssh_key_lookup.md#setting-up-fast-lookup-via-gitlab-shell) and [Push event activities limit and bulk push events](push_event_activities_limit.md). Various settings that affect GitLab performance. |
 | [User and IP rate limits](user_and_ip_rate_limits.md) | Configure limits for web and API requests. |
+| [Package Registry Rate Limits](package_registry_rate_limits.md) | Configure specific limits for Packages API requests that supersede the user and IP rate limits. |
 | [Outbound requests](../../../security/webhooks.md) | Allow requests to the local network from hooks and services. |
 | [Protected Paths](protected_paths.md) | Configure paths to be protected by Rack Attack. |
 | [Incident Management](../../../operations/incident_management/index.md) Limits | Configure limits on the number of inbound alerts able to be sent to a project. |
@@ -107,6 +108,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | Option | Description |
 | ------ | ----------- |
 | [Email](email.md) | Various email settings. |
+| [What's new](../../../administration/whats-new.md) | Configure What's new drawer and content. |
 | [Help page](help_page.md) | Help page text and support page URL. |
 | [Pages](../../../administration/pages/index.md#custom-domain-verification) | Size and domain settings for static websites |
 | [Real-time features](../../../administration/polling.md) | Change this value to influence how frequently the GitLab UI polls for updates. |

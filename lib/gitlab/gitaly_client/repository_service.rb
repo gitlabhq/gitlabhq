@@ -319,7 +319,7 @@ module Gitlab
         response = GitalyClient.call(@storage, :repository_service, :calculate_checksum, request, timeout: GitalyClient.fast_timeout)
         response.checksum.presence
       rescue GRPC::DataLoss => e
-        raise Gitlab::Git::Repository::InvalidRepository.new(e)
+        raise Gitlab::Git::Repository::InvalidRepository, e
       end
 
       def raw_changes_between(from, to)

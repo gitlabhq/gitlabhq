@@ -1,23 +1,25 @@
 {
-  "files": {
-    "file_a.rb": [
-      {
-        "line": 10,
-        "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
-        "severity": "major"
-      },
-      {
-        "line": 10,
-        "description": "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
-        "severity": "minor"
-      }
-    ],
-    "file_b.rb": [
-      {
-        "line": 10,
-        "description": "This cop checks for methods with too many parameters.\nThe maximum number of parameters is configurable.\nKeyword arguments can optionally be excluded from the total count.",
-        "severity": "minor"
-      }
-    ]
+  "merge_request_123456789": {
+    "files": {
+      "file_a.rb": [
+        {
+          "line": 10,
+          "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
+          "severity": "major"
+        },
+        {
+          "line": 10,
+          "description": "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
+          "severity": "minor"
+        }
+      ],
+      "file_b.rb": [
+        {
+          "line": 10,
+          "description": "This cop checks for methods with too many parameters.\nThe maximum number of parameters is configurable.\nKeyword arguments can optionally be excluded from the total count.",
+          "severity": "minor"
+        }
+      ]
+    }
   }
 }

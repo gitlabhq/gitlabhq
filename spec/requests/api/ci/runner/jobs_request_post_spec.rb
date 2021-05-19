@@ -378,7 +378,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                   {
                     "name" => "release",
                     "script" =>
-                    ["release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" --tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\""],
+                    ["release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" --tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\" --assets-link \"{\\\"url\\\":\\\"https://example.com/assets/1\\\",\\\"name\\\":\\\"asset1\\\"}\""],
                     "timeout" => 3600,
                     "when" => "on_success",
                     "allow_failure" => false
@@ -502,8 +502,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                   expect { request_job }.to exceed_all_query_limit(1).for_model(::Ci::JobArtifact)
                 end
 
-                it 'queries the ci_builds table more than five times' do
-                  expect { request_job }.to exceed_all_query_limit(5).for_model(::Ci::Build)
+                it 'queries the ci_builds table more than three times' do
+                  expect { request_job }.to exceed_all_query_limit(3).for_model(::Ci::Build)
                 end
               end
 

@@ -33,10 +33,10 @@ module Boards
       service = Boards::Lists::UpdateService.new(board_parent, current_user, update_list_params)
       result = service.execute(list)
 
-      if result[:status] == :success
+      if result.success?
         head :ok
       else
-        head result[:http_status]
+        head result.http_status
       end
     end
 
@@ -99,4 +99,4 @@ module Boards
   end
 end
 
-Boards::ListsController.prepend_if_ee('EE::Boards::ListsController')
+Boards::ListsController.prepend_mod_with('Boards::ListsController')

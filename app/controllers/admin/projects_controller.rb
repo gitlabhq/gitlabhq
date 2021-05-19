@@ -89,4 +89,4 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 end
 
-Admin::ProjectsController.prepend_if_ee('EE::Admin::ProjectsController')
+Admin::ProjectsController.prepend_mod_with('Admin::ProjectsController')

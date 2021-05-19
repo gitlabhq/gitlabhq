@@ -99,7 +99,7 @@ RSpec.describe 'Project > Settings > Access Tokens', :js do
           visit project_settings_access_tokens_path(personal_project)
 
           expect(page).to have_selector('#new_project_access_token')
-          expect(page).to have_text('You can generate an access token scoped to this project for each application to use the GitLab API.')
+          expect(page).to have_text('Generate project access tokens scoped to this project for your applications that need access to the GitLab API.')
         end
       end
 

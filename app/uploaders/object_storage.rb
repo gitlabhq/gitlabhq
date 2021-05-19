@@ -187,7 +187,6 @@ module ObjectStorage
             hash[:TempPath] = workhorse_local_upload_path
           end
 
-          hash[:FeatureFlagExtractBase] = Feature.enabled?(:workhorse_extract_filename_base, default_enabled: :yaml)
           hash[:MaximumSize] = maximum_size if maximum_size.present?
         end
       end
@@ -452,7 +451,7 @@ module ObjectStorage
     def with_exclusive_lease
       lease_key = exclusive_lease_key
       uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.hour.to_i).try_obtain
-      raise ExclusiveLeaseTaken.new(lease_key) unless uuid
+      raise ExclusiveLeaseTaken, lease_key unless uuid
 
       yield uuid
     ensure
@@ -484,7 +483,7 @@ module ObjectStorage
       end
 
       file
-    rescue => e
+    rescue StandardError => e
       # in case of failure delete new file
       new_file.delete unless new_file.nil?
       # revert back to the old file
@@ -509,4 +508,4 @@ module ObjectStorage
   end
 end
 
-ObjectStorage::Concern.include_if_ee('::EE::ObjectStorage::Concern')
+ObjectStorage::Concern.include_mod_with('ObjectStorage::Concern')

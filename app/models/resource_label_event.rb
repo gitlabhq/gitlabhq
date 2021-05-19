@@ -115,4 +115,4 @@ class ResourceLabelEvent < ResourceEvent
   end
 end
 
-ResourceLabelEvent.prepend_if_ee('EE::ResourceLabelEvent')
+ResourceLabelEvent.prepend_mod_with('ResourceLabelEvent')

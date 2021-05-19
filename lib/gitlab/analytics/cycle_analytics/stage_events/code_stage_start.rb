@@ -17,11 +17,6 @@ module Gitlab
             MergeRequest
           end
 
-          def timestamp_projection
-            Arel::Nodes::NamedFunction.new('COALESCE', column_list)
-          end
-
-          override :column_list
           def column_list
             [
               issue_metrics_table[:first_mentioned_in_commit_at],

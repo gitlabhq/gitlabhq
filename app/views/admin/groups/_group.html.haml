@@ -15,7 +15,7 @@
         = markdown_field(group, :description)
 
   .stats.gl-text-gray-500.gl-flex-shrink-0.gl-display-none.gl-sm-display-flex
-    %span.badge.badge-pill
+    %span.badge.badge-muted.badge-pill.gl-badge.sm
       = storage_counter(group.storage_size)
 
     = render_if_exists 'admin/namespace_plan_badge', namespace: group, css_class: 'gl-ml-5 gl-mr-0'

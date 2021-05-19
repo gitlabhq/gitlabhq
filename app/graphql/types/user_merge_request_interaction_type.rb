@@ -44,4 +44,4 @@ module Types
   end
 end
 
-::Types::UserMergeRequestInteractionType.prepend_if_ee('EE::Types::UserMergeRequestInteractionType')
+::Types::UserMergeRequestInteractionType.prepend_mod_with('Types::UserMergeRequestInteractionType')

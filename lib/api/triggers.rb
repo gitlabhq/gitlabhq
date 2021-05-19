@@ -37,7 +37,7 @@ module API
         result = ::Ci::PipelineTriggerService.new(project, nil, params).execute
         not_found! unless result
 
-        if result[:http_status]
+        if result.error?
           render_api_error!(result[:message], result[:http_status])
         else
           present result[:pipeline], with: Entities::Ci::Pipeline

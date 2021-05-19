@@ -9,6 +9,7 @@ RSpec.describe PropagateIntegrationGroupWorker do
     let_it_be(:subgroup1) { create(:group, parent: group) }
     let_it_be(:subgroup2) { create(:group, parent: group) }
     let_it_be(:integration) { create(:redmine_service, :instance) }
+
     let(:job_args) { [integration.id, group.id, subgroup2.id] }
 
     it_behaves_like 'an idempotent worker' do

@@ -3,9 +3,12 @@
 module Database
   class BatchedBackgroundMigrationWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     feature_category :database
+    tags :exclude_from_kubernetes
     idempotent!
 
     LEASE_TIMEOUT_MULTIPLIER = 3
@@ -13,7 +16,7 @@ module Database
     INTERVAL_VARIANCE = 5.seconds.freeze
 
     def perform
-      return unless Feature.enabled?(:execute_batched_migrations_on_schedule, type: :ops) && active_migration
+      return unless Feature.enabled?(:execute_batched_migrations_on_schedule, type: :ops, default_enabled: :yaml) && active_migration
 
       with_exclusive_lease(active_migration.interval) do
         # Now that we have the exclusive lease, reload migration in case another process has changed it.
@@ -38,16 +41,12 @@ module Database
     end
 
     def with_exclusive_lease(interval)
-      timeout = max(interval * LEASE_TIMEOUT_MULTIPLIER, MINIMUM_LEASE_TIMEOUT)
+      timeout = [interval * LEASE_TIMEOUT_MULTIPLIER, MINIMUM_LEASE_TIMEOUT].max
       lease = Gitlab::ExclusiveLease.new(lease_key, timeout: timeout)
 
       yield if lease.try_obtain
     ensure
       lease&.cancel
-    end
-
-    def max(left, right)
-      left >= right ? left : right
     end
 
     def lease_key

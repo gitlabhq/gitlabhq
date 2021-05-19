@@ -18,16 +18,14 @@ module Ci
         AfterRequeueJobService.new(project, current_user).execute(build)
 
         ::MergeRequests::AddTodoWhenBuildFailsService
-          .new(project, current_user)
+          .new(project: project, current_user: current_user)
           .close(new_build)
       end
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
     def reprocess!(build)
-      unless can?(current_user, :update_build, build)
-        raise Gitlab::Access::AccessDeniedError
-      end
+      check_access!(build)
 
       attributes = self.class.clone_accessors.to_h do |attribute|
         [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
@@ -52,6 +50,12 @@ module Ci
 
     private
 
+    def check_access!(build)
+      unless can?(current_user, :update_build, build)
+        raise Gitlab::Access::AccessDeniedError
+      end
+    end
+
     def create_build!(attributes)
       build = project.builds.new(attributes)
       build.assign_attributes(::Gitlab::Ci::Pipeline::Seed::Build.environment_attributes_for(build))
@@ -64,4 +68,4 @@ module Ci
   end
 end
 
-Ci::RetryBuildService.prepend_if_ee('EE::Ci::RetryBuildService')
+Ci::RetryBuildService.prepend_mod_with('Ci::RetryBuildService')

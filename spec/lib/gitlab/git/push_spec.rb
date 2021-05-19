@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Git::Push do
   let_it_be(:project) { create(:project, :repository) }
+
   let(:oldrev) { project.commit('HEAD~2').id }
   let(:newrev) { project.commit.id }
   let(:ref) { 'refs/heads/some-branch' }

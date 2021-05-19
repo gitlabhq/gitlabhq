@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'declarative_policy'
-
 module API
   class Projects < ::API::Base
     include PaginationParams
@@ -119,6 +117,7 @@ module API
         optional :last_activity_after, type: DateTime, desc: 'Limit results to projects with last_activity after specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
         optional :last_activity_before, type: DateTime, desc: 'Limit results to projects with last_activity before specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
+        optional :topic, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of topics. Limit results to projects having all topics'
 
         use :optional_filter_params_ee
       end
@@ -619,6 +618,8 @@ module API
         optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
         optional :with_shared, type: Boolean, default: false,
                  desc: 'Include shared groups'
+        optional :shared_visible_only, type: Boolean, default: false,
+                 desc: 'Limit to shared groups user has access to'
         optional :shared_min_access_level, type: Integer, values: Gitlab::Access.all_values,
                  desc: 'Limit returned shared groups by minimum access level to the project'
         use :pagination
@@ -663,4 +664,4 @@ module API
   end
 end
 
-API::Projects.prepend_if_ee('EE::API::Projects')
+API::Projects.prepend_mod_with('API::Projects')

@@ -110,6 +110,15 @@ describe('Boards - Getters', () => {
       );
     });
 
+    it('returns group path of last subgroup for the active issue', () => {
+      const mockActiveIssue = {
+        referencePath: 'gitlab-org/subgroup/subsubgroup/gitlab-test#1',
+      };
+      expect(getters.groupPathForActiveIssue({}, { activeBoardItem: mockActiveIssue })).toEqual(
+        'gitlab-org/subgroup/subsubgroup',
+      );
+    });
+
     it('returns empty string as group path when active issue is an empty object', () => {
       const mockActiveIssue = {};
       expect(getters.groupPathForActiveIssue({}, { activeBoardItem: mockActiveIssue })).toEqual('');

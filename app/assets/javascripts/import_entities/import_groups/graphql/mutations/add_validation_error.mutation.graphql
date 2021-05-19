@@ -1,0 +1,9 @@
+mutation addValidationError($sourceGroupId: String!, $field: String!, $message: String!) {
+  addValidationError(sourceGroupId: $sourceGroupId, field: $field, message: $message) @client {
+    id
+    validation_errors {
+      field
+      message
+    }
+  }
+}

@@ -20,6 +20,7 @@ RSpec.describe AlertManagement::AlertPresenter do
   end
 
   let_it_be(:alert) { create(:alert_management_alert, project: project, payload: payload) }
+
   let(:alert_url) { "http://localhost/#{project.full_path}/-/alert_management/#{alert.iid}/details" }
 
   subject(:presenter) { described_class.new(alert) }

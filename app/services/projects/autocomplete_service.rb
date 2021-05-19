@@ -39,4 +39,4 @@ module Projects
   end
 end
 
-Projects::AutocompleteService.prepend_if_ee('EE::Projects::AutocompleteService')
+Projects::AutocompleteService.prepend_mod_with('Projects::AutocompleteService')

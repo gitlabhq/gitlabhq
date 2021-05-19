@@ -866,5 +866,36 @@ RSpec.describe MergeRequestsFinder do
         end
       end
     end
+
+    describe '#count_by_state' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:labels) { create_list(:label, 2, project: project) }
+      let_it_be(:merge_requests) { create_list(:merge_request, 4, :unique_branches, author: user, target_project: project, source_project: project, labels: labels) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      context 'when filtering by multiple labels' do
+        it 'returns the correnct counts' do
+          counts = described_class.new(user, { label_name: labels.map(&:name) }).count_by_state
+
+          expect(counts[:all]).to eq(merge_requests.size)
+        end
+      end
+
+      context 'when filtering by approved_by_usernames' do
+        before do
+          merge_requests.each { |mr| mr.approved_by_users << user }
+        end
+
+        it 'returns the correnct counts' do
+          counts = described_class.new(user, { approved_by_usernames: [user.username] }).count_by_state
+
+          expect(counts[:all]).to eq(merge_requests.size)
+        end
+      end
+    end
   end
 end

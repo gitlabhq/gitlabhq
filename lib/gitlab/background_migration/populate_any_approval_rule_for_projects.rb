@@ -11,4 +11,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::PopulateAnyApprovalRuleForProjects.prepend_if_ee('EE::Gitlab::BackgroundMigration::PopulateAnyApprovalRuleForProjects')
+Gitlab::BackgroundMigration::PopulateAnyApprovalRuleForProjects.prepend_mod_with('Gitlab::BackgroundMigration::PopulateAnyApprovalRuleForProjects')

@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# JWT OmniAuth provider
+# JWT OmniAuth provider **(FREE SELF)**
 
 To enable the JWT OmniAuth provider, you must register your application with JWT.
 JWT will provide you with a secret key for you to use.

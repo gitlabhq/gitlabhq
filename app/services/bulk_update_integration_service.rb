@@ -8,8 +8,8 @@ class BulkUpdateIntegrationService
 
   # rubocop: disable CodeReuse/ActiveRecord
   def execute
-    Service.transaction do
-      Service.where(id: batch.select(:id)).update_all(service_hash)
+    Integration.transaction do
+      Integration.where(id: batch.select(:id)).update_all(service_hash)
 
       if integration.data_fields_present?
         integration.data_fields.class.where(service_id: batch.select(:id)).update_all(data_fields_hash)

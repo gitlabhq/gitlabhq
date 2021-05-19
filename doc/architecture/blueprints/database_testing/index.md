@@ -79,7 +79,7 @@ Database Lab provides an API we can interact with to manage thin clones. In orde
 
 The short-term focus is on testing regular migrations (typically schema changes) and using the existing Database Lab instance from postgres.ai for it.
 
-In order to secure this process and meet compliance goals, the runner environment will be treated as a *production* environment and similarly locked down, monitored and audited. Only Database Maintainers will have access to the CI pipeline and its job output. Everyone else will only be able to see the results and statistics posted back on the merge request.
+In order to secure this process and meet compliance goals, the runner environment is treated as a *production* environment and similarly locked down, monitored and audited. Only Database Maintainers have access to the CI pipeline and its job output. Everyone else can only see the results and statistics posted back on the merge request.
 
 We implement a secured CI pipeline on <https://ops.gitlab.net> that adds the execution steps outlined above. The goal is to secure this pipeline in order to solve the following problem:
 
@@ -117,7 +117,7 @@ An alternative approach we have discussed and abandoned is to "scrub" and anonym
 - Anonymization is complex by nature - it is a hard problem to call a "scrubbed clone" actually safe to work with in public. Different data types may require different anonymization techniques (e.g. anonymizing sensitive information inside a JSON field) and only focusing on one attribute at a time does not guarantee that a dataset is fully anonymized (for example join attacks or using timestamps in conjunction to public profiles/projects to de-anonymize users by there activity).
 - Anonymization requires an additional process to keep track and update the set of attributes considered as sensitive, ongoing maintenance and security reviews every time the database schema changes.
 - Annotating data as "sensitive" is error prone, with the wrong anonymization approach used for a data type or one sensitive attribute accidentally not marked as such possibly leading to a data breach.
-- Scrubbing not only removes sensitive data, but also changes data distribution, which greatly affects performance of migrations and queries.
+- Scrubbing not only removes sensitive data, but it also changes data distribution, which greatly affects performance of migrations and queries.
 - Scrubbing heavily changes the database contents, potentially updating a lot of data, which leads to different data storage details (think MVC bloat), affecting performance of migrations and queries.
 
 ## Who

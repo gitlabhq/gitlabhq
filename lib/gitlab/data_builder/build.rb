@@ -30,6 +30,7 @@ module Gitlab
           build_started_at: build.started_at,
           build_finished_at: build.finished_at,
           build_duration: build.duration,
+          build_queued_duration: build.queued_duration,
           build_allow_failure: build.allow_failure,
           build_failure_reason: build.failure_reason,
           pipeline_id: commit.id,

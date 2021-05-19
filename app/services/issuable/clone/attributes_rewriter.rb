@@ -73,10 +73,15 @@ module Issuable
 
         copy_events(ResourceStateEvent.table_name, original_entity.resource_state_events) do |event|
           event.attributes
-            .except('id')
+            .except(*blocked_state_event_attributes)
             .merge(entity_key => new_entity.id,
                    'state' => ResourceStateEvent.states[event.state])
         end
+      end
+
+      # Overriden on EE::Issuable::Clone::AttributesRewriter
+      def blocked_state_event_attributes
+        ['id']
       end
 
       def event_attributes_with_milestone(event, milestone)
@@ -118,4 +123,4 @@ module Issuable
   end
 end
 
-Issuable::Clone::AttributesRewriter.prepend_if_ee('EE::Issuable::Clone::AttributesRewriter')
+Issuable::Clone::AttributesRewriter.prepend_mod_with('Issuable::Clone::AttributesRewriter')

@@ -9,6 +9,7 @@ RSpec.describe Resolvers::ProjectPipelineResolver do
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, iid: '1234', sha: 'sha') }
   let_it_be(:other_project_pipeline) { create(:ci_pipeline, project: project, iid: '1235', sha: 'sha2') }
   let_it_be(:other_pipeline) { create(:ci_pipeline) }
+
   let(:current_user) { create(:user) }
 
   specify do

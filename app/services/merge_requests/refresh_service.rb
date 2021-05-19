@@ -62,7 +62,7 @@ module MergeRequests
       # the latest diff state as the last _valid_ one.
       merge_requests_for_source_branch.reject(&:source_branch_exists?).each do |mr|
         MergeRequests::CloseService
-          .new(mr.target_project, @current_user)
+          .new(project: mr.target_project, current_user: @current_user)
           .execute(mr)
       end
     end
@@ -96,7 +96,7 @@ module MergeRequests
         merge_request.merge_commit_sha = analyzer.get_merge_commit(merge_request.diff_head_sha)
 
         MergeRequests::PostMergeService
-          .new(merge_request.target_project, @current_user)
+          .new(project: merge_request.target_project, current_user: @current_user)
           .execute(merge_request)
       end
     end
@@ -109,7 +109,7 @@ module MergeRequests
 
       merge_requests_for_forks.find_each do |mr|
         LinkLfsObjectsService
-          .new(mr.target_project)
+          .new(project: mr.target_project)
           .execute(mr, oldrev: @push.oldrev, newrev: @push.newrev)
       end
     end
@@ -162,12 +162,7 @@ module MergeRequests
     end
 
     def refresh_pipelines_on_merge_requests(merge_request)
-      if Feature.enabled?(:code_review_async_pipeline_creation, project, default_enabled: :yaml)
-        create_pipeline_for(merge_request, current_user, async: true)
-      else
-        create_pipeline_for(merge_request, current_user, async: false)
-        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
-      end
+      create_pipeline_for(merge_request, current_user, async: true)
     end
 
     def abort_auto_merges(merge_request)
@@ -218,7 +213,7 @@ module MergeRequests
           # If the a commit no longer exists in this repo, gitlab_git throws
           # a Rugged::OdbError. This is fixed in https://gitlab.com/gitlab-org/gitlab_git/merge_requests/52
           @commits = @project.repository.commits_between(common_ref, @push.newrev) if common_ref
-        rescue
+        rescue StandardError
         end
       elsif @push.branch_removed?
         # No commits for a deleted branch.
@@ -309,4 +304,4 @@ module MergeRequests
   end
 end
 
-MergeRequests::RefreshService.prepend_if_ee('EE::MergeRequests::RefreshService')
+MergeRequests::RefreshService.prepend_mod_with('MergeRequests::RefreshService')

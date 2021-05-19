@@ -283,6 +283,8 @@ $indigo-700: #4b4ba3;
 $indigo-800: #393982;
 $indigo-900: #292961;
 $indigo-950: #1a1a40;
+// To do this variant right for darkmode, we need to create a variable for it.
+$indigo-900-alpha-008: rgba($indigo-900, 0.08);
 
 $theme-blue-50: #f4f8fc;
 $theme-blue-100: #e6edf5;

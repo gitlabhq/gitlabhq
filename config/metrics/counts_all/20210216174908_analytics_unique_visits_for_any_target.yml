@@ -1,9 +1,9 @@
 ---
 key_path: analytics_unique_visits.analytics_unique_visits_for_any_target
-description: Visits to any of the pages listed above per week
+description: Unique visitors to any analytics feature by week
 product_section: dev
 product_stage: manage
-product_group: group::analytics
+product_group: group::optimize
 product_category:
 value_type: number
 status: data_available

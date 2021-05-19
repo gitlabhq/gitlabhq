@@ -70,7 +70,7 @@ export default {
 <template>
   <div class="md-suggestion">
     <suggestion-diff-header
-      class="qa-suggestion-diff-header js-suggestion-diff-header"
+      class="js-suggestion-diff-header"
       :suggestions-count="suggestionsCount"
       :can-apply="suggestion.appliable && suggestion.current_user.can_apply && !disabled"
       :is-applied="suggestion.applied"

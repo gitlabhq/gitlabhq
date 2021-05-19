@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Helpers do
+  using RSpec::Parameterized::TableSyntax
+
   subject { Class.new.include(described_class).new }
 
   describe '#find_project' do
@@ -99,6 +101,59 @@ RSpec.describe API::Helpers do
     end
   end
 
+  describe '#find_project!' do
+    let_it_be(:project) { create(:project) }
+
+    let(:user) { project.owner}
+
+    before do
+      allow(subject).to receive(:current_user).and_return(user)
+      allow(subject).to receive(:authorized_project_scope?).and_return(true)
+      allow(subject).to receive(:job_token_authentication?).and_return(false)
+      allow(subject).to receive(:authenticate_non_public?).and_return(false)
+    end
+
+    shared_examples 'project finder' do
+      context 'when project exists' do
+        it 'returns requested project' do
+          expect(subject.find_project!(existing_id)).to eq(project)
+        end
+
+        it 'returns nil' do
+          expect(subject).to receive(:render_api_error!).with('404 Project Not Found', 404)
+          expect(subject.find_project!(non_existing_id)).to be_nil
+        end
+      end
+    end
+
+    context 'when ID is used as an argument' do
+      let(:existing_id) { project.id }
+      let(:non_existing_id) { non_existing_record_id }
+
+      it_behaves_like 'project finder'
+    end
+
+    context 'when PATH is used as an argument' do
+      let(:existing_id) { project.full_path }
+      let(:non_existing_id) { 'something/else' }
+
+      it_behaves_like 'project finder'
+
+      context 'with an invalid PATH' do
+        let(:non_existing_id) { 'undefined' } # path without slash
+
+        it_behaves_like 'project finder'
+
+        it 'does not hit the database' do
+          expect(Project).not_to receive(:find_by_full_path)
+          expect(subject).to receive(:render_api_error!).with('404 Project Not Found', 404)
+
+          subject.find_project!(non_existing_id)
+        end
+      end
+    end
+  end
+
   describe '#find_namespace' do
     let(:namespace) { create(:namespace) }
 
@@ -189,6 +244,49 @@ RSpec.describe API::Helpers do
     end
 
     it_behaves_like 'user namespace finder'
+  end
+
+  describe '#authorized_project_scope?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:other_project) { create(:project) }
+    let_it_be(:job) { create(:ci_build) }
+
+    let(:send_authorized_project_scope) { subject.authorized_project_scope?(project) }
+
+    where(:job_token_authentication, :route_setting, :feature_flag, :same_job_project, :expected_result) do
+      false | false | false | false | true
+      false | false | false | true  | true
+      false | false | true  | false | true
+      false | false | true  | true  | true
+      false | true  | false | false | true
+      false | true  | false | true  | true
+      false | true  | true  | false | true
+      false | true  | true  | true  | true
+      true  | false | false | false | true
+      true  | false | false | true  | true
+      true  | false | true  | false | true
+      true  | false | true  | true  | true
+      true  | true  | false | false | false
+      true  | true  | false | true  | false
+      true  | true  | true  | false | false
+      true  | true  | true  | true  | true
+    end
+
+    with_them do
+      before do
+        allow(subject).to receive(:job_token_authentication?).and_return(job_token_authentication)
+        allow(subject).to receive(:route_authentication_setting).and_return(job_token_scope: route_setting ? :project : nil)
+        allow(subject).to receive(:current_authenticated_job).and_return(job)
+        allow(job).to receive(:project).and_return(same_job_project ? project : other_project)
+
+        stub_feature_flags(ci_job_token_scope: false)
+        stub_feature_flags(ci_job_token_scope: project) if feature_flag
+      end
+
+      it 'returns the expected result' do
+        expect(send_authorized_project_scope).to eq(expected_result)
+      end
+    end
   end
 
   describe '#send_git_blob' do

@@ -61,7 +61,7 @@ RSpec.describe UserPreference do
   describe 'sort_by preferences' do
     shared_examples_for 'a sort_by preference' do
       it 'allows nil sort fields' do
-        user_preference.update(attribute => nil)
+        user_preference.update!(attribute => nil)
 
         expect(user_preference).to be_valid
       end

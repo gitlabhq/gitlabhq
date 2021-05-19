@@ -12,7 +12,7 @@ module Lfs
       error('already locked', 409, current_lock)
     rescue Gitlab::GitAccess::ForbiddenError => ex
       error(ex.message, 403)
-    rescue => ex
+    rescue StandardError => ex
       error(ex.message, 500)
     end
 
@@ -42,4 +42,4 @@ module Lfs
   end
 end
 
-Lfs::LockFileService.prepend_if_ee('EE::Lfs::LockFileService')
+Lfs::LockFileService.prepend_mod_with('Lfs::LockFileService')

@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Utils::ZoomUrlValidator do
         expect(zoom_meeting.valid?).to eq(false)
 
         expect(zoom_meeting.errors).to be_present
-        expect(zoom_meeting.errors.first[1]).to eq 'must contain one valid Zoom URL'
+        expect(zoom_meeting.errors.added?(:url, 'must contain one valid Zoom URL')).to be true
       end
     end
 

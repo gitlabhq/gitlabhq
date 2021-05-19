@@ -68,4 +68,4 @@ class PreviewMarkdownService < BaseService
   end
 end
 
-PreviewMarkdownService.prepend_if_ee('EE::PreviewMarkdownService')
+PreviewMarkdownService.prepend_mod_with('PreviewMarkdownService')

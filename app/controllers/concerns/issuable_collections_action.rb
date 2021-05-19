@@ -32,10 +32,6 @@ module IssuableCollectionsAction
 
   private
 
-  def set_not_query_feature_flag(object = nil)
-    push_frontend_feature_flag(:not_issuable_queries, object, default_enabled: true)
-  end
-
   def sorting_field
     case action_name
     when 'issues'

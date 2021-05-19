@@ -1,8 +1,0 @@
----
-name: usage_data_i_code_review_user_merge_mr
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50654
-rollout_issue_url: 
-milestone: '13.8'
-type: development
-group: group::code review
-default_enabled: true

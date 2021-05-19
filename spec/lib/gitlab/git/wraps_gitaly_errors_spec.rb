@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Git::WrapsGitalyErrors do
 
     mapping.each do |grpc_error, error|
       it "wraps #{grpc_error} in a #{error}" do
-        expect { wrapper.wrapped_gitaly_errors { raise grpc_error.new('wrapped') } }
+        expect { wrapper.wrapped_gitaly_errors { raise grpc_error, 'wrapped' } }
           .to raise_error(error)
       end
     end

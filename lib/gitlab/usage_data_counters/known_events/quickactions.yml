@@ -3,334 +3,267 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_assign_single
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_assign_multiple
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_assign_self
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_assign_reviewer
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_award
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_board_move
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_child_epic
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_clear_weight
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_clone
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_close
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_confidential
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_copy_metadata_merge_request
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_copy_metadata_issue
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_create_merge_request
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_done
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_draft
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_due
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_duplicate
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_epic
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_estimate
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_iteration
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_label
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_lock
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_merge
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_milestone
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_move
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_parent_epic
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_promote
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_publish
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_reassign
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_reassign_reviewer
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_rebase
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_relabel
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_relate
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_remove_child_epic
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_remove_due_date
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_remove_epic
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_remove_estimate
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_remove_iteration
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_remove_milestone
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_remove_parent_epic
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_remove_time_spent
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_remove_zoom
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_reopen
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_shrug
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_spend_subtract
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_spend_add
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_submit_review
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_subscribe
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_tableflip
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_tag
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_target_branch
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_title
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_todo
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_unassign_specific
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_unassign_all
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_unassign_reviewer
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_unlabel_specific
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_unlabel_all
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_unlock
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_unsubscribe
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_weight
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_wip
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_zoom
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_invite_email_single
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions
 - name: i_quickactions_invite_email_multiple
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-  feature_flag: usage_data_track_quickactions

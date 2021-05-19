@@ -72,6 +72,7 @@ RSpec.describe ProjectPresenter do
 
       context 'when repository is not empty' do
         let_it_be(:project) { create(:project, :public, :repository) }
+
         let(:release) { create(:release, project: project, author: user) }
 
         it 'returns files and readme if user has repository access' do
@@ -271,6 +272,7 @@ RSpec.describe ProjectPresenter do
     let_it_be(:user)    { create(:user) }
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:release) { create(:release, project: project, author: user) }
+
     let(:presenter) { described_class.new(project, current_user: user) }
 
     describe '#files_anchor_data' do
@@ -790,6 +792,12 @@ RSpec.describe ProjectPresenter do
         it { is_expected.to be_falsey }
       end
     end
+  end
+
+  describe '#add_code_quality_ci_yml_path' do
+    subject { presenter.add_code_quality_ci_yml_path }
+
+    it { is_expected.to match(/code_quality_walkthrough=true.*template=Code-Quality/) }
   end
 
   describe 'empty_repo_upload_experiment?' do

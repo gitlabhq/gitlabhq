@@ -13,7 +13,7 @@ module Packages
           )
 
           unless meta.valid?
-            raise ActiveRecord::RecordInvalid.new(meta)
+            raise ActiveRecord::RecordInvalid, meta
           end
 
           Packages::Pypi::Metadatum.upsert(meta.attributes)

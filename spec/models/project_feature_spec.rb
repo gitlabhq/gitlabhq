@@ -20,7 +20,7 @@ RSpec.describe ProjectFeature do
 
   context 'repository related features' do
     before do
-      project.project_feature.update(
+      project.project_feature.update!(
         merge_requests_access_level: ProjectFeature::DISABLED,
         builds_access_level: ProjectFeature::DISABLED,
         repository_access_level: ProjectFeature::PRIVATE

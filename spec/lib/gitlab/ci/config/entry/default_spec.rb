@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Default do
+  let(:config) { {} }
   let(:entry) { described_class.new(config) }
 
   it_behaves_like 'with inheritable CI config' do

@@ -68,7 +68,7 @@ module Issuable
       end
 
       def create_issuable(attributes)
-        create_issuable_class.new(@project, @user, attributes).execute
+        create_issuable_class.new(project: @project, current_user: @user, params: attributes).execute
       end
 
       def email_results_to_user

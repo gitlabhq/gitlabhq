@@ -129,6 +129,11 @@ RSpec.describe ApplicationSetting do
     it { is_expected.not_to allow_value(nil).for(:notes_create_limit_allowlist) }
     it { is_expected.to allow_value([]).for(:notes_create_limit_allowlist) }
 
+    it { is_expected.to allow_value('all_tiers').for(:whats_new_variant) }
+    it { is_expected.to allow_value('current_tier').for(:whats_new_variant) }
+    it { is_expected.to allow_value('disabled').for(:whats_new_variant) }
+    it { is_expected.not_to allow_value(nil).for(:whats_new_variant) }
+
     context 'help_page_documentation_base_url validations' do
       it { is_expected.to allow_value(nil).for(:help_page_documentation_base_url) }
       it { is_expected.to allow_value('https://docs.gitlab.com').for(:help_page_documentation_base_url) }
@@ -211,7 +216,8 @@ RSpec.describe ApplicationSetting do
           setting.spam_check_endpoint_enabled = true
         end
 
-        it { is_expected.to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value('grpc://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value(nil).for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('').for(:spam_check_endpoint_url) }
@@ -222,7 +228,8 @@ RSpec.describe ApplicationSetting do
           setting.spam_check_endpoint_enabled = false
         end
 
-        it { is_expected.to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value('grpc://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
         it { is_expected.to allow_value(nil).for(:spam_check_endpoint_url) }
         it { is_expected.to allow_value('').for(:spam_check_endpoint_url) }
@@ -245,7 +252,9 @@ RSpec.describe ApplicationSetting do
 
     context "when user accepted let's encrypt terms of service" do
       before do
-        setting.update(lets_encrypt_terms_of_service_accepted: true)
+        expect do
+          setting.update!(lets_encrypt_terms_of_service_accepted: true)
+        end.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Lets encrypt notification email can't be blank")
       end
 
       it { is_expected.not_to allow_value(nil).for(:lets_encrypt_notification_email) }
@@ -295,26 +304,30 @@ RSpec.describe ApplicationSetting do
 
     describe 'default_artifacts_expire_in' do
       it 'sets an error if it cannot parse' do
-        setting.update(default_artifacts_expire_in: 'a')
+        expect do
+          setting.update!(default_artifacts_expire_in: 'a')
+        end.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Default artifacts expire in is not a correct duration")
 
         expect_invalid
       end
 
       it 'sets an error if it is blank' do
-        setting.update(default_artifacts_expire_in: ' ')
+        expect do
+          setting.update!(default_artifacts_expire_in: ' ')
+        end.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Default artifacts expire in can't be blank")
 
         expect_invalid
       end
 
       it 'sets the value if it is valid' do
-        setting.update(default_artifacts_expire_in: '30 days')
+        setting.update!(default_artifacts_expire_in: '30 days')
 
         expect(setting).to be_valid
         expect(setting.default_artifacts_expire_in).to eq('30 days')
       end
 
       it 'sets the value if it is 0' do
-        setting.update(default_artifacts_expire_in: '0')
+        setting.update!(default_artifacts_expire_in: '0')
 
         expect(setting).to be_valid
         expect(setting.default_artifacts_expire_in).to eq('0')
@@ -393,18 +406,18 @@ RSpec.describe ApplicationSetting do
     context 'auto_devops_domain setting' do
       context 'when auto_devops_enabled? is true' do
         before do
-          setting.update(auto_devops_enabled: true)
+          setting.update!(auto_devops_enabled: true)
         end
 
         it 'can be blank' do
-          setting.update(auto_devops_domain: '')
+          setting.update!(auto_devops_domain: '')
 
           expect(setting).to be_valid
         end
 
         context 'with a valid value' do
           before do
-            setting.update(auto_devops_domain: 'domain.com')
+            setting.update!(auto_devops_domain: 'domain.com')
           end
 
           it 'is valid' do
@@ -414,7 +427,9 @@ RSpec.describe ApplicationSetting do
 
         context 'with an invalid value' do
           before do
-            setting.update(auto_devops_domain: 'definitelynotahostname')
+            expect do
+              setting.update!(auto_devops_domain: 'definitelynotahostname')
+            end.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Auto devops domain is not a fully qualified domain name")
           end
 
           it 'is invalid' do
@@ -785,6 +800,10 @@ RSpec.describe ApplicationSetting do
           throttle_authenticated_api_period_in_seconds
           throttle_authenticated_web_requests_per_period
           throttle_authenticated_web_period_in_seconds
+          throttle_unauthenticated_packages_api_requests_per_period
+          throttle_unauthenticated_packages_api_period_in_seconds
+          throttle_authenticated_packages_api_requests_per_period
+          throttle_authenticated_packages_api_period_in_seconds
         ]
       end
 

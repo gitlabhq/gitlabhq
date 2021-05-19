@@ -250,4 +250,4 @@ module ContainerRegistry
   end
 end
 
-ContainerRegistry::Client.prepend_if_ee('EE::ContainerRegistry::Client')
+ContainerRegistry::Client.prepend_mod_with('ContainerRegistry::Client')

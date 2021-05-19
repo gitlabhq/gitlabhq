@@ -158,7 +158,7 @@ module API
           status 200
 
           unless actor.key_or_user
-            raise ActiveRecord::RecordNotFound.new('User not found!')
+            raise ActiveRecord::RecordNotFound, 'User not found!'
           end
 
           actor.update_last_used_at!
@@ -336,4 +336,4 @@ module API
   end
 end
 
-API::Internal::Base.prepend_if_ee('EE::API::Internal::Base')
+API::Internal::Base.prepend_mod_with('API::Internal::Base')

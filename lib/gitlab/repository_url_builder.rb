@@ -10,7 +10,7 @@ module Gitlab
         when :http
           http_url(path)
         else
-          raise NotImplementedError.new("No URL builder defined for protocol #{protocol}")
+          raise NotImplementedError, "No URL builder defined for protocol #{protocol}"
         end
       end
 

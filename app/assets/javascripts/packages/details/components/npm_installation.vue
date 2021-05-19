@@ -14,6 +14,11 @@ export default {
     GlLink,
     GlSprintf,
   },
+  data() {
+    return {
+      instructionType: 'npm',
+    };
+  },
   computed: {
     ...mapState(['npmHelpPath']),
     ...mapGetters(['npmInstallationCommand', 'npmSetupCommand']),
@@ -29,6 +34,9 @@ export default {
     yarnSetupCommand() {
       return this.npmSetupCommand(NpmManager.YARN);
     },
+    showNpm() {
+      return this.instructionType === 'npm';
+    },
   },
   i18n: {
     helpText: s__(
@@ -37,16 +45,23 @@ export default {
   },
   trackingActions: { ...TrackingActions },
   TrackingLabels,
-  installOptions: [{ value: 'npm', label: s__('PackageRegistry|Show NPM commands') }],
+  installOptions: [
+    { value: 'npm', label: s__('PackageRegistry|Show NPM commands') },
+    { value: 'yarn', label: s__('PackageRegistry|Show Yarn commands') },
+  ],
 };
 </script>
 
 <template>
   <div>
-    <installation-title package-type="npm" :options="$options.installOptions" />
+    <installation-title
+      package-type="npm"
+      :options="$options.installOptions"
+      @change="instructionType = $event"
+    />
 
     <code-instruction
-      :label="s__('PackageRegistry|npm command')"
+      v-if="showNpm"
       :instruction="npmCommand"
       :copy-text="s__('PackageRegistry|Copy npm command')"
       :tracking-action="$options.trackingActions.COPY_NPM_INSTALL_COMMAND"
@@ -54,7 +69,7 @@ export default {
     />
 
     <code-instruction
-      :label="s__('PackageRegistry|yarn command')"
+      v-else
       :instruction="yarnCommand"
       :copy-text="s__('PackageRegistry|Copy yarn command')"
       :tracking-action="$options.trackingActions.COPY_YARN_INSTALL_COMMAND"
@@ -64,7 +79,7 @@ export default {
     <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
 
     <code-instruction
-      :label="s__('PackageRegistry|npm command')"
+      v-if="showNpm"
       :instruction="npmSetup"
       :copy-text="s__('PackageRegistry|Copy npm setup command')"
       :tracking-action="$options.trackingActions.COPY_NPM_SETUP_COMMAND"
@@ -72,7 +87,7 @@ export default {
     />
 
     <code-instruction
-      :label="s__('PackageRegistry|yarn command')"
+      v-else
       :instruction="yarnSetupCommand"
       :copy-text="s__('PackageRegistry|Copy yarn setup command')"
       :tracking-action="$options.trackingActions.COPY_YARN_SETUP_COMMAND"

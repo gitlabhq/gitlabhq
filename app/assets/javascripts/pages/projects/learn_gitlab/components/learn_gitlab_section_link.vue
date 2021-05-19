@@ -34,7 +34,15 @@ export default {
       {{ $options.i18n.ACTION_LABELS[action].title }}
     </span>
     <span v-else>
-      <gl-link :href="value.url">{{ $options.i18n.ACTION_LABELS[action].title }}</gl-link>
+      <gl-link
+        target="_blank"
+        :href="value.url"
+        data-track-action="click_link"
+        :data-track-label="$options.i18n.ACTION_LABELS[action].title"
+        data-track-property="Growth::Conversion::Experiment::LearnGitLabA"
+      >
+        {{ $options.i18n.ACTION_LABELS[action].title }}
+      </gl-link>
     </span>
     <span v-if="trialOnly" class="gl-font-style-italic gl-text-gray-500" data-testid="trial-only">
       - {{ $options.i18n.trialOnly }}

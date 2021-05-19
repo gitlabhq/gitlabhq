@@ -2,11 +2,14 @@
 
 class DisallowTwoFactorForSubgroupsWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ExceptionBacktrace
 
   INTERVAL = 2.seconds.to_i
 
   feature_category :subgroups
+  tags :exclude_from_kubernetes
   idempotent!
 
   def perform(group_id)

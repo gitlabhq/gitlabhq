@@ -18,3 +18,4 @@ const getClient = memoize(() =>
 );
 
 export const query = (...args) => getClient().query(...args);
+export const mutate = (...args) => getClient().mutate(...args);

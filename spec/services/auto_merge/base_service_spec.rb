@@ -84,7 +84,7 @@ RSpec.describe AutoMerge::BaseService do
 
     context 'when failed to save merge request' do
       before do
-        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid.new }
+        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid }
       end
 
       it 'does not yield block' do
@@ -195,7 +195,7 @@ RSpec.describe AutoMerge::BaseService do
 
     context 'when failed to save' do
       before do
-        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid.new }
+        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid }
       end
 
       it 'does not yield block' do
@@ -213,7 +213,7 @@ RSpec.describe AutoMerge::BaseService do
 
     context 'when failed to save merge request' do
       before do
-        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid.new }
+        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid }
       end
 
       it 'returns error status' do
@@ -260,7 +260,7 @@ RSpec.describe AutoMerge::BaseService do
 
     context 'when failed to save' do
       before do
-        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid.new }
+        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid }
       end
 
       it 'returns error status' do

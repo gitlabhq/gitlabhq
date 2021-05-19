@@ -5,7 +5,7 @@ module Admin
     include PropagateService
 
     def propagate
-      if integration.instance?
+      if integration.instance_level?
         update_inherited_integrations
         create_integration_for_groups_without_integration
         create_integration_for_projects_without_integration
@@ -20,14 +20,14 @@ module Admin
 
     def update_inherited_integrations
       propagate_integrations(
-        Service.by_type(integration.type).inherit_from_id(integration.id),
+        Integration.by_type(integration.type).inherit_from_id(integration.id),
         PropagateIntegrationInheritWorker
       )
     end
 
     def update_inherited_descendant_integrations
       propagate_integrations(
-        Service.inherited_descendants_from_self_or_ancestors_from(integration),
+        Integration.inherited_descendants_from_self_or_ancestors_from(integration),
         PropagateIntegrationInheritDescendantWorker
       )
     end

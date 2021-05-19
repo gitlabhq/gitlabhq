@@ -7,6 +7,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import mockAlerts from 'jest/vue_shared/alert_details/mocks/alerts.json';
 import AlertManagementTable from '~/alert_management/components/alert_management_table.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
+import AlertDeprecationWarning from '~/vue_shared/components/alerts_deprecation_warning.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import defaultProvideValues from '../mocks/alerts_provide_config.json';
@@ -14,6 +15,7 @@ import defaultProvideValues from '../mocks/alerts_provide_config.json';
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn().mockName('visitUrlMock'),
   joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
+  setUrlFragment: jest.requireActual('~/lib/utils/url_utility').setUrlFragment,
 }));
 
 describe('AlertManagementTable', () => {
@@ -39,6 +41,8 @@ describe('AlertManagementTable', () => {
     resolved: 11,
     all: 26,
   };
+  const findDeprecationNotice = () =>
+    wrapper.findComponent(AlertDeprecationWarning).findComponent(GlAlert);
 
   function mountComponent({ provide = {}, data = {}, loading = false, stubs = {} } = {}) {
     wrapper = extendedWrapper(
@@ -47,6 +51,7 @@ describe('AlertManagementTable', () => {
           ...defaultProvideValues,
           alertManagementEnabled: true,
           userCanEnableAlertManagement: true,
+          hasManagedPrometheus: false,
           ...provide,
         },
         data() {
@@ -232,6 +237,20 @@ describe('AlertManagementTable', () => {
       });
 
       expect(visitUrl).toHaveBeenCalledWith('/1527542/details', true);
+    });
+
+    describe('deprecation notice', () => {
+      it('shows the deprecation notice when available', () => {
+        mountComponent({ provide: { hasManagedPrometheus: true } });
+
+        expect(findDeprecationNotice().exists()).toBe(true);
+      });
+
+      it('hides the deprecation notice when not available', () => {
+        mountComponent();
+
+        expect(findDeprecationNotice().exists()).toBe(false);
+      });
     });
 
     describe('alert issue links', () => {

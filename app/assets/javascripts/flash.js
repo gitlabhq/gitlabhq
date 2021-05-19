@@ -9,6 +9,10 @@ const FLASH_TYPES = {
   WARNING: 'warning',
 };
 
+const getCloseEl = (flashEl) => {
+  return flashEl.querySelector('.js-close-icon');
+};
+
 const hideFlash = (flashEl, fadeTransition = true) => {
   if (fadeTransition) {
     Object.assign(flashEl.style, {
@@ -56,9 +60,7 @@ const createFlashEl = (message, type) => `
 `;
 
 const removeFlashClickListener = (flashEl, fadeTransition) => {
-  flashEl
-    .querySelector('.js-close-icon')
-    .addEventListener('click', () => hideFlash(flashEl, fadeTransition));
+  getCloseEl(flashEl).addEventListener('click', () => hideFlash(flashEl, fadeTransition));
 };
 
 /*
@@ -113,6 +115,10 @@ const createFlash = function createFlash({
   if (addBodyClass) document.body.classList.add('flash-shown');
 
   if (captureError && error) Sentry.captureException(error);
+
+  flashContainer.close = () => {
+    getCloseEl(flashEl).click();
+  };
 
   return flashContainer;
 };

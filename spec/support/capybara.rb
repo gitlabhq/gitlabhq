@@ -157,7 +157,7 @@ RSpec.configure do |config|
     unless session.current_window.size == CAPYBARA_WINDOW_SIZE
       begin
         session.current_window.resize_to(*CAPYBARA_WINDOW_SIZE)
-      rescue # ?
+      rescue StandardError # ?
       end
     end
   end
@@ -170,14 +170,16 @@ RSpec.configure do |config|
     Capybara.raise_server_errors = false
 
     example.run
-
-    if example.metadata[:screenshot]
-      screenshot = example.metadata[:screenshot][:image] || example.metadata[:screenshot][:html]
-      example.metadata[:stdout] = %{[[ATTACHMENT|#{screenshot}]]}
-    end
-
   ensure
     Capybara.raise_server_errors = true
+  end
+
+  config.append_after do |example|
+    if example.metadata[:screenshot]
+      screenshot = example.metadata[:screenshot][:image] || example.metadata[:screenshot][:html]
+      screenshot&.delete_prefix!(ENV.fetch('CI_PROJECT_DIR', ''))
+      example.metadata[:stdout] = %{[[ATTACHMENT|#{screenshot}]]}
+    end
   end
 
   config.after(:example, :js) do |example|

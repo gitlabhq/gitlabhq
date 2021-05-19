@@ -2,6 +2,8 @@
 
 class PostReceive # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include Gitlab::Experiment::Dsl
 
   feature_category :source_code_management
@@ -123,7 +125,7 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
 
   def after_project_changes_hooks(project, user, refs, changes)
     experiment(:new_project_readme, actor: user).track_initial_writes(project)
-    experiment(:empty_repo_upload, project: project).track(:initial_write) if project.empty_repo?
+    experiment(:empty_repo_upload, project: project).track_initial_write
     repository_update_hook_data = Gitlab::DataBuilder::Repository.update(project, user, changes, refs)
     SystemHooksService.new.execute_hooks(repository_update_hook_data, :repository_update_hooks)
     Gitlab::UsageDataCounters::SourceCodeCounter.count(:pushes)
@@ -134,4 +136,4 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
   end
 end
 
-PostReceive.prepend_if_ee('EE::PostReceive')
+PostReceive.prepend_mod_with('PostReceive')

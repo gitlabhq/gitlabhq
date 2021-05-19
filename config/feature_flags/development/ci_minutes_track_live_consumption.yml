@@ -1,0 +1,8 @@
+---
+name: ci_minutes_track_live_consumption
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59263
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/329197
+milestone: '13.12'
+type: development
+group: group::continuous integration
+default_enabled: false

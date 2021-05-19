@@ -67,4 +67,4 @@ module DesignManagement
   end
 end
 
-DesignManagement::DeleteDesignsService.prepend_if_ee('EE::DesignManagement::DeleteDesignsService')
+DesignManagement::DeleteDesignsService.prepend_mod_with('DesignManagement::DeleteDesignsService')

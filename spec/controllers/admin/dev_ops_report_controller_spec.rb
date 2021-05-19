@@ -9,12 +9,6 @@ RSpec.describe Admin::DevOpsReportController do
     end
   end
 
-  describe 'should_track_devops_score?' do
-    it 'is always true' do
-      expect(controller.should_track_devops_score?).to be_truthy
-    end
-  end
-
   describe 'GET #show' do
     context 'as admin' do
       let(:user) { create(:admin) }
@@ -31,6 +25,8 @@ RSpec.describe Admin::DevOpsReportController do
 
       it_behaves_like 'tracking unique visits', :show do
         let(:target_id) { 'i_analytics_dev_ops_score' }
+
+        let(:request_params) { { tab: 'devops-score' } }
       end
     end
   end

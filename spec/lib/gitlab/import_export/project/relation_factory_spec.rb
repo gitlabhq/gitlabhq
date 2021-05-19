@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
+RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_memory_store_caching do
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
@@ -13,6 +13,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
     described_class.create(
       relation_sym: relation_sym,
       relation_hash: relation_hash,
+      relation_index: 1,
       object_builder: Gitlab::ImportExport::Project::ObjectBuilder,
       members_mapper: members_mapper,
       user: importer_user,
@@ -168,6 +169,75 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
 
     it 'has preloaded target project' do
       expect(created_object.target_project).to equal(project)
+    end
+  end
+
+  context 'issue object' do
+    let(:relation_sym) { :issues }
+
+    let(:exported_member) do
+      {
+        "id" => 111,
+        "access_level" => 30,
+        "source_id" => 1,
+        "source_type" => "Project",
+        "user_id" => 3,
+        "notification_level" => 3,
+        "created_at" => "2016-11-18T09:29:42.634Z",
+        "updated_at" => "2016-11-18T09:29:42.634Z",
+        "user" => {
+          "id" => admin.id,
+          "email" => admin.email,
+          "username" => admin.username
+        }
+      }
+    end
+
+    let(:members_mapper) do
+      Gitlab::ImportExport::MembersMapper.new(
+        exported_members: [exported_member],
+        user: importer_user,
+        importable: project)
+    end
+
+    let(:relation_hash) do
+      {
+        'id' => 20,
+        'target_branch' => "feature",
+        'source_branch' => "feature_conflict",
+        'project_id' => project.id,
+        'author_id' => admin.id,
+        'assignee_id' => admin.id,
+        'updated_by_id' => admin.id,
+        'title' => "Issue 1",
+        'created_at' => "2016-06-14T15:02:36.568Z",
+        'updated_at' => "2016-06-14T15:02:56.815Z",
+        'state' => "opened",
+        'description' => "Description",
+        "relative_position" => 25111 # just a random position
+      }
+    end
+
+    it 'has preloaded project' do
+      expect(created_object.project).to equal(project)
+    end
+
+    context 'computing relative position' do
+      context 'when max relative position in the hierarchy is not cached' do
+        it 'has computed new relative_position' do
+          expect(created_object.relative_position).to equal(1026) # 513*2 - ideal distance
+        end
+      end
+
+      context 'when max relative position in the hierarchy is cached' do
+        before do
+          Rails.cache.write("import:#{project.model_name.plural}:#{project.id}:hierarchy_max_issues_relative_position", 10000)
+        end
+
+        it 'has computed new relative_position' do
+          expect(created_object.relative_position).to equal(10000 + 1026) # 513*2 - ideal distance
+        end
+      end
     end
   end
 

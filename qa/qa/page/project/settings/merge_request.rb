@@ -12,7 +12,7 @@ module QA
           end
 
           view 'app/views/projects/_merge_request_merge_method_settings.html.haml' do
-            element :merge_ff_radio_button
+            element :merge_ff_radio
           end
 
           view 'app/views/projects/_merge_request_merge_checks_settings.html.haml' do
@@ -24,7 +24,7 @@ module QA
           end
 
           def enable_ff_only
-            click_element(:merge_ff_radio_button)
+            choose_element(:merge_ff_radio)
             click_save_changes
           end
 
@@ -38,4 +38,4 @@ module QA
   end
 end
 
-QA::Page::Project::Settings::MergeRequest.prepend_if_ee("QA::EE::Page::Project::Settings::MergeRequest")
+QA::Page::Project::Settings::MergeRequest.prepend_mod_with("Page::Project::Settings::MergeRequest", namespace: QA)

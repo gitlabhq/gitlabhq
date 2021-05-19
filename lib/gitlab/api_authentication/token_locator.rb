@@ -10,7 +10,17 @@ module Gitlab
 
       attr_reader :location
 
-      validates :location, inclusion: { in: %i[http_basic_auth http_token] }
+      validates :location, inclusion: {
+        in: %i[
+          http_basic_auth
+          http_token
+          http_bearer_token
+          http_deploy_token_header
+          http_job_token_header
+          http_private_token_header
+          token_param
+        ]
+      }
 
       def initialize(location)
         @location = location
@@ -23,6 +33,16 @@ module Gitlab
           extract_from_http_basic_auth request
         when :http_token
           extract_from_http_token request
+        when :http_bearer_token
+          extract_from_http_bearer_token request
+        when :http_deploy_token_header
+          extract_from_http_deploy_token_header request
+        when :http_job_token_header
+          extract_from_http_job_token_header request
+        when :http_private_token_header
+          extract_from_http_private_token_header request
+        when :token_param
+          extract_from_token_param request
         end
       end
 
@@ -37,6 +57,41 @@ module Gitlab
 
       def extract_from_http_token(request)
         password = request.headers['Authorization']
+        return unless password.present?
+
+        UsernameAndPassword.new(nil, password)
+      end
+
+      def extract_from_http_bearer_token(request)
+        password = request.headers['Authorization']
+        return unless password.present?
+
+        UsernameAndPassword.new(nil, password.split(' ').last)
+      end
+
+      def extract_from_http_deploy_token_header(request)
+        password = request.headers['Deploy-Token']
+        return unless password.present?
+
+        UsernameAndPassword.new(nil, password)
+      end
+
+      def extract_from_http_job_token_header(request)
+        password = request.headers['Job-Token']
+        return unless password.present?
+
+        UsernameAndPassword.new(nil, password)
+      end
+
+      def extract_from_http_private_token_header(request)
+        password = request.headers['Private-Token']
+        return unless password.present?
+
+        UsernameAndPassword.new(nil, password)
+      end
+
+      def extract_from_token_param(request)
+        password = request.query_parameters['token']
         return unless password.present?
 
         UsernameAndPassword.new(nil, password)

@@ -7,7 +7,7 @@ RSpec.describe Issuable::DestroyService do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, group: group) }
 
-  subject(:service) { described_class.new(project, user) }
+  subject(:service) { described_class.new(project: project, current_user: user) }
 
   describe '#execute' do
     context 'when issuable is an issue' do
@@ -31,6 +31,10 @@ RSpec.describe Issuable::DestroyService do
       it_behaves_like 'service deleting todos' do
         let(:issuable) { issue }
       end
+
+      it_behaves_like 'service deleting label links' do
+        let(:issuable) { issue }
+      end
     end
 
     context 'when issuable is a merge request' do
@@ -52,6 +56,10 @@ RSpec.describe Issuable::DestroyService do
       end
 
       it_behaves_like 'service deleting todos' do
+        let(:issuable) { merge_request }
+      end
+
+      it_behaves_like 'service deleting label links' do
         let(:issuable) { merge_request }
       end
     end

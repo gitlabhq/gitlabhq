@@ -11,8 +11,8 @@ import { deprecatedCreateFlash as createFlash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import {
-  DEFAULT_LABEL_NONE,
   DEFAULT_LABEL_ANY,
+  DEFAULT_NONE_ANY,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 
@@ -159,7 +159,7 @@ describe('AuthorToken', () => {
     });
 
     it('renders provided defaultAuthors as suggestions', async () => {
-      const defaultAuthors = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
+      const defaultAuthors = DEFAULT_NONE_ANY;
       wrapper = createComponent({
         active: true,
         config: { ...mockAuthorToken, defaultAuthors },

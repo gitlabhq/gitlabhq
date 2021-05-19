@@ -4,7 +4,7 @@ module ActiveRecord
   module Associations
     class Preloader
       class NullPreloader
-        def self.new(klass, owners, reflection, preload_scope)
+        def self.new(*args, **kwargs)
           self
         end
 

@@ -36,7 +36,7 @@ module Gitlab
             create_repository_and_files(snippet)
 
             logger.info(message: 'Snippet Migration: repository created and migrated', snippet: snippet.id)
-          rescue => e
+          rescue StandardError => e
             set_file_path_error(e)
             set_signature_error(e)
 
@@ -68,7 +68,7 @@ module Gitlab
       # Removing the db record
       def destroy_snippet_repository(snippet)
         snippet.snippet_repository&.delete
-      rescue => e
+      rescue StandardError => e
         logger.error(message: "Snippet Migration: error destroying snippet repository. Reason: #{e.message}", snippet: snippet.id)
       end
 
@@ -78,7 +78,7 @@ module Gitlab
 
         snippet.repository.remove
         snippet.repository.expire_exists_cache
-      rescue => e
+      rescue StandardError => e
         logger.error(message: "Snippet Migration: error deleting repository. Reason: #{e.message}", snippet: snippet.id)
       end
 

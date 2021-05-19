@@ -102,6 +102,7 @@ ProjectLabel:
 - template
 - description
 - priority
+- remove_on_close
 Milestone:
 - id
 - title
@@ -208,6 +209,7 @@ MergeRequest:
 - discussion_locked
 - allow_maintainer_to_push
 - merge_ref_sha
+- draft
 MergeRequestDiff:
 - id
 - state
@@ -640,6 +642,7 @@ Timelog:
 - time_spent
 - merge_request_id
 - user_id
+- project_id
 - spent_at
 - created_at
 - updated_at

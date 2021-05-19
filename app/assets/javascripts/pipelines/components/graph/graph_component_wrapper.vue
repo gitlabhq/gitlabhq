@@ -5,7 +5,9 @@ import { __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
-import { reportToSentry } from '../../utils';
+import DismissPipelineGraphCallout from '../../graphql/mutations/dismiss_pipeline_notification.graphql';
+import getUserCallouts from '../../graphql/queries/get_user_callouts.query.graphql';
+import { reportToSentry, reportMessageToSentry } from '../../utils';
 import { listByLayers } from '../parsing_utils';
 import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW, VIEW_TYPE_KEY } from './constants';
 import PipelineGraph from './graph_component.vue';
@@ -16,6 +18,9 @@ import {
   toggleQueryPollingByVisibility,
   unwrapPipelineData,
 } from './utils';
+
+const featureName = 'pipeline_needs_hover_tip';
+const enumFeatureName = featureName.toUpperCase();
 
 export default {
   name: 'PipelineGraphWrapper',
@@ -44,10 +49,12 @@ export default {
   data() {
     return {
       alertType: null,
+      callouts: [],
       currentViewType: STAGE_VIEW,
       pipeline: null,
       pipelineLayers: null,
       showAlert: false,
+      showLinks: false,
     };
   },
   errorTexts: {
@@ -59,6 +66,18 @@ export default {
     [DEFAULT]: __('An unknown error occurred while loading this graph.'),
   },
   apollo: {
+    callouts: {
+      query: getUserCallouts,
+      update(data) {
+        return data?.currentUser?.callouts?.nodes.map((callout) => callout.featureName) || [];
+      },
+      error(err) {
+        reportToSentry(
+          this.$options.name,
+          `type: callout_load_failure, info: ${serializeLoadErrors(err)}`,
+        );
+      },
+    },
     pipeline: {
       context() {
         return getQueryHeaders(this.graphqlResourceEtag);
@@ -90,9 +109,16 @@ export default {
       },
       error(err) {
         this.reportFailure({ type: LOAD_FAILURE, skipSentry: true });
-        reportToSentry(
+
+        reportMessageToSentry(
           this.$options.name,
-          `type: ${LOAD_FAILURE}, info: ${serializeLoadErrors(err)}`,
+          `| type: ${LOAD_FAILURE} , info: ${serializeLoadErrors(err)}`,
+          {
+            projectPath: this.projectPath,
+            pipelineIid: this.pipelineIid,
+            pipelineStages: this.pipeline?.stages?.length || 0,
+            nbOfDownstreams: this.pipeline?.downstream?.length || 0,
+          },
         );
       },
       result({ error }) {
@@ -137,6 +163,13 @@ export default {
         metricsPath: this.metricsPath,
       };
     },
+    graphViewType() {
+      /* This prevents reading view type off the localStorage value if it does not apply. */
+      return this.showGraphViewSelector ? this.currentViewType : STAGE_VIEW;
+    },
+    hoverTipPreviouslyDismissed() {
+      return this.callouts.includes(enumFeatureName);
+    },
     showLoadingIcon() {
       /*
         Shows the icon only when the graph is empty, not when it is is
@@ -166,6 +199,18 @@ export default {
 
       return this.pipelineLayers;
     },
+    handleTipDismissal() {
+      try {
+        this.$apollo.mutate({
+          mutation: DismissPipelineGraphCallout,
+          variables: {
+            featureName,
+          },
+        });
+      } catch (err) {
+        reportToSentry(this.$options.name, `type: callout_dismiss_failure, info: ${err}`);
+      }
+    },
     hideAlert() {
       this.showAlert = false;
       this.alertType = null;
@@ -182,6 +227,9 @@ export default {
       }
     },
     /* eslint-enable @gitlab/require-i18n-strings */
+    updateShowLinksState(val) {
+      this.showLinks = val;
+    },
     updateViewType(type) {
       this.currentViewType = type;
     },
@@ -201,8 +249,12 @@ export default {
     >
       <graph-view-selector
         v-if="showGraphViewSelector"
-        :type="currentViewType"
+        :type="graphViewType"
+        :show-links="showLinks"
+        :tip-previously-dismissed="hoverTipPreviouslyDismissed"
+        @dismissHoverTip="handleTipDismissal"
         @updateViewType="updateViewType"
+        @updateShowLinksState="updateShowLinksState"
       />
     </local-storage-sync>
     <gl-loading-icon v-if="showLoadingIcon" class="gl-mx-auto gl-my-4" size="lg" />
@@ -211,7 +263,8 @@ export default {
       :config-paths="configPaths"
       :pipeline="pipeline"
       :pipeline-layers="getPipelineLayers()"
-      :view-type="currentViewType"
+      :show-links="showLinks"
+      :view-type="graphViewType"
       @error="reportFailure"
       @refreshPipelineGraph="refreshPipelineGraph"
     />

@@ -1,8 +1,0 @@
----
-name: new_pipeline_form
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35674
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/229632
-milestone: '13.2'
-type: development
-group: group::continuous integration
-default_enabled: true

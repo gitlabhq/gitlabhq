@@ -21,4 +21,4 @@ module ProtectedBranches
   end
 end
 
-ProtectedBranches::ApiService.prepend_if_ee('EE::ProtectedBranches::ApiService')
+ProtectedBranches::ApiService.prepend_mod_with('ProtectedBranches::ApiService')

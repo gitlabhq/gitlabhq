@@ -16,6 +16,6 @@
     "name_with_namespace": { "type": "string" },
     "path": { "type": "string" },
     "path_with_namespace": { "type": "string" },
-    "created_at": { "type": "date" }
+    "created_at": { "type": "string", "format": "date-time" }
   }
 }

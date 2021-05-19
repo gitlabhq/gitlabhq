@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Diff::Highlight do
   include RepoHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:commit) { project.commit(sample_commit.id) }
   let(:diff) { commit.raw_diffs.first }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
@@ -154,6 +155,35 @@ RSpec.describe Gitlab::Diff::Highlight do
 
       context 'when no inline diffs' do
         it_behaves_like 'without inline diffs'
+      end
+    end
+
+    context 'when blob is too large' do
+      let(:subject) { described_class.new(diff_file, repository: project.repository).highlight }
+
+      before do
+        allow(Gitlab::Highlight).to receive(:too_large?).and_return(true)
+      end
+
+      it 'blobs are highlighted as plain text without loading all data' do
+        expect(diff_file.blob).not_to receive(:load_all_data!)
+
+        expect(subject[2].rich_text).to eq(%Q{ <span id="LC7" class="line" lang="">  def popen(cmd, path=nil)</span>\n})
+        expect(subject[2].rich_text).to be_html_safe
+      end
+
+      context 'when limited_diff_highlighting is disabled' do
+        before do
+          stub_feature_flags(limited_diff_highlighting: false)
+          stub_feature_flags(diff_line_syntax_highlighting: false)
+        end
+
+        it 'blobs are highlighted as plain text with loading all data' do
+          expect(diff_file.blob).to receive(:load_all_data!).twice
+
+          code = %Q{ <span id="LC7" class="line" lang="">  def popen(cmd, path=nil)</span>\n}
+          expect(subject[2].rich_text).to eq(code)
+        end
       end
     end
   end

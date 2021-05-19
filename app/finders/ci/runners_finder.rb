@@ -4,8 +4,6 @@ module Ci
   class RunnersFinder < UnionFinder
     include Gitlab::Allowable
 
-    NUMBER_OF_RUNNERS_PER_PAGE = 30
-
     def initialize(current_user:, group: nil, params:)
       @params = params
       @group = group
@@ -18,7 +16,6 @@ module Ci
       filter_by_runner_type!
       filter_by_tag_list!
       sort!
-      paginate!
 
       @runners.with_tags
 
@@ -75,10 +72,6 @@ module Ci
 
     def sort!
       @runners = @runners.order_by(sort_key)
-    end
-
-    def paginate!
-      @runners = @runners.page(@params[:page]).per(NUMBER_OF_RUNNERS_PER_PAGE)
     end
 
     def filter_by!(scope_name, available_scopes)

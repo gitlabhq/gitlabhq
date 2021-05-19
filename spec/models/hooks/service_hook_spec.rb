@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe ServiceHook do
   describe 'associations' do
-    it { is_expected.to belong_to :service }
+    it { is_expected.to belong_to :integration }
   end
 
   describe 'validations' do
-    it { is_expected.to validate_presence_of(:service) }
+    it { is_expected.to validate_presence_of(:integration) }
   end
 
   describe 'execute' do
@@ -20,6 +20,14 @@ RSpec.describe ServiceHook do
       expect_any_instance_of(WebHookService).to receive(:execute)
 
       hook.execute(data)
+    end
+  end
+
+  describe '#rate_limit' do
+    let(:hook) { build(:service_hook) }
+
+    it 'returns nil' do
+      expect(hook.rate_limit).to be_nil
     end
   end
 end

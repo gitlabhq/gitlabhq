@@ -62,28 +62,31 @@ When you're creating a new issue, these are the fields you can fill in:
 - Checkbox to make the issue confidential
 - Assignee
 - Weight
-- Epic **(PREMIUM)**
+- [Epic](../../group/epics/index.md)
 - Due date
 - Milestone
 - Labels
 
-### New issue from the group-level Issue Tracker
+### New issue from the group-level issue tracker
 
-Go to the Group dashboard and click **Issues** in the sidebar to visit the Issue Tracker
-for all projects in your Group. Select the project you'd like to add an issue for
-using the dropdown button at the top-right of the page.
+To visit the issue tracker for all projects in your group:
 
-![Select project to create issue](img/select_project_from_group_level_issue_tracker.png)
+1. Go to the group dashboard.
+1. In the left sidebar, select **Issues**.
+1. In the top-right, select the **Select project to create issue** button.
+1. Select the project you'd like to create an issue for. The button now reflects the selected
+   project.
+1. Select the button to create an issue in the selected project.
+
+![Select project to create issue](img/select_project_from_group_level_issue_tracker_v13_11.png)
 
 The project you selected most recently becomes the default for your next visit.
 This should save you a lot of time and clicks, if you mostly create issues for the same project.
 
-![Create issue from group-level issue tracker](img/create_issue_from_group_level_issue_tracker.png)
-
 ### New issue via Service Desk
 
 Enable [Service Desk](../service_desk.md) for your project and offer email support.
-By doing so, when your customer sends a new email, a new issue can be created in
+Now, when your customer sends a new email, a new issue can be created in
 the appropriate project and followed up from there.
 
 ### New issue via email
@@ -119,21 +122,16 @@ older format is still supported, allowing existing aliases or contacts to contin
 
 To link directly to the new issue page with prefilled fields, use query
 string parameters in a URL. You can embed a URL in an external
-HTML page, or create issues with certain
+HTML page to create issues with certain
 fields prefilled.
-
-The title, description, description template, and confidential fields can be prefilled
-using this method. You cannot pre-fill both the description and description template
-fields in the same URL because a description template also populates the description
-field.
 
 | Field                | URL Parameter Name    | Notes                                                 |
 |----------------------|-----------------------|-------------------------------------------------------|
 | title                | `issue[title]`        |                                                       |
-| description          | `issue[description]`  |                                                       |
-| description template | `issuable_template`   |                                                       |
-| issue type           | `issue[issue_type]`   | Either `incident` or `issue`                                     |
-| confidential         | `issue[confidential]` | Parameter value must be `true` to set to confidential |
+| description          | `issue[description]`  | Cannot be used at the same time as `issuable_template`. |
+| description template | `issuable_template`   | Cannot be used at the same time as `issue[description]`.  |
+| issue type           | `issue[issue_type]`   | Either `incident` or `issue`.                         |
+| confidential         | `issue[confidential]` | Parameter value must be `true` to set to confidential. |
 
 Follow these examples to form your new issue URL with prefilled fields.
 
@@ -143,6 +141,58 @@ Follow these examples to form your new issue URL with prefilled fields.
   and a pre-filled description template, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/-/issues/new?issue[title]=Validate%20new%20concept&issuable_template=Research%20proposal`
 - For a new issue in the GitLab Community Edition project with a pre-filled title,
   a pre-filled description, and the confidential flag set, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/-/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true`
+
+## Bulk edit issues at the project level
+
+> - Assigning epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
+> - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
+> - Editing iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196806) in GitLab 13.9.
+
+Users with permission level of [Reporter or higher](../../permissions.md) can manage issues.
+
+When bulk editing issues in a project, you can edit the following attributes:
+
+- Status (open/closed)
+- Assignee
+- [Epic](../../group/epics/index.md)
+- [Milestone](../milestones/index.md)
+- [Labels](../labels.md)
+- [Health status](#health-status)
+- Notification subscription
+- [Iteration](../../group/iterations/index.md)
+
+To update multiple project issues at the same time:
+
+1. In a project, go to **Issues > List**.
+1. Click **Edit issues**. A sidebar on the right-hand side of your screen appears with editable fields.
+1. Select the checkboxes next to each issue you want to edit.
+1. Select the appropriate fields and their values from the sidebar.
+1. Click **Update all**.
+
+## Bulk edit issues at the group level
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7249) in GitLab 12.1.
+> - Assigning epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
+> - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
+> - Editing iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196806) in GitLab 13.9.
+
+Users with permission level of [Reporter or higher](../../permissions.md) can manage issues.
+
+When bulk editing issues in a group, you can edit the following attributes:
+
+- [Epic](../../group/epics/index.md)
+- [Milestone](../milestones/index.md)
+- [Labels](../labels.md)
+- [Health status](#health-status)
+- [Iteration](../../group/iterations/index.md)
+
+To update multiple project issues at the same time:
+
+1. In a group, go to **Issues > List**.
+1. Click **Edit issues**. A sidebar on the right-hand side of your screen appears with editable fields.
+1. Select the checkboxes next to each issue you want to edit.
+1. Select the appropriate fields and their values from the sidebar.
+1. Click **Update all**.
 
 ## Moving issues
 
@@ -207,7 +257,7 @@ description, issues `#4` and `#6` are closed automatically when the MR is merged
 Using `Related to` flags `#5` as a [related issue](related_issues.md),
 but is not closed automatically.
 
-![merge request closing issue when merged](img/merge_request_closes_issue.png)
+![merge request closing issue when merged](img/merge_request_closes_issue_v13_11.png)
 
 If the issue is in a different repository than the MR, add the full URL for the issue(s):
 
@@ -278,12 +328,10 @@ of your installation.
 
 ## Deleting issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2982) in GitLab 8.6.
-
 Users with [project owner permission](../../permissions.md) can delete an issue by
-editing it and clicking on the delete button.
+editing it and selecting **Delete issue**.
 
-![delete issue - button](img/delete_issue.png)
+![delete issue - button](img/delete_issue_v13_11.png)
 
 ## Promote an issue to an epic **(PREMIUM)**
 
@@ -321,7 +369,7 @@ in a comment or description field.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 13.3.
 
 Assignees in the sidebar are updated in real time. This feature is **disabled by default**.
-To enable it, you need to enable [ActionCable in-app mode](https://docs.gitlab.com/omnibus/settings/actioncable.html).
+To enable it, you need to enable [Action Cable in-app mode](https://docs.gitlab.com/omnibus/settings/actioncable.html).
 
 ## Similar issues
 
@@ -354,5 +402,4 @@ This marks issues as progressing as planned or needs attention to keep on schedu
 After an issue is closed, its health status can't be edited and the **Edit** button becomes disabled
 until the issue is reopened.
 
-You can then see issue statuses in the issues list and the
-[epic tree](../../group/epics/index.md#issue-health-status-in-epic-tree).
+You can then see issue statuses in the issues list and the epic tree.

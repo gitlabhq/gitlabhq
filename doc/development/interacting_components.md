@@ -20,7 +20,7 @@ change that affects uploads should also be tested against [object storage](https
 which is _not_ enabled by default in [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit).
 
 When working on a related feature, make sure to enable and test it
-against [MinIO](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/object_storage.md).
+against [MinIO](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/object_storage.md).
 
 See also [File Storage in GitLab](file_storage.md).
 

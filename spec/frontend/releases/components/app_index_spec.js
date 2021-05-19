@@ -1,210 +1,231 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { range as rge } from 'lodash';
+import { shallowMount } from '@vue/test-utils';
+import { merge } from 'lodash';
+import Vue from 'vue';
 import Vuex from 'vuex';
-import { getJSONFixture } from 'helpers/fixtures';
-import waitForPromises from 'helpers/wait_for_promises';
-import api from '~/api';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import ReleasesApp from '~/releases/components/app_index.vue';
+import { getParameterByName } from '~/lib/utils/common_utils';
+import AppIndex from '~/releases/components/app_index.vue';
+import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
 import ReleasesPagination from '~/releases/components/releases_pagination.vue';
-import createStore from '~/releases/stores';
-import createIndexModule from '~/releases/stores/modules/index';
-import { pageInfoHeadersWithoutPagination, pageInfoHeadersWithPagination } from '../mock_data';
+import ReleasesSort from '~/releases/components/releases_sort.vue';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
-  getParameterByName: jest.fn().mockImplementation((paramName) => {
-    return `${paramName}_param_value`;
-  }),
+  getParameterByName: jest.fn(),
 }));
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
-const release = getJSONFixture('api/releases/release.json');
-const releases = [release];
-
-describe('Releases App ', () => {
+describe('app_index.vue', () => {
   let wrapper;
-  let fetchReleaseSpy;
+  let fetchReleasesSpy;
+  let urlParams;
 
-  const paginatedReleases = rge(21).map((index) => ({
-    ...convertObjectPropsToCamelCase(release, { deep: true }),
-    tagName: `${index}.00`,
-  }));
-
-  const defaultInitialState = {
-    projectId: 'gitlab-ce',
-    projectPath: 'gitlab-org/gitlab-ce',
-    documentationPath: 'help/releases',
-    illustrationPath: 'illustration/path',
-  };
-
-  const createComponent = (stateUpdates = {}) => {
-    const indexModule = createIndexModule({
-      ...defaultInitialState,
-      ...stateUpdates,
-    });
-
-    fetchReleaseSpy = jest.spyOn(indexModule.actions, 'fetchReleases');
-
-    const store = createStore({
-      modules: { index: indexModule },
-      featureFlags: {
-        graphqlReleaseData: true,
-        graphqlReleasesPage: false,
-        graphqlMilestoneStats: true,
-      },
-    });
-
-    wrapper = shallowMount(ReleasesApp, {
-      store,
-      localVue,
+  const createComponent = (storeUpdates) => {
+    wrapper = shallowMount(AppIndex, {
+      store: new Vuex.Store({
+        modules: {
+          index: merge(
+            {
+              namespaced: true,
+              actions: {
+                fetchReleases: fetchReleasesSpy,
+              },
+              state: {
+                isLoading: true,
+                releases: [],
+              },
+            },
+            storeUpdates,
+          ),
+        },
+      }),
     });
   };
+
+  beforeEach(() => {
+    fetchReleasesSpy = jest.fn();
+    getParameterByName.mockImplementation((paramName) => urlParams[paramName]);
+  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  describe('on startup', () => {
-    beforeEach(() => {
-      jest
-        .spyOn(api, 'releases')
-        .mockResolvedValue({ data: releases, headers: pageInfoHeadersWithoutPagination });
+  // Finders
+  const findLoadingIndicator = () => wrapper.find(ReleaseSkeletonLoader);
+  const findEmptyState = () => wrapper.find('[data-testid="empty-state"]');
+  const findSuccessState = () => wrapper.find('[data-testid="success-state"]');
+  const findPagination = () => wrapper.find(ReleasesPagination);
+  const findSortControls = () => wrapper.find(ReleasesSort);
+  const findNewReleaseButton = () => wrapper.find('[data-testid="new-release-button"]');
 
+  // Expectations
+  const expectLoadingIndicator = (shouldExist) => {
+    it(`${shouldExist ? 'renders' : 'does not render'} a loading indicator`, () => {
+      expect(findLoadingIndicator().exists()).toBe(shouldExist);
+    });
+  };
+
+  const expectEmptyState = (shouldExist) => {
+    it(`${shouldExist ? 'renders' : 'does not render'} an empty state`, () => {
+      expect(findEmptyState().exists()).toBe(shouldExist);
+    });
+  };
+
+  const expectSuccessState = (shouldExist) => {
+    it(`${shouldExist ? 'renders' : 'does not render'} the success state`, () => {
+      expect(findSuccessState().exists()).toBe(shouldExist);
+    });
+  };
+
+  const expectPagination = (shouldExist) => {
+    it(`${shouldExist ? 'renders' : 'does not render'} the pagination controls`, () => {
+      expect(findPagination().exists()).toBe(shouldExist);
+    });
+  };
+
+  const expectNewReleaseButton = (shouldExist) => {
+    it(`${shouldExist ? 'renders' : 'does not render'} the "New release" button`, () => {
+      expect(findNewReleaseButton().exists()).toBe(shouldExist);
+    });
+  };
+
+  // Tests
+  describe('on startup', () => {
+    it.each`
+      before                  | after
+      ${null}                 | ${null}
+      ${'before_param_value'} | ${null}
+      ${null}                 | ${'after_param_value'}
+    `(
+      'calls fetchRelease with the correct parameters based on the curent query parameters: before: $before, after: $after',
+      ({ before, after }) => {
+        urlParams = { before, after };
+
+        createComponent();
+
+        expect(fetchReleasesSpy).toHaveBeenCalledTimes(1);
+        expect(fetchReleasesSpy).toHaveBeenCalledWith(expect.anything(), urlParams);
+      },
+    );
+  });
+
+  describe('when the request to fetch releases has not yet completed', () => {
+    beforeEach(() => {
       createComponent();
     });
 
-    it('calls fetchRelease with the page, before, and after parameters', () => {
-      expect(fetchReleaseSpy).toHaveBeenCalledTimes(1);
-      expect(fetchReleaseSpy).toHaveBeenCalledWith(expect.anything(), {
-        page: 'page_param_value',
-        before: 'before_param_value',
-        after: 'after_param_value',
+    expectLoadingIndicator(true);
+    expectEmptyState(false);
+    expectSuccessState(false);
+    expectPagination(false);
+  });
+
+  describe('when the request fails', () => {
+    beforeEach(() => {
+      createComponent({
+        state: {
+          isLoading: false,
+          hasError: true,
+        },
       });
     });
+
+    expectLoadingIndicator(false);
+    expectEmptyState(false);
+    expectSuccessState(false);
+    expectPagination(true);
   });
 
-  describe('while loading', () => {
+  describe('when the request succeeds but returns no releases', () => {
     beforeEach(() => {
-      jest
-        .spyOn(api, 'releases')
-        // Need to defer the return value here to the next stack,
-        // otherwise the loading state disappears before our test even starts.
-        .mockImplementation(() => waitForPromises().then(() => ({ data: [], headers: {} })));
+      createComponent({
+        state: {
+          isLoading: false,
+        },
+      });
+    });
 
+    expectLoadingIndicator(false);
+    expectEmptyState(true);
+    expectSuccessState(false);
+    expectPagination(true);
+  });
+
+  describe('when the request succeeds and includes at least one release', () => {
+    beforeEach(() => {
+      createComponent({
+        state: {
+          isLoading: false,
+          releases: [{}],
+        },
+      });
+    });
+
+    expectLoadingIndicator(false);
+    expectEmptyState(false);
+    expectSuccessState(true);
+    expectPagination(true);
+  });
+
+  describe('sorting', () => {
+    beforeEach(() => {
       createComponent();
     });
 
-    it('renders loading icon', () => {
-      expect(wrapper.find('.js-loading').exists()).toBe(true);
-      expect(wrapper.find('.js-empty-state').exists()).toBe(false);
-      expect(wrapper.find('.js-success-state').exists()).toBe(false);
-      expect(wrapper.find(ReleasesPagination).exists()).toBe(false);
-    });
-  });
-
-  describe('with successful request', () => {
-    beforeEach(() => {
-      jest
-        .spyOn(api, 'releases')
-        .mockResolvedValue({ data: releases, headers: pageInfoHeadersWithoutPagination });
-
-      createComponent();
+    it('renders the sort controls', () => {
+      expect(findSortControls().exists()).toBe(true);
     });
 
-    it('renders success state', () => {
-      expect(wrapper.find('.js-loading').exists()).toBe(false);
-      expect(wrapper.find('.js-empty-state').exists()).toBe(false);
-      expect(wrapper.find('.js-success-state').exists()).toBe(true);
-      expect(wrapper.find(ReleasesPagination).exists()).toBe(true);
-    });
-  });
+    it('calls the fetchReleases store method when the sort is updated', () => {
+      fetchReleasesSpy.mockClear();
 
-  describe('with successful request and pagination', () => {
-    beforeEach(() => {
-      jest
-        .spyOn(api, 'releases')
-        .mockResolvedValue({ data: paginatedReleases, headers: pageInfoHeadersWithPagination });
+      findSortControls().vm.$emit('sort:changed');
 
-      createComponent();
-    });
-
-    it('renders success state', () => {
-      expect(wrapper.find('.js-loading').exists()).toBe(false);
-      expect(wrapper.find('.js-empty-state').exists()).toBe(false);
-      expect(wrapper.find('.js-success-state').exists()).toBe(true);
-      expect(wrapper.find(ReleasesPagination).exists()).toBe(true);
-    });
-  });
-
-  describe('with empty request', () => {
-    beforeEach(() => {
-      jest.spyOn(api, 'releases').mockResolvedValue({ data: [], headers: {} });
-
-      createComponent();
-    });
-
-    it('renders empty state', () => {
-      expect(wrapper.find('.js-loading').exists()).toBe(false);
-      expect(wrapper.find('.js-empty-state').exists()).toBe(true);
-      expect(wrapper.find('.js-success-state').exists()).toBe(false);
+      expect(fetchReleasesSpy).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('"New release" button', () => {
-    const findNewReleaseButton = () => wrapper.find('.js-new-release-btn');
-
-    beforeEach(() => {
-      jest.spyOn(api, 'releases').mockResolvedValue({ data: [], headers: {} });
-    });
-
-    describe('when the user is allowed to create a new Release', () => {
-      const newReleasePath = 'path/to/new/release';
+    describe('when the user is allowed to create releases', () => {
+      const newReleasePath = 'path/to/new/release/page';
 
       beforeEach(() => {
-        createComponent({ newReleasePath });
+        createComponent({ state: { newReleasePath } });
       });
 
-      it('renders the "New release" button', () => {
-        expect(findNewReleaseButton().exists()).toBe(true);
-      });
+      expectNewReleaseButton(true);
 
-      it('renders the "New release" button with the correct href', () => {
+      it('renders the button with the correct href', () => {
         expect(findNewReleaseButton().attributes('href')).toBe(newReleasePath);
       });
     });
 
-    describe('when the user is not allowed to create a new Release', () => {
-      beforeEach(() => createComponent());
-
-      it('does not render the "New release" button', () => {
-        expect(findNewReleaseButton().exists()).toBe(false);
+    describe('when the user is not allowed to create releases', () => {
+      beforeEach(() => {
+        createComponent();
       });
+
+      expectNewReleaseButton(false);
     });
   });
 
-  describe('when the back button is pressed', () => {
+  describe("when the browser's back button is pressed", () => {
     beforeEach(() => {
-      jest
-        .spyOn(api, 'releases')
-        .mockResolvedValue({ data: releases, headers: pageInfoHeadersWithoutPagination });
+      urlParams = {
+        before: 'before_param_value',
+      };
 
       createComponent();
 
-      fetchReleaseSpy.mockClear();
+      fetchReleasesSpy.mockClear();
 
       window.dispatchEvent(new PopStateEvent('popstate'));
     });
 
-    it('calls fetchRelease with the page parameter', () => {
-      expect(fetchReleaseSpy).toHaveBeenCalledTimes(1);
-      expect(fetchReleaseSpy).toHaveBeenCalledWith(expect.anything(), {
-        page: 'page_param_value',
-        before: 'before_param_value',
-        after: 'after_param_value',
-      });
+    it('calls the fetchRelease store method with the parameters from the URL query', () => {
+      expect(fetchReleasesSpy).toHaveBeenCalledTimes(1);
+      expect(fetchReleasesSpy).toHaveBeenCalledWith(expect.anything(), urlParams);
     });
   });
 });

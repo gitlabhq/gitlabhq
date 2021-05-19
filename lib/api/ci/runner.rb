@@ -184,6 +184,8 @@ module API
             .new(job, declared_params(include_missing: false))
 
           service.execute.then do |result|
+            track_ci_minutes_usage!(job, current_runner)
+
             header 'X-GitLab-Trace-Update-Interval', result.backoff
             status result.status
             body result.status.to_s
@@ -213,6 +215,8 @@ module API
           if result.status == 416
             break error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{result.stream_size}" })
           end
+
+          track_ci_minutes_usage!(job, current_runner)
 
           status result.status
           header 'Job-Status', job.status

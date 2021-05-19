@@ -3,11 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Boards::Lists::DestroyService do
+  let_it_be(:user) { create(:user) }
+
+  let(:list_type) { :list }
+
   describe '#execute' do
     context 'when board parent is a project' do
-      let(:project) { create(:project) }
-      let(:board)   { create(:board, project: project) }
-      let(:user)    { create(:user) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:board) { create(:board, project: project) }
+      let_it_be(:list) { create(:list, board: board) }
+      let_it_be(:closed_list) { board.lists.closed.first }
+
+      let(:params) do
+        { board: board }
+      end
 
       let(:parent) { project }
 
@@ -15,9 +24,14 @@ RSpec.describe Boards::Lists::DestroyService do
     end
 
     context 'when board parent is a group' do
-      let(:group) { create(:group) }
-      let(:board)   { create(:board, group: group) }
-      let(:user)    { create(:user) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:board) { create(:board, group: group) }
+      let_it_be(:list) { create(:list, board: board) }
+      let_it_be(:closed_list) { board.lists.closed.first }
+
+      let(:params) do
+        { board: board }
+      end
 
       let(:parent) { group }
 

@@ -86,7 +86,7 @@ Put the following code in the file:
 service: gitlab-example
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs14.x
 
 functions:
   hello:

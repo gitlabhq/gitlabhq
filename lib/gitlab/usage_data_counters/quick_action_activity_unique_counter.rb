@@ -7,7 +7,6 @@ module Gitlab
         # Tracks the quick action with name `name`.
         # `args` is expected to be a single string, will be split internally when necessary.
         def track_unique_action(name, args:, user:)
-          return unless Feature.enabled?(:usage_data_track_quickactions, default_enabled: :yaml)
           return unless user
 
           args ||= ''

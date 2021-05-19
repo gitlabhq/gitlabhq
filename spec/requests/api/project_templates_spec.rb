@@ -53,15 +53,6 @@ RSpec.describe API::ProjectTemplates do
       expect(json_response).to satisfy_one { |template| template['key'] == 'Android' }
     end
 
-    it 'returns gitlab_ci_syntax_ymls' do
-      get api("/projects/#{public_project.id}/templates/gitlab_ci_syntax_ymls")
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to include_pagination_headers
-      expect(response).to match_response_schema('public_api/v4/template_list')
-      expect(json_response).to satisfy_one { |template| template['key'] == 'Artifacts example' }
-    end
-
     it 'returns licenses' do
       get api("/projects/#{public_project.id}/templates/licenses")
 
@@ -170,14 +161,6 @@ RSpec.describe API::ProjectTemplates do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/template')
       expect(json_response['name']).to eq('Android')
-    end
-
-    it 'returns a specific gitlab_ci_syntax_yml' do
-      get api("/projects/#{public_project.id}/templates/gitlab_ci_syntax_ymls/Artifacts%20example")
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to match_response_schema('public_api/v4/template')
-      expect(json_response['name']).to eq('Artifacts example')
     end
 
     it 'returns a specific metrics_dashboard_yml' do

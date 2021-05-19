@@ -21,8 +21,6 @@ Out-of-the-box management systems can decrease hours spent on maintaining toolch
 Watch our ["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
 webcast to learn about continuous methods and how the GitLab built-in CI can help you simplify and scale software development.
 
-## Overview
-
 Continuous Integration works by pushing small code chunks to your
 application's codebase hosted in a Git repository, and to every
 push, run a pipeline of scripts to build, test, and validate the
@@ -49,42 +47,6 @@ read the [Introduction to CI/CD with GitLab](introduction/index.md).
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/1iXFbchozdY" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
-
-## Getting started
-
-GitLab CI/CD is configured by a file called `.gitlab-ci.yml` placed
-at the repository's root. This file creates a [pipeline](pipelines/index.md), which runs for changes to the code in the repository. Pipelines consist of one or more stages that run in order and can each contain one or more jobs that run in parallel. These jobs (or scripts) get executed by the [GitLab Runner](https://docs.gitlab.com/runner/) agent.
-
-To get started with GitLab CI/CD, we recommend you read through
-the following documents:
-
-- [Get started with GitLab CI/CD](quick_start/index.md).
-- [Fundamental pipeline architectures](pipelines/pipeline_architectures.md).
-- [GitLab CI/CD basic workflow](introduction/index.md#gitlab-cicd-workflow).
-- [Step-by-step guide for writing `.gitlab-ci.yml` for the first time](../user/project/pages/getting_started/pages_from_scratch.md).
-
-If you're migrating from another CI/CD tool, check out our handy references:
-
-- [Migrating from CircleCI](migration/circleci.md)
-- [Migrating from Jenkins](migration/jenkins.md)
-
-You can also get started by using one of the
-[`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates)
-available through the UI. You can use them by creating a new file,
-choosing a template that suits your application, and adjusting it
-to your needs:
-
-![Use a YAML template](img/add_file_template_11_10.png)
-
-While building your `.gitlab-ci.yml`, you can use the [CI/CD configuration visualization](pipeline_editor/index.md#visualize-ci-configuration) to facilitate your writing experience.
-
-For a broader overview, see the [CI/CD getting started](quick_start/index.md) guide.
-
-After you're familiar with how GitLab CI/CD works, see the
-[`.gitlab-ci.yml` full reference](yaml/README.md)
-for all the attributes you can set and use.
-
-GitLab CI/CD and [shared runners](runners/README.md#shared-runners) are enabled on GitLab.com and available for all users, limited only by the [pipeline quota](../user/gitlab_com/index.md#shared-runners).
 
 ## Concepts
 

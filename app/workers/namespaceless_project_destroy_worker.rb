@@ -8,6 +8,8 @@
 # namespace. For those use ProjectDestroyWorker instead.
 class NamespacelessProjectDestroyWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ExceptionBacktrace
 
   feature_category :authentication_and_authorization

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Issuable
-  class CommonSystemNotesService < ::BaseService
+  class CommonSystemNotesService < ::BaseProjectService
     attr_reader :issuable
 
     def execute(issuable, old_labels: [], old_milestone: nil, is_update: true)
@@ -109,4 +109,4 @@ module Issuable
   end
 end
 
-Issuable::CommonSystemNotesService.prepend_if_ee('EE::Issuable::CommonSystemNotesService')
+Issuable::CommonSystemNotesService.prepend_mod_with('Issuable::CommonSystemNotesService')

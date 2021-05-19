@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::RepositoryCache do
   let_it_be(:project) { create(:project) }
+
   let(:backend) { double('backend').as_null_object }
   let(:repository) { project.repository }
   let(:namespace) { "#{repository.full_path}:#{project.id}" }
@@ -38,6 +39,7 @@ RSpec.describe Gitlab::RepositoryCache do
 
     describe 'personal snippet repository' do
       let_it_be(:personal_snippet) { create(:personal_snippet) }
+
       let(:namespace) { repository.full_path }
 
       it_behaves_like 'cache_key examples' do

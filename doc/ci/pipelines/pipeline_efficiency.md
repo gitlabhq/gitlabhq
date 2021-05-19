@@ -110,6 +110,8 @@ and get the pipeline status and duration. In combination with a Grafana dashboar
 this helps build an actionable view for your operations team. Metric graphs can also
 be embedded into incidents making problem resolving easier. Additionally, it can also export metrics about jobs and environments.
 
+If you use the GitLab CI Pipelines Exporter, you should start with the [example configuration](https://github.com/mvisonneau/gitlab-ci-pipelines-exporter/blob/main/docs/configuration_syntax.md).
+
 ![Grafana Dashboard for GitLab CI Pipelines Prometheus Exporter](img/ci_efficiency_pipeline_health_grafana_dashboard.png)
 
 Alternatively, you can use a monitoring tool that can execute scripts, like

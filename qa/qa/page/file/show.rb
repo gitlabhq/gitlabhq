@@ -62,4 +62,4 @@ module QA
   end
 end
 
-QA::Page::File::Show.prepend_if_ee('QA::EE::Page::File::Show')
+QA::Page::File::Show.prepend_mod_with('Page::File::Show', namespace: QA)

@@ -3,9 +3,9 @@
 module Clusters
   module Applications
     class ElasticStack < ApplicationRecord
-      VERSION = '3.0.0'
+      include ::Clusters::Concerns::ElasticsearchClient
 
-      ELASTICSEARCH_PORT = 9200
+      VERSION = '3.0.0'
 
       self.table_name = 'clusters_applications_elastic_stacks'
 
@@ -13,9 +13,22 @@ module Clusters
       include ::Clusters::Concerns::ApplicationStatus
       include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
-      include ::Gitlab::Utils::StrongMemoize
 
       default_value_for :version, VERSION
+
+      after_destroy do
+        cluster&.find_or_build_integration_elastic_stack&.update(enabled: false, chart_version: nil)
+      end
+
+      state_machine :status do
+        after_transition any => [:installed] do |application|
+          application.cluster&.find_or_build_integration_elastic_stack&.update(enabled: true, chart_version: application.version)
+        end
+
+        after_transition any => [:uninstalled] do |application|
+          application.cluster&.find_or_build_integration_elastic_stack&.update(enabled: false, chart_version: nil)
+        end
+      end
 
       def chart
         'elastic-stack/elastic-stack'
@@ -51,31 +64,6 @@ module Clusters
         super.merge('wait-for-elasticsearch.sh': File.read("#{Rails.root}/vendor/elastic_stack/wait-for-elasticsearch.sh"))
       end
 
-      def elasticsearch_client(timeout: nil)
-        strong_memoize(:elasticsearch_client) do
-          next unless kube_client
-
-          proxy_url = kube_client.proxy_url('service', service_name, ::Clusters::Applications::ElasticStack::ELASTICSEARCH_PORT, Gitlab::Kubernetes::Helm::NAMESPACE)
-
-          Elasticsearch::Client.new(url: proxy_url) do |faraday|
-            # ensures headers containing auth data are appended to original client options
-            faraday.headers.merge!(kube_client.headers)
-            # ensure TLS certs are properly verified
-            faraday.ssl[:verify] = kube_client.ssl_options[:verify_ssl]
-            faraday.ssl[:cert_store] = kube_client.ssl_options[:cert_store]
-            faraday.options.timeout = timeout unless timeout.nil?
-          end
-
-        rescue Kubeclient::HttpError => error
-          # If users have mistakenly set parameters or removed the depended clusters,
-          # `proxy_url` could raise an exception because gitlab can not communicate with the cluster.
-          # We check for a nil client in downstream use and behaviour is equivalent to an empty state
-          log_exception(error, :failed_to_create_elasticsearch_client)
-
-          nil
-        end
-      end
-
       def chart_above_v2?
         Gem::Version.new(version) >= Gem::Version.new('2.0.0')
       end
@@ -104,10 +92,6 @@ module Clusters
         [
           Gitlab::Kubernetes::KubectlCmd.delete("pvc", "--selector", pvc_selector, "--namespace", Gitlab::Kubernetes::Helm::NAMESPACE)
         ]
-      end
-
-      def kube_client
-        cluster&.kubeclient&.core_client
       end
 
       def migrate_to_3_script

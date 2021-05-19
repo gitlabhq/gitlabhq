@@ -221,4 +221,4 @@ class SnippetsFinder < UnionFinder
   end
 end
 
-SnippetsFinder.prepend_if_ee('EE::SnippetsFinder')
+SnippetsFinder.prepend_mod_with('SnippetsFinder')

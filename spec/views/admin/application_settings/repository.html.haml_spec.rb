@@ -12,35 +12,17 @@ RSpec.describe 'admin/application_settings/repository.html.haml' do
   end
 
   describe 'default initial branch name' do
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(global_default_branch_name: false)
-      end
+    it 'has the setting section' do
+      render
 
-      it 'does not show the setting section' do
-        render
-
-        expect(rendered).not_to have_css("#js-default-branch-name")
-      end
+      expect(rendered).to have_css("#js-default-branch-name")
     end
 
-    context 'when the feature flag is enabled' do
-      before do
-        stub_feature_flags(global_default_branch_name: true)
-      end
+    it 'renders the correct setting section content' do
+      render
 
-      it 'has the setting section' do
-        render
-
-        expect(rendered).to have_css("#js-default-branch-name")
-      end
-
-      it 'renders the correct setting section content' do
-        render
-
-        expect(rendered).to have_content("Default initial branch name")
-        expect(rendered).to have_content("Set the default name of the initial branch when creating new repositories through the user interface.")
-      end
+      expect(rendered).to have_content("Default initial branch name")
+      expect(rendered).to have_content("Set the default name of the initial branch when creating new repositories through the user interface.")
     end
   end
 end

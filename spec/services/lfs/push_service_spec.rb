@@ -63,6 +63,7 @@ RSpec.describe Lfs::PushService do
     it 'returns a failure when submitting a batch fails' do
       expect(lfs_client).to receive(:batch!) { raise 'failed' }
 
+      expect(Gitlab::ErrorTracking).to receive(:log_exception).and_call_original
       expect(service.execute).to eq(status: :error, message: 'failed')
     end
 
@@ -70,6 +71,7 @@ RSpec.describe Lfs::PushService do
       stub_lfs_batch(lfs_object)
       expect(lfs_client).to receive(:upload!) { raise 'failed' }
 
+      expect(Gitlab::ErrorTracking).to receive(:log_exception).and_call_original
       expect(service.execute).to eq(status: :error, message: 'failed')
     end
 

@@ -26,7 +26,7 @@ module CacheMarkdownField
 
   # Returns the default Banzai render context for the cached markdown field.
   def banzai_render_context(field)
-    raise ArgumentError.new("Unknown field: #{field.inspect}") unless
+    raise ArgumentError, "Unknown field: #{field.inspect}" unless
       cached_markdown_fields.markdown_fields.include?(field)
 
     # Always include a project key, or Banzai complains
@@ -99,7 +99,7 @@ module CacheMarkdownField
   end
 
   def cached_html_for(markdown_field)
-    raise ArgumentError.new("Unknown field: #{markdown_field}") unless
+    raise ArgumentError, "Unknown field: #{markdown_field}" unless
       cached_markdown_fields.markdown_fields.include?(markdown_field)
 
     __send__(cached_markdown_fields.html_field(markdown_field)) # rubocop:disable GitlabSecurity/PublicSend

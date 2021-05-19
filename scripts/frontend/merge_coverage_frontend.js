@@ -1,8 +1,8 @@
+const { resolve } = require('path');
 const { sync } = require('glob');
 const { createCoverageMap } = require('istanbul-lib-coverage');
 const { createContext } = require('istanbul-lib-report');
 const { create } = require('istanbul-reports');
-const { resolve } = require('path');
 
 const coverageMap = createCoverageMap();
 

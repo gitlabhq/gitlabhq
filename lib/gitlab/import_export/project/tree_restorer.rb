@@ -39,7 +39,7 @@ module Gitlab
           else
             false
           end
-        rescue => e
+        rescue StandardError => e
           @shared.error(e)
           false
         end

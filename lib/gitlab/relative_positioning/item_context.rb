@@ -129,6 +129,14 @@ module Gitlab
         neighbour(sib)
       end
 
+      def at_position(position)
+        item = scoped_items.find_by(relative_position: position)
+
+        raise InvalidPosition, 'No item found at the specified position' if item.nil?
+
+        neighbour(item)
+      end
+
       def shift_left
         move_sequence_before(true)
         object.reset_relative_position

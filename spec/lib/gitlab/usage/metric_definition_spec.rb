@@ -25,11 +25,22 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
   let(:definition) { described_class.new(path, attributes) }
   let(:yaml_content) { attributes.deep_stringify_keys.to_yaml }
 
+  around do |example|
+    described_class.instance_variable_set(:@definitions, nil)
+    example.run
+    described_class.instance_variable_set(:@definitions, nil)
+  end
+
   def write_metric(metric, path, content)
     path = File.join(metric, path)
     dir = File.dirname(path)
     FileUtils.mkdir_p(dir)
     File.write(path, content)
+  end
+
+  after do
+    # Reset memoized `definitions` result
+    described_class.instance_variable_set(:@definitions, nil)
   end
 
   it 'has all definitons valid' do
@@ -62,6 +73,9 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       :distribution       | 'test'
       :tier               | %w(test ee)
       :name               | 'count_<adjective_describing>_boards'
+
+      :instrumentation_class | 'Metric_Class'
+      :instrumentation_class | 'metricClass'
     end
 
     with_them do
@@ -184,8 +198,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
           File.join(metric2, '**', '*.yml')
         ]
       )
-      # Reset memoized `definitions` result
-      described_class.instance_variable_set(:@definitions, nil)
     end
 
     after do

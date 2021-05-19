@@ -4,7 +4,6 @@ import { sortBy } from 'lodash';
 import Draggable from 'vuedraggable';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
-import { sortableEnd, sortableStart } from '~/boards/mixins/sortable_default_options';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BoardColumn from './board_column.vue';
@@ -48,7 +47,7 @@ export default {
         : this.lists;
     },
     canDragColumns() {
-      return !this.isEpicBoard && this.glFeatures.graphqlBoardLists && this.canAdminList;
+      return (this.isEpicBoard || this.glFeatures.graphqlBoardLists) && this.canAdminList;
     },
     boardColumnWrapper() {
       return this.canDragColumns ? Draggable : 'div';
@@ -73,14 +72,7 @@ export default {
       const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
       el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
     },
-    handleDragOnStart() {
-      sortableStart();
-    },
-
     handleDragOnEnd(params) {
-      sortableEnd();
-      if (this.isEpicBoard) return;
-
       const { item, newIndex, oldIndex, to } = params;
 
       const listId = item.dataset.id;
@@ -108,7 +100,6 @@ export default {
       ref="list"
       v-bind="draggableOptions"
       class="boards-list gl-w-full gl-py-5 gl-px-3 gl-white-space-nowrap"
-      @start="handleDragOnStart"
       @end="handleDragOnEnd"
     >
       <board-column

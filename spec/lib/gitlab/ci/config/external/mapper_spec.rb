@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:local_file) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
   let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
   let(:template_file) { 'Auto-DevOps.gitlab-ci.yml' }

@@ -7,7 +7,11 @@ module GroupsHelper
       groups#details
       groups#activity
       groups#subgroups
-    ]
+    ].tap do |paths|
+      break paths if Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+
+      paths.concat(['labels#index', 'group_members#index'])
+    end
   end
 
   def group_settings_nav_link_paths
@@ -25,7 +29,9 @@ module GroupsHelper
       applications#index
       applications#show
       applications#edit
-      packages_and_registries#index
+      packages_and_registries#show
+      groups/runners#show
+      groups/runners#edit
     ]
   end
 
@@ -34,6 +40,14 @@ module GroupsHelper
       groups/packages#index
       groups/container_registries#index
     ]
+  end
+
+  def group_information_title(group)
+    if Feature.enabled?(:sidebar_refactor, current_user)
+      group.subgroup? ? _('Subgroup information') : _('Group information')
+    else
+      group.subgroup? ? _('Subgroup overview') : _('Group overview')
+    end
   end
 
   def group_container_registry_nav?
@@ -113,9 +127,7 @@ module GroupsHelper
     @has_group_title = true
     full_title = []
 
-    ancestors = group.ancestors.with_route
-
-    ancestors.reverse_each.with_index do |parent, index|
+    sorted_ancestors(group).with_route.reverse_each.with_index do |parent, index|
       if index > 0
         add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false, show_avatar: true, for_dropdown: true), location: :before)
       else
@@ -141,9 +153,9 @@ module GroupsHelper
   def projects_lfs_status(group)
     lfs_status =
       if group.lfs_enabled?
-        group.projects.select(&:lfs_enabled?).size
+        group.projects.count(&:lfs_enabled?)
       else
-        group.projects.reject(&:lfs_enabled?).size
+        group.projects.count { |project| !project.lfs_enabled? }
       end
 
     size = group.projects.size
@@ -206,10 +218,9 @@ module GroupsHelper
   end
 
   def show_invite_banner?(group)
-    Feature.enabled?(:invite_your_teammates_banner_a, group) &&
-      can?(current_user, :admin_group, group) &&
-      !just_created? &&
-      !multiple_members?(group)
+    can?(current_user, :admin_group, group) &&
+    !just_created? &&
+    !multiple_members?(group)
   end
 
   def render_setting_to_allow_project_access_token_creation?(group)
@@ -231,7 +242,7 @@ module GroupsHelper
   end
 
   def multiple_members?(group)
-    group.member_count > 1
+    group.member_count > 1 || group.members_with_parents.count > 1
   end
 
   def get_group_sidebar_links
@@ -285,8 +296,17 @@ module GroupsHelper
   end
 
   def oldest_consecutively_locked_ancestor(group)
-    group.ancestors.find do |group|
+    sorted_ancestors(group).find do |group|
       !group.has_parent? || !group.parent.share_with_group_lock?
+    end
+  end
+
+  # Ancestors sorted by hierarchy depth in bottom-top order.
+  def sorted_ancestors(group)
+    if group.root_ancestor.use_traversal_ids?
+      group.ancestors(hierarchy_order: :asc)
+    else
+      group.ancestors
     end
   end
 
@@ -327,4 +347,4 @@ module GroupsHelper
   end
 end
 
-GroupsHelper.prepend_if_ee('EE::GroupsHelper')
+GroupsHelper.prepend_mod_with('GroupsHelper')

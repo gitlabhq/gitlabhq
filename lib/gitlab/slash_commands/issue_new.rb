@@ -33,7 +33,7 @@ module Gitlab
       private
 
       def create_issue(title:, description:)
-        Issues::CreateService.new(project, current_user, title: title, description: description).execute
+        Issues::CreateService.new(project: project, current_user: current_user, params: { title: title, description: description }).execute
       end
 
       def presenter(issue)

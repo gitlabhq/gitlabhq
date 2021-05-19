@@ -10,7 +10,7 @@
       "avatar_url": { "type": ["string", "null"] },
       "web_url": { "type": ["string", "null"] },
       "access_level": { "type": "integer" },
-      "expires_at": { "type": ["date", "null"] },
+      "expires_at": { "type": ["string", "null"], "format": "date-time" },
       "is_using_seat": { "type": "boolean" }
     },
     "required": [

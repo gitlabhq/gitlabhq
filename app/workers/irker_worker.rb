@@ -6,6 +6,8 @@ require 'socket'
 class IrkerWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :integrations
 
   def perform(project_id, channels, colors, push_data, settings)

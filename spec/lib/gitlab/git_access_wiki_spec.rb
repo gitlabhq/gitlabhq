@@ -6,6 +6,7 @@ RSpec.describe Gitlab::GitAccessWiki do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :wiki_repo) }
   let_it_be(:wiki) { create(:project_wiki, project: project) }
+
   let(:changes) { ['6f6d7e7ed 570e7b2ab refs/heads/master'] }
   let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }

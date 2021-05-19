@@ -1,6 +1,6 @@
 ---
 key_path: usage_activity_by_stage_monthly.create.merge_requests_users
-description:
+description: Monthly count of the number of merge request users
 product_section: dev
 product_stage: create
 product_group: group::code review
@@ -8,9 +8,11 @@ product_category: code_review
 value_type: number
 status: data_available
 time_frame: 28d
-data_source:
+data_source: redis_hll
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

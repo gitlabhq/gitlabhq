@@ -15,51 +15,49 @@ Use the [Bitbucket Cloud importer](bitbucket.md) for that.
 
 Import your projects from Bitbucket Server to GitLab with minimal effort.
 
-## Overview
+The Bitbucket importer can import:
 
-- In its current state, the Bitbucket importer can import:
-  - the repository description (GitLab 11.2+)
-  - the Git repository data (GitLab 11.2+)
-  - the pull requests (GitLab 11.2+)
-  - the pull request comments (GitLab 11.2+)
-- Repository public access is retained. If a repository is private in Bitbucket
-  it will be created as private in GitLab as well.
+- Repository description (GitLab 11.2+)
+- Git repository data (GitLab 11.2+)
+- Pull requests (GitLab 11.2+)
+- Pull request comments (GitLab 11.2+)
+
+When importing, repository public access is retained. If a repository is private in Bitbucket, it's
+created as private in GitLab as well.
 
 ## Limitations
 
-1. Currently GitLab doesn't allow comments on arbitrary lines of code, so any
-   Bitbucket comments out of bounds will be inserted as comments in the merge
-   request.
-1. Bitbucket Server allows multiple levels of threading. GitLab import
-   will collapse this into one thread and quote part of the original comment.
-1. Declined pull requests have unreachable commits, which prevents the GitLab
-   importer from generating a proper diff. These pull requests will show up as
-   empty changes.
-1. Attachments in Markdown are currently not imported.
-1. Task lists are not imported.
-1. Emoji reactions are not imported
-1. Project filtering does not support fuzzy search (only `starts with` or `full
-   match strings` are currently supported)
+- GitLab doesn't allow comments on arbitrary lines of code, so any Bitbucket comments out of bounds
+  are inserted as comments in the merge request.
+- Bitbucket Server allows multiple levels of threading. GitLab import collapses this into one thread
+  and quote part of the original comment.
+- Declined pull requests have unreachable commits, which prevents the GitLab importer from
+  generating a proper diff. These pull requests show up as empty changes.
+- Attachments in Markdown are not imported.
+- Task lists are not imported.
+- Emoji reactions are not imported.
+- Project filtering does not support fuzzy search (only `starts with` or `full match strings` are 
+  supported).
 
 ## How it works
 
 The Bitbucket Server importer works as follows:
 
-1. The user will be prompted to enter the URL, username, and password (or personal access token) to log in to Bitbucket.
+1. The user is prompted to enter the URL, username, and password (or personal access token) to log in to Bitbucket.
    These credentials are preserved only as long as the importer is running.
-1. The importer will attempt to list all the current repositories on the Bitbucket Server.
-1. Upon selection, the importer will clone the repository and import pull requests and comments.
+1. The importer attempts to list all the current repositories on the Bitbucket Server.
+1. Upon selection, the importer clones the repository and import pull requests and comments.
 
 ### User assignment
 
 When issues/pull requests are being imported, the Bitbucket importer tries to
 find the author's e-mail address with a confirmed e-mail address in the GitLab
 user database. If no such user is available, the project creator is set as
-the author. The importer will append a note in the comment to mark the original
+the author. The importer appends a note in the comment to mark the original
 creator.
 
-The importer will create any new namespaces (groups) if they don't exist or in
-the case the namespace is taken, the repository will be imported under the user's
+The importer creates any new namespaces (groups) if they don't exist or in
+the case the namespace is taken, the repository is imported under the user's
 namespace that started the import process.
 
 #### User assignment by username
@@ -104,7 +102,7 @@ To disable it:
 Feature.disable(:bitbucket_server_user_mapping_by_username)
 ```
 
-## Importing your Bitbucket repositories
+## Import your Bitbucket repositories
 
 1. Sign in to GitLab and go to your dashboard.
 1. Click on **New project**.
@@ -118,7 +116,7 @@ Feature.disable(:bitbucket_server_user_mapping_by_username)
    ![Grant access](img/bitbucket_server_import_credentials.png)
 
 1. Click on the projects that you'd like to import or **Import all projects**.
-   You can also filter projects by name and select the namespace under which each project will be
+   You can also filter projects by name and select the namespace under which each project is
    imported.
 
    ![Import projects](img/bitbucket_server_import_select_project_v12_3.png)

@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::FixOrphanPromotedIssues.prepend_if_ee('EE::Gitlab::BackgroundMigration::FixOrphanPromotedIssues')
+Gitlab::BackgroundMigration::FixOrphanPromotedIssues.prepend_mod_with('Gitlab::BackgroundMigration::FixOrphanPromotedIssues')

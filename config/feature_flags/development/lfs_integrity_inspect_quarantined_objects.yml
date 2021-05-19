@@ -1,8 +1,0 @@
----
-name: lfs_integrity_inspect_quarantined_objects
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58634
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/327440
-milestone: '13.11'
-type: development
-group: group::gitaly
-default_enabled: false

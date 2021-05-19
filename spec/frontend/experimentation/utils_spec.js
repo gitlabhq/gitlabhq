@@ -1,5 +1,9 @@
 import { assignGitlabExperiment } from 'helpers/experimentation_helper';
-import { DEFAULT_VARIANT, CANDIDATE_VARIANT } from '~/experimentation/constants';
+import {
+  DEFAULT_VARIANT,
+  CANDIDATE_VARIANT,
+  TRACKING_CONTEXT_SCHEMA,
+} from '~/experimentation/constants';
 import * as experimentUtils from '~/experimentation/utils';
 
 describe('experiment Utilities', () => {
@@ -15,6 +19,20 @@ describe('experiment Utilities', () => {
 
       it(`returns ${output}`, () => {
         expect(experimentUtils.getExperimentData(...input)).toEqual(output);
+      });
+    });
+  });
+
+  describe('getExperimentContexts', () => {
+    describe.each`
+      gon                     | input         | output
+      ${[TEST_KEY, '_data_']} | ${[TEST_KEY]} | ${[{ schema: TRACKING_CONTEXT_SCHEMA, data: { variant: '_data_' } }]}
+      ${[]}                   | ${[TEST_KEY]} | ${[]}
+    `('with input=$input and gon=$gon', ({ gon, input, output }) => {
+      assignGitlabExperiment(...gon);
+
+      it(`returns ${output}`, () => {
+        expect(experimentUtils.getExperimentContexts(...input)).toEqual(output);
       });
     });
   });

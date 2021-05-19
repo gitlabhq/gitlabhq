@@ -17,6 +17,7 @@ RSpec.describe Resolvers::MergeRequestPipelinesResolver do
 
   let_it_be(:other_project_pipeline) { create(:ci_pipeline, project: merge_request.source_project, ref: 'other-ref') }
   let_it_be(:other_pipeline) { create(:ci_pipeline) }
+
   let(:current_user) { create(:user) }
 
   before do

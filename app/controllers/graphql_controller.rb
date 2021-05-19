@@ -109,6 +109,8 @@ class GraphqlController < ApplicationController
     end
   end
 
+  # When modifying the context, also update GraphqlChannel#context if needed
+  # so that we have similar context when executing queries, mutations, and subscriptions
   def context
     api_user = !!sessionless_user?
     @context ||= {

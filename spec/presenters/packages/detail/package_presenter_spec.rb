@@ -50,6 +50,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       name: package.name,
       package_files: expected_package_files,
       package_type: package.package_type,
+      status: package.status,
       project_id: package.project_id,
       tags: package.tags.as_json,
       updated_at: package.updated_at,
@@ -125,6 +126,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
     context 'with nuget_metadatum' do
       let_it_be(:package) { create(:nuget_package, project: project) }
       let_it_be(:nuget_metadatum) { create(:nuget_metadatum, package: package) }
+
       let(:expected_package_details) { super().merge(nuget_metadatum: nuget_metadatum) }
 
       it 'returns nuget_metadatum' do

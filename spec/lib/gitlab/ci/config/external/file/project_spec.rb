@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
   let_it_be(:context_project) { create(:project) }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:context_user) { user }
   let(:parent_pipeline) { double(:parent_pipeline) }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }

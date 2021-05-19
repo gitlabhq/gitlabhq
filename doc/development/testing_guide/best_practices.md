@@ -168,7 +168,7 @@ can be used:
 
 ```ruby
 RSpec.describe API::Search, factory_default: :keep do
-  let_it_be(:namespace) { create_default(:namespace).freeze }
+  let_it_be(:namespace) { create_default(:namespace) }
 ```
 
 Then every project we create uses this `namespace`, without us having to pass
@@ -176,9 +176,9 @@ it as `namespace: namespace`. In order to make it work along with `let_it_be`, `
 must be explicitly specified. That keeps the default factory for every example in a suite instead of
 recreating it for each example.
 
-Objects created inside a `factory_default: :keep`, and using
-`create_default` inside a `let_it_be` should be frozen to prevent accidental reliance
-between test examples.
+To prevent accidental reliance between test examples, objects created
+with `create_default` are
+[frozen](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/factory_default.rb).
 
 Maybe we don't need to create 208 different projects - we
 can create one and reuse it. In addition, we can see that only about 1/3 of the
@@ -186,7 +186,7 @@ projects we create are ones we ask for (76/208). There is benefit in setting
 a default value for projects as well:
 
 ```ruby
-  let_it_be(:project) { create_default(:project).freeze }
+  let_it_be(:project) { create_default(:project) }
 ```
 
 In this case, the `total time` and `top-level time` numbers match more closely:
@@ -451,7 +451,7 @@ expect(page).to have_current_path 'gitlab/gitlab-test/-/issues'
 
 expect(page).to have_title 'Not Found'
 
-# acceptable when a more specific matcher above is not possible 
+# acceptable when a more specific matcher above is not possible
 expect(page).to have_css 'h2', text: 'Issue title'
 expect(page).to have_css 'p', text: 'Issue description', exact: true
 expect(page).to have_css '[data-testid="weight"]', text: 2
@@ -894,6 +894,27 @@ When you want to ensure that no event got called, you can use `expect_no_snowplo
     end
   end
 ```
+
+#### Test Snowplow context against the schema
+
+The [Snowplow schema matcher](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60480)
+helps to reduce validation errors by testing Snowplow context against the JSON schema.
+The schema matcher accepts the following parameters:
+
+- `schema path`
+- `context`
+
+To add a schema matcher spec:
+
+1. Add a new schema to the [Iglu repository](https://gitlab.com/gitlab-org/iglu),
+   then copy the same schema to the `spec/fixtures/product_intelligence/` directory.
+1. In the copied schema, remove the `"$schema"` key and value. We do not need it for specs
+   and the spec fails if we keep the key, as it tries to look for the schema in the URL.
+1. Use the following snippet to call the schema matcher:
+
+   ```ruby
+   match_snowplow_context_schema(schema_path: '<filename from step 1>', context: <Context Hash> )
+   ```
 
 ### Table-based / Parameterized tests
 

@@ -8,6 +8,8 @@ module Gitlab
     # stage.
     class AdvanceStageWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
+
+      sidekiq_options retry: 3
       include ::Gitlab::Import::AdvanceStage
 
       sidekiq_options dead: false

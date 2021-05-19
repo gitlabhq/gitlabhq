@@ -11,6 +11,7 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerMatcher do
       [
         {
           name: 'a',
+          worker_name: 'WorkerA',
           feature_category: :category_a,
           has_external_dependencies: false,
           urgency: :low,
@@ -19,6 +20,7 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerMatcher do
         },
         {
           name: 'a:2',
+          worker_name: 'WorkerA2',
           feature_category: :category_a,
           has_external_dependencies: false,
           urgency: :high,
@@ -27,6 +29,7 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerMatcher do
         },
         {
           name: 'b',
+          worker_name: 'WorkerB',
           feature_category: :category_b,
           has_external_dependencies: true,
           urgency: :high,
@@ -35,6 +38,7 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerMatcher do
         },
         {
           name: 'c',
+          worker_name: 'WorkerC',
           feature_category: :category_c,
           has_external_dependencies: false,
           urgency: :throttled,
@@ -46,56 +50,62 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerMatcher do
 
     context 'with valid input' do
       where(:query, :expected_metadatas) do
+        # worker_name
+        'worker_name=WorkerA' | %w(WorkerA)
+        'worker_name=WorkerA2' | %w(WorkerA2)
+        'worker_name=WorkerB|worker_name=WorkerD' | %w(WorkerB)
+        'worker_name!=WorkerA' | %w(WorkerA2 WorkerB WorkerC)
+
         # feature_category
-        'feature_category=category_a' | %w(a a:2)
-        'feature_category=category_a,category_c' | %w(a a:2 c)
-        'feature_category=category_a|feature_category=category_c' | %w(a a:2 c)
-        'feature_category!=category_a' | %w(b c)
+        'feature_category=category_a' | %w(WorkerA WorkerA2)
+        'feature_category=category_a,category_c' | %w(WorkerA WorkerA2 WorkerC)
+        'feature_category=category_a|feature_category=category_c' | %w(WorkerA WorkerA2 WorkerC)
+        'feature_category!=category_a' | %w(WorkerB WorkerC)
 
         # has_external_dependencies
-        'has_external_dependencies=true' | %w(b)
-        'has_external_dependencies=false' | %w(a a:2 c)
-        'has_external_dependencies=true,false' | %w(a a:2 b c)
-        'has_external_dependencies=true|has_external_dependencies=false' | %w(a a:2 b c)
-        'has_external_dependencies!=true' | %w(a a:2 c)
+        'has_external_dependencies=true' | %w(WorkerB)
+        'has_external_dependencies=false' | %w(WorkerA WorkerA2 WorkerC)
+        'has_external_dependencies=true,false' | %w(WorkerA WorkerA2 WorkerB WorkerC)
+        'has_external_dependencies=true|has_external_dependencies=false' | %w(WorkerA WorkerA2 WorkerB WorkerC)
+        'has_external_dependencies!=true' | %w(WorkerA WorkerA2 WorkerC)
 
         # urgency
-        'urgency=high' | %w(a:2 b)
-        'urgency=low' | %w(a)
-        'urgency=high,low,throttled' | %w(a a:2 b c)
-        'urgency=low|urgency=throttled' | %w(a c)
-        'urgency!=high' | %w(a c)
+        'urgency=high' | %w(WorkerA2 WorkerB)
+        'urgency=low' | %w(WorkerA)
+        'urgency=high,low,throttled' | %w(WorkerA WorkerA2 WorkerB WorkerC)
+        'urgency=low|urgency=throttled' | %w(WorkerA WorkerC)
+        'urgency!=high' | %w(WorkerA WorkerC)
 
         # name
-        'name=a' | %w(a)
-        'name=a,b' | %w(a b)
-        'name=a,a:2|name=b' | %w(a a:2 b)
-        'name!=a,a:2' | %w(b c)
+        'name=a' | %w(WorkerA)
+        'name=a,b' | %w(WorkerA WorkerB)
+        'name=a,a:2|name=b' | %w(WorkerA WorkerA2 WorkerB)
+        'name!=a,a:2' | %w(WorkerB WorkerC)
 
         # resource_boundary
-        'resource_boundary=memory' | %w(b c)
-        'resource_boundary=memory,cpu' | %w(a b c)
-        'resource_boundary=memory|resource_boundary=cpu' | %w(a b c)
-        'resource_boundary!=memory,cpu' | %w(a:2)
+        'resource_boundary=memory' | %w(WorkerB WorkerC)
+        'resource_boundary=memory,cpu' | %w(WorkerA WorkerB WorkerC)
+        'resource_boundary=memory|resource_boundary=cpu' | %w(WorkerA WorkerB WorkerC)
+        'resource_boundary!=memory,cpu' | %w(WorkerA2)
 
         # tags
-        'tags=no_disk_io' | %w(a b)
-        'tags=no_disk_io,git_access' | %w(a a:2 b)
-        'tags=no_disk_io|tags=git_access' | %w(a a:2 b)
-        'tags=no_disk_io&tags=git_access' | %w(a)
-        'tags!=no_disk_io' | %w(a:2 c)
-        'tags!=no_disk_io,git_access' | %w(c)
+        'tags=no_disk_io' | %w(WorkerA WorkerB)
+        'tags=no_disk_io,git_access' | %w(WorkerA WorkerA2 WorkerB)
+        'tags=no_disk_io|tags=git_access' | %w(WorkerA WorkerA2 WorkerB)
+        'tags=no_disk_io&tags=git_access' | %w(WorkerA)
+        'tags!=no_disk_io' | %w(WorkerA2 WorkerC)
+        'tags!=no_disk_io,git_access' | %w(WorkerC)
         'tags=unknown_tag' | []
-        'tags!=no_disk_io' | %w(a:2 c)
-        'tags!=no_disk_io,git_access' | %w(c)
-        'tags!=unknown_tag' | %w(a a:2 b c)
+        'tags!=no_disk_io' | %w(WorkerA2 WorkerC)
+        'tags!=no_disk_io,git_access' | %w(WorkerC)
+        'tags!=unknown_tag' | %w(WorkerA WorkerA2 WorkerB WorkerC)
 
         # combinations
-        'feature_category=category_a&urgency=high' | %w(a:2)
-        'feature_category=category_a&urgency=high|feature_category=category_c' | %w(a:2 c)
+        'feature_category=category_a&urgency=high' | %w(WorkerA2)
+        'feature_category=category_a&urgency=high|feature_category=category_c' | %w(WorkerA2 WorkerC)
 
         # Match all
-        '*' | %w(a a:2 b c)
+        '*' | %w(WorkerA WorkerA2 WorkerB WorkerC)
       end
 
       with_them do
@@ -103,7 +113,7 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerMatcher do
           matched_metadatas = worker_metadatas.select do |metadata|
             described_class.new(query).match?(metadata)
           end
-          expect(matched_metadatas.map { |m| m[:name] }).to match_array(expected_metadatas)
+          expect(matched_metadatas.map { |m| m[:worker_name] }).to match_array(expected_metadatas)
         end
       end
     end
@@ -113,7 +123,7 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerMatcher do
         'feature_category="category_a"' | described_class::InvalidTerm
         'feature_category=' | described_class::InvalidTerm
         'feature_category~category_a' | described_class::InvalidTerm
-        'worker_name=a' | described_class::UnknownPredicate
+        'invalid_term=a' | described_class::UnknownPredicate
       end
 
       with_them do

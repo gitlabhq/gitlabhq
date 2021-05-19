@@ -79,3 +79,28 @@ export const directMember = { ...member, isDirectMember: true };
 export const inheritedMember = { ...member, isDirectMember: false };
 
 export const member2faEnabled = { ...member, user: { ...member.user, twoFactorEnabled: true } };
+
+export const paginationData = {
+  current_page: 1,
+  per_page: 5,
+  total_items: 10,
+  param_name: 'page',
+  params: { search_groups: null },
+};
+
+export const pagination = {
+  currentPage: 1,
+  perPage: 5,
+  totalItems: 10,
+  paramName: 'page',
+  params: { search_groups: null },
+};
+
+export const dataAttribute = JSON.stringify({
+  members,
+  pagination: paginationData,
+  source_id: 234,
+  can_manage_members: true,
+  member_path: '/groups/foo-bar/-/group_members/:id',
+  ldap_override_path: '/groups/ldap-group/-/group_members/:id/override',
+});

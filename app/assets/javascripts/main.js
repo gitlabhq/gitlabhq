@@ -35,6 +35,7 @@ import initUsagePingConsent from './usage_ping_consent';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
+import { initTopNav } from './nav';
 
 import 'ee_else_ce/main_ee';
 
@@ -80,6 +81,7 @@ initRails();
 function deferredInitialisation() {
   const $body = $('body');
 
+  initTopNav();
   initBreadcrumbs();
   initTodoToggle();
   initLogoAnimation();

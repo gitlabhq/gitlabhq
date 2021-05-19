@@ -9,6 +9,22 @@ module IssuesHelper
     classes.join(' ')
   end
 
+  def issue_manual_ordering_class
+    is_sorting_by_relative_position = @sort == 'relative_position'
+
+    if is_sorting_by_relative_position && !issue_repositioning_disabled?
+      "manual-ordering"
+    end
+  end
+
+  def issue_repositioning_disabled?
+    if @group
+      @group.root_ancestor.issue_repositioning_disabled?
+    elsif @project
+      @project.root_namespace.issue_repositioning_disabled?
+    end
+  end
+
   def status_box_class(item)
     if item.try(:expired?)
       'status-box-expired'
@@ -165,23 +181,32 @@ module IssuesHelper
 
   def issues_list_data(project, current_user, finder)
     {
+      autocomplete_users_path: autocomplete_users_path(active: true, current_user: true, project_id: project.id, format: :json),
+      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
       can_bulk_update: can?(current_user, :admin_issue, project).to_s,
       can_edit: can?(current_user, :admin_project, project).to_s,
       can_import_issues: can?(current_user, :import_issues, @project).to_s,
       email: current_user&.notification_email,
+      emails_help_page_path: help_page_path('development/emails', anchor: 'email-namespace'),
       empty_state_svg_path: image_path('illustrations/issues.svg'),
       endpoint: expose_path(api_v4_projects_issues_path(id: project.id)),
       export_csv_path: export_csv_project_issues_path(project),
-      full_path: project.full_path,
       has_issues: project_issues(project).exists?.to_s,
       import_csv_issues_path: import_csv_namespace_project_issues_path,
+      initial_email: project.new_issuable_address(current_user, 'issue'),
       is_signed_in: current_user.present?.to_s,
       issues_path: project_issues_path(project),
       jira_integration_path: help_page_url('user/project/integrations/jira', anchor: 'view-jira-issues'),
+      markdown_help_path: help_page_path('user/markdown'),
       max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
       new_issue_path: new_project_issue_path(project, issue: { assignee_id: finder.assignee.try(:id), milestone_id: finder.milestones.first.try(:id) }),
       project_import_jira_path: project_import_jira_path(project),
+      project_labels_path: project_labels_path(project, include_ancestor_groups: true, format: :json),
+      project_milestones_path: project_milestones_path(project, format: :json),
+      project_path: project.full_path,
+      quick_actions_help_path: help_page_path('user/project/quick_actions'),
+      reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
       rss_path: url_for(safe_params.merge(rss_url_options)),
       show_new_issue_link: show_new_issue_link?(project).to_s,
       sign_in_path: new_user_session_path
@@ -200,4 +225,4 @@ module IssuesHelper
   end
 end
 
-IssuesHelper.prepend_if_ee('EE::IssuesHelper')
+IssuesHelper.prepend_mod_with('IssuesHelper')

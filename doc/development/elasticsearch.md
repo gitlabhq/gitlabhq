@@ -25,7 +25,7 @@ Developers making significant changes to Elasticsearch queries should test their
 
 ## Setting up development environment
 
-See the [Elasticsearch GDK setup instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/elasticsearch.md)
+See the [Elasticsearch GDK setup instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/elasticsearch.md)
 
 ## Helpful Rake tasks
 
@@ -241,8 +241,8 @@ cron worker runs. Default value is 5 minutes.
 - `pause_indexing!` - Pause indexing while the migration runs. This setting will record the indexing setting before
 the migration runs and set it back to that value when the migration is completed.
 
-- `space_requirements!` - Verify that enough free space is available in the cluster when the migration runs. This setting 
-  will halt the migration if the storage required is not available when the migration runs. The migration must provide 
+- `space_requirements!` - Verify that enough free space is available in the cluster when the migration runs. This setting
+  will halt the migration if the storage required is not available when the migration runs. The migration must provide
   the space required in bytes by defining a `space_required_bytes` method.
 
 ```ruby
@@ -285,7 +285,7 @@ defer it to another release if there is risk of important data loss.
 Follow these best practices for best results:
 
 - When working in batches, keep the batch size under 9,000 documents
-  and `throttle_delay` over 3 minutes. The bulk indexer is set to run
+  and `throttle_delay` for at least 3 minutes. The bulk indexer is set to run
   every 1 minute and process a batch of 10,000 documents. These limits
   allow the bulk indexer time to process records before another migration
   batch is attempted.
@@ -316,11 +316,11 @@ choose to remove the migration code and tests so that:
   anymore.
 
 To be extra safe, we will not delete migrations that were created in the last
-minor version before the major upgrade. So, if the we are upgrading to `%14.0`,
-we should not delete migrations that were only added in `%13.11`. This is an
+minor version before the major upgrade. So, if we are upgrading to `%14.0`,
+we should not delete migrations that were only added in `%13.12`. This is an
 extra safety net as we expect there are migrations that get merged that may
 take multiple weeks to finish on GitLab.com. It would be bad if we upgraded
-GitLab.com to `%14.0` before the migrations in `%13.11` were finished. Since
+GitLab.com to `%14.0` before the migrations in `%13.12` were finished. Since
 our deployments to GitLab.com are automated and we currently don't have
 automated checks to prevent this, the extra precaution is warranted.
 Additionally, even if we did have automated checks to prevent it, we wouldn't
@@ -340,7 +340,7 @@ being upgraded to, we do the following:
    def migrate
      log_raise "Migration has been deleted in the last major version upgrade." \
        "Migrations are supposed to be finished before upgrading major version https://docs.gitlab.com/ee/update/#upgrading-to-a-new-major-version ." \
-       "In order to correct this issue you will need to reacreate your index from scratch https://docs.gitlab.com/ee/integration/elasticsearch.html#last-resort-to-recreate-an-index ."
+       "To correct this issue, recreate your index from scratch: https://docs.gitlab.com/ee/integration/elasticsearch.html#last-resort-to-recreate-an-index."
    end
 
    def completed?

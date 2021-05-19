@@ -71,6 +71,7 @@ describe('Action components', () => {
   });
 
   describe('DELETE_ACTION_COMPONENTS', () => {
+    const oncallSchedules = [{ name: 'schedule1' }, { name: 'schedule2' }];
     it.each(DELETE_ACTIONS)('renders a dropdown item for "%s"', async (action) => {
       initComponent({
         component: Actions[capitalizeFirstCharacter(action)],
@@ -80,6 +81,7 @@ describe('Action components', () => {
             delete: '/delete',
             block: '/block',
           },
+          oncallSchedules,
         },
         stubs: { SharedDeleteAction },
       });
@@ -92,6 +94,9 @@ describe('Action components', () => {
       expect(sharedAction.attributes('data-delete-user-url')).toBe('/delete');
       expect(sharedAction.attributes('data-gl-modal-action')).toBe(kebabCase(action));
       expect(sharedAction.attributes('data-username')).toBe('John Doe');
+      expect(sharedAction.attributes('data-oncall-schedules')).toBe(
+        JSON.stringify(oncallSchedules),
+      );
       expect(findDropdownItem().exists()).toBe(true);
     });
   });

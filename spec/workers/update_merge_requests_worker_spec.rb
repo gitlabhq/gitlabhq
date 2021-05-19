@@ -20,7 +20,7 @@ RSpec.describe UpdateMergeRequestsWorker do
     end
 
     it 'executes MergeRequests::RefreshService with expected values' do
-      expect_next_instance_of(MergeRequests::RefreshService, project, user) do |refresh_service|
+      expect_next_instance_of(MergeRequests::RefreshService, project: project, current_user: user) do |refresh_service|
         expect(refresh_service).to receive(:execute).with(oldrev, newrev, ref)
       end
 

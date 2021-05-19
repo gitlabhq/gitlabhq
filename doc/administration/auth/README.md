@@ -6,7 +6,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab authentication and authorization
+# GitLab authentication and authorization **(FREE SELF)**
 
 GitLab integrates with the following external authentication and authorization
 providers:

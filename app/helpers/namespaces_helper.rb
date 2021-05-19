@@ -83,6 +83,15 @@ module NamespacesHelper
     }
   end
 
+  def cascading_namespace_setting_locked?(attribute, group, **args)
+    return false if group.nil?
+
+    method_name = "#{attribute}_locked?"
+    return false unless group.namespace_settings.respond_to?(method_name)
+
+    group.namespace_settings.public_send(method_name, **args) # rubocop:disable GitlabSecurity/PublicSend
+  end
+
   private
 
   # Many importers create a temporary Group, so use the real
@@ -116,4 +125,4 @@ module NamespacesHelper
   end
 end
 
-NamespacesHelper.prepend_if_ee('EE::NamespacesHelper')
+NamespacesHelper.prepend_mod_with('NamespacesHelper')

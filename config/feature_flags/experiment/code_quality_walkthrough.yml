@@ -1,0 +1,8 @@
+---
+name: code_quality_walkthrough
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58900
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/327229
+milestone: "13.12"
+type: experiment
+group: group::activation
+default_enabled: false

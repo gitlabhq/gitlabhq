@@ -11,7 +11,7 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker do
 
   it_behaves_like 'worker with data consistency',
                   described_class,
-                  feature_flag: :periodic_project_authorization_update_via_replica,
+                  feature_flag: :delayed_consistency_for_user_refresh_over_range_worker,
                   data_consistency: :delayed
 
   describe '#perform' do

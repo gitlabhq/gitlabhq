@@ -4,7 +4,10 @@ module Namespaces
   class OnboardingPipelineCreatedWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :subgroups
+    tags :exclude_from_kubernetes
     urgency :low
 
     deduplicate :until_executing

@@ -128,7 +128,7 @@ module CommitsHelper
     %w(btn gpg-status-box) + Array(additional_classes)
   end
 
-  def conditionally_paginate_diff_files(diffs, paginate:, per: Projects::CommitController::COMMIT_DIFFS_PER_PAGE)
+  def conditionally_paginate_diff_files(diffs, paginate:, per:)
     if paginate
       Kaminari.paginate_array(diffs.diff_files.to_a).page(params[:page]).per(per)
     else
@@ -146,6 +146,27 @@ module CommitsHelper
         refsUrl: refs_project_path(project)
       }
     end
+  end
+
+  # This is used to calculate a cache key for the app/views/projects/commits/_commit.html.haml
+  # partial. It takes some of the same parameters as used in the partial and will hash the
+  # current pipeline status.
+  #
+  # This includes a keyed hash for values that can be nil, to prevent invalid cache entries
+  # being served if the order should change in future.
+  def commit_partial_cache_key(commit, ref:, merge_request:, request:)
+    [
+      commit,
+      commit.author,
+      ref,
+      {
+        merge_request: merge_request,
+        pipeline_status: commit.status_for(ref),
+        xhr: request.xhr?,
+        controller: controller.controller_path,
+        path: @path # referred to in #link_to_browse_code
+      }
+    ]
   end
 
   protected

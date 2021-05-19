@@ -14,7 +14,7 @@ module Clusters
       end
 
       def execute
-        raise MissingRoleError.new('AWS provisioning role not configured') unless provision_role.present?
+        raise MissingRoleError, 'AWS provisioning role not configured' unless provision_role.present?
 
         ::Aws::AssumeRoleCredentials.new(
           client: client,
@@ -54,7 +54,7 @@ module Clusters
 
       ##
       # If we haven't created a provider record yet,
-      # we restrict ourselves to read only access so
+      # we restrict ourselves to read-only access so
       # that we can safely expose credentials to the
       # frontend (to be used when populating the
       # creation form).

@@ -620,16 +620,12 @@ RSpec.describe WikiPage do
   end
 
   describe "#versions" do
-    include_context 'subject is persisted page'
+    let(:subject) { create_wiki_page }
 
     it "returns an array of all commits for the page" do
-      3.times { |i| subject.update(content: "content #{i}") }
-
-      expect(subject.versions.count).to eq(4)
-    end
-
-    it 'returns instances of WikiPageVersion' do
-      expect(subject.versions).to all( be_a(Gitlab::Git::WikiPageVersion) )
+      expect do
+        3.times { |i| subject.update(content: "content #{i}") }
+      end.to change { subject.versions.count }.by(3)
     end
   end
 
@@ -640,6 +636,7 @@ RSpec.describe WikiPage do
     let_it_be(:existing_page) { create_wiki_page(title: 'test page') }
     let_it_be(:directory_page) { create_wiki_page(title: 'parent directory/child page') }
     let_it_be(:page_with_special_characters) { create_wiki_page(title: 'test+page') }
+
     let(:untitled_page) { described_class.new(wiki) }
 
     where(:page, :title, :changed) do
@@ -776,8 +773,11 @@ RSpec.describe WikiPage do
   end
 
   describe '#historical?' do
-    include_context 'subject is persisted page'
+    let!(:container) { create(:project) }
 
+    subject { create_wiki_page }
+
+    let(:wiki) { subject.wiki }
     let(:old_version) { subject.versions.last.id }
     let(:old_page) { wiki.find_page(subject.title, old_version) }
     let(:latest_version) { subject.versions.first.id }

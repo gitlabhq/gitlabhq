@@ -62,4 +62,4 @@ module QA
   end
 end
 
-QA::Page::Project::Settings::Repository.prepend_if_ee('QA::EE::Page::Project::Settings::Repository')
+QA::Page::Project::Settings::Repository.prepend_mod_with('Page::Project::Settings::Repository', namespace: QA)

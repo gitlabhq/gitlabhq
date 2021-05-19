@@ -38,7 +38,7 @@ module Registrations
     end
 
     def learn_gitlab
-      @learn_gitlab ||= LearnGitlab.new(current_user)
+      @learn_gitlab ||= LearnGitlab::Project.new(current_user)
     end
   end
 end

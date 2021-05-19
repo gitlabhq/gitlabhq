@@ -10,4 +10,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 level: suggestion
 ignorecase: true
 swap:
-  'admin ?\w*': '(?:Admin Area|[Aa]dminist(ration|rator|rators|er|rative))'
+  'admin ?\w*': '(?:Admin (Area|Mode)|[Aa]dminist(ration|rator|rators|er|rative))'

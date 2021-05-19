@@ -46,7 +46,8 @@ Example response:
     "open_merge_requests_count": 1,
     "subscribed": false,
     "priority": 10,
-    "is_project_label": true
+    "is_project_label": true,
+    "remove_on_close": false
   },
   {
     "id" : 4,
@@ -60,7 +61,8 @@ Example response:
     "open_merge_requests_count": 0,
     "subscribed": false,
     "priority": null,
-    "is_project_label": true
+    "is_project_label": true,
+    "remove_on_close": false
   },
   {
     "id" : 7,
@@ -74,7 +76,8 @@ Example response:
     "open_merge_requests_count": 1,
     "subscribed": false,
     "priority": null,
-    "is_project_label": true
+    "is_project_label": true,
+    "remove_on_close": true
   },
   {
     "id" : 8,
@@ -88,7 +91,8 @@ Example response:
     "open_merge_requests_count": 2,
     "subscribed": false,
     "priority": null,
-    "is_project_label": false
+    "is_project_label": false,
+    "remove_on_close": false
   },
   {
     "id" : 9,
@@ -102,7 +106,8 @@ Example response:
     "open_merge_requests_count": 1,
     "subscribed": true,
     "priority": null,
-    "is_project_label": true
+    "is_project_label": true,
+    "remove_on_close": false
   }
 ]
 ```
@@ -140,7 +145,8 @@ Example response:
   "open_merge_requests_count": 1,
   "subscribed": false,
   "priority": 10,
-  "is_project_label": true
+  "is_project_label": true,
+  "remove_on_close": true
 }
 ```
 
@@ -159,6 +165,7 @@ POST /projects/:id/labels
 | `color`       | string  | yes      | The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description` | string  | no       | The description of the label |
 | `priority`    | integer | no       | The priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
+| `remove_on_close` | boolean | no | Whether the label should be removed from an issue when the issue is closed. _([Introduced in GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/17461))_ |
 
 ```shell
 curl --data "name=feature&color=#5843AD" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels"
@@ -179,7 +186,8 @@ Example response:
   "open_merge_requests_count": 0,
   "subscribed": false,
   "priority": null,
-    "is_project_label": true
+  "is_project_label": true,
+  "remove_on_close": true
 }
 ```
 
@@ -220,6 +228,7 @@ PUT /projects/:id/labels/:label_id
 | `color`         | string  | yes if `new_name` is not provided | The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description`   | string  | no                                | The new description of the label |
 | `priority`    | integer | no       | The new priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
+| `remove_on_close` | boolean | no | Boolean option specifying whether the label should be removed from issues when they are closed. |
 
 ```shell
 curl --request PUT --data "new_name=docs&color=#8E44AD&description=Documentation" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels/documentation"
@@ -240,7 +249,8 @@ Example response:
   "open_merge_requests_count": 2,
   "subscribed": false,
   "priority": null,
-  "is_project_label": true
+  "is_project_label": true,
+  "remove_on_close": true
 }
 ```
 
@@ -281,7 +291,8 @@ Example response:
   "open_issues_count": 1,
   "closed_issues_count": 0,
   "open_merge_requests_count": 2,
-  "subscribed": false
+  "subscribed": false,
+  "remove_on_close": true
 }
 ```
 
@@ -322,7 +333,8 @@ Example response:
   "open_merge_requests_count": 1,
   "subscribed": true,
   "priority": null,
-  "is_project_label": true
+  "is_project_label": true,
+  "remove_on_close": true
 }
 ```
 

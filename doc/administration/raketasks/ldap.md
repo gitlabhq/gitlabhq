@@ -10,8 +10,8 @@ The following are LDAP-related Rake tasks.
 
 ## Check
 
-The LDAP check Rake task will test the `bind_dn` and `password` credentials
-(if configured) and will list a sample of LDAP users. This task is also
+The LDAP check Rake task tests the `bind_dn` and `password` credentials
+(if configured) and lists a sample of LDAP users. This task is also
 executed as part of the `gitlab:check` task, but can run independently
 using the command below.
 
@@ -27,7 +27,7 @@ sudo gitlab-rake gitlab:ldap:check
 sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
 ```
 
-By default, the task will return a sample of 100 LDAP users. Change this
+By default, the task returns a sample of 100 LDAP users. Change this
 limit by passing a number to the check task:
 
 ```shell
@@ -36,9 +36,9 @@ rake gitlab:ldap:check[50]
 
 ## Run a group sync **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in GitLab 12.2.
 
-The following task will run a [group sync](../auth/ldap/index.md#group-sync) immediately. This is valuable
+The following task runs a [group sync](../auth/ldap/index.md#group-sync) immediately. This is valuable
 when you'd like to update all configured group memberships against LDAP without
 waiting for the next scheduled group sync to be run.
 
@@ -61,9 +61,9 @@ bundle exec rake gitlab:ldap:group_sync
 
 ## Rename a provider
 
-If you change the LDAP server ID in `gitlab.yml` or `gitlab.rb` you will need
-to update all user identities or users will be unable to sign in. Input the
-old and new provider and this task will update all matching identities in the
+If you change the LDAP server ID in `gitlab.yml` or `gitlab.rb` you need
+to update all user identities or users aren't able to sign in. Input the
+old and new provider and this task updates all matching identities in the
 database.
 
 `old_provider` and `new_provider` are derived from the prefix `ldap` plus the
@@ -81,9 +81,10 @@ main:
 
 `main` is the LDAP server ID. Together, the unique provider is `ldapmain`.
 
-> **Warning**: If you input an incorrect new provider users will be unable
-to sign in. If this happens, run the task again with the incorrect provider
-as the `old_provider` and the correct provider as the `new_provider`.
+WARNING:
+If you input an incorrect new provider, users cannot sign in. If this happens,
+run the task again with the incorrect provider as the `old_provider` and the
+correct provider as the `new_provider`.
 
 **Omnibus Installation**
 
@@ -119,7 +120,7 @@ User identities were successfully updated
 
 ### Other options
 
-If you do not specify an `old_provider` and `new_provider` you will be prompted
+If you do not specify an `old_provider` and `new_provider` the task prompts you
 for them:
 
 **Omnibus Installation**
@@ -141,7 +142,7 @@ What is the old provider? Ex. 'ldapmain': ldapmain
 What is the new provider? Ex. 'ldapcustom': ldapmycompany
 ```
 
-This tasks also accepts the `force` environment variable which will skip the
+This task also accepts the `force` environment variable, which skips the
 confirmation dialog:
 
 ```shell

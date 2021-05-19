@@ -1006,23 +1006,70 @@ RSpec.describe Repository do
       end
     end
 
-    context 'when specifying a path with wildcard' do
-      let(:path) { 'files/*/*.png' }
+    context 'when specifying a wildcard path' do
+      let(:path) { '*.md' }
 
-      it 'returns all files matching the path' do
-        expect(result).to contain_exactly('files/images/logo-black.png',
-                                          'files/images/logo-white.png')
+      it 'returns files matching the path in the root folder' do
+        expect(result).to contain_exactly('CONTRIBUTING.md',
+                                          'MAINTENANCE.md',
+                                          'PROCESS.md',
+                                          'README.md')
       end
     end
 
-    context 'when specifying an extension with wildcard' do
-      let(:path) { '*.rb' }
+    context 'when specifying a wildcard path for all' do
+      let(:path) { '**.md' }
 
-      it 'returns all files matching the extension' do
+      it 'returns all matching files in all folders' do
+        expect(result).to contain_exactly('CONTRIBUTING.md',
+                                          'MAINTENANCE.md',
+                                          'PROCESS.md',
+                                          'README.md',
+                                          'files/markdown/ruby-style-guide.md',
+                                          'with space/README.md')
+      end
+    end
+
+    context 'when specifying a path to subfolders using two asterisks and a slash' do
+      let(:path) { 'files/**/*.md' }
+
+      it 'returns all files matching the path' do
+        expect(result).to contain_exactly('files/markdown/ruby-style-guide.md')
+      end
+    end
+
+    context 'when specifying a wildcard path to subfolder with just two asterisks' do
+      let(:path) { 'files/**.md' }
+
+      it 'returns all files in the matching path' do
+        expect(result).to contain_exactly('files/markdown/ruby-style-guide.md')
+      end
+    end
+
+    context 'when specifying a wildcard path to subfolder with one asterisk' do
+      let(:path) { 'files/*/*.md' }
+
+      it 'returns all files in the matching path' do
+        expect(result).to contain_exactly('files/markdown/ruby-style-guide.md')
+      end
+    end
+
+    context 'when specifying a wildcard path for an unknown number of subfolder levels' do
+      let(:path) { '**/*.rb' }
+
+      it 'returns all matched files in all subfolders' do
         expect(result).to contain_exactly('encoding/russian.rb',
                                           'files/ruby/popen.rb',
                                           'files/ruby/regex.rb',
                                           'files/ruby/version_info.rb')
+      end
+    end
+
+    context 'when specifying a wildcard path to one level of subfolders' do
+      let(:path) { '*/*.rb' }
+
+      it 'returns all matched files in one subfolder' do
+        expect(result).to contain_exactly('encoding/russian.rb')
       end
     end
 

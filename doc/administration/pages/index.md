@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: 'Learn how to administer GitLab Pages.'
 ---
 
-# GitLab Pages administration
+# GitLab Pages administration **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80) in GitLab EE 8.3.
 > - Custom CNAMEs with TLS support were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173) in GitLab EE 8.5.
@@ -120,7 +120,7 @@ This example contains the following:
 - `example.com`: The GitLab domain.
 - `example.io`: The domain GitLab Pages is served from.
 - `192.0.2.1`: The primary IP of your GitLab instance.
-- `192.0.2.2`: The secondary IP, which is dedicated to GitLab Pages.
+- `192.0.2.2`: The secondary IP, which is dedicated to GitLab Pages. It must be different than the primary IP.
 
 NOTE:
 You should not use the GitLab domain to serve user pages. For more information see the [security section](#security).
@@ -253,13 +253,14 @@ control over how the Pages daemon runs and serves content in your environment.
 | `gitlab_server`                         | Server to use for authentication when access control is enabled; defaults to GitLab `external_url`. |
 | `headers`                               | Specify any additional http headers that should be sent to the client with each response. Multiple headers can be given as an array, header and value as one string, for example `['my-header: myvalue', 'my-other-header: my-other-value']` |
 | `inplace_chroot`                        | On [systems that don't support bind-mounts](index.md#additional-configuration-for-docker-container), this instructs GitLab Pages to `chroot` into its `pages_path` directory. Some caveats exist when using in-place `chroot`; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information. |
+| `enable_disk`                           | Allows the GitLab Pages daemon to serve content from disk. Shall be disabled if shared disk storage isn't available. |
 | `insecure_ciphers`                      | Use default list of cipher suites, may contain insecure ones like 3DES and RC4. |
 | `internal_gitlab_server`                | Internal GitLab server address used exclusively for API requests. Useful if you want to send that traffic over an internal load balancer. Defaults to GitLab `external_url`. |
 | `listen_proxy`                          | The addresses to listen on for reverse-proxy requests. Pages binds to these addresses' network sockets and receives incoming requests from them. Sets the value of `proxy_pass` in `$nginx-dir/conf/gitlab-pages.conf`. |
 | `log_directory`                         | Absolute path to a log directory. |
 | `log_format`                            | The log output format: `text` or `json`. |
 | `log_verbose`                           | Verbose logging, true/false. |
-| `propagate_correlation_id`              | Set to true (false by default) to re-use existing Correlation ID from the incoming request header `X-Request-ID` if present. If a reverse proxy sets this header, the value will be propagated in the request chain. |
+| `propagate_correlation_id`              | Set to true (false by default) to re-use existing Correlation ID from the incoming request header `X-Request-ID` if present. If a reverse proxy sets this header, the value is propagated in the request chain. |
 | `max_connections`                       | Limit on the number of concurrent connections to the HTTP, HTTPS or proxy listeners. |
 | `metrics_address`                       | The address to listen on for metrics requests. |
 | `redirect_http`                         | Redirect pages from HTTP to HTTPS, true/false. |
@@ -310,14 +311,12 @@ world. Custom domains are supported, but no TLS.
 
    ```ruby
    pages_external_url "http://example.io"
-   nginx['listen_addresses'] = ['192.0.2.1']
+   nginx['listen_addresses'] = ['192.0.2.1'] # The primary IP of the GitLab instance
    pages_nginx['enable'] = false
-   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80']
+   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
    ```
 
-   where `192.0.2.1` is the primary IP address that GitLab is listening to and
-   `192.0.2.2` and `2001:db8::2` are the secondary IPs the GitLab Pages daemon
-   listens on. If you don't have IPv6, you can omit the IPv6 address.
+   If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
@@ -342,20 +341,18 @@ world. Custom domains and TLS are supported.
 
    ```ruby
    pages_external_url "https://example.io"
-   nginx['listen_addresses'] = ['192.0.2.1']
+   nginx['listen_addresses'] = ['192.0.2.1'] # The primary IP of the GitLab instance
    pages_nginx['enable'] = false
-   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80']
-   gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001:db8::2]:443']
+   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
+   gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001:db8::2]:443'] # The secondary IPs for the GitLab Pages daemon
    # Redirect pages from HTTP to HTTPS
    gitlab_pages['redirect_http'] = true
    ```
 
-   where `192.0.2.1` is the primary IP address that GitLab is listening to and
-   `192.0.2.2` and `2001:db8::2` are the secondary IPs where the GitLab Pages daemon
-   listens on. If you don't have IPv6, you can omit the IPv6 address.
+   If you don't have IPv6, you can omit the IPv6 address.
 
 1. If you haven't named your certificate and key `example.io.crt` and `example.io.key` respectively,
-then you'll need to also add the full paths as shown below:
+then you need to also add the full paths as shown below:
 
    ```ruby
    gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
@@ -468,7 +465,7 @@ To do that:
 
 WARNING:
 For self-managed installations, all public websites remain private until they are
-redeployed. This issue will be resolved by
+redeployed. Resolve this issue by
 [sourcing domain configuration from the GitLab API](https://gitlab.com/gitlab-org/gitlab/-/issues/218357).
 
 ### Running behind a proxy
@@ -555,9 +552,9 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/438) in GitLab 13.10.
 
-Setting the `propagate_correlation_id` to true will allow installations behind a reverse proxy generate
+Setting the `propagate_correlation_id` to true allows installations behind a reverse proxy to generate
 and set a correlation ID to requests sent to GitLab Pages. When a reverse proxy sets the header value `X-Request-ID`,
-the value will be propagated in the request chain.
+the value propagates in the request chain.
 Users [can find the correlation ID in the logs](../troubleshooting/tracing_correlation_id.md#identify-the-correlation-id-for-a-request).
 
 To enable the propagation of the correlation ID:
@@ -648,7 +645,7 @@ The default is 100MB.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16610) in GitLab 12.7.
 
 NOTE:
-Only GitLab admin users will be able to view and override the **Maximum size of Pages** setting.
+Only GitLab admin users are able to view and override the **Maximum size of Pages** setting.
 
 To override the global maximum pages size for a specific project:
 
@@ -771,7 +768,7 @@ The default value for Omnibus installations is `nil`.
 If left unchanged, GitLab Pages tries to use any available source (either `gitlab` or `disk`). The
 preferred source is `gitlab`, which uses [API-based configuration](#gitlab-api-based-configuration).
 
-On large GitLab instances, using the API-based configuration will significantly improve the pages daemon startup time, as there is no need to load all custom domains configuration into memory.
+On large GitLab instances, using the API-based configuration significantly improves the pages daemon startup time, as there is no need to load all custom domains configuration into memory.
 
 For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/how-gitlab-pages-uses-the-gitlab-api-to-serve-content/).
 
@@ -839,25 +836,25 @@ Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
 
 Examples:
 
-- Increasing `gitlab_cache_expiry` will allow items to exist in the cache longer.
+- Increasing `gitlab_cache_expiry` allows items to exist in the cache longer.
 This setting might be useful if the communication between GitLab Pages and GitLab Rails
 is not stable.
 
-- Increasing `gitlab_cache_refresh` will reduce the frequency at which GitLab Pages
+- Increasing `gitlab_cache_refresh` reduces the frequency at which GitLab Pages
 requests a domain's configuration from GitLab Rails. This setting might be useful
 GitLab Pages generates too many requests to GitLab API and content does not change frequently.
 
-- Decreasing `gitlab_cache_cleanup` will remove expired items from the cache more frequently,
+- Decreasing `gitlab_cache_cleanup` removes expired items from the cache more frequently,
 reducing the memory usage of your Pages node.
 
 - Decreasing `gitlab_retrieval_timeout` allows you to stop the request to GitLab Rails
-more quickly. Increasing it will allow more time to receive a response from the API,
+more quickly. Increasing it allows more time to receive a response from the API,
 useful in slow networking environments.
 
-- Decreasing `gitlab_retrieval_interval` will make requests to the API more frequently,
+- Decreasing `gitlab_retrieval_interval` makes requests to the API more frequently,
 only when there is an error response from the API, for example a connection timeout.
 
-- Decreasing `gitlab_retrieval_retries` will reduce the number of times a domain's
+- Decreasing `gitlab_retrieval_retries` reduces the number of times a domain's
 configuration is tried to be resolved automatically before reporting an error.
 
 ## Using object storage
@@ -867,13 +864,6 @@ configuration is tried to be resolved automatically before reporting an error.
 [Read more about using object storage with GitLab](../object_storage.md).
 
 ### Object storage settings
-
-WARNING:
-With the following settings, Pages uses both NFS and Object Storage locations when deploying the
-site. **Do not remove the existing NFS mount used by Pages** when applying these settings. For more
-information, see the epics
-[3901](https://gitlab.com/groups/gitlab-org/-/epics/3901#how-to-test-object-storage-integration-in-beta)
-and [3910](https://gitlab.com/groups/gitlab-org/-/epics/3910).
 
 The following settings are:
 
@@ -885,6 +875,10 @@ The following settings are:
 | `enabled` | Whether object storage is enabled. | `false` |
 | `remote_directory` | The name of the bucket where Pages site content is stored. | |
 | `connection` | Various connection options described below. | |
+
+NOTE:
+If you want to stop using and disconnect the NFS server, you need to [explicitly disable
+local storage](#disable-pages-local-storage), and it's only possible after upgrading to GitLab 13.11.
 
 #### S3-compatible connection settings
 
@@ -919,6 +913,8 @@ In Omnibus installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 
+1. [Migrate existing Pages deployments to object storage.](#migrate-pages-deployments-to-object-storage)
+
 In installations from source:
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
@@ -938,6 +934,8 @@ In installations from source:
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source)
    for the changes to take effect.
 
+1. [Migrate existing Pages deployments to object storage.](#migrate-pages-deployments-to-object-storage)
+
 ## ZIP storage
 
 In GitLab 14.0 the underlaying storage format of GitLab Pages is changing from
@@ -951,7 +949,9 @@ These ZIP archives can be stored either locally on disk storage or on the [objec
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59003) in GitLab 13.11.
 
-GitLab will [try to automatically migrate](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54578) the old storage format to the new ZIP-based one when you upgrade to GitLab 13.11 or further.
+GitLab tries to
+[automatically migrate](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54578)
+the old storage format to the new ZIP-based one when you upgrade to GitLab 13.11 or further.
 However, some projects may fail to be migrated for different reasons.
 To verify that all projects have been migrated successfully, you can manually run the migration:
 
@@ -996,7 +996,7 @@ If you find that migrated data is invalid, you can remove all migrated data by r
 sudo gitlab-rake gitlab:pages:clean_migrated_zip_storage
 ```
 
-This will not remove any data from the legacy disk storage and the GitLab Pages daemon will automatically fallback
+This does not remove any data from the legacy disk storage and the GitLab Pages daemon automatically falls back
 to using that.
 
 ### Migrate Pages deployments to object storage
@@ -1020,6 +1020,43 @@ After the migration to object storage is performed, you can choose to revert you
 ```shell
 sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
 ```
+
+### Disable Pages local storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301159) in GitLab 13.11.
+
+If you use [object storage](#using-object-storage), disable local storage:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['pages_local_store_enabled'] = false
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+Starting from GitLab 13.12, this setting also disables the [legacy storage](#migrate-legacy-storage-to-zip-storage), so if you were using NFS to serve Pages, you can completely disconnect from it.
+
+## Migrate GitLab Pages to 14.0
+
+In GitLab 14.0 a number of breaking changes are introduced which may require some user intervention.
+The steps below describe the best way to migrate without causing any downtime for your GitLab instance.
+
+If you run GitLab on a single server, then most likely you will not notice any problem after
+upgrading to GitLab 14.0, but it may be safer to follow the steps anyway.
+If you run GitLab on a single server, then most likely the upgrade process to 14.0 will go smoothly for you. Regardless, we recommend everyone follow the migration steps to ensure a successful upgrade.
+If at any point you run into issues, consult the [troubleshooting section](#troubleshooting).
+
+To migrate GitLab Pages to GitLab 14.0:
+
+1. If your current GitLab version is lower than 13.12, then you first need to upgrade to 13.12.
+Upgrading directly to 14.0 may cause downtime for some web-sites hosted on GitLab Pages
+until you finish the following steps.
+1. Enable the [API-based configuration](#gitlab-api-based-configuration), which
+is the default starting from GitLab 14.0. Skip this step if you're already running GitLab 14.0 or above.
+1. If you want to store your pages content in the [object storage](#using-object-storage), make sure to configure it.
+If you want to store the pages content locally or continue using an NFS server, skip this step.
+1. [Migrate legacy storage to ZIP storage.](#migrate-legacy-storage-to-zip-storage)
 
 ## Backup
 
@@ -1120,6 +1157,35 @@ to define the explicit address that the GitLab Pages daemon should listen on:
 gitlab_pages['listen_proxy'] = '127.0.0.1:8090'
 ```
 
+### Intermittent 502 errors or after a few days
+
+If you run Pages on a system that uses `systemd` and
+[`tmpfiles.d`](https://www.freedesktop.org/software/systemd/man/tmpfiles.d.html),
+you may encounter intermittent 502 errors trying to serve Pages with an error similar to:
+
+```plaintext
+dial tcp: lookup gitlab.example.com on [::1]:53: dial udp [::1]:53: connect: no route to host"
+```
+
+GitLab Pages creates a [bind mount](https://man7.org/linux/man-pages/man8/mount.8.html)
+inside `/tmp/gitlab-pages-*` that includes files like `/etc/hosts`.
+However, `systemd` may clean the `/tmp/` directory on a regular basis so the DNS
+configuration may be lost.
+
+To stop `systemd` from cleaning the Pages related content:
+
+1. Tell `tmpfiles.d` to not remove the Pages `/tmp` directory:
+
+   ```shell
+   echo 'x /tmp/gitlab-pages-*' >> /etc/tmpfiles.d/gitlab-pages-jail.conf
+   ```
+
+1. Restart GitLab Pages:
+
+   ```shell
+   sudo gitlab-ctl restart gitlab-pages
+   ```
+
 ### 404 error after transferring the project to a different group or user, or changing project path
 
 If you encounter a `404 Not Found` error a Pages site after transferring a project to
@@ -1135,6 +1201,17 @@ date > /var/opt/gitlab/gitlab-rails/shared/pages/.update
 ```
 
 If you've customized the Pages storage path, adjust the command above to use your custom path.
+
+### 404 error after promoting a Geo secondary to a primary node
+
+These are due to the Pages files not being among the
+[supported data types](../geo/replication/datatypes.md#limitations-on-replicationverification).
+
+It is possible to copy the subfolders and files in the [Pages path](#change-storage-path)
+to the new primary node to resolve this.
+For example, you can adapt the `rsync` strategy from the
+[moving repositories documenation](../operations/moving_repositories.md).
+Alternatively, run the CI pipelines of those projects that contain a `pages` job again.
 
 ### Failed to connect to the internal GitLab API
 
@@ -1199,7 +1276,7 @@ If the wildcard DNS [prerequisite](#prerequisites) can't be met, you can still u
    all projects you need to use Pages with into a single group namespace, for example `pages`.
 1. Configure a [DNS entry](#dns-configuration) without the `*.`-wildcard, for example `pages.example.io`.
 1. Configure `pages_external_url http://example.io/` in your `gitlab.rb` file.
-   Omit the group namespace here, because it will automatically be prepended by GitLab.
+   Omit the group namespace here, because it automatically is prepended by GitLab.
 
 ### Pages daemon fails with permission denied errors
 
@@ -1223,3 +1300,24 @@ Once added, reconfigure with `sudo gitlab-ctl reconfigure` and restart GitLab wi
 
 Verify that the **Callback URL**/Redirect URI in the GitLab Pages [System OAuth application](../../integration/oauth_provider.md#instance-wide-applications)
 is using the protocol (HTTP or HTTPS) that `pages_external_url` is configured to use.
+
+### 500 error `cannot serve from disk`
+
+If you get a 500 response from Pages and encounter an error similar to:
+
+```plaintext
+ERRO[0145] cannot serve from disk                        error="gitlab: disk access is disabled via enable-disk=false" project_id=27 source_path="file:///shared/pages/@hashed/67/06/670671cd97404156226e507973f2ab8330d3022ca96e0c93bdbdb320c41adcaf/pages_deployments/14/artifacts.zip" source_type=zip
+```
+
+It means that GitLab Rails is telling GitLab Pages to serve content from a location on disk,
+however, GitLab Pages was configured to disable disk access.
+
+To enable disk access:
+
+1. Enable disk access for GitLab Pages in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['enable_disk'] = true
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).

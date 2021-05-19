@@ -37,7 +37,7 @@ module API
           custom_params = declared_params(include_missing: false)
           custom_params.merge!(attrs)
 
-          issuable = update_service.new(user_project, current_user, custom_params).execute(load_issuable)
+          issuable = update_service.new(project: user_project, current_user: current_user, params: custom_params).execute(load_issuable)
           if issuable.valid?
             present issuable, with: Entities::IssuableTimeStats
           else
@@ -85,10 +85,15 @@ module API
       post ":id/#{issuable_collection_name}/:#{issuable_key}/add_spent_time" do
         authorize! admin_issuable_key, load_issuable
 
-        update_issuable(spend_time: {
-          duration: Gitlab::TimeTrackingFormatter.parse(params.delete(:duration)),
-          user_id: current_user.id
-        })
+        update_params = {
+          spend_time: {
+            duration: Gitlab::TimeTrackingFormatter.parse(params.delete(:duration)),
+            user_id: current_user.id
+          }
+        }
+        update_params[:use_specialized_service] = true if issuable_name == 'merge_request'
+
+        update_issuable(update_params)
       end
 
       desc "Reset spent time for a project #{issuable_name}"

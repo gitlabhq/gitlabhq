@@ -3,9 +3,6 @@ import * as types from './mutation_types';
 export default {
   [types.SET_PATHS](state, paths) {
     state.basePath = paths.basePath;
-    state.headPath = paths.headPath;
-    state.baseBlobPath = paths.baseBlobPath;
-    state.headBlobPath = paths.headBlobPath;
     state.reportsPath = paths.reportsPath;
     state.helpPath = paths.helpPath;
   },

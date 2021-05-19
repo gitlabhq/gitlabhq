@@ -43,7 +43,7 @@ predefined variable:
 test_variable:
   stage: test
   script:
-    - echo $CI_JOB_STAGE
+    - echo "$CI_JOB_STAGE"
 ```
 
 The script outputs the `stage` for the `test_variable`, which is `test`:
@@ -88,7 +88,7 @@ job1:
   variables:
     TEST_VAR_JOB: "Only job1 can use this variable's value"
   script:
-    - echo $TEST_VAR and $TEST_VAR_JOB
+    - echo "$TEST_VAR" and "$TEST_VAR_JOB"
 ```
 
 Variables saved in the `.gitlab-ci.yml` file should store only non-sensitive project
@@ -114,9 +114,9 @@ name inside another variable:
 ```yaml
 variables:
   FLAGS: '-al'
-  LS_CMD: 'ls $FLAGS $$TMP_DIR'
+  LS_CMD: 'ls "$FLAGS" $$TMP_DIR'
 script:
-  - 'eval $LS_CMD'  # Executes 'ls -al $TMP_DIR'
+  - 'eval "$LS_CMD"'  # Executes 'ls -al $TMP_DIR'
 ```
 
 Use the [`value` and `description`](../yaml/README.md#prefill-variables-in-manual-pipelines)
@@ -151,10 +151,10 @@ After you create a variable, you can use it in the `.gitlab-ci.yml` file:
 test_variable:
   stage: test
   script:
-    - echo $CI_JOB_STAGE  # calls a predefined variable
-    - echo $TEST          # calls a custom variable of type `env_var`
-    - echo $GREETING      # calls a custom variable of type `file` that contains the path to the temp file
-    - cat $GREETING       # the temp file itself contains the variable value
+    - echo "$CI_JOB_STAGE"  # calls a predefined variable
+    - echo "$TEST"          # calls a custom variable of type `env_var`
+    - echo "$GREETING"      # calls a custom variable of type `file` that contains the path to the temp file
+    - cat "$GREETING"       # the temp file itself contains the variable value
 ```
 
 The output is:
@@ -181,7 +181,7 @@ To add a group variable:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Environment scope** (optional): `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable).
+   - **Environment scope** (optional): `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM)**
    - **Protect variable** (Optional): If selected, the variable is only available
      in pipelines that run on protected branches or tags.
    - **Mask variable** (Optional): If selected, the variable's **Value** is masked
@@ -298,6 +298,7 @@ The value of the variable must:
   - Characters from the Base64 alphabet (RFC4648).
   - The `@` and `:` characters ([In GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/63043) and later).
   - The `.` character ([In GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29022) and later).
+  - The `~` character ([In GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61517) and later).
 - Not match the name of an existing predefined or custom CI/CD variable.
 
 ### Protect a CI/CD variable
@@ -366,7 +367,7 @@ CI/CD variable with (`$`):
 ```yaml
 job_name:
   script:
-    - echo $CI_JOB_ID
+    - echo "$CI_JOB_ID"
 ```
 
 ### Use variables with PowerShell
@@ -506,7 +507,7 @@ build:
 deploy:
   stage: deploy
   script:
-    - echo $BUILD_VERSION  # Output is: 'hello'
+    - echo "$BUILD_VERSION"  # Output is: 'hello'
   dependencies:
     - build
 ```
@@ -525,7 +526,7 @@ build:
 deploy:
   stage: deploy
   script:
-    - echo $BUILD_VERSION  # Output is: 'hello'
+    - echo "$BUILD_VERSION"  # Output is: 'hello'
   needs:
     - job: build
       artifacts: true
@@ -603,10 +604,17 @@ to enable the `restrict_user_defined_variables` setting. The setting is `disable
 
 ## Limit the environment scope of a CI/CD variable
 
-You can limit the environment scope of a variable by
-[defining which environments](../environments/index.md) it can be available for.
+By default, all CI/CD variables are available to any job in a pipeline. Therefore, if a project uses a
+compromised tool in a test job, it could expose all CI/CD variables that a deployment job used. This is
+a common scenario in supply chain attacks. GitLab helps mitigate supply chain attacks by limiting
+the environment scope of a variable. GitLab does this by
+[defining which environments and corresponding jobs](../environments/index.md)
+the variable can be available for.
 
 To learn more about scoping environments, see [Scoping environments with specs](../environments/index.md#scoping-environments-with-specs).
+
+To learn more about ensuring CI/CD variables are only exposed in pipelines running from protected
+branches or tags, see [Protect a CI/CD Variable](#protect-a-cicd-variable).
 
 ## Deployment variables
 
@@ -635,7 +643,7 @@ CI/CD variables with multi-line values are not supported.
 
 ## CI/CD variable expressions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37397) in GitLab 10.7 for [the `only` and `except` CI keywords](../yaml/README.md#onlyexcept-advanced)
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37397) in GitLab 10.7 for [the `only` and `except` CI keywords](../yaml/README.md#onlyvariables--exceptvariables)
 > - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3 with [the `rules` keyword](../yaml/README.md#rules)
 
 Use variable expressions to limit which jobs are created
@@ -644,7 +652,7 @@ in a pipeline after changes are pushed to GitLab.
 In `.gitlab-ci.yml`, variable expressions work with both:
 
 - [`rules`](../yaml/README.md#rules), which is the recommended approach, and
-- [`only` and `except`](../yaml/README.md#onlyexcept-basic), which are candidates for deprecation.
+- [`only` and `except`](../yaml/README.md#only--except), which are candidates for deprecation.
 
 This is particularly useful in combination with variables and triggered
 pipeline variables.
@@ -665,7 +673,7 @@ If any of the conditions in `variables` evaluates to true when using `only`,
 a new job is created. If any of the expressions evaluates to true
 when `except` is being used, a job is not created.
 
-This follows the usual rules for [`only` / `except` policies](../yaml/README.md#onlyexcept-advanced).
+This follows the usual rules for [`only` / `except` policies](../yaml/README.md#onlyvariables--exceptvariables).
 
 ### Syntax of CI/CD variable expressions
 

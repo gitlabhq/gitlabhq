@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Requires let variables:
-# * throttle_setting_prefix: "throttle_authenticated_api", "throttle_authenticated_web", "throttle_protected_paths"
+# * throttle_setting_prefix: "throttle_authenticated_api", "throttle_authenticated_web", "throttle_protected_paths", "throttle_authenticated_packages_api"
 # * request_method
 # * request_args
 # * other_user_request_args
@@ -13,7 +13,8 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
     {
       "throttle_protected_paths" => "throttle_authenticated_protected_paths_api",
       "throttle_authenticated_api" => "throttle_authenticated_api",
-      "throttle_authenticated_web" => "throttle_authenticated_web"
+      "throttle_authenticated_web" => "throttle_authenticated_web",
+      "throttle_authenticated_packages_api" => "throttle_authenticated_packages_api"
     }
   end
 

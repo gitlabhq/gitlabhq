@@ -82,7 +82,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Access, :clean_gitlab_redis_cache 
       context 'when the request fails' do
         before do
           allow(fake_client).to receive(:request_access) do
-            raise ::Gitlab::ExternalAuthorization::RequestFailed.new('Service unavailable')
+            raise ::Gitlab::ExternalAuthorization::RequestFailed, 'Service unavailable'
           end
         end
 

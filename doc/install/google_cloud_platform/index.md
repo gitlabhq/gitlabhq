@@ -44,17 +44,17 @@ To deploy GitLab on GCP you first need to create a virtual machine:
 1. To select the size, type, and desired [operating system](../requirements.md#supported-linux-distributions),
    click **Change** under `Boot disk`. Click **Select** when finished.
 
-1. As a last step allow HTTP and HTTPS traffic, then click **Create**. The process will finish in a few seconds.
+1. As a last step allow HTTP and HTTPS traffic, then click **Create**. The process finishes in a few seconds.
 
 ## Installing GitLab
 
-After a few seconds, the instance will be created and available to log in. The next step is to install GitLab onto the instance.
+After a few seconds, the instance is created and available to log in. The next step is to install GitLab onto the instance.
 
 ![Deploy settings](img/vm_created.png)
 
-1. Make a note of the IP address of the instance, as you will need that in a later step.
+1. Make a note of the IP address of the instance, as you will need that in a later step. <!-- using future tense is okay here -->
 1. Click on the SSH button to connect to the instance.
-1. A new window will appear, with you logged into the instance.
+1. A new window appears, with you logged into the instance.
 
    ![GitLab first sign in](img/ssh_terminal.png)
 
@@ -72,8 +72,8 @@ the first time.
 ### Assigning a static IP
 
 By default, Google assigns an ephemeral IP to your instance. It is strongly
-recommended to assign a static IP if you are going to use GitLab in production
-and use a domain name as we'll see below.
+recommended to assign a static IP if you are using GitLab in production
+and use a domain name as shown below.
 
 Read Google's documentation on how to [promote an ephemeral IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip).
 
@@ -84,7 +84,7 @@ set up DNS to point to the static IP you configured in the previous step,
 here's how you configure GitLab to be aware of the change:
 
 1. SSH into the VM. You can easily use the **SSH** button in the Google console
-   and a new window will pop up.
+   and a new window pops up.
 
    ![SSH button](img/vm_created.png)
 
@@ -104,7 +104,7 @@ here's how you configure GitLab to be aware of the change:
    external_url 'http://gitlab.example.com'
    ```
 
-   We will set up HTTPS in the next step, no need to do this now.
+   We will set up HTTPS in the next step, no need to do this now. <!-- using future tense is okay here -->
 
 1. Reconfigure GitLab for the changes to take effect:
 
@@ -121,8 +121,7 @@ certificate. Follow the steps in the [Omnibus documentation](https://docs.gitlab
 
 ### Configuring the email SMTP settings
 
-You need to configure the email SMTP settings correctly otherwise GitLab will
-not be able to send notification emails, like comments, and password changes.
+You need to configure the email SMTP settings correctly otherwise GitLab cannot send notification emails, like comments, and password changes.
 Check the [Omnibus documentation](https://docs.gitlab.com/omnibus/settings/smtp.html#smtp-settings) how to do so.
 
 ## Further reading
@@ -131,7 +130,7 @@ GitLab can be configured to authenticate with other OAuth providers, LDAP, SAML,
 Kerberos, etc. Here are some documents you might be interested in reading:
 
 - [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/)
-- [Integration documentation](../../integration/README.md)
+- [Integration documentation](../../integration/index.md)
 - [GitLab Pages configuration](../../administration/pages/index.md)
 - [GitLab Container Registry configuration](../../administration/packages/container_registry.md)
 

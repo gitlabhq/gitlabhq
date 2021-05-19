@@ -8,6 +8,7 @@ RSpec.describe Ci::PipelinePresenter do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :test_repo) }
   let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+
   let(:current_user) { user }
 
   subject(:presenter) do
@@ -246,6 +247,7 @@ RSpec.describe Ci::PipelinePresenter do
 
     context 'permissions' do
       let_it_be_with_refind(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
+
       let(:pipeline) { merge_request.all_pipelines.take }
 
       shared_examples 'private merge requests' do

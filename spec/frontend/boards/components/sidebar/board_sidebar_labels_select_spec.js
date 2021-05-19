@@ -1,7 +1,11 @@
 import { GlLabel } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import { labels as TEST_LABELS, mockIssue as TEST_ISSUE } from 'jest/boards/mock_data';
+import {
+  labels as TEST_LABELS,
+  mockIssue as TEST_ISSUE,
+  mockIssueFullPath as TEST_ISSUE_FULLPATH,
+} from 'jest/boards/mock_data';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import BoardSidebarLabelsSelect from '~/boards/components/sidebar/board_sidebar_labels_select.vue';
 import { createStore } from '~/boards/stores';
@@ -23,7 +27,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
     wrapper = null;
   });
 
-  const createWrapper = ({ labels = [] } = {}) => {
+  const createWrapper = ({ labels = [], providedValues = {} } = {}) => {
     store = createStore();
     store.state.boardItems = { [TEST_ISSUE.id]: { ...TEST_ISSUE, labels } };
     store.state.activeId = TEST_ISSUE.id;
@@ -32,9 +36,9 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
       store,
       provide: {
         canUpdate: true,
-        labelsFetchPath: TEST_HOST,
         labelsManagePath: TEST_HOST,
         labelsFilterBasePath: TEST_HOST,
+        ...providedValues,
       },
       stubs: {
         BoardEditableItem,
@@ -47,6 +51,22 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
   const findLabelsTitles = () =>
     wrapper.findAll(GlLabel).wrappers.map((item) => item.props('title'));
   const findCollapsed = () => wrapper.find('[data-testid="collapsed-content"]');
+
+  describe('when labelsFetchPath is provided', () => {
+    it('uses injected labels fetch path', () => {
+      createWrapper({ providedValues: { labelsFetchPath: 'foobar' } });
+
+      expect(findLabelsSelect().props('labelsFetchPath')).toEqual('foobar');
+    });
+  });
+
+  it('uses the default project label endpoint', () => {
+    createWrapper();
+
+    expect(findLabelsSelect().props('labelsFetchPath')).toEqual(
+      `/${TEST_ISSUE_FULLPATH}/-/labels?include_ancestor_groups=true`,
+    );
+  });
 
   it('renders "None" when no labels are selected', () => {
     createWrapper();
@@ -78,7 +98,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
     it('commits change to the server', () => {
       expect(wrapper.vm.setActiveBoardItemLabels).toHaveBeenCalledWith({
         addLabelIds: TEST_LABELS.map((label) => label.id),
-        projectPath: 'gitlab-org/test-subgroup/gitlab-test',
+        projectPath: TEST_ISSUE_FULLPATH,
         removeLabelIds: [],
       });
     });
@@ -103,7 +123,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
       expect(wrapper.vm.setActiveBoardItemLabels).toHaveBeenCalledWith({
         addLabelIds: [5, 7],
         removeLabelIds: [6],
-        projectPath: 'gitlab-org/test-subgroup/gitlab-test',
+        projectPath: TEST_ISSUE_FULLPATH,
       });
     });
   });
@@ -122,7 +142,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
 
       expect(wrapper.vm.setActiveBoardItemLabels).toHaveBeenCalledWith({
         removeLabelIds: [getIdFromGraphQLId(testLabel.id)],
-        projectPath: 'gitlab-org/test-subgroup/gitlab-test',
+        projectPath: TEST_ISSUE_FULLPATH,
       });
     });
   });

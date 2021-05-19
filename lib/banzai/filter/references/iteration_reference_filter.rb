@@ -6,13 +6,10 @@ module Banzai
       # The actual filter is implemented in the EE mixin
       class IterationReferenceFilter < AbstractReferenceFilter
         self.reference_type = :iteration
-
-        def self.object_class
-          Iteration
-        end
+        self.object_class   = Iteration
       end
     end
   end
 end
 
-Banzai::Filter::References::IterationReferenceFilter.prepend_if_ee('EE::Banzai::Filter::References::IterationReferenceFilter')
+Banzai::Filter::References::IterationReferenceFilter.prepend_mod_with('Banzai::Filter::References::IterationReferenceFilter')

@@ -16,6 +16,11 @@ export default {
       type: String,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     pathPieces() {
@@ -45,7 +50,12 @@ export default {
   <div data-qa-selector="package-path" class="gl-display-flex gl-align-items-center">
     <gl-icon data-testid="base-icon" name="project" class="gl-mx-3 gl-min-w-0" />
 
-    <gl-link data-testid="root-link" class="gl-text-gray-500 gl-min-w-0" :href="`/${rootLink}`">
+    <gl-link
+      data-testid="root-link"
+      class="gl-text-gray-500 gl-min-w-0"
+      :href="`/${rootLink}`"
+      :disabled="disabled"
+    >
       {{ root }}
     </gl-link>
 
@@ -63,7 +73,12 @@ export default {
         <gl-icon data-testid="ellipsis-chevron" name="chevron-right" class="gl-mx-2 gl-min-w-0" />
       </template>
 
-      <gl-link data-testid="leaf-link" class="gl-text-gray-500 gl-min-w-0" :href="`/${path}`">
+      <gl-link
+        data-testid="leaf-link"
+        class="gl-text-gray-500 gl-min-w-0"
+        :href="`/${path}`"
+        :disabled="disabled"
+      >
         {{ leaf }}
       </gl-link>
     </template>

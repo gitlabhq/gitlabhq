@@ -29,5 +29,5 @@ module IssueAvailableFeatures
   end
 end
 
-IssueAvailableFeatures.prepend_if_ee('EE::IssueAvailableFeatures')
-IssueAvailableFeatures::ClassMethods.prepend_if_ee('EE::IssueAvailableFeatures::ClassMethods')
+IssueAvailableFeatures.prepend_mod_with('IssueAvailableFeatures')
+IssueAvailableFeatures::ClassMethods.prepend_mod_with('IssueAvailableFeatures::ClassMethods')

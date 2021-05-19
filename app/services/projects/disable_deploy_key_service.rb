@@ -12,4 +12,4 @@ module Projects
   end
 end
 
-Projects::DisableDeployKeyService.prepend_if_ee('EE::Projects::DisableDeployKeyService')
+Projects::DisableDeployKeyService.prepend_mod_with('Projects::DisableDeployKeyService')

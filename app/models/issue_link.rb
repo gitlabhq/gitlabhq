@@ -46,4 +46,4 @@ class IssueLink < ApplicationRecord
   end
 end
 
-IssueLink.prepend_if_ee('EE::IssueLink')
+IssueLink.prepend_mod_with('IssueLink')

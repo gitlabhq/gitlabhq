@@ -21,4 +21,4 @@ module Banzai
   end
 end
 
-Banzai::Filter::References::EpicReferenceFilter.prepend_if_ee('EE::Banzai::Filter::References::EpicReferenceFilter')
+Banzai::Filter::References::EpicReferenceFilter.prepend_mod_with('Banzai::Filter::References::EpicReferenceFilter')

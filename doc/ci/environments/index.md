@@ -400,8 +400,8 @@ stop_review:
       when: manual
 ```
 
-Both jobs must have the same [`rules`](../yaml/README.md#onlyexcept-basic)
-or [`only/except`](../yaml/README.md#onlyexcept-basic) configuration. Otherwise,
+Both jobs must have the same [`rules`](../yaml/README.md#only--except)
+or [`only/except`](../yaml/README.md#only--except) configuration. Otherwise,
 the `stop_review` job might not be included in all pipelines that include the
 `deploy_review` job, and you cannot trigger `action: stop` to stop the environment automatically.
 
@@ -676,6 +676,7 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
 > - [Environment scoping for CI/CD variables was moved to all tiers](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) in GitLab 12.2.
+> - [Environment scoping for Group CI/CD variables](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) added to GitLab Premium in 13.11.
 
 You can limit the environment scope of a CI/CD variable by
 defining which environments it can be available for.

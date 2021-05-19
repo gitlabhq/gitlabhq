@@ -18,7 +18,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
-    it { is_expected.to have_many(:services) }
+    it { is_expected.to have_many(:integrations) }
     it { is_expected.to have_many(:events) }
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
@@ -46,13 +46,13 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_one(:asana_service) }
     it { is_expected.to have_many(:boards) }
     it { is_expected.to have_one(:campfire_service) }
+    it { is_expected.to have_one(:datadog_service) }
     it { is_expected.to have_one(:discord_service) }
     it { is_expected.to have_one(:drone_ci_service) }
     it { is_expected.to have_one(:emails_on_push_service) }
     it { is_expected.to have_one(:pipelines_email_service) }
     it { is_expected.to have_one(:irker_service) }
     it { is_expected.to have_one(:pivotaltracker_service) }
-    it { is_expected.to have_one(:hipchat_service) }
     it { is_expected.to have_one(:flowdock_service) }
     it { is_expected.to have_one(:assembla_service) }
     it { is_expected.to have_one(:slack_slash_commands_service) }
@@ -114,7 +114,8 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:lfs_file_locks) }
     it { is_expected.to have_many(:project_deploy_tokens) }
     it { is_expected.to have_many(:deploy_tokens).through(:project_deploy_tokens) }
-    it { is_expected.to have_many(:cycle_analytics_stages) }
+    it { is_expected.to have_many(:cycle_analytics_stages).inverse_of(:project) }
+    it { is_expected.to have_many(:value_streams).inverse_of(:project) }
     it { is_expected.to have_many(:external_pull_requests) }
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }
@@ -131,6 +132,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_artifacts) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
+    it { is_expected.to have_many(:timelogs) }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -215,7 +217,7 @@ RSpec.describe Project, factory_default: :keep do
       it 'does not raise an error' do
         project = create(:project)
 
-        expect { project.update(ci_cd_settings: nil) }.not_to raise_exception
+        expect { project.update!(ci_cd_settings: nil) }.not_to raise_exception
       end
     end
 
@@ -873,13 +875,13 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       it 'returns the most recent timestamp' do
-        project.update(updated_at: nil,
+        project.update!(updated_at: nil,
                        last_activity_at: timestamp,
                        last_repository_updated_at: timestamp - 1.hour)
 
         expect(project.last_activity_date).to be_like_time(timestamp)
 
-        project.update(updated_at: timestamp,
+        project.update!(updated_at: timestamp,
                        last_activity_at: timestamp - 1.hour,
                        last_repository_updated_at: nil)
 
@@ -1076,14 +1078,14 @@ RSpec.describe Project, factory_default: :keep do
     it 'returns nil and does not query services when there is no external issue tracker' do
       project = create(:project)
 
-      expect(project).not_to receive(:services)
+      expect(project).not_to receive(:integrations)
       expect(project.external_issue_tracker).to eq(nil)
     end
 
     it 'retrieves external_issue_tracker querying services and cache it when there is external issue tracker' do
       project = create(:redmine_project)
 
-      expect(project).to receive(:services).once.and_call_original
+      expect(project).to receive(:integrations).once.and_call_original
       2.times { expect(project.external_issue_tracker).to be_a_kind_of(RedmineService) }
     end
   end
@@ -1116,7 +1118,7 @@ RSpec.describe Project, factory_default: :keep do
 
       it 'becomes false when external issue tracker service is destroyed' do
         expect do
-          Service.find(service.id).delete
+          Integration.find(service.id).delete
         end.to change { subject }.to(false)
       end
 
@@ -1133,7 +1135,7 @@ RSpec.describe Project, factory_default: :keep do
 
         it 'does not become false when external issue tracker service is destroyed' do
           expect do
-            Service.find(service.id).delete
+            Integration.find(service.id).delete
           end.not_to change { subject }
         end
 
@@ -1191,7 +1193,7 @@ RSpec.describe Project, factory_default: :keep do
 
       it 'becomes false if the external wiki service is destroyed' do
         expect do
-          Service.find(service.id).delete
+          Integration.find(service.id).delete
         end.to change { subject }.to(false)
       end
 
@@ -1277,7 +1279,9 @@ RSpec.describe Project, factory_default: :keep do
 
     it 'is false if avatar is html page' do
       project.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(project.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp'])
+      project.avatar_type
+
+      expect(project.errors.added?(:avatar, "file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp")).to be true
     end
   end
 
@@ -2670,7 +2674,7 @@ RSpec.describe Project, factory_default: :keep do
 
     context 'with pending pipeline' do
       it 'returns empty relation' do
-        pipeline.update(status: 'pending')
+        pipeline.update!(status: 'pending')
         pending_build = create_build(pipeline)
 
         expect { project.latest_successful_build_for_ref!(pending_build.name) }
@@ -2813,11 +2817,11 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#remove_import_data' do
-    let_it_be(:import_data) { ProjectImportData.new(data: { 'test' => 'some data' }) }
+    let(:import_data) { ProjectImportData.new(data: { 'test' => 'some data' }) }
 
     context 'when jira import' do
-      let_it_be(:project, reload: true) { create(:project, import_type: 'jira', import_data: import_data) }
-      let_it_be(:jira_import) { create(:jira_import_state, project: project) }
+      let!(:project) { create(:project, import_type: 'jira', import_data: import_data) }
+      let!(:jira_import) { create(:jira_import_state, project: project) }
 
       it 'does remove import data' do
         expect(project.mirror?).to be false
@@ -2827,8 +2831,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'when neither a mirror nor a jira import' do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:project) { create(:project, import_type: 'github', import_data: import_data) }
+      let!(:project) { create(:project, import_type: 'github', import_data: import_data) }
 
       it 'removes import data' do
         expect(project.mirror?).to be false
@@ -2864,7 +2867,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'returns false when remote mirror is disabled' do
-      project.remote_mirrors.first.update(enabled: false)
+      project.remote_mirrors.first.update!(enabled: false)
 
       is_expected.to be_falsy
     end
@@ -2895,7 +2898,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'does not sync disabled remote mirrors' do
-      project.remote_mirrors.first.update(enabled: false)
+      project.remote_mirrors.first.update!(enabled: false)
 
       expect_any_instance_of(RemoteMirror).not_to receive(:sync)
 
@@ -2933,7 +2936,7 @@ RSpec.describe Project, factory_default: :keep do
     it 'fails stuck remote mirrors' do
       project = create(:project, :repository, :remote_mirror)
 
-      project.remote_mirrors.first.update(
+      project.remote_mirrors.first.update!(
         update_status: :started,
         last_update_started_at: 2.days.ago
       )
@@ -3191,7 +3194,7 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       it 'returns the root of the fork network when the directs source was deleted' do
-        forked_project.destroy
+        forked_project.destroy!
 
         expect(second_fork.fork_source).to eq(project)
       end
@@ -3435,7 +3438,7 @@ RSpec.describe Project, factory_default: :keep do
           let(:environment) { 'foo%bar/test' }
 
           it 'matches literally for _' do
-            ci_variable.update(environment_scope: 'foo%bar/*')
+            ci_variable.environment_scope = 'foo%bar/*'
 
             is_expected.to contain_exactly(ci_variable)
           end
@@ -3676,7 +3679,7 @@ RSpec.describe Project, factory_default: :keep do
 
     it "updates the namespace_id when changed" do
       namespace = create(:namespace)
-      project.update(namespace: namespace)
+      project.update!(namespace: namespace)
 
       expect(project.statistics.namespace_id).to eq namespace.id
     end
@@ -3969,14 +3972,14 @@ RSpec.describe Project, factory_default: :keep do
       expect(project).to receive(:visibility_level_allowed_as_fork).and_call_original
       expect(project).to receive(:visibility_level_allowed_by_group).and_call_original
 
-      project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+      project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
     end
 
     it 'does not validate the visibility' do
       expect(project).not_to receive(:visibility_level_allowed_as_fork).and_call_original
       expect(project).not_to receive(:visibility_level_allowed_by_group).and_call_original
 
-      project.update(updated_at: Time.current)
+      project.update!(updated_at: Time.current)
     end
   end
 
@@ -4060,7 +4063,7 @@ RSpec.describe Project, factory_default: :keep do
       project_2 = create(:project, :public, :merge_requests_disabled)
       project_3 = create(:project, :public, :issues_disabled)
       project_4 = create(:project, :public)
-      project_4.project_feature.update(issues_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE )
+      project_4.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE )
 
       project_ids = described_class.ids_with_issuables_available_for(user).pluck(:id)
 
@@ -4103,7 +4106,7 @@ RSpec.describe Project, factory_default: :keep do
       let(:project) { create(:project, :public) }
 
       it 'returns projects with the project feature access level nil' do
-        project.project_feature.update(merge_requests_access_level: nil)
+        project.project_feature.update!(merge_requests_access_level: nil)
 
         is_expected.to include(project)
       end
@@ -4391,7 +4394,7 @@ RSpec.describe Project, factory_default: :keep do
     it 'is run when the project is destroyed' do
       expect(project).to receive(:legacy_remove_pages).and_call_original
 
-      expect { project.destroy }.not_to raise_error
+      expect { project.destroy! }.not_to raise_error
     end
   end
 
@@ -4921,7 +4924,7 @@ RSpec.describe Project, factory_default: :keep do
 
     context 'when enabled on group' do
       it 'has auto devops implicitly enabled' do
-        project.update(namespace: create(:group, :auto_devops_enabled))
+        project.update!(namespace: create(:group, :auto_devops_enabled))
 
         expect(project).to have_auto_devops_implicitly_enabled
       end
@@ -4930,7 +4933,7 @@ RSpec.describe Project, factory_default: :keep do
     context 'when enabled on parent group' do
       it 'has auto devops implicitly enabled' do
         subgroup = create(:group, parent: create(:group, :auto_devops_enabled))
-        project.update(namespace: subgroup)
+        project.update!(namespace: subgroup)
 
         expect(project).to have_auto_devops_implicitly_enabled
       end
@@ -5404,7 +5407,7 @@ RSpec.describe Project, factory_default: :keep do
 
       before do
         create_list(:group_badge, 2, group: project_group)
-        project_group.update(parent: parent_group)
+        project_group.update!(parent: parent_group)
       end
 
       it 'returns the project and the project nested groups badges' do
@@ -5799,16 +5802,16 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'avoids N+1 database queries with more available services' do
-      allow(Service).to receive(:available_services_names).and_return(%w[pushover])
+      allow(Integration).to receive(:available_services_names).and_return(%w[pushover])
       control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_services }
 
-      allow(Service).to receive(:available_services_names).and_call_original
+      allow(Integration).to receive(:available_services_names).and_call_original
       expect { subject.find_or_initialize_services }.not_to exceed_query_limit(control_count)
     end
 
     context 'with disabled services' do
       before do
-        allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover teamcity])
+        allow(Integration).to receive(:available_services_names).and_return(%w[prometheus pushover teamcity])
         allow(subject).to receive(:disabled_services).and_return(%w[prometheus])
       end
 
@@ -5843,11 +5846,11 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#find_or_initialize_service' do
     it 'avoids N+1 database queries' do
-      allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover])
+      allow(Integration).to receive(:available_services_names).and_return(%w[prometheus pushover])
 
       control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_service('prometheus') }.count
 
-      allow(Service).to receive(:available_services_names).and_call_original
+      allow(Integration).to receive(:available_services_names).and_call_original
 
       expect { subject.find_or_initialize_service('prometheus') }.not_to exceed_query_limit(control_count)
     end
@@ -6301,22 +6304,30 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#access_request_approvers_to_be_notified' do
-    it 'returns a maximum of ten, active, non_requested maintainers of the project in recent_sign_in descending order' do
-      group = create(:group, :public)
-      project = create(:project, group: group)
+    let_it_be(:project) { create(:project, group: create(:group, :public)) }
 
+    it 'returns a maximum of ten maintainers of the project in recent_sign_in descending order' do
       users = create_list(:user, 12, :with_sign_ins)
       active_maintainers = users.map do |user|
-        create(:project_member, :maintainer, user: user)
+        create(:project_member, :maintainer, user: user, project: project)
       end
 
-      create(:project_member, :maintainer, :blocked, project: project)
-      create(:project_member, :developer, project: project)
-      create(:project_member, :access_request, :maintainer, project: project)
-
-      active_maintainers_in_recent_sign_in_desc_order = project.members_and_requesters.where(id: active_maintainers).order_recent_sign_in.limit(10)
+      active_maintainers_in_recent_sign_in_desc_order = project.members_and_requesters
+                                                               .id_in(active_maintainers)
+                                                               .order_recent_sign_in.limit(10)
 
       expect(project.access_request_approvers_to_be_notified).to eq(active_maintainers_in_recent_sign_in_desc_order)
+    end
+
+    it 'returns active, non_invited, non_requested maintainers of the project' do
+      maintainer = create(:project_member, :maintainer, source: project)
+
+      create(:project_member, :developer, project: project)
+      create(:project_member, :maintainer, :invited, project: project)
+      create(:project_member, :maintainer, :access_request, project: project)
+      create(:project_member, :maintainer, :blocked, project: project)
+
+      expect(project.access_request_approvers_to_be_notified.to_a).to eq([maintainer])
     end
   end
 
@@ -6478,17 +6489,17 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe 'with services and chat names' do
+  describe 'with integrations and chat names' do
     subject { create(:project) }
 
-    let(:service) { create(:service, project: subject) }
+    let(:integration) { create(:service, project: subject) }
 
     before do
-      create_list(:chat_name, 5, service: service)
+      create_list(:chat_name, 5, integration: integration)
     end
 
     it 'removes chat names on removal' do
-      expect { subject.destroy }.to change { ChatName.count }.by(-5)
+      expect { subject.destroy! }.to change { ChatName.count }.by(-5)
     end
   end
 
@@ -6823,6 +6834,26 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#parent_loaded?' do
+    let_it_be(:project) { create(:project) }
+
+    before do
+      project.namespace = create(:namespace)
+
+      project.reload
+    end
+
+    it 'is false when the parent is not loaded' do
+      expect(project.parent_loaded?).to be_falsey
+    end
+
+    it 'is true when the parent is loaded' do
+      project.parent
+
+      expect(project.parent_loaded?).to be_truthy
+    end
+  end
+
   describe '#bots' do
     subject { project.bots }
 
@@ -6887,6 +6918,105 @@ RSpec.describe Project, factory_default: :keep do
 
           expect(subject).to be_empty
         end
+      end
+    end
+
+    describe '#activity_path' do
+      it 'returns the project activity_path' do
+        expected_path = "/#{project.namespace.path}/#{project.name}/activity"
+
+        expect(project.activity_path).to eq(expected_path)
+      end
+    end
+  end
+
+  describe '#default_branch_or_main' do
+    let(:project) { create(:project, :repository) }
+
+    it 'returns default branch' do
+      expect(project.default_branch_or_main).to eq(project.default_branch)
+    end
+
+    context 'when default branch is nil' do
+      let(:project) { create(:project, :empty_repo) }
+
+      it 'returns Gitlab::DefaultBranch.value' do
+        expect(project.default_branch_or_main).to eq(Gitlab::DefaultBranch.value)
+      end
+    end
+  end
+
+  describe '#increment_statistic_value' do
+    let(:project) { build_stubbed(:project) }
+
+    subject(:increment) do
+      project.increment_statistic_value(:build_artifacts_size, -10)
+    end
+
+    it 'increments the value' do
+      expect(ProjectStatistics)
+        .to receive(:increment_statistic)
+        .with(project, :build_artifacts_size, -10)
+
+      increment
+    end
+
+    context 'when the project is scheduled for removal' do
+      let(:project) { build_stubbed(:project, pending_delete: true) }
+
+      it 'does not increment the value' do
+        expect(ProjectStatistics).not_to receive(:increment_statistic)
+
+        increment
+      end
+    end
+  end
+
+  describe 'topics' do
+    let_it_be(:project) { create(:project, tag_list: 'topic1, topic2, topic3') }
+
+    it 'topic_list returns correct string array' do
+      expect(project.topic_list).to match_array(%w[topic1 topic2 topic3])
+    end
+
+    it 'topics returns correct tag records' do
+      expect(project.topics.first.class.name).to eq('ActsAsTaggableOn::Tag')
+      expect(project.topics.map(&:name)).to match_array(%w[topic1 topic2 topic3])
+    end
+
+    context 'aliases' do
+      it 'tag_list returns correct string array' do
+        expect(project.tag_list).to match_array(%w[topic1 topic2 topic3])
+      end
+
+      it 'tags returns correct tag records' do
+        expect(project.tags.first.class.name).to eq('ActsAsTaggableOn::Tag')
+        expect(project.tags.map(&:name)).to match_array(%w[topic1 topic2 topic3])
+      end
+    end
+
+    context 'intermediate state during background migration' do
+      before do
+        project.taggings.first.update!(context: 'tags')
+        project.instance_variable_set("@tag_list", nil)
+        project.reload
+      end
+
+      it 'tag_list returns string array including old and new topics' do
+        expect(project.tag_list).to match_array(%w[topic1 topic2 topic3])
+      end
+
+      it 'tags returns old and new tag records' do
+        expect(project.tags.first.class.name).to eq('ActsAsTaggableOn::Tag')
+        expect(project.tags.map(&:name)).to match_array(%w[topic1 topic2 topic3])
+        expect(project.taggings.map(&:context)).to match_array(%w[tags topics topics])
+      end
+
+      it 'update tag_list adds new topics and removes old topics' do
+        project.update!(tag_list: 'topic1, topic2, topic3, topic4')
+
+        expect(project.tags.map(&:name)).to match_array(%w[topic1 topic2 topic3 topic4])
+        expect(project.taggings.map(&:context)).to match_array(%w[topics topics topics topics])
       end
     end
   end

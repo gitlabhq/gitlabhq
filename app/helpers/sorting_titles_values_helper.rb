@@ -328,4 +328,4 @@ module SortingTitlesValuesHelper
   end
 end
 
-SortingHelper.include_if_ee('::EE::SortingTitlesValuesHelper')
+SortingHelper.include_mod_with('SortingTitlesValuesHelper')

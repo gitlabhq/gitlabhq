@@ -3,11 +3,9 @@
 %h4
   = _('Shared runners')
 
-.bs-callout.shared-runners-description
-  = _('These runners are shared across this GitLab instance.')
-  %p
+.bs-callout{ data: { testid: 'shared-runners-description' } }
+  %p= _('These runners are shared across this GitLab instance.')
   - if Gitlab::CurrentSettings.shared_runners_text.present?
-    = markdown_field(Gitlab::CurrentSettings.current_application_settings, :shared_runners_text)
+    = markdown(Gitlab::CurrentSettings.current_application_settings.shared_runners_text)
   - else
-    = _('The same shared runner executes code from multiple projects, unless you configure autoscaling with %{link} set to 1 (which it is on GitLab.com).').html_safe % { link: link }
-  = yield
+    %p= _('The same shared runner executes code from multiple projects, unless you configure autoscaling with %{link} set to 1 (which it is on GitLab.com).').html_safe % { link: link }

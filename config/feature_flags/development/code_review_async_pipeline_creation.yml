@@ -1,8 +1,0 @@
----
-name: code_review_async_pipeline_creation
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58542
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/327559
-milestone: '13.11'
-type: development
-group: group::code review
-default_enabled: false

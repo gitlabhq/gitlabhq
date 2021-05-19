@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required" : ["versions"],
+  "optional" : ["source"],
+  "properties" : {
+    "source": { "type": "string" },
+    "versions": {
+      "minItems": 0,
+      "items": { "$ref": "./version.json" }
+    }
+  }
+}

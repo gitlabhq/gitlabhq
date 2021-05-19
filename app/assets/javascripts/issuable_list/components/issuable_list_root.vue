@@ -274,44 +274,47 @@ export default {
           <gl-skeleton-loading />
         </li>
       </ul>
-      <component
-        :is="issuablesWrapper"
-        v-if="!issuablesLoading && issuables.length"
-        class="content-list issuable-list issues-list"
-        :class="{ 'manual-ordering': isManualOrdering }"
-        v-bind="$options.vueDraggableAttributes"
-        @update="handleVueDraggableUpdate"
-      >
-        <issuable-item
-          v-for="issuable in issuables"
-          :key="issuableId(issuable)"
-          :class="{ 'gl-cursor-grab': isManualOrdering }"
-          :issuable-symbol="issuableSymbol"
-          :issuable="issuable"
-          :enable-label-permalinks="enableLabelPermalinks"
-          :label-filter-param="labelFilterParam"
-          :show-checkbox="showBulkEditSidebar"
-          :checked="issuableChecked(issuable)"
-          @checked-input="handleIssuableCheckedInput(issuable, $event)"
+      <template v-else>
+        <component
+          :is="issuablesWrapper"
+          v-if="issuables.length > 0"
+          class="content-list issuable-list issues-list"
+          :class="{ 'manual-ordering': isManualOrdering }"
+          v-bind="$options.vueDraggableAttributes"
+          @update="handleVueDraggableUpdate"
         >
-          <template #reference>
-            <slot name="reference" :issuable="issuable"></slot>
-          </template>
-          <template #author>
-            <slot name="author" :author="issuable.author"></slot>
-          </template>
-          <template #timeframe>
-            <slot name="timeframe" :issuable="issuable"></slot>
-          </template>
-          <template #status>
-            <slot name="status" :issuable="issuable"></slot>
-          </template>
-          <template #statistics>
-            <slot name="statistics" :issuable="issuable"></slot>
-          </template>
-        </issuable-item>
-      </component>
-      <slot v-if="!issuablesLoading && !issuables.length" name="empty-state"></slot>
+          <issuable-item
+            v-for="issuable in issuables"
+            :key="issuableId(issuable)"
+            :class="{ 'gl-cursor-grab': isManualOrdering }"
+            :issuable-symbol="issuableSymbol"
+            :issuable="issuable"
+            :enable-label-permalinks="enableLabelPermalinks"
+            :label-filter-param="labelFilterParam"
+            :show-checkbox="showBulkEditSidebar"
+            :checked="issuableChecked(issuable)"
+            @checked-input="handleIssuableCheckedInput(issuable, $event)"
+          >
+            <template #reference>
+              <slot name="reference" :issuable="issuable"></slot>
+            </template>
+            <template #author>
+              <slot name="author" :author="issuable.author"></slot>
+            </template>
+            <template #timeframe>
+              <slot name="timeframe" :issuable="issuable"></slot>
+            </template>
+            <template #status>
+              <slot name="status" :issuable="issuable"></slot>
+            </template>
+            <template #statistics>
+              <slot name="statistics" :issuable="issuable"></slot>
+            </template>
+          </issuable-item>
+        </component>
+        <slot v-else name="empty-state"></slot>
+      </template>
+
       <gl-pagination
         v-if="showPaginationControls"
         :per-page="defaultPageSize"

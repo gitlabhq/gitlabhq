@@ -1,0 +1,5 @@
+---
+title: Add gl-form-input class for fields in gitea import page
+merge_request: 58313
+author: Yogi (@yo)
+type: changed

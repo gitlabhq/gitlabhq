@@ -41,4 +41,4 @@ module Types
   end
 end
 
-Types::BoardType.prepend_if_ee('::EE::Types::BoardType')
+Types::BoardType.prepend_mod_with('Types::BoardType')

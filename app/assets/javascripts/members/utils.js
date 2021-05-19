@@ -1,9 +1,5 @@
 import { isUndefined } from 'lodash';
-import {
-  getParameterByName,
-  convertObjectPropsToCamelCase,
-  parseBoolean,
-} from '~/lib/utils/common_utils';
+import { getParameterByName, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import {
@@ -105,14 +101,12 @@ export const buildSortHref = ({
 export const canOverride = () => false;
 
 export const parseDataAttributes = (el) => {
-  const { members, sourceId, memberPath, canManageMembers } = el.dataset;
+  const { membersData } = el.dataset;
 
-  return {
-    members: convertObjectPropsToCamelCase(JSON.parse(members), { deep: true }),
-    sourceId: parseInt(sourceId, 10),
-    memberPath,
-    canManageMembers: parseBoolean(canManageMembers),
-  };
+  return convertObjectPropsToCamelCase(JSON.parse(membersData), {
+    deep: true,
+    ignoreKeyNames: ['params'],
+  });
 };
 
 export const baseRequestFormatter = (basePropertyName, accessLevelPropertyName) => ({

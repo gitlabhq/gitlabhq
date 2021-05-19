@@ -1,28 +1,44 @@
-import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { __ } from '~/locale';
+import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import initProjectVisibilitySelector from '../../../project_visibility';
 import initProjectNew from '../../../projects/project_new';
+import NewProjectCreationApp from './components/app.vue';
 
 initProjectVisibilitySelector();
 initProjectNew.bindEvents();
 
-import(
-  /* webpackChunkName: 'experiment_new_project_creation' */ '../../../projects/experiment_new_project_creation'
-)
-  .then((m) => {
-    const el = document.querySelector('.js-experiment-new-project-creation');
+function initNewProjectCreation(el) {
+  const {
+    pushToCreateProjectCommand,
+    workingWithProjectsHelpPath,
+    newProjectGuidelines,
+    hasErrors,
+    isCiCdAvailable,
+  } = el.dataset;
 
-    if (!el) {
-      return;
-    }
+  const props = {
+    hasErrors: parseBoolean(hasErrors),
+    isCiCdAvailable: parseBoolean(isCiCdAvailable),
+    newProjectGuidelines,
+  };
 
-    const config = {
-      hasErrors: 'hasErrors' in el.dataset,
-      isCiCdAvailable: 'isCiCdAvailable' in el.dataset,
-      newProjectGuidelines: el.dataset.newProjectGuidelines,
-    };
-    m.default(el, config);
-  })
-  .catch(() => {
-    createFlash(__('An error occurred while loading project creation UI'));
+  const provide = {
+    workingWithProjectsHelpPath,
+    pushToCreateProjectCommand,
+  };
+
+  return new Vue({
+    el,
+    components: {
+      NewProjectCreationApp,
+    },
+    provide,
+    render(h) {
+      return h(NewProjectCreationApp, { props });
+    },
   });
+}
+
+const el = document.querySelector('.js-new-project-creation');
+
+initNewProjectCreation(el);

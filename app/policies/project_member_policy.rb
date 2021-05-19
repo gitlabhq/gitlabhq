@@ -8,7 +8,11 @@ class ProjectMemberPolicy < BasePolicy
   condition(:project_bot) { @subject.user&.project_bot? }
 
   rule { anonymous }.prevent_all
-  rule { target_is_owner }.prevent_all
+
+  rule { target_is_owner }.policy do
+    prevent :update_project_member
+    prevent :destroy_project_member
+  end
 
   rule { ~project_bot & can?(:admin_project_member) }.policy do
     enable :update_project_member

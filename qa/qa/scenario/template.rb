@@ -23,6 +23,15 @@ module QA
       def perform(options, *args)
         extract_address(:gitlab_address, options, args)
 
+        gitlab_address = URI(Runtime::Scenario.gitlab_address)
+
+        # Define the "About" page as an `about` subdomain.
+        # @example
+        #   Given *gitlab_address* = 'https://gitlab.com/' #=> https://about.gitlab.com/
+        #   Given *gitlab_address* = 'https://staging.gitlab.com/' #=> https://about.staging.gitlab.com/
+        #   Given *gitlab_address* = 'http://gitlab-abc123.test/' #=> http://about.gitlab-abc123.test/
+        Runtime::Scenario.define(:about_address, URI(-> { gitlab_address.host = "about.#{gitlab_address.host}"; gitlab_address }.call).to_s) # rubocop:disable Style/Semicolon
+
         ##
         # Perform before hooks, which are different for CE and EE
         #

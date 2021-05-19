@@ -24,7 +24,7 @@ module Gitlab
         )
         ::Gitlab::ExternalAuthorization::Response.new(response)
       rescue *Gitlab::HTTP::HTTP_ERRORS => e
-        raise ::Gitlab::ExternalAuthorization::RequestFailed.new(e)
+        raise ::Gitlab::ExternalAuthorization::RequestFailed, e
       end
 
       private

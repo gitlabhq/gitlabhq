@@ -31,7 +31,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
   "title": "Sample key 25",
   "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1256k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
   "created_at": "2015-09-03T07:24:44.627Z",
-  "expires_at": "2020-05-05T00:00:00.000Z"
+  "expires_at": "2020-05-05T00:00:00.000Z",
   "user": {
     "name": "John Smith",
     "username": "john_smith",
@@ -59,7 +59,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "identities": [],
     "can_create_group": true,
     "can_create_project": true,
-    "two_factor_enabled": false
+    "two_factor_enabled": false,
     "external": false,
     "private_profile": null
   }
@@ -100,7 +100,7 @@ Example response:
   "title": "Sample key 1",
   "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1016k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
   "created_at": "2019-11-14T15:11:13.222Z",
-  "expires_at": "2020-05-05T00:00:00.000Z"
+  "expires_at": "2020-05-05T00:00:00.000Z",
   "user": {
     "id": 1,
     "name": "Administrator",

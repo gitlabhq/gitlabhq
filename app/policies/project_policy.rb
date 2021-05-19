@@ -171,6 +171,7 @@ class ProjectPolicy < BasePolicy
   rule { guest | admin }.enable :read_project_for_iids
 
   rule { admin }.enable :update_max_artifacts_size
+  rule { admin }.enable :read_storage_disk_path
   rule { can?(:read_all_resources) }.enable :read_confidential_issues
 
   rule { guest }.enable :guest_access
@@ -225,6 +226,8 @@ class ProjectPolicy < BasePolicy
     enable :read_analytics
     enable :read_insights
   end
+
+  rule { can?(:guest_access) & can?(:create_issue) }.enable :create_incident
 
   # These abilities are not allowed to admins that are not members of the project,
   # that's why they are defined separately.
@@ -745,4 +748,4 @@ class ProjectPolicy < BasePolicy
   end
 end
 
-ProjectPolicy.prepend_if_ee('EE::ProjectPolicy')
+ProjectPolicy.prepend_mod_with('ProjectPolicy')

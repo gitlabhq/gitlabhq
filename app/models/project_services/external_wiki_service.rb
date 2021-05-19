@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-class ExternalWikiService < Service
+class ExternalWikiService < Integration
   include ActionView::Helpers::UrlHelper
+
   prop_accessor :external_wiki_url
   validates :external_wiki_url, presence: true, public_url: true, if: :activated?
 
@@ -39,7 +40,7 @@ class ExternalWikiService < Service
   def execute(_data)
     response = Gitlab::HTTP.get(properties['external_wiki_url'], verify: true)
     response.body if response.code == 200
-  rescue
+  rescue StandardError
     nil
   end
 

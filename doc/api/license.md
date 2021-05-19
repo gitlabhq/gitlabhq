@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Growth
+group: Activation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -80,7 +80,7 @@ GET /licenses
       "Name": "Doe John"
     },
     "add_ons": {
-      "GitLab_FileLocks": 1,
+      "GitLab_FileLocks": 1
     }
   }
 ]

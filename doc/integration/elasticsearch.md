@@ -31,7 +31,7 @@ and the advantage of the [special searches](../user/search/advanced_search.md).
 Elasticsearch requires additional resources in excess of those documented in the
 [GitLab system requirements](../install/requirements.md).
 
-The amount of resources (memory, CPU, storage) will vary greatly, based on the
+The amount of resources (memory, CPU, storage) varies greatly, based on the
 amount of data being indexed into the Elasticsearch cluster. According to
 [Elasticsearch official guidelines](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_memory),
 each node should have:
@@ -44,8 +44,8 @@ A few notes on CPU and storage:
 
 - CPU requirements for Elasticsearch tend to be minimal. There are specific
   scenarios where this isn't true, but GitLab.com isn't using Elasticsearch in
-  an exceptionally CPU-heavy way. More cores will be more performant than faster
-  CPUs. Extra concurrency from multiple cores will far outweigh a slightly
+  an exceptionally CPU-heavy way. More cores are more performant than faster
+  CPUs. Extra concurrency from multiple cores far outweighs a slightly
   faster clock speed in Elasticsearch.
 
 - Storage requirements for Elasticsearch are important, especially for
@@ -60,7 +60,7 @@ A few notes on CPU and storage:
   for the calculation. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221177) in GitLab 13.10.
 
 Keep in mind, these are **minimum requirements** for Elasticsearch.
-Heavily-used Elasticsearch clusters will likely require considerably more
+Heavily-used Elasticsearch clusters likely require considerably more
 resources.
 
 ## Installing Elasticsearch
@@ -77,26 +77,26 @@ service. Running Elasticsearch on the same server as GitLab is not recommended
 and can cause a degradation in GitLab instance performance.
 
 **For a single node Elasticsearch cluster the functional cluster health status
-will be yellow** (will never be green) because the primary shard is allocated but
+is yellow** (will never be green) because the primary shard is allocated but
 replicas can not be as there is no other node to which Elasticsearch can assign a
 replica.
 
 After the data is added to the database or repository and [Elasticsearch is
-enabled in the Admin Area](#enabling-advanced-search) the search index will be
+enabled in the Admin Area](#enabling-advanced-search) the search index is
 updated automatically.
 
 ## Upgrading to a new Elasticsearch major version
 
 Since Elasticsearch can read and use indices created in the previous major version, you don't need to change anything in the GitLab configuration when upgrading Elasticsearch.
 
-The only thing worth noting is that if you have created your current index before GitLab 13.0, you might want to reindex from scratch (which will implicitly create an alias) in order to use some features, for example [Zero downtime reindexing](#zero-downtime-reindexing). Once you do that, you'll be able to perform zero-downtime reindexing and will benefit from any future features that make use of the alias.
+The only thing worth noting is that if you have created your current index before GitLab 13.0, you might want to reindex from scratch (which implicitly creates an alias) in order to use some features, for example [Zero downtime reindexing](#zero-downtime-reindexing). Once you do that, you are able to perform zero-downtime reindexing and will benefit from any future features that make use of the alias.
 
 If you are unsure when your current index was created,
 you can check whether it was created after GitLab 13.0 by using the
 [Elasticsearch cat aliases API](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/cat-alias.html).
 If the list of aliases returned contains an entry for `gitlab-production` that points to an index
 named `gitlab-production-<numerical timestamp>`, your index was created after GitLab 13.0.
-If the `gitlab-production` alias is missing, you'll need to reindex from scratch to use
+If the `gitlab-production` alias is missing, you need to reindex from scratch to use
 features such as Zero-downtime reindexing.
 
 ## Elasticsearch repository indexer
@@ -108,6 +108,7 @@ The way you install the Go indexer depends on your version of GitLab:
 - For Omnibus GitLab 11.8 or greater, see [Omnibus GitLab](#omnibus-gitlab).
 - For installations from source or older versions of Omnibus GitLab,
   [install the indexer from source](#from-source).
+- If you are using GitLab Development Kit, see [GDK Elasticsearch how-to](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md)
 
 ### Omnibus GitLab
 
@@ -116,7 +117,7 @@ The former Ruby-based indexer was removed in [GitLab 12.3](https://gitlab.com/gi
 
 ### From source
 
-First, we need to install some dependencies, then we'll build and install
+First, we need to install some dependencies, then we build and install
 the indexer itself.
 
 This project relies on [ICU](http://site.icu-project.org/) for text encoding,
@@ -229,7 +230,9 @@ The following Elasticsearch settings are available:
 | `Elasticsearch indexing`                              | Enables or disables Elasticsearch indexing and creates an empty index if one does not already exist. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
 | `Pause Elasticsearch indexing`                        | Enables or disables temporary indexing pause. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the Elasticsearch index until resumed. |
 | `Search with Elasticsearch enabled`                   | Enables or disables using Elasticsearch in search. |
-| `URL`                                                 | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., `http://host1, https://host2:9200`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (e.g., `http://<username>:<password>@<elastic_host>:9200/`). Special characters in the username or password should use [percentage encoding](https://en.wikipedia.org/wiki/Percent-encoding). |
+| `URL`                                                 | The URL of your Elasticsearch instance. Use a comma-separated list to support clustering (for example, `http://host1, https://host2:9200`). If your Elasticsearch instance is password-protected, use the `Username` and `Password` fields described below. Alternatively, use inline credentials such as `http://<username>:<password>@<elastic_host>:9200/`. |
+| `Username`                                                 | The `username` of your Elasticsearch instance. |
+| `Password`                                                 | The password of your Elasticsearch instance. |
 | `Number of Elasticsearch shards`                      | Elasticsearch indexes are split into multiple shards for performance reasons. In general, you should use at least 5 shards, and indexes with tens of millions of documents need to have more shards ([see below](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). |
 | `Number of Elasticsearch replicas`                    | Each Elasticsearch shard can have a number of replicas. These are a complete copy of the shard, and can provide increased query performance or resilience against hardware failure. Increasing this value will greatly increase total disk space required by the index. |
 | `Limit namespaces and projects that can be indexed`   | Enabling this will allow you to select namespaces and projects to index. All other namespaces and projects will use database search instead. Please note that if you enable this option but do not select any namespaces or projects, none will be indexed. [Read more below](#limiting-namespaces-and-projects).
@@ -326,15 +329,56 @@ index alias to it which becomes the new `primary` index. At the end, we resume t
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069) in GitLab 13.2.
 > - A scheduled index deletion and the ability to cancel it was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38914) in GitLab 13.3.
+> - Support for retries during reindexing was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55681) in GitLab 13.12.
 
-Under **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
+To trigger the reindexing process:
+
+1. Sign in to your GitLab instance as an administrator.
+1. Go to **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**.
+1. Select **Trigger cluster reindexing**.
 
 Reindexing can be a lengthy process depending on the size of your Elasticsearch cluster.
 
-WARNING:
-After the reindexing is completed, the original index will be scheduled to be deleted after 14 days. You can cancel this action by pressing the cancel button.
+After this process is completed, the original index is scheduled to be deleted after
+14 days. You can cancel this action by pressing the **Cancel** button on the same
+page you triggered the reindexing process.
 
 While the reindexing is running, you will be able to follow its progress under that same section.
+
+#### Elasticsearch zero-downtime reindexing
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55681) in GitLab 13.12.
+
+The following reindex settings are available in **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**:
+
+- [Slice multiplier](#slice-multiplier)
+- [Maximum running slices](#maximum-running-slices)
+
+##### Slice multiplier
+
+The slice multiplier calculates the [number of slices during reindexing](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html#docs-reindex-slice).
+
+GitLab uses [manual slicing](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html#docs-reindex-manual-slice)
+to control the reindex efficiently and safely, which enables users to retry only
+failed slices.
+
+The multiplier defaults to `2` and applies to the number of shards per index.
+For example, if this value is `2` and your index has 20 shards, then the
+reindex task is split into 40 slices.
+
+##### Maximum running slices
+
+The maximum running slices parameter defaults to `60` and corresponds to the
+maximum number of slices allowed to run concurrently during Elasticsearch
+reindexing.
+
+Setting this value too high can have adverse performance impacts as your cluster
+may become heavily saturated with searches and writes. Setting this value too
+low may lead the reindexing process to take a very long time to complete.
+
+The best value for this will depend on your cluster size, whether you're willing
+to accept some degraded search performance during reindexing, and how important
+it is for the reindex to finish quickly and resume indexing.
 
 ### Mark the most recent reindex job as failed and resume the indexing
 
@@ -950,3 +994,18 @@ Advanced Search will store all the projects in the same Elasticsearch indexes,
 however searches will only surface results that can be viewed by the user.
 Advanced Search will honor all permission checks in the application by
 filtering out projects that a user does not have access to at search time.
+
+### Access requirements for the self-managed AWS Elasticsearch Service
+
+To use the self-managed AWS Elasticsearch Service with GitLab, configure your instance's domain access policies
+to contain the actions below.
+See [Identity and Access Management in Amazon Elasticsearch Service](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-ac.html) for details.
+
+```plaintext
+es:ESHttpDelete
+es:ESHttpGet
+es:ESHttpHead
+es:ESHttpPost
+es:ESHttpPut
+es:ESHttpPatch
+```

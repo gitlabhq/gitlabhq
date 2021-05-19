@@ -88,7 +88,7 @@ class Wiki
     repository.create_if_not_exists
 
     raise CouldNotCreateWikiError unless repository_exists?
-  rescue => err
+  rescue StandardError => err
     Gitlab::ErrorTracking.track_exception(err, wiki: {
       container_type: container.class.name,
       container_id: container.id,
@@ -192,16 +192,9 @@ class Wiki
   def delete_page(page, message = nil)
     return unless page
 
-    if Feature.enabled?(:gitaly_replace_wiki_delete_page, user, default_enabled: :yaml)
-      capture_git_error(:deleted) do
-        repository.delete_file(user, page.path, **multi_commit_options(:deleted, message, page.title))
+    capture_git_error(:deleted) do
+      repository.delete_file(user, page.path, **multi_commit_options(:deleted, message, page.title))
 
-        after_wiki_activity
-
-        true
-      end
-    else
-      wiki.delete_page(page.path, commit_details(:deleted, message, page.title))
       after_wiki_activity
 
       true
@@ -327,4 +320,4 @@ class Wiki
   end
 end
 
-Wiki.prepend_if_ee('EE::Wiki')
+Wiki.prepend_mod_with('Wiki')

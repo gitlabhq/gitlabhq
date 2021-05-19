@@ -24,13 +24,13 @@ class Environment < ApplicationRecord
   has_many :self_managed_prometheus_alert_events, inverse_of: :environment
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
-  has_one :last_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment', inverse_of: :environment
+  has_one :last_deployment, -> { success.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
   has_one :last_deployable, through: :last_deployment, source: 'deployable', source_type: 'CommitStatus'
   has_one :last_pipeline, through: :last_deployable, source: 'pipeline'
   has_one :last_visible_deployment, -> { visible.distinct_on_environment }, inverse_of: :environment, class_name: 'Deployment'
   has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus'
   has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline'
-  has_one :upcoming_deployment, -> { running.order('deployments.id DESC') }, class_name: 'Deployment', inverse_of: :environment
+  has_one :upcoming_deployment, -> { running.distinct_on_environment }, class_name: 'Deployment', inverse_of: :environment
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
   before_validation :nullify_external_url
@@ -269,7 +269,7 @@ class Environment < ApplicationRecord
       Gitlab::OptimisticLocking.retry_lock(deployment.deployable, name: 'environment_cancel_deployment_jobs') do |deployable|
         deployable.cancel! if deployable&.cancelable?
       end
-    rescue => e
+    rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, environment_id: id, deployment_id: deployment.id)
     end
   end
@@ -406,7 +406,7 @@ class Environment < ApplicationRecord
   end
 
   def elastic_stack_available?
-    !!deployment_platform&.cluster&.application_elastic_stack_available?
+    !!deployment_platform&.cluster&.elastic_stack_available?
   end
 
   def rollout_status
@@ -471,4 +471,4 @@ class Environment < ApplicationRecord
   end
 end
 
-Environment.prepend_if_ee('EE::Environment')
+Environment.prepend_mod_with('Environment')

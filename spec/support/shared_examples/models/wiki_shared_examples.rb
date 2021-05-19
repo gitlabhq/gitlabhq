@@ -469,33 +469,29 @@ RSpec.shared_examples 'wiki model' do
   end
 
   describe '#delete_page' do
-    shared_examples 'delete_page operations' do
-      let(:page) { create(:wiki_page, wiki: wiki) }
+    let(:page) { create(:wiki_page, wiki: wiki) }
 
-      it 'deletes the page' do
-        subject.delete_page(page)
+    it 'deletes the page' do
+      subject.delete_page(page)
 
-        expect(subject.list_pages.count).to eq(0)
-      end
-
-      it 'sets the correct commit email' do
-        subject.delete_page(page)
-
-        expect(user.commit_email).not_to eq(user.email)
-        expect(commit.author_email).to eq(user.commit_email)
-        expect(commit.committer_email).to eq(user.commit_email)
-      end
-
-      it 'runs after_wiki_activity callbacks' do
-        page
-
-        expect(subject).to receive(:after_wiki_activity)
-
-        subject.delete_page(page)
-      end
+      expect(subject.list_pages.count).to eq(0)
     end
 
-    it_behaves_like 'delete_page operations'
+    it 'sets the correct commit email' do
+      subject.delete_page(page)
+
+      expect(user.commit_email).not_to eq(user.email)
+      expect(commit.author_email).to eq(user.commit_email)
+      expect(commit.committer_email).to eq(user.commit_email)
+    end
+
+    it 'runs after_wiki_activity callbacks' do
+      page
+
+      expect(subject).to receive(:after_wiki_activity)
+
+      subject.delete_page(page)
+    end
 
     context 'when an error is raised' do
       it 'logs the error and returns false' do
@@ -508,14 +504,6 @@ RSpec.shared_examples 'wiki model' do
 
         expect(subject.delete_page(page)).to be_falsey
       end
-    end
-
-    context 'when feature flag :gitaly_replace_wiki_delete_page is disabled' do
-      before do
-        stub_feature_flags(gitaly_replace_wiki_delete_page: false)
-      end
-
-      it_behaves_like 'delete_page operations'
     end
   end
 

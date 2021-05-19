@@ -17,7 +17,7 @@
           = _("If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.")
           - clear_repository_checks_link = _('Clear all repository checks')
           - clear_repository_checks_message = _('This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?')
-        = link_to clear_repository_checks_link, clear_repository_check_states_admin_application_settings_path, data: { confirm: clear_repository_checks_message }, method: :put, class: "gl-button btn btn-sm btn-danger"
+        = link_to clear_repository_checks_link, clear_repository_check_states_admin_application_settings_path, data: { confirm: clear_repository_checks_message }, method: :put, class: "gl-button btn btn-sm btn-danger gl-mt-3"
 
     .sub-section
       %h4= _("Housekeeping")

@@ -69,4 +69,4 @@ module QA
   end
 end
 
-QA::Page::Project::Settings::ProtectedBranches.prepend_if_ee('QA::EE::Page::Project::Settings::ProtectedBranches')
+QA::Page::Project::Settings::ProtectedBranches.prepend_mod_with('Page::Project::Settings::ProtectedBranches', namespace: QA)

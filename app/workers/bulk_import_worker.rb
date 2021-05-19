@@ -4,6 +4,7 @@ class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :importers
+  tags :exclude_from_kubernetes
 
   sidekiq_options retry: false, dead: false
 
@@ -23,13 +24,14 @@ class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
     created_entities.first(next_batch_size).each do |entity|
       create_pipeline_tracker_for(entity)
 
+      BulkImports::ExportRequestWorker.perform_async(entity.id)
       BulkImports::EntityWorker.perform_async(entity.id)
 
       entity.start!
     end
 
     re_enqueue
-  rescue => e
+  rescue StandardError => e
     Gitlab::ErrorTracking.track_exception(e, bulk_import_id: @bulk_import&.id)
 
     @bulk_import&.fail_op

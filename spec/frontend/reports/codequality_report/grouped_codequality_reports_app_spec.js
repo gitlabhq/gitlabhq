@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import CodequalityIssueBody from '~/reports/codequality_report/components/codequality_issue_body.vue';
 import GroupedCodequalityReportsApp from '~/reports/codequality_report/grouped_codequality_reports_app.vue';
 import { getStoreConfig } from '~/reports/codequality_report/store';
-import { mockParsedHeadIssues, mockParsedBaseIssues } from './mock_data';
+import { parsedReportIssues } from './mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -80,7 +80,7 @@ describe('Grouped code quality reports app', () => {
     describe('with issues', () => {
       describe('with new issues', () => {
         beforeEach(() => {
-          mockStore.state.newIssues = [mockParsedHeadIssues[0]];
+          mockStore.state.newIssues = parsedReportIssues.newIssues;
           mockStore.state.resolvedIssues = [];
         });
 
@@ -89,14 +89,14 @@ describe('Grouped code quality reports app', () => {
         });
 
         it('renders custom codequality issue body', () => {
-          expect(findIssueBody().props('issue')).toEqual(mockParsedHeadIssues[0]);
+          expect(findIssueBody().props('issue')).toEqual(parsedReportIssues.newIssues[0]);
         });
       });
 
       describe('with resolved issues', () => {
         beforeEach(() => {
           mockStore.state.newIssues = [];
-          mockStore.state.resolvedIssues = [mockParsedBaseIssues[0]];
+          mockStore.state.resolvedIssues = parsedReportIssues.resolvedIssues;
         });
 
         it('renders summary text', () => {
@@ -104,14 +104,14 @@ describe('Grouped code quality reports app', () => {
         });
 
         it('renders custom codequality issue body', () => {
-          expect(findIssueBody().props('issue')).toEqual(mockParsedBaseIssues[0]);
+          expect(findIssueBody().props('issue')).toEqual(parsedReportIssues.resolvedIssues[0]);
         });
       });
 
       describe('with new and resolved issues', () => {
         beforeEach(() => {
-          mockStore.state.newIssues = [mockParsedHeadIssues[0]];
-          mockStore.state.resolvedIssues = [mockParsedBaseIssues[0]];
+          mockStore.state.newIssues = parsedReportIssues.newIssues;
+          mockStore.state.resolvedIssues = parsedReportIssues.resolvedIssues;
         });
 
         it('renders summary text', () => {
@@ -121,7 +121,7 @@ describe('Grouped code quality reports app', () => {
         });
 
         it('renders custom codequality issue body', () => {
-          expect(findIssueBody().props('issue')).toEqual(mockParsedHeadIssues[0]);
+          expect(findIssueBody().props('issue')).toEqual(parsedReportIssues.newIssues[0]);
         });
       });
     });

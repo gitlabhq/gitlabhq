@@ -6,16 +6,7 @@ module QA
     # Ensure we're in our sandbox namespace, either by navigating to it or by
     # creating it if it doesn't yet exist.
     #
-    class Sandbox < Base
-      include Members
-
-      attr_accessor :path
-
-      attribute :id
-      attribute :runners_token
-      attribute :name
-      attribute :full_path
-
+    class Sandbox < GroupBase
       def initialize
         @path = Runtime::Namespace.sandbox_name
       end
@@ -56,18 +47,6 @@ module QA
         "/groups/#{path}"
       end
 
-      def api_members_path
-        "#{api_get_path}/members"
-      end
-
-      def api_post_path
-        '/groups'
-      end
-
-      def api_delete_path
-        "/groups/#{id}"
-      end
-
       def api_post_body
         {
           path: path,
@@ -76,17 +55,14 @@ module QA
         }
       end
 
-      def api_put_path
-        "/groups/#{id}"
-      end
-
       def update_group_setting(group_setting:, value:)
-        put_body = { "#{group_setting}": value }
-        response = put Runtime::API::Request.new(api_client, api_put_path).url, put_body
+        response = put(Runtime::API::Request.new(api_client, api_put_path).url, { "#{group_setting}": value })
+        return if response.code == HTTP_STATUS_OK
 
-        unless response.code == HTTP_STATUS_OK
-          raise ResourceUpdateFailedError, "Could not update #{group_setting} to #{value}. Request returned (#{response.code}): `#{response}`."
-        end
+        raise(
+          ResourceUpdateFailedError,
+          "Could not update #{group_setting} to #{value}. Request returned (#{response.code}): `#{response}`."
+        )
       end
     end
   end

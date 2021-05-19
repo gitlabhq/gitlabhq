@@ -28,6 +28,17 @@ module BulkImports
         end
       end
 
+      def post(resource, body = {})
+        with_error_handling do
+          Gitlab::HTTP.post(
+            resource_url(resource),
+            headers: request_headers,
+            follow_redirects: false,
+            body: body
+          )
+        end
+      end
+
       def each_page(method, resource, query = {}, &block)
         return to_enum(__method__, method, resource, query) unless block_given?
 
@@ -63,7 +74,7 @@ module BulkImports
       def with_error_handling
         response = yield
 
-        raise ConnectionError.new("Error #{response.code}") unless response.success?
+        raise ConnectionError, "Error #{response.code}" unless response.success?
 
         response
       rescue *Gitlab::HTTP::HTTP_ERRORS => e

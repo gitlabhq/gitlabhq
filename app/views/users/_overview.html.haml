@@ -3,7 +3,7 @@
 .row.d-none.d-sm-flex
   .col-12.calendar-block.gl-my-3
     .user-calendar.light{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: Time.zone.utc_offset } }
-      .spinner.spinner-md.gl-my-8
+      .gl-spinner.gl-spinner-md.gl-my-8
       .user-calendar-error.invisible
         = _('There was an error loading users activity calendar.')
         %a.js-retry-load{ href: '#' }
@@ -18,9 +18,9 @@
             %h4.gl-flex-grow-1
               = Feature.enabled?(:security_auto_fix) && @user.bot? ? s_('UserProfile|Bot activity') : s_('UserProfile|Activity')
             = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all"
-          .overview-content-list{ data: { href: user_activity_path } }
+          .overview-content-list{ data: { href: user_activity_path, qa_selector: 'user_activity_content' } }
             .center.light.loading
-              .spinner.spinner-md
+              .gl-spinner.gl-spinner-md
 
   - unless Feature.enabled?(:security_auto_fix) && @user.bot?
     .col-md-12.col-lg-6
@@ -32,4 +32,4 @@
             = link_to s_('UserProfile|View all'), user_projects_path, class: "hide js-view-all"
           .overview-content-list{ data: { href: user_projects_path } }
             .center.light.loading
-              .spinner.spinner-md
+              .gl-spinner.gl-spinner-md

@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 shared_examples_for 'service deleting todos' do
-  before do
-    stub_feature_flags(destroy_issuable_todos_async: group)
-  end
-
   it 'destroys associated todos asynchronously' do
     expect(TodosDestroyer::DestroyedIssuableWorker)
       .to receive(:perform_async)
@@ -12,20 +8,14 @@ shared_examples_for 'service deleting todos' do
 
     subject.execute(issuable)
   end
+end
 
-  context 'when destroy_issuable_todos_async feature is disabled for group' do
-    before do
-      stub_feature_flags(destroy_issuable_todos_async: false)
-    end
+shared_examples_for 'service deleting label links' do
+  it 'destroys associated label links asynchronously' do
+    expect(Issuable::LabelLinksDestroyWorker)
+      .to receive(:perform_async)
+      .with(issuable.id, issuable.class.name)
 
-    it 'destroy associated todos synchronously' do
-      expect_next_instance_of(TodosDestroyer::DestroyedIssuableWorker) do |worker|
-        expect(worker)
-          .to receive(:perform)
-          .with(issuable.id, issuable.class.name)
-      end
-
-      subject.execute(issuable)
-    end
+    subject.execute(issuable)
   end
 end

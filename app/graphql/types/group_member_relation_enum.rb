@@ -6,7 +6,7 @@ module Types
     description 'Group member relation'
 
     ::GroupMembersFinder::RELATIONS.each do |member_relation|
-      value member_relation.to_s.upcase, value: member_relation, description: "#{member_relation.to_s.titleize} members"
+      value member_relation.to_s.upcase, value: member_relation, description: "#{::GroupMembersFinder::RELATIONS_DESCRIPTIONS[member_relation]}."
     end
   end
 end

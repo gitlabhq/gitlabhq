@@ -244,8 +244,8 @@ include:
 See the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) for information on available jobs.
 
 WARNING:
-Auto DevOps templates using the [`only`](../../ci/yaml/README.md#onlyexcept-basic) or
-[`except`](../../ci/yaml/README.md#onlyexcept-basic) syntax have switched
+Auto DevOps templates using the [`only`](../../ci/yaml/README.md#only--except) or
+[`except`](../../ci/yaml/README.md#only--except) syntax have switched
 to the [`rules`](../../ci/yaml/README.md#rules) syntax, starting in
 [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213336).
 If your `.gitlab-ci.yml` extends these Auto DevOps templates and override the `only` or
@@ -387,6 +387,8 @@ The following table lists variables used to disable jobs.
 |----------------------------------------|---------------------------------|-----------------------|-----------------|
 | `.fuzz_base`                           | `COVFUZZ_DISABLED`              | [From GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34984) | [Read more](../../user/application_security/coverage_fuzzing/) about how `.fuzz_base` provide capability for your own jobs. If the variable is present, your jobs aren't created. |
 | `apifuzzer_fuzz`                       | `API_FUZZING_DISABLED`          | [From GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39135) | If the variable is present, the job isn't created. |
+| `build`                                | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
+| `build_artifact`                       | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
 | `bandit-sast`                          | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
 | `brakeman-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
 | `bundler-audit-dependency_scanning`    | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |

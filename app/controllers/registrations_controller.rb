@@ -155,11 +155,19 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def resource
-    @resource ||= Users::BuildService.new(current_user, sign_up_params).execute
+    @resource ||= Users::RegistrationsBuildService
+                    .new(current_user, sign_up_params.merge({ skip_confirmation: skip_email_confirmation? }))
+                    .execute
   end
 
   def devise_mapping
     @devise_mapping ||= Devise.mappings[:user]
+  end
+
+  def skip_email_confirmation?
+    invite_email = session.delete(:invite_email)
+
+    sign_up_params[:email] == invite_email
   end
 
   def load_recaptcha
@@ -179,6 +187,21 @@ class RegistrationsController < Devise::RegistrationsController
   def set_invite_params
     @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
   end
+
+  def after_pending_invitations_hook
+    member_id = session.delete(:originating_member_id)
+
+    return unless member_id
+
+    # if invited multiple times to different projects, only the email clicked will be counted as accepted
+    # for the specific member on a project or group
+    member = resource.members.find_by(id: member_id) # rubocop: disable CodeReuse/ActiveRecord
+
+    return unless member
+
+    experiment(:invite_signup_page_interaction, actor: member).track(:form_submission)
+    experiment('members/invite_email', actor: member).track(:accepted)
+  end
 end
 
-RegistrationsController.prepend_if_ee('EE::RegistrationsController')
+RegistrationsController.prepend_mod_with('RegistrationsController')

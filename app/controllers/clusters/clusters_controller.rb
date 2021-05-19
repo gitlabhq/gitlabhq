@@ -62,6 +62,7 @@ class Clusters::ClustersController < Clusters::BaseController
   def show
     if params[:tab] == 'integrations'
       @prometheus_integration = Clusters::IntegrationPresenter.new(@cluster.find_or_build_integration_prometheus)
+      @elastic_stack_integration = Clusters::IntegrationPresenter.new(@cluster.find_or_build_integration_elastic_stack)
     end
   end
 
@@ -362,4 +363,4 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 end
 
-Clusters::ClustersController.prepend_if_ee('EE::Clusters::ClustersController')
+Clusters::ClustersController.prepend_mod_with('Clusters::ClustersController')

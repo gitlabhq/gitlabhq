@@ -12,6 +12,7 @@
         is_dismissed_key: "invite_#{@group.id}_#{current_user.id}",
         track_label: 'invite_members_banner',
         invite_members_path: group_group_members_path(@group) } }
+  = render 'groups/invite_members_modal', group: @group
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")

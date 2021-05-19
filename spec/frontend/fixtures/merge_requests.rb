@@ -62,8 +62,14 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
     remove_repository(project)
   end
 
+  it 'merge_requests/merge_request_with_single_assignee_feature.html' do
+    stub_licensed_features(multiple_merge_request_assignees: false)
+
+    render_merge_request(merge_request)
+  end
+
   it 'merge_requests/merge_request_of_current_user.html' do
-    merge_request.update(author: user)
+    merge_request.update!(author: user)
 
     render_merge_request(merge_request)
   end

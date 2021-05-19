@@ -372,7 +372,7 @@ $system-note-svg-size: 16px;
       top: $mr-tabs-height + $header-height;
 
       .with-performance-bar & {
-        top: 126px;
+        top: 123px;
       }
     }
 
@@ -672,6 +672,7 @@ $system-note-svg-size: 16px;
   align-items: center;
   margin-left: 10px;
   color: $gray-400;
+  margin-top: -4px;
 
   @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     float: none;

@@ -43,13 +43,20 @@
     "introduced_by_url": {
       "type": ["string", "null"]
     },
+    "extra": {
+      "type": "object"
+    },
     "time_frame": {
       "type": "string",
       "enum": ["7d", "28d", "all", "none"]
     },
     "data_source": {
       "type": "string",
-      "enum": ["database", "redis", "redis_hll", "prometheus", "ruby"]
+      "enum": ["database", "redis", "redis_hll", "prometheus", "system"]
+    },
+    "instrumentation_class": {
+      "type": "string",
+      "pattern": "^(([A-Z][a-z]+)+::)*(([A-Z][a-z]+)+)$"
     },
     "distribution": {
       "type": "array",
@@ -67,6 +74,9 @@
     },
     "skip_validation": {
       "type": "boolean"
+    },
+    "value_json_schema": {
+      "type": "string"
     }
   }
 }

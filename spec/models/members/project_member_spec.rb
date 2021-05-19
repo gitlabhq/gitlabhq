@@ -49,13 +49,13 @@ RSpec.describe ProjectMember do
 
     it "creates an expired event when left due to expiry" do
       expired = create(:project_member, project: project, expires_at: 1.day.from_now)
-      travel_to(2.days.from_now) { expired.destroy }
+      travel_to(2.days.from_now) { expired.destroy! }
 
       expect(Event.recent.first).to be_expired_action
     end
 
     it "creates a left event when left due to leave" do
-      maintainer.destroy
+      maintainer.destroy!
       expect(Event.recent.first).to be_left_action
     end
   end

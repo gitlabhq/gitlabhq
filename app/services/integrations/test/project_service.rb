@@ -42,4 +42,4 @@ module Integrations
   end
 end
 
-Integrations::Test::ProjectService.prepend_if_ee('::EE::Integrations::Test::ProjectService')
+Integrations::Test::ProjectService.prepend_mod_with('Integrations::Test::ProjectService')

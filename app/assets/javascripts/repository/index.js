@@ -4,6 +4,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
+import PerformancePlugin from '~/performance/vue_performance_plugin';
 import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
@@ -16,6 +17,10 @@ import refsQuery from './queries/ref.query.graphql';
 import createRouter from './router';
 import { updateFormAction } from './utils/dom';
 import { setTitle } from './utils/title';
+
+Vue.use(PerformancePlugin, {
+  components: ['SimpleViewer', 'BlobContent'],
+});
 
 export default function setupVueRepositoryList() {
   const el = document.getElementById('js-tree-list');

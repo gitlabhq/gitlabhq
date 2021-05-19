@@ -59,7 +59,7 @@ To filter results:
 1. Select a parameter to filter by.
 1. Select a value from the autocompleted results, or type to refine the results.
 
-![Value stream analytics filter bar](img/vsa_filter_bar_v13_3.png "Active filter bar for value stream analytics")
+![Value stream analytics filter bar](img/vsa_filter_bar_v13_12.png "Active filter bar for value stream analytics")
 
 ### Date ranges
 
@@ -71,14 +71,28 @@ GitLab provides the ability to filter analytics based on a date range. To filter
 1. Optionally select a project.
 1. Select a date range using the available date pickers.
 
-## How Time metrics are measured
+## How metrics are measured
 
 The "Time" metrics near the top of the page are measured as follows:
 
 - **Lead time**: median time from issue created to issue closed.
-- **Cycle time**: median time from first commit to issue closed. (You can associate a commit with an issue by [crosslinking in the commit message](../../project/issues/crosslinking_issues.md#from-commit-messages).)
+- **Cycle time**: median time from first commit to issue closed. (You can associate a commit with an
+  issue by [crosslinking in the commit message](../../project/issues/crosslinking_issues.md#from-commit-messages).)
 
-![Value stream analytics time metrics](img/vsa_time_metrics_v13_0.png "Time metrics for value stream analytics")
+The "Recent Activity" metrics near the top of the page are measured as follows:
+
+- **New Issues:** the number of issues created in the date range.
+- **Deploys:** the number of deployments to production (1) in the date range.
+- **Deployment Frequency:** the average number of deployments to production (1) per day in the date range.
+
+(1) To give a more accurate representation of deployments that actually completed successfully,
+the calculation for these two metrics changed in GitLab 13.9 from using the time a deployment was
+created to the time a deployment finished. If you were referencing this metric prior to 13.9, please
+keep this slight change in mind.
+
+You can learn more about these metrics in our [analytics definitions](../../analytics/index.md).
+
+![Value stream analytics time metrics](img/vsa_time_metrics_v13_12.png "Time metrics for value stream analytics")
 
 ## How the stages are measured
 
@@ -109,8 +123,8 @@ How this works, behind the scenes:
    we need for the stages, like issue creation date, merge request merge time,
    etc.
 
-To sum up, anything that doesn't follow [GitLab flow](../../../topics/gitlab_flow.md) will not be tracked and the
-Value Stream Analytics dashboard will not present any data for:
+To sum up, anything that doesn't follow [GitLab flow](../../../topics/gitlab_flow.md) is not tracked and the
+Value Stream Analytics dashboard does not present any data for:
 
 - Merge requests that do not close an issue.
 - Issues not labeled with a label present in the Issue Board or for issues not assigned a milestone.
@@ -118,7 +132,8 @@ Value Stream Analytics dashboard will not present any data for:
 
 ## How the production environment is identified
 
-Value Stream Analytics identifies production environments by looking for project [environments](../../../ci/yaml/README.md#environment) with a name matching any of these patterns:
+Value Stream Analytics identifies production environments by looking for project
+[environments](../../../ci/yaml/README.md#environment) with a name matching any of these patterns:
 
 - `prod` or `prod/*`
 - `production` or `production/*`
@@ -176,7 +191,7 @@ A few notes:
   cycles, calculate their median time and the result is what the dashboard of
   Value Stream Analytics is showing.
 
-## Customizable Stages
+## Custom value streams
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in GitLab 12.9.
 
@@ -184,14 +199,13 @@ The default stages are designed to work straight out of the box, but they might 
 all teams. Different teams use different approaches to building software, so some teams might want
 to customize their Value Stream Analytics.
 
-GitLab allows users to create multiple value streams, hide default stages and create custom stages that align better to their development workflow.
+GitLab allows users to create multiple value streams, hide default stages and create custom stages
+that align better to their development workflow.
 
 ### Stage path
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
-> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../../../administration/feature_flags.md). **(FREE SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in GitLab 13.12.
 
 ![Value stream path navigation](img/vsa_path_nav_v13_11.png "Value stream path navigation")
 
@@ -212,98 +226,62 @@ Hovering over a stage item displays a popover with the following information:
 
 - Start event description for the given stage
 - End event description
+- Median time items took to complete the stage
+- Number of items that completed the stage
 
-Horizontal path navigation is enabled by default. If you have a self-managed instance, an
-administrator can [open a Rails console](../../../administration/troubleshooting/navigating_gitlab_via_rails_console.md)
-and disable it with the following command:
+### Stream overview
 
-```ruby
-Feature.disable(:value_stream_analytics_path_navigation)
-```
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321438) in GitLab 13.11.
 
-### Adding a stage
+![Value Stream Analytics Overview](img/vsa_overview_stage_v13_11.png "VSA overview")
 
-In the following example we're creating a new stage that measures and tracks issues from creation
-time until they are closed.
+The stream overview provides access to key metrics and charts summarizing all the stages in the value stream
+based on selected filters.
 
-1. Navigate to your group's **Analytics > Value Stream**.
-1. Click the **Add a stage** button.
-1. Fill in the new stage form:
-   - Name: Issue start to finish.
-   - Start event: Issue created.
-   - End event: Issue closed.
-1. Click the **Add stage** button.
+Shown metrics and charts includes:
 
-![New Value Stream Analytics Stage](img/new_vsm_stage_v12_9.png "Form for creating a new stage")
+- [Lead time](#how-metrics-are-measured)
+- [Cycle time](#how-metrics-are-measured)
+- [Days to completion chart](#days-to-completion-chart)
+- [Tasks by type chart](#type-of-work---tasks-by-type-chart)
 
-The new stage is persisted and it will always show up on the Value Stream Analytics page for your
-group.
+### Stage table
 
-If you want to alter or delete the stage, you can easily do that for customized stages by:
+> Sorting the stage table [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301082) in GitLab 13.12.
 
-1. Hovering over the stage.
-1. Clicking the vertical ellipsis (**{ellipsis_v}**) button that appears.
+![Value Stream Analytics Stage table](img/vsa_stage_table_v13_12.png "VSA stage table")
 
-![Value Stream Analytics Stages](img/vsm_stage_list_v12_9.png)
+The stage table shows a list of related workflow items for the selected stage. This can include:
 
-Creating a custom stage requires specifying two events:
+- CI/CD jobs
+- Issues
+- Merge requests
+- Pipelines
 
-- A start.
-- An end.
+A little badge next to the workflow items table header shows the number of workflow items that
+completed the selected stage.
 
-Be careful to choose a start event that occurs *before* your end event. For example, consider a
-stage that:
+The stage table also includes the **Time** column, which shows how long it takes each item to pass
+through the selected value stream stage.
 
-- Started when an issue is added to a board.
-- Ended when the issue is created.
+The stage table is not displayed on the stream [Overview](#stream-overview).
+The workflow item column (first column) is ordered by end event.
 
-This stage would not work because the end event has already happened when the start event occurs.
-To prevent such invalid stages, the UI prohibits incompatible start and end events. After you select
-the start event, the stop event dropdown will only list the compatible events.
+To sort the stage table by a table column, select the table header.
+You can sort in ascending or descending order. To find items that spent the most time in a stage,
+potentially causing bottlenecks in your value stream, sort the table by the **Time** column.
+From there, select individual items to drill in and investigate how delays are happening.
+To see which items the stage most recently, sort by the work item column on the left.
 
-### Re-ordering stages
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196698) in GitLab 12.10.
-
-Once a custom stage has been added, you can "drag and drop" stages to rearrange their order. These changes are automatically saved to the system.
-
-### Label based stages
-
-The pre-defined start and end events can cover many use cases involving both issues and merge requests.
-
-For supporting more complex workflows, use stages based on group labels. These events are based on
-labels being added or removed. In particular, [scoped labels](../../project/labels.md#scoped-labels)
-are useful for complex workflows.
-
-In this example, we'd like to measure more accurate code review times. The workflow is the following:
-
-- When the code review starts, the reviewer adds `workflow::code_review_start` label to the merge request.
-- When the code review is finished, the reviewer adds `workflow::code_review_complete` label to the merge request.
-
-Creating a new stage called "Code Review":
-
-![New Label Based Value Stream Analytics Stage](img/label_based_stage_vsm_v12_9.png "Creating a label based Value Stream Analytics Stage")
-
-### Hiding unused stages
-
-Sometimes certain default stages are not relevant to a team. In this case, you can easily hide stages
-so they no longer appear in the list. To hide stages:
-
-1. Add a custom stage to activate customizability.
-1. Hover over the default stage you want to hide.
-1. Click the vertical ellipsis (**{ellipsis_v}**) button that appears and select **Hide stage**.
-
-To recover a default stage that was previously hidden:
-
-1. Click **Add a stage** button.
-1. In the top right corner open the **Recover hidden stage** dropdown.
-1. Select a stage.
+The table displays up to 20 items at a time. If there are more than 20 items, you can use the
+**Prev** and **Next** buttons to navigate through the pages.
 
 ### Creating a value stream
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221202) in GitLab 13.3
 
-A default value stream is readily available for each group. You can create additional value streams based on the different areas of work that you would like to measure.
+A default value stream is readily available for each group. You can create additional value streams
+based on the different areas of work that you would like to measure.
 
 Once created, a new value stream includes the [seven stages](#default-stages) that follow
 [GitLab workflow](../../../topics/gitlab_flow.md)
@@ -317,7 +295,7 @@ To create a value stream:
    - You can [customize the stages](#creating-a-value-stream-with-stages)
 1. Click the **Create Value Stream** button.
 
-![New value stream](img/new_value_stream_v13_3.png "Creating a new value stream")
+![New value stream](img/new_value_stream_v13_12.png "Creating a new value stream")
 
 #### Creating a value stream with stages
 
@@ -333,17 +311,52 @@ add stages as desired.
 
 To create a value stream with stages:
 
-1. Navigate to your group's **Analytics > Value Stream**.
-1. Find and select the Value Stream dropdown. Select **Create new Value Stream**.
+1. Go to your group and select **Analytics > Value Stream**.
+1. Select the Value Stream dropdown and select **Create new Value Stream**.
 1. Select either **Create from default template** or **Create from no template**.
-   - Default stages in the value stream can be hidden or re-ordered
+   - Default stages in the value stream can be hidden or re-ordered.
+
      ![Default stage actions](img/vsa_default_stage_v13_10.png "Default stage actions")
-   - New stages can be added by clicking the 'Add another stage' button
+
+   - New stages can be added by clicking the 'Add another stage' button.
    - The name, start and end events for the stage can be selected
+
      ![Custom stage actions](img/vsa_custom_stage_v13_10.png "Custom stage actions")
 1. Select the **Create Value Stream** button to save the value stream.
 
-![Extended create value stream form](img/extended_value_stream_form_v13_10.png "Extended create value stream form")
+#### Label-based stages
+
+The pre-defined start and end events can cover many use cases involving both issues and merge requests.
+
+In more complex workflows, use stages based on group labels. These events are based on
+added or removed labels. In particular, [scoped labels](../../project/labels.md#scoped-labels)
+are useful for complex workflows.
+
+In this example, we'd like to measure times for deployment from a staging environment to production. The workflow is the following:
+
+- When the code is deployed to staging, the `workflow::staging` label is added to the merge request.
+- When the code is deployed to production, the `workflow::production` label is added to the merge request.
+
+![Label Based Value Stream Analytics Stage](img/vsa_label_based_stage_v14_0.png "Creating a label based Value Stream Analytics Stage")
+
+### Editing a value stream
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267537) in GitLab 13.10.
+
+After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
+
+1. Go to your group and select **Analytics > Value Stream**.
+1. Find and select the relevant value stream from the value stream dropdown. 
+1. Next to the value stream dropdown, select **Edit**.
+   The edit form is populated with the value stream details.
+1. Optional:
+    - Rename the value stream.
+    - Hide or re-order default stages.
+    - Remove existing custom stages.
+    - Add new stages by selecting the 'Add another stage' button
+    - Select the start and end events for the stage.
+1. Optional. To undo any modifications, select **Restore value stream defaults**.
+1. Select **Save Value Stream**.
 
 ### Deleting a value stream
 
@@ -356,14 +369,15 @@ To delete a custom value stream:
 1. Click the **Delete (name of value stream)**.
 1. Click the **Delete** button to confirm.
 
-![Delete value stream](img/delete_value_stream_v13_4.png "Deleting a custom value stream")
+![Delete value stream](img/delete_value_stream_v13_12.png "Deleting a custom value stream")
 
 ## Days to completion chart
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.
 > - [Chart median line removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
+> - [Totals replaced with averages](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) in GitLab 13.12.
 
-This chart visually depicts the total number of days it takes for cycles to be completed. (Totals are being replaced with averages in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/262070).)
+This chart visually depicts the average number of days it takes for cycles to be completed.
 
 This chart uses the global page filters for displaying data based on the selected
 group, projects, and time frame. In addition, specific stages can be selected

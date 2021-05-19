@@ -1,0 +1,5 @@
+---
+title: Remove Legacy Group-Level DORA metrics API
+merge_request: 59858
+author:
+type: removed

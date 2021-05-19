@@ -4,6 +4,8 @@
 class ProjectCacheWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   LEASE_TIMEOUT = 15.minutes.to_i
 
   feature_category :source_code_management
@@ -61,4 +63,4 @@ class ProjectCacheWorker
   end
 end
 
-ProjectCacheWorker.prepend_if_ee('EE::ProjectCacheWorker')
+ProjectCacheWorker.prepend_mod_with('ProjectCacheWorker')

@@ -1,0 +1,8 @@
+---
+name: ci_modified_paths_of_external_prs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60736
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/330605
+milestone: '13.12'
+type: development
+group: group::pipeline authoring
+default_enabled: false

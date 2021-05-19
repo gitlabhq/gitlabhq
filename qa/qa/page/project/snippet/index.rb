@@ -26,4 +26,4 @@ module QA
   end
 end
 
-QA::Page::Project::Snippet::Index.prepend_if_ee('QA::EE::Page::Project::Snippet::Index')
+QA::Page::Project::Snippet::Index.prepend_mod_with('Page::Project::Snippet::Index', namespace: QA)

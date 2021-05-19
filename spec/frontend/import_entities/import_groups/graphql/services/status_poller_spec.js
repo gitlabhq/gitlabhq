@@ -21,17 +21,15 @@ const FAKE_POLL_PATH = '/fake/poll/path';
 describe('Bulk import status poller', () => {
   let poller;
   let mockAdapter;
-  let groupManager;
+  let updateImportStatus;
 
   const getPollHistory = () => mockAdapter.history.get.filter((x) => x.url === FAKE_POLL_PATH);
 
   beforeEach(() => {
     mockAdapter = new MockAdapter(axios);
     mockAdapter.onGet(FAKE_POLL_PATH).reply(200, {});
-    groupManager = {
-      setImportStatusByImportId: jest.fn(),
-    };
-    poller = new StatusPoller({ groupManager, pollPath: FAKE_POLL_PATH });
+    updateImportStatus = jest.fn();
+    poller = new StatusPoller({ updateImportStatus, pollPath: FAKE_POLL_PATH });
   });
 
   it('creates poller with proper config', () => {
@@ -96,9 +94,9 @@ describe('Bulk import status poller', () => {
   it('when success response arrives updates relevant group status', () => {
     const FAKE_ID = 5;
     const [[pollConfig]] = Poll.mock.calls;
+    const FAKE_RESPONSE = { id: FAKE_ID, status_name: STATUSES.FINISHED };
+    pollConfig.successCallback({ data: [FAKE_RESPONSE] });
 
-    pollConfig.successCallback({ data: [{ id: FAKE_ID, status_name: STATUSES.FINISHED }] });
-
-    expect(groupManager.setImportStatusByImportId).toHaveBeenCalledWith(FAKE_ID, STATUSES.FINISHED);
+    expect(updateImportStatus).toHaveBeenCalledWith(FAKE_RESPONSE);
   });
 });

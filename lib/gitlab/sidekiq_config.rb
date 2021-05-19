@@ -21,8 +21,18 @@ module Gitlab
     # invalid class name. We keep it in the YAML file for safety, just
     # in case anything does get scheduled to run there.
     DEFAULT_WORKERS = {
-      '_' => DummyWorker.new('default', weight: 1, tags: []),
-      'ActionMailer::MailDeliveryJob' => DummyWorker.new('mailers', feature_category: :issue_tracking, urgency: 'low', weight: 2, tags: [])
+      '_' => DummyWorker.new(
+        queue: 'default',
+        weight: 1, tags: []
+      ),
+      'ActionMailer::MailDeliveryJob' => DummyWorker.new(
+        name: 'ActionMailer::MailDeliveryJob',
+        queue: 'mailers',
+        feature_category: :issue_tracking,
+        urgency: 'low',
+        weight: 2,
+        tags: []
+      )
     }.transform_values { |worker| Gitlab::SidekiqConfig::Worker.new(worker, ee: false) }.freeze
 
     class << self

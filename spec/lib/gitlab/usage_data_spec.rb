@@ -172,6 +172,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         another_project = create(:project, :repository, creator: another_user)
         create(:remote_mirror, project: another_project, enabled: false)
         create(:snippet, author: user)
+        create(:suggestion, note: create(:note, project: project))
       end
 
       expect(described_class.usage_activity_by_stage_create({})).to include(
@@ -181,7 +182,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_with_disable_overriding_approvers_per_merge_request: 2,
         projects_without_disable_overriding_approvers_per_merge_request: 6,
         remote_mirrors: 2,
-        snippets: 2
+        snippets: 2,
+        suggestions: 2
       )
       expect(described_class.usage_activity_by_stage_create(described_class.last_28_days_time_period)).to include(
         deploy_keys: 1,
@@ -190,7 +192,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_with_disable_overriding_approvers_per_merge_request: 1,
         projects_without_disable_overriding_approvers_per_merge_request: 3,
         remote_mirrors: 1,
-        snippets: 1
+        snippets: 1,
+        suggestions: 1
       )
     end
   end
@@ -571,7 +574,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:projects_with_repositories_enabled]).to eq(3)
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
       expect(count_data[:projects_with_tracing_enabled]).to eq(1)
-      expect(count_data[:projects_with_alerts_service_enabled]).to eq(1)
       expect(count_data[:projects_with_enabled_alert_integrations]).to eq(1)
       expect(count_data[:projects_with_prometheus_alerts]).to eq(2)
       expect(count_data[:projects_with_terraform_reports]).to eq(2)
@@ -745,10 +747,34 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
+  describe '.runners_usage' do
+    before do
+      project = build(:project)
+      create_list(:ci_runner, 2, :instance_type, :online)
+      create(:ci_runner, :group, :online)
+      create(:ci_runner, :group, :inactive)
+      create_list(:ci_runner, 3, :project_type, :online, projects: [project])
+    end
+
+    subject { described_class.runners_usage }
+
+    it 'gathers runner usage counts correctly' do
+      expect(subject[:ci_runners]).to eq(7)
+      expect(subject[:ci_runners_instance_type_active]).to eq(2)
+      expect(subject[:ci_runners_group_type_active]).to eq(1)
+      expect(subject[:ci_runners_project_type_active]).to eq(3)
+
+      expect(subject[:ci_runners_instance_type_active_online]).to eq(2)
+      expect(subject[:ci_runners_group_type_active_online]).to eq(1)
+      expect(subject[:ci_runners_project_type_active_online]).to eq(3)
+    end
+  end
+
   describe '.usage_counters' do
     subject { described_class.usage_counters }
 
     it { is_expected.to include(:kubernetes_agent_gitops_sync) }
+    it { is_expected.to include(:kubernetes_agent_k8s_api_proxy_request) }
     it { is_expected.to include(:static_site_editor_views) }
     it { is_expected.to include(:package_events_i_package_pull_package) }
     it { is_expected.to include(:package_events_i_package_delete_package_by_user) }
@@ -1158,8 +1184,17 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
 
     describe ".system_usage_data_settings" do
+      let(:prometheus_client) { double(Gitlab::PrometheusClient) }
+
       before do
         allow(described_class).to receive(:operating_system).and_return('ubuntu-20.04')
+        expect(prometheus_client).to receive(:query).with(/gitlab_usage_ping:gitaly_apdex:ratio_avg_over_time_5m/).and_return([
+          {
+            'metric' => {},
+            'value' => [1616016381.473, '0.95']
+          }
+        ])
+        expect(described_class).to receive(:with_prometheus_client).and_yield(prometheus_client)
       end
 
       subject { described_class.system_usage_data_settings }
@@ -1170,6 +1205,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       it 'populates operating system information' do
         expect(subject[:settings][:operating_system]).to eq('ubuntu-20.04')
+      end
+
+      it 'gathers gitaly apdex', :aggregate_failures do
+        expect(subject[:settings][:gitaly_apdex]).to be_within(0.001).of(0.95)
       end
     end
   end
@@ -1291,10 +1330,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           'p_analytics_repo' => 123,
           'i_analytics_cohorts' => 123,
           'i_analytics_dev_ops_score' => 123,
-          'i_analytics_dev_ops_adoption' => 123,
           'i_analytics_instance_statistics' => 123,
           'p_analytics_merge_request' => 123,
-          'g_analytics_merge_request' => 123,
+          'i_analytics_dev_ops_adoption' => 123,
+          'users_viewing_analytics_group_devops_adoption' => 123,
           'analytics_unique_visits_for_any_target' => 543,
           'analytics_unique_visits_for_any_target_monthly' => 987
         }
@@ -1423,6 +1462,86 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       expect(subject).to eq(service_desk_enabled_projects: 1,
                             service_desk_issues: 2)
+    end
+  end
+
+  describe '.email_campaign_counts' do
+    subject { described_class.send(:email_campaign_counts) }
+
+    context 'when queries time out' do
+      before do
+        allow_any_instance_of(ActiveRecord::Relation)
+          .to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
+      end
+
+      it 'returns -1 for email campaign data' do
+        expected_data = {
+          "in_product_marketing_email_create_0_sent" => -1,
+          "in_product_marketing_email_create_0_cta_clicked" => -1,
+          "in_product_marketing_email_create_1_sent" => -1,
+          "in_product_marketing_email_create_1_cta_clicked" => -1,
+          "in_product_marketing_email_create_2_sent" => -1,
+          "in_product_marketing_email_create_2_cta_clicked" => -1,
+          "in_product_marketing_email_verify_0_sent" => -1,
+          "in_product_marketing_email_verify_0_cta_clicked" => -1,
+          "in_product_marketing_email_verify_1_sent" => -1,
+          "in_product_marketing_email_verify_1_cta_clicked" => -1,
+          "in_product_marketing_email_verify_2_sent" => -1,
+          "in_product_marketing_email_verify_2_cta_clicked" => -1,
+          "in_product_marketing_email_trial_0_sent" => -1,
+          "in_product_marketing_email_trial_0_cta_clicked" => -1,
+          "in_product_marketing_email_trial_1_sent" => -1,
+          "in_product_marketing_email_trial_1_cta_clicked" => -1,
+          "in_product_marketing_email_trial_2_sent" => -1,
+          "in_product_marketing_email_trial_2_cta_clicked" => -1,
+          "in_product_marketing_email_team_0_sent" => -1,
+          "in_product_marketing_email_team_0_cta_clicked" => -1,
+          "in_product_marketing_email_team_1_sent" => -1,
+          "in_product_marketing_email_team_1_cta_clicked" => -1,
+          "in_product_marketing_email_team_2_sent" => -1,
+          "in_product_marketing_email_team_2_cta_clicked" => -1
+        }
+
+        expect(subject).to eq(expected_data)
+      end
+    end
+
+    context 'when there are entries' do
+      before do
+        create(:in_product_marketing_email, track: :create, series: 0, cta_clicked_at: Time.zone.now)
+        create(:in_product_marketing_email, track: :verify, series: 0)
+      end
+
+      it 'gathers email campaign data' do
+        expected_data = {
+          "in_product_marketing_email_create_0_sent" => 1,
+          "in_product_marketing_email_create_0_cta_clicked" => 1,
+          "in_product_marketing_email_create_1_sent" => 0,
+          "in_product_marketing_email_create_1_cta_clicked" => 0,
+          "in_product_marketing_email_create_2_sent" => 0,
+          "in_product_marketing_email_create_2_cta_clicked" => 0,
+          "in_product_marketing_email_verify_0_sent" => 1,
+          "in_product_marketing_email_verify_0_cta_clicked" => 0,
+          "in_product_marketing_email_verify_1_sent" => 0,
+          "in_product_marketing_email_verify_1_cta_clicked" => 0,
+          "in_product_marketing_email_verify_2_sent" => 0,
+          "in_product_marketing_email_verify_2_cta_clicked" => 0,
+          "in_product_marketing_email_trial_0_sent" => 0,
+          "in_product_marketing_email_trial_0_cta_clicked" => 0,
+          "in_product_marketing_email_trial_1_sent" => 0,
+          "in_product_marketing_email_trial_1_cta_clicked" => 0,
+          "in_product_marketing_email_trial_2_sent" => 0,
+          "in_product_marketing_email_trial_2_cta_clicked" => 0,
+          "in_product_marketing_email_team_0_sent" => 0,
+          "in_product_marketing_email_team_0_cta_clicked" => 0,
+          "in_product_marketing_email_team_1_sent" => 0,
+          "in_product_marketing_email_team_1_cta_clicked" => 0,
+          "in_product_marketing_email_team_2_sent" => 0,
+          "in_product_marketing_email_team_2_cta_clicked" => 0
+        }
+
+        expect(subject).to eq(expected_data)
+      end
     end
   end
 

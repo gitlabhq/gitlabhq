@@ -60,4 +60,4 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   end
 end
 
-Profiles::PersonalAccessTokensController.prepend_if_ee('EE::Profiles::PersonalAccessTokensController')
+Profiles::PersonalAccessTokensController.prepend_mod_with('Profiles::PersonalAccessTokensController')

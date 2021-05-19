@@ -5,6 +5,8 @@
 class RebaseWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :source_code_management
   weight 2
   loggable_arguments 2
@@ -14,7 +16,7 @@ class RebaseWorker # rubocop:disable Scalability/IdempotentWorker
     merge_request = MergeRequest.find(merge_request_id)
 
     MergeRequests::RebaseService
-      .new(merge_request.source_project, current_user)
+      .new(project: merge_request.source_project, current_user: current_user)
       .execute(merge_request, skip_ci: skip_ci)
   end
 end

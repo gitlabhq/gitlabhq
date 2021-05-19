@@ -170,4 +170,4 @@ module API
   end
 end
 
-API::Helpers::ProjectsHelpers.prepend_if_ee('EE::API::Helpers::ProjectsHelpers')
+API::Helpers::ProjectsHelpers.prepend_mod_with('API::Helpers::ProjectsHelpers')

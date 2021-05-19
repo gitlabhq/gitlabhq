@@ -142,6 +142,9 @@ func TestAcceleratedUpload(t *testing.T) {
 		{"POST", `/api/v4/projects/group%2Fsubgroup%2Fproject/issues/30/metric_images`, true},
 		{"POST", `/my/project/-/requirements_management/requirements/import_csv`, true},
 		{"POST", `/my/project/-/requirements_management/requirements/import_csv/`, true},
+		{"POST", "/api/v4/projects/2412/packages/helm/api/stable/charts", true},
+		{"POST", "/api/v4/projects/group%2Fproject/packages/helm/api/stable/charts", true},
+		{"POST", "/api/v4/projects/group%2Fsubgroup%2Fproject/packages/helm/api/stable/charts", true},
 	}
 
 	for _, tt := range tests {
@@ -232,6 +235,8 @@ func TestUnacceleratedUploads(t *testing.T) {
 		{"POST", `/api/v4/projects/group/subgroup/project/packages/pypi`},
 		{"POST", `/api/v4/projects/group/project/packages/pypi`},
 		{"POST", `/api/v4/projects/group/subgroup/project/packages/pypi`},
+		{"POST", "/api/v4/projects/group/project/packages/helm/api/stable/charts"},
+		{"POST", "/api/v4/projects/group/subgroup%2Fproject/packages/helm/api/stable/charts"},
 		{"POST", `/api/v4/projects/group/project/issues/30/metric_images`},
 		{"POST", `/api/v4/projects/group/subgroup/project/issues/30/metric_images`},
 	}
@@ -512,6 +517,7 @@ func TestPackageFilesUpload(t *testing.T) {
 		{"PUT", "/api/v4/projects/group%2Fproject/packages/generic/mypackage/0.0.1/myfile.tar.gz"},
 		{"PUT", "/api/v4/projects/group%2Fproject/packages/debian/libsample0_1.2.3~alpha2-1_amd64.deb"},
 		{"POST", "/api/v4/projects/group%2Fproject/packages/rubygems/api/v1/gems/sample.gem"},
+		{"PUT", "/api/v4/projects/group%2Fproject/packages/terraform/modules/mymodule/mysystem/0.0.1/file"},
 	}
 
 	for _, r := range routes {

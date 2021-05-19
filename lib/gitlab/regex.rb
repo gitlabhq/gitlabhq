@@ -6,6 +6,8 @@ module Gitlab
       CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt conan_sources.tgz conan_export.tgz].freeze
       CONAN_PACKAGE_FILES = %w[conaninfo.txt conanmanifest.txt conan_package.tgz].freeze
 
+      API_PATH_REGEX = %r{^/api/v\d+/(projects/[^/]+/|groups?/[^/]+/-/)?packages/[A-Za-z]+}.freeze
+
       def conan_package_reference_regex
         @conan_package_reference_regex ||= %r{\A[A-Za-z0-9]+\z}.freeze
       end
@@ -75,6 +77,10 @@ module Gitlab
         /x.freeze
       end
 
+      def terraform_module_package_name_regex
+        @terraform_module_package_name_regex ||= %r{\A[-a-z0-9]+\/[-a-z0-9]+\z}.freeze
+      end
+
       def pypi_version_regex
         # See the official regex: https://github.com/pypa/packaging/blob/16.7/packaging/version.py#L159
 
@@ -123,6 +129,18 @@ module Gitlab
         @debian_component_regex ||= %r{#{debian_distribution_regex}}.freeze
       end
 
+      def helm_channel_regex
+        @helm_channel_regex ||= %r{\A[-\.\_a-zA-Z0-9]+\z}.freeze
+      end
+
+      def helm_package_regex
+        @helm_package_regex ||= %r{#{helm_channel_regex}}.freeze
+      end
+
+      def helm_version_regex
+        @helm_version_regex ||= %r{#{prefixed_semver_regex}}.freeze
+      end
+
       def unbounded_semver_regex
         # See the official regex: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 
@@ -135,7 +153,7 @@ module Gitlab
       end
 
       def semver_regex
-        @semver_regex ||= Regexp.new("\\A#{::Gitlab::Regex.unbounded_semver_regex.source}\\z", ::Gitlab::Regex.unbounded_semver_regex.options)
+        @semver_regex ||= Regexp.new("\\A#{::Gitlab::Regex.unbounded_semver_regex.source}\\z", ::Gitlab::Regex.unbounded_semver_regex.options).freeze
       end
 
       # These partial semver regexes are intended for use in composing other
@@ -235,7 +253,7 @@ module Gitlab
     # used as a routing constraint.
     #
     def container_registry_tag_regex
-      @container_registry_tag_regex ||= /[\w][\w.-]{0,127}/
+      @container_registry_tag_regex ||= /\w[\w.-]{0,127}/
     end
 
     def environment_name_regex_chars

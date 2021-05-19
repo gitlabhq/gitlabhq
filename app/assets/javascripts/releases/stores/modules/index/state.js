@@ -16,8 +16,7 @@ export default ({
   isLoading: false,
   hasError: false,
   releases: [],
-  restPageInfo: {},
-  graphQlPageInfo: {},
+  pageInfo: {},
   sorting: {
     sort: DESCENDING_ORDER,
     orderBy: RELEASED_AT,

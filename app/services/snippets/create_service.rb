@@ -69,7 +69,7 @@ module Snippets
       end
 
       snippet_saved
-    rescue => e # Rescuing all because we can receive Creation exceptions, GRPC exceptions, Git exceptions, ...
+    rescue StandardError => e # Rescuing all because we can receive Creation exceptions, GRPC exceptions, Git exceptions, ...
       Gitlab::ErrorTracking.log_exception(e, service: 'Snippets::CreateService')
 
       # If the commit action failed we need to remove the repository if exists

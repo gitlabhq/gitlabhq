@@ -10,10 +10,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import {
-  DEFAULT_LABEL_NONE,
-  DEFAULT_LABEL_ANY,
-} from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import BranchToken from '~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue';
 
 import { mockBranches, mockBranchToken } from '../mock_data';
@@ -77,7 +74,7 @@ describe('BranchToken', () => {
 
     describe('currentValue', () => {
       it('returns lowercase string for `value.data`', () => {
-        expect(wrapper.vm.currentValue).toBe('master');
+        expect(wrapper.vm.currentValue).toBe('main');
       });
     });
 
@@ -137,7 +134,7 @@ describe('BranchToken', () => {
   });
 
   describe('template', () => {
-    const defaultBranches = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
+    const defaultBranches = DEFAULT_NONE_ANY;
     async function showSuggestions() {
       const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);

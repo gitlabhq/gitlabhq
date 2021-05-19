@@ -141,4 +141,4 @@ module DesignManagement
   end
 end
 
-DesignManagement::SaveDesignsService.prepend_if_ee('EE::DesignManagement::SaveDesignsService')
+DesignManagement::SaveDesignsService.prepend_mod_with('DesignManagement::SaveDesignsService')

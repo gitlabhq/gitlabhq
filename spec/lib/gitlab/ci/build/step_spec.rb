@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Ci::Build::Step do
       let(:job) { create(:ci_build, :release_options) }
 
       it 'returns the release-cli command line' do
-        expect(subject.script).to eq(["release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" --tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\""])
+        expect(subject.script).to eq(["release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" --tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\" --assets-link \"{\\\"name\\\":\\\"asset1\\\",\\\"url\\\":\\\"https://example.com/assets/1\\\"}\""])
       end
     end
 

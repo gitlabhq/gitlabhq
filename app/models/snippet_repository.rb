@@ -133,4 +133,4 @@ class SnippetRepository < ApplicationRecord
   end
 end
 
-SnippetRepository.prepend_if_ee('EE::SnippetRepository')
+SnippetRepository.prepend_mod_with('SnippetRepository')

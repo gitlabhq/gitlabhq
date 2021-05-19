@@ -155,4 +155,4 @@ class BuildDetailsEntity < JobEntity
   end
 end
 
-BuildDetailsEntity.prepend_if_ee('::EE::BuildDetailEntity')
+BuildDetailsEntity.prepend_mod_with('BuildDetailEntity')

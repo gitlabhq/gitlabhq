@@ -59,7 +59,7 @@ module Gitlab
         end
 
         def self.invalid_provider(provider)
-          raise InvalidProvider.new("Unknown provider (#{provider}). Available providers: #{providers}")
+          raise InvalidProvider, "Unknown provider (#{provider}). Available providers: #{providers}"
         end
 
         def self.encrypted_secrets
@@ -288,7 +288,7 @@ module Gitlab
 
         def secrets
           @secrets ||= self.class.encrypted_secrets[@provider.delete_prefix('ldap').to_sym]
-        rescue => e
+        rescue StandardError => e
           Gitlab::AppLogger.error "LDAP encrypted secrets are invalid: #{e.inspect}"
 
           nil
@@ -320,4 +320,4 @@ module Gitlab
   end
 end
 
-Gitlab::Auth::Ldap::Config.prepend_if_ee('::EE::Gitlab::Auth::Ldap::Config')
+Gitlab::Auth::Ldap::Config.prepend_mod_with('Gitlab::Auth::Ldap::Config')

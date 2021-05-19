@@ -10,6 +10,7 @@ RSpec.describe IncidentManagement::ProcessAlertWorker do
     let_it_be(:started_at) { Time.now.rfc3339 }
     let_it_be(:payload) { { 'title' => 'title', 'start_time' => started_at } }
     let_it_be(:alert) { create(:alert_management_alert, project: project, payload: payload, started_at: started_at) }
+
     let(:created_issue) { Issue.last! }
 
     subject { described_class.new.perform(nil, nil, alert.id) }

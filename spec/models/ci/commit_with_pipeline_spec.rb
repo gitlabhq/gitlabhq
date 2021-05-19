@@ -26,15 +26,47 @@ RSpec.describe Ci::CommitWithPipeline do
     end
   end
 
+  describe '#lazy_latest_pipeline' do
+    let(:commit_1) do
+      described_class.new(Commit.new(RepoHelpers.sample_commit, project))
+    end
+
+    let(:commit_2) do
+      described_class.new(Commit.new(RepoHelpers.another_sample_commit, project))
+    end
+
+    let!(:commits) { [commit_1, commit_2] }
+
+    it 'executes only 1 SQL query' do
+      recorder = ActiveRecord::QueryRecorder.new do
+        # Running this first ensures we don't run one query for every
+        # commit.
+        commits.each(&:lazy_latest_pipeline)
+
+        # This forces the execution of the SQL queries necessary to load the
+        # data.
+        commits.each { |c| c.latest_pipeline.try(:id) }
+      end
+
+      expect(recorder.count).to eq(1)
+    end
+  end
+
   describe '#latest_pipeline' do
     let(:pipeline) { double }
 
     shared_examples_for 'fetching latest pipeline' do |ref|
       it 'returns the latest pipeline for the project' do
-        expect(commit)
-          .to receive(:latest_pipeline_for_project)
-          .with(ref, project)
-          .and_return(pipeline)
+        if ref
+          expect(commit)
+            .to receive(:latest_pipeline_for_project)
+            .with(ref, project)
+            .and_return(pipeline)
+        else
+          expect(commit)
+            .to receive(:lazy_latest_pipeline)
+            .and_return(pipeline)
+        end
 
         expect(result).to eq(pipeline)
       end

@@ -7,7 +7,7 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 const projectCompareIndexPath = 'some/path';
 const refsProjectPath = 'some/refs/path';
-const paramsFrom = 'master';
+const paramsFrom = 'main';
 const paramsTo = 'some-other-branch';
 
 describe('CompareApp component', () => {

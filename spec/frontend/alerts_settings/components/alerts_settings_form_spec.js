@@ -8,7 +8,6 @@ import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_for
 import { typeSet } from '~/alerts_settings/constants';
 import alertFields from '../mocks/alert_fields.json';
 import parsedMapping from '../mocks/parsed_mapping.json';
-import { defaultAlertSettingsConfig } from './util';
 
 const scrollIntoViewMock = jest.fn();
 HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
@@ -29,7 +28,6 @@ describe('AlertsSettingsForm', () => {
           ...props,
         },
         provide: {
-          ...defaultAlertSettingsConfig,
           multiIntegrations,
         },
         mocks: {
@@ -50,7 +48,6 @@ describe('AlertsSettingsForm', () => {
   const findFormToggle = () => wrapper.findComponent(GlToggle);
   const findSamplePayloadSection = () => wrapper.findByTestId('sample-payload-section');
   const findMappingBuilder = () => wrapper.findComponent(MappingBuilder);
-
   const findSubmitButton = () => wrapper.findByTestId('integration-form-submit');
   const findMultiSupportText = () => wrapper.findByTestId('multi-integrations-not-supported');
   const findJsonTestSubmit = () => wrapper.findByTestId('send-test-alert');

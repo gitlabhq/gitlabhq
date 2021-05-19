@@ -2,6 +2,16 @@
 
 module Gitlab
   module Database
+    # This constant is used when renaming tables concurrently.
+    # If you plan to rename a table using the `rename_table_safely` method, add your table here one milestone before the rename.
+    # Example:
+    # TABLES_TO_BE_RENAMED = {
+    #   'old_name' => 'new_name'
+    # }.freeze
+    TABLES_TO_BE_RENAMED = {
+      'analytics_instance_statistics_measurements' => 'analytics_usage_trends_measurements'
+    }.freeze
+
     # Minimum PostgreSQL version requirement per documentation:
     # https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements
     MINIMUM_POSTGRES_VERSION = 11
@@ -35,8 +45,27 @@ module Gitlab
     # It does not include the default public schema
     EXTRA_SCHEMAS = [DYNAMIC_PARTITIONS_SCHEMA, STATIC_PARTITIONS_SCHEMA].freeze
 
+    DEFAULT_POOL_HEADROOM = 10
+
+    # We configure the database connection pool size automatically based on the
+    # configured concurrency. We also add some headroom, to make sure we don't run
+    # out of connections when more threads besides the 'user-facing' ones are
+    # running.
+    #
+    # Read more about this in doc/development/database/client_side_connection_pool.md
+    def self.default_pool_size
+      headroom = (ENV["DB_POOL_HEADROOM"].presence || DEFAULT_POOL_HEADROOM).to_i
+
+      Gitlab::Runtime.max_threads + headroom
+    end
+
     def self.config
-      ActiveRecord::Base.configurations[Rails.env]
+      default_config_hash = ActiveRecord::Base.configurations.find_db_config(Rails.env)&.config || {}
+
+      default_config_hash.with_indifferent_access.tap do |hash|
+        # Match config/initializers/database_config.rb
+        hash[:pool] ||= default_pool_size
+      end
     end
 
     def self.username
@@ -123,6 +152,16 @@ module Gitlab
       # ignore - happens when Rake tasks yet have to create a database, e.g. for testing
     end
 
+    def self.nulls_order(field, direction = :asc, nulls_order = :nulls_last)
+      raise ArgumentError unless [:nulls_last, :nulls_first].include?(nulls_order)
+      raise ArgumentError unless [:asc, :desc].include?(direction)
+
+      case nulls_order
+      when :nulls_last then nulls_last_order(field, direction)
+      when :nulls_first then nulls_first_order(field, direction)
+      end
+    end
+
     def self.nulls_last_order(field, direction = 'ASC')
       Arel.sql("#{field} #{direction} NULLS LAST")
     end
@@ -204,23 +243,13 @@ module Gitlab
     # pool_size - The size of the DB pool.
     # host - An optional host name to use instead of the default one.
     def self.create_connection_pool(pool_size, host = nil, port = nil)
-      env = Rails.env
-      original_config = ActiveRecord::Base.configurations.to_h
+      original_config = Gitlab::Database.config
 
-      env_config = original_config[env].merge('pool' => pool_size)
-      env_config['host'] = host if host
-      env_config['port'] = port if port
+      env_config = original_config.merge(pool: pool_size)
+      env_config[:host] = host if host
+      env_config[:port] = port if port
 
-      config = ActiveRecord::DatabaseConfigurations.new(
-        original_config.merge(env => env_config)
-      )
-
-      spec =
-        ActiveRecord::
-          ConnectionAdapters::
-          ConnectionSpecification::Resolver.new(config).spec(env.to_sym)
-
-      ActiveRecord::ConnectionAdapters::ConnectionPool.new(spec)
+      ActiveRecord::ConnectionAdapters::ConnectionHandler.new.establish_connection(env_config)
     end
 
     def self.connection
@@ -246,7 +275,7 @@ module Gitlab
       connection
 
       true
-    rescue
+    rescue StandardError
       false
     end
 
@@ -347,4 +376,4 @@ module Gitlab
   end
 end
 
-Gitlab::Database.prepend_if_ee('EE::Gitlab::Database')
+Gitlab::Database.prepend_mod_with('Gitlab::Database')

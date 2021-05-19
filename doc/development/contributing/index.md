@@ -123,7 +123,7 @@ The general flow of contributing to GitLab is:
 1. [Create a fork](../../user/project/repository/forking_workflow.md#creating-a-fork)
    of GitLab. In some cases, you will want to set up the
    [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) to
-   [develop against your fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/index.md#develop-in-your-own-gitlab-fork).
+   [develop against your fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#develop-in-your-own-gitlab-fork).
 1. Make your changes in your fork.
 1. When you're ready, [create a new merge request](../../user/project/merge_requests/creating_merge_requests.md).
 1. In the merge request's description:
@@ -152,7 +152,7 @@ Keep the following in mind when submitting merge requests:
   reviewer will have reservations about the code's overall quality. When there is a reservation,
   the reviewer will inform the author and provide some guidance.
 - Though GitLab generally allows anyone to indicate
-  [approval](../../user/project/merge_requests/merge_request_approvals.md) of merge requests, the
+  [approval](../../user/project/merge_requests/approvals/index.md) of merge requests, the
   maintainer may require [approvals from certain reviewers](../code_review.md#approval-guidelines)
   before merging a merge request.
 - After review, the author may be asked to update the merge request. Once the merge request has been

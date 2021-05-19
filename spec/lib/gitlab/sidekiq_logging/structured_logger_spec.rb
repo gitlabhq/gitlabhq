@@ -69,7 +69,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect do
             call_subject(job, 'test_queue') do
               raise ArgumentError, 'Something went wrong'
-            rescue
+            rescue StandardError
               raise Sidekiq::JobRetry::Skip
             end
           end.to raise_error(Sidekiq::JobRetry::Skip)
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect do
             call_subject(job, 'test_queue') do
               raise ArgumentError, 'Something went wrong'
-            rescue
+            rescue StandardError
               raise Sidekiq::JobRetry::Handled
             end
           end.to raise_error(Sidekiq::JobRetry::Handled)
@@ -291,6 +291,16 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
             job['key that will be ignored because it does not start with extra.'] = 17
           end
         end
+      end
+    end
+
+    context 'when instrumentation data is not loaded' do
+      before do
+        allow(logger).to receive(:info)
+      end
+
+      it 'does not raise exception' do
+        expect { subject.call(job.dup, 'test_queue') {} }.not_to raise_error
       end
     end
   end

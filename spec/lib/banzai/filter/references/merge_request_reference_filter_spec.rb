@@ -142,6 +142,17 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter do
       expect(doc.text).to eq("Merge (#{reference}.)")
     end
 
+    it 'has correct data attributes' do
+      doc = reference_filter("Merge (#{reference}.)")
+
+      link = doc.css('a').first
+
+      expect(link.attr('data-project')).to eq project2.id.to_s
+      expect(link.attr('data-project-path')).to eq project2.full_path
+      expect(link.attr('data-iid')).to eq merge.iid.to_s
+      expect(link.attr('data-mr-title')).to eq merge.title
+    end
+
     it 'ignores invalid merge IDs on the referenced project' do
       exp = act = "Merge #{invalidate_reference(reference)}"
 

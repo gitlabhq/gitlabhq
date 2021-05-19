@@ -9,14 +9,14 @@ module Mutations
                [::Types::GlobalIDType[Label]],
                required: true,
                description: <<~DESC
-                            The Label IDs to set. Replaces existing labels by default.
+                 The Label IDs to set. Replaces existing labels by default.
                DESC
 
       argument :operation_mode,
                Types::MutationOperationModeEnum,
                required: false,
                description: <<~DESC
-                            Changes the operation mode. Defaults to REPLACE.
+                 Changes the operation mode. Defaults to REPLACE.
                DESC
 
       def resolve(project_path:, iid:, label_ids:, operation_mode: Types::MutationOperationModeEnum.enum[:replace])
@@ -38,7 +38,7 @@ module Mutations
                            :label_ids
                          end
 
-        ::MergeRequests::UpdateService.new(project, current_user, attribute_name => label_ids)
+        ::MergeRequests::UpdateService.new(project: project, current_user: current_user, params: { attribute_name => label_ids })
           .execute(merge_request)
 
         {

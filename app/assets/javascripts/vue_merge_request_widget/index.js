@@ -32,6 +32,10 @@ export default () => {
 
   const vm = new Vue({
     el: '#js-vue-mr-widget',
+    provide: {
+      artifactsEndpoint: gl.mrWidgetData.artifacts_endpoint,
+      artifactsEndpointPlaceholder: gl.mrWidgetData.artifacts_endpoint_placeholder,
+    },
     ...MrWidgetOptions,
     apolloProvider,
   });

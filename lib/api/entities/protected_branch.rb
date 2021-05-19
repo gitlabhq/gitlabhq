@@ -12,4 +12,4 @@ module API
   end
 end
 
-API::Entities::ProtectedBranch.prepend_if_ee('EE::API::Entities::ProtectedBranch')
+API::Entities::ProtectedBranch.prepend_mod_with('API::Entities::ProtectedBranch')

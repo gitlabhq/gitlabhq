@@ -1,7 +1,14 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import AdminUsersApp from './components/app.vue';
-import UsagePingDisabled from './components/usage_ping_disabled.vue';
+
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
+});
 
 export const initAdminUsersApp = (el = document.querySelector('#js-admin-users-app')) => {
   if (!el) {
@@ -12,6 +19,7 @@ export const initAdminUsersApp = (el = document.querySelector('#js-admin-users-a
 
   return new Vue({
     el,
+    apolloProvider,
     render: (createElement) =>
       createElement(AdminUsersApp, {
         props: {
@@ -19,25 +27,5 @@ export const initAdminUsersApp = (el = document.querySelector('#js-admin-users-a
           paths: convertObjectPropsToCamelCase(JSON.parse(paths)),
         },
       }),
-  });
-};
-
-export const initCohortsEmptyState = (el = document.querySelector('#js-cohorts-empty-state')) => {
-  if (!el) {
-    return false;
-  }
-
-  const { emptyStateSvgPath, enableUsagePingLink, docsLink } = el.dataset;
-
-  return new Vue({
-    el,
-    provide: {
-      svgPath: emptyStateSvgPath,
-      primaryButtonPath: enableUsagePingLink,
-      docsLink,
-    },
-    render(h) {
-      return h(UsagePingDisabled);
-    },
   });
 };

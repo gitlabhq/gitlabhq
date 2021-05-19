@@ -33,7 +33,7 @@ module Gitlab
         end
 
         def panels_not_found!(opts)
-          raise PanelNotFoundError.new(_("No panels matching properties %{opts}") % { opts: opts })
+          raise PanelNotFoundError, _("No panels matching properties %{opts}") % { opts: opts }
         end
       end
     end

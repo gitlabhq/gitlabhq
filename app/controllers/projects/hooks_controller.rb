@@ -32,6 +32,7 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def edit
+    redirect_to(action: :index) unless hook
   end
 
   def update

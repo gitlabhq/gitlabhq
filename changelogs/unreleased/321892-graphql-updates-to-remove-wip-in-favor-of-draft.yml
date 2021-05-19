@@ -1,0 +1,5 @@
+---
+title: Deprecate SetWip GraphQL mutation and add SetDraft mutation
+merge_request: 60803
+author:
+type: deprecated

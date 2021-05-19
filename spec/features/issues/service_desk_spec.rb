@@ -9,6 +9,8 @@ RSpec.describe 'Service Desk Issue Tracker', :js do
   let_it_be(:support_bot) { User.support_bot }
 
   before do
+    stub_feature_flags(vue_issuables_list: true)
+
     # The following two conditions equate to Gitlab::ServiceDesk.supported == true
     allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
     allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
@@ -21,7 +23,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js do
     before do
       visit project_path(project)
       find('.sidebar-top-level-items .shortcuts-issues').click
-      find('.sidebar-sub-level-items a[title="Service Desk"]').click
+      find('.sidebar-sub-level-items a', text: 'Service Desk').click
     end
 
     it 'can navigate to the service desk from link in the sidebar' do

@@ -139,4 +139,4 @@ module Emails
   end
 end
 
-Emails::Issues.prepend_if_ee('EE::Emails::Issues')
+Emails::Issues.prepend_mod_with('Emails::Issues')

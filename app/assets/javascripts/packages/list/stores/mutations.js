@@ -4,9 +4,8 @@ import * as types from './mutation_types';
 
 export default {
   [types.SET_INITIAL_STATE](state, config) {
-    const { comingSoonJson, ...rest } = config;
     state.config = {
-      ...rest,
+      ...config,
       isGroupPage: config.pageType === GROUP_PAGE_TYPE,
     };
   },

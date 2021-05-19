@@ -375,7 +375,7 @@ export const MR_PREVIOUS_FILE_IN_DIFF = {
 export const MR_GO_TO_FILE = {
   id: 'mergeRequests.goToFile',
   description: __('Go to file'),
-  defaultKeys: ['t', 'mod+p'],
+  defaultKeys: ['mod+p', 't'],
   customizable: false,
 };
 

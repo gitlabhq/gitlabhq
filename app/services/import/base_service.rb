@@ -18,7 +18,7 @@ module Import
       group = Groups::NestedCreateService.new(current_user, group_path: namespace).execute
 
       group.errors.any? ? current_user.namespace : group
-    rescue => e
+    rescue StandardError => e
       Gitlab::AppLogger.error(e)
 
       current_user.namespace

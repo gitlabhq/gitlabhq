@@ -1,5 +1,7 @@
--# WAIT! Before adding more items to the nav bar, please see
--# https://gitlab.com/gitlab-org/gitlab-foss/issues/49713 for more information.
+-# WARNING! This file is slated to be removed along with the `combined_menu`
+-# feature flag. The logic here will be migrated to an upcoming `top_nav_helper`.
+-# Please see [this MR][1] for more context.
+-# [1]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587
 %ul.list-unstyled.navbar-sub-nav
   - if dashboard_nav_link?(:projects)
     = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects qa-projects-dropdown", data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" } }) do

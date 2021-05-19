@@ -15,6 +15,7 @@ the `.gitlab-ci.yml` file in the root of your repository. To access the editor, 
 
 From the pipeline editor page you can:
 
+- Select the branch to work from. [Introduced in GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/326189), disabled by default.
 - [Validate](#validate-ci-configuration) your configuration syntax while editing the file.
 - Do a deeper [lint](#lint-ci-configuration) of your configuration, that verifies it with any configuration
   added with the [`include`](../yaml/README.md#include) keyword.
@@ -53,14 +54,7 @@ reflected in the CI lint. It displays the same results as the existing [CI Lint 
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241722) in GitLab 13.5.
 > - [Moved to **CI/CD > Editor**](https://gitlab.com/gitlab-org/gitlab/-/issues/263141) in GitLab 13.7.
-> - It was [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/290117) in GitLab 13.8.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cicd-configuration-visualization). **(FREE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290117) in GitLab 13.12.
 
 To view a visualization of your `gitlab-ci.yml` configuration, in your project,
 go to **CI/CD > Editor**, and then select the **Visualize** tab. The
@@ -77,30 +71,10 @@ Hover over a job to highlight its `needs` relationships:
 If the configuration does not have any `needs` relationships, then no lines are drawn because
 each job depends only on the previous stage being completed successfully.
 
-### Enable or disable CI/CD configuration visualization **(FREE SELF)**
-
-CI/CD configuration visualization is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_config_visualization_tab)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_config_visualization_tab)
-```
-
 ## View expanded configuration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/246801) in GitLab 13.9.
-> - It is [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-expanded-configuration). **(FREE SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/301103) in GitLab 13.12.
 
 To view the fully expanded CI/CD configuration as one combined file, go to the
 pipeline editor's **View merged YAML** tab. This tab displays an expanded configuration
@@ -110,25 +84,6 @@ where:
 - Jobs that use [`extends`](../yaml/README.md#extends) display with the
   [extended configuration merged into the job](../yaml/README.md#merge-details).
 - YAML anchors are [replaced with the linked configuration](../yaml/README.md#anchors).
-
-### Enable or disable expanded configuration **(FREE SELF)**
-
-Expanded CI/CD configuration is under development and not ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to enable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_config_merged_tab)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_config_merged_tab)
-```
 
 ## Commit changes to CI configuration
 

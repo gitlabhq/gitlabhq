@@ -365,6 +365,12 @@ if the application no longer uses the table.
 Renaming tables requires downtime as an application may continue
 using the old table name during/after a database migration.
 
+If the table and the ActiveRecord model is not in use yet, removing the old
+table and creating a new one is the preferred way to "rename" the table.
+
+Renaming a table is possible without downtime by following our multi-release
+[rename table process](database/rename_database_tables.md#rename-table-without-downtime).
+
 ## Adding Foreign Keys
 
 Adding foreign keys usually works in 3 steps:

@@ -14,7 +14,8 @@ Please link to the respective test case in the testcases project
 - [ ] Ensure that no [transient bugs](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#transient-bugs) are hidden accidentally due to the usage of `waits` and `reloads`.
 - [ ] Verify the tags to ensure it runs on the desired test environments.
 - [ ] If this MR has a dependency on another MR, such as a GitLab QA MR, specify the order in which the MRs should be merged.
-- [ ] (If applicable) Create a follow-up issue to document [the special setup](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/running_tests_that_require_special_setup.html) necessary to run the test: ISSUE_LINK 
+- [ ] (If applicable) Create a follow-up issue to document [the special setup](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/running_tests_that_require_special_setup.html) necessary to run the test: ISSUE_LINK
+- [ ] If the test requires an admin's personal access token, ensure that the test passes on your local with and without the `GITLAB_QA_ADMIN_ACCESS_TOKEN` provided.
 
 <!-- Base labels. -->
 /label ~"Quality" ~"QA" ~test

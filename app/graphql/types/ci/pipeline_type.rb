@@ -24,6 +24,9 @@ module Types
       field :before_sha, GraphQL::STRING_TYPE, null: true,
             description: 'Base SHA of the source branch.'
 
+      field :complete, GraphQL::BOOLEAN_TYPE, null: false, method: :complete?,
+            description: 'Indicates if a pipeline is complete.'
+
       field :status, PipelineStatusEnum, null: false,
             description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
 
@@ -38,6 +41,9 @@ module Types
 
       field :duration, GraphQL::INT_TYPE, null: true,
             description: 'Duration of the pipeline in seconds.'
+
+      field :queued_duration, Types::DurationType, null: true,
+            description: 'How long the pipeline was queued before starting.'
 
       field :coverage, GraphQL::FLOAT_TYPE, null: true,
             description: 'Coverage percentage.'
@@ -57,12 +63,17 @@ module Types
       field :committed_at, Types::TimeType, null: true,
             description: "Timestamp of the pipeline's commit."
 
-      field :stages, Types::Ci::StageType.connection_type, null: true,
+      field :stages,
+            type: Types::Ci::StageType.connection_type,
+            null: true,
+            authorize: :read_commit_status,
             description: 'Stages of the pipeline.',
             extras: [:lookahead],
             resolver: Resolvers::Ci::PipelineStagesResolver
 
-      field :user, Types::UserType, null: true,
+      field :user,
+            type: Types::UserType,
+            null: true,
             description: 'Pipeline user.'
 
       field :retryable, GraphQL::BOOLEAN_TYPE,
@@ -78,12 +89,14 @@ module Types
       field :jobs,
             ::Types::Ci::JobType.connection_type,
             null: true,
+            authorize: :read_commit_status,
             description: 'Jobs belonging to the pipeline.',
             resolver: ::Resolvers::Ci::JobsResolver
 
       field :job,
             type: ::Types::Ci::JobType,
             null: true,
+            authorize: :read_commit_status,
             description: 'A specific job in this pipeline, either by name or ID.' do
         argument :id,
                  type: ::Types::GlobalIDType[::CommitStatus],
@@ -95,7 +108,10 @@ module Types
                  description: 'Name of the job.'
       end
 
-      field :source_job, Types::Ci::JobType, null: true,
+      field :source_job,
+            type: Types::Ci::JobType,
+            null: true,
+            authorize: :read_commit_status,
             description: 'Job where pipeline was triggered from.'
 
       field :downstream, Types::Ci::PipelineType.connection_type, null: true,
@@ -166,4 +182,4 @@ module Types
   end
 end
 
-Types::Ci::PipelineType.prepend_if_ee('::EE::Types::Ci::PipelineType')
+Types::Ci::PipelineType.prepend_mod_with('Types::Ci::PipelineType')

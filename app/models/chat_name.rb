@@ -3,11 +3,11 @@
 class ChatName < ApplicationRecord
   LAST_USED_AT_INTERVAL = 1.hour
 
-  belongs_to :service
+  belongs_to :integration, foreign_key: :service_id
   belongs_to :user
 
   validates :user, presence: true
-  validates :service, presence: true
+  validates :integration, presence: true
   validates :team_id, presence: true
   validates :chat_id, presence: true
 

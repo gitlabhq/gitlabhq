@@ -602,6 +602,34 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
+  context 'FastDestroyAll' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:job) { create(:ci_build, pipeline: pipeline, project: project) }
+
+    let!(:job_artifact) { create(:ci_job_artifact, :archive, job: job) }
+    let(:subjects) { pipeline.job_artifacts }
+
+    describe '.use_fast_destroy' do
+      it 'performs cascading delete with fast_destroy_all' do
+        expect(Ci::DeletedObject.count).to eq(0)
+        expect(subjects.count).to be > 0
+
+        expect { pipeline.destroy! }.not_to raise_error
+
+        expect(subjects.count).to eq(0)
+        expect(Ci::DeletedObject.count).to be > 0
+      end
+
+      it 'updates project statistics' do
+        expect(ProjectStatistics).to receive(:increment_statistic).once
+              .with(project, :build_artifacts_size, -job_artifact.file.size)
+
+        pipeline.destroy!
+      end
+    end
+  end
+
   def file_type_limit_failure_message(type, limit_name)
     <<~MSG
       The artifact type `#{type}` is missing its counterpart plan limit which is expected to be named `#{limit_name}`.

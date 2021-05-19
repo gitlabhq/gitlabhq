@@ -31,7 +31,7 @@ You can change the total number of months displayed by setting a URL parameter.
 For example, `https://gitlab.com/groups/gitlab-org/-/issues_analytics?months_back=15`
 shows a total of 15 months for the chart in the GitLab.org group.
 
-![Issues created per month](img/issues_created_per_month_v12_8.png)
+![Issues created per month](img/issues_created_per_month_v12_8_a.png)
 
 ## Drill into the information
 

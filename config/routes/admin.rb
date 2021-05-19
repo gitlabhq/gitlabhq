@@ -10,11 +10,19 @@ namespace :admin do
       end
     end
 
+    collection do
+      scope '/-/' do
+        get :cohorts
+      end
+    end
+
     member do
       get :projects
       get :keys
       put :block
       put :unblock
+      put :ban
+      put :unban
       put :deactivate
       put :activate
       put :unlock

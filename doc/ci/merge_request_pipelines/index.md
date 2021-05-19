@@ -137,7 +137,7 @@ save resources.
 #### Excluding certain branches
 
 Pipelines for merge requests require special treatment when
-using [`only`/`except`](../yaml/README.md#onlyexcept-basic). Unlike ordinary
+using [`only`/`except`](../yaml/README.md#only--except). Unlike ordinary
 branch refs (for example `refs/heads/my-feature-branch`), merge request refs
 use a special Git reference that looks like `refs/merge-requests/:iid/head`. Because
 of this, the following configuration will **not** work as expected:
@@ -153,7 +153,7 @@ Instead, you can use the
 [`$CI_COMMIT_REF_NAME` predefined environment
 variable](../variables/predefined_variables.md) in
 combination with
-[`only:variables`](../yaml/README.md#onlyvariablesexceptvariables) to
+[`only:variables`](../yaml/README.md#onlyvariables--exceptvariables) to
 accomplish this behavior:
 
 ```yaml

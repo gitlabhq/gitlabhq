@@ -7,6 +7,8 @@
 #   until the prior link is deleted.
 class ErrorTrackingIssueLinkWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ExclusiveLeaseGuard
   include Gitlab::Utils::StrongMemoize
 

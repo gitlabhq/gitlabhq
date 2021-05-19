@@ -1,0 +1,5 @@
+---
+title: Fixes bug where variables are being filtered that do not have a value but a key.
+merge_request: 60538
+author:
+type: fixed

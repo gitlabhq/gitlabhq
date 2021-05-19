@@ -63,4 +63,4 @@ class ProtectedBranch < ApplicationRecord
   end
 end
 
-ProtectedBranch.prepend_if_ee('EE::ProtectedBranch')
+ProtectedBranch.prepend_mod_with('ProtectedBranch')

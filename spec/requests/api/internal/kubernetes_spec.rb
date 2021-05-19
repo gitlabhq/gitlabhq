@@ -67,26 +67,26 @@ RSpec.describe API::Internal::Kubernetes do
     context 'is authenticated for an agent' do
       let!(:agent_token) { create(:cluster_agent_token) }
 
-      it 'returns no_content for valid gitops_sync_count' do
-        send_request(params: { gitops_sync_count: 10 })
+      it 'returns no_content for valid events' do
+        send_request(params: { gitops_sync_count: 10, k8s_api_proxy_request_count: 5 })
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
 
-      it 'returns no_content 0 gitops_sync_count' do
-        send_request(params: { gitops_sync_count: 0 })
+      it 'returns no_content for counts of zero' do
+        send_request(params: { gitops_sync_count: 0, k8s_api_proxy_request_count: 0 })
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
 
       it 'returns 400 for non number' do
-        send_request(params: { gitops_sync_count: 'string' })
+        send_request(params: { gitops_sync_count: 'string', k8s_api_proxy_request_count: 1 })
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 for negative number' do
-        send_request(params: { gitops_sync_count: '-1' })
+        send_request(params: { gitops_sync_count: -1, k8s_api_proxy_request_count: 1 })
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end

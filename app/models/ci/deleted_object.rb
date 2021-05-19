@@ -29,7 +29,7 @@ module Ci
     def delete_file_from_storage
       file.remove!
       true
-    rescue => exception
+    rescue StandardError => exception
       Gitlab::ErrorTracking.track_exception(exception)
       false
     end

@@ -118,6 +118,34 @@ RSpec.describe "Compare", :js do
         end
       end
     end
+
+    context "pagination" do
+      before do
+        stub_const("Projects::CompareController::COMMIT_DIFFS_PER_PAGE", 1)
+      end
+
+      it "shows an adjusted count for changed files on this page" do
+        visit project_compare_index_path(project, from: "feature", to: "master")
+
+        click_button('Compare')
+
+        expect(page).to have_content("Showing 1 changed file")
+      end
+
+      it "shows commits list only on the first page" do
+        visit project_compare_index_path(project, from: "feature", to: "master")
+        click_button('Compare')
+
+        expect(page).to have_content 'Commits (29)'
+
+        # go to the second page
+        within(".files .gl-pagination") do
+          click_on("2")
+        end
+
+        expect(page).not_to have_content 'Commits (29)'
+      end
+    end
   end
 
   describe "tags" do

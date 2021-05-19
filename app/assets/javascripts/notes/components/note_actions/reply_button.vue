@@ -22,7 +22,6 @@ export default {
     data-track-event="click_button"
     data-track-label="reply_comment_button"
     category="tertiary"
-    size="small"
     icon="comment"
     :title="$options.i18n.buttonText"
     :aria-label="$options.i18n.buttonText"

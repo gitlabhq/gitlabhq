@@ -225,7 +225,7 @@ RSpec.describe Gitlab::SidekiqDaemon::Monitor do
 
         after do
           thread.kill
-        rescue
+        rescue StandardError
         end
 
         it 'does log cancellation message' do

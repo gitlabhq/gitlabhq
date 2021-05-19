@@ -11,7 +11,7 @@ exports[`Learn GitLab Section Card renders correctly 1`] = `
     class="learn-gitlab-section-card-header"
   >
     <img
-      src="/assets/learn_gitlab/section_workspace.svg"
+      src="workspace.svg"
     />
      
     <h2

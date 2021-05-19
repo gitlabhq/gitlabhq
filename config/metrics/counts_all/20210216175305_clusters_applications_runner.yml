@@ -2,7 +2,7 @@
 key_path: counts.clusters_applications_runner
 description: Total GitLab Managed clusters with GitLab Managed App:Runner installed
 product_section: ops
-product_stage:
+product_stage: configure
 product_group: group::configure
 product_category: kubernetes_management
 value_type: number
@@ -16,4 +16,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

@@ -1,8 +1,0 @@
----
-name: ci_accept_frontend_prometheus_metrics
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52820
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/300770
-milestone: '13.9'
-type: development
-group: group::pipeline authoring
-default_enabled: false

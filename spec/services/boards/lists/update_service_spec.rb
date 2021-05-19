@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Boards::Lists::UpdateService do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+
   let!(:list) { create(:list, board: board, position: 0) }
+  let!(:list2) { create(:list, board: board, position: 1) }
 
   describe '#execute' do
     let(:service) { described_class.new(board.resource_parent, user, params) }

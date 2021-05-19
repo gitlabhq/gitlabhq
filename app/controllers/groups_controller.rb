@@ -35,10 +35,6 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:vue_issuables_list, @group)
   end
 
-  before_action do
-    set_not_query_feature_flag(@group)
-  end
-
   before_action :export_rate_limit, only: [:export, :download_export]
 
   helper_method :captcha_required?
@@ -53,10 +49,9 @@ class GroupsController < Groups::ApplicationController
 
   feature_category :subgroups, [
                      :index, :new, :create, :show, :edit, :update,
-                     :destroy, :details, :transfer
+                     :destroy, :details, :transfer, :activity
                    ]
 
-  feature_category :audit_events, [:activity]
   feature_category :issue_tracking, [:issues, :issues_calendar, :preview_markdown]
   feature_category :code_review, [:merge_requests, :unfoldered_environment_names]
   feature_category :projects, [:projects]
@@ -197,7 +192,7 @@ class GroupsController < Groups::ApplicationController
   def unfoldered_environment_names
     respond_to do |format|
       format.json do
-        render json: EnvironmentNamesFinder.new(@group, current_user).execute
+        render json: Environments::EnvironmentNamesFinder.new(@group, current_user).execute
       end
     end
   end
@@ -369,4 +364,4 @@ class GroupsController < Groups::ApplicationController
   end
 end
 
-GroupsController.prepend_if_ee('EE::GroupsController')
+GroupsController.prepend_mod_with('GroupsController')

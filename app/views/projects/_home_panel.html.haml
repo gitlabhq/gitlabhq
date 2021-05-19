@@ -2,6 +2,7 @@
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
 - max_project_topic_length = 15
 - emails_disabled = @project.emails_disabled?
+- cache_enabled = Feature.enabled?(:cache_home_panel, @project, type: :development, default_enabled: :yaml)
 
 .project-home-panel.js-show-on-project-root.gl-my-5{ class: [("empty-project" if empty_repo)] }
   .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-mb-3
@@ -23,42 +24,45 @@
           - if current_user
             %span.access-request-links.gl-ml-3
               = render 'shared/members/access_request_links', source: @project
+
           - if @project.tag_list.present?
-            %span.home-panel-topic-list.mt-2.w-100.d-inline-flex.gl-font-base.gl-font-weight-normal.gl-align-items-center
-              = sprite_icon('tag', css_class: 'icon gl-relative gl-mr-2')
+            = cache_if(cache_enabled, [@project, :tag_list], expires_in: 1.day) do
+              %span.home-panel-topic-list.mt-2.w-100.d-inline-flex.gl-font-base.gl-font-weight-normal.gl-align-items-center
+                = sprite_icon('tag', css_class: 'icon gl-relative gl-mr-2')
 
-              - @project.topics_to_show.each do |topic|
-                - project_topics_classes = "badge badge-pill badge-secondary gl-mr-2"
-                - explore_project_topic_path = explore_projects_path(tag: topic)
-                - if topic.length > max_project_topic_length
-                  %a{ class: "#{ project_topics_classes } str-truncated-30 has-tooltip", data: { container: "body" }, title: topic, href: explore_project_topic_path, itemprop: 'keywords' }
-                    = topic.titleize
-                - else
-                  %a{ class: project_topics_classes, href: explore_project_topic_path, itemprop: 'keywords' }
-                    = topic.titleize
+                - @project.topics_to_show.each do |topic|
+                  - project_topics_classes = "badge badge-pill badge-secondary gl-mr-2"
+                  - explore_project_topic_path = explore_projects_path(tag: topic)
+                  - if topic.length > max_project_topic_length
+                    %a{ class: "#{ project_topics_classes } str-truncated-30 has-tooltip", data: { container: "body" }, title: topic, href: explore_project_topic_path, itemprop: 'keywords' }
+                      = topic.titleize
+                  - else
+                    %a{ class: project_topics_classes, href: explore_project_topic_path, itemprop: 'keywords' }
+                      = topic.titleize
 
-              - if @project.has_extra_topics?
-                .text-nowrap.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_topics? ? @project.topics_not_shown.join(', ') : nil }
-                  = _("+ %{count} more") % { count: @project.count_of_extra_topics_not_shown }
+                - if @project.has_extra_topics?
+                  .text-nowrap.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_topics? ? @project.topics_not_shown.join(', ') : nil }
+                    = _("+ %{count} more") % { count: @project.count_of_extra_topics_not_shown }
 
+    = cache_if(cache_enabled, [@project, :buttons, current_user, @notification_setting], expires_in: 1.day) do
+      .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-start.gl-flex-wrap.gl-mt-5
+        - if current_user
+          .gl-display-flex.gl-align-items-start.gl-mr-3
+            - if @notification_setting
+              .js-vue-notification-dropdown{ data: { button_size: "small", disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id } }
 
-    .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-start.gl-flex-wrap.gl-mt-5
-      - if current_user
-        .gl-display-flex.gl-align-items-start.gl-mr-3
-          - if @notification_setting
-            .js-vue-notification-dropdown{ data: { button_size: "small", disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id } }
-
-      .count-buttons.gl-display-flex.gl-align-items-flex-start
-        = render 'projects/buttons/star'
-        = render 'projects/buttons/fork'
+        .count-buttons.gl-display-flex.gl-align-items-flex-start
+          = render 'projects/buttons/star'
+          = render 'projects/buttons/fork'
 
   - if can?(current_user, :download_code, @project)
-    %nav.project-stats
-      .nav-links.quick-links
-        - if @project.empty_repo?
-          = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
-        - else
-          = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
+    = cache_if(cache_enabled, [@project, :download_code], expires_in: 1.minute) do
+      %nav.project-stats
+        .nav-links.quick-links
+          - if @project.empty_repo?
+            = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
+          - else
+            = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
 
   .home-panel-home-desc.mt-1
     - if @project.description.present?
@@ -80,11 +84,12 @@
     = render_if_exists "projects/home_mirror"
 
   - if @project.badges.present?
-    .project-badges.mb-2
-      - @project.badges.each do |badge|
-        %a.gl-mr-3{ href: badge.rendered_link_url(@project),
-          target: '_blank',
-          rel: 'noopener noreferrer' }>
-          %img.project-badge{ src: badge.rendered_image_url(@project),
-            'aria-hidden': true,
-            alt: 'Project badge' }>
+    = cache_if(cache_enabled, [@project, :badges], expires_in: 1.day) do
+      .project-badges.mb-2
+        - @project.badges.each do |badge|
+          %a.gl-mr-3{ href: badge.rendered_link_url(@project),
+            target: '_blank',
+            rel: 'noopener noreferrer' }>
+            %img.project-badge{ src: badge.rendered_image_url(@project),
+              'aria-hidden': true,
+              alt: 'Project badge' }>

@@ -54,7 +54,7 @@ RSpec.describe Resolvers::BoardsResolver do
       end
 
       it 'returns nil if board not found' do
-        outside_parent = create(board_parent.class.underscore.to_sym)
+        outside_parent = create(board_parent.class.underscore.to_sym) # rubocop:disable Rails/SaveBang
         outside_board  = create(:board, name: 'outside board', resource_parent: outside_parent)
 
         expect(resolve_boards(args: { id: global_id_of(outside_board) })).to eq Board.none

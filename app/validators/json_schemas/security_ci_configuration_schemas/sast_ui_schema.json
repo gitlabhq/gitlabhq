@@ -161,6 +161,13 @@
             "variables": []
         },
         {
+            "name": "semgrep",
+            "label": "Semgrep",
+            "enabled": true,
+            "description": "Multi-language scanning",
+            "variables": []
+        },
+        {
             "name": "sobelow",
             "label": "Sobelow",
             "enabled" : true,

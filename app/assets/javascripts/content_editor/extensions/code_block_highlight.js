@@ -1,38 +1,27 @@
-import { CodeBlockHighlight as BaseCodeBlockHighlight } from 'tiptap-extensions';
+import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
+import { defaultMarkdownSerializer } from 'prosemirror-markdown/src/to_markdown';
 
-export default class GlCodeBlockHighlight extends BaseCodeBlockHighlight {
-  get schema() {
-    const baseSchema = super.schema;
+const extractLanguage = (element) => element.firstElementChild?.getAttribute('lang');
 
+const ExtendedCodeBlockLowlight = CodeBlockLowlight.extend({
+  addAttributes() {
     return {
-      ...baseSchema,
-      attrs: {
-        params: {
-          default: null,
+      ...this.parent(),
+      /* `params` is the name of the attribute that
+        prosemirror-markdown uses to extract the language
+        of a codeblock.
+        https://github.com/ProseMirror/prosemirror-markdown/blob/master/src/to_markdown.js#L62
+      */
+      params: {
+        parseHTML: (element) => {
+          return {
+            params: extractLanguage(element),
+          };
         },
       },
-      parseDOM: [
-        {
-          tag: 'pre',
-          preserveWhitespace: 'full',
-          getAttrs: (node) => {
-            const code = node.querySelector('code');
-
-            if (!code) {
-              return null;
-            }
-
-            return {
-              /* `params` is the name of the attribute that
-                prosemirror-markdown uses to extract the language
-                of a codeblock.
-                https://github.com/ProseMirror/prosemirror-markdown/blob/master/src/to_markdown.js#L62
-              */
-              params: code.getAttribute('lang'),
-            };
-          },
-        },
-      ],
     };
-  }
-}
+  },
+});
+
+export const tiptapExtension = ExtendedCodeBlockLowlight;
+export const serializer = defaultMarkdownSerializer.nodes.code_block;

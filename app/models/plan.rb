@@ -39,4 +39,4 @@ class Plan < ApplicationRecord
   end
 end
 
-Plan.prepend_if_ee('EE::Plan')
+Plan.prepend_mod_with('Plan')

@@ -7,46 +7,45 @@ type: reference, howto
 
 # Protected branches **(FREE)**
 
-[Permissions](../permissions.md) in GitLab are fundamentally defined around the
+In GitLab, [permissions](../permissions.md) are fundamentally defined around the
 idea of having read or write permission to the repository and branches. To impose
 further restrictions on certain branches, they can be protected.
 
-## Overview
+The default branch for your repository is protected by default.
 
-By default, a protected branch does these things:
+## Who can access a protected branch
 
-- It prevents its creation, if not already created, from everybody except users
-  with Maintainer permission.
-- It prevents pushes from everybody except users with **Allowed** permission.
-- It prevents **anyone** from force pushing to the branch.
-- It prevents **anyone** from deleting the branch.
+When a branch is protected, the default behavior enforces
+these restrictions on the branch.
 
-**Permissions:**
+| Action                   | Who can do it |
+|--------------------------|---------------|
+| Protect a branch         | Maintainers only. |
+| Push to the branch       | GitLab administrators and anyone with **Allowed** permission. (*) |
+| Force push to the branch | No one. |
+| Delete the branch        | No one. |
 
-- GitLab administrators are allowed to push to the protected branches.
-- Users with [Developer permissions](../permissions.md) are allowed to
-  create a project in a group, but might not be allowed to initially
-  push to the [default branch](repository/branches/default.md).
+(*) Users with developer permissions can create a project in a group,
+but might not be allowed to initially push to the [default branch](repository/branches/default.md).
+
+### Set the branch protection default level
 
 The default branch protection level is set in the [Admin Area](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
 
-See the [Changelog](#changelog) section for changes over time.
+## Configure a protected branch
 
-## Configuring protected branches
+Prerequisite:
 
-To protect a branch, you need to have at least Maintainer permission level.
-The default branch for your repository is protected by default.
+- You must have at least maintainer permissions.
 
-1. In your project, go to **Settings > Repository**.
-1. Scroll to find the **Protected branches** section.
-1. From the **Branch** dropdown menu, select the branch you want to protect and
-   click **Protect**. In the screenshot below, we chose the `develop` branch.
+To protect a branch:
 
-   ![Protected branches page](img/protected_branches_page_v12_3.png)
+1. Go to your project and select **Settings > Repository**.
+1. Expand **Protected branches**.
+1. From the **Branch** dropdown menu, select the branch you want to protect.
+1. Select **Protect**.
 
-1. Once done, the protected branch displays in the **Protected branches** list.
-
-   ![Protected branches list](img/protected_branches_list_v12_3.png)
+The protected branch displays in the **Protected branches** list.
 
 ## Using the Allowed to merge and Allowed to push settings
 
@@ -141,7 +140,7 @@ all matching branches:
 
 ![Protected branch matches](img/protected_branches_matches.png)
 
-## Creating a protected branch
+## Create a protected branch
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53361) in GitLab 11.9.
 
@@ -161,7 +160,7 @@ To create a new branch through the user interface:
    base the new branch on. Only existing protected branches and commits
    that are already in protected branches are accepted.
 
-## Deleting a protected branch
+## Delete a protected branch
 
 From time to time, you may need to delete or clean up protected branches.
 User with [Maintainer permissions](../permissions.md) and greater can manually delete protected

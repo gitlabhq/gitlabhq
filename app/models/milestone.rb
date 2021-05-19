@@ -7,7 +7,7 @@ class Milestone < ApplicationRecord
   include FromUnion
   include Importable
 
-  prepend_if_ee('::EE::Milestone') # rubocop: disable Cop/InjectEnterpriseEditionModule
+  prepend_mod_with('Milestone') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
   class Predefined
     ALL = [::Timebox::None, ::Timebox::Any, ::Timebox::Started, ::Timebox::Upcoming].freeze
@@ -94,7 +94,7 @@ class Milestone < ApplicationRecord
   end
 
   def participants
-    User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).distinct
+    User.joins(assigned_issues: :milestone).where(milestones: { id: id }).distinct
   end
 
   def self.sort_by_attribute(method)

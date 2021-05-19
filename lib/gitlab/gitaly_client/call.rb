@@ -30,7 +30,7 @@ module Gitlab
           store_timings
           response
         end
-      rescue => err
+      rescue StandardError => err
         store_timings
         raise err
       end

@@ -143,11 +143,17 @@ state synchronization mechanisms and hooking into existing ones.
 
 ## Iterations
 
-1. [Build comprehensive Grafana dashboard for GraphQL](https://gitlab.com/groups/gitlab-com/-/epics/1343)
-1. [Improve logging of GraphQL requests in Elastic](https://gitlab.com/groups/gitlab-org/-/epics/4646)
+### In the scope of the blueprint
+
+1. [GraphQL API architecture](https://gitlab.com/groups/gitlab-org/-/epics/5842)
+    1. [Build comprehensive Grafana dashboard for GraphQL](https://gitlab.com/groups/gitlab-org/-/epics/5841)
+    1. [Improve logging of GraphQL requests in Elastic](https://gitlab.com/groups/gitlab-org/-/epics/4646)
+    1. [Build GraphQL query correlation mechanisms](https://gitlab.com/groups/gitlab-org/-/epics/5320)
+    1. [Design a better data-informed deprecation policy](https://gitlab.com/groups/gitlab-org/-/epics/5321)
+
+### Future iterations
+
 1. [Build a scalable state synchronization for GraphQL](https://gitlab.com/groups/gitlab-org/-/epics/5319)
-1. [Build GraphQL feature-to-query correlation mechanisms](https://gitlab.com/groups/gitlab-org/-/epics/5320)
-1. [Design a better data-informed deprecation policy](https://gitlab.com/groups/gitlab-org/-/epics/5321)
 1. [Add support for direct uploads for GraphQL](https://gitlab.com/gitlab-org/gitlab/-/issues/280819)
 1. [Review GraphQL design choices related to security](https://gitlab.com/gitlab-org/security/gitlab/-/issues/339)
 
@@ -179,6 +185,11 @@ DRIs:
 | Leadership                   | Darva Satcher          |
 | Product                      | Patrick Deuley         |
 | Engineering                  | Paul Slaughter         |
+
+Domain Experts:
+
+| Area                         | Who
+|------------------------------|------------------------|
 | Domain Expert / GraphQL      | Charlie Ablett         |
 | Domain Expert / GraphQL      | Alex Kalderimis        |
 | Domain Expert / GraphQL      | Natalia Tepluhina      |

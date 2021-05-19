@@ -7,12 +7,10 @@ module BoardsActions
   included do
     include BoardsResponses
 
+    before_action :authorize_read_board!, only: [:index, :show]
     before_action :boards, only: :index
     before_action :board, only: :show
     before_action :push_licensed_features, only: [:index, :show]
-    before_action do
-      push_frontend_feature_flag(:not_issuable_queries, parent, default_enabled: true)
-    end
   end
 
   def index
@@ -21,7 +19,7 @@ module BoardsActions
 
   def show
     # Add / update the board in the recent visits table
-    Boards::Visits::CreateService.new(parent, current_user).execute(board) if request.format.html?
+    board_visit_service.new(parent, current_user).execute(board) if request.format.html?
 
     respond_with_board
   end
@@ -54,6 +52,10 @@ module BoardsActions
     board_klass.to_type
   end
 
+  def board_visit_service
+    Boards::Visits::CreateService
+  end
+
   def serializer
     BoardSerializer.new(current_user: current_user)
   end
@@ -63,4 +65,4 @@ module BoardsActions
   end
 end
 
-BoardsActions.prepend_if_ee('EE::BoardsActions')
+BoardsActions.prepend_mod_with('BoardsActions')

@@ -6,7 +6,7 @@ RSpec.describe MergeRequests::AfterCreateService do
   let_it_be(:merge_request) { create(:merge_request) }
 
   subject(:after_create_service) do
-    described_class.new(merge_request.target_project, merge_request.author)
+    described_class.new(project: merge_request.target_project, current_user: merge_request.author)
   end
 
   describe '#execute' do
@@ -191,7 +191,7 @@ RSpec.describe MergeRequests::AfterCreateService do
 
     it 'calls MergeRequests::LinkLfsObjectsService#execute' do
       service = instance_spy(MergeRequests::LinkLfsObjectsService)
-      allow(MergeRequests::LinkLfsObjectsService).to receive(:new).with(merge_request.target_project).and_return(service)
+      allow(MergeRequests::LinkLfsObjectsService).to receive(:new).with(project: merge_request.target_project).and_return(service)
 
       execute_service
 

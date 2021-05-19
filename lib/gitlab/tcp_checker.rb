@@ -30,7 +30,7 @@ module Gitlab
       end
 
       true
-    rescue => err
+    rescue StandardError => err
       @error = err
 
       false

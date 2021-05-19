@@ -3,12 +3,10 @@
 class ServiceHook < WebHook
   include Presentable
 
-  belongs_to :service
-  validates :service, presence: true
+  belongs_to :integration, foreign_key: :service_id
+  validates :integration, presence: true
 
-  # rubocop: disable CodeReuse/ServiceClass
   def execute(data, hook_name = 'service_hook')
-    WebHookService.new(self, data, hook_name).execute
+    super(data, hook_name)
   end
-  # rubocop: enable CodeReuse/ServiceClass
 end

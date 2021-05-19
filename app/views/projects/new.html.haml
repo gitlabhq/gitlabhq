@@ -2,80 +2,38 @@
 - @hide_top_links = true
 - page_title    _('New Project')
 - header_title  _("Projects"), dashboard_projects_path
-- active_tab = local_assigns.fetch(:active_tab, 'blank')
+- add_page_specific_style 'page_bundles/new_namespace'
 
 .project-edit-container.gl-mt-5
   .project-edit-errors
     = render 'projects/errors'
 
-  .js-experiment-new-project-creation{ data: { is_ci_cd_available: (ci_cd_projects_available? if Gitlab.ee?), has_errors: @project.errors.any?, new_project_guidelines: brand_new_project_guidelines, push_to_create_project_command: push_to_create_project_command, working_with_projects_help_path: help_page_path("user/project/working_with_projects") } }
+  .js-new-project-creation{ data: { is_ci_cd_available: (ci_cd_projects_available? if Gitlab.ee?).to_s, has_errors: @project.errors.any?.to_s, new_project_guidelines: brand_new_project_guidelines, push_to_create_project_command: push_to_create_project_command, working_with_projects_help_path: help_page_path("user/project/working_with_projects") } }
 
   .row{ 'v-cloak': true }
-    .col-lg-3.profile-settings-sidebar
-      %h4.gl-mt-0
-        = _('New project')
-      %p
-        - among_other_things_link = link_to _('among other things'), help_page_path("user/project/index.md", anchor: "project-features"), target: '_blank'
-        = _('A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}.').html_safe % { among_other_things_link: among_other_things_link }
-      %p
-        = _('All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings.')
-      = render_if_exists 'projects/new_ci_cd_banner_external_repo'
-      %p
-        - pages_getting_started_guide = link_to _('Pages getting started guide'), help_page_path("user/project/pages/index", anchor: "getting-started"), target: '_blank'
-        = _('Information about additional Pages templates and how to install them can be found in our %{pages_getting_started_guide}.').html_safe % { pages_getting_started_guide: pages_getting_started_guide }
-      .md
-        = brand_new_project_guidelines
-      %p
-        %strong= _("Tip:")
-        = _("You can also create a project from the command line.")
+    #blank-project-pane.tab-pane.active
+      = form_for @project, html: { class: 'new_project' } do |f|
+        = render 'new_project_fields', f: f, project_name_id: "blank-project-name"
 
-    .col-lg-9.js-toggle-container
-      %ul.nav.nav-tabs.nav-links.gitlab-tabs{ role: 'tablist' }
-        %li.nav-item{ role: 'presentation' }
-          %a.nav-link.active{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab', experiment_track_label: 'blank_project' }, role: 'tab' }
-            %span.d-none.d-sm-block= s_('ProjectsNew|Blank project')
-            %span.d-block.d-sm-none= s_('ProjectsNew|Blank')
-        %li.nav-item{ role: 'presentation' }
-          %a.nav-link{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab', experiment_track_label: 'create_from_template' }, role: 'tab' }
-            %span.d-none.d-sm-block.qa-project-create-from-template-tab= s_('ProjectsNew|Create from template')
-            %span.d-block.d-sm-none= s_('ProjectsNew|Template')
-        %li.nav-item{ role: 'presentation' }
-          %a.nav-link{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab', experiment_track_label: 'import_project' }, role: 'tab' }
-            %span.d-none.d-sm-block= s_('ProjectsNew|Import project')
-            %span.d-block.d-sm-none= s_('ProjectsNew|Import')
-        = render_if_exists 'projects/new_ci_cd_only_project_tab', active_tab: active_tab
-
-      .tab-content.gitlab-tab-content
-        .tab-pane.js-toggle-container{ id: 'blank-project-pane', class: active_when(active_tab == 'blank'), role: 'tabpanel' }
-          = form_for @project, html: { class: 'new_project' } do |f|
-            = render 'new_project_fields', f: f, project_name_id: "blank-project-name"
-
-        #create-from-template-pane.tab-pane.js-toggle-container.px-0.pb-0{ class: active_when(active_tab == 'template'), role: 'tabpanel' }
-          .card.card-slim.m-4.p-4
+    #create-from-template-pane.tab-pane
+      .gl-card.gl-my-5
+        .gl-card-body
+          %div
+            - contributing_templates_url = 'https://gitlab.com/gitlab-org/project-templates/contributing'
+            - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: contributing_templates_url }
+            = _('Learn how to %{link_start}contribute to the built-in templates%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+      = form_for @project, html: { class: 'new_project' } do |f|
+        .project-template
+          .form-group
             %div
-              - contributing_templates_url = 'https://gitlab.com/gitlab-org/project-templates/contributing'
-              - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: contributing_templates_url }
-              = _('Learn how to %{link_start}contribute to the built-in templates%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
-          = form_for @project, html: { class: 'new_project' } do |f|
-            .project-template
-              .form-group
-                %div
-                  = render 'project_templates', f: f, project: @project
+              = render 'project_templates', f: f, project: @project
 
-        .tab-pane.import-project-pane.js-toggle-container{ id: 'import-project-pane', class: active_when(active_tab == 'import'), role: 'tabpanel' }
-          - if import_sources_enabled?
-            = render 'import_project_pane', active_tab: active_tab
-          - else
-            .nothing-here-block
-              %h4= s_('ProjectsNew|No import options available')
-              %p= s_('ProjectsNew|Contact an administrator to enable options for importing your project.')
+    #import-project-pane.tab-pane.js-toggle-container
+      - if import_sources_enabled?
+        = render 'import_project_pane'
+      - else
+        .nothing-here-block
+          %h4= s_('ProjectsNew|No import options available')
+          %p= s_('ProjectsNew|Contact an administrator to enable options for importing your project.')
 
-        = render_if_exists 'projects/new_ci_cd_only_project_pane', active_tab: active_tab
-
-.save-project-loader.d-none
-  .center
-    %h2
-      .spinner.spinner-md.align-text-bottom
-      = s_('ProjectsNew|Creating project & repository.')
-    %p
-      = s_('ProjectsNew|Please wait a moment, this page will automatically refresh when ready.')
+    = render_if_exists 'projects/new_ci_cd_only_project_pane'

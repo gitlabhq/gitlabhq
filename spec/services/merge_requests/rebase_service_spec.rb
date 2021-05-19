@@ -18,7 +18,7 @@ RSpec.describe MergeRequests::RebaseService do
   let(:repository) { project.repository.raw }
   let(:skip_ci) { false }
 
-  subject(:service) { described_class.new(project, user, {}) }
+  subject(:service) { described_class.new(project: project, current_user: user) }
 
   before do
     project.add_maintainer(user)

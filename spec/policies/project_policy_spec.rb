@@ -60,7 +60,7 @@ RSpec.describe ProjectPolicy do
       end
 
       it 'does not include the issues permissions' do
-        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
+        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident
       end
 
       it 'disables boards and lists permissions' do
@@ -72,7 +72,7 @@ RSpec.describe ProjectPolicy do
         it 'does not include the issues permissions' do
           create(:jira_service, project: project)
 
-          expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
+          expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident
         end
       end
     end
@@ -389,6 +389,34 @@ RSpec.describe ProjectPolicy do
         let(:current_user) { send(role) }
 
         it { expect_disallowed(:update_max_artifacts_size) }
+      end
+    end
+  end
+
+  describe 'read_storage_disk_path' do
+    context 'when no user' do
+      let(:current_user) { anonymous }
+
+      it { expect_disallowed(:read_storage_disk_path) }
+    end
+
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed(:read_storage_disk_path) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { expect_disallowed(:read_storage_disk_path) }
+      end
+    end
+
+    %w(guest reporter developer maintainer owner).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it { expect_disallowed(:read_storage_disk_path) }
       end
     end
   end
@@ -892,6 +920,8 @@ RSpec.describe ProjectPolicy do
   end
 
   describe 'design permissions' do
+    include DesignManagementTestHelpers
+
     let(:current_user) { guest }
 
     let(:design_permissions) do
@@ -899,12 +929,14 @@ RSpec.describe ProjectPolicy do
     end
 
     context 'when design management is not available' do
+      before do
+        enable_design_management(false)
+      end
+
       it { is_expected.not_to be_allowed(*design_permissions) }
     end
 
     context 'when design management is available' do
-      include DesignManagementTestHelpers
-
       before do
         enable_design_management
       end

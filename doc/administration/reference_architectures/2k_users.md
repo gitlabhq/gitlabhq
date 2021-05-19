@@ -13,19 +13,25 @@ For a full list of reference architectures, see
 
 > - **Supported users (approximate):** 2,000
 > - **High Availability:** No. For a highly-available environment, you can
->   follow the [3K reference architecture](3k_users.md).
+>   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 > - **Test requests per second (RPS) rates:** API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
 
-| Service                                  | Nodes  | Configuration           | GCP            | AWS          | Azure   |
-|------------------------------------------|--------|-------------------------|----------------|--------------|---------|
-| Load balancer                            | 1      | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | `c5.large`     | F2s v2  |
-| PostgreSQL                               | 1      | 2 vCPU, 7.5 GB memory   | n1-standard-2  | `m5.large`     | D2s v3  |
-| Redis                                    | 1      | 1 vCPU, 3.75 GB memory  | n1-standard-1  | `m5.large`     | D2s v3  |
-| Gitaly                                   | 1      | 4 vCPU, 15 GB memory    | n1-standard-4  | `m5.xlarge`    | D4s v3  |
-| GitLab Rails                             | 2      | 8 vCPU, 7.2 GB memory   | n1-highcpu-8   | `c5.2xlarge`   | F8s v2  |
-| Monitoring node                          | 1      | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | `c5.large`     | F2s v2  |
-| Object storage                           | n/a    | n/a                     | n/a            | n/a          | n/a     |
-| NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6 GB memory   | n1-highcpu-4   | `c5.xlarge`    | F4s v2  |
+| Service                                  | Nodes  | Configuration           | GCP             | AWS          | Azure    |
+|------------------------------------------|--------|-------------------------|-----------------|--------------|----------|
+| Load balancer                            | 1      | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| PostgreSQL*                              | 1      | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
+| Redis**                                  | 1      | 1 vCPU, 3.75 GB memory  | `n1-standard-1` | `m5.large`   | `D2s v3` |
+| Gitaly                                   | 1      | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
+| GitLab Rails                             | 2      | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
+| Monitoring node                          | 1      | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| Object storage                           | n/a    | n/a                     | n/a             | n/a          | n/a      |
+| NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`  | `F4s v2` |
+
+NOTE:
+Components marked with * can be optionally run on reputable
+third party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work.
+Components marked with ** can be optionally run on reputable
+third party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 
 ```plantuml
 @startuml 2k
@@ -60,7 +66,7 @@ The Google Cloud Platform (GCP) architectures were built and tested using the
 CPU platform. On different hardware you may find that adjustments, either lower
 or higher, are required for your CPU or node counts. For more information, see
 our [Sysbench](https://github.com/akopytov/sysbench)-based
-[CPU benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
+[CPU benchmarks](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
 Due to better performance and availability, for data objects (such as LFS,
 uploads, or artifacts), using an [object storage service](#configure-the-object-storage)
@@ -642,6 +648,8 @@ On each node perform the following:
    node_exporter['listen_address'] = '0.0.0.0:9100'
    gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
    sidekiq['listen_address'] = "0.0.0.0"
+   # Set number of Sidekiq threads per queue process to the recommend number of 10
+   sidekiq['max_concurrency'] = 10
    puma['listen'] = '0.0.0.0'
 
    # Add the monitoring node's IP address to the monitoring whitelist and allow it to

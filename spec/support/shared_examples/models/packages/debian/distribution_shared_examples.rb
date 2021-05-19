@@ -19,11 +19,6 @@ RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
 
     it { is_expected.to have_many(:components).class_name("Packages::Debian::#{container.capitalize}Component").inverse_of(:distribution) }
     it { is_expected.to have_many(:architectures).class_name("Packages::Debian::#{container.capitalize}Architecture").inverse_of(:distribution) }
-
-    if container != :group
-      it { is_expected.to have_many(:publications).class_name('Packages::Debian::Publication').inverse_of(:distribution).with_foreign_key(:distribution_id) }
-      it { is_expected.to have_many(:packages).class_name('Packages::Package').through(:publications) }
-    end
   end
 
   describe 'validations' do
@@ -224,6 +219,46 @@ RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
               is_expected.to be_truthy
             end
           end
+        end
+      end
+    end
+  end
+
+  if container == :project
+    describe 'project distribution specifics' do
+      describe 'relationships' do
+        it { is_expected.to have_many(:publications).class_name('Packages::Debian::Publication').inverse_of(:distribution).with_foreign_key(:distribution_id) }
+        it { is_expected.to have_many(:packages).class_name('Packages::Package').through(:publications) }
+        it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile').through(:packages) }
+      end
+    end
+  else
+    describe 'group distribution specifics' do
+      let_it_be(:public_project) { create(:project, :public, group: distribution_with_suite.container)}
+      let_it_be(:public_distribution_with_same_codename) { create(:debian_project_distribution, container: public_project, codename: distribution_with_suite.codename) }
+      let_it_be(:public_package_with_same_codename) { create(:debian_package, project: public_project, published_in: public_distribution_with_same_codename)}
+      let_it_be(:public_distribution_with_same_suite) { create(:debian_project_distribution, container: public_project, suite: distribution_with_suite.suite) }
+      let_it_be(:public_package_with_same_suite) { create(:debian_package, project: public_project, published_in: public_distribution_with_same_suite)}
+
+      let_it_be(:private_project) { create(:project, :private, group: distribution_with_suite.container)}
+      let_it_be(:private_distribution_with_same_codename) { create(:debian_project_distribution, container: private_project, codename: distribution_with_suite.codename) }
+      let_it_be(:private_package_with_same_codename) { create(:debian_package, project: private_project, published_in: private_distribution_with_same_codename)}
+      let_it_be(:private_distribution_with_same_suite) { create(:debian_project_distribution, container: private_project, suite: distribution_with_suite.suite) }
+      let_it_be(:private_package_with_same_suite) { create(:debian_package, project: private_project, published_in: private_distribution_with_same_codename)}
+
+      describe '#packages' do
+        subject { distribution_with_suite.packages }
+
+        it 'returns only public packages with same codename' do
+          expect(subject.to_a).to contain_exactly(public_package_with_same_codename)
+        end
+      end
+
+      describe '#package_files' do
+        subject { distribution_with_suite.package_files }
+
+        it 'returns only files from public packages with same codename' do
+          expect(subject.to_a).to contain_exactly(*public_package_with_same_codename.package_files)
         end
       end
     end

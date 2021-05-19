@@ -4,7 +4,7 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Upgrading PostgreSQL Using Slony
+# Upgrading PostgreSQL Using Slony **(FREE SELF)**
 
 This guide describes the steps one can take to upgrade their PostgreSQL database
 to the latest version without the need for hours of downtime. This guide assumes

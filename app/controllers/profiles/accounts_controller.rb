@@ -37,4 +37,4 @@ class Profiles::AccountsController < Profiles::ApplicationController
   end
 end
 
-Profiles::AccountsController.prepend_if_ee('EE::Profiles::AccountsController')
+Profiles::AccountsController.prepend_mod_with('Profiles::AccountsController')

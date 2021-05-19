@@ -1,0 +1,5 @@
+---
+title: Optimize merge request permission check for references
+merge_request: 61591
+author:
+type: performance

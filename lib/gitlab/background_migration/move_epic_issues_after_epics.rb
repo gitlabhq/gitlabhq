@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::MoveEpicIssuesAfterEpics.prepend_if_ee('EE::Gitlab::BackgroundMigration::MoveEpicIssuesAfterEpics')
+Gitlab::BackgroundMigration::MoveEpicIssuesAfterEpics.prepend_mod_with('Gitlab::BackgroundMigration::MoveEpicIssuesAfterEpics')

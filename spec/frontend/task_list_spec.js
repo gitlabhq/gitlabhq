@@ -16,7 +16,20 @@ describe('TaskList', () => {
   beforeEach(() => {
     setFixtures(`
       <div class="task-list">
-        <div class="js-task-list-container"></div>
+        <div class="js-task-list-container">
+          <ul data-sourcepos="5:1-5:11" class="task-list" dir="auto">
+            <li data-sourcepos="5:1-5:11" class="task-list-item enabled">
+              <input type="checkbox" class="task-list-item-checkbox" checked=""> markdown task
+            </li>
+          </ul>
+
+          <ul class="task-list" dir="auto">
+            <li class="task-list-item enabled">
+              <input type="checkbox" class="task-list-item-checkbox"> hand-coded checkbox
+            </li>
+          </ul>
+          <textarea class="hidden js-task-list-field"></textarea>
+        </div>
       </div>
     `);
 
@@ -59,32 +72,47 @@ describe('TaskList', () => {
 
   describe('disableTaskListItems', () => {
     it('should call taskList method with disable param', () => {
-      jest.spyOn($.prototype, 'taskList').mockImplementation(() => {});
+      taskList.disableTaskListItems();
 
-      taskList.disableTaskListItems({ currentTarget });
-
-      expect(currentTarget.taskList).toHaveBeenCalledWith('disable');
+      expect(document.querySelectorAll('.task-list-item input:disabled').length).toEqual(2);
     });
   });
 
   describe('enableTaskListItems', () => {
-    it('should call taskList method with enable param', () => {
-      jest.spyOn($.prototype, 'taskList').mockImplementation(() => {});
+    it('should enable markdown tasks and disable non-markdown tasks', () => {
+      taskList.disableTaskListItems();
+      taskList.enableTaskListItems();
 
-      taskList.enableTaskListItems({ currentTarget });
+      expect(document.querySelectorAll('.task-list-item input:enabled').length).toEqual(1);
+      expect(document.querySelectorAll('.task-list-item input:disabled').length).toEqual(1);
+    });
+  });
 
-      expect(currentTarget.taskList).toHaveBeenCalledWith('enable');
+  describe('enable', () => {
+    it('should enable task list items and on document event', () => {
+      jest.spyOn($.prototype, 'on').mockImplementation(() => {});
+
+      taskList.enable();
+
+      expect(document.querySelectorAll('.task-list-item input:enabled').length).toEqual(1);
+      expect(document.querySelectorAll('.task-list-item input:disabled').length).toEqual(1);
+
+      expect($(document).on).toHaveBeenCalledWith(
+        'tasklist:changed',
+        taskList.taskListContainerSelector,
+        taskList.updateHandler,
+      );
     });
   });
 
   describe('disable', () => {
     it('should disable task list items and off document event', () => {
-      jest.spyOn(taskList, 'disableTaskListItems').mockImplementation(() => {});
       jest.spyOn($.prototype, 'off').mockImplementation(() => {});
 
       taskList.disable();
 
-      expect(taskList.disableTaskListItems).toHaveBeenCalled();
+      expect(document.querySelectorAll('.task-list-item input:disabled').length).toEqual(2);
+
       expect($(document).off).toHaveBeenCalledWith(
         'tasklist:changed',
         taskList.taskListContainerSelector,

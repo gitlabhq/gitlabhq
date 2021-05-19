@@ -13,13 +13,20 @@ module ContainerExpirationPolicies
     def execute
       return ServiceResponse.error(message: 'no repository') unless repository
 
+      unless policy.valid?
+        disable_policy!
+
+        return ServiceResponse.error(message: 'invalid policy')
+      end
+
       repository.start_expiration_policy!
+      schedule_next_run_if_needed
 
       begin
         service_result = Projects::ContainerRepository::CleanupTagsService
                            .new(project, nil, policy_params.merge('container_expiration_policy' => true))
                            .execute(repository)
-      rescue
+      rescue StandardError
         repository.cleanup_unfinished!
 
         raise
@@ -28,7 +35,6 @@ module ContainerExpirationPolicies
       if service_result[:status] == :success
         repository.update!(
           expiration_policy_cleanup_status: :cleanup_unscheduled,
-          expiration_policy_started_at: nil,
           expiration_policy_completed_at: Time.zone.now
         )
 
@@ -41,6 +47,27 @@ module ContainerExpirationPolicies
     end
 
     private
+
+    def schedule_next_run_if_needed
+      return unless Feature.enabled?(:container_registry_expiration_policies_loopless)
+      return if policy.next_run_at.future?
+
+      repos_before_next_run = ::ContainerRepository.for_project_id(policy.project_id)
+                                                   .expiration_policy_started_at_nil_or_before(policy.next_run_at)
+      return if repos_before_next_run.exists?
+
+      policy.schedule_next_run!
+    end
+
+    def disable_policy!
+      policy.disable!
+      repository.cleanup_unscheduled!
+
+      Gitlab::ErrorTracking.log_exception(
+        ::ContainerExpirationPolicyWorker::InvalidPolicyError.new,
+        container_expiration_policy_id: policy.id
+      )
+    end
 
     def success(cleanup_status, service_result)
       payload = {

@@ -50,4 +50,4 @@ module Boards
   end
 end
 
-Boards::Issues::ListService.prepend_if_ee('EE::Boards::Issues::ListService')
+Boards::Issues::ListService.prepend_mod_with('Boards::Issues::ListService')

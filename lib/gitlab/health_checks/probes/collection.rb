@@ -20,7 +20,7 @@ module Gitlab
             success ? 200 : 503,
             status(success).merge(payload(readiness))
           )
-        rescue => e
+        rescue StandardError => e
           exception_payload = { message: "#{e.class} : #{e.message}" }
 
           Probes::Status.new(

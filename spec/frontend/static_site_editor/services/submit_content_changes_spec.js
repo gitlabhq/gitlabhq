@@ -3,7 +3,6 @@ import Api from '~/api';
 import { convertObjectPropsToSnakeCase } from '~/lib/utils/common_utils';
 
 import {
-  DEFAULT_TARGET_BRANCH,
   SUBMIT_CHANGES_BRANCH_ERROR,
   SUBMIT_CHANGES_COMMIT_ERROR,
   SUBMIT_CHANGES_MERGE_REQUEST_ERROR,
@@ -25,6 +24,7 @@ import {
   createMergeRequestResponse,
   mergeRequestMeta,
   sourcePath,
+  branch as targetBranch,
   sourceContentYAML as content,
   trackingCategory,
   images,
@@ -33,7 +33,7 @@ import {
 jest.mock('~/static_site_editor/services/generate_branch_name');
 
 describe('submitContentChanges', () => {
-  const branch = 'branch-name';
+  const sourceBranch = 'branch-name';
   let trackingSpy;
   let origPage;
 
@@ -41,6 +41,7 @@ describe('submitContentChanges', () => {
     username,
     projectId,
     sourcePath,
+    targetBranch,
     content,
     images,
     mergeRequestMeta,
@@ -54,7 +55,7 @@ describe('submitContentChanges', () => {
       .spyOn(Api, 'createProjectMergeRequest')
       .mockResolvedValue({ data: createMergeRequestResponse });
 
-    generateBranchName.mockReturnValue(branch);
+    generateBranchName.mockReturnValue(sourceBranch);
 
     origPage = document.body.dataset.page;
     document.body.dataset.page = trackingCategory;
@@ -69,8 +70,8 @@ describe('submitContentChanges', () => {
   it('creates a branch named after the username and target branch', () => {
     return submitContentChanges(buildPayload()).then(() => {
       expect(Api.createBranch).toHaveBeenCalledWith(projectId, {
-        ref: DEFAULT_TARGET_BRANCH,
-        branch,
+        ref: targetBranch,
+        branch: sourceBranch,
       });
     });
   });
@@ -86,7 +87,7 @@ describe('submitContentChanges', () => {
   describe('committing markdown formatting changes', () => {
     const formattedMarkdown = `formatted ${content}`;
     const commitPayload = {
-      branch,
+      branch: sourceBranch,
       commit_message: `${DEFAULT_FORMATTING_CHANGES_COMMIT_MESSAGE}\n\n${DEFAULT_FORMATTING_CHANGES_COMMIT_DESCRIPTION}`,
       actions: [
         {
@@ -116,7 +117,7 @@ describe('submitContentChanges', () => {
   it('commits the content changes to the branch when creating branch succeeds', () => {
     return submitContentChanges(buildPayload()).then(() => {
       expect(Api.commitMultiple).toHaveBeenCalledWith(projectId, {
-        branch,
+        branch: sourceBranch,
         commit_message: mergeRequestMeta.title,
         actions: [
           {
@@ -140,7 +141,7 @@ describe('submitContentChanges', () => {
     const payload = buildPayload({ content: contentWithoutImages });
     return submitContentChanges(payload).then(() => {
       expect(Api.commitMultiple).toHaveBeenCalledWith(projectId, {
-        branch,
+        branch: sourceBranch,
         commit_message: mergeRequestMeta.title,
         actions: [
           {
@@ -169,8 +170,8 @@ describe('submitContentChanges', () => {
         convertObjectPropsToSnakeCase({
           title,
           description,
-          targetBranch: DEFAULT_TARGET_BRANCH,
-          sourceBranch: branch,
+          targetBranch,
+          sourceBranch,
         }),
       );
     });
@@ -194,7 +195,7 @@ describe('submitContentChanges', () => {
     });
 
     it('returns the branch name', () => {
-      expect(result).toMatchObject({ branch: { label: branch } });
+      expect(result).toMatchObject({ branch: { label: sourceBranch } });
     });
 
     it('returns commit short id and web url', () => {

@@ -75,4 +75,4 @@ module QA
   end
 end
 
-QA::Page::Project::Job::Show.prepend_if_ee('QA::EE::Page::Project::Job::Show')
+QA::Page::Project::Job::Show.prepend_mod_with('Page::Project::Job::Show', namespace: QA)

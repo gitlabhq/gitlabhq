@@ -45,7 +45,7 @@ Projects include the following [features](https://about.gitlab.com/features/):
   - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Create team-specific workflows (Issue Boards) for a project.
 - [Merge Requests](merge_requests/index.md): Apply a branching
   strategy and get reviewed by your team.
-  - [Merge Request Approvals](merge_requests/merge_request_approvals.md): Ask for approval before
+  - [Merge Request Approvals](merge_requests/approvals/index.md): Ask for approval before
   implementing a change.
   - [Fix merge conflicts from the UI](merge_requests/resolve_conflicts.md): View Git diffs from the GitLab UI.
   - [Review Apps](../../ci/review_apps/index.md): By branch, preview the results

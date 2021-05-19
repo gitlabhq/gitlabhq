@@ -8,6 +8,130 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:user) { create(:user) }
 
+  around do |example|
+    travel_to(Time.current) { example.run }
+  end
+
+  describe 'duration fields' do
+    let_it_be(:pipeline) do
+      create(:ci_pipeline, project: project)
+    end
+
+    let(:query_path) do
+      [
+        [:project, { full_path: project.full_path }],
+        [:pipelines],
+        [:nodes]
+      ]
+    end
+
+    let(:query) do
+      wrap_fields(query_graphql_path(query_path, 'queuedDuration duration'))
+    end
+
+    before do
+      pipeline.update!(
+        created_at: 1.minute.ago,
+        started_at: 55.seconds.ago
+      )
+      create(:ci_build, :success,
+             pipeline: pipeline,
+             started_at: 55.seconds.ago,
+             finished_at: 10.seconds.ago)
+      pipeline.update_duration
+      pipeline.save!
+
+      post_graphql(query, current_user: user)
+    end
+
+    it 'includes the duration fields' do
+      path = query_path.map(&:first)
+      expect(graphql_data_at(*path, :queued_duration)).to eq [5.0]
+      expect(graphql_data_at(*path, :duration)).to eq [45]
+    end
+  end
+
+  describe '.stages' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be(:stage) { create(:ci_stage_entity, pipeline: pipeline, project: project) }
+    let_it_be(:other_stage) { create(:ci_stage_entity, pipeline: pipeline, project: project, name: 'other') }
+
+    let(:first_n) { var('Int') }
+    let(:query_path) do
+      [
+        [:project, { full_path: project.full_path }],
+        [:pipelines],
+        [:nodes],
+        [:stages, { first: first_n }],
+        [:nodes]
+      ]
+    end
+
+    let(:query) do
+      with_signature([first_n], wrap_fields(query_graphql_path(query_path, :name)))
+    end
+
+    before_all do
+      # see app/services/ci/ensure_stage_service.rb to explain why we use stage_id
+      create(:ci_build, pipeline: pipeline, stage_id: stage.id, name: 'linux: [foo]')
+      create(:ci_build, pipeline: pipeline, stage_id: stage.id, name: 'linux: [bar]')
+      create(:ci_build, pipeline: pipeline, stage_id: other_stage.id, name: 'linux: [baz]')
+    end
+
+    it 'is null if the user is a guest' do
+      project.add_guest(user)
+
+      post_graphql(query, current_user: user, variables: first_n.with(1))
+
+      expect(graphql_data_at(:project, :pipelines, :nodes)).to contain_exactly a_hash_including('stages' => be_nil)
+    end
+
+    it 'is present if the user has reporter access' do
+      project.add_reporter(user)
+
+      post_graphql(query, current_user: user)
+
+      expect(graphql_data_at(:project, :pipelines, :nodes, :stages, :nodes, :name))
+        .to contain_exactly(eq(stage.name), eq(other_stage.name))
+    end
+
+    describe '.groups' do
+      let(:query_path) do
+        [
+          [:project, { full_path: project.full_path }],
+          [:pipelines],
+          [:nodes],
+          [:stages],
+          [:nodes],
+          [:groups],
+          [:nodes]
+        ]
+      end
+
+      let(:query) do
+        wrap_fields(query_graphql_path(query_path, :name))
+      end
+
+      it 'is empty if the user is a guest' do
+        project.add_guest(user)
+
+        post_graphql(query, current_user: user)
+
+        expect(graphql_data_at(:project, :pipelines, :nodes, :stages, :nodes, :groups)).to be_empty
+      end
+
+      it 'is present if the user has reporter access' do
+        project.add_reporter(user)
+
+        post_graphql(query, current_user: user)
+
+        expect(graphql_data_at(:project, :pipelines, :nodes, :stages, :nodes, :groups, :nodes, :name))
+          .to contain_exactly('linux', 'linux')
+      end
+    end
+  end
+
   describe '.jobs' do
     let(:first_n) { var('Int') }
     let(:query_path) do

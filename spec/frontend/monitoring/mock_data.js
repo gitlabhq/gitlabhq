@@ -15,7 +15,7 @@ const customDashboardsData = new Array(30).fill(null).map((_, idx) => ({
   can_edit: true,
   system_dashboard: false,
   out_of_the_box_dashboard: false,
-  project_blob_path: `${mockProjectDir}/blob/master/dashboards/.gitlab/dashboards/dashboard_${idx}.yml`,
+  project_blob_path: `${mockProjectDir}/blob/main/dashboards/.gitlab/dashboards/dashboard_${idx}.yml`,
   path: `.gitlab/dashboards/dashboard_${idx}.yml`,
   starred: false,
 }));
@@ -32,7 +32,7 @@ export const anomalyDeploymentData = [
     iid: 3,
     sha: 'f5bcd1d9dac6fa4137e2510b9ccd134ef2e84187',
     ref: {
-      name: 'master',
+      name: 'main',
     },
     created_at: '2019-08-19T22:00:00.000Z',
     deployed_at: '2019-08-19T22:01:00.000Z',
@@ -44,7 +44,7 @@ export const anomalyDeploymentData = [
     iid: 2,
     sha: 'f5bcd1d9dac6fa4137e2510b9ccd134ef2e84187',
     ref: {
-      name: 'master',
+      name: 'main',
     },
     created_at: '2019-08-19T23:00:00.000Z',
     deployed_at: '2019-08-19T23:00:00.000Z',
@@ -61,7 +61,7 @@ export const deploymentData = [
     commitUrl:
       'http://test.host/frontend-fixtures/environments-project/-/commit/f5bcd1d9dac6fa4137e2510b9ccd134ef2e84187',
     ref: {
-      name: 'master',
+      name: 'main',
     },
     created_at: '2019-07-16T10:14:25.589Z',
     tag: false,
@@ -75,7 +75,7 @@ export const deploymentData = [
     commitUrl:
       'http://test.host/frontend-fixtures/environments-project/-/commit/f5bcd1d9dac6fa4137e2510b9ccd134ef2e84187',
     ref: {
-      name: 'master',
+      name: 'main',
     },
     created_at: '2019-07-16T11:14:25.589Z',
     tag: false,
@@ -187,7 +187,7 @@ export const dashboardGitResponse = [
     can_edit: true,
     system_dashboard: false,
     out_of_the_box_dashboard: false,
-    project_blob_path: `${mockProjectDir}/-/blob/master/.gitlab/dashboards/dashboard.yml`,
+    project_blob_path: `${mockProjectDir}/-/blob/main/.gitlab/dashboards/dashboard.yml`,
     path: '.gitlab/dashboards/dashboard.yml',
     starred: true,
     user_starred_path: `${mockProjectDir}/metrics_user_starred_dashboards?dashboard_path=.gitlab/dashboards/dashboard.yml`,
@@ -224,7 +224,7 @@ export const selfMonitoringDashboardGitResponse = [
     can_edit: true,
     system_dashboard: false,
     out_of_the_box_dashboard: false,
-    project_blob_path: `${mockProjectDir}/-/blob/master/.gitlab/dashboards/dashboard.yml`,
+    project_blob_path: `${mockProjectDir}/-/blob/main/.gitlab/dashboards/dashboard.yml`,
     path: '.gitlab/dashboards/dashboard.yml',
     starred: true,
     user_starred_path: `${mockProjectDir}/metrics_user_starred_dashboards?dashboard_path=.gitlab/dashboards/dashboard.yml`,
@@ -572,7 +572,7 @@ export const storeVariables = [
 ];
 
 export const dashboardHeaderProps = {
-  defaultBranch: 'master',
+  defaultBranch: 'main',
   isRearrangingPanels: false,
   selectedTimeRange: {
     start: '2020-01-01T00:00:00.000Z',
@@ -581,7 +581,7 @@ export const dashboardHeaderProps = {
 };
 
 export const dashboardActionsMenuProps = {
-  defaultBranch: 'master',
+  defaultBranch: 'main',
   addingMetricsAvailable: true,
   customMetricsPath: 'https://path/to/customMetrics',
   validateQueryPath: 'https://path/to/validateQuery',

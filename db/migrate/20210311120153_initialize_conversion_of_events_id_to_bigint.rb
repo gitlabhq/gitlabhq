@@ -14,7 +14,7 @@ class InitializeConversionOfEventsIdToBigint < ActiveRecord::Migration[6.0]
   def down
     trigger_name = rename_trigger_name(:events, :id, :id_convert_to_bigint)
 
-    remove_rename_triggers_for_postgresql :events, trigger_name
+    remove_rename_triggers :events, trigger_name
 
     remove_column :events, :id_convert_to_bigint
   end

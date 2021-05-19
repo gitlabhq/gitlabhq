@@ -8,6 +8,7 @@ RSpec.describe 'Users views raw design image files' do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:design) { create(:design, :with_file, issue: issue, versions_count: 2) }
+
   let(:newest_version) { design.versions.ordered.first }
   let(:oldest_version) { design.versions.ordered.last }
 

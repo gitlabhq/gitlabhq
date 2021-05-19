@@ -4,6 +4,8 @@ export const groupPackageSettingsMock = {
       packageSettings: {
         mavenDuplicatesAllowed: true,
         mavenDuplicateExceptionRegex: '',
+        genericDuplicatesAllowed: true,
+        genericDuplicateExceptionRegex: '',
       },
     },
   },
@@ -14,7 +16,9 @@ export const groupPackageSettingsMutationMock = (override) => ({
     updateNamespacePackageSettings: {
       packageSettings: {
         mavenDuplicatesAllowed: true,
-        mavenDuplicateExceptionRegex: 'latest[master]something',
+        mavenDuplicateExceptionRegex: 'latest[main]something',
+        genericDuplicatesAllowed: true,
+        genericDuplicateExceptionRegex: 'latest[main]somethingGeneric',
       },
       errors: [],
       ...override,
@@ -26,20 +30,20 @@ export const groupPackageSettingsMutationErrorMock = {
   errors: [
     {
       message:
-        'Variable $input of type UpdateNamespacePackageSettingsInput! was provided invalid value for mavenDuplicateExceptionRegex (latest[master]somethingj)) is an invalid regexp: unexpected ): latest[master]somethingj)))',
+        'Variable $input of type UpdateNamespacePackageSettingsInput! was provided invalid value for mavenDuplicateExceptionRegex (latest[main]somethingj)) is an invalid regexp: unexpected ): latest[main]somethingj)))',
       locations: [{ line: 1, column: 41 }],
       extensions: {
         value: {
           namespacePath: 'gitlab-org',
-          mavenDuplicateExceptionRegex: 'latest[master]something))',
+          mavenDuplicateExceptionRegex: 'latest[main]something))',
         },
         problems: [
           {
             path: ['mavenDuplicateExceptionRegex'],
             explanation:
-              'latest[master]somethingj)) is an invalid regexp: unexpected ): latest[master]something))',
+              'latest[main]somethingj)) is an invalid regexp: unexpected ): latest[main]something))',
             message:
-              'latest[master]somethingj)) is an invalid regexp: unexpected ): latest[master]something))',
+              'latest[main]somethingj)) is an invalid regexp: unexpected ): latest[main]something))',
           },
         ],
       },

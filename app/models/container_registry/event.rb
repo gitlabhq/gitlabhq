@@ -66,4 +66,4 @@ module ContainerRegistry
   end
 end
 
-::ContainerRegistry::Event.prepend_if_ee('EE::ContainerRegistry::Event')
+::ContainerRegistry::Event.prepend_mod_with('ContainerRegistry::Event')

@@ -201,10 +201,29 @@ FactoryBot.define do
       end
     end
 
+    factory :helm_package_file do
+      package { association(:helm_package, without_package_files: true) }
+      file_name { "#{package.name}-#{package.version}.tgz" }
+      file_fixture { "spec/fixtures/packages/helm/rook-ceph-v1.5.8.tgz" }
+
+      transient do
+        without_loaded_metadatum { false }
+        channel { 'stable' }
+      end
+
+      after :create do |package_file, evaluator|
+        unless evaluator.without_loaded_metadatum
+          create :helm_file_metadatum, package_file: package_file, channel: evaluator.channel
+        end
+      end
+    end
+
     trait(:jar) do
       file_fixture { 'spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.jar' }
       file_name { 'my-app-1.0-20180724.124855-1.jar' }
       file_sha1 { '4f0bfa298744d505383fbb57c554d4f5c12d88b3' }
+      file_md5 { '0a7392d24f42f83068fa3767c5310052' }
+      file_sha256 { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
       size { 100.kilobytes }
     end
 
@@ -212,6 +231,8 @@ FactoryBot.define do
       file_fixture { 'spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.pom' }
       file_name { 'my-app-1.0-20180724.124855-1.pom' }
       file_sha1 { '19c975abd49e5102ca6c74a619f21e0cf0351c57' }
+      file_md5 { '0a7392d24f42f83068fa3767c5310052' }
+      file_sha256 { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
       size { 200.kilobytes }
     end
 
@@ -219,6 +240,8 @@ FactoryBot.define do
       file_fixture { 'spec/fixtures/packages/maven/maven-metadata.xml' }
       file_name { 'maven-metadata.xml' }
       file_sha1 { '42b1bdc80de64953b6876f5a8c644f20204011b0' }
+      file_md5 { '0a7392d24f42f83068fa3767c5310052' }
+      file_sha256 { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
       size { 300.kilobytes }
     end
 
@@ -229,6 +252,13 @@ FactoryBot.define do
       verified_at { Date.current }
       verification_checksum { '4437b5775e61455588a7e5187a2e5c58c680694260bbe5501c235ec690d17f83' }
       size { 400.kilobytes }
+    end
+
+    trait(:terraform_module) do
+      file_fixture { 'spec/fixtures/packages/terraform_module/module-system-v1.0.0.tgz' }
+      file_name { 'module-system-v1.0.0.tgz' }
+      file_sha1 { 'abf850accb1947c0c0e3ef4b441b771bb5c9ae3c' }
+      size { 806.bytes }
     end
 
     trait(:nuget) do

@@ -35,6 +35,6 @@ module RequiresWhitelistedMonitoringClient
   end
 
   def render_404
-    render file: Rails.root.join('public', '404'), layout: false, status: '404'
+    render "errors/not_found", layout: "errors", status: :not_found
   end
 end

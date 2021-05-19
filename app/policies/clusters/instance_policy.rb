@@ -13,4 +13,4 @@ module Clusters
   end
 end
 
-Clusters::InstancePolicy.prepend_if_ee('EE::Clusters::InstancePolicy')
+Clusters::InstancePolicy.prepend_mod_with('Clusters::InstancePolicy')

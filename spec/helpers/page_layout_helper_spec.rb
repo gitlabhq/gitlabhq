@@ -232,7 +232,6 @@ RSpec.describe PageLayoutHelper do
         is_expected.to eq({
           current_emoji: '',
           current_message: '',
-          can_set_user_availability: true,
           default_emoji: UserStatus::DEFAULT_EMOJI
         })
       end
@@ -251,7 +250,6 @@ RSpec.describe PageLayoutHelper do
           current_availability: 'busy',
           current_emoji: 'basketball',
           current_message: 'Some message',
-          can_set_user_availability: true,
           default_emoji: UserStatus::DEFAULT_EMOJI
         })
       end

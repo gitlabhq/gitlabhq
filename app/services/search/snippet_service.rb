@@ -12,4 +12,4 @@ module Search
   end
 end
 
-Search::SnippetService.prepend_if_ee('::EE::Search::SnippetService')
+Search::SnippetService.prepend_mod_with('Search::SnippetService')

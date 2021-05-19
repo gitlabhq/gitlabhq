@@ -58,7 +58,7 @@ module Metrics
           target_branch: project.default_branch,
           title: params[:commit_message]
         }
-        merge_request = ::MergeRequests::CreateService.new(project, current_user, merge_request_params).execute
+        merge_request = ::MergeRequests::CreateService.new(project: project, current_user: current_user, params: merge_request_params).execute
 
         if merge_request.persisted?
           success(result.merge(merge_request: Gitlab::UrlBuilder.build(merge_request)))

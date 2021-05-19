@@ -13,7 +13,7 @@ module Gitlab
           return {} unless route
 
           { route: route }
-        rescue
+        rescue StandardError
           # endpoint.route calls env[Grape::Env::GRAPE_ROUTING_ARGS][:route_info]
           # but env[Grape::Env::GRAPE_ROUTING_ARGS] is nil in the case of a 405 response
           # so we're rescuing exceptions and bailing out

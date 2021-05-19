@@ -173,7 +173,7 @@ RSpec.describe 'Merge request > User resolves conflicts', :js do
       end
 
       it "renders bad name without xss issues" do
-        expect(find('.resolve-conflicts-form .resolve-info')).to have_content(bad_branch_name)
+        expect(find('[data-testid="resolve-info"]')).to have_content(bad_branch_name)
       end
     end
   end

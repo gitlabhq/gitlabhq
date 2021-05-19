@@ -66,28 +66,31 @@ RSpec.describe 'Group Packages & Registries settings' do
     it 'automatically saves changes to the server', :js do
       visit_settings_page
 
-      expect(page).to have_content('Allow duplicates')
+      within '[data-testid="maven-settings"]' do
+        expect(page).to have_content('Allow duplicates')
 
-      find('.gl-toggle').click
+        find('.gl-toggle').click
 
-      expect(page).to have_content('Do not allow duplicates')
+        expect(page).to have_content('Do not allow duplicates')
 
-      visit_settings_page
+        visit_settings_page
 
-      expect(page).to have_content('Do not allow duplicates')
+        expect(page).to have_content('Do not allow duplicates')
+      end
     end
 
     it 'shows an error on wrong regex', :js do
       visit_settings_page
 
-      expect(page).to have_content('Allow duplicates')
+      within '[data-testid="maven-settings"]' do
+        expect(page).to have_content('Allow duplicates')
 
-      find('.gl-toggle').click
+        find('.gl-toggle').click
 
-      expect(page).to have_content('Do not allow duplicates')
+        expect(page).to have_content('Do not allow duplicates')
 
-      fill_in 'Exceptions', with: ')'
-
+        fill_in 'Exceptions', with: ')'
+      end
       # simulate blur event
       find('body').click
 
@@ -98,11 +101,13 @@ RSpec.describe 'Group Packages & Registries settings' do
       it 'works correctly', :js do
         visit_sub_group_settings_page
 
-        expect(page).to have_content('Allow duplicates')
+        within '[data-testid="maven-settings"]' do
+          expect(page).to have_content('Allow duplicates')
 
-        find('.gl-toggle').click
+          find('.gl-toggle').click
 
-        expect(page).to have_content('Do not allow duplicates')
+          expect(page).to have_content('Do not allow duplicates')
+        end
       end
     end
   end

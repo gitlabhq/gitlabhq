@@ -130,7 +130,15 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
 
       context 'when the package name matches the exception regex' do
         before do
-          package_settings.update!(maven_duplicate_exception_regex: '.*')
+          package_settings.update!(maven_duplicate_exception_regex: existing_package.name)
+        end
+
+        it_behaves_like 'reuse existing package'
+      end
+
+      context 'when the package version matches the exception regex' do
+        before do
+          package_settings.update!(maven_duplicate_exception_regex: existing_package.version)
         end
 
         it_behaves_like 'reuse existing package'

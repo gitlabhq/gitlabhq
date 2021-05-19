@@ -8,7 +8,7 @@ type: reference, api
 # Merge request approvals API **(PREMIUM)**
 
 Configuration for
-[approvals on all merge requests](../user/project/merge_requests/merge_request_approvals.md)
+[approvals on all merge requests](../user/project/merge_requests/approvals/index.md)
 in the project. Must be authenticated for all endpoints.
 
 ## Project-level MR approvals
@@ -664,7 +664,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
         "web_url": "http://localhost:3000/root"
       }
     }
-  ],
+  ]
 }
 ```
 
@@ -1068,7 +1068,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 | `id`                | integer | yes      | The ID of a project     |
 | `merge_request_iid` | integer | yes      | The IID of MR           |
 | `sha`               | string  | no       | The HEAD of the MR      |
-| `approval_password` **(PREMIUM)** | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/merge_request_approvals.md#require-authentication-when-approving-a-merge-request) is enabled in the project settings. |
+| `approval_password` **(PREMIUM)** | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-authentication-for-approvals) is enabled in the project settings. |
 
 The `sha` parameter works in the same way as
 when [accepting a merge request](merge_requests.md#accept-mr): if it is passed, then it must
@@ -1109,7 +1109,7 @@ does not match, the response code is `409`.
         "web_url": "http://localhost:3000/ryley"
       }
     }
-  ],
+  ]
 }
 ```
 

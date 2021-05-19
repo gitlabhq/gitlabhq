@@ -13,10 +13,10 @@ module SystemNotes
     protected
 
     def create_note(note_summary)
-      note = Note.create(note_summary.note.merge(system: true))
-      note.system_note_metadata = SystemNoteMetadata.new(note_summary.metadata) if note_summary.metadata?
+      note_params = note_summary.note.merge(system: true)
+      note_params[:system_note_metadata] = SystemNoteMetadata.new(note_summary.metadata) if note_summary.metadata?
 
-      note
+      Note.create(note_params)
     end
 
     def content_tag(*args)

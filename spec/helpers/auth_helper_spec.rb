@@ -77,8 +77,8 @@ RSpec.describe AuthHelper do
     end
 
     context 'all providers are enabled to sign in' do
-      it 'returns all the enabled providers from settings' do
-        expect(helper.enabled_button_based_providers).to include('twitter', 'github', 'google_oauth2', 'openid_connect')
+      it 'returns all the enabled providers from settings in expected order' do
+        expect(helper.enabled_button_based_providers).to match(%w[google_oauth2 github twitter openid_connect])
       end
 
       it 'puts google and github in the beginning' do
@@ -99,19 +99,19 @@ RSpec.describe AuthHelper do
     end
   end
 
-  describe 'trial_enabled_button_based_providers' do
-    it 'returns the intersection set of github & google_oauth2 with enabled providers' do
+  describe 'popular_enabled_button_based_providers' do
+    it 'returns the intersection set of popular & enabled providers', :aggregate_failures do
       allow(helper).to receive(:enabled_button_based_providers) { %w(twitter github google_oauth2) }
 
-      expect(helper.trial_enabled_button_based_providers).to eq(%w(github google_oauth2))
+      expect(helper.popular_enabled_button_based_providers).to eq(%w(github google_oauth2))
 
       allow(helper).to receive(:enabled_button_based_providers) { %w(google_oauth2 bitbucket) }
 
-      expect(helper.trial_enabled_button_based_providers).to eq(%w(google_oauth2))
+      expect(helper.popular_enabled_button_based_providers).to eq(%w(google_oauth2))
 
       allow(helper).to receive(:enabled_button_based_providers) { %w(bitbucket) }
 
-      expect(helper.trial_enabled_button_based_providers).to be_empty
+      expect(helper.popular_enabled_button_based_providers).to be_empty
     end
   end
 
@@ -311,6 +311,39 @@ RSpec.describe AuthHelper do
       end
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#auth_app_owner_text' do
+    shared_examples 'generates text with the correct info' do
+      it 'includes the name of the application owner' do
+        auth_app_owner_text = helper.auth_app_owner_text(owner)
+
+        expect(auth_app_owner_text).to include(owner.name)
+        expect(auth_app_owner_text).to include(path_to_owner)
+      end
+    end
+
+    context 'when owner is a user' do
+      let_it_be(:owner) { create(:user) }
+
+      let(:path_to_owner) { user_path(owner) }
+
+      it_behaves_like 'generates text with the correct info'
+    end
+
+    context 'when owner is a group' do
+      let_it_be(:owner) { create(:group) }
+
+      let(:path_to_owner) { user_path(owner) }
+
+      it_behaves_like 'generates text with the correct info'
+    end
+
+    context 'when the user is missing' do
+      it 'returns nil' do
+        expect(helper.auth_app_owner_text(nil)).to be(nil)
+      end
     end
   end
 end

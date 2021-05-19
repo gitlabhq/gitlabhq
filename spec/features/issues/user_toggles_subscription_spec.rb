@@ -32,8 +32,8 @@ RSpec.describe "User toggles subscription", :js do
     let(:project) { create(:project_empty_repo, :public, emails_disabled: true) }
 
     it 'is disabled' do
-      expect(page).to have_content('Notifications have been disabled by the project or group owner')
-      expect(page).not_to have_selector('[data-testid="subscription-toggle"]')
+      expect(page).to have_content('Disabled by project owner')
+      expect(page).to have_button('Notifications', class: 'is-disabled')
     end
   end
 end

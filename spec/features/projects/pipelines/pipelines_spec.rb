@@ -457,22 +457,8 @@ RSpec.describe 'Pipelines', :js do
             visit_project_pipelines
           end
 
-          it 'has artifacts' do
-            expect(page).to have_selector('.build-artifacts')
-          end
-
-          it 'has artifacts download dropdown' do
-            find('.js-pipeline-dropdown-download').click
-
-            expect(page).to have_link(with_artifacts.file_type)
-          end
-
-          it 'has download attribute on download links' do
-            find('.js-pipeline-dropdown-download').click
-            expect(page).to have_selector('a', text: 'Download')
-            page.all('.build-artifacts a', text: 'Download').each do |link|
-              expect(link[:download]).to eq ''
-            end
+          it 'has artifacts dropdown' do
+            expect(page).to have_selector('[data-testid="pipeline-multi-actions-dropdown"]')
           end
         end
 
@@ -488,7 +474,7 @@ RSpec.describe 'Pipelines', :js do
             visit_project_pipelines
           end
 
-          it { expect(page).not_to have_selector('.build-artifacts') }
+          it { expect(page).not_to have_selector('[data-testid="artifact-item"]') }
         end
 
         context 'without artifacts' do
@@ -503,7 +489,7 @@ RSpec.describe 'Pipelines', :js do
             visit_project_pipelines
           end
 
-          it { expect(page).not_to have_selector('.build-artifacts') }
+          it { expect(page).not_to have_selector('[data-testid="artifact-item"]') }
         end
 
         context 'with trace artifact' do
@@ -514,7 +500,7 @@ RSpec.describe 'Pipelines', :js do
           end
 
           it 'does not show trace artifact as artifacts' do
-            expect(page).not_to have_selector('.build-artifacts')
+            expect(page).not_to have_selector('[data-testid="artifact-item"]')
           end
         end
       end
@@ -657,26 +643,28 @@ RSpec.describe 'Pipelines', :js do
       let(:project) { create(:project, :repository) }
 
       before do
-        stub_feature_flags(new_pipeline_form: false)
         visit new_project_pipeline_path(project)
       end
 
       context 'for valid commit', :js do
         before do
           click_button project.default_branch
+          wait_for_requests
 
-          page.within '.dropdown-menu' do
-            click_link 'master'
-          end
+          find('p', text: 'master').click
+          wait_for_requests
         end
 
-        context 'with gitlab-ci.yml' do
+        context 'with gitlab-ci.yml', :js do
           before do
             stub_ci_pipeline_to_return_yaml_file
           end
 
           it 'creates a new pipeline' do
-            expect { click_on 'Run pipeline' }
+            expect do
+              click_on 'Run pipeline'
+              wait_for_requests
+            end
               .to change { Ci::Pipeline.count }.by(1)
 
             expect(Ci::Pipeline.last).to be_web
@@ -684,12 +672,15 @@ RSpec.describe 'Pipelines', :js do
 
           context 'when variables are specified' do
             it 'creates a new pipeline with variables' do
-              page.within '.ci-variable-row-body' do
-                fill_in "Input variable key", with: "key_name"
-                fill_in "Input variable value", with: "value"
+              page.within(find("[data-testid='ci-variable-row']")) do
+                find("[data-testid='pipeline-form-ci-variable-key']").set('key_name')
+                find("[data-testid='pipeline-form-ci-variable-value']").set('value')
               end
 
-              expect { click_on 'Run pipeline' }
+              expect do
+                click_on 'Run pipeline'
+                wait_for_requests
+              end
                 .to change { Ci::Pipeline.count }.by(1)
 
               expect(Ci::Pipeline.last.variables.map { |var| var.slice(:key, :secret_value) })
@@ -701,19 +692,17 @@ RSpec.describe 'Pipelines', :js do
         context 'without gitlab-ci.yml' do
           before do
             click_on 'Run pipeline'
+            wait_for_requests
           end
 
           it { expect(page).to have_content('Missing CI config file') }
           it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file is available when trying again' do
-            click_button project.default_branch
-
             stub_ci_pipeline_to_return_yaml_file
 
-            page.within '.dropdown-menu' do
-              click_link 'master'
+            expect do
+              click_on 'Run pipeline'
+              wait_for_requests
             end
-
-            expect { click_on 'Run pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
           end
         end
@@ -760,14 +749,13 @@ RSpec.describe 'Pipelines', :js do
       let(:project) { create(:project, :repository) }
 
       before do
-        stub_feature_flags(new_pipeline_form: false)
         visit new_project_pipeline_path(project)
       end
 
       describe 'new pipeline page' do
         it 'has field to add a new pipeline' do
-          expect(page).to have_selector('.js-branch-select')
-          expect(find('.js-branch-select')).to have_content project.default_branch
+          expect(page).to have_selector('[data-testid="ref-select"]')
+          expect(find('[data-testid="ref-select"]')).to have_content project.default_branch
           expect(page).to have_content('Run for')
         end
       end
@@ -776,10 +764,10 @@ RSpec.describe 'Pipelines', :js do
         it 'shows filtered pipelines', :js do
           click_button project.default_branch
 
-          page.within '.dropdown-menu' do
-            find('.dropdown-input-field').native.send_keys('fix')
+          page.within '[data-testid="ref-select"]' do
+            find('[data-testid="search-refs"]').native.send_keys('fix')
 
-            page.within '.dropdown-content' do
+            page.within '.gl-new-dropdown-contents' do
               expect(page).to have_content('fix')
             end
           end

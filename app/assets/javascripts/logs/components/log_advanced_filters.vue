@@ -1,8 +1,9 @@
 <script>
 import { GlFilteredSearch } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
+import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import { timeRanges } from '~/vue_shared/constants';
 import { TOKEN_TYPE_POD_NAME } from '../constants';
 import TokenWithLoadingState from './tokens/token_with_loading_state.vue';
@@ -54,7 +55,7 @@ export default {
           type: TOKEN_TYPE_POD_NAME,
           title: s__('Environments|Pod name'),
           token: TokenWithLoadingState,
-          operators: [{ value: '=', description: __('is'), default: 'true' }],
+          operators: OPERATOR_IS_ONLY,
           unique: true,
           options: this.podOptions,
           loading: this.logs.isLoading,

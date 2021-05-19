@@ -21,7 +21,7 @@ When a user registers for an account while this setting is enabled:
 
 A user pending approval:
 
-- Is functionally identical to a [blocked](blocking_unblocking_users.md) user.
+- Is functionally identical to a [blocked](moderate_users.md#blocking-a-user) user.
 - Cannot sign in.
 - Cannot access Git repositories or the GitLab API.
 - Does not receive any notifications from GitLab.

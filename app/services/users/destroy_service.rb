@@ -31,7 +31,7 @@ module Users
       end
 
       if !delete_solo_owned_groups && user.solo_owned_groups.present?
-        user.errors[:base] << 'You must transfer ownership or delete groups before you can remove user'
+        user.errors.add(:base, 'You must transfer ownership or delete groups before you can remove user')
         return user
       end
 
@@ -73,4 +73,4 @@ module Users
   end
 end
 
-Users::DestroyService.prepend_if_ee('EE::Users::DestroyService')
+Users::DestroyService.prepend_mod_with('Users::DestroyService')

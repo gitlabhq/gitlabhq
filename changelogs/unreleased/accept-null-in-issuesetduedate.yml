@@ -1,0 +1,5 @@
+---
+title: Allow issueSetDueDate GraphQL mutation to accept null values
+merge_request: 60139
+author:
+type: added

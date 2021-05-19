@@ -8,9 +8,8 @@ product_category: collection
 value_type: boolean
 status: data_available
 time_frame: none
-data_source:
+data_source: system
 distribution:
 - ce
 tier:
 - free
-skip_validation: true

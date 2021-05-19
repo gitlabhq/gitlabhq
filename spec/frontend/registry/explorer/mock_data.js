@@ -113,7 +113,6 @@ export const containerRepositoryMock = {
   canDelete: true,
   createdAt: '2020-11-03T13:29:21Z',
   updatedAt: '2020-11-03T13:29:21Z',
-  tagsCount: 13,
   expirationPolicyStartedAt: null,
   expirationPolicyCleanupStatus: 'UNSCHEDULED',
   project: {
@@ -160,6 +159,30 @@ export const tagsMock = [
     __typename: 'ContainerRepositoryTag',
   },
 ];
+
+export const imageTagsMock = (nodes = tagsMock) => ({
+  data: {
+    containerRepository: {
+      id: containerRepositoryMock.id,
+      tags: {
+        nodes,
+        pageInfo: { ...tagsPageInfo },
+        __typename: 'ContainerRepositoryTagConnection',
+      },
+      __typename: 'ContainerRepositoryDetails',
+    },
+  },
+});
+
+export const imageTagsCountMock = (override) => ({
+  data: {
+    containerRepository: {
+      id: containerRepositoryMock.id,
+      tagsCount: 13,
+      ...override,
+    },
+  },
+});
 
 export const graphQLImageDetailsMock = (override) => ({
   data: {

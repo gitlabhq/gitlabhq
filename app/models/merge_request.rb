@@ -37,6 +37,7 @@ class MergeRequest < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 
   ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON = {
+    'Ci::CompareMetricsReportsService'     => ->(project) { ::Gitlab::Ci::Features.merge_base_pipeline_for_metrics_comparison?(project) },
     'Ci::CompareCodequalityReportsService' => ->(project) { true }
   }.freeze
 
@@ -381,7 +382,7 @@ class MergeRequest < ApplicationRecord
   scope :review_requested_to, ->(user) do
     where(
       reviewers_subquery
-        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user))
+        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user.id))
         .exists
     )
   end
@@ -389,7 +390,7 @@ class MergeRequest < ApplicationRecord
   scope :no_review_requested_to, ->(user) do
     where(
       reviewers_subquery
-        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user))
+        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user.id))
         .exists
         .not
     )
@@ -1367,11 +1368,11 @@ class MergeRequest < ApplicationRecord
   def environments_for(current_user, latest: false)
     return [] unless diff_head_commit
 
-    envs = EnvironmentsByDeploymentsFinder.new(target_project, current_user,
+    envs = Environments::EnvironmentsByDeploymentsFinder.new(target_project, current_user,
       ref: target_branch, commit: diff_head_commit, with_tags: true, find_latest: latest).execute
 
     if source_project
-      envs.concat EnvironmentsByDeploymentsFinder.new(source_project, current_user,
+      envs.concat Environments::EnvironmentsByDeploymentsFinder.new(source_project, current_user,
         ref: source_branch, commit: diff_head_commit, find_latest: latest).execute
     end
 
@@ -1741,7 +1742,7 @@ class MergeRequest < ApplicationRecord
 
     if project.resolve_outdated_diff_discussions?
       MergeRequests::ResolvedDiscussionNotificationService
-        .new(project, current_user)
+        .new(project: project, current_user: current_user)
         .execute(self)
     end
   end
@@ -1899,6 +1900,12 @@ class MergeRequest < ApplicationRecord
     diff_stats.map(&:path).include?(project.ci_config_path_or_default)
   end
 
+  def context_commits_diff
+    strong_memoize(:context_commits_diff) do
+      ContextCommitsDiff.new(self)
+    end
+  end
+
   private
 
   def missing_report_error(report_type)
@@ -1948,4 +1955,4 @@ class MergeRequest < ApplicationRecord
   end
 end
 
-MergeRequest.prepend_if_ee('::EE::MergeRequest')
+MergeRequest.prepend_mod_with('MergeRequest')

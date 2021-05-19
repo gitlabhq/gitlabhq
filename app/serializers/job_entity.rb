@@ -7,6 +7,7 @@ class JobEntity < Grape::Entity
   expose :name
 
   expose :started?, as: :started
+  expose :complete?, as: :complete
   expose :archived?, as: :archived
 
   # bridge jobs don't have build detail pages

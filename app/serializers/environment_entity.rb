@@ -21,7 +21,7 @@ class EnvironmentEntity < Grape::Entity
   expose :stop_action_available?, as: :has_stop_action
   expose :rollout_status, if: -> (*) { can_read_deploy_board? }, using: RolloutStatusEntity
 
-  expose :upcoming_deployment, expose_nil: false do |environment, ops|
+  expose :upcoming_deployment, if: -> (environment) { environment.upcoming_deployment } do |environment, ops|
     DeploymentEntity.represent(environment.upcoming_deployment,
       ops.merge(except: UNNECESSARY_ENTRIES_FOR_UPCOMING_DEPLOYMENT))
   end
@@ -122,4 +122,4 @@ class EnvironmentEntity < Grape::Entity
   end
 end
 
-EnvironmentEntity.prepend_if_ee('::EE::EnvironmentEntity')
+EnvironmentEntity.prepend_mod_with('EnvironmentEntity')

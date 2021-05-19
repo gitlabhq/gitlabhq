@@ -28,9 +28,14 @@ export default {
       'mavenSetupXml',
       'gradleGroovyInstalCommand',
       'gradleGroovyAddSourceCommand',
+      'gradleKotlinInstalCommand',
+      'gradleKotlinAddSourceCommand',
     ]),
     showMaven() {
       return this.instructionType === 'maven';
+    },
+    showGroovy() {
+      return this.instructionType === 'groovy';
     },
   },
   i18n: {
@@ -47,8 +52,9 @@ export default {
   trackingActions: { ...TrackingActions },
   TrackingLabels,
   installOptions: [
-    { value: 'maven', label: s__('PackageRegistry|Show Maven commands') },
-    { value: 'groovy', label: s__('PackageRegistry|Show Gradle Groovy DSL commands') },
+    { value: 'maven', label: s__('PackageRegistry|Maven XML') },
+    { value: 'groovy', label: s__('PackageRegistry|Gradle Groovy DSL') },
+    { value: 'kotlin', label: s__('PackageRegistry|Gradle Kotlin DSL') },
   ],
 };
 </script>
@@ -107,7 +113,7 @@ export default {
         </template>
       </gl-sprintf>
     </template>
-    <template v-else>
+    <template v-else-if="showGroovy">
       <code-instruction
         class="gl-mb-5"
         :label="s__('PackageRegistry|Gradle Groovy DSL install command')"
@@ -121,6 +127,24 @@ export default {
         :instruction="gradleGroovyAddSourceCommand"
         :copy-text="s__('PackageRegistry|Copy add Gradle Groovy DSL repository command')"
         :tracking-action="$options.trackingActions.COPY_GRADLE_ADD_TO_SOURCE_COMMAND"
+        :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
+        multiline
+      />
+    </template>
+    <template v-else>
+      <code-instruction
+        class="gl-mb-5"
+        :label="s__('PackageRegistry|Gradle Kotlin DSL install command')"
+        :instruction="gradleKotlinInstalCommand"
+        :copy-text="s__('PackageRegistry|Copy Gradle Kotlin DSL install command')"
+        :tracking-action="$options.trackingActions.COPY_KOTLIN_INSTALL_COMMAND"
+        :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
+      />
+      <code-instruction
+        :label="s__('PackageRegistry|Add Gradle Kotlin DSL repository command')"
+        :instruction="gradleKotlinAddSourceCommand"
+        :copy-text="s__('PackageRegistry|Copy add Gradle Kotlin DSL repository command')"
+        :tracking-action="$options.trackingActions.COPY_KOTLIN_ADD_TO_SOURCE_COMMAND"
         :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
         multiline
       />

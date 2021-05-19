@@ -25,4 +25,4 @@ class MemberUserEntity < UserEntity
   end
 end
 
-MemberUserEntity.prepend_if_ee('EE::MemberUserEntity')
+MemberUserEntity.prepend_mod_with('MemberUserEntity')

@@ -3,6 +3,7 @@ stage: none
 group: Development
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
 description: "Understand what 'GitLab features deployed behind flags' means."
+layout: 'feature_flags'
 ---
 
 # GitLab functionality may be limited by feature flags

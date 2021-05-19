@@ -8,7 +8,7 @@ describe('Commits header component', () => {
     wrapper = shallowMount(CommitsHeader, {
       propsData: {
         isSquashEnabled: false,
-        targetBranch: 'master',
+        targetBranch: 'main',
         commitsCount: 5,
         isFastForwardEnabled: false,
         ...props,
@@ -94,7 +94,7 @@ describe('Commits header component', () => {
     it('has correct target branch displayed', () => {
       createComponent();
 
-      expect(findTargetBranchMessage().text()).toBe('master');
+      expect(findTargetBranchMessage().text()).toBe('main');
     });
 
     it('does has merge commit part of the message', () => {

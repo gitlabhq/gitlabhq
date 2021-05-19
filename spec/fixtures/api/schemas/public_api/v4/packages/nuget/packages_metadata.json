@@ -2,7 +2,6 @@
   "type": "object",
   "required": ["count", "items"],
   "properties": {
-    "count": { "const": 0 },
     "items": {
       "type": "array",
       "items": {

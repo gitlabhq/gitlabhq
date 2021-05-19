@@ -8,10 +8,7 @@ module Banzai
         include Gitlab::Utils::StrongMemoize
 
         self.reference_type = :milestone
-
-        def self.object_class
-          Milestone
-        end
+        self.object_class   = Milestone
 
         # Links to project milestones contain the IID, but when we're handling
         # 'regular' references, we need to use the global ID to disambiguate
@@ -70,7 +67,7 @@ module Banzai
         end
 
         def find_milestone(project_ref, namespace_ref, milestone_id, milestone_name)
-          project_path = full_project_path(namespace_ref, project_ref)
+          project_path = reference_cache.full_project_path(namespace_ref, project_ref)
 
           # Returns group if project is not found by path
           parent = parent_from_ref(project_path)

@@ -5,7 +5,7 @@ module API
     module Runner
       include Gitlab::Utils::StrongMemoize
 
-      prepend_if_ee('EE::API::Helpers::Runner') # rubocop: disable Cop/InjectEnterpriseEditionModule
+      prepend_mod_with('API::Helpers::Runner') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
       JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
       JOB_TOKEN_PARAM = :token
@@ -86,6 +86,10 @@ module API
           user: -> { current_job.user },
           project: -> { current_job.project }
         )
+      end
+
+      def track_ci_minutes_usage!(_build, _runner)
+        # noop: overridden in EE
       end
     end
   end

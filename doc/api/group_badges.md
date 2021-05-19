@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Manage
+group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -192,6 +192,6 @@ Example response:
   "link_url": "http://example.com/ci_status.svg?project=%{project_path}&ref=%{default_branch}",
   "image_url": "https://shields.io/my/badge",
   "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=master",
-  "rendered_image_url": "https://shields.io/my/badge",
+  "rendered_image_url": "https://shields.io/my/badge"
 }
 ```

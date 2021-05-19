@@ -61,4 +61,4 @@ module WikiPages
   end
 end
 
-WikiPages::BaseService.prepend_if_ee('EE::WikiPages::BaseService')
+WikiPages::BaseService.prepend_mod_with('WikiPages::BaseService')

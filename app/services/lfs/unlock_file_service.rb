@@ -12,7 +12,7 @@ module Lfs
       error(ex.message, 403)
     rescue ActiveRecord::RecordNotFound
       error(_('Lock not found'), 404)
-    rescue => ex
+    rescue StandardError => ex
       error(ex.message, 500)
     end
 
@@ -46,4 +46,4 @@ module Lfs
   end
 end
 
-Lfs::UnlockFileService.prepend_if_ee('EE::Lfs::UnlockFileService')
+Lfs::UnlockFileService.prepend_mod_with('Lfs::UnlockFileService')

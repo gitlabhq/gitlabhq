@@ -50,7 +50,7 @@ export default {
 </script>
 
 <template>
-  <gl-tabs>
+  <gl-tabs content-class="gl-pb-0">
     <gl-tab
       v-for="tab in tabs"
       :key="tab.text"

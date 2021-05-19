@@ -20,15 +20,34 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
   end
 
   describe '.default_settings_hash' do
-    it 'returns empty defaults' do
+    it 'returns defaults for all keys' do
       settings = described_class.default_settings_hash
 
-      expect(settings['enabled']).to be_falsey
+      expect(settings['enabled']).to be_truthy
       expect(settings['report_only']).to be_falsey
 
-      described_class::DIRECTIVES.each do |directive|
-        expect(settings['directives'].has_key?(directive)).to be_truthy
-        expect(settings['directives'][directive]).to be_nil
+      directives = settings['directives']
+      directive_names = (described_class::DIRECTIVES - ['report_uri'])
+      directive_names.each do |directive|
+        expect(directives.has_key?(directive)).to be_truthy
+        expect(directives[directive]).to be_truthy
+      end
+
+      expect(directives.has_key?('report_uri')).to be_truthy
+      expect(directives['report_uri']).to be_nil
+    end
+
+    context 'when GITLAB_CDN_HOST is set' do
+      before do
+        stub_env('GITLAB_CDN_HOST', 'https://example.com')
+      end
+
+      it 'adds GITLAB_CDN_HOST to CSP' do
+        settings = described_class.default_settings_hash
+        directives = settings['directives']
+
+        expect(directives['script_src']).to eq("'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.recaptcha.net https://apis.google.com https://example.com")
+        expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://example.com")
       end
     end
   end

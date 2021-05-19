@@ -8,7 +8,13 @@ type: howto, reference
 # Deploy Boards **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
-> - [Moved](<https://gitlab.com/gitlab-org/gitlab/-/issues/212320>) to GitLab Free in 13.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) to GitLab Free in 13.8.
+> - In GitLab 13.5 and earlier, apps that consist of multiple deployments are shown as
+>   duplicates on the deploy board. This is [fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/8463)
+>   in GitLab 13.6.
+> - In GitLab 13.11 and earlier, environments in folders do not show deploy boards.
+>   This is [fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60525) in
+>   GitLab 13.12.
 
 GitLab Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../ci/environments/index.md) running on [Kubernetes](https://kubernetes.io), displaying the status
@@ -45,10 +51,6 @@ knowledge. In particular, you should be familiar with:
 - [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
 - [Kubernetes namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
 - [Kubernetes canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
-
-In GitLab 13.5 and earlier, apps that consist of multiple deployments are shown as
-duplicates on the deploy board. This is [fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/8463)
-in GitLab 13.6.
 
 ## Use cases
 

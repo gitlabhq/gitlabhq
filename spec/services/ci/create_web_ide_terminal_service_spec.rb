@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::CreateWebIdeTerminalService do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:ref) { 'master' }
 
   describe '#execute' do
@@ -19,6 +20,13 @@ RSpec.describe Ci::CreateWebIdeTerminalService do
           expect(subject[:pipeline]).to be_persisted
           expect(subject[:pipeline].stages.count).to eq(1)
           expect(subject[:pipeline].builds.count).to eq(1)
+        end
+
+        it 'calls ensure_project_iid explicitly' do
+          expect_next_instance_of(Ci::Pipeline) do |instance|
+            expect(instance).to receive(:ensure_project_iid!).twice
+          end
+          subject
         end
       end
 

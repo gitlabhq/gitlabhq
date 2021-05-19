@@ -26,13 +26,9 @@ module Gitlab
         if matches.one?
           matches.first
         elsif matches.none?
-          raise UnknownProcessError.new(
-            "Failed to identify runtime for process #{Process.pid} (#{$0})"
-          )
+          raise UnknownProcessError, "Failed to identify runtime for process #{Process.pid} (#{$0})"
         else
-          raise AmbiguousProcessError.new(
-            "Ambiguous runtime #{matches} for process #{Process.pid} (#{$0})"
-          )
+          raise AmbiguousProcessError, "Ambiguous runtime #{matches} for process #{Process.pid} (#{$0})"
         end
       end
 
@@ -91,7 +87,7 @@ module Gitlab
       def max_threads
         threads = 1 # main thread
 
-        if puma?
+        if puma? && Puma.respond_to?(:cli_config)
           threads += Puma.cli_config.options[:max_threads]
         elsif sidekiq?
           # An extra thread for the poller in Sidekiq Cron:

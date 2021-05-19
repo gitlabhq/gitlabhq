@@ -267,3 +267,19 @@ any other Markdown text field in GitLab by
 You can embed both [GitLab-hosted metrics](../metrics/embed.md) and
 [Grafana metrics](../metrics/embed_grafana.md) in incidents and issue
 templates.
+
+### Automatically close incidents via recovery alerts
+
+> - [Introduced for Prometheus Integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13401) in GitLab 12.5.
+> - [Introduced for HTTP Integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
+
+With Maintainer or higher [permissions](../../user/permissions.md), you can enable
+ GitLab to close an incident automatically when a **Recovery Alert** is received:
+
+1. Navigate to **Settings > Operations > Incidents** and expand **Incidents**.
+1. Check the **Automatically close associated Incident** checkbox.
+1. Click **Save changes**.
+
+When GitLab receives a **Recovery Alert**, it closes the associated incident.
+This action is recorded as a system message on the incident indicating that it
+was closed automatically by the GitLab Alert bot.

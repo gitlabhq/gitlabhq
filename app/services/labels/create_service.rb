@@ -26,4 +26,4 @@ module Labels
   end
 end
 
-Labels::CreateService.prepend_if_ee('EE::Labels::CreateService')
+Labels::CreateService.prepend_mod_with('Labels::CreateService')

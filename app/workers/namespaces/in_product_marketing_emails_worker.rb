@@ -3,9 +3,12 @@
 module Namespaces
   class InProductMarketingEmailsWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     feature_category :subgroups
+    tags :exclude_from_kubernetes
     urgency :low
 
     def perform
@@ -32,4 +35,4 @@ module Namespaces
   end
 end
 
-Namespaces::InProductMarketingEmailsWorker.prepend_if_ee('EE::Namespaces::InProductMarketingEmailsWorker')
+Namespaces::InProductMarketingEmailsWorker.prepend_mod_with('Namespaces::InProductMarketingEmailsWorker')

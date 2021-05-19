@@ -11,11 +11,19 @@ module VersionCheckHelper
 
   def link_to_version
     if Gitlab.pre_release?
-      commit_link = link_to(Gitlab.revision, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', source_code_project, Gitlab.revision))
+      commit_link = link_to(Gitlab.revision, source_host_url + namespace_project_commits_path(source_code_group, source_code_project, Gitlab.revision))
       [Gitlab::VERSION, content_tag(:small, commit_link)].join(' ').html_safe
     else
-      link_to Gitlab::VERSION, Gitlab::COM_URL + namespace_project_tag_path('gitlab-org', source_code_project, "v#{Gitlab::VERSION}")
+      link_to Gitlab::VERSION, source_host_url + namespace_project_tag_path(source_code_group, source_code_project, "v#{Gitlab::VERSION}")
     end
+  end
+
+  def source_host_url
+    Gitlab::COM_URL
+  end
+
+  def source_code_group
+    'gitlab-org'
   end
 
   def source_code_project
@@ -23,4 +31,4 @@ module VersionCheckHelper
   end
 end
 
-VersionCheckHelper.prepend_if_ee('EE::VersionCheckHelper')
+VersionCheckHelper.prepend_mod

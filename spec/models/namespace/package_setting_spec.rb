@@ -14,9 +14,12 @@ RSpec.describe Namespace::PackageSetting do
       it { is_expected.to allow_value(true).for(:maven_duplicates_allowed) }
       it { is_expected.to allow_value(false).for(:maven_duplicates_allowed) }
       it { is_expected.not_to allow_value(nil).for(:maven_duplicates_allowed) }
+      it { is_expected.to allow_value(true).for(:generic_duplicates_allowed) }
+      it { is_expected.to allow_value(false).for(:generic_duplicates_allowed) }
+      it { is_expected.not_to allow_value(nil).for(:generic_duplicates_allowed) }
     end
 
-    describe '#maven_duplicate_exception_regex' do
+    describe 'regex values' do
       let_it_be(:package_settings) { create(:namespace_package_setting) }
 
       subject { package_settings }
@@ -24,12 +27,14 @@ RSpec.describe Namespace::PackageSetting do
       valid_regexps = %w[SNAPSHOT .* v.+ v10.1.* (?:v.+|SNAPSHOT|TEMP)]
       invalid_regexps = ['[', '(?:v.+|SNAPSHOT|TEMP']
 
-      valid_regexps.each do |valid_regexp|
-        it { is_expected.to allow_value(valid_regexp).for(:maven_duplicate_exception_regex) }
-      end
+      [:maven_duplicate_exception_regex, :generic_duplicate_exception_regex].each do |attribute|
+        valid_regexps.each do |valid_regexp|
+          it { is_expected.to allow_value(valid_regexp).for(attribute) }
+        end
 
-      invalid_regexps.each do |invalid_regexp|
-        it { is_expected.not_to allow_value(invalid_regexp).for(:maven_duplicate_exception_regex) }
+        invalid_regexps.each do |invalid_regexp|
+          it { is_expected.not_to allow_value(invalid_regexp).for(attribute) }
+        end
       end
     end
   end
@@ -41,8 +46,8 @@ RSpec.describe Namespace::PackageSetting do
 
     context 'package types with package_settings' do
       # As more package types gain settings they will be added to this list
-      [:maven_package].each do |format|
-        let_it_be(:package) { create(format) } # rubocop:disable Rails/SaveBang
+      [:maven_package, :generic_package].each do |format|
+        let_it_be(:package) { create(format, name: 'foo', version: 'beta') } # rubocop:disable Rails/SaveBang
         let_it_be(:package_type) { package.package_type }
         let_it_be(:package_setting) { package.project.namespace.package_settings }
 
@@ -50,6 +55,8 @@ RSpec.describe Namespace::PackageSetting do
           true  | ''   | true
           false | ''   | false
           false | '.*' | true
+          false | 'fo.*' | true
+          false | 'be.*' | true
         end
 
         with_them do
@@ -68,7 +75,7 @@ RSpec.describe Namespace::PackageSetting do
     end
 
     context 'package types without package_settings' do
-      [:npm_package, :conan_package, :nuget_package, :pypi_package, :composer_package, :generic_package, :golang_package, :debian_package].each do |format|
+      [:npm_package, :conan_package, :nuget_package, :pypi_package, :composer_package, :golang_package, :debian_package].each do |format|
         let_it_be(:package) { create(format) } # rubocop:disable Rails/SaveBang
         let_it_be(:package_setting) { package.project.namespace.package_settings }
 

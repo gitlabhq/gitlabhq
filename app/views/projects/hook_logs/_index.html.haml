@@ -4,7 +4,7 @@
       Recent Deliveries
     %p When an event in GitLab triggers a webhook, you can use the request details to figure out if something went wrong.
   .col-lg-9
-    - if hook_logs.any?
+    - if hook_logs.present?
       %table.table
         %thead
           %tr

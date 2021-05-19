@@ -6,8 +6,8 @@ module Gitlab
       class CodequalityMrDiff
         attr_reader :files
 
-        def initialize(raw_report)
-          @raw_report = raw_report
+        def initialize(new_errors)
+          @new_errors = new_errors
           @files = {}
           build_report!
         end
@@ -15,7 +15,7 @@ module Gitlab
         private
 
         def build_report!
-          codequality_files = @raw_report.all_degradations.each_with_object({}) do |degradation, codequality_files|
+          codequality_files = @new_errors.each_with_object({}) do |degradation, codequality_files|
             unless codequality_files[degradation.dig(:location, :path)].present?
               codequality_files[degradation.dig(:location, :path)] = []
             end

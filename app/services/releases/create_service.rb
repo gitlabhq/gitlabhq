@@ -57,7 +57,7 @@ module Releases
       create_evidence!(release, evidence_pipeline)
 
       success(tag: tag, release: release)
-    rescue => e
+    rescue StandardError => e
       error(e.message, 400)
     end
 

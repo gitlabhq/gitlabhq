@@ -4,6 +4,8 @@ module Gitlab
   module JiraImport
     class AdvanceStageWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
+
+      sidekiq_options retry: 3
       include QueueOptions
       include ::Gitlab::Import::AdvanceStage
 

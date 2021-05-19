@@ -10,7 +10,7 @@ module Storage
       proj_with_tags = first_project_with_container_registry_tags
 
       if proj_with_tags
-        raise Gitlab::UpdatePathError.new("Namespace #{name} (#{id}) cannot be moved because at least one project (e.g. #{proj_with_tags.name} (#{proj_with_tags.id})) has tags in container registry")
+        raise Gitlab::UpdatePathError, "Namespace #{name} (#{id}) cannot be moved because at least one project (e.g. #{proj_with_tags.name} (#{proj_with_tags.id})) has tags in container registry"
       end
 
       parent_was = if saved_change_to_parent? && parent_id_before_last_save.present?
@@ -48,7 +48,7 @@ module Storage
       begin
         send_update_instructions
         write_projects_repository_config
-      rescue => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e,
           full_path_before_last_save: full_path_before_last_save,
           full_path: full_path,
@@ -83,7 +83,7 @@ module Storage
 
             # if we cannot move namespace directory we should rollback
             # db changes in order to prevent out of sync between db and fs
-            raise Gitlab::UpdatePathError.new('namespace directory cannot be moved')
+            raise Gitlab::UpdatePathError, 'namespace directory cannot be moved'
           end
         end
       end

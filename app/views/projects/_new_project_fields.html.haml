@@ -8,7 +8,7 @@
   .form-group.project-name.col-sm-12
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
-    = f.text_field :name, placeholder: "My awesome project", class: "form-control input-lg", autofocus: true, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
+    = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", autofocus: true, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
       %span= s_("Project URL")
@@ -33,7 +33,7 @@
   .form-group.project-path.col-sm-6
     = f.label :path, class: 'label-bold' do
       %span= _("Project slug")
-    = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", required: true, aria: { required: true }
+    = f.text_field :path, placeholder: "my-awesome-project", class: "form-control gl-form-input", required: true, aria: { required: true }
 - if current_user.can_create_group?
   .form-text.text-muted
     - link_start_group_path = '<a href="%{path}">' % { path: new_group_path }
@@ -43,7 +43,7 @@
 .form-group
   = f.label :description, class: 'label-bold' do
     = s_('ProjectsNew|Project description %{tag_start}(optional)%{tag_end}').html_safe % { tag_start: '<span>'.html_safe, tag_end: '</span>'.html_safe }
-  = f.text_area :description, placeholder: s_('ProjectsNew|Description format'), class: "form-control", rows: 3, maxlength: 250, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_description", track_value: "" }
+  = f.text_area :description, placeholder: s_('ProjectsNew|Description format'), class: "form-control gl-form-input", rows: 3, maxlength: 250, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_description", track_value: "" }
 
 = f.label :visibility_level, class: 'label-bold' do
   = s_('ProjectsNew|Visibility Level')

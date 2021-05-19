@@ -4,8 +4,11 @@ module JiraConnect
   class SyncProjectWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     queue_namespace :jira_connect
     feature_category :integrations
+    tags :exclude_from_kubernetes
     idempotent!
     worker_has_external_dependencies!
 

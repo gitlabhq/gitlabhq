@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe OpenProjectTrackerData do
-  describe 'Associations' do
-    it { is_expected.to belong_to(:service) }
+  describe 'associations' do
+    it { is_expected.to belong_to(:integration) }
   end
 
   describe 'closed_status_id' do

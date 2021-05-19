@@ -31,7 +31,7 @@ module Pages
       end
 
       success(archive_path: output_file, entries_count: entries_count)
-    rescue => e
+    rescue StandardError => e
       FileUtils.rm_f(output_file) if output_file
       raise e
     end

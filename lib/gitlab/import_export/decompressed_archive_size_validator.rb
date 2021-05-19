@@ -61,7 +61,7 @@ module Gitlab
         Process.kill(-1, pgrp) if pgrp
 
         false
-      rescue => e
+      rescue StandardError => e
         log_error(e.message)
 
         Process.kill(-1, pgrp) if pgrp

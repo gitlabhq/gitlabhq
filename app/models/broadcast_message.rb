@@ -106,6 +106,14 @@ class BroadcastMessage < ApplicationRecord
     return false if current_path.blank? && target_path.present?
     return true if current_path.blank? || target_path.blank?
 
+    # Ensure paths are consistent across callers.
+    # This fixes a mismatch between requests in the GUI and CLI
+    #
+    # This has to be reassigned due to frozen strings being provided.
+    unless current_path.start_with?("/")
+      current_path = "/#{current_path}"
+    end
+
     escaped = Regexp.escape(target_path).gsub('\\*', '.*')
     regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
 
@@ -119,4 +127,4 @@ class BroadcastMessage < ApplicationRecord
   end
 end
 
-BroadcastMessage.prepend_if_ee('EE::BroadcastMessage')
+BroadcastMessage.prepend_mod_with('BroadcastMessage')

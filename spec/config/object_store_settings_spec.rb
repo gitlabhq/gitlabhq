@@ -74,6 +74,7 @@ RSpec.describe ObjectStoreSettings do
         expect(settings.artifacts['object_store']['proxy_download']).to be false
         expect(settings.artifacts['object_store']['remote_directory']).to eq('artifacts')
         expect(settings.artifacts['object_store']['consolidated_settings']).to be true
+        expect(settings.artifacts).to eq(settings['artifacts'])
 
         expect(settings.lfs['enabled']).to be true
         expect(settings.lfs['object_store']['enabled']).to be true
@@ -83,15 +84,18 @@ RSpec.describe ObjectStoreSettings do
         expect(settings.lfs['object_store']['proxy_download']).to be true
         expect(settings.lfs['object_store']['remote_directory']).to eq('lfs-objects')
         expect(settings.lfs['object_store']['consolidated_settings']).to be true
+        expect(settings.lfs).to eq(settings['lfs'])
 
         expect(settings.pages['enabled']).to be true
         expect(settings.pages['object_store']['enabled']).to be true
         expect(settings.pages['object_store']['connection']).to eq(connection)
         expect(settings.pages['object_store']['remote_directory']).to eq('pages')
         expect(settings.pages['object_store']['consolidated_settings']).to be true
+        expect(settings.pages).to eq(settings['pages'])
 
         expect(settings.external_diffs['enabled']).to be false
         expect(settings.external_diffs['object_store']).to be_nil
+        expect(settings.external_diffs).to eq(settings['external_diffs'])
       end
 
       it 'raises an error when a bucket is missing' do

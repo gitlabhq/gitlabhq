@@ -52,7 +52,7 @@ module Gitlab
         @importable.members.destroy_all # rubocop: disable Cop/DestroyAll
 
         relation_class.create!(user: @user, access_level: highest_access_level, source_id: @importable.id, importing: true)
-      rescue => e
+      rescue StandardError => e
         raise e, "Error adding importer user to #{@importable.class} members. #{e.message}"
       end
 

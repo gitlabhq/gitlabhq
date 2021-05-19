@@ -4,7 +4,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages administration for source installations
+# GitLab Pages administration for source installations **(FREE SELF)**
 
 NOTE:
 Before attempting to enable GitLab Pages, first make sure you have

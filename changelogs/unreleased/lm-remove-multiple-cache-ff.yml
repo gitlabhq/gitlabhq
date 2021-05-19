@@ -1,0 +1,5 @@
+---
+title: Removes multiple_cache_per_job feature flag and associated code
+merge_request:
+author: Laura Montemayor
+type: removed

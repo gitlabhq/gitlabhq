@@ -7,7 +7,7 @@
 
       .user-info
         .block-truncated
-          = link_to user.name, user_path(user), class: 'user js-user-link', data: { user_id: user.id }
+          = link_to user.name, user_path(user), class: 'user js-user-link', data: { user_id: user.id, qa_selector: 'user_link', qa_username: user.username }
 
         .block-truncated
           %span.gl-text-gray-900= user.to_reference

@@ -890,8 +890,8 @@ helper method. For example:
 describe GraphQL::Query, type: :request do
   include GraphqlHelpers
 
-  all_releases_query_path = 'releases/queries/all_releases.query.graphql'
-  fragment_paths = ['releases/queries/release.fragment.graphql']
+  all_releases_query_path = 'releases/graphql/queries/all_releases.query.graphql'
+  fragment_paths = ['releases/graphql/fragments/release.fragment.graphql']
 
   before(:all) do
     clean_frontend_fixtures('graphql/releases/')
@@ -908,7 +908,7 @@ end
 ```
 
 This will create a new fixture located at
-`tmp/tests/frontend/fixtures-ee/graphql/releases/queries/all_releases.query.graphql.json`.
+`tmp/tests/frontend/fixtures-ee/graphql/releases/graphql/queries/all_releases.query.graphql.json`.
 
 You will need to provide the paths to all fragments used by the query.
 `get_graphql_query_as_string` reads all of the provided file paths and returns
@@ -1151,8 +1151,8 @@ Both functions run `callback` on the next tick after the requests finish (using 
 
 ### `shallowMountExtended` and `mountExtended`
 
-The `shallowMountExtended` and `mountExtended` utilities provide you with the ability to perform 
-any of the available [DOM Testing Library queries](https://testing-library.com/docs/queries/about) 
+The `shallowMountExtended` and `mountExtended` utilities provide you with the ability to perform
+any of the available [DOM Testing Library queries](https://testing-library.com/docs/queries/about)
 by prefixing them with `find` or `findAll`.
 
 ```javascript
@@ -1302,7 +1302,7 @@ A good guideline to follow: the more complex the component you may want to steer
 
 - To capture large data structures just to have something
 - To just have some kind of test written
-- To capture highly volatile ui elements without stubbing them (Think of GitLab UI version updates)
+- To capture highly volatile UI elements without stubbing them (Think of GitLab UI version updates)
 
 ---
 

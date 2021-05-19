@@ -122,12 +122,10 @@ module Ci
 
     private
 
-    def calculate_duration
-      if started_at && finished_at
-        finished_at - started_at
-      elsif started_at
-        Time.current - started_at
-      end
+    def calculate_duration(start_time, end_time)
+      return unless start_time
+
+      (end_time || Time.current) - start_time
     end
   end
 end

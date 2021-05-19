@@ -1,7 +1,7 @@
 = form_tag request.path, method: :get do |f|
   = search_field_tag :search_title, params[:search_title],
     placeholder: _('Filter by milestone name'),
-    class: 'form-control input-short',
+    class: 'form-control gl-form-input input-short',
     spellcheck: false
   = hidden_field_tag :state, params[:state]
   = hidden_field_tag :sort, params[:sort]

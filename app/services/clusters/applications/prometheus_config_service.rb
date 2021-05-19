@@ -96,8 +96,6 @@ module Clusters
       end
 
       def alert_manager_token
-        app.generate_alert_manager_token!
-
         app.alert_manager_token
       end
 

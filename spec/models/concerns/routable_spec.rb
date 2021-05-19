@@ -62,7 +62,7 @@ RSpec.describe Routable do
   end
 end
 
-RSpec.describe Group, 'Routable' do
+RSpec.describe Group, 'Routable', :with_clean_rails_cache do
   let_it_be_with_reload(:group) { create(:group, name: 'foo') }
   let_it_be(:nested_group) { create(:group, parent: group) }
 
@@ -165,19 +165,63 @@ RSpec.describe Group, 'Routable' do
     end
   end
 
+  describe '#parent_loaded?' do
+    before do
+      group.parent = create(:group)
+      group.save!
+
+      group.reload
+    end
+
+    it 'is false when the parent is not loaded' do
+      expect(group.parent_loaded?).to be_falsey
+    end
+
+    it 'is true when the parent is loaded' do
+      group.parent
+
+      expect(group.parent_loaded?).to be_truthy
+    end
+  end
+
+  describe '#route_loaded?' do
+    it 'is false when the route is not loaded' do
+      expect(group.route_loaded?).to be_falsey
+    end
+
+    it 'is true when the route is loaded' do
+      group.route
+
+      expect(group.route_loaded?).to be_truthy
+    end
+  end
+
   describe '#full_path' do
     it { expect(group.full_path).to eq(group.path) }
     it { expect(nested_group.full_path).to eq("#{group.full_path}/#{nested_group.path}") }
+
+    it 'hits the cache when not preloaded' do
+      forcibly_hit_cached_lookup(nested_group, :full_path)
+
+      expect(nested_group.full_path).to eq("#{group.full_path}/#{nested_group.path}")
+    end
   end
 
   describe '#full_name' do
     it { expect(group.full_name).to eq(group.name) }
     it { expect(nested_group.full_name).to eq("#{group.name} / #{nested_group.name}") }
+
+    it 'hits the cache when not preloaded' do
+      forcibly_hit_cached_lookup(nested_group, :full_name)
+
+      expect(nested_group.full_name).to eq("#{group.name} / #{nested_group.name}")
+    end
   end
 end
 
-RSpec.describe Project, 'Routable' do
-  let_it_be(:project) { create(:project) }
+RSpec.describe Project, 'Routable', :with_clean_rails_cache do
+  let_it_be(:namespace) { create(:namespace) }
+  let_it_be(:project) { create(:project, namespace: namespace) }
 
   it_behaves_like '.find_by_full_path' do
     let_it_be(:record) { project }
@@ -192,10 +236,30 @@ RSpec.describe Project, 'Routable' do
   end
 
   describe '#full_path' do
-    it { expect(project.full_path).to eq "#{project.namespace.full_path}/#{project.path}" }
+    it { expect(project.full_path).to eq "#{namespace.full_path}/#{project.path}" }
+
+    it 'hits the cache when not preloaded' do
+      forcibly_hit_cached_lookup(project, :full_path)
+
+      expect(project.full_path).to eq("#{namespace.full_path}/#{project.path}")
+    end
   end
 
   describe '#full_name' do
-    it { expect(project.full_name).to eq "#{project.namespace.human_name} / #{project.name}" }
+    it { expect(project.full_name).to eq "#{namespace.human_name} / #{project.name}" }
+
+    it 'hits the cache when not preloaded' do
+      forcibly_hit_cached_lookup(project, :full_name)
+
+      expect(project.full_name).to eq("#{namespace.human_name} / #{project.name}")
+    end
   end
+end
+
+def forcibly_hit_cached_lookup(record, method)
+  stub_feature_flags(cached_route_lookups: true)
+  expect(record).to receive(:persisted?).and_return(true)
+  expect(record).to receive(:route_loaded?).and_return(false)
+  expect(record).to receive(:parent_loaded?).and_return(false)
+  expect(Gitlab::Cache).to receive(:fetch_once).with([record.cache_key, method]).and_call_original
 end

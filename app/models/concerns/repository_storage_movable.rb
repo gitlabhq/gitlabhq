@@ -50,7 +50,7 @@ module RepositoryStorageMovable
 
         begin
           storage_move.container.set_repository_read_only!(skip_git_transfer_check: true)
-        rescue => err
+        rescue StandardError => err
           storage_move.add_error(err.message)
           next false
         end
@@ -114,7 +114,7 @@ module RepositoryStorageMovable
   private
 
   def container_repository_writable
-    add_error(_('is read only')) if container&.repository_read_only?
+    add_error(_('is read-only')) if container&.repository_read_only?
   end
 
   def error_key

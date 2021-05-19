@@ -71,7 +71,7 @@ class CleanupGroupImportStatesWithNullUserId < ActiveRecord::Migration[6.0]
       end
     end
 
-    GroupImportState.where('user_id IS NULL').delete_all
+    GroupImportState.where(user_id: nil).delete_all
   end
 
   def down

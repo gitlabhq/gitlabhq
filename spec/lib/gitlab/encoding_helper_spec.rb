@@ -216,4 +216,63 @@ RSpec.describe Gitlab::EncodingHelper do
       expect(test).not_to eq(io_stream)
     end
   end
+
+  describe '#detect_encoding' do
+    subject { ext_class.detect_encoding(data, **kwargs) }
+
+    let(:data) { binary_string }
+    let(:kwargs) { {} }
+
+    shared_examples 'detects encoding' do
+      it { is_expected.to be_a(Hash) }
+
+      it 'correctly detects the binary' do
+        expect(subject[:type]).to eq(:binary)
+      end
+
+      context 'data is nil' do
+        let(:data) { nil }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'limit is provided' do
+        let(:kwargs) do
+          { limit: 10 }
+        end
+
+        it 'correctly detects the binary' do
+          expect(subject[:type]).to eq(:binary)
+        end
+      end
+    end
+
+    context 'cached_encoding_detection is enabled' do
+      before do
+        stub_feature_flags(cached_encoding_detection: true)
+      end
+
+      it_behaves_like 'detects encoding'
+
+      context 'cache_key is provided' do
+        let(:kwargs) do
+          { cache_key: %w(foo bar) }
+        end
+
+        it 'uses that cache_key to serve from the cache' do
+          expect(Rails.cache).to receive(:fetch).with([:detect_binary, CharlockHolmes::VERSION, %w(foo bar)], expires_in: 1.week).and_call_original
+
+          expect(subject[:type]).to eq(:binary)
+        end
+      end
+    end
+
+    context 'cached_encoding_detection is disabled' do
+      before do
+        stub_feature_flags(cached_encoding_detection: false)
+      end
+
+      it_behaves_like 'detects encoding'
+    end
+  end
 end

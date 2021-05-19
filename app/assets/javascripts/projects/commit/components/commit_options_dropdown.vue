@@ -65,6 +65,7 @@ export default {
     <gl-dropdown-item
       v-if="canRevert"
       data-testid="revert-link"
+      data-qa-selector="revert_button"
       @click="showModal($options.openRevertModal)"
     >
       {{ s__('ChangeTypeAction|Revert') }}

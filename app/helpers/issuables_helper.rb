@@ -199,7 +199,7 @@ module IssuablesHelper
     count = issuables_count_for_state(issuable_type, state)
 
     if count != -1
-      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge badge-pill')
+      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm')
     end
 
     html.html_safe
@@ -332,6 +332,18 @@ module IssuablesHelper
     end
   end
 
+  def state_name_with_icon(issuable)
+    if issuable.is_a?(MergeRequest) && issuable.merged?
+      [_("Merged"), "git-merge"]
+    elsif issuable.is_a?(MergeRequest) && issuable.closed?
+      [_("Closed"), "close"]
+    elsif issuable.closed?
+      [_("Closed"), "mobile-issue-close"]
+    else
+      [_("Open"), "issue-open-m"]
+    end
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -386,11 +398,11 @@ module IssuablesHelper
       rootPath: root_path,
       fullPath: issuable[:project_full_path],
       iid: issuable[:iid],
+      id: issuable[:id],
       severity: issuable[:severity],
       timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours,
       createNoteEmail: issuable[:create_note_email],
-      issuableType: issuable[:type],
-      projectMembersPath: project_project_members_path(@project, sort: :access_level_desc)
+      issuableType: issuable[:type]
     }
   end
 
@@ -414,4 +426,4 @@ module IssuablesHelper
   end
 end
 
-IssuablesHelper.prepend_if_ee('EE::IssuablesHelper')
+IssuablesHelper.prepend_mod_with('IssuablesHelper')

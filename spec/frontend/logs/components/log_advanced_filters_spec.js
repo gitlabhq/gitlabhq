@@ -4,6 +4,7 @@ import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import LogAdvancedFilters from '~/logs/components/log_advanced_filters.vue';
 import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
 import { createStore } from '~/logs/stores';
+import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import { defaultTimeRange } from '~/vue_shared/constants';
 import { mockPods, mockSearch } from '../mock_data';
 
@@ -77,7 +78,7 @@ describe('LogAdvancedFilters', () => {
     expect(getSearchToken(TOKEN_TYPE_POD_NAME)).toMatchObject({
       title: 'Pod name',
       unique: true,
-      operators: [expect.objectContaining({ value: '=' })],
+      operators: OPERATOR_IS_ONLY,
     });
   });
 

@@ -18,9 +18,25 @@ class Ci::CommitWithPipeline < SimpleDelegator
     end
   end
 
+  def lazy_latest_pipeline
+    BatchLoader.for(sha).batch do |shas, loader|
+      preload_pipelines = project.ci_pipelines.latest_pipeline_per_commit(shas.compact)
+
+      shas.each do |sha|
+        pipeline = preload_pipelines[sha]
+
+        loader.call(sha, pipeline)
+      end
+    end
+  end
+
   def latest_pipeline(ref = nil)
     @latest_pipelines.fetch(ref) do |ref|
-      @latest_pipelines[ref] = latest_pipeline_for_project(ref, project)
+      @latest_pipelines[ref] = if ref
+                                 latest_pipeline_for_project(ref, project)
+                               else
+                                 lazy_latest_pipeline&.itself
+                               end
     end
   end
 

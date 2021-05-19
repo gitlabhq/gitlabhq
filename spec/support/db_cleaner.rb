@@ -16,4 +16,4 @@ module DbCleaner
   end
 end
 
-DbCleaner.prepend_if_ee('EE::DbCleaner')
+DbCleaner.prepend_mod_with('DbCleaner')

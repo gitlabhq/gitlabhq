@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": ["artifacts"],
+  "properties": {
+    "artifacts": {
+      "type": "array",
+       "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "expire_at": { "type": ["string", "null"], "format": "date-time" },
+          "expired": { "type": "boolean" },
+          "path": { "type": "string" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

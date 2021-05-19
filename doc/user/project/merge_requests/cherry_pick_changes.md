@@ -16,7 +16,7 @@ with a **Cherry-pick** button in merge requests and commit details.
 After the merge request has been merged, a **Cherry-pick** button displays
 to cherry-pick the changes introduced by that merge request.
 
-![Cherry-pick Merge Request](img/cherry_pick_changes_mr.png)
+![Cherry-pick merge request](img/cherry_pick_changes_mr.png)
 
 After you click that button, a modal displays a
 [branch filter search box](../repository/branches/index.md#branch-filter-search-box)
@@ -32,7 +32,7 @@ where you can choose to either:
 When you cherry-pick a merge commit, GitLab displays a system note to the related merge
 request thread. It crosslinks the new commit and the existing merge request.
 
-![Cherry-pick tracking in Merge Request timeline](img/cherry_pick_mr_timeline_v12_9.png)
+![Cherry-pick tracking in merge request timeline](img/cherry_pick_mr_timeline_v12_9.png)
 
 Each deployment's [list of associated merge requests](../../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment) includes cherry-picked merge commits.
 

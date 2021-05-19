@@ -7,4 +7,4 @@ module Boards
   end
 end
 
-Boards::Lists::CreateService.prepend_if_ee('EE::Boards::Lists::CreateService')
+Boards::Lists::CreateService.prepend_mod_with('Boards::Lists::CreateService')

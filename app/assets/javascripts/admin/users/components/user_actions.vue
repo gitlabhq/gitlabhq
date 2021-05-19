@@ -70,14 +70,14 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-justify-content-end">
+  <div class="gl-display-flex gl-justify-content-end" :data-testid="`user-actions-${user.id}`">
     <gl-button v-if="hasEditAction" data-testid="edit" :href="userPaths.edit">{{
       $options.i18n.edit
     }}</gl-button>
 
     <gl-dropdown
       v-if="hasDropdownActions"
-      data-testid="actions"
+      data-testid="dropdown-toggle"
       right
       class="gl-ml-2"
       icon="settings"
@@ -109,6 +109,7 @@ export default {
           :key="action"
           :paths="userPaths"
           :username="user.name"
+          :oncall-schedules="user.oncallSchedules"
           :data-testid="`delete-${action}`"
         >
           {{ $options.i18n[action] }}

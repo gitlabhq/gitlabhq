@@ -18,7 +18,7 @@ RSpec.describe Projects::PostCreationWorker do
         let(:job_args) { [nil] }
 
         it 'does not create prometheus service' do
-          expect { subject }.not_to change { Service.count }
+          expect { subject }.not_to change { Integration.count }
         end
       end
 

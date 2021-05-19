@@ -79,7 +79,7 @@ Requests time out at 30 seconds.
 ## Breaking changes
 
 The GitLab GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning) which means
-developers must familiarize themselves with our [deprecation cycle of breaking changes](#breaking-changes).
+developers must familiarize themselves with our [Deprecation and Removal process](../api/graphql/index.md#deprecation-and-removal-process).
 
 Breaking changes are:
 
@@ -770,6 +770,29 @@ argument :title, GraphQL::STRING_TYPE,
           description: copy_field_description(Types::MergeRequestType, :title)
 ```
 
+### Documentation references
+
+Sometimes we want to refer to external URLs in our descriptions. To make this
+easier, and provide proper markup in the generated reference documentation, we
+provide a `see` property on fields. For example:
+
+```ruby
+field :genus,
+      type: GraphQL::STRING_TYPE,
+      null: true,
+      description: 'A taxonomic genus.'
+      see: { 'Wikipedia page on genera' => 'https://wikipedia.org/wiki/Genus' }
+```
+
+This will render in our documentation as:
+
+```markdown
+A taxonomic genus. See: [Wikipedia page on genera](https://wikipedia.org/wiki/Genus)
+```
+
+Multiple documentation references can be provided. The syntax for this property
+is a `HashMap` where the keys are textual descriptions, and the values are URLs.
+
 ## Authorization
 
 See: [GraphQL Authorization](graphql_guide/authorization.md)
@@ -867,7 +890,7 @@ The main use case for this is one resolver to find all items, and another to
 find one specific one. For this, we supply convenience methods:
 
 - `BaseResolver.single`, which constructs a new resolver that selects the first item.
-- `BaseResolver.last`, with constructs a resolver that selects the last item.
+- `BaseResolver.last`, which constructs a resolver that selects the last item.
 
 The correct singular type is inferred from the collection type, so we don't have
 to define the `type` here.
@@ -973,7 +996,7 @@ end
 For this reason, whenever you call a resolver (mainly in tests - as framework
 abstractions Resolvers should not be considered re-usable, finders are to be
 preferred), remember to call the `ready?` method and check the boolean flag
-before calling `resolve`! An example can be seen in our [`GraphQLHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/2d395f32d2efbb713f7bc861f96147a2a67e92f2/spec/support/helpers/graphql_helpers.rb#L20-27).
+before calling `resolve`! An example can be seen in our [`GraphqlHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/2d395f32d2efbb713f7bc861f96147a2a67e92f2/spec/support/helpers/graphql_helpers.rb#L20-27).
 
 ### Look-Ahead
 
@@ -1161,8 +1184,8 @@ are returned as the result of the mutation.
 
 The service-oriented architecture in GitLab means that most mutations call a Create, Delete, or Update
 service, for example `UpdateMergeRequestService`.
-For Update mutations, a you might want to only update one aspect of an object, and thus only need a
-_fine-grained_ mutation, for example `MergeRequest::SetWip`.
+For Update mutations, you might want to only update one aspect of an object, and thus only need a
+_fine-grained_ mutation, for example `MergeRequest::SetDraft`.
 
 It's acceptable to have both fine-grained mutations and coarse-grained mutations, but be aware
 that too many fine-grained mutations can lead to organizational challenges in maintainability, code
@@ -1258,7 +1281,7 @@ end
 [input type](https://graphql.org/learn/schema/#input-types).
 
 For example, the
-[`mergeRequestSetWip` mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/set_wip.rb)
+[`mergeRequestSetDraft` mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/set_draft.rb)
 defines these arguments (some
 [through inheritance](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/base.rb)):
 
@@ -1271,17 +1294,16 @@ argument :iid, GraphQL::STRING_TYPE,
          required: true,
          description: "The IID of the merge request to mutate."
 
-argument :wip,
+argument :draft,
          GraphQL::BOOLEAN_TYPE,
          required: false,
          description: <<~DESC
-                      Whether or not to set the merge request as a WIP.
-                      If not passed, the value will be toggled.
-                      DESC
+           Whether or not to set the merge request as a draft.
+         DESC
 ```
 
 These arguments automatically generate an input type called
-`MergeRequestSetWipInput` with the 3 arguments we specified and the
+`MergeRequestSetDraftInput` with the 3 arguments we specified and the
 `clientMutationId`.
 
 ### Object identifier arguments
@@ -1318,7 +1340,7 @@ From here, we can call the service that modifies the resource.
 
 The `resolve` method should then return a hash with the same field
 names as defined on the mutation including an `errors` array. For example,
-the `Mutations::MergeRequests::SetWip` defines a `merge_request`
+the `Mutations::MergeRequests::SetDraft` defines a `merge_request`
 field:
 
 ```ruby
@@ -1356,13 +1378,13 @@ module Types
 
     graphql_name "Mutation"
 
-    mount_mutation Mutations::MergeRequests::SetWip
+    mount_mutation Mutations::MergeRequests::SetDraft
   end
 end
 ```
 
-Generates a field called `mergeRequestSetWip` that
-`Mutations::MergeRequests::SetWip` to be resolved.
+Generates a field called `mergeRequestSetDraft` that
+`Mutations::MergeRequests::SetDraft` to be resolved.
 
 ### Authorizing resources
 
@@ -1372,8 +1394,8 @@ To authorize resources inside a mutation, we first provide the required
 ```ruby
 module Mutations
   module MergeRequests
-    class SetWip < Base
-      graphql_name 'MergeRequestSetWip'
+    class SetDraft < Base
+      graphql_name 'MergeRequestSetDraft'
 
       authorize :update_merge_request
     end

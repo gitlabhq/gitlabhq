@@ -56,7 +56,11 @@
   - 1
 - - bulk_imports_entity
   - 1
+- - bulk_imports_export_request
+  - 1
 - - bulk_imports_pipeline
+  - 1
+- - bulk_imports_relation_export
   - 1
 - - chaos
   - 2
@@ -148,8 +152,6 @@
   - 1
 - - geo
   - 1
-- - git_garbage_collect
-  - 1
 - - github_import_advance_stage
   - 1
 - - github_importer
@@ -189,6 +191,10 @@
 - - irker
   - 1
 - - issuable_export_csv
+  - 1
+- - issuable_label_links_destroy
+  - 1
+- - issuables_clear_groups_issue_counter
   - 1
 - - issue_placement
   - 2
@@ -397,6 +403,8 @@
 - - update_project_statistics
   - 1
 - - upload_checksum
+  - 1
+- - users_update_open_issue_count
   - 1
 - - vulnerabilities_statistics_adjustment
   - 1

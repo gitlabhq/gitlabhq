@@ -1,13 +1,15 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { GlAlert } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import Autosave from '~/autosave';
+import DescriptionTemplate from '~/issue_show/components/fields/description_template.vue';
 import formComponent from '~/issue_show/components/form.vue';
+import LockedWarning from '~/issue_show/components/locked_warning.vue';
 import eventHub from '~/issue_show/event_hub';
 
 jest.mock('~/autosave');
 
 describe('Inline edit form component', () => {
-  let vm;
+  let wrapper;
   const defaultProps = {
     canDestroy: true,
     formState: {
@@ -24,22 +26,26 @@ describe('Inline edit form component', () => {
   };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   const createComponent = (props) => {
-    const Component = Vue.extend(formComponent);
-
-    vm = mountComponent(Component, {
-      ...defaultProps,
-      ...props,
+    wrapper = shallowMount(formComponent, {
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
     });
   };
+
+  const findDescriptionTemplate = () => wrapper.findComponent(DescriptionTemplate);
+  const findLockedWarning = () => wrapper.findComponent(LockedWarning);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   it('does not render template selector if no templates exist', () => {
     createComponent();
 
-    expect(vm.$el.querySelector('.js-issuable-selector-wrap')).toBeNull();
+    expect(findDescriptionTemplate().exists()).toBe(false);
   });
 
   it('renders template selector when templates as array exists', () => {
@@ -49,7 +55,7 @@ describe('Inline edit form component', () => {
       ],
     });
 
-    expect(vm.$el.querySelector('.js-issuable-selector-wrap')).not.toBeNull();
+    expect(findDescriptionTemplate().exists()).toBe(true);
   });
 
   it('renders template selector when templates as hash exists', () => {
@@ -59,19 +65,19 @@ describe('Inline edit form component', () => {
       },
     });
 
-    expect(vm.$el.querySelector('.js-issuable-selector-wrap')).not.toBeNull();
+    expect(findDescriptionTemplate().exists()).toBe(true);
   });
 
   it('hides locked warning by default', () => {
     createComponent();
 
-    expect(vm.$el.querySelector('.alert')).toBeNull();
+    expect(findLockedWarning().exists()).toBe(false);
   });
 
   it('shows locked warning if formState is different', () => {
     createComponent({ formState: { ...defaultProps.formState, lockedWarningVisible: true } });
 
-    expect(vm.$el.querySelector('.alert')).not.toBeNull();
+    expect(findLockedWarning().exists()).toBe(true);
   });
 
   it('hides locked warning when currently saving', () => {
@@ -79,7 +85,7 @@ describe('Inline edit form component', () => {
       formState: { ...defaultProps.formState, updateLoading: true, lockedWarningVisible: true },
     });
 
-    expect(vm.$el.querySelector('.alert')).toBeNull();
+    expect(findLockedWarning().exists()).toBe(false);
   });
 
   describe('autosave', () => {
@@ -109,6 +115,24 @@ describe('Inline edit form component', () => {
       eventHub.$emit('update.issuable');
 
       expect(spy).toHaveBeenCalledTimes(6);
+    });
+
+    describe('outdated description', () => {
+      it('does not show warning if lock version from server is the same as the local lock version', () => {
+        createComponent();
+        expect(findAlert().exists()).toBe(false);
+      });
+
+      it('shows warning if lock version from server differs than the local lock version', async () => {
+        Autosave.prototype.getSavedLockVersion.mockResolvedValue('lock version from local storage');
+
+        createComponent({
+          formState: { ...defaultProps.formState, lock_version: 'lock version from server' },
+        });
+
+        await wrapper.vm.$nextTick();
+        expect(findAlert().exists()).toBe(true);
+      });
     });
   });
 });

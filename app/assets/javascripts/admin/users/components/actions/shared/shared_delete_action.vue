@@ -18,6 +18,10 @@ export default {
       type: String,
       required: true,
     },
+    oncallSchedules: {
+      type: Array,
+      required: true,
+    },
   },
   computed: {
     modalAttributes() {
@@ -26,6 +30,7 @@ export default {
         'data-delete-user-url': this.paths.delete,
         'data-gl-modal-action': this.modalType,
         'data-username': this.username,
+        'data-oncall-schedules': JSON.stringify(this.oncallSchedules),
       };
     },
   },

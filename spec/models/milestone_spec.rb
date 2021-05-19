@@ -293,21 +293,7 @@ RSpec.describe Milestone do
     end
   end
 
-  context 'when `optimized_timebox_queries` feature flag is enabled' do
-    before do
-      stub_feature_flags(optimized_timebox_queries: true)
-    end
-
-    it_behaves_like '#for_projects_and_groups'
-  end
-
-  context 'when `optimized_timebox_queries` feature flag is disabled' do
-    before do
-      stub_feature_flags(optimized_timebox_queries: false)
-    end
-
-    it_behaves_like '#for_projects_and_groups'
-  end
+  it_behaves_like '#for_projects_and_groups'
 
   describe '.upcoming_ids' do
     let(:group_1) { create(:group) }

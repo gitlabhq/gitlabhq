@@ -85,7 +85,7 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter do
       document = Nokogiri::HTML.fragment("<p>#{get_reference(project)}</p>")
       filter = described_class.new(document, project: project)
 
-      expect(filter.projects_hash).to eq({ project.full_path => project })
+      expect(filter.send(:projects_hash)).to eq({ project.full_path => project })
     end
   end
 
@@ -94,7 +94,7 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter do
       document = Nokogiri::HTML.fragment("<p>#{get_reference(project)}</p>")
       filter = described_class.new(document, project: project)
 
-      expect(filter.projects).to eq([project.full_path])
+      expect(filter.send(:projects)).to eq([project.full_path])
     end
   end
 end

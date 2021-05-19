@@ -1,4 +1,5 @@
 import { truncateSha } from '~/lib/utils/text_utility';
+import { uuids } from '~/lib/utils/uuids';
 
 import {
   DIFF_FILE_SYMLINK_MODE,
@@ -7,7 +8,6 @@ import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
 } from '../constants';
 import { getDerivedMergeRequestInformation } from './merge_request';
-import { uuids } from './uuids';
 
 function fileSymlinkInformation(file, fileList) {
   const duplicates = fileList.filter((iteratedFile) => iteratedFile.file_hash === file.file_hash);

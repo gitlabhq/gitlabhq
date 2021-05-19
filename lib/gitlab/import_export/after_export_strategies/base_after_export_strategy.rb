@@ -42,7 +42,7 @@ module Gitlab
           strategy_execute
 
           true
-        rescue => e
+        rescue StandardError => e
           project.import_export_shared.error(e)
           false
         ensure

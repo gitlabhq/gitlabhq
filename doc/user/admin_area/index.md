@@ -28,7 +28,7 @@ The Admin Area is made up of the following sections:
 | **{messages}** Messages                        | Send and manage [broadcast messages](broadcast_messages.md) for your users. |
 | **{hook}** System Hooks                        | Configure [system hooks](../../system_hooks/system_hooks.md) for many events. |
 | **{applications}** Applications                | Create system [OAuth applications](../../integration/oauth_provider.md) for integrations with other services. |
-| **{slight-frown}** Abuse Reports               | Manage [abuse reports](abuse_reports.md) submitted by your users. |
+| **{slight-frown}** Abuse Reports               | Manage [abuse reports](review_abuse_reports.md) submitted by your users. |
 | **{license}** License                          | Upload, display, and remove [licenses](license.md). |
 | **{cloud-gear}** Kubernetes                    | Create and manage instance-level [Kubernetes clusters](../instance/clusters/index.md). |
 | **{push-rules}** Push rules | Configure pre-defined Git [push rules](../../push_rules/push_rules.md) for projects. Also, configure [merge requests approvers rules](merge_requests_approvals.md). |
@@ -117,8 +117,8 @@ To list users matching a specific criteria, click on one of the following tabs o
 - **2FA Enabled**
 - **2FA Disabled**
 - **External**
-- **[Blocked](blocking_unblocking_users.md)**
-- **[Deactivated](activating_deactivating_users.md)**
+- **[Blocked](moderate_users.md#blocking-a-user)**
+- **[Deactivated](moderate_users.md#deactivating-a-user)**
 - **Without projects**
 
 For each user, the following are listed:
@@ -126,6 +126,7 @@ For each user, the following are listed:
 1. Username
 1. Email address
 1. Project membership count
+1. Group membership count ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276215) in GitLab 13.12)
 1. Date of account creation
 1. Date of last activity
 

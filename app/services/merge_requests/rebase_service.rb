@@ -27,7 +27,7 @@ module MergeRequests
       repository.rebase(current_user, merge_request, skip_ci: @skip_ci)
 
       true
-    rescue => e
+    rescue StandardError => e
       log_error(exception: e, message: REBASE_ERROR, save_message_on_model: true)
 
       false

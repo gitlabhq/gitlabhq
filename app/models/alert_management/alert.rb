@@ -20,7 +20,13 @@ module AlertManagement
       resolved: 2,
       ignored: 3
     }.freeze
-    private_constant :STATUSES
+
+    STATUS_DESCRIPTIONS = {
+      triggered: 'Investigation has not started',
+      acknowledged: 'Someone is actively investigating the problem',
+      resolved: 'No further work is required',
+      ignored: 'No action will be taken on the alert'
+    }.freeze
 
     belongs_to :project
     belongs_to :issue, optional: true
@@ -271,4 +277,4 @@ module AlertManagement
   end
 end
 
-AlertManagement::Alert.prepend_if_ee('EE::AlertManagement::Alert')
+AlertManagement::Alert.prepend_mod_with('AlertManagement::Alert')

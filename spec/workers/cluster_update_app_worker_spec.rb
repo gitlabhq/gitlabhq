@@ -46,8 +46,19 @@ RSpec.describe ClusterUpdateAppWorker do
       subject.perform(application.name, application.id, project.id, Time.current)
     end
 
+    context 'application is externally installed' do
+      it 'does not execute PrometheusUpdateService' do
+        application = create(:clusters_applications_prometheus, :externally_installed)
+
+        expect(prometheus_update_service).not_to receive(:execute)
+
+        subject.perform(application.name, application.id, project.id, Time.current)
+      end
+    end
+
     context 'with exclusive lease' do
       let_it_be(:user) { create(:user) }
+
       let(:application) { create(:clusters_applications_prometheus, :installed) }
       let(:lease_key) { "#{described_class.name.underscore}-#{application.id}" }
 

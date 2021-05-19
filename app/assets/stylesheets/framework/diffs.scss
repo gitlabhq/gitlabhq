@@ -670,10 +670,6 @@ table.code {
   float: right;
 }
 
-.files-changed {
-  border-bottom: 0;
-}
-
 .merge-request-details .file-content.image_file img {
   max-height: 50vh;
 }
@@ -733,7 +729,7 @@ table.code {
 }
 
 .files {
-  .diff-file:last-child {
+  .diff-file:not(.is-virtual-scrolling):last-child {
     margin-bottom: 0;
   }
 }

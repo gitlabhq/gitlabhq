@@ -144,7 +144,7 @@ RSpec.describe CommitsHelper do
       }
     end
 
-    subject { helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate) }
+    subject { helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate, per: Projects::CommitController::COMMIT_DIFFS_PER_PAGE) }
 
     before do
       allow(helper).to receive(:params).and_return(params)
@@ -168,15 +168,15 @@ RSpec.describe CommitsHelper do
         let(:page) { 1 }
 
         it "has 20 diffs" do
-          expect(subject.size).to eq(75)
+          expect(subject.size).to eq(20)
         end
       end
 
-      context "page 2" do
-        let(:page) { 2 }
+      context "page 5" do
+        let(:page) { 5 }
 
-        it "has the remaining 10 diffs" do
-          expect(subject.size).to eq(10)
+        it "has the remaining 5 out of 85 diffs" do
+          expect(subject.size).to eq(5)
         end
       end
     end
@@ -287,6 +287,48 @@ RSpec.describe CommitsHelper do
         can_tag: 'true',
         can_email_patches: 'true'
       }
+    end
+  end
+
+  describe "#commit_partial_cache_key" do
+    subject(:cache_key) { helper.commit_partial_cache_key(commit, ref: ref, merge_request: merge_request, request: request) }
+
+    let(:commit) { create(:commit).present(current_user: user) }
+    let(:commit_status) { Gitlab::Ci::Status::Running.new(pipeline, user) }
+    let(:pipeline) { create(:ci_pipeline, :running) }
+    let(:user) { create(:user) }
+    let(:ref) { "master" }
+    let(:merge_request) { nil }
+    let(:request) { double(xhr?: true) }
+    let(:current_path) { "test" }
+
+    before do
+      expect(commit).to receive(:status_for).with(ref).and_return(commit_status)
+      assign(:path, current_path)
+    end
+
+    it { is_expected.to be_an(Array) }
+    it { is_expected.to include(commit) }
+    it { is_expected.to include(commit.author) }
+    it { is_expected.to include(ref) }
+
+    it do
+      is_expected.to include(
+        {
+          merge_request: merge_request,
+          pipeline_status: commit_status,
+          xhr: true,
+          controller: "commits",
+          path: current_path
+        }
+      )
+    end
+
+    describe "final cache key output" do
+      subject { ActiveSupport::Cache.expand_cache_key(cache_key) }
+
+      it { is_expected.to include(commit.cache_key) }
+      it { is_expected.to include(pipeline.cache_key) }
     end
   end
 end

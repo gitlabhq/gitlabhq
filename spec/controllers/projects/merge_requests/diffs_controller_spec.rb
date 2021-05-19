@@ -180,7 +180,8 @@ RSpec.describe Projects::MergeRequests::DiffsController do
           start_version: nil,
           start_sha: nil,
           commit: nil,
-          latest_diff: true
+          latest_diff: true,
+          only_context_commits: false
         }
 
         expect_next_instance_of(DiffsMetadataSerializer) do |instance|
@@ -203,7 +204,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
       end
 
       it "correctly generates the right diff between versions" do
-        MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
+        MergeRequests::MergeToRefService.new(project: project, current_user: merge_request.author).execute(merge_request)
 
         expect_next_instance_of(CompareService) do |service|
           expect(service).to receive(:execute).with(
@@ -261,7 +262,8 @@ RSpec.describe Projects::MergeRequests::DiffsController do
           start_version: nil,
           start_sha: nil,
           commit: nil,
-          latest_diff: true
+          latest_diff: true,
+          only_context_commits: false
         }
 
         expect_next_instance_of(DiffsMetadataSerializer) do |instance|
@@ -290,7 +292,8 @@ RSpec.describe Projects::MergeRequests::DiffsController do
           start_version: nil,
           start_sha: nil,
           commit: merge_request.diff_head_commit,
-          latest_diff: nil
+          latest_diff: nil,
+          only_context_commits: false
         }
 
         expect_next_instance_of(DiffsMetadataSerializer) do |instance|

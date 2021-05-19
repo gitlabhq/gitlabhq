@@ -200,16 +200,16 @@ module Groups
     end
 
     def update_integrations
-      @group.services.inherit.delete_all
-      Service.create_from_active_default_integrations(@group, :group_id)
+      @group.integrations.inherit.delete_all
+      Integration.create_from_active_default_integrations(@group, :group_id)
     end
 
     def propagate_integrations
-      @group.services.inherit.each do |integration|
+      @group.integrations.inherit.each do |integration|
         PropagateIntegrationWorker.perform_async(integration.id)
       end
     end
   end
 end
 
-Groups::TransferService.prepend_if_ee('EE::Groups::TransferService')
+Groups::TransferService.prepend_mod_with('Groups::TransferService')

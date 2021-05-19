@@ -16,11 +16,16 @@ module Lfs
       end
 
       success
-    rescue => err
+    rescue StandardError => err
+      Gitlab::ErrorTracking.log_exception(err, extra_context)
       error(err.message)
     end
 
     private
+
+    def extra_context
+      { project_id: project.id, user_id: current_user&.id }.compact
+    end
 
     # Currently we only set repository_type for design repository objects, so
     # push mirroring must send objects with a `nil` repository type - but if the

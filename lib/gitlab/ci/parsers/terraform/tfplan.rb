@@ -19,7 +19,7 @@ module Gitlab
             end
           rescue JSON::ParserError
             terraform_reports.add_plan(job_id, invalid_tfplan(:invalid_json_format, job_details))
-          rescue
+          rescue StandardError
             details = job_details || {}
             plan_name = job_id || 'failed_tf_plan'
             terraform_reports.add_plan(plan_name, invalid_tfplan(:unknown_error, details))

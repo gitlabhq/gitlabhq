@@ -63,7 +63,7 @@ module Gitlab
       #
       # user - An instance of `Gitlab::GithubImport::Representation::User`.
       def user_id_for(user)
-        find(user.id, user.login)
+        find(user.id, user.login) if user.present?
       end
 
       # Returns the GitLab ID for the given GitHub ID or username.

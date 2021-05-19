@@ -30,4 +30,4 @@ module Gitlab
   end
 end
 
-::Gitlab::WebIde::Config::Entry::Global.prepend_if_ee('EE::Gitlab::WebIde::Config::Entry::Global')
+::Gitlab::WebIde::Config::Entry::Global.prepend_mod_with('Gitlab::WebIde::Config::Entry::Global')

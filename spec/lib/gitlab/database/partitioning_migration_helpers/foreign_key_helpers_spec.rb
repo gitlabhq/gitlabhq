@@ -10,6 +10,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
   end
 
   let_it_be(:connection) { ActiveRecord::Base.connection }
+
   let(:referenced_table) { :issues }
   let(:function_name) { '_test_partitioned_foreign_keys_function' }
   let(:trigger_name) { '_test_partitioned_foreign_keys_trigger' }

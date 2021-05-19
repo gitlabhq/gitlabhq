@@ -11,9 +11,16 @@ module QA
 
           view 'app/assets/javascripts/projects/commit/components/commit_options_dropdown.vue' do
             element :options_button
+            element :revert_button
             element :cherry_pick_button
             element :email_patches
             element :plain_diff
+          end
+
+          def revert_commit
+            click_element(:options_button)
+            click_element(:revert_button, Page::Component::CommitModal)
+            click_element(:submit_commit_button)
           end
 
           def cherry_pick_commit

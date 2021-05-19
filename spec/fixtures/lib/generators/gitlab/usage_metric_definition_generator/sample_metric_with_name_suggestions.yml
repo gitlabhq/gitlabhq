@@ -15,8 +15,8 @@ time_frame: 7d
 data_source:
 distribution:
 - ce
-# Add here corresponding tiers
-# tier:
-# - free
-# - premium
-# - ultimate
+- ee
+tier:
+- free
+- premium
+- ultimate

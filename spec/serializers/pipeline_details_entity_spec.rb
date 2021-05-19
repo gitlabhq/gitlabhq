@@ -32,7 +32,7 @@ RSpec.describe PipelineDetailsEntity do
         expect(subject[:details])
           .to include :duration, :finished_at
         expect(subject[:details])
-          .to include :stages, :artifacts, :manual_actions, :scheduled_actions
+          .to include :stages, :manual_actions, :scheduled_actions
         expect(subject[:details][:status]).to include :icon, :favicon, :text, :label
       end
 
@@ -68,6 +68,20 @@ RSpec.describe PipelineDetailsEntity do
       context 'user does not have ability to retry pipeline' do
         it 'retryable flag is false' do
           expect(subject[:flags][:retryable]).to eq false
+        end
+      end
+
+      it 'does not contain code_quality_build_path in details' do
+        expect(subject[:details]).not_to include :code_quality_build_path
+      end
+
+      context 'when option code_quality_walkthrough is set and pipeline is a success' do
+        let(:entity) do
+          described_class.represent(pipeline, request: request, code_quality_walkthrough: true)
+        end
+
+        it 'contains details.code_quality_build_path' do
+          expect(subject[:details]).to include :code_quality_build_path
         end
       end
     end
@@ -184,7 +198,5 @@ RSpec.describe PipelineDetailsEntity do
         expect(source_jobs[child_pipeline.id][:name]).to eq('child')
       end
     end
-
-    it_behaves_like 'public artifacts'
   end
 end

@@ -32,4 +32,4 @@ end
 
 # TODO: Remove this once we implement ES support for group wikis.
 # https://gitlab.com/gitlab-org/gitlab/-/issues/207889
-ProjectWiki.prepend_if_ee('EE::ProjectWiki')
+ProjectWiki.prepend_mod_with('ProjectWiki')

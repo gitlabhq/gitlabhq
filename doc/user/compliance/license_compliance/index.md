@@ -180,7 +180,7 @@ directory of your project.
 ### Overriding the template
 
 WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#only--except)
 is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 
 If you want to override the job definition (for example, change properties like
@@ -636,7 +636,7 @@ registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:latest
 
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Please consult your IT staff to find an accepted and approved
-process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../../application_security/index.md#maintenance-and-update-of-the-vulnerabilities-database)
+process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../../application_security/vulnerabilities/index.md#vulnerability-scanner-maintenance)
 with new definitions, so consider if you are able to make periodic updates yourself.
 
 For details on saving and transporting Docker images as a file, see Docker's documentation on
@@ -766,7 +766,7 @@ Defining a non-latest Python version in ASDF_PYTHON_VERSION [doesn't have it aut
 1. Define the required version by setting the `ASDF_PYTHON_VERSION` CI/CD variable.
 1. Pass a custom script to the `SETUP_CMD` CI/CD variable to install the required version and dependencies.
 
-For example: 
+For example:
 
 ```yaml
 include:

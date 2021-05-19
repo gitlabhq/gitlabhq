@@ -1,0 +1,5 @@
+mutation deleteReleaseAssetLink($input: ReleaseAssetLinkDeleteInput!) {
+  releaseAssetLinkDelete(input: $input) {
+    errors
+  }
+}

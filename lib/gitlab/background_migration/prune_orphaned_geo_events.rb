@@ -14,4 +14,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::PruneOrphanedGeoEvents.prepend_if_ee('EE::Gitlab::BackgroundMigration::PruneOrphanedGeoEvents')
+Gitlab::BackgroundMigration::PruneOrphanedGeoEvents.prepend_mod_with('Gitlab::BackgroundMigration::PruneOrphanedGeoEvents')

@@ -9,7 +9,7 @@ class RedmineService < IssueTrackerService
   end
 
   def description
-    s_('IssueTracker|Use Redmine as the issue tracker.')
+    s_("IssueTracker|Use Redmine as this project's issue tracker.")
   end
 
   def help

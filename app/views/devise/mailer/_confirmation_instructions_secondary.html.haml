@@ -1,8 +1,8 @@
 #content
-  = email_default_heading("#{sanitize_name(@resource.user.name)}, confirm your email address now!")
-  %p Click the link below to confirm your email address (#{@resource.email})
+  = email_default_heading(_("%{name}, confirm your email address now!") % { name: sanitize_name(@resource.user.name) })
+  %p= _('Click the link below to confirm your email address (%{email})') % { email: @resource.email }
   #cta
-    = link_to 'Confirm your email address', confirmation_url(@resource, confirmation_token: @token)
+    = link_to _('Confirm your email address'), confirmation_url(@resource, confirmation_token: @token)
   %p
-    If this email was added in error, you can remove it here:
-    = link_to "Emails", profile_emails_url
+    = _('If this email was added in error, you can remove it here:')
+    = link_to _("Emails"), profile_emails_url

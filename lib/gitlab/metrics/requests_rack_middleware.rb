@@ -83,7 +83,7 @@ module Gitlab
           end
 
           [status, headers, body]
-        rescue
+        rescue StandardError
           RequestsRackMiddleware.rack_uncaught_errors_count.increment
           raise
         ensure

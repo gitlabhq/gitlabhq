@@ -1,6 +1,7 @@
 import { GlAlert, GlBadge, GlPagination, GlTabs, GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Tracking from '~/tracking';
+import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import PageWrapper from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
@@ -291,7 +292,7 @@ describe('AlertManagementEmptyState', () => {
           unique: true,
           symbol: '@',
           token: AuthorToken,
-          operators: [{ value: '=', description: 'is', default: 'true' }],
+          operators: OPERATOR_IS_ONLY,
           fetchPath: '/link',
           fetchAuthors: expect.any(Function),
         },
@@ -302,7 +303,7 @@ describe('AlertManagementEmptyState', () => {
           unique: true,
           symbol: '@',
           token: AuthorToken,
-          operators: [{ value: '=', description: 'is', default: 'true' }],
+          operators: OPERATOR_IS_ONLY,
           fetchPath: '/link',
           fetchAuthors: expect.any(Function),
         },

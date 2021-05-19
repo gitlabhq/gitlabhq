@@ -1,0 +1,8 @@
+---
+name: import_project_from_remote_file
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59033
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/330039
+milestone: '13.12'
+type: development
+group: group::import
+default_enabled: false

@@ -33,9 +33,10 @@ module Banzai
         end
 
         self.reference_type = :design
+        self.object_class   = ::DesignManagement::Design
 
         def find_object(project, identifier)
-          records_per_parent[project][identifier]
+          reference_cache.records_per_parent[project][identifier]
         end
 
         def parent_records(project, identifiers)
@@ -58,15 +59,6 @@ module Banzai
           super.includes(:route, :namespace, :group)
         end
 
-        def parent_type
-          :project
-        end
-
-        # optimisation to reuse the parent_per_reference query information
-        def parent_from_ref(ref)
-          parent_per_reference[ref || current_parent_path]
-        end
-
         def url_for_object(design, project)
           path_options = { vueroute: design.filename }
           Gitlab::Routing.url_helpers.designs_project_issue_path(project, design.issue, path_options)
@@ -76,15 +68,11 @@ module Banzai
           super.merge(issue: design.issue_id)
         end
 
-        def self.object_class
-          ::DesignManagement::Design
-        end
-
-        def self.object_sym
+        def object_sym
           :design
         end
 
-        def self.parse_symbol(raw, match_data)
+        def parse_symbol(raw, match_data)
           filename = match_data[:url_filename]
           iid = match_data[:issue].to_i
           Identifier.new(filename: CGI.unescape(filename), issue_iid: iid)

@@ -169,7 +169,7 @@ module Gitlab
         # We raise a custom error so it's easier to catch different changelog
         # related errors. In addition, this ensures the caller of this method
         # doesn't depend on a Parslet specific error class.
-        raise Error.new("Failed to parse the template: #{ex.message}")
+        raise Error, "Failed to parse the template: #{ex.message}"
       end
     end
   end

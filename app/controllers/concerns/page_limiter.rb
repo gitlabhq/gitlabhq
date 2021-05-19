@@ -46,7 +46,7 @@ module PageLimiter
 
     if params[:page].present? && params[:page].to_i > max_page_number
       record_page_limit_interception
-      raise PageOutOfBoundsError.new(max_page_number)
+      raise PageOutOfBoundsError, max_page_number
     end
   end
 

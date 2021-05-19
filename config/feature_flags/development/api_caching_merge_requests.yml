@@ -1,0 +1,8 @@
+---
+name: api_caching_merge_requests
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61067
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/330342
+milestone: '13.12'
+type: development
+group: group::source code
+default_enabled: false

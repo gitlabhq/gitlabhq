@@ -6,5 +6,5 @@ class MergeRequestAssignee < ApplicationRecord
 
   validates :assignee, uniqueness: { scope: :merge_request_id }
 
-  scope :in_projects, ->(project_ids) { joins(:merge_request).where("merge_requests.target_project_id in (?)", project_ids) }
+  scope :in_projects, ->(project_ids) { joins(:merge_request).where(merge_requests: { target_project_id: project_ids }) }
 end

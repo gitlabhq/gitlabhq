@@ -15,14 +15,14 @@ module API
         authorize_read_package!
       end
 
-      namespace ':id/packages/debian' do
-        include DebianPackageEndpoints
+      namespace ':id' do
+        include ::API::Concerns::Packages::DebianEndpoints
 
         params do
           requires :file_name, type: String, desc: 'The file name'
         end
 
-        namespace ':file_name', requirements: FILE_NAME_REQUIREMENTS do
+        namespace 'packages/debian/:file_name', requirements: FILE_NAME_REQUIREMENTS do
           content_type :json, Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
 
           # PUT {projects|groups}/:id/packages/debian/:file_name

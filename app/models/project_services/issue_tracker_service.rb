@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class IssueTrackerService < Service
+class IssueTrackerService < Integration
   validate :one_issue_tracker, if: :activated?, on: :manual_change
 
   # TODO: we can probably just delegate as part of
@@ -73,9 +73,9 @@ class IssueTrackerService < Service
 
   def fields
     [
-      { type: 'text', name: 'project_url', title: _('Project URL'), required: true },
-      { type: 'text', name: 'issues_url', title: s_('ProjectService|Issue URL'), required: true },
-      { type: 'text', name: 'new_issue_url', title: s_('ProjectService|New issue URL'), required: true }
+      { type: 'text', name: 'project_url', title: _('Project URL'), help: s_('IssueTracker|The URL to the project in the external issue tracker.'), required: true },
+      { type: 'text', name: 'issues_url', title: s_('IssueTracker|Issue URL'), help: s_('IssueTracker|The URL to view an issue in the external issue tracker. Must contain %{colon_id}.') % { colon_id: '<code>:id</code>'.html_safe }, required: true },
+      { type: 'text', name: 'new_issue_url', title: s_('IssueTracker|New issue URL'), help: s_('IssueTracker|The URL to create an issue in the external issue tracker.'), required: true }
     ]
   end
 
@@ -143,10 +143,10 @@ class IssueTrackerService < Service
     return if template? || instance?
     return if project.blank?
 
-    if project.services.external_issue_trackers.where.not(id: id).any?
+    if project.integrations.external_issue_trackers.where.not(id: id).any?
       errors.add(:base, _('Another issue tracker is already in use. Only one issue tracker service can be active at a time'))
     end
   end
 end
 
-IssueTrackerService.prepend_if_ee('EE::IssueTrackerService')
+IssueTrackerService.prepend_mod_with('IssueTrackerService')

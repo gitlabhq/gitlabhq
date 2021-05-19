@@ -4,6 +4,7 @@
     "name",
     "version",
     "package_type",
+    "status",
     "_links",
     "versions"
   ],
@@ -18,6 +19,9 @@
       "type": "string"
     },
     "package_type": {
+      "type": "string"
+    },
+    "status": {
       "type": "string"
     },
     "_links": {

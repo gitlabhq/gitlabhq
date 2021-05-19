@@ -20,6 +20,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Hidden do
   end
 
   describe '.new' do
+    let(:config) { {} }
     let(:entry) { described_class.new(config) }
 
     describe 'validations' do
@@ -41,8 +42,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Hidden do
 
       context 'when entry value is not correct' do
         context 'when config is empty' do
-          let(:config) { {} }
-
           describe '#valid' do
             it 'is invalid' do
               expect(entry).not_to be_valid

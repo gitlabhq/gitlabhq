@@ -301,4 +301,4 @@ module SortingHelper
   end
 end
 
-SortingHelper.prepend_if_ee('::EE::SortingHelper')
+SortingHelper.prepend_mod_with('SortingHelper')

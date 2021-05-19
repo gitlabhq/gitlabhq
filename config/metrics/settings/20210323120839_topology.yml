@@ -18,4 +18,4 @@ tier:
 - free
 - premium
 - ultimate
-object_json_schema: 'config/metrics/objects_schemas/topology_schema.json'
+value_json_schema: 'config/metrics/objects_schemas/topology_schema.json'

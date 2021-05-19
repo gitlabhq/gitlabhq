@@ -257,8 +257,8 @@ The following configuration options can be configured:
   Defaults to `cpu`.
 - `STACKPROF_INTERVAL`: Sampling interval. Unit semantics depend on `STACKPROF_MODE`.
   For `object` mode this is a per-event interval (every `nth` event is sampled)
-  and defaults to `1000`.
-  For other modes such as `cpu` this is a frequency and defaults to `10000` μs (100hz).
+  and defaults to `100`.
+  For other modes such as `cpu` this is a frequency interval and defaults to `10100` μs (99hz).
 - `STACKPROF_FILE_PREFIX`: File path prefix where profiles are stored. Defaults
   to `$TMPDIR` (often corresponds to `/tmp`).
 - `STACKPROF_TIMEOUT_S`: Profiling timeout in seconds. Profiling will
@@ -363,16 +363,18 @@ This patch is available by default for
 [CNG](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/591),
 [GitLab CI](https://gitlab.com/gitlab-org/gitlab-build-images/-/merge_requests/355),
 [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/merge_requests/149)
-and can additionally be enabled for [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/advanced.md#apply-custom-patches-for-ruby).
+and can additionally be enabled for [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/advanced.md#apply-custom-patches-for-ruby).
 
-This patch provides a set of 3 metrics that makes it easier to understand efficiency of memory usage for a given codepath:
+This patch provides the following metrics that make it easier to understand efficiency of memory use for a given codepath:
 
+- `mem_total_bytes`: the number of bytes consumed both due to new objects being allocated into existing object slots
+                     plus additional memory allocated for large objects (that is, `mem_bytes + slot_size * mem_objects`).
+- `mem_bytes`: the number of bytes allocated by `malloc` for objects that did not fit into an existing object slot.
 - `mem_objects`: the number of objects allocated.
-- `mem_bytes`: the number of bytes allocated by malloc.
-- `mem_mallocs`: the number of malloc allocations.
+- `mem_mallocs`: the number of `malloc` calls.
 
 The number of objects and bytes allocated impact how often GC cycles happen.
-Fewer objects allocations result in a significantly more responsive application.
+Fewer object allocations result in a significantly more responsive application.
 
 It is advised that web server requests do not allocate more than `100k mem_objects`
 and `100M mem_bytes`. You can view the current usage on [GitLab.com](https://log.gprd.gitlab.net/goto/3a9678bb595e3f89a0c7b5c61bcc47b9).

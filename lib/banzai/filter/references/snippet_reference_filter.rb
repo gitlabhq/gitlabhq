@@ -9,15 +9,16 @@ module Banzai
       # This filter supports cross-project references.
       class SnippetReferenceFilter < AbstractReferenceFilter
         self.reference_type = :snippet
+        self.object_class   = Snippet
 
-        def self.object_class
-          Snippet
+        def parent_records(project, ids)
+          return unless project.is_a?(Project)
+
+          project.snippets.where(id: ids.to_a)
         end
 
         def find_object(project, id)
-          return unless project.is_a?(Project)
-
-          project.snippets.find_by(id: id)
+          reference_cache.records_per_parent[project][id]
         end
 
         def url_for_object(snippet, project)

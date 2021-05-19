@@ -1,12 +1,4 @@
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
-
-query getContainerRepositoryDetails(
-  $id: ID!
-  $first: Int
-  $last: Int
-  $after: String
-  $before: String
-) {
+query getContainerRepositoryDetails($id: ID!) {
   containerRepository(id: $id) {
     id
     name
@@ -16,25 +8,8 @@ query getContainerRepositoryDetails(
     canDelete
     createdAt
     updatedAt
-    tagsCount
     expirationPolicyStartedAt
     expirationPolicyCleanupStatus
-    tags(after: $after, before: $before, first: $first, last: $last) {
-      nodes {
-        digest
-        location
-        path
-        name
-        revision
-        shortRevision
-        createdAt
-        totalSize
-        canDelete
-      }
-      pageInfo {
-        ...PageInfo
-      }
-    }
     project {
       visibility
       containerExpirationPolicy {

@@ -19,11 +19,11 @@ for all projects:
 1. Go to **Admin Area > Settings > CI/CD**.
 1. Check (or uncheck to disable) the box that says **Default to Auto DevOps pipeline for all projects**.
 1. Optionally, set up the [Auto DevOps base domain](../../../topics/autodevops/index.md#auto-devops-base-domain)
-   which is going to be used for Auto Deploy and Auto Review Apps.
+   which is used for Auto Deploy and Auto Review Apps.
 1. Hit **Save changes** for the changes to take effect.
 
 From now on, every existing project and newly created ones that don't have a
-`.gitlab-ci.yml`, will use the Auto DevOps pipelines.
+`.gitlab-ci.yml`, uses the Auto DevOps pipelines.
 
 If you want to disable it for a specific project, you can do so in
 [its settings](../../../topics/autodevops/index.md#enable-or-disable-auto-devops).
@@ -49,13 +49,13 @@ To change it at the:
    1. Change the value of maximum artifacts size (in MB).
    1. Click **Save changes** for the changes to take effect.
 
-- Group level (this will override the instance setting):
+- Group level (this overrides the instance setting):
 
   1. Go to the group's **Settings > CI/CD > General Pipelines**.
   1. Change the value of **maximum artifacts size (in MB)**.
   1. Click **Save changes** for the changes to take effect.
 
-- Project level (this will override the instance and group settings):
+- Project level (this overrides the instance and group settings):
 
   1. Go to the project's **Settings > CI/CD > General Pipelines**.
   1. Change the value of **maximum artifacts size (in MB)**.
@@ -80,7 +80,7 @@ This setting is set per job and can be overridden in
 To disable the expiration, set it to `0`. The default unit is in seconds.
 
 NOTE:
-Any changes to this setting will apply to new artifacts only. The expiration time will not
+Any changes to this setting applies to new artifacts only. The expiration time is not
 be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
 artifacts, as described in the [troubleshooting documentation](../../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#remove-artifacts-more-than-a-week-old).
@@ -117,7 +117,7 @@ All application settings have a [customizable cache expiry interval](../../../ad
 
 If you have enabled shared runners for your GitLab instance, you can limit their
 usage by setting a maximum number of pipeline minutes that a group can use on
-shared runners per month. Setting this to `0` (default value) will grant
+shared runners per month. Setting this to `0` (default value) grants
 unlimited pipeline minutes. While build limits are stored as minutes, the
 counting is done in seconds. Usage resets on the first day of each month.
 On GitLab.com, the quota is calculated based on your
@@ -157,18 +157,18 @@ Archiving jobs is useful for reducing the CI/CD footprint on the system by
 removing some of the capabilities of the jobs (metadata needed to run the job),
 but persisting the traces and artifacts for auditing purposes.
 
-To set the duration for which the jobs will be considered as old and expired:
+To set the duration for which the jobs are considered as old and expired:
 
 1. Go to **Admin Area > Settings > CI/CD**.
 1. Expand the **Continuous Integration and Deployment** section.
 1. Set the value of **Archive jobs**.
 1. Hit **Save changes** for the changes to take effect.
 
-Once that time passes, the jobs will be archived and no longer able to be
+Once that time passes, the jobs are archived and no longer able to be
 retried. Make it empty to never expire jobs. It has to be no less than 1 day,
 for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
 
-As of June 22, 2020 the [value is set](../../gitlab_com/index.md#gitlab-cicd) to 3 months on GitLab.com. Jobs created before that date will be archived after September 22, 2020.
+As of June 22, 2020 the [value is set](../../gitlab_com/index.md#gitlab-cicd) to 3 months on GitLab.com. Jobs created before that date were archived after September 22, 2020.
 
 ## Default CI configuration path
 

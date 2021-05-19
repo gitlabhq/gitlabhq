@@ -1,7 +1,7 @@
-.form-actions
+.form-actions.gl-display-flex
   = button_tag 'Commit changes', id: 'commit-changes', class: 'gl-button btn btn-confirm js-commit-button  qa-commit-button'
 
   = link_to 'Cancel', cancel_path,
-            class: 'gl-button btn btn-default btn-cancel', data: {confirm: leave_edit_message}
+            class: 'gl-button btn btn-default gl-ml-3', data: {confirm: leave_edit_message}
 
   = render 'shared/projects/edit_information'

@@ -9,6 +9,20 @@
   aggregation: daily
   feature_flag: track_epics_activity
 
+# content change events
+
+- name: project_management_users_unchecking_epic_task
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity
+
+- name: project_management_users_checking_epic_task
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity
+
 - name: g_project_management_users_updating_epic_titles
   category: epics_usage
   redis_slot: project_management
@@ -36,6 +50,20 @@
   feature_flag: track_epics_activity
 
 - name: g_project_management_users_destroying_epic_notes
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity
+
+# emoji
+
+- name: g_project_management_users_awarding_epic_emoji
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity
+
+- name: g_project_management_users_removing_epic_emoji
   category: epics_usage
   redis_slot: project_management
   aggregation: daily
@@ -81,6 +109,8 @@
   aggregation: daily
   feature_flag: track_epics_activity
 
+# relationships
+
 - name: g_project_management_epic_issue_added
   category: epics_usage
   redis_slot: project_management
@@ -94,6 +124,12 @@
   feature_flag: track_epics_activity
 
 - name: g_project_management_epic_issue_moved_from_project
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity
+
+- name: g_project_management_users_updating_epic_parent
   category: epics_usage
   redis_slot: project_management
   aggregation: daily
@@ -136,6 +172,12 @@
   feature_flag: track_epics_activity
 
 - name: g_project_management_epic_destroyed
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity
+
+- name: g_project_management_epic_cross_referenced
   category: epics_usage
   redis_slot: project_management
   aggregation: daily

@@ -37,7 +37,7 @@ memory-static:
 memory-on-boot:
   extends:
     - .only-code-memory-job-base
-    - .use-pg11
+    - .use-pg12
   stage: test
   needs: ["setup-test-env", "compile-test-assets"]
   variables:

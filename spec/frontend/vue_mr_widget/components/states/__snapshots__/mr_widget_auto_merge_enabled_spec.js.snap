@@ -16,7 +16,6 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
     >
       <span
         class="gl-mr-3"
-        data-qa-selector="merge_request_status_content"
       >
         <span
           class="js-status-text-before-author"
@@ -40,13 +39,14 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
        
       <a
         class="btn btn-sm btn-default js-cancel-auto-merge"
+        data-qa-selector="cancel_auto_merge_button"
         data-testid="cancelAutomaticMergeButton"
         href="#"
         role="button"
       >
         <!---->
         
-          Cancel automatic merge
+          Cancel
         
       </a>
     </h4>
@@ -108,7 +108,6 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
     >
       <span
         class="gl-mr-3"
-        data-qa-selector="merge_request_status_content"
       >
         <span
           class="js-status-text-before-author"
@@ -132,13 +131,14 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
        
       <a
         class="btn btn-sm btn-default js-cancel-auto-merge"
+        data-qa-selector="cancel_auto_merge_button"
         data-testid="cancelAutomaticMergeButton"
         href="#"
         role="button"
       >
         <!---->
         
-          Cancel automatic merge
+          Cancel
         
       </a>
     </h4>

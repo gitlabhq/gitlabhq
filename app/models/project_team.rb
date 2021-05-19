@@ -130,7 +130,7 @@ class ProjectTeam
     end
 
     true
-  rescue
+  rescue StandardError
     false
   end
 
@@ -234,4 +234,4 @@ class ProjectTeam
   end
 end
 
-ProjectTeam.prepend_if_ee('EE::ProjectTeam')
+ProjectTeam.prepend_mod_with('ProjectTeam')

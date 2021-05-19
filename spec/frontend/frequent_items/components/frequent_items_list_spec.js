@@ -1,8 +1,12 @@
-import { mount } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import frequentItemsListComponent from '~/frequent_items/components/frequent_items_list.vue';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
 import { createStore } from '~/frequent_items/store';
 import { mockFrequentProjects } from '../mock_data';
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 describe('FrequentItemsListComponent', () => {
   let wrapper;
@@ -17,6 +21,10 @@ describe('FrequentItemsListComponent', () => {
         hasSearchQuery: false,
         matcher: 'lab',
         ...props,
+      },
+      localVue,
+      provide: {
+        vuexModule: 'frequentProjects',
       },
     });
   };

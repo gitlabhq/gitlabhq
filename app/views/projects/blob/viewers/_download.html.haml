@@ -4,4 +4,4 @@
       %h1.light
         = sprite_icon('download')
       %h4
-        Download (#{number_to_human_size(viewer.blob.raw_size)})
+        = _('Download (%{size})').html_safe % { size: number_to_human_size(viewer.blob.raw_size) }

@@ -237,7 +237,7 @@ The `covfuzz-ci.yml` is the same as that in the [original synchronous example](h
 
 ## Interacting with the vulnerabilities
 
-After a vulnerability is found, you can [address it](../index.md#addressing-vulnerabilities).
+After a vulnerability is found, you can [address it](../vulnerabilities/index.md).
 The merge request widget lists the vulnerability and contains a button for downloading the fuzzing
 artifacts. By clicking one of the detected vulnerabilities, you can see its details.
 

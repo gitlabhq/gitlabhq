@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
-# Base class, scoped by container (project or group)
+# Base class, scoped by container (project or group).
+#
+# New or existing services which only require project as a container
+# should subclass BaseProjectService.
+#
+# If you require a different but specific, non-polymorphic container (such
+# as group), consider creating a new subclass such as BaseGroupService,
+# and update the related comment at the top of the original BaseService.
 class BaseContainerService
   include BaseServiceUtility
 

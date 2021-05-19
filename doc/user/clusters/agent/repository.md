@@ -94,3 +94,41 @@ gitops:
       # If 'paths' is not specified or is an empty list, the configuration below is used
     - glob: '/**/*.{yaml,yml,json}'
 ```
+
+## Surface network security alerts from cluster to GitLab
+
+The GitLab Agent provides an [integration with Cilium](index.md#kubernetes-network-security-alerts).
+To integrate, add a top-level `cilium` section to your `config.yml` file. Currently, the
+only configuration option is the Hubble relay address:
+
+```yaml
+cilium:
+  hubble_relay_address: "<hubble-relay-host>:<hubble-relay-port>"
+```
+
+If your Cilium integration was performed through GitLab Managed Apps, you can use `hubble-relay.gitlab-managed-apps.svc.cluster.local:80` as the address:
+
+```yaml
+cilium:
+  hubble_relay_address: "hubble-relay.gitlab-managed-apps.svc.cluster.local:80"
+```
+
+## Debugging
+
+To debug the cluster-side component (`agentk`) of the GitLab Kubernetes Agent, set the log
+level according to the available options:
+
+- `off`
+- `warning`
+- `error`
+- `info`
+- `debug`
+
+The log level defaults to `info`. You can change it by using a top-level `observability`
+section in the configuration file, for example:
+
+```yaml
+observability:
+  logging:
+    level: debug
+```

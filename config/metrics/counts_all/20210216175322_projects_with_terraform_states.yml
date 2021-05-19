@@ -13,4 +13,5 @@ distribution:
 - ce
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

@@ -268,7 +268,7 @@ export default {
       this.$emit('toggleCollapse');
     },
     setContentIsOnViewport(showDropdownContents) {
-      if (!this.isDropdownVariantEmbedded || !showDropdownContents) {
+      if (!showDropdownContents) {
         this.contentIsOnViewport = true;
 
         return;
@@ -276,8 +276,7 @@ export default {
 
       this.$nextTick(() => {
         if (this.$refs.dropdownContents) {
-          const offset = { top: 100 };
-          this.contentIsOnViewport = isInViewport(this.$refs.dropdownContents.$el, offset);
+          this.contentIsOnViewport = isInViewport(this.$refs.dropdownContents.$el);
         }
       });
     },
@@ -313,6 +312,7 @@ export default {
       <dropdown-contents
         v-show="dropdownButtonVisible && showDropdownContents"
         ref="dropdownContents"
+        :render-on-top="!contentIsOnViewport"
       />
     </template>
     <template v-if="isDropdownVariantStandalone || isDropdownVariantEmbedded">

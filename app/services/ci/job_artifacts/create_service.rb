@@ -136,7 +136,7 @@ module Ci
       rescue *OBJECT_STORAGE_ERRORS => error
         track_exception(error, params)
         error(error.message, :service_unavailable)
-      rescue => error
+      rescue StandardError => error
         track_exception(error, params)
         error(error.message, :bad_request)
       end

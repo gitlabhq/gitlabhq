@@ -41,7 +41,7 @@ RSpec.describe Issues::UpdateService, :mailer do
     end
 
     def update_issue(opts)
-      described_class.new(project, user, opts).execute(issue)
+      described_class.new(project: project, current_user: user, params: opts).execute(issue)
     end
 
     context 'valid params' do
@@ -165,20 +165,38 @@ RSpec.describe Issues::UpdateService, :mailer do
         expect(user2.assigned_open_issues_count).to eq 1
       end
 
-      it 'sorts issues as specified by parameters' do
-        issue1 = create(:issue, project: project, assignees: [user3])
-        issue2 = create(:issue, project: project, assignees: [user3])
+      context 'when changing relative position' do
+        let(:issue1) { create(:issue, project: project, assignees: [user3]) }
+        let(:issue2) { create(:issue, project: project, assignees: [user3]) }
 
-        [issue, issue1, issue2].each do |issue|
-          issue.move_to_end
-          issue.save!
+        before do
+          [issue, issue1, issue2].each do |issue|
+            issue.move_to_end
+            issue.save!
+          end
         end
 
-        opts[:move_between_ids] = [issue1.id, issue2.id]
+        it 'sorts issues as specified by parameters' do
+          opts[:move_between_ids] = [issue1.id, issue2.id]
 
-        update_issue(opts)
+          update_issue(opts)
 
-        expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
+          expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
+        end
+
+        context 'when block_issue_positioning flag is enabled' do
+          before do
+            stub_feature_flags(block_issue_repositioning: true)
+          end
+
+          it 'raises error' do
+            old_position = issue.relative_position
+            opts[:move_between_ids] = [issue1.id, issue2.id]
+
+            expect { update_issue(opts) }.to raise_error(::Gitlab::RelativePositioning::IssuePositioningDisabled)
+            expect(issue.reload.relative_position).to eq(old_position)
+          end
+        end
       end
 
       it 'does not rebalance even if needed if the flag is disabled' do
@@ -269,7 +287,7 @@ RSpec.describe Issues::UpdateService, :mailer do
           opts[:move_between_ids] = [issue_1.id, issue_2.id]
           opts[:board_group_id] = group.id
 
-          described_class.new(issue_3.project, user, opts).execute(issue_3)
+          described_class.new(project: issue_3.project, current_user: user, params: opts).execute(issue_3)
           expect(issue_2.relative_position).to be_between(issue_1.relative_position, issue_2.relative_position)
         end
       end
@@ -282,7 +300,12 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'filters out params that cannot be set without the :admin_issue permission' do
-          described_class.new(project, guest, opts.merge(confidential: true)).execute(issue)
+          described_class.new(
+            project: project, current_user: guest, params: opts.merge(
+              confidential: true,
+              issue_type: 'test_case'
+            )
+          ).execute(issue)
 
           expect(issue).to be_valid
           expect(issue.title).to eq 'New title'
@@ -293,6 +316,7 @@ RSpec.describe Issues::UpdateService, :mailer do
           expect(issue.due_date).to be_nil
           expect(issue.discussion_locked).to be_falsey
           expect(issue.confidential).to be_falsey
+          expect(issue.issue_type).to eql('issue')
         end
       end
 
@@ -650,7 +674,7 @@ RSpec.describe Issues::UpdateService, :mailer do
         opts = { label_ids: [label.id] }
 
         perform_enqueued_jobs do
-          @issue = described_class.new(project, user, opts).execute(issue)
+          @issue = described_class.new(project: project, current_user: user, params: opts).execute(issue)
         end
 
         should_email(subscriber)
@@ -666,7 +690,7 @@ RSpec.describe Issues::UpdateService, :mailer do
           opts = { label_ids: [label.id, label2.id] }
 
           perform_enqueued_jobs do
-            @issue = described_class.new(project, user, opts).execute(issue)
+            @issue = described_class.new(project: project, current_user: user, params: opts).execute(issue)
           end
 
           should_not_email(subscriber)
@@ -677,7 +701,7 @@ RSpec.describe Issues::UpdateService, :mailer do
           opts = { label_ids: [label2.id] }
 
           perform_enqueued_jobs do
-            @issue = described_class.new(project, user, opts).execute(issue)
+            @issue = described_class.new(project: project, current_user: user, params: opts).execute(issue)
           end
 
           should_not_email(subscriber)
@@ -709,7 +733,7 @@ RSpec.describe Issues::UpdateService, :mailer do
               line_number: 1
             }
           }
-          service = described_class.new(project, user, params)
+          service = described_class.new(project: project, current_user: user, params: params)
 
           expect(Spam::SpamActionService).not_to receive(:new)
 
@@ -785,7 +809,7 @@ RSpec.describe Issues::UpdateService, :mailer do
 
     context 'updating labels' do
       let(:label3) { create(:label, project: project) }
-      let(:result) { described_class.new(project, user, params).execute(issue).reload }
+      let(:result) { described_class.new(project: project, current_user: user, params: params).execute(issue).reload }
 
       context 'when add_label_ids and label_ids are passed' do
         let(:params) { { label_ids: [label.id], add_label_ids: [label3.id] } }
@@ -983,14 +1007,14 @@ RSpec.describe Issues::UpdateService, :mailer do
       it 'raises an error for invalid move ids within a project' do
         opts = { move_between_ids: [9000, non_existing_record_id] }
 
-        expect { described_class.new(issue.project, user, opts).execute(issue) }
+        expect { described_class.new(project: issue.project, current_user: user, params: opts).execute(issue) }
             .to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'raises an error for invalid move ids within a group' do
         opts = { move_between_ids: [9000, non_existing_record_id], board_group_id: create(:group).id }
 
-        expect { described_class.new(issue.project, user, opts).execute(issue) }
+        expect { described_class.new(project: issue.project, current_user: user, params: opts).execute(issue) }
             .to raise_error(ActiveRecord::RecordNotFound)
       end
     end
@@ -1014,13 +1038,13 @@ RSpec.describe Issues::UpdateService, :mailer do
 
       with_them do
         it 'broadcasts to the issues channel based on ActionCable and feature flag values' do
-          expect(Gitlab::ActionCable::Config).to receive(:in_app?).and_return(action_cable_in_app_enabled)
+          allow(Gitlab::ActionCable::Config).to receive(:in_app?).and_return(action_cable_in_app_enabled)
           stub_feature_flags(broadcast_issue_updates: feature_flag_enabled)
 
           if should_broadcast
-            expect(IssuesChannel).to receive(:broadcast_to).with(issue, event: 'updated')
+            expect(GraphqlTriggers).to receive(:issuable_assignees_updated).with(issue)
           else
-            expect(IssuesChannel).not_to receive(:broadcast_to)
+            expect(GraphqlTriggers).not_to receive(:issuable_assignees_updated).with(issue)
           end
 
           update_issue(update_params)
@@ -1030,7 +1054,7 @@ RSpec.describe Issues::UpdateService, :mailer do
 
     it_behaves_like 'issuable record that supports quick actions' do
       let(:existing_issue) { create(:issue, project: project) }
-      let(:issuable) { described_class.new(project, user, params).execute(existing_issue) }
+      let(:issuable) { described_class.new(project: project, current_user: user, params: params).execute(existing_issue) }
     end
   end
 end

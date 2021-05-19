@@ -115,7 +115,7 @@ module Gitlab
         # necessary graph walk to detect only new LFS pointers and instead scan
         # through all quarantined objects.
         git_env = ::Gitlab::Git::HookEnv.all(@gitaly_repo.gl_repository)
-        if Feature.enabled?(:lfs_integrity_inspect_quarantined_objects, @project, default_enabled: :yaml) && git_env['GIT_OBJECT_DIRECTORY_RELATIVE'].present?
+        if git_env['GIT_OBJECT_DIRECTORY_RELATIVE'].present?
           repository = @gitaly_repo.dup
           repository.git_alternate_object_directories = Google::Protobuf::RepeatedField.new(:string)
 

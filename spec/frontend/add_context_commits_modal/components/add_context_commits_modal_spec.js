@@ -40,7 +40,7 @@ describe('AddContextCommitsModal', () => {
       store,
       propsData: {
         contextCommitsPath: '',
-        targetBranch: 'master',
+        targetBranch: 'main',
         mergeRequestIid: 1,
         projectId: 1,
         ...props,

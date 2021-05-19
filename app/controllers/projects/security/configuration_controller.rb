@@ -14,4 +14,4 @@ module Projects
   end
 end
 
-Projects::Security::ConfigurationController.prepend_if_ee('EE::Projects::Security::ConfigurationController')
+Projects::Security::ConfigurationController.prepend_mod_with('Projects::Security::ConfigurationController')

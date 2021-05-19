@@ -1,0 +1,8 @@
+---
+name: api_caching_branches
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61157
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/330371
+milestone: '13.12'
+type: development
+group: group::source code
+default_enabled: false

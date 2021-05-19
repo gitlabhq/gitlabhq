@@ -160,50 +160,92 @@ RSpec.describe 'Runners' do
       end
     end
 
-    context 'when application settings have shared_runners_text' do
-      let(:shared_runners_text) { 'custom **shared** runners description' }
-      let(:shared_runners_html) { 'custom shared runners description' }
+    context 'shared runner text' do
+      context 'when application settings have no shared_runners_text' do
+        it 'user sees default shared runners description' do
+          visit project_runners_path(project)
 
-      before do
-        stub_application_setting(shared_runners_text: shared_runners_text)
+          page.within("[data-testid='shared-runners-description']") do
+            expect(page).to have_content('The same shared runner executes code from multiple projects')
+          end
+        end
       end
 
-      it 'user sees shared runners description' do
-        visit project_runners_path(project)
+      context 'when application settings have shared_runners_text' do
+        let(:shared_runners_text) { 'custom **shared** runners description' }
+        let(:shared_runners_html) { 'custom shared runners description' }
 
-        expect(page.find('.shared-runners-description')).to have_content(shared_runners_html)
+        before do
+          stub_application_setting(shared_runners_text: shared_runners_text)
+        end
+
+        it 'user sees shared runners description' do
+          visit project_runners_path(project)
+
+          page.within("[data-testid='shared-runners-description']") do
+            expect(page).not_to have_content('The same shared runner executes code from multiple projects')
+            expect(page).to have_content(shared_runners_html)
+          end
+        end
+      end
+
+      context 'when application settings have an unsafe link in shared_runners_text' do
+        let(:shared_runners_text) { '<a href="javascript:alert(\'xss\')">link</a>' }
+
+        before do
+          stub_application_setting(shared_runners_text: shared_runners_text)
+        end
+
+        it 'user sees no link' do
+          visit project_runners_path(project)
+
+          page.within("[data-testid='shared-runners-description']") do
+            expect(page).to have_content('link')
+            expect(page).not_to have_link('link')
+          end
+        end
+      end
+
+      context 'when application settings have an unsafe image in shared_runners_text' do
+        let(:shared_runners_text) { '<img src="404.png" onerror="alert(\'xss\')"/>' }
+
+        before do
+          stub_application_setting(shared_runners_text: shared_runners_text)
+        end
+
+        it 'user sees image safely' do
+          visit project_runners_path(project)
+
+          page.within("[data-testid='shared-runners-description']") do
+            expect(page).to have_css('img')
+            expect(page).not_to have_css('img[onerror]')
+          end
+        end
       end
     end
   end
 
-  context 'when a project has disabled shared_runners' do
-    let(:project) { create(:project, shared_runners_enabled: false) }
+  context 'enable shared runners in project settings', :js do
+    before do
+      project.add_maintainer(user)
 
-    context 'when feature flag: vueify_shared_runners_toggle is disabled' do
-      before do
-        stub_feature_flags(vueify_shared_runners_toggle: false)
-        project.add_maintainer(user)
-      end
+      visit project_runners_path(project)
+    end
 
-      it 'user enables shared runners' do
-        visit project_runners_path(project)
+    context 'when a project has enabled shared_runners' do
+      let(:project) { create(:project, shared_runners_enabled: true) }
 
-        click_on 'Enable shared runners'
-
-        expect(page.find('.shared-runners-description')).to have_content('Disable shared runners')
-        expect(page).not_to have_selector('#toggle-shared-runners-form')
+      it 'shared runners toggle is on' do
+        expect(page).to have_selector('[data-testid="toggle-shared-runners"]')
+        expect(page).to have_selector('[data-testid="toggle-shared-runners"] .is-checked')
       end
     end
 
-    context 'when feature flag: vueify_shared_runners_toggle is enabled' do
-      before do
-        project.add_maintainer(user)
-      end
+    context 'when a project has disabled shared_runners' do
+      let(:project) { create(:project, shared_runners_enabled: false) }
 
-      it 'user enables shared runners' do
-        visit project_runners_path(project)
-
-        expect(page).to have_selector('#toggle-shared-runners-form')
+      it 'shared runners toggle is off' do
+        expect(page).not_to have_selector('[data-testid="toggle-shared-runners"] .is-checked')
       end
     end
   end

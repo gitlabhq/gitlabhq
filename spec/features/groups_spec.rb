@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group' do
-  let_it_be(:user) { create(:user) }
+  let(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -368,21 +368,21 @@ RSpec.describe 'Group' do
 
       expect(page).to have_content(nested_group.name)
       expect(page).to have_content(project.name)
-      expect(page).to have_link('Group overview')
+      expect(page).to have_link('Group information')
     end
 
-    it 'renders subgroup page with the text "Subgroup overview"' do
+    it 'renders subgroup page with the text "Subgroup information"' do
       visit group_path(nested_group)
       wait_for_requests
 
-      expect(page).to have_link('Subgroup overview')
+      expect(page).to have_link('Subgroup information')
     end
 
-    it 'renders project page with the text "Project overview"' do
+    it 'renders project page with the text "Project information"' do
       visit project_path(project)
       wait_for_requests
 
-      expect(page).to have_link('Project overview')
+      expect(page).to have_link('Project information')
     end
   end
 
@@ -435,6 +435,35 @@ RSpec.describe 'Group' do
           expect(page).to have_link('New subgroup')
           expect(page).to have_link('New project')
         end
+      end
+    end
+  end
+
+  describe 'new_repo experiment' do
+    let_it_be(:group) { create_default(:group) }
+
+    it 'when in candidate renders "project/repository"' do
+      stub_experiments(new_repo: :candidate)
+
+      visit group_path(group)
+
+      find('li.header-new.dropdown').click
+
+      page.within('li.header-new.dropdown') do
+        expect(page).to have_selector('a', text: 'New project/repository')
+      end
+    end
+
+    it 'when in control renders "project/repository"' do
+      stub_experiments(new_repo: :control)
+
+      visit group_path(group)
+
+      find('li.header-new.dropdown').click
+
+      page.within('li.header-new.dropdown') do
+        expect(page).to have_selector('a', text: 'New project')
+        expect(page).to have_no_selector('a', text: 'New project/repository')
       end
     end
   end

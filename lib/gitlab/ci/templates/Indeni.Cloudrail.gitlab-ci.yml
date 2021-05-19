@@ -1,0 +1,87 @@
+# This template is provided and maintained by Indeni, an official Technology Partner with GitLab.
+# See https://about.gitlab.com/partners/technology-partners/#security for more information.
+
+# For more information about Indeni Cloudrail: https://indeni.com/cloudrail/
+#
+# This file shows an example of using Indeni Cloudrail with GitLab CI/CD.
+# It is not designed to be included in an existing CI/CD configuration with the "include:" keyword.
+# Documentation about this integration: https://indeni.com/doc-indeni-cloudrail/integrate-with-ci-cd/gitlab-instructions
+#
+# For an example of this used in a GitLab repository, see: https://gitlab.com/indeni/cloudrail-demo/-/blob/master/.gitlab-ci.yml
+
+# The sast-report output complies with GitLab's format. This report displays Cloudrail's
+# results in the Security tab in the pipeline view, if you have that feature enabled
+# (GitLab Ultimate only). Otherwise, Cloudrail generates a JUnit report, which displays
+# in the "Test summary" in merge requests.
+
+# Note that Cloudrail's input is the Terraform plan. That is why we've included in this
+# template an example of doing that. You are welcome to replace it with your own way
+# of generating a Terraform plan.
+
+# Before you can use this template, get a Cloudrail API key from the Cloudrail web
+# user interface. Save it as a CI/CD variable named CLOUDRAIL_API_KEY in your project
+# settings.
+
+variables:
+  TEST_ROOT: ${CI_PROJECT_DIR}/my_folder_with_terraform_content
+
+default:
+  before_script:
+    - cd ${CI_PROJECT_DIR}/my_folder_with_terraform_content
+
+init_and_plan:
+  stage: build
+  image: registry.gitlab.com/gitlab-org/terraform-images/releases/0.13
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.tf'
+  script:
+    - terraform init
+    - terraform plan -out=plan.out
+  artifacts:
+    name: "$CI_COMMIT_BRANCH-terraform_plan"
+    paths:
+      - ./**/plan.out
+      - ./**/.terraform
+
+cloudrail_scan:
+  stage: test
+  image: indeni/cloudrail-cli:1.2.44
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.tf'
+  script:
+    - |
+      if [[ "${GITLAB_FEATURES}" == *"security_dashboard"* ]]; then
+        echo "You are licensed for GitLab Security Dashboards. Your scan results will display in the Security Dashboard."
+        cloudrail run --tf-plan plan.out \
+                      --directory . \
+                      --api-key ${CLOUDRAIL_API_KEY} \
+                      --origin ci \
+                      --build-link "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID" \
+                      --execution-source-identifier "$CI_COMMIT_BRANCH - $CI_JOB_ID" \
+                      --output-format json-gitlab-sast \
+                      --output-file ${CI_PROJECT_DIR}/cloudrail-sast-report.json \
+                      --auto-approve
+      else
+        echo "Your scan results will display in the GitLab Test results visualization panel."
+        cloudrail run --tf-plan plan.out \
+                      --directory . \
+                      --api-key ${CLOUDRAIL_API_KEY} \
+                      --origin ci \
+                      --build-link "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID" \
+                      --execution-source-identifier "$CI_COMMIT_BRANCH - $CI_JOB_ID" \
+                      --output-format junit \
+                      --output-file ${CI_PROJECT_DIR}/cloudrail-junit-report.xml \
+                      --auto-approve
+      fi
+  artifacts:
+    reports:
+      sast: cloudrail-sast-report.json
+      junit: cloudrail-junit-report.xml

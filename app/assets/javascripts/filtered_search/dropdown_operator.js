@@ -50,7 +50,7 @@ export default class DropdownOperator extends FilteredSearchDropdown {
     ];
     const dropdownToken = this.tokenKeys.searchByKey(dropdownName.toLowerCase());
 
-    if (gon.features?.notIssuableQueries && !dropdownToken?.hideNotEqual) {
+    if (!dropdownToken?.hideNotEqual) {
       dropdownData.push({
         tag: 'not-equal',
         type: 'string',

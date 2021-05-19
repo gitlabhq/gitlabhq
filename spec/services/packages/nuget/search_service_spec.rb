@@ -7,7 +7,7 @@ RSpec.describe Packages::Nuget::SearchService do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, namespace: subgroup) }
-  let_it_be(:package_a) { create(:nuget_package, project: project, name: 'DummyPackageA') }
+  let_it_be_with_refind(:package_a) { create(:nuget_package, project: project, name: 'DummyPackageA') }
   let_it_be(:packages_b) { create_list(:nuget_package, 5, project: project, name: 'DummyPackageB') }
   let_it_be(:packages_c) { create_list(:nuget_package, 5, project: project, name: 'DummyPackageC') }
   let_it_be(:package_d) { create(:nuget_package, project: project, name: 'FooBarD') }
@@ -77,6 +77,16 @@ RSpec.describe Packages::Nuget::SearchService do
         let(:search_term) { '' }
 
         it { expect_search_results 4, package_a, packages_b, packages_c, package_d }
+      end
+
+      context 'with non-displayable packages' do
+        let(:search_term) { '' }
+
+        before do
+          package_a.update_column(:status, 1)
+        end
+
+        it { expect_search_results 3, packages_b, packages_c, package_d }
       end
 
       context 'with prefix search term' do

@@ -48,7 +48,13 @@ module Ci
         # This counter is temporary. It will be used to check whether if we still use this method or not
         # after setting correct value of `GenericCommitStatus#retried`.
         # More info: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50465#note_491657115
-        metrics.legacy_update_jobs_counter.increment if updated_count > 0
+        if updated_count > 0
+          Gitlab::AppJsonLogger.info(event: 'update_retried_is_used',
+                                     project_id: pipeline.project.id,
+                                     pipeline_id: pipeline.id)
+
+          metrics.legacy_update_jobs_counter.increment
+        end
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord

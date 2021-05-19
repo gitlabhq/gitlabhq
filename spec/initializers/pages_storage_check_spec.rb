@@ -9,7 +9,7 @@ RSpec.describe 'pages storage check' do
 
   context 'when local store does not exist yet' do
     before do
-      Settings.pages['local_store'] = nil
+      stub_config(pages: { enabled: true, local_store: nil })
     end
 
     it { is_expected.to be_truthy }
@@ -17,77 +17,41 @@ RSpec.describe 'pages storage check' do
 
   context 'when pages is not enabled' do
     before do
-      Settings.pages['enabled'] = false
+      stub_config(pages: { enabled: false })
     end
 
     it { is_expected.to be_truthy }
   end
 
   context 'when pages is enabled' do
-    before do
-      Settings.pages['enabled'] = true
-      Settings.pages['local_store'] = Settingslogic.new({})
+    using RSpec::Parameterized::TableSyntax
+
+    where(:local_storage_enabled, :object_storage_enabled, :raises_exception) do
+      false | false | true
+      false | true  | false
+      true  | false | false
+      true  | true  | false
+      1     | 0     | false
+      nil   | nil   | true
     end
 
-    context 'when pages object storage is not enabled' do
+    with_them do
       before do
-        Settings.pages['object_store']['enabled'] = false
+        stub_config(
+          pages: {
+            enabled: true,
+            local_store: { enabled: local_storage_enabled },
+            object_store: { enabled: object_storage_enabled }
+          }
+        )
       end
 
-      context 'when pages local storage is not enabled' do
-        it 'raises an exception' do
-          Settings.pages['local_store']['enabled'] = false
-
+      it 'validates pages storage configuration' do
+        if raises_exception
           expect { subject }.to raise_error(main_error_message)
-        end
-      end
-
-      context 'when pages local storage is enabled' do
-        it 'is true' do
-          Settings.pages['local_store']['enabled'] = true
-
+        else
           expect(subject).to be_truthy
         end
-      end
-    end
-
-    context 'when pages object storage is enabled' do
-      before do
-        Settings.pages['object_store']['enabled'] = true
-      end
-
-      context 'when pages local storage is not enabled' do
-        it 'is true' do
-          Settings.pages['local_store']['enabled'] = false
-
-          expect(subject).to be_truthy
-        end
-      end
-
-      context 'when pages local storage is enabled' do
-        it 'is true' do
-          Settings.pages['local_store']['enabled'] = true
-
-          expect(subject).to be_truthy
-        end
-      end
-    end
-
-    context 'when using integers instead of booleans' do
-      it 'is true' do
-        Settings.pages['local_store']['enabled'] = 1
-        Settings.pages['object_store']['enabled'] = 0
-
-        expect(subject).to be_truthy
-      end
-    end
-
-    context 'when both enabled attributes are not set' do
-      it 'raises an exception' do
-        Settings.pages['local_store']['enabled'] = nil
-        Settings.pages['object_store']['enabled'] = nil
-
-        expect { subject }.to raise_error(main_error_message)
       end
     end
   end

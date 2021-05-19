@@ -121,4 +121,4 @@ module Gitlab
   end
 end
 
-Gitlab::Auth::Ldap::Person.prepend_if_ee('::EE::Gitlab::Auth::Ldap::Person')
+Gitlab::Auth::Ldap::Person.prepend_mod_with('Gitlab::Auth::Ldap::Person')

@@ -1,5 +1,5 @@
 mutation updateIssueDueDate($input: UpdateIssueInput!) {
-  issuableSetDueDate: updateIssue(input: $input) {
+  issuableSetDate: updateIssue(input: $input) {
     issuable: issue {
       id
       dueDate

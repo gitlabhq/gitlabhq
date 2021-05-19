@@ -206,10 +206,6 @@ module BlobHelper
     @gitlab_ci_ymls ||= TemplateFinder.all_template_names(project, :gitlab_ci_ymls)
   end
 
-  def gitlab_ci_syntax_ymls(project)
-    @gitlab_ci_syntax_ymls ||= TemplateFinder.all_template_names(project, :gitlab_ci_syntax_ymls)
-  end
-
   def metrics_dashboard_ymls(project)
     @metrics_dashboard_ymls ||= TemplateFinder.all_template_names(project, :metrics_dashboard_ymls)
   end

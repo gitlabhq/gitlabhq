@@ -163,6 +163,9 @@ module Ci
     def expanded_environment_name
     end
 
+    def instantized_environment
+    end
+
     def execute_hooks
       raise NotImplementedError
     end
@@ -248,4 +251,4 @@ module Ci
   end
 end
 
-::Ci::Bridge.prepend_if_ee('::EE::Ci::Bridge')
+::Ci::Bridge.prepend_mod_with('Ci::Bridge')

@@ -29,7 +29,7 @@ RSpec.describe Admin::PropagateServiceTemplate do
 
     context 'with a project that has another service' do
       before do
-        BambooService.create!(
+        Integrations::Bamboo.create!(
           active: true,
           project: project,
           properties: {
@@ -50,10 +50,10 @@ RSpec.describe Admin::PropagateServiceTemplate do
     end
 
     it 'does not create the service if it exists already' do
-      Service.build_from_integration(service_template, project_id: project.id).save!
+      Integration.build_from_integration(service_template, project_id: project.id).save!
 
       expect { described_class.propagate(service_template) }
-        .not_to change { Service.count }
+        .not_to change { Integration.count }
     end
   end
 end

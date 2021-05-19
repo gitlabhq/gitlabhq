@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Seed::Environment do
   let_it_be(:project) { create(:project) }
+
   let(:job) { build(:ci_build, project: project) }
   let(:seed) { described_class.new(job) }
   let(:attributes) { {} }

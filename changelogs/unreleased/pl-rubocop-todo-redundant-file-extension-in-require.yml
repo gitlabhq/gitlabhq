@@ -1,0 +1,5 @@
+---
+title: Resolves rubocop offense Style/RedundantFileExtensionInRequire
+merge_request: 57963
+author: Shubham Kumar (@imskr)
+type: fixed

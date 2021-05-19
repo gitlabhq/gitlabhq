@@ -15,7 +15,7 @@ RSpec.describe Appearance do
       create(:appearance)
 
       new_row = build(:appearance)
-      new_row.save
+      expect { new_row.save! }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Only 1 appearances row can exist')
 
       expect(new_row.valid?).to eq(false)
     end
@@ -39,7 +39,7 @@ RSpec.describe Appearance do
     end
 
     it 'returns the path when the upload has been orphaned' do
-      appearance.send(logo_type).upload.destroy
+      appearance.send(logo_type).upload.destroy!
       appearance.reload
 
       expect(appearance.send("#{logo_type}_path")).to eq(expected_path)

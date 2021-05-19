@@ -106,9 +106,8 @@ class JiraService < IssueTrackerService
   end
 
   def help
-    "You need to configure Jira before enabling this service. For more details
-    read the
-    [Jira service documentation](#{help_page_url('user/project/integrations/jira')})."
+    jira_doc_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_url('integration/jira/index.html') }
+    s_("JiraService|You need to configure Jira before enabling this integration. For more details, read the %{jira_doc_link_start}Jira integration documentation%{link_end}.") % { jira_doc_link_start: jira_doc_link_start, link_end: '</a>'.html_safe }
   end
 
   def title
@@ -116,7 +115,7 @@ class JiraService < IssueTrackerService
   end
 
   def description
-    s_('JiraService|Track issues in Jira')
+    s_("JiraService|Use Jira as this project's issue tracker.")
   end
 
   def self.to_param
@@ -305,7 +304,7 @@ class JiraService < IssueTrackerService
     )
 
     true
-  rescue => error
+  rescue StandardError => error
     log_error(
       "Issue transition failed",
         error: {
@@ -490,7 +489,7 @@ class JiraService < IssueTrackerService
   # Handle errors when doing Jira API calls
   def jira_request
     yield
-  rescue => error
+  rescue StandardError => error
     @error = error
     log_error("Error sending message", client_url: client_url, error: @error.message)
     nil
@@ -539,4 +538,4 @@ class JiraService < IssueTrackerService
   end
 end
 
-JiraService.prepend_if_ee('EE::JiraService')
+JiraService.prepend_mod_with('JiraService')

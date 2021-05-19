@@ -15,7 +15,7 @@ class CleanupClusterTokensWithNullName < ActiveRecord::Migration[6.0]
 
   def up
     AgentToken.each_batch(of: BATCH_SIZE) do |relation|
-      relation.where('name IS NULL').update_all("name = 'agent-token-' || id")
+      relation.where(name: nil).update_all("name = 'agent-token-' || id")
     end
   end
 

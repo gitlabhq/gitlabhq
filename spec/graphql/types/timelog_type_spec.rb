@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Timelog'] do
-  let(:fields) { %i[spent_at time_spent user issue note] }
+  let(:fields) { %i[spent_at time_spent user issue merge_request note] }
 
   it { expect(described_class.graphql_name).to eq('Timelog') }
   it { expect(described_class).to have_graphql_fields(fields) }
@@ -22,6 +22,14 @@ RSpec.describe GitlabSchema.types['Timelog'] do
 
     it 'returns issue' do
       is_expected.to have_graphql_type(Types::IssueType)
+    end
+  end
+
+  describe 'merge_request field' do
+    subject { described_class.fields['mergeRequest'] }
+
+    it 'returns merge_request' do
+      is_expected.to have_graphql_type(Types::MergeRequestType)
     end
   end
 

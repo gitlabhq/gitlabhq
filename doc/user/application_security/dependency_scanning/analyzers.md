@@ -56,10 +56,10 @@ variables:
 This configuration requires that your custom registry provides images for all
 the official analyzers.
 
-### Selecting specific analyzers
+### Disable specific analyzers
 
-You can select the official analyzers you want to run. Here's how to enable
-`bundler-audit` and `gemnasium` while disabling all the other default ones.
+You can select the official analyzers you don't want to run. Here's how to disable
+`bundler-audit` and `gemnasium` analyzers.
 In `.gitlab-ci.yml` define:
 
 ```yaml
@@ -67,26 +67,23 @@ include:
   template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DS_DEFAULT_ANALYZERS: "bundler-audit,gemnasium"
+  DS_EXCLUDED_ANALYZERS: "bundler-audit, gemnasium"
 ```
-
-`bundler-audit` runs first. When merging the reports, Dependency Scanning
-removes the duplicates and keeps the `bundler-audit` entries.
 
 ### Disabling default analyzers
 
-Setting `DS_DEFAULT_ANALYZERS` to an empty string disables all the official
-default analyzers. In `.gitlab-ci.yml` define:
+Setting `DS_EXCLUDED_ANALYZERS` to a list of the official analyzers disables them.
+In `.gitlab-ci.yml` define:
 
 ```yaml
 include:
   template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DS_DEFAULT_ANALYZERS: ""
+  DS_EXCLUDED_ANALYZERS: "gemnasium, gemansium-maven, gemnasium-python, bundler-audit, retire.js"
 ```
 
-That's needed when one totally relies on [custom analyzers](#custom-analyzers).
+This is used when one totally relies on [custom analyzers](#custom-analyzers).
 
 ## Custom analyzers
 

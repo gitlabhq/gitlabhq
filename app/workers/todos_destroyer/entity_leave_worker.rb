@@ -3,6 +3,8 @@
 module TodosDestroyer
   class EntityLeaveWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include TodosDestroyerQueue
 
     loggable_arguments 2

@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::GenerateGitlabSubscriptions.prepend_if_ee('EE::Gitlab::BackgroundMigration::GenerateGitlabSubscriptions')
+Gitlab::BackgroundMigration::GenerateGitlabSubscriptions.prepend_mod_with('Gitlab::BackgroundMigration::GenerateGitlabSubscriptions')

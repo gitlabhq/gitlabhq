@@ -6,4 +6,4 @@ class IssueSidebarBasicEntity < IssuableSidebarBasicEntity
   expose :severity
 end
 
-IssueSidebarBasicEntity.prepend_if_ee('EE::IssueSidebarBasicEntity')
+IssueSidebarBasicEntity.prepend_mod_with('IssueSidebarBasicEntity')

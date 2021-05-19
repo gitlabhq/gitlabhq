@@ -3,6 +3,8 @@
 class IssuableExportCsvWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :issue_tracking
   worker_resource_boundary :cpu
   loggable_arguments 2
@@ -47,4 +49,4 @@ class IssuableExportCsvWorker # rubocop:disable Scalability/IdempotentWorker
   end
 end
 
-IssuableExportCsvWorker.prepend_if_ee('::EE::IssuableExportCsvWorker')
+IssuableExportCsvWorker.prepend_mod_with('IssuableExportCsvWorker')

@@ -4,7 +4,10 @@ module Projects
   class PostCreationWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :source_code_management
+    tags :exclude_from_kubernetes
     idempotent!
 
     def perform(project_id)

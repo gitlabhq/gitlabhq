@@ -1,3 +1,3 @@
-import initForm from '../../../../shared/milestones/form';
+import initForm from '~/shared/milestones/form';
 
-initForm(false);
+initForm();

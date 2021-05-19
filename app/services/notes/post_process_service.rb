@@ -44,4 +44,4 @@ module Notes
   end
 end
 
-Notes::PostProcessService.prepend_if_ee('EE::Notes::PostProcessService')
+Notes::PostProcessService.prepend_mod_with('Notes::PostProcessService')

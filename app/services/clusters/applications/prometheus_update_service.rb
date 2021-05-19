@@ -2,6 +2,7 @@
 
 module Clusters
   module Applications
+    # Deprecated, to be removed in %14.0 as part of https://gitlab.com/groups/gitlab-org/-/epics/4280
     class PrometheusUpdateService < BaseHelmService
       attr_accessor :project
 
@@ -11,6 +12,8 @@ module Clusters
       end
 
       def execute
+        raise NotImplementedError, 'Externally installed prometheus should not be modified!' unless app.managed_prometheus?
+
         app.make_updating!
 
         helm_api.update(patch_command(values))

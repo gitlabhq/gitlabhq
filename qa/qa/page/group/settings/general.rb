@@ -6,6 +6,7 @@ module QA
       module Settings
         class General < QA::Page::Base
           include ::QA::Page::Settings::Common
+          include Page::Component::VisibilitySetting
 
           view 'app/views/groups/edit.html.haml' do
             element :permission_lfs_2fa_content
@@ -19,10 +20,6 @@ module QA
           view 'app/views/groups/settings/_general.html.haml' do
             element :group_name_field
             element :save_name_visibility_settings_button
-          end
-
-          view 'app/views/shared/_visibility_radios.html.haml' do
-            element :internal_radio, 'qa_selector: "#{visibility_level_label(level).downcase}_radio"' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
           end
 
           view 'app/views/groups/settings/_lfs.html.haml' do
@@ -56,47 +53,43 @@ module QA
             find_element(:group_name_field).set name
           end
 
-          def set_group_visibility(visibility)
-            find_element("#{visibility.downcase}_radio").click
-          end
-
           def click_save_name_visibility_settings_button
             click_element(:save_name_visibility_settings_button)
           end
 
           def set_lfs_enabled
             expand_content(:permission_lfs_2fa_content)
-            check_element(:lfs_checkbox)
+            check_element(:lfs_checkbox, true)
             click_element(:save_permissions_changes_button)
           end
 
           def set_lfs_disabled
             expand_content(:permission_lfs_2fa_content)
-            uncheck_element(:lfs_checkbox)
+            uncheck_element(:lfs_checkbox, true)
             click_element(:save_permissions_changes_button)
           end
 
           def set_request_access_enabled
             expand_content(:permission_lfs_2fa_content)
-            check_element(:request_access_checkbox)
+            check_element(:request_access_checkbox, true)
             click_element(:save_permissions_changes_button)
           end
 
           def set_request_access_disabled
             expand_content(:permission_lfs_2fa_content)
-            uncheck_element(:request_access_checkbox)
+            uncheck_element(:request_access_checkbox, true)
             click_element(:save_permissions_changes_button)
           end
 
           def set_require_2fa_enabled
             expand_content(:permission_lfs_2fa_content)
-            check_element(:require_2fa_checkbox)
+            check_element(:require_2fa_checkbox, true)
             click_element(:save_permissions_changes_button)
           end
 
           def set_require_2fa_disabled
             expand_content(:permission_lfs_2fa_content)
-            uncheck_element(:require_2fa_checkbox)
+            uncheck_element(:require_2fa_checkbox, true)
             click_element(:save_permissions_changes_button)
           end
 
@@ -109,10 +102,10 @@ module QA
           def toggle_request_access
             expand_content(:permission_lfs_2fa_content)
 
-            if find_element(:request_access_checkbox).checked?
-              uncheck_element(:request_access_checkbox)
+            if find_element(:request_access_checkbox, visible: false).checked?
+              uncheck_element(:request_access_checkbox, true)
             else
-              check_element(:request_access_checkbox)
+              check_element(:request_access_checkbox, true)
             end
 
             click_element(:save_permissions_changes_button)
@@ -136,4 +129,4 @@ module QA
   end
 end
 
-QA::Page::Group::Settings::General.prepend_if_ee('QA::EE::Page::Group::Settings::General')
+QA::Page::Group::Settings::General.prepend_mod_with('Page::Group::Settings::General', namespace: QA)

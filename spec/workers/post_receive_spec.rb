@@ -94,30 +94,12 @@ RSpec.describe PostReceive do
         perform
       end
 
-      it 'tracks an event for the empty_repo_upload experiment', :snowplow do
-        allow_next_instance_of(ApplicationExperiment) do |e|
-          allow(e).to receive(:should_track?).and_return(true)
-          allow(e).to receive(:track_initial_writes)
+      it 'tracks an event for the empty_repo_upload experiment', :experiment do
+        expect_next_instance_of(EmptyRepoUploadExperiment) do |e|
+          expect(e).to receive(:track_initial_write)
         end
 
         perform
-
-        expect_snowplow_event(category: 'empty_repo_upload', action: 'initial_write', context: [{
-          schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
-          data: anything
-        }])
-      end
-
-      it 'does not track an event for the empty_repo_upload experiment when project is not empty', :snowplow do
-        allow(empty_project).to receive(:empty_repo?).and_return(false)
-        allow_next_instance_of(ApplicationExperiment) do |e|
-          allow(e).to receive(:should_track?).and_return(true)
-          allow(e).to receive(:track_initial_writes)
-        end
-
-        perform
-
-        expect_no_snowplow_event
       end
     end
 

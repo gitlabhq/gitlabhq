@@ -21,7 +21,7 @@ module Resolvers
       alias_method :project, :object
 
       def resolve(active: nil, type: nil)
-        servs = project.services
+        servs = project.integrations
         servs = servs.by_active_flag(active) unless active.nil?
         servs = servs.by_type(type) unless type.blank?
         servs

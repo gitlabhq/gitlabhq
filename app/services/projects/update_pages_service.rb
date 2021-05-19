@@ -48,7 +48,7 @@ module Projects
       end
     rescue InvalidStateError => e
       error(e.message)
-    rescue => e
+    rescue StandardError => e
       error(e.message)
       raise e
     end
@@ -145,7 +145,7 @@ module Projects
       FileUtils.mkdir_p(pages_path)
       begin
         FileUtils.move(public_path, previous_public_path)
-      rescue
+      rescue StandardError
       end
       FileUtils.move(archive_public_path, public_path)
     ensure
@@ -267,4 +267,4 @@ module Projects
   end
 end
 
-Projects::UpdatePagesService.prepend_if_ee('EE::Projects::UpdatePagesService')
+Projects::UpdatePagesService.prepend_mod_with('Projects::UpdatePagesService')

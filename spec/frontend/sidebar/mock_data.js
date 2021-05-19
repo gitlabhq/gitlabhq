@@ -233,7 +233,7 @@ export const issueConfidentialityResponse = (confidential = false) => ({
   },
 });
 
-export const issueDueDateResponse = (dueDate = null) => ({
+export const issuableDueDateResponse = (dueDate = null) => ({
   data: {
     workspace: {
       __typename: 'Project',
@@ -241,6 +241,47 @@ export const issueDueDateResponse = (dueDate = null) => ({
         __typename: 'Issue',
         id: 'gid://gitlab/Issue/4',
         dueDate,
+      },
+    },
+  },
+});
+
+export const issuableStartDateResponse = (startDate = null) => ({
+  data: {
+    workspace: {
+      __typename: 'Group',
+      issuable: {
+        __typename: 'Epic',
+        id: 'gid://gitlab/Epic/4',
+        startDate,
+        startDateIsFixed: true,
+        startDateFixed: startDate,
+        startDateFromMilestones: null,
+      },
+    },
+  },
+});
+
+export const epicParticipantsResponse = () => ({
+  data: {
+    workspace: {
+      __typename: 'Group',
+      issuable: {
+        __typename: 'Epic',
+        id: 'gid://gitlab/Epic/4',
+        participants: {
+          nodes: [
+            {
+              id: 'gid://gitlab/User/2',
+              avatarUrl:
+                'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
+              name: 'Jacki Kub',
+              username: 'francina.skiles',
+              webUrl: '/franc',
+              status: null,
+            },
+          ],
+        },
       },
     },
   },
@@ -259,6 +300,20 @@ export const issueReferenceResponse = (reference) => ({
   },
 });
 
+export const issueSubscriptionsResponse = (subscribed = false, emailsDisabled = false) => ({
+  data: {
+    workspace: {
+      __typename: 'Project',
+      issuable: {
+        __typename: 'Issue',
+        id: 'gid://gitlab/Issue/4',
+        subscribed,
+        emailsDisabled,
+      },
+    },
+  },
+});
+
 export const issuableQueryResponse = {
   data: {
     workspace: {
@@ -267,38 +322,6 @@ export const issuableQueryResponse = {
         __typename: 'Issue',
         id: 'gid://gitlab/Issue/1',
         iid: '1',
-        participants: {
-          nodes: [
-            {
-              id: 'gid://gitlab/User/1',
-              avatarUrl:
-                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
-              name: 'Administrator',
-              username: 'root',
-              webUrl: '/root',
-              status: null,
-            },
-            {
-              id: 'gid://gitlab/User/2',
-              avatarUrl:
-                'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
-              name: 'Jacki Kub',
-              username: 'francina.skiles',
-              webUrl: '/franc',
-              status: {
-                availability: 'BUSY',
-              },
-            },
-            {
-              id: 'gid://gitlab/User/3',
-              avatarUrl: '/avatar',
-              name: 'John Doe',
-              username: 'johndoe',
-              webUrl: '/john',
-              status: null,
-            },
-          ],
-        },
         assignees: {
           nodes: [
             {
@@ -370,32 +393,121 @@ export const updateIssueAssigneesMutationResponse = {
           ],
           __typename: 'UserConnection',
         },
-        participants: {
-          nodes: [
-            {
-              __typename: 'User',
-              id: 'gid://gitlab/User/1',
-              avatarUrl:
-                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
-              name: 'Administrator',
-              username: 'root',
-              webUrl: '/root',
-              status: null,
-            },
-            {
-              __typename: 'User',
+        __typename: 'Issue',
+      },
+    },
+  },
+};
+
+export const subscriptionNullResponse = {
+  data: {
+    issuableAssigneesUpdated: null,
+  },
+};
+
+const mockUser1 = {
+  id: 'gid://gitlab/User/1',
+  avatarUrl:
+    'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+  name: 'Administrator',
+  username: 'root',
+  webUrl: '/root',
+  status: null,
+};
+
+const mockUser2 = {
+  id: 'gid://gitlab/User/4',
+  avatarUrl: '/avatar2',
+  name: 'rookie',
+  username: 'rookie',
+  webUrl: 'rookie',
+  status: null,
+};
+
+export const searchResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      users: {
+        nodes: [
+          {
+            user: mockUser1,
+          },
+          {
+            user: mockUser2,
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const projectMembersResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      users: {
+        nodes: [
+          // Remove nulls https://gitlab.com/gitlab-org/gitlab/-/issues/329750
+          null,
+          null,
+          // Remove duplicated entry https://gitlab.com/gitlab-org/gitlab/-/issues/327822
+          mockUser1,
+          mockUser1,
+          mockUser2,
+          {
+            user: {
               id: 'gid://gitlab/User/2',
               avatarUrl:
                 'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
               name: 'Jacki Kub',
               username: 'francina.skiles',
               webUrl: '/franc',
+              status: {
+                availability: 'BUSY',
+              },
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const participantsQueryResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      issuable: {
+        __typename: 'Issue',
+        id: 'gid://gitlab/Issue/1',
+        iid: '1',
+        participants: {
+          nodes: [
+            // Remove duplicated entry https://gitlab.com/gitlab-org/gitlab/-/issues/327822
+            mockUser1,
+            mockUser1,
+            {
+              id: 'gid://gitlab/User/2',
+              avatarUrl:
+                'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
+              name: 'Jacki Kub',
+              username: 'francina.skiles',
+              webUrl: '/franc',
+              status: {
+                availability: 'BUSY',
+              },
+            },
+            {
+              id: 'gid://gitlab/User/3',
+              avatarUrl: '/avatar',
+              name: 'John Doe',
+              username: 'rollie',
+              webUrl: '/john',
               status: null,
             },
           ],
-          __typename: 'UserConnection',
         },
-        __typename: 'Issue',
       },
     },
   },

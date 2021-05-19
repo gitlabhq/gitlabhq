@@ -11,4 +11,4 @@ module ProtectedBranches
   end
 end
 
-ProtectedBranches::UpdateService.prepend_if_ee('EE::ProtectedBranches::UpdateService')
+ProtectedBranches::UpdateService.prepend_mod_with('ProtectedBranches::UpdateService')

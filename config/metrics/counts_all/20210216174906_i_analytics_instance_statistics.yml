@@ -1,9 +1,9 @@
 ---
 key_path: analytics_unique_visits.i_analytics_instance_statistics
-description: Visit to /admin/instance_statistics
+description: Unique visitors to/admin/usage_trends
 product_section: dev
 product_stage: manage
-product_group: group::analytics
+product_group: group::optimize
 product_category:
 value_type: number
 status: data_available

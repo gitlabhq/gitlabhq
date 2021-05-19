@@ -22,7 +22,7 @@ module Gitlab
         schedule_first_tasks_page
 
         true
-      rescue => e
+      rescue StandardError => e
         fail_import(e.message)
 
         false

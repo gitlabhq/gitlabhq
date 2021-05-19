@@ -21,7 +21,7 @@ RSpec.shared_examples 'SQL set operator' do |operator_keyword|
       expect(set_operator.to_sql).to eq("(#{to_sql(relation_1)})\n#{operator_keyword}\n(#{to_sql(relation_2)})")
     end
 
-    it 'skips Model.none segements' do
+    it 'skips Model.none segments' do
       empty_relation = User.none
       set_operator = described_class.new([empty_relation, relation_1, relation_2])
 

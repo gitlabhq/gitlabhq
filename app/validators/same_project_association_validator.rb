@@ -16,6 +16,6 @@ class SameProjectAssociationValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     return if record.project == value&.project
 
-    record.errors[attribute] << 'must associate the same project'
+    record.errors.add(attribute, 'must associate the same project')
   end
 end

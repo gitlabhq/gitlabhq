@@ -8,17 +8,13 @@ class PipelineDetailsEntity < Ci::PipelineEntity
   end
 
   expose :details do
-    expose :artifacts do |pipeline, options|
-      rel = pipeline.downloadable_artifacts
-
-      if Feature.enabled?(:non_public_artifacts, type: :development)
-        rel = rel.select { |artifact| can?(request.current_user, :read_job_artifacts, artifact.job) }
-      end
-
-      BuildArtifactEntity.represent(rel, options.merge(project: pipeline.project))
-    end
     expose :manual_actions, using: BuildActionEntity
     expose :scheduled_actions, using: BuildActionEntity
+    expose :code_quality_build_path, if: -> (_, options) { options[:code_quality_walkthrough] } do |pipeline|
+      next unless code_quality_build = pipeline.builds.finished.find_by_name('code_quality')
+
+      project_job_path(pipeline.project, code_quality_build, code_quality_walkthrough: true)
+    end
   end
 
   expose :triggered_by_pipeline, as: :triggered_by, with: TriggeredPipelineEntity

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-include ActionDispatch::TestProcess
-
 FactoryBot.define do
   factory :ci_job_artifact, class: 'Ci::JobArtifact' do
     job factory: :ci_build
@@ -276,6 +274,16 @@ FactoryBot.define do
       after(:build) do |artifact, _|
         artifact.file = fixture_file_upload(
           Rails.root.join('spec/fixtures/security_reports/master/gl-sast-report.json'), 'application/json')
+      end
+    end
+
+    trait :sast_minimal do
+      file_type { :sast }
+      file_format { :raw }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-sast-report-minimal.json'), 'application/json')
       end
     end
 

@@ -106,7 +106,7 @@ RSpec.shared_examples 'conan authenticate endpoint' do
         expect(payload['user_id']).to eq(personal_access_token.user_id)
 
         duration = payload['exp'] - payload['iat']
-        expect(duration).to eq(1.hour)
+        expect(duration).to eq(::Gitlab::ConanToken::CONAN_TOKEN_EXPIRE_TIME)
       end
     end
   end
@@ -661,7 +661,7 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do
 end
 
 RSpec.shared_examples 'creates build_info when there is a job' do
-  context 'with job token' do
+  context 'with job token', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/294047' do
     let(:jwt) { build_jwt_from_job(job) }
 
     it 'creates a build_info record' do

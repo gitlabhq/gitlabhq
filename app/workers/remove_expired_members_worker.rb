@@ -2,6 +2,8 @@
 
 class RemoveExpiredMembersWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include CronjobQueue
 
   feature_category :authentication_and_authorization
@@ -26,7 +28,7 @@ class RemoveExpiredMembersWorker # rubocop:disable Scalability/IdempotentWorker
           Users::DestroyService.new(nil).execute(expired_user, skip_authorization: true)
         end
       end
-    rescue => ex
+    rescue StandardError => ex
       logger.error("Expired Member ID=#{member.id} cannot be removed - #{ex}")
     end
   end

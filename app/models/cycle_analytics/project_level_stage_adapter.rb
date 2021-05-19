@@ -4,6 +4,8 @@
 # compatible with the old value stream controller actions.
 module CycleAnalytics
   class ProjectLevelStageAdapter
+    ProjectLevelStage = Struct.new(:title, :description, :legend, :name, :project_median, keyword_init: true )
+
     def initialize(stage, options)
       @stage = stage
       @options = options
@@ -13,7 +15,7 @@ module CycleAnalytics
     def as_json(serializer: AnalyticsStageSerializer)
       presenter = Analytics::CycleAnalytics::StagePresenter.new(stage)
 
-      serializer.new.represent(OpenStruct.new(
+      serializer.new.represent(ProjectLevelStage.new(
                                  title: presenter.title,
                                  description: presenter.description,
                                  legend: presenter.legend,

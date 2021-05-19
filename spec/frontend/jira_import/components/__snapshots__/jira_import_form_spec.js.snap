@@ -24,7 +24,9 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
         role="columnheader"
         scope="col"
       >
-        Jira display name
+        <div>
+          Jira display name
+        </div>
       </th>
       <th
         aria-colindex="2"
@@ -32,14 +34,18 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
         class=""
         role="columnheader"
         scope="col"
-      />
+      >
+        <div />
+      </th>
       <th
         aria-colindex="3"
         class=""
         role="columnheader"
         scope="col"
       >
-        GitLab username
+        <div>
+          GitLab username
+        </div>
       </th>
     </tr>
   </thead>

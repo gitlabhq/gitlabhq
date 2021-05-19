@@ -56,4 +56,4 @@ module QA
   end
 end
 
-QA::Page::Profile::Menu.prepend_if_ee('QA::EE::Page::Profile::Menu')
+QA::Page::Profile::Menu.prepend_mod_with('Page::Profile::Menu', namespace: QA)

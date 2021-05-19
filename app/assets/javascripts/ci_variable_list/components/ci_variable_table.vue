@@ -162,22 +162,25 @@ export default {
         </p>
       </template>
     </gl-table>
-    <div class="ci-variable-actions" :class="{ 'justify-content-center': !tableIsNotEmpty }">
+    <div
+      class="ci-variable-actions gl-display-flex"
+      :class="{ 'justify-content-center': !tableIsNotEmpty }"
+    >
+      <gl-button
+        ref="add-ci-variable"
+        v-gl-modal-directive="$options.modalId"
+        class="gl-mr-3"
+        data-qa-selector="add_ci_variable_button"
+        variant="confirm"
+        category="primary"
+        >{{ __('Add variable') }}</gl-button
+      >
       <gl-button
         v-if="tableIsNotEmpty"
         ref="secret-value-reveal-button"
         data-qa-selector="reveal_ci_variable_value_button"
-        class="gl-mr-3"
         @click="toggleValues(!valuesHidden)"
         >{{ valuesButtonText }}</gl-button
-      >
-      <gl-button
-        ref="add-ci-variable"
-        v-gl-modal-directive="$options.modalId"
-        data-qa-selector="add_ci_variable_button"
-        variant="success"
-        category="primary"
-        >{{ __('Add Variable') }}</gl-button
       >
     </div>
   </div>

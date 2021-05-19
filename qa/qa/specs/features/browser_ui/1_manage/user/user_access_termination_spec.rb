@@ -49,7 +49,7 @@ module QA
 
           Page::File::Show.perform(&:click_edit)
 
-          expect(page).to have_text("You're not allowed to edit files in this project directly.")
+          expect(page).to have_text("You can’t edit files directly in this project.")
         end
 
         after do

@@ -13,6 +13,13 @@ module Gitlab
           ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
         end
 
+        def self.pipeline_security_orchestration_policy_processing_duration_histogram
+          name = :gitlab_ci_pipeline_security_orchestration_policy_processing_duration_seconds
+          comment = 'Pipeline security orchestration policy processing duration'
+
+          ::Gitlab::Metrics.histogram(name, comment)
+        end
+
         def self.pipeline_size_histogram
           name = :gitlab_ci_pipeline_size_builds
           comment = 'Pipeline size'
@@ -55,6 +62,21 @@ module Gitlab
           comment = 'Counter of job failure reasons'
 
           Gitlab::Metrics.counter(name, comment)
+        end
+
+        def ci_minutes_exceeded_builds_counter
+          name = :ci_minutes_exceeded_builds_counter
+          comment = 'Count of builds dropped due to CI minutes exceeded'
+
+          Gitlab::Metrics.counter(name, comment)
+        end
+
+        def self.gitlab_ci_difference_live_vs_actual_minutes
+          name = :gitlab_ci_difference_live_vs_actual_minutes
+          comment = 'Comparison between CI minutes consumption from live tracking vs actual consumption'
+          labels = {}
+          buckets = [-120.0, -60.0, -30.0, -10.0, -5.0, -3.0, -1.0, 0.0, 1.0, 3.0, 5.0, 10.0, 30.0, 60.0, 120.0]
+          ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
         end
       end
     end

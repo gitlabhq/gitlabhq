@@ -134,16 +134,16 @@ All open source (OSS) analyzers have been moved to the GitLab Free tier as of Gi
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                                                                   | In Free             | In Ultimate        |
-|:-------------------------------------------------------------------------------------------------------------|:--------------------|:-------------------|
-| [Configure SAST Scanners](#configuration)                                                                    | **{check-circle}**  | **{check-circle}** |
-| [Customize SAST Settings](#customizing-the-sast-settings)                                                    | **{check-circle}**  | **{check-circle}** |
-| View [JSON Report](#reports-json-format)                                                                     | **{check-circle}**  | **{check-circle}** |
-| Presentation of JSON Report in Merge Request                                                                 | **{dotted-circle}** | **{check-circle}** |
-| [Address vulnerabilities](../../application_security/index.md#addressing-vulnerabilities)                    | **{dotted-circle}** | **{check-circle}** |
-| [Access to Security Dashboard](../../application_security/security_dashboard/index.md)                       | **{dotted-circle}** | **{check-circle}** |
-| [Configure SAST in the UI](#configure-sast-in-the-ui)                                                        | **{dotted-circle}** | **{check-circle}** |
-| [Customize SAST Rulesets](#customize-rulesets)                                                               | **{dotted-circle}** | **{check-circle}** |
+| Capability                                                                             | In Free             | In Ultimate        |
+|:---------------------------------------------------------------------------------------|:--------------------|:-------------------|
+| [Configure SAST Scanners](#configuration)                                              | **{check-circle}**  | **{check-circle}** |
+| [Customize SAST Settings](#customizing-the-sast-settings)                              | **{check-circle}**  | **{check-circle}** |
+| View [JSON Report](#reports-json-format)                                               | **{check-circle}**  | **{check-circle}** |
+| Presentation of JSON Report in Merge Request                                           | **{dotted-circle}** | **{check-circle}** |
+| [Address vulnerabilities](../../application_security/vulnerabilities/index.md)         | **{dotted-circle}** | **{check-circle}** |
+| [Access to Security Dashboard](../../application_security/security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
+| [Configure SAST in the UI](#configure-sast-in-the-ui)                                  | **{dotted-circle}** | **{check-circle}** |
+| [Customize SAST Rulesets](#customize-rulesets)                                         | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -222,7 +222,7 @@ the pipeline configuration, the last mention of the variable takes precedence.
 ### Overriding SAST jobs
 
 WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#only--except)
 is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 
 To override a job definition, (for example, change properties like `variables` or `dependencies`),
@@ -247,8 +247,8 @@ You can customize the default scanning rules provided by our SAST analyzers.
 
 Ruleset customization supports two capabilities:
 
-1. Disabling predefined rules
-1. Modifying the default behavior of a given analyzer
+1. Disabling predefined rules (available for all analyzers).
+1. Modifying the default behavior of a given analyzer (only available for `nodejs-scan` and `gosec`).
 
 These capabilities can be used simultaneously.
 
@@ -464,7 +464,7 @@ Some analyzers make it possible to filter out vulnerabilities under a given thre
 
 | CI/CD variable               | Default value            | Description                                                                                                                                                                                                                 |
 |------------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SAST_EXCLUDED_PATHS`        | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. You might need to exclude temporary directories used by your build tool as these can generate false positives. |
+| `SAST_EXCLUDED_PATHS`        | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. You might need to exclude temporary directories used by your build tool as these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your own paths to be excluded. If you don't specify the default excluded paths, you will override the defaults and _only_ paths you specify will be excluded from the SAST scans. |
 | `SEARCH_MAX_DEPTH`           | 4                        | SAST searches the repository to detect the programming languages used, and selects the matching analyzers. Set the value of `SEARCH_MAX_DEPTH` to specify how many directory levels the search phase should span. After the analyzers have been selected, the _entire_ repository is analyzed. |
 | `SAST_BANDIT_EXCLUDED_PATHS` |                          | Comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html); For example: `'*/tests/*, */venv/*'`                                                  |
 | `SAST_BRAKEMAN_LEVEL`        | 1                        | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High.                                                                                                                                        |
@@ -517,7 +517,6 @@ removed, or promoted to regular features at any time.
 Experimental features available are:
 
 - Enable scanning of iOS and Android apps using the [MobSF analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/).
-- Enable the [semgrep analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/).
 
 #### Enable experimental features
 
@@ -652,14 +651,15 @@ registry.gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/pmd-apex:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/security-code-scan:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/semgrep:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/sobelow:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/spotbugs:2
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Please consult your IT staff to find an accepted and approved
-process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../index.md#maintenance-and-update-of-the-vulnerabilities-database)
-with new definitions, so consider if you're able to make periodic updates yourself.
+process by which external resources can be imported or temporarily accessed. These scanners are [periodically updated](../vulnerabilities/index.md#vulnerability-scanner-maintenance)
+with new definitions, and you may be able to make occasional updates on your own.
 
 For details on saving and transporting Docker images as a file, see Docker's documentation on
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
@@ -681,7 +681,7 @@ Support for custom certificate authorities was introduced in the following versi
 | `phpcs-security-audit` | [v2.8.2](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit/-/releases/v2.8.2) |
 | `pmd-apex`             | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex/-/releases/v2.1.0)             |
 | `security-code-scan`   | [v2.7.3](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/releases/v2.7.3)   |
-| `semgrep`              | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/releases/v0.0.1)   |
+| `semgrep`              | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/releases/v0.0.1)   |
 | `sobelow`              | [v2.2.0](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/releases/v2.2.0)              |
 | `spotbugs`             | [v2.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/releases/v2.7.1)             |
 
@@ -710,7 +710,7 @@ documentation for instructions.
 
 ## Running SAST in SELinux
 
-By default SAST analyzers are supported in GitLab instances hosted on SELinux. Adding a `before_script` in an [overriden SAST job](#overriding-sast-jobs) may not work as runners hosted on SELinux have restricted permissions.
+By default SAST analyzers are supported in GitLab instances hosted on SELinux. Adding a `before_script` in an [overridden SAST job](#overriding-sast-jobs) may not work as runners hosted on SELinux have restricted permissions.
 
 ## Troubleshooting
 

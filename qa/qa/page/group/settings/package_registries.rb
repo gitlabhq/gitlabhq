@@ -11,7 +11,7 @@ module QA
             element :package_registry_settings_content
           end
 
-          view 'app/assets/javascripts/packages_and_registries/settings/group/components/maven_settings.vue' do
+          view 'app/assets/javascripts/packages_and_registries/settings/group/components/group_settings_app.vue' do
             element :allow_duplicates_toggle
             element :allow_duplicates_label
           end

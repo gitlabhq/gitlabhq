@@ -10,10 +10,11 @@ module Banzai
       # This filter does not support cross-project references.
       class ExternalIssueReferenceFilter < ReferenceFilter
         self.reference_type = :external_issue
+        self.object_class   = ExternalIssue
 
         # Public: Find `JIRA-123` issue references in text
         #
-        #   ExternalIssueReferenceFilter.references_in(text, pattern) do |match, issue|
+        #   references_in(text, pattern) do |match, issue|
         #     "<a href=...>##{issue}</a>"
         #   end
         #
@@ -22,7 +23,7 @@ module Banzai
         # Yields the String match and the String issue reference.
         #
         # Returns a String replaced with the return of the block.
-        def self.references_in(text, pattern)
+        def references_in(text, pattern = object_reference_pattern)
           text.gsub(pattern) do |match|
             yield match, $~[:issue]
           end
@@ -32,27 +33,7 @@ module Banzai
           # Early return if the project isn't using an external tracker
           return doc if project.nil? || default_issues_tracker?
 
-          ref_pattern = issue_reference_pattern
-          ref_start_pattern = /\A#{ref_pattern}\z/
-
-          nodes.each_with_index do |node, index|
-            if text_node?(node)
-              replace_text_when_pattern_matches(node, index, ref_pattern) do |content|
-                issue_link_filter(content)
-              end
-
-            elsif element_node?(node)
-              yield_valid_link(node) do |link, inner_html|
-                if link =~ ref_start_pattern
-                  replace_link_node_with_href(node, index, link) do
-                    issue_link_filter(link, link_content: inner_html)
-                  end
-                end
-              end
-            end
-          end
-
-          doc
+          super
         end
 
         private
@@ -65,8 +46,8 @@ module Banzai
         #
         # Returns a String with `JIRA-123` references replaced with links. All
         # links have `gfm` and `gfm-issue` class names attached for styling.
-        def issue_link_filter(text, link_content: nil)
-          self.class.references_in(text, issue_reference_pattern) do |match, id|
+        def object_link_filter(text, pattern, link_content: nil, link_reference: false)
+          references_in(text) do |match, id|
             url = url_for_issue(id)
             klass = reference_class(:issue)
             data  = data_attribute(project: project.id, external_issue: id)
@@ -97,12 +78,8 @@ module Banzai
           external_issues_cached(:default_issues_tracker?)
         end
 
-        def issue_reference_pattern
+        def object_reference_pattern
           external_issues_cached(:external_issue_reference_pattern)
-        end
-
-        def project
-          context[:project]
         end
 
         def issue_title

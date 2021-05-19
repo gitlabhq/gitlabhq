@@ -71,4 +71,4 @@ class UserPreference < ApplicationRecord
   end
 end
 
-UserPreference.prepend_if_ee('EE::UserPreference')
+UserPreference.prepend_mod_with('UserPreference')

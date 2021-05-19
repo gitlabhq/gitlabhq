@@ -39,7 +39,7 @@ class SlackService < ChatNotificationService
   end
 
   def get_message(object_kind, data)
-    return ChatMessage::AlertMessage.new(data) if object_kind == 'alert'
+    return Integrations::ChatMessage::AlertMessage.new(data) if object_kind == 'alert'
 
     super
   end

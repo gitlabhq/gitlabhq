@@ -6,10 +6,7 @@ module Banzai
       # HTML filter that replaces label references with links.
       class LabelReferenceFilter < AbstractReferenceFilter
         self.reference_type = :label
-
-        def self.object_class
-          Label
-        end
+        self.object_class   = Label
 
         def find_object(parent_object, id)
           find_labels(parent_object).find(id)
@@ -20,7 +17,7 @@ module Banzai
           unescaped_html = unescape_html_entities(text).gsub(pattern) do |match|
             namespace = $~[:namespace]
             project = $~[:project]
-            project_path = full_project_path(namespace, project)
+            project_path = reference_cache.full_project_path(namespace, project)
             label = find_label_cached(project_path, $~[:label_id], $~[:label_name])
 
             if label
@@ -96,7 +93,7 @@ module Banzai
           parent = project || group
 
           if project || full_path_ref?(matches)
-            project_path    = full_project_path(matches[:namespace], matches[:project])
+            project_path    = reference_cache.full_project_path(matches[:namespace], matches[:project])
             parent_from_ref = from_ref_cached(project_path)
             reference       = parent_from_ref.to_human_reference(parent)
 
@@ -129,4 +126,4 @@ module Banzai
   end
 end
 
-Banzai::Filter::References::LabelReferenceFilter.prepend_if_ee('EE::Banzai::Filter::References::LabelReferenceFilter')
+Banzai::Filter::References::LabelReferenceFilter.prepend_mod_with('Banzai::Filter::References::LabelReferenceFilter')

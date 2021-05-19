@@ -32,7 +32,7 @@ export default {
       return {
         'gl-border-t-transparent': !this.first && !this.selected,
         'gl-border-t-gray-100': this.first && !this.selected,
-        'disabled-content': this.disabled,
+        'gl-opacity-5': this.disabled,
         'gl-border-b-gray-100': !this.selected,
         'gl-bg-blue-50 gl-border-blue-200': this.selected,
       };

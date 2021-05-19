@@ -101,6 +101,22 @@ RSpec.describe Issuable::BulkUpdateService do
     end
   end
 
+  shared_examples 'scheduling cached group count clear' do
+    it 'schedules worker' do
+      expect(Issuables::ClearGroupsIssueCounterWorker).to receive(:perform_async)
+
+      bulk_update(issuables, params)
+    end
+  end
+
+  shared_examples 'not scheduling cached group count clear' do
+    it 'does not schedule worker' do
+      expect(Issuables::ClearGroupsIssueCounterWorker).not_to receive(:perform_async)
+
+      bulk_update(issuables, params)
+    end
+  end
+
   context 'with issuables at a project level' do
     let(:parent) { project }
 
@@ -131,6 +147,11 @@ RSpec.describe Issuable::BulkUpdateService do
         expect(project.issues.opened).to be_empty
         expect(project.issues.closed).not_to be_empty
       end
+
+      it_behaves_like 'scheduling cached group count clear' do
+        let(:issuables) { issues }
+        let(:params) { { state_event: 'close' } }
+      end
     end
 
     describe 'reopen issues' do
@@ -148,6 +169,11 @@ RSpec.describe Issuable::BulkUpdateService do
 
         expect(project.issues.closed).to be_empty
         expect(project.issues.opened).not_to be_empty
+      end
+
+      it_behaves_like 'scheduling cached group count clear' do
+        let(:issuables) { issues }
+        let(:params) { { state_event: 'reopen' } }
       end
     end
 
@@ -231,6 +257,10 @@ RSpec.describe Issuable::BulkUpdateService do
       let(:milestone) { create(:milestone, project: project) }
 
       it_behaves_like 'updates milestones'
+
+      it_behaves_like 'not scheduling cached group count clear' do
+        let(:params) { { milestone_id: milestone.id } }
+      end
     end
 
     describe 'updating labels' do

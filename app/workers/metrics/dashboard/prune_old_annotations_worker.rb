@@ -5,6 +5,8 @@ module Metrics
     class PruneOldAnnotationsWorker
       include ApplicationWorker
 
+      sidekiq_options retry: 3
+
       DELETE_LIMIT = 10_000
       DEFAULT_CUT_OFF_PERIOD = 2.weeks
 

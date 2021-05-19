@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
   let(:base_report) { Gitlab::Ci::Reports::CodequalityReports.new }
   let(:head_report) { Gitlab::Ci::Reports::CodequalityReports.new }
   let(:major_degradation) { build(:codequality_degradation, :major) }
-  let(:minor_degradation) { build(:codequality_degradation, :major) }
+  let(:minor_degradation) { build(:codequality_degradation, :minor) }
   let(:critical_degradation) { build(:codequality_degradation, :critical) }
   let(:blocker_degradation) { build(:codequality_degradation, :blocker) }
 

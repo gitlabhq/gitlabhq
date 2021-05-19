@@ -6,4 +6,4 @@ module Types
   end
 end
 
-Types::IssueConnectionType.prepend_if_ee('::EE::Types::IssueConnectionType')
+Types::IssueConnectionType.prepend_mod_with('Types::IssueConnectionType')

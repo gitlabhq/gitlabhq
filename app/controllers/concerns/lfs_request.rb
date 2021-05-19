@@ -136,4 +136,4 @@ module LfsRequest
   end
 end
 
-LfsRequest.prepend_if_ee('EE::LfsRequest')
+LfsRequest.prepend_mod_with('LfsRequest')

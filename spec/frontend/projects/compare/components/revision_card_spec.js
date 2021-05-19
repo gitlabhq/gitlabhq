@@ -3,13 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import RepoDropdown from '~/projects/compare/components/repo_dropdown.vue';
 import RevisionCard from '~/projects/compare/components/revision_card.vue';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown.vue';
-
-const defaultProps = {
-  refsProjectPath: 'some/refs/path',
-  revisionText: 'Source',
-  paramsName: 'to',
-  paramsBranch: 'master',
-};
+import { revisionCardDefaultProps as defaultProps } from './mock_data';
 
 describe('RepoDropdown component', () => {
   let wrapper;

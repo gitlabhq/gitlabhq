@@ -33,7 +33,7 @@ module WaitableWorker
 
       args_list.each do |args|
         new.perform(*args)
-      rescue
+      rescue StandardError
         failed << args
       end
 

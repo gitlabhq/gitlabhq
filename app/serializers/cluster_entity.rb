@@ -28,6 +28,6 @@ class ClusterEntity < Grape::Entity
   end
 
   expose :enable_advanced_logs_querying do |cluster|
-    cluster.application_elastic_stack_available?
+    cluster.elastic_stack_available?
   end
 end

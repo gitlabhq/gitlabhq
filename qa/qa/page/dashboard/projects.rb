@@ -45,4 +45,4 @@ module QA
   end
 end
 
-QA::Page::Dashboard::Projects.prepend_if_ee('QA::EE::Page::Dashboard::Projects')
+QA::Page::Dashboard::Projects.prepend_mod_with('Page::Dashboard::Projects', namespace: QA)

@@ -6,7 +6,7 @@ RSpec.describe 'Project fork' do
   include ProjectForksHelper
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public, :repository) }
+  let(:project) { create(:project, :public, :repository, description: 'some description') }
 
   before do
     sign_in(user)
@@ -228,7 +228,7 @@ RSpec.describe 'Project fork' do
       click_link 'Fork'
 
       page.within('.fork-thumbnail-container') do
-        expect(page).to have_css('div.identicon')
+        expect(page).to have_css('span.identicon')
       end
     end
 

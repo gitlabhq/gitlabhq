@@ -3,6 +3,8 @@
 module ObjectPool
   class CreateWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include ObjectPoolQueue
     include ExclusiveLeaseGuard
 
@@ -28,7 +30,7 @@ module ObjectPool
 
       pool.create_object_pool
       pool.mark_ready
-    rescue => e
+    rescue StandardError => e
       pool.mark_failed
       raise e
     end

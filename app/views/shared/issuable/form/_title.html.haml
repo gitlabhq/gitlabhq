@@ -5,11 +5,8 @@
 - div_class = no_issuable_templates ? 'col-sm-10' : 'col-sm-7 col-lg-8'
 - toggle_wip_link_start = '<a href="" class="js-toggle-wip">'
 - toggle_wip_link_end = '</a>'
-- draft_snippet = '<code>Draft:</code>'.html_safe
-- wip_snippet = '<code>WIP:</code>'.html_safe
-- draft_or_wip_snippet = '<code>Draft/WIP</code>'.html_safe
-- add_wip_text = (_('%{link_start}Start the title with %{draft_snippet} or %{wip_snippet}%{link_end} to prevent a merge request that is a work in progress from being merged before it\'s ready.') % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_snippet: draft_snippet, wip_snippet: wip_snippet } ).html_safe
-- remove_wip_text = (_('%{link_start}Remove the %{draft_or_wip_snippet} prefix%{link_end} from the title to allow this merge request to be merged when it\'s ready.' ) % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_or_wip_snippet: draft_or_wip_snippet } ).html_safe
+- add_wip_text = (_('%{link_start}Start the title with %{draft_snippet}%{link_end} to prevent a merge request that is a work in progress from being merged before it\'s ready.') % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_snippet: '<code>Draft:</code>'.html_safe } ).html_safe
+- remove_wip_text = (_('%{link_start}Remove the %{draft_snippet} prefix%{link_end} from the title to allow this merge request to be merged when it\'s ready.' ) % { link_start: toggle_wip_link_start, link_end: toggle_wip_link_end, draft_snippet: '<code>Draft</code>'.html_safe } ).html_safe
 
 %div{ class: div_class }
   = form.text_field :title, required: true, maxlength: 255, autofocus: true,

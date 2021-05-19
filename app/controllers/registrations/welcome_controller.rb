@@ -18,7 +18,13 @@ module Registrations
       if result[:status] == :success
         return redirect_to new_users_sign_up_group_path if show_signup_onboarding?
 
-        redirect_to path_for_signed_in_user(current_user)
+        members = current_user.members
+
+        if members.count == 1 && members.last.source.present?
+          redirect_to members_activity_path(members), notice: helpers.invite_accepted_notice(members.last)
+        else
+          redirect_to path_for_signed_in_user(current_user)
+        end
       else
         render :show
       end
@@ -48,7 +54,14 @@ module Registrations
     def path_for_signed_in_user(user)
       return users_almost_there_path if requires_confirmation?(user)
 
-      stored_location_for(user) || dashboard_projects_path
+      stored_location_for(user) || members_activity_path(user.members)
+    end
+
+    def members_activity_path(members)
+      return dashboard_projects_path unless members.any?
+      return dashboard_projects_path unless members.last.source.present?
+
+      members.last.source.activity_path
     end
 
     def show_signup_onboarding?
@@ -57,4 +70,4 @@ module Registrations
   end
 end
 
-Registrations::WelcomeController.prepend_if_ee('EE::Registrations::WelcomeController')
+Registrations::WelcomeController.prepend_mod_with('Registrations::WelcomeController')

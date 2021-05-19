@@ -1,0 +1,7 @@
+---
+name: wiki_content_editor
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57370
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/255919
+group: group::editor
+type: development
+default_enabled: false

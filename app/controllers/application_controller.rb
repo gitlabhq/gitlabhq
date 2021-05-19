@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::Logging::CloudflareHelper
   include Gitlab::Utils::StrongMemoize
   include ::Gitlab::WithFeatureCategory
+  include FlocOptOut
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
@@ -103,6 +104,10 @@ class ApplicationController < ActionController::Base
 
   def redirect_back_or_default(default: root_path, options: {})
     redirect_back(fallback_location: default, **options)
+  end
+
+  def check_if_gl_com_or_dev
+    render_404 unless ::Gitlab.dev_env_or_com?
   end
 
   def not_found
@@ -207,13 +212,13 @@ class ApplicationController < ActionController::Base
       end
 
     respond_to do |format|
-      format.any { head status }
       format.html do
         render template,
                layout: "errors",
                status: status,
                locals: { message: message }
       end
+      format.any { head status }
     end
   end
 
@@ -223,8 +228,8 @@ class ApplicationController < ActionController::Base
 
   def render_403
     respond_to do |format|
-      format.any { head :forbidden }
       format.html { render "errors/access_denied", layout: "errors", status: :forbidden }
+      format.any { head :forbidden }
     end
   end
 
@@ -555,4 +560,4 @@ class ApplicationController < ActionController::Base
   end
 end
 
-ApplicationController.prepend_ee_mod
+ApplicationController.prepend_mod

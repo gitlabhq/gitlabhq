@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { UPGRADE_CTA } from './scanners_constants';
+import { UPGRADE_CTA } from './constants';
 
 export default {
   components: {

@@ -7,6 +7,10 @@ module Members
 
     INVITE_TYPE = 'initial_email'
 
+    def self.initial_invite_email?(invite_type)
+      invite_type == INVITE_TYPE
+    end
+
     def resolve_variant_name
       RoundRobin.new(feature_flag_name, %i[avatar permission_info control]).execute
     end

@@ -121,6 +121,20 @@ RSpec.describe PreferencesHelper do
     end
   end
 
+  describe '#language_choices' do
+    include StubLanguagesTranslationPercentage
+
+    it 'lists all the selectable language options with their translation percent' do
+      stub_languages_translation_percentage(en: 100, es: 65)
+      stub_user(preferred_language: :en)
+
+      expect(helper.language_choices).to eq([
+        '<option selected="selected" value="en">English (100% translated)</option>',
+        '<option value="es">Spanish - español (65% translated)</option>'
+      ].join("\n"))
+    end
+  end
+
   def stub_user(messages = {})
     if messages.empty?
       allow(helper).to receive(:current_user).and_return(nil)

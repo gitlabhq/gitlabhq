@@ -8,10 +8,11 @@ product_category: continuous_integration
 value_type: number
 status: data_available
 time_frame: all
-data_source:
+data_source: database
 distribution:
 - ce
 - ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

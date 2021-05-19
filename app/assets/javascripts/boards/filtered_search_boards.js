@@ -28,6 +28,10 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
 
     if (vuexstore.getters.shouldUseGraphQL && vuexstore.state.boardConfig) {
       const boardConfigPath = transformBoardConfig(vuexstore.state.boardConfig);
+      // TODO Refactor: https://gitlab.com/gitlab-org/gitlab/-/issues/329274
+      // here we are using "window.location.search" as a temporary store
+      // only to unpack the params and do another validation inside
+      // 'performSearch' and 'setFilter' vuex actions.
       if (boardConfigPath !== '') {
         const filterPath = window.location.search ? `${window.location.search}&` : '?';
         updateHistory({

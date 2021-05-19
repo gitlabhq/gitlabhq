@@ -13,6 +13,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory do
   subject do
     described_class.create(relation_sym: relation_sym,
                            relation_hash: relation_hash,
+                           relation_index: 1,
                            object_builder: Gitlab::ImportExport::Project::ObjectBuilder,
                            members_mapper: members_mapper,
                            user: user,

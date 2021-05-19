@@ -20,7 +20,7 @@ class IssueBoardEntity < Grape::Entity
     API::Entities::Project.represent issue.project, only: [:id, :path]
   end
 
-  expose :milestone, expose_nil: false do |issue|
+  expose :milestone, if: -> (issue) { issue.milestone } do |issue|
     API::Entities::Milestone.represent issue.milestone, only: [:id, :title]
   end
 
@@ -53,4 +53,4 @@ class IssueBoardEntity < Grape::Entity
   end
 end
 
-IssueBoardEntity.prepend_if_ee('EE::IssueBoardEntity')
+IssueBoardEntity.prepend_mod_with('IssueBoardEntity')

@@ -37,6 +37,16 @@ RSpec.describe API::ProjectPackages do
         end
       end
 
+      context 'with terraform module package' do
+        let_it_be(:terraform_module_package) { create(:terraform_module_package, project: project) }
+
+        it 'filters out terraform module packages when no package_type filter is set' do
+          subject
+
+          expect(json_response).not_to include(a_hash_including('package_type' => 'terraform_module'))
+        end
+      end
+
       context 'project is private' do
         let(:project) { create(:project, :private) }
 

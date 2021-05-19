@@ -71,7 +71,7 @@ your SAML configuration differs from [the recommended SAML settings](index.md#az
 modify the corresponding `customappsso` settings accordingly. If a mapping is not listed in the
 table, use the Azure defaults.
 
-| Azure Active Directory Attribute | customappsso Attribute | Matching precedence |
+| Azure Active Directory Attribute | `customappsso` Attribute | Matching precedence |
 | -------------------------------- | ---------------------- | -------------------- |
 | `objectId`                       | `externalId`           | 1 |
 | `userPrincipalName`              | `emails[type eq "work"].value` |  |
@@ -129,11 +129,11 @@ configuration. Otherwise, the Okta SCIM app may not work properly.
     - For **API Token** enter the SCIM token obtained from the GitLab SCIM configuration page
 1. Click 'Test API Credentials' to verify configuration.
 1. Click **Save** to apply the settings.
-1. After saving the API integration details, new settings tabs will appear on the left. Choose **To App**.
+1. After saving the API integration details, new settings tabs appear on the left. Choose **To App**.
 1. Click **Edit**.
 1. Check the box to **Enable** for both **Create Users** and **Deactivate Users**.
 1. Click **Save**.
-1. Assign users in the **Assignments** tab. Assigned users will be created and
+1. Assign users in the **Assignments** tab. Assigned users are created and
    managed in your GitLab group.
 
 #### Okta Known Issues
@@ -212,7 +212,7 @@ Ensure that the user has been added to the SCIM app.
 
 If you receive "User is not linked to a SAML account", then most likely the user already exists in GitLab. Have the user follow the [User access and linking setup](#user-access-and-linking-setup) instructions.
 
-The **Identity** (`extern_uid`) value stored by GitLab is updated by SCIM whenever `id` or `externalId` changes. Users won't be able to sign in unless the GitLab Identity (`extern_uid`) value matches the `NameId` sent by SAML.
+The **Identity** (`extern_uid`) value stored by GitLab is updated by SCIM whenever `id` or `externalId` changes. Users cannot sign in unless the GitLab Identity (`extern_uid`) value matches the `NameId` sent by SAML.
 
 This value is also used by SCIM to match users on the `id`, and is updated by SCIM whenever the `id` or `externalId` values change.
 
@@ -242,9 +242,9 @@ you can address the problem in the following ways:
 - You can have users unlink and relink themselves, based on the ["SAML authentication failed: User has already been taken"](index.md#message-saml-authentication-failed-user-has-already-been-taken) section.
 - You can unlink all users simultaneously, by removing all users from the SAML app while provisioning is turned on.
 - It may be possible to use the [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) to manually correct the `externalId` stored for users to match the SAML `NameId`.
-  To look up a user, you'll need to know the desired value that matches the `NameId` as well as the current `externalId`.
+  To look up a user, you need to know the desired value that matches the `NameId` as well as the current `externalId`.
 
-It is important not to update these to incorrect values, since this will cause users to be unable to sign in. It is also important not to assign a value to the wrong user, as this would cause users to get signed into the wrong account.
+It is important not to update these to incorrect values, since this causes users to be unable to sign in. It is also important not to assign a value to the wrong user, as this causes users to get signed into the wrong account.
 
 ### I need to change my SCIM app
 

@@ -8,9 +8,9 @@ class IssueAssignee < ApplicationRecord
 
   validates :assignee, uniqueness: { scope: :issue_id }
 
-  scope :in_projects, ->(project_ids) { joins(:issue).where("issues.project_id in (?)", project_ids) }
+  scope :in_projects, ->(project_ids) { joins(:issue).where(issues: { project_id: project_ids }) }
   scope :on_issues, ->(issue_ids) { where(issue_id: issue_ids) }
   scope :for_assignee, ->(user) { where(assignee: user) }
 end
 
-IssueAssignee.prepend_if_ee('EE::IssueAssignee')
+IssueAssignee.prepend_mod_with('IssueAssignee')

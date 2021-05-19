@@ -31,9 +31,9 @@ module X509SerialNumberAttribute
       end
 
       unless column.type == :binary
-        raise ArgumentError.new("x509_serial_number_attribute #{name.inspect} is invalid since the column type is not :binary")
+        raise ArgumentError, "x509_serial_number_attribute #{name.inspect} is invalid since the column type is not :binary"
       end
-    rescue => error
+    rescue StandardError => error
       Gitlab::AppLogger.error "X509SerialNumberAttribute initialization: #{error.message}"
       raise
     end

@@ -110,7 +110,7 @@ There are many ways to integrate with GitLab, including:
 |:-------------------------------------------|:------------|
 | [GitLab REST API](api/README.md)           | Integrate with GitLab using our REST API. |
 | [GitLab GraphQL API](api/graphql/index.md) | Integrate with GitLab using our GraphQL API. |
-| [Integrations](integration/README.md)      | Integrations with third-party products. |
+| [Integrations](integration/index.md)      | Integrations with third-party products. |
 
 ## Contributing to GitLab
 

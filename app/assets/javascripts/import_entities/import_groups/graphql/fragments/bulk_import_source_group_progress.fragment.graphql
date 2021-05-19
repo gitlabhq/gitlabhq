@@ -1,0 +1,4 @@
+fragment BulkImportSourceGroupProgress on ClientBulkImportProgress {
+  id
+  status
+}

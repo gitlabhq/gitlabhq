@@ -1,0 +1,5 @@
+---
+title: Fix N+1 problem in CustomEmojiFilter
+merge_request: 60910
+author:
+type: performance

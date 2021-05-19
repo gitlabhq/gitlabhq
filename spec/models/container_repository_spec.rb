@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRepository do
+  using RSpec::Parameterized::TableSyntax
+
   let(:group) { create(:group, name: 'group') }
   let(:project) { create(:project, path: 'test', group: group) }
 
@@ -26,18 +28,6 @@ RSpec.describe ContainerRepository do
   describe 'associations' do
     it 'belongs to the project' do
       expect(repository).to belong_to(:project)
-    end
-  end
-
-  describe '.exists_by_path?' do
-    it 'returns true for known container repository paths' do
-      path = ContainerRegistry::Path.new("#{project.full_path}/#{repository.name}")
-      expect(described_class.exists_by_path?(path)).to be_truthy
-    end
-
-    it 'returns false for unknown container repository paths' do
-      path = ContainerRegistry::Path.new('you/dont/know/me')
-      expect(described_class.exists_by_path?(path)).to be_falsey
     end
   end
 
@@ -359,6 +349,17 @@ RSpec.describe ContainerRepository do
     it { is_expected.to contain_exactly(repository) }
   end
 
+  describe '.expiration_policy_started_at_nil_or_before' do
+    let_it_be(:repository1) { create(:container_repository, expiration_policy_started_at: nil) }
+    let_it_be(:repository2) { create(:container_repository, expiration_policy_started_at: 1.day.ago) }
+    let_it_be(:repository3) { create(:container_repository, expiration_policy_started_at: 2.hours.ago) }
+    let_it_be(:repository4) { create(:container_repository, expiration_policy_started_at: 1.week.ago) }
+
+    subject { described_class.expiration_policy_started_at_nil_or_before(3.hours.ago) }
+
+    it { is_expected.to contain_exactly(repository1, repository2, repository4) }
+  end
+
   describe '.waiting_for_cleanup' do
     let_it_be(:repository_cleanup_scheduled) { create(:container_repository, :cleanup_scheduled) }
     let_it_be(:repository_cleanup_unfinished) { create(:container_repository, :cleanup_unfinished) }
@@ -367,5 +368,75 @@ RSpec.describe ContainerRepository do
     subject { described_class.waiting_for_cleanup }
 
     it { is_expected.to contain_exactly(repository_cleanup_scheduled, repository_cleanup_unfinished) }
+  end
+
+  describe '.exists_by_path?' do
+    it 'returns true for known container repository paths' do
+      path = ContainerRegistry::Path.new("#{project.full_path}/#{repository.name}")
+      expect(described_class.exists_by_path?(path)).to be_truthy
+    end
+
+    it 'returns false for unknown container repository paths' do
+      path = ContainerRegistry::Path.new('you/dont/know/me')
+      expect(described_class.exists_by_path?(path)).to be_falsey
+    end
+  end
+
+  describe '.with_enabled_policy' do
+    let_it_be(:repository) { create(:container_repository) }
+    let_it_be(:repository2) { create(:container_repository) }
+
+    subject { described_class.with_enabled_policy }
+
+    before do
+      repository.project.container_expiration_policy.update!(enabled: true)
+    end
+
+    it { is_expected.to eq([repository]) }
+  end
+
+  context 'with repositories' do
+    let_it_be_with_reload(:repository) { create(:container_repository, :cleanup_unscheduled) }
+    let_it_be(:other_repository) { create(:container_repository, :cleanup_unscheduled) }
+
+    let(:policy) { repository.project.container_expiration_policy }
+
+    before do
+      ContainerExpirationPolicy.update_all(enabled: true)
+    end
+
+    describe '.requiring_cleanup' do
+      subject { described_class.requiring_cleanup }
+
+      context 'with next_run_at in the future' do
+        before do
+          policy.update_column(:next_run_at, 10.minutes.from_now)
+        end
+
+        it { is_expected.to eq([]) }
+      end
+
+      context 'with next_run_at in the past' do
+        before do
+          policy.update_column(:next_run_at, 10.minutes.ago)
+        end
+
+        it { is_expected.to eq([repository]) }
+      end
+    end
+
+    describe '.with_unfinished_cleanup' do
+      subject { described_class.with_unfinished_cleanup }
+
+      it { is_expected.to eq([]) }
+
+      context 'with an unfinished repository' do
+        before do
+          repository.cleanup_unfinished!
+        end
+
+        it { is_expected.to eq([repository]) }
+      end
+    end
   end
 end

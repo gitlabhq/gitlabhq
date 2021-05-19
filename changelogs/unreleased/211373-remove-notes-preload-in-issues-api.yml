@@ -1,0 +1,5 @@
+---
+title: Improve performance of project issues API
+merge_request: 60981
+author:
+type: performance

@@ -49,7 +49,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def integrations
     return not_found unless instance_level_integrations?
 
-    @integrations = Service.find_or_initialize_all_non_project_specific(Service.for_instance).sort_by(&:title)
+    @integrations = Integration.find_or_initialize_all_non_project_specific(Integration.for_instance).sort_by(&:title)
   end
 
   def update
@@ -292,4 +292,4 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 end
 
-Admin::ApplicationSettingsController.prepend_if_ee('EE::Admin::ApplicationSettingsController')
+Admin::ApplicationSettingsController.prepend_mod_with('Admin::ApplicationSettingsController')

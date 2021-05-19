@@ -59,15 +59,21 @@ RSpec.describe SlackService do
       context 'deployment notification' do
         let_it_be(:deployment) { create(:deployment, user: user) }
 
-        let(:data) { Gitlab::DataBuilder::Deployment.build(deployment) }
+        let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, Time.current) }
 
         it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_deployment_notification'
       end
 
       context 'wiki_page notification' do
-        let_it_be(:wiki_page) { create(:wiki_page, wiki: project.wiki, message: 'user created page: Awesome wiki_page') }
+        let(:wiki_page) { create(:wiki_page, wiki: project.wiki, message: 'user created page: Awesome wiki_page') }
 
         let(:data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
+
+        before do
+          # Skip this method that is not relevant to this test to prevent having
+          # to update project which is frozen
+          allow(project.wiki).to receive(:after_wiki_activity)
+        end
 
         it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_wiki_page_notification'
       end

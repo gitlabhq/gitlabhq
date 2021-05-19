@@ -49,7 +49,7 @@ RSpec.describe MergeRequests::BuildService do
   end
 
   let(:service) do
-    described_class.new(project, user, params)
+    described_class.new(project: project, current_user: user, params: params)
   end
 
   before do
@@ -100,7 +100,7 @@ RSpec.describe MergeRequests::BuildService do
     context 'with force_remove_source_branch parameter when the user is authorized' do
       let(:mr_params) { params.merge(force_remove_source_branch: '1') }
       let(:source_project) { fork_project(project, user) }
-      let(:merge_request) { described_class.new(project, user, mr_params).execute }
+      let(:merge_request) { described_class.new(project: project, current_user: user, params: mr_params).execute }
 
       before do
         project.add_reporter(user)

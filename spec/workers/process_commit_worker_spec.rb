@@ -94,7 +94,7 @@ RSpec.describe ProcessCommitWorker do
         project.repository.after_create_branch
 
         MergeRequests::MergeService
-          .new(project, merge_request.author, { sha: merge_request.diff_head_sha })
+          .new(project: project, current_user: merge_request.author, params: { sha: merge_request.diff_head_sha })
           .execute(merge_request)
 
         merge_request.reload.merge_commit

@@ -19,9 +19,9 @@ module Gitlab
             yield new_blob(current_blob_data) if current_blob_data
 
             current_blob_data = msg.to_h.slice(:oid, :path, :size, :revision, :mode)
-            current_blob_data[:data] = msg.data.dup
+            current_blob_data[:data_parts] = [msg.data]
           else
-            current_blob_data[:data] << msg.data
+            current_blob_data[:data_parts] << msg.data
           end
         end
 
@@ -31,6 +31,8 @@ module Gitlab
       private
 
       def new_blob(blob_data)
+        data = blob_data[:data_parts].join
+
         Gitlab::Git::Blob.new(
           id: blob_data[:oid],
           mode: blob_data[:mode].to_s(8),
@@ -38,8 +40,8 @@ module Gitlab
           path: blob_data[:path],
           size: blob_data[:size],
           commit_id: blob_data[:revision],
-          data: blob_data[:data],
-          binary: Gitlab::Git::Blob.binary?(blob_data[:data])
+          data: data,
+          binary: Gitlab::Git::Blob.binary?(data, cache_key: blob_data[:oid])
         )
       end
     end

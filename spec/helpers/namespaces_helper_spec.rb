@@ -265,4 +265,32 @@ RSpec.describe NamespacesHelper do
       end
     end
   end
+
+  describe '#cascading_namespace_setting_locked?' do
+    let(:attribute) { :delayed_project_removal }
+
+    context 'when `group` argument is `nil`' do
+      it 'returns `false`' do
+        expect(helper.cascading_namespace_setting_locked?(attribute, nil)).to eq(false)
+      end
+    end
+
+    context 'when `*_locked?` method does not exist' do
+      it 'returns `false`' do
+        expect(helper.cascading_namespace_setting_locked?(:attribute_that_does_not_exist, admin_group)).to eq(false)
+      end
+    end
+
+    context 'when `*_locked?` method does exist' do
+      before do
+        allow(admin_group.namespace_settings).to receive(:delayed_project_removal_locked?).and_return(true)
+      end
+
+      it 'calls corresponding `*_locked?` method' do
+        helper.cascading_namespace_setting_locked?(attribute, admin_group, include_self: true)
+
+        expect(admin_group.namespace_settings).to have_received(:delayed_project_removal_locked?).with(include_self: true)
+      end
+    end
+  end
 end

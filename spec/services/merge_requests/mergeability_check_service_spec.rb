@@ -87,7 +87,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       described_class.new(merge_request).async_execute
     end
 
-    context 'when read only DB' do
+    context 'when read-only DB' do
       before do
         allow(Gitlab::Database).to receive(:read_only?) { true }
       end
@@ -232,7 +232,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
     context 'when MR cannot be merged and has outdated merge ref' do
       before do
-        MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
+        MergeRequests::MergeToRefService.new(project: project, current_user: merge_request.author).execute(merge_request)
         merge_request.mark_as_unmergeable!
       end
 
@@ -258,7 +258,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       end
     end
 
-    context 'when read only DB' do
+    context 'when read-only DB' do
       it 'returns ServiceResponse.error' do
         allow(Gitlab::Database).to receive(:read_only?) { true }
 
@@ -332,7 +332,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
       context 'when MR is mergeable but merge-ref is already updated' do
         before do
-          MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
+          MergeRequests::MergeToRefService.new(project: project, current_user: merge_request.author).execute(merge_request)
           merge_request.mark_as_mergeable!
         end
 
@@ -361,7 +361,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
     context 'merge with conflicts' do
       it 'calls MergeToRefService with true allow_conflicts param' do
         expect(MergeRequests::MergeToRefService).to receive(:new)
-          .with(project, merge_request.author, { allow_conflicts: true }).and_call_original
+          .with(project: project, current_user: merge_request.author, params: { allow_conflicts: true }).and_call_original
 
         subject
       end
@@ -373,7 +373,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
         it 'calls MergeToRefService with false allow_conflicts param' do
           expect(MergeRequests::MergeToRefService).to receive(:new)
-            .with(project, merge_request.author, { allow_conflicts: false }).and_call_original
+            .with(project: project, current_user: merge_request.author, params: { allow_conflicts: false }).and_call_original
 
           subject
         end

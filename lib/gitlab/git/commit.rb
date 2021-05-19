@@ -263,7 +263,7 @@ module Gitlab
 
       def has_zero_stats?
         stats.total == 0
-      rescue
+      rescue StandardError
         true
       end
 

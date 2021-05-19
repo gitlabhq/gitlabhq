@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::MigrateApproverToApprovalRulesInBatch.prepend_if_ee('EE::Gitlab::BackgroundMigration::MigrateApproverToApprovalRulesInBatch')
+Gitlab::BackgroundMigration::MigrateApproverToApprovalRulesInBatch.prepend_mod_with('Gitlab::BackgroundMigration::MigrateApproverToApprovalRulesInBatch')

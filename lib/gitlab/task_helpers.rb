@@ -109,7 +109,7 @@ module Gitlab
     def run_command!(command)
       output, status = Gitlab::Popen.popen(command)
 
-      raise Gitlab::TaskFailedError.new(output) unless status == 0
+      raise Gitlab::TaskFailedError, output unless status == 0
 
       output
     end

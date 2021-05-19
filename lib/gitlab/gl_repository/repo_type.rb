@@ -81,4 +81,4 @@ module Gitlab
   end
 end
 
-Gitlab::GlRepository::RepoType.prepend_if_ee('EE::Gitlab::GlRepository::RepoType')
+Gitlab::GlRepository::RepoType.prepend_mod_with('Gitlab::GlRepository::RepoType')

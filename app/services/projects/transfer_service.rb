@@ -47,16 +47,16 @@ module Projects
       @old_namespace = project.namespace
 
       if Project.where(namespace_id: @new_namespace.try(:id)).where('path = ? or name = ?', project.path, project.name).exists?
-        raise TransferError.new(s_("TransferProject|Project with same name or path in target namespace already exists"))
+        raise TransferError, s_("TransferProject|Project with same name or path in target namespace already exists")
       end
 
       if project.has_container_registry_tags?
         # We currently don't support renaming repository if it contains tags in container registry
-        raise TransferError.new(s_('TransferProject|Project cannot be transferred, because tags are present in its container registry'))
+        raise TransferError, s_('TransferProject|Project cannot be transferred, because tags are present in its container registry')
       end
 
       if project.has_packages?(:npm) && !new_namespace_has_same_root?(project)
-        raise TransferError.new(s_("TransferProject|Root namespace can't be updated if project has NPM packages"))
+        raise TransferError, s_("TransferProject|Root namespace can't be updated if project has NPM packages")
       end
 
       proceed_to_transfer
@@ -170,7 +170,7 @@ module Projects
 
       # Move main repository
       unless move_repo_folder(@old_path, @new_path)
-        raise TransferError.new(s_("TransferProject|Cannot move project"))
+        raise TransferError, s_("TransferProject|Cannot move project")
       end
 
       # Disk path is changed; we need to ensure we reload it
@@ -223,10 +223,10 @@ module Projects
     end
 
     def update_integrations
-      project.services.inherit.delete_all
-      Service.create_from_active_default_integrations(project, :project_id)
+      project.integrations.inherit.delete_all
+      Integration.create_from_active_default_integrations(project, :project_id)
     end
   end
 end
 
-Projects::TransferService.prepend_if_ee('EE::Projects::TransferService')
+Projects::TransferService.prepend_mod_with('Projects::TransferService')

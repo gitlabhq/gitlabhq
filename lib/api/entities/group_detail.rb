@@ -39,4 +39,4 @@ module API
   end
 end
 
-API::Entities::GroupDetail.prepend_if_ee('EE::API::Entities::GroupDetail')
+API::Entities::GroupDetail.prepend_mod_with('API::Entities::GroupDetail')

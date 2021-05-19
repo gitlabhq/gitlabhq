@@ -37,7 +37,7 @@ describe('duplicate dashboard modal', () => {
 
     return shallowMount(DuplicateDashboardModal, {
       propsData: {
-        defaultBranch: 'master',
+        defaultBranch: 'main',
         modalId: 'id',
       },
       store,

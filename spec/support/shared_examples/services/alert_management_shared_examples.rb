@@ -1,111 +1,77 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'creates an alert management alert' do
-  it { is_expected.to be_success }
+RSpec.shared_examples 'alerts service responds with an error and takes no actions' do |http_status|
+  include_examples 'alerts service responds with an error', http_status
 
-  it 'creates AlertManagement::Alert' do
-    expect { subject }.to change(AlertManagement::Alert, :count).by(1)
-  end
+  it_behaves_like 'does not create an alert management alert'
+  it_behaves_like 'does not create a system note for alert'
+  it_behaves_like 'does not process incident issues'
+  it_behaves_like 'does not send alert notification emails'
+end
 
-  it 'executes the alert service hooks' do
-    expect_next_instance_of(AlertManagement::Alert) do |alert|
-      expect(alert).to receive(:execute_services)
-    end
-
-    subject
+RSpec.shared_examples 'alerts service responds with an error' do |http_status|
+  specify do
+    expect(subject).to be_error
+    expect(subject.http_status).to eq(http_status)
   end
 end
 
 # This shared_example requires the following variables:
-# - last_alert_attributes, last created alert
-# - project, project that alert created
-# - payload_raw, hash representation of payload
-# - environment, project's environment
-# - fingerprint, fingerprint hash
-RSpec.shared_examples 'assigns the alert properties' do
-  it 'ensures that created alert has all data properly assigned' do
-    subject
+# - `service`, a service which includes ::IncidentManagement::Settings
+RSpec.shared_context 'incident management settings enabled' do
+  let(:auto_close_incident) { true }
+  let(:create_issue) { true }
+  let(:send_email) { true }
 
-    expect(last_alert_attributes).to match(
-      project_id: project.id,
-      title: payload_raw.fetch(:title),
-      started_at: Time.zone.parse(payload_raw.fetch(:start_time)),
-      severity: payload_raw.fetch(:severity),
-      status: AlertManagement::Alert.status_value(:triggered),
-      events: 1,
-      domain: domain,
-      hosts: payload_raw.fetch(:hosts),
-      payload: payload_raw.with_indifferent_access,
-      issue_id: nil,
-      description: payload_raw.fetch(:description),
-      monitoring_tool: payload_raw.fetch(:monitoring_tool),
-      service: payload_raw.fetch(:service),
-      fingerprint: Digest::SHA1.hexdigest(fingerprint),
-      environment_id: environment.id,
-      ended_at: nil,
-      prometheus_alert_id: nil
+  let(:incident_management_setting) do
+    double(
+      auto_close_incident?: auto_close_incident,
+      create_issue?: create_issue,
+      send_email?: send_email
     )
   end
-end
-
-RSpec.shared_examples 'does not an create alert management alert' do
-  it 'does not create alert' do
-    expect { subject }.not_to change(AlertManagement::Alert, :count)
-  end
-end
-
-RSpec.shared_examples 'adds an alert management alert event' do
-  it { is_expected.to be_success }
-
-  it 'does not create an alert' do
-    expect { subject }.not_to change(AlertManagement::Alert, :count)
-  end
-
-  it 'increases alert events count' do
-    expect { subject }.to change { alert.reload.events }.by(1)
-  end
-
-  it 'does not executes the alert service hooks' do
-    expect(alert).not_to receive(:execute_services)
-
-    subject
-  end
-end
-
-RSpec.shared_examples 'processes incident issues' do
-  let(:create_incident_service) { spy }
 
   before do
-    allow_any_instance_of(AlertManagement::Alert).to receive(:execute_services)
-  end
-
-  it 'processes issues' do
-    expect(IncidentManagement::ProcessAlertWorker)
-      .to receive(:perform_async)
-      .with(nil, nil, kind_of(Integer))
-      .once
-
-    Sidekiq::Testing.inline! do
-      expect(subject).to be_success
-    end
+    allow(ProjectServiceWorker).to receive(:perform_async)
+    allow(service)
+      .to receive(:incident_management_setting)
+      .and_return(incident_management_setting)
   end
 end
 
-RSpec.shared_examples 'does not process incident issues' do
-  it 'does not process issues' do
-    expect(IncidentManagement::ProcessAlertWorker)
-      .not_to receive(:perform_async)
+RSpec.shared_examples 'processes never-before-seen alert' do
+  it_behaves_like 'creates an alert management alert or errors'
+  it_behaves_like 'creates expected system notes for alert', :new_alert
+  it_behaves_like 'processes incident issues if enabled'
+  it_behaves_like 'sends alert notification emails if enabled'
+end
 
-    expect(subject).to be_success
+RSpec.shared_examples 'processes never-before-seen recovery alert' do
+  it_behaves_like 'creates an alert management alert or errors'
+  it_behaves_like 'creates expected system notes for alert', :new_alert, :recovery_alert, :resolve_alert
+  it_behaves_like 'sends alert notification emails if enabled'
+  it_behaves_like 'does not process incident issues'
+  it_behaves_like 'writes a warning to the log for a failed alert status update' do
+    let(:alert) { nil } # Ensure the next alert id is used
+  end
+
+  it 'resolves the alert' do
+    subject
+
+    expect(AlertManagement::Alert.last.ended_at).to be_present
+    expect(AlertManagement::Alert.last.resolved?).to be(true)
   end
 end
 
-RSpec.shared_examples 'does not process incident issues due to error' do |http_status:|
-  it 'does not process issues' do
-    expect(IncidentManagement::ProcessAlertWorker)
-      .not_to receive(:perform_async)
+RSpec.shared_examples 'processes one firing and one resolved prometheus alerts' do
+  it 'creates AlertManagement::Alert' do
+    expect(Gitlab::AppLogger).not_to receive(:warn)
 
-    expect(subject).to be_error
-    expect(subject.http_status).to eq(http_status)
+    expect { subject }
+      .to change(AlertManagement::Alert, :count).by(2)
+      .and change(Note, :count).by(4)
   end
+
+  it_behaves_like 'processes incident issues'
+  it_behaves_like 'sends alert notification emails', count: 2
 end

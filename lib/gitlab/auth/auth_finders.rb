@@ -160,7 +160,7 @@ module Gitlab
 
         case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE
-          raise InsufficientScopeError.new(scopes)
+          raise InsufficientScopeError, scopes
         when AccessTokenValidationService::EXPIRED
           raise ExpiredError
         when AccessTokenValidationService::REVOKED
@@ -321,4 +321,4 @@ module Gitlab
   end
 end
 
-Gitlab::Auth::AuthFinders.prepend_if_ee('::EE::Gitlab::Auth::AuthFinders')
+Gitlab::Auth::AuthFinders.prepend_mod_with('Gitlab::Auth::AuthFinders')

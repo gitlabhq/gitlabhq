@@ -127,10 +127,21 @@ class WikiPage
     @path ||= @page.path
   end
 
+  # Returns a CommitCollection
+  #
+  # Queries the commits for current page's path, equivalent to
+  # `git log path/to/page`. Filters and options supported:
+  # https://gitlab.com/gitlab-org/gitaly/-/blob/master/proto/commit.proto#L322-344
   def versions(options = {})
     return [] unless persisted?
 
-    wiki.wiki.page_versions(page.path, options)
+    default_per_page = Kaminari.config.default_per_page
+    offset = [options[:page].to_i - 1, 0].max * options.fetch(:per_page, default_per_page)
+
+    wiki.repository.commits('HEAD',
+                            path: page.path,
+                            limit: options.fetch(:limit, default_per_page),
+                            offset: offset)
   end
 
   def count_versions

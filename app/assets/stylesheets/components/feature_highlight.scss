@@ -7,3 +7,25 @@
     padding: 0.25rem;
   }
 }
+
+.gl-order-1 {
+  order: 1;
+}
+
+.gl-sm-order-init {
+  @media (min-width: $breakpoint-sm) {
+    order: initial;
+  }
+}
+
+.gl-xs-ml-3 {
+  @media (max-width: $breakpoint-sm) {
+    @include gl-ml-3;
+  }
+}
+
+.gl-sm-mr-3 {
+  @media (min-width: $breakpoint-sm) {
+    @include gl-mr-3;
+  }
+}

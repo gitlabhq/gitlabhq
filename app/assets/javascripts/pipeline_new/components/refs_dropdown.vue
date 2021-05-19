@@ -81,11 +81,12 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown :text="refShortName" block @show.once="loadRefs">
+  <gl-dropdown :text="refShortName" block data-testid="ref-select" @show.once="loadRefs">
     <gl-search-box-by-type
       v-model.trim="searchTerm"
       :is-loading="isLoading"
       :placeholder="__('Search refs')"
+      data-testid="search-refs"
     />
     <gl-dropdown-section-header>{{ __('Branches') }}</gl-dropdown-section-header>
     <gl-dropdown-item

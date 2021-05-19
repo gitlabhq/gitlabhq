@@ -29,4 +29,4 @@ class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
   end
 end
 
-Projects::ProtectedBranchesController.prepend_if_ee('EE::Projects::ProtectedBranchesController')
+Projects::ProtectedBranchesController.prepend_mod_with('Projects::ProtectedBranchesController')

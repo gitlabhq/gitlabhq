@@ -5,7 +5,6 @@ module Tooling
     module ProjectHelper
       LOCAL_RULES ||= %w[
         changelog
-        changes_size
         commit_messages
         database
         datateam
@@ -169,21 +168,11 @@ module Tooling
       end
 
       def all_ee_changes
-        helper.all_changed_files.grep(%r{\Aee/})
+        changes.files.grep(%r{\Aee/})
       end
 
       def project_name
         ee? ? 'gitlab' : 'gitlab-foss'
-      end
-
-      def missing_database_labels(current_mr_labels)
-        labels = if has_database_scoped_labels?(current_mr_labels)
-                   ['database']
-                 else
-                   ['database', 'database::review pending']
-                 end
-
-        labels - current_mr_labels
       end
 
       private
@@ -191,10 +180,6 @@ module Tooling
       def ee?
         # Support former project name for `dev` and support local Danger run
         %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME']) || Dir.exist?(File.expand_path('../../../ee', __dir__))
-      end
-
-      def has_database_scoped_labels?(current_mr_labels)
-        current_mr_labels.any? { |label| label.start_with?('database::') }
       end
     end
   end

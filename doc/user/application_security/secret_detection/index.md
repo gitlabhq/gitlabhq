@@ -118,7 +118,7 @@ To enable Secret Detection for GitLab 13.1 and later, you must include the
 `Secret-Detection.gitlab-ci.yml` template that's provided as a part of your GitLab installation. For
 GitLab versions earlier than 11.9, you can copy and use the job as defined in that template.
 
-Add the following to your `.gitlab-ci.yml` file:
+Ensure your `.gitlab-ci.yml` file has a `stage` called `test`, and add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
@@ -133,6 +133,31 @@ The results are saved as a
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
 
+### Enable Secret Detection via an automatic merge request **(ULTIMATE SELF)**
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11.
+> - [Deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-configure-secret-detection-via-a-merge-request). **(ULTIMATE SELF)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+There can be
+[risks when disabling released features](../../../user/feature_flags.md#risks-when-disabling-released-features).
+Refer to this feature's version history for more details.
+
+To enable Secret Detection in a project, you can create a merge request
+from the Security Configuration page.
+
+1. In the project where you want to enable Secret Detection, go to
+   **Security & Compliance > Configuration**.
+1. In the **Secret Detection** row, select **Configure via Merge Request**.
+
+This automatically creates a merge request with the changes necessary to enable Secret Detection
+that you can review and merge to complete the configuration.
+
 ### Customizing settings
 
 The Secret Detection scan settings can be changed through [CI/CD variables](#available-variables)
@@ -144,7 +169,7 @@ declare a job with the same name as the SAST job to override. Place this new job
 inclusion and specify any additional keys under it.
 
 WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#only--except)
 is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 
 #### GIT_DEPTH
@@ -316,8 +341,8 @@ registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:3
 
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Please consult your IT staff to find an accepted and approved
-process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../index.md#maintenance-and-update-of-the-vulnerabilities-database)
-with new definitions, so consider if you're able to make periodic updates yourself.
+process by which external resources can be imported or temporarily accessed. These scanners are [periodically updated](../vulnerabilities/index.md#vulnerability-scanner-maintenance)
+with new definitions, and you may be able to make occasional updates on your own.
 
 For details on saving and transporting Docker images as a file, see Docker's documentation on
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
@@ -379,4 +404,23 @@ your `.gitlab-ci.yml` file:
 secret_detection:
   variables:
     GIT_DEPTH: 100
+```
+
+### Enable or disable Configure Secret Detection via a Merge Request
+
+Configure Secret Detection via a Merge Request is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:sec_secret_detection_ui_enable)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:sec_secret_detection_ui_enable)
 ```

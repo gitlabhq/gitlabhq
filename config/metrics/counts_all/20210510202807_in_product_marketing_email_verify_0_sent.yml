@@ -1,0 +1,21 @@
+---
+key_path: counts.in_product_marketing_email_verify_0_sent
+name: "count_sent_first_email_of_the_verify_track_for_in_product_marketing_emails"
+description: Total sent emails of the verify track's first email
+product_section:
+product_stage: growth
+product_group: group::activation
+product_category: onboarding
+value_type: number
+status: implemented
+milestone: "13.12"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56752
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

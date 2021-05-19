@@ -1,19 +1,19 @@
 <%- if controller_name != 'sessions' %>
-  <%= link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: "btn" %><br />
+  <%= link_to _("Sign in"), new_session_path(:user, redirect_to_referer: 'yes'), class: "btn" %><br />
 <% end -%>
 
 <%- if devise_mapping.registerable? && controller_name != 'registrations' && allow_signup? %>
-  <%= link_to "Sign up", new_registration_path(:user) %><br />
+  <%= link_to _("Sign up"), new_registration_path(:user) %><br />
 <% end -%>
 
 <%- if devise_mapping.recoverable? && controller_name != 'passwords' %>
-<%= link_to "Forgot your password?", new_password_path(:user), class: "btn" %><br />
+<%= link_to _("Forgot your password?"), new_password_path(:user), class: "btn" %><br />
 <% end -%>
 
 <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
-  <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(:user) %><br />
+  <%= link_to _("Didn't receive confirmation instructions?"), new_confirmation_path(:user) %><br />
 <% end -%>
 
 <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
-  <%= link_to "Didn't receive unlock instructions?", new_unlock_path(:user) %><br />
+  <%= link_to _("Didn't receive unlock instructions?"), new_unlock_path(:user) %><br />
 <% end -%>

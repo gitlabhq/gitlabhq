@@ -9,4 +9,7 @@ class LabelLink < ApplicationRecord
 
   validates :target, presence: true, unless: :importing?
   validates :label, presence: true, unless: :importing?
+
+  scope :for_target, -> (target_id, target_type) { where(target_id: target_id, target_type: target_type) }
+  scope :with_remove_on_close_labels, -> { joins(:label).where(labels: { remove_on_close: true }) }
 end

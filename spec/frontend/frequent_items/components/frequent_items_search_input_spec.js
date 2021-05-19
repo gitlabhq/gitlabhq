@@ -1,8 +1,12 @@
 import { GlSearchBoxByType } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import searchComponent from '~/frequent_items/components/frequent_items_search_input.vue';
 import { createStore } from '~/frequent_items/store';
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 describe('FrequentItemsSearchInputComponent', () => {
   let wrapper;
@@ -14,12 +18,16 @@ describe('FrequentItemsSearchInputComponent', () => {
     shallowMount(searchComponent, {
       store,
       propsData: { namespace },
+      localVue,
+      provide: {
+        vuexModule: 'frequentProjects',
+      },
     });
 
   const findSearchBoxByType = () => wrapper.find(GlSearchBoxByType);
 
   beforeEach(() => {
-    store = createStore({ dropdownType: 'project' });
+    store = createStore();
     jest.spyOn(store, 'dispatch').mockImplementation(() => {});
 
     trackingSpy = mockTracking('_category_', document, jest.spyOn);
@@ -57,9 +65,9 @@ describe('FrequentItemsSearchInputComponent', () => {
       await wrapper.vm.$nextTick();
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'type_search_query', {
-        label: 'project_dropdown_frequent_items_search_input',
+        label: 'projects_dropdown_frequent_items_search_input',
       });
-      expect(store.dispatch).toHaveBeenCalledWith('setSearchQuery', value);
+      expect(store.dispatch).toHaveBeenCalledWith('frequentProjects/setSearchQuery', value);
     });
   });
 });

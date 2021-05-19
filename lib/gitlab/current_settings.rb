@@ -43,7 +43,7 @@ module Gitlab
 
         begin
           ::ApplicationSetting.cached
-        rescue
+        rescue StandardError
           # In case Redis isn't running
           # or the Redis UNIX socket file is not available
           # or the DB is not running (we use migrations in the cache key)

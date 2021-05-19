@@ -12,7 +12,7 @@ module Taskable
   COMPLETED          = 'completed'
   INCOMPLETE         = 'incomplete'
   COMPLETE_PATTERN   = /(\[[xX]\])/.freeze
-  INCOMPLETE_PATTERN = /(\[[\s]\])/.freeze
+  INCOMPLETE_PATTERN = /(\[\s\])/.freeze
   ITEM_PATTERN       = %r{
     ^
     (?:(?:>\s{0,4})*)          # optional blockquote characters

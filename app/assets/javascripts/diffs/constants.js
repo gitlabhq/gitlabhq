@@ -114,3 +114,20 @@ export const CONFLICT_THEIR = 'conflict_their';
 export const CONFLICT_MARKER = 'conflict_marker';
 export const CONFLICT_MARKER_OUR = 'conflict_marker_our';
 export const CONFLICT_MARKER_THEIR = 'conflict_marker_their';
+
+// Tracking events
+export const TRACKING_CLICK_DIFF_VIEW_SETTING = 'i_code_review_click_diff_view_setting';
+export const TRACKING_DIFF_VIEW_INLINE = 'i_code_review_diff_view_inline';
+export const TRACKING_DIFF_VIEW_PARALLEL = 'i_code_review_diff_view_parallel';
+
+export const TRACKING_CLICK_FILE_BROWSER_SETTING = 'i_code_review_click_file_browser_setting';
+export const TRACKING_FILE_BROWSER_TREE = 'i_code_review_file_browser_tree_view';
+export const TRACKING_FILE_BROWSER_LIST = 'i_code_review_file_browser_list_view';
+
+export const TRACKING_CLICK_WHITESPACE_SETTING = 'i_code_review_click_whitespace_setting';
+export const TRACKING_WHITESPACE_SHOW = 'i_code_review_diff_show_whitespace';
+export const TRACKING_WHITESPACE_HIDE = 'i_code_review_diff_hide_whitespace';
+
+export const TRACKING_CLICK_SINGLE_FILE_SETTING = 'i_code_review_click_single_file_mode_setting';
+export const TRACKING_SINGLE_FILE_MODE = 'i_code_review_diff_single_file';
+export const TRACKING_MULTIPLE_FILES_MODE = 'i_code_review_diff_multiple_files';

@@ -10,7 +10,7 @@ class BulkCreateIntegrationService
   def execute
     service_list = ServiceList.new(batch, service_hash, association).to_array
 
-    Service.transaction do
+    Integration.transaction do
       results = bulk_insert(*service_list)
 
       if integration.data_fields_present?

@@ -26,11 +26,11 @@ module Gitlab
       def json_schema_path
         return '' unless has_json_schema?
 
-        "#{BASE_REPO_PATH}/#{attributes[:object_json_schema]}"
+        "#{BASE_REPO_PATH}/#{attributes[:value_json_schema]}"
       end
 
       def has_json_schema?
-        attributes[:value_type] == 'object' && attributes[:object_json_schema].present?
+        attributes[:value_type] == 'object' && attributes[:value_json_schema].present?
       end
 
       def yaml_path
@@ -65,6 +65,10 @@ module Gitlab
           @definitions ||= load_all!
         end
 
+        def all
+          @all ||= definitions.map { |_key_path, definition| definition }
+        end
+
         def schemer
           @schemer ||= ::JSONSchemer.schema(Pathname.new(METRIC_SCHEMA_PATH))
         end
@@ -87,7 +91,7 @@ module Gitlab
           definition.deep_symbolize_keys!
 
           self.new(path, definition).tap(&:validate!)
-        rescue => e
+        rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Gitlab::Usage::Metric::InvalidMetricError.new(e.message))
         end
 
@@ -117,4 +121,4 @@ module Gitlab
   end
 end
 
-Gitlab::Usage::MetricDefinition.prepend_if_ee('EE::Gitlab::Usage::MetricDefinition')
+Gitlab::Usage::MetricDefinition.prepend_mod_with('Gitlab::Usage::MetricDefinition')

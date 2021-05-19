@@ -15,8 +15,6 @@ module Resolvers
     end
 
     def resolve(tag_name:)
-      return unless Feature.enabled?(:graphql_release_data, project, default_enabled: true)
-
       ReleasesFinder.new(
         project,
         current_user,

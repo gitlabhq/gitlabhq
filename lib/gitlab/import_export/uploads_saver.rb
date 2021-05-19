@@ -13,7 +13,7 @@ module Gitlab
           project: @project,
           shared: @shared
         ).save
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       end

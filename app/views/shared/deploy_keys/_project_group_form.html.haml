@@ -2,10 +2,10 @@
   = form_errors(@deploy_keys.new_key)
   .form-group.row
     = f.label :title, class: "label-bold"
-    = f.text_field :title, class: 'form-control gl-form-input', required: true
+    = f.text_field :title, class: 'form-control gl-form-input', required: true, data: { qa_selector: 'deploy_key_title_field' }
   .form-group.row
     = f.label :key, class: "label-bold"
-    = f.text_area :key, class: 'form-control gl-form-input', rows: 5, required: true
+    = f.text_area :key, class: 'form-control gl-form-input', rows: 5, required: true, data: { qa_selector: 'deploy_key_field' }
   .form-group.row
     %p.light.gl-mb-0
       = _('Paste a public key here.')
@@ -21,4 +21,4 @@
         = _('Allow this key to push to this repository')
 
   .form-group.row
-    = f.submit _("Add key"), class: "btn gl-button btn-confirm"
+    = f.submit _("Add key"), class: "btn gl-button btn-confirm", data: { qa_selector: "add_deploy_key_button"}

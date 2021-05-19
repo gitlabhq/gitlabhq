@@ -119,7 +119,13 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '#create_batched_job!' do
-    let(:batched_migration) { create(:batched_background_migration) }
+    let(:batched_migration) do
+      create(:batched_background_migration,
+             batch_size: 999,
+             sub_batch_size: 99,
+             pause_ms: 250
+            )
+    end
 
     it 'creates a batched_job with the correct batch configuration' do
       batched_job = batched_migration.create_batched_job!(1, 5)
@@ -128,7 +134,9 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
         min_value: 1,
         max_value: 5,
         batch_size: batched_migration.batch_size,
-        sub_batch_size: batched_migration.sub_batch_size)
+        sub_batch_size: batched_migration.sub_batch_size,
+        pause_ms: 250
+      )
     end
   end
 
@@ -196,6 +204,22 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     it_behaves_like 'an attr_writer that demodulizes assigned class names', :batch_class_name
   end
 
+  describe '#migrated_tuple_count' do
+    subject { batched_migration.migrated_tuple_count }
+
+    let(:batched_migration) { create(:batched_background_migration) }
+
+    before do
+      create_list(:batched_background_migration_job, 5, status: :succeeded, batch_size: 1_000, batched_migration: batched_migration)
+      create_list(:batched_background_migration_job, 1, status: :running, batch_size: 1_000, batched_migration: batched_migration)
+      create_list(:batched_background_migration_job, 1, status: :failed, batch_size: 1_000, batched_migration: batched_migration)
+    end
+
+    it 'sums the batch_size of succeeded jobs' do
+      expect(subject).to eq(5_000)
+    end
+  end
+
   describe '#prometheus_labels' do
     let(:batched_migration) { create(:batched_background_migration, job_class_name: 'TestMigration', table_name: 'foo', column_name: 'bar') }
 
@@ -206,6 +230,98 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       }
 
       expect(batched_migration.prometheus_labels).to eq(labels)
+    end
+  end
+
+  describe '#smoothed_time_efficiency' do
+    let(:migration) { create(:batched_background_migration, interval: 120.seconds) }
+    let(:end_time) { Time.zone.now }
+
+    around do |example|
+      freeze_time do
+        example.run
+      end
+    end
+
+    let(:common_attrs) do
+      {
+        status: :succeeded,
+        batched_migration: migration,
+        finished_at: end_time
+      }
+    end
+
+    context 'when there are not enough jobs' do
+      subject { migration.smoothed_time_efficiency(number_of_jobs: 10) }
+
+      it 'returns nil' do
+        create_list(:batched_background_migration_job, 9, **common_attrs)
+
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when there are enough jobs' do
+      subject { migration.smoothed_time_efficiency(number_of_jobs: number_of_jobs) }
+
+      let!(:jobs) { create_list(:batched_background_migration_job, number_of_jobs, **common_attrs.merge(batched_migration: migration)) }
+      let(:number_of_jobs) { 10 }
+
+      before do
+        expect(migration).to receive_message_chain(:batched_jobs, :successful_in_execution_order, :reverse_order, :limit).with(no_args).with(no_args).with(number_of_jobs).and_return(jobs)
+      end
+
+      def mock_efficiencies(*effs)
+        effs.each_with_index do |eff, i|
+          expect(jobs[i]).to receive(:time_efficiency).and_return(eff)
+        end
+      end
+
+      context 'example 1: increasing trend, but only recently crossed threshold' do
+        it 'returns the smoothed time efficiency' do
+          mock_efficiencies(1.1, 1, 0.95, 0.9, 0.8, 0.95, 0.9, 0.8, 0.9, 0.95)
+
+          expect(subject).to be_within(0.05).of(0.95)
+        end
+      end
+
+      context 'example 2: increasing trend, crossed threshold a while ago' do
+        it 'returns the smoothed time efficiency' do
+          mock_efficiencies(1.2, 1.1, 1, 1, 1.1, 1, 0.95, 0.9, 0.95, 0.9)
+
+          expect(subject).to be_within(0.05).of(1.1)
+        end
+      end
+
+      context 'example 3: decreasing trend, but only recently crossed threshold' do
+        it 'returns the smoothed time efficiency' do
+          mock_efficiencies(0.9, 0.95, 1, 1.2, 1.1, 1.2, 1.1, 1.0, 1.1, 1.0)
+
+          expect(subject).to be_within(0.05).of(1.0)
+        end
+      end
+
+      context 'example 4: latest run spiked' do
+        it 'returns the smoothed time efficiency' do
+          mock_efficiencies(1.2, 0.9, 0.8, 0.9, 0.95, 0.9, 0.92, 0.9, 0.95, 0.9)
+
+          expect(subject).to be_within(0.02).of(0.96)
+        end
+      end
+    end
+  end
+
+  describe '#optimize!' do
+    subject { batched_migration.optimize! }
+
+    let(:batched_migration) { create(:batched_background_migration) }
+    let(:optimizer) { instance_double('Gitlab::Database::BackgroundMigration::BatchOptimizer') }
+
+    it 'calls the BatchOptimizer' do
+      expect(Gitlab::Database::BackgroundMigration::BatchOptimizer).to receive(:new).with(batched_migration).and_return(optimizer)
+      expect(optimizer).to receive(:optimize!)
+
+      subject
     end
   end
 end

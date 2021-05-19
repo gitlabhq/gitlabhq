@@ -38,4 +38,4 @@ module Gitlab
   end
 end
 
-Namespace.prepend_if_ee('::EE::Namespace')
+Namespace.prepend_mod_with('Namespace')

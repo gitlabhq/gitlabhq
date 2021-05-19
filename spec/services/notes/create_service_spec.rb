@@ -176,7 +176,7 @@ RSpec.describe Notes::CreateService do
             end
 
             it 'note is associated with a note diff file' do
-              MergeRequests::MergeToRefService.new(merge_request.project, merge_request.author).execute(merge_request)
+              MergeRequests::MergeToRefService.new(project: merge_request.project, current_user: merge_request.author).execute(merge_request)
 
               note = described_class.new(project_with_repo, user, new_opts).execute
 

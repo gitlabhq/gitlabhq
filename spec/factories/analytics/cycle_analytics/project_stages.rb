@@ -6,6 +6,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Stage ##{n}" }
     hidden { false }
     issue_stage
+    value_stream { association(:cycle_analytics_project_value_stream, project: project) }
 
     trait :issue_stage do
       start_event_identifier { Gitlab::Analytics::CycleAnalytics::StageEvents::IssueCreated.identifier }

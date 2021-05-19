@@ -69,13 +69,13 @@ module Gitlab
       # Error messages are based on the responses of proxy.golang.org
 
       # Verify that the SHA fragment references a commit
-      raise ArgumentError.new 'invalid pseudo-version: unknown commit' unless commit
+      raise ArgumentError, 'invalid pseudo-version: unknown commit' unless commit
 
       # Require the SHA fragment to be 12 characters long
-      raise ArgumentError.new 'invalid pseudo-version: revision is shorter than canonical' unless version.commit_id.length == 12
+      raise ArgumentError, 'invalid pseudo-version: revision is shorter than canonical' unless version.commit_id.length == 12
 
       # Require the timestamp to match that of the commit
-      raise ArgumentError.new 'invalid pseudo-version: does not match version-control timestamp' unless commit.committed_date.strftime('%Y%m%d%H%M%S') == version.timestamp
+      raise ArgumentError, 'invalid pseudo-version: does not match version-control timestamp' unless commit.committed_date.strftime('%Y%m%d%H%M%S') == version.timestamp
 
       commit
     end

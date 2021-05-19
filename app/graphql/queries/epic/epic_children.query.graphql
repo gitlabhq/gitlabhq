@@ -16,6 +16,10 @@ fragment RelatedTreeBaseEpic on Epic {
     adminEpic
     createEpic
   }
+  descendantWeightSum {
+    closedIssues
+    openedIssues
+  }
   descendantCounts {
     __typename
     openedEpics

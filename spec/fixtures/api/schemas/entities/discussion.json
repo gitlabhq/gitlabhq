@@ -29,7 +29,7 @@
               "web_url": { "type": "uri" },
               "status_tooltip_html": { "type": ["string", "null"] },
               "path": { "type": "string" }
-            }, 
+            },
             "required": [
               "id",
               "state",
@@ -39,8 +39,8 @@
               "username"
             ]
           },
-          "created_at": { "type": "date" },
-          "updated_at": { "type": "date" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" },
           "system": { "type": "boolean" },
           "noteable_id": { "type": "integer" },
           "noteable_iid": { "type": ["integer", "null"] },
@@ -48,7 +48,7 @@
           "resolved": { "type": "boolean" },
           "resolvable": { "type": "boolean" },
           "resolved_by": { "type": ["string", "null"] },
-          "resolved_at": { "type": ["date", "null"] },
+          "resolved_at": { "type": ["string", "null"], "format": "date-time" },
           "note": { "type": "string" },
           "note_html": { "type": "string"  },
           "current_user": { "type": "object" },

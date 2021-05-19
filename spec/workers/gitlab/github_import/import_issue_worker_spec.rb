@@ -12,6 +12,7 @@ RSpec.describe Gitlab::GithubImport::ImportIssueWorker do
       importer = double(:importer)
       hash = {
         'iid' => 42,
+        'github_id' => 42,
         'title' => 'My Issue',
         'description' => 'This is my issue',
         'milestone_number' => 4,

@@ -7,12 +7,12 @@ import createFlash from '~/flash';
 import ReleaseShowApp from '~/releases/components/app_show.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
-import oneReleaseQuery from '~/releases/queries/one_release.query.graphql';
+import oneReleaseQuery from '~/releases/graphql/queries/one_release.query.graphql';
 
 jest.mock('~/flash');
 
 const oneReleaseQueryResponse = getJSONFixture(
-  'graphql/releases/queries/one_release.query.graphql.json',
+  'graphql/releases/graphql/queries/one_release.query.graphql.json',
 );
 
 Vue.use(VueApollo);

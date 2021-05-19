@@ -25,11 +25,11 @@ class UpdateRoutesForLostAndFoundGroupAndOrphanedProjects < ActiveRecord::Migrat
       # There should only be one Group owned by the Ghost user starting with 'lost-and-found'
       Group
         .joins('INNER JOIN members ON namespaces.id = members.source_id')
-        .where('namespaces.type = ?', 'Group')
-        .where('members.type = ?', 'GroupMember')
-        .where('members.source_type = ?', 'Namespace')
-        .where('members.user_id = ?', self.id)
-        .where('members.access_level = ?', ACCESS_LEVEL_OWNER)
+        .where(namespaces: { type: 'Group' })
+        .where(members: { type: 'GroupMember' })
+        .where(members: { source_type: 'Namespace' })
+        .where(members: { user_id: self.id })
+        .where(members: { access_level: ACCESS_LEVEL_OWNER })
         .find_by(Group.arel_table[:name].matches("#{LOST_AND_FOUND_GROUP}%"))
     end
 

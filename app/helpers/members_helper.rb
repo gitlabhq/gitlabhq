@@ -65,4 +65,14 @@ module MembersHelper
 
     'group and any subresources'
   end
+
+  def members_pagination_data(members, pagination = {})
+    {
+      current_page: members.respond_to?(:current_page) ? members.current_page : nil,
+      per_page: members.respond_to?(:limit_value) ? members.limit_value : nil,
+      total_items: members.respond_to?(:total_count) ? members.total_count : members.count,
+      param_name: pagination[:param_name] || nil,
+      params: pagination[:params] || {}
+    }
+  end
 end

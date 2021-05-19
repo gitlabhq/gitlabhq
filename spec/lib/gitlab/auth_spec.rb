@@ -779,7 +779,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         end.not_to change(user, :failed_attempts)
       end
 
-      context 'when the database is read only' do
+      context 'when the database is read-only' do
         before do
           allow(Gitlab::Database).to receive(:read_only?).and_return(true)
         end

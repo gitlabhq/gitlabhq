@@ -13,6 +13,14 @@ FactoryBot.define do
       confidential { true }
     end
 
+    trait :with_asc_relative_position do
+      sequence(:relative_position) { |n| n * 1000 }
+    end
+
+    trait :with_desc_relative_position do
+      sequence(:relative_position) { |n| -n * 1000 }
+    end
+
     trait :opened do
       state_id { Issue.available_states[:opened] }
     end

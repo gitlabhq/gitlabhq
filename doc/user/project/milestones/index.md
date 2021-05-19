@@ -38,7 +38,7 @@ You can assign **group milestones** to any issue or merge request of any project
 To view the group milestone list, in a group, go to **{issues}** **Issues > Milestones**.
 
 You can also view all milestones you have access to in the dashboard milestones list.
-To view both project milestones and group milestones you have access to, click **More > Milestones**
+To view both project milestones and group milestones you have access to, select **More > Milestones**
 on the top navigation bar.
 
 For information about project and group milestones API, see:
@@ -47,9 +47,9 @@ For information about project and group milestones API, see:
 - [Group Milestones API](../../../api/group_milestones.md)
 
 NOTE:
-If you're in a group and click **Issues > Milestones**, GitLab displays group milestones
+If you're in a group and select **Issues > Milestones**, GitLab displays group milestones
 and the milestones of projects in this group.
-If you're in a project and click **Issues > Milestones**, GitLab displays only this project's milestones.
+If you're in a project and select **Issues > Milestones**, GitLab displays only this project's milestones.
 
 ## Creating milestones
 
@@ -58,23 +58,23 @@ A permission level of [Developer or higher](../../permissions.md) is required to
 
 ### New project milestone
 
-To create a **project milestone**:
+To create a project milestone:
 
 1. In a project, go to **{issues}** **Issues > Milestones**.
-1. Click **New milestone**.
+1. Select **New milestone**.
 1. Enter the title, an optional description, an optional start date, and an optional due date.
-1. Click **New milestone**.
+1. Select **New milestone**.
 
 ![New project milestone](img/milestones_new_project_milestone.png)
 
 ### New group milestone
 
-To create a **group milestone**:
+To create a group milestone:
 
 1. In a group, go to **{issues}** **Issues > Milestones**.
-1. Click **New milestone**.
+1. Select **New milestone**.
 1. Enter the title, an optional description, an optional start date, and an optional due date.
-1. Click **New milestone**.
+1. Select **New milestone**.
 
 ![New group milestone](img/milestones_new_group_milestone_v13_5.png)
 
@@ -86,10 +86,10 @@ A permission level of [Developer or higher](../../permissions.md) is required to
 To edit a milestone:
 
 1. In a project or group, go to **{issues}** **Issues > Milestones**.
-1. Click a milestone's title.
-1. Click **Edit**.
+1. Select a milestone's title.
+1. Select **Edit**.
 
-You can delete a milestone by clicking the **Delete** button.
+You can delete a milestone by selecting the **Delete** button.
 
 ### Promoting project milestones to group milestones
 
@@ -182,7 +182,7 @@ The milestone sidebar on the milestone view shows the following:
 - The total time spent on all issues and merge requests assigned to the milestone.
 - The total issue weight of all issues assigned to the milestone.
 
-![Project milestone page](img/milestones_project_milestone_page.png)
+![Project milestone page](img/milestones_project_milestone_page_sidebar_v13_11.png)
 
 <!-- ## Troubleshooting
 

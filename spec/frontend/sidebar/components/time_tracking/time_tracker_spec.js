@@ -10,6 +10,7 @@ describe('Issuable Time Tracker', () => {
   const findComparisonMeter = () => findByTestId('compareMeter').attributes('title');
   const findCollapsedState = () => findByTestId('collapsedState');
   const findTimeRemainingProgress = () => findByTestId('timeRemainingProgress');
+  const findReportLink = () => findByTestId('reportLink');
 
   const defaultProps = {
     timeEstimate: 10_000, // 2h 46m
@@ -189,6 +190,33 @@ describe('Issuable Time Tracker', () => {
         const correctText = 'No estimate or time spent';
         expect(pane.exists()).toBe(true);
         expect(pane.text().trim()).toBe(correctText);
+      });
+    });
+
+    describe('Time tracking report', () => {
+      describe('When no time spent', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            props: {
+              timeSpent: 0,
+              timeSpentHumanReadable: '',
+            },
+          });
+        });
+
+        it('link should not appear', () => {
+          expect(findReportLink().exists()).toBe(false);
+        });
+      });
+
+      describe('When time spent', () => {
+        beforeEach(() => {
+          wrapper = mountComponent();
+        });
+
+        it('link should appear', () => {
+          expect(findReportLink().exists()).toBe(true);
+        });
       });
     });
 

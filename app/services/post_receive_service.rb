@@ -56,7 +56,7 @@ class PostReceiveService
     end
 
     service = ::MergeRequests::PushOptionsHandlerService.new(
-      project, user, changes, push_options
+      project: project, current_user: user, changes: changes, push_options: push_options
     ).execute
 
     if service.errors.present?
@@ -72,7 +72,7 @@ class PostReceiveService
   def merge_request_urls
     return [] unless repository&.repo_type&.project?
 
-    ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
+    ::MergeRequests::GetUrlsService.new(project: project).execute(params[:changes])
   end
 
   private
@@ -98,4 +98,4 @@ class PostReceiveService
   end
 end
 
-PostReceiveService.prepend_if_ee('EE::PostReceiveService')
+PostReceiveService.prepend_mod_with('PostReceiveService')

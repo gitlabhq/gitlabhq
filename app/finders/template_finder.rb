@@ -7,7 +7,6 @@ class TemplateFinder
     dockerfiles: ::Gitlab::Template::DockerfileTemplate,
     gitignores: ::Gitlab::Template::GitignoreTemplate,
     gitlab_ci_ymls: ::Gitlab::Template::GitlabCiYmlTemplate,
-    gitlab_ci_syntax_ymls: ::Gitlab::Template::GitlabCiSyntaxYmlTemplate,
     metrics_dashboard_ymls: ::Gitlab::Template::MetricsDashboardTemplate,
     issues: ::Gitlab::Template::IssueTemplate,
     merge_requests: ::Gitlab::Template::MergeRequestTemplate
@@ -71,4 +70,4 @@ class TemplateFinder
   end
 end
 
-TemplateFinder.prepend_if_ee('::EE::TemplateFinder')
+TemplateFinder.prepend_mod_with('TemplateFinder')

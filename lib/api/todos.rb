@@ -79,7 +79,7 @@ module API
             next unless collection
 
             targets = collection.map(&:target)
-            options[type] = { issuable_metadata: Gitlab::IssuableMetadata.new(current_user, targets).data }
+            options[type] = { issuable_metadata: Gitlab::IssuableMetadata.new(current_user, targets).data, include_subscribed: false }
           end
         end
       end
@@ -124,4 +124,4 @@ module API
   end
 end
 
-API::Todos.prepend_if_ee('EE::API::Todos')
+API::Todos.prepend_mod_with('API::Todos')

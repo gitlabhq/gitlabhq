@@ -1,5 +1,5 @@
 import { GlDropdownDivider } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Actions from '~/admin/users/components/actions';
 import AdminUserActions from '~/admin/users/components/user_actions.vue';
 import { I18N_USER_ACTIONS } from '~/admin/users/constants';
@@ -14,12 +14,14 @@ describe('AdminUserActions component', () => {
   const user = users[0];
   const userPaths = generateUserPaths(paths, user.username);
 
-  const findEditButton = () => wrapper.find('[data-testid="edit"]');
-  const findActionsDropdown = () => wrapper.find('[data-testid="actions"');
-  const findDropdownDivider = () => wrapper.find(GlDropdownDivider);
+  const findUserActions = (id) => wrapper.findByTestId(`user-actions-${id}`);
+  const findEditButton = (id = user.id) => findUserActions(id).find('[data-testid="edit"]');
+  const findActionsDropdown = (id = user.id) =>
+    findUserActions(id).find('[data-testid="dropdown-toggle"]');
+  const findDropdownDivider = () => wrapper.findComponent(GlDropdownDivider);
 
   const initComponent = ({ actions = [] } = {}) => {
-    wrapper = shallowMount(AdminUserActions, {
+    wrapper = shallowMountExtended(AdminUserActions, {
       propsData: {
         user: {
           ...user,

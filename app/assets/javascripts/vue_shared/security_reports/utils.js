@@ -14,9 +14,7 @@ const addReportTypeIfExists = (acc, reportTypes, reportType, getName, downloadPa
   }
 };
 
-export const extractSecurityReportArtifacts = (reportTypes, data) => {
-  const jobs = data.project?.mergeRequest?.headPipeline?.jobs?.nodes ?? [];
-
+const extractSecurityReportArtifacts = (reportTypes, jobs) => {
   return jobs.reduce((acc, job) => {
     const artifacts = job.artifacts?.nodes ?? [];
 
@@ -40,4 +38,14 @@ export const extractSecurityReportArtifacts = (reportTypes, data) => {
 
     return acc;
   }, []);
+};
+
+export const extractSecurityReportArtifactsFromPipeline = (reportTypes, data) => {
+  const jobs = data.project?.pipeline?.jobs?.nodes ?? [];
+  return extractSecurityReportArtifacts(reportTypes, jobs);
+};
+
+export const extractSecurityReportArtifactsFromMergeRequest = (reportTypes, data) => {
+  const jobs = data.project?.mergeRequest?.headPipeline?.jobs?.nodes ?? [];
+  return extractSecurityReportArtifacts(reportTypes, jobs);
 };

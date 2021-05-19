@@ -66,7 +66,7 @@ when you mark a merge request as ready, notifications are triggered to
 When viewing or searching in your project's merge requests list, you can include or exclude
 draft merge requests:
 
-1. In your project, select **Merge Requests** from the left sidebar.
+1. Go to your project and select **Merge requests**.
 1. In the navigation bar, click **Open**, **Merged**, **Closed**, or **All** to
    filter by merge request status.
 1. Click the search box to display a list of filters and select **Draft**, or

@@ -13,4 +13,4 @@ module Types
   end
 end
 
-Types::IssueSortEnum.prepend_if_ee('::EE::Types::IssueSortEnum')
+Types::IssueSortEnum.prepend_mod_with('Types::IssueSortEnum')

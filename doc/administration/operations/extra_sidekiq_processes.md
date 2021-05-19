@@ -144,8 +144,10 @@ attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/all_q
   quickly. Can be `high`, `low`, or `throttled`. For example, the
   `authorized_projects` queue is used to refresh user permissions, and
   is high urgency.
-- `name` - the queue name. The other attributes are typically more useful as
-  they are more general, but this is available in case a particular queue needs
+- `worker_name` - the worker name. The other attributes are typically more useful as
+  they are more general, but this is available in case a particular worker needs
+  to be selected.
+- `name` - the queue name. Similiarly, this is available in case a particular queue needs
   to be selected.
 - `resource_boundary` - if the queue is bound by `cpu`, `memory`, or
   `unknown`. For example, the `project_export` queue is memory bound as it has

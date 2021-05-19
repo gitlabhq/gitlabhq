@@ -1,0 +1,9 @@
+mutation removeValidationError($sourceGroupId: String!, $field: String!) {
+  removeValidationError(sourceGroupId: $sourceGroupId, field: $field) @client {
+    id
+    validation_errors {
+      field
+      message
+    }
+  }
+}

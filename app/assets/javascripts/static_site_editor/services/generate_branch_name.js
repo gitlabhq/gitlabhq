@@ -1,8 +1,8 @@
-import { BRANCH_SUFFIX_COUNT, DEFAULT_TARGET_BRANCH } from '../constants';
+import { BRANCH_SUFFIX_COUNT } from '../constants';
 
 const generateBranchSuffix = () => `${Date.now()}`.substr(BRANCH_SUFFIX_COUNT);
 
-const generateBranchName = (username, targetBranch = DEFAULT_TARGET_BRANCH) =>
+const generateBranchName = (username, targetBranch) =>
   `${username}-${targetBranch}-patch-${generateBranchSuffix()}`;
 
 export default generateBranchName;

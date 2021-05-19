@@ -26,7 +26,7 @@ module Packages
       end
 
       def execute
-        raise ExtractionError.new('invalid package file') unless valid_package_file?
+        raise ExtractionError, 'invalid package file' unless valid_package_file?
 
         extract_metadata(nuspec_file)
       end
@@ -94,8 +94,8 @@ module Packages
           Zip::File.open(file_path) do |zip_file|
             entry = zip_file.glob('*.nuspec').first
 
-            raise ExtractionError.new('nuspec file not found') unless entry
-            raise ExtractionError.new('nuspec file too big') if entry.size > MAX_FILE_SIZE
+            raise ExtractionError, 'nuspec file not found' unless entry
+            raise ExtractionError, 'nuspec file too big' if entry.size > MAX_FILE_SIZE
 
             entry.get_input_stream.read
           end

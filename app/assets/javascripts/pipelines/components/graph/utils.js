@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import Visibility from 'visibilityjs';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { unwrapStagesWithNeedsAndLookup } from '../unwrapping_utils';
@@ -39,15 +40,15 @@ const serializeGqlErr = (gqlError) => {
 const serializeLoadErrors = (errors) => {
   const { gqlError, graphQLErrors, networkError, message } = errors;
 
-  if (graphQLErrors) {
+  if (!isEmpty(graphQLErrors)) {
     return graphQLErrors.map((err) => serializeGqlErr(err)).join('; ');
   }
 
-  if (gqlError) {
+  if (!isEmpty(gqlError)) {
     return serializeGqlErr(gqlError);
   }
 
-  if (networkError) {
+  if (!isEmpty(networkError)) {
     return `Network error: ${networkError.message}`;
   }
 

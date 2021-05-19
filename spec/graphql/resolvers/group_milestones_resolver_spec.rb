@@ -119,6 +119,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
 
     context 'when including descendant milestones in a public group' do
       let_it_be(:group) { create(:group, :public) }
+
       let(:args) { { include_descendants: true } }
 
       it 'finds milestones only in accessible projects and groups' do

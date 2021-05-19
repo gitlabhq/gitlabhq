@@ -3,11 +3,14 @@
 function retrieve_tests_metadata() {
   mkdir -p knapsack/ rspec_flaky/ rspec_profiling/
 
+  # ${CI_DEFAULT_BRANCH} might not be master in other forks but we want to
+  # always target the canonical project here, so the branch must be hardcoded
   local project_path="gitlab-org/gitlab"
+  local artifact_branch="master"
   local test_metadata_job_id
 
   # Ruby
-  test_metadata_job_id=$(scripts/api/get_job_id.rb --project "${project_path}" -q "status=success" -q "ref=master" -q "username=gitlab-bot" -Q "scope=success" --job-name "update-tests-metadata")
+  test_metadata_job_id=$(scripts/api/get_job_id.rb --project "${project_path}" -q "status=success" -q "ref=${artifact_branch}" -q "username=gitlab-bot" -Q "scope=success" --job-name "update-tests-metadata")
 
   if [[ ! -f "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ]]; then
     scripts/api/download_job_artifact.rb --project "${project_path}" --job-id "${test_metadata_job_id}" --artifact-path "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" || echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
@@ -39,10 +42,13 @@ function update_tests_metadata() {
 function retrieve_tests_mapping() {
   mkdir -p crystalball/
 
+  # ${CI_DEFAULT_BRANCH} might not be master in other forks but we want to
+  # always target the canonical project here, so the branch must be hardcoded
   local project_path="gitlab-org/gitlab"
+  local artifact_branch="master"
   local test_metadata_with_mapping_job_id
 
-  test_metadata_with_mapping_job_id=$(scripts/api/get_job_id.rb --project "${project_path}" -q "status=success" -q "ref=master" -q "username=gitlab-bot" -Q "scope=success" --job-name "update-tests-metadata" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz")
+  test_metadata_with_mapping_job_id=$(scripts/api/get_job_id.rb --project "${project_path}" -q "status=success" -q "ref=${artifact_branch}" -q "username=gitlab-bot" -Q "scope=success" --job-name "update-tests-metadata" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz")
 
   if [[ ! -f "${RSPEC_PACKED_TESTS_MAPPING_PATH}" ]]; then
    (scripts/api/download_job_artifact.rb --project "${project_path}" --job-id "${test_metadata_with_mapping_job_id}" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" && gzip -d "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz") || echo "{}" > "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
@@ -89,7 +95,7 @@ function rspec_paralellized_job() {
   read -ra job_name <<< "${CI_JOB_NAME}"
   local test_tool="${job_name[0]}"
   local test_level="${job_name[1]}"
-  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg11 1/24' would become 'rspec_unit_pg11_1_24'
+  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg12 1/24' would become 'rspec_unit_pg12_1_24'
   local rspec_opts="${1}"
   local spec_folder_prefix=""
 

@@ -3,4 +3,4 @@
 class UserEntity < API::Entities::UserPath
 end
 
-UserEntity.prepend_if_ee('EE::UserEntity')
+UserEntity.prepend_mod_with('UserEntity')

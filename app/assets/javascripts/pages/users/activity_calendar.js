@@ -247,7 +247,7 @@ export default class ActivityCalendar {
 
   renderKey() {
     const keyValues = [
-      __('no contributions'),
+      __('No contributions'),
       __('1-9 contributions'),
       __('10-19 contributions'),
       __('20-29 contributions'),

@@ -43,6 +43,43 @@ module API
           render_api_error!(message: 'Group export could not be started.')
         end
       end
+
+      desc 'Start relations export' do
+        detail 'This feature was introduced in GitLab 13.12'
+      end
+      post ':id/export_relations' do
+        response = ::BulkImports::ExportService.new(portable: user_group, user: current_user).execute
+
+        if response.success?
+          accepted!
+        else
+          render_api_error!(message: 'Group relations export could not be started.')
+        end
+      end
+
+      desc 'Download relations export' do
+        detail 'This feature was introduced in GitLab 13.12'
+      end
+      params do
+        requires :relation, type: String, desc: 'Group relation name'
+      end
+      get ':id/export_relations/download' do
+        export = user_group.bulk_import_exports.find_by_relation(params[:relation])
+        file = export&.upload&.export_file
+
+        if file
+          present_carrierwave_file!(file)
+        else
+          render_api_error!('404 Not found', 404)
+        end
+      end
+
+      desc 'Relations export status' do
+        detail 'This feature was introduced in GitLab 13.12'
+      end
+      get ':id/export_relations/status' do
+        present user_group.bulk_import_exports, with: Entities::BulkImports::ExportStatus
+      end
     end
   end
 end

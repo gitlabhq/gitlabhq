@@ -30,7 +30,7 @@ export default {
   },
   mounted() {
     this.openDrawer(this.versionDigest);
-    this.fetchItems();
+    this.fetchFreshItems();
 
     const body = document.querySelector('body');
     const namespaceId = body.getAttribute('data-namespace-id');
@@ -42,12 +42,17 @@ export default {
     bottomReached() {
       const page = this.pageInfo.nextPage;
       if (page) {
-        this.fetchItems({ page });
+        this.fetchFreshItems(page);
       }
     },
     handleResize() {
       const height = getDrawerBodyHeight(this.$refs.drawer.$el);
       this.setDrawerBodyHeight(height);
+    },
+    fetchFreshItems(page) {
+      const { versionDigest } = this;
+
+      this.fetchItems({ page, versionDigest });
     },
   },
 };
@@ -58,7 +63,7 @@ export default {
     <gl-drawer
       ref="drawer"
       v-gl-resize-observer="handleResize"
-      class="whats-new-drawer"
+      class="whats-new-drawer gl-reset-line-height"
       :z-index="700"
       :open="open"
       @close="closeDrawer"
@@ -83,6 +88,6 @@ export default {
         <skeleton-loader />
       </div>
     </gl-drawer>
-    <div v-if="open" class="whats-new-modal-backdrop modal-backdrop"></div>
+    <div v-if="open" class="whats-new-modal-backdrop modal-backdrop" @click="closeDrawer"></div>
   </div>
 </template>

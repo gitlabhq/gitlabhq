@@ -426,8 +426,8 @@ RSpec.describe 'Copy as GFM', :js do
 
         html = <<~HTML
           <div class="md-suggestion">
-            <div class="md-suggestion-header border-bottom-0 mt-2 qa-suggestion-diff-header js-suggestion-diff-header">
-              <div class="qa-suggestion-diff-header js-suggestion-diff-header font-weight-bold">
+            <div class="md-suggestion-header border-bottom-0 mt-2 js-suggestion-diff-header">
+              <div class="js-suggestion-diff-header font-weight-bold">
                 Suggested change
                 <a href="/gitlab/help/user/discussions/index.md#suggest-changes" aria-label="Help" class="js-help-btn">
                   <svg aria-hidden="true" class="s16 ic-question-o link-highlight">

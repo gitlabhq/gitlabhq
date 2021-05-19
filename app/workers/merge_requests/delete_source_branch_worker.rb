@@ -3,6 +3,8 @@
 class MergeRequests::DeleteSourceBranchWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :source_code_management
   urgency :high
   idempotent!
@@ -17,7 +19,7 @@ class MergeRequests::DeleteSourceBranchWorker
     ::Branches::DeleteService.new(merge_request.source_project, user)
       .execute(merge_request.source_branch)
 
-    ::MergeRequests::RetargetChainService.new(merge_request.source_project, user)
+    ::MergeRequests::RetargetChainService.new(project: merge_request.source_project, current_user: user)
       .execute(merge_request)
   rescue ActiveRecord::RecordNotFound
   end

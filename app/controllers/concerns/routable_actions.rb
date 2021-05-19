@@ -56,4 +56,4 @@ module RoutableActions
   end
 end
 
-RoutableActions.prepend_if_ee('EE::RoutableActions')
+RoutableActions.prepend_mod_with('RoutableActions')

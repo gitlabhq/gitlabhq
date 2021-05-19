@@ -2,7 +2,7 @@
 
 # Base class for Chat services
 # This class is not meant to be used directly, but only to inherrit from.
-class SlashCommandsService < Service
+class SlashCommandsService < Integration
   default_value_for :category, 'chat'
 
   prop_accessor :token

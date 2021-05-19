@@ -58,6 +58,8 @@ methods:
 
 preloads:
 
+export_reorders:
+
 # EE specific relationships and settings to include. All of this will be merged
 # into the previous structures if EE is used.
 ee:

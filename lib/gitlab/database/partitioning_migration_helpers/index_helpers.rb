@@ -40,7 +40,7 @@ module Gitlab
           end
 
           with_lock_retries do
-            add_index(table_name, column_names, options)
+            add_index(table_name, column_names, **options)
           end
         end
 

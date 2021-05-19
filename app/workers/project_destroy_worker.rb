@@ -2,10 +2,12 @@
 
 class ProjectDestroyWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ExceptionBacktrace
 
   feature_category :source_code_management
-  tags :requires_disk_io
+  tags :requires_disk_io, :exclude_from_kubernetes
 
   def perform(project_id, user_id, params)
     project = Project.find(project_id)

@@ -30,7 +30,7 @@ module Snippets
       ServiceResponse.success(message: 'Snippet was deleted.')
     rescue DestroyError
       service_response_error('Failed to remove snippet repository.', 400)
-    rescue
+    rescue StandardError
       attempt_rollback_repository
       service_response_error('Failed to remove snippet.', 400)
     end
@@ -59,4 +59,4 @@ module Snippets
   end
 end
 
-Snippets::DestroyService.prepend_if_ee('EE::Snippets::DestroyService')
+Snippets::DestroyService.prepend_mod_with('Snippets::DestroyService')

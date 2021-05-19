@@ -115,7 +115,7 @@ module QA
           commit.add_files(
             [
               {
-                file_path: "#{Faker::Lorem.word}.txt",
+                file_path: Faker::File.unique.file_name,
                 content: Faker::Lorem.sentence
               }
             ]
@@ -129,7 +129,7 @@ module QA
           merge_request.project = project
           merge_request.description = Faker::Lorem.sentence
           merge_request.target_new_branch = false
-          merge_request.file_name = "#{Faker::Lorem.word}.txt"
+          merge_request.file_name = Faker::File.unique.file_name
           merge_request.file_content = Faker::Lorem.sentence
         end
       end

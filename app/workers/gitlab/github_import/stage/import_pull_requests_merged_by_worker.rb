@@ -5,8 +5,12 @@ module Gitlab
     module Stage
       class ImportPullRequestsMergedByWorker # rubocop:disable Scalability/IdempotentWorker
         include ApplicationWorker
+
+        sidekiq_options retry: 3
         include GithubImport::Queue
         include StageMethods
+
+        tags :exclude_from_kubernetes
 
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.

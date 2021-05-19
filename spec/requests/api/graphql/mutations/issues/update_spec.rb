@@ -14,7 +14,8 @@ RSpec.describe 'Update of an existing issue' do
       'title' => 'new title',
       'description' => 'new description',
       'confidential' => true,
-      'dueDate' => Date.tomorrow.strftime('%Y-%m-%d')
+      'dueDate' => Date.tomorrow.strftime('%Y-%m-%d'),
+      'type' => 'ISSUE'
     }
   end
 

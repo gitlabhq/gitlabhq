@@ -48,7 +48,7 @@ module Gitlab
         @importable.reload # rubocop:disable Cop/ActiveRecordAssociationReload
 
         true
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       end
@@ -81,7 +81,7 @@ module Gitlab
           relation_object.save!
           log_relation_creation(@importable, relation_key, relation_object)
         end
-      rescue => e
+      rescue StandardError => e
         import_failure_service.log_import_failure(
           source: 'process_relation_item!',
           relation_key: relation_key,
@@ -155,7 +155,7 @@ module Gitlab
           transform_sub_relations!(data_hash, sub_relation_key, sub_relation_definition, relation_index)
         end
 
-        relation = @relation_factory.create(**relation_factory_params(relation_key, data_hash))
+        relation = @relation_factory.create(**relation_factory_params(relation_key, relation_index, data_hash))
 
         if relation && !relation.valid?
           @shared.logger.warn(
@@ -221,8 +221,9 @@ module Gitlab
         importable_class.to_s.downcase.to_sym
       end
 
-      def relation_factory_params(relation_key, data_hash)
+      def relation_factory_params(relation_key, relation_index, data_hash)
         {
+          relation_index: relation_index,
           relation_sym: relation_key.to_sym,
           relation_hash: data_hash,
           importable: @importable,

@@ -12,13 +12,22 @@ RSpec.shared_examples 'misconfigured dashboard service response' do |status_code
 end
 
 RSpec.shared_examples 'valid dashboard service response for schema' do
+  file_ref_resolver = proc do |uri|
+    file = Rails.root.join(uri.path)
+    raise StandardError, "Ref file #{uri.path} must be json" unless uri.path.ends_with?('.json')
+    raise StandardError, "File #{file.to_path} doesn't exists" unless file.exist?
+
+    Gitlab::Json.parse(File.read(file))
+  end
+
   it 'returns a json representation of the dashboard' do
     result = service_call
 
     expect(result.keys).to contain_exactly(:dashboard, :status)
     expect(result[:status]).to eq(:success)
 
-    expect(JSON::Validator.fully_validate(dashboard_schema, result[:dashboard])).to be_empty
+    validator = JSONSchemer.schema(dashboard_schema, ref_resolver: file_ref_resolver)
+    expect(validator.valid?(result[:dashboard].with_indifferent_access)).to be true
   end
 end
 

@@ -182,6 +182,8 @@ GitLab tracks wiki creation, deletion, and update events. These events are displ
 [group](../../group/index.md#view-group-activity),
 and [project](../working_with_projects.md#project-activity) activity pages.
 
+Commits to wikis are not counted in [repository analytics](../../analytics/repository_analytics.md).
+
 ## Customize sidebar
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23109) in GitLab 13.8, the sidebar can be customized by selecting the **Edit sidebar** button.

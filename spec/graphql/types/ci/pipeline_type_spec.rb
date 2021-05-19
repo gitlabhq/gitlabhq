@@ -9,7 +9,8 @@ RSpec.describe Types::Ci::PipelineType do
 
   it 'contains attributes related to a pipeline' do
     expected_fields = %w[
-      id iid sha before_sha status detailed_status config_source duration
+      id iid sha before_sha complete status detailed_status config_source
+      duration queued_duration
       coverage created_at updated_at started_at finished_at committed_at
       stages user retryable cancelable jobs source_job job downstream
       upstream path project active user_permissions warnings commit_path uses_needs
@@ -17,7 +18,7 @@ RSpec.describe Types::Ci::PipelineType do
     ]
 
     if Gitlab.ee?
-      expected_fields += %w[security_report_summary security_report_findings]
+      expected_fields += %w[security_report_summary security_report_findings code_quality_reports]
     end
 
     expect(described_class).to have_graphql_fields(*expected_fields)

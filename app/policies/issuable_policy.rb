@@ -28,4 +28,4 @@ class IssuablePolicy < BasePolicy
   end
 end
 
-IssuablePolicy.prepend_if_ee('EE::IssuablePolicy')
+IssuablePolicy.prepend_mod_with('IssuablePolicy')

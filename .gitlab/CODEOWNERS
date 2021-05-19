@@ -17,42 +17,47 @@
 /doc/administration/operations/ @axil @eread @marcia
 /doc/administration/packages/ @ngaskill
 /doc/administration/postgresql/ @marcia
-/doc/administration/raketasks/ @axil @eread @mjang1
+/doc/administration/raketasks/ @axil @eread
 /doc/administration/redis/ @axil
 /doc/administration/reference_architectures/ @axil
 /doc/administration/snippets/ @aqualls
-/doc/administration/troubleshooting @axil @marcia @mjang1
+/doc/administration/troubleshooting @axil @marcia
+/doc/api/group_activity_analytics.md @msedlakjakubowski
 /doc/ci/ @marcel.amirault @sselhorn
 /doc/ci/environments/ @axil
 /doc/ci/services/ @sselhorn
 /doc/ci/test_cases/ @msedlakjakubowski
-/doc/development/ @marcia @mjang1
+/doc/development/ @marcia
 /doc/development/documentation/ @cnorris
+/doc/development/value_stream_analytics.md @msedlakjakubowski
 /doc/gitlab-basics/ @marcia
 /doc/install/ @axil
-/doc/integration/ @aqualls @mjang1
+/doc/integration/ @aqualls
 /doc/operations/ @ngaskill @axil
 /doc/push_rules/ @aqualls
-/doc/ssh/ @mjang1
+/doc/ssh/ @eread
 /doc/subscriptions/ @sselhorn
 /doc/topics/autodevops/ @ngaskill @marcia
 /doc/topics/git/ @aqualls
 /doc/update/ @axil @marcia
-/doc/user/analytics/ @mjang1 @ngaskill
+/doc/user/analytics/ @msedlakjakubowski @ngaskill
 /doc/user/application_security @rdickenson
 /doc/user/clusters/ @marcia
-/doc/user/compliance/ @mjang1 @rdickenson
-/doc/user/group/ @mjang1 @msedlakjakubowski
+/doc/user/compliance/ @rdickenson
+/doc/user/group/ @msedlakjakubowski
 /doc/user/group/bulk_editing/ @msedlakjakubowski
+/doc/user/group/devops_adoption/ @msedlakjakubowski
 /doc/user/group/epics/ @msedlakjakubowski
+/doc/user/group/insights/ @msedlakjakubowski
 /doc/user/group/iterations/ @msedlakjakubowski
 /doc/user/group/roadmap/ @msedlakjakubowski
+/doc/user/group/value_stream_analytics/ @msedlakjakubowski
 /doc/user/infrastructure/ @marcia
 /doc/user/packages/ @ngaskill
-/doc/user/profile/ @mjang1 @msedlakjakubowski
-/doc/user/project/ @aqualls @axil @eread @mjang1 @msedlakjakubowski @ngaskill
+/doc/user/profile/ @msedlakjakubowski
+/doc/user/project/ @aqualls @axil @eread @msedlakjakubowski @ngaskill
 /doc/user/project/clusters/ @ngaskill
-/doc/user/project/import/ @mjang1 @msedlakjakubowski
+/doc/user/project/import/ @msedlakjakubowski
 /doc/user/project/integrations/ @aqualls
 /doc/user/project/integrations/prometheus_library/ @ngaskill
 /doc/user/project/issues/ @msedlakjakubowski
@@ -60,7 +65,7 @@
 /doc/user/project/milestones/ @msedlakjakubowski
 /doc/user/project/pages/ @axil
 /doc/user/project/repository/ @aqualls
-/doc/user/project/settings/ @mjang1 @aqualls
+/doc/user/project/settings/ @aqualls
 /doc/user/project/static_site_editor/index.md @aqualls
 /doc/user/project/web_ide/index.md @aqualls
 /doc/user/project/wiki/index.md @aqualls
@@ -131,13 +136,13 @@
 /doc/user/snippets.md @aqualls
 
 [Docs Growth]
-/doc/administration/instance_review.md @aqualls
-/doc/api/invitations.md @aqualls
-/doc/api/experiments.md @aqualls 
-/doc/development/experiment_guide/ @aqualls
-/doc/development/snowplow/ @aqualls
-/doc/development/usage_ping/ @aqualls
-/doc/user/admin_area/license.md @aqualls
+/doc/administration/instance_review.md @kpaizee
+/doc/api/invitations.md @kpaizee
+/doc/api/experiments.md @kpaizee
+/doc/development/experiment_guide/ @kpaizee
+/doc/development/snowplow/ @kpaizee
+/doc/development/usage_ping/ @kpaizee
+/doc/user/admin_area/license.md @kpaizee
 
 [Frontend]
 *.scss @annabeldunstone @gitlab-org/maintainers/frontend
@@ -181,9 +186,9 @@ Dangerfile @gl-quality/eng-prod
 .editorconfig @gl-quality/eng-prod
 
 [Backend Static Code Analysis]
-.rubocop*.yml @dstull @splattael @gl-quality/eng-prod 
-/rubocop/ @dstull @splattael @gl-quality/eng-prod 
-/spec/rubocop/ @dstull @splattael @gl-quality/eng-prod 
+.rubocop*.yml @dstull @splattael @gl-quality/eng-prod
+/rubocop/ @dstull @splattael @gl-quality/eng-prod
+/spec/rubocop/ @dstull @splattael @gl-quality/eng-prod
 
 [End-to-end]
 /qa/ @gl-quality
@@ -223,39 +228,80 @@ Dangerfile @gl-quality/eng-prod
 /ee/lib/gitlab/ci/reports/security/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis-be @gitlab-org/secure/static-analysis-be @gitlab-org/secure/fuzzing-be
 
 [Container Security]
-/ee/app/views/projects/threat_monitoring/** @gitlab-org/threat-management/defend/container-security/frontend
-/ee/app/assets/javascripts/pages/projects/threat_monitoring/** @gitlab-org/threat-management/defend/container-security/frontend
-/ee/app/assets/javascripts/threat_monitoring/** @gitlab-org/threat-management/defend/container-security/frontend
-/ee/spec/frontend/threat_monitoring/** @gitlab-org/threat-management/defend/container-security/frontend
+/ee/app/views/projects/threat_monitoring/** @gitlab-org/protect/container-security-frontend
+/ee/app/views/projects/security/policies/** @gitlab-org/protect/container-security-frontend
+/ee/spec/views/projects/security/policies/** @gitlab-org/protect/container-security-frontend
+/ee/app/assets/javascripts/pages/projects/threat_monitoring/** @gitlab-org/protect/container-security-frontend
+/ee/app/assets/javascripts/threat_monitoring/** @gitlab-org/protect/container-security-frontend
+/ee/spec/frontend/threat_monitoring/** @gitlab-org/protect/container-security-frontend
 
-/ee/app/controllers/projects/threat_monitoring_controller.rb @gitlab-org/threat-management/defend/container-security/backend
-/ee/spec/controllers/projects/threat_monitoring_controller_spec.rb @gitlab-org/threat-management/defend/container-security/backend
-/lib/gitlab/kubernetes/cilium_network_policy.rb @gitlab-org/threat-management/defend/container-security/backend
-/spec/lib/gitlab/kubernetes/cilium_network_policy_spec.rb @gitlab-org/threat-management/defend/container-security/backend
-/lib/gitlab/kubernetes/network_policy_common.rb @gitlab-org/threat-management/defend/container-security/backend
-/spec/support/shared_examples/lib/gitlab/kubernetes/network_policy_common_shared_examples.rb @gitlab-org/threat-management/defend/container-security/backend
-/lib/gitlab/kubernetes/network_policy.rb @gitlab-org/threat-management/defend/container-security/backend
-/spec/lib/gitlab/kubernetes/network_policy_spec.rb @gitlab-org/threat-management/defend/container-security/backend
-/ee/app/services/network_policies/** @gitlab-org/threat-management/defend/container-security/backend
-/ee/spec/services/network_policies/** @gitlab-org/threat-management/defend/container-security/backend
-/ee/app/controllers/projects/security/waf_anomalies_controller.rb @gitlab-org/threat-management/defend/container-security/backend
-/ee/spec/controllers/projects/security/waf_anomalies_controller_spec.rb @gitlab-org/threat-management/defend/container-security/backend
-/app/models/clusters/applications/cilium.rb @gitlab-org/threat-management/defend/container-security/backend
-/spec/models/clusters/applications/cilium_spec.rb @gitlab-org/threat-management/defend/container-security/backend
-/ee/app/controllers/projects/security/network_policies_controller.rb @gitlab-org/threat-management/defend/container-security/backend
-/ee/spec/controllers/projects/security/network_policies_controller_spec.rb  @gitlab-org/threat-management/defend/container-security/backend
-/ee/app/workers/network_policy_metrics_worker.rb   @gitlab-org/threat-management/defend/container-security/backend
-/ee/spec/workers/network_policy_metrics_worker_spec.rb @gitlab-org/threat-management/defend/container-security/backend
-/ee/app/services/network_policies/** @gitlab-org/threat-management/defend/container-security/backend
-/ee/spec/services/network_policies/** @gitlab-org/threat-management/defend/container-security/backend
-/ee/lib/gitlab/usage_data_counters/network_policy_counter.rb @gitlab-org/threat-management/defend/container-security/backend
-/ee/spec/lib/gitlab/usage_data_counters/network_policy_counter_spec.rb @gitlab-org/threat-management/defend/container-security/backend
+/ee/app/controllers/projects/threat_monitoring_controller.rb @gitlab-org/protect/container-security-backend
+/ee/spec/controllers/projects/threat_monitoring_controller_spec.rb @gitlab-org/protect/container-security-backend
+/ee/app/controllers/projects/security/policies_controller.rb @gitlab-org/protect/container-security-backend
+/ee/spec/requests/projects/security/policies_controller_spec.rb @gitlab-org/protect/container-security-backend
+/ee/app/models/security/orchestration_policy_configuration.rb @gitlab-org/protect/container-security-backend
+/ee/spec/models/security/orchestration_policy_configuration_spec.rb @gitlab-org/protect/container-security-backend
+/lib/gitlab/kubernetes/cilium_network_policy.rb @gitlab-org/protect/container-security-backend
+/spec/lib/gitlab/kubernetes/cilium_network_policy_spec.rb @gitlab-org/protect/container-security-backend
+/lib/gitlab/kubernetes/network_policy_common.rb @gitlab-org/protect/container-security-backend
+/spec/support/shared_examples/lib/gitlab/kubernetes/network_policy_common_shared_examples.rb @gitlab-org/protect/container-security-backend
+/lib/gitlab/kubernetes/network_policy.rb @gitlab-org/protect/container-security-backend
+/spec/lib/gitlab/kubernetes/network_policy_spec.rb @gitlab-org/protect/container-security-backend
+/ee/app/services/network_policies/** @gitlab-org/protect/container-security-backend
+/ee/spec/services/network_policies/** @gitlab-org/protect/container-security-backend
+/ee/app/controllers/projects/security/waf_anomalies_controller.rb @gitlab-org/protect/container-security-backend
+/ee/spec/controllers/projects/security/waf_anomalies_controller_spec.rb @gitlab-org/protect/container-security-backend
+/app/models/clusters/applications/cilium.rb @gitlab-org/protect/container-security-backend
+/spec/models/clusters/applications/cilium_spec.rb @gitlab-org/protect/container-security-backend
+/ee/app/controllers/projects/security/network_policies_controller.rb @gitlab-org/protect/container-security-backend
+/ee/spec/controllers/projects/security/network_policies_controller_spec.rb  @gitlab-org/protect/container-security-backend
+/ee/app/workers/network_policy_metrics_worker.rb   @gitlab-org/protect/container-security-backend
+/ee/spec/workers/network_policy_metrics_worker_spec.rb @gitlab-org/protect/container-security-backend
+/ee/app/services/network_policies/** @gitlab-org/protect/container-security-backend
+/ee/spec/services/network_policies/** @gitlab-org/protect/container-security-backend
+/ee/app/services/security/orchestration/** @gitlab-org/protect/container-security-backend
+/ee/spec/services/security/orchestration/** @gitlab-org/protect/container-security-backend
+/ee/lib/gitlab/usage_data_counters/network_policy_counter.rb @gitlab-org/protect/container-security-backend
+/ee/spec/lib/gitlab/usage_data_counters/network_policy_counter_spec.rb @gitlab-org/protect/container-security-backend
 
 [Code Owners]
 /ee/lib/gitlab/code_owners.rb @reprazent @kerrizor @garyh
 /ee/lib/gitlab/code_owners/ @reprazent @kerrizor @garyh
 /ee/spec/lib/gitlab/code_owners/ @reprazent @kerrizor @garyh
 /doc/user/project/code_owners.md @reprazent @kerrizor @garyh
+
+[Merge Requests]
+/app/controllers/projects/merge_requests/ @garyh @patrickbajao @marc_shaw @kerrizor
+/app/models/merge_request.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+/app/services/merge_requests/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+/app/workers/merge_requests/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+/app/workers/merge_request_mergeability_check_worker.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+/lib/gitlab/diff/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+/lib/gitlab/discussions_diff/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+/lib/gitlab/quick_actions/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+
+/ee/app/models/merge_request.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+/ee/app/services/merge_requests/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+/ee/app/workers/merge_requests/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+/ee/app/workers/merge_request_reset_approvals_worker.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+
+/app/assets/javascripts/diffs @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/javascripts/batch_comments/ @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/javascripts/notes @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/javascripts/merge_request @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/javascripts/merge_conflicts @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/javascripts/mr_notes @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/javascripts/mr_popover @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/javascripts/vue_merge_request_widget @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/javascripts/merge_request.js @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/javascripts/merge_request_tabs.js @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/stylesheets/framework/diffs.scss @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/stylesheets/components/batch_comments/ @viktomas @jboyson @iamphill @thomasrandolph
+/ee/app/assets/javascripts/diffs/ @viktomas @jboyson @iamphill @thomasrandolph
+/ee/app/assets/javascripts/vue_merge_request_widget @viktomas @jboyson @iamphill @thomasrandolph
+/spec/frontend/diffs/ @viktomas @jboyson @iamphill @thomasrandolph
+/spec/frontend/batch_comments/ @viktomas @jboyson @iamphill @thomasrandolph
+
 
 [Product Intelligence]
 /ee/lib/gitlab/usage_data_counters/ @gitlab-org/growth/product-intelligence/engineers
@@ -283,4 +329,7 @@ Dangerfile @gl-quality/eng-prod
 /config/dependency_decisions.yml @gitlab-org/legal-reviewers
 
 [Workhorse]
-/workhorse/ @jacobvosmaer-gitlab @nick.thomas @nolith @patrickbajao 
+/workhorse/ @jacobvosmaer-gitlab @nick.thomas @nolith @patrickbajao
+
+[Application Security]
+/lib/gitlab/content_security_policy/ @gitlab-com/gl-security/appsec

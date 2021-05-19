@@ -37,4 +37,4 @@ module QuickActions
   end
 end
 
-QuickActions::TargetService.prepend_if_ee('EE::QuickActions::TargetService')
+QuickActions::TargetService.prepend_mod_with('QuickActions::TargetService')

@@ -64,20 +64,17 @@ module Issues
 
     private
 
-    def allowed_issue_base_params
-      [:title, :description, :confidential, :issue_type]
-    end
-
-    def allowed_issue_admin_params
-      [:milestone_id]
-    end
-
     def allowed_issue_params
-      if can?(current_user, :admin_issue, project)
-        params.slice(*(allowed_issue_base_params + allowed_issue_admin_params))
-      else
-        params.slice(*allowed_issue_base_params)
-      end
+      allowed_params = [
+        :title,
+        :description,
+        :confidential
+      ]
+
+      allowed_params << :milestone_id if can?(current_user, :admin_issue, project)
+      allowed_params << :issue_type if issue_type_allowed?(project)
+
+      params.slice(*allowed_params)
     end
 
     def build_issue_params
@@ -88,4 +85,4 @@ module Issues
   end
 end
 
-Issues::BuildService.prepend_if_ee('EE::Issues::BuildService')
+Issues::BuildService.prepend_mod_with('Issues::BuildService')

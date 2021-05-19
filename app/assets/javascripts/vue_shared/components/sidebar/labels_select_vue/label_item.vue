@@ -22,7 +22,7 @@ export default {
     const { label, highlight, isLabelSet } = props;
 
     const labelColorBox = h('span', {
-      class: 'dropdown-label-box',
+      class: 'dropdown-label-box gl-flex-shrink-0 gl-top-0 gl-mr-3',
       style: {
         backgroundColor: label.color,
       },
@@ -33,7 +33,7 @@ export default {
 
     const checkedIcon = h(GlIcon, {
       class: {
-        'mr-2 align-self-center': true,
+        'gl-mr-3 gl-flex-shrink-0': true,
         hidden: !isLabelSet,
       },
       props: {
@@ -43,7 +43,7 @@ export default {
 
     const noIcon = h('span', {
       class: {
-        'mr-3 pr-2': true,
+        'gl-mr-5 gl-pr-3': true,
         hidden: isLabelSet,
       },
       attrs: {
@@ -56,7 +56,7 @@ export default {
     const labelLink = h(
       GlLink,
       {
-        class: 'd-flex align-items-baseline text-break-word label-item',
+        class: 'gl-display-flex gl-align-items-center label-item gl-text-black-normal',
         on: {
           click: () => {
             listeners.clickLabel(label);
@@ -70,8 +70,8 @@ export default {
       'li',
       {
         class: {
-          'd-block': true,
-          'text-left': true,
+          'gl-display-block': true,
+          'gl-text-left': true,
           'is-focused': highlight,
         },
       },

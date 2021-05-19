@@ -126,7 +126,7 @@ Example response:
         "ip_address": "127.0.0.1",
         "is_shared": true,
         "name": null,
-        "online": false
+        "online": false,
         "status": "offline"
     },
     {
@@ -136,7 +136,7 @@ Example response:
         "ip_address": "127.0.0.1",
         "is_shared": false,
         "name": null,
-        "online": true
+        "online": true,
         "status": "paused"
     },
     {
@@ -156,7 +156,7 @@ Example response:
 
 Get details of a runner.
 
-[Maintainer access or higher](../user/permissions.md) is required to get runner details at the project and group level. 
+[Maintainer access or higher](../user/permissions.md) is required to get runner details at the project and group level.
 
 Instance-level runner details via this endpoint are available to all signed in users.
 
@@ -428,7 +428,7 @@ Example response:
         "ip_address": "127.0.0.1",
         "is_shared": true,
         "name": null,
-        "online": true
+        "online": true,
         "status": "paused"
     }
 ]

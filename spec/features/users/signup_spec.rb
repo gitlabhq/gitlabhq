@@ -57,6 +57,12 @@ RSpec.describe 'Signup' do
     fill_in 'new_user_password', with: new_user.password
   end
 
+  def confirm_email
+    new_user_token = User.find_by_email(new_user.email).confirmation_token
+
+    visit user_confirmation_path(confirmation_token: new_user_token)
+  end
+
   describe 'username validation', :js do
     before do
       visit new_user_registration_path
@@ -191,7 +197,7 @@ RSpec.describe 'Signup' do
           stub_feature_flags(soft_email_confirmation: false)
         end
 
-        it 'creates the user account and sends a confirmation email' do
+        it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming' do
           visit new_user_registration_path
 
           fill_in_signup_form
@@ -199,6 +205,10 @@ RSpec.describe 'Signup' do
           expect { click_button 'Register' }.to change { User.count }.by(1)
           expect(current_path).to eq users_almost_there_path
           expect(page).to have_content('Please check your email to confirm your account')
+
+          confirm_email
+
+          expect(find_field('Username or email').value).to eq(new_user.email)
         end
       end
 

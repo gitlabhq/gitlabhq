@@ -118,7 +118,7 @@ job with the same name, the job artifact from the parent pipeline is returned.
 
 ## Access the latest job artifacts by URL
 
-You can download the latest job artifacts by using a URL.
+You can download job artifacts from the latest successful pipeline by using a URL.
 
 To download the whole artifacts archive:
 
@@ -173,9 +173,8 @@ https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/file/htmlcov/index.
 
 ## When job artifacts are deleted
 
-By default, the latest job artifacts from the most recent successful jobs are never deleted.
-If a job is configured with [`expire_in`](../yaml/README.md#artifactsexpire_in),
-its artifacts only expire if a more recent artifact exists.
+See the [`expire_in`](../yaml/README.md#artifactsexpire_in) documentation for information on when
+job artifacts are deleted.
 
 ### Keep artifacts from most recent successful jobs
 

@@ -24,12 +24,12 @@ module Notes
       UPDATE_SERVICES
     end
 
-    def self.noteable_update_service(note)
+    def self.noteable_update_service_class(note)
       update_services[note.noteable_type]
     end
 
     def self.supported?(note)
-      !!noteable_update_service(note)
+      !!noteable_update_service_class(note)
     end
 
     def supported?(note)
@@ -55,9 +55,23 @@ module Notes
         update_params[:spend_time][:note_id] = note.id
       end
 
-      self.class.noteable_update_service(note).new(note.resource_parent, current_user, update_params).execute(note.noteable)
+      noteable_update_service_class = self.class.noteable_update_service_class(note)
+
+      # TODO: This conditional is necessary because we have not fully converted all possible
+      #   noteable_update_service_class classes to use named arguments. See more details
+      #   on the partial conversion at https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59182
+      #   Follow-on issue to address this is here:
+      #   https://gitlab.com/gitlab-org/gitlab/-/issues/328734
+      service =
+        if noteable_update_service_class.respond_to?(:constructor_container_arg)
+          noteable_update_service_class.new(**noteable_update_service_class.constructor_container_arg(note.resource_parent), current_user: current_user, params: update_params)
+        else
+          noteable_update_service_class.new(note.resource_parent, current_user, update_params)
+        end
+
+      service.execute(note.noteable)
     end
   end
 end
 
-Notes::QuickActionsService.prepend_if_ee('EE::Notes::QuickActionsService')
+Notes::QuickActionsService.prepend_mod_with('Notes::QuickActionsService')

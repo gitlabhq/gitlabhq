@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ProcessPipelineService do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, ref: 'master', project: project)
@@ -23,8 +22,6 @@ RSpec.describe Ci::ProcessPipelineService do
   before do
     stub_ci_pipeline_to_return_yaml_file
     stub_not_protect_default_branch
-
-    project.add_developer(user)
 
     allow(subject).to receive(:metrics).and_return(metrics)
   end
@@ -65,6 +62,14 @@ RSpec.describe Ci::ProcessPipelineService do
 
       it 'increments the counter' do
         expect(legacy_update_jobs_counter).to receive(:increment)
+
+        subject.execute
+      end
+
+      it 'logs the project and pipeline id' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(event: 'update_retried_is_used',
+                                                             project_id: project.id,
+                                                             pipeline_id: pipeline.id)
 
         subject.execute
       end

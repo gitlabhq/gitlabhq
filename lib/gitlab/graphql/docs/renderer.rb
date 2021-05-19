@@ -24,6 +24,7 @@ module Gitlab
           @layout = Haml::Engine.new(File.read(template))
           @parsed_schema = GraphQLDocs::Parser.new(schema.graphql_definition, {}).parse
           @schema = schema
+          @seen = Set.new
         end
 
         def contents
@@ -36,6 +37,16 @@ module Gitlab
 
           FileUtils.mkdir_p(@output_dir)
           File.write(filename, contents)
+        end
+
+        private
+
+        def seen_type?(name)
+          @seen.include?(name)
+        end
+
+        def seen_type!(name)
+          @seen << name
         end
       end
     end

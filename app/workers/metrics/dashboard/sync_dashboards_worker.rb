@@ -5,7 +5,10 @@ module Metrics
     class SyncDashboardsWorker
       include ApplicationWorker
 
+      sidekiq_options retry: 3
+
       feature_category :metrics
+      tags :exclude_from_kubernetes
 
       idempotent!
 

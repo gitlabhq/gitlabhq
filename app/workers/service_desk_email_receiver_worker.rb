@@ -3,13 +3,14 @@
 class ServiceDeskEmailReceiverWorker < EmailReceiverWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  def perform(raw)
-    return unless ::Gitlab::ServiceDeskEmail.enabled?
+  feature_category :service_desk
+  sidekiq_options retry: 3
 
-    begin
-      Gitlab::Email::ServiceDeskReceiver.new(raw).execute
-    rescue => e
-      handle_failure(raw, e)
-    end
+  def should_perform?
+    ::Gitlab::ServiceDeskEmail.enabled?
+  end
+
+  def receiver
+    @receiver ||= Gitlab::Email::ServiceDeskReceiver.new(raw)
   end
 end

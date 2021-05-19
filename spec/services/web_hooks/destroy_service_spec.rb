@@ -41,15 +41,15 @@ RSpec.describe WebHooks::DestroyService do
   end
 
   context 'with system hook' do
-    let_it_be(:hook) { create(:system_hook, url: "http://example.com") }
-    let_it_be(:log) { create_list(:web_hook_log, 3, web_hook: hook) }
+    let!(:hook) { create(:system_hook, url: "http://example.com") }
+    let!(:log) { create_list(:web_hook_log, 3, web_hook: hook) }
 
     it_behaves_like 'batched destroys'
   end
 
   context 'with project hook' do
-    let_it_be(:hook) { create(:project_hook) }
-    let_it_be(:log) { create_list(:web_hook_log, 3, web_hook: hook) }
+    let!(:hook) { create(:project_hook) }
+    let!(:log) { create_list(:web_hook_log, 3, web_hook: hook) }
 
     it_behaves_like 'batched destroys'
   end

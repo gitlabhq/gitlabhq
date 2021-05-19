@@ -223,6 +223,52 @@ RSpec.describe API::Projects do
         expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
       end
 
+      context 'filter by topic (column tag_list)' do
+        before do
+          project.update!(tag_list: %w(ruby javascript))
+        end
+
+        it 'returns no projects' do
+          get api('/projects', user), params: { topic: 'foo' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_empty
+        end
+
+        it 'returns matching project for a single topic' do
+          get api('/projects', user), params: { topic: 'ruby' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to contain_exactly a_hash_including('id' => project.id)
+        end
+
+        it 'returns matching project for multiple topics' do
+          get api('/projects', user), params: { topic: 'ruby, javascript' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to contain_exactly a_hash_including('id' => project.id)
+        end
+
+        it 'returns no projects if project match only some topic' do
+          get api('/projects', user), params: { topic: 'ruby, foo' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_empty
+        end
+
+        it 'ignores topic if it is empty' do
+          get api('/projects', user), params: { topic: '' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_present
+        end
+      end
+
       context 'and with_issues_enabled=true' do
         it 'only returns projects with issues enabled' do
           project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
@@ -302,22 +348,11 @@ RSpec.describe API::Projects do
 
       context 'and with simple=true' do
         it 'returns a simplified version of all the projects' do
-          expected_keys = %w(
-            id description default_branch tag_list
-            ssh_url_to_repo http_url_to_repo web_url readme_url
-            name name_with_namespace
-            path path_with_namespace
-            star_count forks_count
-            created_at last_activity_at
-            avatar_url namespace
-          )
-
           get api('/projects?simple=true', user)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
-          expect(json_response).to be_an Array
-          expect(json_response.first.keys).to match_array expected_keys
+          expect(response).to match_response_schema('public_api/v4/projects')
         end
       end
 
@@ -1300,6 +1335,7 @@ RSpec.describe API::Projects do
   describe 'GET /users/:user_id/starred_projects/' do
     before do
       user3.update!(starred_projects: [project, project2, project3])
+      user3.reload
     end
 
     it 'returns error when user not found' do
@@ -1588,7 +1624,6 @@ RSpec.describe API::Projects do
     end
 
     it "does not leave the temporary file in place after uploading, even when the tempfile reaper does not run" do
-      stub_env('GITLAB_TEMPFILE_IMMEDIATE_UNLINK', '1')
       tempfile = Tempfile.new('foo')
       path = tempfile.path
 
@@ -1648,7 +1683,7 @@ RSpec.describe API::Projects do
     let_it_be(:root_group) { create(:group, :public, name: 'root group') }
     let_it_be(:project_group) { create(:group, :public, parent: root_group, name: 'project group') }
     let_it_be(:shared_group_with_dev_access) { create(:group, :private, parent: root_group, name: 'shared group') }
-    let_it_be(:shared_group_with_reporter_access) { create(:group, :private) }
+    let_it_be(:shared_group_with_reporter_access) { create(:group, :public) }
     let_it_be(:private_project) { create(:project, :private, group: project_group) }
     let_it_be(:public_project) { create(:project, :public, group: project_group) }
 
@@ -1727,6 +1762,14 @@ RSpec.describe API::Projects do
 
             it_behaves_like 'successful groups response' do
               let(:expected_groups) { [root_group, project_group, shared_group_with_dev_access] }
+            end
+          end
+
+          context 'when shared_visible_only is on' do
+            let(:params) { super().merge(shared_visible_only: true) }
+
+            it_behaves_like 'successful groups response' do
+              let(:expected_groups) { [root_group, project_group, shared_group_with_reporter_access] }
             end
           end
 

@@ -24,4 +24,4 @@ module API
   end
 end
 
-API::Helpers::VariablesHelpers.prepend_if_ee('EE::API::Helpers::VariablesHelpers')
+API::Helpers::VariablesHelpers.prepend_mod_with('API::Helpers::VariablesHelpers')

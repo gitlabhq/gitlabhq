@@ -24,9 +24,9 @@ module ShaAttribute
       return unless column
 
       unless column.type == :binary
-        raise ArgumentError.new("sha_attribute #{name.inspect} is invalid since the column type is not :binary")
+        raise ArgumentError, "sha_attribute #{name.inspect} is invalid since the column type is not :binary"
       end
-    rescue => error
+    rescue StandardError => error
       Gitlab::AppLogger.error "ShaAttribute initialization: #{error.message}"
       raise
     end
@@ -37,4 +37,4 @@ module ShaAttribute
   end
 end
 
-ShaAttribute::ClassMethods.prepend_if_ee('EE::ShaAttribute')
+ShaAttribute::ClassMethods.prepend_mod_with('ShaAttribute')

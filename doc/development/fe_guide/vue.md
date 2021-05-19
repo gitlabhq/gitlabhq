@@ -102,9 +102,9 @@ across the codebase.
 #### Providing Rails form fields to Vue applications
 
 When composing a form with Rails, the `name`, `id`, and `value` attributes of form inputs are generated
-to match the backend. It can be helpful to have access to these generated attributes when converting 
+to match the backend. It can be helpful to have access to these generated attributes when converting
 a Rails form to Vue, or when [integrating components (datepicker, project selector, etc)](https://gitlab.com/gitlab-org/gitlab/-/blob/8956ad767d522f37a96e03840595c767de030968/app/assets/javascripts/access_tokens/index.js#L15) into it.
-The [`parseRailsFormFields`](https://gitlab.com/gitlab-org/gitlab/-/blob/fe88797f682c7ff0b13f2c2223a3ff45ada751c1/app/assets/javascripts/lib/utils/forms.js#L107) utility can be used to parse the generated form input attributes so they can be passed to the Vue application. 
+The [`parseRailsFormFields`](https://gitlab.com/gitlab-org/gitlab/-/blob/fe88797f682c7ff0b13f2c2223a3ff45ada751c1/app/assets/javascripts/lib/utils/forms.js#L107) utility can be used to parse the generated form input attributes so they can be passed to the Vue application.
 This allows us to easily integrate Vue components without changing how the form submits.
 
 ```haml
@@ -116,7 +116,7 @@ This allows us to easily integrate Vue components without changing how the form 
 ```
 
 > The `js_name` data attribute is used as the key in the resulting JavaScript object.
-For example `= form.text_field :email, data: { js_name: 'fooBarBaz' }` would be translated 
+For example `= form.text_field :email, data: { js_name: 'fooBarBaz' }` would be translated
 to `{ fooBarBaz: { name: 'user[email]', id: 'user_email', value: '' } }`
 
 ```javascript

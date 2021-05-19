@@ -556,42 +556,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
       end
     end
 
-    context 'with multiple_cache_per_job FF disabled' do
-      before do
-        stub_feature_flags(multiple_cache_per_job: false)
-      end
-
-      context 'when job config overrides default config' do
-        before do
-          entry.compose!(deps)
-        end
-
-        let(:config) do
-          { script: 'rspec', image: 'some_image', cache: { key: 'test' } }
-        end
-
-        it 'overrides default config' do
-          expect(entry[:image].value).to eq(name: 'some_image')
-          expect(entry[:cache].value).to eq(key: 'test', policy: 'pull-push', when: 'on_success')
-        end
-      end
-
-      context 'when job config does not override default config' do
-        before do
-          allow(default).to receive('[]').with(:image).and_return(specified)
-
-          entry.compose!(deps)
-        end
-
-        let(:config) { { script: 'ls', cache: { key: 'test' } } }
-
-        it 'uses config from default entry' do
-          expect(entry[:image].value).to eq 'specified'
-          expect(entry[:cache].value).to eq(key: 'test', policy: 'pull-push', when: 'on_success')
-        end
-      end
-    end
-
     context 'with workflow rules' do
       using RSpec::Parameterized::TableSyntax
 

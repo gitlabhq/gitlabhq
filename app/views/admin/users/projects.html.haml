@@ -5,7 +5,7 @@
 
 - if @user.groups.any?
   .card
-    .card-header Group projects
+    .card-header= _('Group projects')
     %ul.hover-list
       - @user.group_members.includes(:source).each do |group_member| # rubocop: disable CodeReuse/ActiveRecord
         - group = group_member.group
@@ -24,12 +24,12 @@
     - if @personal_projects.present?
       = render 'admin/users/projects', projects: @personal_projects
     - else
-      .nothing-here-block This user has no personal projects.
+      .nothing-here-block= _('This user has no personal projects.')
 
 
   .col-md-6
     .card
-      .card-header Joined projects (#{@joined_projects.count})
+      .card-header= _('Joined projects (%{projects_count})') % { projects_count: @joined_projects.count }
       %ul.hover-list
         - @joined_projects.sort_by(&:full_name).each do |project|
           - member = project.team.find_member(@user.id)
@@ -41,10 +41,10 @@
             - if member
               .float-right
                 - if member.owner?
-                  %span.light Owner
+                  %span.light= _('Owner')
                 - else
                   %span.light.vertical-align-middle= member.human_access
 
                   - if member.respond_to? :project
-                    = link_to project_project_member_path(project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn btn-sm btn-danger gl-button btn-icon gl-ml-3", title: 'Remove user from project' do
+                    = link_to project_project_member_path(project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn btn-sm btn-danger gl-button btn-icon gl-ml-3", title: _('Remove user from project') do
                       = sprite_icon('close', size: 16, css_class: 'gl-icon')

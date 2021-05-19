@@ -109,7 +109,7 @@ RSpec.describe Gitlab::Cluster::Mixins::PumaCluster do
         line = process.readline
         puts "PUMA_DEBUG: #{line}" if ENV['PUMA_DEBUG']
       end
-    rescue
+    rescue StandardError
     end
   end
 end

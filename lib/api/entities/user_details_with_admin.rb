@@ -11,4 +11,4 @@ module API
   end
 end
 
-API::Entities::UserDetailsWithAdmin.prepend_if_ee('EE::API::Entities::UserDetailsWithAdmin')
+API::Entities::UserDetailsWithAdmin.prepend_mod_with('API::Entities::UserDetailsWithAdmin')

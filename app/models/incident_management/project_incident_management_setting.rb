@@ -12,7 +12,7 @@ module IncidentManagement
 
     attr_encrypted :pagerduty_token,
       mode: :per_attribute_iv,
-      key: ::Settings.attr_encrypted_db_key_base_truncated,
+      key: ::Settings.attr_encrypted_db_key_base_32,
       algorithm: 'aes-256-gcm',
       encode: false, # No need to encode for binary column https://github.com/attr-encrypted/attr_encrypted#the-encode-encode_iv-encode_salt-and-default_encoding-options
       encode_iv: false
@@ -52,4 +52,4 @@ module IncidentManagement
   end
 end
 
-IncidentManagement::ProjectIncidentManagementSetting.prepend_if_ee('EE::IncidentManagement::ProjectIncidentManagementSetting')
+IncidentManagement::ProjectIncidentManagementSetting.prepend_mod_with('IncidentManagement::ProjectIncidentManagementSetting')

@@ -29,7 +29,7 @@ module MergeRequests
       squash_sha = repository.squash(current_user, merge_request, message || merge_request.default_squash_commit_message)
 
       success(squash_sha: squash_sha)
-    rescue => e
+    rescue StandardError => e
       log_error(exception: e, message: 'Failed to squash merge request')
 
       false
@@ -37,7 +37,7 @@ module MergeRequests
 
     def squash_in_progress?
       merge_request.squash_in_progress?
-    rescue => e
+    rescue StandardError => e
       log_error(exception: e, message: 'Failed to check squash in progress')
 
       raise SquashInProgressError, e.message

@@ -7,6 +7,10 @@
 .diff-files-holder {
   flex: 1;
   min-width: 0;
+
+  .vue-recycle-scroller__item-wrapper {
+    overflow: visible;
+  }
 }
 
 .with-system-header {

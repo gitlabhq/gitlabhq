@@ -77,6 +77,30 @@ RSpec.describe Registrations::WelcomeController do
 
       it { is_expected.to redirect_to(dashboard_projects_path)}
 
+      context 'when the new user already has any accepted group membership' do
+        let!(:member1) { create(:group_member, user: user) }
+
+        it 'redirects to the group activity page' do
+          expect(subject).to redirect_to(activity_group_path(member1.source))
+        end
+
+        context 'when the new user already has more than 1 accepted group membership' do
+          it 'redirects to the most recent membership group activty page' do
+            member2 = create(:group_member, user: user)
+
+            expect(subject).to redirect_to(activity_group_path(member2.source))
+          end
+        end
+
+        context 'when the member has an orphaned source at the time of the welcome' do
+          it 'redirects to the project dashboard page' do
+            member1.source.delete
+
+            expect(subject).to redirect_to(dashboard_projects_path)
+          end
+        end
+      end
+
       context 'when the user opted in' do
         let(:email_opted_in) { '1' }
 

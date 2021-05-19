@@ -1,0 +1,5 @@
+---
+title: Improve message for :project_not_found error to indicate possible cause
+merge_request: 58945
+author: Ignacy Moryc @ignacy
+type: changed

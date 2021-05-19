@@ -5,7 +5,7 @@
   %li{ class: active_when(params[:scope].nil?) }
     = link_to subject_snippets_path(subject) do
       = _("All")
-      %span.badge.badge-pill
+      %span.badge.badge-muted.badge-pill.gl-badge.sm
         - if include_private
           = counts[:total]
         - else
@@ -15,17 +15,17 @@
     %li{ class: active_when(params[:scope] == "are_private") }
       = link_to subject_snippets_path(subject, scope: 'are_private') do
         = _("Private")
-        %span.badge.badge-pill
+        %span.badge.badge-muted.badge-pill.gl-badge.sm
           = counts[:are_private]
 
   %li{ class: active_when(params[:scope] == "are_internal") }
     = link_to subject_snippets_path(subject, scope: 'are_internal') do
       = _("Internal")
-      %span.badge.badge-pill
+      %span.badge.badge-muted.badge-pill.gl-badge.sm
         = counts[:are_internal]
 
   %li{ class: active_when(params[:scope] == "are_public") }
     = link_to subject_snippets_path(subject, scope: 'are_public') do
       = _("Public")
-      %span.badge.badge-pill
+      %span.badge.badge-muted.badge-pill.gl-badge.sm
         = counts[:are_public]

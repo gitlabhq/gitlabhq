@@ -1,0 +1,5 @@
+---
+title: Remove the longer_count_cache_validity_period feature flag
+merge_request: 59746
+author:
+type: performance

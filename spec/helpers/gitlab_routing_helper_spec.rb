@@ -113,6 +113,24 @@ RSpec.describe GitlabRoutingHelper do
     end
   end
 
+  describe 'members helpers' do
+    describe '#source_members_url' do
+      it 'returns a url to the memberships page for a group membership' do
+        membership = build_stubbed(:group_member)
+        group_members_url = "http://test.host/groups/#{membership.source.full_path}/-/group_members"
+
+        expect(source_members_url(membership)).to eq(group_members_url)
+      end
+
+      it 'returns a url to the memberships page for a project membership' do
+        membership = build_stubbed(:project_member)
+        project_members_url = "http://test.host/#{membership.source.full_path}/-/project_members"
+
+        expect(source_members_url(membership)).to eq(project_members_url)
+      end
+    end
+  end
+
   context 'artifacts' do
     let_it_be(:project) { create(:project) }
     let_it_be(:job) { create(:ci_build, project: project, name: 'test:job', artifacts_expire_at: 1.hour.from_now) }
@@ -335,7 +353,12 @@ RSpec.describe GitlabRoutingHelper do
 
   context 'GraphQL ETag paths' do
     context 'with pipelines' do
-      let(:pipeline) { double(id: 5) }
+      let(:sha) { 'b08774cb1a11ecdc27a82c5f444a69ea7e038ede' }
+      let(:pipeline) { double(id: 5 ) }
+
+      it 'returns an ETag path for a pipeline sha' do
+        expect(graphql_etag_pipeline_sha_path(sha)).to eq('/api/graphql:pipelines/sha/b08774cb1a11ecdc27a82c5f444a69ea7e038ede')
+      end
 
       it 'returns an ETag path for pipelines' do
         expect(graphql_etag_pipeline_path(pipeline)).to eq('/api/graphql:pipelines/id/5')

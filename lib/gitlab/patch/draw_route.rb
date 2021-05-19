@@ -10,7 +10,7 @@ module Gitlab
       def draw(routes_name)
         drawn_any = draw_ee(routes_name) | draw_ce(routes_name)
 
-        drawn_any || raise(RoutesNotFound.new("Cannot find #{routes_name}"))
+        drawn_any || raise(RoutesNotFound, "Cannot find #{routes_name}")
       end
 
       def draw_ce(routes_name)
@@ -37,4 +37,4 @@ module Gitlab
   end
 end
 
-Gitlab::Patch::DrawRoute.prepend_if_ee('EE::Gitlab::Patch::DrawRoute')
+Gitlab::Patch::DrawRoute.prepend_mod_with('Gitlab::Patch::DrawRoute')

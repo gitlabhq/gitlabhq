@@ -23,7 +23,6 @@ describe('SetStatusModalWrapper', () => {
     currentEmoji: defaultEmoji,
     currentMessage: defaultMessage,
     defaultEmoji,
-    canSetUserAvailability: true,
   };
 
   const createComponent = (props = {}) => {
@@ -276,18 +275,6 @@ describe('SetStatusModalWrapper', () => {
           "Sorry, we weren't able to set your status. Please try again later.",
         );
       });
-    });
-  });
-
-  describe('with canSetUserAvailability=false', () => {
-    beforeEach(async () => {
-      mockEmoji = await initEmojiMock();
-      wrapper = createComponent({ canSetUserAvailability: false });
-      return initModal();
-    });
-
-    it('hides the set availability checkbox', () => {
-      expect(findAvailabilityCheckbox().exists()).toBe(false);
     });
   });
 });

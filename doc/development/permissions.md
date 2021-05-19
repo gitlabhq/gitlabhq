@@ -39,11 +39,16 @@ Additionally, the following project features can have different visibility level
 - Issues
 - Repository
   - Merge Request
+  - Forks
   - Pipelines
-  - Container Registry
-  - Git Large File Storage
+- Analytics
+- Requirements
+- Security & Compliance
 - Wiki
 - Snippets
+- Pages
+- Operations
+- Metrics Dashboard
 
 These features can be set to "Everyone with Access" or "Only Project Members".
 They make sense only for public or internal projects because private projects

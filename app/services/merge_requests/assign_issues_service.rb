@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class AssignIssuesService < BaseService
+  class AssignIssuesService < BaseProjectService
     def assignable_issues
       @assignable_issues ||= begin
         if current_user == merge_request.author
@@ -16,7 +16,7 @@ module MergeRequests
 
     def execute
       assignable_issues.each do |issue|
-        Issues::UpdateService.new(issue.project, current_user, assignee_ids: [current_user.id]).execute(issue)
+        Issues::UpdateService.new(project: issue.project, current_user: current_user, params: { assignee_ids: [current_user.id] }).execute(issue)
       end
 
       {

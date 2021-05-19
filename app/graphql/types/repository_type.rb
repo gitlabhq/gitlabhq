@@ -19,5 +19,9 @@ module Types
     field :branch_names, [GraphQL::STRING_TYPE], null: true, calls_gitaly: true,
           complexity: 170, description: 'Names of branches available in this repository that match the search pattern.',
           resolver: Resolvers::RepositoryBranchNamesResolver
+    field :disk_path, GraphQL::STRING_TYPE,
+          description: 'Shows a disk path of the repository.',
+          null: true,
+          authorize: :read_storage_disk_path
   end
 end

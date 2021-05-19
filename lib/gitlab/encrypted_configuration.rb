@@ -65,7 +65,7 @@ module Gitlab
 
       contents = deserialize(read)
 
-      raise InvalidConfigError.new unless contents.is_a?(Hash)
+      raise InvalidConfigError unless contents.is_a?(Hash)
 
       @config = contents.deep_symbolize_keys
     end
@@ -115,7 +115,7 @@ module Gitlab
     end
 
     def handle_missing_key!
-      raise MissingKeyError.new if @key.nil?
+      raise MissingKeyError if @key.nil?
     end
   end
 end

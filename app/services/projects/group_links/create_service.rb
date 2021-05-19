@@ -44,4 +44,4 @@ module Projects
   end
 end
 
-Projects::GroupLinks::CreateService.prepend_if_ee('EE::Projects::GroupLinks::CreateService')
+Projects::GroupLinks::CreateService.prepend_mod_with('Projects::GroupLinks::CreateService')

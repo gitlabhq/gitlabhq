@@ -6,6 +6,7 @@ import BlobContentError from './blob_content_error.vue';
 import { BLOB_RENDER_EVENT_LOAD, BLOB_RENDER_EVENT_SHOW_SOURCE } from './constants';
 
 export default {
+  name: 'BlobContent',
   components: {
     GlLoadingIcon,
     BlobContentError,

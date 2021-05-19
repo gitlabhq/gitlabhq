@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Admin Groups' do
   include Select2Helper
   include Spec::Support::Helpers::Features::MembersHelpers
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
 
@@ -202,6 +203,7 @@ RSpec.describe 'Admin Groups' do
           select2(Gitlab::Access::REPORTER, from: '#access_level')
         end
         click_button "Add users to group"
+
         page.within ".group-users-list" do
           expect(page).to have_content(user.name)
           expect(page).to have_content('Reporter')
@@ -220,19 +222,13 @@ RSpec.describe 'Admin Groups' do
 
   describe 'add admin himself to a group' do
     before do
-      stub_feature_flags(invite_members_group_modal: false)
       group.add_user(:user, Gitlab::Access::OWNER)
     end
 
     it 'adds admin a to a group as developer', :js do
       visit group_group_members_path(group)
 
-      page.within '.invite-users-form' do
-        select2(current_user.id, from: '#user_ids', multiple: true)
-        select 'Developer', from: 'access_level'
-      end
-
-      click_button 'Invite'
+      invite_member(current_user.name, role: 'Developer')
 
       page.within members_table do
         expect(page).to have_content(current_user.name)

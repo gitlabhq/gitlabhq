@@ -13,6 +13,10 @@ FactoryBot.define do
         Rails.root.join('spec/fixtures/pipeline_artifacts/code_coverage.json'), 'application/json')
     end
 
+    trait :unlocked do
+      association :pipeline, :unlocked, factory: :ci_pipeline
+    end
+
     trait :checksummed do
       verification_checksum { 'abc' }
     end

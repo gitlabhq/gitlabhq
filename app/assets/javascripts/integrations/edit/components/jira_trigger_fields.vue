@@ -16,13 +16,13 @@ const commentDetailOptions = [
   {
     value: 'standard',
     label: s__('Integrations|Standard'),
-    help: s__('Integrations|Includes commit title and branch'),
+    help: s__('Integrations|Includes commit title and branch.'),
   },
   {
     value: 'all_details',
     label: s__('Integrations|All details'),
     help: s__(
-      'Integrations|Includes Standard plus entire commit message, commit hash, and issue IDs',
+      'Integrations|Includes Standard, plus the entire commit message, commit hash, and issue IDs',
     ),
   },
 ];
@@ -144,7 +144,7 @@ export default {
       label-for="service[trigger]"
       :description="
         s__(
-          'Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) is created.',
+          'Integrations|When you mention a Jira issue in a commit or merge request, GitLab creates a remote link and comment (if enabled).',
         )
       "
     >

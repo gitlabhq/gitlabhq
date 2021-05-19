@@ -7,9 +7,16 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
   let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
+  let_it_be(:pause_ms) { 250 }
   let_it_be(:active_migration) { create(:batched_background_migration, :active, job_arguments: [:id, :other_id]) }
 
-  let!(:job_record) { create(:batched_background_migration_job, batched_migration: active_migration) }
+  let!(:job_record) do
+    create(:batched_background_migration_job,
+           batched_migration: active_migration,
+           pause_ms: pause_ms
+          )
+  end
+
   let(:job_instance) { double('job instance', batch_metrics: {}) }
 
   before do
@@ -17,7 +24,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   end
 
   it 'runs the migration job' do
-    expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, 'id', 'other_id')
+    expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
 
     subject
   end
@@ -42,6 +49,42 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
     end
   end
 
+  context 'when running a job that failed previously' do
+    let!(:job_record) do
+      create(:batched_background_migration_job,
+        batched_migration: active_migration,
+        pause_ms: pause_ms,
+        attempts: 1,
+        status: :failed,
+        finished_at: 1.hour.ago,
+        metrics: { 'my_metrics' => 'some_value' }
+      )
+    end
+
+    it 'increments attempts and updates other fields' do
+      updated_metrics = { 'updated_metrics' => 'some_value' }
+
+      expect(job_instance).to receive(:perform)
+      expect(job_instance).to receive(:batch_metrics).and_return(updated_metrics)
+
+      expect(job_record).to receive(:update!).with(
+        hash_including(attempts: 2, status: :running, finished_at: nil, metrics: {})
+      ).and_call_original
+
+      freeze_time do
+        subject
+
+        job_record.reload
+
+        expect(job_record).not_to be_failed
+        expect(job_record.attempts).to eq(2)
+        expect(job_record.started_at).to eq(Time.current)
+        expect(job_record.finished_at).to eq(Time.current)
+        expect(job_record.metrics).to eq(updated_metrics)
+      end
+    end
+  end
+
   context 'reporting prometheus metrics' do
     let(:labels) { job_record.batched_migration.prometheus_labels }
 
@@ -61,8 +104,22 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
       subject
     end
 
+    it 'reports interval' do
+      expect(described_class.metrics[:gauge_interval]).to receive(:set).with(labels, job_record.batched_migration.interval)
+
+      subject
+    end
+
     it 'reports updated tuples (currently based on batch_size)' do
       expect(described_class.metrics[:counter_updated_tuples]).to receive(:increment).with(labels, job_record.batch_size)
+
+      subject
+    end
+
+    it 'reports migrated tuples' do
+      count = double
+      expect(job_record.batched_migration).to receive(:migrated_tuple_count).and_return(count)
+      expect(described_class.metrics[:gauge_migrated_tuples]).to receive(:set).with(labels, count)
 
       subject
     end
@@ -82,14 +139,26 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
       subject
     end
 
-    it 'reports time efficiency' do
+    it 'reports job duration' do
       freeze_time do
         expect(Time).to receive(:current).and_return(Time.zone.now - 5.seconds).ordered
-        expect(Time).to receive(:current).and_return(Time.zone.now).ordered
+        allow(Time).to receive(:current).and_call_original
 
-        ratio = 5 / job_record.batched_migration.interval.to_f
+        expect(described_class.metrics[:gauge_job_duration]).to receive(:set).with(labels, 5.seconds)
 
-        expect(described_class.metrics[:histogram_time_efficiency]).to receive(:observe).with(labels, ratio)
+        subject
+      end
+    end
+
+    it 'reports the total tuple count for the migration' do
+      expect(described_class.metrics[:gauge_total_tuple_count]).to receive(:set).with(labels, job_record.batched_migration.total_tuple_count)
+
+      subject
+    end
+
+    it 'reports last updated at timestamp' do
+      freeze_time do
+        expect(described_class.metrics[:gauge_last_update_time]).to receive(:set).with(labels, Time.current.to_i)
 
         subject
       end
@@ -98,7 +167,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
   context 'when the migration job does not raise an error' do
     it 'marks the tracking record as succeeded' do
-      expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, 'id', 'other_id')
+      expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
 
       freeze_time do
         subject
@@ -112,19 +181,24 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   end
 
   context 'when the migration job raises an error' do
-    it 'marks the tracking record as failed before raising the error' do
-      expect(job_instance).to receive(:perform)
-        .with(1, 10, 'events', 'id', 1, 'id', 'other_id')
-        .and_raise(RuntimeError, 'Something broke!')
+    shared_examples 'an error is raised' do |error_class|
+      it 'marks the tracking record as failed' do
+        expect(job_instance).to receive(:perform)
+          .with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
+          .and_raise(error_class)
 
-      freeze_time do
-        expect { subject }.to raise_error(RuntimeError, 'Something broke!')
+        freeze_time do
+          expect { subject }.to raise_error(error_class)
 
-        reloaded_job_record = job_record.reload
+          reloaded_job_record = job_record.reload
 
-        expect(reloaded_job_record).to be_failed
-        expect(reloaded_job_record.finished_at).to eq(Time.current)
+          expect(reloaded_job_record).to be_failed
+          expect(reloaded_job_record.finished_at).to eq(Time.current)
+        end
       end
     end
+
+    it_behaves_like 'an error is raised', RuntimeError.new('Something broke!')
+    it_behaves_like 'an error is raised', SignalException.new('SIGTERM')
   end
 end

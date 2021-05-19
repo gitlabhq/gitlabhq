@@ -1,0 +1,11 @@
+#import "ee_else_ce/alerts_settings/graphql/fragments/http_integration_payload_data.fragment.graphql"
+
+query getHttpIntegration($projectPath: ID!, $id: ID) {
+  project(fullPath: $projectPath) {
+    alertManagementHttpIntegrations(id: $id) {
+      nodes {
+        ...HttpIntegrationPayloadData
+      }
+    }
+  }
+}

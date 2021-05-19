@@ -7,7 +7,7 @@ RSpec.describe WhatsNewController, :clean_gitlab_redis_cache do
     ReleaseHighlight.instance_variable_set(:@file_paths, nil)
   end
 
-  describe 'whats_new_path' do
+  describe 'GET #index' do
     let(:item) { double(:item) }
     let(:highlights) { double(:highlight, items: [item], map: [item].map, next_page: 2) }
 
@@ -31,6 +31,18 @@ RSpec.describe WhatsNewController, :clean_gitlab_redis_cache do
 
       it 'returns a 404 if page param is negative' do
         get whats_new_path(page: -1), xhr: true
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with whats_new_variant = disabled' do
+      before do
+        Gitlab::CurrentSettings.current_application_settings.whats_new_variant_disabled!
+      end
+
+      it 'returns a 404' do
+        get whats_new_path, xhr: true
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

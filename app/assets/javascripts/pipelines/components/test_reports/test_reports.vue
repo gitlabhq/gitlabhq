@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import EmptyState from './empty_state.vue';
 import TestSuiteTable from './test_suite_table.vue';
 import TestSummary from './test_summary.vue';
 import TestSummaryTable from './test_summary_table.vue';
@@ -8,6 +9,7 @@ import TestSummaryTable from './test_summary_table.vue';
 export default {
   name: 'TestReports',
   components: {
+    EmptyState,
     GlLoadingIcon,
     TestSuiteTable,
     TestSummary,
@@ -83,11 +85,5 @@ export default {
     </transition>
   </div>
 
-  <div v-else>
-    <div class="row gl-mt-3">
-      <div class="col-12">
-        <p data-testid="no-tests-to-show">{{ s__('TestReports|There are no tests to show.') }}</p>
-      </div>
-    </div>
-  </div>
+  <empty-state v-else />
 </template>

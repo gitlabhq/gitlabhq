@@ -25,6 +25,7 @@ module Gitlab
 
           hash = {
             iid: pr.number,
+            github_id: pr.number,
             title: pr.title,
             description: pr.body,
             source_branch: pr.head.ref,

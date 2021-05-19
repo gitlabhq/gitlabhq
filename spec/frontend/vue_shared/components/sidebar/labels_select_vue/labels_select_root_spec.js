@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import { isInViewport } from '~/lib/utils/common_utils';
 import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select/dropdown_value_collapsed.vue';
+import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
 import DropdownButton from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_button.vue';
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents.vue';
 import DropdownTitle from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_title.vue';
@@ -190,40 +191,33 @@ describe('LabelsSelectRoot', () => {
     });
 
     describe('sets content direction based on viewport', () => {
-      it('does not set direction when `state.variant` is not "embedded"', async () => {
-        createComponent();
-
-        wrapper.vm.$store.dispatch('toggleDropdownContents');
-        wrapper.vm.setContentIsOnViewport(wrapper.vm.$store.state);
-        await wrapper.vm.$nextTick;
-
-        expect(wrapper.find(DropdownContents).props('renderOnTop')).toBe(false);
-      });
-
-      describe('when `state.variant` is "embedded"', () => {
-        beforeEach(() => {
-          createComponent({ ...mockConfig, variant: 'embedded' });
-          wrapper.vm.$store.dispatch('toggleDropdownContents');
-        });
-
-        it('set direction when out of viewport', () => {
-          isInViewport.mockImplementation(() => false);
-          wrapper.vm.setContentIsOnViewport(wrapper.vm.$store.state);
-
-          return wrapper.vm.$nextTick().then(() => {
-            expect(wrapper.find(DropdownContents).props('renderOnTop')).toBe(true);
+      describe.each(Object.values(DropdownVariant))(
+        'when labels variant is "%s"',
+        ({ variant }) => {
+          beforeEach(() => {
+            createComponent({ ...mockConfig, variant });
+            wrapper.vm.$store.dispatch('toggleDropdownContents');
           });
-        });
 
-        it('does not set direction when inside of viewport', () => {
-          isInViewport.mockImplementation(() => true);
-          wrapper.vm.setContentIsOnViewport(wrapper.vm.$store.state);
+          it('set direction when out of viewport', () => {
+            isInViewport.mockImplementation(() => false);
+            wrapper.vm.setContentIsOnViewport(wrapper.vm.$store.state);
 
-          return wrapper.vm.$nextTick().then(() => {
-            expect(wrapper.find(DropdownContents).props('renderOnTop')).toBe(false);
+            return wrapper.vm.$nextTick().then(() => {
+              expect(wrapper.find(DropdownContents).props('renderOnTop')).toBe(true);
+            });
           });
-        });
-      });
+
+          it('does not set direction when inside of viewport', () => {
+            isInViewport.mockImplementation(() => true);
+            wrapper.vm.setContentIsOnViewport(wrapper.vm.$store.state);
+
+            return wrapper.vm.$nextTick().then(() => {
+              expect(wrapper.find(DropdownContents).props('renderOnTop')).toBe(false);
+            });
+          });
+        },
+      );
     });
   });
 

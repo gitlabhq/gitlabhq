@@ -138,8 +138,8 @@ RSpec.describe DataFields do
 
   context 'when data are stored in both properties and data_fields' do
     let(:service) do
-      create(:jira_service, :without_properties_callback, active: false, properties: properties).tap do |service|
-        create(:jira_tracker_data, properties.merge(service: service))
+      create(:jira_service, :without_properties_callback, active: false, properties: properties).tap do |integration|
+        create(:jira_tracker_data, properties.merge(integration: integration))
       end
     end
 

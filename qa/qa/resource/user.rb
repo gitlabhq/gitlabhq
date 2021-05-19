@@ -9,7 +9,7 @@ module QA
 
       attr_reader :unique_id
       attr_writer :username, :password
-      attr_accessor :admin, :provider, :extern_uid, :expect_fabrication_success
+      attr_accessor :admin, :provider, :extern_uid, :expect_fabrication_success, :hard_delete_on_api_removal
 
       attribute :id
       attribute :name
@@ -19,6 +19,7 @@ module QA
 
       def initialize
         @admin = false
+        @hard_delete_on_api_removal = false
         @unique_id = SecureRandom.hex(8)
         @expect_fabrication_success = true
       end
@@ -77,9 +78,7 @@ module QA
 
       def fabricate!
         # Don't try to log-out if we're not logged-in
-        if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
-          Page::Main::Menu.perform { |main| main.sign_out }
-        end
+        Page::Main::Menu.perform(&:sign_out) if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
 
         if credentials_given?
           Page::Main::Login.perform do |login|
@@ -103,9 +102,9 @@ module QA
       end
 
       def api_delete_path
-        "/users/#{id}"
+        "/users/#{id}?hard_delete=#{hard_delete_on_api_removal}"
       rescue NoValueError
-        "/users/#{fetch_id(username)}"
+        "/users/#{fetch_id(username)}?hard_delete=#{hard_delete_on_api_removal}"
       end
 
       def api_get_path
@@ -135,12 +134,12 @@ module QA
 
       def self.fabricate_or_use(username = nil, password = nil)
         if Runtime::Env.signup_disabled?
-          self.fabricate_via_api! do |user|
+          fabricate_via_api! do |user|
             user.username = username
             user.password = password
           end
         else
-          self.fabricate! do |user|
+          fabricate! do |user|
             user.username = username if username
             user.password = password if password
           end
@@ -149,10 +148,9 @@ module QA
 
       def block!
         response = post(Runtime::API::Request.new(api_client, api_block_path).url, nil)
+        return if response.code == HTTP_STATUS_CREATED
 
-        unless response.code == HTTP_STATUS_CREATED
-          raise ResourceUpdateFailedError, "Failed to block user. Request returned (#{response.code}): `#{response}`."
-        end
+        raise ResourceUpdateFailedError, "Failed to block user. Request returned (#{response.code}): `#{response}`."
       end
 
       private

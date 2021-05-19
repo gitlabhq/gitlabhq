@@ -12,20 +12,28 @@ module MergeRequests
     MAX_RETARGET_MERGE_REQUESTS = 4
 
     def execute(merge_request)
+      return if merge_request.merged?
+
+      # Mark the merge request as merged, everything that happens afterwards is
+      # executed once
       merge_request.mark_as_merged
-      close_issues(merge_request)
-      todo_service.merge_merge_request(merge_request, current_user)
+
       create_event(merge_request)
-      create_note(merge_request)
+      todo_service.merge_merge_request(merge_request, current_user)
+
       merge_request_activity_counter.track_merge_mr_action(user: current_user)
+
+      create_note(merge_request)
+      close_issues(merge_request)
       notification_service.merge_mr(merge_request, current_user)
-      execute_hooks(merge_request, 'merge')
       invalidate_cache_counts(merge_request, users: merge_request.assignees | merge_request.reviewers)
       merge_request.update_project_counter_caches
       delete_non_latest_diffs(merge_request)
       cancel_review_app_jobs!(merge_request)
       cleanup_environments(merge_request)
       cleanup_refs(merge_request)
+
+      execute_hooks(merge_request, 'merge')
     end
 
     private
@@ -36,7 +44,7 @@ module MergeRequests
       closed_issues = merge_request.visible_closing_issues_for(current_user)
 
       closed_issues.each do |issue|
-        Issues::CloseService.new(project, current_user).execute(issue, commit: merge_request)
+        Issues::CloseService.new(project: project, current_user: current_user).execute(issue, commit: merge_request)
       end
     end
 
@@ -59,4 +67,4 @@ module MergeRequests
   end
 end
 
-MergeRequests::PostMergeService.prepend_if_ee('EE::MergeRequests::PostMergeService')
+MergeRequests::PostMergeService.prepend_mod_with('MergeRequests::PostMergeService')

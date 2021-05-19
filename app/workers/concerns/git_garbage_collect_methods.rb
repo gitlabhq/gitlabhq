@@ -97,10 +97,10 @@ module GitGarbageCollectMethods
     end
   rescue GRPC::NotFound => e
     Gitlab::GitLogger.error("#{__method__} failed:\nRepository not found")
-    raise Gitlab::Git::Repository::NoRepository.new(e)
+    raise Gitlab::Git::Repository::NoRepository, e
   rescue GRPC::BadStatus => e
     Gitlab::GitLogger.error("#{__method__} failed:\n#{e}")
-    raise Gitlab::Git::CommandError.new(e)
+    raise Gitlab::Git::CommandError, e
   end
 
   def get_gitaly_client(task, repository)

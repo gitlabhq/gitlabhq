@@ -1,9 +1,9 @@
 export const conflictsMock = {
-  target_branch: 'master',
+  target_branch: 'main',
   source_branch: 'test-conflicts',
   commit_sha: '6dbf385a3c7bf01e09b5d2d9e5d72f8fb8c590a3',
   commit_message:
-    "Merge branch 'master' into 'test-conflicts'\n\n# Conflicts:\n#   .gitlab-ci.yml\n#   README.md",
+    "Merge branch 'main' into 'test-conflicts'\n\n# Conflicts:\n#   .gitlab-ci.yml\n#   README.md",
   files: [
     {
       old_path: '.gitlab-ci.yml',

@@ -23,8 +23,6 @@ module Resolvers
     }.freeze
 
     def resolve(sort:)
-      return unless Feature.enabled?(:graphql_release_data, project, default_enabled: true)
-
       ReleasesFinder.new(
         project,
         current_user,

@@ -118,4 +118,4 @@ class IssuableSidebarBasicEntity < Grape::Entity
   end
 end
 
-IssuableSidebarBasicEntity.prepend_if_ee('EE::IssuableSidebarBasicEntity')
+IssuableSidebarBasicEntity.prepend_mod_with('IssuableSidebarBasicEntity')

@@ -53,7 +53,7 @@ There are two options for deleting users:
 - **Delete user and contributions**
 
 When using the **Delete user** option, not all associated records are deleted with the user.
-Here's a list of things that will **not** be deleted:
+Here's a list of things that are **not** deleted:
 
 - Issues that the user created.
 - Merge requests that the user created.
@@ -61,20 +61,20 @@ Here's a list of things that will **not** be deleted:
 - Abuse reports that the user reported.
 - Award emoji that the user created.
 
-Instead of being deleted, these records will be moved to a system-wide
+Instead of being deleted, these records are moved to a system-wide
 user with the username "Ghost User", whose sole purpose is to act as a container
-for such records. Any commits made by a deleted user will still display the
+for such records. Any commits made by a deleted user still display the
 username of the original user.
 
 When using the **Delete user and contributions** option, **all** associated records
 are removed. This includes all of the items mentioned above including issues,
 merge requests, notes/comments, and more. Consider
-[blocking a user](../../admin_area/blocking_unblocking_users.md)
+[blocking a user](../../admin_area/moderate_users.md#blocking-a-user)
 or using the **Delete user** option instead.
 
-When a user is deleted from an [abuse report](../../admin_area/abuse_reports.md)
+When a user is deleted from an [abuse report](../../admin_area/review_abuse_reports.md)
 or spam log, these associated
-records are not ghosted and will be removed, along with any groups the user
+records are not ghosted and are removed, along with any groups the user
 is a sole owner of. Administrators can also request this behavior when
 deleting users from the [API](../../../api/users.md#user-deletion) or the
 Admin Area.

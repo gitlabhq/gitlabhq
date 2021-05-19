@@ -58,4 +58,4 @@ module Groups
   end
 end
 
-Groups::DestroyService.prepend_if_ee('EE::Groups::DestroyService')
+Groups::DestroyService.prepend_mod_with('Groups::DestroyService')

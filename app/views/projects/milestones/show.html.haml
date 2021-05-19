@@ -4,6 +4,8 @@
 - page_description @milestone.description_html
 - add_page_specific_style 'page_bundles/milestone'
 
+- add_page_startup_api_call milestone_tab_path(@milestone, 'issues', show_project_name: false)
+
 = render 'shared/milestones/header', milestone: @milestone
 = render 'shared/milestones/description', milestone: @milestone
 

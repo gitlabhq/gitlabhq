@@ -42,7 +42,7 @@ RSpec.describe WikiPage::Meta do
     subject { described_class.find(meta.id) }
 
     let_it_be(:meta) do
-      described_class.create(title: generate(:wiki_page_title), project: project)
+      described_class.create!(title: generate(:wiki_page_title), project: project)
     end
 
     context 'there are no slugs' do
@@ -124,6 +124,7 @@ RSpec.describe WikiPage::Meta do
 
       context 'the slug is already in the DB (but not canonical)' do
         let_it_be(:slug_record) { create(:wiki_page_slug, wiki_page_meta: meta) }
+
         let(:slug) { slug_record.slug }
         let(:query_limit) { 4 }
 
@@ -132,6 +133,7 @@ RSpec.describe WikiPage::Meta do
 
       context 'the slug is already in the DB (and canonical)' do
         let_it_be(:slug_record) { create(:wiki_page_slug, :canonical, wiki_page_meta: meta) }
+
         let(:slug) { slug_record.slug }
         let(:query_limit) { 4 }
 
@@ -181,7 +183,7 @@ RSpec.describe WikiPage::Meta do
       #    an old slug that = canonical_slug
       different_slug = generate(:sluggified_title)
       create(:wiki_page_meta, project: project, canonical_slug: different_slug)
-        .slugs.create(slug: wiki_page.slug)
+        .slugs.create!(slug: wiki_page.slug)
     end
 
     shared_examples 'metadata examples' do

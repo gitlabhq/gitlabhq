@@ -33,6 +33,8 @@ class User < ApplicationRecord
 
   BLOCKED_PENDING_APPROVAL_STATE = 'blocked_pending_approval'
 
+  COUNT_CACHE_VALIDITY_PERIOD = 24.hours
+
   add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
   add_authentication_token_field :static_object_token
@@ -93,6 +95,12 @@ class User < ApplicationRecord
 
   # Virtual attribute for impersonator
   attr_accessor :impersonator
+
+  attr_writer :max_access_for_group
+
+  def max_access_for_group
+    @max_access_for_group ||= {}
+  end
 
   #
   # Relations
@@ -197,6 +205,7 @@ class User < ApplicationRecord
   has_one :user_detail
   has_one :user_highest_role
   has_one :user_canonical_email
+  has_one :credit_card_validation, class_name: '::Users::CreditCardValidation'
   has_one :atlassian_identity, class_name: 'Atlassian::Identity'
 
   has_many :reviews, foreign_key: :author_id, inverse_of: :author
@@ -309,6 +318,7 @@ class User < ApplicationRecord
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
+  accepts_nested_attributes_for :credit_card_validation, update_only: true
 
   state_machine :state, initial: :active do
     event :block do
@@ -316,6 +326,7 @@ class User < ApplicationRecord
       transition deactivated: :blocked
       transition ldap_blocked: :blocked
       transition blocked_pending_approval: :blocked
+      transition banned: :blocked
     end
 
     event :ldap_block do
@@ -328,17 +339,24 @@ class User < ApplicationRecord
       transition blocked: :active
       transition ldap_blocked: :active
       transition blocked_pending_approval: :active
+      transition banned: :active
     end
 
     event :block_pending_approval do
       transition active: :blocked_pending_approval
     end
 
+    event :ban do
+      transition active: :banned
+    end
+
     event :deactivate do
+      # Any additional changes to this event should be also
+      # reflected in app/workers/users/deactivate_dormant_users_worker.rb
       transition active: :deactivated
     end
 
-    state :blocked, :ldap_blocked, :blocked_pending_approval do
+    state :blocked, :ldap_blocked, :blocked_pending_approval, :banned do
       def blocked?
         true
       end
@@ -365,6 +383,7 @@ class User < ApplicationRecord
   scope :instance_access_request_approvers_to_be_notified, -> { admins.active.order_recent_sign_in.limit(INSTANCE_ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT) }
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :blocked_pending_approval, -> { with_states(:blocked_pending_approval) }
+  scope :banned, -> { with_states(:banned) }
   scope :external, -> { where(external: true) }
   scope :non_external, -> { where(external: false) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
@@ -376,7 +395,7 @@ class User < ApplicationRecord
   scope :by_name, -> (names) { iwhere(name: Array(names)) }
   scope :by_user_email, -> (emails) { iwhere(email: Array(emails)) }
   scope :by_emails, -> (emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }
-  scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
+  scope :for_todos, -> (todos) { where(id: todos.select(:user_id).distinct) }
   scope :with_emails, -> { preload(:emails) }
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
   scope :with_public_profile, -> { where(private_profile: false) }
@@ -416,10 +435,12 @@ class User < ApplicationRecord
   scope :order_recent_last_activity, -> { reorder(Gitlab::Database.nulls_last_order('last_activity_on', 'DESC')) }
   scope :order_oldest_last_activity, -> { reorder(Gitlab::Database.nulls_first_order('last_activity_on', 'ASC')) }
   scope :by_id_and_login, ->(id, login) { where(id: id).where('username = LOWER(:login) OR email = LOWER(:login)', login: login) }
+  scope :dormant, -> { active.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
+  scope :with_no_activity, -> { active.where(last_activity_on: nil) }
 
   def preferred_language
     read_attribute('preferred_language') ||
-      I18n.default_locale.to_s.presence_in(Gitlab::I18n::AVAILABLE_LANGUAGES.keys) ||
+      I18n.default_locale.to_s.presence_in(Gitlab::I18n.available_locales) ||
       'en'
   end
 
@@ -584,6 +605,8 @@ class User < ApplicationRecord
         blocked
       when 'blocked_pending_approval'
         blocked_pending_approval
+      when 'banned'
+        banned
       when 'two_factor_disabled'
         without_two_factor
       when 'two_factor_enabled'
@@ -1098,6 +1121,11 @@ class User < ApplicationRecord
     Gitlab::CurrentSettings.password_authentication_enabled_for_git? && !password_based_omniauth_user?
   end
 
+  # method overriden in EE
+  def password_based_login_forbidden?
+    false
+  end
+
   def can_change_username?
     gitlab_config.username_changing_enabled
   end
@@ -1209,6 +1237,10 @@ class User < ApplicationRecord
 
   def highest_role
     user_highest_role&.highest_access_level || Gitlab::Access::NO_ACCESS
+  end
+
+  def credit_card_validated_at
+    credit_card_validation&.credit_card_validated_at
   end
 
   def accessible_deploy_keys
@@ -1414,7 +1446,9 @@ class User < ApplicationRecord
     if namespace_path_errors.include?('has already been taken') && !User.exists?(username: username)
       self.errors.add(:base, :username_exists_as_a_different_namespace)
     else
-      self.errors[:username].concat(namespace_path_errors)
+      namespace_path_errors.each do |msg|
+        self.errors.add(:username, msg)
+      end
     end
   end
 
@@ -1619,40 +1653,32 @@ class User < ApplicationRecord
     @global_notification_setting
   end
 
-  def count_cache_validity_period
-    if Feature.enabled?(:longer_count_cache_validity, self, default_enabled: :yaml)
-      24.hours
-    else
-      20.minutes
-    end
-  end
-
   def assigned_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force, expires_in: count_cache_validity_period) do
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       MergeRequestsFinder.new(self, assignee_id: self.id, state: 'opened', non_archived: true).execute.count
     end
   end
 
   def review_requested_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count'], force: force, expires_in: count_cache_validity_period) do
+    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       MergeRequestsFinder.new(self, reviewer_id: id, state: 'opened', non_archived: true).execute.count
     end
   end
 
   def assigned_open_issues_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force, expires_in: count_cache_validity_period) do
+    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       IssuesFinder.new(self, assignee_id: self.id, state: 'opened', non_archived: true).execute.count
     end
   end
 
   def todos_done_count(force: false)
-    Rails.cache.fetch(['users', id, 'todos_done_count'], force: force, expires_in: count_cache_validity_period) do
+    Rails.cache.fetch(['users', id, 'todos_done_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       TodosFinder.new(self, state: :done).execute.count
     end
   end
 
   def todos_pending_count(force: false)
-    Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force, expires_in: count_cache_validity_period) do
+    Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       TodosFinder.new(self, state: :pending).execute.count
     end
   end
@@ -1677,6 +1703,12 @@ class User < ApplicationRecord
 
   def invalidate_issue_cache_counts
     Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
+
+    if Feature.enabled?(:assigned_open_issues_cache, default_enabled: :yaml)
+      run_after_commit do
+        Users::UpdateOpenIssueCountWorker.perform_async(self.id)
+      end
+    end
   end
 
   def invalidate_merge_request_cache_counts
@@ -2061,4 +2093,4 @@ class User < ApplicationRecord
   end
 end
 
-User.prepend_if_ee('EE::User')
+User.prepend_mod_with('User')

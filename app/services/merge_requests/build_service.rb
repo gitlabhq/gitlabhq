@@ -300,4 +300,4 @@ module MergeRequests
   end
 end
 
-MergeRequests::BuildService.prepend_if_ee('EE::MergeRequests::BuildService')
+MergeRequests::BuildService.prepend_mod_with('MergeRequests::BuildService')

@@ -45,6 +45,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'quickactions',
         'pipeline_authoring',
         'epics_usage',
+        'epic_boards_usage',
         'secure'
       )
     end

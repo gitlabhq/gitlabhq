@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative 'shared_example.rb'
+require_relative 'shared_example'
 
 RSpec.describe Gitlab::ImportExport::JSON::LegacyReader::File do
   it_behaves_like 'import/export json legacy reader' do

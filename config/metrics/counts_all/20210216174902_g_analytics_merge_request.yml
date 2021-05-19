@@ -1,13 +1,14 @@
 ---
 key_path: analytics_unique_visits.g_analytics_merge_request
-description: Visits to /groups/:group/-/analytics/merge_request_analytics
+description: Unique visitors to /groups/:group/-/analytics/merge_request_analytics
 product_section: dev
 product_stage: manage
-product_group: group::analytics
+product_group: group::optimize
 product_category:
 value_type: number
-status: data_available
-time_frame: all
+status: removed
+time_frame: 7d
+data_source: redis_hll
 data_source:
 distribution:
 - ce

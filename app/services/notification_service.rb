@@ -384,6 +384,7 @@ class NotificationService
 
   def send_service_desk_notification(note)
     return unless note.noteable_type == 'Issue'
+    return if note.confidential
 
     issue = note.noteable
     recipients = issue.email_participants_emails
@@ -875,4 +876,4 @@ class NotificationService
   end
 end
 
-NotificationService.prepend_if_ee('EE::NotificationService')
+NotificationService.prepend_mod_with('NotificationService')

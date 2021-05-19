@@ -4,6 +4,8 @@ module JiraConnect
   class SyncBranchWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     queue_namespace :jira_connect
     feature_category :integrations
     loggable_arguments 1, 2

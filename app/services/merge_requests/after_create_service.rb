@@ -35,9 +35,9 @@ module MergeRequests
     end
 
     def link_lfs_objects(merge_request)
-      LinkLfsObjectsService.new(merge_request.target_project).execute(merge_request)
+      LinkLfsObjectsService.new(project: merge_request.target_project).execute(merge_request)
     end
   end
 end
 
-MergeRequests::AfterCreateService.prepend_if_ee('EE::MergeRequests::AfterCreateService')
+MergeRequests::AfterCreateService.prepend_mod_with('MergeRequests::AfterCreateService')

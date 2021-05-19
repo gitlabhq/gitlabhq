@@ -40,7 +40,7 @@ RSpec.shared_examples 'project access tokens available #create' do
   it 'returns success message' do
     subject
 
-    expect(response.flash[:notice]).to match('Your new project access token has been created.')
+    expect(controller).to set_flash[:notice].to match('Your new project access token has been created.')
   end
 
   it 'creates project access token' do
@@ -88,7 +88,7 @@ RSpec.shared_examples 'project access tokens available #create' do
     it 'shows a failure alert' do
       subject
 
-      expect(response.flash[:alert]).to match("Failed to create new project access token: Failed!")
+      expect(controller).to set_flash[:alert].to match("Failed to create new project access token: Failed!")
     end
   end
 end

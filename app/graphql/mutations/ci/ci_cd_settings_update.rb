@@ -36,4 +36,4 @@ module Mutations
   end
 end
 
-Mutations::Ci::CiCdSettingsUpdate.prepend_if_ee('::EE::Mutations::Ci::CiCdSettingsUpdate')
+Mutations::Ci::CiCdSettingsUpdate.prepend_mod_with('Mutations::Ci::CiCdSettingsUpdate')

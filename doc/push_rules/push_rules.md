@@ -59,6 +59,13 @@ If you have other target branches, include them in your regex. (See [Enabling pu
 The default branch also defaults to being a [protected branch](../user/project/protected_branches.md),
 which already limits users from pushing directly.
 
+Some example regular expressions you can use in push rules:
+
+- `^JIRA-` Branches must start with `JIRA-`.
+- `-JIRA$` Branches must end with `-JIRA`.
+- `^[a-z0-9\\-]{4,15}$` Branches must be between `4` and `15` characters long,
+  accepting only lowercase letters, numbers and dashes.
+
 #### Default restricted branch names
 
 > Introduced in GitLab 12.10.

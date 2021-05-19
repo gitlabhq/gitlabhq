@@ -6,6 +6,8 @@ require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
 require 'selenium-webdriver'
 
+require 'gitlab_handbook'
+
 module QA
   module Runtime
     class Browser
@@ -21,7 +23,7 @@ module QA
 
       def self.blank_page?
         ['', 'about:blank', 'data:,'].include?(Capybara.current_session.driver.browser.current_url)
-      rescue
+      rescue StandardError
         true
       end
 
@@ -151,6 +153,12 @@ module QA
           # fail because of unexpected line breaks and other white space
           config.default_normalize_ws = true
         end
+
+        Chemlab.configure do |config|
+          config.browser = Capybara.current_session.driver.browser # reuse Capybara session
+          config.libraries = [GitlabHandbook]
+          config.base_url = Runtime::Scenario.attributes[:gitlab_address] # reuse GitLab address
+        end
       end
       # rubocop: enable Metrics/AbcSize
 
@@ -173,7 +181,7 @@ module QA
 
           simulate_slow_connection if Runtime::Env.simulate_slow_connection?
 
-          page_class.validate_elements_present!
+          page_class.validate_elements_present! if page_class.respond_to?(:validate_elements_present!)
 
           if QA::Runtime::Env.qa_cookies
             browser = Capybara.current_session.driver.browser

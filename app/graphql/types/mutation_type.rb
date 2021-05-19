@@ -16,6 +16,7 @@ module Types
     mount_mutation Mutations::AlertManagement::HttpIntegration::ResetToken
     mount_mutation Mutations::AlertManagement::HttpIntegration::Destroy
     mount_mutation Mutations::Security::CiConfiguration::ConfigureSast
+    mount_mutation Mutations::Security::CiConfiguration::ConfigureSecretDetection
     mount_mutation Mutations::AlertManagement::PrometheusIntegration::Create
     mount_mutation Mutations::AlertManagement::PrometheusIntegration::Update
     mount_mutation Mutations::AlertManagement::PrometheusIntegration::ResetToken
@@ -51,7 +52,10 @@ module Types
     mount_mutation Mutations::MergeRequests::SetLocked
     mount_mutation Mutations::MergeRequests::SetMilestone
     mount_mutation Mutations::MergeRequests::SetSubscription
-    mount_mutation Mutations::MergeRequests::SetWip, calls_gitaly: true
+    mount_mutation Mutations::MergeRequests::SetWip,
+                   calls_gitaly: true,
+                   deprecated: { reason: 'Use mergeRequestSetDraft', milestone: '13.12' }
+    mount_mutation Mutations::MergeRequests::SetDraft, calls_gitaly: true
     mount_mutation Mutations::MergeRequests::SetAssignees
     mount_mutation Mutations::MergeRequests::ReviewerRereview
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Create
@@ -93,10 +97,12 @@ module Types
     mount_mutation Mutations::Ci::Pipeline::Destroy
     mount_mutation Mutations::Ci::Pipeline::Retry
     mount_mutation Mutations::Ci::CiCdSettingsUpdate
+    mount_mutation Mutations::Ci::Job::Play
+    mount_mutation Mutations::Ci::Job::Retry
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::UserCallouts::Create
   end
 end
 
 ::Types::MutationType.prepend(::Types::DeprecatedMutations)
-::Types::MutationType.prepend_if_ee('::EE::Types::MutationType')
+::Types::MutationType.prepend_mod_with('Types::MutationType')

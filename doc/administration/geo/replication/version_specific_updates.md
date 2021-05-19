@@ -15,8 +15,29 @@ for updating Geo nodes.
 
 We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
 that may prevent upgrades to GitLab 13.9.0, 13.9.1, 13.9.2 and 13.9.3.
-We are working on a patch and recommend delaying any upgrade attempt until a fixed version
-is released.
+We are working on a patch, but until a fixed version is released, you can manually complete
+the zero-downtime upgrade:
+
+1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
+   execute the following queries using the PostgreSQL console (or `sudo gitlab-psql`)
+   to drop the problematic triggers:
+
+   ```sql
+   drop trigger trigger_e40a6f1858e6 on application_settings;
+   drop trigger trigger_0d588df444c8 on application_settings;
+   drop trigger trigger_1572cbc9a15f on application_settings;
+   drop trigger trigger_22a39c5c25f3 on application_settings;
+   ```
+
+1. Run the final migrations:
+
+   ```shell
+   sudo gitlab-rake db:migrate
+   ```
+
+If you have already run the final `sudo gitlab-rake db:migrate` command on the deploy node and have
+encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you can still
+follow the previous steps to complete the update.
 
 More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
 

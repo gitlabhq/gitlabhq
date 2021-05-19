@@ -6,6 +6,7 @@ class PagesRemoveWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: 3
   feature_category :pages
+  tags :exclude_from_kubernetes
   loggable_arguments 0
 
   def perform(project_id)

@@ -7,16 +7,10 @@ import { mockCiYml, mockLintResponse } from '../../mock_data';
 
 describe('Pipeline editor header', () => {
   let wrapper;
-  const mockProvide = {
-    glFeatures: {
-      pipelineStatusForPipelineEditor: true,
-    },
-  };
 
   const createComponent = ({ provide = {}, props = {} } = {}) => {
     wrapper = shallowMount(PipelineEditorHeader, {
       provide: {
-        ...mockProvide,
         ...provide,
       },
       propsData: {
@@ -54,20 +48,6 @@ describe('Pipeline editor header', () => {
       createComponent();
 
       expect(findValidationSegment().exists()).toBe(true);
-    });
-  });
-
-  describe('with pipeline status feature flag off', () => {
-    beforeEach(() => {
-      createComponent({
-        provide: {
-          glFeatures: { pipelineStatusForPipelineEditor: false },
-        },
-      });
-    });
-
-    it('does not render the pipeline status', () => {
-      expect(findPipelineStatus().exists()).toBe(false);
     });
   });
 });

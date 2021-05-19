@@ -13,7 +13,7 @@ RSpec.describe MergeRequests::CreatePipelineWorker do
     context 'when the objects exist' do
       it 'calls the merge request create pipeline service and calls update head pipeline' do
         aggregate_failures do
-          expect_next_instance_of(MergeRequests::CreatePipelineService, project, user) do |service|
+          expect_next_instance_of(MergeRequests::CreatePipelineService, project: project, current_user: user) do |service|
             expect(service).to receive(:execute).with(merge_request)
           end
 

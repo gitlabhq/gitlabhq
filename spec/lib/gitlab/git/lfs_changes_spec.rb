@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Git::LfsChanges do
   let_it_be(:project) { create(:project, :repository) }
+
   let(:newrev) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
   let(:blob_object_id) { '0c304a93cb8430108629bbbcaa27db3343299bc0' }
 

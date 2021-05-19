@@ -128,10 +128,10 @@ class SshHostKey
 
   def normalize_url(url)
     full_url = ::Addressable::URI.parse(url)
-    raise ArgumentError.new("Invalid URL") unless full_url&.scheme == 'ssh'
+    raise ArgumentError, "Invalid URL" unless full_url&.scheme == 'ssh'
 
     Addressable::URI.parse("ssh://#{full_url.host}:#{full_url.inferred_port}")
   rescue Addressable::URI::InvalidURIError
-    raise ArgumentError.new("Invalid URL")
+    raise ArgumentError, "Invalid URL"
   end
 end

@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::UpdateLocationFingerprintForContainerScanningFindings.prepend_if_ee('EE::Gitlab::BackgroundMigration::UpdateLocationFingerprintForContainerScanningFindings')
+Gitlab::BackgroundMigration::UpdateLocationFingerprintForContainerScanningFindings.prepend_mod_with('Gitlab::BackgroundMigration::UpdateLocationFingerprintForContainerScanningFindings')

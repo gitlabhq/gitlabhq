@@ -16,8 +16,7 @@ import axios from '~/lib/utils/axios_utils';
 
 import {
   DEFAULT_LABELS,
-  DEFAULT_LABEL_NONE,
-  DEFAULT_LABEL_ANY,
+  DEFAULT_NONE_ANY,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 
@@ -176,7 +175,7 @@ describe('LabelToken', () => {
   });
 
   describe('template', () => {
-    const defaultLabels = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
+    const defaultLabels = DEFAULT_NONE_ANY;
 
     beforeEach(async () => {
       wrapper = createComponent({ value: { data: `"${mockRegularLabel.title}"` } });

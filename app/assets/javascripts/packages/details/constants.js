@@ -38,6 +38,9 @@ export const TrackingActions = {
 
   COPY_GRADLE_INSTALL_COMMAND: 'copy_gradle_install_command',
   COPY_GRADLE_ADD_TO_SOURCE_COMMAND: 'copy_gradle_add_to_source_command',
+
+  COPY_KOTLIN_INSTALL_COMMAND: 'copy_kotlin_install_command',
+  COPY_KOTLIN_ADD_TO_SOURCE_COMMAND: 'copy_kotlin_add_to_source_command',
 };
 
 export const NpmManager = {

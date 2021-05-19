@@ -12,4 +12,4 @@ module Emails
   end
 end
 
-Emails::BaseService.prepend_if_ee('::EE::Emails::BaseService')
+Emails::BaseService.prepend_mod_with('Emails::BaseService')

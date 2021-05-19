@@ -17,12 +17,11 @@ export default {
    * @param {Object} state
    * @param {Object} resp
    */
-  [types.RECEIVE_RELEASES_SUCCESS](state, { data, restPageInfo, graphQlPageInfo }) {
+  [types.RECEIVE_RELEASES_SUCCESS](state, { data, pageInfo }) {
     state.hasError = false;
     state.isLoading = false;
     state.releases = data;
-    state.restPageInfo = restPageInfo;
-    state.graphQlPageInfo = graphQlPageInfo;
+    state.pageInfo = pageInfo;
   },
 
   /**
@@ -36,8 +35,7 @@ export default {
     state.isLoading = false;
     state.releases = [];
     state.hasError = true;
-    state.restPageInfo = {};
-    state.graphQlPageInfo = {};
+    state.pageInfo = {};
   },
 
   [types.SET_SORTING](state, sorting) {

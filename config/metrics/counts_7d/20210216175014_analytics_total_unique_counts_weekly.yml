@@ -1,0 +1,15 @@
+---
+key_path: redis_hll_counters.analytics.analytics_total_unique_counts_weekly
+description: The number of unique users who visited any analytics feature by week
+product_section: dev
+product_stage: manage
+product_group: group::optimize
+product_category:
+value_type: number
+status: data_available
+time_frame: 7d
+data_source: redis_hll
+distribution:
+- ee
+tier: []
+skip_validation: true

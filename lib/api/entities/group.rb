@@ -38,4 +38,4 @@ module API
   end
 end
 
-API::Entities::Group.prepend_if_ee('EE::API::Entities::Group', with_descendants: true)
+API::Entities::Group.prepend_mod_with('API::Entities::Group', with_descendants: true)

@@ -51,4 +51,4 @@ module ProfilesHelper
   end
 end
 
-ProfilesHelper.prepend_ee_mod
+ProfilesHelper.prepend_mod

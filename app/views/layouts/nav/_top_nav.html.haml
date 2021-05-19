@@ -1,0 +1,7 @@
+- view_model = top_nav_view_model(project: @project, group: @group)
+%ul.list-unstyled.navbar-sub-nav#js-top-nav{ data: { view_model: view_model.to_json } }
+  %li
+    %a.top-nav-toggle{ href: '#', type: 'button', data: { toggle: "dropdown" } }
+      = sprite_icon('dot-grid', css_class: "dropdown-icon")
+      = view_model[:activeTitle]
+      = sprite_icon('chevron-down')

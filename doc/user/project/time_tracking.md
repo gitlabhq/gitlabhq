@@ -20,13 +20,14 @@ Time Tracking allows you to:
 - Record the time spent working on an issue or a merge request.
 - Add an estimate of the amount of time needed to complete an issue or a merge
   request.
+- View a breakdown of time spent working on an issue or a merge request. 
 
 You don't have to indicate an estimate to enter the time spent, and vice versa.
 
 Data about time tracking is shown on the issue/merge request sidebar, as shown
 below.
 
-![Time tracking in the sidebar](img/time_tracking_sidebar_v8_16.png)
+![Time tracking in the sidebar](img/time_tracking_sidebar_v13_12.png)
 
 ## How to enter data
 
@@ -56,7 +57,7 @@ To remove an estimation entirely, use `/remove_estimate`.
 
 ### Time spent
 
-To enter time spent, write `/spend`, followed by the time. For example, if you need 
+To enter time spent, write `/spend`, followed by the time. For example, if you need
 to log 1 month, 2 weeks, 3 days, 4 hours and 5 minutes, you would write `/spend 1mo 2w 3d 4h 5m`.
 Time units that we support are listed at the bottom of this help page.
 
@@ -68,12 +69,25 @@ days from the total time spent. You can't go below 0 minutes of time spent,
 so GitLab automatically resets the time spent if you remove a larger amount
 of time compared to the time that was entered already.
 
-You can log time in the past by providing a date after the time. 
+You can log time in the past by providing a date after the time.
 For example, if you want to log 1 hour of time spent on the 31 January 2021,
 you would write `/spend 1h 2021-01-31`. If you supply a date in the future, the
 command fails and no time is logged.
 
 To remove all the time spent at once, use `/remove_time_spent`.
+
+## View a time tracking report
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271409) in GitLab 13.12.
+
+You can view a breakdown of time spent on an issue or merge request.
+
+To view a time tracking report, go to an issue or a merge request and select **Time tracking report**
+in the right sidebar.
+
+![Time tracking report](img/time_tracking_report_v13_12.png)
+
+The breakdown of spent time is limited to a maximum of 100 entries.
 
 ## Configuration
 
@@ -98,4 +112,9 @@ With this option enabled, `75h` is displayed instead of `1w 4d 3h`.
 
 ## Other interesting links
 
-- [Time Tracking landing page in the GitLab handbook](https://about.gitlab.com/solutions/time-tracking/)
+- [Time Tracking solutions page](https://about.gitlab.com/solutions/time-tracking/)
+- Time Tracking GraphQL references:
+  - [Connection](../../api/graphql/reference/index.md#timelogconnection)
+  - [Edge](../../api/graphql/reference/index.md#timelogedge)
+  - [Fields](../../api/graphql/reference/index.md#timelog)
+  - [Group Timelogs](../../api/graphql/reference/index.md#grouptimelogs)

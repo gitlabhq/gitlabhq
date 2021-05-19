@@ -45,4 +45,4 @@ class ResourceStateEvent < ResourceEvent
   end
 end
 
-ResourceStateEvent.prepend_if_ee('EE::ResourceStateEvent')
+ResourceStateEvent.prepend_mod_with('ResourceStateEvent')

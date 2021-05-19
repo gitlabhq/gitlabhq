@@ -11,7 +11,7 @@
 
   &::before {
     content: '';
-    @include spinner(32px, 3px);
+    @include spinner-deprecated(32px, 3px);
     @include gl-absolute;
     @include gl-z-index-1;
   }

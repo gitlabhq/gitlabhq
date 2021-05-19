@@ -29,7 +29,7 @@ To enable GitLab import/export:
 
 Note the following:
 
-- Exports are stored in a temporary [shared directory](../../../development/shared_files.md) and are deleted every 24 hours by a specific worker.
+- Exports are stored in a temporary directory and are deleted every 24 hours by a specific worker.
 - To preserve group-level relationships from imported projects, run the Group Import/Export first, to allow projects to
 be imported into the desired group structure.
 - Imported groups are given a `private` visibility level, unless imported into a parent group.
@@ -71,7 +71,7 @@ For more details on the specific data persisted in a group export, see the
    ![Export group panel](img/export_panel_v13_0.png)
 
 1. After the export is generated, you should receive an e-mail with a link to the [exported contents](#exported-contents)
-   in a compressed tar archive, with contents in JSON format.
+   in a compressed tar archive, with contents in NDJSON format.
 
 1. Alternatively, you can come back to the project settings and download the
    file from there by clicking **Download export**, or generate a new file by clicking **Regenerate export**.
@@ -108,6 +108,14 @@ on an existing group's page.
 1. Click **Import group** to begin importing. Your newly imported group page appears after the operation completes.
 
 ## Version history
+
+### 14.0+
+
+In GitLab 14.0, the JSON format is no longer supported for project and group exports. To allow for a
+transitional period, you can still import any JSON exports. The new format for imports and exports
+is NDJSON.
+
+### 13.0+
 
 GitLab can import bundles that were exported from a different GitLab deployment.
 This ability is limited to two previous GitLab [minor](../../../policy/maintenance.md#versioning)

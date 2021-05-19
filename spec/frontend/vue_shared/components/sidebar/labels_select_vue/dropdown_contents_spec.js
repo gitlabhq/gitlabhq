@@ -1,8 +1,8 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 
+import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents.vue';
-
 import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';
 
 import { mockConfig } from './mock_data';
@@ -50,13 +50,20 @@ describe('DropdownContent', () => {
   describe('template', () => {
     it('renders component container element with class `labels-select-dropdown-contents` and no styles', () => {
       expect(wrapper.attributes('class')).toContain('labels-select-dropdown-contents');
-      expect(wrapper.attributes('style')).toBe(undefined);
+      expect(wrapper.attributes('style')).toBeUndefined();
     });
 
-    it('renders component container element with styles when `renderOnTop` is true', () => {
-      wrapper = createComponent(mockConfig, { renderOnTop: true });
+    describe('when `renderOnTop` is true', () => {
+      it.each`
+        variant                       | expected
+        ${DropdownVariant.Sidebar}    | ${'bottom: 3rem'}
+        ${DropdownVariant.Standalone} | ${'bottom: 2rem'}
+        ${DropdownVariant.Embedded}   | ${'bottom: 2rem'}
+      `('renders upward for $variant variant', ({ variant, expected }) => {
+        wrapper = createComponent({ ...mockConfig, variant }, { renderOnTop: true });
 
-      expect(wrapper.attributes('style')).toContain('bottom: 100%');
+        expect(wrapper.attributes('style')).toContain(expected);
+      });
     });
   });
 });

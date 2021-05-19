@@ -87,7 +87,8 @@ class Issue < ApplicationRecord
   enum issue_type: {
     issue: 0,
     incident: 1,
-    test_case: 2 ## EE-only
+    test_case: 2, ## EE-only
+    requirement: 3 ## EE-only
   }
 
   alias_method :issuing_parent, :project
@@ -108,6 +109,7 @@ class Issue < ApplicationRecord
   scope :order_due_date_desc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'DESC')) }
   scope :order_closest_future_date, -> { reorder(Arel.sql('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC')) }
   scope :order_relative_position_asc, -> { reorder(::Gitlab::Database.nulls_last_order('relative_position', 'ASC')) }
+  scope :order_relative_position_desc, -> { reorder(::Gitlab::Database.nulls_first_order('relative_position', 'DESC')) }
   scope :order_closed_date_desc, -> { reorder(closed_at: :desc) }
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
   scope :order_severity_asc, -> { includes(:issuable_severity).order('issuable_severities.severity ASC NULLS FIRST') }
@@ -121,7 +123,7 @@ class Issue < ApplicationRecord
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
   scope :with_self_managed_prometheus_alert_events, -> { joins(:issues_self_managed_prometheus_alert_events) }
   scope :with_api_entity_associations, -> {
-    preload(:timelogs, :closed_by, :assignees, :author, :notes, :labels,
+    preload(:timelogs, :closed_by, :assignees, :author, :labels,
       milestone: { project: [:route, { namespace: :route }] },
       project: [:route, { namespace: :route }])
   }
@@ -174,8 +176,16 @@ class Issue < ApplicationRecord
     state :opened, value: Issue.available_states[:opened]
     state :closed, value: Issue.available_states[:closed]
 
-    before_transition any => :closed do |issue|
+    before_transition any => :closed do |issue, transition|
+      args = transition.args
+
       issue.closed_at = issue.system_note_timestamp
+
+      next if args.empty?
+
+      next unless args.first.is_a?(User)
+
+      issue.closed_by = args.first
     end
 
     before_transition closed: :opened do |issue|
@@ -260,6 +270,18 @@ class Issue < ApplicationRecord
       .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
               Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
               "id DESC")
+  end
+
+  # Temporary disable moving null elements because of performance problems
+  # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
+  def check_repositioning_allowed!
+    if blocked_for_repositioning?
+      raise ::Gitlab::RelativePositioning::IssuePositioningDisabled, "Issue relative position changes temporarily disabled."
+    end
+  end
+
+  def blocked_for_repositioning?
+    resource_parent.root_namespace&.issue_repositioning_disabled?
   end
 
   def hook_attrs
@@ -506,4 +528,4 @@ class Issue < ApplicationRecord
   end
 end
 
-Issue.prepend_if_ee('EE::Issue')
+Issue.prepend_mod_with('Issue')

@@ -74,6 +74,8 @@ module API
             Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project.id })
 
             forbidden!
+          rescue ::Packages::DuplicatePackageError
+            bad_request!('Duplicate package is not allowed')
           end
 
           desc 'Download package file' do

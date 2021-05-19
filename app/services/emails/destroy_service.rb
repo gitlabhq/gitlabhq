@@ -18,4 +18,4 @@ module Emails
   end
 end
 
-Emails::DestroyService.prepend_if_ee('EE::Emails::DestroyService')
+Emails::DestroyService.prepend_mod_with('Emails::DestroyService')

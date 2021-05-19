@@ -58,6 +58,19 @@ RSpec.shared_examples 'value stream analytics stage' do
 
       it { expect(stage).not_to be_valid }
     end
+
+    # rubocop: disable Rails/SaveBang
+    describe '.by_value_stream' do
+      it 'finds stages by value stream' do
+        stage1 = create(factory)
+        create(factory) # other stage with different value stream
+
+        result = described_class.by_value_stream(stage1.value_stream)
+
+        expect(result).to eq([stage1])
+      end
+    end
+    # rubocop: enable Rails/SaveBang
   end
 
   describe '#subject_class' do

@@ -48,7 +48,7 @@ export default {
   source_branch_link: 'daaaa',
   source_project_id: 19,
   source_project_full_path: '/group1/project1',
-  target_branch: 'master',
+  target_branch: 'main',
   target_project_id: 19,
   target_project_full_path: '/group2/project2',
   merge_request_add_ci_config_path: '/group2/project2/new/pipeline',
@@ -83,7 +83,7 @@ export default {
   diff_head_sha: '104096c51715e12e7ae41f9333e9fa35b73f385d',
   diff_head_commit_short_id: '104096c5',
   default_merge_commit_message:
-    "Merge branch 'daaaa' into 'master'\n\nUpdate README.md\n\nSee merge request !22",
+    "Merge branch 'daaaa' into 'main'\n\nUpdate README.md\n\nSee merge request !22",
   pipeline: {
     id: 172,
     user: {
@@ -173,8 +173,8 @@ export default {
       title: 'Update README.md',
       source_branch: 'feature-1',
       source_branch_path: '/root/detached-merge-request-pipelines/branches/feature-1',
-      target_branch: 'master',
-      target_branch_path: '/root/detached-merge-request-pipelines/branches/master',
+      target_branch: 'main',
+      target_branch_path: '/root/detached-merge-request-pipelines/branches/main',
     },
     commit: {
       id: '104096c51715e12e7ae41f9333e9fa35b73f385d',
@@ -243,7 +243,7 @@ export default {
     head_path: 'blob_path',
   },
   codequality_help_path: 'code_quality.html',
-  target_branch_path: '/root/acets-app/branches/master',
+  target_branch_path: '/root/acets-app/branches/main',
   source_branch_path: '/root/acets-app/branches/daaaa',
   conflict_resolution_ui_path: '/root/acets-app/-/merge_requests/22/conflicts',
   remove_wip_path: '/root/acets-app/-/merge_requests/22/remove_wip',
@@ -264,7 +264,7 @@ export default {
   ci_environments_status_url: '/root/acets-app/-/merge_requests/22/ci_environments_status',
   project_archived: false,
   default_merge_commit_message_with_description:
-    "Merge branch 'daaaa' into 'master'\n\nUpdate README.md\n\nSee merge request !22",
+    "Merge branch 'daaaa' into 'main'\n\nUpdate README.md\n\nSee merge request !22",
   default_squash_commit_message: 'Test squash commit message',
   diverged_commits_count: 0,
   only_allow_merge_if_pipeline_succeeds: false,

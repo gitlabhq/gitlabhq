@@ -96,6 +96,16 @@ that builds on this to add some additional niceties, such as allowing
 configuration with a single YAML file for multiple URLs, and uploading of the
 profile and log output to S3.
 
+## Speedscope flamegraphs
+
+You can generate a flamegraph for a particular URL by adding the `performance_bar=flamegraph` parameter to the request.
+
+![Speedscope](img/speedscope_v13_12.png)
+
+More information about the views can be found in the [Speedscope docs](https://github.com/jlfwong/speedscope#views)
+
+This is enabled for all users that can access the performance bar.
+
 ## Sherlock
 
 Sherlock is a custom profiling tool built into GitLab. Sherlock is _only_
@@ -106,7 +116,7 @@ environment variable `ENABLE_SHERLOCK` to a non empty value. For example:
 ENABLE_SHERLOCK=1 bundle exec rails s
 ```
 
-Sherlock is also [available though the GitLab GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/sherlock.md).
+Sherlock is also [available though the GitLab GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/sherlock.md).
 
 Recorded transactions can be found by navigating to `/sherlock/transactions`.
 
@@ -195,7 +205,7 @@ This endpoint is only available for Rails web workers. Sidekiq workers can not b
 
 To disable those features for profiling/benchmarking set the `RAILS_PROFILE` environment variable to `true` before starting GitLab. For example when using GDK:
 
-- create a file [`env.runit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/runit.md#modifying-environment-configuration-for-services) in the root GDK directory
+- create a file [`env.runit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/runit.md#modifying-environment-configuration-for-services) in the root GDK directory
 - add `export RAILS_PROFILE=true` to your `env.runit` file
 - restart GDK with `gdk restart`
 

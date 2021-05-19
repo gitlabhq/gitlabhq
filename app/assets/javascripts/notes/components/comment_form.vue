@@ -15,6 +15,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import Autosave from '~/autosave';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { deprecatedCreateFlash as Flash } from '~/flash';
+import { statusBoxState } from '~/issuable/components/status_box.vue';
 import httpStatusCodes from '~/lib/utils/http_status';
 import {
   capitalizeFirstCharacter,
@@ -162,7 +163,7 @@ export default {
     canToggleIssueState() {
       return (
         this.getNoteableData.current_user.can_update &&
-        this.getNoteableData.state !== constants.MERGED &&
+        this.openState !== constants.MERGED &&
         !this.closedAndLocked
       );
     },
@@ -283,6 +284,7 @@ export default {
       const toggleState = this.isOpen ? this.closeIssuable : this.reopenIssuable;
 
       toggleState()
+        .then(() => statusBoxState.updateStatus && statusBoxState.updateStatus())
         .then(refreshUserMergeRequestCounts)
         .catch(() => Flash(constants.toggleStateErrorMessage[this.noteableType][this.openState]));
     },

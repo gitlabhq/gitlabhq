@@ -62,4 +62,4 @@ class EventFilter
   end
 end
 
-EventFilter.prepend_if_ee('EE::EventFilter')
+EventFilter.prepend_mod_with('EventFilter')

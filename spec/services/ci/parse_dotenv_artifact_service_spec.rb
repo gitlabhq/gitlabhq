@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::ParseDotenvArtifactService do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
   let(:build) { create(:ci_build, pipeline: pipeline, project: project) }
   let(:service) { described_class.new(project, nil) }
 
@@ -24,7 +25,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
 
       context 'when parse error happens' do
         before do
-          allow(service).to receive(:scan_line!) { raise described_class::ParserError.new('Invalid Format') }
+          allow(service).to receive(:scan_line!) { raise described_class::ParserError, 'Invalid Format' }
         end
 
         it 'returns error' do

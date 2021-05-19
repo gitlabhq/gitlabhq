@@ -37,7 +37,7 @@ module Packages
           @mod.version_by(commit: target)
 
         else
-          raise ArgumentError.new 'not a valid target'
+          raise ArgumentError, 'not a valid target'
         end
       end
     end

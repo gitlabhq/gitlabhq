@@ -4,32 +4,50 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Hangouts Chat service **(FREE)**
+# Google Chat integration **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/43756) in GitLab 11.2.
 
-The Hangouts Chat service sends notifications from GitLab to the room for which the webhook was created.
+Integrate your project to send notifications from GitLab to a
+room of your choice in [Google Chat](https://chat.google.com/) (former Google
+Hangouts).
 
-## On Hangouts Chat
+## How it works
 
-1. Open the chat room in which you want to see the notifications.
-1. From the chat room menu, select **Configure Webhooks**.
-1. Click on **ADD WEBHOOK** and fill in the name of the bot to post the messages. Optionally define an avatar.
-1. Click **SAVE** and copy the **Webhook URL** of your webhook.
+To enable this integration, first you need to create a webhook for the room in
+Google Chat where you want to receive the notifications from your project.
 
-See also [the Hangouts Chat documentation for configuring incoming webhooks](https://developers.google.com/hangouts/chat/how-tos/webhooks)
+After that, enable the integration in GitLab and choose the events you want to
+be notified about in your Google Chat room.
 
-## On GitLab
+For every selected event in your project, GitLab acts like a bot sending
+notifications to Google Chat:
 
-When you have the **Webhook URL** for your Hangouts Chat room webhook, you can set up the GitLab service.
+![Google Chat integration illustration](img/google_chat_integration_v13_11.png)
 
-1. Navigate to the [Integrations page](overview.md#accessing-integrations) in your project's settings, i.e. **Project > Settings > Integrations**.
-1. Select the **Hangouts Chat** integration to configure it.
-1. Ensure that the **Active** toggle is enabled.
-1. Check the checkboxes corresponding to the GitLab events you want to receive.
-1. Paste the **Webhook URL** that you copied from the Hangouts Chat configuration step.
-1. Configure the remaining options and click `Save changes`.
+## In Google Chat
 
-Your Hangouts Chat room now starts receiving GitLab event notifications as configured.
+Select a room and create a webhook:
 
-![Hangouts Chat configuration](img/hangouts_chat_configuration.png)
+1. Enter the room where you want to receive notifications from GitLab.
+1. Open the room dropdown menu on the top-left and select **Manage webhooks**.
+1. Enter the name for your webhook, for example "GitLab integration".
+1. (Optional) Add an avatar for your bot.
+1. Select **Save**.
+1. Copy the webhook URL.
+
+For further details, see [the Google Chat documentation for configuring webhooks](https://developers.google.com/hangouts/chat/how-tos/webhooks).
+
+## In GitLab
+
+Enable the Google Chat integration in GitLab:
+
+1. In your project, go to **Settings > Integrations** and select **Google Chat**.
+1. Scroll down to the end of the page where you find a **Webhook** field.
+1. Enter the webhook URL you copied from Google Chat.
+1. Select the events you want to be notified about in your Google Chat room.
+1. (Optional) Select **Test settings** to verify the connection.
+1. Select **Save changes**.
+
+To test the integration, make a change based on the events you selected and
+see the notification in your Google Chat room.

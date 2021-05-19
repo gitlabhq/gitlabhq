@@ -13,20 +13,24 @@ RSpec.describe ApplicationRecord do
 
   describe '.safe_ensure_unique' do
     let(:model) { build(:suggestion) }
+    let_it_be(:note) { create(:diff_note_on_merge_request) }
+
     let(:klass) { model.class }
 
     before do
-      allow(model).to receive(:save).and_raise(ActiveRecord::RecordNotUnique)
+      allow(model).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique)
     end
 
     it 'returns false when ActiveRecord::RecordNotUnique is raised' do
-      expect(model).to receive(:save).once
-      expect(klass.safe_ensure_unique { model.save }).to be_falsey
+      expect(model).to receive(:save!).once
+      model.note_id = note.id
+      expect(klass.safe_ensure_unique { model.save! }).to be_falsey
     end
 
     it 'retries based on retry count specified' do
-      expect(model).to receive(:save).exactly(3).times
-      expect(klass.safe_ensure_unique(retries: 2) { model.save }).to be_falsey
+      expect(model).to receive(:save!).exactly(3).times
+      model.note_id = note.id
+      expect(klass.safe_ensure_unique(retries: 2) { model.save! }).to be_falsey
     end
   end
 

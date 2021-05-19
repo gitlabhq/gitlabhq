@@ -31,7 +31,7 @@ module Gitlab
           def ensure_test_cases_limited!(total_parsed, limit)
             return unless limit > 0 && total_parsed > limit
 
-            raise JunitParserError.new("number of test cases exceeded the limit of #{limit}")
+            raise JunitParserError, "number of test cases exceeded the limit of #{limit}"
           end
 
           def all_cases(root, parent = nil, &blk)

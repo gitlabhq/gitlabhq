@@ -9,6 +9,7 @@ RSpec.describe ::Packages::Composer::PackagesPresenter do
   let_it_be(:json) { { 'name' => package_name } }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :custom_repo, files: { 'composer.json' => json.to_json }, group: group) }
+
   let!(:package1) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
   let!(:package2) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '2.0.0', json: json) }
 

@@ -52,12 +52,12 @@ module Mattermost
       json_response = Gitlab::Json.parse(response.body, legacy_mode: true)
 
       unless response.success?
-        raise Mattermost::ClientError.new(json_response['message'] || 'Undefined error')
+        raise Mattermost::ClientError, json_response['message'] || 'Undefined error'
       end
 
       json_response
     rescue JSON::JSONError
-      raise Mattermost::ClientError.new('Cannot parse response')
+      raise Mattermost::ClientError, 'Cannot parse response'
     end
   end
 end

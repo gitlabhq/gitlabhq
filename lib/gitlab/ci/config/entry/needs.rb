@@ -56,4 +56,4 @@ module Gitlab
   end
 end
 
-::Gitlab::Ci::Config::Entry::Needs.prepend_if_ee('::EE::Gitlab::Ci::Config::Entry::Needs')
+::Gitlab::Ci::Config::Entry::Needs.prepend_mod_with('Gitlab::Ci::Config::Entry::Needs')

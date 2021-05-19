@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { UPGRADE_CTA } from '~/security_configuration/components/scanners_constants';
+import { UPGRADE_CTA } from '~/security_configuration/components/constants';
 import Upgrade from '~/security_configuration/components/upgrade.vue';
 
 const TEST_URL = 'http://www.example.test';

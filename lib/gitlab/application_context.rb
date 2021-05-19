@@ -135,4 +135,4 @@ module Gitlab
   end
 end
 
-Gitlab::ApplicationContext.prepend_if_ee('EE::Gitlab::ApplicationContext')
+Gitlab::ApplicationContext.prepend_mod_with('Gitlab::ApplicationContext')

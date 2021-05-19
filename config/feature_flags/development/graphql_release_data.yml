@@ -1,8 +1,0 @@
----
-name: graphql_release_data
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30753
-rollout_issue_url: 
-milestone: '13.0'
-type: development
-group: group::release
-default_enabled: true

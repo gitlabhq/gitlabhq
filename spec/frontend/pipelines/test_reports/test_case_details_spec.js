@@ -1,5 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 
@@ -13,29 +14,32 @@ describe('Test case details', () => {
     formattedTime: '10.04ms',
     recent_failures: {
       count: 2,
-      base_branch: 'master',
+      base_branch: 'main',
     },
     system_output: 'Line 42 is broken',
   };
 
-  const findModal = () => wrapper.find(GlModal);
-  const findName = () => wrapper.find('[data-testid="test-case-name"]');
-  const findDuration = () => wrapper.find('[data-testid="test-case-duration"]');
-  const findRecentFailures = () => wrapper.find('[data-testid="test-case-recent-failures"]');
-  const findSystemOutput = () => wrapper.find('[data-testid="test-case-trace"]');
+  const findModal = () => wrapper.findComponent(GlModal);
+  const findName = () => wrapper.findByTestId('test-case-name');
+  const findDuration = () => wrapper.findByTestId('test-case-duration');
+  const findRecentFailures = () => wrapper.findByTestId('test-case-recent-failures');
+  const findAttachmentUrl = () => wrapper.findByTestId('test-case-attachment-url');
+  const findSystemOutput = () => wrapper.findByTestId('test-case-trace');
 
   const createComponent = (testCase = {}) => {
-    wrapper = shallowMount(TestCaseDetails, {
-      localVue,
-      propsData: {
-        modalId: 'my-modal',
-        testCase: {
-          ...defaultTestCase,
-          ...testCase,
+    wrapper = extendedWrapper(
+      shallowMount(TestCaseDetails, {
+        localVue,
+        propsData: {
+          modalId: 'my-modal',
+          testCase: {
+            ...defaultTestCase,
+            ...testCase,
+          },
         },
-      },
-      stubs: { CodeBlock, GlModal },
-    });
+        stubs: { CodeBlock, GlModal },
+      }),
+    );
   };
 
   afterEach(() => {
@@ -88,6 +92,25 @@ describe('Test case details', () => {
       createComponent({ recent_failures: null });
 
       expect(findRecentFailures().exists()).toBe(false);
+    });
+  });
+
+  describe('when test case has attachment URL', () => {
+    it('renders the attachment URL as a link', () => {
+      const expectedUrl = '/my/path.jpg';
+      createComponent({ attachment_url: expectedUrl });
+      const attachmentUrl = findAttachmentUrl();
+
+      expect(attachmentUrl.exists()).toBe(true);
+      expect(attachmentUrl.attributes('href')).toBe(expectedUrl);
+    });
+  });
+
+  describe('when test case does not have attachment URL', () => {
+    it('does not render the attachment URL', () => {
+      createComponent({ attachment_url: null });
+
+      expect(findAttachmentUrl().exists()).toBe(false);
     });
   });
 

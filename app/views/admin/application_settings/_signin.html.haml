@@ -6,14 +6,14 @@
       .form-check
         = f.check_box :password_authentication_enabled_for_web, class: 'form-check-input'
         = f.label :password_authentication_enabled_for_web, class: 'form-check-label' do
-          Password authentication enabled for web interface
+          = _('Password authentication enabled for web interface')
           .form-text.text-muted
-            When disabled, an external authentication provider must be used.
+            = _('When disabled, an external authentication provider must be used.')
     .form-group
       .form-check
         = f.check_box :password_authentication_enabled_for_git, class: 'form-check-input'
         = f.label :password_authentication_enabled_for_git, class: 'form-check-label' do
-          Password authentication enabled for Git over HTTP(S)
+          = _('Password authentication enabled for Git over HTTP(S)')
           .form-text.text-muted
             When disabled, a Personal Access Token
             - if Gitlab::Auth::Ldap::Config.enabled?
@@ -26,11 +26,11 @@
         - oauth_providers_checkboxes.each do |source|
           = source
     .form-group
-      = f.label :two_factor_authentication, 'Two-factor authentication', class: 'label-bold'
+      = f.label :two_factor_authentication, _('Two-factor authentication'), class: 'label-bold'
       .form-check
         = f.check_box :require_two_factor_authentication, class: 'form-check-input'
         = f.label :require_two_factor_authentication, class: 'form-check-label' do
-          Require all users to set up Two-factor authentication
+          = _('Require all users to set up two-factor authentication')
     .form-group
       = f.label :admin_mode, _('Admin Mode'), class: 'label-bold'
       = sprite_icon('lock', css_class: 'gl-icon')
@@ -50,19 +50,19 @@
           'https://docs.gitlab.com/ee/user/profile/unknown_sign_in_notification.html',
           target: '_blank'
     .form-group
-      = f.label :two_factor_authentication, 'Two-factor grace period (hours)', class: 'label-bold'
+      = f.label :two_factor_authentication, _('Two-factor grace period (hours)'), class: 'label-bold'
       = f.number_field :two_factor_grace_period, min: 0, class: 'form-control gl-form-input', placeholder: '0'
-      .form-text.text-muted Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication
+      .form-text.text-muted= _('Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication')
     .form-group
-      = f.label :home_page_url, 'Home page URL', class: 'label-bold'
+      = f.label :home_page_url, _('Home page URL'), class: 'label-bold'
       = f.text_field :home_page_url, class: 'form-control gl-form-input', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'
-      %span.form-text.text-muted#home_help_block We will redirect non-logged in users to this page
+      %span.form-text.text-muted#home_help_block= _("We will redirect non-logged in users to this page")
     .form-group
       = f.label :after_sign_out_path, _('After sign-out path'), class: 'label-bold'
       = f.text_field :after_sign_out_path, class: 'form-control gl-form-input', placeholder: 'http://company.example.com', :'aria-describedby' => 'after_sign_out_path_help_block'
-      %span.form-text.text-muted#after_sign_out_path_help_block We will redirect users to this page after they sign out
+      %span.form-text.text-muted#after_sign_out_path_help_block= _("We will redirect users to this page after they sign out")
     .form-group
       = f.label :sign_in_text, _('Sign-in text'), class: 'label-bold'
       = f.text_area :sign_in_text, class: 'form-control gl-form-input', rows: 4
       .form-text.text-muted Markdown enabled
-  = f.submit 'Save changes', class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

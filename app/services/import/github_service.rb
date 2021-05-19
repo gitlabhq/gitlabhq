@@ -122,4 +122,4 @@ module Import
   end
 end
 
-Import::GithubService.prepend_if_ee('EE::Import::GithubService')
+Import::GithubService.prepend_mod_with('Import::GithubService')

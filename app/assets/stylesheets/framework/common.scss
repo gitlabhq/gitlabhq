@@ -93,6 +93,9 @@
 
 .tab-content {
   overflow: visible;
+  @include media-breakpoint-down(sm) {
+    isolation: isolate;
+  }
 }
 
 pre {
@@ -264,12 +267,6 @@ img.emoji {
 .chart {
   overflow: hidden;
   height: 220px;
-}
-
-.description-block {
-  @extend .light-well;
-  @extend .light;
-  margin-bottom: 10px;
 }
 
 .footer-links {

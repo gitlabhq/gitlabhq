@@ -401,4 +401,4 @@ module API
   end
 end
 
-API::Groups.prepend_if_ee('EE::API::Groups')
+API::Groups.prepend_mod_with('API::Groups')

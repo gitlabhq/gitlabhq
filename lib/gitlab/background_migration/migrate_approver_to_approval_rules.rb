@@ -12,4 +12,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::MigrateApproverToApprovalRules.prepend_if_ee('EE::Gitlab::BackgroundMigration::MigrateApproverToApprovalRules')
+Gitlab::BackgroundMigration::MigrateApproverToApprovalRules.prepend_mod_with('Gitlab::BackgroundMigration::MigrateApproverToApprovalRules')

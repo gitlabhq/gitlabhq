@@ -1,8 +1,0 @@
----
-name: invite_your_teammates_banner_a
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37658
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/231275
-milestone: '13.4'
-type: development
-group: group::expansion
-default_enabled: false

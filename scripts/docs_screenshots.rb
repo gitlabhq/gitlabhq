@@ -5,7 +5,7 @@
 require 'png_quantizator'
 require 'open3'
 require 'parallel'
-require_relative '../tooling/lib/tooling/images.rb'
+require_relative '../tooling/lib/tooling/images'
 
 generator = ARGV[0]
 milestone = ARGV[1]

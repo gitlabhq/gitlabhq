@@ -5,7 +5,6 @@ class Groups::BoardsController < Groups::ApplicationController
   include RecordUserLastActivity
   include Gitlab::Utils::StrongMemoize
 
-  before_action :authorize_read_board!, only: [:index, :show]
   before_action :assign_endpoint_vars
   before_action do
     push_frontend_feature_flag(:graphql_board_lists, group, default_enabled: false)

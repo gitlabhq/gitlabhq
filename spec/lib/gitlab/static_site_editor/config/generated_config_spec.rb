@@ -54,13 +54,14 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::GeneratedConfig do
           path,
           '',
           message: 'message',
-          branch_name: 'master'
+          branch_name: ref
         )
       end
 
+      let(:ref) { 'main' }
       let(:path) { 'README.md.erb' }
 
-      it { is_expected.to include(is_supported_content: true) }
+      it { is_expected.to include(branch: ref, is_supported_content: true) }
     end
 
     context 'when file path is nested' do
@@ -69,7 +70,7 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::GeneratedConfig do
       it { is_expected.to include(base_url: '/namespace/project/-/sse/master%2Flib%2FREADME.md') }
     end
 
-    context 'when branch is not master' do
+    context 'when branch is not master or main' do
       let(:ref) { 'my-branch' }
 
       it { is_expected.to include(is_supported_content: false) }

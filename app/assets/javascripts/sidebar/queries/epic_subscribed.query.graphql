@@ -1,0 +1,11 @@
+query epicSubscribed($fullPath: ID!, $iid: ID) {
+  workspace: group(fullPath: $fullPath) {
+    __typename
+    emailsDisabled
+    issuable: epic(iid: $iid) {
+      __typename
+      id
+      subscribed
+    }
+  }
+}

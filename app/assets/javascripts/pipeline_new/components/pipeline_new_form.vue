@@ -21,7 +21,13 @@ import { backOff } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
-import { VARIABLE_TYPE, FILE_TYPE, CONFIG_VARIABLES_TIMEOUT } from '../constants';
+import {
+  VARIABLE_TYPE,
+  FILE_TYPE,
+  CONFIG_VARIABLES_TIMEOUT,
+  CC_VALIDATION_REQUIRED_ERROR,
+} from '../constants';
+import filterVariables from '../utils/filter_variables';
 import RefsDropdown from './refs_dropdown.vue';
 
 const i18n = {
@@ -59,6 +65,8 @@ export default {
     GlSprintf,
     GlLoadingIcon,
     RefsDropdown,
+    CcValidationRequiredAlert: () =>
+      import('ee_component/billings/components/cc_validation_required_alert.vue'),
   },
   directives: { SafeHtml },
   props: {
@@ -141,6 +149,9 @@ export default {
     },
     descriptions() {
       return this.form[this.refFullName]?.descriptions ?? {};
+    },
+    ccRequiredError() {
+      return this.error === CC_VALIDATION_REQUIRED_ERROR;
     },
   },
   watch: {
@@ -281,20 +292,13 @@ export default {
     },
     createPipeline() {
       this.submitted = true;
-      const filteredVariables = this.variables
-        .filter(({ key, value }) => key !== '' && value !== '')
-        .map(({ variable_type, key, value }) => ({
-          variable_type,
-          key,
-          secret_value: value,
-        }));
 
       return axios
         .post(this.pipelinesPath, {
           // send shortName as fall back for query params
           // https://gitlab.com/gitlab-org/gitlab/-/issues/287815
           ref: this.refValue.fullName || this.refShortName,
-          variables_attributes: filteredVariables,
+          variables_attributes: filterVariables(this.variables),
         })
         .then(({ data }) => {
           redirectTo(`${this.pipelinesPath}/${data.id}`);
@@ -335,8 +339,9 @@ export default {
 
 <template>
   <gl-form @submit.prevent="createPipeline">
+    <cc-validation-required-alert v-if="ccRequiredError" class="gl-pb-5" />
     <gl-alert
-      v-if="error"
+      v-else-if="error"
       :title="errorTitle"
       :dismissible="false"
       variant="danger"
@@ -393,6 +398,7 @@ export default {
             v-model="variable.variable_type"
             :class="$options.formElementClasses"
             :options="$options.typeOptions"
+            data-testid="pipeline-form-ci-variable-type"
           />
           <gl-form-input
             v-model="variable.key"

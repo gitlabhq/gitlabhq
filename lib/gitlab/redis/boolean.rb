@@ -50,7 +50,7 @@ module Gitlab
         # @return [String] the encoded boolean
         # @raise [NotABooleanError] if the value isn't true or false
         def encode(value)
-          raise NotABooleanError.new(value) unless bool?(value)
+          raise NotABooleanError, value unless bool?(value)
 
           [LABEL, to_string(value)].join(DELIMITER)
         end
@@ -61,11 +61,11 @@ module Gitlab
         # @return [Boolean] true or false
         # @raise [NotAnEncodedBooleanStringError] if the provided value isn't an encoded boolean
         def decode(value)
-          raise NotAnEncodedBooleanStringError.new(value.class) unless value.is_a?(String)
+          raise NotAnEncodedBooleanStringError, value.class unless value.is_a?(String)
 
           label, bool_str = *value.split(DELIMITER, 2)
 
-          raise NotAnEncodedBooleanStringError.new(label) unless label == LABEL
+          raise NotAnEncodedBooleanStringError, label unless label == LABEL
 
           from_string(bool_str)
         end
@@ -99,7 +99,7 @@ module Gitlab
         end
 
         def from_string(str)
-          raise NotAnEncodedBooleanStringError.new(str) unless [TRUE_STR, FALSE_STR].include?(str)
+          raise NotAnEncodedBooleanStringError, str unless [TRUE_STR, FALSE_STR].include?(str)
 
           str == TRUE_STR
         end

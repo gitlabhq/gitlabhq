@@ -37,4 +37,4 @@ module Search
   end
 end
 
-Search::ProjectService.prepend_if_ee('EE::Search::ProjectService')
+Search::ProjectService.prepend_mod_with('Search::ProjectService')

@@ -4,11 +4,14 @@ module UserStatusCleanup
   # This worker will run every minute to look for user status records to clean up.
   class BatchWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     # rubocop:disable Scalability/CronWorkerContext
     include CronjobQueue
     # rubocop:enable Scalability/CronWorkerContext
 
     feature_category :users
+    tags :exclude_from_kubernetes
 
     idempotent!
 

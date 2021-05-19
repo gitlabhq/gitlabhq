@@ -112,9 +112,6 @@ sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdb
   libcurl4-openssl-dev libicu-dev logrotate rsync python-docutils pkg-config cmake runit-systemd
 ```
 
-Ubuntu 14.04 (Trusty Tahr) doesn't have the `libre2-dev` package available, but
-you can [install re2 manually](https://github.com/google/re2/wiki/Install).
-
 If you want to use Kerberos for user authentication, install `libkrb5-dev`
 (if you don't know what Kerberos is, you can assume you don't need it):
 
@@ -221,12 +218,6 @@ below to use a system Ruby.
 Linux distributions generally have older versions of Ruby available, so these
 instructions are designed to install Ruby from the official source code.
 
-Remove the old Ruby 1.8 if present:
-
-```shell
-sudo apt-get remove ruby1.8
-```
-
 Download Ruby and compile it:
 
 ```shell
@@ -242,7 +233,7 @@ sudo make install
 
 ## 3. Go
 
-In GitLab 8.0 and later, GitLab has several daemons written in Go. To install
+GitLab has several daemons written in Go. To install
 GitLab we need a Go compiler. The instructions below assume you use 64-bit
 Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
@@ -251,21 +242,21 @@ page](https://golang.org/dl).
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --progress-bar "https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz"
-echo '512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569  go1.13.5.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.13.5.linux-amd64.tar.gz
+curl --remote-name --progress-bar "https://dl.google.com/go/go1.15.12.linux-amd64.tar.gz"
+echo 'bbdb935699e0b24d90e2451346da76121b2412d30930eabcd80907c230d098b7  go1.15.12.linux-amd64.tar.gz' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.15.12.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-rm go1.13.5.linux-amd64.tar.gz
+rm go1.15.12.linux-amd64.tar.gz
 ```
 
 ## 4. Node
 
-In GitLab 8.17 and later, GitLab requires the use of Node to compile JavaScript
+GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
-- `node` >= v10.14.2. (We recommend node 14.x as it is faster)
-- `yarn` >= v1.10.0.
+- `node` >= v12.22.1. (We recommend node 14.x as it is faster)
+- `yarn` = v1.22.x (Yarn 2 is not supported yet)
 
 In many distributions,
 the versions provided by the official package repositories are out of date, so
@@ -276,10 +267,7 @@ we need to install through the following commands:
 curl --location "https://deb.nodesource.com/setup_14.x" | sudo bash -
 sudo apt-get install -y nodejs
 
-curl --silent --show-error "https://dl.yarnpkg.com/debian/pubkey.gpg" | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update
-sudo apt-get install yarn
+npm install --global yarn
 ```
 
 Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://classic.yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
@@ -830,6 +818,8 @@ to use. Read all about the needed configuration at the
 [GitLab Pages administration guide](../administration/pages/index.md).
 
 If you want to use HTTPS, replace the `gitlab` NGINX configuration with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
+
+For the NGINX to be able to read the GitLab-Workhorse socket, you need to make sure, that the `www-data` user can read the socket, which will be owned by the GitLab user. This is most easily achieved, if it is world-readable, for example that it has permissions `0755`, which is the default. `www-data` also needs to be able to list the parent directories.
 
 ### Test Configuration
 

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GitAccessProject do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
+
   let(:container) { project }
   let(:actor) { user }
   let(:project_path) { project.path }

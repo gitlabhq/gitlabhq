@@ -9,6 +9,8 @@
 - add_to_breadcrumbs _("Snippets"), dashboard_snippets_path
 - breadcrumb_title @snippet.to_reference
 - page_title "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
+- content_for :prefetch_asset_tags do
+  - webpack_preload_asset_tag('monaco', prefetch: true)
 
 #js-snippet-view{ data: {'qa-selector': 'snippet_view', 'snippet-gid': @snippet.to_global_id} }
 

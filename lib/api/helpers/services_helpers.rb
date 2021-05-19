@@ -420,44 +420,6 @@ module API
             },
             chat_notification_events
           ].flatten,
-          'hipchat' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'The room token'
-            },
-            {
-              required: false,
-              name: :room,
-              type: String,
-              desc: 'The room name or ID'
-            },
-            {
-              required: false,
-              name: :color,
-              type: String,
-              desc: 'The room color'
-            },
-            {
-              required: false,
-              name: :notify,
-              type: Boolean,
-              desc: 'Enable notifications'
-            },
-            {
-              required: false,
-              name: :api_version,
-              type: String,
-              desc: 'Leave blank for default (v2)'
-            },
-            {
-              required: false,
-              name: :server,
-              type: String,
-              desc: 'Leave blank for default. https://hipchat.example.com'
-            }
-          ],
           'irker' => [
             {
               required: true,
@@ -803,7 +765,7 @@ module API
               required: true,
               name: :webhook,
               type: String,
-              desc: 'The Webex Teams webhook. e.g. https://api.ciscospark.com/v1/webhooks/incoming/…'
+              desc: 'The Webex Teams webhook. For example, https://api.ciscospark.com/v1/webhooks/incoming/...'
             },
             chat_notification_events
           ].flatten
@@ -812,23 +774,22 @@ module API
 
       def self.service_classes
         [
-          ::AsanaService,
-          ::AssemblaService,
-          ::BambooService,
+          ::Integrations::Asana,
+          ::Integrations::Assembla,
+          ::Integrations::Bamboo,
+          ::Integrations::Campfire,
+          ::Integrations::Confluence,
+          ::Integrations::Datadog,
+          ::Integrations::EmailsOnPush,
           ::BugzillaService,
           ::BuildkiteService,
-          ::ConfluenceService,
-          ::CampfireService,
           ::CustomIssueTrackerService,
-          ::DatadogService,
           ::DiscordService,
           ::DroneCiService,
-          ::EmailsOnPushService,
           ::EwmService,
           ::ExternalWikiService,
           ::FlowdockService,
           ::HangoutsChatService,
-          ::HipchatService,
           ::IrkerService,
           ::JenkinsService,
           ::JiraService,
@@ -858,4 +819,4 @@ module API
   end
 end
 
-API::Helpers::ServicesHelpers.prepend_if_ee('EE::API::Helpers::ServicesHelpers')
+API::Helpers::ServicesHelpers.prepend_mod_with('API::Helpers::ServicesHelpers')

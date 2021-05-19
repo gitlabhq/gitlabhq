@@ -164,9 +164,9 @@ RSpec.describe Groups::CreateService, '#execute' do
       let!(:instance_integration) { create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/') }
 
       it 'creates a service from the instance-level integration' do
-        expect(created_group.services.count).to eq(1)
-        expect(created_group.services.first.api_url).to eq(instance_integration.api_url)
-        expect(created_group.services.first.inherit_from_id).to eq(instance_integration.id)
+        expect(created_group.integrations.count).to eq(1)
+        expect(created_group.integrations.first.api_url).to eq(instance_integration.api_url)
+        expect(created_group.integrations.first.inherit_from_id).to eq(instance_integration.id)
       end
 
       context 'with an active group-level integration' do
@@ -179,9 +179,9 @@ RSpec.describe Groups::CreateService, '#execute' do
         end
 
         it 'creates a service from the group-level integration' do
-          expect(created_group.services.count).to eq(1)
-          expect(created_group.services.first.api_url).to eq(group_integration.api_url)
-          expect(created_group.services.first.inherit_from_id).to eq(group_integration.id)
+          expect(created_group.integrations.count).to eq(1)
+          expect(created_group.integrations.first.api_url).to eq(group_integration.api_url)
+          expect(created_group.integrations.first.inherit_from_id).to eq(group_integration.id)
         end
 
         context 'with an active subgroup' do
@@ -194,9 +194,9 @@ RSpec.describe Groups::CreateService, '#execute' do
           end
 
           it 'creates a service from the subgroup-level integration' do
-            expect(created_group.services.count).to eq(1)
-            expect(created_group.services.first.api_url).to eq(subgroup_integration.api_url)
-            expect(created_group.services.first.inherit_from_id).to eq(subgroup_integration.id)
+            expect(created_group.integrations.count).to eq(1)
+            expect(created_group.integrations.first.api_url).to eq(subgroup_integration.api_url)
+            expect(created_group.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
           end
         end
       end

@@ -1,0 +1,5 @@
+---
+title: Add gl-form-input class for fields in phabricator import page
+merge_request: 58318
+author: Yogi (@yo)
+type: changed

@@ -67,4 +67,4 @@ module Peek
   end
 end
 
-Peek::Views::ActiveRecord.prepend_if_ee('EE::Peek::Views::ActiveRecord')
+Peek::Views::ActiveRecord.prepend_mod_with('Peek::Views::ActiveRecord')

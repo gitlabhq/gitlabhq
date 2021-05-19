@@ -10,9 +10,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in GitLab Ultimate 12.0.
 
 Use the dependency list to review your project's dependencies and key
-details about those dependencies, including their known vulnerabilities. To see the dependency list,
-in your project, go to **Security & Compliance > Dependency List**.
+details about those dependencies, including their known vulnerabilities. It is a collection of dependencies in your project, including existing and new findings. To see the dependency list, go to your project and select **Security & Compliance > Dependency List**.
 This information is sometimes referred to as a Software Bill of Materials or SBoM / BOM.
+
+The dependency list only shows the results of the last successful pipeline to run on the default branch. This is why we recommend not changing the default behavior of allowing the secure jobs to fail. 
 
 ## Prerequisites
 

@@ -35,7 +35,7 @@ export default {
         <td :class="lineCssClass(line)" class="diff-line-num header"></td>
         <td :class="lineCssClass(line)" class="line_content header">
           <strong>{{ line.richText }}</strong>
-          <button class="btn" @click="handleSelected({ file, line })">
+          <button type="button" @click="handleSelected({ file, line })">
             {{ line.buttonTitle }}
           </button>
         </td>

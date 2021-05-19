@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import BoardCardInner from './board_card_inner.vue';
 
 export default {
@@ -31,7 +31,6 @@ export default {
   },
   computed: {
     ...mapState(['selectedBoardItems', 'activeId']),
-    ...mapGetters(['isSwimlanesOn']),
     isActive() {
       return this.item.id === this.activeId;
     },
@@ -46,7 +45,7 @@ export default {
     ...mapActions(['toggleBoardItemMultiSelection', 'toggleBoardItem']),
     toggleIssue(e) {
       // Don't do anything if this happened on a no trigger element
-      if (e.target.classList.contains('js-no-trigger')) return;
+      if (e.target.closest('.js-no-trigger')) return;
 
       const isMultiSelect = e.ctrlKey || e.metaKey;
       if (isMultiSelect) {

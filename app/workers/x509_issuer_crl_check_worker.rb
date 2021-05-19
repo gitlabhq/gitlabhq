@@ -2,6 +2,8 @@
 
 class X509IssuerCrlCheckWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include CronjobQueue
 
   feature_category :source_code_management

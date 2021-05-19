@@ -27,6 +27,10 @@ FactoryBot.define do
       after(:build) { |user, _| user.block_pending_approval! }
     end
 
+    trait :banned do
+      after(:build) { |user, _| user.ban! }
+    end
+
     trait :ldap_blocked do
       after(:build) { |user, _| user.ldap_block! }
     end
@@ -78,6 +82,12 @@ FactoryBot.define do
       last_sign_in_at { FFaker::Time.between(10.days.ago, 1.day.ago) }
       current_sign_in_ip { '127.0.0.1' }
       last_sign_in_ip { '127.0.0.1' }
+    end
+
+    trait :with_credit_card_validation do
+      after :create do |user|
+        create :credit_card_validation, user: user
+      end
     end
 
     trait :two_factor_via_otp do

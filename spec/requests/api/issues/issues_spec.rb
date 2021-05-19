@@ -115,6 +115,7 @@ RSpec.describe API::Issues do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.dig('author', 'id')).to eq(issue.author.id)
             expect(json_response['description']).to eq(issue.description)
+            expect(json_response['issue_type']).to eq('issue')
           end
         end
 
@@ -376,6 +377,14 @@ RSpec.describe API::Issues do
         get api('/issues', user2), params: { my_reaction_emoji: 'None', scope: 'all' }
 
         expect_paginated_array_response([issue.id, closed_issue.id])
+      end
+
+      it 'returns issues with a given issue_type' do
+        issue2 = create(:incident, project: project)
+
+        get api('/issues', user), params: { issue_type: 'incident' }
+
+        expect_paginated_array_response(issue2.id)
       end
 
       it 'returns issues matching given search string for title' do
@@ -939,7 +948,17 @@ RSpec.describe API::Issues do
     end
   end
 
-  describe 'PUT /projects/:id/issues/:issue_id' do
+  describe "POST /projects/:id/issues" do
+    it 'creates a new project issue' do
+      post api("/projects/#{project.id}/issues", user), params: { title: 'new issue' }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['title']).to eq('new issue')
+      expect(json_response['issue_type']).to eq('issue')
+    end
+  end
+
+  describe 'PUT /projects/:id/issues/:issue_iid' do
     it_behaves_like 'issuable update endpoint' do
       let(:entity) { issue }
     end
@@ -969,6 +988,14 @@ RSpec.describe API::Issues do
         expect(response).to have_gitlab_http_status(:ok)
         expect(Time.parse(json_response['updated_at'])).to be_like_time(fixed_time)
         expect(ResourceLabelEvent.last.created_at).to be_like_time(fixed_time)
+      end
+    end
+
+    describe 'issue_type param' do
+      it 'allows issue type to be converted' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user), params: { issue_type: 'incident' }
+
+        expect(issue.reload.incident?).to be(true)
       end
     end
   end

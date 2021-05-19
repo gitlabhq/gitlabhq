@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, '#execute' do
   let_it_be(:group) { create(:group, name: 'my-organization') }
+
   let(:upstream_project) { create(:project, :repository, name: 'upstream', group: group) }
   let(:downstram_project) { create(:project, :repository, name: 'downstream', group: group) }
   let(:user) { create(:user) }

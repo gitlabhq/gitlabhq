@@ -24,16 +24,56 @@ RSpec.shared_context 'project navbar structure' do
     }
   end
 
+  let(:monitor_nav_item) do
+    {
+      nav_item: _('Operations'),
+      nav_sub_items: monitor_menu_items
+    }
+  end
+
+  let(:monitor_menu_items) do
+    [
+      _('Metrics'),
+      _('Logs'),
+      _('Tracing'),
+      _('Error Tracking'),
+      _('Alerts'),
+      _('Incidents'),
+      _('Serverless'),
+      _('Terraform'),
+      _('Kubernetes'),
+      _('Environments'),
+      _('Feature Flags'),
+      _('Product Analytics')
+    ]
+  end
+
+  let(:project_information_nav_item) do
+    {
+      nav_item: _('Project overview'),
+      nav_sub_items: [
+        _('Details'),
+        _('Activity'),
+        _('Releases')
+      ]
+    }
+  end
+
+  let(:settings_menu_items) do
+    [
+      _('General'),
+      _('Integrations'),
+      _('Webhooks'),
+      _('Access Tokens'),
+      _('Repository'),
+      _('CI/CD'),
+      _('Operations')
+    ]
+  end
+
   let(:structure) do
     [
-      {
-        nav_item: _('Project overview'),
-        nav_sub_items: [
-          _('Details'),
-          _('Activity'),
-          _('Releases')
-        ]
-      },
+      project_information_nav_item,
       {
         nav_item: _('Repository'),
         nav_sub_items: [
@@ -52,7 +92,6 @@ RSpec.shared_context 'project navbar structure' do
         nav_sub_items: [
           _('List'),
           _('Boards'),
-          _('Labels'),
           _('Service Desk'),
           _('Milestones'),
           (_('Iterations') if Gitlab.ee?)
@@ -73,23 +112,7 @@ RSpec.shared_context 'project navbar structure' do
         ]
       },
       security_and_compliance_nav_item,
-      {
-        nav_item: _('Operations'),
-        nav_sub_items: [
-          _('Metrics'),
-          _('Logs'),
-          _('Tracing'),
-          _('Error Tracking'),
-          _('Alerts'),
-          _('Incidents'),
-          _('Serverless'),
-          _('Terraform'),
-          _('Kubernetes'),
-          _('Environments'),
-          _('Feature Flags'),
-          _('Product Analytics')
-        ]
-      },
+      monitor_nav_item,
       analytics_nav_item,
       {
         nav_item: _('Wiki'),
@@ -100,20 +123,8 @@ RSpec.shared_context 'project navbar structure' do
         nav_sub_items: []
       },
       {
-        nav_item: _('Members'),
-        nav_sub_items: []
-      },
-      {
         nav_item: _('Settings'),
-        nav_sub_items: [
-          _('General'),
-          _('Integrations'),
-          _('Webhooks'),
-          _('Access Tokens'),
-          _('Repository'),
-          _('CI/CD'),
-          _('Operations')
-        ].compact
+        nav_sub_items: settings_menu_items
       }
     ].compact
   end
@@ -124,8 +135,7 @@ RSpec.shared_context 'group navbar structure' do
     {
       nav_item: _('Analytics'),
       nav_sub_items: [
-        _('Contribution'),
-        _('DevOps Adoption')
+        _('Contribution')
       ]
     }
   end
@@ -171,23 +181,31 @@ RSpec.shared_context 'group navbar structure' do
     }
   end
 
+  let(:group_information_nav_item) do
+    {
+      nav_item: _('Group information'),
+      nav_sub_items: [
+        _('Activity'),
+        _('Labels'),
+        _('Members')
+      ]
+    }
+  end
+
+  let(:issues_nav_items) do
+    [
+      _('List'),
+      _('Board'),
+      _('Milestones')
+    ]
+  end
+
   let(:structure) do
     [
-      {
-        nav_item: _('Group overview'),
-        nav_sub_items: [
-          _('Details'),
-          _('Activity')
-        ]
-      },
+      group_information_nav_item,
       {
         nav_item: _('Issues'),
-        nav_sub_items: [
-          _('List'),
-          _('Board'),
-          _('Labels'),
-          _('Milestones')
-        ]
+        nav_sub_items: issues_nav_items
       },
       {
         nav_item: _('Merge requests'),
@@ -199,11 +217,7 @@ RSpec.shared_context 'group navbar structure' do
         nav_item: _('Kubernetes'),
         nav_sub_items: []
       },
-      (analytics_nav_item if Gitlab.ee?),
-      {
-        nav_item: _('Members'),
-        nav_sub_items: []
-      }
+      (analytics_nav_item if Gitlab.ee?)
     ]
   end
 end

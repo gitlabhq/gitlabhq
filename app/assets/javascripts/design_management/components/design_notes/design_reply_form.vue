@@ -115,12 +115,13 @@ export default {
       </template>
     </markdown-field>
     <slot name="resolve-checkbox"></slot>
-    <div class="note-form-actions gl-display-flex gl-justify-content-space-between">
+    <div class="note-form-actions gl-display-flex">
       <gl-button
         ref="submitButton"
         :disabled="!hasValue || isSaving"
+        class="gl-mr-3 gl-w-auto!"
         category="primary"
-        variant="success"
+        variant="confirm"
         type="submit"
         data-track-event="click_button"
         data-qa-selector="save_comment_button"
@@ -128,9 +129,14 @@ export default {
       >
         {{ buttonText }}
       </gl-button>
-      <gl-button ref="cancelButton" variant="default" category="primary" @click="cancelComment">{{
-        __('Cancel')
-      }}</gl-button>
+      <gl-button
+        ref="cancelButton"
+        class="gl-w-auto!"
+        variant="default"
+        category="primary"
+        @click="cancelComment"
+        >{{ __('Cancel') }}</gl-button
+      >
     </div>
     <gl-modal
       ref="cancelCommentModal"

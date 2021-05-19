@@ -10,7 +10,11 @@ export const generateFakeEntry = ({ id, status, ...rest }) => ({
     new_name: `group${id}`,
   },
   id,
-  status,
+  progress: {
+    id: `test-${id}`,
+    status,
+  },
+  validation_errors: [],
   ...rest,
 });
 

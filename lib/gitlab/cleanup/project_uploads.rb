@@ -44,7 +44,7 @@ module Gitlab
         return unless upload && upload.local? && upload.model
 
         upload.absolute_path
-      rescue => e
+      rescue StandardError => e
         logger.error e.message
 
         # absolute_path depends on a lot of code. If it doesn't work, then it
@@ -72,7 +72,7 @@ module Gitlab
             FileUtils.mv(path, new_path)
 
             "Did #{action}"
-          rescue => e
+          rescue StandardError => e
             "Error during #{action}: #{e.inspect}"
           end
         end

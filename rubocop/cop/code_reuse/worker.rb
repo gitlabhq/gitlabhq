@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../code_reuse_helpers.rb'
+require_relative '../../code_reuse_helpers'
 
 module RuboCop
   module Cop

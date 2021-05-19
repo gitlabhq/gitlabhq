@@ -3,6 +3,8 @@ import { GlLoadingIcon, GlPagination, GlSprintf } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Mousetrap from 'mousetrap';
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
+import api from '~/api';
 import {
   keysFor,
   MR_PREVIOUS_FILE_IN_DIFF,
@@ -16,7 +18,6 @@ import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import notesEventHub from '../../notes/event_hub';
 import {
@@ -30,6 +31,15 @@ import {
   ALERT_OVERFLOW_HIDDEN,
   ALERT_MERGE_CONFLICT,
   ALERT_COLLAPSED_FILES,
+  INLINE_DIFF_VIEW_TYPE,
+  TRACKING_DIFF_VIEW_INLINE,
+  TRACKING_DIFF_VIEW_PARALLEL,
+  TRACKING_FILE_BROWSER_TREE,
+  TRACKING_FILE_BROWSER_LIST,
+  TRACKING_WHITESPACE_SHOW,
+  TRACKING_WHITESPACE_HIDE,
+  TRACKING_SINGLE_FILE_MODE,
+  TRACKING_MULTIPLE_FILES_MODE,
 } from '../constants';
 
 import { reviewStatuses } from '../utils/file_reviews';
@@ -59,8 +69,9 @@ export default {
     PanelResizer,
     GlPagination,
     GlSprintf,
+    DynamicScroller,
+    DynamicScrollerItem,
   },
-  mixins: [glFeatureFlagsMixin()],
   alerts: {
     ALERT_OVERFLOW_HIDDEN,
     ALERT_MERGE_CONFLICT,
@@ -183,8 +194,15 @@ export default {
       'hasConflicts',
       'viewDiffsFileByFile',
       'mrReviews',
+      'renderTreeList',
+      'showWhitespace',
     ]),
-    ...mapGetters('diffs', ['whichCollapsedTypes', 'isParallelView', 'currentDiffIndex']),
+    ...mapGetters('diffs', [
+      'whichCollapsedTypes',
+      'isParallelView',
+      'currentDiffIndex',
+      'isVirtualScrollingEnabled',
+    ]),
     ...mapGetters('batchComments', ['draftsCount']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     diffs() {
@@ -304,6 +322,32 @@ export default {
 
     if (id && id.indexOf('#note') !== 0) {
       this.setHighlightedRow(id.split('diff-content').pop().slice(1));
+    }
+
+    if (window.gon?.features?.diffSettingsUsageData) {
+      if (this.renderTreeList) {
+        api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_TREE);
+      } else {
+        api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_LIST);
+      }
+
+      if (this.diffViewType === INLINE_DIFF_VIEW_TYPE) {
+        api.trackRedisHllUserEvent(TRACKING_DIFF_VIEW_INLINE);
+      } else {
+        api.trackRedisHllUserEvent(TRACKING_DIFF_VIEW_PARALLEL);
+      }
+
+      if (this.showWhitespace) {
+        api.trackRedisHllUserEvent(TRACKING_WHITESPACE_SHOW);
+      } else {
+        api.trackRedisHllUserEvent(TRACKING_WHITESPACE_HIDE);
+      }
+
+      if (this.viewDiffsFileByFile) {
+        api.trackRedisHllUserEvent(TRACKING_SINGLE_FILE_MODE);
+      } else {
+        api.trackRedisHllUserEvent(TRACKING_MULTIPLE_FILES_MODE);
+      }
     }
   },
   beforeCreate() {
@@ -523,17 +567,41 @@ export default {
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
           <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
           <template v-else-if="renderDiffFiles">
-            <diff-file
-              v-for="(file, index) in diffs"
-              :key="file.newPath"
-              :file="file"
-              :reviewed="fileReviews[file.id]"
-              :is-first-file="index === 0"
-              :is-last-file="index === diffFilesLength - 1"
-              :help-page-path="helpPagePath"
-              :can-current-user-fork="canCurrentUserFork"
-              :view-diffs-file-by-file="viewDiffsFileByFile"
-            />
+            <dynamic-scroller
+              v-if="isVirtualScrollingEnabled"
+              :items="diffs"
+              :min-item-size="70"
+              :buffer="1000"
+              :use-transform="false"
+              page-mode
+            >
+              <template #default="{ item, index, active }">
+                <dynamic-scroller-item :item="item" :active="active">
+                  <diff-file
+                    :file="item"
+                    :reviewed="fileReviews[item.id]"
+                    :is-first-file="index === 0"
+                    :is-last-file="index === diffFilesLength - 1"
+                    :help-page-path="helpPagePath"
+                    :can-current-user-fork="canCurrentUserFork"
+                    :view-diffs-file-by-file="viewDiffsFileByFile"
+                  />
+                </dynamic-scroller-item>
+              </template>
+            </dynamic-scroller>
+            <template v-else>
+              <diff-file
+                v-for="(file, index) in diffs"
+                :key="file.new_path"
+                :file="file"
+                :reviewed="fileReviews[file.id]"
+                :is-first-file="index === 0"
+                :is-last-file="index === diffFilesLength - 1"
+                :help-page-path="helpPagePath"
+                :can-current-user-fork="canCurrentUserFork"
+                :view-diffs-file-by-file="viewDiffsFileByFile"
+              />
+            </template>
             <div
               v-if="showFileByFileNavigation"
               data-testid="file-by-file-navigation"

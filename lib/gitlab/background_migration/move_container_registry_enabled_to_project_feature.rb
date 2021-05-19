@@ -8,18 +8,15 @@ module Gitlab
     class MoveContainerRegistryEnabledToProjectFeature
       MAX_BATCH_SIZE = 300
 
-      module Migratable
-        # Migration model namespace isolated from application code.
-        class ProjectFeature < ActiveRecord::Base
-          ENABLED = 20
-          DISABLED = 0
-        end
-      end
+      ENABLED = 20
+      DISABLED = 0
 
       def perform(from_id, to_id)
         (from_id..to_id).each_slice(MAX_BATCH_SIZE) do |batch|
           process_batch(batch.first, batch.last)
         end
+
+        Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded('MoveContainerRegistryEnabledToProjectFeature', [from_id, to_id])
       end
 
       private
@@ -37,9 +34,9 @@ module Gitlab
         <<~SQL
         UPDATE project_features
         SET container_registry_access_level = (CASE p.container_registry_enabled
-                                              WHEN true THEN #{ProjectFeature::ENABLED}
-                                              WHEN false THEN #{ProjectFeature::DISABLED}
-                                              ELSE #{ProjectFeature::DISABLED}
+                                              WHEN true THEN #{ENABLED}
+                                              WHEN false THEN #{DISABLED}
+                                              ELSE #{DISABLED}
                                               END)
         FROM projects p
         WHERE project_id = p.id AND

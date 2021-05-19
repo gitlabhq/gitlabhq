@@ -12,6 +12,11 @@ module Gitlab
             %r(\Apipelines/id/\d+\z),
             'pipelines_graph',
             'continuous_integration'
+          ],
+          [
+            %r(\Apipelines/sha/\w{7,40}\z),
+            'ci_editor',
+            'pipeline_authoring'
           ]
         ].map(&method(:build_route)).freeze
 

@@ -152,4 +152,4 @@ class SearchController < ApplicationController
   end
 end
 
-SearchController.prepend_if_ee('EE::SearchController')
+SearchController.prepend_mod_with('SearchController')

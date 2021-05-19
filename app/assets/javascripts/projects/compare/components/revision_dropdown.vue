@@ -56,6 +56,9 @@ export default {
     searchTerm: debounce(function debounceSearch() {
       this.searchBranchesAndTags();
     }, SEARCH_DEBOUNCE_MS),
+    paramsBranch(newBranch) {
+      this.setSelectedRevision(newBranch);
+    },
   },
   mounted() {
     this.fetchBranchesAndTags();
@@ -84,7 +87,7 @@ export default {
       this.loading = true;
 
       if (reset) {
-        this.selectedRevision = this.getDefaultBranch();
+        this.setSelectedRevision(this.paramsBranch);
       }
 
       return axios
@@ -108,10 +111,14 @@ export default {
       return this.paramsBranch || EMPTY_DROPDOWN_TEXT;
     },
     onClick(revision) {
-      this.selectedRevision = revision;
+      this.setSelectedRevision(revision);
+      this.$emit('selectRevision', { direction: this.paramsName, revision });
     },
     onSearchEnter() {
-      this.selectedRevision = this.searchTerm;
+      this.setSelectedRevision(this.searchTerm);
+    },
+    setSelectedRevision(revision) {
+      this.selectedRevision = revision || EMPTY_DROPDOWN_TEXT;
     },
   },
 };
@@ -122,7 +129,7 @@ export default {
     <input type="hidden" :name="paramsName" :value="selectedRevision" />
     <gl-dropdown
       class="gl-w-full gl-font-monospace"
-      toggle-class="form-control compare-dropdown-toggle js-compare-dropdown gl-min-w-0"
+      toggle-class="form-control compare-dropdown-toggle gl-min-w-0"
       :text="selectedRevision"
       :header-text="s__('CompareRevisions|Select Git revision')"
       :loading="loading"

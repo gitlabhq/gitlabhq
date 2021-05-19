@@ -58,31 +58,6 @@ const addIntegrationToStore = (
   });
 };
 
-const addHttpIntegrationToStore = (store, query, { httpIntegrationCreate }, variables) => {
-  const integration = httpIntegrationCreate?.integration;
-  if (!integration) {
-    return;
-  }
-
-  const sourceData = store.readQuery({
-    query,
-    variables,
-  });
-
-  const data = produce(sourceData, (draftData) => {
-    draftData.project.alertManagementHttpIntegrations.nodes = [
-      integration,
-      ...draftData.project.alertManagementHttpIntegrations.nodes,
-    ];
-  });
-
-  store.writeQuery({
-    query,
-    variables,
-    data,
-  });
-};
-
 const onError = (data, message) => {
   createFlash({ message });
   throw new Error(data.errors);
@@ -103,13 +78,5 @@ export const updateStoreAfterIntegrationAdd = (store, query, data, variables) =>
     onError(data, ADD_INTEGRATION_ERROR);
   } else {
     addIntegrationToStore(store, query, data, variables);
-  }
-};
-
-export const updateStoreAfterHttpIntegrationAdd = (store, query, data, variables) => {
-  if (hasErrors(data)) {
-    onError(data, ADD_INTEGRATION_ERROR);
-  } else {
-    addHttpIntegrationToStore(store, query, data, variables);
   }
 };

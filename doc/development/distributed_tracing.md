@@ -89,8 +89,6 @@ The easiest way to access tracing from a GDK environment is through the
 [performance-bar](../administration/monitoring/performance/performance_bar.md). This can be shown
 by typing `p` `b` in the browser window.
 
-![Jaeger Search UI](img/distributed_tracing_performance_bar.png)
-
 Once the performance bar is enabled, click on the **Trace** link in the performance bar to go to
 the Jaeger UI.
 

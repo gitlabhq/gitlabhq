@@ -51,7 +51,7 @@ RSpec.describe Git::WikiPushService, services: true do
         process_changes do
           write_new_page
           update_page(wiki_page_a.title)
-          delete_page(wiki_page_b.page.path)
+          delete_page(wiki_page_b.page)
         end
       end
 
@@ -198,7 +198,7 @@ RSpec.describe Git::WikiPushService, services: true do
     context 'when a page we do not know about has been deleted' do
       def run_service
         wiki_page = create(:wiki_page, wiki: wiki)
-        process_changes { delete_page(wiki_page.page.path) }
+        process_changes { delete_page(wiki_page.page) }
       end
 
       it 'create a new meta-data record' do
@@ -350,8 +350,8 @@ RSpec.describe Git::WikiPushService, services: true do
     git_wiki.update_page(page.path, title, 'markdown', 'Hey', commit_details)
   end
 
-  def delete_page(path)
-    git_wiki.delete_page(path, commit_details)
+  def delete_page(page)
+    wiki.delete_page(page, 'commit message')
   end
 
   def commit_details

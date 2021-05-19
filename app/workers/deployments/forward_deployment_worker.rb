@@ -6,6 +6,8 @@ module Deployments
   class ForwardDeploymentWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     queue_namespace :deployment
     feature_category :continuous_delivery
 

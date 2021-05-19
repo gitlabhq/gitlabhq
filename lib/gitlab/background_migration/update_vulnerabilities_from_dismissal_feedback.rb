@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::UpdateVulnerabilitiesFromDismissalFeedback.prepend_if_ee('EE::Gitlab::BackgroundMigration::UpdateVulnerabilitiesFromDismissalFeedback')
+Gitlab::BackgroundMigration::UpdateVulnerabilitiesFromDismissalFeedback.prepend_mod_with('Gitlab::BackgroundMigration::UpdateVulnerabilitiesFromDismissalFeedback')

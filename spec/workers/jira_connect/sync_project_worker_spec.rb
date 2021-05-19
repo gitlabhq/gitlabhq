@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe JiraConnect::SyncProjectWorker, factory_default: :keep do
   describe '#perform' do
     let_it_be(:project) { create_default(:project).freeze }
+
     let!(:mr_with_jira_title) { create(:merge_request, :unique_branches, title: 'TEST-123') }
     let!(:mr_with_jira_description) { create(:merge_request, :unique_branches, description: 'TEST-323') }
     let!(:mr_with_other_title) { create(:merge_request, :unique_branches) }

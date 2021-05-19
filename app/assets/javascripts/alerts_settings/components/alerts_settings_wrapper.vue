@@ -14,13 +14,12 @@ import updateCurrentHttpIntegrationMutation from '../graphql/mutations/update_cu
 import updateCurrentPrometheusIntegrationMutation from '../graphql/mutations/update_current_prometheus_integration.mutation.graphql';
 import updatePrometheusIntegrationMutation from '../graphql/mutations/update_prometheus_integration.mutation.graphql';
 import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
-import getHttpIntegrationsQuery from '../graphql/queries/get_http_integrations.query.graphql';
+import getHttpIntegrationQuery from '../graphql/queries/get_http_integration.query.graphql';
 import getIntegrationsQuery from '../graphql/queries/get_integrations.query.graphql';
 import service from '../services';
 import {
   updateStoreAfterIntegrationDelete,
   updateStoreAfterIntegrationAdd,
-  updateStoreAfterHttpIntegrationAdd,
 } from '../utils/cache_updates';
 import {
   DELETE_INTEGRATION_ERROR,
@@ -68,33 +67,8 @@ export default {
         };
       },
       update(data) {
-        const { alertManagementIntegrations: { nodes: list = [] } = {} } = data.project || {};
-
-        return {
-          list,
-        };
-      },
-      error(err) {
-        createFlash({ message: err });
-      },
-    },
-    // TODO: we'll need to update the logic to request specific http integration by its id on edit
-    // when BE adds support for it https://gitlab.com/gitlab-org/gitlab/-/issues/321674
-    // currently the request for ALL http integrations is made and on specific integration edit we search it in the list
-    httpIntegrations: {
-      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
-      query: getHttpIntegrationsQuery,
-      variables() {
-        return {
-          projectPath: this.projectPath,
-        };
-      },
-      update(data) {
-        const { alertManagementHttpIntegrations: { nodes: list = [] } = {} } = data.project || {};
-
-        return {
-          list,
-        };
+        const { alertManagementIntegrations: { nodes = [] } = {} } = data.project || {};
+        return nodes;
       },
       error(err) {
         createFlash({ message: err });
@@ -107,9 +81,9 @@ export default {
   data() {
     return {
       isUpdating: false,
-      integrations: {},
-      httpIntegrations: {},
+      integrations: [],
       currentIntegration: null,
+      currentHttpIntegration: null,
       newIntegration: null,
       formVisible: false,
       showSuccessfulCreateAlert: false,
@@ -121,7 +95,7 @@ export default {
       return this.$apollo.queries.integrations.loading;
     },
     canAddIntegration() {
-      return this.multiIntegrations || this.integrations?.list?.length < 2;
+      return this.multiIntegrations || this.integrations.length < 2;
     },
   },
   methods: {
@@ -142,11 +116,6 @@ export default {
           },
           update(store, { data }) {
             updateStoreAfterIntegrationAdd(store, getIntegrationsQuery, data, { projectPath });
-            if (isHttp) {
-              updateStoreAfterHttpIntegrationAdd(store, getHttpIntegrationsQuery, data, {
-                projectPath,
-              });
-            }
           },
         })
         .then(({ data: { httpIntegrationCreate, prometheusIntegrationCreate } = {} } = {}) => {
@@ -253,15 +222,38 @@ export default {
         });
     },
     editIntegration({ id, type }) {
-      let currentIntegration = this.integrations.list.find((integration) => integration.id === id);
-      if (this.isHttp(type)) {
-        const httpIntegrationMappingData = this.httpIntegrations.list.find(
-          (integration) => integration.id === id,
-        );
-        currentIntegration = { ...currentIntegration, ...httpIntegrationMappingData };
-      }
+      const currentIntegration = this.integrations.find((integration) => integration.id === id);
 
-      this.viewIntegration(currentIntegration, tabIndices.viewCredentials);
+      if (this.multiIntegrations && this.isHttp(type)) {
+        this.$apollo.addSmartQuery('currentHttpIntegration', {
+          query: getHttpIntegrationQuery,
+          variables() {
+            return {
+              projectPath: this.projectPath,
+              id,
+            };
+          },
+          update(data) {
+            const {
+              project: {
+                alertManagementHttpIntegrations: { nodes = [{}] },
+              },
+            } = data;
+            return nodes[0];
+          },
+          result() {
+            this.viewIntegration(
+              { ...currentIntegration, ...this.currentHttpIntegration },
+              tabIndices.viewCredentials,
+            );
+          },
+          error() {
+            createFlash({ message: DEFAULT_ERROR });
+          },
+        });
+      } else {
+        this.viewIntegration(currentIntegration, tabIndices.viewCredentials);
+      }
     },
     viewIntegration(integration, tabIndex) {
       this.$apollo
@@ -368,7 +360,7 @@ export default {
     </gl-alert>
 
     <integrations-list
-      :integrations="integrations.list"
+      :integrations="integrations"
       :loading="loading"
       @edit-integration="editIntegration"
       @delete-integration="deleteIntegration"

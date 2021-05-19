@@ -13,7 +13,5 @@ time_frame: <%= time_frame %>
 data_source:
 distribution:
 <%= distribution %>
-# tier:
-# - free
-# - premium
-# - ultimate
+tier:
+<%= tier %>

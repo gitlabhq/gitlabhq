@@ -74,6 +74,21 @@ export default {
       // we need to show the "create from" input.
       this.showCreateFrom = true;
     },
+    shouldShowCreateTagOption(isLoading, matches, query) {
+      // Show the "create tag" option if:
+      return (
+        // we're not currently loading any results, and
+        !isLoading &&
+        // the search query isn't just whitespace, and
+        query.trim() &&
+        // the `matches` object is non-null, and
+        matches &&
+        // the tag name doesn't already exist
+        !matches.tags.list.some(
+          (tagInfo) => tagInfo.name.toUpperCase() === query.toUpperCase().trim(),
+        )
+      );
+    },
   },
   translations: {
     tagName: {
@@ -111,7 +126,7 @@ export default {
         >
           <template #footer="{ isLoading, matches, query }">
             <gl-dropdown-item
-              v-if="!isLoading && matches && matches.tags.totalCount === 0"
+              v-if="shouldShowCreateTagOption(isLoading, matches, query)"
               is-check-item
               :is-checked="tagName === query"
               @click="createTagClicked(query)"

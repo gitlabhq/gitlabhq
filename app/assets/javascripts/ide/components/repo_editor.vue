@@ -1,4 +1,5 @@
 <script>
+import { debounce } from 'lodash';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import {
   EDITOR_TYPE_DIFF,
@@ -34,11 +35,13 @@ import mapRulesToMonaco from '../lib/editorconfig/rules_mapper';
 import { getFileEditorOrDefault } from '../stores/modules/editor/utils';
 import { extractMarkdownImagesFromEntries } from '../stores/utils';
 import { getPathParent, readFileAsDataURL, registerSchema, isTextFile } from '../utils';
+import FileAlert from './file_alert.vue';
 import FileTemplatesBar from './file_templates/bar.vue';
 
 export default {
   name: 'RepoEditor',
   components: {
+    FileAlert,
     ContentViewer,
     DiffViewer,
     FileTemplatesBar,
@@ -57,6 +60,7 @@ export default {
       globalEditor: null,
       modelManager: new ModelManager(),
       isEditorLoading: true,
+      unwatchCiYaml: null,
     };
   },
   computed: {
@@ -74,6 +78,7 @@ export default {
       'currentProjectId',
     ]),
     ...mapGetters([
+      'getAlert',
       'currentMergeRequest',
       'getStagedFile',
       'isEditModeActive',
@@ -82,6 +87,9 @@ export default {
       'getJsonSchemaForPath',
     ]),
     ...mapGetters('fileTemplates', ['showFileTemplatesBar']),
+    alertKey() {
+      return this.getAlert(this.file);
+    },
     fileEditor() {
       return getFileEditorOrDefault(this.fileEditors, this.file.path);
     },
@@ -136,6 +144,16 @@ export default {
     },
   },
   watch: {
+    'file.name': {
+      handler() {
+        this.stopWatchingCiYaml();
+
+        if (this.file.name === '.gitlab-ci.yml') {
+          this.startWatchingCiYaml();
+        }
+      },
+      immediate: true,
+    },
     file(newVal, oldVal) {
       if (oldVal.pending) {
         this.removePendingTab(oldVal);
@@ -216,6 +234,7 @@ export default {
       'removePendingTab',
       'triggerFilesChange',
       'addTempImage',
+      'detectGitlabCiFileAlerts',
     ]),
     ...mapActions('editor', ['updateFileEditor']),
     initEditor() {
@@ -422,6 +441,18 @@ export default {
 
       this.updateFileEditor({ path: this.file.path, data });
     },
+    startWatchingCiYaml() {
+      this.unwatchCiYaml = this.$watch(
+        'file.content',
+        debounce(this.detectGitlabCiFileAlerts, 500),
+      );
+    },
+    stopWatchingCiYaml() {
+      if (this.unwatchCiYaml) {
+        this.unwatchCiYaml();
+        this.unwatchCiYaml = null;
+      }
+    },
   },
   viewerTypes,
   FILE_VIEW_MODE_EDITOR,
@@ -439,9 +470,8 @@ export default {
             role="button"
             data-testid="edit-tab"
             @click.prevent="updateEditor({ viewMode: $options.FILE_VIEW_MODE_EDITOR })"
+            >{{ __('Edit') }}</a
           >
-            {{ __('Edit') }}
-          </a>
         </li>
         <li v-if="previewMode" :class="previewTabCSS">
           <a
@@ -454,7 +484,8 @@ export default {
         </li>
       </ul>
     </div>
-    <file-templates-bar v-if="showFileTemplatesBar(file.name)" />
+    <file-alert v-if="alertKey" :alert-key="alertKey" />
+    <file-templates-bar v-else-if="showFileTemplatesBar(file.name)" />
     <div
       v-show="showEditor"
       ref="editor"

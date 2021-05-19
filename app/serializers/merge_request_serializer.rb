@@ -28,4 +28,4 @@ class MergeRequestSerializer < BaseSerializer
   end
 end
 
-MergeRequestSerializer.prepend_if_ee('EE::MergeRequestSerializer')
+MergeRequestSerializer.prepend_mod_with('MergeRequestSerializer')

@@ -14,7 +14,7 @@ module Gitlab
       private
 
       def validate!(obj)
-        raise ParsingError.new(obj.errors.full_messages.join('\n')) unless obj.valid?
+        raise ParsingError, obj.errors.full_messages.join('\n') unless obj.valid?
       end
 
       def group_from_entry(entry)

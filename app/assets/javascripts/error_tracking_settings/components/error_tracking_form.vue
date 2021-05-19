@@ -70,7 +70,7 @@ export default {
             v-show="connectSuccessful"
             class="js-error-tracking-connect-success gl-ml-2 text-success align-middle"
             :aria-label="__('Projects Successfully Retrieved')"
-            name="check-circle"
+            name="check"
           />
         </div>
       </div>

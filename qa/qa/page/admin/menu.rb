@@ -107,4 +107,4 @@ module QA
   end
 end
 
-QA::Page::Admin::Menu.prepend_if_ee('QA::EE::Page::Admin::Menu')
+QA::Page::Admin::Menu.prepend_mod_with('Page::Admin::Menu', namespace: QA)

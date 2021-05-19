@@ -53,7 +53,7 @@ describe('fetchLogsTree', () => {
     client = {
       readQuery: () => ({
         projectPath: 'gitlab-org/gitlab-foss',
-        escapedRef: 'master',
+        escapedRef: 'main',
         commits: [],
       }),
       writeQuery: jest.fn(),
@@ -71,7 +71,7 @@ describe('fetchLogsTree', () => {
 
   it('calls axios get', () =>
     fetchLogsTree(client, '', '0', resolver).then(() => {
-      expect(axios.get).toHaveBeenCalledWith('/gitlab-org/gitlab-foss/-/refs/master/logs_tree/', {
+      expect(axios.get).toHaveBeenCalledWith('/gitlab-org/gitlab-foss/-/refs/main/logs_tree/', {
         params: { format: 'json', offset: '0' },
       });
     }));
@@ -114,7 +114,7 @@ describe('fetchLogsTree', () => {
       query: expect.anything(),
       data: {
         projectPath: 'gitlab-org/gitlab-foss',
-        escapedRef: 'master',
+        escapedRef: 'main',
         commits: [
           expect.objectContaining({
             __typename: 'LogTreeCommit',

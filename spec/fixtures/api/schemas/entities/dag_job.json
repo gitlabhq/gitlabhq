@@ -3,7 +3,7 @@
   "required": ["name", "scheduling_type"],
   "properties": {
     "name": { "type": "string" },
-    "scheduling_type": { "type": ["string", null] },
+    "scheduling_type": { "type": ["string", "null"] },
     "needs": { "type": "array" }
   },
   "additionalProperties": false

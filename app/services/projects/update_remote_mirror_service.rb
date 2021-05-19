@@ -24,7 +24,7 @@ module Projects
       hard_retry_or_fail(remote_mirror, e.message, tries)
 
       error(e.message)
-    rescue => e
+    rescue StandardError => e
       remote_mirror.hard_fail!(e.message)
       raise e
     end

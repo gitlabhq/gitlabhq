@@ -205,3 +205,33 @@ successfully, you must replicate their data using some other means.
 |[GitLab Pages](../../pages/index.md)                                                                           | [No](https://gitlab.com/groups/gitlab-org/-/epics/589)                  | No                                                                      | No                                                                            |       |
 |[Dependency proxy images](../../../user/packages/dependency_proxy/index.md)                                    | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/259694)              | No                                                                      | No                                                                            | Blocked on [Geo: Secondary Mimicry](https://gitlab.com/groups/gitlab-org/-/epics/1528). Note that replication of this cache is not needed for Disaster Recovery purposes because it can be recreated from external sources. |
 |[Vulnerability Export](../../../user/application_security/vulnerability_report/#export-vulnerability-details)  | [Not planned](https://gitlab.com/groups/gitlab-org/-/epics/3111)        | No                                                                      | Via Object Storage provider if supported. Native Geo support (Beta).          | Not planned because they are ephemeral and sensitive. They can be regenerated on demand. |
+
+#### LFS object replication using the self service framework
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276696) in GitLab 13.12.
+> - [Deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
+> - Not enabled on GitLab.com as Geo is not enabled.
+> - Recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-lfs-object-replication-using-the-self-service-framework).
+
+There can be [risks when disabling released features](../../../user/feature_flags.md#risks-when-disabling-released-features).
+Refer to this feature's version history for more details.
+
+##### Enable or disable LFS object replication using the self service framework
+
+LFS object replication using the self service framework is under development but ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:geo_lfs_object_replication)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:geo_lfs_object_replication)
+```

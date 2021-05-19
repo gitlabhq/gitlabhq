@@ -242,16 +242,36 @@ RSpec.describe Issue do
 
       expect { issue.close }.to change { issue.state_id }.from(open_state).to(closed_state)
     end
+
+    context 'when an argument is provided' do
+      context 'and the argument is a User' do
+        it 'changes closed_by to the given user' do
+          expect { issue.close(user) }.to change { issue.closed_by }.from(nil).to(user)
+        end
+      end
+
+      context 'and the argument is a not a User' do
+        it 'does not change closed_by' do
+          expect { issue.close("test") }.not_to change { issue.closed_by }
+        end
+      end
+    end
+
+    context 'when an argument is not provided' do
+      it 'does not change closed_by' do
+        expect { issue.close }.not_to change { issue.closed_by }
+      end
+    end
   end
 
   describe '#reopen' do
     let(:issue) { create(:issue, project: reusable_project, state: 'closed', closed_at: Time.current, closed_by: user) }
 
-    it 'sets closed_at to nil when an issue is reopend' do
+    it 'sets closed_at to nil when an issue is reopened' do
       expect { issue.reopen }.to change { issue.closed_at }.to(nil)
     end
 
-    it 'sets closed_by to nil when an issue is reopend' do
+    it 'sets closed_by to nil when an issue is reopened' do
       expect { issue.reopen }.to change { issue.closed_by }.from(user).to(nil)
     end
 
@@ -297,7 +317,7 @@ RSpec.describe Issue do
       end
 
       context 'when cross-project in different namespace' do
-        let(:another_namespace) { build(:namespace, path: 'another-namespace') }
+        let(:another_namespace) { build(:namespace, id: non_existing_record_id, path: 'another-namespace') }
         let(:another_namespace_project) { build(:project, path: 'another-project', namespace: another_namespace) }
 
         it 'returns complete path to the issue' do
@@ -1121,10 +1141,36 @@ RSpec.describe Issue do
   end
 
   context "relative positioning" do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:issue1) { create(:issue, project: project, relative_position: nil) }
+    let_it_be(:issue2) { create(:issue, project: project, relative_position: nil) }
+
     it_behaves_like "a class that supports relative positioning" do
       let_it_be(:project) { reusable_project }
       let(:factory) { :issue }
       let(:default_params) { { project: project } }
+    end
+
+    it 'is not blocked for repositioning by default' do
+      expect(issue1.blocked_for_repositioning?).to eq(false)
+    end
+
+    context 'when block_issue_repositioning flag is enabled for group' do
+      before do
+        stub_feature_flags(block_issue_repositioning: group)
+      end
+
+      it 'is blocked for repositioning' do
+        expect(issue1.blocked_for_repositioning?).to eq(true)
+      end
+
+      it 'does not move issues with null position' do
+        payload = [issue1, issue2]
+
+        expect { described_class.move_nulls_to_end(payload) }.to raise_error(Gitlab::RelativePositioning::IssuePositioningDisabled)
+        expect { described_class.move_nulls_to_start(payload) }.to raise_error(Gitlab::RelativePositioning::IssuePositioningDisabled)
+      end
     end
   end
 

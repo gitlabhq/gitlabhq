@@ -23,10 +23,10 @@ module API
 
         # Using a blank component at the beginning of the join we ensure
         # that the resulted path will start with '/'. If the resulted path
-        # does not start with '/', URI::Generic#build will fail
+        # does not start with '/', URI::Generic#new will fail
         path_with_script_name = File.join('', [script_name, path].select(&:present?))
 
-        URI::Generic.build(scheme: protocol, host: host, port: port, path: path_with_script_name).to_s
+        URI::Generic.new(protocol, nil, host, port, nil, path_with_script_name, nil, nil, nil, URI::RFC3986_PARSER, true).to_s
       end
 
       private

@@ -1,0 +1,5 @@
+---
+title: Externalise strings in shared/_links.erb
+merge_request: 58278
+author: nuwe1
+type: other

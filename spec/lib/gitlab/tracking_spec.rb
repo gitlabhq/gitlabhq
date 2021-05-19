@@ -36,6 +36,8 @@ RSpec.describe Gitlab::Tracking do
   end
 
   describe '.event' do
+    let(:namespace) { create(:namespace) }
+
     shared_examples 'delegates to destination' do |klass|
       before do
         allow_any_instance_of(Gitlab::Tracking::Destinations::Snowplow).to receive(:event)
@@ -47,7 +49,6 @@ RSpec.describe Gitlab::Tracking do
 
         project = double(:project)
         user = double(:user)
-        namespace = double(:namespace)
 
         expect(Gitlab::Tracking::StandardContext)
           .to receive(:new)

@@ -18,7 +18,7 @@ RSpec.describe ConfirmEmailWarning do
 
   RSpec::Matchers.define :set_confirm_warning_for do |email|
     match do |response|
-      expect(response).to set_flash.now[:warning].to include("Please check your email (#{email}) to verify that you own this address and unlock the power of CI/CD.")
+      expect(controller).to set_flash.now[:warning].to include("Please check your email (#{email}) to verify that you own this address and unlock the power of CI/CD.")
     end
   end
 

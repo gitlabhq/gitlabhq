@@ -59,5 +59,62 @@ RSpec.describe WhatsNewHelper do
         expect(subject).to be false
       end
     end
+
+    context 'depending on whats_new_variant' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:variant, :result) do
+        :all_tiers    | true
+        :current_tier | true
+        :disabled     | false
+      end
+
+      with_them do
+        it 'returns correct result depending on variant' do
+          allow(Gitlab).to receive(:dev_env_org_or_com?).and_return(true)
+          Gitlab::CurrentSettings.update!(whats_new_variant: ApplicationSetting.whats_new_variants[variant])
+
+          expect(subject).to eq(result)
+        end
+      end
+    end
+  end
+
+  describe '#whats_new_variants' do
+    it 'returns ApplicationSetting.whats_new_variants' do
+      expect(helper.whats_new_variants).to eq(ApplicationSetting.whats_new_variants)
+    end
+  end
+
+  describe '#whats_new_variants_label' do
+    let(:labels) do
+      [
+        helper.whats_new_variants_label('all_tiers'),
+        helper.whats_new_variants_label('current_tier'),
+        helper.whats_new_variants_label('disabled'),
+        helper.whats_new_variants_label(nil)
+      ]
+    end
+
+    it 'returns different labels depending on variant' do
+      expect(labels.uniq.size).to eq(labels.size)
+      expect(labels[3]).to be_nil
+    end
+  end
+
+  describe '#whats_new_variants_description' do
+    let(:descriptions) do
+      [
+        helper.whats_new_variants_description('all_tiers'),
+        helper.whats_new_variants_description('current_tier'),
+        helper.whats_new_variants_description('disabled'),
+        helper.whats_new_variants_description(nil)
+      ]
+    end
+
+    it 'returns different descriptions depending on variant' do
+      expect(descriptions.uniq.size).to eq(descriptions.size)
+      expect(descriptions[3]).to be_nil
+    end
   end
 end

@@ -360,25 +360,29 @@ RSpec.describe QuickActions::InterpretService do
 
     shared_examples 'spend command' do
       it 'populates spend_time: 3600 if content contains /spend 1h' do
-        _, updates, _ = service.execute(content, issuable)
+        freeze_time do
+          _, updates, _ = service.execute(content, issuable)
 
-        expect(updates).to eq(spend_time: {
-                                duration: 3600,
-                                user_id: developer.id,
-                                spent_at: DateTime.current.to_date
-                              })
+          expect(updates).to eq(spend_time: {
+                                  duration: 3600,
+                                  user_id: developer.id,
+                                  spent_at: DateTime.current
+                                })
+        end
       end
     end
 
     shared_examples 'spend command with negative time' do
       it 'populates spend_time: -7200 if content contains -120m' do
-        _, updates, _ = service.execute(content, issuable)
+        freeze_time do
+          _, updates, _ = service.execute(content, issuable)
 
-        expect(updates).to eq(spend_time: {
-                                duration: -7200,
-                                user_id: developer.id,
-                                spent_at: DateTime.current.to_date
-                              })
+          expect(updates).to eq(spend_time: {
+                                  duration: -7200,
+                                  user_id: developer.id,
+                                  spent_at: DateTime.current
+                                })
+        end
       end
 
       it 'returns the spend_time message including the formatted duration and verb' do

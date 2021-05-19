@@ -12,11 +12,11 @@ class BulkImports::Configuration < ApplicationRecord
     allow_nil: true
 
   attr_encrypted :url,
-    key: Settings.attr_encrypted_db_key_base_truncated,
+    key: Settings.attr_encrypted_db_key_base_32,
     mode: :per_attribute_iv,
     algorithm: 'aes-256-gcm'
   attr_encrypted :access_token,
-    key: Settings.attr_encrypted_db_key_base_truncated,
+    key: Settings.attr_encrypted_db_key_base_32,
     mode: :per_attribute_iv,
     algorithm: 'aes-256-gcm'
 end

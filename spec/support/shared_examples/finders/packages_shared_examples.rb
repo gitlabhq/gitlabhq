@@ -20,9 +20,11 @@ end
 
 RSpec.shared_examples 'concerning package statuses' do
   let_it_be(:hidden_package) { create(:maven_package, :hidden, project: project) }
+  let_it_be(:error_package) { create(:maven_package, :error, project: project) }
 
-  context 'hidden packages' do
+  context 'displayable packages' do
     it { is_expected.not_to include(hidden_package) }
+    it { is_expected.to include(error_package) }
   end
 
   context 'with status param' do

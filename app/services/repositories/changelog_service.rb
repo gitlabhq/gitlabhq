@@ -39,7 +39,7 @@ module Repositories
       project,
       user,
       version:,
-      branch: project.default_branch_or_master,
+      branch: project.default_branch_or_main,
       from: nil,
       to: branch,
       date: DateTime.now,

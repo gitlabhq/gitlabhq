@@ -94,7 +94,10 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
     end
   end
 
-  shared_examples 'processing an exception' do
+  describe '.call' do
+    let(:event) { Raven::Event.new(wrapped_value) }
+    let(:result_hash) { described_class.call(event).to_hash }
+
     context 'when there is Sidekiq data' do
       let(:wrapped_value) { { extra: { sidekiq: value } } }
 
@@ -166,32 +169,6 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
         expect(result_hash).to include(value)
         expect(result_hash.dig(:extra, :sidekiq)).to be_nil
       end
-    end
-  end
-
-  describe '.call' do
-    let(:event) { Raven::Event.new(wrapped_value) }
-    let(:result_hash) { described_class.call(event).to_hash }
-
-    it_behaves_like 'processing an exception'
-
-    context 'when followed by #process' do
-      let(:result_hash) { described_class.new.process(described_class.call(event).to_hash) }
-
-      it_behaves_like 'processing an exception'
-    end
-  end
-
-  describe '#process' do
-    let(:event) { Raven::Event.new(wrapped_value) }
-    let(:result_hash) { described_class.new.process(event.to_hash) }
-
-    context 'with sentry_processors_before_send disabled' do
-      before do
-        stub_feature_flags(sentry_processors_before_send: false)
-      end
-
-      it_behaves_like 'processing an exception'
     end
   end
 end

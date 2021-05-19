@@ -41,7 +41,7 @@ RSpec.describe Mutations::MergeRequests::SetWip do
         let(:wip) { false }
 
         it 'removes `wip` from the title' do
-          merge_request.update(title: "WIP: working on it")
+          merge_request.update!(title: "WIP: working on it")
 
           expect(mutated_merge_request).not_to be_work_in_progress
         end

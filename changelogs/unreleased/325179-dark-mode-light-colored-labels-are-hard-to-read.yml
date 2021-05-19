@@ -1,0 +1,5 @@
+---
+title: Fix light label text color in dark mode
+merge_request: 59088
+author:
+type: fixed

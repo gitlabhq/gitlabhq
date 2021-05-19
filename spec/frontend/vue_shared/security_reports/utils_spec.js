@@ -3,9 +3,13 @@ import {
   REPORT_TYPE_SECRET_DETECTION,
   REPORT_FILE_TYPES,
 } from '~/vue_shared/security_reports/constants';
-import { extractSecurityReportArtifacts } from '~/vue_shared/security_reports/utils';
 import {
-  securityReportDownloadPathsQueryResponse,
+  extractSecurityReportArtifactsFromMergeRequest,
+  extractSecurityReportArtifactsFromPipeline,
+} from '~/vue_shared/security_reports/utils';
+import {
+  securityReportMergeRequestDownloadPathsQueryResponse,
+  securityReportPipelineDownloadPathsQueryResponse,
   sastArtifacts,
   secretDetectionArtifacts,
   archiveArtifacts,
@@ -13,7 +17,18 @@ import {
   metadataArtifacts,
 } from './mock_data';
 
-describe('extractSecurityReportArtifacts', () => {
+describe.each([
+  [
+    'extractSecurityReportArtifactsFromMergeRequest',
+    extractSecurityReportArtifactsFromMergeRequest,
+    securityReportMergeRequestDownloadPathsQueryResponse,
+  ],
+  [
+    'extractSecurityReportArtifactsFromPipelines',
+    extractSecurityReportArtifactsFromPipeline,
+    securityReportPipelineDownloadPathsQueryResponse,
+  ],
+])('%s', (funcName, extractFunc, response) => {
   it.each`
     reportTypes                                         | expectedArtifacts
     ${[]}                                               | ${[]}
@@ -27,9 +42,7 @@ describe('extractSecurityReportArtifacts', () => {
   `(
     'returns the expected artifacts given report types $reportTypes',
     ({ reportTypes, expectedArtifacts }) => {
-      expect(
-        extractSecurityReportArtifacts(reportTypes, securityReportDownloadPathsQueryResponse),
-      ).toEqual(expectedArtifacts);
+      expect(extractFunc(reportTypes, response)).toEqual(expectedArtifacts);
     },
   );
 });

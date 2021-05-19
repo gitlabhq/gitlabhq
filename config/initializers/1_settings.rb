@@ -564,11 +564,17 @@ Settings.cron_jobs['ssh_keys_expired_notification_worker'] ||= Settingslogic.new
 Settings.cron_jobs['ssh_keys_expired_notification_worker']['cron'] ||= '0 2 * * *'
 Settings.cron_jobs['ssh_keys_expired_notification_worker']['job_class'] = 'SshKeys::ExpiredNotificationWorker'
 Settings.cron_jobs['namespaces_in_product_marketing_emails_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['namespaces_in_product_marketing_emails_worker']['cron'] ||= '0 9 * * *'
+Settings.cron_jobs['namespaces_in_product_marketing_emails_worker']['cron'] ||= '0 16 * * *'
 Settings.cron_jobs['namespaces_in_product_marketing_emails_worker']['job_class'] = 'Namespaces::InProductMarketingEmailsWorker'
 Settings.cron_jobs['ssh_keys_expiring_soon_notification_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ssh_keys_expiring_soon_notification_worker']['cron'] ||= '0 1 * * *'
 Settings.cron_jobs['ssh_keys_expiring_soon_notification_worker']['job_class'] = 'SshKeys::ExpiringSoonNotificationWorker'
+Settings.cron_jobs['users_deactivate_dormant_users_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['users_deactivate_dormant_users_worker']['cron'] ||= '21,42 0-4 * * *'
+Settings.cron_jobs['users_deactivate_dormant_users_worker']['job_class'] = 'Users::DeactivateDormantUsersWorker'
+Settings.cron_jobs['ci_delete_unit_tests_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['ci_delete_unit_tests_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['ci_delete_unit_tests_worker']['job_class'] = 'Ci::DeleteUnitTestsWorker'
 
 Gitlab.com do
   Settings.cron_jobs['batched_background_migrations_worker'] ||= Settingslogic.new({})
@@ -668,7 +674,7 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/30 * * * *'
   Settings.cron_jobs['elastic_migration_worker']['job_class'] ||= 'Elastic::MigrationWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} 0 * * *"
+  Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} 3 * * * UTC"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
   Settings.cron_jobs['web_application_firewall_metrics_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['web_application_firewall_metrics_worker']['cron'] ||= '0 1 * * 0'
@@ -688,6 +694,12 @@ Gitlab.ee do
   Settings.cron_jobs['vulnerability_historical_statistics_deletion_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['vulnerability_historical_statistics_deletion_worker']['cron'] ||= '15 3 * * *'
   Settings.cron_jobs['vulnerability_historical_statistics_deletion_worker']['job_class'] = 'Vulnerabilities::HistoricalStatistics::DeletionWorker'
+  Settings.cron_jobs['security_create_orchestration_policy_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['security_create_orchestration_policy_worker']['cron'] ||= '*/10 * * * *'
+  Settings.cron_jobs['security_create_orchestration_policy_worker']['job_class'] = 'Security::CreateOrchestrationPolicyWorker'
+  Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker']['cron'] ||= '*/15 * * * *'
+  Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker']['job_class'] = 'Security::OrchestrationPolicyRuleScheduleWorker'
 end
 
 #
@@ -695,6 +707,7 @@ end
 #
 Settings['sidekiq'] ||= Settingslogic.new({})
 Settings['sidekiq']['log_format'] ||= 'default'
+Settings['sidekiq']['routing_rules'] ||= []
 
 #
 # GitLab Shell
@@ -852,6 +865,7 @@ Settings['extra'] ||= Settingslogic.new({})
 Settings.extra['matomo_site_id'] ||= Settings.extra['piwik_site_id'] if Settings.extra['piwik_site_id'].present?
 Settings.extra['matomo_url'] ||= Settings.extra['piwik_url'] if Settings.extra['piwik_url'].present?
 Settings.extra['matomo_disable_cookies'] = false if Settings.extra['matomo_disable_cookies'].nil?
+Settings.extra['maximum_text_highlight_size_kilobytes'] = Settings.extra.fetch('maximum_text_highlight_size_kilobytes', 512).kilobytes
 
 #
 # Rack::Attack settings

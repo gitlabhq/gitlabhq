@@ -4,6 +4,8 @@ module Projects
   class ScheduleBulkRepositoryShardMovesWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     idempotent!
     feature_category :gitaly
     urgency :throttled

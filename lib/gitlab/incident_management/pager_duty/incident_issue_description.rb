@@ -33,7 +33,7 @@ module Gitlab
 
         def incident_created_at
           Time.zone.parse(incident_payload['created_at'])
-        rescue
+        rescue StandardError
           Time.current.utc # PagerDuty provides time in UTC
         end
 

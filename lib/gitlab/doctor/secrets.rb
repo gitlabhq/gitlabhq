@@ -77,7 +77,7 @@ module Gitlab
         true
       rescue OpenSSL::Cipher::CipherError, TypeError
         false
-      rescue => e
+      rescue StandardError => e
         logger.debug "> Something went wrong for #{data.class.name}[#{data.id}].#{attr}: #{e}".color(:red)
 
         false

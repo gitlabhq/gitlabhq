@@ -9,7 +9,7 @@ RSpec.describe GracefulTimeoutHandling, type: :controller do
     skip_before_action :authenticate_user!
 
     def index
-      raise ActiveRecord::QueryCanceled.new
+      raise ActiveRecord::QueryCanceled
     end
   end
 

@@ -19,6 +19,7 @@ resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
     get :failures
     get :status
     get :test_report
+    get :downloadable_artifacts
   end
 
   resources :stages, only: [], param: :name, controller: 'pipelines/stages' do

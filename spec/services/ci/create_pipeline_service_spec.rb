@@ -7,6 +7,7 @@ RSpec.describe Ci::CreatePipelineService do
 
   let_it_be(:project, reload: true) { create(:project, :repository) }
   let_it_be(:user, reload: true) { project.owner }
+
   let(:ref_name) { 'refs/heads/master' }
 
   before do
@@ -99,14 +100,6 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         execute_service
-      end
-
-      describe 'recording a conversion event' do
-        it 'schedules a record conversion event worker' do
-          expect(Experiments::RecordConversionEventWorker).to receive(:perform_async).with(:ci_syntax_templates_b, user.id)
-
-          pipeline
-        end
       end
 
       context 'when merge requests already exist for this source branch' do
@@ -539,7 +532,7 @@ RSpec.describe Ci::CreatePipelineService do
         it 'pull it from Auto-DevOps' do
           pipeline = execute_service
           expect(pipeline).to be_auto_devops_source
-          expect(pipeline.builds.map(&:name)).to match_array(%w[brakeman-sast build code_quality eslint-sast secret_detection_default_branch test])
+          expect(pipeline.builds.map(&:name)).to match_array(%w[brakeman-sast build code_quality eslint-sast secret_detection_default_branch semgrep-sast test])
         end
       end
 

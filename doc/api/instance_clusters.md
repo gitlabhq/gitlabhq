@@ -84,7 +84,7 @@ Example response:
     },
     "provider_gcp": null,
     "management_project": null
-  }
+  },
   {
     "id": 11,
     "name": "cluster-3",

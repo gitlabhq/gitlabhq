@@ -12,7 +12,7 @@
     "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
     "repository_url" => escape_once(@project.container_registry_url),
     "registry_host_url_with_port" => escape_once(registry_config.host_port),
-    "expiration_policy_help_page_path" => help_page_path('user/packages/container_registry/index', anchor: 'expiration-policy'),
+    "expiration_policy_help_page_path" => help_page_path('user/packages/container_registry/index.md', anchor: 'cleanup-policy'),
     "garbage_collection_help_page_path" => help_page_path('administration/packages/container_registry', anchor: 'container-registry-garbage-collection'),
     "run_cleanup_policies_help_page_path" => help_page_path('administration/packages/container_registry', anchor: 'run-the-cleanup-policy-now'),
     "project_path": @project.full_path,

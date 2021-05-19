@@ -1,8 +1,0 @@
----
-name: gitaly_replace_wiki_delete_page
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56495
-rollout_issue_url:
-milestone: '13.10'
-type: development
-group: group::editor
-default_enabled: false

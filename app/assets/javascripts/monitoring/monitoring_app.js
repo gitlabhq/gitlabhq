@@ -12,7 +12,10 @@ export default (props = {}) => {
   if (el && el.dataset) {
     const { metricsDashboardBasePath, ...dataset } = el.dataset;
 
-    const { initState, dataProps } = stateAndPropsFromDataset(dataset);
+    const {
+      initState,
+      dataProps: { hasManagedPrometheus, ...dataProps },
+    } = stateAndPropsFromDataset(dataset);
     const store = createStore(initState);
     const router = createRouter(metricsDashboardBasePath);
 
@@ -21,6 +24,7 @@ export default (props = {}) => {
       el,
       store,
       router,
+      provide: { hasManagedPrometheus },
       data() {
         return {
           dashboardProps: { ...dataProps, ...props },

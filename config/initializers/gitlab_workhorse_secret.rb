@@ -2,7 +2,7 @@
 
 begin
   Gitlab::Workhorse.secret
-rescue
+rescue StandardError
   Gitlab::Workhorse.write_secret
 end
 

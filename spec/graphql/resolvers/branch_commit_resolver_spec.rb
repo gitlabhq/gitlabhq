@@ -8,6 +8,7 @@ RSpec.describe Resolvers::BranchCommitResolver do
   subject(:commit) { resolve(described_class, obj: branch) }
 
   let_it_be(:repository) { create(:project, :repository).repository }
+
   let(:branch) { repository.find_branch('master') }
 
   describe '#resolve' do

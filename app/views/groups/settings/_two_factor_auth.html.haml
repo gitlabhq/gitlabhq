@@ -7,17 +7,17 @@
 %p= s_('Check the %{docs_link_start}documentation%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
 
 .form-group
-  .form-check
-    = f.check_box :require_two_factor_authentication, class: 'form-check-input', data: { qa_selector: 'require_2fa_checkbox' }
-    = f.label :require_two_factor_authentication, class: 'form-check-label' do
-      %span= _('Require all users in this group to setup two-factor authentication')
+  .gl-form-checkbox.custom-control.custom-checkbox
+    = f.check_box :require_two_factor_authentication, class: 'custom-control-input', data: { qa_selector: 'require_2fa_checkbox' }
+    = f.label :require_two_factor_authentication, class: 'custom-control-label' do
+      = _('Require all users in this group to setup two-factor authentication')
 .form-group
   = f.label :two_factor_grace_period, _('Time before enforced'), class: 'label-bold'
   = f.text_field :two_factor_grace_period, class: 'form-control form-control-sm w-auto'
   .form-text.text-muted= _('Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication')
 - unless group.has_parent?
   .form-group
-    .form-check
-      = f.check_box :allow_mfa_for_subgroups, class: 'form-check-input', checked: group.namespace_settings&.allow_mfa_for_subgroups
-      = f.label :allow_mfa_for_subgroups, class: 'form-check-label' do
+    .gl-form-checkbox.custom-control.custom-checkbox
+      = f.check_box :allow_mfa_for_subgroups, class: 'custom-control-input', checked: group.namespace_settings&.allow_mfa_for_subgroups
+      = f.label :allow_mfa_for_subgroups, class: 'custom-control-label' do
         = _('Allow subgroups to set up their own two-factor authentication rules')

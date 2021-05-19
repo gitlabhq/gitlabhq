@@ -44,7 +44,7 @@ def create_tokens
 
   begin
     File.delete(secret_file) if file_secret_key
-  rescue => e
+  rescue StandardError => e
     warn "Error deleting useless .secret file: #{e}"
   end
 end

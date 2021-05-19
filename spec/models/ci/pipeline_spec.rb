@@ -68,14 +68,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     describe '#downloadable_artifacts' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:downloadable_artifact) { create(:ci_job_artifact, :codequality, job: build) }
+      let_it_be(:expired_artifact) { create(:ci_job_artifact, :junit, :expired, job: build) }
+      let_it_be(:undownloadable_artifact) { create(:ci_job_artifact, :trace, job: build) }
 
-      it 'returns downloadable artifacts that have not expired' do
-        downloadable_artifact = create(:ci_job_artifact, :codequality, job: build)
-        _expired_artifact = create(:ci_job_artifact, :junit, :expired, job: build)
-        _undownloadable_artifact = create(:ci_job_artifact, :trace, job: build)
+      context 'when artifacts are locked' do
+        it 'returns downloadable artifacts including locked artifacts' do
+          expect(pipeline.downloadable_artifacts).to contain_exactly(downloadable_artifact, expired_artifact)
+        end
+      end
 
-        expect(pipeline.downloadable_artifacts).to contain_exactly(downloadable_artifact)
+      context 'when artifacts are unlocked' do
+        it 'returns only downloadable artifacts not expired' do
+          expired_artifact.job.pipeline.unlocked!
+
+          expect(pipeline.reload.downloadable_artifacts).to contain_exactly(downloadable_artifact)
+        end
       end
     end
   end
@@ -1939,6 +1948,30 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         expect(pipeline.modified_paths).to match(merge_request.modified_paths)
       end
     end
+
+    context 'when source is an external pull request' do
+      let(:pipeline) do
+        create(:ci_pipeline, source: :external_pull_request_event, external_pull_request: external_pull_request)
+      end
+
+      let(:external_pull_request) do
+        create(:external_pull_request, project: project, target_sha: '281d3a7', source_sha: '498214d')
+      end
+
+      it 'returns external pull request modified paths' do
+        expect(pipeline.modified_paths).to match(external_pull_request.modified_paths)
+      end
+
+      context 'when the FF ci_modified_paths_of_external_prs is disabled' do
+        before do
+          stub_feature_flags(ci_modified_paths_of_external_prs: false)
+        end
+
+        it 'returns nil' do
+          expect(pipeline.modified_paths).to be_nil
+        end
+      end
+    end
   end
 
   describe '#all_worktree_paths' do
@@ -3201,18 +3234,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       expect(pipeline.messages.map(&:content)).to contain_exactly('The error message')
     end
-
-    context 'when feature flag ci_store_pipeline_messages is disabled' do
-      before do
-        stub_feature_flags(ci_store_pipeline_messages: false)
-      end
-
-      it 'does not add pipeline error message' do
-        pipeline.add_error_message('The error message')
-
-        expect(pipeline.messages).to be_empty
-      end
-    end
   end
 
   describe '#has_yaml_errors?' do
@@ -4303,17 +4324,71 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe 'reset_ancestor_bridges!' do
-    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+  describe '#reset_source_bridge!' do
+    let(:pipeline) { create(:ci_pipeline, :created, project: project) }
+
+    subject(:reset_bridge) { pipeline.reset_source_bridge!(project.owner) }
+
+    # This whole block will be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/329194
+    # It contains some duplicate checks.
+    context 'when the FF ci_reset_bridge_with_subsequent_jobs is disabled' do
+      before do
+        stub_feature_flags(ci_reset_bridge_with_subsequent_jobs: false)
+      end
+
+      context 'when the pipeline is a child pipeline and the bridge is depended' do
+        let!(:parent_pipeline) { create(:ci_pipeline) }
+        let!(:bridge) { create_bridge(parent_pipeline, pipeline, true) }
+
+        it 'marks source bridge as pending' do
+          reset_bridge
+
+          expect(bridge.reload).to be_pending
+        end
+
+        context 'when the parent pipeline has subsequent jobs after the bridge' do
+          let!(:after_bridge_job) { create(:ci_build, :skipped, pipeline: parent_pipeline, stage_idx: bridge.stage_idx + 1) }
+
+          it 'does not touch subsequent jobs of the bridge' do
+            reset_bridge
+
+            expect(after_bridge_job.reload).to be_skipped
+          end
+        end
+
+        context 'when the parent pipeline has a dependent upstream pipeline' do
+          let!(:upstream_bridge) do
+            create_bridge(create(:ci_pipeline, project: create(:project)), parent_pipeline, true)
+          end
+
+          it 'marks all source bridges as pending' do
+            reset_bridge
+
+            expect(bridge.reload).to be_pending
+            expect(upstream_bridge.reload).to be_pending
+          end
+        end
+      end
+    end
 
     context 'when the pipeline is a child pipeline and the bridge is depended' do
       let!(:parent_pipeline) { create(:ci_pipeline) }
       let!(:bridge) { create_bridge(parent_pipeline, pipeline, true) }
 
       it 'marks source bridge as pending' do
-        pipeline.reset_ancestor_bridges!
+        reset_bridge
 
         expect(bridge.reload).to be_pending
+      end
+
+      context 'when the parent pipeline has subsequent jobs after the bridge' do
+        let!(:after_bridge_job) { create(:ci_build, :skipped, pipeline: parent_pipeline, stage_idx: bridge.stage_idx + 1) }
+
+        it 'marks subsequent jobs of the bridge as processable' do
+          reset_bridge
+
+          expect(after_bridge_job.reload).to be_created
+        end
       end
 
       context 'when the parent pipeline has a dependent upstream pipeline' do
@@ -4322,7 +4397,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         end
 
         it 'marks all source bridges as pending' do
-          pipeline.reset_ancestor_bridges!
+          reset_bridge
 
           expect(bridge.reload).to be_pending
           expect(upstream_bridge.reload).to be_pending
@@ -4335,7 +4410,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let!(:bridge) { create_bridge(parent_pipeline, pipeline, false) }
 
       it 'does not touch source bridge' do
-        pipeline.reset_ancestor_bridges!
+        reset_bridge
 
         expect(bridge.reload).to be_success
       end
@@ -4346,7 +4421,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         end
 
         it 'does not touch any source bridge' do
-          pipeline.reset_ancestor_bridges!
+          reset_bridge
 
           expect(bridge.reload).to be_success
           expect(upstream_bridge.reload).to be_success

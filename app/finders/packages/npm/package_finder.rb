@@ -14,6 +14,7 @@ module Packages
       def execute
         base.npm
             .with_name(@package_name)
+            .installable
             .last_of_each_version
             .preload_files
       end

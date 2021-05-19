@@ -34,7 +34,7 @@ describe('MRWidgetHeader', () => {
             divergedCommitsCount: 12,
             sourceBranch: 'mr-widget-refactor',
             sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
-            targetBranch: 'master',
+            targetBranch: 'main',
             statusPath: 'abc',
           },
         });
@@ -48,7 +48,7 @@ describe('MRWidgetHeader', () => {
             divergedCommitsCount: 0,
             sourceBranch: 'mr-widget-refactor',
             sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
-            targetBranch: 'master',
+            targetBranch: 'main',
             statusPath: 'abc',
           },
         });
@@ -64,14 +64,14 @@ describe('MRWidgetHeader', () => {
             divergedCommitsCount: 1,
             sourceBranch: 'mr-widget-refactor',
             sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
-            targetBranch: 'master',
-            targetBranchPath: '/foo/bar/master',
+            targetBranch: 'main',
+            targetBranchPath: '/foo/bar/main',
             statusPath: 'abc',
           },
         });
 
         expect(wrapper.vm.commitsBehindText).toBe(
-          'The source branch is <a href="/foo/bar/master">1 commit behind</a> the target branch',
+          'The source branch is <a href="/foo/bar/main">1 commit behind</a> the target branch',
         );
       });
 
@@ -81,14 +81,14 @@ describe('MRWidgetHeader', () => {
             divergedCommitsCount: 2,
             sourceBranch: 'mr-widget-refactor',
             sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
-            targetBranch: 'master',
-            targetBranchPath: '/foo/bar/master',
+            targetBranch: 'main',
+            targetBranchPath: '/foo/bar/main',
             statusPath: 'abc',
           },
         });
 
         expect(wrapper.vm.commitsBehindText).toBe(
-          'The source branch is <a href="/foo/bar/master">2 commits behind</a> the target branch',
+          'The source branch is <a href="/foo/bar/main">2 commits behind</a> the target branch',
         );
       });
     });
@@ -105,7 +105,7 @@ describe('MRWidgetHeader', () => {
             sourceBranchRemoved: false,
             targetBranchPath: 'foo/bar/commits-path',
             targetBranchTreePath: 'foo/bar/tree/path',
-            targetBranch: 'master',
+            targetBranch: 'main',
             isOpen: true,
             emailPatchesPath: '/mr/email-patches',
             plainDiffPath: '/mr/plainDiffPath',
@@ -125,7 +125,7 @@ describe('MRWidgetHeader', () => {
       });
 
       it('renders target branch', () => {
-        expect(wrapper.find('.js-target-branch').text().trim()).toBe('master');
+        expect(wrapper.find('.js-target-branch').text().trim()).toBe('main');
       });
     });
 
@@ -138,7 +138,7 @@ describe('MRWidgetHeader', () => {
         sourceBranchRemoved: false,
         targetBranchPath: 'foo/bar/commits-path',
         targetBranchTreePath: 'foo/bar/tree/path',
-        targetBranch: 'master',
+        targetBranch: 'main',
         isOpen: true,
         canPushToSourceBranch: true,
         emailPatchesPath: '/mr/email-patches',
@@ -227,7 +227,7 @@ describe('MRWidgetHeader', () => {
             sourceBranchRemoved: false,
             targetBranchPath: 'foo/bar/commits-path',
             targetBranchTreePath: 'foo/bar/tree/path',
-            targetBranch: 'master',
+            targetBranch: 'main',
             isOpen: false,
             emailPatchesPath: '/mr/email-patches',
             plainDiffPath: '/mr/plainDiffPath',
@@ -257,7 +257,7 @@ describe('MRWidgetHeader', () => {
             sourceBranchRemoved: false,
             targetBranchPath: 'foo/bar/commits-path',
             targetBranchTreePath: 'foo/bar/tree/path',
-            targetBranch: 'master',
+            targetBranch: 'main',
             isOpen: true,
             emailPatchesPath: '/mr/email-patches',
             plainDiffPath: '/mr/plainDiffPath',
@@ -281,7 +281,7 @@ describe('MRWidgetHeader', () => {
             sourceBranchRemoved: false,
             targetBranchPath: 'foo/bar/commits-path',
             targetBranchTreePath: 'foo/bar/tree/path',
-            targetBranch: 'master',
+            targetBranch: 'main',
             isOpen: true,
             emailPatchesPath: '/mr/email-patches',
             plainDiffPath: '/mr/plainDiffPath',

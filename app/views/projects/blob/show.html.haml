@@ -1,6 +1,8 @@
 - breadcrumb_title "Repository"
 - page_title @blob.path, @ref
 - signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.full_path, project_id: @project.path, id: @last_commit, limit: 1)
+- content_for :prefetch_asset_tags do
+  - webpack_preload_asset_tag('monaco', prefetch: true)
 
 .js-signature-container{ data: { 'signatures-path': signatures_path } }
 

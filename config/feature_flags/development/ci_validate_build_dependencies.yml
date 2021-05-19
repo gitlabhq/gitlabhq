@@ -1,8 +1,0 @@
----
-name: ci_validate_build_dependencies
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14009
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/257852
-milestone: '10.3'
-type: development
-group: group::continuous integration
-default_enabled: true

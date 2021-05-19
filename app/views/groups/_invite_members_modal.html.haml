@@ -1,4 +1,4 @@
-- if can_invite_members_for_group?(group)
+- if can?(current_user, :admin_group_member, group)
   .js-invite-members-modal{ data: { id: group.id,
     name: group.name,
     is_project: 'false',

@@ -29,7 +29,7 @@ module QA
 
             def click_user(username)
               within_element(:user_row_content, text: username) do
-                click_element(:username_link)
+                click_link(username)
               end
             end
           end

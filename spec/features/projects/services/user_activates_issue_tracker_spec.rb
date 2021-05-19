@@ -87,6 +87,6 @@ RSpec.describe 'User activates issue tracker', :js do
   it_behaves_like 'external issue tracker activation', tracker: 'Redmine'
   it_behaves_like 'external issue tracker activation', tracker: 'YouTrack', skip_new_issue_url: true
   it_behaves_like 'external issue tracker activation', tracker: 'Bugzilla'
-  it_behaves_like 'external issue tracker activation', tracker: 'Custom Issue Tracker'
+  it_behaves_like 'external issue tracker activation', tracker: 'Custom issue tracker'
   it_behaves_like 'external issue tracker activation', tracker: 'EWM', skip_test: true
 end

@@ -1,13 +1,13 @@
 import { GlProgressBar } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import LearnGitlabA from '~/pages/projects/learn_gitlab/components/learn_gitlab_a.vue';
-import { testActions } from './mock_data';
+import { testActions, testSections } from './mock_data';
 
 describe('Learn GitLab Design A', () => {
   let wrapper;
 
   const createWrapper = () => {
-    wrapper = mount(LearnGitlabA, { propsData: { actions: testActions } });
+    wrapper = mount(LearnGitlabA, { propsData: { actions: testActions, sections: testSections } });
   };
 
   beforeEach(() => {

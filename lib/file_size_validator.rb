@@ -62,7 +62,7 @@ class FileSizeValidator < ActiveModel::EachValidator
       default_message = options[MESSAGES[key]]
       errors_options[:message] ||= default_message if default_message
 
-      record.errors.add(attribute, MESSAGES[key], errors_options)
+      record.errors.add(attribute, MESSAGES[key], **errors_options)
     end
   end
 

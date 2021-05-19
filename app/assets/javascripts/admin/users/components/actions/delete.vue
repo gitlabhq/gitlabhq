@@ -14,12 +14,22 @@ export default {
       type: Object,
       required: true,
     },
+    oncallSchedules: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
 };
 </script>
 
 <template>
-  <shared-delete-action modal-type="delete" :username="username" :paths="paths">
+  <shared-delete-action
+    modal-type="delete"
+    :username="username"
+    :paths="paths"
+    :oncall-schedules="oncallSchedules"
+  >
     <slot></slot>
   </shared-delete-action>
 </template>

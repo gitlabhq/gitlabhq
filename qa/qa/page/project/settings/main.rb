@@ -57,4 +57,4 @@ module QA
   end
 end
 
-QA::Page::Project::Settings::Main.prepend_if_ee("QA::EE::Page::Project::Settings::Main")
+QA::Page::Project::Settings::Main.prepend_mod_with("Page::Project::Settings::Main", namespace: QA)

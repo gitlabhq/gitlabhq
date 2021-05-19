@@ -84,13 +84,23 @@ class Member < ApplicationRecord
     is_external_invite = arel_table[:user_id].eq(nil).and(arel_table[:invite_token].not_eq(nil))
     user_is_blocked = User.arel_table[:state].eq(:blocked)
 
-    user_ok = Arel::Nodes::Grouping.new(is_external_invite).or(user_is_blocked)
-
     left_join_users
-      .where(user_ok)
+      .where(user_is_blocked)
+      .where.not(is_external_invite)
       .non_request
       .non_minimal_access
       .reorder(nil)
+  end
+
+  scope :connected_to_user, -> { where.not(user_id: nil) }
+
+  # This scope is exclusively used to get the members
+  # that can possibly have project_authorization records
+  # to projects/groups.
+  scope :authorizable, -> do
+    connected_to_user
+      .non_request
+      .non_minimal_access
   end
 
   # Like active, but without invites. For when a User is required.
@@ -140,7 +150,8 @@ class Member < ApplicationRecord
   scope :distinct_on_user_with_max_access_level, -> do
     distinct_members = select('DISTINCT ON (user_id, invite_email) *')
                        .order('user_id, invite_email, access_level DESC, expires_at DESC, created_at ASC')
-    Member.from(distinct_members, :members)
+
+    from(distinct_members, :members)
   end
 
   scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
@@ -560,4 +571,4 @@ class Member < ApplicationRecord
   end
 end
 
-Member.prepend_if_ee('EE::Member')
+Member.prepend_mod_with('Member')

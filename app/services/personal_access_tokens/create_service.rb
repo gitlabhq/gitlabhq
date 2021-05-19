@@ -45,4 +45,4 @@ module PersonalAccessTokens
   end
 end
 
-PersonalAccessTokens::CreateService.prepend_if_ee('EE::PersonalAccessTokens::CreateService')
+PersonalAccessTokens::CreateService.prepend_mod_with('PersonalAccessTokens::CreateService')

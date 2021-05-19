@@ -151,6 +151,24 @@ Adding a public deploy key does not immediately expose any repository to it. Pub
 deploy keys enable access from other systems, but access is not given to any project
 until a project maintainer chooses to make use of it.
 
+## How to disable deploy keys
+
+[Project maintainers and owners](../../permissions.md#project-members-permissions)
+can remove or disable a deploy key for a project repository:
+
+1. Navigate to the project's **Settings > Repository** page.
+1. Expand the **Deploy keys** section.
+1. Select the **{remove}** or **{cancel}** button.
+
+NOTE:
+If anything relies on the removed deploy key, it will stop working once removed.
+
+If the key is **publicly accessible**, it will be removed from the project, but still available under **Publicly accessible deploy keys**.
+
+If the key is **privately accessible** and only in use by this project, it will deleted.
+
+If the key is **privately accessible** and in use by other projects, it will be removed from the project, but still available under **Privately accessible deploy keys**.
+
 ## Troubleshooting
 
 ### Deploy key cannot push to a protected branch
@@ -158,7 +176,7 @@ until a project maintainer chooses to make use of it.
 If the owner of this deploy key doesn't have access to a [protected
 branch](../protected_branches.md), then this deploy key doesn't have access to
 the branch either. In addition to this, choosing the **No one** value in
-[the "Allowed to push" section](../protected_branches.md#configuring-protected-branches)
+[the "Allowed to push" section](../protected_branches.md#configure-a-protected-branch)
 means that no users **and** no services using deploy keys can push to that selected branch.
 
 Refer to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30769) for more information.

@@ -47,7 +47,7 @@ RSpec.describe 'projects/settings/operations/show' do
         render
 
         expect(rendered).to have_content _('Error tracking')
-        expect(rendered).to have_content _('To link Sentry to GitLab, enter your Sentry URL and Auth Token')
+        expect(rendered).to have_content _('Link Sentry to GitLab to discover and view the errors your application generates.')
       end
     end
   end

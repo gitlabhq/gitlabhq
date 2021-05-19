@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::AlertManagement::PrometheusIntegration::Create do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
+
   let(:args) { { project_path: project.full_path, active: true, api_url: 'http://prometheus.com/' } }
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_project) }

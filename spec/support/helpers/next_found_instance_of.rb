@@ -22,7 +22,7 @@ module NextFoundInstanceOf
   private
 
   def check_if_active_record!(klass)
-    raise ArgumentError.new(ERROR_MESSAGE) unless klass < ActiveRecord::Base
+    raise ArgumentError, ERROR_MESSAGE unless klass < ActiveRecord::Base
   end
 
   def stub_allocate(target, klass)

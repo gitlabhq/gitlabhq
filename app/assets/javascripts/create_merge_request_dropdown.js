@@ -42,7 +42,7 @@ export default class CreateMergeRequestDropdown {
     this.refInput = this.wrapperEl.querySelector('.js-ref');
     this.refMessage = this.wrapperEl.querySelector('.js-ref-message');
     this.unavailableButton = this.wrapperEl.querySelector('.unavailable');
-    this.unavailableButtonSpinner = this.unavailableButton.querySelector('.spinner');
+    this.unavailableButtonSpinner = this.unavailableButton.querySelector('.gl-spinner');
     this.unavailableButtonText = this.unavailableButton.querySelector('.text');
 
     this.branchCreated = false;

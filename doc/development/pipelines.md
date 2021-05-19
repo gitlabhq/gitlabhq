@@ -424,31 +424,85 @@ This experiment is only enabled when the CI/CD variable `RSPEC_FAIL_FAST_ENABLED
 The test files related to the Merge Request are determined using the [`test_file_finder`](https://gitlab.com/gitlab-org/ci-cd/test_file_finder) gem.
 We are using a custom mapping between source file to test files, maintained in the `tests.yml` file.
 
+### RSpec minimal job experiment
+
+As part of the objective to improve overall pipeline duration, we are experimenting with a minimal set of RSpec tests.
+The purpose of this experiment is to verify if we are able to run a minimal set of RSpec tests in a Merge Request pipeline,
+without resulting in increased number of broken master.
+
+To identify the minimal set of tests needed, we use [Crystalball gem](https://github.com/toptal/crystalball) to create a test mapping.
+The test mapping contains a map of each source files to a list of test files which is dependent of the source file.
+This mapping is currently generated using a combination of test coverage tracing and a static mapping.
+In the `detect-tests` job, we use this mapping to identify the minimal tests needed for the current Merge Request.
+
+In this experiment, each `rspec` job is accompanied with a `minimal` version.
+For example, `rspec unit` job has a corresponding `rspec unit minimal` job.
+During the experiment, each Merge Request pipeline will contain both versions of the job, running in parallel.
+
+To illustrate this:
+
+```mermaid
+graph LR
+    A --"artifact: list of test files"--> C1 & D1 & E1 & F1
+
+    subgraph "prepare stage";
+        A["detect-tests"];
+    end
+
+    subgraph "test stage";
+        C["rspec migration"];
+        C1["rspec migration minimal"];
+        D["rspec unit"];
+        D1["rspec unit minimal"];
+        E["rspec integration"];
+        E1["rspec integration minimal"];
+        F["rspec system"];
+        F1["rspec system minimal"];
+    end
+```
+
+The result of both set of jobs in the pipeline is then compared to identify any false positive.
+A list of such pipeline can be found in [Sisense](https://app.periscopedata.com/app/gitlab/496118/Engineering-Productivity-Sandbox?widget=10492739&udv=833427).
+
+A false positive is defined as a pipeline where the `minimal` jobs passed, but the non-`minimal` jobs failed.
+This indicates that the changeset resulted in a test failure, which was not detected by the `minimal` jobs.
+Consequently, this signifies a gap in the test mapping used, which would need to be rectified.
+
+#### Findings
+
+After a round of the experiment done in December 2020,
+we discovered that it was challenging to achieve a mapping that gives high confidence at the moment,
+because of 2 reasons:
+
+- Each identified gap in the test mapping is unique, each needing its own investigation and improvement to the creation of the test mapping.
+- There is a large number of flaky tests which added a lot of noise in the data, slowing down the investigation process.
+
 ### PostgreSQL versions testing
 
-Even though [Omnibus defaults to PG12 for new installs and upgrades](https://docs.gitlab.com/omnibus/package-information/postgresql_versions.html),
-our test suite is currently running against PG11, since GitLab.com still runs on PG11.
+Our test suite runs against PG12 as GitLab.com runs on PG12 and
+[Omnibus defaults to PG12 for new installs and upgrades](https://docs.gitlab.com/omnibus/package-information/postgresql_versions.html),
+Our test suite is currently running against PG11, since GitLab.com still runs on PG11.
 
-We do run our test suite against PG12 on nightly scheduled pipelines as well as upon specific
-database library changes in MRs and `master` pipelines (with the `rspec db-library-code pg12` job).
+We do run our test suite against PG11 on nightly scheduled pipelines as well as upon specific
+database library changes in MRs and `master` pipelines (with the `rspec db-library-code pg11` job).
 
 #### Current versions testing
 
 | Where? | PostgreSQL version |
 | ------ | ------------------ |
-| MRs    | 11, 12 for DB library changes |
-| `master` (non-scheduled pipelines) | 11, 12 for DB library changes |
-| 2-hourly scheduled pipelines | 11, 12 for DB library changes |
-| `nightly` scheduled pipelines | 11, 12 |
+| MRs    | 12, 11 for DB library changes |
+| `master` (non-scheduled pipelines) | 12, 11 for DB library changes |
+| 2-hourly scheduled pipelines | 12, 11 for DB library changes |
+| `nightly` scheduled pipelines | 12, 11 |
 
 #### Long-term plan
 
 We follow the [PostgreSQL versions shipped with Omnibus GitLab](https://docs.gitlab.com/omnibus/package-information/postgresql_versions.html):
 
-| PostgreSQL version | 13.7 (December 2020) | 13.8 (January 2021) | 13.9 (February 2021) | 13.10 (March 2021) | 13.11 (April 2021) | 14.0 (May 2021?) |
-| -------------------| -------------------- | ------------------- | -------------------- | ------------------ | ------------------ | ---------------- |
-| PG11               | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` |
-| PG12               | `nightly`            | `nightly`           | `nightly`           | `nightly`           | `nightly`           | `nightly`       |
+| PostgreSQL version | 13.11 (April 2021)     | 13.12 (May 2021)       | 14.0 (June 2021?)      |
+| -------------------| ---------------------- | ---------------------- | ---------------------- |
+| PG12               | `nightly`              | MRs/`2-hour`/`nightly` | MRs/`2-hour`/`nightly` |
+| PG11               | MRs/`2-hour`/`nightly` | `nightly`              | `nightly`              |
 
 ### Test jobs
 
@@ -494,7 +548,7 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 
 1. All jobs must only pull caches by default.
 1. All jobs must be able to pass with an empty cache. In other words, caches are only there to speed up jobs.
-1. We currently have several different caches defined in
+1. We currently have several different cache definitions defined in
    [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml),
    with fixed keys:
    - `.setup-test-env-cache`
@@ -505,17 +559,15 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
    - `.qa-cache`
    - `.yarn-cache`
    - `.assets-compile-cache` (the key includes `${NODE_ENV}` so it's actually two different caches).
+1. These cache definitions are composed of [multiple atomic caches](../ci/yaml/README.md#multiple-caches).
 1. Only 6 specific jobs, running in 2-hourly scheduled pipelines, are pushing (i.e. updating) to the caches:
    - `update-setup-test-env-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
-   - `update-rails-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-static-analysis-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
-   - `update-coverage-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
-   - `update-danger-review-cache`, defined in [`.gitlab/ci/review.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/review.gitlab-ci.yml).
    - `update-qa-cache`, defined in [`.gitlab/ci/qa.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/qa.gitlab-ci.yml).
    - `update-assets-compile-production-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-assets-compile-test-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-yarn-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
-1. These jobs run in merge requests whose title include `UPDATE CACHE`.
+1. These jobs can also be forced to run in merge requests whose title include `UPDATE CACHE` (this can be useful to warm the caches in a MR that updates the cache keys).
 
 ### Artifacts strategy
 
@@ -539,12 +591,12 @@ The `CI_PRE_CLONE_SCRIPT` is currently defined as a project CI/CD variable:
 (
   echo "Downloading archived master..."
   wget -O /tmp/gitlab.tar.gz https://storage.googleapis.com/gitlab-ci-git-repo-cache/project-278964/gitlab-master-shallow.tar.gz
-  
+
   if [ ! -f /tmp/gitlab.tar.gz ]; then
       echo "Repository cache not available, cloning a new directory..."
       exit
   fi
-  
+
   rm -rf $CI_PROJECT_DIR
   echo "Extracting tarball into $CI_PROJECT_DIR..."
   mkdir -p $CI_PROJECT_DIR

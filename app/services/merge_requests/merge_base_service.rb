@@ -61,7 +61,7 @@ module MergeRequests
 
     def squash_sha!
       params[:merge_request] = merge_request
-      squash_result = ::MergeRequests::SquashService.new(project, current_user, params).execute
+      squash_result = ::MergeRequests::SquashService.new(project: project, current_user: current_user, params: params).execute
 
       case squash_result[:status]
       when :success
@@ -73,4 +73,4 @@ module MergeRequests
   end
 end
 
-MergeRequests::MergeBaseService.prepend_if_ee('EE::MergeRequests::MergeBaseService')
+MergeRequests::MergeBaseService.prepend_mod_with('MergeRequests::MergeBaseService')

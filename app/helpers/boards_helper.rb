@@ -10,7 +10,7 @@ module BoardsHelper
       boards_endpoint: @boards_endpoint,
       lists_endpoint: board_lists_path(board),
       board_id: board.id,
-      disabled: (!can?(current_user, :create_non_backlog_issues, board)).to_s,
+      disabled: board.disabled_for?(current_user).to_s,
       root_path: root_path,
       full_path: full_path,
       bulk_update_path: @bulk_issues_path,
@@ -89,6 +89,10 @@ module BoardsHelper
     @current_board_parent ||= @group || @project
   end
 
+  def current_board_namespace
+    @current_board_namespace = board.group_board? ? @group : @project.namespace
+  end
+
   def can_update?
     can?(current_user, :admin_issue, board)
   end
@@ -136,4 +140,4 @@ module BoardsHelper
   end
 end
 
-BoardsHelper.prepend_if_ee('EE::BoardsHelper')
+BoardsHelper.prepend_mod_with('BoardsHelper')

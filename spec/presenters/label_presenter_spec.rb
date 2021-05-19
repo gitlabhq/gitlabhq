@@ -7,6 +7,7 @@ RSpec.describe LabelPresenter do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
+
   let(:label) { build_stubbed(:label, project: project).present(issuable_subject: project) }
   let(:group_label) { build_stubbed(:group_label, group: group).present(issuable_subject: project) }
 

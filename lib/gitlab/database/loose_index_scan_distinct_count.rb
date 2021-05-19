@@ -11,7 +11,7 @@ module Gitlab
     # This query will read each element in the index matching the project_id filter.
     # If for a project_id has 100_000 issues, all 100_000 elements will be read.
     #
-    # A loose index scan will read only one entry from the index for each project_id to reduce the number of disk reads.
+    # A loose index scan will only read one entry from the index for each project_id to reduce the number of disk reads.
     #
     # Usage:
     #
@@ -94,7 +94,7 @@ module Gitlab
         elsif column.is_a?(Arel::Attributes::Attribute)
           column
         else
-          raise ColumnConfigurationError.new("Cannot transform the column: #{column.inspect}, please provide the column name as string")
+          raise ColumnConfigurationError, "Cannot transform the column: #{column.inspect}, please provide the column name as string"
         end
       end
     end

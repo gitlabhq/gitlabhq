@@ -51,7 +51,7 @@ module Clusters
 
       def remove_pod
         helm_api.delete_pod!(pod_name)
-      rescue
+      rescue StandardError
         # no-op
       end
 

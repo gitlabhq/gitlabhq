@@ -12,7 +12,7 @@ module Packages
         .including_build_info
         .including_project_route
         .including_tags
-        .processed
+        .displayable
         .find(@package_id)
     end
   end

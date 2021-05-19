@@ -53,15 +53,13 @@ RSpec.describe 'DevOps Report page', :js do
     end
 
     context 'when there is data to display' do
-      it 'shows numbers for each metric' do
+      it 'shows the DevOps Score app' do
         stub_application_setting(usage_ping_enabled: true)
         create(:dev_ops_report_metric)
 
         visit admin_dev_ops_report_path
 
-        expect(page).to have_content(
-          'Issues created per active user 1.2 You 9.3 Lead 13.3%'
-        )
+        expect(page).to have_selector('[data-testid="devops-score-app"]')
       end
     end
   end

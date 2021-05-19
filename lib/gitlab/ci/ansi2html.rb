@@ -30,6 +30,8 @@ module Gitlab
         Converter.new.convert(ansi, state)
       end
 
+      Result = Struct.new(:html, :state, :append, :truncated, :offset, :size, :total, keyword_init: true) # rubocop:disable Lint/StructNewOverride
+
       class Converter
         def on_0(_)
           reset
@@ -278,9 +280,7 @@ module Gitlab
 
           close_open_tags
 
-          # TODO: replace OpenStruct with a better type
-          # https://gitlab.com/gitlab-org/gitlab/issues/34305
-          OpenStruct.new(
+          Ansi2html::Result.new(
             html: @out.force_encoding(Encoding.default_external),
             state: state,
             append: append,

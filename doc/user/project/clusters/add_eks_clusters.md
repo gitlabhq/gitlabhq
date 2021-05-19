@@ -41,9 +41,9 @@ For example, the following policy document allows assuming a role whose name sta
 }
 ```
 
-### Administration settings
+### Configure Amazon authentication
 
-Generate an access key for the IAM user, and configure GitLab with the credentials:
+To configure Amazon authentication in GitLab, generate an access key for the IAM user in the Amazon AWS console, and following the steps below.
 
 1. Navigate to **Admin Area > Settings > General** and expand the **Amazon EKS** section.
 1. Check **Enable Amazon EKS integration**.
@@ -232,7 +232,7 @@ sequenceDiagram
 First, GitLab must obtain an initial set of credentials to communicate with the AWS API.
 These credentials can be retrieved in one of two ways:
 
-- Statically through the [Administration settings](#administration-settings).
+- Statically through the [Configure Amazon authentication](#configure-amazon-authentication).
 - Dynamically via an IAM instance profile ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291015) in GitLab 13.7).
 
 After GitLab retrieves the AWS credentials, it makes an
@@ -272,7 +272,7 @@ arn:aws:iam::123456789012:role/gitlab-eks-provision'
 #### Access denied: User `arn:aws:iam::x` is not authorized to perform: `sts:AssumeRole` on resource: `arn:aws:iam::y`
 
 This error occurs when the credentials defined in the
-[Administration settings](#administration-settings) cannot assume the role defined by the
+[Configure Amazon authentication](#configure-amazon-authentication) cannot assume the role defined by the
 Provision Role ARN. Check that:
 
 1. The initial set of AWS credentials [has the AssumeRole policy](#additional-requirements-for-self-managed-instances).
@@ -289,6 +289,10 @@ When populating options in the configuration form, GitLab returns this error
 because GitLab has successfully assumed your provided role, but the role has
 insufficient permissions to retrieve the resources needed for the form. Make sure
 you've assigned the role the correct permissions.
+
+### Key Pairs are not loaded
+
+GitLab loads the key pairs from the **Cluster Region** specified. Ensure that key pair exists in that region. 
 
 #### `ROLLBACK_FAILED` during cluster creation
 

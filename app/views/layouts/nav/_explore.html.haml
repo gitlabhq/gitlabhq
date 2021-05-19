@@ -1,3 +1,7 @@
+-# WARNING! This file is slated to be removed along with the `combined_menu`
+-# feature flag. The logic here will be migrated to an upcoming `top_nav_helper`.
+-# Please see [this MR][1] for more context.
+-# [1]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587
 %ul.list-unstyled.navbar-sub-nav
   - if explore_nav_link?(:projects)
     = nav_link(path: ['dashboard#show', 'root#show', 'projects#trending', 'projects#starred', 'projects#index'], html_options: {class: 'home'}) do

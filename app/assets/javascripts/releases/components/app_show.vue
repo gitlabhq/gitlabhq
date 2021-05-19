@@ -1,7 +1,7 @@
 <script>
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
-import oneReleaseQuery from '../queries/one_release.query.graphql';
+import oneReleaseQuery from '../graphql/queries/one_release.query.graphql';
 import { convertGraphQLRelease } from '../util';
 import ReleaseBlock from './release_block.vue';
 import ReleaseSkeletonLoader from './release_skeleton_loader.vue';

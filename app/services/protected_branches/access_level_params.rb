@@ -34,4 +34,4 @@ module ProtectedBranches
   end
 end
 
-ProtectedBranches::AccessLevelParams.prepend_if_ee('EE::ProtectedBranches::AccessLevelParams')
+ProtectedBranches::AccessLevelParams.prepend_mod_with('ProtectedBranches::AccessLevelParams')

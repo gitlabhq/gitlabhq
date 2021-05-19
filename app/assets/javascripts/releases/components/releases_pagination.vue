@@ -1,20 +1,37 @@
 <script>
-import { mapGetters } from 'vuex';
-import ReleasesPaginationGraphql from './releases_pagination_graphql.vue';
-import ReleasesPaginationRest from './releases_pagination_rest.vue';
+import { GlKeysetPagination } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
+import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 
 export default {
-  name: 'ReleasesPagination',
-  components: { ReleasesPaginationGraphql, ReleasesPaginationRest },
+  name: 'ReleasesPaginationGraphql',
+  components: { GlKeysetPagination },
   computed: {
-    ...mapGetters(['useGraphQLEndpoint']),
+    ...mapState('index', ['pageInfo']),
+    showPagination() {
+      return this.pageInfo.hasPreviousPage || this.pageInfo.hasNextPage;
+    },
+  },
+  methods: {
+    ...mapActions('index', ['fetchReleases']),
+    onPrev(before) {
+      historyPushState(buildUrlWithCurrentLocation(`?before=${before}`));
+      this.fetchReleases({ before });
+    },
+    onNext(after) {
+      historyPushState(buildUrlWithCurrentLocation(`?after=${after}`));
+      this.fetchReleases({ after });
+    },
   },
 };
 </script>
-
 <template>
   <div class="gl-display-flex gl-justify-content-center">
-    <releases-pagination-graphql v-if="useGraphQLEndpoint" />
-    <releases-pagination-rest v-else />
+    <gl-keyset-pagination
+      v-if="showPagination"
+      v-bind="pageInfo"
+      @prev="onPrev($event)"
+      @next="onNext($event)"
+    />
   </div>
 </template>

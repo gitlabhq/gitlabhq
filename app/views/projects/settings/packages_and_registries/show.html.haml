@@ -1,0 +1,16 @@
+- breadcrumb_title _('Packages & Registries')
+- page_title _('Packages & Registries')
+- @content_class = 'limit-container-width' unless fluid_layout
+- expanded = true
+
+%section.settings.no-animate#js-registry-policies{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = _("Clean up image tags")
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _("Save space and find images in the Container Registry. Remove unneeded tags and keep only the ones you want.")
+      = link_to _('How does cleanup work?'), help_page_path('user/packages/container_registry/index', anchor: 'cleanup-policy'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    = render 'projects/registry/settings/index'

@@ -7,6 +7,7 @@ module Ci
     let_it_be(:group) { create(:group) }
     let_it_be(:project, reload: true) { create(:project, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
     let!(:shared_runner) { create(:ci_runner, :instance) }
     let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
     let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
@@ -81,31 +82,69 @@ module Ci
             let!(:build2_project2) { FactoryBot.create :ci_build, pipeline: pipeline2 }
             let!(:build1_project3) { FactoryBot.create :ci_build, pipeline: pipeline3 }
 
-            it 'prefers projects without builds first' do
-              # it gets for one build from each of the projects
-              expect(execute(shared_runner)).to eq(build1_project1)
-              expect(execute(shared_runner)).to eq(build1_project2)
-              expect(execute(shared_runner)).to eq(build1_project3)
+            context 'when using fair scheduling' do
+              context 'when all builds are pending' do
+                it 'prefers projects without builds first' do
+                  # it gets for one build from each of the projects
+                  expect(execute(shared_runner)).to eq(build1_project1)
+                  expect(execute(shared_runner)).to eq(build1_project2)
+                  expect(execute(shared_runner)).to eq(build1_project3)
 
-              # then it gets a second build from each of the projects
-              expect(execute(shared_runner)).to eq(build2_project1)
-              expect(execute(shared_runner)).to eq(build2_project2)
+                  # then it gets a second build from each of the projects
+                  expect(execute(shared_runner)).to eq(build2_project1)
+                  expect(execute(shared_runner)).to eq(build2_project2)
 
-              # in the end the third build
-              expect(execute(shared_runner)).to eq(build3_project1)
+                  # in the end the third build
+                  expect(execute(shared_runner)).to eq(build3_project1)
+                end
+              end
+
+              context 'when some builds transition to success' do
+                it 'equalises number of running builds' do
+                  # after finishing the first build for project 1, get a second build from the same project
+                  expect(execute(shared_runner)).to eq(build1_project1)
+                  build1_project1.reload.success
+                  expect(execute(shared_runner)).to eq(build2_project1)
+
+                  expect(execute(shared_runner)).to eq(build1_project2)
+                  build1_project2.reload.success
+                  expect(execute(shared_runner)).to eq(build2_project2)
+                  expect(execute(shared_runner)).to eq(build1_project3)
+                  expect(execute(shared_runner)).to eq(build3_project1)
+                end
+              end
             end
 
-            it 'equalises number of running builds' do
-              # after finishing the first build for project 1, get a second build from the same project
-              expect(execute(shared_runner)).to eq(build1_project1)
-              build1_project1.reload.success
-              expect(execute(shared_runner)).to eq(build2_project1)
+            context 'when using DEFCON mode that disables fair scheduling' do
+              before do
+                stub_feature_flags(ci_queueing_disaster_recovery: true)
+              end
 
-              expect(execute(shared_runner)).to eq(build1_project2)
-              build1_project2.reload.success
-              expect(execute(shared_runner)).to eq(build2_project2)
-              expect(execute(shared_runner)).to eq(build1_project3)
-              expect(execute(shared_runner)).to eq(build3_project1)
+              context 'when all builds are pending' do
+                it 'returns builds in order of creation (FIFO)' do
+                  # it gets for one build from each of the projects
+                  expect(execute(shared_runner)).to eq(build1_project1)
+                  expect(execute(shared_runner)).to eq(build2_project1)
+                  expect(execute(shared_runner)).to eq(build3_project1)
+                  expect(execute(shared_runner)).to eq(build1_project2)
+                  expect(execute(shared_runner)).to eq(build2_project2)
+                  expect(execute(shared_runner)).to eq(build1_project3)
+                end
+              end
+
+              context 'when some builds transition to success' do
+                it 'returns builds in order of creation (FIFO)' do
+                  expect(execute(shared_runner)).to eq(build1_project1)
+                  build1_project1.reload.success
+                  expect(execute(shared_runner)).to eq(build2_project1)
+
+                  expect(execute(shared_runner)).to eq(build3_project1)
+                  build2_project1.reload.success
+                  expect(execute(shared_runner)).to eq(build1_project2)
+                  expect(execute(shared_runner)).to eq(build2_project2)
+                  expect(execute(shared_runner)).to eq(build1_project3)
+                end
+              end
             end
           end
 
@@ -477,10 +516,6 @@ module Ci
             end
           end
 
-          before do
-            stub_feature_flags(ci_validate_build_dependencies_override: false)
-          end
-
           let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
           let!(:pending_job) do
@@ -491,37 +526,7 @@ module Ci
 
           subject { execute(specific_runner) }
 
-          context 'when validates for dependencies is enabled' do
-            before do
-              stub_feature_flags(ci_validate_build_dependencies_override: false)
-            end
-
-            it_behaves_like 'validation is active'
-
-            context 'when the main feature flag is enabled for a specific project' do
-              before do
-                stub_feature_flags(ci_validate_build_dependencies: pipeline.project)
-              end
-
-              it_behaves_like 'validation is active'
-            end
-
-            context 'when the main feature flag is enabled for a different project' do
-              before do
-                stub_feature_flags(ci_validate_build_dependencies: create(:project))
-              end
-
-              it_behaves_like 'validation is not active'
-            end
-          end
-
-          context 'when validates for dependencies is disabled' do
-            before do
-              stub_feature_flags(ci_validate_build_dependencies_override: true)
-            end
-
-            it_behaves_like 'validation is not active'
-          end
+          it_behaves_like 'validation is active'
         end
 
         context 'when build is degenerated' do

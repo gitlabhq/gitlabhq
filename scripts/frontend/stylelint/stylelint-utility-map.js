@@ -1,8 +1,8 @@
 const fs = require('fs');
-const sass = require('node-sass');
 const path = require('path');
 const postcss = require('postcss');
 const prettier = require('prettier');
+const sass = require('sass');
 
 const utils = require('./stylelint-utils');
 

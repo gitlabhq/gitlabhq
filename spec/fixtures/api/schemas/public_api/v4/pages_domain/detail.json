@@ -5,7 +5,7 @@
     "url": { "type": "uri" },
     "verified": { "type": "boolean" },
     "verification_code": { "type": ["string", "null"] },
-    "enabled_until": { "type": ["date", "null"] },
+    "enabled_until": { "type": ["string", "null"] },
     "auto_ssl_enabled": { "type": "boolean" },
     "certificate": {
       "type": "object",

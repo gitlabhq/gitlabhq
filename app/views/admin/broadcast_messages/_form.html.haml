@@ -4,7 +4,7 @@
     - if @broadcast_message.message.present?
       = render_broadcast_message(@broadcast_message)
     - else
-      Your message here
+      = _('Your message here')
 .d-flex.justify-content-center
   .broadcast-message.broadcast-notification-message.preview.js-broadcast-notification-message-preview.mt-2{ class: ('hidden' unless @broadcast_message.notification? ) }
     = sprite_icon('bullhorn', css_class: 'vertical-align-text-top')
@@ -12,7 +12,7 @@
       - if @broadcast_message.message.present?
         = render_broadcast_message(@broadcast_message)
       - else
-        Your message here
+        = _('Your message here')
 
 = form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form js-quick-submit js-requires-input'} do |f|
   = form_errors(@broadcast_message)
@@ -55,7 +55,7 @@
         = _('Allow users to dismiss the broadcast message')
   .form-group.row.js-toggle-colors-container.toggle-colors.hide
     .col-sm-2.col-form-label
-      = f.label :font, "Font Color"
+      = f.label :font, _("Font Color")
     .col-sm-10
       = f.color_field :font, class: "form-control gl-form-input text-font-color"
   .form-group.row
@@ -77,6 +77,6 @@
       = f.datetime_select :ends_at, {}, class: 'form-control form-control-inline'
   .form-actions
     - if @broadcast_message.persisted?
-      = f.submit "Update broadcast message", class: "btn gl-button btn-confirm"
+      = f.submit _("Update broadcast message"), class: "btn gl-button btn-confirm"
     - else
-      = f.submit "Add broadcast message", class: "btn gl-button btn-confirm"
+      = f.submit _("Add broadcast message"), class: "btn gl-button btn-confirm"

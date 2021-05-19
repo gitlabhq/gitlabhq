@@ -25,13 +25,6 @@ module AlertManagement
 
     attr_reader :project, :payload
 
-    override :process_new_alert
-    def process_new_alert
-      return if resolving_alert?
-
-      super
-    end
-
     override :incoming_payload
     def incoming_payload
       strong_memoize(:incoming_payload) do

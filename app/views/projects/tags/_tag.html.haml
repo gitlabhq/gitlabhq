@@ -8,7 +8,7 @@
     = link_to tag.name, project_tag_path(@project, tag.name), class: 'item-title ref-name'
 
     - if protected_tag?(@project, tag)
-      %span.badge.badge-success.gl-ml-2
+      %span.badge.badge-success.gl-ml-2.gl-badge.sm.badge-pill
         = s_('TagsPage|protected')
 
     - if tag.message.present?
@@ -42,5 +42,5 @@
 
     - if can?(current_user, :admin_tag, @project)
       = link_to edit_project_tag_release_path(@project, tag.name), class: 'btn gl-button btn-default btn-icon btn-edit has-tooltip', title: s_('TagsPage|Edit release notes'), data: { container: "body" } do
-        = sprite_icon("pencil")
+        = sprite_icon('pencil', css_class: 'gl-icon')
       = render 'projects/buttons/remove_tag', project: @project, tag: tag

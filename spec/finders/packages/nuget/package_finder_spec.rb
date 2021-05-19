@@ -6,7 +6,7 @@ RSpec.describe Packages::Nuget::PackageFinder do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, namespace: subgroup) }
-  let_it_be(:package1) { create(:nuget_package, project: project) }
+  let_it_be_with_refind(:package1) { create(:nuget_package, project: project) }
   let_it_be(:package2) { create(:nuget_package, name: package1.name, version: '2.0.0', project: project) }
   let_it_be(:package3) { create(:nuget_package, name: 'Another.Dummy.Package', project: project) }
   let_it_be(:other_package_1) { create(:nuget_package, name: package1.name, version: package1.version) }
@@ -31,6 +31,14 @@ RSpec.describe Packages::Nuget::PackageFinder do
         let(:package_name) { 'foobar' }
 
         it { is_expected.to be_empty }
+      end
+
+      context 'with an uninstallable package' do
+        before do
+          package1.update_column(:status, 1)
+        end
+
+        it { is_expected.to contain_exactly(package2) }
       end
 
       context 'with valid version' do

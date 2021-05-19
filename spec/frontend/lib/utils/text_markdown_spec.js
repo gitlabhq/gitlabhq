@@ -51,6 +51,25 @@ describe('init markdown', () => {
         expect(textArea.value).toEqual(`${initialValue}- `);
       });
 
+      it('inserts dollar signs correctly', () => {
+        const initialValue = '';
+
+        textArea.value = initialValue;
+        textArea.selectionStart = 0;
+        textArea.selectionEnd = 0;
+
+        insertMarkdownText({
+          textArea,
+          text: textArea.value,
+          tag: '```suggestion:-0+0\n{text}\n```',
+          blockTag: true,
+          selected: '# Does not parse the `$` currently.',
+          wrap: false,
+        });
+
+        expect(textArea.value).toContain('# Does not parse the `$` currently.');
+      });
+
       it('inserts the tag on a new line if the current one is not empty', () => {
         const initialValue = 'some text';
 

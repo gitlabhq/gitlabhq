@@ -43,11 +43,20 @@ module Gitlab
         GitalyClient.call(@storage, :remote_service, :remove_remote, request, timeout: GitalyClient.long_timeout).result
       end
 
-      def find_remote_root_ref(remote_name)
-        request = Gitaly::FindRemoteRootRefRequest.new(
-          repository: @gitaly_repo,
-          remote: remote_name
-        )
+      # The remote_name parameter is deprecated and will be removed soon.
+      def find_remote_root_ref(remote_name, remote_url, authorization)
+        request = if Feature.enabled?(:find_remote_root_refs_inmemory, default_enabled: :yaml)
+                    Gitaly::FindRemoteRootRefRequest.new(
+                      repository: @gitaly_repo,
+                      remote_url: remote_url,
+                      http_authorization_header: authorization
+                    )
+                  else
+                    Gitaly::FindRemoteRootRefRequest.new(
+                      repository: @gitaly_repo,
+                      remote: remote_name
+                    )
+                  end
 
         response = GitalyClient.call(@storage, :remote_service,
                                      :find_remote_root_ref, request, timeout: GitalyClient.medium_timeout)

@@ -90,7 +90,7 @@ exports[`Alert integration settings form default state should match the default 
         checked="true"
       >
         <span>
-          Automatically close incidents when the associated Prometheus alert resolves.
+          Automatically close associated incident when a recovery alert notification resolves an alert
         </span>
       </gl-form-checkbox-stub>
     </gl-form-group-stub>

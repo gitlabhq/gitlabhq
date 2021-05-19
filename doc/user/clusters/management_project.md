@@ -20,7 +20,7 @@ privileges.
 
 This can be useful for:
 
-- Creating pipelines to install cluster-wide applications into your cluster, see [Install using GitLab CI/CD (beta)](applications.md#install-using-gitlab-cicd) for details.
+- Creating pipelines to install cluster-wide applications into your cluster, see [Install using GitLab CI/CD (beta)](applications.md#install-using-gitlab-cicd-deprecated) for details.
 - Any jobs that require `cluster-admin` privileges.
 
 ## Permissions

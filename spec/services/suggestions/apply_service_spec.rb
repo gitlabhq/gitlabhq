@@ -67,11 +67,13 @@ RSpec.describe Suggestions::ApplyService do
       apply(suggestions)
 
       commit = project.repository.commit
+      author = suggestions.first.note.author
 
       expect(user.commit_email).not_to eq(user.email)
-      expect(commit.author_email).to eq(user.commit_email)
+      expect(commit.author_email).to eq(author.commit_email)
       expect(commit.committer_email).to eq(user.commit_email)
-      expect(commit.author_name).to eq(user.name)
+      expect(commit.author_name).to eq(author.name)
+      expect(commit.committer_name).to eq(user.name)
     end
 
     it 'tracks apply suggestion event' do
@@ -319,6 +321,73 @@ RSpec.describe Suggestions::ApplyService do
         end
       end
 
+      context 'single suggestion' do
+        let(:author) { suggestions.first.note.author }
+        let(:commit) { project.repository.commit }
+
+        context 'author of suggestion applies suggestion' do
+          before do
+            suggestion.note.update!(author_id: user.id)
+
+            apply(suggestions)
+          end
+
+          it 'created commit by same author and committer' do
+            expect(user.commit_email).to eq(author.commit_email)
+            expect(author).to eq(user)
+            expect(commit.author_email).to eq(author.commit_email)
+            expect(commit.committer_email).to eq(user.commit_email)
+            expect(commit.author_name).to eq(author.name)
+            expect(commit.committer_name).to eq(user.name)
+          end
+        end
+
+        context 'another user applies suggestion' do
+          before do
+            apply(suggestions)
+          end
+
+          it 'created commit has authors info and commiters info' do
+            expect(user.commit_email).not_to eq(user.email)
+            expect(author).not_to eq(user)
+            expect(commit.author_email).to eq(author.commit_email)
+            expect(commit.committer_email).to eq(user.commit_email)
+            expect(commit.author_name).to eq(author.name)
+            expect(commit.committer_name).to eq(user.name)
+          end
+        end
+      end
+
+      context 'multiple suggestions' do
+        let(:author_emails) { suggestions.map {|s| s.note.author.commit_email } }
+        let(:first_author) { suggestion.note.author }
+        let(:commit) { project.repository.commit }
+
+        context 'when all the same author' do
+          before do
+            apply(suggestions)
+          end
+
+          it 'uses first authors information' do
+            expect(author_emails).to include(first_author.commit_email).exactly(3)
+            expect(commit.author_email).to eq(first_author.commit_email)
+          end
+        end
+
+        context 'when all different authors' do
+          before do
+            suggestion2.note.update!(author_id: create(:user).id)
+            suggestion3.note.update!(author_id: create(:user).id)
+            apply(suggestions)
+          end
+
+          it 'uses committers information' do
+            expect(commit.author_email).to eq(user.commit_email)
+            expect(commit.committer_email).to eq(user.commit_email)
+          end
+        end
+      end
+
       context 'multiple suggestions applied sequentially' do
         def apply_suggestion(suggestion)
           suggestion.reload
@@ -329,7 +398,7 @@ RSpec.describe Suggestions::ApplyService do
           suggestion.reload
           expect(result[:status]).to eq(:success)
 
-          refresh = MergeRequests::RefreshService.new(project, user)
+          refresh = MergeRequests::RefreshService.new(project: project, current_user: user)
           refresh.execute(merge_request.diff_head_sha,
                           suggestion.commit_id,
                           merge_request.source_branch_ref)

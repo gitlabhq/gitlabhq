@@ -14,6 +14,21 @@ module API
       def import_params
         declared_params(include_missing: false)
       end
+
+      def namespace_from(params, current_user)
+        if params[:namespace]
+          find_namespace!(params[:namespace])
+        else
+          current_user.namespace
+        end
+      end
+
+      def filtered_override_params(params)
+        override_params = params.delete(:override_params)
+        filter_attributes_using_license!(override_params) if override_params
+
+        override_params
+      end
     end
 
     before do
@@ -67,34 +82,25 @@ module API
 
         check_rate_limit! :project_import, [current_user, :project_import]
 
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20823')
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21041')
 
         validate_file!
 
-        namespace = if import_params[:namespace]
-                      find_namespace!(import_params[:namespace])
-                    else
-                      current_user.namespace
-                    end
-
-        project_params = {
-            path: import_params[:path],
-            namespace_id: namespace.id,
-            name: import_params[:name],
-            file: import_params[:file],
-            overwrite: import_params[:overwrite]
-        }
-
-        override_params = import_params.delete(:override_params)
-        filter_attributes_using_license!(override_params) if override_params
-
-        project = ::Projects::GitlabProjectsImportService.new(
-          current_user, project_params, override_params
+        response = ::Import::GitlabProjects::CreateProjectFromUploadedFileService.new(
+          current_user,
+          path: import_params[:path],
+          namespace: namespace_from(import_params, current_user),
+          name: import_params[:name],
+          file: import_params[:file],
+          overwrite: import_params[:overwrite],
+          override: filtered_override_params(import_params)
         ).execute
 
-        render_api_error!(project.errors.full_messages&.first, 400) unless project.saved?
-
-        present project, with: Entities::ProjectImportStatus
+        if response.success?
+          present(response.payload, with: Entities::ProjectImportStatus)
+        else
+          render_api_error!(response.message, response.http_status)
+        end
       end
 
       params do
@@ -106,6 +112,44 @@ module API
       end
       get ':id/import' do
         present user_project, with: Entities::ProjectImportStatus
+      end
+
+      params do
+        requires :url, type: String, desc: 'The URL for the file.'
+        requires :path, type: String, desc: 'The new project path and name'
+        optional :name, type: String, desc: 'The name of the project to be imported. Defaults to the path of the project if not provided.'
+        optional :namespace, type: String, desc: "The ID or name of the namespace that the project will be imported into. Defaults to the current user's namespace."
+        optional :overwrite, type: Boolean, default: false, desc: 'If there is a project in the same namespace and with the same name overwrite it'
+        optional :override_params,
+          type: Hash,
+          desc: 'New project params to override values in the export' do
+            use :optional_project_params
+          end
+      end
+      desc 'Create a new project import using a remote object storage path' do
+        detail 'This feature was introduced in GitLab 13.2.'
+        success Entities::ProjectImportStatus
+      end
+      post 'remote-import' do
+        not_found! unless ::Feature.enabled?(:import_project_from_remote_file)
+
+        check_rate_limit! :project_import, [current_user, :project_import]
+
+        response = ::Import::GitlabProjects::CreateProjectFromRemoteFileService.new(
+          current_user,
+          path: import_params[:path],
+          namespace: namespace_from(import_params, current_user),
+          name: import_params[:name],
+          remote_import_url: import_params[:url],
+          overwrite: import_params[:overwrite],
+          override: filtered_override_params(import_params)
+        ).execute
+
+        if response.success?
+          present(response.payload, with: Entities::ProjectImportStatus)
+        else
+          render_api_error!(response.message, response.http_status)
+        end
       end
     end
   end

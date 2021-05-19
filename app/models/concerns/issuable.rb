@@ -63,7 +63,7 @@ module Issuable
 
     has_many :note_authors, -> { distinct }, through: :notes, source: :author
 
-    has_many :label_links, as: :target, dependent: :destroy, inverse_of: :target # rubocop:disable Cop/ActiveRecordDependent
+    has_many :label_links, as: :target, inverse_of: :target
     has_many :labels, through: :label_links
     has_many :todos, as: :target
 
@@ -103,7 +103,7 @@ module Issuable
     end
     scope :assigned_to, ->(u) do
       assignees_table = Arel::Table.new("#{to_ability_name}_assignees")
-      sql = assignees_table.project('true').where(assignees_table[:user_id].in(u)).where(Arel::Nodes::SqlLiteral.new("#{to_ability_name}_id = #{to_ability_name}s.id"))
+      sql = assignees_table.project('true').where(assignees_table[:user_id].in(u.id)).where(Arel::Nodes::SqlLiteral.new("#{to_ability_name}_id = #{to_ability_name}s.id"))
       where("EXISTS (#{sql.to_sql})")
     end
     # rubocop:enable GitlabSecurity/SqlInjection
@@ -564,4 +564,4 @@ module Issuable
   end
 end
 
-Issuable.prepend_if_ee('EE::Issuable')
+Issuable.prepend_mod_with('Issuable')

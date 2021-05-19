@@ -33,4 +33,4 @@ class UserPolicy < BasePolicy
   rule { (user_is_self | admin) & ~blocked }.enable :create_user_personal_access_token
 end
 
-UserPolicy.prepend_if_ee('EE::UserPolicy')
+UserPolicy.prepend_mod_with('UserPolicy')

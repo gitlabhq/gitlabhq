@@ -16,28 +16,46 @@ to them.
 
 > - The New Epic form [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211533) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 > - In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/229621) and later, the New Epic button on the Epics list opens the New Epic form.
-> - In [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45948) and later, you can create a new epic from an empty Roadmap.
+> - In [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45948) and later, you can create a new epic from an empty roadmap.
 
 To create an epic in the group you're in:
 
 1. Get to the New Epic form:
-   - From the **Epics** list in your group, select **New epic**.
+   - Go to your group and from the left sidebar select **Epics**. Then select **New epic**.
    - From an epic in your group, select **New epic**.
    - From anywhere, in the top menu, select **New...** (**{plus-square}**) **> New epic**.
    - In an empty [roadmap](../roadmap/index.md), select **New epic**.
 
-     ![New epic from an open epic](img/new_epic_from_groups_v13.7.png)
+1. Enter a title.
+1. Optional. Enter a description.
+1. Optional. To make the epic confidential, select the [Confidentiality checkbox](#make-an-epic-confidential).
+1. Optional. Choose labels.
+1. Optional. Select a start and due date, or [inherit](#start-and-due-date-inheritance) them.
+1. Select **Create epic**.
 
-1. Fill in these fields:
+The newly created epic opens.
 
-   - Title
-   - Description
-   - [Confidentiality checkbox](#make-an-epic-confidential)
-   - Labels
-   - Start date
-   - Due date
+### Start and due date inheritance
 
-1. Select **Create epic**. You are taken to view the newly created epic.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 to replace **From milestones**.
+
+If you select **Inherited**:
+
+- For the **start date**: GitLab scans all child epics and issues assigned to the epic,
+  and sets the start date to match the earliest found start date or milestone.
+- For the **due date**: GitLab sets the due date to match the latest due date or
+  milestone found among its child epics and issues.
+
+These are dynamic dates and recalculated if any of the following occur:
+
+- A child epic's dates change.
+- Milestones are reassigned to an issue.
+- A milestone's dates change.
+- Issues are added to, or removed from, the epic.
+
+Because the epic's dates can inherit dates from its children, the start date and due date propagate from the bottom to the top.
+If the start date of a child epic on the lowest level changes, that becomes the earliest possible start date for its parent epic.
+The parent epic's start date then reflects this change and propagates upwards to the top epic.
 
 ## Edit an epic
 
@@ -55,15 +73,26 @@ To edit an epic's title or description:
 1. Make your changes.
 1. Select **Save changes**.
 
-To edit an epics' start date, due date, or labels:
+To edit an epic's start date, due date, or labels:
 
 1. Select **Edit** next to each section in the epic sidebar.
 1. Select the dates or labels for your epic.
 
-## Bulk-edit epics
+## Bulk edit epics
 
-You can edit multiple epics at once. To learn how to do it, visit
-[Bulk editing issues, epics, and merge requests at the group level](../bulk_editing/index.md#bulk-edit-epics).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7250) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+
+Users with permission level of [Reporter or higher](../../permissions.md) can manage epics.
+
+When bulk editing epics in a group, you can edit their labels.
+
+To update multiple epics at the same time:
+
+1. In a group, go to **Epics > List**.
+1. Click **Edit epics**. A sidebar on the right-hand side of your screen appears with editable fields.
+1. Check the checkboxes next to each epic you want to edit.
+1. Select the appropriate fields and their values from the sidebar.
+1. Click **Update all**.
 
 ## Delete an epic
 
@@ -140,6 +169,19 @@ The sort option and order is saved and used wherever you browse epics, including
 
 ![epics sort](img/epics_sort.png)
 
+## Change activity sort order
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214364) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+You can reverse the default order and interact with the activity feed sorted by most recent items
+at the top. Your preference is saved via local storage and automatically applied to every epic and issue
+you view.
+
+To change the activity sort order, click the **Oldest first** dropdown menu and select either oldest
+or newest items to be shown first.
+
+![Issue activity sort order dropdown button](img/epic_activity_sort_order_v13_2.png)
+
 ## Make an epic confidential
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213068) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0 behind a feature flag, disabled by default.
@@ -161,6 +203,13 @@ To make an epic confidential:
 
 This section collects instructions for all the things you can do with [issues](../../project/issues/index.md)
 in relation to epics.
+
+### View count of issues in an epic
+
+On the **Epics and Issues** tab, under each epic name, hover over the total counts.
+
+The number indicates all epics associated with the project, including issues
+you might not have permission to.
 
 ### Add a new issue to an epic
 
@@ -275,7 +324,16 @@ For an introduction to epic templates, see [GitLab Epics and Epic Template Tip](
 
 For more on epic templates, see [Epic Templates - Repeatable sets of issues](https://about.gitlab.com/handbook/marketing/strategic-marketing/getting-started/104/).
 
-## Manage multi-level child epics **(ULTIMATE)**
+## Multi-level child epics **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8333) in GitLab Ultimate 11.7.
+
+You can add any epic that belongs to a group or subgroup of the parent epic's group.
+New child epics appear at the top of the list of epics in the **Epics and Issues** tab.
+
+When you add an epic that's already linked to a parent epic, the link to its current parent is removed.
+
+Epics can contain multiple nested child epics, up to a total of seven levels deep.
 
 ### Add a child epic to an epic
 

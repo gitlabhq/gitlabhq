@@ -3,6 +3,9 @@ import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  i18n: {
+    unassigned: __('Unassigned'),
+  },
   components: { GlButton, GlLoadingIcon },
   inject: {
     canUpdate: {},
@@ -39,6 +42,11 @@ export default {
         label: null,
         property: null,
       }),
+    },
+    canEdit: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -103,14 +111,16 @@ export default {
   <div>
     <div class="gl-display-flex gl-align-items-center" @click.self="collapse">
       <span class="hide-collapsed" data-testid="title" @click="collapse">{{ title }}</span>
+      <slot name="title-extra"></slot>
       <gl-loading-icon v-if="loading || initialLoading" inline class="gl-ml-2 hide-collapsed" />
       <gl-loading-icon
         v-if="loading && isClassicSidebar"
         inline
         class="gl-mx-auto gl-my-0 hide-expanded"
       />
+      <slot name="collapsed-right"></slot>
       <gl-button
-        v-if="canUpdate && !initialLoading"
+        v-if="canUpdate && !initialLoading && canEdit"
         variant="link"
         class="gl-text-gray-900! gl-hover-text-blue-800! gl-ml-auto hide-collapsed"
         data-testid="edit-button"

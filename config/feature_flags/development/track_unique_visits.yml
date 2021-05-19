@@ -1,7 +1,7 @@
 ---
 name: track_unique_visits
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33146
-rollout_issue_url: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/255994
 milestone: '13.2'
 type: development
 group: group::optimize

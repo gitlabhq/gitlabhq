@@ -1,9 +1,12 @@
-query getAvailableBranches($projectFullPath: ID!) {
-  project(fullPath: $projectFullPath) @client {
+query getAvailableBranches(
+  $limit: Int!
+  $offset: Int!
+  $projectFullPath: ID!
+  $searchPattern: String!
+) {
+  project(fullPath: $projectFullPath) {
     repository {
-      branches {
-        name
-      }
+      branchNames(limit: $limit, offset: $offset, searchPattern: $searchPattern)
     }
   }
 }

@@ -153,9 +153,9 @@ module ServicesHelper
   private
 
   def integration_level(integration)
-    if integration.instance
+    if integration.instance_level?
       'instance'
-    elsif integration.group_id
+    elsif integration.group_level?
       'group'
     else
       'project'
@@ -172,10 +172,14 @@ module ServicesHelper
       name: integration.to_param
     }
   end
+
+  def show_service_templates_nav_link?
+    Feature.disabled?(:disable_service_templates, type: :development, default_enabled: :yaml)
+  end
 end
 
-ServicesHelper.prepend_if_ee('EE::ServicesHelper')
+ServicesHelper.prepend_mod_with('ServicesHelper')
 
 # The methods in `EE::ServicesHelper` should be available as both instance and
 # class methods.
-ServicesHelper.extend_if_ee('EE::ServicesHelper')
+ServicesHelper.extend_mod_with('ServicesHelper')

@@ -20,6 +20,7 @@ export default function createRouter(base, baseRef) {
     component: BlobPage,
     props: (route) => ({
       path: route.params.path,
+      projectPath: base,
     }),
   };
 

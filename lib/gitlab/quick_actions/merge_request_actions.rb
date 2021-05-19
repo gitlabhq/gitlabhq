@@ -148,7 +148,7 @@ module Gitlab
           quick_action_target.persisted? && quick_action_target.can_be_approved_by?(current_user)
         end
         command :approve do
-          success = MergeRequests::ApprovalService.new(quick_action_target.project, current_user).execute(quick_action_target)
+          success = MergeRequests::ApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
 
           next unless success
 

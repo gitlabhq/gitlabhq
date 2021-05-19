@@ -208,7 +208,7 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
       end
 
       context 'on merge request' do
-        let(:service) { MergeRequests::CreatePipelineService.new(project, user) }
+        let(:service) { MergeRequests::CreatePipelineService.new(project: project, current_user: user) }
         let(:merge_request) { create(:merge_request, :simple, source_project: project) }
         let(:pipeline) { service.execute(merge_request) }
 

@@ -148,4 +148,4 @@ module Repositories
   end
 end
 
-Repositories::LfsApiController.prepend_if_ee('EE::Repositories::LfsApiController')
+Repositories::LfsApiController.prepend_mod_with('Repositories::LfsApiController')

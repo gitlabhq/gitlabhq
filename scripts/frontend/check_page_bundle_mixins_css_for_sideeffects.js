@@ -8,8 +8,8 @@ if (process.env.RAILS_ENV !== 'production') {
 }
 
 const fs = require('fs');
-const glob = require('glob');
 const path = require('path');
+const glob = require('glob');
 const pjs = require('postcss');
 
 const paths = glob.sync('public/assets/page_bundles/_mixins_and_variables_and_functions*.css', {

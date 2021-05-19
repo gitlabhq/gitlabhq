@@ -14,6 +14,7 @@ class Namespace < ApplicationRecord
   include IgnorableColumns
   include Namespaces::Traversal::Recursive
   include Namespaces::Traversal::Linear
+  include EachBatch
 
   ignore_column :delayed_project_removal, remove_with: '14.1', remove_after: '2021-05-22'
 
@@ -88,8 +89,12 @@ class Namespace < ApplicationRecord
   after_update :move_dir, if: :saved_change_to_path_or_parent?
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
+  after_commit :expire_child_caches, on: :update, if: -> {
+    Feature.enabled?(:cached_route_lookups, self, type: :ops, default_enabled: :yaml) &&
+      saved_change_to_name? || saved_change_to_path? || saved_change_to_parent_id?
+  }
 
-  scope :for_user, -> { where('type IS NULL') }
+  scope :for_user, -> { where(type: nil) }
   scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
   scope :include_route, -> { includes(:route) }
   scope :by_parent, -> (parent) { where(parent_id: parent) }
@@ -198,7 +203,7 @@ class Namespace < ApplicationRecord
   end
 
   def any_project_has_container_registry_tags?
-    all_projects.any?(&:has_container_registry_tags?)
+    all_projects.includes(:container_repositories).any?(&:has_container_registry_tags?)
   end
 
   def first_project_with_container_registry_tags
@@ -420,7 +425,21 @@ class Namespace < ApplicationRecord
     created_at >= 90.days.ago
   end
 
+  def issue_repositioning_disabled?
+    Feature.enabled?(:block_issue_repositioning, self, type: :ops, default_enabled: :yaml)
+  end
+
   private
+
+  def expire_child_caches
+    Namespace.where(id: descendants).each_batch do |namespaces|
+      namespaces.touch_all
+    end
+
+    all_projects.each_batch do |projects|
+      projects.touch_all
+    end
+  end
 
   def all_projects_with_pages
     if all_projects.pages_metadata_not_migrated.exists?
@@ -490,4 +509,4 @@ class Namespace < ApplicationRecord
   end
 end
 
-Namespace.prepend_if_ee('EE::Namespace')
+Namespace.prepend_mod_with('Namespace')

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::PrometheusMetrics::ObserveHistogramsService do
   let_it_be(:project) { create(:project) }
+
   let(:params) { {} }
 
   subject(:execute) { described_class.new(project, params).execute }
@@ -51,32 +52,6 @@ RSpec.describe Ci::PrometheusMetrics::ObserveHistogramsService do
 
     it 'raises ActiveRecord::RecordNotFound error' do
       expect { subject }.to raise_error ActiveRecord::RecordNotFound
-    end
-  end
-
-  context 'with feature flag disabled' do
-    before do
-      stub_feature_flags(ci_accept_frontend_prometheus_metrics: false)
-    end
-
-    let(:params) do
-      {
-        histograms: [
-          { name: 'pipeline_graph_link_calculation_duration_seconds', value: '4' }
-        ]
-      }
-    end
-
-    it 'does not register the metrics' do
-      execute
-
-      expect(histogram_data).to be_nil
-    end
-
-    it 'returns an empty body and status code' do
-      is_expected.to be_success
-      expect(subject.http_status).to eq(:accepted)
-      expect(subject.payload).to eq({})
     end
   end
 

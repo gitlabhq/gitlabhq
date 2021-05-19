@@ -30,7 +30,7 @@ function factory(propsData = {}) {
     },
   });
 
-  vm.setData({ escapedRef: 'master' });
+  vm.setData({ escapedRef: 'main' });
 }
 
 describe('Repository table row component', () => {
@@ -115,7 +115,7 @@ describe('Repository table row component', () => {
 
     return vm.vm.$nextTick().then(() => {
       expect(vm.find({ ref: 'link' }).props('to')).toEqual({
-        path: `/-/tree/master/${encodeURIComponent(path)}`,
+        path: `/-/tree/main/${encodeURIComponent(path)}`,
       });
     });
   });
@@ -130,7 +130,7 @@ describe('Repository table row component', () => {
     });
 
     return vm.vm.$nextTick().then(() => {
-      expect(vm.find('.tree-item-link').props('to')).toEqual({ path: '/-/tree/master/test%23' });
+      expect(vm.find('.tree-item-link').props('to')).toEqual({ path: '/-/tree/main/test%23' });
     });
   });
 

@@ -6,7 +6,8 @@ product_stage: monitor
 product_group: group::health
 product_category: incident_management
 value_type: number
-status: data_available
+status: removed
+milestone_removed: '13.12'
 time_frame: all
 data_source: database
 distribution:

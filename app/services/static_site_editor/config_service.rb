@@ -25,7 +25,7 @@ module StaticSiteEditor
       ServiceResponse.success(payload: data)
     rescue ValidationError => e
       ServiceResponse.error(message: e.message)
-    rescue => e
+    rescue StandardError => e
       Gitlab::ErrorTracking.track_and_raise_exception(e)
     end
 
@@ -67,7 +67,7 @@ module StaticSiteEditor
 
     def check_for_duplicate_keys!(generated_data, file_data)
       duplicate_keys = generated_data.keys & file_data.keys
-      raise ValidationError.new("Duplicate key(s) '#{duplicate_keys}' found.") if duplicate_keys.present?
+      raise ValidationError, "Duplicate key(s) '#{duplicate_keys}' found." if duplicate_keys.present?
     end
 
     def merged_data(generated_data, file_data)

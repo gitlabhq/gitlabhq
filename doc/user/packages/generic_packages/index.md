@@ -69,22 +69,6 @@ Example response:
 }
 ```
 
-Example request using a deploy token:
-
-```shell
-curl --header "DEPLOY-TOKEN: <deploy_token>" \
-     --upload-file path/to/file.txt \
-     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?status=hidden"
-```
-
-Example response:
-
-```json
-{
-  "message":"201 Created"
-}
-```
-
 ## Download package file
 
 Download a package file.

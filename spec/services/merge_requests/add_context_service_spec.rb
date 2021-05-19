@@ -9,7 +9,7 @@ RSpec.describe MergeRequests::AddContextService do
   let(:commits) { ["874797c3a73b60d2187ed6e2fcabd289ff75171e"] }
   let(:raw_repository) { project.repository.raw }
 
-  subject(:service) { described_class.new(project, admin, merge_request: merge_request, commits: commits) }
+  subject(:service) { described_class.new(project: project, current_user: admin, params: { merge_request: merge_request, commits: commits }) }
 
   describe "#execute" do
     context "when admin mode is enabled", :enable_admin_mode do
@@ -32,7 +32,7 @@ RSpec.describe MergeRequests::AddContextService do
       let(:user) { create(:user) }
       let(:merge_request1) { create(:merge_request, source_project: project, author: user) }
 
-      subject(:service) { described_class.new(project, user, merge_request: merge_request, commits: commits) }
+      subject(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request, commits: commits }) }
 
       it "doesn't add context commit" do
         subject.execute
@@ -42,7 +42,7 @@ RSpec.describe MergeRequests::AddContextService do
     end
 
     context "when the commits array is empty" do
-      subject(:service) { described_class.new(project, admin, merge_request: merge_request, commits: []) }
+      subject(:service) { described_class.new(project: project, current_user: admin, params: { merge_request: merge_request, commits: [] }) }
 
       it "doesn't add context commit" do
         subject.execute

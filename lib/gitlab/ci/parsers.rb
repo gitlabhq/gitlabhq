@@ -15,8 +15,8 @@ module Gitlab
         }
       end
 
-      def self.fabricate!(file_type, *args)
-        parsers.fetch(file_type.to_sym).new(*args)
+      def self.fabricate!(file_type, *args, **kwargs)
+        parsers.fetch(file_type.to_sym).new(*args, **kwargs)
       rescue KeyError
         raise ParserNotFoundError, "Cannot find any parser matching file type '#{file_type}'"
       end
@@ -28,4 +28,4 @@ module Gitlab
   end
 end
 
-Gitlab::Ci::Parsers.prepend_if_ee('::EE::Gitlab::Ci::Parsers')
+Gitlab::Ci::Parsers.prepend_mod_with('Gitlab::Ci::Parsers')

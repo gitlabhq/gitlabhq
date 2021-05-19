@@ -4,7 +4,8 @@
 - diff_page_context = local_assigns.fetch(:diff_page_context, nil)
 - load_diff_files_async = Feature.enabled?(:async_commit_diff_files, @project) && diff_page_context == "is-commit"
 - paginate_diffs = local_assigns.fetch(:paginate_diffs, false) && !load_diff_files_async
-- diff_files = conditionally_paginate_diff_files(diffs, paginate: paginate_diffs)
+- paginate_diffs_per_page = local_assigns.fetch(:paginate_diffs_per_page, nil)
+- diff_files = conditionally_paginate_diff_files(diffs, paginate: paginate_diffs, per: paginate_diffs_per_page)
 
 .content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed
   .files-changed-inner
@@ -33,7 +34,7 @@
     - url = url_for(safe_params.merge(action: 'diff_files'))
     .js-diffs-batch{ data: { diff_files_path: url } }
       .text-center
-        %span.spinner.spinner-md
+        %span.gl-spinner.gl-spinner-md
   - else
     = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, diff_page_context: diff_page_context }
 

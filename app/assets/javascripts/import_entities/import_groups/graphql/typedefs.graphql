@@ -1,0 +1,65 @@
+type ClientBulkImportAvailableNamespace {
+  id: ID!
+  full_path: String!
+}
+
+type ClientBulkImportTarget {
+  target_namespace: String!
+  new_name: String!
+}
+
+type ClientBulkImportSourceGroupConnection {
+  nodes: [ClientBulkImportSourceGroup!]!
+  pageInfo: ClientBulkImportPageInfo!
+}
+
+type ClientBulkImportProgress {
+  id: ID
+  status: String!
+}
+
+type ClientBulkImportValidationError {
+  field: String!
+  message: String!
+}
+
+type ClientBulkImportSourceGroup {
+  id: ID!
+  web_url: String!
+  full_path: String!
+  full_name: String!
+  progress: ClientBulkImportProgress!
+  import_target: ClientBulkImportTarget!
+  validation_errors: [ClientBulkImportValidationError!]!
+}
+
+type ClientBulkImportPageInfo {
+  page: Int!
+  perPage: Int!
+  total: Int!
+  totalPages: Int!
+}
+
+extend type Query {
+  bulkImportSourceGroup(id: ID!): ClientBulkImportSourceGroup
+  bulkImportSourceGroups(
+    page: Int!
+    perPage: Int!
+    filter: String!
+  ): ClientBulkImportSourceGroupConnection!
+  availableNamespaces: [ClientBulkImportAvailableNamespace!]!
+}
+
+extend type Mutation {
+  setNewName(newName: String, sourceGroupId: ID!): ClientBulkImportSourceGroup!
+  setTargetNamespace(targetNamespace: String, sourceGroupId: ID!): ClientBulkImportSourceGroup!
+  importGroups(sourceGroupIds: [ID!]!): [ClientBulkImportSourceGroup!]!
+  setImportProgress(id: ID, status: String!): ClientBulkImportSourceGroup!
+  updateImportProgress(id: ID, status: String!): ClientBulkImportProgress
+  addValidationError(
+    sourceGroupId: ID!
+    field: String!
+    message: String!
+  ): ClientBulkImportSourceGroup!
+  removeValidationError(sourceGroupId: ID!, field: String!): ClientBulkImportSourceGroup!
+}

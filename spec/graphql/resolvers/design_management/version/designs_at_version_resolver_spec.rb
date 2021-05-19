@@ -8,6 +8,7 @@ RSpec.describe Resolvers::DesignManagement::Version::DesignsAtVersionResolver do
   include_context 'four designs in three versions'
 
   let_it_be(:current_user) { authorized_user }
+
   let(:gql_context) { { current_user: current_user } }
 
   let(:version) { third_version }

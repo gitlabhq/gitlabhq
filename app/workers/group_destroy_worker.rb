@@ -2,10 +2,12 @@
 
 class GroupDestroyWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ExceptionBacktrace
 
   feature_category :subgroups
-  tags :requires_disk_io
+  tags :requires_disk_io, :exclude_from_kubernetes
 
   def perform(group_id, user_id)
     begin

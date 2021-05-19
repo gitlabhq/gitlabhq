@@ -4,7 +4,7 @@ module Lfs
   class LocksFinderService < BaseService
     def execute
       success(locks: find_locks)
-    rescue => ex
+    rescue StandardError => ex
       error(ex.message, 500)
     end
 

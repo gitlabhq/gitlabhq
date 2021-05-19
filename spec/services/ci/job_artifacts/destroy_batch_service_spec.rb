@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobArtifacts::DestroyBatchService do
-  include ExclusiveLeaseHelpers
-
   let(:artifacts) { Ci::JobArtifact.all }
   let(:service) { described_class.new(artifacts, pick_up_at: Time.current) }
 
@@ -25,14 +23,6 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
         expect { subject }.to change { Ci::DeletedObject.count }.by(1)
       end
 
-      it 'resets project statistics' do
-        expect(ProjectStatistics).to receive(:increment_statistic).once
-          .with(artifact.project, :build_artifacts_size, -artifact.file.size)
-          .and_call_original
-
-        execute
-      end
-
       it 'does not remove the files' do
         expect { execute }.not_to change { artifact.file.exists? }
       end
@@ -43,6 +33,29 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
         end
 
         execute
+      end
+
+      context 'ProjectStatistics' do
+        it 'resets project statistics' do
+          expect(ProjectStatistics).to receive(:increment_statistic).once
+            .with(artifact.project, :build_artifacts_size, -artifact.file.size)
+            .and_call_original
+
+          execute
+        end
+
+        context 'with update_stats: false' do
+          it 'does not update project statistics' do
+            expect(ProjectStatistics).not_to receive(:increment_statistic)
+
+            service.execute(update_stats: false)
+          end
+
+          it 'returns size statistics' do
+            expect(service.execute(update_stats: false)).to match(
+              a_hash_including(statistics_updates: { artifact.project => -artifact.file.size }))
+          end
+        end
       end
     end
 
@@ -65,16 +78,12 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
     context 'when there are no artifacts' do
       let(:artifacts) { Ci::JobArtifact.none }
 
-      before do
-        artifact.destroy!
-      end
-
       it 'does not raise error' do
         expect { execute }.not_to raise_error
       end
 
       it 'reports the number of destroyed artifacts' do
-        is_expected.to eq(destroyed_artifacts_count: 0, status: :success)
+        is_expected.to eq(destroyed_artifacts_count: 0, statistics_updates: {}, status: :success)
       end
     end
   end

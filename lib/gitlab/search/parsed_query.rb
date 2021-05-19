@@ -50,11 +50,11 @@ module Gitlab
         when :including then including
         when :excluding then excluding
         else
-          raise ArgumentError.new(type)
+          raise ArgumentError, type
         end
       end
     end
   end
 end
 
-Gitlab::Search::ParsedQuery.prepend_if_ee('EE::Gitlab::Search::ParsedQuery')
+Gitlab::Search::ParsedQuery.prepend_mod_with('Gitlab::Search::ParsedQuery')

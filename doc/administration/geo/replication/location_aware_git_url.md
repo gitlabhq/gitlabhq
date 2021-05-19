@@ -8,11 +8,11 @@ type: howto
 # Location-aware Git remote URL with AWS Route53 **(PREMIUM SELF)**
 
 You can provide GitLab users with a single remote URL that automatically uses
-the Geo node closest to them. This means users don't need to update their Git
-configuration to take advantage of closer Geo nodes as they move.
+the Geo site closest to them. This means users don't need to update their Git
+configuration to take advantage of closer Geo sites as they move.
 
 This is possible because, Git push requests can be automatically redirected
-(HTTP) or proxied (SSH) from **secondary** nodes to the **primary** node.
+(HTTP) or proxied (SSH) from **secondary** sites to the **primary** site.
 
 Though these instructions use [AWS Route53](https://aws.amazon.com/route53/),
 other services such as [Cloudflare](https://www.cloudflare.com/) could be used
@@ -20,30 +20,30 @@ as well.
 
 NOTE:
 You can also use a load balancer to distribute web UI or API traffic to
-[multiple Geo **secondary** nodes](../../../user/admin_area/geo_nodes.md#multiple-secondary-nodes-behind-a-load-balancer).
-Importantly, the **primary** node cannot yet be included. See the feature request
+[multiple Geo **secondary** sites](../../../user/admin_area/geo_nodes.md#multiple-secondary-nodes-behind-a-load-balancer).
+Importantly, the **primary** site cannot yet be included. See the feature request
 [Support putting the **primary** behind a Geo node load balancer](https://gitlab.com/gitlab-org/gitlab/-/issues/10888).
 
 ## Prerequisites
 
 In this example, we have already set up:
 
-- `primary.example.com` as a Geo **primary** node.
-- `secondary.example.com` as a Geo **secondary** node.
+- `primary.example.com` as a Geo **primary** site.
+- `secondary.example.com` as a Geo **secondary** site.
 
 We will create a `git.example.com` subdomain that will automatically direct
 requests:
 
-- From Europe to the **secondary** node.
-- From all other locations to the **primary** node.
+- From Europe to the **secondary** site.
+- From all other locations to the **primary** site.
 
 In any case, you require:
 
-- A working GitLab **primary** node that is accessible at its own address.
-- A working GitLab **secondary** node.
+- A working GitLab **primary** site that is accessible at its own address.
+- A working GitLab **secondary** site.
 - A Route53 Hosted Zone managing your domain.
 
-If you haven't yet set up a Geo _primary_ node and _secondary_ node, see the
+If you haven't yet set up a Geo _primary_ site and _secondary_ site, see the
 [Geo setup instructions](../index.md#setup-instructions).
 
 ## Create a traffic policy
@@ -89,7 +89,7 @@ routing configurations.
    ![Created policy record](img/single_git_created_policy_record.png)
 
 You have successfully set up a single host, e.g. `git.example.com` which
-distributes traffic to your Geo nodes by geolocation!
+distributes traffic to your Geo sites by geolocation!
 
 ## Configure Git clone URLs to use the special Git URL
 
@@ -114,10 +114,10 @@ You can customize the:
 After following the configuration steps above, handling for Git requests is now location aware.
 For requests:
 
-- Outside Europe, all requests are directed to the **primary** node.
+- Outside Europe, all requests are directed to the **primary** site.
 - Within Europe, over:
   - HTTP:
-    - `git clone http://git.example.com/foo/bar.git` is directed to the **secondary** node.
+    - `git clone http://git.example.com/foo/bar.git` is directed to the **secondary** site.
     - `git push` is initially directed to the **secondary**, which automatically
       redirects to `primary.example.com`.
   - SSH:

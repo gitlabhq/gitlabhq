@@ -58,4 +58,4 @@ module Issues
   end
 end
 
-Issues::ExportCsvService.prepend_if_ee('EE::Issues::ExportCsvService')
+Issues::ExportCsvService.prepend_mod_with('Issues::ExportCsvService')

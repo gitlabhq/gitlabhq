@@ -1,3 +1,3 @@
 .detail-page-description.py-2
-  %h2.title.qa-title.mb-0
+  %h2.title.mb-0{ data: { qa_selector: 'title_content' } }
     = markdown_field(@merge_request, :title)

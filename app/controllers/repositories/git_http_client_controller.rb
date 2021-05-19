@@ -134,4 +134,4 @@ module Repositories
   end
 end
 
-Repositories::GitHttpClientController.prepend_if_ee('EE::Repositories::GitHttpClientController')
+Repositories::GitHttpClientController.prepend_mod_with('Repositories::GitHttpClientController')

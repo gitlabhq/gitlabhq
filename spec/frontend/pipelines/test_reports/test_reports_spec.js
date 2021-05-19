@@ -2,6 +2,8 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { getJSONFixture } from 'helpers/fixtures';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import EmptyState from '~/pipelines/components/test_reports/empty_state.vue';
 import TestReports from '~/pipelines/components/test_reports/test_reports.vue';
 import TestSummary from '~/pipelines/components/test_reports/test_summary.vue';
 import TestSummaryTable from '~/pipelines/components/test_reports/test_summary_table.vue';
@@ -16,11 +18,11 @@ describe('Test reports app', () => {
 
   const testReports = getJSONFixture('pipelines/test_report.json');
 
-  const loadingSpinner = () => wrapper.find(GlLoadingIcon);
-  const testsDetail = () => wrapper.find('[data-testid="tests-detail"]');
-  const noTestsToShow = () => wrapper.find('[data-testid="no-tests-to-show"]');
-  const testSummary = () => wrapper.find(TestSummary);
-  const testSummaryTable = () => wrapper.find(TestSummaryTable);
+  const loadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
+  const testsDetail = () => wrapper.findByTestId('tests-detail');
+  const emptyState = () => wrapper.findComponent(EmptyState);
+  const testSummary = () => wrapper.findComponent(TestSummary);
+  const testSummaryTable = () => wrapper.findComponent(TestSummaryTable);
 
   const actionSpies = {
     fetchTestSuite: jest.fn(),
@@ -29,7 +31,7 @@ describe('Test reports app', () => {
     removeSelectedSuiteIndex: jest.fn(),
   };
 
-  const createComponent = (state = {}) => {
+  const createComponent = ({ state = {} } = {}) => {
     store = new Vuex.Store({
       state: {
         isLoading: false,
@@ -41,10 +43,12 @@ describe('Test reports app', () => {
       getters,
     });
 
-    wrapper = shallowMount(TestReports, {
-      store,
-      localVue,
-    });
+    wrapper = extendedWrapper(
+      shallowMount(TestReports, {
+        store,
+        localVue,
+      }),
+    );
   };
 
   afterEach(() => {
@@ -52,33 +56,28 @@ describe('Test reports app', () => {
   });
 
   describe('when component is created', () => {
-    beforeEach(() => {
+    it('should call fetchSummary when pipeline has test report', () => {
       createComponent();
-    });
 
-    it('should call fetchSummary', () => {
       expect(actionSpies.fetchSummary).toHaveBeenCalled();
     });
   });
 
   describe('when loading', () => {
-    beforeEach(() => createComponent({ isLoading: true }));
+    beforeEach(() => createComponent({ state: { isLoading: true } }));
 
     it('shows the loading spinner', () => {
-      expect(noTestsToShow().exists()).toBe(false);
+      expect(emptyState().exists()).toBe(false);
       expect(testsDetail().exists()).toBe(false);
       expect(loadingSpinner().exists()).toBe(true);
     });
   });
 
   describe('when the api returns no data', () => {
-    beforeEach(() => createComponent({ testReports: {} }));
+    it('displays empty state component', () => {
+      createComponent({ state: { testReports: {} } });
 
-    it('displays that there are no tests to show', () => {
-      const noTests = noTestsToShow();
-
-      expect(noTests.exists()).toBe(true);
-      expect(noTests.text()).toBe('There are no tests to show.');
+      expect(emptyState().exists()).toBe(true);
     });
   });
 
@@ -97,7 +96,7 @@ describe('Test reports app', () => {
 
   describe('when a suite is clicked', () => {
     beforeEach(() => {
-      createComponent({ hasFullReport: true });
+      createComponent({ state: { hasFullReport: true } });
       testSummaryTable().vm.$emit('row-click', 0);
     });
 
@@ -109,7 +108,7 @@ describe('Test reports app', () => {
 
   describe('when clicking back to summary', () => {
     beforeEach(() => {
-      createComponent({ selectedSuiteIndex: 0 });
+      createComponent({ state: { selectedSuiteIndex: 0 } });
       testSummary().vm.$emit('on-back-click');
     });
 

@@ -5,13 +5,15 @@ import Poll from '~/lib/utils/poll';
 import { s__ } from '~/locale';
 
 export class StatusPoller {
-  constructor({ groupManager, pollPath }) {
+  constructor({ updateImportStatus, pollPath }) {
     this.eTagPoll = new Poll({
       resource: {
         fetchJobs: () => axios.get(pollPath),
       },
       method: 'fetchJobs',
-      successCallback: ({ data }) => this.updateImportsStatuses(data),
+      successCallback: ({ data: statuses }) => {
+        statuses.forEach((status) => updateImportStatus(status));
+      },
       errorCallback: () =>
         createFlash({
           message: s__('BulkImport|Update of import statuses with realtime changes failed'),
@@ -25,17 +27,9 @@ export class StatusPoller {
         this.eTagPoll.stop();
       }
     });
-
-    this.groupManager = groupManager;
   }
 
   startPolling() {
     this.eTagPoll.makeRequest();
-  }
-
-  async updateImportsStatuses(importStatuses) {
-    importStatuses.forEach(({ id, status_name: statusName }) => {
-      this.groupManager.setImportStatusByImportId(id, statusName);
-    });
   }
 }

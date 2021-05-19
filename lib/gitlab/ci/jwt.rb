@@ -123,4 +123,4 @@ module Gitlab
   end
 end
 
-Gitlab::Ci::Jwt.prepend_if_ee('::EE::Gitlab::Ci::Jwt')
+Gitlab::Ci::Jwt.prepend_mod_with('Gitlab::Ci::Jwt')

@@ -18,12 +18,7 @@ You can add a help message, which is shown on the GitLab `/help` page (e.g.,
 
 1. Navigate to **Admin Area > Settings > Preferences**, then expand **Help page**.
 1. Under **Help page text**, fill in the information you wish to display on `/help`.
-
-   ![help page help message](img/help_page_help_page_text_v12_3.png)
-
 1. Save your changes. You can now see the message on `/help`.
-
-![help message on help page example](img/help_page_help_page_text_ex_v12_3.png)
 
 ## Adding a help message to the login page **(STARTER)**
 

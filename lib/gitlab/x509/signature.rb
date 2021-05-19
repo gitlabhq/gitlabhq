@@ -72,7 +72,7 @@ module Gitlab
           pkcs7_text = pkcs7_text.sub('-----END SIGNED MESSAGE-----', '-----END PKCS7-----')
 
           OpenSSL::PKCS7.new(pkcs7_text)
-        rescue
+        rescue StandardError
           nil
         end
       end
@@ -87,7 +87,7 @@ module Gitlab
 
       def valid_signature?
         p7.verify([], cert_store, signed_text, OpenSSL::PKCS7::NOVERIFY)
-      rescue
+      rescue StandardError
         nil
       end
 
@@ -104,7 +104,7 @@ module Gitlab
         else
           nil
         end
-      rescue
+      rescue StandardError
         nil
       end
 

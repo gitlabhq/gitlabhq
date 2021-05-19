@@ -17,6 +17,7 @@ module Packages
           name: name,
           package_files: @package.package_files.map { |pf| build_package_file_view(pf) },
           package_type: @package.package_type,
+          status: @package.status,
           project_id: @package.project_id,
           tags: @package.tags.as_json,
           updated_at: @package.updated_at,

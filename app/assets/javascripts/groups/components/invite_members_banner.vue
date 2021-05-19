@@ -1,5 +1,6 @@
 <script>
 import { GlBanner } from '@gitlab/ui';
+import eventHub from '~/invite_members/event_hub';
 import { parseBoolean, setCookie, getCookie } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -11,7 +12,7 @@ export default {
     GlBanner,
   },
   mixins: [trackingMixin],
-  inject: ['svgPath', 'inviteMembersPath', 'isDismissedKey', 'trackLabel'],
+  inject: ['svgPath', 'isDismissedKey', 'trackLabel'],
   data() {
     return {
       isDismissed: parseBoolean(getCookie(this.isDismissedKey)),
@@ -19,11 +20,6 @@ export default {
         label: this.trackLabel,
       },
     };
-  },
-  created() {
-    this.$nextTick(() => {
-      this.addTrackingAttributesToButton();
-    });
   },
   mounted() {
     this.trackOnShow();
@@ -39,15 +35,12 @@ export default {
         if (!this.isDismissed) this.track(this.$options.displayEvent);
       });
     },
-    addTrackingAttributesToButton() {
-      if (this.$refs.banner === undefined) return;
-
-      const button = this.$refs.banner.$el.querySelector(`[href='${this.inviteMembersPath}']`);
-
-      if (button) {
-        button.setAttribute('data-track-event', this.$options.buttonClickEvent);
-        button.setAttribute('data-track-label', this.trackLabel);
-      }
+    openModal() {
+      eventHub.$emit('openModal', {
+        inviteeType: 'members',
+        source: this.$options.openModalSource,
+      });
+      this.track(this.$options.buttonClickEvent);
     },
   },
   i18n: {
@@ -59,6 +52,7 @@ export default {
   },
   displayEvent: 'invite_members_banner_displayed',
   buttonClickEvent: 'invite_members_banner_button_clicked',
+  openModalSource: 'invite_members_banner',
   dismissEvent: 'invite_members_banner_dismissed',
 };
 </script>
@@ -70,8 +64,8 @@ export default {
     :title="$options.i18n.title"
     :button-text="$options.i18n.button_text"
     :svg-path="svgPath"
-    :button-link="inviteMembersPath"
     @close="handleClose"
+    @primary="openModal"
   >
     <p>{{ $options.i18n.body }}</p>
   </gl-banner>

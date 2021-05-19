@@ -1,23 +1,23 @@
-<%= in_product_marketing_tagline(@track, @series) %>
+<%= @message.tagline %>
 
-<%= in_product_marketing_title(@track, @series) %>
-<%= in_product_marketing_subtitle(@track, @series) %>
-
-
-<%= in_product_marketing_body_line1(@track, @series) %>
-
-<%= in_product_marketing_body_line2(@track, @series) %>
-
-<%= cta_link(@track, @series, @group) %>
+<%= @message.title %>
+<%= @message.subtitle %>
 
 
+<%= @message.body_line1 %>
+
+<%= @message.body_line2 %>
+
+<%= @message.cta_link %>
 
 
 
 
 
-<%= footer_links %>
 
-<%= address %>
 
-<%= unsubscribe(@track, @series) %>
+<%= @message.footer_links %>
+
+<%= @message.address %>
+
+<%= @message.unsubscribe %>

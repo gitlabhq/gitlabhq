@@ -114,7 +114,7 @@ module Groups
       def notify_error!
         notify_error
 
-        raise Gitlab::ImportExport::Error.new(shared.errors.to_sentence)
+        raise Gitlab::ImportExport::Error, shared.errors.to_sentence
       end
 
       def remove_base_tmp_dir
@@ -124,4 +124,4 @@ module Groups
   end
 end
 
-Groups::ImportExport::ImportService.prepend_if_ee('EE::Groups::ImportExport::ImportService')
+Groups::ImportExport::ImportService.prepend_mod_with('Groups::ImportExport::ImportService')

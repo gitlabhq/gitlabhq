@@ -36,7 +36,7 @@ RSpec.describe Groups::Settings::IntegrationsController do
   describe '#edit' do
     context 'when user is not owner' do
       it 'renders not_found' do
-        get :edit, params: { group_id: group, id: Service.available_services_names(include_project_specific: false).sample }
+        get :edit, params: { group_id: group, id: Integration.available_services_names(include_project_specific: false).sample }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -47,7 +47,7 @@ RSpec.describe Groups::Settings::IntegrationsController do
         group.add_owner(user)
       end
 
-      Service.available_services_names(include_project_specific: false).each do |integration_name|
+      Integration.available_services_names(include_project_specific: false).each do |integration_name|
         context "#{integration_name}" do
           it 'successfully displays the template' do
             get :edit, params: { group_id: group, id: integration_name }

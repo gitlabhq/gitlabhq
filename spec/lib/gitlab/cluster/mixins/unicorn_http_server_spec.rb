@@ -111,7 +111,7 @@ RSpec.describe Gitlab::Cluster::Mixins::UnicornHttpServer do
         line = process.readline
         puts "UNICORN_DEBUG: #{line}" if ENV['UNICORN_DEBUG']
       end
-    rescue
+    rescue StandardError
     end
   end
 end

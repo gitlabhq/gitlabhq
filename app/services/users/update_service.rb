@@ -34,7 +34,7 @@ module Users
     def execute!(*args, &block)
       result = execute(*args, &block)
 
-      raise ActiveRecord::RecordInvalid.new(@user) unless result[:status] == :success
+      raise ActiveRecord::RecordInvalid, @user unless result[:status] == :success
 
       true
     end
@@ -96,4 +96,4 @@ module Users
   end
 end
 
-Users::UpdateService.prepend_if_ee('EE::Users::UpdateService')
+Users::UpdateService.prepend_mod_with('Users::UpdateService')

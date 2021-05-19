@@ -5,6 +5,7 @@ module BulkImports
     include ApplicationWorker
 
     feature_category :importers
+    tags :exclude_from_kubernetes
 
     sidekiq_options retry: false, dead: false
 
@@ -46,7 +47,7 @@ module BulkImports
       pipeline_tracker.pipeline_class.new(context).run
 
       pipeline_tracker.finish!
-    rescue => e
+    rescue StandardError => e
       pipeline_tracker.fail_op!
 
       logger.error(

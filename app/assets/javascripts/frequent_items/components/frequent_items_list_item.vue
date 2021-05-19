@@ -1,8 +1,8 @@
 <script>
 /* eslint-disable vue/require-default-prop, vue/no-v-html */
-import { mapState } from 'vuex';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
+import { mapVuexModuleState } from '~/lib/utils/vuex_module_mappers';
 import Tracking from '~/tracking';
 import Identicon from '~/vue_shared/components/identicon.vue';
 
@@ -13,6 +13,7 @@ export default {
     Identicon,
   },
   mixins: [trackingMixin],
+  inject: ['vuexModule'],
   props: {
     matcher: {
       type: String,
@@ -42,7 +43,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['dropdownType']),
+    ...mapVuexModuleState((vm) => vm.vuexModule, ['dropdownType']),
     truncatedNamespace() {
       return truncateNamespace(this.namespace);
     },

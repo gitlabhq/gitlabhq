@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::JiraImport::Stage::StartImportWorker do
   let_it_be(:project) { create(:project, import_type: 'jira') }
   let_it_be(:jid) { '12345678' }
+
   let(:worker) { described_class.new }
 
   describe 'modules' do

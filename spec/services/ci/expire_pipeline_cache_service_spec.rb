@@ -6,6 +6,7 @@ RSpec.describe Ci::ExpirePipelineCacheService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
   subject { described_class.new }
 
   describe '#execute' do
@@ -14,12 +15,14 @@ RSpec.describe Ci::ExpirePipelineCacheService do
       new_mr_pipelines_path = "/#{project.full_path}/-/merge_requests/new.json"
       pipeline_path = "/#{project.full_path}/-/pipelines/#{pipeline.id}.json"
       graphql_pipeline_path = "/api/graphql:pipelines/id/#{pipeline.id}"
+      graphql_pipeline_sha_path = "/api/graphql:pipelines/sha/#{pipeline.sha}"
 
       expect_next_instance_of(Gitlab::EtagCaching::Store) do |store|
         expect(store).to receive(:touch).with(pipelines_path)
         expect(store).to receive(:touch).with(new_mr_pipelines_path)
         expect(store).to receive(:touch).with(pipeline_path)
         expect(store).to receive(:touch).with(graphql_pipeline_path)
+        expect(store).to receive(:touch).with(graphql_pipeline_sha_path)
       end
 
       subject.execute(pipeline)
@@ -49,7 +52,7 @@ RSpec.describe Ci::ExpirePipelineCacheService do
       let(:project_with_repo) { create(:project, :repository) }
       let!(:pipeline_with_commit) { create(:ci_pipeline, :success, project: project_with_repo, sha: project_with_repo.commit.id) }
 
-      it 'clears the cache', :use_clean_rails_memory_store_caching do
+      it 'clears the cache', :use_clean_rails_redis_caching do
         create(:commit_status, :success, pipeline: pipeline_with_commit, ref: pipeline_with_commit.ref)
 
         # Sanity check
@@ -58,6 +61,9 @@ RSpec.describe Ci::ExpirePipelineCacheService do
         subject.execute(pipeline_with_commit, delete: true)
 
         pipeline_with_commit.destroy!
+
+        # We need to reset lazy_latest_pipeline cache to simulate a new request
+        BatchLoader::Executor.clear_current
 
         # Need to use find to avoid memoization
         expect(Project.find(project_with_repo.id).pipeline_status.has_status?).to be_falsey

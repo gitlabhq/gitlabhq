@@ -1,0 +1,5 @@
+---
+title: Add Ci::Build graphql mutations
+merge_request: 60443
+author:
+type: added

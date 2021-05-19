@@ -1,16 +1,18 @@
 ---
 key_path: instance_auto_devops_enabled
 description: Whether auto DevOps is enabled
-product_section: growth
-product_stage: growth
-product_group: group::product intelligence
-product_category: collection
+product_section: ops
+product_stage: configure
+product_group: group::configure
+product_category: auto_devops
 value_type: boolean
 status: data_available
 time_frame: none
-data_source:
+data_source: system
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

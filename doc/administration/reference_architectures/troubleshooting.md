@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting a reference architecture setup
+# Troubleshooting a reference architecture setup **(FREE SELF)**
 
 This page serves as the troubleshooting documentation if you followed one of
 the [reference architectures](index.md#reference-architectures).
@@ -33,7 +33,7 @@ The dependency on disk storage also prevents Pages being deployed using the
 ### Incremental logging is required for CI to use object storage
 
 If you configure GitLab to use object storage for CI logs and artifacts,
-[you must also enable incremental logging](../job_logs.md#new-incremental-logging-architecture).
+[you must also enable incremental logging](../job_logs.md#incremental-logging-architecture).
 
 ### Proxy Download
 

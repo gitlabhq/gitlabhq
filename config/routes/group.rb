@@ -52,7 +52,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
       resources :applications
 
-      resources :packages_and_registries, only: [:index]
+      resource :packages_and_registries, only: [:show]
     end
 
     resource :variables, only: [:show, :update]
@@ -114,6 +114,17 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :container_registries, only: [:index, :show], controller: 'registry/repositories'
     resource :dependency_proxy, only: [:show, :update]
     resources :email_campaigns, only: :index
+
+    resources :autocomplete_sources, only: [] do
+      collection do
+        get 'members'
+        get 'issues'
+        get 'merge_requests'
+        get 'labels'
+        get 'commands'
+        get 'milestones'
+      end
+    end
   end
 
   scope(path: '*id',

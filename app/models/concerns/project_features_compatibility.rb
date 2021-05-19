@@ -109,4 +109,4 @@ module ProjectFeaturesCompatibility
   end
 end
 
-ProjectFeaturesCompatibility.prepend_if_ee('EE::ProjectFeaturesCompatibility')
+ProjectFeaturesCompatibility.prepend_mod_with('ProjectFeaturesCompatibility')

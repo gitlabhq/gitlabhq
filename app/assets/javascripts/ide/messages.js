@@ -1,11 +1,11 @@
 import { s__ } from '~/locale';
 
 export const MSG_CANNOT_PUSH_CODE_SHOULD_FORK = s__(
-  'WebIDE|You need permission to edit files directly in this project. Fork this project to make your changes and submit a merge request.',
+  'WebIDE|You can’t edit files directly in this project. Fork this project and submit a merge request with your changes.',
 );
 
 export const MSG_CANNOT_PUSH_CODE_GO_TO_FORK = s__(
-  'WebIDE|You need permission to edit files directly in this project. Go to your fork to make changes and submit a merge request.',
+  'WebIDE|You can’t edit files directly in this project. Go to your fork and submit a merge request with your changes.',
 );
 
 export const MSG_CANNOT_PUSH_CODE = s__(
@@ -13,7 +13,7 @@ export const MSG_CANNOT_PUSH_CODE = s__(
 );
 
 export const MSG_CANNOT_PUSH_UNSIGNED = s__(
-  'WebIDE|This project does not accept unsigned commits. You will not be able to commit your changes through the Web IDE.',
+  'WebIDE|This project does not accept unsigned commits. You can’t commit changes through the Web IDE.',
 );
 
 export const MSG_CANNOT_PUSH_UNSIGNED_SHORT = s__(

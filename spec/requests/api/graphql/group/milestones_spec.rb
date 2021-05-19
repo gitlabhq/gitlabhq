@@ -197,18 +197,6 @@ RSpec.describe 'Milestones through GroupQuery' do
           }
         })
       end
-
-      context 'when the graphql_milestone_stats feature flag is disabled' do
-        before do
-          stub_feature_flags(graphql_milestone_stats: false)
-        end
-
-        it 'returns nil for the stats field' do
-          expect(post_query).to eq({
-            'stats' => nil
-          })
-        end
-      end
     end
   end
 end

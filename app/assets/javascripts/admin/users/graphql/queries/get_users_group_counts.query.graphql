@@ -1,0 +1,8 @@
+query getUsersGroupCounts($usernames: [String!]) {
+  users(usernames: $usernames) {
+    nodes {
+      id
+      groupCount
+    }
+  }
+}

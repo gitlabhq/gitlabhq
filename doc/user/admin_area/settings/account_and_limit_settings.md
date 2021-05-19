@@ -50,7 +50,7 @@ You can set a global prefix for all generated Personal Access Tokens.
 
 A prefix can help you identify PATs visually, as well as with automation tools.
 
-### Setting a prefix
+### Set a prefix
 
 Only a GitLab administrator can set the prefix, which is a global setting applied
 to any PAT generated in the system by any user:
@@ -148,7 +148,7 @@ To set a limit on how long these sessions are valid:
 1. Fill in the **Session duration for Git operations when 2FA is enabled (minutes)** field.
 1. Click **Save changes**.
 
-## Limiting lifetime of personal access tokens **(ULTIMATE SELF)**
+## Limit the lifetime of personal access tokens **(ULTIMATE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab Ultimate 12.6.
 
@@ -160,7 +160,7 @@ Personal access tokens are the only tokens needed for programmatic access to Git
 However, organizations with security requirements may want to enforce more protection by
 requiring the regular rotation of these tokens.
 
-### Setting a lifetime
+### Set a lifetime
 
 Only a GitLab administrator can set a lifetime. Leaving it empty means
 there are no restrictions.
@@ -180,12 +180,16 @@ Once a lifetime for personal access tokens is set, GitLab:
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
 
-## Optional enforcement of SSH key expiration **(ULTIMATE SELF)**
+## Enforce SSH key expiration **(ULTIMATE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250480) in GitLab 13.9.
 
 By default, expired SSH keys **can still be used**.
-You can prevent the use of expired SSH keys with the following steps:
+
+WARNING:
+Allowing use of expired SSH keys by default is deprecated and scheduled to change in GitLab 14.0.
+
+To prevent the use of expired SSH keys:
 
 1. Navigate to **Admin Area > Settings > General**.
 1. Expand the **Account and limit** section.
@@ -195,7 +199,7 @@ Enforcing SSH key expiration immediately disables all expired SSH keys.
 
 For more information, see the following issue on [SSH key expiration](https://gitlab.com/gitlab-org/gitlab/-/issues/320970).
 
-## Optional non-enforcement of Personal Access Token expiration **(ULTIMATE SELF)**
+## Do not enforce Personal Access Token expiration **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214723) in GitLab Ultimate 13.1.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/296881) in GitLab 13.9.
@@ -209,7 +213,7 @@ To do this:
 1. Expand the **Account and limit** section.
 1. Uncheck the **Enforce personal access token expiration** checkbox.
 
-## Disabling user profile name changes **(PREMIUM SELF)**
+## Disable user profile name changes **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24605) in GitLab 12.7.
 

@@ -11,8 +11,5 @@
       = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-metrics-dashboard-selector qa-metrics-dashboard-dropdown', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: metrics_dashboard_ymls(@project) } } )
     #gitlab-ci-yml-selector.gitlab-ci-yml-selector.js-gitlab-ci-yml-selector-wrap.js-template-selector-wrap.hidden
       = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-gitlab-ci-yml-selector qa-gitlab-ci-yml-dropdown', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: gitlab_ci_ymls(@project), selected: params[:template] } } )
-    - if experiment_enabled?(:ci_syntax_templates_b, subject: current_user) && @project.namespace.recent?
-      .gitlab-ci-syntax-yml-selector.js-gitlab-ci-syntax-yml-selector-wrap.js-template-selector-wrap.hidden
-        = dropdown_tag(_("Learn CI/CD syntax"), options: { toggle_class: 'js-gitlab-ci-syntax-yml-selector qa-gitlab-ci-syntax-yml-dropdown', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: gitlab_ci_syntax_ymls(@project) } } )
     .dockerfile-selector.js-dockerfile-selector-wrap.js-template-selector-wrap.hidden
       = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-dockerfile-selector qa-dockerfile-dropdown', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: dockerfile_names(@project) } } )

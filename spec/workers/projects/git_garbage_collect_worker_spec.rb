@@ -36,6 +36,7 @@ RSpec.describe Projects::GitGarbageCollectWorker do
 
     context 'LFS object garbage collection' do
       let_it_be(:lfs_reference) { create(:lfs_objects_project, project: project) }
+
       let(:lfs_object) { lfs_reference.lfs_object }
 
       before do

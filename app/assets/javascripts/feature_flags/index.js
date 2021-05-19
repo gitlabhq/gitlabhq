@@ -24,6 +24,7 @@ export default () => {
     newFeatureFlagPath,
     newUserListPath,
     featureFlagsLimitExceeded,
+    featureFlagsLimit,
   } = el.dataset;
 
   return new Vue({
@@ -40,7 +41,8 @@ export default () => {
       canUserConfigure: canUserAdminFeatureFlag !== undefined,
       newFeatureFlagPath,
       newUserListPath,
-      featureFlagsLimitExceeded,
+      featureFlagsLimitExceeded: featureFlagsLimitExceeded !== undefined,
+      featureFlagsLimit,
     },
     render(createElement) {
       return createElement(FeatureFlagsComponent);

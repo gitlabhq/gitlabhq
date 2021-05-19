@@ -25,4 +25,4 @@ module ExportHelper
   end
 end
 
-ExportHelper.prepend_if_ee('EE::ExportHelper')
+ExportHelper.prepend_mod_with('ExportHelper')

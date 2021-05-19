@@ -1,16 +1,18 @@
 ---
 key_path: counts.commit_comment
-description:
+description: Count of total unique commit comments. Does not include MR diff comments
 product_section: dev
 product_stage: create
 product_group: group::source code
-product_category: code_review
+product_category: source_code_management
 value_type: number
 status: data_available
 time_frame: all
-data_source: database
+data_source: redis
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

@@ -10,7 +10,7 @@ import { debounce } from 'lodash';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 
-import { DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY, DEBOUNCE_DELAY } from '../constants';
+import { DEBOUNCE_DELAY, DEFAULT_NONE_ANY } from '../constants';
 import { stripQuotes } from '../filtered_search_utils';
 
 export default {
@@ -33,7 +33,7 @@ export default {
   data() {
     return {
       emojis: this.config.initialEmojis || [],
-      defaultEmojis: this.config.defaultEmojis || [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY],
+      defaultEmojis: this.config.defaultEmojis || DEFAULT_NONE_ANY,
       loading: true,
     };
   },
@@ -45,6 +45,16 @@ export default {
       return this.emojis.find(
         (emoji) => emoji.name.toLowerCase() === stripQuotes(this.currentValue),
       );
+    },
+  },
+  watch: {
+    active: {
+      immediate: true,
+      handler(newValue) {
+        if (!newValue && !this.emojis.length) {
+          this.fetchEmojiBySearchTerm(this.value.data);
+        }
+      },
     },
   },
   methods: {

@@ -23,6 +23,6 @@
         .clearable-input
           = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Expiration date'
           = sprite_icon('close', size: 16, css_class: 'clear-icon js-clear-input gl-text-gray-200')
-      = submit_tag _("Invite"), class: "gl-button btn btn-confirm gl-mr-3", data: { qa_selector: 'invite_member_button' }
+      = submit_tag _("Invite"), class: "gl-button btn btn-confirm gl-mr-2", data: { qa_selector: 'invite_member_button' }
       - if can_import_members
         = link_to _("Import"), import_path, class: "gl-button btn btn-default", title: _("Import members from another project")

@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create', quarantine: { only: { subdomain: :staging }, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/323990', type: :flaky } do
     describe 'Merge request rebasing' do
-      it 'user rebases source branch of merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1274' do
+      it 'user rebases source branch of merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1800' do
         Flow::Login.sign_in
 
         project = Resource::Project.fabricate_via_api! do |project|

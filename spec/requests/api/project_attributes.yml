@@ -41,6 +41,7 @@ itself: # project
     - reset_approvals_on_push
     - runners_token_encrypted
     - storage_version
+    - topic_list
     - updated_at
   remapped_attributes:
     avatar: avatar_url
@@ -67,6 +68,7 @@ itself: # project
     - readme_url
     - shared_with_groups
     - ssh_url_to_repo
+    - tag_list
     - web_url
 
 build_auto_devops: # auto_devops

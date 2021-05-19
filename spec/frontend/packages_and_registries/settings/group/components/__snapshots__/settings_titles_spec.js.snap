@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`settings_titles renders properly 1`] = `
+<div>
+  <h5
+    class="gl-border-b-solid gl-border-b-1 gl-border-gray-200"
+  >
+    
+    foo
+  
+  </h5>
+   
+  <p>
+    bar
+  </p>
+   
+</div>
+`;

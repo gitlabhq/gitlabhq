@@ -16,11 +16,11 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
     let(:merge_request2) { create(:merge_request, source_project: forked_project, target_project: fork_project(project)) }
     let(:merge_request_in_fork) { create(:merge_request, source_project: forked_project, target_project: forked_project) }
 
-    let(:mr_close_service) { MergeRequests::CloseService.new(forked_project, user) }
+    let(:mr_close_service) { MergeRequests::CloseService.new(project: forked_project, current_user: user) }
 
     before do
       allow(MergeRequests::CloseService).to receive(:new)
-        .with(forked_project, user)
+        .with(project: forked_project, current_user: user)
         .and_return(mr_close_service)
     end
 
@@ -79,11 +79,11 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
       let!(:merge_request2) { create(:merge_request, source_project: project, target_project: fork_project(project)) }
       let!(:merge_request_in_fork) { create(:merge_request, source_project: forked_project, target_project: forked_project) }
 
-      let(:mr_close_service) { MergeRequests::CloseService.new(project, user) }
+      let(:mr_close_service) { MergeRequests::CloseService.new(project: project, current_user: user) }
 
       before do
         allow(MergeRequests::CloseService).to receive(:new)
-                                                .with(project, user)
+                                                .with(project: project, current_user: user)
                                                 .and_return(mr_close_service)
       end
 
@@ -142,11 +142,11 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
         let!(:mr_from_child) { create(:merge_request, source_project: fork_of_fork, target_project: forked_project) }
         let!(:merge_request_in_fork) { create(:merge_request, source_project: forked_project, target_project: forked_project) }
 
-        let(:mr_close_service) { MergeRequests::CloseService.new(forked_project, user) }
+        let(:mr_close_service) { MergeRequests::CloseService.new(project: forked_project, current_user: user) }
 
         before do
           allow(MergeRequests::CloseService).to receive(:new)
-            .with(forked_project, user)
+            .with(project: forked_project, current_user: user)
             .and_return(mr_close_service)
         end
 

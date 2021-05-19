@@ -53,20 +53,21 @@ See also the Code Climate list of [Supported Languages for Maintainability](http
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267612) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.11.
 > - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 13.12.
 
 Changes to files in merge requests can cause Code Quality to fall if merged. In these cases,
 an indicator is displayed (**{information-o}** **Code Quality**) on the file in the merge request's diff view. For example:
 
 ![Code Quality MR diff report](img/code_quality_mr_diff_report_v13_11.png)
 
-To enable this feature, a GitLab administrator can run the following in a
+To disable this feature, a GitLab administrator can run the following in a
 [Rails console](../../../administration/operations/rails_console.md):
 
 ```ruby
 # For the instance
-Feature.enable(:codequality_mr_diff)
+Feature.disable(:codequality_mr_diff)
 # For a single project
-Feature.enable(:codequality_mr_diff, Project.find(<project id>))
+Feature.disable(:codequality_mr_diff, Project.find(<project id>))
 ```
 
 ## Use cases
@@ -519,7 +520,7 @@ to change the default configuration, **not** a `.codequality.yml` file. If you u
 the wrong filename, the [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml.template)
 is still used.
 
-### No Code Quality report is displayed in a Merge Request
+### No Code Quality report is displayed in a merge request
 
 This can be due to multiple reasons:
 
@@ -531,7 +532,7 @@ This can be due to multiple reasons:
   nothing is displayed.
 - The [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in) CI/CD
   setting can cause the Code Quality artifact(s) to expire faster than desired.
-- The widgets use the pipeline of the latest commit to the target branch. If commits are made to the default branch that do not run the code quality job, this may cause the Merge Request widget to have no base report for comparison.
+- The widgets use the pipeline of the latest commit to the target branch. If commits are made to the default branch that do not run the code quality job, this may cause the merge request widget to have no base report for comparison.
 - If you use the [`REPORT_STDOUT` environment variable](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables), no report file is generated and nothing displays in the merge request.
 - Large `gl-code-quality-report.json` files (esp. >10 MB) are [known to prevent the report from being displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/2737).
   As a work-around, try removing [properties](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types)

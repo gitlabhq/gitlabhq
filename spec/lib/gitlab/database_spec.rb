@@ -15,9 +15,29 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.default_pool_size' do
+    before do
+      allow(Gitlab::Runtime).to receive(:max_threads).and_return(7)
+    end
+
+    it 'returns the max thread size plus a fixed headroom of 10' do
+      expect(described_class.default_pool_size).to eq(17)
+    end
+
+    it 'returns the max thread size plus a DB_POOL_HEADROOM if this env var is present' do
+      stub_env('DB_POOL_HEADROOM', '7')
+
+      expect(described_class.default_pool_size).to eq(14)
+    end
+  end
+
   describe '.config' do
-    it 'returns a Hash' do
-      expect(described_class.config).to be_an_instance_of(Hash)
+    it 'returns a HashWithIndifferentAccess' do
+      expect(described_class.config).to be_an_instance_of(HashWithIndifferentAccess)
+    end
+
+    it 'returns a default pool size' do
+      expect(described_class.config).to include(pool: described_class.default_pool_size)
     end
   end
 
@@ -176,7 +196,7 @@ RSpec.describe Gitlab::Database do
 
           closed_pool = pool
 
-          raise error.new('boom')
+          raise error, 'boom'
         end
       rescue error
       end
@@ -395,13 +415,13 @@ RSpec.describe Gitlab::Database do
       allow(ActiveRecord::Base.connection).to receive(:execute).and_call_original
     end
 
-    it 'detects a read only database' do
+    it 'detects a read-only database' do
       allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "t" }])
 
       expect(described_class.db_read_only?).to be_truthy
     end
 
-    it 'detects a read only database' do
+    it 'detects a read-only database' do
       allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => true }])
 
       expect(described_class.db_read_only?).to be_truthy

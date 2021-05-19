@@ -35,4 +35,4 @@ module Git
   end
 end
 
-Git::TagHooksService.prepend_if_ee('::EE::Git::TagHooksService')
+Git::TagHooksService.prepend_mod_with('Git::TagHooksService')

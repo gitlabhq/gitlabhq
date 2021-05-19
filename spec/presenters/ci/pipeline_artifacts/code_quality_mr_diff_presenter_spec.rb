@@ -4,11 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelineArtifacts::CodeQualityMrDiffPresenter do
   let(:pipeline_artifact) { create(:ci_pipeline_artifact, :with_codequality_mr_diff_report) }
+  let(:merge_request) { double(id: 123456789, new_paths: filenames) }
 
   subject(:presenter) { described_class.new(pipeline_artifact) }
 
   describe '#for_files' do
-    subject(:quality_data) { presenter.for_files(filenames) }
+    subject(:quality_data) { presenter.for_files(merge_request) }
 
     context 'when code quality has data' do
       context 'when filenames is empty' do

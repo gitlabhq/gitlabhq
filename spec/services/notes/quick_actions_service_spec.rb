@@ -103,6 +103,30 @@ RSpec.describe Notes::QuickActionsService do
             expect(Timelog.last.note_id).to eq(note.id)
           end
         end
+
+        context 'adds a system note' do
+          context 'when not specifying a date' do
+            let(:note_text) { "/spend 1h" }
+
+            it 'does not include the date' do
+              _, update_params = service.execute(note)
+              service.apply_updates(update_params, note)
+
+              expect(Note.last.note).to eq('added 1h of time spent')
+            end
+          end
+
+          context 'when specifying a date' do
+            let(:note_text) { "/spend 1h 2020-01-01" }
+
+            it 'does include the date' do
+              _, update_params = service.execute(note)
+              service.apply_updates(update_params, note)
+
+              expect(Note.last.note).to eq('added 1h of time spent at 2020-01-01')
+            end
+          end
+        end
       end
     end
 
@@ -214,25 +238,25 @@ RSpec.describe Notes::QuickActionsService do
     end
   end
 
-  describe '.noteable_update_service' do
+  describe '.noteable_update_service_class' do
     include_context 'note on noteable'
 
     it 'returns Issues::UpdateService for a note on an issue' do
       note = create(:note_on_issue, project: project)
 
-      expect(described_class.noteable_update_service(note)).to eq(Issues::UpdateService)
+      expect(described_class.noteable_update_service_class(note)).to eq(Issues::UpdateService)
     end
 
     it 'returns MergeRequests::UpdateService for a note on a merge request' do
       note = create(:note_on_merge_request, project: project)
 
-      expect(described_class.noteable_update_service(note)).to eq(MergeRequests::UpdateService)
+      expect(described_class.noteable_update_service_class(note)).to eq(MergeRequests::UpdateService)
     end
 
     it 'returns Commits::TagService for a note on a commit' do
       note = create(:note_on_commit, project: project)
 
-      expect(described_class.noteable_update_service(note)).to eq(Commits::TagService)
+      expect(described_class.noteable_update_service_class(note)).to eq(Commits::TagService)
     end
   end
 

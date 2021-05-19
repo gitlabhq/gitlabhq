@@ -123,7 +123,7 @@ This is usually caused by the `rules` configuration, and there are several ways 
 
 #### A job is not in the pipeline
 
-GitLab determines if a job is added to a pipeline based on the [`only/except`](yaml/README.md#onlyexcept-basic)
+GitLab determines if a job is added to a pipeline based on the [`only/except`](yaml/README.md#only--except)
 or [`rules`](yaml/README.md#rules) defined for the job. If it didn't run, it's probably
 not evaluating as you expect.
 
@@ -150,7 +150,7 @@ A common reason a job is added to a pipeline unexpectedly is because the `change
 keyword always evaluates to true in certain cases. For example, `changes` is always
 true in certain pipeline types, including scheduled pipelines and pipelines for tags.
 
-The `changes` keyword is used in combination with [`only/except`](yaml/README.md#onlychangesexceptchanges)
+The `changes` keyword is used in combination with [`only/except`](yaml/README.md#onlychanges--exceptchanges)
 or [`rules`](yaml/README.md#ruleschanges)). It's recommended to use `changes` with
 `rules` or `only/except` configuration that ensures the job is only added to branch
 pipelines or merge request pipelines.
@@ -269,7 +269,7 @@ which pipelines can run.
 resource_group = Project.find_by_full_path('...').resource_groups.find_by(key: 'the-group-name')
 busy_resources = resource_group.resources.where('build_id IS NOT NULL')
 
-# identify which builds are occupying the resource 
+# identify which builds are occupying the resource
 # (I think it should be 1 as of today)
 busy_resources.pluck(:build_id)
 

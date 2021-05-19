@@ -5,6 +5,8 @@ module IncidentManagement
     class ProcessIncidentWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
 
+      sidekiq_options retry: 3
+
       queue_namespace :incident_management
       feature_category :incident_management
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PivotaltrackerService < Service
+class PivotaltrackerService < Integration
   API_ENDPOINT = 'https://www.pivotaltracker.com/services/v5/source_commits'
 
   prop_accessor :token, :restrict_to_branch
@@ -11,7 +11,7 @@ class PivotaltrackerService < Service
   end
 
   def description
-    s_('PivotalTrackerService|Project Management Software (Source Commits Endpoint)')
+    s_('PivotalTrackerService|Add commit messages as comments to PivotalTracker stories.')
   end
 
   def self.to_param

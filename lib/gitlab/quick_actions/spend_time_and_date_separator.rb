@@ -19,7 +19,7 @@ module Gitlab
 
       def execute
         return if @spend_arg.blank?
-        return [get_time, DateTime.now.to_date] unless date_present?
+        return [get_time, DateTime.current] unless date_present?
         return unless valid_date?
 
         [get_time, get_date]

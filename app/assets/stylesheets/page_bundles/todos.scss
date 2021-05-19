@@ -8,8 +8,6 @@
 .todos-list > .todo {
   // workaround because we cannot use border-collapse
   border-top: 1px solid transparent;
-  display: flex;
-  flex-direction: row;
 
   &:hover {
     background-color: var(--blue-50, $blue-50);
@@ -24,25 +22,6 @@
     &:hover {
       border-color: var(--blue-200, $blue-200);
     }
-  }
-
-  .todo-avatar,
-  .todo-actions {
-    @include transition(opacity);
-    flex: 0 0 auto;
-  }
-
-  .todo-actions {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    margin-left: 10px;
-    min-width: 55px;
-  }
-
-  .todo-item {
-    flex: 0 1 100%;
-    min-width: 0;
   }
 
   &.todo-pending.done-reversible {
@@ -71,56 +50,20 @@
 .todo-item {
   @include transition(opacity);
 
-  .todo-title {
-    > .title-item {
-      &:first-child {
-        margin-left: 0;
-      }
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-
-    .todo-label {
-      flex: 0 1 auto;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  }
-
   .status-box {
-    margin: 0;
-    float: none;
-    display: inline-block;
-    font-weight: $gl-font-weight-normal;
-    padding: 0 5px;
     line-height: inherit;
-    font-size: 14px;
   }
 
   .todo-label,
   .todo-project {
     a {
-      font-weight: $gl-font-weight-normal;
       color: var(--blue-600, $blue-600);
     }
   }
 
   .todo-body {
-    .badge.badge-pill,
     p {
       color: var(--gl-text-color, $gl-text-color);
-    }
-
-    .md {
-      color: $gl-grayish-blue;
-      font-size: $gl-font-size;
-    }
-
-    code {
-      white-space: pre-wrap;
     }
 
     pre {
@@ -139,120 +82,13 @@
       float: none;
     }
 
-    p:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  .gl-label-scoped {
-    --label-inset-border: inset 0 0 0 1px currentColor;
-  }
-}
-
-@include media-breakpoint-down(lg) {
-  .todos-filters {
-    .filter-categories {
-      width: 75%;
-
-      .filter-item {
-        margin-bottom: 10px;
-      }
-    }
-  }
-}
-
-@include media-breakpoint-down(sm) {
-  .container-fluid .todos-list-container {
-    margin: 0 (-$gl-padding);
-  }
-
-  .todo {
-    .avatar {
-      display: none;
-    }
-  }
-
-  .todo-item {
-    .todo-title {
-      margin-bottom: 10px;
-
-      .todo-label {
-        white-space: normal;
-      }
+    .gl-label-scoped {
+      --label-inset-border: inset 0 0 0 1px currentColor;
     }
 
-    .todo-body {
-      margin: 0;
+    @include media-breakpoint-down(sm) {
       border-left: 2px solid var(--border-color, $border-color);
       padding-left: 10px;
     }
-  }
-
-  .todos-filters {
-    .filter-categories {
-      width: auto;
-    }
-
-    .dropdown-menu-toggle {
-      width: 100%;
-    }
-
-    .dropdown-menu-toggle-sort {
-      width: auto;
-    }
-  }
-}
-
-.todos-empty {
-  display: flex;
-  flex-direction: column;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-
-  @include media-breakpoint-up(sm) {
-    flex-direction: row;
-    padding-top: 80px;
-  }
-}
-
-.todos-empty-content {
-  align-self: center;
-  max-width: 480px;
-}
-
-.todos-empty-hero {
-  width: 200px;
-  margin-left: auto;
-  margin-right: auto;
-
-  @include media-breakpoint-up(sm) {
-    width: 300px;
-    margin-right: 0;
-    order: 2;
-  }
-}
-
-.todos-all-done {
-  padding-top: 20px;
-
-  @include media-breakpoint-up(sm) {
-    padding-top: 50px;
-  }
-
-  > svg {
-    display: block;
-    max-width: 300px;
-    margin: 0 auto 20px;
-  }
-
-  p {
-    max-width: 470px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  a {
-    font-weight: $gl-font-weight-bold;
   }
 }

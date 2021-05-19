@@ -66,6 +66,12 @@ class ApplicationRecord < ActiveRecord::Base
     end
   end
 
+  def create_or_load_association(association_name)
+    association(association_name).create unless association(association_name).loaded?
+  rescue ActiveRecord::RecordNotUnique, PG::UniqueViolation
+    association(association_name).reader
+  end
+
   def self.underscore
     Gitlab::SafeRequestStore.fetch("model:#{self}:underscore") { self.to_s.underscore }
   end
@@ -80,4 +86,4 @@ class ApplicationRecord < ActiveRecord::Base
   end
 end
 
-ApplicationRecord.prepend_if_ee('EE::ApplicationRecordHelpers')
+ApplicationRecord.prepend_mod_with('ApplicationRecordHelpers')

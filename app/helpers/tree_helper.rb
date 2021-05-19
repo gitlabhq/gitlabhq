@@ -205,4 +205,4 @@ module TreeHelper
   end
 end
 
-TreeHelper.prepend_if_ee('::EE::TreeHelper')
+TreeHelper.prepend_mod_with('TreeHelper')

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
     it 'returns the object kind for a deployment' do
       deployment = build(:deployment, deployable: nil, environment: create(:environment))
 
-      data = described_class.build(deployment)
+      data = described_class.build(deployment, Time.current)
 
       expect(data[:object_kind]).to eq('deployment')
     end
@@ -21,10 +21,12 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
       expected_deployable_url = Gitlab::Routing.url_helpers.project_job_url(deployable.project, deployable)
       expected_user_url = Gitlab::Routing.url_helpers.user_url(deployment.deployed_by)
       expected_commit_url = Gitlab::UrlBuilder.build(commit)
+      status_changed_at = Time.current
 
-      data = described_class.build(deployment)
+      data = described_class.build(deployment, status_changed_at)
 
       expect(data[:status]).to eq('failed')
+      expect(data[:status_changed_at]).to eq(status_changed_at)
       expect(data[:deployable_id]).to eq(deployable.id)
       expect(data[:deployable_url]).to eq(expected_deployable_url)
       expect(data[:environment]).to eq("somewhere")
@@ -38,7 +40,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
 
     it 'does not include the deployable URL when there is no deployable' do
       deployment = create(:deployment, status: :failed, deployable: nil)
-      data = described_class.build(deployment)
+      data = described_class.build(deployment, Time.current)
 
       expect(data[:deployable_url]).to be_nil
     end

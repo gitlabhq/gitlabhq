@@ -6,6 +6,7 @@ module Labels
       @current_user = current_user
       @parent = parent
       @available_labels = params.delete(:available_labels)
+      @existing_labels_by_title = params.delete(:existing_labels_by_title)
       @params = params.dup.with_indifferent_access
     end
 
@@ -16,7 +17,7 @@ module Labels
 
     private
 
-    attr_reader :current_user, :parent, :params, :skip_authorization
+    attr_reader :current_user, :parent, :params, :skip_authorization, :existing_labels_by_title
 
     def available_labels
       @available_labels ||= LabelsFinder.new(
@@ -29,9 +30,8 @@ module Labels
 
     # Only creates the label if current_user can do so, if the label does not exist
     # and the user can not create the label, nil is returned
-    # rubocop: disable CodeReuse/ActiveRecord
     def find_or_create_label(find_only: false)
-      new_label = available_labels.find_by(title: title)
+      new_label = find_existing_label(title)
 
       return new_label if find_only
 
@@ -41,6 +41,13 @@ module Labels
       end
 
       new_label
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def find_existing_label(title)
+      return existing_labels_by_title[title] if existing_labels_by_title
+
+      available_labels.find_by(title: title)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

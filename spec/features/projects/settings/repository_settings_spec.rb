@@ -42,6 +42,7 @@ RSpec.describe 'Projects > Settings > Repository settings' do
     context 'Deploy Keys', :js do
       let_it_be(:private_deploy_key) { create(:deploy_key, title: 'private_deploy_key', public: false) }
       let_it_be(:public_deploy_key) { create(:another_deploy_key, title: 'public_deploy_key', public: true) }
+
       let(:new_ssh_key) { attributes_for(:key)[:key] }
 
       it 'get list of keys' do
@@ -116,7 +117,8 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        accept_confirm { find('.deploy-key', text: private_deploy_key.title).find('[data-testid="remove-icon"]').click }
+        click_button 'Remove'
+        click_button 'Remove deploy key'
 
         expect(page).not_to have_content(private_deploy_key.title)
       end

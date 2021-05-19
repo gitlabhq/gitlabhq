@@ -20,11 +20,12 @@ Your *To-Do List* offers a chronological list of items waiting for your input
 The To-Do List supports tracking [actions](#what-triggers-a-to-do-item) related to
 the following:
 
-- Issues
-- Merge Requests
-- Epics **(ULTIMATE)**
+- [Issues](project/issues/index.md)
+- [Merge requests](project/merge_requests/index.md)
+- [Epics](group/epics/index.md)
+- [Designs](project/issues/design_management.md)
 
-![to-do screenshot showing a list of items to check on](img/todos_index.png)
+![to-do list with items to check on](img/todos_index_v13_11.png)
 
 You can access your To-Do List by clicking the To-Do List icon (**{task-done}**)
 next to the search bar in the top navigation. If the to-do item count is:
@@ -33,15 +34,13 @@ next to the search bar in the top navigation. If the to-do item count is:
 - *100 or more*, the number displays as 99+. The exact number displays in the
   To-Do List.
 
-![To Do icon](img/todos_icon.png)
-
 ## What triggers a to-do item
 
 A to-do item appears on your To-Do List when:
 
 - An issue or merge request is assigned to you.
 - You're `@mentioned` in the description or comment of an issue or merge request
-  (or epic **(ULTIMATE)**).
+  (or epic).
 - You are `@mentioned` in a comment on a:
   - Commit
   - Design
@@ -54,7 +53,7 @@ A to-do item appears on your To-Do List when:
 - [In GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12136) and later, a
   merge request is removed from a
   [merge train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md),
-  and you're the user that added it. **(PREMIUM)**
+  and you're the user that added it.
 
 When several trigger actions occur for the same user on the same object (for
 example, an issue), GitLab displays only the first action as a single to do
@@ -93,18 +92,18 @@ for filtering purposes; otherwise, they appear as normal.
 
 ### Manually creating a to-do item
 
-You can also add the following to your To-Do List by clicking the **Add a to do** button on an:
+You can also add the following to your To-Do List by clicking the **Add a to do** button on:
 
-- [Issue](project/issues/index.md)
-- [Merge Request](project/merge_requests/index.md)
-- [Epic](group/epics/index.md) **(ULTIMATE)**
-- [Design](project/issues/design_management.md)
+- [Issues](project/issues/index.md)
+- [Merge requests](project/merge_requests/index.md)
+- [Epics](group/epics/index.md)
+- [Designs](project/issues/design_management.md)
 
 ![Adding a to-do item from the issuable sidebar](img/todos_add_todo_sidebar.png)
 
 ## Marking a to-do item as done
 
-Any action to an issue or merge request (or epic **(PREMIUM)**) marks its
+Any action to an issue, merge request, or epic marks its
 corresponding to-do item as done.
 
 Actions that dismiss to-do items include:
@@ -119,8 +118,8 @@ action. If you close the issue or merge request, your to-do item is marked as
 done.
 
 To prevent other users from closing issues without you being notified, if
-someone else closes, merges, or takes action on an issue or merge request (or
-epic **(ULTIMATE)**), your to-do item remains pending.
+someone else closes, merges, or takes action on an issue, merge request, or
+epic, your to-do item remains pending.
 
 There's just one to-do item for each of these, so mentioning a user many times
 in an issue only triggers one to-do item.
@@ -132,7 +131,7 @@ your To-Do List.
 ![A to do in the To-Do List](img/todos_todo_list_item.png)
 
 You can also mark a to-do item as done by clicking the **Mark as done** button
-in the sidebar of an issue or merge request (or epic **(ULTIMATE)**).
+in the sidebar of an issue, merge request, or epic.
 
 ![Mark as done from the issuable sidebar](img/todos_mark_done_sidebar.png)
 
@@ -148,7 +147,7 @@ You can use the following types of filters with your To-Do List:
 | Project | Filter by project.                                               |
 | Group   | Filter by group.                                                 |
 | Author  | Filter by the author that triggered the to do.                   |
-| Type    | Filter by issue, merge request, design, or epic. **(ULTIMATE)**  |
+| Type    | Filter by issue, merge request, design, or epic.                 |
 | Action  | Filter by the action that triggered the to do.                   |
 
 You can also filter by more than one of these at the same time. The previously

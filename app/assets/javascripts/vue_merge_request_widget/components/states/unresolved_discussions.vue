@@ -28,7 +28,7 @@ export default {
     <status-icon :show-disabled-button="true" status="warning" />
     <div class="media-body">
       <span class="gl-ml-3 gl-font-weight-bold gl-display-block gl-w-100">{{
-        s__('mrWidget|Before this can be merged, one or more threads must be resolved.')
+        s__('mrWidget|Merge blocked: all threads must be resolved.')
       }}</span>
       <gl-button
         data-testid="jump-to-first"

@@ -11,7 +11,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
   let_it_be(:user3) { create(:user, developer_projects: [project]) }
   let_it_be(:forked_project) { fork_project(project, user1, repository: true) }
 
-  let(:service) { described_class.new(project, user1, changes, push_options) }
+  let(:service) { described_class.new(project: project, current_user: user1, changes: changes, push_options: push_options) }
   let(:source_branch) { 'fix' }
   let(:target_branch) { 'feature' }
   let(:title) { 'my title' }

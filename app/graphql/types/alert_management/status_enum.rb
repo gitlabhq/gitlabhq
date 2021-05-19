@@ -7,7 +7,7 @@ module Types
       description 'Alert status values'
 
       ::AlertManagement::Alert.status_names.each do |status|
-        value status.to_s.upcase, value: status, description: "#{status.to_s.titleize} status"
+        value status.to_s.upcase, value: status, description: "#{::AlertManagement::Alert::STATUS_DESCRIPTIONS[status]}."
       end
     end
   end

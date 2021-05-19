@@ -130,8 +130,8 @@ RSpec.shared_examples 'wiki controller actions' do
     it_behaves_like 'fetching history', :ok do
       let(:allow_read_wiki)   { true }
 
-      it 'assigns @page_versions' do
-        expect(assigns(:page_versions)).to be_present
+      it 'assigns @commits' do
+        expect(assigns(:commits)).to be_present
       end
     end
 

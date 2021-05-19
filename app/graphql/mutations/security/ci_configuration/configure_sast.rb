@@ -7,6 +7,11 @@ module Mutations
         include FindsProject
 
         graphql_name 'ConfigureSast'
+        description <<~DESC
+          Configure SAST for a project by enabling SAST in a new or modified
+          `.gitlab-ci.yml` file in a new branch. The new branch and a URL to
+          create a Merge Request are a part of the response.
+        DESC
 
         argument :project_path, GraphQL::ID_TYPE,
           required: true,
@@ -16,11 +21,11 @@ module Mutations
           required: true,
           description: 'SAST CI configuration for the project.'
 
-        field :status, GraphQL::STRING_TYPE, null: false,
-          description: 'Status of creating the commit for the supplied SAST CI configuration.'
-
         field :success_path, GraphQL::STRING_TYPE, null: true,
           description: 'Redirect path to use when the response is successful.'
+
+        field :branch, GraphQL::STRING_TYPE, null: true,
+          description: 'Branch that has the new/modified `.gitlab-ci.yml` file.'
 
         authorize :push_code
 
@@ -35,9 +40,9 @@ module Mutations
 
         def prepare_response(result)
           {
-            status: result[:status],
-            success_path: result[:success_path],
-            errors: Array(result[:errors])
+            branch: result.payload[:branch],
+            success_path: result.payload[:success_path],
+            errors: result.errors
           }
         end
       end

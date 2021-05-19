@@ -1,0 +1,18 @@
+- page_title _('Join your team')
+- add_page_specific_style 'page_bundles/signup'
+- content_for :page_specific_javascripts do
+  = render "layouts/google_tag_manager_head"
+= render "layouts/google_tag_manager_body"
+
+%h2.center.pt-6.pb-3.gl-mb-0
+  = _('Join your team')
+%p.gl-text-center= _('Create your own profile to collaborate with your teammates in issues, merge requests, and more.')
+
+.signup-page
+  = render 'devise/shared/signup_box',
+    url: users_sign_up_invites_path,
+    button_text: _('Continue'),
+    show_omniauth_providers: social_signin_enabled?,
+    omniauth_providers_placement: :top,
+    suggestion_path: nil
+  = render 'devise/shared/sign_in_link'

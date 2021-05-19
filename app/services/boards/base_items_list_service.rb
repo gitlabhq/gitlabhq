@@ -129,7 +129,7 @@ module Boards
     # rubocop: disable CodeReuse/ActiveRecord
     def label_links(label_ids)
       LabelLink
-        .where('label_links.target_type = ?', item_model)
+        .where(label_links: { target_type: item_model })
         .where(item_model.arel_table[:id].eq(LabelLink.arel_table[:target_id]).to_sql)
         .where(label_id: label_ids)
     end

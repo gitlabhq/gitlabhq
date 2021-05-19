@@ -21,8 +21,11 @@ RSpec.describe GitlabSchema.types['Query'] do
       user
       users
       issue
+      merge_request
       usage_trends_measurements
       runner_platforms
+      runner
+      runners
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least
@@ -60,8 +63,18 @@ RSpec.describe GitlabSchema.types['Query'] do
   describe 'issue field' do
     subject { described_class.fields['issue'] }
 
-    it 'returns issue' do
+    it "finds an issue by it's gid" do
+      is_expected.to have_graphql_arguments(:id)
       is_expected.to have_graphql_type(Types::IssueType)
+    end
+  end
+
+  describe 'merge_request field' do
+    subject { described_class.fields['mergeRequest'] }
+
+    it "finds a merge_request by it's gid" do
+      is_expected.to have_graphql_arguments(:id)
+      is_expected.to have_graphql_type(Types::MergeRequestType)
     end
   end
 
@@ -71,6 +84,18 @@ RSpec.describe GitlabSchema.types['Query'] do
     it 'returns usage trends measurements' do
       is_expected.to have_graphql_type(Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type)
     end
+  end
+
+  describe 'runner field' do
+    subject { described_class.fields['runner'] }
+
+    it { is_expected.to have_graphql_type(Types::Ci::RunnerType) }
+  end
+
+  describe 'runners field' do
+    subject { described_class.fields['runners'] }
+
+    it { is_expected.to have_graphql_type(Types::Ci::RunnerType.connection_type) }
   end
 
   describe 'runner_platforms field' do

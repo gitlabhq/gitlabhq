@@ -67,4 +67,4 @@ module ResourceAccessTokens
   end
 end
 
-ResourceAccessTokens::RevokeService.prepend_if_ee('EE::ResourceAccessTokens::RevokeService')
+ResourceAccessTokens::RevokeService.prepend_mod_with('ResourceAccessTokens::RevokeService')

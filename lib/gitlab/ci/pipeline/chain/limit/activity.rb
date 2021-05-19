@@ -20,4 +20,4 @@ module Gitlab
   end
 end
 
-Gitlab::Ci::Pipeline::Chain::Limit::Activity.prepend_if_ee('EE::Gitlab::Ci::Pipeline::Chain::Limit::Activity')
+Gitlab::Ci::Pipeline::Chain::Limit::Activity.prepend_mod_with('Gitlab::Ci::Pipeline::Chain::Limit::Activity')

@@ -24,7 +24,7 @@ module Ci
       end
     rescue ::Gitlab::Ci::Trace::AlreadyArchivedError
       # It's already archived, thus we can safely ignore this exception.
-    rescue => e
+    rescue StandardError => e
       # Tracks this error with application logs, Sentry, and Prometheus.
       # If `archive!` keeps failing for over a week, that could incur data loss.
       # (See more https://docs.gitlab.com/ee/administration/job_logs.html#new-incremental-logging-architecture)

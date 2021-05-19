@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Create
+group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -68,7 +68,7 @@ explorer. GraphiQL explorer is available for:
           }
         }
       }
-    } 
+    }
    ```
 
 1. Open the [GraphiQL explorer tool](https://gitlab.com/-/graphql-explorer).

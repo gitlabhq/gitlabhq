@@ -452,11 +452,15 @@ RSpec.describe Todo do
     end
   end
 
-  describe '.pluck_user_id' do
-    subject { described_class.pluck_user_id }
+  describe '.distinct_user_ids' do
+    subject { described_class.distinct_user_ids }
 
-    let_it_be(:todo) { create(:todo) }
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+    let_it_be(:todo) { create(:todo, user: user1) }
+    let_it_be(:todo) { create(:todo, user: user1) }
+    let_it_be(:todo) { create(:todo, user: user2) }
 
-    it { is_expected.to eq([todo.user_id]) }
+    it { is_expected.to contain_exactly(user1.id, user2.id) }
   end
 end

@@ -71,7 +71,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Client do
     end
 
     it 'wraps exceptions if the request fails' do
-      expect(Gitlab::HTTP).to receive(:post) { raise Gitlab::HTTP::BlockedUrlError.new('the request broke') }
+      expect(Gitlab::HTTP).to receive(:post) { raise Gitlab::HTTP::BlockedUrlError, 'the request broke' }
 
       expect { client.request_access }
         .to raise_error(::Gitlab::ExternalAuthorization::RequestFailed)

@@ -1,7 +1,9 @@
 %li{ id: dom_id(merge_request), class: mr_css_classes(merge_request), data: { labels: merge_request.label_ids, id: merge_request.id } }
   - if @can_bulk_update
     .issue-check.hidden
-      = check_box_tag dom_id(merge_request, "selected"), nil, false, 'data-id' => merge_request.id, class: "selected-issuable"
+      - checkbox_id = dom_id(merge_request, "selected")
+      %label.gl-sr-only{ for: checkbox_id }= merge_request.title
+      = check_box_tag checkbox_id, nil, false, 'data-id' => merge_request.id, class: "selected-issuable"
 
   .issuable-info-container
     .issuable-main-info

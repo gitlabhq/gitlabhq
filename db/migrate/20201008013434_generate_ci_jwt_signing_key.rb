@@ -8,7 +8,7 @@ class GenerateCiJwtSigningKey < ActiveRecord::Migration[6.0]
 
     attr_encrypted :ci_jwt_signing_key, {
       mode: :per_attribute_iv,
-      key: Rails.application.secrets.db_key_base[0..31],
+      key: Gitlab::Utils.ensure_utf8_size(Rails.application.secrets.db_key_base, bytes: 32.bytes),
       algorithm: 'aes-256-gcm',
       encode: true
     }

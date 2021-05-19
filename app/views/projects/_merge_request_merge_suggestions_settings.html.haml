@@ -3,7 +3,7 @@
 .form-group
   %b= s_('ProjectSettings|Merge suggestions')
   %p.text-secondary
-    - configure_the_commit_message_for_applied_suggestions_help_link_url = help_page_path('user/discussions/index.md', anchor: 'configure-the-commit-message-for-applied-suggestions')
+    - configure_the_commit_message_for_applied_suggestions_help_link_url = help_page_path('user/project/merge_requests/reviews/suggestions.md', anchor: 'configure-the-commit-message-for-applied-suggestions')
     - configure_the_commit_message_for_applied_suggestions_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: configure_the_commit_message_for_applied_suggestions_help_link_url }
     = s_('ProjectSettings|The commit message used when applying merge request suggestions. %{link_start}Learn more about suggestions.%{link_end}').html_safe % { link_start: configure_the_commit_message_for_applied_suggestions_help_link_start, link_end: '</a>'.html_safe }
   .mb-2

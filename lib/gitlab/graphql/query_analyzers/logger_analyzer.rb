@@ -16,7 +16,7 @@ module Gitlab
             query_string: query.query_string,
             variables: variables
           })
-        rescue => e
+        rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
           default_initial_values(query)
         end
@@ -41,7 +41,7 @@ module Gitlab
           RequestStore.store[:graphql_logs] ||= []
           RequestStore.store[:graphql_logs] << memo
           GraphqlLogger.info(memo.except!(:time_started, :query))
-        rescue => e
+        rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         end
 

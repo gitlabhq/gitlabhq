@@ -3,12 +3,12 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: index, reference
-description: "Getting started with Merge Requests."
+description: "Getting started with merge requests."
 ---
 
-# Getting started with Merge Requests **(FREE)**
+# Getting started with merge requests **(FREE)**
 
-A Merge Request (**MR**) is the basis of GitLab as a code
+A merge request (**MR**) is the basis of GitLab as a code
 collaboration and version control.
 
 When working in a Git-based platform, you can use branching
@@ -25,7 +25,7 @@ avoiding changes to be pushed directly to the default branch
 without prior reviews, tests, and approvals.
 
 When you create a new feature branch, change the files, and push
-it to GitLab, you have the option to create a **Merge Request**,
+it to GitLab, you have the option to create a **merge request**,
 which is essentially a _request_ to merge one branch into another.
 
 The branch you added your changes into is called _source branch_
@@ -56,7 +56,7 @@ request's page at the top-right side:
 - [Assign](#assignee) the merge request to a colleague for review. With [multiple assignees](#multiple-assignees), you can assign it to more than one person at a time.
 - Set a [milestone](../milestones/index.md) to track time-sensitive changes.
 - Add [labels](../labels.md) to help contextualize and filter your merge requests over time.
-- Require [approval](merge_request_approvals.md) from your team. **(PREMIUM)**
+- [Require approval](approvals/index.md#required-approvals) from your team. **(PREMIUM)**
 - [Close issues automatically](#merge-requests-to-close-issues) when they are merged.
 - Enable the [delete source branch when merge request is accepted](#deleting-the-source-branch) option to keep your repository clean.
 - Enable the [squash commits when merge request is accepted](squash_and_merge.md) option to combine all the commits into one before merging, thus keep a clean commit history in your repository.
@@ -65,24 +65,24 @@ request's page at the top-right side:
 After you have created the merge request, you can also:
 
 - [Discuss](../../discussions/index.md) your implementation with your team in the merge request thread.
-- [Perform inline code reviews](reviewing_and_managing_merge_requests.md#perform-inline-code-reviews).
+- [Perform inline code reviews](reviews/index.md#perform-inline-code-reviews).
 - Add [merge request dependencies](merge_request_dependencies.md) to restrict it to be merged only when other merge requests have been merged. **(PREMIUM)**
-- Preview continuous integration [pipelines on the merge request widget](reviewing_and_managing_merge_requests.md#pipeline-status-in-merge-requests-widgets).
-- Preview how your changes look directly on your deployed application with [Review Apps](reviewing_and_managing_merge_requests.md#live-preview-with-review-apps).
+- Preview continuous integration [pipelines on the merge request widget](reviews/index.md#pipeline-status-in-merge-requests-widgets).
+- Preview how your changes look directly on your deployed application with [Review Apps](reviews/index.md#live-preview-with-review-apps).
 - [Allow collaboration on merge requests across forks](allow_collaboration.md).
-- Perform a [Review](../../discussions/index.md#merge-request-reviews) to create multiple comments on a diff and publish them when you're ready.
-- Add [code suggestions](../../discussions/index.md#suggest-changes) to change the content of merge requests directly into merge request threads, and easily apply them to the codebase directly from the UI.
+- Perform a [Review](reviews/index.md) to create multiple comments on a diff and publish them when you're ready.
+- Add [code suggestions](reviews/suggestions.md) to change the content of merge requests directly into merge request threads, and easily apply them to the codebase directly from the UI.
 - Add a time estimation and the time spent with that merge request with [Time Tracking](../time_tracking.md#time-tracking).
 
 Many of these can be set when pushing changes from the command line,
 with [Git push options](../push_options.md).
 
-See also other [features associated to merge requests](reviewing_and_managing_merge_requests.md#associated-features).
+See also other [features associated to merge requests](reviews/index.md#associated-features).
 
 ### Assignee
 
 Choose an assignee to designate someone as the person responsible
-for the first [review of the merge request](reviewing_and_managing_merge_requests.md).
+for the first [review of the merge request](reviews/index.md).
 Open the drop down box to search for the user you wish to assign,
 and the merge request is added to their
 [assigned merge request list](../../search/index.md#issues-and-merge-requests).
@@ -122,7 +122,7 @@ Requesting a code review is an important part of contributing code. However, dec
 your code and asking for a review are no easy tasks. Using the "assignee" field for both authors and
 reviewers makes it hard for others to determine who's doing what on a merge request.
 
-The Merge Request Reviewers feature enables you to request a review of your work, and
+The merge request Reviewers feature enables you to request a review of your work, and
 see the status of the review. Reviewers help distinguish the roles of the users
 involved in the merge request. In comparison to an **Assignee**, who is directly
 responsible for creating or merging a merge request, a **Reviewer** is a team member
@@ -138,7 +138,7 @@ When selected, GitLab creates a [to-do list item](../../todos.md) for each revie
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
-displays the name of the matching [approval rule](merge_request_approvals.md#approval-rules)
+displays the name of the matching [approval rule](approvals/rules.md)
 below the name of each suggested reviewer. [Code Owners](../code_owners.md) are displayed as `Codeowner` without group detail.
 
 This example shows reviewers and approval rules when creating a new merge request:
@@ -234,7 +234,7 @@ The feature today works only on merge. Clicking the **Remove source branch** but
 after the merge request was merged will not automatically retarget a merge request.
 This improvement is [tracked as a follow-up](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).
 
-## Recommendations and best practices for Merge Requests
+## Recommendations and best practices for merge requests
 
 - When working locally in your branch, add multiple commits and only push when
   you're done, so GitLab runs only one pipeline for all the commits pushed

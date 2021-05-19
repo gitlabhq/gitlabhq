@@ -53,21 +53,36 @@ workflow:
 variables:
   RAILS_ENV: "test"
   NODE_ENV: "test"
+  BUNDLE_WITHOUT: "production:development"
+  BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3 --quiet"
   # we override the max_old_space_size to prevent OOM errors
   NODE_OPTIONS: --max_old_space_size=3584
-  SIMPLECOV: "true"
   GIT_DEPTH: "20"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
+
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
   RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
   RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
-  BUILD_ASSETS_IMAGE: "false"
+
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"
   DOCKER_VERSION: "20.10.1"
   CACHE_CLASSES: "true"
+  CHECK_PRECOMPILED_ASSETS: "true"
+  FF_USE_FASTZIP: "true"
+
+  DOCS_REVIEW_APPS_DOMAIN: "178.62.207.141.nip.io"
+  DOCS_GITLAB_REPO_SUFFIX: "ee"
+
+  REVIEW_APPS_DOMAIN: "gitlab-review.app"
+  REVIEW_APPS_GCP_PROJECT: "gitlab-review-apps"
+  REVIEW_APPS_GCP_REGION: "us-central1"
+
+  BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
+  RSPEC_FAIL_FAST_ENABLED: "true"  # Set it to "false" to disable RSpec fail-fast
+  SIMPLECOV: "true"
 
   # Preparing custom clone path to reduce space used by all random forks
   # on GitLab.com's Shared Runners. Our main forks - especially the security
@@ -91,30 +106,4 @@ variables:
   GIT_CLONE_PATH: "/builds/gitlab-org-forks/${CI_PROJECT_NAME}"
 
 include:
-  - local: .gitlab/ci/build-images.gitlab-ci.yml
-  - local: .gitlab/ci/cache-repo.gitlab-ci.yml
-  - local: .gitlab/ci/cng.gitlab-ci.yml
-  - local: .gitlab/ci/docs.gitlab-ci.yml
-  - local: .gitlab/ci/frontend.gitlab-ci.yml
-  - local: .gitlab/ci/global.gitlab-ci.yml
-  - local: .gitlab/ci/memory.gitlab-ci.yml
-  - local: .gitlab/ci/pages.gitlab-ci.yml
-  - local: .gitlab/ci/qa.gitlab-ci.yml
-  - local: .gitlab/ci/reports.gitlab-ci.yml
-  - local: .gitlab/ci/rails.gitlab-ci.yml
-  - local: .gitlab/ci/vendored-gems.gitlab-ci.yml
-  - local: .gitlab/ci/review.gitlab-ci.yml
-  - local: .gitlab/ci/rules.gitlab-ci.yml
-  - local: .gitlab/ci/setup.gitlab-ci.yml
-  - local: .gitlab/ci/dev-fixtures.gitlab-ci.yml
-  - local: .gitlab/ci/test-metadata.gitlab-ci.yml
-  - local: .gitlab/ci/yaml.gitlab-ci.yml
-  - local: .gitlab/ci/releases.gitlab-ci.yml
-  - local: .gitlab/ci/notify.gitlab-ci.yml
-  - local: .gitlab/ci/dast.gitlab-ci.yml
-  - local: .gitlab/ci/workhorse.gitlab-ci.yml
-  - local: .gitlab/ci/graphql.gitlab-ci.yml
-  # switch the remote include to a local include until this is resolved:
-  #   https://gitlab.com/gitlab-org/gitlab/-/issues/327299
-  # - remote: 'https://gitlab.com/gitlab-org/frontend/untamper-my-lockfile/-/raw/main/.gitlab-ci-template.yml'
-  - local: .gitlab/ci/untamper-my-lockfile.yml
+  - local: .gitlab/ci/*.gitlab-ci.yml

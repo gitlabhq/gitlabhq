@@ -4,22 +4,29 @@ class Admin::UsersController < Admin::ApplicationController
   include RoutableActions
   include Analytics::UniqueVisitsHelper
 
-  before_action :user, except: [:index, :new, :create]
+  before_action :user, except: [:index, :cohorts, :new, :create]
   before_action :check_impersonation_availability, only: :impersonate
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
+  before_action :check_ban_user_feature_flag, only: [:ban]
 
   feature_category :users
 
+  PAGINATION_WITH_COUNT_LIMIT = 1000
+
   def index
+    return redirect_to cohorts_admin_users_path if params[:tab] == 'cohorts'
+
     @users = User.filter_items(params[:filter]).order_name_asc
     @users = @users.search_with_secondary_emails(params[:search_query]) if params[:search_query].present?
     @users = users_with_included_associations(@users)
     @users = @users.sort_by_attribute(@sort = params[:sort])
     @users = @users.page(params[:page])
+    @users = @users.without_count if paginate_without_count?
+  end
 
+  def cohorts
     @cohorts = load_cohorts
-
-    track_cohorts_visit if params[:tab] == 'cohorts'
+    track_cohorts_visit
   end
 
   def show
@@ -121,6 +128,24 @@ class Admin::UsersController < Admin::ApplicationController
       redirect_back_or_admin_user(notice: _("Successfully unblocked"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not unblocked"))
+    end
+  end
+
+  def ban
+    result = Users::BanService.new(current_user).execute(user)
+
+    if result[:status] == :success
+      redirect_back_or_admin_user(notice: _("Successfully banned"))
+    else
+      redirect_back_or_admin_user(alert: _("Error occurred. User was not banned"))
+    end
+  end
+
+  def unban
+    if update_user { |user| user.activate }
+      redirect_back_or_admin_user(notice: _("Successfully unbanned"))
+    else
+      redirect_back_or_admin_user(alert: _("Error occurred. User was not unbanned"))
     end
   end
 
@@ -228,6 +253,12 @@ class Admin::UsersController < Admin::ApplicationController
 
   protected
 
+  def paginate_without_count?
+    counts = Gitlab::Database::Count.approximate_counts([User])
+
+    counts[User] > PAGINATION_WITH_COUNT_LIMIT
+  end
+
   def users_with_included_associations(users)
     users.includes(:authorized_projects) # rubocop: disable CodeReuse/ActiveRecord
   end
@@ -313,18 +344,20 @@ class Admin::UsersController < Admin::ApplicationController
     access_denied! unless Gitlab.config.gitlab.impersonation_enabled
   end
 
+  def check_ban_user_feature_flag
+    access_denied! unless Feature.enabled?(:ban_user_feature_flag)
+  end
+
   def log_impersonation_event
     Gitlab::AppLogger.info(_("User %{current_user_username} has started impersonating %{username}") % { current_user_username: current_user.username, username: user.username })
   end
 
   def load_cohorts
-    if Gitlab::CurrentSettings.usage_ping_enabled
-      cohorts_results = Rails.cache.fetch('cohorts', expires_in: 1.day) do
-        CohortsService.new.execute
-      end
-
-      CohortsSerializer.new.represent(cohorts_results)
+    cohorts_results = Rails.cache.fetch('cohorts', expires_in: 1.day) do
+      CohortsService.new.execute
     end
+
+    CohortsSerializer.new.represent(cohorts_results)
   end
 
   def track_cohorts_visit
@@ -334,4 +367,4 @@ class Admin::UsersController < Admin::ApplicationController
   end
 end
 
-Admin::UsersController.prepend_if_ee('EE::Admin::UsersController')
+Admin::UsersController.prepend_mod_with('Admin::UsersController')

@@ -1,4 +1,7 @@
 ---
+# While this FF is enabled by default, we want to keep it in place for now as there are still related migrations that
+# have not been run in production yet. For additional info, see https://gitlab.com/gitlab-org/gitlab/-/issues/21801
+# Discussion and removal MR: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60322
 name: migrate_user_mentions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34378
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/231175

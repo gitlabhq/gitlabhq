@@ -130,7 +130,7 @@ module Gitlab
           strong_memoize(:environment) do
             next unless environment_name
 
-            EnvironmentsFinder
+            ::Environments::EnvironmentsFinder
               .new(project, nil, { name: environment_name })
               .execute
               .first
@@ -193,7 +193,7 @@ module Gitlab
 
         def parse_time(value)
           Time.parse(value).utc
-        rescue ArgumentError
+        rescue ArgumentError, TypeError
         end
 
         def parse_integer(value)

@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 
 require 'mail'
-require_relative '../../config/initializers/mail_encoding_patch.rb'
+require_relative '../../config/initializers/mail_encoding_patch'
 
 RSpec.describe 'Mail quoted-printable transfer encoding patch and Unicode characters' do
   shared_examples 'email encoding' do |email|

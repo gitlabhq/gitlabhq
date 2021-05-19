@@ -6,6 +6,11 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
   let(:table_name) { :copy_primary_key_test }
   let(:test_table) { table(table_name) }
   let(:sub_batch_size) { 1000 }
+  let(:pause_ms) { 0 }
+
+  let(:helpers) do
+    ActiveRecord::Migration.new.extend(Gitlab::Database::MigrationHelpers)
+  end
 
   before do
     ActiveRecord::Base.connection.execute(<<~SQL)
@@ -14,8 +19,8 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
        id integer NOT NULL,
        name character varying,
        fk integer NOT NULL,
-       id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
-       fk_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+       #{helpers.convert_to_bigint_column(:id)} bigint DEFAULT 0 NOT NULL,
+       #{helpers.convert_to_bigint_column(:fk)} bigint DEFAULT 0 NOT NULL,
        name_convert_to_text text DEFAULT 'no name'
       );
     SQL
@@ -34,43 +39,85 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
     SQL
   end
 
-  subject { described_class.new }
+  subject(:copy_columns) { described_class.new }
 
   describe '#perform' do
     let(:migration_class) { described_class.name }
 
     it 'copies all primary keys in range' do
-      subject.perform(12, 15, table_name, 'id', sub_batch_size, 'id', 'id_convert_to_bigint')
+      temporary_column = helpers.convert_to_bigint_column(:id)
+      copy_columns.perform(12, 15, table_name, 'id', sub_batch_size, pause_ms, 'id', temporary_column)
 
-      expect(test_table.where('id = id_convert_to_bigint').pluck(:id)).to contain_exactly(12, 15)
-      expect(test_table.where(id_convert_to_bigint: 0).pluck(:id)).to contain_exactly(11, 19)
+      expect(test_table.where("id = #{temporary_column}").pluck(:id)).to contain_exactly(12, 15)
+      expect(test_table.where(temporary_column => 0).pluck(:id)).to contain_exactly(11, 19)
       expect(test_table.all.count).to eq(4)
     end
 
     it 'copies all foreign keys in range' do
-      subject.perform(10, 14, table_name, 'id', sub_batch_size, 'fk', 'fk_convert_to_bigint')
+      temporary_column = helpers.convert_to_bigint_column(:fk)
+      copy_columns.perform(10, 14, table_name, 'id', sub_batch_size, pause_ms, 'fk', temporary_column)
 
-      expect(test_table.where('fk = fk_convert_to_bigint').pluck(:id)).to contain_exactly(11, 12)
-      expect(test_table.where(fk_convert_to_bigint: 0).pluck(:id)).to contain_exactly(15, 19)
+      expect(test_table.where("fk = #{temporary_column}").pluck(:id)).to contain_exactly(11, 12)
+      expect(test_table.where(temporary_column => 0).pluck(:id)).to contain_exactly(15, 19)
       expect(test_table.all.count).to eq(4)
     end
 
     it 'copies columns with NULLs' do
       expect(test_table.where("name_convert_to_text = 'no name'").count).to eq(4)
 
-      subject.perform(10, 20, table_name, 'id', sub_batch_size, 'name', 'name_convert_to_text')
+      copy_columns.perform(10, 20, table_name, 'id', sub_batch_size, pause_ms, 'name', 'name_convert_to_text')
 
       expect(test_table.where('name = name_convert_to_text').pluck(:id)).to contain_exactly(11, 12, 19)
       expect(test_table.where('name is NULL and name_convert_to_text is NULL').pluck(:id)).to contain_exactly(15)
       expect(test_table.where("name_convert_to_text = 'no name'").count).to eq(0)
     end
 
+    it 'copies multiple columns when given' do
+      columns_to_copy_from = %w[id fk]
+      id_tmp_column = helpers.convert_to_bigint_column('id')
+      fk_tmp_column = helpers.convert_to_bigint_column('fk')
+      columns_to_copy_to = [id_tmp_column, fk_tmp_column]
+
+      subject.perform(10, 15, table_name, 'id', sub_batch_size, pause_ms, columns_to_copy_from, columns_to_copy_to)
+
+      expect(test_table.where("id = #{id_tmp_column} AND fk = #{fk_tmp_column}").pluck(:id)).to contain_exactly(11, 12, 15)
+      expect(test_table.where(id_tmp_column => 0).where(fk_tmp_column => 0).pluck(:id)).to contain_exactly(19)
+      expect(test_table.all.count).to eq(4)
+    end
+
+    it 'raises error when number of source and target columns does not match' do
+      columns_to_copy_from = %w[id fk]
+      columns_to_copy_to = [helpers.convert_to_bigint_column(:id)]
+
+      expect do
+        subject.perform(10, 15, table_name, 'id', sub_batch_size, pause_ms, columns_to_copy_from, columns_to_copy_to)
+      end.to raise_error(ArgumentError, 'number of source and destination columns must match')
+    end
+
     it 'tracks timings of queries' do
-      expect(subject.batch_metrics.timings).to be_empty
+      expect(copy_columns.batch_metrics.timings).to be_empty
 
-      subject.perform(10, 20, table_name, 'id', sub_batch_size, 'name', 'name_convert_to_text')
+      copy_columns.perform(10, 20, table_name, 'id', sub_batch_size, pause_ms, 'name', 'name_convert_to_text')
 
-      expect(subject.batch_metrics.timings[:update_all]).not_to be_empty
+      expect(copy_columns.batch_metrics.timings[:update_all]).not_to be_empty
+    end
+
+    context 'pause interval between sub-batches' do
+      it 'sleeps for the specified time between sub-batches' do
+        sub_batch_size = 2
+
+        expect(copy_columns).to receive(:sleep).with(0.005)
+
+        copy_columns.perform(10, 12, table_name, 'id', sub_batch_size, 5, 'name', 'name_convert_to_text')
+      end
+
+      it 'treats negative values as 0' do
+        sub_batch_size = 2
+
+        expect(copy_columns).to receive(:sleep).with(0)
+
+        copy_columns.perform(10, 12, table_name, 'id', sub_batch_size, -5, 'name', 'name_convert_to_text')
+      end
     end
   end
 end

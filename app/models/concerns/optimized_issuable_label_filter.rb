@@ -28,7 +28,6 @@ module OptimizedIssuableLabelFilter
 
   # Taken from IssuableFinder
   def count_by_state
-    return super if root_namespace.nil?
     return super if Feature.disabled?(:optimized_issuable_label_filter, default_enabled: :yaml)
 
     count_params = params.merge(state: nil, sort: nil, force_cte: true)
@@ -40,7 +39,11 @@ module OptimizedIssuableLabelFilter
       .group(:state_id)
       .count
 
-    counts = state_counts.transform_keys { |key| count_key(key) }
+    counts = Hash.new(0)
+
+    state_counts.each do |key, value|
+      counts[count_key(key)] += value
+    end
 
     counts[:all] = counts.values.sum
     counts.with_indifferent_access

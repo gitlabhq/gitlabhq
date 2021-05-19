@@ -20,20 +20,37 @@ RSpec.describe Gitlab::UsageMetricDefinitionGenerator do
   end
 
   describe 'Creating metric definition file' do
+    let(:sample_metric) { load_sample_metric_definition(filename: sample_filename) }
+
     # Stub version so that `milestone` key remains constant between releases to prevent flakiness.
     before do
       stub_const('Gitlab::VERSION', '13.9.0')
       allow(::Gitlab::Usage::Metrics::NamesSuggestions::Generator).to receive(:generate).and_return('test metric name')
     end
 
-    let(:sample_metric) { load_sample_metric_definition(filename: 'sample_metric_with_name_suggestions.yml') }
+    context 'without ee option' do
+      let(:sample_filename) { 'sample_metric_with_name_suggestions.yml' }
+      let(:metric_definition_path) { Dir.glob(File.join(temp_dir, 'metrics/counts_7d/*_test_metric.yml')).first }
 
-    it 'creates a metric definition file using the template' do
-      described_class.new([key_path], { 'dir' => dir }).invoke_all
+      it 'creates a metric definition file using the template' do
+        described_class.new([key_path], { 'dir' => dir }).invoke_all
+        expect(YAML.safe_load(File.read(metric_definition_path))).to eq(sample_metric)
+      end
+    end
 
-      metric_definition_path = Dir.glob(File.join(temp_dir, 'metrics/counts_7d/*_test_metric.yml')).first
+    context 'with ee option' do
+      let(:sample_filename) { 'sample_metric_with_ee.yml' }
+      let(:metric_definition_path) { Dir.glob(File.join(temp_dir, 'ee/config/metrics/counts_7d/*_test_metric.yml')).first }
 
-      expect(YAML.safe_load(File.read(metric_definition_path))).to eq(sample_metric)
+      before do
+        stub_const("#{described_class}::TOP_LEVEL_DIR", 'config')
+        stub_const("#{described_class}::TOP_LEVEL_DIR_EE", File.join(temp_dir, 'ee'))
+      end
+
+      it 'creates a metric definition file using the template' do
+        described_class.new([key_path], { 'dir' => dir, 'ee': true }).invoke_all
+        expect(YAML.safe_load(File.read(metric_definition_path))).to eq(sample_metric)
+      end
     end
   end
 

@@ -53,12 +53,12 @@ module ProtectedRefAccess
   end
 end
 
-ProtectedRefAccess.include_if_ee('EE::ProtectedRefAccess::Scopes')
-ProtectedRefAccess.prepend_if_ee('EE::ProtectedRefAccess')
+ProtectedRefAccess.include_mod_with('ProtectedRefAccess::Scopes')
+ProtectedRefAccess.prepend_mod_with('ProtectedRefAccess')
 
 # When using `prepend` (or `include` for that matter), the `ClassMethods`
 # constants are not merged. This means that `class_methods` in
 # `EE::ProtectedRefAccess` would be ignored.
 #
 # To work around this, we prepend the `ClassMethods` constant manually.
-ProtectedRefAccess::ClassMethods.prepend_if_ee('EE::ProtectedRefAccess::ClassMethods')
+ProtectedRefAccess::ClassMethods.prepend_mod_with('ProtectedRefAccess::ClassMethods')

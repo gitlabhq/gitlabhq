@@ -39,7 +39,7 @@ module Gitlab
           end
 
           def error!(message)
-            raise Errors::DashboardProcessingError.new(message)
+            raise Errors::DashboardProcessingError, message
           end
 
           def group_url(metric)
@@ -67,14 +67,14 @@ module Gitlab
           def query_for_metric(metric)
             query = metric[query_type(metric)]
 
-            raise Errors::MissingQueryError.new('Each "metric" must define one of :query or :query_range') unless query
+            raise Errors::MissingQueryError, 'Each "metric" must define one of :query or :query_range' unless query
 
             query
           end
 
           def verify_params
-            raise Errors::DashboardProcessingError.new(_('Cluster is required for Stages::ClusterEndpointInserter')) unless params[:cluster]
-            raise Errors::DashboardProcessingError.new(_('Cluster type must be specificed for Stages::ClusterEndpointInserter')) unless params[:cluster_type]
+            raise Errors::DashboardProcessingError, _('Cluster is required for Stages::ClusterEndpointInserter') unless params[:cluster]
+            raise Errors::DashboardProcessingError, _('Cluster type must be specificed for Stages::ClusterEndpointInserter') unless params[:cluster_type]
           end
         end
       end

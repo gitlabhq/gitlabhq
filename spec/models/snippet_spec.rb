@@ -826,18 +826,6 @@ RSpec.describe Snippet do
         allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return(default_branch)
       end
 
-      context 'when default branch in settings is "master"' do
-        let(:default_branch) { 'master' }
-
-        it 'does nothing' do
-          expect(File.read(head_path).squish).to eq 'ref: refs/heads/master'
-
-          expect(snippet.repository.raw_repository).not_to receive(:write_ref)
-
-          subject
-        end
-      end
-
       context 'when default branch in settings is different from "master"' do
         let(:default_branch) { 'main' }
 

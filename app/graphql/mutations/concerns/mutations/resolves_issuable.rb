@@ -38,4 +38,4 @@ module Mutations
   end
 end
 
-Mutations::ResolvesIssuable.prepend_if_ee('::EE::Mutations::ResolvesIssuable')
+Mutations::ResolvesIssuable.prepend_mod_with('Mutations::ResolvesIssuable')

@@ -19,6 +19,63 @@ dependencies and build times.
 
 Refer to [licensing guidelines](licensing.md) for ensuring license compliance.
 
+## GitLab-created gems
+
+Sometimes we create libraries within our codebase that we want to
+extract, either because we want to use them in other applications
+ourselves, or because we think it would benefit the wider community.
+Extracting code to a gem also means that we can be sure that the gem
+does not contain any hidden dependencies on our application code.
+
+In general, we want to think carefully before doing this as there are
+also disadvantages:
+
+1. Gems - even those maintained by GitLab - do not necessarily go
+   through the same [code review process](code_review.md) as the main
+   Rails application.
+1. Extracting the code into a separate project means that we need a
+   minimum of two merge requests to change functionality: one in the gem
+   to make the functional change, and one in the Rails app to bump the
+   version.
+1. Our needs for our own usage of the gem may not align with the wider
+   community's needs. In general, if we are not using the latest version
+   of our own gem, that might be a warning sign.
+
+In the case where we do want to extract some library code we've written
+to a gem, go through these steps:
+
+1. Start with the code in the Rails application. Here it's fine to have
+   the code in `lib/` and loaded automatically. We can skip this step if
+   the step below makes more sense initially.
+1. Before extracting to its own project, move the gem to `vendor/gems` and
+   load it in the `Gemfile` using the `path` option. This gives us a gem
+   that can be published to RubyGems.org, with its own test suite and
+   isolated set of dependencies, that is still in our main code tree and
+   goes through the standard code review process.
+   - For an example, see the [merge request !57805](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57805).
+1. Once the gem is stable - we have been using it in production for a
+   while with few, if any, changes - extract to its own project under
+   the `gitlab-org` namespace.
+       1. When creating the project, follow the [instructions for new projects](https://about.gitlab.com/handbook/engineering/#creating-a-new-project).
+       1. Follow the instructions for setting up a [CI/CD configuration](https://about.gitlab.com/handbook/engineering/#cicd-configuration).
+       1. Follow the instructions for [publishing a project](https://about.gitlab.com/handbook/engineering/#publishing-a-project).
+   - See [issue
+     #325463](https://gitlab.com/gitlab-org/gitlab/-/issues/325463)
+     for an example.
+   - In some cases we may want to move a gem to its own namespace. Some
+     examples might be that it will naturally have more than one project
+     (say, something that has plugins as separate libraries), or that we
+     expect non-GitLab-team-members to be maintainers on this project as
+     well as GitLab team members.
+
+     The latter situation (maintainers from outside GitLab) could also
+     apply if someone who currently works at GitLab wants to maintain
+     the gem beyond their time working at GitLab.
+
+When publishing a gem to RubyGems.org, also note the section on [gem
+owners](https://about.gitlab.com/handbook/developer-onboarding/#ruby-gems)
+in the handbook.
+
 ## Upgrade Rails
 
 When upgrading the Rails gem and its dependencies, you also should update the following:
@@ -58,7 +115,7 @@ operator](https://thoughtbot.com/blog/rubys-pessimistic-operator))
 making it possible to upgrade `license_finder` or any other gem to a
 version that depends on `thor 1.2`.
 
-Simlarly, if `license_finder` had a vulnerability fixed in 6.0.1, we
+Similarly, if `license_finder` had a vulnerability fixed in 6.0.1, we
 should add:
 
 ```ruby
@@ -70,7 +127,7 @@ still depend on a newer version of `thor`, such as `6.0.2`, but would
 not be able to depend on the vulnerable version `6.0.0`.
 
 A downgrade like that could happen if we introduced a new dependency
-that also relied on thor but had its version pinned to a vulnerable
+that also relied on `thor` but had its version pinned to a vulnerable
 one. These changes are easy to miss in the `Gemfile.lock`. Pinning the
 version would result in a conflict that would need to be solved.
 

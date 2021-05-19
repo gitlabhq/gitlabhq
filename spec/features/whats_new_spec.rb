@@ -34,6 +34,24 @@ RSpec.describe "renders a `whats new` dropdown item" do
       sign_in(user)
     end
 
+    it 'renders dropdown item when feature enabled' do
+      Gitlab::CurrentSettings.update!(whats_new_variant: ApplicationSetting.whats_new_variants[:all_tiers])
+
+      visit root_dashboard_path
+      find('.header-help-dropdown-toggle').click
+
+      expect(page).to have_button(text: "What's new")
+    end
+
+    it 'does not render dropdown item when feature disabled' do
+      Gitlab::CurrentSettings.update!(whats_new_variant: ApplicationSetting.whats_new_variants[:disabled])
+
+      visit root_dashboard_path
+      find('.header-help-dropdown-toggle').click
+
+      expect(page).not_to have_button(text: "What's new")
+    end
+
     it 'shows notification dot and count and removes it once viewed' do
       visit root_dashboard_path
 

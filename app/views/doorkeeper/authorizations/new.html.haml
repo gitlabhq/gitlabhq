@@ -17,10 +17,8 @@
           = _("An application called %{link_to_client} is requesting access to your GitLab account.").html_safe % { link_to_client: link_to_client }
 
           - auth_app_owner = @pre_auth.client.application.owner
-          - if auth_app_owner
-            - link_to_owner = link_to(auth_app_owner.name, user_path(auth_app_owner))
-            = _("This application was created by %{link_to_owner}.").html_safe % { link_to_owner: link_to_owner }
 
+          = auth_app_owner_text(auth_app_owner)
           = _("Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access.")
         - if @pre_auth.scopes
           %p

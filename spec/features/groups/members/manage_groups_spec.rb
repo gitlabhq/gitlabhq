@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Groups > Members > Manage groups', :js do
   include Select2Helper
   include Spec::Support::Helpers::Features::MembersHelpers
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
   let_it_be(:user) { create(:user) }
 
@@ -12,18 +13,43 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
     sign_in(user)
   end
 
-  context 'when group link does not exist' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:group_to_add) { create(:group) }
-
+  context 'with invite_members_group_modal disabled' do
     before do
       stub_feature_flags(invite_members_group_modal: false)
-      group.add_owner(user)
-      visit group_group_members_path(group)
     end
 
-    it 'add group to group' do
-      add_group(group_to_add.id, 'Reporter')
+    context 'when group link does not exist' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group_to_add) { create(:group) }
+
+      before do
+        group.add_owner(user)
+        group_to_add.add_owner(user)
+        visit group_group_members_path(group)
+      end
+
+      it 'can share group with group' do
+        add_group(group_to_add.id, 'Reporter')
+
+        click_groups_tab
+
+        page.within(first_row) do
+          expect(page).to have_content(group_to_add.name)
+          expect(page).to have_content('Reporter')
+        end
+      end
+    end
+  end
+
+  context 'when group link does not exist' do
+    it 'can share a group with group' do
+      group = create(:group)
+      group_to_add = create(:group)
+      group.add_owner(user)
+      group_to_add.add_owner(user)
+
+      visit group_group_members_path(group)
+      invite_group(group_to_add.name, role: 'Reporter')
 
       click_groups_tab
 

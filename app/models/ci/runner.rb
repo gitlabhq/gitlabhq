@@ -39,16 +39,16 @@ module Ci
 
     AVAILABLE_TYPES_LEGACY = %w[specific shared].freeze
     AVAILABLE_TYPES = runner_types.keys.freeze
-    AVAILABLE_STATUSES = %w[active paused online offline].freeze
+    AVAILABLE_STATUSES = %w[active paused online offline not_connected].freeze
     AVAILABLE_SCOPES = (AVAILABLE_TYPES_LEGACY + AVAILABLE_TYPES + AVAILABLE_STATUSES).freeze
 
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
     MINUTES_COST_FACTOR_FIELDS = %i[public_projects_minutes_cost_factor private_projects_minutes_cost_factor].freeze
 
     has_many :builds
-    has_many :runner_projects, inverse_of: :runner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects
-    has_many :runner_namespaces, inverse_of: :runner
+    has_many :runner_namespaces, inverse_of: :runner, autosave: true
     has_many :groups, through: :runner_namespaces
 
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
@@ -65,6 +65,7 @@ module Ci
     # did `contacted_at <= ?` the query would effectively have to do a seq
     # scan.
     scope :offline, -> { where.not(id: online) }
+    scope :not_connected, -> { where(contacted_at: nil) }
     scope :ordered, -> { order(id: :desc) }
 
     scope :with_recent_runner_queue, -> { where('contacted_at > ?', recent_queue_deadline) }
@@ -405,4 +406,4 @@ module Ci
   end
 end
 
-Ci::Runner.prepend_if_ee('EE::Ci::Runner')
+Ci::Runner.prepend_mod_with('Ci::Runner')

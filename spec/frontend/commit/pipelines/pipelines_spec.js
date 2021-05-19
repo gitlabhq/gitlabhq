@@ -1,3 +1,4 @@
+import '~/commons';
 import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';

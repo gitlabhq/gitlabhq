@@ -930,7 +930,7 @@ describe('Api', () => {
 
   describe('createBranch', () => {
     it('creates new branch', (done) => {
-      const ref = 'master';
+      const ref = 'main';
       const branch = 'new-branch-name';
       const dummyProjectPath = 'gitlab-org/gitlab-ce';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
@@ -1262,7 +1262,7 @@ describe('Api', () => {
     )}/merge_requests`;
     const options = {
       source_branch: 'feature',
-      target_branch: 'master',
+      target_branch: 'main',
       title: 'Add feature',
     };
 

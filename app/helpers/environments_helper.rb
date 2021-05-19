@@ -34,7 +34,7 @@ module EnvironmentsHelper
   def environment_logs_data(project, environment)
     {
       "environment_name": environment.name,
-      "environments_path": project_environments_path(project, format: :json),
+      "environments_path": api_v4_projects_environments_path(id: project.id),
       "environment_id": environment.id,
       "cluster_applications_documentation_path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack'),
       "clusters_path": project_clusters_path(project, format: :json)
@@ -62,7 +62,8 @@ module EnvironmentsHelper
       'validate_query_path'         => validate_query_project_prometheus_metrics_path(project),
       'custom_metrics_available'    => "#{custom_metrics_available?(project)}",
       'prometheus_alerts_available' => "#{can?(current_user, :read_prometheus_alerts, project)}",
-      'dashboard_timezone'          => project.metrics_setting_dashboard_timezone.to_s.upcase
+      'dashboard_timezone'          => project.metrics_setting_dashboard_timezone.to_s.upcase,
+      'has_managed_prometheus'      => has_managed_prometheus?(project).to_s
     }
   end
 
@@ -76,6 +77,10 @@ module EnvironmentsHelper
       'prometheus_status'           => "#{environment.prometheus_status}",
       'environment_state'           => "#{environment.state}"
     }
+  end
+
+  def has_managed_prometheus?(project)
+    project.prometheus_service&.prometheus_available? == true
   end
 
   def metrics_dashboard_base_path(environment, project)
@@ -117,4 +122,4 @@ module EnvironmentsHelper
   end
 end
 
-EnvironmentsHelper.prepend_if_ee('::EE::EnvironmentsHelper')
+EnvironmentsHelper.prepend_mod_with('EnvironmentsHelper')

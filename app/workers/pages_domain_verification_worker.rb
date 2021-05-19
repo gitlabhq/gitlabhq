@@ -3,8 +3,10 @@
 class PagesDomainVerificationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :pages
-  tags :requires_disk_io
+  tags :requires_disk_io, :exclude_from_kubernetes
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(domain_id)

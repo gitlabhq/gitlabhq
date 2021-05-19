@@ -1,0 +1,5 @@
+---
+title: Fixed dollar signs in suggestions getting replaced incorrectly
+merge_request: 61041
+author:
+type: fixed

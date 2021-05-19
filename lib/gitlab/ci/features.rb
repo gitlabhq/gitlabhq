@@ -18,9 +18,8 @@ module Gitlab
         Feature.enabled?(:ci_pipeline_status_omit_commit_sha_in_cache_key, project, default_enabled: true)
       end
 
-      # Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/224199
-      def self.store_pipeline_messages?(project)
-        ::Feature.enabled?(:ci_store_pipeline_messages, project, default_enabled: true)
+      def self.merge_base_pipeline_for_metrics_comparison?(project)
+        Feature.enabled?(:merge_base_pipeline_for_metrics_comparison, project, default_enabled: :yaml)
       end
 
       def self.raise_job_rules_without_workflow_rules_warning?
@@ -47,21 +46,16 @@ module Gitlab
         ::Feature.enabled?(:ci_trace_log_invalid_chunks, project, type: :ops, default_enabled: false)
       end
 
-      def self.validate_build_dependencies?(project)
-        ::Feature.enabled?(:ci_validate_build_dependencies, project, default_enabled: :yaml) &&
-          ::Feature.disabled?(:ci_validate_build_dependencies_override, project)
-      end
-
       def self.display_quality_on_mr_diff?(project)
-        ::Feature.enabled?(:codequality_mr_diff, project, default_enabled: false)
-      end
-
-      def self.multiple_cache_per_job?
-        ::Feature.enabled?(:multiple_cache_per_job, default_enabled: :yaml)
+        ::Feature.enabled?(:codequality_mr_diff, project, default_enabled: :yaml)
       end
 
       def self.gldropdown_tags_enabled?
         ::Feature.enabled?(:gldropdown_tags, default_enabled: :yaml)
+      end
+
+      def self.background_pipeline_retry_endpoint?(project)
+        ::Feature.enabled?(:background_pipeline_retry_endpoint, project)
       end
     end
   end

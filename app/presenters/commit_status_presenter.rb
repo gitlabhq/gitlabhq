@@ -15,6 +15,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     scheduler_failure: 'The scheduler failed to assign job to the runner, please try again or contact system administrator',
     data_integrity_failure: 'There has been a structural integrity problem detected, please contact system administrator',
     forward_deployment_failure: 'The deployment job is older than the previously succeeded deployment job, and therefore cannot be run',
+    pipeline_loop_detected: 'This job could not be executed because it would create infinitely looping pipelines',
     invalid_bridge_trigger: 'This job could not be executed because downstream pipeline trigger definition is invalid',
     downstream_bridge_project_not_found: 'This job could not be executed because downstream bridge project could not be found',
     insufficient_bridge_permissions: 'This job could not be executed because of insufficient permissions to create a downstream pipeline',
@@ -23,7 +24,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     secrets_provider_not_found: 'The secrets provider can not be found',
     reached_max_descendant_pipelines_depth: 'You reached the maximum depth of child pipelines',
     project_deleted: 'The job belongs to a deleted project',
-    user_blocked: 'The user who created this job is blocked'
+    user_blocked: 'The user who created this job is blocked',
+    ci_quota_exceeded: 'No more CI minutes available'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES
@@ -39,4 +41,4 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   end
 end
 
-CommitStatusPresenter.prepend_if_ee('::EE::CommitStatusPresenter')
+CommitStatusPresenter.prepend_mod_with('CommitStatusPresenter')

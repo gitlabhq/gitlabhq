@@ -51,10 +51,11 @@ To enable 2FA:
    1. Install a compatible application, like:
       - [Authy](https://authy.com/)
       - [Duo Mobile](https://duo.com/product/multi-factor-authentication-mfa/duo-mobile-app)
-      - [LastPass](https://lastpass.com/auth/)
+      - [LastPass Authenticator](https://lastpass.com/auth/)
       - [Authenticator](https://mattrubin.me/authenticator/)
       - [andOTP](https://github.com/andOTP/andOTP)
       - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en)
+      - [Microsoft Authenticator](https://www.microsoft.com/en-us/account/authenticator)
       - [SailOTP](https://openrepos.net/content/seiichiro0185/sailotp)
    1. In the application, add a new entry in one of two ways:
       - Scan the code presented in GitLab with your device's camera to add the

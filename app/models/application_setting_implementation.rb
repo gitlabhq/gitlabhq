@@ -38,6 +38,7 @@ module ApplicationSettingImplementation
         admin_mode: false,
         after_sign_up_text: nil,
         akismet_enabled: false,
+        akismet_api_key: nil,
         allow_local_requests_from_system_hooks: true,
         allow_local_requests_from_web_hooks_and_services: false,
         asset_proxy_enabled: false,
@@ -76,6 +77,7 @@ module ApplicationSettingImplementation
         external_pipeline_validation_service_token: nil,
         external_pipeline_validation_service_url: nil,
         first_day_of_week: 0,
+        floc_enabled: false,
         gitaly_timeout_default: 55,
         gitaly_timeout_fast: 10,
         gitaly_timeout_medium: 30,
@@ -149,6 +151,7 @@ module ApplicationSettingImplementation
         sourcegraph_url: nil,
         spam_check_endpoint_enabled: false,
         spam_check_endpoint_url: nil,
+        spam_check_api_key: nil,
         terminal_max_session_time: 0,
         throttle_authenticated_api_enabled: false,
         throttle_authenticated_api_period_in_seconds: 3600,
@@ -156,6 +159,9 @@ module ApplicationSettingImplementation
         throttle_authenticated_web_enabled: false,
         throttle_authenticated_web_period_in_seconds: 3600,
         throttle_authenticated_web_requests_per_period: 7200,
+        throttle_authenticated_packages_api_enabled: false,
+        throttle_authenticated_packages_api_period_in_seconds: 15,
+        throttle_authenticated_packages_api_requests_per_period: 1000,
         throttle_incident_management_notification_enabled: false,
         throttle_incident_management_notification_per_period: 3600,
         throttle_incident_management_notification_period_in_seconds: 3600,
@@ -165,6 +171,9 @@ module ApplicationSettingImplementation
         throttle_unauthenticated_enabled: false,
         throttle_unauthenticated_period_in_seconds: 3600,
         throttle_unauthenticated_requests_per_period: 3600,
+        throttle_unauthenticated_packages_api_enabled: false,
+        throttle_unauthenticated_packages_api_period_in_seconds: 15,
+        throttle_unauthenticated_packages_api_requests_per_period: 800,
         time_tracking_limit_to_hours: false,
         two_factor_grace_period: 48,
         unique_ips_limit_enabled: false,
@@ -181,7 +190,8 @@ module ApplicationSettingImplementation
         kroki_enabled: false,
         kroki_url: nil,
         kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false },
-        rate_limiting_response_text: nil
+        rate_limiting_response_text: nil,
+        whats_new_variant: 0
       }
     end
 

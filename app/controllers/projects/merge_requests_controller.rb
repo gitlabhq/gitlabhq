@@ -42,11 +42,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:usage_data_i_testing_summary_widget_total, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:diffs_virtual_scrolling, project, default_enabled: :yaml)
 
     # Usage data feature flags
     push_frontend_feature_flag(:users_expanding_widgets_usage_data, @project, default_enabled: :yaml)
-
-    record_experiment_user(:invite_members_version_b)
+    push_frontend_feature_flag(:diff_settings_usage_data, default_enabled: :yaml)
 
     experiment(:invite_members_in_comment, namespace: @project.root_ancestor) do |experiment_instance|
       experiment_instance.exclude! unless helpers.can_import_members?
@@ -60,6 +60,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action do
     push_frontend_feature_flag(:mr_collapsed_approval_rules, @project)
+    push_frontend_feature_flag(:show_relevant_approval_rule_approvers, @project, default_enabled: :yaml)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
@@ -114,6 +115,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count + @merge_request.context_commits_count
+        @diffs_count = get_diffs_count
         @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
         @current_user_data = UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestCurrentUserEntity).to_json
         @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
@@ -244,7 +246,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def update
-    @merge_request = ::MergeRequests::UpdateService.new(project, current_user, merge_request_update_params).execute(@merge_request)
+    @merge_request = ::MergeRequests::UpdateService.new(project: project, current_user: current_user, params: merge_request_update_params).execute(@merge_request)
 
     respond_to do |format|
       format.html do
@@ -273,7 +275,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def remove_wip
     @merge_request = ::MergeRequests::UpdateService
-      .new(project, current_user, wip_event: 'unwip')
+      .new(project: project, current_user: current_user, params: { wip_event: 'unwip' })
       .execute(@merge_request)
 
     render json: serialize_widget(@merge_request)
@@ -308,7 +310,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def assign_related_issues
-    result = ::MergeRequests::AssignIssuesService.new(project, current_user, merge_request: @merge_request).execute
+    result = ::MergeRequests::AssignIssuesService.new(project: project, current_user: current_user, params: { merge_request: @merge_request }).execute
 
     case result[:count]
     when 0
@@ -386,6 +388,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   private
 
+  def get_diffs_count
+    if show_only_context_commits?
+      @merge_request.context_commits_diff.raw_diffs.size
+    else
+      @merge_request.diff_size
+    end
+  end
+
   def merge_request_update_params
     merge_request_params.merge!(params.permit(:merge_request_diff_head_sha))
   end
@@ -412,7 +422,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       return :failed
     end
 
-    merge_service = ::MergeRequests::MergeService.new(@project, current_user, merge_params)
+    merge_service = ::MergeRequests::MergeService.new(project: @project, current_user: current_user, params: merge_params)
 
     unless merge_service.hooks_validation_pass?(@merge_request)
       return :hook_validation_error
@@ -525,4 +535,4 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 end
 
-Projects::MergeRequestsController.prepend_if_ee('EE::Projects::MergeRequestsController')
+Projects::MergeRequestsController.prepend_mod_with('Projects::MergeRequestsController')

@@ -25,4 +25,4 @@ module Applications
   end
 end
 
-Applications::CreateService.prepend_if_ee('EE::Applications::CreateService')
+Applications::CreateService.prepend_mod_with('Applications::CreateService')

@@ -33,6 +33,10 @@ const focusFirstInvalidInput = (e) => {
   }
 };
 
+const getInputElement = (el) => {
+  return el.querySelector('input') || el;
+};
+
 const isEveryFieldValid = (form) => Object.values(form.fields).every(({ state }) => state === true);
 
 const createValidator = (context, feedbackMap) => ({ el, reportInvalidInput = false }) => {
@@ -91,8 +95,9 @@ export default function initValidation(customFeedbackMap = {}) {
   const elDataMap = new WeakMap();
 
   return {
-    inserted(el, binding, { context }) {
+    inserted(element, binding, { context }) {
       const { arg: showGlobalValidation } = binding;
+      const el = getInputElement(element);
       const { form: formEl } = el;
 
       const validate = createValidator(context, feedbackMap);
@@ -121,7 +126,8 @@ export default function initValidation(customFeedbackMap = {}) {
 
       validate({ el, reportInvalidInput: showGlobalValidation });
     },
-    update(el, binding) {
+    update(element, binding) {
+      const el = getInputElement(element);
       const { arg: showGlobalValidation } = binding;
       const { validate, isTouched, isBlurred } = elDataMap.get(el);
       const showValidationFeedback = showGlobalValidation || (isTouched && isBlurred);
@@ -130,3 +136,59 @@ export default function initValidation(customFeedbackMap = {}) {
     },
   };
 }
+
+/**
+ * This is a helper that initialize the form fields structure to be used in initForm
+ * @param {*} fieldValues
+ * @returns formObject
+ */
+const initFormField = ({ value, required = true, skipValidation = false }) => ({
+  value,
+  required,
+  state: skipValidation ? true : null,
+  feedback: null,
+});
+
+/**
+ * This is a helper that initialize the form structure that is compliant to be used with the validation directive
+ *
+ * @example
+ * const form initForm = initForm({
+ *   fields: {
+ *     name: {
+ *       value: 'lorem'
+ *     },
+ *     description: {
+ *       value: 'ipsum',
+ *       required: false,
+ *       skipValidation: true
+ *     }
+ *   }
+ * })
+ *
+ * @example
+ * const form initForm = initForm({
+ *   state: true,   // to override
+ *   foo: {         // something custom
+ *     bar: 'lorem'
+ *   },
+ *   fields: {...}
+ * })
+ *
+ * @param {*} formObject
+ * @returns form
+ */
+export const initForm = ({ fields = {}, ...rest } = {}) => {
+  const initFields = Object.fromEntries(
+    Object.entries(fields).map(([fieldName, fieldValues]) => {
+      return [fieldName, initFormField(fieldValues)];
+    }),
+  );
+
+  return {
+    state: false,
+    showValidation: false,
+    ...rest,
+    fields: initFields,
+  };
+};

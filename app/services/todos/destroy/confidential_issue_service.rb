@@ -37,7 +37,7 @@ module Todos
       def todos
         Todo.joins_issue_and_assignees
           .where(target: issues)
-          .where('issues.confidential = ?', true)
+          .where(issues: { confidential: true })
           .where('todos.user_id != issues.author_id')
           .where('todos.user_id != issue_assignees.user_id')
       end

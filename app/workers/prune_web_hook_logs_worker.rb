@@ -4,6 +4,8 @@
 # table.
 class PruneWebHookLogsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   # rubocop:disable Scalability/CronWorkerContext
   # This worker does not perform work scoped to a context
   include CronjobQueue

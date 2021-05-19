@@ -11,6 +11,7 @@ stages:
     - fuzz
 
 variables:
+    SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
     FUZZAPI_PROFILE: Quick
     FUZZAPI_VERSION: "1.6"
     FUZZAPI_CONFIG: .gitlab-api-fuzzing.yml
@@ -24,7 +25,7 @@ variables:
     # available (non 500 response to HTTP(s))
     FUZZAPI_SERVICE_START_TIMEOUT: "300"
     #
-    FUZZAPI_IMAGE: registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:${FUZZAPI_VERSION}-engine
+    FUZZAPI_IMAGE: ${SECURE_ANALYZERS_PREFIX}/api-fuzzing:${FUZZAPI_VERSION}
     #
 
 apifuzzer_fuzz_unlicensed:

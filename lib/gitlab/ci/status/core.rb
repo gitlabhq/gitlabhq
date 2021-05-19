@@ -11,6 +11,8 @@ module Gitlab
 
         attr_reader :subject, :user
 
+        delegate :cache_key, to: :subject
+
         def initialize(subject, user)
           @subject = subject
           @user = user

@@ -275,6 +275,7 @@ describe('static_site_editor/pages/home', () => {
             formattedMarkdown,
             project,
             sourcePath,
+            targetBranch: branch,
             username,
             images,
             mergeRequestMeta,

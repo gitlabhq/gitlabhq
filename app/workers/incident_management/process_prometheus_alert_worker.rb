@@ -4,6 +4,8 @@ module IncidentManagement
   class ProcessPrometheusAlertWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     queue_namespace :incident_management
     feature_category :incident_management
     worker_resource_boundary :cpu

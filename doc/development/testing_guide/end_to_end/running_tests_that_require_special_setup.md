@@ -147,10 +147,10 @@ docker rm gitlab-gitaly-cluster praefect postgres gitaly3 gitaly2 gitaly1
 
 To run the Monitor tests locally, against the GDK, please follow the preparation steps below:
 
-1. Complete the [Prerequisites](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/auto_devops/index.md#prerequisites-for-gitlab-team-members-only), at least through step 5. Note that the monitor tests do not require permissions to work with GKE because they use [k3s as a Kubernetes cluster provider](https://github.com/rancher/k3s).
+1. Complete the [Prerequisites](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/auto_devops/index.md#prerequisites-for-gitlab-team-members-only), at least through step 5. Note that the monitor tests do not require permissions to work with GKE because they use [k3s as a Kubernetes cluster provider](https://github.com/rancher/k3s).
 1. The test setup deploys the app in a Kubernetes cluster, using the Auto DevOps deployment strategy.
-To enable Auto DevOps in GDK, follow the [associated setup](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/auto_devops/index.md#setup) instructions. If you have problems, review the [troubleshooting guide](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/auto_devops/tips_and_troubleshooting.md) or reach out to the `#gdk` channel in the internal GitLab Slack.
-1. Do [secure your GitLab instance](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/auto_devops/index.md#secure-your-gitlab-instance) since it is now publicly accessible on `https://[YOUR-PORT].qa-tunnel.gitlab.info`.
+To enable Auto DevOps in GDK, follow the [associated setup](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/auto_devops/index.md#setup) instructions. If you have problems, review the [troubleshooting guide](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/auto_devops/tips_and_troubleshooting.md) or reach out to the `#gdk` channel in the internal GitLab Slack.
+1. Do [secure your GitLab instance](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/auto_devops/index.md#secure-your-gitlab-instance) since it is now publicly accessible on `https://[YOUR-PORT].qa-tunnel.gitlab.info`.
 1. Install the Kubernetes command line tool known as `kubectl`. Use the [official installation instructions](https://kubernetes.io/docs/tasks/tools/).
 
 You might see NGINX issues when you run `gdk start` or `gdk restart`. In that case, run `sft login` to revalidate your credentials and regain access the QA Tunnel.
@@ -272,7 +272,7 @@ You can free some memory with either of the following commands: `docker prune sy
 
 ## Geo tests
 
-Geo end-to-end tests can run locally against a [Geo GDK setup](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/geo.md) or on Geo spun up in Docker containers.
+Geo end-to-end tests can run locally against a [Geo GDK setup](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/geo.md) or on Geo spun up in Docker containers.
 
 ### Using Geo GDK
 

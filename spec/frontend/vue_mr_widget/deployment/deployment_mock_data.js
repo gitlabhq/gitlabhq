@@ -45,15 +45,15 @@ const deploymentMockData = {
   changes: [
     {
       path: 'index.html',
-      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
+      external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/index.html',
     },
     {
       path: 'imgs/gallery.html',
-      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
+      external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
     },
     {
       path: 'about/',
-      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
+      external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/about/',
     },
   ],
 };

@@ -22,7 +22,7 @@ module Gitlab
 
         def safe_sample
           sample
-        rescue => e
+        rescue StandardError => e
           Gitlab::AppLogger.warn("#{self.class}: #{e}, stopping")
           stop
         end

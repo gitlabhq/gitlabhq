@@ -23,6 +23,7 @@ module RendersCommits
 
   def prepare_commits_for_rendering(commits)
     commits.each(&:lazy_author) # preload commits' authors
+    commits.each(&:lazy_latest_pipeline)
 
     Banzai::CommitRenderer.render(commits, @project, current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 

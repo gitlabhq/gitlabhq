@@ -72,4 +72,4 @@ module EnforcesTwoFactorAuthentication
   end
 end
 
-EnforcesTwoFactorAuthentication.prepend_if_ee('EE::EnforcesTwoFactorAuthentication')
+EnforcesTwoFactorAuthentication.prepend_mod_with('EnforcesTwoFactorAuthentication')

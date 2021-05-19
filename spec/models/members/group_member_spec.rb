@@ -85,11 +85,11 @@ RSpec.describe GroupMember do
 
       expect(user).to receive(:update_two_factor_requirement)
 
-      group_member.save
+      group_member.save!
 
       expect(user).to receive(:update_two_factor_requirement)
 
-      group_member.destroy
+      group_member.destroy!
     end
   end
 

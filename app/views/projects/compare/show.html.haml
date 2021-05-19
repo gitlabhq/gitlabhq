@@ -6,8 +6,15 @@
     #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
 
 - if @commits.present?
-  = render "projects/commits/commit_list"
-  = render "projects/diffs/diffs", diffs: @diffs, environment: @environment, diff_page_context: "is-compare"
+  -# Only show commit list in the first page
+  - hide_commit_list = params[:page].present? && params[:page] != '1'
+  = render "projects/commits/commit_list" unless hide_commit_list
+  = render "projects/diffs/diffs",
+    diffs: @diffs,
+    environment: @environment,
+    diff_page_context: "is-compare",
+    paginate_diffs: true,
+    paginate_diffs_per_page: Projects::CompareController::COMMIT_DIFFS_PER_PAGE
 - else
   .card.bg-light
     .center

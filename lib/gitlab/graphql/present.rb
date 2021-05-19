@@ -10,14 +10,14 @@ module Gitlab
         end
 
         def self.presenter_class
-          @presenter_class
+          @presenter_class || superclass.try(:presenter_class)
         end
 
         def self.present(object, attrs)
-          klass = @presenter_class
+          klass = presenter_class
           return object if !klass || object.is_a?(klass)
 
-          @presenter_class.new(object, **attrs)
+          klass.new(object, **attrs)
         end
       end
 

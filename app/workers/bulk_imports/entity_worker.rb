@@ -5,6 +5,7 @@ module BulkImports
     include ApplicationWorker
 
     feature_category :importers
+    tags :exclude_from_kubernetes
 
     sidekiq_options retry: false, dead: false
 
@@ -26,7 +27,7 @@ module BulkImports
           entity_id
         )
       end
-    rescue => e
+    rescue StandardError => e
       logger.error(
         worker: self.class.name,
         entity_id: entity_id,

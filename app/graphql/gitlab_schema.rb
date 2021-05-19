@@ -10,6 +10,7 @@ class GitlabSchema < GraphQL::Schema
   DEFAULT_MAX_DEPTH = 15
   AUTHENTICATED_MAX_DEPTH = 20
 
+  use GraphQL::Subscriptions::ActionCableSubscriptions
   use GraphQL::Pagination::Connections
   use BatchLoader::GraphQL
   use Gitlab::Graphql::Pagination::Connections
@@ -24,6 +25,7 @@ class GitlabSchema < GraphQL::Schema
 
   query Types::QueryType
   mutation Types::MutationType
+  subscription Types::SubscriptionType
 
   default_max_page_size 100
 
@@ -168,7 +170,7 @@ class GitlabSchema < GraphQL::Schema
   end
 end
 
-GitlabSchema.prepend_if_ee('EE::GitlabSchema') # rubocop: disable Cop/InjectEnterpriseEditionModule
+GitlabSchema.prepend_mod_with('GitlabSchema') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
 # Force the schema to load as a workaround for intermittent errors we
 # see due to a lack of thread safety.

@@ -1,0 +1,8 @@
+---
+name: cached_encoding_detection
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60128
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/328819
+milestone: '13.12'
+type: development
+group: group::source code
+default_enabled: false

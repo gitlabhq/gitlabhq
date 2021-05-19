@@ -37,7 +37,7 @@ module API
           begin
             @blob = Gitlab::Git::Blob.raw(@repo, params[:sha])
             @blob.load_all_data!(@repo)
-          rescue
+          rescue StandardError
             not_found! 'Blob'
           end
 
@@ -106,7 +106,7 @@ module API
         not_acceptable! if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)
 
         send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true
-      rescue
+      rescue StandardError
         not_found!('File')
       end
 
@@ -152,7 +152,7 @@ module API
       get ':id/repository/contributors' do
         contributors = ::Kaminari.paginate_array(user_project.repository.contributors(order_by: params[:order_by], sort: params[:sort]))
         present paginate(contributors), with: Entities::Contributor
-      rescue
+      rescue StandardError
         not_found!
       end
 
@@ -224,7 +224,7 @@ module API
           desc: 'The commit message to use when committing the changelog'
       end
       post ':id/repository/changelog' do
-        branch = params[:branch] || user_project.default_branch_or_master
+        branch = params[:branch] || user_project.default_branch_or_main
         access = Gitlab::UserAccess.new(current_user, container: user_project)
 
         unless access.can_push_to_branch?(branch)

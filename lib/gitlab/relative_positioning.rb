@@ -13,7 +13,9 @@ module Gitlab
     MIN_GAP = 2
 
     NoSpaceLeft = Class.new(StandardError)
+    InvalidPosition = Class.new(StandardError)
     IllegalRange = Class.new(ArgumentError)
+    IssuePositioningDisabled = Class.new(StandardError)
 
     def self.range(lhs, rhs)
       if lhs && rhs

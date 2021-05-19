@@ -52,7 +52,7 @@ module Boards
       end
 
       def update(issue, issue_modification_params)
-        ::Issues::UpdateService.new(issue.project, current_user, issue_modification_params).execute(issue)
+        ::Issues::UpdateService.new(project: issue.project, current_user: current_user, params: issue_modification_params).execute(issue)
       end
 
       def reposition_parent
@@ -62,4 +62,4 @@ module Boards
   end
 end
 
-Boards::Issues::MoveService.prepend_if_ee('EE::Boards::Issues::MoveService')
+Boards::Issues::MoveService.prepend_mod_with('Boards::Issues::MoveService')

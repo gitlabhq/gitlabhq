@@ -3,6 +3,8 @@
 module RepositoryCheck
   class BatchWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include RepositoryCheckQueue
     include ExclusiveLeaseGuard
 
@@ -95,4 +97,4 @@ module RepositoryCheck
   end
 end
 
-RepositoryCheck::BatchWorker.prepend_if_ee('::EE::RepositoryCheck::BatchWorker')
+RepositoryCheck::BatchWorker.prepend_mod_with('RepositoryCheck::BatchWorker')

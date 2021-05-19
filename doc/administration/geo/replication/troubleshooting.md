@@ -558,6 +558,7 @@ to start again from scratch, there are a few steps that can help you:
    mv /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads.old
    mkdir -p /var/opt/gitlab/gitlab-rails/uploads
 
+   gitlab-ctl start postgresql
    gitlab-ctl start geo-postgresql
    ```
 
@@ -852,6 +853,12 @@ To resolve this issue:
   using IPv6 to send its status to the **primary** node. If it is, add an entry to
   the **primary** node using IPv4 in the `/etc/hosts` file. Alternatively, you should
   [enable IPv6 on the **primary** node](https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-address-or-addresses).
+
+### GitLab Pages return 404 errors after promoting
+
+This is due to [Pages data not being managed by Geo](datatypes.md#limitations-on-replicationverification).
+Find advice to resolve those errors in the
+[Pages administration documentation](../../../administration/pages/index.md#404-error-after-promoting-a-geo-secondary-to-a-primary-node).
 
 ## Fixing client errors
 

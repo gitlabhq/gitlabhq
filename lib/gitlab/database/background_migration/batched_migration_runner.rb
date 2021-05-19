@@ -19,8 +19,10 @@ module Gitlab
         #
         # Note that this method is primarily intended to called by a scheduled worker.
         def run_migration_job(active_migration)
-          if next_batched_job = create_next_batched_job!(active_migration)
+          if next_batched_job = find_or_create_next_batched_job(active_migration)
             migration_wrapper.perform(next_batched_job)
+
+            active_migration.optimize!
           else
             finish_active_migration(active_migration)
           end
@@ -46,12 +48,12 @@ module Gitlab
 
         attr_reader :migration_wrapper
 
-        def create_next_batched_job!(active_migration)
-          next_batch_range = find_next_batch_range(active_migration)
-
-          return if next_batch_range.nil?
-
-          active_migration.create_batched_job!(next_batch_range.min, next_batch_range.max)
+        def find_or_create_next_batched_job(active_migration)
+          if next_batch_range = find_next_batch_range(active_migration)
+            active_migration.create_batched_job!(next_batch_range.min, next_batch_range.max)
+          else
+            active_migration.batched_jobs.retriable.first
+          end
         end
 
         def find_next_batch_range(active_migration)
@@ -80,7 +82,13 @@ module Gitlab
         end
 
         def finish_active_migration(active_migration)
-          active_migration.finished!
+          return if active_migration.batched_jobs.active.exists?
+
+          if active_migration.batched_jobs.failed.exists?
+            active_migration.failed!
+          else
+            active_migration.finished!
+          end
         end
       end
     end

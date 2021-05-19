@@ -3,38 +3,36 @@
 require 'active_support/inflector'
 
 module InjectEnterpriseEditionModule
-  def prepend_if_ee(constant, with_descendants: false)
-    return unless Gitlab.ee?
-
-    prepend_module(constant.constantize, with_descendants)
+  def prepend_mod_with(constant_name, namespace: Object, with_descendants: false)
+    each_extension_for(constant_name, namespace) do |constant|
+      prepend_module(constant, with_descendants)
+    end
   end
 
-  def extend_if_ee(constant)
-    extend(constant.constantize) if Gitlab.ee?
+  def extend_mod_with(constant_name, namespace: Object)
+    each_extension_for(
+      constant_name,
+      namespace,
+      &method(:extend))
   end
 
-  def include_if_ee(constant)
-    include(constant.constantize) if Gitlab.ee?
+  def include_mod_with(constant_name, namespace: Object)
+    each_extension_for(
+      constant_name,
+      namespace,
+      &method(:include))
   end
 
-  def prepend_ee_mod(with_descendants: false)
-    return unless Gitlab.ee?
-
-    prepend_module(ee_module, with_descendants)
+  def prepend_mod(with_descendants: false)
+    prepend_mod_with(name, with_descendants: with_descendants) # rubocop: disable Cop/InjectEnterpriseEditionModule
   end
 
-  def extend_ee_mod
-    extend(ee_module) if Gitlab.ee?
+  def extend_mod
+    extend_mod_with(name) # rubocop: disable Cop/InjectEnterpriseEditionModule
   end
 
-  def include_ee_mod
-    include(ee_module) if Gitlab.ee?
-  end
-
-  def prepend_if_jh(constant, with_descendants: false)
-    return unless Gitlab.jh?
-
-    prepend_module(constant.constantize, with_descendants)
+  def include_mod
+    include_mod_with(name) # rubocop: disable Cop/InjectEnterpriseEditionModule
   end
 
   private
@@ -47,8 +45,28 @@ module InjectEnterpriseEditionModule
     end
   end
 
-  def ee_module
-    ::EE.const_get(name, false)
+  def each_extension_for(constant_name, namespace)
+    Gitlab.extensions.each do |extension_name|
+      extension_namespace =
+        const_get_maybe_false(namespace, extension_name.upcase)
+
+      extension_module =
+        const_get_maybe_false(extension_namespace, constant_name)
+
+      yield(extension_module) if extension_module
+    end
+  end
+
+  def const_get_maybe_false(mod, name)
+    # We're still heavily relying on Rails autoloading instead of zeitwerk,
+    # therefore this check: `mod.const_defined?(name, false)`
+    # Is not reliable, which may return false while it's defined.
+    # After we moved everything over to zeitwerk we can avoid rescuing
+    # NameError and just check if const_defined?
+    # mod && mod.const_defined?(name, false) && mod.const_get(name, false)
+    mod && mod.const_get(name, false)
+  rescue NameError
+    false
   end
 end
 

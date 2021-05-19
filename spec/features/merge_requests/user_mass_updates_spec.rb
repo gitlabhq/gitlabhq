@@ -44,7 +44,7 @@ RSpec.describe 'Merge requests > User mass updates', :js do
 
       click_button 'Edit merge requests'
 
-      expect(page).not_to have_css('.js-issue-status')
+      expect(page).not_to have_button 'Select status'
     end
   end
 
@@ -57,9 +57,7 @@ RSpec.describe 'Merge requests > User mass updates', :js do
       it 'updates merge request with assignee' do
         change_assignee(user.name)
 
-        page.within('.merge-request .controls') do
-          expect(find('.author-link')["title"]).to have_content(user.name)
-        end
+        expect(find('.merge-request')).to have_link "Assigned to #{user.name}"
       end
     end
 
@@ -72,7 +70,7 @@ RSpec.describe 'Merge requests > User mass updates', :js do
       it 'removes assignee from the merge request' do
         change_assignee('Unassigned')
 
-        expect(find('.merge-request .controls')).not_to have_css('.author-link')
+        expect(find('.merge-request')).not_to have_link "Assigned to #{user.name}"
       end
     end
   end
@@ -109,35 +107,33 @@ RSpec.describe 'Merge requests > User mass updates', :js do
 
   def change_status(text)
     click_button 'Edit merge requests'
-    find('#check-all-issues').click
-    find('.js-issue-status').click
-    find('.dropdown-menu-status a', text: text).click
+    check 'Select all'
+    click_button 'Select status'
+    click_link text
     click_update_merge_requests_button
   end
 
   def change_assignee(text)
     click_button 'Edit merge requests'
-    find('#check-all-issues').click
-    find('.js-update-assignee').click
-    wait_for_requests
-
-    page.within '.dropdown-menu-user' do
+    check 'Select all'
+    within 'aside[aria-label="Bulk update"]' do
+      click_button 'Select assignee'
+      wait_for_requests
       click_link text
     end
-
     click_update_merge_requests_button
   end
 
   def change_milestone(text)
     click_button 'Edit merge requests'
-    find('#check-all-issues').click
-    find('.issues-bulk-update .js-milestone-select').click
-    find('.dropdown-menu-milestone a', text: text).click
+    check 'Select all'
+    click_button 'Select milestone'
+    click_link text
     click_update_merge_requests_button
   end
 
   def click_update_merge_requests_button
-    find('.update-selected-issues').click
+    click_button 'Update all'
     wait_for_requests
   end
 end

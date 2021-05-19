@@ -4,8 +4,11 @@ module HashedStorage
   class MigratorWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     queue_namespace :hashed_storage
     feature_category :source_code_management
+    tags :exclude_from_gitlab_com
 
     # @param [Integer] start initial ID of the batch
     # @param [Integer] finish last ID of the batch

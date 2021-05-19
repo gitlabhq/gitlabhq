@@ -336,6 +336,32 @@ RSpec.describe ApplicationSettings::UpdateService do
     end
   end
 
+  context 'when package registry rate limits are passed' do
+    let(:params) do
+      {
+        throttle_unauthenticated_packages_api_enabled: 1,
+        throttle_unauthenticated_packages_api_period_in_seconds: 500,
+        throttle_unauthenticated_packages_api_requests_per_period: 20,
+        throttle_authenticated_packages_api_enabled: 1,
+        throttle_authenticated_packages_api_period_in_seconds: 600,
+        throttle_authenticated_packages_api_requests_per_period: 10
+      }
+    end
+
+    it 'updates package registry throttle settings' do
+      subject.execute
+
+      application_settings.reload
+
+      expect(application_settings.throttle_unauthenticated_packages_api_enabled).to be_truthy
+      expect(application_settings.throttle_unauthenticated_packages_api_period_in_seconds).to eq(500)
+      expect(application_settings.throttle_unauthenticated_packages_api_requests_per_period).to eq(20)
+      expect(application_settings.throttle_authenticated_packages_api_enabled).to be_truthy
+      expect(application_settings.throttle_authenticated_packages_api_period_in_seconds).to eq(600)
+      expect(application_settings.throttle_authenticated_packages_api_requests_per_period).to eq(10)
+    end
+  end
+
   context 'when issues_create_limit is passed' do
     let(:params) do
       {

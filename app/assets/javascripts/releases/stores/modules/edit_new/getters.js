@@ -103,3 +103,39 @@ export const isValid = (_state, getters) => {
   const errors = getters.validationErrors;
   return Object.values(errors.assets.links).every(isEmpty) && !errors.isTagNameEmpty;
 };
+
+/** Returns all the variables for a `releaseUpdate` GraphQL mutation */
+export const releaseUpdateMutatationVariables = (state) => {
+  const name = state.release.name?.trim().length > 0 ? state.release.name.trim() : null;
+
+  // Milestones may be either a list of milestone objects OR just a list
+  // of milestone titles. The GraphQL mutation requires only the titles be sent.
+  const milestones = (state.release.milestones || []).map((m) => m.title || m);
+
+  return {
+    input: {
+      projectPath: state.projectPath,
+      tagName: state.release.tagName,
+      name,
+      description: state.release.description,
+      milestones,
+    },
+  };
+};
+
+/** Returns all the variables for a `releaseCreate` GraphQL mutation */
+export const releaseCreateMutatationVariables = (state, getters) => {
+  return {
+    input: {
+      ...getters.releaseUpdateMutatationVariables.input,
+      ref: state.createFrom,
+      assets: {
+        links: getters.releaseLinksToCreate.map(({ name, url, linkType }) => ({
+          name,
+          url,
+          linkType: linkType.toUpperCase(),
+        })),
+      },
+    },
+  };
+};

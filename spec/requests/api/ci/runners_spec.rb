@@ -999,6 +999,19 @@ RSpec.describe API::Ci::Runners do
             end.to change { project.runners.count }.by(+1)
             expect(response).to have_gitlab_http_status(:created)
           end
+
+          context 'when it exceeds the application limits' do
+            before do
+              create(:plan_limits, :default_plan, ci_registered_project_runners: 1)
+            end
+
+            it 'does not enable specific runner' do
+              expect do
+                post api("/projects/#{project.id}/runners", admin), params: { runner_id: new_project_runner.id }
+              end.not_to change { project.runners.count }
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
+          end
         end
 
         it 'enables a instance type runner' do

@@ -3,9 +3,12 @@ module Ci
   module MergeRequests
     class AddTodoWhenBuildFailsWorker
       include ApplicationWorker
+
+      sidekiq_options retry: 3
       include PipelineQueue
 
       urgency :low
+      tags :exclude_from_kubernetes
       idempotent!
 
       def perform(job_id)
@@ -14,7 +17,7 @@ module Ci
 
         return unless job && project
 
-        ::MergeRequests::AddTodoWhenBuildFailsService.new(job.project, nil).execute(job)
+        ::MergeRequests::AddTodoWhenBuildFailsService.new(project: job.project).execute(job)
       end
     end
   end

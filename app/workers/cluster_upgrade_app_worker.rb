@@ -2,6 +2,8 @@
 
 class ClusterUpgradeAppWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ClusterQueue
   include ClusterApplications
 

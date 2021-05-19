@@ -92,7 +92,7 @@ module Gitlab
       Gitlab::Git::Repository.new(storage, "#{disk_path}.git", nil, nil).rename("#{new_disk_path}.git")
 
       true
-    rescue => e
+    rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, path: disk_path, new_path: new_disk_path, storage: storage)
 
       false
@@ -115,7 +115,7 @@ module Gitlab
       Gitlab::Git::Repository.new(storage, "#{disk_path}.git", nil, nil).remove
 
       true
-    rescue => e
+    rescue StandardError => e
       Gitlab::AppLogger.warn("Repository does not exist: #{e} at: #{disk_path}.git")
       Gitlab::ErrorTracking.track_exception(e, path: disk_path, storage: storage)
 

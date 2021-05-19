@@ -86,4 +86,4 @@ module Releases
   end
 end
 
-Releases::BaseService.prepend_if_ee('EE::Releases::BaseService')
+Releases::BaseService.prepend_mod_with('Releases::BaseService')

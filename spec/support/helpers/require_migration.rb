@@ -20,7 +20,7 @@ class RequireMigration
   class << self
     def require_migration!(file_name)
       file_paths = search_migration_file(file_name)
-      raise AutoLoadError.new(file_name) unless file_paths.first
+      raise AutoLoadError, file_name unless file_paths.first
 
       require file_paths.first
     end
@@ -41,7 +41,7 @@ class RequireMigration
   end
 end
 
-RequireMigration.prepend_if_ee('EE::RequireMigration')
+RequireMigration.prepend_mod_with('RequireMigration')
 
 def require_migration!(file_name = nil)
   location_info = caller_locations.first.path.match(RequireMigration::SPEC_FILE_PATTERN)

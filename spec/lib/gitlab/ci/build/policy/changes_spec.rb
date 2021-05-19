@@ -120,6 +120,7 @@ RSpec.describe Gitlab::Ci::Build::Policy::Changes do
 
     context 'when branch is created' do
       let_it_be(:project) { create(:project, :repository) }
+
       let(:pipeline) do
         create(:ci_empty_pipeline, project: project,
                                    ref: 'feature',

@@ -141,7 +141,7 @@ RSpec.describe Namespace do
       end
 
       it 'allows updating other attributes for existing record' do
-        namespace = build(:namespace, path: 'j')
+        namespace = build(:namespace, path: 'j', owner: create(:user))
         namespace.save(validate: false)
         namespace.reload
 
@@ -212,6 +212,54 @@ RSpec.describe Namespace do
     end
   end
 
+  describe "after_commit :expire_child_caches" do
+    let(:namespace) { create(:group) }
+
+    it "expires the child caches when updated" do
+      child_1 = create(:group, parent: namespace, updated_at: 1.week.ago)
+      child_2 = create(:group, parent: namespace, updated_at: 1.day.ago)
+      grandchild = create(:group, parent: child_1, updated_at: 1.week.ago)
+      project_1 = create(:project, namespace: namespace, updated_at: 2.days.ago)
+      project_2 = create(:project, namespace: child_1, updated_at: 3.days.ago)
+      project_3 = create(:project, namespace: grandchild, updated_at: 4.years.ago)
+
+      freeze_time do
+        namespace.update!(path: "foo")
+
+        [namespace, child_1, child_2, grandchild, project_1, project_2, project_3].each do |record|
+          expect(record.reload.updated_at).to eq(Time.zone.now)
+        end
+      end
+    end
+
+    it "expires on name changes" do
+      expect(namespace).to receive(:expire_child_caches).once
+
+      namespace.update!(name: "Foo")
+    end
+
+    it "expires on path changes" do
+      expect(namespace).to receive(:expire_child_caches).once
+
+      namespace.update!(path: "bar")
+    end
+
+    it "expires on parent changes" do
+      expect(namespace).to receive(:expire_child_caches).once
+
+      namespace.update!(parent: create(:group))
+    end
+
+    it "doesn't expire on other field changes" do
+      expect(namespace).not_to receive(:expire_child_caches)
+
+      namespace.update!(
+        description: "Foo bar",
+        max_artifacts_size: 10
+      )
+    end
+  end
+
   describe '#visibility_level_field' do
     it { expect(namespace.visibility_level_field).to eq(:visibility_level) }
   end
@@ -222,6 +270,41 @@ RSpec.describe Namespace do
 
   describe '#human_name' do
     it { expect(namespace.human_name).to eq(namespace.owner_name) }
+  end
+
+  describe '#any_project_has_container_registry_tags?' do
+    subject { namespace.any_project_has_container_registry_tags? }
+
+    let!(:project_without_registry) { create(:project, namespace: namespace) }
+
+    context 'without tags' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'with tags' do
+      before do
+        repositories = create_list(:container_repository, 3)
+        create(:project, namespace: namespace, container_repositories: repositories)
+
+        stub_container_registry_config(enabled: true)
+      end
+
+      it 'finds tags' do
+        stub_container_registry_tags(repository: :any, tags: ['tag'])
+
+        is_expected.to be_truthy
+      end
+
+      it 'does not cause N+1 query in fetching registries' do
+        stub_container_registry_tags(repository: :any, tags: [])
+        control_count = ActiveRecord::QueryRecorder.new { namespace.any_project_has_container_registry_tags? }.count
+
+        other_repositories = create_list(:container_repository, 2)
+        create(:project, namespace: namespace, container_repositories: other_repositories)
+
+        expect { namespace.any_project_has_container_registry_tags? }.not_to exceed_query_limit(control_count + 1)
+      end
+    end
   end
 
   describe '#first_project_with_container_registry_tags' do
@@ -880,7 +963,7 @@ RSpec.describe Namespace do
   end
 
   describe '#use_traversal_ids?' do
-    let_it_be(:namespace) { build(:namespace) }
+    let_it_be(:namespace, reload: true) { create(:namespace) }
 
     subject { namespace.use_traversal_ids? }
 
@@ -898,30 +981,6 @@ RSpec.describe Namespace do
       end
 
       it { is_expected.to eq false }
-    end
-  end
-
-  context 'when use_traversal_ids feature flag is true' do
-    it_behaves_like 'namespace traversal'
-
-    describe '#self_and_descendants' do
-      subject { namespace.self_and_descendants }
-
-      it { expect(subject.to_sql).to include 'traversal_ids @>' }
-    end
-  end
-
-  context 'when use_traversal_ids feature flag is false' do
-    before do
-      stub_feature_flags(use_traversal_ids: false)
-    end
-
-    it_behaves_like 'namespace traversal'
-
-    describe '#self_and_descendants' do
-      subject { namespace.self_and_descendants }
-
-      it { expect(subject.to_sql).not_to include 'traversal_ids @>' }
     end
   end
 

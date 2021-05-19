@@ -48,10 +48,16 @@ notification. You do not need to add the hash sign (`#`).
 
 Then fill in the integration configuration:
 
-| Field | Description |
-| ----- | ----------- |
-| **Webhook**  | The incoming webhook URL on Mattermost, similar to: `http://mattermost.example/hooks/5xo…`. |
-| **Username** | (Optional) The username to show on messages sent to Mattermost. Fill this in to change the username of the bot. |
-| **Notify only broken pipelines** | If you enable the **Pipeline** event and you want to be notified about failed pipelines only. |
-| **Branches to be notified** | Select which branches to send notifications for. |
-| **Labels to be notified** | (Optional) Labels that the issue or merge request must have to trigger a notification. Leave blank to get notifications for all issues and merge requests. |
+- **Webhook**: The incoming webhook URL on Mattermost, similar to
+  `http://mattermost.example/hooks/5xo…`.
+- **Username**: (Optional) The username shown in messages sent to Mattermost.
+  To change the bot's username, provide a value.
+- **Notify only broken pipelines**: If you enable the **Pipeline** event, and you want
+  notifications about failed pipelines only.
+- **Branches to be notified**: The branches to send notifications for.
+- **Labels to be notified**: (Optional) Labels required for the issue or merge request
+  to trigger a notification. Leave blank to notify for all issues and merge requests.
+- **Labels to be notified behavior**: When you use the **Labels to be notified** filter,
+  messages are sent when an issue or merge request contains _any_ of the labels specified
+  in the filter. You can also choose to trigger messages only when the issue or merge request
+  contains _all_ the labels defined in the filter.

@@ -135,4 +135,4 @@ module Participable
   end
 end
 
-Participable.prepend_if_ee('EE::Participable')
+Participable.prepend_mod_with('Participable')

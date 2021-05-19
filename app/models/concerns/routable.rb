@@ -96,11 +96,49 @@ module Routable
   end
 
   def full_name
-    route&.name || build_full_name
+    # We have to test for persistence as the cache key uses #updated_at
+    return (route&.name || build_full_name) unless persisted? && Feature.enabled?(:cached_route_lookups, self, type: :ops, default_enabled: :yaml)
+
+    # Return the name as-is if the parent is missing
+    return name if route.nil? && parent.nil? && name.present?
+
+    # If the route is already preloaded, return directly, preventing an extra load
+    return route.name if route_loaded? && route.present?
+
+    # Similarly, we can allow the build if the parent is loaded
+    return build_full_name if parent_loaded?
+
+    Gitlab::Cache.fetch_once([cache_key, :full_name]) do
+      route&.name || build_full_name
+    end
   end
 
   def full_path
-    route&.path || build_full_path
+    # We have to test for persistence as the cache key uses #updated_at
+    return (route&.path || build_full_path) unless persisted? && Feature.enabled?(:cached_route_lookups, self, type: :ops, default_enabled: :yaml)
+
+    # Return the path as-is if the parent is missing
+    return path if route.nil? && parent.nil? && path.present?
+
+    # If the route is already preloaded, return directly, preventing an extra load
+    return route.path if route_loaded? && route.present?
+
+    # Similarly, we can allow the build if the parent is loaded
+    return build_full_path if parent_loaded?
+
+    Gitlab::Cache.fetch_once([cache_key, :full_path]) do
+      route&.path || build_full_path
+    end
+  end
+
+  # Overriden in the Project model
+  # parent_id condition prevents issues with parent reassignment
+  def parent_loaded?
+    association(:parent).loaded?
+  end
+
+  def route_loaded?
+    association(:route).loaded?
   end
 
   def full_path_components
@@ -124,7 +162,9 @@ module Routable
 
   def set_path_errors
     route_path_errors = self.errors.delete(:"route.path")
-    self.errors[:path].concat(route_path_errors) if route_path_errors
+    route_path_errors&.each do |msg|
+      self.errors.add(:path, msg)
+    end
   end
 
   def full_name_changed?

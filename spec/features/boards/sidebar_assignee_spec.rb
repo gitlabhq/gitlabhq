@@ -18,6 +18,8 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
   let(:card)              { find('.board:nth-child(2)').first('.board-card') }
 
   before do
+    stub_licensed_features(multiple_issue_assignees: false)
+
     project.add_maintainer(user)
 
     sign_in(user)
@@ -27,10 +29,12 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
   end
 
   context 'assignee' do
+    let(:assignees_widget) { '[data-testid="issue-boards-sidebar"] [data-testid="assignees-widget"]' }
+
     it 'updates the issues assignee' do
       click_card(card)
 
-      page.within('.assignee') do
+      page.within(assignees_widget) do
         click_button('Edit')
 
         wait_for_requests
@@ -41,11 +45,10 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
           first('.gl-avatar-labeled').click
         end
 
-        click_button('Apply')
-        wait_for_requests
-
         expect(page).to have_content(assignee)
       end
+
+      wait_for_requests
 
       expect(card).to have_selector('.avatar')
     end
@@ -54,7 +57,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
       card_two = find('.board:nth-child(2)').find('.board-card:nth-child(2)')
       click_card(card_two)
 
-      page.within('.assignee') do
+      page.within(assignees_widget) do
         click_button('Edit')
 
         wait_for_requests
@@ -62,9 +65,6 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
         page.within('.dropdown-menu-user') do
           find('[data-testid="unassign"]').click
         end
-
-        click_button('Apply')
-        wait_for_requests
 
         expect(page).to have_content('None')
       end
@@ -75,7 +75,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
     it 'assignees to current user' do
       click_card(card)
 
-      page.within(find('.assignee')) do
+      page.within(assignees_widget) do
         expect(page).to have_content('None')
 
         click_button 'assign yourself'
@@ -91,7 +91,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
     it 'updates assignee dropdown' do
       click_card(card)
 
-      page.within('.assignee') do
+      page.within(assignees_widget) do
         click_button('Edit')
 
         wait_for_requests
@@ -102,9 +102,6 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
           first('.gl-avatar-labeled').click
         end
 
-        click_button('Apply')
-        wait_for_requests
-
         expect(page).to have_content(assignee)
       end
 
@@ -112,7 +109,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
         find('.board-card:nth-child(2)').click
       end
 
-      page.within('.assignee') do
+      page.within(assignees_widget) do
         click_button('Edit')
 
         expect(find('.dropdown-menu')).to have_selector('.gl-new-dropdown-item-check-icon')

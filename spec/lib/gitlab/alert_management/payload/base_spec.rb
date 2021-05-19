@@ -89,6 +89,12 @@ RSpec.describe Gitlab::AlertManagement::Payload::Base do
 
         it { is_expected.to be_nil }
       end
+
+      context 'with time in seconds' do
+        let(:raw_payload) { { 'test' => 1618877936 } }
+
+        it { is_expected.to be_nil }
+      end
     end
 
     context 'with an integer type provided' do

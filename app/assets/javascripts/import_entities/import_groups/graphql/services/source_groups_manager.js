@@ -1,26 +1,10 @@
-import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
-import produce from 'immer';
 import { debounce, merge } from 'lodash';
-import { STATUSES } from '../../../constants';
-import ImportSourceGroupFragment from '../fragments/bulk_import_source_group_item.fragment.graphql';
-
-function extractTypeConditionFromFragment(fragment) {
-  return fragment.definitions[0]?.typeCondition.name.value;
-}
-
-function generateGroupId(id) {
-  return defaultDataIdFromObject({
-    __typename: extractTypeConditionFromFragment(ImportSourceGroupFragment),
-    id,
-  });
-}
 
 export const KEY = 'gl-bulk-imports-import-state';
 export const DEBOUNCE_INTERVAL = 200;
 
 export class SourceGroupsManager {
-  constructor({ client, sourceUrl, storage = window.localStorage }) {
-    this.client = client;
+  constructor({ sourceUrl, storage = window.localStorage }) {
     this.sourceUrl = sourceUrl;
 
     this.storage = storage;
@@ -29,51 +13,58 @@ export class SourceGroupsManager {
 
   loadImportStatesFromStorage() {
     try {
-      return JSON.parse(this.storage.getItem(KEY)) ?? {};
+      return Object.fromEntries(
+        Object.entries(JSON.parse(this.storage.getItem(KEY)) ?? {}).map(([jobId, config]) => {
+          // new format of storage
+          if (config.groups) {
+            return [jobId, config];
+          }
+
+          return [
+            jobId,
+            {
+              status: config.status,
+              groups: [{ id: config.id, importTarget: config.importTarget }],
+            },
+          ];
+        }),
+      );
     } catch {
       return {};
     }
   }
 
-  findById(id) {
-    const cacheId = generateGroupId(id);
-    return this.client.readFragment({ fragment: ImportSourceGroupFragment, id: cacheId });
-  }
-
-  update(group, fn) {
-    this.client.writeFragment({
-      fragment: ImportSourceGroupFragment,
-      id: generateGroupId(group.id),
-      data: produce(group, fn),
-    });
-  }
-
-  updateById(id, fn) {
-    const group = this.findById(id);
-    this.update(group, fn);
-  }
-
-  saveImportState(importId, group) {
+  createImportState(importId, jobConfig) {
     this.importStates[this.getStorageKey(importId)] = {
-      id: group.id,
-      importTarget: group.import_target,
-      status: group.status,
+      status: jobConfig.status,
+      groups: jobConfig.groups.map((g) => ({ importTarget: g.import_target, id: g.id })),
     };
     this.saveImportStatesToStorage();
   }
 
-  getImportStateFromStorage(importId) {
-    return this.importStates[this.getStorageKey(importId)];
+  updateImportProgress(importId, status) {
+    const currentState = this.importStates[this.getStorageKey(importId)];
+    if (!currentState) {
+      return;
+    }
+
+    currentState.status = status;
+    this.saveImportStatesToStorage();
   }
 
   getImportStateFromStorageByGroupId(groupId) {
     const PREFIX = this.getStorageKey('');
-    const [, importState] =
+    const [jobId, importState] =
       Object.entries(this.importStates).find(
-        ([key, group]) => key.startsWith(PREFIX) && group.id === groupId,
+        ([key, state]) => key.startsWith(PREFIX) && state.groups.some((g) => g.id === groupId),
       ) ?? [];
 
-    return importState;
+    if (!jobId) {
+      return null;
+    }
+
+    const group = importState.groups.find((g) => g.id === groupId);
+    return { jobId, importState: { ...group, status: importState.status } };
   }
 
   getStorageKey(importId) {
@@ -91,34 +82,4 @@ export class SourceGroupsManager {
       // empty catch intentional: storage might be unavailable or full
     }
   }, DEBOUNCE_INTERVAL);
-
-  startImport({ group, importId }) {
-    this.setImportStatus(group, STATUSES.CREATED);
-    this.saveImportState(importId, group);
-  }
-
-  setImportStatus(group, status) {
-    this.update(group, (sourceGroup) => {
-      // eslint-disable-next-line no-param-reassign
-      sourceGroup.status = status;
-    });
-  }
-
-  setImportStatusByImportId(importId, status) {
-    const importState = this.getImportStateFromStorage(importId);
-    if (!importState) {
-      return;
-    }
-
-    if (importState.status !== status) {
-      importState.status = status;
-    }
-
-    const group = this.findById(importState.id);
-    if (group?.id) {
-      this.setImportStatus(group, status);
-    }
-
-    this.saveImportStatesToStorage();
-  }
 }

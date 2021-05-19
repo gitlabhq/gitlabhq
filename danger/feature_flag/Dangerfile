@@ -13,7 +13,7 @@ group: "%<group>s"
 SUGGEST_COMMENT
 
 def check_feature_flag_yaml(feature_flag)
-  mr_group_label = helper.group_label(gitlab.mr_labels)
+  mr_group_label = helper.group_label
 
   if feature_flag.group.nil?
     message_for_feature_flag_missing_group!(feature_flag: feature_flag, mr_group_label: mr_group_label)

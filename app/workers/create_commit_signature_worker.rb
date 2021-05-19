@@ -3,6 +3,8 @@
 class CreateCommitSignatureWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :source_code_management
   weight 2
   idempotent!
@@ -36,7 +38,7 @@ class CreateCommitSignatureWorker
     # This calculates and caches the signature in the database
     commits.each do |commit|
       commit&.signature
-    rescue => e
+    rescue StandardError => e
       Gitlab::AppLogger.error("Failed to create signature for commit #{commit.id}. Error: #{e.message}")
     end
   end

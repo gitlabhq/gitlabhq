@@ -20,7 +20,6 @@ class Snippet < ApplicationRecord
   extend ::Gitlab::Utils::Override
 
   MAX_FILE_COUNT = 10
-  MASTER_BRANCH = 'master'
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
@@ -118,7 +117,7 @@ class Snippet < ApplicationRecord
   def self.only_include_projects_visible_to(current_user = nil)
     levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
 
-    joins(:project).where('projects.visibility_level IN (?)', levels)
+    joins(:project).where(projects: { visibility_level: levels })
   end
 
   def self.only_include_projects_with_snippets_enabled(include_private: false)
@@ -316,19 +315,19 @@ class Snippet < ApplicationRecord
 
   override :default_branch
   def default_branch
-    super || MASTER_BRANCH
+    super || Gitlab::DefaultBranch.value(object: project)
   end
 
   def repository_storage
     snippet_repository&.shard_name || Repository.pick_storage_shard
   end
 
-  # Repositories are created by default with the `master` branch.
+  # Repositories are created with a default branch. This branch
+  # can be different from the default branch set in the platform.
   # This method changes the `HEAD` file to point to the existing
-  # default branch in case it's not master.
+  # default branch in case it's different.
   def change_head_to_default_branch
     return unless repository.exists?
-    return if default_branch == MASTER_BRANCH
     # All snippets must have at least 1 file. Therefore, if
     # `HEAD` is empty is because it's pointing to the wrong
     # default branch
@@ -391,4 +390,4 @@ class Snippet < ApplicationRecord
   end
 end
 
-Snippet.prepend_if_ee('EE::Snippet')
+Snippet.prepend_mod_with('Snippet')

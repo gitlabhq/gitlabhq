@@ -111,6 +111,7 @@ export default {
               project: this.appData.project,
               username: this.appData.username,
               sourcePath: this.appData.sourcePath,
+              targetBranch: this.appData.branch,
               content: this.content,
               formattedMarkdown: this.formattedMarkdown,
               images: this.images,

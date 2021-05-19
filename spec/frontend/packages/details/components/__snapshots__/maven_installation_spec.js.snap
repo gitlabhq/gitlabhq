@@ -1,16 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MavenInstallation gradle renders all the messages 1`] = `
+exports[`MavenInstallation groovy renders all the messages 1`] = `
 <div>
   <installation-title-stub
-    options="[object Object],[object Object]"
+    options="[object Object],[object Object],[object Object]"
     packagetype="maven"
   />
    
   <code-instruction-stub
     class="gl-mb-5"
     copytext="Copy Gradle Groovy DSL install command"
-    instruction="foo/gradle/install"
+    instruction="foo/gradle/groovy/install"
     label="Gradle Groovy DSL install command"
     trackingaction="copy_gradle_install_command"
     trackinglabel="code_instruction"
@@ -18,7 +18,7 @@ exports[`MavenInstallation gradle renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy add Gradle Groovy DSL repository command"
-    instruction="foo/gradle/add/source"
+    instruction="foo/gradle/groovy/add/source"
     label="Add Gradle Groovy DSL repository command"
     multiline="true"
     trackingaction="copy_gradle_add_to_source_command"
@@ -27,10 +27,37 @@ exports[`MavenInstallation gradle renders all the messages 1`] = `
 </div>
 `;
 
+exports[`MavenInstallation kotlin renders all the messages 1`] = `
+<div>
+  <installation-title-stub
+    options="[object Object],[object Object],[object Object]"
+    packagetype="maven"
+  />
+   
+  <code-instruction-stub
+    class="gl-mb-5"
+    copytext="Copy Gradle Kotlin DSL install command"
+    instruction="foo/gradle/kotlin/install"
+    label="Gradle Kotlin DSL install command"
+    trackingaction="copy_kotlin_install_command"
+    trackinglabel="code_instruction"
+  />
+   
+  <code-instruction-stub
+    copytext="Copy add Gradle Kotlin DSL repository command"
+    instruction="foo/gradle/kotlin/add/source"
+    label="Add Gradle Kotlin DSL repository command"
+    multiline="true"
+    trackingaction="copy_kotlin_add_to_source_command"
+    trackinglabel="code_instruction"
+  />
+</div>
+`;
+
 exports[`MavenInstallation maven renders all the messages 1`] = `
 <div>
   <installation-title-stub
-    options="[object Object],[object Object]"
+    options="[object Object],[object Object],[object Object]"
     packagetype="maven"
   />
    

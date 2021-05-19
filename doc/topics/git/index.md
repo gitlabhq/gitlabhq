@@ -39,7 +39,7 @@ The following resources can help you get started with Git:
   - [Squashing commits](../gitlab_flow.md#squashing-commits-with-rebase)
   - [Squash-and-merge](../../user/project/merge_requests/squash_and_merge.md)
   - [Signing commits](../../user/project/repository/gpg_signed_commits/index.md)
-- [Git stash](../../university/training/topics/stash.md)
+- [Git stash](stash.md)
 - [Git file blame](../../user/project/repository/git_blame.md)
 - [Git file history](../../user/project/repository/git_history.md)
 - [Git tags](tags.md)
@@ -48,11 +48,26 @@ The following resources can help you get started with Git:
 
 The following are resources on version control concepts:
 
-- [Git concepts](../../university/training/user_training.md#git-concepts)
 - [Why Git is Worth the Learning Curve](https://about.gitlab.com/blog/2017/05/17/learning-curve-is-the-biggest-challenge-developers-face-with-git/)
 - [The future of SaaS hosted Git repository pricing](https://about.gitlab.com/blog/2016/05/11/git-repository-pricing/)
 - [Git website on version control](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control)
 - [GitLab University presentation about Version Control](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit?usp=sharing)
+
+### Work with Git on the command line
+
+You can do many Git tasks from the command line:
+
+- [Bisect](bisect.md).
+- [Cherry pick](cherry_picking.md).
+- [Feature branching](feature_branching.md).
+- [Getting started with Git](getting_started.md).
+- [Git add](git_add.md).
+- [Git log](git_log.md).
+- [Git stash](stash.md).
+- [Merge conflicts](merge_conflicts.md).
+- [Rollback commits](rollback_commits.md).
+- [Subtree](subtree.md).
+- [Unstage](unstage.md).
 
 ## Git tips
 
@@ -100,6 +115,5 @@ The following relate to Git Large File Storage:
 - [Migrate an existing Git repository with Git LFS](lfs/migrate_to_git_lfs.md)
 - [Removing objects from LFS](lfs/index.md#removing-objects-from-lfs)
 - [GitLab Git LFS user documentation](lfs/index.md)
-- [GitLab Git LFS admin documentation](../../administration/lfs/index.md)
-- [Git Annex to Git LFS migration guide](lfs/migrate_from_git_annex_to_git_lfs.md)
+- [GitLab Git LFS administrator documentation](../../administration/lfs/index.md)
 - [Towards a production quality open source Git LFS server](https://about.gitlab.com/blog/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)

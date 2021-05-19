@@ -15,7 +15,7 @@ RSpec.describe Ci::MergeRequests::AddTodoWhenBuildFailsWorker do
     include_examples 'an idempotent worker' do
       it 'executes todo service' do
         service = double
-        expect(::MergeRequests::AddTodoWhenBuildFailsService).to receive(:new).with(project, nil).and_return(service).twice
+        expect(::MergeRequests::AddTodoWhenBuildFailsService).to receive(:new).with(project: project).and_return(service).twice
         expect(service).to receive(:execute).with(job).twice
 
         perform_twice

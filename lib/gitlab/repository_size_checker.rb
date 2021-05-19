@@ -56,4 +56,4 @@ module Gitlab
   end
 end
 
-Gitlab::RepositorySizeChecker.prepend_if_ee('EE::Gitlab::RepositorySizeChecker')
+Gitlab::RepositorySizeChecker.prepend_mod_with('Gitlab::RepositorySizeChecker')

@@ -10,6 +10,7 @@ import {
   changeInPercent,
   formattedChangeInPercent,
   isNumeric,
+  isPositiveInteger,
 } from '~/lib/utils/number_utils';
 
 describe('Number Utils', () => {
@@ -182,6 +183,31 @@ describe('Number Utils', () => {
       ${null}      | ${false}
     `('when called with $value it returns $outcome', ({ value, outcome }) => {
       expect(isNumeric(value)).toBe(outcome);
+    });
+  });
+
+  describe.each`
+    value        | outcome
+    ${0}         | ${true}
+    ${'0'}       | ${true}
+    ${12345}     | ${true}
+    ${'12345'}   | ${true}
+    ${-1}        | ${false}
+    ${'-1'}      | ${false}
+    ${1.01}      | ${false}
+    ${'1.01'}    | ${false}
+    ${'abcd'}    | ${false}
+    ${'100abcd'} | ${false}
+    ${'abcd100'} | ${false}
+    ${''}        | ${false}
+    ${false}     | ${false}
+    ${true}      | ${false}
+    ${undefined} | ${false}
+    ${null}      | ${false}
+    ${Infinity}  | ${false}
+  `('isPositiveInteger', ({ value, outcome }) => {
+    it(`when called with ${typeof value} ${value} it returns ${outcome}`, () => {
+      expect(isPositiveInteger(value)).toBe(outcome);
     });
   });
 });

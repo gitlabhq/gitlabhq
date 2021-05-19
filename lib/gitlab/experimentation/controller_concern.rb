@@ -19,13 +19,18 @@ module Gitlab
       end
 
       def set_experimentation_subject_id_cookie
-        return if cookies[:experimentation_subject_id].present?
+        if Gitlab.dev_env_or_com?
+          return if cookies[:experimentation_subject_id].present?
 
-        cookies.permanent.signed[:experimentation_subject_id] = {
-          value: SecureRandom.uuid,
-          secure: ::Gitlab.config.gitlab.https,
-          httponly: true
-        }
+          cookies.permanent.signed[:experimentation_subject_id] = {
+            value: SecureRandom.uuid,
+            secure: ::Gitlab.config.gitlab.https,
+            httponly: true
+          }
+        else
+          # We set the cookie before, although experiments are not conducted on self managed instances.
+          cookies.delete(:experimentation_subject_id)
+        end
       end
 
       def push_frontend_experiment(experiment_key, subject: nil)

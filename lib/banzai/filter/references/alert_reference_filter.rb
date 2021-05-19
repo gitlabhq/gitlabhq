@@ -5,12 +5,9 @@ module Banzai
     module References
       class AlertReferenceFilter < IssuableReferenceFilter
         self.reference_type = :alert
+        self.object_class   = AlertManagement::Alert
 
-        def self.object_class
-          AlertManagement::Alert
-        end
-
-        def self.object_sym
+        def object_sym
           :alert
         end
 

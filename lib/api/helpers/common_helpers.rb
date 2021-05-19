@@ -40,4 +40,4 @@ module API
   end
 end
 
-API::Helpers::CommonHelpers.prepend_if_ee('EE::API::Helpers::CommonHelpers')
+API::Helpers::CommonHelpers.prepend_mod_with('API::Helpers::CommonHelpers')

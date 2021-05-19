@@ -1,4 +1,4 @@
-import initIssuablesList from '~/issues_list';
+import { mountIssuablesListApp } from '~/issues_list';
 import FilteredSearchServiceDesk from './filtered_search';
 
 const supportBotData = JSON.parse(
@@ -11,5 +11,5 @@ if (document.querySelector('.filtered-search')) {
 }
 
 if (gon.features?.vueIssuablesList) {
-  initIssuablesList();
+  mountIssuablesListApp();
 }

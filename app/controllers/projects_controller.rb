@@ -43,13 +43,12 @@ class ProjectsController < Projects::ApplicationController
 
   feature_category :projects, [
                      :index, :show, :new, :create, :edit, :update, :transfer,
-                     :destroy, :resolve, :archive, :unarchive, :toggle_star
+                     :destroy, :resolve, :archive, :unarchive, :toggle_star, :activity
                    ]
 
   feature_category :source_code_management, [:remove_fork, :housekeeping, :refs]
   feature_category :issue_tracking, [:preview_markdown, :new_issuable_address]
   feature_category :importers, [:export, :remove_export, :generate_new_export, :download_export]
-  feature_category :audit_events, [:activity]
   feature_category :code_review, [:unfoldered_environment_names]
 
   def index
@@ -85,7 +84,7 @@ class ProjectsController < Projects::ApplicationController
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
       )
     else
-      render 'new', locals: { active_tab: active_new_project_tab }
+      render 'new'
     end
   end
 
@@ -311,7 +310,7 @@ class ProjectsController < Projects::ApplicationController
   def unfoldered_environment_names
     respond_to do |format|
       format.json do
-        render json: EnvironmentNamesFinder.new(@project, current_user).execute
+        render json: Environments::EnvironmentNamesFinder.new(@project, current_user).execute
       end
     end
   end
@@ -545,4 +544,4 @@ class ProjectsController < Projects::ApplicationController
   end
 end
 
-ProjectsController.prepend_if_ee('EE::ProjectsController')
+ProjectsController.prepend_mod_with('ProjectsController')

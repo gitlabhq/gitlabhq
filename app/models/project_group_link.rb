@@ -2,6 +2,7 @@
 
 class ProjectGroupLink < ApplicationRecord
   include Expirable
+  include EachBatch
 
   belongs_to :project
   belongs_to :group
@@ -49,4 +50,4 @@ class ProjectGroupLink < ApplicationRecord
   end
 end
 
-ProjectGroupLink.prepend_if_ee('EE::ProjectGroupLink')
+ProjectGroupLink.prepend_mod_with('ProjectGroupLink')

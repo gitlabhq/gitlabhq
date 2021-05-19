@@ -36,12 +36,22 @@ module Suggestions
         .track_apply_suggestion_action(user: current_user)
     end
 
+    def author
+      authors = suggestion_set.authors
+
+      return unless authors.one?
+
+      Gitlab::Git::User.from_gitlab(authors.first)
+    end
+
     def multi_service
       params = {
         commit_message: commit_message,
         branch_name: suggestion_set.branch,
         start_branch: suggestion_set.branch,
-        actions: suggestion_set.actions
+        actions: suggestion_set.actions,
+        author_name: author&.name,
+        author_email: author&.email
       }
 
       ::Files::MultiService.new(suggestion_set.project, current_user, params)

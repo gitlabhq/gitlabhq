@@ -2,9 +2,12 @@
 
 class DisallowTwoFactorForGroupWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ExceptionBacktrace
 
   feature_category :subgroups
+  tags :exclude_from_kubernetes
   idempotent!
 
   def perform(group_id)

@@ -4,7 +4,10 @@ module Experiments
   class RecordConversionEventWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :users
+    tags :exclude_from_kubernetes
     urgency :low
 
     idempotent!

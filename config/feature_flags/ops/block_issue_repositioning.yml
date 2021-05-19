@@ -1,0 +1,8 @@
+---
+name: block_issue_repositioning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60141
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/329663
+milestone: '13.12'
+type: ops
+group: group::project management
+default_enabled: false

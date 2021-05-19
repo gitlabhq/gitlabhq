@@ -253,6 +253,9 @@ RSpec.configure do |config|
       # tests, until we introduce it in user settings
       stub_feature_flags(forti_token_cloud: false)
 
+      # This feature flag is by default disabled and used in disaster recovery mode
+      stub_feature_flags(ci_queueing_disaster_recovery: false)
+
       enable_rugged = example.metadata[:enable_rugged].present?
 
       # Disable Rugged features by default
@@ -265,15 +268,32 @@ RSpec.configure do |config|
       stub_feature_flags(file_identifier_hash: false)
 
       stub_feature_flags(unified_diff_components: false)
+      stub_feature_flags(diffs_virtual_scrolling: false)
 
-      # The following `vue_issues_list` stub can be removed once the
-      # Vue issues page has feature parity with the current Haml page
+      # The following `vue_issues_list`/`vue_issuables_list` stubs can be removed
+      # once the Vue issues page has feature parity with the current Haml page
       stub_feature_flags(vue_issues_list: false)
+      stub_feature_flags(vue_issuables_list: false)
 
       # Disable `refactor_blob_viewer` as we refactor
       # the blob viewer. See the follwing epic for more:
       # https://gitlab.com/groups/gitlab-org/-/epics/5531
       stub_feature_flags(refactor_blob_viewer: false)
+
+      # Disable `main_branch_over_master` as we migrate
+      # from `master` to `main` accross our codebase.
+      # It's done in order to preserve the concistency in tests
+      # As we're ready to change `master` usages to `main`, let's enable it
+      stub_feature_flags(main_branch_over_master: false)
+
+      # Selectively disable by actor https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor
+      stub_feature_flags(remove_description_html_in_release_api_override: false)
+
+      # Disable issue respositioning to avoid heavy load on database when importing big projects.
+      # This is only turned on when app is handling heavy project imports.
+      # Can be removed when we find a better way to deal with the problem.
+      # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
+      stub_feature_flags(block_issue_repositioning: false)
 
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else

@@ -11,6 +11,7 @@ import commitCIFile from '../../graphql/mutations/commit_ci_file.mutation.graphq
 import getCommitSha from '../../graphql/queries/client/commit_sha.graphql';
 import getCurrentBranch from '../../graphql/queries/client/current_branch.graphql';
 import getIsNewCiConfigFile from '../../graphql/queries/client/is_new_ci_config_file.graphql';
+import getPipelineEtag from '../../graphql/queries/client/pipeline_etag.graphql';
 
 import CommitForm from './commit_form.vue';
 
@@ -94,9 +95,14 @@ export default {
           },
           update(store, { data }) {
             const commitSha = data?.commitCreate?.commit?.sha;
+            const pipelineEtag = data?.commitCreate?.commit?.commitPipelinePath;
 
             if (commitSha) {
               store.writeQuery({ query: getCommitSha, data: { commitSha } });
+            }
+
+            if (pipelineEtag) {
+              store.writeQuery({ query: getPipelineEtag, data: { pipelineEtag } });
             }
           },
         });

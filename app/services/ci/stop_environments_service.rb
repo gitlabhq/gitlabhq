@@ -27,7 +27,7 @@ module Ci
 
       stop_actions.each do |stop_action|
         stop_action.play(stop_action.user)
-      rescue => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, deployable_id: stop_action.id)
       end
     end
@@ -35,7 +35,7 @@ module Ci
     private
 
     def environments
-      @environments ||= EnvironmentsByDeploymentsFinder
+      @environments ||= Environments::EnvironmentsByDeploymentsFinder
         .new(project, current_user, ref: @ref, recently_updated: true)
         .execute
     end

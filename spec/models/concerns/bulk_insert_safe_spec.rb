@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe BulkInsertSafe do
   before(:all) do
     ActiveRecord::Schema.define do
+      create_table :bulk_insert_parent_items, force: true do |t|
+        t.string :name, null: false
+      end
+
       create_table :bulk_insert_items, force: true do |t|
         t.string :name, null: true
         t.integer :enum_value, null: false
@@ -12,6 +16,7 @@ RSpec.describe BulkInsertSafe do
         t.string :encrypted_secret_value_iv, null: false
         t.binary :sha_value, null: false, limit: 20
         t.jsonb :jsonb_value, null: false
+        t.belongs_to :bulk_insert_parent_item, foreign_key: true, null: true
 
         t.index :name, unique: true
       end
@@ -21,7 +26,21 @@ RSpec.describe BulkInsertSafe do
   after(:all) do
     ActiveRecord::Schema.define do
       drop_table :bulk_insert_items, force: true
+      drop_table :bulk_insert_parent_items, force: true
     end
+  end
+
+  BulkInsertParentItem = Class.new(ActiveRecord::Base) do
+    self.table_name = :bulk_insert_parent_items
+    self.inheritance_column = :_type_disabled
+
+    def self.name
+      table_name.singularize.camelcase
+    end
+  end
+
+  let_it_be(:bulk_insert_parent_item) do
+    BulkInsertParentItem.create!(name: 'parent')
   end
 
   let_it_be(:bulk_insert_item_class) do
@@ -32,6 +51,8 @@ RSpec.describe BulkInsertSafe do
       include ShaAttribute
 
       validates :name, :enum_value, :secret_value, :sha_value, :jsonb_value, presence: true
+
+      belongs_to :bulk_insert_parent_item
 
       sha_attribute :sha_value
 
@@ -51,8 +72,8 @@ RSpec.describe BulkInsertSafe do
         'BulkInsertItem'
       end
 
-      def self.valid_list(count)
-        Array.new(count) { |n| new(name: "item-#{n}", secret_value: 'my-secret') }
+      def self.valid_list(count, bulk_insert_parent_item: nil)
+        Array.new(count) { |n| new(name: "item-#{n}", secret_value: 'my-secret', bulk_insert_parent_item: bulk_insert_parent_item) }
       end
 
       def self.invalid_list(count)
@@ -117,6 +138,14 @@ RSpec.describe BulkInsertSafe do
         bulk_insert_item_class.bulk_insert!(items, batch_size: 5)
       end
 
+      it 'inserts items with belongs_to association' do
+        items = bulk_insert_item_class.valid_list(10, bulk_insert_parent_item: bulk_insert_parent_item)
+
+        bulk_insert_item_class.bulk_insert!(items, batch_size: 5)
+
+        expect(bulk_insert_item_class.last(items.size).map(&:bulk_insert_parent_item)).to eq([bulk_insert_parent_item] * 10)
+      end
+
       it 'items can be properly fetched from database' do
         items = bulk_insert_item_class.valid_list(10)
 
@@ -129,8 +158,7 @@ RSpec.describe BulkInsertSafe do
 
       it 'rolls back the transaction when any item is invalid' do
         # second batch is bad
-        all_items = bulk_insert_item_class.valid_list(10) +
-          bulk_insert_item_class.invalid_list(10)
+        all_items = bulk_insert_item_class.valid_list(10) + bulk_insert_item_class.invalid_list(10)
 
         expect do
           bulk_insert_item_class.bulk_insert!(all_items, batch_size: 2) rescue nil

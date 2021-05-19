@@ -5,7 +5,6 @@ class Projects::BoardsController < Projects::ApplicationController
   include IssuableCollections
 
   before_action :check_issues_available!
-  before_action :authorize_read_board!, only: [:index, :show]
   before_action :assign_endpoint_vars
   before_action do
     push_frontend_feature_flag(:swimlanes_buffered_rendering, project, default_enabled: :yaml)

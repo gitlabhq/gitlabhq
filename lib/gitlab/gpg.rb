@@ -133,7 +133,7 @@ module Gitlab
       Retriable.retriable(max_elapsed_time: cleanup_time, base_interval: 0.1, tries: 15) do
         FileUtils.remove_entry(tmp_dir) if File.exist?(tmp_dir)
       end
-    rescue => e
+    rescue StandardError => e
       raise CleanupError, e
     end
 

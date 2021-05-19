@@ -13,7 +13,7 @@ module Gitlab
           Response.parse!(response)
         rescue *Gitlab::HTTP::HTTP_ERRORS => e
           # Wrap all errors from the API into an API-error.
-          raise ApiError.new(e)
+          raise ApiError, e
         end
 
         private

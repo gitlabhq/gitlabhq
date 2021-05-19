@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Project members list', :js do
-  include Select2Helper
   include Spec::Support::Helpers::Features::MembersHelpers
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
   let(:user1) { create(:user, name: 'John Doe') }
   let(:user2) { create(:user, name: 'Mary Jane') }
@@ -12,8 +12,6 @@ RSpec.describe 'Project members list', :js do
   let(:project) { create(:project, :internal, namespace: group) }
 
   before do
-    stub_feature_flags(invite_members_group_modal: true)
-
     sign_in(user1)
     group.add_owner(user1)
   end
@@ -52,7 +50,7 @@ RSpec.describe 'Project members list', :js do
   it 'add user to project' do
     visit_members_page
 
-    add_user(user2.name, 'Reporter')
+    invite_member(user2.name, role: 'Reporter')
 
     page.within find_member_row(user2) do
       expect(page).to have_button('Reporter')
@@ -100,7 +98,7 @@ RSpec.describe 'Project members list', :js do
   it 'invite user to project' do
     visit_members_page
 
-    add_user('test@example.com', 'Reporter')
+    invite_member('test@example.com', role: 'Reporter')
 
     click_link 'Invited'
 
@@ -170,25 +168,6 @@ RSpec.describe 'Project members list', :js do
   end
 
   private
-
-  def add_user(id, role)
-    click_on 'Invite members'
-
-    page.within '#invite-members-modal' do
-      fill_in 'Select members or type email addresses', with: id
-
-      wait_for_requests
-      click_button id
-
-      click_button 'Guest'
-      wait_for_requests
-      click_button role
-
-      click_button 'Invite'
-    end
-
-    page.refresh
-  end
 
   def visit_members_page
     visit project_project_members_path(project)

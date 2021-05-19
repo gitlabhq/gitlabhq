@@ -70,4 +70,4 @@ module QA
   end
 end
 
-QA::Page::Project::Issue::Show.prepend_if_ee('QA::EE::Page::Project::Issue::Show')
+QA::Page::Project::Issue::Show.prepend_mod_with('Page::Project::Issue::Show', namespace: QA)

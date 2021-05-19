@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Groups::EmailCampaignsController do
-  include InProductMarketingHelper
   using RSpec::Parameterized::TableSyntax
 
   describe 'GET #index', :snowplow do
@@ -13,7 +12,7 @@ RSpec.describe Groups::EmailCampaignsController do
     let(:track) { 'create' }
     let(:series) { '0' }
     let(:schema) { described_class::EMAIL_CAMPAIGNS_SCHEMA_URL }
-    let(:subject_line_text) { subject_line(track.to_sym, series.to_i) }
+    let(:subject_line_text) { Gitlab::Email::Message::InProductMarketing.for(track.to_sym).new(group: group, series: series.to_i).subject_line }
     let(:data) do
       {
         namespace_id: group.id,

@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Jira DVCS connector
+# Jira DVCS connector **(FREE)**
 
 Use the Jira DVCS (distributed version control system) connector if you self-host
 either your Jira instance or your GitLab instance, and you want to sync information
@@ -18,7 +18,7 @@ are accessible.
 - **Jira Cloud**: Your instance must be accessible through the internet.
 - **Jira Server**: Your network must allow access to your instance.
 
-## Smart commits
+## Smart Commits
 
 When connecting GitLab with Jira with DVCS, you can process your Jira issues using
 special commands, called
@@ -31,11 +31,33 @@ in your commit messages. With Smart Commits, you can:
 
 Commands must be in the first line of the commit message. The
 [Jira Software documentation](https://support.atlassian.com/jira-software-cloud/docs/process-issues-with-smart-commits/)
-contains more information about how smart commits work, and what commands are available
+contains more information about how Smart Commits work, and what commands are available
 for your use.
 
-For smart commits to work, the committing user on GitLab must have a corresponding
+For Smart Commits to work, the committing user on GitLab must have a corresponding
 user on Jira with the same email address or username.
+
+### Smart Commit syntax
+
+Smart Commits should follow the pattern of:
+
+```plaintext
+<ISSUE_KEY> <ignored text> #<command> <optional command parameters>
+```
+
+Some examples:
+
+- Adding a comment to a Jira issue: `KEY-123 fixes a bug #comment Bug is fixed.`
+- Recording time tracking: `KEY-123 #time 2w 4d 10h 52m Tracking work time.`
+- Closing an issue: `KEY-123 #close Closing issue`
+
+A Smart Commit message must not span more than one line (no carriage returns) but
+you can still perform multiple actions in a single commit:
+
+- Time tracking, commenting, and transitioning to **Closed**:
+  `KEY-123 #time 2d 5h #comment Task completed ahead of schedule #close`.
+- Commenting, transitioning to **In-progress**, and time tracking:
+  `KEY-123 #comment started working on the issue #in-progress #time 12d 5h`.
 
 ## Configure a GitLab application for DVCS
 
@@ -72,7 +94,7 @@ for the groups you specify, into Jira. This import takes a few minutes and, afte
 it completes, refreshes every 60 minutes:
 
 1. Ensure you have completed the [GitLab configuration](#configure-a-gitlab-application-for-dvcs).
-1. Go to your DVCS account:
+1. Go to your DVCS accounts:
    - *For Jira Server,* go to **Settings (gear) > Applications > DVCS accounts**.
    - *For Jira Cloud,* go to **Settings (gear) > Products > DVCS accounts**.
 1. To create a new integration, select the appropriate value for **Host**:
@@ -94,12 +116,15 @@ it completes, refreshes every 60 minutes:
 1. For **Client ID**, use the **Application ID** value from the previous section.
 1. For **Client Secret**, use the **Secret** value from the previous section.
 1. Ensure that the rest of the checkboxes are checked.
-1. Select **Add** to complete and create the integration.
+1. Select **Add** and then **Continue** to create the DVCS account.
+1. Jira redirects to GitLab where you have to confirm the authorization,
+   and then GitLab redirects back to Jira where you should see the synced
+   projects show up inside the new account.
 
 To connect additional GitLab projects from other GitLab top-level groups, or
 personal namespaces, repeat the previous steps with additional Jira DVCS accounts.
 
-After you configure the integration, read more about [how to test and use it](development_panel.md#usage).
+After you configure the integration, read more about [how to test and use it](development_panel.md).
 
 ## Refresh data imported to Jira
 
@@ -135,7 +160,7 @@ Problems with SSL and TLS can cause this error message:
 Error obtaining access token. Cannot access https://gitlab.example.com from Jira.
 ```
 
-- The [GitLab Jira integration](../../user/project/integrations/jira.md) requires
+- The [GitLab Jira integration](index.md) requires
   GitLab to connect to Jira. Any TLS issues that arise from a private certificate
   authority or self-signed certificate are resolved
   [on the GitLab server](https://docs.gitlab.com/omnibus/settings/ssl.html#other-certificate-authorities),
@@ -198,9 +223,8 @@ encounter these issues:
 
 To resolve this issue:
 
-- If you're using GitLab Free or GitLab Starter, be sure you're using
-  GitLab 13.4 or later.
-- *If you're using GitLab versions 11.10-12.7,* upgrade to GitLab 12.8.10 or later
+- If you're using GitLab Free, be sure you're using GitLab 13.4 or later.
+- If you're using GitLab versions 11.10-12.7, upgrade to GitLab 12.8.10 or later
   to resolve [an identified issue](https://gitlab.com/gitlab-org/gitlab/-/issues/37012).
 
 [Contact GitLab Support](https://about.gitlab.com/support/) if none of these reasons apply.

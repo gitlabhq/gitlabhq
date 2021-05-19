@@ -3,17 +3,13 @@
 module MergeRequests
   class HandleAssigneesChangeService < MergeRequests::BaseService
     def async_execute(merge_request, old_assignees, options = {})
-      if Feature.enabled?(:async_handle_merge_request_assignees_change, merge_request.target_project, default_enabled: :yaml)
-        MergeRequests::HandleAssigneesChangeWorker
-          .perform_async(
-            merge_request.id,
-            current_user.id,
-            old_assignees.map(&:id),
-            options
-          )
-      else
-        execute(merge_request, old_assignees, options)
-      end
+      MergeRequests::HandleAssigneesChangeWorker
+        .perform_async(
+          merge_request.id,
+          current_user.id,
+          old_assignees.map(&:id),
+          options
+        )
     end
 
     def execute(merge_request, old_assignees, options = {})
@@ -40,4 +36,4 @@ module MergeRequests
   end
 end
 
-MergeRequests::HandleAssigneesChangeService.prepend_if_ee('EE::MergeRequests::HandleAssigneesChangeService')
+MergeRequests::HandleAssigneesChangeService.prepend_mod_with('MergeRequests::HandleAssigneesChangeService')

@@ -78,84 +78,40 @@ RSpec.describe Projects::RunnersController do
     let(:group) { create(:group) }
     let(:project) { create(:project, group: group) }
 
-    context 'without feature flag' do
-      before do
-        stub_feature_flags(vueify_shared_runners_toggle: false)
-      end
+    it 'toggles shared_runners_enabled when the group allows shared runners' do
+      project.update!(shared_runners_enabled: true)
 
-      it 'toggles shared_runners_enabled when the group allows shared runners' do
-        project.update!(shared_runners_enabled: true)
+      post :toggle_shared_runners, params: params
 
-        post :toggle_shared_runners, params: params
+      project.reload
 
-        project.reload
-
-        expect(response).to have_gitlab_http_status(:found)
-        expect(project.shared_runners_enabled).to eq(false)
-      end
-
-      it 'toggles shared_runners_enabled when the group disallows shared runners but allows overrides' do
-        group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true)
-        project.update!(shared_runners_enabled: false)
-
-        post :toggle_shared_runners, params: params
-
-        project.reload
-
-        expect(response).to have_gitlab_http_status(:found)
-        expect(project.shared_runners_enabled).to eq(true)
-      end
-
-      it 'does not enable if the group disallows shared runners' do
-        group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: false)
-        project.update!(shared_runners_enabled: false)
-
-        post :toggle_shared_runners, params: params
-
-        project.reload
-
-        expect(response).to have_gitlab_http_status(:found)
-        expect(project.shared_runners_enabled).to eq(false)
-        expect(flash[:alert]).to eq('Cannot enable shared runners because parent group does not allow it')
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(project.shared_runners_enabled).to eq(false)
     end
 
-    context 'with feature flag: vueify_shared_runners_toggle' do
-      it 'toggles shared_runners_enabled when the group allows shared runners' do
-        project.update!(shared_runners_enabled: true)
+    it 'toggles shared_runners_enabled when the group disallows shared runners but allows overrides' do
+      group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true)
+      project.update!(shared_runners_enabled: false)
 
-        post :toggle_shared_runners, params: params
+      post :toggle_shared_runners, params: params
 
-        project.reload
+      project.reload
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(project.shared_runners_enabled).to eq(false)
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(project.shared_runners_enabled).to eq(true)
+    end
 
-      it 'toggles shared_runners_enabled when the group disallows shared runners but allows overrides' do
-        group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true)
-        project.update!(shared_runners_enabled: false)
+    it 'does not enable if the group disallows shared runners' do
+      group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: false)
+      project.update!(shared_runners_enabled: false)
 
-        post :toggle_shared_runners, params: params
+      post :toggle_shared_runners, params: params
 
-        project.reload
+      project.reload
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(project.shared_runners_enabled).to eq(true)
-      end
-
-      it 'does not enable if the group disallows shared runners' do
-        group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: false)
-        project.update!(shared_runners_enabled: false)
-
-        post :toggle_shared_runners, params: params
-
-        project.reload
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
-        expect(project.shared_runners_enabled).to eq(false)
-        expect(json_response['error']).to eq('Cannot enable shared runners because parent group does not allow it')
-      end
+      expect(response).to have_gitlab_http_status(:unauthorized)
+      expect(project.shared_runners_enabled).to eq(false)
+      expect(json_response['error']).to eq('Cannot enable shared runners because parent group does not allow it')
     end
   end
 end

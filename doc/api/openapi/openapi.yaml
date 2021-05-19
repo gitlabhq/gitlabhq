@@ -4,6 +4,8 @@ tags:
     description: Version
   - name: access_requests
     description: Access requests for projects and groups
+  - name: access_tokens
+    description: Access tokens for projects
 info:
   description: |
     An OpenAPI definition for the GitLab REST API.
@@ -16,7 +18,8 @@ info:
     The feature uses the current [GitLab session cookie](https://docs.gitlab.com/ee/api/README.html#session-cookie),
     so each request is made using your account.
 
-    Read more at <https://docs.gitlab.com/ee/development/documentation/restful_api_styleguide.html>.
+    Instructions for using this tool can be found in [Interactive API Documentation](openapi_interactive.md).
+
   version: v4
   title: GitLab API
   termsOfService: 'https://about.gitlab.com/terms/'
@@ -57,6 +60,12 @@ paths:
   /v4/groups/{id}/access_requests/{user_id}/approve:
     $ref: 'v4/access_requests.yaml#/accessRequestsGroupsApprove'
   
-  /v4/groupss/{id}/access_requests/{user_id}:
+  /v4/groups/{id}/access_requests/{user_id}:
     $ref: 'v4/access_requests.yaml#/accessRequestsGroupsDeny'
 
+  # ACCESS REQUESTS (PROJECTS)
+  /v4/projects/{id}/access_tokens:
+    $ref: 'v4/access_tokens.yaml#/accessTokens'
+
+  /v4/projects/{id}/access_tokens/{token_id}:
+    $ref: 'v4/access_tokens.yaml#/accessTokensRevoke'

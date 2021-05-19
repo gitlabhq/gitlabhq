@@ -18,3 +18,4 @@ tier:
 - free
 - premium
 - ultimate
+value_json_schema: 'config/metrics/objects_schemas/projects_with_enabled_alert_integrations_histogram.json'

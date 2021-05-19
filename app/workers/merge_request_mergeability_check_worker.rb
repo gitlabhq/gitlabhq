@@ -3,6 +3,8 @@
 class MergeRequestMergeabilityCheckWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :code_review
   idempotent!
 

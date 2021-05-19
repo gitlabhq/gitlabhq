@@ -13,6 +13,8 @@ describe('CsvExportModal', () => {
       mount(CsvExportModal, {
         propsData: {
           modalId: 'csv-export-modal',
+          exportCsvPath: 'export/csv/path',
+          issuableCount: 1,
           ...props,
         },
         provide: {

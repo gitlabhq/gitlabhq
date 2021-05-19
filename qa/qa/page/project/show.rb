@@ -147,7 +147,7 @@ module QA
         end
 
         def open_web_ide!
-          click_element :web_ide_button
+          click_element(:web_ide_button)
         end
 
         def has_edit_fork_button?
@@ -180,4 +180,4 @@ module QA
   end
 end
 
-QA::Page::Project::Show.prepend_if_ee('QA::EE::Page::Project::Show')
+QA::Page::Project::Show.prepend_mod_with('Page::Project::Show', namespace: QA)

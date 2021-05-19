@@ -7,6 +7,21 @@ import {
 } from '~/editor/constants';
 import { EditorLiteExtension } from '~/editor/extensions/editor_lite_extension_base';
 
+jest.mock('~/helpers/startup_css_helper', () => {
+  return {
+    waitForCSSLoaded: jest.fn().mockImplementation((cb) => {
+      // We have to artificially put the callback's execution
+      // to the end of the current call stack to be able to
+      // test that the callback is called after waitForCSSLoaded.
+      // setTimeout with 0 delay does exactly that.
+      // Otherwise we might end up with false positive results
+      setTimeout(() => {
+        cb.apply();
+      }, 0);
+    }),
+  };
+});
+
 describe('The basis for an Editor Lite extension', () => {
   const defaultLine = 3;
   let ext;
@@ -44,6 +59,19 @@ describe('The basis for an Editor Lite extension', () => {
   });
 
   describe('constructor', () => {
+    it('resets the layout in waitForCSSLoaded callback', async () => {
+      const instance = {
+        layout: jest.fn(),
+      };
+      ext = new EditorLiteExtension({ instance });
+      expect(instance.layout).not.toHaveBeenCalled();
+
+      // We're waiting for the waitForCSSLoaded mock to kick in
+      await jest.runOnlyPendingTimers();
+
+      expect(instance.layout).toHaveBeenCalled();
+    });
+
     it.each`
       description                                                     | instance     | options
       ${'accepts configuration options and instance'}                 | ${{}}        | ${defaultOptions}
@@ -51,6 +79,7 @@ describe('The basis for an Editor Lite extension', () => {
       ${'does not fail if both instance and the options are omitted'} | ${undefined} | ${undefined}
       ${'throws if only options are passed'}                          | ${undefined} | ${defaultOptions}
     `('$description', ({ instance, options } = {}) => {
+      EditorLiteExtension.deferRerender = jest.fn();
       const originalInstance = { ...instance };
 
       if (instance) {
@@ -82,12 +111,14 @@ describe('The basis for an Editor Lite extension', () => {
     });
 
     it('initializes the line highlighting', () => {
+      EditorLiteExtension.deferRerender = jest.fn();
       const spy = jest.spyOn(EditorLiteExtension, 'highlightLines');
       ext = new EditorLiteExtension({ instance: {} });
       expect(spy).toHaveBeenCalled();
     });
 
     it('sets up the line linking for code instance', () => {
+      EditorLiteExtension.deferRerender = jest.fn();
       const spy = jest.spyOn(EditorLiteExtension, 'setupLineLinking');
       const instance = {
         getEditorType: jest.fn().mockReturnValue(EDITOR_TYPE_CODE),
@@ -99,6 +130,7 @@ describe('The basis for an Editor Lite extension', () => {
     });
 
     it('does not set up the line linking for diff instance', () => {
+      EditorLiteExtension.deferRerender = jest.fn();
       const spy = jest.spyOn(EditorLiteExtension, 'setupLineLinking');
       const instance = {
         getEditorType: jest.fn().mockReturnValue(EDITOR_TYPE_DIFF),

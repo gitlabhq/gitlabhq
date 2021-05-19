@@ -4,6 +4,10 @@ class ReleaseHighlight
   CACHE_DURATION = 1.hour
   FILES_PATH = Rails.root.join('data', 'whats_new', '*.yml')
 
+  FREE_PACKAGE = 'Free'
+  PREMIUM_PACKAGE = 'Premium'
+  ULTIMATE_PACKAGE = 'Ultimate'
+
   def self.paginated(page: 1)
     key = self.cache_key("items:page-#{page}")
 
@@ -25,14 +29,12 @@ class ReleaseHighlight
     file = File.read(file_path)
     items = YAML.safe_load(file, permitted_classes: [Date])
 
-    platform = Gitlab.com? ? 'gitlab-com' : 'self-managed'
-
     items&.map! do |item|
-      next unless item[platform]
+      next unless include_item?(item)
 
       begin
         item.tap {|i| i['body'] = Kramdown::Document.new(i['body']).to_html }
-      rescue => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, file_path: file_path)
 
         next
@@ -53,7 +55,8 @@ class ReleaseHighlight
   end
 
   def self.cache_key(key)
-    ['release_highlight', key, Gitlab.revision].join(':')
+    variant = Gitlab::CurrentSettings.current_application_settings.whats_new_variant
+    ['release_highlight', variant, key, Gitlab.revision].join(':')
   end
 
   def self.next_page(current_page: 1)
@@ -87,5 +90,28 @@ class ReleaseHighlight
     include Enumerable
 
     delegate :each, to: :items
+  end
+
+  def self.current_package
+    return FREE_PACKAGE unless defined?(License)
+
+    case License.current&.plan&.downcase
+    when License::PREMIUM_PLAN
+      PREMIUM_PACKAGE
+    when License::ULTIMATE_PLAN
+      ULTIMATE_PACKAGE
+    else
+      FREE_PACKAGE
+    end
+  end
+
+  def self.include_item?(item)
+    platform = Gitlab.com? ? 'gitlab-com' : 'self-managed'
+
+    return false unless item[platform]
+
+    return true unless Gitlab::CurrentSettings.current_application_settings.whats_new_variant_current_tier?
+
+    item['packages']&.include?(current_package)
   end
 end

@@ -23,7 +23,7 @@ module Gitlab
         end
 
         true
-      rescue => e
+      rescue StandardError => e
         shared.error(e)
         false
       end

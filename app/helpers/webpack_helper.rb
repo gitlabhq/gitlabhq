@@ -1,8 +1,30 @@
 # frozen_string_literal: true
 
 module WebpackHelper
+  def prefetch_link_tag(source)
+    href = asset_path(source)
+
+    link_tag = tag.link(rel: 'prefetch', href: href)
+
+    early_hints_link = "<#{href}>; rel=prefetch"
+
+    request.send_early_hints("Link" => early_hints_link)
+
+    link_tag
+  end
+
   def webpack_bundle_tag(bundle)
     javascript_include_tag(*webpack_entrypoint_paths(bundle))
+  end
+
+  def webpack_preload_asset_tag(asset, options = {})
+    path = Gitlab::Webpack::Manifest.asset_paths(asset).first
+
+    if options.delete(:prefetch)
+      prefetch_link_tag(path)
+    else
+      preload_link_tag(path, options)
+    end
   end
 
   def webpack_controller_bundle_tags

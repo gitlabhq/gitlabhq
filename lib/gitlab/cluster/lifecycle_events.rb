@@ -154,7 +154,7 @@ module Gitlab
 
           hooks.each do |hook|
             hook.call
-          rescue => e
+          rescue StandardError => e
             Gitlab::ErrorTracking.track_exception(e, type: 'LifecycleEvents', hook: hook)
             warn("ERROR: The hook #{name} failed with exception (#{e.class}) \"#{e.message}\".")
 

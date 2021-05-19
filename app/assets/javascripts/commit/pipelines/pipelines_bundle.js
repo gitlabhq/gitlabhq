@@ -27,6 +27,10 @@ export default () => {
 
     if (pipelineTableViewEl.dataset.disableInitialization === undefined) {
       const table = new Vue({
+        provide: {
+          artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
+          artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
+        },
         render(createElement) {
           return createElement(CommitPipelinesTable, {
             props: {

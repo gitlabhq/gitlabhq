@@ -6,11 +6,11 @@ RSpec.describe ChatName do
   let_it_be(:chat_name) { create(:chat_name) }
   subject { chat_name }
 
-  it { is_expected.to belong_to(:service) }
+  it { is_expected.to belong_to(:integration) }
   it { is_expected.to belong_to(:user) }
 
   it { is_expected.to validate_presence_of(:user) }
-  it { is_expected.to validate_presence_of(:service) }
+  it { is_expected.to validate_presence_of(:integration) }
   it { is_expected.to validate_presence_of(:team_id) }
   it { is_expected.to validate_presence_of(:chat_id) }
 
@@ -18,7 +18,7 @@ RSpec.describe ChatName do
   it { is_expected.to validate_uniqueness_of(:chat_id).scoped_to(:service_id, :team_id) }
 
   it 'is removed when the project is deleted' do
-    expect { subject.reload.service.project.delete }.to change { ChatName.count }.by(-1)
+    expect { subject.reload.integration.project.delete }.to change { ChatName.count }.by(-1)
 
     expect(ChatName.where(id: subject.id)).not_to exist
   end

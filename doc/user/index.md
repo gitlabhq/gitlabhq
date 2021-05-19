@@ -56,7 +56,7 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 With GitLab Enterprise Edition, you can also:
 
 - Improve collaboration with:
-  - [Merge Request Approvals](project/merge_requests/merge_request_approvals.md).
+  - [Merge Request Approvals](project/merge_requests/approvals/index.md).
   - [Multiple Assignees for Issues](project/issues/multiple_assignees_for_issues.md).
   - [Multiple Issue Boards](project/issue_board.md#multiple-issue-boards).
 - Create formal relationships between issues with [linked issues](project/issues/related_issues.md).
@@ -86,10 +86,11 @@ There are several types of users in GitLab:
 ## User activity
 
 You can follow or unfollow other users from their [user profiles](profile/index.md#access-your-user-profile).
-To see their activity in the top-level Activity view, select Follow or Unfollow, and select
-the Followed Users tab:
+To view a user's activity in a top-level Activity view:
 
-![Follow users](img/activity_followed_users_v13_9.png)
+1. From a user's profile, select **Follow**.
+1. In the GitLab menu, select **Activity**.
+1. Select the **Followed users** tab.
 
 ## Projects
 
@@ -119,7 +120,7 @@ to enjoy the best of GitLab.
   user type (guest, reporter, developer, maintainer, owner).
 - [Feature highlight](feature_highlight.md): Learn more about the little blue dots
   around the app that explain certain features.
-- [Abuse reports](abuse_reports.md): Report abuse from users to GitLab administrators.
+- [Abuse reports](report_abuse.md): Report abuse from users to GitLab administrators.
 
 ## Groups
 
@@ -177,7 +178,7 @@ pages and accomplish tasks faster.
 
 ## Integrations
 
-[Integrate GitLab](../integration/README.md) with your preferred tool,
+[Integrate GitLab](../integration/index.md) with your preferred tool,
 such as Trello, Jira, etc.
 
 ## Webhooks

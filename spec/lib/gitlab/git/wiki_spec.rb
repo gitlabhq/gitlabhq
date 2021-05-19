@@ -58,22 +58,6 @@ RSpec.describe Gitlab::Git::Wiki do
     end
   end
 
-  describe '#delete_page' do
-    after do
-      destroy_page('page1')
-    end
-
-    it 'only removes the page with the same path' do
-      create_page('page1', 'content')
-      create_page('*', 'content')
-
-      subject.delete_page('*', commit_details('whatever'))
-
-      expect(subject.list_pages.count).to eq 1
-      expect(subject.list_pages.first.title).to eq 'page1'
-    end
-  end
-
   describe '#preview_slug' do
     where(:title, :format, :expected_slug) do
       'The Best Thing'       | :markdown  | 'The-Best-Thing'

@@ -161,7 +161,7 @@ export default {
       const collapsed = !this.list.collapsed;
       this.toggleListCollapsed({ listId: this.list.id, collapsed });
 
-      if (!this.isLoggedIn || this.isEpicBoard) {
+      if (!this.isLoggedIn) {
         this.addToLocalStorage();
       } else {
         this.updateListFunction();

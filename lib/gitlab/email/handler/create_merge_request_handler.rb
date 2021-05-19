@@ -61,7 +61,7 @@ module Gitlab
         private
 
         def build_merge_request
-          MergeRequests::BuildService.new(project, author, merge_request_params).execute
+          MergeRequests::BuildService.new(project: project, current_user: author, params: merge_request_params).execute
         end
 
         def create_merge_request
@@ -78,7 +78,7 @@ module Gitlab
           if merge_request.errors.any?
             merge_request
           else
-            MergeRequests::CreateService.new(project, author).create(merge_request)
+            MergeRequests::CreateService.new(project: project, current_user: author).create(merge_request)
           end
         end
 

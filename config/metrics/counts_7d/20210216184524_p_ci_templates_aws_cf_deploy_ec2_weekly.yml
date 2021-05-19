@@ -1,0 +1,18 @@
+---
+key_path: redis_hll_counters.ci_templates.p_ci_templates_aws_cf_deploy_ec2_weekly
+description: "Count of projects using `AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml` template in last 7 days."
+product_section: ops
+product_stage: release
+product_group: "group::release"
+product_category: continuous_delivery
+value_type: number
+status: data_available
+time_frame: 7d
+data_source: redis_hll
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

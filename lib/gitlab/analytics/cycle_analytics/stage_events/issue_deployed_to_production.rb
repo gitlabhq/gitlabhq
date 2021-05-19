@@ -17,13 +17,8 @@ module Gitlab
             Issue
           end
 
-          def timestamp_projection
-            mr_metrics_table[:first_deployed_to_production_at]
-          end
-
-          override :column_list
           def column_list
-            [timestamp_projection]
+            [mr_metrics_table[:first_deployed_to_production_at]]
           end
 
           # rubocop: disable CodeReuse/ActiveRecord

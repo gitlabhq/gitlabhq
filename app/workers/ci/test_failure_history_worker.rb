@@ -3,7 +3,11 @@
 module Ci
   class TestFailureHistoryWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include PipelineBackgroundQueue
+
+    tags :exclude_from_kubernetes
 
     idempotent!
 

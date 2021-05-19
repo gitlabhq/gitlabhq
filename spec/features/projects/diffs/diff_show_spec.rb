@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Diff file viewer', :js do
+RSpec.describe 'Diff file viewer', :js, :with_clean_rails_cache do
   let(:project) { create(:project, :public, :repository) }
 
   def visit_commit(sha, anchor: nil)

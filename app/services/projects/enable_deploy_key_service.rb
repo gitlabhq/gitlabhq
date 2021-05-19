@@ -27,4 +27,4 @@ module Projects
   end
 end
 
-Projects::EnableDeployKeyService.prepend_if_ee('EE::Projects::EnableDeployKeyService')
+Projects::EnableDeployKeyService.prepend_mod_with('Projects::EnableDeployKeyService')

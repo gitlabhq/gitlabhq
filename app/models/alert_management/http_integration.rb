@@ -10,7 +10,7 @@ module AlertManagement
 
     attr_encrypted :token,
       mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base_truncated,
+      key: Settings.attr_encrypted_db_key_base_32,
       algorithm: 'aes-256-gcm'
 
     default_value_for(:endpoint_identifier, allows_nil: false) { SecureRandom.hex(8) }

@@ -5,7 +5,10 @@ module Packages
     class CacheUpdateWorker
       include ApplicationWorker
 
+      sidekiq_options retry: 3
+
       feature_category :package_registry
+      tags :exclude_from_kubernetes
 
       idempotent!
 
@@ -15,7 +18,7 @@ module Packages
         return unless project
 
         Gitlab::Composer::Cache.new(project: project, name: package_name, last_page_sha: last_page_sha).execute
-      rescue => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(e, project_id: project_id)
       end
     end

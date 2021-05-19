@@ -155,6 +155,32 @@ describe('Tracking', () => {
     });
   });
 
+  describe('.enableFormTracking', () => {
+    it('tells snowplow to enable form tracking', () => {
+      const config = { forms: { whitelist: [''] }, fields: { whitelist: [''] } };
+      Tracking.enableFormTracking(config, ['_passed_context_']);
+
+      expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking', config, [
+        { data: { source: 'gitlab-javascript' }, schema: undefined },
+        '_passed_context_',
+      ]);
+    });
+
+    it('throws an error if no whitelist rules are provided', () => {
+      const expectedError = new Error(
+        'Unable to enable form event tracking without whitelist rules.',
+      );
+
+      expect(() => Tracking.enableFormTracking()).toThrow(expectedError);
+      expect(() => Tracking.enableFormTracking({ fields: { whitelist: [] } })).toThrow(
+        expectedError,
+      );
+      expect(() => Tracking.enableFormTracking({ fields: { whitelist: [1] } })).not.toThrow(
+        expectedError,
+      );
+    });
+  });
+
   describe('.flushPendingEvents', () => {
     it('flushes any pending events', () => {
       Tracking.initialized = false;

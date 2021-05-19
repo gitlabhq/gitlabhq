@@ -25,10 +25,12 @@ RSpec.describe Ci::RunnersFinder do
       end
 
       context 'filter by status' do
-        it 'calls the corresponding scope on Ci::Runner' do
-          expect(Ci::Runner).to receive(:paused).and_call_original
+        Ci::Runner::AVAILABLE_STATUSES.each do |status|
+          it "calls the corresponding :#{status} scope on Ci::Runner" do
+            expect(Ci::Runner).to receive(status.to_sym).and_call_original
 
-          described_class.new(current_user: admin, params: { status_status: 'paused' }).execute
+            described_class.new(current_user: admin, params: { status_status: status }).execute
+          end
         end
       end
 
@@ -67,17 +69,6 @@ RSpec.describe Ci::RunnersFinder do
 
             expect(described_class.new(current_user: admin, params: { sort: 'contacted_asc' }).execute).to eq [runner2, runner3, runner1]
           end
-        end
-      end
-
-      context 'paginate' do
-        it 'returns the runners for the specified page' do
-          stub_const('Ci::RunnersFinder::NUMBER_OF_RUNNERS_PER_PAGE', 1)
-          runner1 = create :ci_runner, created_at: '2018-07-12 07:00'
-          runner2 = create :ci_runner, created_at: '2018-07-12 08:00'
-
-          expect(described_class.new(current_user: admin, params: { page: 1 }).execute).to eq [runner2]
-          expect(described_class.new(current_user: admin, params: { page: 2 }).execute).to eq [runner1]
         end
       end
 
@@ -167,38 +158,6 @@ RSpec.describe Ci::RunnersFinder do
                                  runner_sub_group_3, runner_sub_group_4, runner_project_1,
                                  runner_project_2, runner_project_3, runner_project_4,
                                  runner_project_5, runner_project_6, runner_project_7])
-        end
-      end
-
-      context 'paginate' do
-        using RSpec::Parameterized::TableSyntax
-
-        let(:runners) do
-          [[runner_project_7, runner_project_6, runner_project_5],
-           [runner_project_4, runner_project_3, runner_project_2],
-           [runner_project_1, runner_sub_group_4, runner_sub_group_3],
-           [runner_sub_group_2, runner_sub_group_1, runner_group]]
-        end
-
-        where(:page, :index) do
-          1 | 0
-          2 | 1
-          3 | 2
-          4 | 3
-        end
-
-        before do
-          stub_const('Ci::RunnersFinder::NUMBER_OF_RUNNERS_PER_PAGE', 3)
-
-          group.add_owner(user)
-        end
-
-        with_them do
-          let(:params) { { page: page } }
-
-          it 'returns the runners for the specified page' do
-            expect(subject).to eq(runners[index])
-          end
         end
       end
 

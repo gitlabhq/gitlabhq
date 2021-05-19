@@ -370,8 +370,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "value=u
 ```json
 {
     "key": "NEW_VARIABLE",
-    "value": "updated value"
-    "variable_type": "env_var",
+    "value": "updated value",
+    "variable_type": "env_var"
 }
 ```
 

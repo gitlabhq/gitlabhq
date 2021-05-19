@@ -50,6 +50,7 @@ the following tables:
 | [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)                         | **{check-circle}** Yes   | Integer                    | `1`, `2`, `3`, `4`, `5`            |
 | [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                           | **{check-circle}** Yes   | String                     | `CriticalSeverity`, `InfoSeverity` |
 | [`secrets`](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)                           | **{check-circle}** Yes   | N/A                        | Hardcodes all severity levels to `Critical` |
+| [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)                           | **{check-circle}** Yes   | String                     | `error`, `warning`, `note`, `none` |
 
 ## Dependency Scanning
 
@@ -61,9 +62,10 @@ the following tables:
 
 ## Container Scanning
 
-| GitLab analyzer                                                        | Outputs severity levels? | Native severity level type | Native severity level example                                |
+| GitLab scanner                                                        | Outputs severity levels? | Native severity level type | Native severity level example                                |
 |------------------------------------------------------------------------|--------------------------|----------------------------|--------------------------------------------------------------|
-| [`klar`](https://gitlab.com/gitlab-org/security-products/analyzers/klar) | **{check-circle}** Yes   | String                     | `Negligible`, `Low`, `Medium`, `High`, `Critical`, `Defcon1` |
+| [`clair`](https://gitlab.com/gitlab-org/security-products/analyzers/klar) | **{check-circle}** Yes   | String                     | `Negligible`, `Low`, `Medium`, `High`, `Critical`, `Defcon1` |
+| [`trivy`](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning)| **{check-circle}** Yes | String | `Unknown`, `Low`, `Medium`, `High`, `Critical` |
 
 ## Fuzz Testing
 

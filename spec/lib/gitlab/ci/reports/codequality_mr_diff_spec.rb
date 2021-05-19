@@ -9,14 +9,11 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityMrDiff do
   let(:degradation_3) { build(:codequality_degradation_3) }
 
   describe '#initialize!' do
-    subject(:report) { described_class.new(codequality_report) }
+    subject(:report) { described_class.new(new_degradations) }
 
     context 'when quality has degradations' do
       context 'with several degradations on the same line' do
-        before do
-          codequality_report.add_degradation(degradation_1)
-          codequality_report.add_degradation(degradation_2)
-        end
+        let(:new_degradations) { [degradation_1, degradation_2] }
 
         it 'generates quality report for mr diff' do
           expect(report.files).to match(
@@ -29,11 +26,7 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityMrDiff do
       end
 
       context 'with several degradations on several files' do
-        before do
-          codequality_report.add_degradation(degradation_1)
-          codequality_report.add_degradation(degradation_2)
-          codequality_report.add_degradation(degradation_3)
-        end
+        let(:new_degradations) { [degradation_1, degradation_2, degradation_3] }
 
         it 'returns quality report for mr diff' do
           expect(report.files).to match(
@@ -50,6 +43,8 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityMrDiff do
     end
 
     context 'when quality has no degradation' do
+      let(:new_degradations) { [] }
+
       it 'returns an empty hash' do
         expect(report.files).to match({})
       end

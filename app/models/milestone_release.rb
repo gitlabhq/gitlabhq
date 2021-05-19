@@ -19,4 +19,4 @@ class MilestoneRelease < ApplicationRecord
   end
 end
 
-MilestoneRelease.prepend_if_ee('EE::MilestoneRelease')
+MilestoneRelease.prepend_mod_with('MilestoneRelease')

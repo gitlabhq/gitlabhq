@@ -74,8 +74,6 @@ The following metrics are available:
 | `gitlab_transaction_event_import_repository_total`               | Counter     | 9.4     | Counter for repository imports (RepositoryImportWorker)                                                               |                                                           |
 | `gitlab_transaction_event_patch_hard_limit_bytes_hit_total`      | Counter     | 13.9    | Counter for diff patch size limit hits                                                                                |                                                           |
 | `gitlab_transaction_event_push_branch_total`                     | Counter     | 9.4     | Counter for all branch pushes                                                                                         |                                                           |
-| `gitlab_transaction_event_push_commit_total`                     | Counter     | 9.4     | Counter for commits                                                                                                   | `branch`                                                  |
-| `gitlab_transaction_event_push_tag_total`                        | Counter     | 9.4     | Counter for tag pushes                                                                                                |                                                           |
 | `gitlab_transaction_event_rails_exception_total`                 | Counter     | 9.4     | Counter for number of rails exceptions                                                                                |                                                           |
 | `gitlab_transaction_event_receive_email_total`                   | Counter     | 9.4     | Counter for received emails                                                                                           | `handler`                                                 |
 | `gitlab_transaction_event_remote_mirrors_failed_total`           | Counter     | 10.8    | Counter for failed remote mirrors                                                                                     |                                                           |
@@ -129,6 +127,9 @@ The following metrics are available:
 | `pipeline_graph_link_calculation_duration_seconds`               | Histogram   | 13.9    | Total time spent calculating links, in seconds                                                                        |                                                           |
 | `pipeline_graph_links_total`                                     | Histogram   | 13.9    | Number of links per graph                                                                                             |                                                           |
 | `pipeline_graph_links_per_job_ratio`                             | Histogram   | 13.9    | Ratio of links to job per graph                                                                                       |                                                           |
+| `gitlab_ci_pipeline_security_orchestration_policy_processing_duration_seconds` | Histogram   | 13.12    | Time in seconds it takes to process Security Policies in CI/CD pipeline                                                                    |                                                           |
+| `gitlab_ci_difference_live_vs_actual_minutes`                    | Histogram   | 13.12    | Difference between CI minute consumption counted while jobs were running (live) vs when jobs are complete (actual). Used to enforce CI minute consumption limits on long running jobs. | `plan` |
+| `gitlab_spamcheck_request_duration_seconds`                      | Histogram   | 13.12   | The duration for requests between Rails and the anti-spam engine                                                        |                                                           |
 
 ## Metrics controlled by a feature flag
 
@@ -214,11 +215,15 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_package_files_failed`                     | Gauge   | 13.3  | Number of syncable package files failed to sync on secondary | `url` |
 | `geo_package_files_registry`                   | Gauge   | 13.3  | Number of package files in the registry | `url` |
 | `geo_terraform_state_versions`                 | Gauge   | 13.5  | Number of terraform state versions on primary | `url` |
-| `geo_terraform_state_versions_checksummed`     | Gauge   | 13.5  | Number of terraform state versions checksummed on primary | `url` |
+| `geo_terraform_state_versions_checksummed`     | Gauge   | 13.5  | Number of terraform state versions checksummed successfully on primary | `url` |
 | `geo_terraform_state_versions_checksum_failed` | Gauge   | 13.5  | Number of terraform state versions failed to calculate the checksum on primary | `url` |
+| `geo_terraform_state_versions_checksum_total`  | Gauge   | 13.12  | Number of terraform state versions tried to checksum on primary | `url` |
 | `geo_terraform_state_versions_synced`          | Gauge   | 13.5  | Number of syncable terraform state versions synced on secondary | `url` |
 | `geo_terraform_state_versions_failed`          | Gauge   | 13.5  | Number of syncable terraform state versions failed to sync on secondary | `url` |
 | `geo_terraform_state_versions_registry`        | Gauge   | 13.5  | Number of terraform state versions in the registry | `url` |
+| `geo_terraform_state_versions_verified`        | Gauge   | 13.12  | Number of terraform state versions verified on secondary | `url` |
+| `geo_terraform_state_versions_verification_failed` | Gauge   | 13.12  | Number of terraform state versions verifications failed on secondary | `url` |
+| `geo_terraform_state_versions_verification_total` | Gauge   | 13.12  | Number of terraform state versions verifications tried on secondary | `url` |
 | `global_search_bulk_cron_queue_size`           | Gauge   | 12.10 | Number of database records waiting to be synchronized to Elasticsearch | |
 | `global_search_awaiting_indexing_queue_size`   | Gauge   | 13.2  | Number of database updates waiting to be synchronized to Elasticsearch while indexing is paused | |
 | `geo_merge_request_diffs`                      | Gauge   | 13.4  | Number of merge request diffs on primary | `url` |
@@ -254,7 +259,7 @@ The following metrics are available:
 |:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |:--------------------------------------------------------- |
 | `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)   | Current number of load balancing hosts | |
 | `sidekiq_load_balancing_count`    | Counter   | 13.11                                                         | Sidekiq jobs using load balancing with data consistency set to :sticky or :delayed | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `data_consistency`, `database_chosen` |
- 
+
 ## Database partitioning metrics **(PREMIUM SELF)**
 
 The following metrics are available:

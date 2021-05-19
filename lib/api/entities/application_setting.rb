@@ -36,4 +36,4 @@ module API
   end
 end
 
-API::Entities::ApplicationSetting.prepend_if_ee('EE::API::Entities::ApplicationSetting')
+API::Entities::ApplicationSetting.prepend_mod_with('API::Entities::ApplicationSetting')

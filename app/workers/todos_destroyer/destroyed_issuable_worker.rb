@@ -3,7 +3,11 @@
 module TodosDestroyer
   class DestroyedIssuableWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include TodosDestroyerQueue
+
+    tags :exclude_from_kubernetes
 
     idempotent!
 

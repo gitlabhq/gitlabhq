@@ -22,10 +22,6 @@ export default function init() {
       components: {
         CompareApp,
       },
-      provide: {
-        projectTo: JSON.parse(projectTo),
-        projectsFrom: JSON.parse(projectsFrom),
-      },
       render(createElement) {
         return createElement(CompareApp, {
           props: {
@@ -35,6 +31,8 @@ export default function init() {
             projectCompareIndexPath,
             projectMergeRequestPath,
             createMrPath,
+            defaultProject: JSON.parse(projectTo),
+            projects: JSON.parse(projectsFrom),
           },
         });
       },

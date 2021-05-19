@@ -56,6 +56,6 @@ apply:
     - terraform apply -input=false $PLAN
   dependencies:
     - plan
-  when: manual
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual

@@ -69,7 +69,10 @@ export default {
 <template>
   <div class="top-bar">
     <!-- truncate information -->
-    <div class="truncated-info d-none d-sm-block float-left" data-testid="log-truncated-info">
+    <div
+      class="truncated-info gl-display-none gl-sm-display-block gl-float-left"
+      data-testid="log-truncated-info"
+    >
       <template v-if="isTraceSizeVisible">
         {{ jobLogSize }}
         <gl-link
@@ -83,7 +86,7 @@ export default {
     </div>
     <!-- eo truncate information -->
 
-    <div class="controllers float-right">
+    <div class="controllers gl-float-right">
       <!-- links -->
       <gl-button
         v-if="rawPath"

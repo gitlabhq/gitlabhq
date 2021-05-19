@@ -3,6 +3,8 @@
 class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   attr_reader :email, :skip_premailer
 
   feature_category :source_code_management
@@ -56,7 +58,7 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
       end
     end
 
-    EmailsOnPushService.valid_recipients(recipients).each do |recipient|
+    Integrations::EmailsOnPush.valid_recipients(recipients).each do |recipient|
       send_email(
         recipient,
         project_id,

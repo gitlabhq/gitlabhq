@@ -15,6 +15,7 @@ export const createUniqueLinkId = (stageName, jobName) => `${stageName}-${jobNam
 
 export const generateLinksData = ({ links }, containerID, modifier = '') => {
   const containerEl = document.getElementById(containerID);
+
   return links.map((link) => {
     const path = d3.path();
 

@@ -3,6 +3,8 @@
 class DeleteUserWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :authentication_and_authorization
   loggable_arguments 2
 

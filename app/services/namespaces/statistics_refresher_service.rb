@@ -9,7 +9,7 @@ module Namespaces
 
       root_storage_statistics.recalculate!
     rescue ActiveRecord::ActiveRecordError => e
-      raise RefresherError.new(e.message)
+      raise RefresherError, e.message
     end
 
     private

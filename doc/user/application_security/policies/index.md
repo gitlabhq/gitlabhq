@@ -66,7 +66,8 @@ scan_execution_policy:
   enabled: true
   rules:
   - type: pipeline
-    branch: master
+    branches:
+    - master
   actions:
   - scan: dast
     scanner_profile: Scanner Profile A
@@ -76,7 +77,8 @@ scan_execution_policy:
   enabled: true
   rules:
   - type: pipeline
-    branch: main
+    branches:
+    - main
   actions:
   - scan: dast
     scanner_profile: Scanner Profile C
@@ -108,7 +110,17 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
 | `type` | `string` | `pipeline` | The rule's type. |
-| `branch` | `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+| `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+
+### `schedule` rule type
+
+This rule enforces the defined actions and schedules a scan on the provided date/time.
+
+| Field      | Type | Possible values | Description |
+|------------|------|-----------------|-------------|
+| `type`     | `string` | `schedule` | The rule's type. |
+| `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+| `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
 
 ### `scan` action type
 
@@ -129,6 +141,9 @@ Note the following:
 - Once you associate the site profile and scanner profile by name in the policy, it is not possible
   to modify or delete them. If you want to modify them, you must first disable the policy by setting
   the `active` flag to `false`.
+- When configuring policies with a scheduled DAST scan, the author of the commit in the security
+  policy project's repository must have access to the scanner and site profiles. Otherwise, the scan
+  is not scheduled successfully.
 
 Here's an example:
 
@@ -140,17 +155,20 @@ scan_execution_policy:
   enabled: true
   rules:
   - type: pipeline
-    branch: release/*
+    branches:
+    - release/*
   actions:
   - scan: dast
     scanner_profile: Scanner Profile A
     site_profile: Site Profile B
-- name: Enforce DAST in every pipeline in main branch
-  description: This policy enforces pipeline configuration to have a job with DAST scan for main branch
+- name: Enforce DAST scan every 10 minutes
+  description: This policy enforces a DAST scan to run every 10 minutes
   enabled: true
   rules:
-  - type: pipeline
-    branch: main
+  - type: schedule
+    branches:
+    - main
+    cadence: */10 * * * *
   actions:
   - scan: dast
     scanner_profile: Scanner Profile C
@@ -160,11 +178,7 @@ scan_execution_policy:
 In this example, the DAST scan runs with the scanner profile `Scanner Profile A` and the site
 profile `Site Profile B` for every pipeline executed on branches that match the
 `release/*` wildcard (for example, branch name `release/v1.2.1`); and the DAST scan runs with
-the scanner profile `Scanner Profile C` and the site profile `Site Profile D` for every pipeline executed on `main` branch.
-
-NOTE:
-All scanner and site profiles must be configured and created for each project that is assigned to the selected Security Policy Project.
-If they are not created, the job will fail with the error message.
+the scanner profile `Scanner Profile C` and the site profile `Site Profile D` every 10 minutes.
 
 ## Security Policy project selection
 

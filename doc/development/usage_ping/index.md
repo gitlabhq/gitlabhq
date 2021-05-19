@@ -178,10 +178,132 @@ The correct approach is to add a new metric for GitLab 12.6 release with updated
 
 and update existing business analysis artefacts to use `example_metric_without_archived` instead of `example_metric`
 
-### 3. Metrics deprecation and removal
+### 3. Deprecate a metric
 
-The process for deprecating and removing metrics is under development. For
-more information, see the following [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284637).
+If a metric is obsolete and you no longer use it, you can mark it as deprecated.
+
+For an example of the metric deprecation process take a look at this [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59899)
+
+To deprecate a metric:
+
+1. Check the following YAML files and verify the metric is not used in an aggregate:
+   - [`config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/)
+   - [`ee/config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/aggregates/)
+
+1. Create an issue in the [GitLab Data Team
+   project](https://gitlab.com/gitlab-data/analytics/-/issues). Ask for
+   confirmation that the metric is not used by other teams, or in any of the SiSense
+   dashboards.
+
+1. Verify the metric is not used to calculate the conversational index. The
+   conversational index is a measure that reports back to self-managed instances
+   to inform administrators of the progress of DevOps adoption for the instance.
+
+   You can check
+   [`CalculateConvIndexService`](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/calculate_conv_index_service.rb)
+   to view the metrics that are used. The metrics are represented
+   as the keys that are passed as a field argument into the `get_value` method.
+
+1. Document the deprecation in the metric's YAML definition. Set
+   the `status:` attribute to `deprecated`, for example:
+
+   ```yaml
+   ---
+   key_path: analytics_unique_visits.analytics_unique_visits_for_any_target_monthly
+   description: Visits to any of the pages listed above per month
+   product_section: dev
+   product_stage: manage
+   product_group: group::analytics
+   product_category:
+   value_type: number
+   status: deprecated
+   time_frame: 28d
+   data_source:
+   distribution:
+   - ce
+   tier:
+   - free
+   ```
+
+1. Replace the metric's instrumentation with a fixed value. This avoids wasting
+   resources to calculate the deprecated metric. In
+   [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb)
+   or
+   [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb),
+   replace the code that calculates the metric's value with a fixed value that
+   indicates it's deprecated:
+
+   ```ruby
+   module Gitlab
+     class UsageData
+       DEPRECATED_VALUE = -1000
+
+       def analytics_unique_visits_data
+         results['analytics_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics) }
+         results['analytics_unique_visits_for_any_target_monthly'] = DEPRECATED_VALUE
+
+         { analytics_unique_visits: results }
+       end
+     # ...
+     end
+   end
+   ```
+
+1. Update the Metrics Dictionary following [guidelines instructions](dictionary.md).
+
+### 4. Remove a metric
+
+Only deprecated metrics can be removed from Usage Ping.
+
+For an example of the metric removal process take a look at this [example issue](https://gitlab.com/gitlab-org/gitlab/-/issues/297029)
+
+To remove a deprecated metric:
+
+1. Verify that removing the metric from the Usage Ping payload does not cause
+   errors in [Version App](https://gitlab.com/gitlab-services/version-gitlab-com)
+   when the updated payload is collected and processed. Version App collects
+   and persists all Usage Ping reports. To do that you can modify
+   [fixtures](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/spec/support/usage_data_helpers.rb#L540)
+   used to test
+   [`UsageDataController#create`](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/3760ef28/spec/controllers/usage_data_controller_spec.rb#L75)
+   endpoint, and assure that test suite does not fail when metric that you wish to remove is not included into test payload.
+
+1. Create an issue in the
+   [GitLab Data Team project](https://gitlab.com/gitlab-data/analytics/-/issues).
+   Ask for confirmation that the metric is not referred to in any SiSense dashboards and
+   can be safely removed from Usage Ping. Use this
+   [example issue](https://gitlab.com/gitlab-data/analytics/-/issues/7539) for guidance.
+   This step can be skipped if verification done during [deprecation process](#3-deprecate-a-metric)
+   reported that metric is not required by any data transformation in Snowflake data warehouse nor it is
+   used by any of SiSense dashboards.
+
+1. After you verify the metric can be safely removed,
+   update the attributes of the metric's YAML definition:
+
+   - Set the `status:` to `removed`.
+   - Set `milestone_removed:` to the number of the
+     milestone in which the metric was removed.
+
+   Do not remove the metric's YAML definition altogether. Some self-managed
+   instances might not immediately update to the latest version of GitLab, and
+   therefore continue to report the removed metric. The Product Intelligence team
+   requires a record of all removed metrics in order to identify and filter them.
+
+   For example please take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#b01f429a54843feb22265100c0e4fec1b7da1240_10_10).
+
+1. After you verify the metric can be safely removed,
+   remove the metric's instrumentation from
+   [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb)
+   or
+   [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb).
+
+   For example please take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#6335dc533bd21df26db9de90a02dd66278c2390d_167_167).
+
+1. Remove any other records related to the metric:
+   - The feature flag YAML file at [`config/feature_flags/*/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/feature_flags).
+   - The entry in the known events YAML file at [`lib/gitlab/usage_data_counters/known_events/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/usage_data_counters/known_events).
+
+1. Update the Metrics Dictionary following [guidelines instructions](dictionary.md).
 
 ## Implementing Usage Ping
 
@@ -492,39 +614,33 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    Example event:
 
    ```yaml
-   - name: i_compliance_credential_inventory
-     category: compliance
-     redis_slot: compliance
-     expiry: 42  # 6 weeks
+   - name: users_creating_epics
+     category: epics_usage
+     redis_slot: users
      aggregation: weekly
-     feature_flag: usage_data_i_compliance_credential_inventory
+     feature_flag: track_epics_activity
    ```
 
    Keys:
 
    - `name`: unique event name.
 
-     Name format `<prefix>_<redis_slot>_name`.
+     Name format for Redis HLL events `<name>_<redis_slot>`.
 
-     Use one of the following prefixes for the event's name:
-
-        - `g_` for group, as an event which is tracked for group.
-        - `p_` for project, as an event which is tracked for project.
-        - `i_` for instance, as an event which is tracked for instance.
-        - `a_` for events encompassing all `g_`, `p_`, `i_`.
-        - `o_` for other.
+     [See Metric name](metrics_dictionary.md#metric-name) for a complete guide on metric naming suggestion.
 
      Consider including in the event's name the Redis slot to be able to count totals for a specific category.
 
-     Example names: `i_compliance_credential_inventory`, `g_analytics_contribution`.
+     Example names: `users_creating_epics`, `users_triggering_security_scans`.
 
    - `category`: event category. Used for getting total counts for events in a category, for easier
      access to a group of events.
-   - `redis_slot`: optional Redis slot; default value: event name. Used if needed to calculate totals
-     for a group of metrics. Ensure keys are in the same slot. For example:
-     `i_compliance_credential_inventory` with `redis_slot: 'compliance'` builds Redis key
-     `i_{compliance}_credential_inventory-2020-34`. If `redis_slot` is not defined the Redis key will
-     be `{i_compliance_credential_inventory}-2020-34`.
+   - `redis_slot`: optional Redis slot. Default value: event name. Only event data that is stored in the same slot
+     can be aggregated. Ensure keys are in the same slot. For example:
+     `users_creating_epics` with `redis_slot: 'users'` builds Redis key
+     `{users}_creating_epics-2020-34`. If `redis_slot` is not defined the Redis key will
+     be `{users_creating_epics}-2020-34`.
+     Recommended slots to use are: `users`, `projects`. This is the value we count.
    - `expiry`: expiry time in days. Default: 29 days for daily aggregation and 6 weeks for weekly
      aggregation.
    - `aggregation`: may be set to a `:daily` or `:weekly` key. Defines how counting data is stored in Redis.
@@ -550,7 +666,7 @@ Use one of the following methods to track events:
      include RedisTracking
 
      skip_before_action :authenticate_user!, only: :show
-     track_redis_hll_event :index, :show, name: 'g_compliance_example_feature_visitors'
+     track_redis_hll_event :index, :show, name: 'users_visiting_projects'
 
      def index
        render html: 'index'
@@ -581,7 +697,7 @@ Use one of the following methods to track events:
        user: current_user, subject: user_group
      ).execute
 
-     increment_unique_values('i_list_repositories', current_user.id)
+     increment_unique_values('users_listing_repositories', current_user.id)
 
      present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
    end
@@ -655,15 +771,15 @@ Use one of the following methods to track events:
 Trigger events in rails console by using `track_event` method
 
    ```ruby
-   Gitlab::UsageDataCounters::HLLRedisCounter.track_event('g_compliance_audit_events', values: 1)
-   Gitlab::UsageDataCounters::HLLRedisCounter.track_event('g_compliance_audit_events', values: [2, 3])
+   Gitlab::UsageDataCounters::HLLRedisCounter.track_event('users_viewing_compliance_audit_events', values: 1)
+   Gitlab::UsageDataCounters::HLLRedisCounter.track_event('users_viewing_compliance_audit_events', values: [2, 3])
    ```
 
 Next, get the unique events for the current week.
 
    ```ruby
    # Get unique events for metric for current_week
-   Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'g_compliance_audit_events',
+   Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'users_viewing_compliance_audit_events',
    start_date: Date.current.beginning_of_week, end_date: Date.current.next_week)
    ```
 
@@ -681,7 +797,7 @@ We have the following recommendations for [Adding new events](#adding-new-events
 
 ##### Enable/Disable Redis HLL tracking
 
-Events are tracked behind [feature flags](../feature_flags/index.md) due to concerns for Redis performance and scalability.
+Events are tracked behind optional [feature flags](../feature_flags/index.md) due to concerns for Redis performance and scalability.
 
 For a full list of events and corresponding feature flags see, [known_events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/) files.
 
@@ -691,6 +807,13 @@ To enable or disable tracking for specific event in <https://gitlab.com> or <htt
 ```shell
 /chatops run feature set <feature_name> true
 /chatops run feature set <feature_name> false
+```
+
+We can also disable tracking completely by using the global flag:
+
+```shell
+/chatops run feature set redis_hll_tracking true
+/chatops run feature set redis_hll_tracking false
 ```
 
 ##### Known events are added automatically in usage data payload
@@ -711,29 +834,24 @@ Example of `redis_hll_counters` data:
 ```ruby
 {:redis_hll_counters=>
   {"compliance"=>
-    {"g_compliance_dashboard_weekly"=>0,
-     "g_compliance_dashboard_monthly"=>0,
-     "g_compliance_audit_events_weekly"=>0,
-     "g_compliance_audit_events_monthly"=>0,
+    {"users_viewing_compliance_dashboard_weekly"=>0,
+     "users_viewing_compliance_dashboard_monthly"=>0,
+     "users_viewing_compliance_audit_events_weekly"=>0,
+     "users_viewing_audit_events_monthly"=>0,
      "compliance_total_unique_counts_weekly"=>0,
      "compliance_total_unique_counts_monthly"=>0},
-   "analytics"=>
-    {"g_analytics_contribution_weekly"=>0,
-     "g_analytics_contribution_monthly"=>0,
-     "g_analytics_insights_weekly"=>0,
-     "g_analytics_insights_monthly"=>0,
+ "analytics"=>
+    {"users_viewing_analytics_group_devops_adoption_weekly"=>0,
+     "users_viewing_analytics_group_devops_adoption_monthly"=>0,
      "analytics_total_unique_counts_weekly"=>0,
      "analytics_total_unique_counts_monthly"=>0},
    "ide_edit"=>
-    {"g_edit_by_web_ide_weekly"=>0,
-     "g_edit_by_web_ide_monthly"=>0,
-     "g_edit_by_sfe_weekly"=>0,
-     "g_edit_by_sfe_monthly"=>0,
+    {"users_editing_by_web_ide_weekly"=>0,
+     "users_editing_by_web_ide_monthly"=>0,
+     "users_editing_by_sfe_weekly"=>0,
+     "users_editing_by_sfe_monthly"=>0,
      "ide_edit_total_unique_counts_weekly"=>0,
-     "ide_edit_total_unique_counts_monthly"=>0},
-   "search"=>
-    {"i_search_total_weekly"=>0, "i_search_total_monthly"=>0, "i_search_advanced_weekly"=>0, "i_search_advanced_monthly"=>0, "i_search_paid_weekly"=>0, "i_search_paid_monthly"=>0, "search_total_unique_counts_weekly"=>0, "search_total_unique_counts_monthly"=>0},
-   "source_code"=>{"wiki_action_weekly"=>0, "wiki_action_monthly"=>0}
+     "ide_edit_total_unique_counts_monthly"=>0}
  }
 ```
 
@@ -747,10 +865,10 @@ redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
 # Define events in common.yml https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml
 
 # Tracking events
-Gitlab::UsageDataCounters::HLLRedisCounter.track_event('expand_vulnerabilities', values: visitor_id)
+Gitlab::UsageDataCounters::HLLRedisCounter.track_event('users_expanding_vulnerabilities', values: visitor_id)
 
 # Get unique events for metric
-redis_usage_data { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'expand_vulnerabilities', start_date: 28.days.ago, end_date: Date.current) }
+redis_usage_data { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'users_expanding_vulnerabilities', start_date: 28.days.ago, end_date: Date.current) }
 ```
 
 ### Alternative Counters
@@ -824,7 +942,6 @@ We return fallback values in these cases:
 
 Add the metric in one of the top level keys
 
-- `license`: for license related metrics.
 - `settings`: for settings related metrics.
 - `counts_weekly`: for counters that have data for the most recent 7 days.
 - `counts_monthly`: for counters that have data for the most recent 28 days.
@@ -907,15 +1024,21 @@ On GitLab.com, we have DangerBot setup to monitor Product Intelligence related f
 
 ### 10. Verify your metric
 
-On GitLab.com, the Product Intelligence team regularly monitors Usage Ping. They may alert you that your metrics need further optimization to run quicker and with greater success. You may also use the [Usage Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "SaaS" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
+On GitLab.com, the Product Intelligence team regularly [monitors Usage Ping](https://gitlab.com/groups/gitlab-org/-/epics/6000).
+They may alert you that your metrics need further optimization to run quicker and with greater success.
+
+The Usage Ping JSON payload for GitLab.com is shared in the
+[#g_product_intelligence](https://gitlab.slack.com/archives/CL3A7GFPF) Slack channel every week.
+
+You may also use the [Usage Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "SaaS" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
 
 ### Usage Ping local setup
 
 To set up Usage Ping locally, you must:
 
-1. [Set up local repositories]#(set-up-local-repositories)
-1. [Test local setup](#test-local-setup)
-1. (Optional) [Test Prometheus-based usage ping](#test-prometheus-based-usage-ping)
+1. [Set up local repositories](#set-up-local-repositories).
+1. [Test local setup](#test-local-setup).
+1. (Optional) [Test Prometheus-based usage ping](#test-prometheus-based-usage-ping).
 
 #### Set up local repositories
 
@@ -981,7 +1104,7 @@ build in a [downstream pipeline of the `omnibus-gitlab-mirror` project](https://
 This is the less recommended approach, because it comes with a number of difficulties when emulating a real GitLab deployment.
 
 The [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) is not set up to run a Prometheus server or `node_exporter` alongside other GitLab components. If you would
-like to do so, [Monitoring the GDK with Prometheus](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/prometheus/index.md#monitoring-the-gdk-with-prometheus) is a good start.
+like to do so, [Monitoring the GDK with Prometheus](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/prometheus/index.md#monitoring-the-gdk-with-prometheus) is a good start.
 
 The [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit) has limited support for testing Prometheus based Usage Ping.
 By default, it already comes with a fully configured Prometheus service that is set up to scrape a number of components,
@@ -1030,9 +1153,9 @@ Example aggregated metric entries:
 - name: example_metrics_union
   operator: OR
   events:
-    - 'i_search_total'
-    - 'i_search_advanced'
-    - 'i_search_paid'
+    - 'users_expanding_secure_security_report'
+    - 'users_expanding_testing_code_quality_report'
+    - 'users_expanding_testing_accessibility_report'
   source: redis
   time_frame:
     - 7d

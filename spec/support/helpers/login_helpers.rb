@@ -237,4 +237,4 @@ module LoginHelpers
   end
 end
 
-LoginHelpers.prepend_if_ee('EE::LoginHelpers')
+LoginHelpers.prepend_mod_with('LoginHelpers')

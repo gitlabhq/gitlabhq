@@ -339,7 +339,8 @@ sudo -u git -H GITLAB_ASSUME_YES=1 bundle exec rake gitlab:backup:restore RAILS_
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37158) in GitLab 13.3.
 
-Repositories can be backed up concurrently to help fully use CPU time. The
+When using [multiple repository storages](../administration/repository_storage_paths.md),
+repositories can be backed up concurrently to help fully use CPU time. The
 following variables are available to modify the default behavior of the Rake
 task:
 
@@ -349,7 +350,7 @@ task:
   back up at the same time on each storage. This allows the repository backups
   to be spread across storages. Defaults to `1`.
 
-For example, for Omnibus GitLab installations:
+For example, for Omnibus GitLab installations with 4 repository storages:
 
 ```shell
 sudo gitlab-backup create GITLAB_BACKUP_MAX_CONCURRENCY=4 GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY=1

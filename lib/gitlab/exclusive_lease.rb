@@ -113,4 +113,4 @@ module Gitlab
   end
 end
 
-Gitlab::ExclusiveLease.prepend_if_ee('EE::Gitlab::ExclusiveLease')
+Gitlab::ExclusiveLease.prepend_mod_with('Gitlab::ExclusiveLease')

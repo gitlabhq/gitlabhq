@@ -138,7 +138,7 @@ export default {
           />
         </div>
         <div class="commit-detail flex-list">
-          <div class="commit-content qa-commit-content">
+          <div class="commit-content" data-qa-selector="commit_content">
             <a
               :href="commit.commit_url"
               class="commit-row-message item-title"
@@ -173,7 +173,7 @@ export default {
       <pre
         v-if="commit.description_html"
         :class="{ 'js-toggle-content': collapsible, 'd-block': !collapsible }"
-        class="commit-row-description gl-mb-3 text-dark"
+        class="commit-row-description gl-mb-3 gl-text-body"
         v-html="commitDescription"
       ></pre>
     </div>

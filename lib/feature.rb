@@ -249,4 +249,4 @@ class Feature
   end
 end
 
-Feature::ActiveSupportCacheStoreAdapter.prepend_if_ee('EE::Feature::ActiveSupportCacheStoreAdapter')
+Feature::ActiveSupportCacheStoreAdapter.prepend_mod_with('Feature::ActiveSupportCacheStoreAdapter')

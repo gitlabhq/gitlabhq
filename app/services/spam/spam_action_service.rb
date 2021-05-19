@@ -53,7 +53,7 @@ module Spam
       if request
         options[:ip_address] = request.env['action_dispatch.remote_ip'].to_s
         options[:user_agent] = request.env['HTTP_USER_AGENT']
-        options[:referrer] = request.env['HTTP_REFERRER']
+        options[:referer] = request.env['HTTP_REFERER']
       else
         # TODO: This code is never used, because we do not perform a verification if there is not a
         #   request.  Why? Should it be deleted? Or should we check even if there is no request?
@@ -123,7 +123,15 @@ module Spam
           # https://gitlab.com/gitlab-org/gitlab/-/issues/214739
           target.spam! unless target.allow_possible_spam?
           create_spam_log(api)
+        when BLOCK_USER
+          # TODO: improve BLOCK_USER handling, non-existent until now
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/329666
+          target.spam! unless target.allow_possible_spam?
+          create_spam_log(api)
         when ALLOW
+          target.clear_spam_flags!
+        when NOOP
+          # spamcheck is not explicitly rendering a verdict & therefore can't make a decision
           target.clear_spam_flags!
         end
       end

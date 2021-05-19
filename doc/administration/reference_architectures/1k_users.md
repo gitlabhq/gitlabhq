@@ -17,20 +17,20 @@ many organizations .
 
 > - **Supported users (approximate):** 1,000
 > - **High Availability:** No. For a highly-available environment, you can
->   follow the [3K reference architecture](3k_users.md).
+>   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 > - **Test requests per second (RPS) rates:** API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS
 
-| Users        | Configuration           | GCP            | AWS             | Azure          |
-|--------------|-------------------------|----------------|-----------------|----------------|
-| Up to 500    | 4 vCPU, 3.6 GB memory   | n1-highcpu-4   | `c5.xlarge`       | F4s v2         |
-| Up to 1,000  | 8 vCPU, 7.2 GB memory   | n1-highcpu-8   | `c5.2xlarge`      | F8s v2         |
+| Users        | Configuration           | GCP            | AWS          | Azure    |
+|--------------|-------------------------|----------------|--------------|----------|
+| Up to 500    | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4` | `c5.xlarge`  | `F4s v2` |
+| Up to 1,000  | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8` | `c5.2xlarge` | `F8s v2` |
 
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
 CPU platform. On different hardware you may find that adjustments, either lower
 or higher, are required for your CPU or node counts. For more information, see
 our [Sysbench](https://github.com/akopytov/sysbench)-based
-[CPU benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
+[CPU benchmarks](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
 In addition to the stated configurations, we recommend having at least 2 GB of
 swap on your server, even if you currently have enough available memory. Having

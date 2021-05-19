@@ -1,0 +1,68 @@
+{
+  "version": "14.0.0",
+  "vulnerabilities": [
+    {
+      "category": "sast",
+      "name": "Cipher with no integrity",
+      "message": "Cipher with no integrity",
+      "cve": "groovy/src/main/java/com/gitlab/security_products/tests/App.groovy:29:CIPHER_INTEGRITY",
+      "severity": "Medium",
+      "confidence": "High",
+      "scanner": {
+        "id": "find_sec_bugs",
+        "name": "Find Security Bugs"
+      },
+      "location": {
+        "file": "groovy/src/main/java/com/gitlab/security_products/tests/App.groovy",
+        "start_line": 29,
+        "end_line": 29,
+        "class": "com.gitlab.security_products.tests.App",
+        "method": "insecureCypher"
+      },
+      "identifiers": [
+        {
+          "type": "find_sec_bugs_type",
+          "name": "Find Security Bugs-CIPHER_INTEGRITY",
+          "value": "CIPHER_INTEGRITY",
+          "url": "https://find-sec-bugs.github.io/bugs.htm#CIPHER_INTEGRITY"
+        }
+      ],
+      "tracking": {
+        "type": "source",
+        "items": [
+          {
+            "file": "groovy/src/main/java/com/gitlab/security_products/tests/App.groovy",
+            "start_line": 29,
+            "end_line": 29,
+            "signatures": [
+              {
+                "algorithm": "hash",
+                "value": "HASHVALUE"
+              },
+              {
+                "algorithm": "scope_offset",
+                "value": "groovy/src/main/java/com/gitlab/security_products/tests/App.groovy:App[0]:insecureCypher[0]:2"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "remediations": [],
+  "scan": {
+    "scanner": {
+      "id": "find_sec_bugs",
+      "name": "Find Security Bugs",
+      "url": "https://spotbugs.github.io",
+      "vendor": {
+        "name": "GitLab"
+      },
+      "version": "4.0.2"
+    },
+    "type": "sast",
+    "status": "success",
+    "start_time": "placeholder-value",
+    "end_time": "placeholder-value"
+  }
+}

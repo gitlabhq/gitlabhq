@@ -53,7 +53,7 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter do
     end
 
     expect do
-      filter('<p>:tanuki: :party-parrot:</p>')
+      filter('<p>:tanuki:</p> <p>:party-parrot:</p>')
     end.not_to exceed_all_query_limit(control_count.count)
   end
 end

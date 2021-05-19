@@ -167,4 +167,4 @@ module Emails
   end
 end
 
-Emails::Members.prepend_if_ee('EE::Emails::Members')
+Emails::Members.prepend_mod_with('Emails::Members')

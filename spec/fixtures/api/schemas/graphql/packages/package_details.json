@@ -12,7 +12,8 @@
     "tags",
     "pipelines",
     "versions",
-    "metadata"
+    "metadata",
+    "status"
   ],
   "properties": {
     "id": {
@@ -80,6 +81,8 @@
       "anyOf": [
         { "$ref": "./package_composer_metadata.json" },
         { "$ref": "./package_conan_metadata.json" },
+        { "$ref": "./package_maven_metadata.json" },
+        { "$ref": "./package_nuget_metadata.json" },
         { "type": "null" }
       ]
     },
@@ -91,6 +94,10 @@
         "edges": { "type": "array" },
         "nodes": { "type": "array" }
       }
+    },
+    "status": {
+      "type": ["string"],
+      "enum": ["DEFAULT", "HIDDEN", "PROCESSING", "ERROR"]
     }
   }
 }

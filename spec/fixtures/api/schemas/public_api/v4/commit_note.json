@@ -14,6 +14,6 @@
     "line": { "type": ["integer", "null"] },
     "line_type": { "type": ["string", "null"] },
     "author": { "$ref": "user/basic.json" },
-    "created_at": { "type": "date" }
+    "created_at": { "type": "string", "format": "date-time" }
   }
 }

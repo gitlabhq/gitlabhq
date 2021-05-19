@@ -92,7 +92,7 @@ gitlab_rails['omniauth_providers'] = [
 
 #### GroupSAML for GitLab.com
 
-See [the GDK SAML documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/saml.md).
+See [the GDK SAML documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/saml.md).
 
 ### Elasticsearch
 

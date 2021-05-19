@@ -1,0 +1,5 @@
+---
+title: Fix MR sidebar rendering on mobile
+merge_request: 60552
+author:
+type: fixed

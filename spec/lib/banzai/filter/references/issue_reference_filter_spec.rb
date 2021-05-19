@@ -470,42 +470,24 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     end
   end
 
-  describe '#records_per_parent' do
-    context 'using an internal issue tracker' do
-      it 'returns a Hash containing the issues per project' do
-        doc = Nokogiri::HTML.fragment('')
-        filter = described_class.new(doc, project: project)
-
-        expect(filter).to receive(:parent_per_reference)
-          .and_return({ project.full_path => project })
-
-        expect(filter).to receive(:references_per_parent)
-          .and_return({ project.full_path => Set.new([issue.iid]) })
-
-        expect(filter.records_per_parent)
-          .to eq({ project => { issue.iid => issue } })
-      end
-    end
-  end
-
   describe '.references_in' do
     let(:merge_request) { create(:merge_request) }
 
     it 'yields valid references' do
       expect do |b|
-        described_class.references_in(issue.to_reference, &b)
+        described_class.new('', project: nil).references_in(issue.to_reference, &b)
       end.to yield_with_args(issue.to_reference, issue.iid, nil, nil, MatchData)
     end
 
     it "doesn't yield invalid references" do
       expect do |b|
-        described_class.references_in('#0', &b)
+        described_class.new('', project: nil).references_in('#0', &b)
       end.not_to yield_control
     end
 
     it "doesn't yield unsupported references" do
       expect do |b|
-        described_class.references_in(merge_request.to_reference, &b)
+        described_class.new('', project: nil).references_in(merge_request.to_reference, &b)
       end.not_to yield_control
     end
   end

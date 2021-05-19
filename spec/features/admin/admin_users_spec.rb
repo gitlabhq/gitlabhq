@@ -10,61 +10,51 @@ RSpec.describe "Admin::Users" do
     gitlab_enable_admin_mode_sign_in(current_user)
   end
 
-  describe 'Tabs', :js do
+  describe 'Tabs' do
     let(:tabs_selector) { '.js-users-tabs' }
     let(:active_tab_selector) { '.nav-link.active' }
 
-    it 'does not add the tab param when the Users tab is selected' do
-      visit admin_users_path
+    it 'links to the Users tab' do
+      visit cohorts_admin_users_path
 
       within tabs_selector do
         click_link 'Users'
+
+        expect(page).to have_selector active_tab_selector, text: 'Users'
       end
 
       expect(page).to have_current_path(admin_users_path)
     end
 
-    it 'adds the ?tab=cohorts param when the Cohorts tab is selected' do
+    it 'links to the Cohorts tab' do
       visit admin_users_path
 
       within tabs_selector do
         click_link 'Cohorts'
-      end
 
-      expect(page).to have_current_path(admin_users_path(tab: 'cohorts'))
-    end
-
-    it 'shows the cohorts tab when the tab param is set' do
-      visit admin_users_path(tab: 'cohorts')
-
-      within tabs_selector do
         expect(page).to have_selector active_tab_selector, text: 'Cohorts'
       end
+
+      expect(page).to have_current_path(cohorts_admin_users_path)
+      expect(page).to have_selector active_tab_selector, text: 'Cohorts'
+    end
+
+    it 'redirects legacy route' do
+      visit admin_users_path(tab: 'cohorts')
+
+      expect(page).to have_current_path(cohorts_admin_users_path)
     end
   end
 
   describe 'Cohorts tab content' do
-    context 'with usage ping enabled' do
-      it 'shows users count per month' do
-        stub_application_setting(usage_ping_enabled: true)
+    it 'shows users count per month' do
+      stub_application_setting(usage_ping_enabled: false)
 
-        create_list(:user, 2)
+      create_list(:user, 2)
 
-        visit admin_users_path(tab: 'cohorts')
+      visit admin_users_path(tab: 'cohorts')
 
-        expect(page).to have_content("#{Time.now.strftime('%b %Y')} 3 0")
-      end
-    end
-
-    context 'with usage ping disabled' do
-      it 'shows empty state', :js do
-        stub_application_setting(usage_ping_enabled: false)
-
-        visit admin_users_path(tab: 'cohorts')
-
-        expect(page).to have_selector(".js-empty-state")
-        expect(page).to have_content("Activate user activity analysis")
-      end
+      expect(page).to have_content("#{Time.now.strftime('%b %Y')} 3 0")
     end
   end
 end

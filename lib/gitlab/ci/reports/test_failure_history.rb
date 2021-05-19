@@ -13,7 +13,7 @@ module Gitlab
 
         def load!
           recent_failures_count.each do |key_hash, count|
-            failed_junit_tests[key_hash].set_recent_failures(count, project.default_branch_or_master)
+            failed_junit_tests[key_hash].set_recent_failures(count, project.default_branch_or_main)
           end
         end
 

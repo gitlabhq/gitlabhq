@@ -3,8 +3,8 @@ import { GlEmptyState } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { __ } from '~/locale';
 
-const ERROR_FETCHING_DATA_HEADER = __('Could not get the data properly');
-const ERROR_FETCHING_DATA_DESCRIPTION = __(
+export const ERROR_FETCHING_DATA_HEADER = __('Could not get the data properly');
+export const ERROR_FETCHING_DATA_DESCRIPTION = __(
   'Please try and refresh the page. If the problem persists please contact support.',
 );
 

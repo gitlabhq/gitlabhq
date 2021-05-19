@@ -144,6 +144,11 @@ class ObjectStoreSettings
       target_config['remote_directory'] = target_config.delete('bucket')
       target_config['consolidated_settings'] = true
       section['object_store'] = target_config
+      # Settingslogic internally stores data as a Hash, but it also
+      # creates a Settings object for every key. To avoid confusion, we should
+      # update both so that Settings.artifacts and Settings['artifacts'] return
+      # the same result.
+      settings[store_type]['object_store'] = target_config
     end
 
     settings

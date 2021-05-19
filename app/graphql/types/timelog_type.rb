@@ -26,6 +26,11 @@ module Types
           null: true,
           description: 'The issue that logged time was added to.'
 
+    field :merge_request,
+          Types::MergeRequestType,
+          null: true,
+          description: 'The merge request that logged time was added to.'
+
     field :note,
           Types::Notes::NoteType,
           null: true,
@@ -37,6 +42,10 @@ module Types
 
     def issue
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Issue, object.issue_id).find
+    end
+
+    def spent_at
+      object.spent_at || object.created_at
     end
   end
 end

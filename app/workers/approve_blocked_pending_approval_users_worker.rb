@@ -3,9 +3,12 @@
 class ApproveBlockedPendingApprovalUsersWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   idempotent!
 
   feature_category :users
+  tags :exclude_from_kubernetes
 
   def perform(current_user_id)
     current_user = User.find(current_user_id)

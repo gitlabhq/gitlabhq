@@ -155,7 +155,7 @@ RSpec.describe Ci::PipelineEntity do
 
       it 'has a correct failure reason' do
         expect(subject[:failure_reason])
-          .to eq 'CI/CD YAML configuration error!'
+          .to eq 'The pipeline failed due to an error on the CI/CD configuration file.'
       end
     end
 
@@ -239,23 +239,23 @@ RSpec.describe Ci::PipelineEntity do
     end
 
     context 'when pipeline has failed builds' do
-      let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
       let_it_be(:build) { create(:ci_build, :success, pipeline: pipeline) }
       let_it_be(:failed_1) { create(:ci_build, :failed, pipeline: pipeline) }
       let_it_be(:failed_2) { create(:ci_build, :failed, pipeline: pipeline) }
 
       context 'when the user can retry the pipeline' do
-        it 'exposes these failed builds' do
-          allow(entity).to receive(:can_retry?).and_return(true)
+        before do
+          project.add_maintainer(user)
+        end
 
+        it 'exposes these failed builds' do
           expect(subject[:failed_builds].map { |b| b[:id] }).to contain_exactly(failed_1.id, failed_2.id)
         end
       end
 
       context 'when the user cannot retry the pipeline' do
         it 'is nil' do
-          allow(entity).to receive(:can_retry?).and_return(false)
-
           expect(subject[:failed_builds]).to be_nil
         end
       end

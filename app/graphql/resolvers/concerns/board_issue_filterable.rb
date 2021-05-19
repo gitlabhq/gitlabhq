@@ -32,4 +32,4 @@ module BoardIssueFilterable
   end
 end
 
-::BoardIssueFilterable.prepend_if_ee('::EE::Resolvers::BoardIssueFilterable')
+::BoardIssueFilterable.prepend_mod_with('Resolvers::BoardIssueFilterable')

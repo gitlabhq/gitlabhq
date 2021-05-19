@@ -36,12 +36,14 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `value_type`        | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type.html).                                                     |
 | `status`            | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `data_available`, `implemented`, `not_used`, `deprecated`, `removed`. |
 | `time_frame`        | yes      | `string`; may be set to a value like `7d`, `28d`, `all`, `none`. |
-| `data_source`       | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `ruby`. |
+| `data_source`       | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `system`. |
+| `instrumentation_class` | no   | `string`; [the class that implements the metric](metrics_instrumentation.md).  |
 | `distribution`      | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available.  |
 | `tier`              | yes      | `array`; may be set to one of `free, premium, ultimate`, `premium, ultimate` or `ultimate`. The [tier]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. |
 | `milestone`         | no       | The milestone when the metric is introduced. |
 | `milestone_removed` | no       | The milestone when the metric is removed. |
 | `introduced_by_url` | no       | The URL to the Merge Request that introduced the metric. |
+| `extra`             | no       | `object`: extra information needed to calculate the metric value. |
 | `skip_validation`   | no       | This should **not** be set. [Used for imported metrics until we review, update and make them valid](https://gitlab.com/groups/gitlab-org/-/epics/5425). |
 
 ### Metric statuses
@@ -119,10 +121,10 @@ only the single prompt to be replaced by the person working with metrics YAML.
   `{subject}_{verb}{ing|ed}_{object}`, such as `user_creating_epics`, `users_triggering_security_scans`,
   or `merge_requests_viewed_in_single_file_mode`
 
-#### Metric with `data_source: prometheus` or `ruby`
+#### Metric with `data_source: prometheus` or `system`
 
-For metrics instrumented with Prometheus or Ruby, the suggested name includes only
-the single prompt by person working with metrics YAML.
+For metrics instrumented with Prometheus or coming from the operating system,
+the suggested name includes only the single prompt by person working with metrics YAML.
 
 - **Prompt**: `<please fill metric name>`
 - **Final metric name**: Due to the variety of cases that can apply to this kind of metric,
@@ -191,6 +193,14 @@ The generator takes `category` and `event` arguments, as the root key will be `r
 
 ```shell
 bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues i_closed
+create  config/metrics/counts_7d/i_closed_weekly.yml
+create  config/metrics/counts_28d/i_closed_monthly.yml
+```
+
+To create a metric definition used in EE, add the `--ee` flag.
+
+```shell
+bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues users_closing_issues --ee
 create  config/metrics/counts_7d/i_closed_weekly.yml
 create  config/metrics/counts_28d/i_closed_monthly.yml
 ```

@@ -9,7 +9,7 @@ const defaultProps = {
   refsProjectPath: 'some/refs/path',
   revisionText: 'Target',
   paramsName: 'from',
-  paramsBranch: 'master',
+  paramsBranch: 'main',
 };
 
 jest.mock('~/flash');

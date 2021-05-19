@@ -12,10 +12,6 @@ class ApplicationExperiment # rubocop:disable Gitlab/NamespacedClass
     super(...)
     Feature.persist_used!(feature_flag_name)
   end
-
-  def should_track?
-    true
-  end
 end
 
 RSpec.configure do |config|

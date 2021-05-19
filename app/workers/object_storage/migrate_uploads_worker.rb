@@ -4,6 +4,8 @@
 module ObjectStorage
   class MigrateUploadsWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include ObjectStorageQueue
 
     feature_category_not_owned!
@@ -48,7 +50,7 @@ module ObjectStorage
         Gitlab::AppLogger.info header(success, failures)
         Gitlab::AppLogger.warn failures(failures)
 
-        raise MigrationFailures.new(failures.map(&:error)) if failures.any?
+        raise MigrationFailures, failures.map(&:error) if failures.any?
       end
 
       def header(success, failures)
@@ -132,7 +134,7 @@ module ObjectStorage
     def process_uploader(uploader)
       MigrationResult.new(uploader.upload).tap do |result|
         uploader.migrate!(@to_store)
-      rescue => e
+      rescue StandardError => e
         result.error = e
       end
     end

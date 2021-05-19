@@ -12,7 +12,7 @@ module TokenAuthenticatable
 
     def add_authentication_token_field(token_field, options = {})
       if token_authenticatable_fields.include?(token_field)
-        raise ArgumentError.new("#{token_field} already configured via add_authentication_token_field")
+        raise ArgumentError, "#{token_field} already configured via add_authentication_token_field"
       end
 
       token_authenticatable_fields.push(token_field)

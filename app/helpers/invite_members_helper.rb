@@ -3,31 +3,17 @@
 module InviteMembersHelper
   include Gitlab::Utils::StrongMemoize
 
-  def can_invite_members_for_group?(group)
-    Feature.enabled?(:invite_members_group_modal, group) && can?(current_user, :admin_group_member, group)
+  def can_invite_members_for_project?(project)
+    Feature.enabled?(:invite_members_group_modal, project.group) && can_manage_project_members?(project)
   end
 
-  def can_invite_members_for_project?(project)
-    Feature.enabled?(:invite_members_group_modal, project.group) && can_import_members?
+  def can_invite_group_for_project?(project)
+    Feature.enabled?(:invite_members_group_modal, project.group) && project.allowed_to_share_with_group?
   end
 
   def directly_invite_members?
     strong_memoize(:directly_invite_members) do
       can_import_members?
-    end
-  end
-
-  def indirectly_invite_members?
-    strong_memoize(:indirectly_invite_members) do
-      experiment_enabled?(:invite_members_version_b) && !can_import_members?
-    end
-  end
-
-  def show_invite_members_track_event
-    if directly_invite_members?
-      'show_invite_members'
-    elsif indirectly_invite_members?
-      'show_invite_members_version_b'
     end
   end
 
@@ -43,6 +29,17 @@ module InviteMembersHelper
               'track-property': experiment_tracking_category_and_group(:invite_members_new_dropdown)
             } do
       invite_member_link_content
+    end
+  end
+
+  def invite_accepted_notice(member)
+    case member.source
+    when Project
+      _("You have been granted %{member_human_access} access to project %{name}.") %
+        { member_human_access: member.human_access, name: member.source.name }
+    when Group
+      _("You have been granted %{member_human_access} access to group %{name}.") %
+        { member_human_access: member.human_access, name: member.source.name }
     end
   end
 

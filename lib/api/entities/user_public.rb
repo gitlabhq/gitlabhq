@@ -19,4 +19,4 @@ module API
   end
 end
 
-API::Entities::UserPublic.prepend_if_ee('EE::API::Entities::UserPublic', with_descendants: true)
+API::Entities::UserPublic.prepend_mod_with('API::Entities::UserPublic', with_descendants: true)

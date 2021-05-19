@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
+
   let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha) }
   let(:root_variables) { [] }
   let(:seed_context) { double(pipeline: pipeline, root_variables: root_variables) }
@@ -86,91 +87,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         is_expected.to include(yaml_variables: [{ key: 'VAR1', value: 'new var 1', public: true },
                                                 { key: 'VAR2', value: 'var 2', public: true },
                                                 { key: 'VAR3', value: 'var 3', public: true }])
-      end
-    end
-
-    context 'with multiple_cache_per_job FF disabled' do
-      before do
-        stub_feature_flags(multiple_cache_per_job: false)
-      end
-
-      context 'with cache:key' do
-        let(:attributes) do
-          {
-            name: 'rspec',
-            ref: 'master',
-            cache: {
-              key: 'a-value'
-            }
-          }
-        end
-
-        it { is_expected.to include(options: { cache: { key: 'a-value' } }) }
-      end
-
-      context 'with cache:key:files' do
-        let(:attributes) do
-          {
-            name: 'rspec',
-            ref: 'master',
-            cache: {
-              key: {
-                files: ['VERSION']
-              }
-            }
-          }
-        end
-
-        it 'includes cache options' do
-          cache_options = {
-            options: {
-              cache: { key: 'f155568ad0933d8358f66b846133614f76dd0ca4' }
-            }
-          }
-
-          is_expected.to include(cache_options)
-        end
-      end
-
-      context 'with cache:key:prefix' do
-        let(:attributes) do
-          {
-            name: 'rspec',
-            ref: 'master',
-            cache: {
-              key: {
-                prefix: 'something'
-              }
-            }
-          }
-        end
-
-        it { is_expected.to include(options: { cache: { key: 'something-default' } }) }
-      end
-
-      context 'with cache:key:files and prefix' do
-        let(:attributes) do
-          {
-            name: 'rspec',
-            ref: 'master',
-            cache: {
-              key: {
-                files: ['VERSION'],
-                prefix: 'something'
-              }
-            }
-          }
-        end
-
-        it 'includes cache options' do
-          cache_options = {
-            options: {
-              cache: { key: 'something-f155568ad0933d8358f66b846133614f76dd0ca4' }
-            }
-          }
-
-          is_expected.to include(cache_options)
-        end
       end
     end
 

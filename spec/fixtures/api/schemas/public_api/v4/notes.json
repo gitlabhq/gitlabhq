@@ -22,8 +22,8 @@
         ]
       },
       "commands_changes": { "type": "object", "additionalProperties": true },
-      "created_at": { "type": "date" },
-      "updated_at": { "type": "date" },
+      "created_at": { "type": "string", "format": "date-time" },
+      "updated_at": { "type": "string", "format": "date-time" },
       "system": { "type": "boolean" },
       "noteable_id": { "type": "integer" },
       "noteable_iid": { "type": "integer" },
@@ -31,7 +31,7 @@
       "resolved": { "type": "boolean" },
       "resolvable": { "type": "boolean" },
       "resolved_by": { "type": ["string", "null"] },
-      "resolved_at": { "type": ["date", "null"] },
+      "resolved_at": { "type": ["string", "null"] },
       "confidential": { "type": ["boolean", "null"] }
     },
     "required": [

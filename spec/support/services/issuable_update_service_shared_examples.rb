@@ -12,13 +12,13 @@ RSpec.shared_examples 'issuable update service' do
 
     context 'to reopened' do
       it 'executes hooks only once' do
-        described_class.new(project, user, state_event: 'reopen').execute(closed_issuable)
+        described_class.new(project: project, current_user: user, params: { state_event: 'reopen' }).execute(closed_issuable)
       end
     end
 
     context 'to closed' do
       it 'executes hooks only once' do
-        described_class.new(project, user, state_event: 'close').execute(open_issuable)
+        described_class.new(project: project, current_user: user, params: { state_event: 'close' }).execute(open_issuable)
       end
     end
   end

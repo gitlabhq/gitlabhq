@@ -1,8 +1,0 @@
----
-name: usage_data_incident_management_alert_create_incident
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48087
-rollout_issue_url:
-milestone: '13.7'
-type: development
-group: group::monitor
-default_enabled: true

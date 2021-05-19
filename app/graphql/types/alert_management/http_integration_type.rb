@@ -21,4 +21,4 @@ module Types
   end
 end
 
-Types::AlertManagement::HttpIntegrationType.prepend_ee_mod
+Types::AlertManagement::HttpIntegrationType.prepend_mod

@@ -108,7 +108,7 @@ describe('Ref selector Vuex store mutations', () => {
       const response = {
         data: [
           {
-            name: 'master',
+            name: 'main',
             default: true,
 
             // everything except "name" and "default" should be stripped
@@ -130,7 +130,7 @@ describe('Ref selector Vuex store mutations', () => {
       expect(state.matches.branches).toEqual({
         list: [
           {
-            name: 'master',
+            name: 'main',
             default: true,
           },
           {

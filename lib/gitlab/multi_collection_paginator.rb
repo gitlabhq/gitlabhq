@@ -5,7 +5,7 @@ module Gitlab
     attr_reader :first_collection, :second_collection, :per_page
 
     def initialize(*collections, per_page: nil)
-      raise ArgumentError.new('Only 2 collections are supported') if collections.size != 2
+      raise ArgumentError, 'Only 2 collections are supported' if collections.size != 2
 
       @per_page = (per_page || Kaminari.config.default_per_page).to_i
       @first_collection, @second_collection = collections

@@ -83,16 +83,13 @@ module Gitlab
 
     def self.configure_throttles(rack_attack)
       throttle_or_track(rack_attack, 'throttle_unauthenticated', Gitlab::Throttle.unauthenticated_options) do |req|
-        if !req.should_be_skipped? &&
-           Gitlab::Throttle.settings.throttle_unauthenticated_enabled &&
-           req.unauthenticated?
+        if req.throttle_unauthenticated?
           req.ip
         end
       end
 
       throttle_or_track(rack_attack, 'throttle_authenticated_api', Gitlab::Throttle.authenticated_api_options) do |req|
-        if req.api_request? &&
-           Gitlab::Throttle.settings.throttle_authenticated_api_enabled
+        if req.throttle_authenticated_api?
           req.throttled_user_id([:api])
         end
       end
@@ -107,37 +104,38 @@ module Gitlab
       end
 
       throttle_or_track(rack_attack, 'throttle_authenticated_web', Gitlab::Throttle.authenticated_web_options) do |req|
-        if req.web_request? &&
-           Gitlab::Throttle.settings.throttle_authenticated_web_enabled
+        if req.throttle_authenticated_web?
           req.throttled_user_id([:api, :rss, :ics])
         end
       end
 
       throttle_or_track(rack_attack, 'throttle_unauthenticated_protected_paths', Gitlab::Throttle.protected_paths_options) do |req|
-        if req.post? &&
-           !req.should_be_skipped? &&
-           req.protected_path? &&
-           Gitlab::Throttle.protected_paths_enabled? &&
-           req.unauthenticated?
+        if req.throttle_unauthenticated_protected_paths?
           req.ip
         end
       end
 
       throttle_or_track(rack_attack, 'throttle_authenticated_protected_paths_api', Gitlab::Throttle.protected_paths_options) do |req|
-        if req.post? &&
-           req.api_request? &&
-           req.protected_path? &&
-           Gitlab::Throttle.protected_paths_enabled?
+        if req.throttle_authenticated_protected_paths_api?
           req.throttled_user_id([:api])
         end
       end
 
       throttle_or_track(rack_attack, 'throttle_authenticated_protected_paths_web', Gitlab::Throttle.protected_paths_options) do |req|
-        if req.post? &&
-           req.web_request? &&
-           req.protected_path? &&
-           Gitlab::Throttle.protected_paths_enabled?
+        if req.throttle_authenticated_protected_paths_web?
           req.throttled_user_id([:api, :rss, :ics])
+        end
+      end
+
+      throttle_or_track(rack_attack, 'throttle_unauthenticated_packages_api', Gitlab::Throttle.unauthenticated_packages_api_options) do |req|
+        if req.throttle_unauthenticated_packages_api?
+          req.ip
+        end
+      end
+
+      throttle_or_track(rack_attack, 'throttle_authenticated_packages_api', Gitlab::Throttle.authenticated_packages_api_options) do |req|
+        if req.throttle_authenticated_packages_api?
+          req.throttled_user_id([:api])
         end
       end
 
@@ -173,4 +171,4 @@ module Gitlab
     end
   end
 end
-::Gitlab::RackAttack.prepend_if_ee('::EE::Gitlab::RackAttack')
+::Gitlab::RackAttack.prepend_mod_with('Gitlab::RackAttack')

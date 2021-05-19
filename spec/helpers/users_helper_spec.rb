@@ -136,6 +136,16 @@ RSpec.describe UsersHelper do
       end
     end
 
+    context 'with a banned user' do
+      it 'returns the banned badge' do
+        banned_user = create(:user, :banned)
+
+        badges = helper.user_badges_in_admin_section(banned_user)
+
+        expect(filter_ee_badges(badges)).to eq([text: 'Banned', variant: 'danger'])
+      end
+    end
+
     context 'with an admin user' do
       it "returns the admin badge" do
         admin_user = create(:admin)
@@ -160,7 +170,7 @@ RSpec.describe UsersHelper do
       it 'returns the "It\'s You" badge' do
         badges = helper.user_badges_in_admin_section(user)
 
-        expect(filter_ee_badges(badges)).to eq([text: "It's you!", variant: nil])
+        expect(filter_ee_badges(badges)).to eq([text: "It's you!", variant: "muted"])
       end
     end
 

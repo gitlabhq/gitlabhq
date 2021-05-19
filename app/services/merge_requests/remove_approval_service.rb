@@ -41,4 +41,4 @@ module MergeRequests
   end
 end
 
-MergeRequests::RemoveApprovalService.prepend_if_ee('EE::MergeRequests::RemoveApprovalService')
+MergeRequests::RemoveApprovalService.prepend_mod_with('MergeRequests::RemoveApprovalService')

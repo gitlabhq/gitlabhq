@@ -13,8 +13,8 @@
       "id": { "type": "integer" },
       "environment_scope": { "type": "string" },
       "active": { "type": "boolean" },
-      "created_at": { "type": "date" },
-      "updated_at": { "type": "date" },
+      "created_at": { "type": "string", "format": "date-time" },
+      "updated_at": { "type": "string", "format": "date-time" },
       "strategies": { "type": "array", "items": { "$ref": "feature_flag_strategy.json" } }
     },
     "additionalProperties": false

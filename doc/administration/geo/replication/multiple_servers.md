@@ -53,14 +53,14 @@ It is possible to use cloud hosted services for PostgreSQL and Redis, but this i
 
 ## Prerequisites: Two working GitLab multi-node clusters
 
-One cluster will serve as the **primary** node. Use the
+One cluster serves as the **primary** node. Use the
 [GitLab multi-node documentation](../../reference_architectures/index.md) to set this up. If
 you already have a working GitLab instance that is in-use, it can be used as a
 **primary**.
 
-The second cluster will serve as the **secondary** node. Again, use the
+The second cluster serves as the **secondary** node. Again, use the
 [GitLab multi-node documentation](../../reference_architectures/index.md) to set this up.
-It's a good idea to log in and test it, however, note that its data will be
+It's a good idea to log in and test it, however, note that its data is
 wiped out as part of the process of replicating from the **primary**.
 
 ## Configure the GitLab cluster to be the **primary** node
@@ -120,7 +120,7 @@ major differences:
   called the "tracking database", which tracks the synchronization state of
   various resources.
 
-Therefore, we will set up the multi-node components one-by-one, and include deviations
+Therefore, we set up the multi-node components one-by-one, and include deviations
 from the normal multi-node setup. However, we highly recommend first configuring a
 brand-new cluster as if it were not part of a Geo setup so that it can be
 tested and verified as a working cluster. And only then should it be modified
@@ -133,7 +133,7 @@ Configure the following services, again using the non-Geo multi-node
 documentation:
 
 - [Configuring Redis for GitLab](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application) for multiple nodes.
-- [Gitaly](../../gitaly/index.md), which will store data that is
+- [Gitaly](../../gitaly/index.md), which stores data that is
   synchronized from the **primary** node.
 
 NOTE:
@@ -143,7 +143,7 @@ recommended.
 ### Step 2: Configure the main read-only replica PostgreSQL database on the **secondary** node
 
 NOTE:
-The following documentation assumes the database will be run on
+The following documentation assumes the database runs on
 a single node only. Multi-node PostgreSQL on **secondary** nodes is
 [not currently supported](https://gitlab.com/groups/gitlab-org/-/epics/2536).
 
@@ -151,7 +151,7 @@ Configure the [**secondary** database](../setup/database.md) as a read-only repl
 the **primary** database. Use the following as a guide.
 
 1. Generate an MD5 hash of the desired password for the database user that the
-   GitLab application will use to access the read-replica database:
+   GitLab application uses to access the read-replica database:
 
    Note that the username (`gitlab` by default) is incorporated into the hash.
 
@@ -233,13 +233,13 @@ If using an external PostgreSQL instance, refer also to
 ### Step 3: Configure the tracking database on the **secondary** node
 
 NOTE:
-This documentation assumes the tracking database will be run on
+This documentation assumes the tracking database runs on
 only a single machine, rather than as a PostgreSQL cluster.
 
 Configure the tracking database.
 
 1. Generate an MD5 hash of the desired password for the database user that the
-   GitLab application will use to access the tracking database:
+   GitLab application uses to access the tracking database:
 
    Note that the username (`gitlab_geo` by default) is incorporated into the
    hash.
@@ -377,7 +377,7 @@ Make sure that current node IP is listed in `postgresql['md5_auth_cidr_addresses
 
 After making these changes [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
 
-On the secondary the following GitLab frontend services will be enabled:
+On the secondary the following GitLab frontend services are enabled:
 
 - `geo-logcursor`
 - `gitlab-pages`

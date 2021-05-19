@@ -28,6 +28,7 @@ describe('dashboard invalid url parameters', () => {
         },
       },
       options,
+      provide: { hasManagedPrometheus: false },
     });
   };
 

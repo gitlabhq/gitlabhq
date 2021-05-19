@@ -155,4 +155,4 @@ module Projects
   end
 end
 
-Projects::Settings::OperationsController.prepend_if_ee('::EE::Projects::Settings::OperationsController')
+Projects::Settings::OperationsController.prepend_mod_with('Projects::Settings::OperationsController')

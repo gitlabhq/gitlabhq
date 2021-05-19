@@ -438,6 +438,12 @@ production: &base
   ## Sidekiq
   sidekiq:
     log_format: json # (default is the original format)
+    # An array of tuples indicating the rules for re-routing a worker to a
+    # desirable queue before scheduling. For example:
+    # routing_rules:
+    #   - ["resource_boundary=cpu", "cpu_boundary"]
+    #   - ["feature_category=pages", null]
+    #   - ["*", "default"]
 
   ## Auxiliary jobs
   # Periodically executed jobs, to self-heal GitLab, do external synchronizations, etc.
@@ -1264,6 +1270,10 @@ production: &base
     # matomo_site_id: '_your_matomo_site_id'
     # matomo_disable_cookies: false
 
+    ## Maximum file size for syntax highlighting
+    ## https://docs.gitlab.com/ee/user/project/highlighting.html
+    # maximum_text_highlight_size_kilobytes: 512
+
   rack_attack:
     git_basic_auth:
       # Rack Attack IP banning enabled
@@ -1416,7 +1426,7 @@ test:
         gitaly_address: unix:tmp/tests/gitaly/praefect.socket
 
   gitaly:
-    client_path: tmp/tests/gitaly
+    client_path: tmp/tests/gitaly/_build/bin
     token: secret
   workhorse:
     secret_file: tmp/gitlab_workhorse_test_secret

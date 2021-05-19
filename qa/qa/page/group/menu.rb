@@ -11,7 +11,7 @@ module QA
           element :group_issues_item
           element :group_members_item
           element :group_milestones_link
-          element :group_settings_item
+          element :group_settings
         end
 
         view 'app/views/groups/sidebar/_packages_settings.html.haml' do
@@ -31,7 +31,7 @@ module QA
 
         def click_settings
           within_sidebar do
-            click_element(:group_settings_item)
+            click_element(:group_settings)
           end
         end
 
@@ -44,7 +44,7 @@ module QA
         end
 
         def click_group_general_settings_item
-          hover_element(:group_settings_item) do
+          hover_element(:group_settings) do
             within_submenu(:group_sidebar_submenu) do
               click_element(:general_settings_link)
             end
@@ -60,8 +60,8 @@ module QA
         end
 
         def go_to_package_settings
-          scroll_to_element(:group_settings_item)
-          hover_element(:group_settings_item) do
+          scroll_to_element(:group_settings)
+          hover_element(:group_settings) do
             within_submenu(:group_sidebar_submenu) do
               click_element(:group_package_settings_link)
             end
@@ -83,4 +83,4 @@ module QA
   end
 end
 
-QA::Page::Group::Menu.prepend_if_ee('QA::EE::Page::Group::Menu')
+QA::Page::Group::Menu.prepend_mod_with('Page::Group::Menu', namespace: QA)

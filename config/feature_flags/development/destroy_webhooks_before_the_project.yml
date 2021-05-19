@@ -1,0 +1,8 @@
+---
+name: destroy_webhooks_before_the_project
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59754
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/328393
+milestone: '13.12'
+type: development
+group: group::source code
+default_enabled: true

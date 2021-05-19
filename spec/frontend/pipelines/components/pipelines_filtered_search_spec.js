@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesFilteredSearch from '~/pipelines/components/pipelines_list/pipelines_filtered_search.vue';
+import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import { users, mockSearch, branches, tags } from '../mock_data';
 
 describe('Pipelines filtered search', () => {
@@ -57,7 +58,7 @@ describe('Pipelines filtered search', () => {
       title: 'Trigger author',
       unique: true,
       projectId: '21',
-      operators: [expect.objectContaining({ value: '=' })],
+      operators: OPERATOR_IS_ONLY,
     });
 
     expect(findBranchToken()).toMatchObject({
@@ -66,7 +67,7 @@ describe('Pipelines filtered search', () => {
       title: 'Branch name',
       unique: true,
       projectId: '21',
-      operators: [expect.objectContaining({ value: '=' })],
+      operators: OPERATOR_IS_ONLY,
     });
 
     expect(findStatusToken()).toMatchObject({
@@ -74,7 +75,7 @@ describe('Pipelines filtered search', () => {
       icon: 'status',
       title: 'Status',
       unique: true,
-      operators: [expect.objectContaining({ value: '=' })],
+      operators: OPERATOR_IS_ONLY,
     });
 
     expect(findTagToken()).toMatchObject({
@@ -82,7 +83,7 @@ describe('Pipelines filtered search', () => {
       icon: 'tag',
       title: 'Tag name',
       unique: true,
-      operators: [expect.objectContaining({ value: '=' })],
+      operators: OPERATOR_IS_ONLY,
     });
   });
 
@@ -138,7 +139,7 @@ describe('Pipelines filtered search', () => {
   describe('Url query params', () => {
     const params = {
       username: 'deja.green',
-      ref: 'master',
+      ref: 'main',
     };
 
     beforeEach(() => {

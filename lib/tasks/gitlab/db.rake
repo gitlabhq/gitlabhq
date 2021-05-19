@@ -191,7 +191,7 @@ namespace :gitlab do
       ActiveRecord::Base.logger = Logger.new(STDOUT) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
 
       Gitlab::Database::Reindexing.perform(indexes)
-    rescue => e
+    rescue StandardError => e
       Gitlab::AppLogger.error(e)
       raise
     end
@@ -217,9 +217,11 @@ namespace :gitlab do
     end
 
     desc 'Run migrations with instrumentation'
-    task :migration_testing, [:result_file] => :environment do |_, args|
-      result_file = args[:result_file] || raise("Please specify result_file argument")
-      raise "File exists already, won't overwrite: #{result_file}" if File.exist?(result_file)
+    task migration_testing: :environment do
+      result_dir = Gitlab::Database::Migrations::Instrumentation::RESULT_DIR
+      raise "Directory exists already, won't overwrite: #{result_dir}" if File.exist?(result_dir)
+
+      Dir.mkdir(result_dir)
 
       verbose_was = ActiveRecord::Migration.verbose
       ActiveRecord::Migration.verbose = true
@@ -240,13 +242,27 @@ namespace :gitlab do
       end
     ensure
       if instrumentation
-        File.open(result_file, 'wb+') do |io|
+        File.open(File.join(result_dir, Gitlab::Database::Migrations::Instrumentation::STATS_FILENAME), 'wb+') do |io|
           io << instrumentation.observations.to_json
         end
       end
 
       ActiveRecord::Base.clear_cache!
       ActiveRecord::Migration.verbose = verbose_was
+    end
+
+    desc 'Run all pending batched migrations'
+    task execute_batched_migrations: :environment do
+      Gitlab::Database::BackgroundMigration::BatchedMigration.active.queue_order.each do |migration|
+        Gitlab::AppLogger.info("Executing batched migration #{migration.id} inline")
+        Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new.run_entire_migration(migration)
+      end
+    end
+
+    # Only for development environments,
+    # we execute pending data migrations inline for convenience.
+    Rake::Task['db:migrate'].enhance do
+      Rake::Task['gitlab:db:execute_batched_migrations'].invoke if Rails.env.development?
     end
   end
 end

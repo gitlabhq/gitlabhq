@@ -4,6 +4,8 @@ module Clusters
   module Applications
     class ActivateServiceWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
+
+      sidekiq_options retry: 3
       include ClusterQueue
 
       loggable_arguments 1

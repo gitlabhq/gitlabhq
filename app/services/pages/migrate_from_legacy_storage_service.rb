@@ -59,7 +59,7 @@ module Pages
       end
 
       @logger.info(message: "Pages legacy storage migration: batch processed", migrated: @migrated, errored: @errored)
-    rescue => e
+    rescue StandardError => e
       # This method should never raise exception otherwise all threads might be killed
       # and this will result in queue starving (and deadlock)
       Gitlab::ErrorTracking.track_exception(e)
@@ -81,7 +81,7 @@ module Pages
         @logger.error(message: "Pages legacy storage migration: project failed to be migrated: #{result[:message]}", project_id: project.id, pages_path: project.pages_path, duration: time.round(2))
         @counters_lock.synchronize { @errored += 1 }
       end
-    rescue => e
+    rescue StandardError => e
       @counters_lock.synchronize { @errored += 1 }
       @logger.error(message: "Pages legacy storage migration: project failed to be migrated: #{result[:message]}", project_id: project&.id, pages_path: project&.pages_path)
       Gitlab::ErrorTracking.track_exception(e, project_id: project&.id)

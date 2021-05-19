@@ -22,11 +22,7 @@ RSpec.describe 'ActionCable logging', :js do
     subscription_data = a_hash_including(
       remote_ip: '127.0.0.1',
       user_id: user.id,
-      username: user.username,
-      params: a_hash_including(
-        project_path: project.full_path,
-        iid: issue.iid.to_s
-      )
+      username: user.username
     )
 
     expect(ActiveSupport::Notifications).to receive(:instrument).with('subscribe.action_cable', subscription_data)

@@ -17,8 +17,8 @@ module Gitlab
             MergeRequest
           end
 
-          def timestamp_projection
-            mr_metrics_table[:merged_at]
+          def column_list
+            [mr_metrics_table[:merged_at]]
           end
         end
       end

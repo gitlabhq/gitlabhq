@@ -96,10 +96,10 @@ export default {
       required: false,
       default: false,
     },
-    hasCodequalityChanges: {
-      type: Boolean,
+    codequalityDiff: {
+      type: Array,
       required: false,
-      default: false,
+      default: () => [],
     },
   },
   data() {
@@ -333,7 +333,12 @@ export default {
         data-track-property="diff_copy_file"
       />
 
-      <code-quality-badge v-if="hasCodequalityChanges" class="gl-mr-2" />
+      <code-quality-badge
+        v-if="codequalityDiff.length"
+        :file-name="filePath"
+        :codequality-diff="codequalityDiff"
+        class="gl-mr-2"
+      />
 
       <small v-if="isModeChanged" ref="fileMode" class="mr-1">
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}

@@ -15,6 +15,7 @@ RSpec.describe Gitlab::Email::Receiver do
 
   context 'when the email contains a valid email address in a header' do
     let(:handler) { double(:handler) }
+    let(:metadata) { receiver.mail_metadata }
 
     before do
       allow(handler).to receive(:execute)
@@ -22,24 +23,38 @@ RSpec.describe Gitlab::Email::Receiver do
       allow(handler).to receive(:metrics_event)
 
       stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.example.com")
+
+      expect(receiver.mail_metadata.keys).to match_array(%i(mail_uid from_address to_address mail_key references delivered_to envelope_to x_envelope_to))
     end
 
     context 'when in a Delivered-To header' do
       let(:email_raw) { fixture_file('emails/forwarded_new_issue.eml') }
 
       it_behaves_like 'correctly finds the mail key'
+
+      it 'parses the metadata' do
+        expect(metadata[:delivered_to]). to eq(["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com", "support@example.com"])
+      end
     end
 
     context 'when in an Envelope-To header' do
       let(:email_raw) { fixture_file('emails/envelope_to_header.eml') }
 
       it_behaves_like 'correctly finds the mail key'
+
+      it 'parses the metadata' do
+        expect(metadata[:envelope_to]). to eq(["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com"])
+      end
     end
 
     context 'when in an X-Envelope-To header' do
       let(:email_raw) { fixture_file('emails/x_envelope_to_header.eml') }
 
       it_behaves_like 'correctly finds the mail key'
+
+      it 'parses the metadata' do
+        expect(metadata[:x_envelope_to]). to eq(["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com"])
+      end
     end
 
     context 'when enclosed with angle brackets in an Envelope-To header' do

@@ -7,9 +7,11 @@ class Admin::RunnersController < Admin::ApplicationController
 
   feature_category :continuous_integration
 
+  NUMBER_OF_RUNNERS_PER_PAGE = 30
+
   def index
     finder = Ci::RunnersFinder.new(current_user: current_user, params: params)
-    @runners = finder.execute
+    @runners = finder.execute.page(params[:page]).per(NUMBER_OF_RUNNERS_PER_PAGE)
     @active_runners_count = Ci::Runner.online.count
     @sort = finder.sort_key
   end

@@ -3,7 +3,7 @@
 module QA
   module Resource
     class Snippet < Base
-      attr_accessor :title, :description, :file_content, :visibility, :file_name
+      attr_accessor :title, :description, :file_content, :visibility, :file_name, :files
 
       attribute :id
       attribute :http_url_to_repo

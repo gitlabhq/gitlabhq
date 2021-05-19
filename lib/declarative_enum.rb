@@ -40,7 +40,7 @@
 module DeclarativeEnum
   # This `prepended` hook will merge the enum definition
   # of the prepended module into the base module to be
-  # used by `prepend_if_ee` helper method.
+  # used by `prepend_mod_with` helper method.
   def prepended(base)
     base.definition.merge!(definition)
   end
@@ -64,7 +64,7 @@ module DeclarativeEnum
   end
 
   def define(&block)
-    raise LocalJumpError.new('No block given') unless block
+    raise LocalJumpError, 'No block given' unless block
 
     @definition = Builder.new(definition, block).build
   end

@@ -49,7 +49,7 @@ RSpec.describe ArrayMembersValidator do
         object = test_class.new(children: [])
 
         expect(object.valid?).to be_falsey
-        expect(object.errors.messages).to eql(children: ['should be an array of children objects'])
+        expect(object.errors.messages).to eq(children: ['should be an array of children objects'])
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe ArrayMembersValidator do
         object = test_class.new(children: [])
 
         expect(object.valid?).to be_falsey
-        expect(object.errors.messages).to eql(children: ['should be an array of test objects'])
+        expect(object.errors.messages).to eq(children: ['should be an array of test objects'])
       end
     end
   end

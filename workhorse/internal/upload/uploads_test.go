@@ -325,20 +325,17 @@ func TestInvalidFileNames(t *testing.T) {
 	defer os.RemoveAll(tempPath)
 
 	for _, testCase := range []struct {
-		filename               string
-		code                   int
-		FeatureFlagExtractBase bool
-		expectedPrefix         string
+		filename       string
+		code           int
+		expectedPrefix string
 	}{
-		{"foobar", 200, false, "foobar"}, // sanity check for test setup below
-		{"foo/bar", 500, false, ""},
-		{"foo/bar", 200, true, "bar"},
-		{"foo/bar/baz", 200, true, "baz"},
-		{"/../../foobar", 500, false, ""},
-		{"/../../foobar", 200, true, "foobar"},
-		{".", 500, false, ""},
-		{"..", 500, false, ""},
-		{"./", 500, false, ""},
+		{"foobar", 200, "foobar"}, // sanity check for test setup below
+		{"foo/bar", 200, "bar"},
+		{"foo/bar/baz", 200, "baz"},
+		{"/../../foobar", 200, "foobar"},
+		{".", 500, ""},
+		{"..", 500, ""},
+		{"./", 500, ""},
 	} {
 		buffer := &bytes.Buffer{}
 
@@ -356,7 +353,6 @@ func TestInvalidFileNames(t *testing.T) {
 		apiResponse := &api.Response{TempPath: tempPath}
 		preparer := &DefaultPreparer{}
 		opts, _, err := preparer.Prepare(apiResponse)
-		opts.FeatureFlagExtractBase = testCase.FeatureFlagExtractBase
 		require.NoError(t, err)
 
 		HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)

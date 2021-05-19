@@ -1,8 +1,0 @@
----
-name: usage_data_incident_management_incident_reopened
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40475
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/229918
-milestone: '13.4'
-type: development
-group: group::monitor
-default_enabled: true

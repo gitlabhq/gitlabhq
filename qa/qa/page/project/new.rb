@@ -4,13 +4,9 @@ module QA
   module Page
     module Project
       class New < Page::Base
-        include Page::Component::Select2
         include Page::Component::Project::Templates
-
-        view 'app/views/projects/new.html.haml' do
-          element :project_create_from_template_tab
-          element :import_project_tab, "Import project" # rubocop:disable QA/ElementWithPattern
-        end
+        include Page::Component::Select2
+        include Page::Component::VisibilitySetting
 
         view 'app/views/projects/_new_project_fields.html.haml' do
           element :initialize_with_readme_checkbox
@@ -26,6 +22,19 @@ module QA
         view 'app/views/projects/project_templates/_template.html.haml' do
           element :use_template_button
           element :template_option_row
+        end
+
+        view 'app/assets/javascripts/vue_shared/new_namespace/components/welcome.vue' do
+          element :blank_project_link, ':data-qa-selector="`${panel.name}_link`"' # rubocop:disable QA/ElementWithPattern
+          element :create_from_template_link, ':data-qa-selector="`${panel.name}_link`"' # rubocop:disable QA/ElementWithPattern
+        end
+
+        def click_blank_project_link
+          click_element :blank_project_link
+        end
+
+        def click_create_from_template_link
+          click_element :create_from_template_link
         end
 
         def choose_test_namespace
@@ -75,4 +84,4 @@ module QA
   end
 end
 
-QA::Page::Project::New.prepend_if_ee('QA::EE::Page::Project::New')
+QA::Page::Project::New.prepend_mod_with('Page::Project::New', namespace: QA)

@@ -29,7 +29,7 @@ module Projects
       Gitlab::ErrorTracking.track_exception(e, project_path: project.full_path, importer: project.import_type)
 
       error(s_("ImportProjects|Error importing repository %{project_safe_import_url} into %{project_full_path} - %{message}") % { project_safe_import_url: project.safe_import_url, project_full_path: project.full_path, message: e.message })
-    rescue => e
+    rescue StandardError => e
       message = Projects::ImportErrorFilter.filter_message(e.message)
 
       Gitlab::ErrorTracking.track_exception(e, project_path: project.full_path, importer: project.import_type)
@@ -149,7 +149,7 @@ module Projects
   end
 end
 
-Projects::ImportService.prepend_if_ee('EE::Projects::ImportService')
+Projects::ImportService.prepend_mod_with('Projects::ImportService')
 
 # Measurable should be at the bottom of the ancestor chain, so it will measure execution of EE::Projects::ImportService as well
 Projects::ImportService.prepend(Measurable)

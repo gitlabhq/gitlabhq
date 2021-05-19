@@ -216,14 +216,14 @@ describe('InlineDiffTableRow', () => {
         const TEST_LINE_NUMBER = 1;
 
         describe.each`
-          lineProps                                                                                     | findLineNumber       | expectedHref            | expectedClickArg  | expectedQaSelector
-          ${{ line_code: TEST_LINE_CODE, old_line: TEST_LINE_NUMBER }}                                  | ${findLineNumberOld} | ${`#${TEST_LINE_CODE}`} | ${TEST_LINE_CODE} | ${undefined}
-          ${{ line_code: undefined, old_line: TEST_LINE_NUMBER }}                                       | ${findLineNumberOld} | ${'#'}                  | ${undefined}      | ${undefined}
-          ${{ line_code: undefined, left: { line_code: TEST_LINE_CODE }, old_line: TEST_LINE_NUMBER }}  | ${findLineNumberOld} | ${'#'}                  | ${TEST_LINE_CODE} | ${undefined}
-          ${{ line_code: undefined, right: { line_code: TEST_LINE_CODE }, new_line: TEST_LINE_NUMBER }} | ${findLineNumberNew} | ${'#'}                  | ${TEST_LINE_CODE} | ${'new_diff_line_link'}
+          lineProps                                                                                     | findLineNumber       | expectedHref            | expectedClickArg
+          ${{ line_code: TEST_LINE_CODE, old_line: TEST_LINE_NUMBER }}                                  | ${findLineNumberOld} | ${`#${TEST_LINE_CODE}`} | ${TEST_LINE_CODE}
+          ${{ line_code: undefined, old_line: TEST_LINE_NUMBER }}                                       | ${findLineNumberOld} | ${'#'}                  | ${undefined}
+          ${{ line_code: undefined, left: { line_code: TEST_LINE_CODE }, old_line: TEST_LINE_NUMBER }}  | ${findLineNumberOld} | ${'#'}                  | ${TEST_LINE_CODE}
+          ${{ line_code: undefined, right: { line_code: TEST_LINE_CODE }, new_line: TEST_LINE_NUMBER }} | ${findLineNumberNew} | ${'#'}                  | ${TEST_LINE_CODE}
         `(
           'with line ($lineProps)',
-          ({ lineProps, findLineNumber, expectedHref, expectedClickArg, expectedQaSelector }) => {
+          ({ lineProps, findLineNumber, expectedHref, expectedClickArg }) => {
             beforeEach(() => {
               jest.spyOn(store, 'dispatch').mockImplementation();
               createComponent({
@@ -236,7 +236,6 @@ describe('InlineDiffTableRow', () => {
               expect(findLineNumber().attributes()).toEqual({
                 href: expectedHref,
                 'data-linenumber': TEST_LINE_NUMBER.toString(),
-                'data-qa-selector': expectedQaSelector,
               });
             });
 

@@ -65,7 +65,7 @@ GitLab [Auto Build](../../../topics/autodevops/stages.md#auto-build)
 and [Container Registry](../../../user/packages/container_registry/index.md).
 
 1. Go to **ecs-demo** project on GitLab.
-1. Click **Setup up CI/CD**. It brings you to a [`.gitlab-ci.yml`](../../README.md#getting-started)
+1. Click **Setup up CI/CD**. It brings you to a `.gitlab-ci.yml`
    creation form.
 1. Copy and paste the following content into the empty `.gitlab-ci.yml`. This defines
    [a pipeline for continuous deployment to ECS](../index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs).
@@ -77,9 +77,9 @@ and [Container Registry](../../../user/packages/container_registry/index.md).
 
 1. Click **Commit Changes**. It automatically triggers a new pipeline. In this pipeline, the `build`
    job containerizes the application and pushes the image to [GitLab Container Registry](../../../user/packages/container_registry/index.md).
-  
+
    ![Create project](img/initial-pipeline.png)
-  
+
 1. Visit **Packages & Registries > Container Registry**. Make sure the application image has been
    pushed.
 
@@ -232,7 +232,7 @@ These variables are injected into the pipeline jobs and can access the ECS API.
 Change a file in the project and see if it's reflected in the demo application on ECS:
 
 1. Go to **ecs-demo** project on GitLab.
-1. Open the file at **app > views > welcome > index.html.erb**.
+1. Open the file at **app > views > welcome > `index.html.erb`**.
 1. Click **Edit**.
 1. Change the text to `You're on ECS!`.
 1. Click **Commit Changes**. This automatically triggers a new pipeline. Wait until it finishes.

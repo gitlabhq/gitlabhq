@@ -41,7 +41,7 @@ module Projects
       current_user.invalidate_personal_projects_count
 
       true
-    rescue => error
+    rescue StandardError => error
       attempt_rollback(project, error.message)
       false
     rescue Exception => error # rubocop:disable Lint/RescueException
@@ -116,6 +116,7 @@ module Projects
       log_destroy_event
       trash_relation_repositories!
       trash_project_repositories!
+      destroy_web_hooks! if Feature.enabled?(:destroy_webhooks_before_the_project, project, default_enabled: :yaml)
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
@@ -129,6 +130,23 @@ module Projects
 
     def log_destroy_event
       log_info("Attempting to destroy #{project.full_path} (#{project.id})")
+    end
+
+    # The project can have multiple webhooks with hundreds of thousands of web_hook_logs.
+    # By default, they are removed with "DELETE CASCADE" option defined via foreign_key.
+    # But such queries can exceed the statement_timeout limit and fail to delete the project.
+    # (see https://gitlab.com/gitlab-org/gitlab/-/issues/26259)
+    #
+    # To prevent that we use WebHooks::DestroyService. It deletes logs in batches and
+    # produces smaller and faster queries to the database.
+    def destroy_web_hooks!
+      project.hooks.find_each do |web_hook|
+        result = ::WebHooks::DestroyService.new(current_user).sync_destroy(web_hook)
+
+        unless result[:status] == :success
+          raise_error(s_('DeleteProject|Failed to remove webhooks. Please try again or contact administrator.'))
+        end
+      end
     end
 
     def remove_registry_tags
@@ -156,7 +174,7 @@ module Projects
     end
 
     def raise_error(message)
-      raise DestroyError.new(message)
+      raise DestroyError, message
     end
 
     def flush_caches(project)
@@ -165,4 +183,4 @@ module Projects
   end
 end
 
-Projects::DestroyService.prepend_if_ee('EE::Projects::DestroyService')
+Projects::DestroyService.prepend_mod_with('Projects::DestroyService')

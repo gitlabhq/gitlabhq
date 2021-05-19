@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Prometheus::AdditionalMetricsParser do
       end
 
       before do
-        allow(described_class).to receive(:load_yaml_file) { YAML.load(sample_yaml) }
+        allow(described_class).to receive(:load_yaml_file) { YAML.safe_load(sample_yaml) }
       end
 
       it 'parses to two metric groups with 2 and 1 metric respectively' do
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Prometheus::AdditionalMetricsParser do
     shared_examples 'required field' do |field_name|
       context "when #{field_name} is nil" do
         before do
-          allow(described_class).to receive(:load_yaml_file) { YAML.load(field_missing) }
+          allow(described_class).to receive(:load_yaml_file) { YAML.safe_load(field_missing) }
         end
 
         it 'throws parsing error' do
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::Prometheus::AdditionalMetricsParser do
 
       context "when #{field_name} are not specified" do
         before do
-          allow(described_class).to receive(:load_yaml_file) { YAML.load(field_nil) }
+          allow(described_class).to receive(:load_yaml_file) { YAML.safe_load(field_nil) }
         end
 
         it 'throws parsing error' do

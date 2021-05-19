@@ -16,8 +16,8 @@
     "description": { "type": ["string", "null"] },
     "state": { "type": "string" },
     "iid": { "type": "integer" },
-    "created_at": { "type": "date" },
-    "due_date": { "type": ["date", "null"] },
+    "created_at": { "type": "string" },
+    "due_date": { "type": ["string", "null"] },
     "issues": {
       "type": "array",
       "items": { "$ref": "issue.json" }

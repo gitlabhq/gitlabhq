@@ -25,4 +25,4 @@ module Gitlab
   end
 end
 
-Gitlab::Auth::Result.prepend_if_ee('::EE::Gitlab::Auth::Result')
+Gitlab::Auth::Result.prepend_mod_with('Gitlab::Auth::Result')

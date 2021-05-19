@@ -218,15 +218,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
     end
 
     context 'N+1 queries' do
-      it 'avoids N+1 queries when calculating variables of jobs' do
+      it 'avoids N+1 queries when calculating variables of jobs', :use_sql_query_cache do
+        warm_up_pipeline, warm_up_command = prepare_pipeline1
+        perform_seed(warm_up_pipeline, warm_up_command)
+
         pipeline1, command1 = prepare_pipeline1
         pipeline2, command2 = prepare_pipeline2
 
-        control = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           perform_seed(pipeline1, command1)
         end
 
-        expect { perform_seed(pipeline2, command2) }.not_to exceed_query_limit(
+        expect { perform_seed(pipeline2, command2) }.not_to exceed_all_query_limit(
           control.count + expected_extra_queries
         )
       end
@@ -259,15 +262,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
 
       def expected_extra_queries
         extra_jobs = 2
-        non_handled_sql_queries = 3
+        non_handled_sql_queries = 2
 
-        # 1. Ci::Build Load () SELECT "ci_builds".* FROM "ci_builds"
-        #                      WHERE "ci_builds"."type" = 'Ci::Build'
-        #                        AND "ci_builds"."commit_id" IS NULL
-        #                        AND ("ci_builds"."retried" = FALSE OR "ci_builds"."retried" IS NULL)
-        #                        AND (stage_idx < 1)
-        # 2. Ci::InstanceVariable Load => `Ci::InstanceVariable#cached_data` => already cached with `fetch_memory_cache`
-        # 3. Ci::Variable Load => `Project#ci_variables_for` => already cached with `Gitlab::SafeRequestStore`
+        # 1. Ci::InstanceVariable Load => `Ci::InstanceVariable#cached_data` => already cached with `fetch_memory_cache`
+        # 2. Ci::Variable Load => `Project#ci_variables_for` => already cached with `Gitlab::SafeRequestStore`
 
         extra_jobs * non_handled_sql_queries
       end

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-include ActionDispatch::TestProcess
-
 FactoryBot.define do
   factory :ci_build, class: 'Ci::Build', parent: :ci_processable do
     name { 'test' }
@@ -371,6 +369,12 @@ FactoryBot.define do
       end
     end
 
+    trait :codequality_reports_without_degradation do
+      after(:build) do |build|
+        build.job_artifacts << create(:ci_job_artifact, :codequality_without_errors, job: build)
+      end
+    end
+
     trait :terraform_reports do
       after(:build) do |build|
         build.job_artifacts << create(:ci_job_artifact, :terraform, job: build)
@@ -427,7 +431,8 @@ FactoryBot.define do
             name: 'Release $CI_COMMIT_SHA',
             description: 'Created using the release-cli $EXTRA_DESCRIPTION',
             tag_name: 'release-$CI_COMMIT_SHA',
-            ref: '$CI_COMMIT_SHA'
+            ref: '$CI_COMMIT_SHA',
+            assets: { links: [{ name: 'asset1', url: 'https://example.com/assets/1' }] }
           }
         }
       end

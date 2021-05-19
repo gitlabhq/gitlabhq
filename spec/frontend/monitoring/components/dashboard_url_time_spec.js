@@ -31,6 +31,7 @@ describe('dashboard invalid url parameters', () => {
       store,
       stubs: { 'graph-group': true, 'dashboard-panel': true, 'dashboard-header': DashboardHeader },
       ...options,
+      provide: { hasManagedPrometheus: false },
     });
   };
 

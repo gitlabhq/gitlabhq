@@ -66,6 +66,9 @@ the user details need to be passed to GitLab as SAML assertions.
 At a minimum, the user's email address *must* be specified as an assertion named `email` or `mail`.
 See [the assertions list](../../../integration/saml.md#assertions) for other available claims.
 
+NOTE:
+The `username` assertion is not supported for GitLab.com SaaS integrations.
+
 ### Metadata configuration
 
 GitLab provides metadata XML that can be used to configure your identity provider.
@@ -82,21 +85,21 @@ After you set up your identity provider to work with GitLab, you must configure 
 1. Find the SSO URL from your identity provider and enter it the **Identity provider single sign-on URL** field.
 1. Find and enter the fingerprint for the SAML token signing certificate in the **Certificate** field.
 1. Select the access level to be applied to newly added users in the **Default membership role** field. The default access level is 'Guest'.
-1. Select the **Enable SAML authentication for this group** toggle switch.
+1. Select the **Enable SAML authentication for this group** checkbox.
 1. Select the **Save changes** button.
 
-![Group SAML Settings for GitLab.com](img/group_saml_settings_v13_3.png)
+![Group SAML Settings for GitLab.com](img/group_saml_settings_v13_12.png)
 
 NOTE:
 Please note that the certificate [fingerprint algorithm](../../../integration/saml.md#notes-on-configuring-your-identity-provider) must be in SHA1. When configuring the identity provider, use a secure signature algorithm.
 
 ### SSO enforcement
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5291) in GitLab 11.8.
-- [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9255) in GitLab 11.11 with ongoing enforcement in the GitLab UI.
-- [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/292811) in GitLab 13.8, with an updated timeout experience.
-- [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/211962) in GitLab 13.8 with allowing group owners to not go through SSO.
-- [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in GitLab 13.11 with enforcing open SSO session to use Git if this setting is switched on.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5291) in GitLab 11.8.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9255) in GitLab 11.11 with ongoing enforcement in the GitLab UI.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/292811) in GitLab 13.8, with an updated timeout experience.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/211962) in GitLab 13.8 with allowing group owners to not go through SSO.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in GitLab 13.11 with enforcing open SSO session to use Git if this setting is switched on.
 
 With this option enabled, users (except owners) must go through your group's GitLab single sign-on URL if they wish to access group resources through the UI. Users can't be manually added as members.
 
@@ -322,10 +325,8 @@ Ensure your SAML identity provider sends an attribute statement named `Groups` o
 ```
 
 When SAML SSO is enabled for the top-level group, `Maintainer` and `Owner` level users
-see a new menu item in group **Settings -> SAML Group Links**. Each group (parent or subgroup) can specify
+see a new menu item in group **Settings > SAML Group Links**. Each group (parent or subgroup) can specify
 one or more group links to map a SAML identity provider group name to a GitLab access level.
-
-![SAML Group Links navigation](img/saml_group_links_nav_v13_6.png)
 
 To link the SAML `Freelancers` group in the attribute statement example above:
 

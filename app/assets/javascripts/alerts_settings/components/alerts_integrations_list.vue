@@ -116,7 +116,7 @@ export default {
   methods: {
     tbodyTrClass(item) {
       return {
-        [bodyTrClass]: this.integrations.length,
+        [bodyTrClass]: this.integrations?.length,
         'gl-bg-blue-50': (item !== null && item.id) === this.currentIntegration?.id,
       };
     },

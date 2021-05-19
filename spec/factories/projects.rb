@@ -194,7 +194,7 @@ FactoryBot.define do
             filename,
             content,
             message: "Automatically created file #{filename}",
-            branch_name: project.default_branch_or_master
+            branch_name: project.default_branch || 'master'
           )
         end
       end

@@ -1,4 +1,5 @@
 import {
+  GlButton,
   GlEmptyState,
   GlLoadingIcon,
   GlSearchBoxByClick,
@@ -14,7 +15,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { STATUSES } from '~/import_entities/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
 import ImportTableRow from '~/import_entities/import_groups/components/import_table_row.vue';
-import importGroupMutation from '~/import_entities/import_groups/graphql/mutations/import_group.mutation.graphql';
+import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
 import setNewNameMutation from '~/import_entities/import_groups/graphql/mutations/set_new_name.mutation.graphql';
 import setTargetNamespaceMutation from '~/import_entities/import_groups/graphql/mutations/set_target_namespace.mutation.graphql';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
@@ -40,6 +41,7 @@ describe('import table', () => {
   ];
   const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
 
+  const findImportAllButton = () => wrapper.find('h1').find(GlButton);
   const findPaginationDropdown = () => wrapper.findComponent(GlDropdown);
   const findPaginationDropdownText = () => findPaginationDropdown().find({ ref: 'text' }).text();
 
@@ -72,7 +74,6 @@ describe('import table', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   it('renders loading icon while performing request', async () => {
@@ -141,7 +142,7 @@ describe('import table', () => {
       event                        | payload            | mutation                      | variables
       ${'update-target-namespace'} | ${'new-namespace'} | ${setTargetNamespaceMutation} | ${{ sourceGroupId: FAKE_GROUP.id, targetNamespace: 'new-namespace' }}
       ${'update-new-name'}         | ${'new-name'}      | ${setNewNameMutation}         | ${{ sourceGroupId: FAKE_GROUP.id, newName: 'new-name' }}
-      ${'import-group'}            | ${undefined}       | ${importGroupMutation}        | ${{ sourceGroupId: FAKE_GROUP.id }}
+      ${'import-group'}            | ${undefined}       | ${importGroupsMutation}       | ${{ sourceGroupIds: [FAKE_GROUP.id] }}
     `('correctly maps $event to mutation', async ({ event, payload, mutation, variables }) => {
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
       wrapper.find(ImportTableRow).vm.$emit(event, payload);
@@ -275,6 +276,68 @@ describe('import table', () => {
         expect.anything(),
         expect.anything(),
       );
+    });
+  });
+
+  describe('import all button', () => {
+    it('does not exists when no groups available', () => {
+      createComponent({
+        bulkImportSourceGroups: () => new Promise(() => {}),
+      });
+
+      expect(findImportAllButton().exists()).toBe(false);
+    });
+
+    it('exists when groups are available for import', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: FAKE_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+        }),
+      });
+      await waitForPromises();
+
+      expect(findImportAllButton().exists()).toBe(true);
+    });
+
+    it('counts only not-imported groups', async () => {
+      const NEW_GROUPS = [
+        generateFakeEntry({ id: 1, status: STATUSES.NONE }),
+        generateFakeEntry({ id: 2, status: STATUSES.NONE }),
+        generateFakeEntry({ id: 3, status: STATUSES.FINISHED }),
+      ];
+
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: NEW_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+        }),
+      });
+      await waitForPromises();
+
+      expect(findImportAllButton().text()).toMatchInterpolatedText('Import 2 groups');
+    });
+
+    it('disables button when any group has validation errors', async () => {
+      const NEW_GROUPS = [
+        generateFakeEntry({ id: 1, status: STATUSES.NONE }),
+        generateFakeEntry({
+          id: 2,
+          status: STATUSES.NONE,
+          validation_errors: [{ field: 'new_name', message: 'test validation error' }],
+        }),
+        generateFakeEntry({ id: 3, status: STATUSES.FINISHED }),
+      ];
+
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: NEW_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+        }),
+      });
+      await waitForPromises();
+
+      expect(findImportAllButton().props().disabled).toBe(true);
     });
   });
 });

@@ -288,4 +288,4 @@ module TimeboxesHelper
   end
 end
 
-TimeboxesHelper.prepend_if_ee('EE::TimeboxesHelper')
+TimeboxesHelper.prepend_mod_with('TimeboxesHelper')

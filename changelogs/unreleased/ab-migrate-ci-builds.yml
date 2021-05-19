@@ -1,0 +1,5 @@
+---
+title: Initialize int8 migration for ci_builds
+merge_request: 60265
+author:
+type: other

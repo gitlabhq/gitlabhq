@@ -61,7 +61,7 @@ module Issues
 
       # Skip creation of system notes for existing attributes of the issue. The system notes of the old
       # issue are copied over so we don't want to end up with duplicate notes.
-      CreateService.new(@target_project, @current_user, new_params).execute(skip_system_notes: true)
+      CreateService.new(project: @target_project, current_user: @current_user, params: new_params).execute(skip_system_notes: true)
     end
 
     def queue_copy_designs
@@ -106,4 +106,4 @@ module Issues
   end
 end
 
-Issues::MoveService.prepend_if_ee('EE::Issues::MoveService')
+Issues::MoveService.prepend_mod_with('Issues::MoveService')

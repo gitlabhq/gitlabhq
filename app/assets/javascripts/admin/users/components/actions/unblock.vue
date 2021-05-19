@@ -23,9 +23,7 @@ export default {
         'data-method': 'put',
         'data-modal-attributes': JSON.stringify({
           title: sprintf(s__('AdminUsers|Unblock user %{username}?'), { username: this.username }),
-          message: s__(
-            'AdminUsers|You can always unblock their account, their data will remain intact.',
-          ),
+          message: s__('AdminUsers|You can always block their account again if needed.'),
           okVariant: 'confirm',
           okTitle: s__('AdminUsers|Unblock'),
         }),

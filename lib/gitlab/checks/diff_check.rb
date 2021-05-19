@@ -76,4 +76,4 @@ module Gitlab
   end
 end
 
-Gitlab::Checks::DiffCheck.prepend_if_ee('EE::Gitlab::Checks::DiffCheck')
+Gitlab::Checks::DiffCheck.prepend_mod_with('Gitlab::Checks::DiffCheck')

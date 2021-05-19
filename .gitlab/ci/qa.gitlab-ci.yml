@@ -4,11 +4,13 @@
     - .qa-cache
   stage: test
   needs: []
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+    SETUP_DB: "false"
   before_script:
-    - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
+    - !reference [.default-before_script, before_script]
     - cd qa/
-    - bundle install --clean --jobs=$(nproc) --path=vendor --retry=3 --without=development --quiet
-    - bundle check
+    - bundle_install_script
 
 qa:internal:
   extends:
@@ -39,12 +41,11 @@ qa:selectors-as-if-foss:
 update-qa-cache:
   extends:
     - .qa-job-base
+    - .qa-cache-push
     - .shared:rules:update-cache
   stage: prepare
   script:
     - echo "Cache has been updated and ready to be uploaded."
-  cache:
-    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .package-and-qa-base:
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine

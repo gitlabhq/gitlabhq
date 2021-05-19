@@ -66,7 +66,7 @@ RSpec.describe Ci::Maskable do
     end
 
     it 'matches valid strings' do
-      expect(subject.match?('Hello+World_123/@:-.')).to eq(true)
+      expect(subject.match?('Hello+World_123/@:-~.')).to eq(true)
     end
   end
 

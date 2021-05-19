@@ -25,7 +25,7 @@ The dashboards for stage groups are at a very early stage. All contributions are
 Read more about how we are using error budgets overall in our
 [handbook](https://about.gitlab.com/handbook/engineering/error-budgets/).
 
-By default, the first row of panels on the dashbhoard will show the [error
+By default, the first row of panels on the dashboard will show the [error
 budget for the stage
 group](https://about.gitlab.com/handbook/engineering/error-budgets/#budget-spend-by-stage-group). This
 row shows how the features owned by
@@ -57,7 +57,7 @@ component has 2 indicators:
 The calculation to a ratio then happens as follows:
 
 ```math
-\frac {operations\_meeting\_apdex + (total\_operations - operations\_with_\errors)} {total\_apdex\_measurements + total\_operations}
+\frac {operations\_meeting\_apdex + (total\_operations - operations\_with\_errors)} {total\_apdex\_measurements + total\_operations}
 ```
 
 *Caveat:* Not all components are included, causing the

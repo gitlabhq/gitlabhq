@@ -49,6 +49,7 @@ RSpec.describe Boards::IssuesController do
           create(:labeled_issue, project: project, labels: [development], due_date: Date.tomorrow)
           create(:labeled_issue, project: project, labels: [development], assignees: [johndoe])
           issue.subscribe(johndoe, project)
+          expect(Issue).to receive(:move_nulls_to_end)
 
           list_issues user: user, board: board, list: list2
 
@@ -118,6 +119,18 @@ RSpec.describe Boards::IssuesController do
           query_count = recorder.occurrences.select { |query,| query.start_with?('SELECT issues.*') }.each_value.first
 
           expect(query_count).to eq(1)
+        end
+
+        context 'when block_issue_repositioning feature flag is enabled' do
+          before do
+            stub_feature_flags(block_issue_repositioning: true)
+          end
+
+          it 'does not reposition issues with null position' do
+            expect(Issue).not_to receive(:move_nulls_to_end)
+
+            list_issues(user: user, board: group_board, list: list3)
+          end
         end
       end
 

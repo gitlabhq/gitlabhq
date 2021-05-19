@@ -38,8 +38,9 @@ RSpec.describe 'Import/Export Project configuration' do
     <<-MSG
       It looks like #{relation_class}, which is exported using the project Import/Export, has references: #{prohibited_keys.join(',')}
 
-      Please replace it with actual relation in IMPORT_EXPORT_CONFIG if you consider this can be exported.
-      Please blacklist the attribute(s) in IMPORT_EXPORT_CONFIG by adding it to its correspondent
+      Please replace it with actual relation in IMPORT_EXPORT_CONFIG if they can be exported.
+
+      Please denylist the attribute(s) in IMPORT_EXPORT_CONFIG by adding it to its corresponding
       model in the +excluded_attributes+ section.
 
       IMPORT_EXPORT_CONFIG: #{Gitlab::ImportExport.config_file}

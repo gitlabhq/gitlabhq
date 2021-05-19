@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::FixRubyObjectInAuditEvents.prepend_if_ee('EE::Gitlab::BackgroundMigration::FixRubyObjectInAuditEvents')
+Gitlab::BackgroundMigration::FixRubyObjectInAuditEvents.prepend_mod_with('Gitlab::BackgroundMigration::FixRubyObjectInAuditEvents')

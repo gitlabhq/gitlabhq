@@ -26,7 +26,7 @@ module Gitlab
           end
 
           true
-        rescue => e
+        rescue StandardError => e
           shared.error(e)
           false
         end
@@ -74,7 +74,7 @@ module Gitlab
           group = create_group(group_attributes)
 
           restore_group(group, group_attributes)
-        rescue => e
+        rescue StandardError => e
           import_failure_service.log_import_failure(
             source: 'process_child',
             relation_key: 'group',

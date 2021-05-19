@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import * as types from './mutation_types';
+import alertMutations from './mutations/alert';
 import branchMutations from './mutations/branch';
 import fileMutations from './mutations/file';
 import mergeRequestMutation from './mutations/merge_request';
@@ -244,4 +245,5 @@ export default {
   ...fileMutations,
   ...treeMutations,
   ...branchMutations,
+  ...alertMutations,
 };

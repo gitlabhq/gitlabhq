@@ -93,4 +93,4 @@ module Users
   end
 end
 
-Users::MigrateToGhostUserService.prepend_if_ee('EE::Users::MigrateToGhostUserService')
+Users::MigrateToGhostUserService.prepend_mod_with('Users::MigrateToGhostUserService')

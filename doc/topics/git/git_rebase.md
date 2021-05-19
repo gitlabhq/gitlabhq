@@ -175,7 +175,7 @@ a macOS's `ZSH` shell, and you want to **squash** all the three commits
 Note that the steps for editing through the command line can be slightly
 different depending on your operating system and the shell you're using.
 
-See [Numerous undo possibilities in Git](numerous_undo_possibilities_in_git/index.md#with-history-modification)
+See [Numerous undo possibilities in Git](numerous_undo_possibilities_in_git/index.md#undo-staged-local-changes-without-modifying-history)
 for a deeper look into interactive rebase.
 
 ## Force-push

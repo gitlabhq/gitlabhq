@@ -3,6 +3,7 @@ import LearnGitlabSectionCard from '~/pages/projects/learn_gitlab/components/lea
 import { testActions } from './mock_data';
 
 const defaultSection = 'workspace';
+const testImage = 'workspace.svg';
 
 describe('Learn GitLab Section Card', () => {
   let wrapper;
@@ -14,7 +15,7 @@ describe('Learn GitLab Section Card', () => {
 
   const createWrapper = () => {
     wrapper = shallowMount(LearnGitlabSectionCard, {
-      propsData: { section: defaultSection, actions: testActions },
+      propsData: { section: defaultSection, actions: testActions, svg: testImage },
     });
   };
 

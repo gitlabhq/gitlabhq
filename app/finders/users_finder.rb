@@ -143,4 +143,4 @@ class UsersFinder
   # rubocop: enable CodeReuse/ActiveRecord
 end
 
-UsersFinder.prepend_if_ee('EE::UsersFinder')
+UsersFinder.prepend_mod_with('UsersFinder')

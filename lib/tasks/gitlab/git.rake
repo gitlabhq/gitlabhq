@@ -9,7 +9,7 @@ namespace :gitlab do
         begin
           project.repository.fsck
 
-        rescue => e
+        rescue StandardError => e
           failures << "#{project.full_path} on #{project.repository_storage}: #{e}"
         end
 
@@ -51,7 +51,7 @@ namespace :gitlab do
         next unless project.repo_exists?
 
         result = project.repository.checksum
-      rescue => e
+      rescue StandardError => e
         result = "Ignored error: #{e.message}".squish.truncate(255)
       ensure
         puts "#{project.id},#{result}"

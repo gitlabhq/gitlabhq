@@ -110,10 +110,10 @@ Where `{KEY_ID}` is the `%i` argument passed to the script
 (e.g. `aeanfjord`), and `{PRINCIPAL}` is the principal passed to it
 (e.g. `sshUsers`).
 
-You will need to customize the `sshUsers` part of that. It should be
+You need to customize the `sshUsers` part of that. It should be
 some principal that's guaranteed to be part of the key for all users
 who can log in to GitLab, or you must provide a list of principals,
-one of which is going to be present for the user, e.g.:
+one of which is present for the user, e.g.:
 
 ```plaintext
     [...]
@@ -122,7 +122,7 @@ one of which is going to be present for the user, e.g.:
 
 ## Principals and security
 
-You can supply as many principals as you want, these will be turned
+You can supply as many principals as you want, these are turned
 into multiple lines of `authorized_keys` output, as described in the
 `AuthorizedPrincipalsFile` documentation in `sshd_config(5)`.
 
@@ -130,32 +130,32 @@ Normally when using the `AuthorizedKeysCommand` with OpenSSH the
 principal is some "group" that's allowed to log into that
 server. However with GitLab it's only used to appease OpenSSH's
 requirement for it, we effectively only care about the "key ID" being
-correct. Once that's extracted GitLab will enforce its own ACLs for
+correct. Once that's extracted GitLab enforces its own ACLs for
 that user (e.g. what projects the user can access).
 
 So it's OK to e.g. be overly generous in what you accept, since if the
-user e.g. has no access to GitLab at all it'll just error out with a
+user e.g. has no access to GitLab at all it just errors out with a
 message about this being an invalid user.
 
 ## Interaction with the `authorized_keys` file
 
 SSH certificates can be used in conjunction with the `authorized_keys`
-file, and if set up as configured above the `authorized_keys` file will
-still serve as a fallback.
+file, and if set up as configured above the `authorized_keys` file
+still serves as a fallback.
 
 This is because if the `AuthorizedPrincipalsCommand` can't
-authenticate the user, OpenSSH will fall back on
+authenticate the user, OpenSSH falls back on
 `~/.ssh/authorized_keys` (or the `AuthorizedKeysCommand`).
 
 Therefore there may still be a reason to use the ["Fast lookup of
 authorized SSH keys in the database"](fast_ssh_key_lookup.html) method
-in conjunction with this. Since you'll be using SSH certificates for
+in conjunction with this. Since you are using SSH certificates for
 all your normal users, and relying on the `~/.ssh/authorized_keys`
 fallback for deploy keys, if you make use of those.
 
 But you may find that there's no reason to do that, since all your
-normal users will use the fast `AuthorizedPrincipalsCommand` path, and
-only automated deployment key access will fall back on
+normal users use the fast `AuthorizedPrincipalsCommand` path, and
+only automated deployment key access falls back on
 `~/.ssh/authorized_keys`, or that you have a lot more keys for normal
 users (especially if they're renewed) than you have deploy keys.
 
@@ -167,14 +167,14 @@ uploading an SSH public key to their profile, relying on the
 currently no feature to prevent this, [but there's an open request for
 adding it](https://gitlab.com/gitlab-org/gitlab/-/issues/23260).
 
-Such a restriction can currently be hacked in by e.g. providing a
+Such a restriction can currently be hacked in by, for example, providing a
 custom `AuthorizedKeysCommand` which checks if the discovered key-ID
 returned from `gitlab-shell-authorized-keys-check` is a deploy key or
 not (all non-deploy keys should be refused).
 
 ## Disabling the global warning about users lacking SSH keys
 
-By default GitLab will show a "You won't be able to pull or push
+By default GitLab shows a "You won't be able to pull or push
 project code via SSH" warning to users who have not uploaded an SSH
 key to their profile.
 

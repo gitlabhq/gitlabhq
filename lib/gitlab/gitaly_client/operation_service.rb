@@ -59,7 +59,7 @@ module Gitlab
                                      :user_create_branch, request, timeout: GitalyClient.long_timeout)
 
         if response.pre_receive_error.present?
-          raise Gitlab::Git::PreReceiveError.new(response.pre_receive_error)
+          raise Gitlab::Git::PreReceiveError, response.pre_receive_error
         end
 
         branch = response.branch
@@ -159,7 +159,7 @@ module Gitlab
 
         branch_update = second_response.branch_update
         return if branch_update.nil?
-        raise Gitlab::Git::CommitError.new('failed to apply merge to branch') unless branch_update.commit_id.present?
+        raise Gitlab::Git::CommitError, 'failed to apply merge to branch' unless branch_update.commit_id.present?
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
       ensure

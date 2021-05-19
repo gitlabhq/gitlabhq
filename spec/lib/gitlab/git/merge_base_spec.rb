@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Git::MergeBase do
   let_it_be(:project) { create(:project, :repository) }
+
   let(:repository) { project.repository }
 
   subject(:merge_base) { described_class.new(repository, refs) }

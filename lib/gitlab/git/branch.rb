@@ -28,6 +28,10 @@ module Gitlab
       def state
         active? ? :active : :stale
       end
+
+      def cache_key
+        "branch:" + Digest::SHA1.hexdigest([name, target, dereferenced_target&.sha].join(':'))
+      end
     end
   end
 end

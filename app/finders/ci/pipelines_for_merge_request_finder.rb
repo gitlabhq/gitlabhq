@@ -45,8 +45,12 @@ module Ci
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def pipelines_using_cte
-      cte = Gitlab::SQL::CTE.new(:shas, merge_request.all_commits.select(:sha))
+      sha_relation = merge_request.all_commits.select(:sha)
+      sha_relation = sha_relation.distinct if Feature.enabled?(:use_distinct_in_shas_cte)
+
+      cte = Gitlab::SQL::CTE.new(:shas, sha_relation)
 
       pipelines_for_merge_requests = triggered_by_merge_request
       pipelines_for_branch = filter_by_sha(triggered_for_branch, cte)
@@ -54,6 +58,7 @@ module Ci
       Ci::Pipeline.with(cte.to_arel) # rubocop: disable CodeReuse/ActiveRecord
         .from_union([pipelines_for_merge_requests, pipelines_for_branch])
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def filter_by_sha(pipelines, cte)
       hex = Arel::Nodes::SqlLiteral.new("'hex'")

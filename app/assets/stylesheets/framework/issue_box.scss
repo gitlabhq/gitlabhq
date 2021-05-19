@@ -5,16 +5,7 @@
  */
 
 .status-box {
-
-  /* Extra small devices (phones, less than 768px) */
-  /* No media query since this is the default in Bootstrap */
-  padding: 5px 11px;
-  margin-top: 4px;
-  /* Small devices (tablets, 768px and up) */
-  @include media-breakpoint-up(sm) {
-    padding: 0 $gl-btn-padding;
-    margin-top: 5px;
-  }
+  padding: 0 $gl-btn-padding;
 
   border-radius: $border-radius-default;
   display: block;

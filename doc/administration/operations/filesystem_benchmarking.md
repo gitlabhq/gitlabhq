@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 File system performance has a big impact on overall GitLab performance,
 especially for actions that read or write to Git repositories. This information
-will help benchmark file system performance against known good and bad real-world
+helps benchmark file system performance against known good and bad real-world
 systems.
 
 Normally when talking about file system performance the biggest concern is
@@ -35,12 +35,12 @@ Then run the following:
 fio --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=test --bs=4k --iodepth=64 --readwrite=randrw --rwmixread=75 --size=4G --filename=/path/to/git-data/testfile
 ```
 
-This will create a 4GB file in `/path/to/git-data/testfile`. It performs
+This creates a 4GB file in `/path/to/git-data/testfile`. It performs
 4KB reads and writes using a 75%/25% split within the file, with 64
 operations running at a time. Be sure to delete the file after the test
 completes.
 
-The output will vary depending on what version of `fio` installed. The following
+The output varies depending on what version of `fio` installed. The following
 is an example output from `fio` v2.2.10 on a networked solid-state drive (SSD):
 
 ```plaintext
@@ -78,8 +78,8 @@ test but still have poor performance due to read speed and various other
 factors.
 
 The following one-line commands provide a quick benchmark for file system write and read
-performance. This will write 1,000 small files to the directory in which it is
-executed, and then read the same 1,000 files.
+performance. This writes 1,000 small files to the directory in which it is
+executed, and then reads the same 1,000 files.
 
 1. Change into the root of the appropriate
    [repository storage path](../repository_storage_paths.md).
@@ -107,7 +107,7 @@ executed, and then read the same 1,000 files.
   cd ../; rm -rf test
   ```
 
-The output of the `time for ...` commands will look similar to the following. The
+The output of the `time for ...` commands resemble the following. The
 important metric is the `real` time.
 
 ```shell

@@ -70,7 +70,7 @@ RSpec.shared_examples 'merge request reviewers cache counters invalidator' do
   it 'invalidates counter cache for reviewers' do
     expect(merge_request.reviewers).to all(receive(:invalidate_merge_request_cache_counts))
 
-    described_class.new(project, user, {}).execute(merge_request)
+    described_class.new(project: project, current_user: user).execute(merge_request)
   end
 end
 
@@ -86,7 +86,7 @@ RSpec.shared_examples_for 'a service that can create a merge request' do
 
   context 'when project has been forked', :sidekiq_might_not_need_inline do
     let(:forked_project) { fork_project(project, user1, repository: true) }
-    let(:service) { described_class.new(forked_project, user1, changes, push_options) }
+    let(:service) { described_class.new(project: forked_project, current_user: user1, changes: changes, push_options: push_options) }
 
     before do
       allow(forked_project).to receive(:empty_repo?).and_return(false)

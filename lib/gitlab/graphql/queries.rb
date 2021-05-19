@@ -264,7 +264,7 @@ module Gitlab
         definitions = []
 
         ::Find.find(root.to_s) do |path|
-          definitions << Definition.new(path, fragments) if query?(path)
+          definitions << Definition.new(path, fragments) if query_for_gitlab_schema?(path)
         end
 
         definitions
@@ -288,10 +288,11 @@ module Gitlab
         @known_failures.fetch('filenames', []).any? { |known_failure| path.to_s.ends_with?(known_failure) }
       end
 
-      def self.query?(path)
+      def self.query_for_gitlab_schema?(path)
         path.ends_with?('.graphql') &&
           !path.ends_with?('.fragment.graphql') &&
-          !path.ends_with?('typedefs.graphql')
+          !path.ends_with?('typedefs.graphql') &&
+          !/.*\.customer\.(query|mutation)\.graphql$/.match?(path)
       end
     end
   end

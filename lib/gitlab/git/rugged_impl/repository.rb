@@ -31,7 +31,7 @@ module Gitlab
         def rugged
           @rugged ||= ::Rugged::Repository.new(path, alternates: alternate_object_directories)
         rescue ::Rugged::RepositoryError, ::Rugged::OSError
-          raise ::Gitlab::Git::Repository::NoRepository.new('no repository for such path')
+          raise ::Gitlab::Git::Repository::NoRepository, 'no repository for such path'
         end
 
         def cleanup

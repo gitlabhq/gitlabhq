@@ -17,7 +17,7 @@ module Flowdock
     end
 
     def initialize(ref, from, to, options = {})
-      raise TokenError.new("Flowdock API token not found") unless options[:token]
+      raise TokenError, "Flowdock API token not found" unless options[:token]
 
       @ref = ref
       @from = from

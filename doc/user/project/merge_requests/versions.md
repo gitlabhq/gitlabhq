@@ -49,11 +49,11 @@ This only applies to commits that are in the most recent version of a merge
 request - if commits were in a merge request, then rebased out of that merge
 request, they aren't linked.
 
-## `HEAD` comparison mode for Merge Requests
+## `HEAD` comparison mode for merge requests
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27008) in GitLab 12.10.
 
-Merge Requests, particularly the **Changes** tab, is where source code
+Merge requests, particularly the **Changes** tab, is where source code
 is reviewed and discussed. In circumstances where the target branch was
 merged into the source branch of the merge request, the changes in the
 source and target branch can be shown mixed together making it hard to

@@ -31,9 +31,9 @@ module Sha256Attribute
       end
 
       unless column.type == :binary
-        raise ArgumentError.new("sha256_attribute #{name.inspect} is invalid since the column type is not :binary")
+        raise ArgumentError, "sha256_attribute #{name.inspect} is invalid since the column type is not :binary"
       end
-    rescue => error
+    rescue StandardError => error
       Gitlab::AppLogger.error "Sha256Attribute initialization: #{error.message}"
       raise
     end

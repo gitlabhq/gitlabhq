@@ -3,11 +3,14 @@
 module ContainerExpirationPolicies
   class CleanupContainerRepositoryWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include LimitedCapacity::Worker
     include Gitlab::Utils::StrongMemoize
 
     queue_namespace :container_repository
     feature_category :container_registry
+    tags :exclude_from_kubernetes
     urgency :low
     worker_resource_boundary :unknown
     idempotent!
@@ -28,7 +31,7 @@ module ContainerExpirationPolicies
       log_extra_metadata_on_done(:container_repository_id, container_repository.id)
       log_extra_metadata_on_done(:project_id, project.id)
 
-      unless allowed_to_run?(container_repository)
+      unless allowed_to_run?
         container_repository.cleanup_unscheduled!
         log_extra_metadata_on_done(:cleanup_status, :skipped)
         return
@@ -39,9 +42,13 @@ module ContainerExpirationPolicies
       log_on_done(result)
     end
 
+    def max_running_jobs
+      return 0 unless throttling_enabled?
+
+      ::Gitlab::CurrentSettings.container_registry_expiration_policies_worker_capacity
+    end
+
     def remaining_work_count
-      cleanup_scheduled_count = ContainerRepository.cleanup_scheduled.count
-      cleanup_unfinished_count = ContainerRepository.cleanup_unfinished.count
       total_count = cleanup_scheduled_count + cleanup_unfinished_count
 
       log_info(
@@ -53,50 +60,95 @@ module ContainerExpirationPolicies
       total_count
     end
 
-    def max_running_jobs
-      return 0 unless throttling_enabled?
-
-      ::Gitlab::CurrentSettings.current_application_settings.container_registry_expiration_policies_worker_capacity
-    end
-
     private
-
-    def allowed_to_run?(container_repository)
-      return false unless policy&.enabled && policy&.next_run_at
-
-      Time.zone.now + max_cleanup_execution_time.seconds < policy.next_run_at
-    end
-
-    def throttling_enabled?
-      Feature.enabled?(:container_registry_expiration_policies_throttling)
-    end
-
-    def max_cleanup_execution_time
-      ::Gitlab::CurrentSettings.current_application_settings.container_registry_delete_tags_service_timeout
-    end
-
-    def policy
-      project.container_expiration_policy
-    end
-
-    def project
-      container_repository.project
-    end
 
     def container_repository
       strong_memoize(:container_repository) do
         ContainerRepository.transaction do
           # rubocop: disable CodeReuse/ActiveRecord
           # We need a lock to prevent two workers from picking up the same row
-          container_repository = ContainerRepository.waiting_for_cleanup
-                                                    .order(:expiration_policy_cleanup_status, :expiration_policy_started_at)
-                                                    .limit(1)
-                                                    .lock('FOR UPDATE SKIP LOCKED')
-                                                    .first
+          container_repository = if loopless_enabled?
+                                   next_container_repository
+                                 else
+                                   ContainerRepository.waiting_for_cleanup
+                                                      .order(:expiration_policy_cleanup_status, :expiration_policy_started_at)
+                                                      .limit(1)
+                                                      .lock('FOR UPDATE SKIP LOCKED')
+                                                      .first
+                                 end
+
           # rubocop: enable CodeReuse/ActiveRecord
           container_repository&.tap(&:cleanup_ongoing!)
         end
       end
+    end
+
+    def next_container_repository
+      # rubocop: disable CodeReuse/ActiveRecord
+      next_one_requiring = ContainerRepository.requiring_cleanup
+                                              .order(:expiration_policy_cleanup_status, :expiration_policy_started_at)
+                                              .limit(1)
+                                              .lock('FOR UPDATE SKIP LOCKED')
+                                              .first
+      return next_one_requiring if next_one_requiring
+
+      ContainerRepository.with_unfinished_cleanup
+                         .order(:expiration_policy_started_at)
+                         .limit(1)
+                         .lock('FOR UPDATE SKIP LOCKED')
+                         .first
+      # rubocop: enable CodeReuse/ActiveRecord
+    end
+
+    def cleanup_scheduled_count
+      strong_memoize(:cleanup_scheduled_count) do
+        if loopless_enabled?
+          limit = max_running_jobs + 1
+          ContainerExpirationPolicy.with_container_repositories
+                                   .runnable_schedules
+                                   .limit(limit)
+                                   .count
+        else
+          ContainerRepository.cleanup_scheduled.count
+        end
+      end
+    end
+
+    def cleanup_unfinished_count
+      strong_memoize(:cleanup_unfinished_count) do
+        if loopless_enabled?
+          limit = max_running_jobs + 1
+          ContainerRepository.with_unfinished_cleanup
+                             .limit(limit)
+                             .count
+        else
+          ContainerRepository.cleanup_unfinished.count
+        end
+      end
+    end
+
+    def allowed_to_run?
+      return false unless policy&.enabled && policy&.next_run_at
+
+      now = Time.zone.now
+
+      if loopless_enabled?
+        policy.next_run_at < now || (now + max_cleanup_execution_time.seconds < policy.next_run_at)
+      else
+        now + max_cleanup_execution_time.seconds < policy.next_run_at
+      end
+    end
+
+    def throttling_enabled?
+      Feature.enabled?(:container_registry_expiration_policies_throttling)
+    end
+
+    def loopless_enabled?
+      Feature.enabled?(:container_registry_expiration_policies_loopless)
+    end
+
+    def max_cleanup_execution_time
+      ::Gitlab::CurrentSettings.container_registry_delete_tags_service_timeout
     end
 
     def log_info(extra_structure)
@@ -104,6 +156,11 @@ module ContainerExpirationPolicies
     end
 
     def log_on_done(result)
+      if result.error?
+        log_extra_metadata_on_done(:cleanup_status, :error)
+        log_extra_metadata_on_done(:cleanup_error_message, result.message)
+      end
+
       LOG_ON_DONE_FIELDS.each do |field|
         value = result.payload[field]
 
@@ -119,6 +176,14 @@ module ContainerExpirationPolicies
                     before_truncate_size != after_truncate_size
       log_extra_metadata_on_done(:cleanup_tags_service_truncated, !!truncated)
       log_extra_metadata_on_done(:running_jobs_count, running_jobs_count)
+    end
+
+    def policy
+      project.container_expiration_policy
+    end
+
+    def project
+      container_repository.project
     end
   end
 end

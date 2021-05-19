@@ -13,14 +13,12 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create, :config_variables]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action do
-    push_frontend_feature_flag(:new_pipeline_form, project, default_enabled: :yaml)
     push_frontend_feature_flag(:pipeline_graph_layers_view, project, type: :development, default_enabled: :yaml)
     push_frontend_feature_flag(:pipeline_filter_jobs, project, default_enabled: :yaml)
     push_frontend_feature_flag(:graphql_pipeline_details, project, type: :development, default_enabled: :yaml)
     push_frontend_feature_flag(:graphql_pipeline_details_users, current_user, type: :development, default_enabled: :yaml)
-    push_frontend_feature_flag(:jira_for_vulnerabilities, project, type: :development, default_enabled: :yaml)
   end
-  before_action :ensure_pipeline, only: [:show]
+  before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
@@ -33,7 +31,12 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   POLLING_INTERVAL = 10_000
 
-  feature_category :continuous_integration
+  feature_category :continuous_integration, [
+                     :charts, :show, :config_variables, :stage, :cancel, :retry,
+                     :builds, :dag, :failures, :status, :downloadable_artifacts,
+                     :index, :create, :new, :destroy
+                   ]
+  feature_category :code_testing, [:test_report]
 
   def index
     @pipelines = Ci::PipelinesFinder
@@ -54,6 +57,17 @@ class Projects::PipelinesController < Projects::ApplicationController
           e.use {}
           e.try {}
           e.track(:view, value: project.namespace_id)
+        end
+        experiment(:code_quality_walkthrough, namespace: project.root_ancestor) do |e|
+          e.exclude! unless current_user
+          e.exclude! unless can?(current_user, :create_pipeline, project)
+          e.exclude! unless project.root_ancestor.recent?
+          e.exclude! if @pipelines_count.to_i > 0
+          e.exclude! if helpers.has_gitlab_ci?(project)
+
+          e.use {}
+          e.try {}
+          e.track(:view, property: project.root_ancestor.id.to_s)
         end
       end
       format.json do
@@ -162,7 +176,11 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def retry
-    pipeline.retry_failed(current_user)
+    if Gitlab::Ci::Features.background_pipeline_retry_endpoint?(@project)
+      ::Ci::RetryPipelineWorker.perform_async(pipeline.id, current_user.id) # rubocop:disable CodeReuse/Worker
+    else
+      pipeline.retry_failed(current_user)
+    end
 
     respond_to do |format|
       format.html do
@@ -206,13 +224,20 @@ class Projects::PipelinesController < Projects::ApplicationController
     end
   end
 
+  def downloadable_artifacts
+    render json: Ci::DownloadableArtifactSerializer.new(
+      project: project,
+      current_user: current_user
+    ).represent(@pipeline)
+  end
+
   private
 
   def serialize_pipelines
     PipelineSerializer
       .new(project: @project, current_user: @current_user)
       .with_pagination(request, response)
-      .represent(@pipelines, disable_coverage: true, preload: true)
+      .represent(@pipelines, disable_coverage: true, preload: true, code_quality_walkthrough: params[:code_quality_walkthrough].present?)
   end
 
   def render_show
@@ -298,4 +323,4 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 end
 
-Projects::PipelinesController.prepend_if_ee('EE::Projects::PipelinesController')
+Projects::PipelinesController.prepend_mod_with('Projects::PipelinesController')

@@ -8,13 +8,14 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter do
   let(:user) { create(:user) }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
+  let(:note_body) { 'This is my note' }
 
   let(:github_note) do
     Gitlab::GithubImport::Representation::Note.new(
       noteable_id: 1,
       noteable_type: 'Issue',
       author: Gitlab::GithubImport::Representation::User.new(id: 4, login: 'alice'),
-      note: 'This is my note',
+      note: note_body,
       created_at: created_at,
       updated_at: updated_at,
       github_id: 1
@@ -90,6 +91,24 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter do
             .and_call_original
 
           importer.execute
+        end
+      end
+
+      context 'when the note have invalid chars' do
+        let(:note_body) { %{There were an invalid char "\u0000" <= right here} }
+
+        it 'removes invalid chars' do
+          expect(importer.user_finder)
+            .to receive(:author_id_for)
+            .with(github_note)
+            .and_return([user.id, true])
+
+          expect { importer.execute }
+            .to change(project.notes, :count)
+            .by(1)
+
+          expect(project.notes.last.note)
+            .to eq('There were an invalid char "" <= right here')
         end
       end
     end

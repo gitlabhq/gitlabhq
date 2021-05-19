@@ -3,6 +3,8 @@
 class CleanupContainerRepositoryWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   queue_namespace :container_repository
   feature_category :container_registry
   urgency :low

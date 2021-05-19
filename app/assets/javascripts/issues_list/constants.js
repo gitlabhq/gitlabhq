@@ -1,4 +1,11 @@
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
+import {
+  FILTER_ANY,
+  FILTER_CURRENT,
+  FILTER_NONE,
+  OPERATOR_IS,
+  OPERATOR_IS_NOT,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 
 // Maps sort order as it appears in the URL query to API `order_by` and `sort` params.
 const PRIORITY = 'priority';
@@ -53,23 +60,78 @@ export const availableSortOptionsJira = [
   },
 ];
 
+export const i18n = {
+  calendarLabel: __('Subscribe to calendar'),
+  closed: __('CLOSED'),
+  closedMoved: __('CLOSED (MOVED)'),
+  confidentialNo: __('No'),
+  confidentialYes: __('Yes'),
+  downvotes: __('Downvotes'),
+  editIssues: __('Edit issues'),
+  errorFetchingIssues: __('An error occurred while loading issues'),
+  jiraIntegrationMessage: s__(
+    'JiraService|%{jiraDocsLinkStart}Enable the Jira integration%{jiraDocsLinkEnd} to view your Jira issues in GitLab.',
+  ),
+  jiraIntegrationSecondaryMessage: s__('JiraService|This feature requires a Premium plan.'),
+  jiraIntegrationTitle: s__('JiraService|Using Jira for issue tracking?'),
+  newIssueLabel: __('New issue'),
+  noClosedIssuesTitle: __('There are no closed issues'),
+  noOpenIssuesDescription: __('To keep this project going, create a new issue'),
+  noOpenIssuesTitle: __('There are no open issues'),
+  noIssuesSignedInDescription: __(
+    'Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable.',
+  ),
+  noIssuesSignedInTitle: __(
+    'The Issue Tracker is the place to add things that need to be improved or solved in a project',
+  ),
+  noIssuesSignedOutButtonText: __('Register / Sign In'),
+  noIssuesSignedOutDescription: __(
+    'The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project.',
+  ),
+  noIssuesSignedOutTitle: __('There are no issues to show'),
+  noSearchResultsDescription: __('To widen your search, change or remove filters above'),
+  noSearchResultsTitle: __('Sorry, your filter produced no results'),
+  relatedMergeRequests: __('Related merge requests'),
+  reorderError: __('An error occurred while reordering issues.'),
+  rssLabel: __('Subscribe to RSS feed'),
+  searchPlaceholder: __('Search or filter results…'),
+  upvotes: __('Upvotes'),
+};
+
 export const JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY = 'jira-import-success-alert-hide-map';
 
-export const BLOCKING_ISSUES_ASC = 'BLOCKING_ISSUES_ASC';
+export const PARAM_DUE_DATE = 'due_date';
+export const PARAM_PAGE = 'page';
+export const PARAM_SORT = 'sort';
+export const PARAM_STATE = 'state';
+
+export const DUE_DATE_NONE = '0';
+export const DUE_DATE_ANY = '';
+export const DUE_DATE_OVERDUE = 'overdue';
+export const DUE_DATE_WEEK = 'week';
+export const DUE_DATE_MONTH = 'month';
+export const DUE_DATE_NEXT_MONTH_AND_PREVIOUS_TWO_WEEKS = 'next_month_and_previous_two_weeks';
+export const DUE_DATE_VALUES = [
+  DUE_DATE_NONE,
+  DUE_DATE_ANY,
+  DUE_DATE_OVERDUE,
+  DUE_DATE_WEEK,
+  DUE_DATE_MONTH,
+  DUE_DATE_NEXT_MONTH_AND_PREVIOUS_TWO_WEEKS,
+];
+
 export const BLOCKING_ISSUES_DESC = 'BLOCKING_ISSUES_DESC';
 export const CREATED_ASC = 'CREATED_ASC';
 export const CREATED_DESC = 'CREATED_DESC';
 export const DUE_DATE_ASC = 'DUE_DATE_ASC';
 export const DUE_DATE_DESC = 'DUE_DATE_DESC';
-export const LABEL_PRIORITY_ASC = 'LABEL_PRIORITY_ASC';
 export const LABEL_PRIORITY_DESC = 'LABEL_PRIORITY_DESC';
 export const MILESTONE_DUE_ASC = 'MILESTONE_DUE_ASC';
 export const MILESTONE_DUE_DESC = 'MILESTONE_DUE_DESC';
 export const POPULARITY_ASC = 'POPULARITY_ASC';
 export const POPULARITY_DESC = 'POPULARITY_DESC';
-export const PRIORITY_ASC = 'PRIORITY_ASC';
 export const PRIORITY_DESC = 'PRIORITY_DESC';
-export const RELATIVE_POSITION_ASC = 'RELATIVE_POSITION_ASC';
+export const RELATIVE_POSITION_DESC = 'RELATIVE_POSITION_DESC';
 export const UPDATED_ASC = 'UPDATED_ASC';
 export const UPDATED_DESC = 'UPDATED_DESC';
 export const WEIGHT_ASC = 'WEIGHT_ASC';
@@ -78,13 +140,19 @@ export const WEIGHT_DESC = 'WEIGHT_DESC';
 const SORT_ASC = 'asc';
 const SORT_DESC = 'desc';
 
+const CREATED_DATE_SORT = 'created_date';
+const CREATED_ASC_SORT = 'created_asc';
+const UPDATED_DESC_SORT = 'updated_desc';
+const UPDATED_ASC_SORT = 'updated_asc';
+const MILESTONE_SORT = 'milestone';
+const MILESTONE_DUE_DESC_SORT = 'milestone_due_desc';
+const DUE_DATE_DESC_SORT = 'due_date_desc';
+const POPULARITY_ASC_SORT = 'popularity_asc';
+const WEIGHT_DESC_SORT = 'weight_desc';
+const BLOCKING_ISSUES_DESC_SORT = 'blocking_issues_desc';
 const BLOCKING_ISSUES = 'blocking_issues';
 
-export const sortParams = {
-  [PRIORITY_ASC]: {
-    order_by: PRIORITY,
-    sort: SORT_ASC,
-  },
+export const apiSortParams = {
   [PRIORITY_DESC]: {
     order_by: PRIORITY,
     sort: SORT_DESC,
@@ -129,15 +197,11 @@ export const sortParams = {
     order_by: POPULARITY,
     sort: SORT_DESC,
   },
-  [LABEL_PRIORITY_ASC]: {
-    order_by: LABEL_PRIORITY,
-    sort: SORT_ASC,
-  },
   [LABEL_PRIORITY_DESC]: {
     order_by: LABEL_PRIORITY,
     sort: SORT_DESC,
   },
-  [RELATIVE_POSITION_ASC]: {
+  [RELATIVE_POSITION_DESC]: {
     order_by: RELATIVE_POSITION,
     per_page: 100,
     sort: SORT_ASC,
@@ -150,95 +214,233 @@ export const sortParams = {
     order_by: WEIGHT,
     sort: SORT_DESC,
   },
-  [BLOCKING_ISSUES_ASC]: {
-    order_by: BLOCKING_ISSUES,
-    sort: SORT_ASC,
-  },
   [BLOCKING_ISSUES_DESC]: {
     order_by: BLOCKING_ISSUES,
     sort: SORT_DESC,
   },
 };
 
-export const sortOptions = [
-  {
-    id: 1,
-    title: __('Priority'),
-    sortDirection: {
-      ascending: PRIORITY_ASC,
-      descending: PRIORITY_DESC,
+export const urlSortParams = {
+  [PRIORITY_DESC]: {
+    sort: PRIORITY,
+  },
+  [CREATED_ASC]: {
+    sort: CREATED_ASC_SORT,
+  },
+  [CREATED_DESC]: {
+    sort: CREATED_DATE_SORT,
+  },
+  [UPDATED_ASC]: {
+    sort: UPDATED_ASC_SORT,
+  },
+  [UPDATED_DESC]: {
+    sort: UPDATED_DESC_SORT,
+  },
+  [MILESTONE_DUE_ASC]: {
+    sort: MILESTONE_SORT,
+  },
+  [MILESTONE_DUE_DESC]: {
+    sort: MILESTONE_DUE_DESC_SORT,
+  },
+  [DUE_DATE_ASC]: {
+    sort: DUE_DATE,
+  },
+  [DUE_DATE_DESC]: {
+    sort: DUE_DATE_DESC_SORT,
+  },
+  [POPULARITY_ASC]: {
+    sort: POPULARITY_ASC_SORT,
+  },
+  [POPULARITY_DESC]: {
+    sort: POPULARITY,
+  },
+  [LABEL_PRIORITY_DESC]: {
+    sort: LABEL_PRIORITY,
+  },
+  [RELATIVE_POSITION_DESC]: {
+    sort: RELATIVE_POSITION,
+    per_page: 100,
+  },
+  [WEIGHT_ASC]: {
+    sort: WEIGHT,
+  },
+  [WEIGHT_DESC]: {
+    sort: WEIGHT_DESC_SORT,
+  },
+  [BLOCKING_ISSUES_DESC]: {
+    sort: BLOCKING_ISSUES_DESC_SORT,
+  },
+};
+
+export const MAX_LIST_SIZE = 10;
+
+export const API_PARAM = 'apiParam';
+export const URL_PARAM = 'urlParam';
+export const NORMAL_FILTER = 'normalFilter';
+export const SPECIAL_FILTER = 'specialFilter';
+export const ALTERNATIVE_FILTER = 'alternativeFilter';
+export const SPECIAL_FILTER_VALUES = [FILTER_NONE, FILTER_ANY, FILTER_CURRENT];
+
+export const filters = {
+  author_username: {
+    [API_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'author_username',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[author_username]',
+      },
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'author_username',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[author_username]',
+      },
     },
   },
-  {
-    id: 2,
-    title: __('Created date'),
-    sortDirection: {
-      ascending: CREATED_ASC,
-      descending: CREATED_DESC,
+  assignee_username: {
+    [API_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'assignee_username',
+        [SPECIAL_FILTER]: 'assignee_id',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[assignee_username]',
+      },
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'assignee_username[]',
+        [SPECIAL_FILTER]: 'assignee_id',
+        [ALTERNATIVE_FILTER]: 'assignee_username',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[assignee_username][]',
+      },
     },
   },
-  {
-    id: 3,
-    title: __('Last updated'),
-    sortDirection: {
-      ascending: UPDATED_ASC,
-      descending: UPDATED_DESC,
+  milestone: {
+    [API_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'milestone',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[milestone]',
+      },
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'milestone_title',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[milestone_title]',
+      },
     },
   },
-  {
-    id: 4,
-    title: __('Milestone due date'),
-    sortDirection: {
-      ascending: MILESTONE_DUE_ASC,
-      descending: MILESTONE_DUE_DESC,
+  labels: {
+    [API_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'labels',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[labels]',
+      },
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'label_name[]',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[label_name][]',
+      },
     },
   },
-  {
-    id: 5,
-    title: __('Due date'),
-    sortDirection: {
-      ascending: DUE_DATE_ASC,
-      descending: DUE_DATE_DESC,
+  my_reaction_emoji: {
+    [API_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'my_reaction_emoji',
+        [SPECIAL_FILTER]: 'my_reaction_emoji',
+      },
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'my_reaction_emoji',
+        [SPECIAL_FILTER]: 'my_reaction_emoji',
+      },
     },
   },
-  {
-    id: 6,
-    title: __('Popularity'),
-    sortDirection: {
-      ascending: POPULARITY_ASC,
-      descending: POPULARITY_DESC,
+  confidential: {
+    [API_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'confidential',
+      },
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'confidential',
+      },
     },
   },
-  {
-    id: 7,
-    title: __('Label priority'),
-    sortDirection: {
-      ascending: LABEL_PRIORITY_ASC,
-      descending: LABEL_PRIORITY_DESC,
+  iteration: {
+    [API_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'iteration_title',
+        [SPECIAL_FILTER]: 'iteration_id',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[iteration_title]',
+      },
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'iteration_title',
+        [SPECIAL_FILTER]: 'iteration_id',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[iteration_title]',
+      },
     },
   },
-  {
-    id: 8,
-    title: __('Manual'),
-    sortDirection: {
-      ascending: RELATIVE_POSITION_ASC,
-      descending: RELATIVE_POSITION_ASC,
+  epic_id: {
+    [API_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'epic_id',
+        [SPECIAL_FILTER]: 'epic_id',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[epic_id]',
+      },
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'epic_id',
+        [SPECIAL_FILTER]: 'epic_id',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[epic_id]',
+      },
     },
   },
-  {
-    id: 9,
-    title: __('Weight'),
-    sortDirection: {
-      ascending: WEIGHT_ASC,
-      descending: WEIGHT_DESC,
+  weight: {
+    [API_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'weight',
+        [SPECIAL_FILTER]: 'weight',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[weight]',
+      },
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'weight',
+        [SPECIAL_FILTER]: 'weight',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[weight]',
+      },
     },
   },
-  {
-    id: 10,
-    title: __('Blocking'),
-    sortDirection: {
-      ascending: BLOCKING_ISSUES_ASC,
-      descending: BLOCKING_ISSUES_DESC,
-    },
-  },
-];
+};

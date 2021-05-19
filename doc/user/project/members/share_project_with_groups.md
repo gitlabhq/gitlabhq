@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Share Projects with other Groups
+# Share projects with other groups
 
 You can share projects with other [groups](../../group/index.md). This makes it
 possible to add a group of users to a project with a single action.
@@ -28,21 +28,13 @@ This is where the group sharing feature can be of use.
 To share 'Project Acme' with the 'Engineering' group:
 
 1. For 'Project Acme' use the left navigation menu to go to **Members**.
-
-   ![share project with groups](img/share_project_with_groups_tab_v13_9.png)
-
 1. Select the **Invite group** tab.
 1. Add the 'Engineering' group with the maximum access level of your choice.
 1. Optionally, select an expiring date.
 1. Click **Invite**.
 1. After sharing 'Project Acme' with 'Engineering':
    - The group is listed in the **Groups** tab.
-
-     !['Engineering' group is listed in Groups tab](img/project_groups_tab_v13_9.png)
-
    - The project is listed on the group dashboard.
-
-     !['Project Acme' is listed as a shared project for 'Engineering'](img/other_group_sees_shared_project_v13_8.png)
 
 Note that you can only share a project with:
 

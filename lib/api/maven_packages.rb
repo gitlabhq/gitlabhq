@@ -25,7 +25,7 @@ module API
     helpers do
       def path_exists?(path)
         # return true when FF disabled so that processing the request is not stopped
-        return true unless Feature.enabled?(:check_maven_path_first)
+        return true unless Feature.enabled?(:check_maven_path_first, default_enabled: :yaml)
         return false if path.blank?
 
         Packages::Maven::Metadatum.with_path(path)
@@ -88,17 +88,13 @@ module API
       end
 
       def fetch_package(file_name:, project: nil, group: nil)
-        order_by_package_file = false
-        if Feature.enabled?(:maven_packages_group_level_improvements, default_enabled: :yaml)
-          order_by_package_file = file_name.include?(::Packages::Maven::Metadata.filename) &&
-                                    !params[:path].include?(::Packages::Maven::FindOrCreatePackageService::SNAPSHOT_TERM)
-        end
+        order_by_package_file = file_name.include?(::Packages::Maven::Metadata.filename) &&
+                                  !params[:path].include?(::Packages::Maven::FindOrCreatePackageService::SNAPSHOT_TERM)
 
         ::Packages::Maven::PackageFinder.new(
-          params[:path],
           current_user,
-          project: project,
-          group: group,
+          project || group,
+          path: params[:path],
           order_by_package_file: order_by_package_file
         ).execute!
       end

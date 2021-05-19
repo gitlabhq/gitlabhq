@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { securityReportDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
+import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
 import axios from '~/lib/utils/axios_utils';
 import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
@@ -12,7 +12,7 @@ import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/consta
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
-import securityReportDownloadPathsQuery from '~/vue_shared/security_reports/queries/security_report_download_paths.query.graphql';
+import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/queries/security_report_merge_request_download_paths.query.graphql';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData from './mock_data';
 
@@ -559,15 +559,15 @@ describe('MrWidgetOptions', () => {
       const changes = [
         {
           path: 'index.html',
-          external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
+          external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/index.html',
         },
         {
           path: 'imgs/gallery.html',
-          external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
+          external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
         },
         {
           path: 'about/',
-          external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
+          external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/about/',
         },
       ];
       const deploymentMockData = {
@@ -688,22 +688,22 @@ describe('MrWidgetOptions', () => {
               scheduled_actions: [],
             },
             ref: {
-              name: 'master',
-              path: '/root/ci-web-terminal/commits/master',
+              name: 'main',
+              path: '/root/ci-web-terminal/commits/main',
               tag: false,
               branch: true,
             },
             commit: {
               id: 'aa1939133d373c94879becb79d91828a892ee319',
               short_id: 'aa193913',
-              title: "Merge branch 'master-test' into 'master'",
+              title: "Merge branch 'main-test' into 'main'",
               created_at: '2018-10-22T11:41:33.000Z',
               parent_ids: [
                 '4622f4dd792468993003caf2e3be978798cbe096',
                 '76598df914cdfe87132d0c3c40f80db9fa9396a4',
               ],
               message:
-                "Merge branch 'master-test' into 'master'\n\nUpdate .gitlab-ci.yml\n\nSee merge request root/ci-web-terminal!1",
+                "Merge branch 'main-test' into 'main'\n\nUpdate .gitlab-ci.yml\n\nSee merge request root/ci-web-terminal!1",
               author_name: 'Administrator',
               author_email: 'admin@example.com',
               authored_date: '2018-10-22T11:41:33.000Z',
@@ -751,17 +751,16 @@ describe('MrWidgetOptions', () => {
                 changes: [
                   {
                     path: 'index.html',
-                    external_url:
-                      'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
+                    external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/index.html',
                   },
                   {
                     path: 'imgs/gallery.html',
                     external_url:
-                      'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
+                      'http://root-main-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
                   },
                   {
                     path: 'about/',
-                    external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
+                    external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/about/',
                   },
                 ],
                 status: 'success',
@@ -831,8 +830,8 @@ describe('MrWidgetOptions', () => {
         return createComponent(mrData, {
           apolloProvider: createMockApollo([
             [
-              securityReportDownloadPathsQuery,
-              async () => ({ data: securityReportDownloadPathsQueryResponse }),
+              securityReportMergeRequestDownloadPathsQuery,
+              async () => ({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
             ],
           ]),
         });

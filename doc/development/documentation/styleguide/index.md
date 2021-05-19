@@ -164,13 +164,12 @@ standard for GitLab documentation).
 
 A rule that could cause confusion is `MD044/proper-names`, as it might not be
 immediately clear what caused markdownlint to fail, or how to correct the
-failure. This rule checks a list of known words, listed in the `.markdownlint.json`
+failure. This rule checks a list of known words, listed in the `.markdownlint.yml`
 file in each project, to verify proper use of capitalization and backticks.
 Words in backticks are ignored by markdownlint.
 
 In general, product names should follow the exact capitalization of the official
-names of the products, protocols, and so on. See [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json)
-for the words tested for proper capitalization in GitLab documentation.
+names of the products, protocols, and so on.
 
 Some examples fail if incorrect capitalization is used:
 
@@ -370,7 +369,7 @@ Capitalize names of:
 - Third-party organizations, software, and products. For example, Prometheus,
   Kubernetes, Git, and The Linux Foundation.
 - Methods or methodologies. For example, Continuous Integration,
-  Continuous Deployment, Scrum, and Agile. (Tested in [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json).)
+  Continuous Deployment, Scrum, and Agile.
 
 Follow the capitalization style listed at the [authoritative source](#links-to-external-documentation)
 for the entity, which may use non-standard case styles. For example: GitLab and
@@ -1112,13 +1111,9 @@ document to ensure it links to the most recent version of the file.
 When documenting navigation through the user interface:
 
 - Use the exact wording as shown in the UI, including any capital letters as-is.
-- Use bold text for navigation items and the char "greater than" (`>`) as a
-  separator. For example: `From your project, go to **Settings > CI/CD**`.
-- If there are any expandable menus, make sure to mention that the user needs to
-  expand the tab to find the settings you're referring to. For example:
-  `From your group, go to **Settings > CI/CD** and expand **General pipelines**`.
+- Use bold text for navigation items.
 
-### Navigational elements
+### What to call the menus
 
 Use these terms when referring to the main GitLab user interface
 elements:
@@ -1129,6 +1124,19 @@ elements:
   interface, specific to the project or group.
 - **Right sidebar**: This is the navigation sidebar on the right of the user
   interface, specific to the open issue, merge request, or epic.
+
+### How to document the left sidebar
+
+To be consistent, use this format when you refer to the left sidebar.
+
+- Go to your project and select **Settings > CI/CD**.
+- Go to your group and select **Settings > CI/CD**.
+- Go to the Admin Area (**{admin}**) and select **Overview > Projects**.
+
+For expandable menus, use this format:
+
+1. Go to your group and select **Settings > CI/CD**.
+1. Expand **General pipelines**.
 
 ## Images
 

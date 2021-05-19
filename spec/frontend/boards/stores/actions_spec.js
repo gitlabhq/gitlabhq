@@ -1,15 +1,21 @@
 import * as Sentry from '@sentry/browser';
+import {
+  inactiveId,
+  ISSUABLE,
+  ListType,
+  issuableTypes,
+  BoardType,
+  listsQuery,
+} from 'ee_else_ce/boards/constants';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
 import testAction from 'helpers/vuex_action_helper';
 import {
-  fullBoardId,
   formatListIssues,
   formatBoardLists,
   formatIssueInput,
   formatIssue,
   getMoveData,
 } from '~/boards/boards_util';
-import { inactiveId, ISSUABLE, ListType } from '~/boards/constants';
 import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
 import actions, { gqlClient } from '~/boards/stores/actions';
@@ -33,12 +39,6 @@ import {
 } from '../mock_data';
 
 jest.mock('~/flash');
-
-const expectNotImplemented = (action) => {
-  it('is not implemented', () => {
-    expect(action).toThrow(new Error('Not implemented!'));
-  });
-};
 
 // We need this helper to make sure projectPath is including
 // subgroups when the movIssue action is called.
@@ -66,20 +66,32 @@ describe('setInitialBoardData', () => {
 });
 
 describe('setFilters', () => {
-  it('should commit mutation SET_FILTERS', (done) => {
+  it.each([
+    [
+      'with correct filters as payload',
+      {
+        filters: { labelName: 'label' },
+        updatedFilters: { labelName: 'label', not: {} },
+      },
+    ],
+    [
+      'and updates assigneeWildcardId',
+      {
+        filters: { assigneeId: 'None' },
+        updatedFilters: { assigneeWildcardId: 'NONE', not: {} },
+      },
+    ],
+  ])('should commit mutation SET_FILTERS %s', (_, { filters, updatedFilters }) => {
     const state = {
       filters: {},
     };
-
-    const filters = { labelName: 'label' };
 
     testAction(
       actions.setFilters,
       filters,
       state,
-      [{ type: types.SET_FILTERS, payload: { ...filters, not: {} } }],
+      [{ type: types.SET_FILTERS, payload: updatedFilters }],
       [],
-      done,
     );
   });
 });
@@ -120,20 +132,12 @@ describe('setActiveId', () => {
 });
 
 describe('fetchLists', () => {
-  it('should dispatch fetchIssueLists action', () => {
-    testAction({
-      action: actions.fetchLists,
-      expectedActions: [{ type: 'fetchIssueLists' }],
-    });
-  });
-});
-
-describe('fetchIssueLists', () => {
-  const state = {
+  let state = {
     fullPath: 'gitlab-org',
-    boardId: '1',
+    fullBoardId: 'gid://gitlab/Board/1',
     filterParams: {},
     boardType: 'group',
+    issuableType: 'issue',
   };
 
   let queryResponse = {
@@ -155,7 +159,7 @@ describe('fetchIssueLists', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     testAction(
-      actions.fetchIssueLists,
+      actions.fetchLists,
       {},
       state,
       [
@@ -173,7 +177,7 @@ describe('fetchIssueLists', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(Promise.reject());
 
     testAction(
-      actions.fetchIssueLists,
+      actions.fetchLists,
       {},
       state,
       [
@@ -202,7 +206,7 @@ describe('fetchIssueLists', () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     testAction(
-      actions.fetchIssueLists,
+      actions.fetchLists,
       {},
       state,
       [
@@ -215,6 +219,43 @@ describe('fetchIssueLists', () => {
       done,
     );
   });
+
+  it.each`
+    issuableType           | boardType            | fullBoardId               | isGroup  | isProject
+    ${issuableTypes.issue} | ${BoardType.group}   | ${'gid://gitlab/Board/1'} | ${true}  | ${false}
+    ${issuableTypes.issue} | ${BoardType.project} | ${'gid://gitlab/Board/1'} | ${false} | ${true}
+  `(
+    'calls $issuableType query with correct variables',
+    async ({ issuableType, boardType, fullBoardId, isGroup, isProject }) => {
+      const commit = jest.fn();
+      const dispatch = jest.fn();
+
+      state = {
+        fullPath: 'gitlab-org',
+        fullBoardId,
+        filterParams: {},
+        boardType,
+        issuableType,
+      };
+
+      const variables = {
+        query: listsQuery[issuableType].query,
+        variables: {
+          fullPath: 'gitlab-org',
+          boardId: fullBoardId,
+          filters: {},
+          isGroup,
+          isProject,
+        },
+      };
+
+      jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
+
+      await actions.fetchLists({ commit, state, dispatch });
+
+      expect(gqlClient.query).toHaveBeenCalledWith(variables);
+    },
+  );
 });
 
 describe('createList', () => {
@@ -236,7 +277,7 @@ describe('createIssueList', () => {
   beforeEach(() => {
     state = {
       fullPath: 'gitlab-org',
-      boardId: '1',
+      fullBoardId: 'gid://gitlab/Board/1',
       boardType: 'group',
       disabled: false,
       boardLists: [{ type: 'closed' }],
@@ -366,7 +407,7 @@ describe('moveList', () => {
 
     const state = {
       fullPath: 'gitlab-org',
-      boardId: '1',
+      fullBoardId: 'gid://gitlab/Board/1',
       boardType: 'group',
       disabled: false,
       boardLists: initialBoardListsState,
@@ -409,7 +450,7 @@ describe('moveList', () => {
 
     const state = {
       fullPath: 'gitlab-org',
-      boardId: '1',
+      fullBoardId: 'gid://gitlab/Board/1',
       boardType: 'group',
       disabled: false,
       boardLists: initialBoardListsState,
@@ -443,10 +484,11 @@ describe('updateList', () => {
 
     const state = {
       fullPath: 'gitlab-org',
-      boardId: '1',
+      fullBoardId: 'gid://gitlab/Board/1',
       boardType: 'group',
       disabled: false,
       boardLists: [{ type: 'closed' }],
+      issuableType: issuableTypes.issue,
     };
 
     testAction(
@@ -490,6 +532,7 @@ describe('removeList', () => {
   beforeEach(() => {
     state = {
       boardLists: mockListsById,
+      issuableType: issuableTypes.issue,
     };
   });
 
@@ -559,7 +602,7 @@ describe('fetchItemsForList', () => {
 
   const state = {
     fullPath: 'gitlab-org',
-    boardId: '1',
+    fullBoardId: 'gid://gitlab/Board/1',
     filterParams: {},
     boardType: 'group',
   };
@@ -946,7 +989,7 @@ describe('updateIssueOrder', () => {
 
   const state = {
     boardItems: issues,
-    boardId: 'gid://gitlab/Board/1',
+    fullBoardId: 'gid://gitlab/Board/1',
   };
 
   const moveData = {
@@ -960,7 +1003,7 @@ describe('updateIssueOrder', () => {
       mutation: issueMoveListMutation,
       variables: {
         projectPath: getProjectPath(mockIssue.referencePath),
-        boardId: fullBoardId(state.boardId),
+        boardId: state.fullBoardId,
         iid: mockIssue.iid,
         fromListId: 1,
         toListId: 2,
@@ -1362,7 +1405,7 @@ describe('setActiveItemSubscribed', () => {
       [mockActiveIssue.id]: mockActiveIssue,
     },
     fullPath: 'gitlab-org',
-    issuableType: 'issue',
+    issuableType: issuableTypes.issue,
   };
   const getters = { activeBoardItem: mockActiveIssue, isEpicBoard: false };
   const subscribedState = true;
@@ -1470,7 +1513,7 @@ describe('setActiveIssueMilestone', () => {
 describe('setActiveItemTitle', () => {
   const state = {
     boardItems: { [mockIssue.id]: mockIssue },
-    issuableType: 'issue',
+    issuableType: issuableTypes.issue,
     fullPath: 'path/f',
   };
   const getters = { activeBoardItem: mockIssue, isEpicBoard: false };
@@ -1519,6 +1562,33 @@ describe('setActiveItemTitle', () => {
       .mockResolvedValue({ data: { updateIssue: { errors: ['failed mutation'] } } });
 
     await expect(actions.setActiveItemTitle({ getters }, input)).rejects.toThrow(Error);
+  });
+});
+
+describe('setActiveItemConfidential', () => {
+  const state = { boardItems: { [mockIssue.id]: mockIssue } };
+  const getters = { activeBoardItem: mockIssue };
+
+  it('set confidential value on board item', (done) => {
+    const payload = {
+      itemId: getters.activeBoardItem.id,
+      prop: 'confidential',
+      value: true,
+    };
+
+    testAction(
+      actions.setActiveItemConfidential,
+      true,
+      { ...state, ...getters },
+      [
+        {
+          type: types.UPDATE_BOARD_ITEM_BY_ID,
+          payload,
+        },
+      ],
+      [],
+      done,
+    );
   });
 });
 
@@ -1748,28 +1818,4 @@ describe('unsetError', () => {
       ],
     });
   });
-});
-
-describe('fetchBacklog', () => {
-  expectNotImplemented(actions.fetchBacklog);
-});
-
-describe('bulkUpdateIssues', () => {
-  expectNotImplemented(actions.bulkUpdateIssues);
-});
-
-describe('fetchIssue', () => {
-  expectNotImplemented(actions.fetchIssue);
-});
-
-describe('toggleIssueSubscription', () => {
-  expectNotImplemented(actions.toggleIssueSubscription);
-});
-
-describe('showPage', () => {
-  expectNotImplemented(actions.showPage);
-});
-
-describe('toggleEmptyState', () => {
-  expectNotImplemented(actions.toggleEmptyState);
 });

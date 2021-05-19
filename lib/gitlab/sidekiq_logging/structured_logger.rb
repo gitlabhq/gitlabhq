@@ -30,7 +30,7 @@ module Gitlab
         Sidekiq.logger.warn log_job_done(job, started_time, base_payload, job_exception.cause || job_exception)
 
         raise
-      rescue => job_exception
+      rescue StandardError => job_exception
         Sidekiq.logger.warn log_job_done(job, started_time, base_payload, job_exception)
 
         raise
@@ -39,7 +39,7 @@ module Gitlab
       private
 
       def add_instrumentation_keys!(job, output_payload)
-        output_payload.merge!(job[:instrumentation].stringify_keys)
+        output_payload.merge!(job[:instrumentation].stringify_keys) if job[:instrumentation]
       end
 
       def add_logging_extras!(job, output_payload)
@@ -69,6 +69,8 @@ module Gitlab
         add_time_keys!(elapsed_time, payload)
 
         message = base_message(payload)
+
+        payload['database_chosen'] = job[:database_chosen] if job[:database_chosen]
 
         if job_exception
           payload['message'] = "#{message}: fail: #{payload['duration_s']} sec"

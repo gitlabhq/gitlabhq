@@ -177,4 +177,4 @@ module AuthenticatesWithTwoFactor
   end
 end
 
-AuthenticatesWithTwoFactor.prepend_if_ee('EE::AuthenticatesWithTwoFactor')
+AuthenticatesWithTwoFactor.prepend_mod_with('AuthenticatesWithTwoFactor')

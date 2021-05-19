@@ -48,4 +48,4 @@ module Types
   end
 end
 
-Types::NamespaceType.prepend_if_ee('EE::Types::NamespaceType')
+Types::NamespaceType.prepend_mod_with('Types::NamespaceType')

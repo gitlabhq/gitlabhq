@@ -8,7 +8,7 @@ class ServiceList
   end
 
   def to_array
-    [Service, columns, values]
+    [Integration, columns, values]
   end
 
   private

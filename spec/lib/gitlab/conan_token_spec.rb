@@ -20,7 +20,7 @@ RSpec.describe Gitlab::ConanToken do
     JSONWebToken::HMACToken.new(jwt_secret).tap do |jwt|
       jwt['access_token'] = access_token_id
       jwt['user_id'] = user_id || user_id
-      jwt.expire_time = expire_time || jwt.issued_at + 1.hour
+      jwt.expire_time = expire_time || jwt.issued_at + ::Gitlab::ConanToken::CONAN_TOKEN_EXPIRE_TIME
     end
   end
 
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::ConanToken do
     it 'returns nil for expired JWT' do
       jwt = build_jwt(access_token_id: 123,
                       user_id: 456,
-                      expire_time: Time.zone.now - 2.hours)
+                      expire_time: Time.zone.now - (::Gitlab::ConanToken::CONAN_TOKEN_EXPIRE_TIME + 1.hour))
 
       expect(described_class.decode(jwt.encoded)).to be_nil
     end

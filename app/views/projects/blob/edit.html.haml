@@ -1,5 +1,7 @@
 - breadcrumb_title _("Repository")
 - page_title _("Edit"), @blob.path, @ref
+- content_for :prefetch_asset_tags do
+  - webpack_preload_asset_tag('monaco')
 
 - if @conflict
   .gl-alert.gl-alert-danger.gl-mb-5.gl-mt-5

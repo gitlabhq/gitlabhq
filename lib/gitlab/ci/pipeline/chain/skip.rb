@@ -11,7 +11,14 @@ module Gitlab
 
           def perform!
             if skipped?
-              @pipeline.skip if @command.save_incompleted
+              if @command.save_incompleted
+                # Project iid must be called outside a transaction, so we ensure it is set here
+                # otherwise it may be set within the state transition transaction of the skip call
+                # which it will lock the InternalId row for the whole transaction
+                @pipeline.ensure_project_iid!
+
+                @pipeline.skip
+              end
             end
           end
 

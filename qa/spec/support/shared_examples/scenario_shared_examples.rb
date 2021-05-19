@@ -18,6 +18,7 @@ module QA
       stub_const('QA::Runtime::Scenario', attributes)
       stub_const('QA::Runtime::Feature', feature)
 
+      allow(attributes).to receive(:gitlab_address).and_return(args[:gitlab_address])
       allow(runner).to receive(:perform).and_yield(runner)
       allow(QA::Runtime::Address).to receive(:valid?).and_return(true)
     end

@@ -27,7 +27,7 @@ RSpec.shared_examples 'moves repository shard in bulk' do
         container.set_repository_read_only!
 
         expect(subject).to receive(:log_info)
-          .with(/Container #{container.full_path} \(#{container.id}\) was skipped: #{container.class} is read only/)
+          .with(/Container #{container.full_path} \(#{container.id}\) was skipped: #{container.class} is read-only/)
         expect { subject.execute(source_storage_name, destination_storage_name) }
           .to change(move_service_klass, :count).by(0)
       end

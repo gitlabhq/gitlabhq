@@ -27,8 +27,6 @@ of top-performing instances based on [usage ping data](../settings/usage_statist
 collected. Your score is compared to the lead score of each feature and then expressed as a percentage at the bottom of said feature.
 Your overall **DevOps Score** is an average of your feature scores. You can use this score to compare your DevOps status to other organizations.
 
-![DevOps Report](img/dev_ops_report_v13_4.png)
-
 The page also provides helpful links to articles and GitLab docs, to help you
 improve your scores.
 
@@ -57,8 +55,6 @@ DevOps Adoption allows you to:
 - Verify whether you are getting the return on investment that you expected from GitLab.
 - Identify specific groups that are lagging in their adoption of GitLab so you can help them along in their DevOps journey.
 - Find the groups that have adopted certain features and can provide guidance to other groups on how to use those features.
-
-![DevOps Report](img/dev_ops_adoption_v13_9.png)
 
 ### Disable or enable DevOps Adoption
 

@@ -41,7 +41,7 @@ RSpec.describe Branches::DeleteService do
       context 'when Gitlab::Git::CommandError is raised' do
         before do
           allow(repository).to receive(:rm_branch) do
-            raise Gitlab::Git::CommandError.new('Could not update patch')
+            raise Gitlab::Git::CommandError, 'Could not update patch'
           end
         end
 

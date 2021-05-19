@@ -13,7 +13,7 @@ module Gitlab
 
         @project.avatar = File.open(avatar_export_file)
         @project.save!
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       end

@@ -54,4 +54,4 @@ class JsonSchemaValidator < ActiveModel::EachValidator
   end
 end
 
-JsonSchemaValidator.prepend_ee_mod
+JsonSchemaValidator.prepend_mod

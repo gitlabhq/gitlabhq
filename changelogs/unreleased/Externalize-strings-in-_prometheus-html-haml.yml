@@ -1,0 +1,5 @@
+---
+title: Externalise strings in /application_settings/_prometheus.html.haml
+merge_request: 58030
+author: nuwe1
+type: other

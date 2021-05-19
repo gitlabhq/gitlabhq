@@ -101,16 +101,16 @@ describe('list item', () => {
   });
 
   describe('disabled prop', () => {
-    it('when true applies disabled-content class', () => {
+    it('when true applies gl-opacity-5 class', () => {
       mountComponent({ disabled: true });
 
-      expect(wrapper.classes('disabled-content')).toBe(true);
+      expect(wrapper.classes('gl-opacity-5')).toBe(true);
     });
 
-    it('when false does not apply disabled-content class', () => {
+    it('when false does not apply gl-opacity-5 class', () => {
       mountComponent({ disabled: false });
 
-      expect(wrapper.classes('disabled-content')).toBe(false);
+      expect(wrapper.classes('gl-opacity-5')).toBe(false);
     });
   });
 

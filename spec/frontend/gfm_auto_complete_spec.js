@@ -691,12 +691,9 @@ describe('GfmAutoComplete', () => {
           { search: 'ErlindaMayert nicolle' },
           { search: 'PhoebeSchaden salina' },
           { search: 'KinaCummings robena' },
-          // Remaining members are grouped last
-          { search: 'Administrator root' },
-          { search: 'AntoineLedner ammie' },
         ];
 
-        it('sorts by match with start of name/username, then match with any part of name/username, and maintains sort order', () => {
+        it('filters out non-matches, then puts matches with start of name/username first', () => {
           expect(GfmAutoComplete.Members.sort(query, items)).toMatchObject(expected);
         });
       });

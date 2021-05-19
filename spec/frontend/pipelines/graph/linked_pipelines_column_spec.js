@@ -26,6 +26,7 @@ describe('Linked Pipelines Column', () => {
   const defaultProps = {
     columnTitle: 'Downstream',
     linkedPipelines: processedPipeline.downstream,
+    showLinks: false,
     type: DOWNSTREAM,
     viewType: STAGE_VIEW,
     configPaths: {
@@ -117,6 +118,26 @@ describe('Linked Pipelines Column', () => {
         await wrapper.setProps({ viewType: LAYER_VIEW });
         await wrapper.setProps({ viewType: STAGE_VIEW });
         expect(layersFn).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('when graph does not use needs', () => {
+      beforeEach(() => {
+        const nonNeedsResponse = { ...wrappedPipelineReturn };
+        nonNeedsResponse.data.project.pipeline.usesNeeds = false;
+
+        createComponentWithApollo({
+          props: {
+            viewType: LAYER_VIEW,
+          },
+          getPipelineDetailsHandler: jest.fn().mockResolvedValue(nonNeedsResponse),
+          mountFn: mount,
+        });
+      });
+
+      it('shows the stage view, even when the main graph view type is layers', async () => {
+        await clickExpandButtonAndAwaitTimers();
+        expect(findPipelineGraph().props('viewType')).toBe(STAGE_VIEW);
       });
     });
 

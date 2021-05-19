@@ -23,6 +23,7 @@ module Packages
           uniqueness: { scope: %i[distribution_id] },
           format: { with: Gitlab::Regex.debian_component_regex }
 
+        scope :ordered_by_name, -> { order(:name) }
         scope :with_distribution, ->(distribution) { where(distribution: distribution) }
         scope :with_name, ->(name) { where(name: name) }
       end

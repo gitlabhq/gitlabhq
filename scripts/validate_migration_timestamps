@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require 'time'
+
+MIGRATION_DIRS = %w[db/migrate db/post_migrate].freeze
+VERSION_DIGITS = 14
+MIGRATION_TIMESTAMP_REGEX = /\A(?<version>\d{#{VERSION_DIGITS}})_/.freeze
+
+maximum_timestamp = Time.now.utc.strftime('%Y%m%d%H%M%S').to_i
+
+MIGRATION_DIRS.each do |migration_dir|
+  Dir[File.join(migration_dir, '*.rb')].each do |filename|
+    file_basename = File.basename(filename)
+    version_match = MIGRATION_TIMESTAMP_REGEX.match(file_basename)
+
+    raise "#{filename} has an invalid migration version" if version_match.nil?
+
+    migration_timestamp = version_match['version'].to_i
+
+    raise "#{filename} has a future timestamp" if migration_timestamp > maximum_timestamp
+  end
+end

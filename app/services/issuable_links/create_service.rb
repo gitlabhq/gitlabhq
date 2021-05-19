@@ -118,4 +118,4 @@ module IssuableLinks
   end
 end
 
-IssuableLinks::CreateService.prepend_if_ee('EE::IssuableLinks::CreateService')
+IssuableLinks::CreateService.prepend_mod_with('IssuableLinks::CreateService')

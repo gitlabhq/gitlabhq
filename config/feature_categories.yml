@@ -33,6 +33,7 @@
 - container_scanning
 - continuous_delivery
 - continuous_integration
+- continuous_integration_scaling
 - database
 - dataops
 - dependency_firewall
@@ -45,7 +46,10 @@
 - editor_extension
 - epics
 - error_tracking
-- experimentation
+- experimentation_activation
+- experimentation_adoption
+- experimentation_conversion
+- experimentation_expansion
 - feature_flags
 - five_minute_production_app
 - foundations

@@ -6,8 +6,11 @@ module Analytics
       extend ::Gitlab::Utils::Override
       include ApplicationWorker
 
+      sidekiq_options retry: 3
+
       feature_category :devops_reports
       urgency :low
+      tags :exclude_from_kubernetes
 
       idempotent!
 

@@ -36,6 +36,10 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     @excluded = true
   end
 
+  def control_behavior
+    # define a default nil control behavior so we can omit it when not needed
+  end
+
   private
 
   def feature_flag_name

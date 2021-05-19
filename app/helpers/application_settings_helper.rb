@@ -233,6 +233,7 @@ module ApplicationSettingsHelper
       :external_pipeline_validation_service_token,
       :external_pipeline_validation_service_url,
       :first_day_of_week,
+      :floc_enabled,
       :force_pages_access_control,
       :gitaly_timeout_default,
       :gitaly_timeout_medium,
@@ -302,6 +303,7 @@ module ApplicationSettingsHelper
       :sourcegraph_public_only,
       :spam_check_endpoint_enabled,
       :spam_check_endpoint_url,
+      :spam_check_api_key,
       :terminal_max_session_time,
       :terms,
       :throttle_authenticated_api_enabled,
@@ -310,9 +312,15 @@ module ApplicationSettingsHelper
       :throttle_authenticated_web_enabled,
       :throttle_authenticated_web_period_in_seconds,
       :throttle_authenticated_web_requests_per_period,
+      :throttle_authenticated_packages_api_enabled,
+      :throttle_authenticated_packages_api_period_in_seconds,
+      :throttle_authenticated_packages_api_requests_per_period,
       :throttle_unauthenticated_enabled,
       :throttle_unauthenticated_period_in_seconds,
       :throttle_unauthenticated_requests_per_period,
+      :throttle_unauthenticated_packages_api_enabled,
+      :throttle_unauthenticated_packages_api_period_in_seconds,
+      :throttle_unauthenticated_packages_api_requests_per_period,
       :throttle_protected_paths_enabled,
       :throttle_protected_paths_period_in_seconds,
       :throttle_protected_paths_requests_per_period,
@@ -358,7 +366,8 @@ module ApplicationSettingsHelper
       :rate_limiting_response_text,
       :container_registry_expiration_policies_worker_capacity,
       :container_registry_cleanup_tags_service_max_list_size,
-      :keep_latest_artifact
+      :keep_latest_artifact,
+      :whats_new_variant
     ]
   end
 
@@ -387,7 +396,7 @@ module ApplicationSettingsHelper
   end
 
   def integration_expanded?(substring)
-    @application_setting.errors.any? { |k| k.to_s.start_with?(substring) }
+    @application_setting.errors.messages.any? { |k, _| k.to_s.start_with?(substring) }
   end
 
   def instance_clusters_enabled?
@@ -429,8 +438,8 @@ module ApplicationSettingsHelper
   end
 end
 
-ApplicationSettingsHelper.prepend_if_ee('EE::ApplicationSettingsHelper')
+ApplicationSettingsHelper.prepend_mod_with('ApplicationSettingsHelper')
 
 # The methods in `EE::ApplicationSettingsHelper` should be available as both
 # instance and class methods.
-ApplicationSettingsHelper.extend_if_ee('EE::ApplicationSettingsHelper')
+ApplicationSettingsHelper.extend_mod_with('ApplicationSettingsHelper')

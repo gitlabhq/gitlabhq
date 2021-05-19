@@ -17,4 +17,4 @@ module API
   end
 end
 
-API::Helpers::DiscussionsHelpers.prepend_if_ee('EE::API::Helpers::DiscussionsHelpers')
+API::Helpers::DiscussionsHelpers.prepend_mod_with('API::Helpers::DiscussionsHelpers')

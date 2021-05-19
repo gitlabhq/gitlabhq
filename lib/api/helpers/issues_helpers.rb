@@ -28,7 +28,8 @@ module API
           :remove_labels,
           :milestone_id,
           :state_event,
-          :title
+          :title,
+          :issue_type
         ]
       end
 
@@ -47,6 +48,7 @@ module API
         args[:not][:label_name] ||= args[:not]&.delete(:labels)
         args[:scope] = args[:scope].underscore if args[:scope]
         args[:sort] = "#{args[:order_by]}_#{args[:sort]}"
+        args[:issue_types] ||= args.delete(:issue_type)
 
         IssuesFinder.new(current_user, args)
       end
@@ -74,4 +76,4 @@ module API
   end
 end
 
-API::Helpers::IssuesHelpers.prepend_if_ee('EE::API::Helpers::IssuesHelpers')
+API::Helpers::IssuesHelpers.prepend_mod_with('API::Helpers::IssuesHelpers')

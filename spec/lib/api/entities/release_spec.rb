@@ -54,18 +54,41 @@ RSpec.describe API::Entities::Release do
 
     subject(:description_html) { entity.as_json['description_html'] }
 
-    it 'renders special references if current user has access' do
-      project.add_reporter(user)
-
-      expect(description_html).to include(issue_path)
-      expect(description_html).to include(issue_title)
+    it 'is inexistent' do
+      expect(description_html).to be_nil
     end
 
-    it 'does not render special references if current user has no access' do
-      project.add_guest(user)
+    context 'when remove_description_html_in_release_api feature flag is disabled' do
+      before do
+        stub_feature_flags(remove_description_html_in_release_api: false)
+      end
 
-      expect(description_html).not_to include(issue_path)
-      expect(description_html).not_to include(issue_title)
+      it 'renders special references if current user has access' do
+        project.add_reporter(user)
+
+        expect(description_html).to include(issue_path)
+        expect(description_html).to include(issue_title)
+      end
+
+      it 'does not render special references if current user has no access' do
+        project.add_guest(user)
+
+        expect(description_html).not_to include(issue_path)
+        expect(description_html).not_to include(issue_title)
+      end
+    end
+
+    context 'when remove_description_html_in_release_api_override feature flag is enabled' do
+      before do
+        stub_feature_flags(remove_description_html_in_release_api_override: project)
+      end
+
+      it 'renders special references if current user has access' do
+        project.add_reporter(user)
+
+        expect(description_html).to include(issue_path)
+        expect(description_html).to include(issue_title)
+      end
     end
   end
 end

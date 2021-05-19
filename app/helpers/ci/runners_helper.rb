@@ -75,4 +75,4 @@ module Ci
   end
 end
 
-Ci::RunnersHelper.prepend_if_ee('EE::Ci::RunnersHelper')
+Ci::RunnersHelper.prepend_mod_with('Ci::RunnersHelper')

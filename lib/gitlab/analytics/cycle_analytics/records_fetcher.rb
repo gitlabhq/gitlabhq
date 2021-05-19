@@ -124,7 +124,7 @@ module Gitlab
         def time_columns
           [
             stage.start_event.timestamp_projection.as('start_event_timestamp'),
-            stage.end_event.timestamp_projection.as('end_event_timestamp'),
+            end_event_timestamp_projection.as('end_event_timestamp'),
             round_duration_to_seconds.as('total_time')
           ]
         end
@@ -133,4 +133,4 @@ module Gitlab
   end
 end
 
-Gitlab::Analytics::CycleAnalytics::RecordsFetcher.prepend_if_ee('EE::Gitlab::Analytics::CycleAnalytics::RecordsFetcher')
+Gitlab::Analytics::CycleAnalytics::RecordsFetcher.prepend_mod_with('Gitlab::Analytics::CycleAnalytics::RecordsFetcher')

@@ -160,9 +160,58 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver do
         it_behaves_like 'an authorized request'
       end
     end
+
+    context 'with :personal_access_token_from_jwt' do
+      let(:type) { :personal_access_token_from_jwt }
+      let(:token) { personal_access_token }
+
+      context 'with valid credentials' do
+        let(:raw) { username_and_password_from_jwt(token.id) }
+
+        it_behaves_like 'an authorized request'
+      end
+    end
+
+    context 'with :deploy_token_from_jwt' do
+      let(:type) { :deploy_token_from_jwt }
+      let(:token) { deploy_token }
+
+      context 'with valid credentials' do
+        let(:raw) { username_and_password_from_jwt(token.token) }
+
+        it_behaves_like 'an authorized request'
+      end
+    end
+
+    context 'with :job_token_from_jwt' do
+      let(:type) { :job_token_from_jwt }
+      let(:token) { ci_job }
+
+      context 'with valid credentials' do
+        let(:raw) { username_and_password_from_jwt(token.token) }
+
+        it_behaves_like 'an authorized request'
+      end
+
+      context 'when the job is not running' do
+        let(:raw) { username_and_password_from_jwt(ci_job_done.token) }
+
+        it_behaves_like 'an unauthorized request'
+      end
+
+      context 'with an invalid job token' do
+        let(:raw) { username_and_password_from_jwt('not a valid CI job token') }
+
+        it_behaves_like 'an unauthorized request'
+      end
+    end
   end
 
   def username_and_password(username, password)
     ::Gitlab::APIAuthentication::TokenLocator::UsernameAndPassword.new(username, password)
+  end
+
+  def username_and_password_from_jwt(token)
+    username_and_password(nil, ::Gitlab::JWTToken.new.tap { |jwt| jwt['token'] = token }.encoded)
   end
 end

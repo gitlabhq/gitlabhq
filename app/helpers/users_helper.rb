@@ -100,7 +100,7 @@ module UsersHelper
       badges << blocked_user_badge(user) if user.blocked?
       badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin?
       badges << { text: s_('AdminUsers|External'), variant: 'secondary' } if user.external?
-      badges << { text: s_("AdminUsers|It's you!"), variant: nil } if current_user == user
+      badges << { text: s_("AdminUsers|It's you!"), variant: 'muted' } if current_user == user
     end
   end
 
@@ -160,6 +160,49 @@ module UsersHelper
     end
 
     header + list
+  end
+
+  def user_ban_data(user)
+    {
+      path: ban_admin_user_path(user),
+      method: 'put',
+      modal_attributes: {
+        title: s_('AdminUsers|Ban user %{username}?') % { username: sanitize_name(user.name) },
+        message: s_('AdminUsers|You can unban their account in the future. Their data remains intact.'),
+        okVariant: 'warning',
+        okTitle: s_('AdminUsers|Ban')
+      }.to_json
+    }
+  end
+
+  def user_unban_data(user)
+    {
+      path: unban_admin_user_path(user),
+      method: 'put',
+      modal_attributes: {
+        title: s_('AdminUsers|Unban %{username}?') % { username: sanitize_name(user.name) },
+        message: s_('AdminUsers|You ban their account in the future if necessary.'),
+        okVariant: 'info',
+        okTitle: s_('AdminUsers|Unban')
+      }.to_json
+    }
+  end
+
+  def user_ban_effects
+    header = tag.p s_('AdminUsers|Banning the user has the following effects:')
+
+    list = tag.ul do
+      concat tag.li s_('AdminUsers|User will be blocked')
+    end
+
+    link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path("user/admin_area/moderate_users", anchor: "ban-a-user") }
+    info = tag.p s_('AdminUsers|Learn more about %{link_start}banned users.%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+
+    header + list + info
+  end
+
+  def ban_feature_available?
+    Feature.enabled?(:ban_user_feature_flag)
   end
 
   def user_deactivation_data(user, message)
@@ -234,6 +277,9 @@ module UsersHelper
   def blocked_user_badge(user)
     pending_approval_badge = { text: s_('AdminUsers|Pending approval'), variant: 'info' }
     return pending_approval_badge if user.blocked_pending_approval?
+
+    banned_badge = { text: s_('AdminUsers|Banned'), variant: 'danger' }
+    return banned_badge if user.banned?
 
     { text: s_('AdminUsers|Blocked'), variant: 'danger' }
   end
@@ -322,4 +368,4 @@ module UsersHelper
   end
 end
 
-UsersHelper.prepend_if_ee('EE::UsersHelper')
+UsersHelper.prepend_mod_with('UsersHelper')

@@ -18,7 +18,7 @@ class BackfillPushEventPayloadEventIdForBigintConversion < ActiveRecord::Migrati
     Gitlab::Database::BackgroundMigration::BatchedMigration
       .where(job_class_name: 'CopyColumnUsingBackgroundMigrationJob')
       .where(table_name: 'push_event_payloads', column_name: 'event_id')
-      .where('job_arguments = ?', %w[event_id event_id_convert_to_bigint].to_json)
+      .where(job_arguments: %w[event_id event_id_convert_to_bigint].to_json)
       .delete_all
   end
 

@@ -51,10 +51,12 @@ Rails.application.routes.draw do
       Gitlab.ee do
         get :trial_getting_started, on: :collection
         get :trial_onboarding_board, on: :collection
+        get :continuous_onboarding_getting_started, on: :collection
       end
     end
 
     resource :experience_level, only: [:show, :update]
+    resources :invites, only: [:new, :create]
 
     Gitlab.ee do
       resources :groups, only: [:new, :create]
@@ -74,6 +76,9 @@ Rails.application.routes.draw do
 
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
+
+  # Terraform service discovery
+  get '.well-known/terraform.json' => 'terraform/services#index', as: :terraform_services
 
   # Begin of the /-/ scope.
   # Use this scope for all new global routes.

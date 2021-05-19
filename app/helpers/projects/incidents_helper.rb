@@ -16,4 +16,4 @@ module Projects::IncidentsHelper
   end
 end
 
-Projects::IncidentsHelper.prepend_if_ee('EE::Projects::IncidentsHelper')
+Projects::IncidentsHelper.prepend_mod_with('Projects::IncidentsHelper')

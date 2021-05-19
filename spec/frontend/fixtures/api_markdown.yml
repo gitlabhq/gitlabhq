@@ -48,3 +48,7 @@
     3. list item 3
 - name: image
   markdown: '![alt text](https://gitlab.com/logo.png)'
+- name: hard_break
+  markdown: |-
+    This is a line after a\
+    hard break

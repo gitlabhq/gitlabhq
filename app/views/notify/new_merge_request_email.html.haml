@@ -1,8 +1,6 @@
 %p.details
-  = html_escape(_('%{userLinkStart}%{user}%{linkEnd} created a %{mrLinkStart}merge request%{linkEnd}:')) % {userLinkStart: "<a href=\"#{user_url(@merge_request.author)}\">".html_safe,
-                                                                                                            user: @merge_request.author_name,
-                                                                                                            mrLinkStart: "<a href=\"#{@target_url}\">".html_safe,
-                                                                                                            linkEnd: '</a>'.html_safe}
+  = html_escape(_('%{user} created a merge request: %{mr_link}')) % { user: link_to(@merge_request.author_name, user_url(@merge_request.author)),
+                                                                      mr_link: merge_request_reference_link(@merge_request) }
 
 %p
   .branch

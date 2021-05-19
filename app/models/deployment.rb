@@ -32,8 +32,9 @@ class Deployment < ApplicationRecord
   delegate :kubernetes_namespace, to: :deployment_cluster, allow_nil: true
 
   scope :for_environment, -> (environment) { where(environment_id: environment) }
-  scope :for_environment_name, -> (name) do
-    joins(:environment).where(environments: { name: name })
+  scope :for_environment_name, -> (project, name) do
+    where('deployments.environment_id = (?)',
+      Environment.select(:id).where(project: project, name: name).limit(1))
   end
 
   scope :for_status, -> (status) { where(status: status) }
@@ -87,7 +88,7 @@ class Deployment < ApplicationRecord
 
     after_transition any => :running do |deployment|
       deployment.run_after_commit do
-        Deployments::ExecuteHooksWorker.perform_async(id)
+        Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
       end
     end
 
@@ -100,7 +101,7 @@ class Deployment < ApplicationRecord
 
     after_transition any => FINISHED_STATUSES do |deployment|
       deployment.run_after_commit do
-        Deployments::ExecuteHooksWorker.perform_async(id)
+        Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
       end
     end
 
@@ -182,8 +183,8 @@ class Deployment < ApplicationRecord
     Commit.truncate_sha(sha)
   end
 
-  def execute_hooks
-    deployment_data = Gitlab::DataBuilder::Deployment.build(self)
+  def execute_hooks(status_changed_at)
+    deployment_data = Gitlab::DataBuilder::Deployment.build(self, status_changed_at)
     project.execute_hooks(deployment_data, :deployment_hooks)
     project.execute_services(deployment_data, :deployment_hooks)
   end
@@ -347,4 +348,4 @@ class Deployment < ApplicationRecord
   end
 end
 
-Deployment.prepend_if_ee('EE::Deployment')
+Deployment.prepend_mod_with('Deployment')

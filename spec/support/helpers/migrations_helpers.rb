@@ -172,4 +172,4 @@ module MigrationsHelpers
   end
 end
 
-MigrationsHelpers.prepend_if_ee('EE::MigrationsHelpers')
+MigrationsHelpers.prepend_mod_with('MigrationsHelpers')

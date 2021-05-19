@@ -5,10 +5,13 @@ module Packages
     module Metadata
       class SyncWorker
         include ApplicationWorker
+
+        sidekiq_options retry: 3
         include Gitlab::Utils::StrongMemoize
 
         queue_namespace :package_repositories
         feature_category :package_registry
+        tags :exclude_from_kubernetes
 
         deduplicate :until_executing
         idempotent!
@@ -30,10 +33,10 @@ module Packages
           if result.success?
             log_extra_metadata_on_done(:message, result.message)
           else
-            raise SyncError.new(result.message)
+            raise SyncError, result.message
           end
 
-          raise SyncError.new(result.message) unless result.success?
+          raise SyncError, result.message unless result.success?
         end
 
         private

@@ -20,7 +20,7 @@
                 = _('Next')
 
         - if Feature.enabled?(:combined_menu, current_user, default_enabled: :yaml)
-          = render "layouts/nav/combined_menu"
+          = render "layouts/nav/top_nav"
         - else
           - if current_user
             = render "layouts/nav/dashboard"
@@ -92,7 +92,7 @@
             = link_to help_path, class: 'header-help-dropdown-toggle', data: { toggle: "dropdown" } do
               %span.gl-sr-only
                 = s_('Nav|Help')
-              = sprite_icon('question')
+              = sprite_icon('question-o')
               %span.notification-dot.rounded-circle.gl-absolute
               = sprite_icon('chevron-down', css_class: 'caret-down')
             .dropdown-menu.dropdown-menu-right

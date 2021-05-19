@@ -45,5 +45,35 @@ RSpec.describe IdeHelper do
           )
       end
     end
+
+    context 'environments guidance experiment', :experiment do
+      before do
+        stub_experiments(in_product_guidance_environments_webide: :candidate)
+        self.instance_variable_set(:@project, project)
+      end
+
+      context 'when project has no enviornments' do
+        it 'enables environment guidance' do
+          expect(helper.ide_data).to include('enable-environments-guidance' => 'true')
+        end
+
+        context 'and the callout has been dismissed' do
+          it 'disables environment guidance' do
+            callout = create(:user_callout, feature_name: :web_ide_ci_environments_guidance, user: project.creator)
+            callout.update!(dismissed_at: Time.now - 1.week)
+            allow(helper).to receive(:current_user).and_return(User.find(project.creator.id))
+            expect(helper.ide_data).to include('enable-environments-guidance' => 'false')
+          end
+        end
+      end
+
+      context 'when the project has environments' do
+        it 'disables environment guidance' do
+          create(:environment, project: project)
+
+          expect(helper.ide_data).to include('enable-environments-guidance' => 'false')
+        end
+      end
+    end
   end
 end

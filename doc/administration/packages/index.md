@@ -98,6 +98,12 @@ To enable the Packages feature:
 
 1. [Restart GitLab](../restart_gitlab.md#helm-chart-installations "How to reconfigure Helm GitLab") for the changes to take effect.
 
+## Rate limits
+
+When downloading packages as dependencies in downstream projects, many requests are made through the
+Packages API. You may therefore reach enforced user and IP rate limits. To address this issue, you
+can define specific rate limits for the Packages API. For more details, see [Package Registry Rate Limits](../../user/admin_area/settings/package_registry_rate_limits.md).
+
 ## Changing the storage path
 
 By default, the packages are stored locally, but you can change the default

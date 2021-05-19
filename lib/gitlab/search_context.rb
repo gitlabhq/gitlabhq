@@ -164,4 +164,4 @@ module Gitlab
   end
 end
 
-Gitlab::SearchContext::Builder.prepend_ee_mod
+Gitlab::SearchContext::Builder.prepend_mod

@@ -30,10 +30,10 @@ module Boards
       end
 
       def create_issue(params)
-        ::Issues::CreateService.new(project, current_user, params).execute
+        ::Issues::CreateService.new(project: project, current_user: current_user, params: params).execute
       end
     end
   end
 end
 
-Boards::Issues::CreateService.prepend_if_ee('EE::Boards::Issues::CreateService')
+Boards::Issues::CreateService.prepend_mod_with('Boards::Issues::CreateService')

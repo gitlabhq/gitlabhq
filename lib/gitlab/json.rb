@@ -84,7 +84,7 @@ module Gitlab
 
         Oj.load(string, opts)
       rescue Oj::ParseError, Encoding::UndefinedConversionError => ex
-        raise parser_error.new(ex)
+        raise parser_error, ex
       end
 
       # Take a Ruby object and convert it to a string. This method varies
@@ -169,7 +169,7 @@ module Gitlab
       # @return [Boolean]
       def feature_table_exists?
         Feature::FlipperFeature.table_exists?
-      rescue
+      rescue StandardError
         false
       end
     end

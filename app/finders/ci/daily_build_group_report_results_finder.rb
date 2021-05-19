@@ -94,4 +94,4 @@ module Ci
   end
 end
 
-Ci::DailyBuildGroupReportResultsFinder.prepend_if_ee('::EE::Ci::DailyBuildGroupReportResultsFinder')
+Ci::DailyBuildGroupReportResultsFinder.prepend_mod_with('Ci::DailyBuildGroupReportResultsFinder')

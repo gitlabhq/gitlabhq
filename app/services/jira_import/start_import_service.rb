@@ -41,7 +41,7 @@ module JiraImport
       project.save! && jira_import.schedule!
 
       ServiceResponse.success(payload: { import_data: jira_import } )
-    rescue => ex
+    rescue StandardError => ex
       # in case project.save! raises an error
       Gitlab::ErrorTracking.track_exception(ex, project_id: project.id)
       jira_import&.do_fail!(error_message: ex.message)

@@ -57,11 +57,9 @@ module Types
           description: 'Milestone statistics.'
 
     def stats
-      return unless Feature.enabled?(:graphql_milestone_stats, milestone.project || milestone.group, default_enabled: true)
-
       milestone
     end
   end
 end
 
-Types::MilestoneType.prepend_if_ee('::EE::Types::MilestoneType')
+Types::MilestoneType.prepend_mod_with('Types::MilestoneType')

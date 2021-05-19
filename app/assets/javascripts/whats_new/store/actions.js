@@ -14,17 +14,19 @@ export default {
       localStorage.setItem(STORAGE_KEY, versionDigest);
     }
   },
-  fetchItems({ commit, state }, { page } = { page: null }) {
+  fetchItems({ commit, state }, { page, versionDigest } = { page: null, versionDigest: null }) {
     if (state.fetching) {
       return false;
     }
 
     commit(types.SET_FETCHING, true);
 
+    const v = versionDigest;
     return axios
       .get('/-/whats_new', {
         params: {
           page,
+          v,
         },
       })
       .then(({ data, headers }) => {

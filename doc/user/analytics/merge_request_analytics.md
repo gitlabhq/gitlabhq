@@ -7,8 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Merge Request Analytics **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229045) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.3.
-> - Moved to [GitLab Premium](https://about.gitlab.com/pricing/) due to Starter/Bronze being [discontinued](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) in 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229045) in GitLab 13.3.
+> - Moved to GitLab Premium in 13.9.
 
 Merge Request Analytics helps you understand the efficiency of your code review process, and the productivity of your team.
 
@@ -56,7 +56,7 @@ The throughput chart shows the number of merge requests merged per month.
 
 ### Throughput table
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232651) in GitLab 13.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232651) in GitLab 13.3.
 
 The Throughput table displays the most recent merge requests merged in the date range. The
 table displays up to 20 merge requests at a time. If there are more than 20 merge requests,

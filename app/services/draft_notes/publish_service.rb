@@ -24,7 +24,7 @@ module DraftNotes
       create_note_from_draft(draft)
       draft.delete
 
-      MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(merge_request)
+      MergeRequests::ResolvedDiscussionNotificationService.new(project: project, current_user: current_user).execute(merge_request)
     end
 
     def publish_draft_notes
@@ -41,7 +41,7 @@ module DraftNotes
       set_reviewed
 
       notification_service.async.new_review(review)
-      MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(merge_request)
+      MergeRequests::ResolvedDiscussionNotificationService.new(project: project, current_user: current_user).execute(merge_request)
     end
 
     def create_note_from_draft(draft)
@@ -68,7 +68,7 @@ module DraftNotes
     end
 
     def set_reviewed
-      ::MergeRequests::MarkReviewerReviewedService.new(project, current_user).execute(merge_request)
+      ::MergeRequests::MarkReviewerReviewedService.new(project: project, current_user: current_user).execute(merge_request)
     end
   end
 end

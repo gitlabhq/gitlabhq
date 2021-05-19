@@ -14,14 +14,15 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker do
     subject { described_class.new.perform(package_file_id) }
 
     shared_examples 'handling the metadata error' do |exception_class: ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError|
-      it 'removes the package and the package file' do
+      it 'updates package status to error', :aggregate_failures do
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
           instance_of(exception_class),
           project_id: package.project_id
         )
-        expect { subject }
-          .to change { Packages::Package.count }.by(-1)
-          .and change { Packages::PackageFile.count }.by(-1)
+
+        subject
+
+        expect(package.reload).to be_error
       end
     end
 
@@ -101,6 +102,15 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker do
 
         it_behaves_like 'handling the metadata error'
       end
+    end
+
+    context 'handles a processing an unaccounted for error' do
+      before do
+        expect(::Packages::Nuget::UpdatePackageFromMetadataService).to receive(:new)
+          .and_raise(Zip::Error)
+      end
+
+      it_behaves_like 'handling the metadata error', exception_class: Zip::Error
     end
   end
 end

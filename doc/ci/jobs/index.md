@@ -65,7 +65,7 @@ you can also see the reason it failed on the Job detail page.
 
 The order of jobs in a pipeline depends on the type of pipeline graph.
 
-- For [regular pipeline graphs](../pipelines/index.md#regular-pipeline-graphs), jobs are sorted by name.
+- For [full pipeline graphs](../pipelines/index.md#view-full-pipeline-graph), jobs are sorted by name.
 - For [pipeline mini graphs](../pipelines/index.md#pipeline-mini-graphs), jobs are sorted by severity and then by name.
 
 The order of severity is:

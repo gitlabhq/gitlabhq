@@ -1,0 +1,8 @@
+---
+name: api_caching_rate_limit_branches
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61688
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/330876
+milestone: '13.12'
+type: development
+group: group::source code
+default_enabled: true

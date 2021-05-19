@@ -35,7 +35,7 @@ module Gitlab
 
       def tree_by_key(key)
         attributes_finder.find_root(key)
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       end

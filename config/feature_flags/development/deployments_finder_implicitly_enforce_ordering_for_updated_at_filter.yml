@@ -1,0 +1,8 @@
+---
+name: deployments_finder_implicitly_enforce_ordering_for_updated_at_filter
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59771
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/329286
+milestone: '13.12'
+type: development
+group: group::release
+default_enabled: true

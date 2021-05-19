@@ -24,7 +24,7 @@ module PodLogs
     end
 
     def get_raw_pods(result)
-      client = cluster&.application_elastic_stack&.elasticsearch_client
+      client = cluster&.elasticsearch_client
       return error(_('Unable to connect to Elasticsearch')) unless client
 
       result[:raw_pods] = ::Gitlab::Elasticsearch::Logs::Pods.new(client).pods(namespace)
@@ -66,10 +66,8 @@ module PodLogs
     end
 
     def pod_logs(result)
-      client = cluster&.application_elastic_stack&.elasticsearch_client
+      client = cluster&.elasticsearch_client
       return error(_('Unable to connect to Elasticsearch')) unless client
-
-      chart_above_v2 = cluster.application_elastic_stack.chart_above_v2?
 
       response = ::Gitlab::Elasticsearch::Logs::Lines.new(client).pod_logs(
         namespace,
@@ -79,7 +77,7 @@ module PodLogs
         start_time: result[:start_time],
         end_time: result[:end_time],
         cursor: result[:cursor],
-        chart_above_v2: chart_above_v2
+        chart_above_v2: cluster.elastic_stack_adapter.chart_above_v2?
       )
 
       result.merge!(response)

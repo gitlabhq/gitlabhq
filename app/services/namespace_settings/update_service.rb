@@ -35,4 +35,4 @@ module NamespaceSettings
   end
 end
 
-NamespaceSettings::UpdateService.prepend_if_ee('EE::NamespaceSettings::UpdateService')
+NamespaceSettings::UpdateService.prepend_mod_with('NamespaceSettings::UpdateService')

@@ -12,6 +12,10 @@ GitLab uses two primary types of pagination: **offset** and **keyset**
 (sometimes called cursor-based) pagination.
 The GraphQL API mainly uses keyset pagination, falling back to offset pagination when needed.
 
+### Performance considerations
+
+See the [general pagination guidelines section](../database/pagination_guidelines.md) for more information.
+
 ### Offset pagination
 
 This is the traditional, page-by-page pagination, that is most common,

@@ -8,7 +8,7 @@ product_category: onboarding
 value_type: number
 status: data_available
 time_frame: all
-data_source: ruby
+data_source: system
 distribution:
 - ce
 - ee

@@ -114,11 +114,7 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       subject { described_class.with_container(container2) }
 
       it do
-        queries = ActiveRecord::QueryRecorder.new do
-          expect(subject.to_a).to contain_exactly(component_file_other_container)
-        end
-
-        expect(queries.count).to eq(1)
+        expect(subject.to_a).to contain_exactly(component_file_other_container)
       end
     end
 
@@ -126,11 +122,7 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       subject { described_class.with_codename_or_suite(distribution2.codename) }
 
       it do
-        queries = ActiveRecord::QueryRecorder.new do
-          expect(subject.to_a).to contain_exactly(component_file_other_container)
-        end
-
-        expect(queries.count).to eq(1)
+        expect(subject.to_a).to contain_exactly(component_file_other_container)
       end
     end
 
@@ -138,11 +130,7 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       subject { described_class.with_component_name(component1_2.name) }
 
       it do
-        queries = ActiveRecord::QueryRecorder.new do
-          expect(subject.to_a).to contain_exactly(component_file_other_component)
-        end
-
-        expect(queries.count).to eq(1)
+        expect(subject.to_a).to contain_exactly(component_file_other_component)
       end
     end
 
@@ -150,14 +138,7 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       subject { described_class.with_file_type(:source) }
 
       it do
-        # let_it_be_with_refind triggers a query
-        component_file_with_file_type_source
-
-        queries = ActiveRecord::QueryRecorder.new do
-          expect(subject.to_a).to contain_exactly(component_file_with_file_type_source)
-        end
-
-        expect(queries.count).to eq(1)
+        expect(subject.to_a).to contain_exactly(component_file_with_file_type_source)
       end
     end
 
@@ -165,11 +146,7 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       subject { described_class.with_architecture_name(architecture1_2.name) }
 
       it do
-        queries = ActiveRecord::QueryRecorder.new do
-          expect(subject.to_a).to contain_exactly(component_file_other_architecture)
-        end
-
-        expect(queries.count).to eq(1)
+        expect(subject.to_a).to contain_exactly(component_file_other_architecture)
       end
     end
 
@@ -177,11 +154,7 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       subject { described_class.with_compression_type(:xz) }
 
       it do
-        queries = ActiveRecord::QueryRecorder.new do
-          expect(subject.to_a).to contain_exactly(component_file_other_compression_type)
-        end
-
-        expect(queries.count).to eq(1)
+        expect(subject.to_a).to contain_exactly(component_file_other_compression_type)
       end
     end
 
@@ -189,11 +162,19 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       subject { described_class.with_file_sha256('other_sha256') }
 
       it do
-        queries = ActiveRecord::QueryRecorder.new do
-          expect(subject.to_a).to contain_exactly(component_file_other_file_sha256)
-        end
+        expect(subject.to_a).to contain_exactly(component_file_other_file_sha256)
+      end
+    end
 
-        expect(queries.count).to eq(1)
+    describe '.created_before' do
+      let_it_be(:component_file1) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, created_at: 4.hours.ago) }
+      let_it_be(:component_file2) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, created_at: 3.hours.ago) }
+      let_it_be(:component_file3) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, created_at: 1.hour.ago) }
+
+      subject { described_class.created_before(2.hours.ago) }
+
+      it do
+        expect(subject.to_a).to contain_exactly(component_file1, component_file2)
       end
     end
   end

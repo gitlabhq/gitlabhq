@@ -47,7 +47,7 @@ best place to integrate your own product and its results into GitLab.
   displays the results of the pipeline's security checks and the developer can
   review them. The developer can review both a summary and a detailed version
   of the results.
-- If certain policies (such as [merge request approvals](../../user/project/merge_requests/merge_request_approvals.md))
+- If certain policies (such as [merge request approvals](../../user/project/merge_requests/approvals/index.md))
   are in place for a project, developers must resolve specific findings or get
   an approval from a specific list of people.
 - The [security dashboard](../../user/application_security/security_dashboard/index.md)
@@ -101,7 +101,7 @@ and complete an integration with the Secure stage.
    - Users can interact with the findings from your artifact within their workflow. They can dismiss the findings or accept them and create a backlog issue.
    - To automatically create issues without user interaction, use the [issue API](../../api/issues.md).
 1. Optional: Provide auto-remediation steps:
-   - If you specified `remediations` in your artifact, it is proposed through our [automatic remediation](../../user/application_security/index.md#apply-an-automatic-remediation-for-a-vulnerability)
+   - If you specified `remediations` in your artifact, it is proposed through our [automatic remediation](../../user/application_security/vulnerabilities/index.md#remediate-a-vulnerability-automatically)
      interface.
 1. Demo the integration to GitLab:
    - After you have tested and are ready to demo your integration please

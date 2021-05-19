@@ -49,7 +49,7 @@ module Gitlab
         when ::DesignManagement::Design
           design_url(object, **options)
         else
-          raise NotImplementedError.new("No URL builder defined for #{object.inspect}")
+          raise NotImplementedError, "No URL builder defined for #{object.inspect}"
         end
       end
       # rubocop:enable Metrics/CyclomaticComplexity
@@ -127,4 +127,4 @@ module Gitlab
   end
 end
 
-::Gitlab::UrlBuilder.prepend_if_ee('EE::Gitlab::UrlBuilder')
+::Gitlab::UrlBuilder.prepend_mod_with('Gitlab::UrlBuilder')

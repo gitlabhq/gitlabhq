@@ -57,7 +57,7 @@ module Gitlab
 
         def parse_response_body(body)
           Gitlab::Json.parse(body)
-        rescue
+        rescue StandardError
           raise Consul::Internal::UnexpectedResponseError
         end
 
@@ -69,7 +69,7 @@ module Gitlab
           raise Consul::Internal::SSLError
         rescue Errno::ECONNREFUSED
           raise Consul::Internal::ECONNREFUSED
-        rescue
+        rescue StandardError
           raise Consul::Internal::UnexpectedResponseError
         end
       end

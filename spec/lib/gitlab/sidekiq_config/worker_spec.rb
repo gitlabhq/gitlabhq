@@ -6,6 +6,7 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
   def create_worker(queue:, **attributes)
     namespace = queue.include?(':') && queue.split(':').first
     inner_worker = double(
+      name: attributes[:worker_name] || 'Foo::BarWorker',
       queue: queue,
       queue_namespace: namespace,
       get_feature_category: attributes[:feature_category],
@@ -87,6 +88,7 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
   describe 'YAML encoding' do
     it 'encodes the worker in YAML as a hash of the queue' do
       attributes_a = {
+        worker_name: 'WorkerA',
         feature_category: :source_code_management,
         has_external_dependencies: false,
         urgency: :low,
@@ -97,6 +99,7 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
       }
 
       attributes_b = {
+        worker_name: 'WorkerB',
         feature_category: :not_owned,
         has_external_dependencies: true,
         urgency: :high,

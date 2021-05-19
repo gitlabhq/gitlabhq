@@ -1,3 +1,4 @@
+import '~/commons';
 import { GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -5,11 +6,11 @@ import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mi
 import PipelineOperations from '~/pipelines/components/pipelines_list/pipeline_operations.vue';
 import PipelineTriggerer from '~/pipelines/components/pipelines_list/pipeline_triggerer.vue';
 import PipelineUrl from '~/pipelines/components/pipelines_list/pipeline_url.vue';
-import PipelinesStatusBadge from '~/pipelines/components/pipelines_list/pipelines_status_badge.vue';
 import PipelinesTable from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 import PipelinesTimeago from '~/pipelines/components/pipelines_list/time_ago.vue';
 
 import eventHub from '~/pipelines/event_hub';
+import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
 
 jest.mock('~/pipelines/event_hub');
@@ -42,7 +43,7 @@ describe('Pipelines Table', () => {
   };
 
   const findGlTable = () => wrapper.findComponent(GlTable);
-  const findStatusBadge = () => wrapper.findComponent(PipelinesStatusBadge);
+  const findStatusBadge = () => wrapper.findComponent(CiBadge);
   const findPipelineInfo = () => wrapper.findComponent(PipelineUrl);
   const findTriggerer = () => wrapper.findComponent(PipelineTriggerer);
   const findCommit = () => wrapper.findComponent(CommitComponent);

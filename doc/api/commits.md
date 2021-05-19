@@ -316,7 +316,6 @@ Example response:
 {
   "id": "8b090c1b79a14f2bd9e8a738f717824ff53aebad",
   "short_id": "8b090c1b",
-  "title": "Feature added",
   "author_name": "Example User",
   "author_email": "user@example.com",
   "authored_date": "2016-12-12T20:10:39.000+01:00",

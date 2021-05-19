@@ -34,7 +34,7 @@ class Group < Namespace
   has_many :members_and_requesters, as: :source, class_name: 'GroupMember'
 
   has_many :milestones
-  has_many :services
+  has_many :integrations
   has_many :shared_group_links, foreign_key: :shared_with_group_id, class_name: 'GroupGroupLink'
   has_many :shared_with_group_links, foreign_key: :shared_group_id, class_name: 'GroupGroupLink'
   has_many :shared_groups, through: :shared_group_links, source: :shared_group
@@ -66,6 +66,8 @@ class Group < Namespace
   has_many :import_failures, inverse_of: :group
 
   has_one :import_state, class_name: 'GroupImportState', inverse_of: :group
+
+  has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :group
 
   has_many :group_deploy_keys_groups, inverse_of: :group
   has_many :group_deploy_keys, through: :group_deploy_keys_groups
@@ -105,20 +107,20 @@ class Group < Namespace
 
   scope :with_users, -> { includes(:users) }
 
+  scope :with_onboarding_progress, -> { joins(:onboarding_progress) }
+
   scope :by_id, ->(groups) { where(id: groups) }
 
   scope :for_authorized_group_members, -> (user_ids) do
     joins(:group_members)
-      .where("members.user_id IN (?)", user_ids)
+      .where(members: { user_id: user_ids })
       .where("access_level >= ?", Gitlab::Access::GUEST)
   end
 
   scope :for_authorized_project_members, -> (user_ids) do
     joins(projects: :project_authorizations)
-      .where("project_authorizations.user_id IN (?)", user_ids)
+      .where(project_authorizations: { user_id: user_ids })
   end
-
-  delegate :default_branch_name, to: :namespace_settings
 
   class << self
     def sort_by_attribute(method)
@@ -155,7 +157,7 @@ class Group < Namespace
     def select_for_project_authorization
       if current_scope.joins_values.include?(:shared_projects)
         joins('INNER JOIN namespaces project_namespace ON project_namespace.id = projects.namespace_id')
-          .where('project_namespace.share_with_group_lock = ?', false)
+          .where(project_namespace: { share_with_group_lock: false })
           .select("projects.id AS project_id, LEAST(project_group_links.group_access, members.access_level) AS access_level")
       else
         super
@@ -163,12 +165,12 @@ class Group < Namespace
     end
 
     def without_integration(integration)
-      services = Service
+      integrations = Integration
         .select('1')
         .where('services.group_id = namespaces.id')
         .where(type: integration.type)
 
-      where('NOT EXISTS (?)', services)
+      where('NOT EXISTS (?)', integrations)
     end
 
     # This method can be used only if all groups have the same top-level
@@ -448,6 +450,20 @@ class Group < Namespace
                .where(source_id: id)
   end
 
+  def authorizable_members_with_parents
+    source_ids =
+      if has_parent?
+        self_and_ancestors.reorder(nil).select(:id)
+      else
+        id
+      end
+
+    group_hierarchy_members = GroupMember.where(source_id: source_ids)
+
+    GroupMember.from_union([group_hierarchy_members,
+                            members_from_self_and_ancestor_group_shares]).authorizable
+  end
+
   def members_with_parents
     # Avoids an unnecessary SELECT when the group has no parents
     source_ids =
@@ -553,11 +569,22 @@ class Group < Namespace
   def max_member_access_for_user(user, only_concrete_membership: false)
     return GroupMember::NO_ACCESS unless user
     return GroupMember::OWNER if user.can_admin_all_resources? && !only_concrete_membership
+    # Use the preloaded value that exists instead of performing the db query again(cached or not).
+    # Groups::GroupMembersController#preload_max_access makes use of this by
+    # calling Group#max_member_access. This helps when we have a process
+    # that may query this multiple times from the outside through a policy query
+    # like the GroupPolicy#lookup_access_level! does as a condition for any role
+    return user.max_access_for_group[id] if user.max_access_for_group[id]
 
-    max_member_access = members_with_parents.where(user_id: user)
-                                            .reorder(access_level: :desc)
-                                            .first
-                                            &.access_level
+    max_member_access(user)
+  end
+
+  def max_member_access(user)
+    max_member_access = members_with_parents
+                          .where(user_id: user)
+                          .reorder(access_level: :desc)
+                          .first
+                          &.access_level
 
     max_member_access || GroupMember::NO_ACCESS
   end
@@ -622,7 +649,7 @@ class Group < Namespace
   end
 
   def access_request_approvers_to_be_notified
-    members.owners.order_recent_sign_in.limit(ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
+    members.owners.connected_to_user.order_recent_sign_in.limit(ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
   end
 
   def supports_events?
@@ -691,6 +718,14 @@ class Group < Namespace
 
   def has_project_with_service_desk_enabled?
     Gitlab::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
+  end
+
+  def to_ability_name
+    model_name.singular
+  end
+
+  def activity_path
+    Gitlab::Routing.url_helpers.activity_group_path(self)
   end
 
   private
@@ -820,7 +855,12 @@ class Group < Namespace
   end
 
   def uncached_ci_variables_for(ref, project, environment: nil)
-    list_of_ids = [self] + ancestors
+    list_of_ids = if root_ancestor.use_traversal_ids?
+                    [self] + ancestors(hierarchy_order: :asc)
+                  else
+                    [self] + ancestors
+                  end
+
     variables = Ci::GroupVariable.where(group: list_of_ids)
     variables = variables.unprotected unless project.protected_for?(ref)
 
@@ -835,4 +875,4 @@ class Group < Namespace
   end
 end
 
-Group.prepend_if_ee('EE::Group')
+Group.prepend_mod_with('Group')

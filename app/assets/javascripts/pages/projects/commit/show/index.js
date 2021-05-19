@@ -33,7 +33,7 @@ if (filesContainer.length) {
   axios
     .get(batchPath)
     .then(({ data }) => {
-      filesContainer.html($(data.html));
+      filesContainer.html($(data));
       syntaxHighlight(filesContainer);
       handleLocationHash();
       new Diff();

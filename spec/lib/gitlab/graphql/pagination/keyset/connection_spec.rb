@@ -357,9 +357,10 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
 
       it 'is added to end' do
         sliced = subject.sliced_nodes
-        last_order_name = sliced.order_values.last.expr.name
 
-        expect(last_order_name).to eq sliced.primary_key
+        order_sql = sliced.order_values.last.to_sql
+
+        expect(order_sql).to end_with(Project.arel_table[:id].desc.to_sql)
       end
     end
 

@@ -102,7 +102,6 @@ Example Response:
       },
       "merge_when_pipeline_succeeds": false,
       "merge_status": "cannot_be_merged",
-      "subscribed": true,
       "user_notes_count": 7
     },
     "target_url": "https://gitlab.example.com/gitlab-org/gitlab-foss/-/merge_requests/7",
@@ -176,7 +175,6 @@ Example Response:
       },
       "merge_when_pipeline_succeeds": false,
       "merge_status": "cannot_be_merged",
-      "subscribed": true,
       "user_notes_count": 7
     },
     "target_url": "https://gitlab.example.com/gitlab-org/gitlab-foss/-/merge_requests/7",

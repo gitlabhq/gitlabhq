@@ -212,4 +212,20 @@ RSpec.describe Gitlab::RelativePositioning::ItemContext do
       end
     end
   end
+
+  describe '#at_position' do
+    let_it_be(:issue) { create_issue(500) }
+    let_it_be(:issue_2) { create_issue(510) }
+
+    let(:subject) { described_class.new(issue, range) }
+
+    it 'finds the item at the specified position' do
+      expect(subject.at_position(500)).to eq(described_class.new(issue, range))
+      expect(subject.at_position(510)).to eq(described_class.new(issue_2, range))
+    end
+
+    it 'raises InvalidPosition when the item cannot be found' do
+      expect { subject.at_position(501) }.to raise_error Gitlab::RelativePositioning::InvalidPosition
+    end
+  end
 end

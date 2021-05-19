@@ -42,9 +42,9 @@ module DataFields
   end
 
   included do
-    has_one :issue_tracker_data, autosave: true
-    has_one :jira_tracker_data, autosave: true
-    has_one :open_project_tracker_data, autosave: true
+    has_one :issue_tracker_data, autosave: true, inverse_of: :integration, foreign_key: :service_id
+    has_one :jira_tracker_data, autosave: true, inverse_of: :integration, foreign_key: :service_id
+    has_one :open_project_tracker_data, autosave: true, inverse_of: :integration, foreign_key: :service_id
 
     def data_fields
       raise NotImplementedError

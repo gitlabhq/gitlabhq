@@ -1,0 +1,19 @@
+---
+key_path: object_store.uploads.object_store.provider
+description: What Object Storage provider has been configured for Uploads
+product_section: enablement
+product_stage: enablement
+product_group: group::memory
+product_category: operational_metrics
+value_type: string
+status: data_available
+time_frame: all
+data_source: system
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

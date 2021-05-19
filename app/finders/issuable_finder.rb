@@ -142,8 +142,6 @@ class IssuableFinder
   end
 
   def should_filter_negated_args?
-    return false unless not_filters_enabled?
-
     # API endpoints send in `nil` values so we test if there are any non-nil
     not_params.present? && not_params.values.any?
   end
@@ -336,8 +334,7 @@ class IssuableFinder
     return items if items.is_a?(ActiveRecord::NullRelation)
 
     if use_cte_for_search?
-      cte = Gitlab::SQL::RecursiveCTE.new(klass.table_name)
-      cte << items
+      cte = Gitlab::SQL::CTE.new(klass.table_name, items)
 
       items = klass.with(cte.to_arel).from(klass.table_name)
     end
@@ -370,8 +367,7 @@ class IssuableFinder
     Issuables::AuthorFilter.new(
       items,
       params: original_params,
-      or_filters_enabled: or_filters_enabled?,
-      not_filters_enabled: not_filters_enabled?
+      or_filters_enabled: or_filters_enabled?
     ).filter
   end
 
@@ -493,12 +489,6 @@ class IssuableFinder
   def or_filters_enabled?
     strong_memoize(:or_filters_enabled) do
       Feature.enabled?(:or_issuable_queries, feature_flag_scope, default_enabled: :yaml)
-    end
-  end
-
-  def not_filters_enabled?
-    strong_memoize(:not_filters_enabled) do
-      Feature.enabled?(:not_issuable_queries, feature_flag_scope, default_enabled: :yaml)
     end
   end
 

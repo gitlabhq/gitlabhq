@@ -153,4 +153,4 @@ module Types
   end
 end
 
-Types::IssueType.prepend_if_ee('::EE::Types::IssueType')
+Types::IssueType.prepend_mod_with('Types::IssueType')

@@ -32,7 +32,7 @@ module Gitlab
           raise Invalid, "Unexpected parameter: #{ambiguous_param}"
         end
       rescue JSON::ParserError => e
-        raise Invalid.new(e)
+        raise Invalid, e
       end
     end
   end

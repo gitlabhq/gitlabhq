@@ -49,9 +49,7 @@ export default {
     },
   },
   computed: {
-    ...mapState({
-      projectPath: (state) => state.diffs.projectPath,
-    }),
+    ...mapState('diffs', ['projectPath']),
     ...mapGetters('diffs', [
       'isInlineView',
       'isParallelView',

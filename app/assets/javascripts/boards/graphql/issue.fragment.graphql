@@ -13,7 +13,6 @@ fragment IssueNode on Issue {
   emailsDisabled
   confidential
   webUrl
-  subscribed
   relativePosition
   milestone {
     id

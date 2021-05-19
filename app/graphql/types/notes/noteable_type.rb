@@ -28,4 +28,4 @@ module Types
   end
 end
 
-Types::Notes::NoteableType.prepend_if_ee('::EE::Types::Notes::NoteableType')
+Types::Notes::NoteableType.prepend_mod_with('Types::Notes::NoteableType')

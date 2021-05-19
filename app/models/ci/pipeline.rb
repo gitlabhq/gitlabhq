@@ -17,6 +17,7 @@ module Ci
     include FromUnion
     include UpdatedAtFilterable
     include EachBatch
+    include FastDestroyAll::Helpers
 
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
 
@@ -70,7 +71,9 @@ module Ci
     has_many :deployments, through: :builds
     has_many :environments, -> { distinct }, through: :deployments
     has_many :latest_builds, -> { latest.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
-    has_many :downloadable_artifacts, -> { not_expired.downloadable.with_job }, through: :latest_builds, source: :job_artifacts
+    has_many :downloadable_artifacts, -> do
+      not_expired.or(where_exists(::Ci::Pipeline.artifacts_locked.where('ci_pipelines.id = ci_builds.commit_id'))).downloadable.with_job
+    end, through: :latest_builds, source: :job_artifacts
 
     has_many :messages, class_name: 'Ci::PipelineMessage', inverse_of: :pipeline
 
@@ -123,6 +126,8 @@ module Ci
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
 
     after_create :keep_around_commits, unless: :importing?
+
+    use_fast_destroy :job_artifacts
 
     # We use `Enums::Ci::Pipeline.sources` here so that EE can more easily extend
     # this `Hash` with new values.
@@ -908,7 +913,7 @@ module Ci
 
     def same_family_pipeline_ids
       ::Gitlab::Ci::PipelineObjectHierarchy.new(
-        self.class.where(id: root_ancestor), options: { same_project: true }
+        self.class.default_scoped.where(id: root_ancestor), options: { same_project: true }
       ).base_and_descendants.select(:id)
     end
 
@@ -1093,6 +1098,8 @@ module Ci
           merge_request.modified_paths
         elsif branch_updated?
           push_details.modified_paths
+        elsif external_pull_request? && ::Feature.enabled?(:ci_modified_paths_of_external_prs, project, default_enabled: :yaml)
+          external_pull_request.modified_paths
         end
       end
     end
@@ -1115,6 +1122,10 @@ module Ci
 
     def merge_request?
       merge_request_id.present?
+    end
+
+    def external_pull_request?
+      external_pull_request_id.present?
     end
 
     def detached_merge_request_pipeline?
@@ -1210,11 +1221,18 @@ module Ci
     # We need `base_and_ancestors` in a specific order to "break" when needed.
     # If we use `find_each`, then the order is broken.
     # rubocop:disable Rails/FindEach
-    def reset_ancestor_bridges!
-      base_and_ancestors.includes(:source_bridge).each do |pipeline|
-        break unless pipeline.bridge_waiting?
+    def reset_source_bridge!(current_user)
+      if ::Feature.enabled?(:ci_reset_bridge_with_subsequent_jobs, project, default_enabled: :yaml)
+        return unless bridge_waiting?
 
-        pipeline.source_bridge.pending!
+        source_bridge.pending!
+        Ci::AfterRequeueJobService.new(project, current_user).execute(source_bridge) # rubocop:disable CodeReuse/ServiceClass
+      else
+        base_and_ancestors.includes(:source_bridge).each do |pipeline|
+          break unless pipeline.bridge_waiting?
+
+          pipeline.source_bridge.pending!
+        end
       end
     end
     # rubocop:enable Rails/FindEach
@@ -1237,8 +1255,6 @@ module Ci
     private
 
     def add_message(severity, content)
-      return unless Gitlab::Ci::Features.store_pipeline_messages?(project)
-
       messages.build(severity: severity, content: content)
     end
 
@@ -1294,4 +1310,4 @@ module Ci
   end
 end
 
-Ci::Pipeline.prepend_if_ee('EE::Ci::Pipeline')
+Ci::Pipeline.prepend_mod_with('Ci::Pipeline')

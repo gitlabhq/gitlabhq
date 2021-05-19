@@ -1,0 +1,8 @@
+---
+name: load_balancing_for_pipeline_process_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61766
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/330960
+milestone: '13.12'
+type: development
+group: group::continuous integration
+default_enabled: false

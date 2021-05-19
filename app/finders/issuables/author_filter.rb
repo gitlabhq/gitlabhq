@@ -27,7 +27,7 @@ module Issuables
     end
 
     def by_negated_author(issuables)
-      return issuables unless not_filters_enabled? && not_params.present?
+      return issuables unless not_params.present?
 
       if not_params[:author_id].present?
         issuables.not_authored(not_params[:author_id])

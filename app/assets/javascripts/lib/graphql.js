@@ -4,6 +4,7 @@ import { ApolloLink } from 'apollo-link';
 import { BatchHttpLink } from 'apollo-link-batch-http';
 import { createHttpLink } from 'apollo-link-http';
 import { createUploadLink } from 'apollo-upload-client';
+import ActionCableLink from '~/actioncable_link';
 import { apolloCaptchaLink } from '~/captcha/apollo_captcha_link';
 import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 import csrf from '~/lib/utils/csrf';
@@ -18,11 +19,21 @@ export const fetchPolicies = {
 };
 
 export default (resolvers = {}, config = {}) => {
-  let uri = `${gon.relative_url_root || ''}/api/graphql`;
+  const {
+    assumeImmutableResults,
+    baseUrl,
+    batchMax = 10,
+    cacheConfig,
+    fetchPolicy = fetchPolicies.CACHE_FIRST,
+    typeDefs,
+    path = '/api/graphql',
+    useGet = false,
+  } = config;
+  let uri = `${gon.relative_url_root || ''}${path}`;
 
-  if (config.baseUrl) {
+  if (baseUrl) {
     // Prepend baseUrl and ensure that `///` are replaced with `/`
-    uri = `${config.baseUrl}${uri}`.replace(/\/{3,}/g, '/');
+    uri = `${baseUrl}${uri}`.replace(/\/{3,}/g, '/');
   }
 
   const httpOptions = {
@@ -34,7 +45,7 @@ export default (resolvers = {}, config = {}) => {
     // We set to `same-origin` which is default value in modern browsers.
     // See https://github.com/whatwg/fetch/pull/585 for more information.
     credentials: 'same-origin',
-    batchMax: config.batchMax || 10,
+    batchMax,
   };
 
   const requestCounterLink = new ApolloLink((operation, forward) => {
@@ -50,7 +61,7 @@ export default (resolvers = {}, config = {}) => {
   const uploadsLink = ApolloLink.split(
     (operation) => operation.getContext().hasUpload || operation.getContext().isSingleRequest,
     createUploadLink(httpOptions),
-    config.useGet ? createHttpLink(httpOptions) : new BatchHttpLink(httpOptions),
+    useGet ? createHttpLink(httpOptions) : new BatchHttpLink(httpOptions),
   );
 
   const performanceBarLink = new ApolloLink((operation, forward) => {
@@ -73,24 +84,36 @@ export default (resolvers = {}, config = {}) => {
     });
   });
 
-  return new ApolloClient({
-    typeDefs: config.typeDefs,
-    link: ApolloLink.from([
+  const hasSubscriptionOperation = ({ query: { definitions } }) => {
+    return definitions.some(
+      ({ kind, operation }) => kind === 'OperationDefinition' && operation === 'subscription',
+    );
+  };
+
+  const appLink = ApolloLink.split(
+    hasSubscriptionOperation,
+    new ActionCableLink(),
+    ApolloLink.from([
       requestCounterLink,
       performanceBarLink,
       new StartupJSLink(),
       apolloCaptchaLink,
       uploadsLink,
     ]),
+  );
+
+  return new ApolloClient({
+    typeDefs,
+    link: appLink,
     cache: new InMemoryCache({
-      ...config.cacheConfig,
-      freezeResults: config.assumeImmutableResults,
+      ...cacheConfig,
+      freezeResults: assumeImmutableResults,
     }),
     resolvers,
-    assumeImmutableResults: config.assumeImmutableResults,
+    assumeImmutableResults,
     defaultOptions: {
       query: {
-        fetchPolicy: config.fetchPolicy || fetchPolicies.CACHE_FIRST,
+        fetchPolicy,
       },
     },
   });

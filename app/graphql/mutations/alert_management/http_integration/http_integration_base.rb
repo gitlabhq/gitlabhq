@@ -33,4 +33,4 @@ module Mutations
   end
 end
 
-Mutations::AlertManagement::HttpIntegration::HttpIntegrationBase.prepend_if_ee('::EE::Mutations::AlertManagement::HttpIntegration::HttpIntegrationBase')
+Mutations::AlertManagement::HttpIntegration::HttpIntegrationBase.prepend_mod_with('Mutations::AlertManagement::HttpIntegration::HttpIntegrationBase')

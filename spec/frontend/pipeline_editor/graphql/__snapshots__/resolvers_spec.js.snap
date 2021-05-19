@@ -17,7 +17,7 @@ Object {
       "environment": "prd",
       "except": Object {
         "refs": Array [
-          "master@gitlab-org/gitlab",
+          "main@gitlab-org/gitlab",
           "/^release/.*$/@gitlab-org/gitlab",
         ],
       },
@@ -44,7 +44,7 @@ Object {
       "environment": "stg",
       "except": Object {
         "refs": Array [
-          "master@gitlab-org/gitlab",
+          "main@gitlab-org/gitlab",
           "/^release/.*$/@gitlab-org/gitlab",
         ],
       },

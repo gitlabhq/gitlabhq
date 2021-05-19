@@ -4,6 +4,8 @@ module Prometheus
   class CreateDefaultAlertsWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :incident_management
     urgency :high
     idempotent!

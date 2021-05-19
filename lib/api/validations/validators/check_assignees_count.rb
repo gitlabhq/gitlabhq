@@ -34,4 +34,4 @@ module API
   end
 end
 
-API::Validations::Validators::CheckAssigneesCount.prepend_if_ee('EE::API::Validations::Validators::CheckAssigneesCount')
+API::Validations::Validators::CheckAssigneesCount.prepend_mod_with('API::Validations::Validators::CheckAssigneesCount')

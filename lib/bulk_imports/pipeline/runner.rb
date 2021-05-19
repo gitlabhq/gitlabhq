@@ -56,7 +56,7 @@ module BulkImports
           pipeline_step: step,
           step_class: class_name
         )
-      rescue => e
+      rescue StandardError => e
         log_import_failure(e, step)
 
         mark_as_failed if abort_on_failure?

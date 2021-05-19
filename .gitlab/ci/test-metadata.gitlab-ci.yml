@@ -27,19 +27,19 @@ update-tests-metadata:
   stage: post-test
   dependencies:
     - setup-test-env
-    - rspec migration pg11
+    - rspec migration pg12
     - rspec frontend_fixture
     - rspec-ee frontend_fixture
-    - rspec unit pg11
-    - rspec integration pg11
-    - rspec system pg11
-    - rspec-ee migration pg11
-    - rspec-ee unit pg11
-    - rspec-ee integration pg11
-    - rspec-ee system pg11
-    - rspec-ee unit pg11 geo
-    - rspec-ee integration pg11 geo
-    - rspec-ee system pg11 geo
+    - rspec unit pg12
+    - rspec integration pg12
+    - rspec system pg12
+    - rspec-ee migration pg12
+    - rspec-ee unit pg12
+    - rspec-ee integration pg12
+    - rspec-ee system pg12
+    - rspec-ee unit pg12 geo
+    - rspec-ee integration pg12 geo
+    - rspec-ee system pg12 geo
   script:
     - run_timed_command "retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document"
     - source ./scripts/rspec_helpers.sh

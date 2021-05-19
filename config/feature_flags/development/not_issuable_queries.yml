@@ -1,8 +1,0 @@
----
-name: not_issuable_queries
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27639
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/292809
-milestone: '13.0'
-type: development
-group: group::project management
-default_enabled: true

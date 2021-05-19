@@ -95,7 +95,7 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
       @include gl-font-weight-normal;
 
       &.label-dark {
-        @include gl-text-gray-900;
+        color: var(--gray-900, $gray-900);
       }
 
       &.label-bold {

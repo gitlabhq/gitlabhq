@@ -264,7 +264,7 @@ RSpec.describe PostReceiveService do
 
     context "project path matches" do
       before do
-        allow(project).to receive(:full_path).and_return("/company/sekrit-project")
+        allow(project).to receive(:full_path).and_return("company/sekrit-project")
       end
 
       it "does output the latest scoped broadcast message" do

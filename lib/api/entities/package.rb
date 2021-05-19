@@ -22,6 +22,7 @@ module API
 
       expose :version
       expose :package_type
+      expose :status
 
       expose :_links do
         expose :web_path do |package|

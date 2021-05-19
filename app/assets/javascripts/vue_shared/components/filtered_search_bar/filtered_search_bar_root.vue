@@ -93,9 +93,9 @@ export default {
             sortBy.sortDirection.descending === this.initialSortBy,
         )
         .pop();
-      selectedSortDirection = this.initialSortBy.endsWith('_desc')
-        ? SortDirection.descending
-        : SortDirection.ascending;
+      selectedSortDirection = Object.keys(selectedSortOption.sortDirection).find(
+        (key) => selectedSortOption.sortDirection[key] === this.initialSortBy,
+      );
     }
 
     return {
@@ -324,7 +324,9 @@ export default {
       class="gl-align-self-center"
       :checked="checkboxChecked"
       @input="$emit('checked-input', $event)"
-    />
+    >
+      <span class="gl-sr-only">{{ __('Select all') }}</span>
+    </gl-form-checkbox>
     <gl-filtered-search
       ref="filteredSearchInput"
       v-model="filterValue"

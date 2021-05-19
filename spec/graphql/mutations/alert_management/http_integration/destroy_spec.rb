@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::AlertManagement::HttpIntegration::Destroy do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
+
   let(:integration) { create(:alert_management_http_integration, project: project) }
   let(:args) { { id: GitlabSchema.id_from_object(integration) } }
 

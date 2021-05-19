@@ -28,14 +28,14 @@
         %li.dropdown-header= _('This repository')
 
       - if can_push_code
-        %li.qa-new-file-option= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master')
+        %li.qa-new-file-option= link_to _('New file'), project_new_blob_path(@project, @project.default_branch_or_main)
         - unless @project.empty_repo?
           %li= link_to _('New branch'), new_project_branch_path(@project)
           %li= link_to _('New tag'), new_project_tag_path(@project)
       - elsif can_collaborate_with_project?(@project)
-        %li= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master')
+        %li= link_to _('New file'), project_new_blob_path(@project, @project.default_branch_or_main)
       - elsif create_mr_from_new_fork
-        - continue_params = { to: project_new_blob_path(@project, @project.default_branch || 'master'),
+        - continue_params = { to: project_new_blob_path(@project, @project.default_branch_or_main),
                               notice: edit_in_new_fork_notice,
                               notice_now: edit_in_new_fork_notice_now }
         - fork_path = project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_params)

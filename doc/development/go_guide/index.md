@@ -449,12 +449,12 @@ Once you've picked a new Go version to use, the steps to update Omnibus and CNG
 are:
 
 - [Create a merge request in the CNG project](https://gitlab.com/gitlab-org/build/CNG/-/edit/master/ci_files/variables.yml?branch_name=update-go-version),
-  updating the `GO_VERSION` in `ci_files/variables.yml`.
+  update the `GO_VERSION` in `ci_files/variables.yml`.
 - [Create a merge request in the `gitlab-omnibus-builder` project](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/edit/master/docker/VERSIONS?branch_name=update-go-version),
-  updating the `GO_VERSION` in `docker/VERSIONS`.
+  update the `GO_VERSION` in `docker/VERSIONS`.
 - Tag a new release of `gitlab-omnibus-builder` containing the change.
 - [Create a merge request in the `omnibus-gitlab` project](https://gitlab.com/gitlab-org/omnibus-gitlab/edit/master/.gitlab-ci.yml?branch_name=update-gitlab-omnibus-builder-version),
-  updating the `BUILDER_IMAGE_REVISION` to match the newly-created tag.
+  update the `BUILDER_IMAGE_REVISION` to match the newly-created tag.
 
 To reduce unnecessary differences between two distribution methods, Omnibus and
 CNG **should always use the same Go version**.
@@ -501,7 +501,7 @@ up to run `goimports -local gitlab.com/gitlab-org` so that it's applied to every
 
 ### Analyzer Tests
 
-The conventional Secure [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/) has a [`convert` function](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/convert.go#L15-17) that converts SAST/DAST scanner reports into [GitLab Security Reports](https://gitlab.com/gitlab-org/security-products/security-report-schemas). When writing tests for the `convert` function, we should make use of [test fixtures](https://dave.cheney.net/2016/05/10/test-fixtures-in-go) using a `testdata` directory at the root of the analyzer's repo. The `testdata` directory should contain two subdirectories: `expect` and `reports`. The `reports` directory should contain sample SAST/DAST scanner reports which are passed into the `convert` function during the test setup. The `expect` directory should contain the expected GitLab Security Report that the `convert` returns. See Secret Detection for an [example](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/160424589ef1eed7b91b59484e019095bc7233bd/convert_test.go#L13-66).
+The conventional Secure [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/) has a [`convert` function](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/convert.go#L15-17) that converts SAST/DAST scanner reports into [GitLab Security Reports](https://gitlab.com/gitlab-org/security-products/security-report-schemas). When writing tests for the `convert` function, we should make use of [test fixtures](https://dave.cheney.net/2016/05/10/test-fixtures-in-go) using a `testdata` directory at the root of the analyzer's repository. The `testdata` directory should contain two subdirectories: `expect` and `reports`. The `reports` directory should contain sample SAST/DAST scanner reports which are passed into the `convert` function during the test setup. The `expect` directory should contain the expected GitLab Security Report that the `convert` returns. See Secret Detection for an [example](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/160424589ef1eed7b91b59484e019095bc7233bd/convert_test.go#L13-66).
 
 If the scanner report is small, less than 35 lines, then feel free to [inline the report](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/blob/8bd2428a/convert/convert_test.go#L13-77) rather than use a `testdata` directory.
 

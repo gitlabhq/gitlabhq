@@ -96,7 +96,6 @@ module Git
 
     def track_ci_config_change_event
       return unless Gitlab::CurrentSettings.usage_ping_enabled?
-      return unless ::Feature.enabled?(:usage_data_unique_users_committing_ciconfigfile, project, default_enabled: :yaml)
       return unless default_branch?
 
       commits_changing_ci_config.each do |commit|
@@ -227,4 +226,4 @@ module Git
   end
 end
 
-Git::BranchHooksService.prepend_if_ee('::EE::Git::BranchHooksService')
+Git::BranchHooksService.prepend_mod_with('Git::BranchHooksService')

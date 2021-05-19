@@ -76,7 +76,7 @@ RSpec.describe 'Query.issue(id)' do
             post_graphql(query, current_user: current_user)
           end
 
-          it "returns the Issue and field #{params['field']}" do
+          it "returns the issue and field #{params['field']}" do
             expect(issue_data.keys).to eq([field])
           end
         end
@@ -86,7 +86,7 @@ RSpec.describe 'Query.issue(id)' do
     context 'when selecting multiple fields' do
       let(:issue_fields) { ['title', 'description', 'updatedBy { username }'] }
 
-      it 'returns the Issue with the specified fields' do
+      it 'returns the issue with the specified fields' do
         post_graphql(query, current_user: current_user)
 
         expect(issue_data.keys).to eq %w[title description updatedBy]
@@ -115,7 +115,7 @@ RSpec.describe 'Query.issue(id)' do
       end
     end
 
-    context 'when passed a non-Issue gid' do
+    context 'when passed a non-issue gid' do
       let(:mr) { create(:merge_request) }
 
       it 'returns an error' do

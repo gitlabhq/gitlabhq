@@ -8,6 +8,7 @@ RSpec.describe Resolvers::ProjectPipelinesResolver do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:other_pipeline) { create(:ci_pipeline) }
+
   let(:current_user) { create(:user) }
 
   before do

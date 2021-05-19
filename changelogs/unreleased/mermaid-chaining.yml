@@ -1,0 +1,5 @@
+---
+title: Prevent DOS from Chaining in Mermaid
+merge_request: 60382
+author:
+type: security

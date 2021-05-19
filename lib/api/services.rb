@@ -72,7 +72,7 @@ module API
         success Entities::ProjectServiceBasic
       end
       get ":id/services" do
-        services = user_project.services.active
+        services = user_project.integrations.active
 
         present services, with: Entities::ProjectServiceBasic
       end
@@ -125,15 +125,18 @@ module API
         requires :service_slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
       end
       get ":id/services/:service_slug" do
-        service = user_project.find_or_initialize_service(params[:service_slug].underscore)
-        present service, with: Entities::ProjectService
+        integration = user_project.find_or_initialize_service(params[:service_slug].underscore)
+
+        not_found!('Service') unless integration&.persisted?
+
+        present integration, with: Entities::ProjectService
       end
     end
 
     TRIGGER_SERVICES.each do |service_slug, settings|
       helpers do
         def slash_command_service(project, service_slug, params)
-          project.services.active.find do |service|
+          project.integrations.active.find do |service|
             service.try(:token) == params[:token] && service.to_param == service_slug.underscore
           end
         end
@@ -172,4 +175,4 @@ module API
   end
 end
 
-API::Services.prepend_if_ee('EE::API::Services')
+API::Services.prepend_mod_with('API::Services')

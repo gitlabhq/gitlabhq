@@ -40,4 +40,4 @@ module Banzai
   end
 end
 
-Banzai::Pipeline::SingleLinePipeline.prepend_if_ee('EE::Banzai::Pipeline::SingleLinePipeline')
+Banzai::Pipeline::SingleLinePipeline.prepend_mod_with('Banzai::Pipeline::SingleLinePipeline')

@@ -53,13 +53,13 @@ module RelativePositioning
 
       return [size, starting_from] if size >= MIN_GAP
 
+      terminus = context.at_position(starting_from)
+
       if at_end
-        terminus = context.max_sibling
         terminus.shift_left
         max_relative_position = terminus.relative_position
         [[(MAX_POSITION - max_relative_position) / gaps, IDEAL_DISTANCE].min, max_relative_position]
       else
-        terminus = context.min_sibling
         terminus.shift_right
         min_relative_position = terminus.relative_position
         [[(min_relative_position - MIN_POSITION) / gaps, IDEAL_DISTANCE].min, min_relative_position]
@@ -78,6 +78,8 @@ module RelativePositioning
     def move_nulls(objects, at_end:)
       objects = objects.reject(&:relative_position)
       return 0 if objects.empty?
+
+      objects.first.check_repositioning_allowed!
 
       number_of_gaps = objects.size # 1 to the nearest neighbour, and one between each
       representative = RelativePositioning.mover.context(objects.first)
@@ -121,6 +123,12 @@ module RelativePositioning
 
   def self.mover
     ::Gitlab::RelativePositioning::Mover.new(START_POSITION, (MIN_POSITION..MAX_POSITION))
+  end
+
+  # To be overriden on child classes whenever
+  # blocking position updates is necessary.
+  def check_repositioning_allowed!
+    nil
   end
 
   def move_between(before, after)

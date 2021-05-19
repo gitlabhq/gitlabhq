@@ -201,7 +201,7 @@ RSpec.describe Projects::LabelsController do
       context 'service raising InvalidRecord' do
         before do
           expect_any_instance_of(Labels::PromoteService).to receive(:execute) do |label|
-            raise ActiveRecord::RecordInvalid.new(label_1)
+            raise ActiveRecord::RecordInvalid, label_1
           end
         end
 

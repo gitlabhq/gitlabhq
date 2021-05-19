@@ -1,5 +1,5 @@
 <script>
-import { GlKeysetPagination, GlResizeObserverDirective } from '@gitlab/ui';
+import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -21,7 +21,6 @@ import {
   ALERT_SUCCESS_TAGS,
   ALERT_DANGER_TAGS,
   ALERT_DANGER_IMAGE,
-  GRAPHQL_PAGE_SIZE,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   UNFINISHED_STATUS,
   MISSING_OR_DELETED_IMAGE_BREADCRUMB,
@@ -36,7 +35,6 @@ export default {
     DeleteAlert,
     PartialCleanupAlert,
     DetailsHeader,
-    GlKeysetPagination,
     DeleteModal,
     TagsList,
     TagsLoader,
@@ -50,16 +48,12 @@ export default {
   mixins: [Tracking.mixin()],
   inject: ['breadCrumbState', 'config'],
   apollo: {
-    image: {
+    containerRepository: {
       query: getContainerRepositoryDetailsQuery,
       variables() {
         return this.queryVariables;
       },
-      update(data) {
-        return data.containerRepository;
-      },
-      result({ data }) {
-        this.tagsPageInfo = data.containerRepository?.tags?.pageInfo;
+      result() {
         this.updateBreadcrumb();
       },
       error() {
@@ -69,8 +63,7 @@ export default {
   },
   data() {
     return {
-      image: {},
-      tagsPageInfo: {},
+      containerRepository: {},
       itemsToBeDeleted: [],
       isMobile: false,
       mutationLoading: false,
@@ -83,19 +76,15 @@ export default {
     queryVariables() {
       return {
         id: joinPaths(this.config.gidPrefix, `${this.$route.params.id}`),
-        first: GRAPHQL_PAGE_SIZE,
       };
     },
     isLoading() {
-      return this.$apollo.queries.image.loading || this.mutationLoading;
-    },
-    tags() {
-      return this.image?.tags?.nodes || [];
+      return this.$apollo.queries.containerRepository.loading || this.mutationLoading;
     },
     showPartialCleanupWarning() {
       return (
         this.config.showUnfinishedTagCleanupCallout &&
-        this.image?.expirationPolicyCleanupStatus === UNFINISHED_STATUS &&
+        this.containerRepository?.expirationPolicyCleanupStatus === UNFINISHED_STATUS &&
         !this.hidePartialCleanupWarning
       );
     },
@@ -105,26 +94,20 @@ export default {
           this.itemsToBeDeleted?.length > 1 ? 'bulk_registry_tag_delete' : 'registry_tag_delete',
       };
     },
-    showPagination() {
-      return this.tagsPageInfo.hasPreviousPage || this.tagsPageInfo.hasNextPage;
-    },
-    hasNoTags() {
-      return this.tags.length === 0;
-    },
     pageActionsAreDisabled() {
-      return Boolean(this.image?.status);
+      return Boolean(this.containerRepository?.status);
     },
   },
   methods: {
     updateBreadcrumb() {
-      const name = this.image?.id
-        ? this.image?.name || ROOT_IMAGE_TEXT
+      const name = this.containerRepository?.id
+        ? this.containerRepository?.name || ROOT_IMAGE_TEXT
         : MISSING_OR_DELETED_IMAGE_BREADCRUMB;
       this.breadCrumbState.updateName(name);
     },
     deleteTags(toBeDeleted) {
       this.deleteImageAlert = false;
-      this.itemsToBeDeleted = this.tags.filter((tag) => toBeDeleted[tag.name]);
+      this.itemsToBeDeleted = toBeDeleted;
       this.track('click_button');
       this.$refs.deleteModal.show();
     },
@@ -170,33 +153,6 @@ export default {
     handleResize() {
       this.isMobile = GlBreakpointInstance.getBreakpointSize() === 'xs';
     },
-    fetchNextPage() {
-      if (this.tagsPageInfo?.hasNextPage) {
-        this.$apollo.queries.image.fetchMore({
-          variables: {
-            after: this.tagsPageInfo?.endCursor,
-            first: GRAPHQL_PAGE_SIZE,
-          },
-          updateQuery(previousResult, { fetchMoreResult }) {
-            return fetchMoreResult;
-          },
-        });
-      }
-    },
-    fetchPreviousPage() {
-      if (this.tagsPageInfo?.hasPreviousPage) {
-        this.$apollo.queries.image.fetchMore({
-          variables: {
-            first: null,
-            before: this.tagsPageInfo?.startCursor,
-            last: GRAPHQL_PAGE_SIZE,
-          },
-          updateQuery(previousResult, { fetchMoreResult }) {
-            return fetchMoreResult;
-          },
-        });
-      }
-    },
     dismissPartialCleanupWarning() {
       this.hidePartialCleanupWarning = true;
       axios.post(this.config.userCalloutsPath, {
@@ -205,7 +161,7 @@ export default {
     },
     deleteImage() {
       this.deleteImageAlert = true;
-      this.itemsToBeDeleted = [{ path: this.image.path }];
+      this.itemsToBeDeleted = [{ path: this.containerRepository.path }];
       this.$refs.deleteModal.show();
     },
     deleteImageError() {
@@ -221,7 +177,7 @@ export default {
 
 <template>
   <div v-gl-resize-observer="handleResize" class="gl-my-3">
-    <template v-if="image">
+    <template v-if="containerRepository">
       <delete-alert
         v-model="deleteAlertType"
         :garbage-collection-help-page-path="config.garbageCollectionHelpPagePath"
@@ -236,40 +192,27 @@ export default {
         @dismiss="dismissPartialCleanupWarning"
       />
 
-      <status-alert v-if="image.status" :status="image.status" />
+      <status-alert v-if="containerRepository.status" :status="containerRepository.status" />
 
       <details-header
-        :image="image"
-        :metadata-loading="isLoading"
+        v-if="!isLoading"
+        :image="containerRepository"
         :disabled="pageActionsAreDisabled"
         @delete="deleteImage"
       />
 
       <tags-loader v-if="isLoading" />
-      <template v-else>
-        <empty-state v-if="hasNoTags" :no-containers-image="config.noContainersImage" />
-        <template v-else>
-          <tags-list
-            :tags="tags"
-            :is-mobile="isMobile"
-            :disabled="pageActionsAreDisabled"
-            @delete="deleteTags"
-          />
-          <div class="gl-display-flex gl-justify-content-center">
-            <gl-keyset-pagination
-              v-if="showPagination"
-              :has-next-page="tagsPageInfo.hasNextPage"
-              :has-previous-page="tagsPageInfo.hasPreviousPage"
-              class="gl-mt-3"
-              @prev="fetchPreviousPage"
-              @next="fetchNextPage"
-            />
-          </div>
-        </template>
-      </template>
+      <tags-list
+        v-else
+        :id="$route.params.id"
+        :is-image-loading="isLoading"
+        :is-mobile="isMobile"
+        :disabled="pageActionsAreDisabled"
+        @delete="deleteTags"
+      />
 
       <delete-image
-        :id="image.id"
+        :id="containerRepository.id"
         ref="deleteImage"
         use-update-fn
         @start="deleteImageIniit"

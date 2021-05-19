@@ -189,7 +189,7 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter do
       filter = described_class.new(document, project: project)
       ns = user.namespace
 
-      expect(filter.namespaces).to eq({ ns.path => ns })
+      expect(filter.send(:namespaces)).to eq({ ns.path => ns })
     end
   end
 
@@ -198,7 +198,28 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter do
       document = Nokogiri::HTML.fragment("<p>#{get_reference(user)}</p>")
       filter = described_class.new(document, project: project)
 
-      expect(filter.usernames).to eq([user.username])
+      expect(filter.send(:usernames)).to eq([user.username])
+    end
+  end
+
+  context 'checking N+1' do
+    let(:user2)      { create(:user) }
+    let(:group)      { create(:group) }
+    let(:reference2) { user2.to_reference }
+    let(:reference3) { group.to_reference }
+
+    it 'does not have N+1 per multiple user references', :use_sql_query_cache do
+      markdown = "#{reference}"
+
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        reference_filter(markdown)
+      end.count
+
+      markdown = "#{reference} @qwertyuiopzx @wertyuio @ertyu @rtyui #{reference2} #{reference3}"
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(control_count)
     end
   end
 end

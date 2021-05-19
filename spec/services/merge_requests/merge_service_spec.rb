@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::MergeService do
+  include ExclusiveLeaseHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
 
@@ -15,10 +17,13 @@ RSpec.describe MergeRequests::MergeService do
   end
 
   describe '#execute' do
-    let(:service) { described_class.new(project, user, merge_params) }
+    let(:service) { described_class.new(project: project, current_user: user, params: merge_params) }
     let(:merge_params) do
       { commit_message: 'Awesome message', sha: merge_request.diff_head_sha }
     end
+
+    let(:lease_key) { "merge_requests_merge_service:#{merge_request.id}" }
+    let!(:lease) { stub_exclusive_lease(lease_key) }
 
     context 'valid params' do
       before do
@@ -87,6 +92,20 @@ RSpec.describe MergeRequests::MergeService do
 
           expect(merge_request.squash_commit_sha).to eq(squash_commit.id)
         end
+      end
+    end
+
+    context 'running the service multiple time' do
+      it 'is idempotent' do
+        2.times { service.execute(merge_request) }
+
+        expect(merge_request.merge_error).to be_falsey
+        expect(merge_request).to be_valid
+        expect(merge_request).to be_merged
+
+        commit_messages = project.repository.commits('master', limit: 2).map(&:message)
+        expect(commit_messages.uniq.size).to eq(2)
+        expect(merge_request.in_progress_merge_commit_sha).to be_nil
       end
     end
 
@@ -209,7 +228,7 @@ RSpec.describe MergeRequests::MergeService do
     context 'source branch removal' do
       context 'when the source branch is protected' do
         let(:service) do
-          described_class.new(project, user, merge_params.merge('should_remove_source_branch' => true))
+          described_class.new(project: project, current_user: user, params: merge_params.merge('should_remove_source_branch' => true))
         end
 
         before do
@@ -225,7 +244,7 @@ RSpec.describe MergeRequests::MergeService do
 
       context 'when the source branch is the default branch' do
         let(:service) do
-          described_class.new(project, user, merge_params.merge('should_remove_source_branch' => true))
+          described_class.new(project: project, current_user: user, params: merge_params.merge('should_remove_source_branch' => true))
         end
 
         before do
@@ -251,7 +270,7 @@ RSpec.describe MergeRequests::MergeService do
           end
 
           context 'when the merger set the source branch not to be removed' do
-            let(:service) { described_class.new(project, user, merge_params.merge('should_remove_source_branch' => false)) }
+            let(:service) { described_class.new(project: project, current_user: user, params: merge_params.merge('should_remove_source_branch' => false)) }
 
             it 'does not delete the source branch' do
               expect(::MergeRequests::DeleteSourceBranchWorker).not_to receive(:perform_async)
@@ -263,7 +282,7 @@ RSpec.describe MergeRequests::MergeService do
 
         context 'when MR merger set the source branch to be removed' do
           let(:service) do
-            described_class.new(project, user, merge_params.merge('should_remove_source_branch' => true))
+            described_class.new(project: project, current_user: user, params: merge_params.merge('should_remove_source_branch' => true))
           end
 
           it 'removes the source branch using the current user' do
@@ -306,10 +325,12 @@ RSpec.describe MergeRequests::MergeService do
       end
 
       it 'logs and saves error if user is not authorized' do
+        stub_exclusive_lease
+
         unauthorized_user = create(:user)
         project.add_reporter(unauthorized_user)
 
-        service = described_class.new(project, unauthorized_user)
+        service = described_class.new(project: project, current_user: unauthorized_user)
 
         service.execute(merge_request)
 
@@ -423,6 +444,7 @@ RSpec.describe MergeRequests::MergeService do
               merge_request.project.update!(merge_method: merge_method)
               error_message = 'Only fast-forward merge is allowed for your project. Please update your source branch'
               allow(service).to receive(:execute_hooks)
+              expect(lease).to receive(:cancel)
 
               service.execute(merge_request)
 
@@ -471,6 +493,18 @@ RSpec.describe MergeRequests::MergeService do
             end
           end
         end
+      end
+    end
+
+    context 'when the other sidekiq worker has already been running' do
+      before do
+        stub_exclusive_lease_taken(lease_key)
+      end
+
+      it 'does not execute service' do
+        expect(service).not_to receive(:commit)
+
+        service.execute(merge_request)
       end
     end
   end

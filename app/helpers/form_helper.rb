@@ -131,4 +131,4 @@ module FormHelper
   end
 end
 
-FormHelper.prepend_if_ee('::EE::FormHelper')
+FormHelper.prepend_mod_with('FormHelper')

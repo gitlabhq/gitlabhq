@@ -22,7 +22,7 @@ module Gitlab
 
       @regexp = RE2::Regexp.new(pattern, log_errors: false)
 
-      raise RegexpError.new(regexp.error) unless regexp.ok?
+      raise RegexpError, regexp.error unless regexp.ok?
     end
 
     def replace_all(text, rewrite)
