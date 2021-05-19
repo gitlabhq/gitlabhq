@@ -261,7 +261,7 @@ In GitLab 13.11, you can [replace this form with a modal window](#share-a-group-
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
 you can share a group with another group. Members get direct access
-to the shared group. This is not valid for inherited members.
+to the shared group. This includes members who inherited group membership from a parent group.
 
 To share a given group, for example, `Frontend` with another group, for example,
 `Engineering`:

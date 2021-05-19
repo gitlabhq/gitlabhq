@@ -23,6 +23,7 @@ import * as Text from '../extensions/text';
 import buildSerializerConfig from './build_serializer_config';
 import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
+import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
 
 const builtInContentEditorExtensions = [
   Blockquote,
@@ -66,7 +67,7 @@ export const createContentEditor = ({ renderMarkdown, extensions = [], tiptapOpt
   }
 
   const allExtensions = [...builtInContentEditorExtensions, ...extensions];
-  const tiptapExtensions = collectTiptapExtensions(allExtensions);
+  const tiptapExtensions = collectTiptapExtensions(allExtensions).map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: tiptapExtensions, ...tiptapOptions });
   const serializerConfig = buildSerializerConfig(allExtensions);
   const serializer = createMarkdownSerializer({ render: renderMarkdown, serializerConfig });

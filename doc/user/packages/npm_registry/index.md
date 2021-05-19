@@ -14,6 +14,9 @@ packages whenever you need to use them as a dependency.
 
 Only [scoped](https://docs.npmjs.com/misc/scope/) packages are supported.
 
+For documentation of the specific API endpoints that the npm package manager
+client uses, see the [npm API documentation](../../../api/packages/npm.md).
+
 ## Build an npm package
 
 This section covers how to install npm or Yarn and build a package for your

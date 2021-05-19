@@ -5,12 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Jobs artifacts administration
+# Jobs artifacts administration **(FREE SELF)**
 
-> - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
-> - Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format changed to `ZIP`.
-> - Starting with GitLab 8.17, builds are renamed to jobs.
-> - This is the administration documentation. For the user guide see [pipelines/job_artifacts](../ci/pipelines/job_artifacts.md).
+This is the administration documentation. For the user guide see [pipelines/job_artifacts](../ci/pipelines/job_artifacts.md).
 
 Artifacts is a list of files and directories which are attached to a job after it
 finishes. This feature is enabled by default in all GitLab installations. Keep reading
@@ -87,12 +84,7 @@ _The artifacts are stored by default in
 
 ### Using object storage
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1762) in
->   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-> - Since version 9.5, artifacts are [browsable](../ci/pipelines/job_artifacts.md#download-job-artifacts),
->   when object storage is enabled. 9.4 lacks this feature.
-> - Since version 10.6, available in [GitLab Free](https://about.gitlab.com/pricing/).
-> - Since version 11.0, we support `direct_upload` to S3.
+> Introduced in GitLab 11.0: Support for `direct_upload` to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
 artifacts, you can use an object storage like AWS S3 instead.
@@ -118,14 +110,14 @@ This section describes the earlier configuration format.
 
 For source installations the following settings are nested under `artifacts:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `artifacts_object_store_`.
 
-| Setting             | Default | Description                                                                                                                                                                             |
-|---------------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `enabled`           | `false` | Enable/disable object storage                                                                                                                                                           |
-| `remote_directory`  |         | The bucket name where Artifacts are stored                                                                                                                                              |
-| `direct_upload`     | `false` | Set to `true` to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files.         |
-| `background_upload` | `true`  | Set to `false` to disable automatic upload. Option may be removed once upload is direct to S3                                                                                           |
+| Setting             | Default | Description |
+|---------------------|---------|-------------|
+| `enabled`           | `false` | Enable or disable object storage. |
+| `remote_directory`  |         | The bucket name where Artifacts are stored. |
+| `direct_upload`     | `false` | Set to `true` to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. |
+| `background_upload` | `true`  | Set to `false` to disable automatic upload. Option may be removed once upload is direct to S3. |
 | `proxy_download`    | `false` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data. |
-| `connection`        |         | Various connection options described below                                                                                                                                              |
+| `connection`        |         | Various connection options described below. |
 
 #### Connection settings
 

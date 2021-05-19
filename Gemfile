@@ -360,9 +360,9 @@ end
 group :development, :test do
   gem 'deprecation_toolkit', '~> 1.5.1', require: false
   gem 'bullet', '~> 6.1.3'
-  gem 'gitlab-pry-byebug', platform: :mri, require: ['pry-byebug', 'pry-byebug/pry_remote_ext']
+  gem 'pry-byebug'
   gem 'pry-rails', '~> 0.3.9'
-  gem 'pry-remote'
+  gem 'pry-shell', '~> 0.4.0'
 
   gem 'awesome_print', require: false
 

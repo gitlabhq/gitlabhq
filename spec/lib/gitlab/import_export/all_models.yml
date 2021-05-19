@@ -260,6 +260,8 @@ ci_pipelines:
 - latest_statuses
 - dast_profile
 - dast_profiles_pipeline
+- dast_site_profile
+- dast_site_profiles_pipeline
 ci_refs:
 - project
 - ci_pipelines
