@@ -622,7 +622,7 @@ GEM
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
-    http-parser (1.2.1)
+    http-parser (1.2.3)
       ffi-compiler (>= 1.0, < 2.0)
     httparty (0.16.4)
       mime-types (~> 3.0)

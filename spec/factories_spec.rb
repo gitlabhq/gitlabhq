@@ -74,6 +74,7 @@ RSpec.describe 'factories' do
     milestone_release
     namespace
     project_broken_repo
+    project_repository
     prometheus_alert
     prometheus_alert_event
     prometheus_metric
@@ -84,6 +85,7 @@ RSpec.describe 'factories' do
     release
     release_link
     self_managed_prometheus_alert_event
+    shard
     users_star_project
     wiki_page
     wiki_page_meta

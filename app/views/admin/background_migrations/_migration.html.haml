@@ -1,0 +1,10 @@
+%tr{ role: 'row' }
+  %td{ role: 'cell', data: { label: _('Migration') } }= migration.job_class_name + ': ' + migration.table_name
+  %td{ role: 'cell', data: { label: _('Progress') } }
+    - progress = batched_migration_progress(migration, @successful_rows_counts[migration.id])
+    - if progress
+      = number_to_percentage(progress, precision: 2)
+    - else
+      = _('Unknown')
+  %td{ role: 'cell', data: { label: _('Status') } }
+    %span.badge.badge-pill.gl-badge.sm{ class: batched_migration_status_badge_class_name(migration) }= migration.status.humanize

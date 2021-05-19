@@ -36,6 +36,38 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
     it 'returns the first active migration according to queue order' do
       expect(described_class.active_migration).to eq(migration2)
+      create(:batched_background_migration_job, batched_migration: migration1, batch_size: 1000, status: :succeeded)
+    end
+  end
+
+  describe '.queued' do
+    let!(:migration1) { create(:batched_background_migration, :finished) }
+    let!(:migration2) { create(:batched_background_migration, :paused) }
+    let!(:migration3) { create(:batched_background_migration, :active) }
+
+    it 'returns active and paused migrations' do
+      expect(described_class.queued).to contain_exactly(migration2, migration3)
+    end
+  end
+
+  describe '.successful_rows_counts' do
+    let!(:migration1) { create(:batched_background_migration) }
+    let!(:migration2) { create(:batched_background_migration) }
+    let!(:migration_without_jobs) { create(:batched_background_migration) }
+
+    before do
+      create(:batched_background_migration_job, batched_migration: migration1, batch_size: 1000, status: :succeeded)
+      create(:batched_background_migration_job, batched_migration: migration1, batch_size: 200, status: :failed)
+      create(:batched_background_migration_job, batched_migration: migration2, batch_size: 500, status: :succeeded)
+      create(:batched_background_migration_job, batched_migration: migration2, batch_size: 200, status: :running)
+    end
+
+    it 'returns totals from successful jobs' do
+      results = described_class.successful_rows_counts([migration1, migration2, migration_without_jobs])
+
+      expect(results[migration1.id]).to eq(1000)
+      expect(results[migration2.id]).to eq(500)
+      expect(results[migration_without_jobs.id]).to eq(nil)
     end
   end
 

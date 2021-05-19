@@ -2238,13 +2238,13 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'with projects on legacy storage' do
-      let(:project) { create(:project, :repository, :legacy_storage) }
+      let(:project) { create(:project, :legacy_storage) }
 
       it_behaves_like 'tracks storage location'
     end
 
     context 'with projects on hashed storage' do
-      let(:project) { create(:project, :repository) }
+      let(:project) { create(:project) }
 
       it_behaves_like 'tracks storage location'
     end

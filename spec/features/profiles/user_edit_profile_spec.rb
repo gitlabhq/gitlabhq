@@ -8,6 +8,8 @@ RSpec.describe 'User edit profile' do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(improved_emoji_picker: false)
+
     sign_in(user)
     visit(profile_path)
   end

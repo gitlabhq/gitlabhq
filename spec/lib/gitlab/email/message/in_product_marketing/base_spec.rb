@@ -4,12 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Message::InProductMarketing::Base do
   let_it_be(:group) { build(:group) }
+  let_it_be(:user) { build(:user) }
 
   let(:series) { 0 }
   let(:test_class) { Gitlab::Email::Message::InProductMarketing::Create }
 
   describe 'initialize' do
-    subject { test_class.new(group: group, series: series) }
+    subject { test_class.new(group: group, user: user, series: series) }
 
     context 'when series does not exist' do
       let(:series) { 3 }
@@ -29,13 +30,13 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Base do
   end
 
   describe '#logo_path' do
-    subject { test_class.new(group: group, series: series).logo_path }
+    subject { test_class.new(group: group, user: user, series: series).logo_path }
 
     it { is_expected.to eq('mailers/in_product_marketing/create-0.png') }
   end
 
   describe '#unsubscribe' do
-    subject { test_class.new(group: group, series: series).unsubscribe }
+    subject { test_class.new(group: group, user: user, series: series).unsubscribe }
 
     before do
       allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)
@@ -55,7 +56,7 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Base do
   end
 
   describe '#cta_link' do
-    subject(:cta_link) { test_class.new(group: group, series: series).cta_link }
+    subject(:cta_link) { test_class.new(group: group, user: user, series: series).cta_link }
 
     it 'renders link' do
       expect(CGI.unescapeHTML(cta_link)).to include(Gitlab::Routing.url_helpers.group_email_campaigns_url(group, track: :create, series: series))
@@ -63,7 +64,7 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Base do
   end
 
   describe '#progress' do
-    subject { test_class.new(group: group, series: series).progress }
+    subject { test_class.new(group: group, user: user, series: series).progress }
 
     before do
       allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)

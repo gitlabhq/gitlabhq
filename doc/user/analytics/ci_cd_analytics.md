@@ -4,12 +4,11 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# CI/CD Analytics
+# CI/CD Analytics **(FREE)**
 
-## Pipeline success and duration charts **(FREE)**
+## Pipeline success and duration charts
 
-> - Introduced in GitLab 3.1.1 as Commit Stats, and later renamed to Pipeline Charts.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/38318) to CI/CD Analytics in GitLab 12.8.
+> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/38318) to CI/CD Analytics in GitLab 12.8.
 
 GitLab tracks the history of your pipeline successes and failures, as well as how long each pipeline
 ran. To view this information, go to **Analytics > CI/CD Analytics**.
@@ -48,14 +47,14 @@ performance indicators for software development teams:
 
 The following table shows the supported metrics, at which level they are supported, and which GitLab version (API and UI) they were introduced:
 
-| Metric           | Level               | API version                                | Chart (UI) version                                     | Comments                                                                               |
-| --------------- | -----------               | ---------------                      | ----------                                      | -------                                                                               |
-| `deployment_frequency`    | Project-level       | [13.7+](../../api/dora/metrics.md)  | [13.8+](#deployment-frequency-charts) | The [old API endpoint](../../api/dora4_project_analytics.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10. |
-| `deployment_frequency`    | Group-level     | [13.10+](../../api/dora/metrics.md) | To be supported  |                                                                                       |
-| `lead_time_for_changes`   | Project-level      | [13.10+](../../api/dora/metrics.md) | [13.11+](#lead-time-charts)  | Unit in seconds. Aggregation method is median.                                                                    |
-| `lead_time_for_changes`   | Group-level     |  [13.10+](../../api/dora/metrics.md) | To be supported  | Unit in seconds. Aggregation method is median.                                                                    |
-| `change_failure_rate`     | Project/Group-level   |  To be supported                      | To be supported  |                                                                                       |
-| `time_to_restore_service` | Project/Group-level   |  To be supported                      | To be supported  |                                                                                       |
+| Metric                    | Level               | API version                          | Chart (UI) version                    | Comments  |
+|---------------------------|---------------------|--------------------------------------|---------------------------------------|-----------|
+| `deployment_frequency`    | Project-level       | [13.7+](../../api/dora/metrics.md)   | [13.8+](#deployment-frequency-charts) | The [old API endpoint](../../api/dora4_project_analytics.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10. |
+| `deployment_frequency`    | Group-level         | [13.10+](../../api/dora/metrics.md)  | To be supported                       | |
+| `lead_time_for_changes`   | Project-level       | [13.10+](../../api/dora/metrics.md)  | [13.11+](#lead-time-charts)           | Unit in seconds. Aggregation method is median. |
+| `lead_time_for_changes`   | Group-level         |  [13.10+](../../api/dora/metrics.md) | To be supported                       | Unit in seconds. Aggregation method is median. |
+| `change_failure_rate`     | Project/Group-level |  To be supported                     | To be supported                       | |
+| `time_to_restore_service` | Project/Group-level |  To be supported                     | To be supported                       | |
 
 ### Deployment frequency charts **(ULTIMATE)**
 

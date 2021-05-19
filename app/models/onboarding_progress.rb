@@ -85,6 +85,10 @@ class OnboardingProgress < ApplicationRecord
     end
   end
 
+  def number_of_completed_actions
+    attributes.extract!(*ACTIONS.map { |action| self.class.column_name(action).to_s }).compact!.size
+  end
+
   private
 
   def namespace_is_root_namespace

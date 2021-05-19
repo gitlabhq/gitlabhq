@@ -1,16 +1,18 @@
 ---
 key_path: usage_activity_by_stage_monthly.manage.group_imports.group_import
-description: ''
-product_section: ''
-product_stage: ''
-product_group: ''
+description: Number of group import states
+product_section: dev
+product_stage: manage
+product_group: group::import
 product_category: ''
 value_type: number
 status: data_available
 time_frame: 28d
-data_source:
+data_source: database
 distribution:
-- ce
+  - ce
+  - ee
 tier:
-- free
-skip_validation: true
+  - free
+  - premium
+  - ultimate

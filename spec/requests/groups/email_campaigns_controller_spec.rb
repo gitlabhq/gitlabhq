@@ -9,10 +9,11 @@ RSpec.describe Groups::EmailCampaignsController do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
     let_it_be(:user) { create(:user) }
+
     let(:track) { 'create' }
     let(:series) { '0' }
     let(:schema) { described_class::EMAIL_CAMPAIGNS_SCHEMA_URL }
-    let(:subject_line_text) { Gitlab::Email::Message::InProductMarketing.for(track.to_sym).new(group: group, series: series.to_i).subject_line }
+    let(:subject_line_text) { Gitlab::Email::Message::InProductMarketing.for(track.to_sym).new(group: group, user: user, series: series.to_i).subject_line }
     let(:data) do
       {
         namespace_id: group.id,
@@ -91,7 +92,7 @@ RSpec.describe Groups::EmailCampaignsController do
 
     describe 'track parameter' do
       context 'when valid' do
-        where(track: Namespaces::InProductMarketingEmailsService::TRACKS.keys)
+        where(track: Namespaces::InProductMarketingEmailsService::TRACKS.keys.without(:experience))
 
         with_them do
           it_behaves_like 'track and redirect'
@@ -109,7 +110,7 @@ RSpec.describe Groups::EmailCampaignsController do
 
     describe 'series parameter' do
       context 'when valid' do
-        where(series: (0..Namespaces::InProductMarketingEmailsService::INTERVAL_DAYS.length - 1).to_a)
+        where(series: (0..Namespaces::InProductMarketingEmailsService::TRACKS[:create][:interval_days].length - 1).to_a)
 
         with_them do
           it_behaves_like 'track and redirect'
@@ -117,7 +118,7 @@ RSpec.describe Groups::EmailCampaignsController do
       end
 
       context 'when invalid' do
-        where(series: [-1, nil, Namespaces::InProductMarketingEmailsService::INTERVAL_DAYS.length])
+        where(series: [-1, nil, Namespaces::InProductMarketingEmailsService::TRACKS[:create][:interval_days].length])
 
         with_them do
           it_behaves_like 'no track and 404'

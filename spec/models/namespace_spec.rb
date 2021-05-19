@@ -804,9 +804,9 @@ RSpec.describe Namespace do
       end
 
       it 'updates the project storage location' do
-        repository_project_in_parent_group = create(:project_repository, project: project_in_parent_group)
-        repository_hashed_project_in_subgroup = create(:project_repository, project: hashed_project_in_subgroup)
-        repository_legacy_project_in_subgroup = create(:project_repository, project: legacy_project_in_subgroup)
+        repository_project_in_parent_group = project_in_parent_group.project_repository
+        repository_hashed_project_in_subgroup = hashed_project_in_subgroup.project_repository
+        repository_legacy_project_in_subgroup = legacy_project_in_subgroup.project_repository
 
         parent.update(path: 'mygroup_moved')
 

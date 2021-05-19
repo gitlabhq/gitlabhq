@@ -4,17 +4,37 @@ module Namespaces
   class InProductMarketingEmailsService
     include Gitlab::Experimentation::GroupTypes
 
-    INTERVAL_DAYS = [1, 5, 10].freeze
     TRACKS = {
-      create: :git_write,
-      verify: :pipeline_created,
-      trial: :trial_started,
-      team: :user_added
+      create: {
+        interval_days: [1, 5, 10],
+        completed_actions: [:created],
+        incomplete_actions: [:git_write]
+      },
+      verify: {
+        interval_days: [1, 5, 10],
+        completed_actions: [:git_write],
+        incomplete_actions: [:pipeline_created]
+      },
+      trial: {
+        interval_days: [1, 5, 10],
+        completed_actions: [:git_write, :pipeline_created],
+        incomplete_actions: [:trial_started]
+      },
+      team: {
+        interval_days: [1, 5, 10],
+        completed_actions: [:git_write, :pipeline_created, :trial_started],
+        incomplete_actions: [:user_added]
+      },
+      experience: {
+        interval_days: [30],
+        completed_actions: [:created, :git_write],
+        incomplete_actions: []
+      }
     }.freeze
 
     def self.send_for_all_tracks_and_intervals
       TRACKS.each_key do |track|
-        INTERVAL_DAYS.each do |interval|
+        TRACKS[track][:interval_days].each do |interval|
           new(track, interval).execute
         end
       end
@@ -69,7 +89,7 @@ module Namespaces
     def groups_for_track
       onboarding_progress_scope = OnboardingProgress
         .completed_actions_with_latest_in_range(completed_actions, range)
-        .incomplete_actions(incomplete_action)
+        .incomplete_actions(incomplete_actions)
 
       # Filtering out sub-groups is a temporary fix to prevent calling
       # `.root_ancestor` on groups that are not root groups.
@@ -103,6 +123,8 @@ module Namespaces
         user.can?(:start_trial, group)
       when :team
         user.can?(:admin_group_member, group)
+      when :experience
+        true
       end
     end
 
@@ -111,8 +133,7 @@ module Namespaces
     end
 
     def completed_actions
-      index = TRACKS.keys.index(track)
-      index == 0 ? [:created] : TRACKS.values[0..index - 1]
+      TRACKS[track][:completed_actions]
     end
 
     def range
@@ -120,12 +141,12 @@ module Namespaces
       date.beginning_of_day..date.end_of_day
     end
 
-    def incomplete_action
-      TRACKS[track]
+    def incomplete_actions
+      TRACKS[track][:incomplete_actions]
     end
 
     def series
-      INTERVAL_DAYS.index(interval)
+      TRACKS[track][:interval_days].index(interval)
     end
 
     def save_tracked_emails!

@@ -61,7 +61,7 @@ module NavHelper
   end
 
   def admin_monitoring_nav_links
-    %w(system_info background_jobs health_check requests_profiles)
+    %w(system_info background_migrations background_jobs health_check requests_profiles)
   end
 
   def admin_analytics_nav_links

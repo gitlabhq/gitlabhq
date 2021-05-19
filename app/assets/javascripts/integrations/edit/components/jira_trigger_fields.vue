@@ -37,7 +37,7 @@ const issueTransitionOptions = [
     help: s__(
       'JiraService|Automatically transitions Jira issues to the "Done" category. %{linkStart}Learn more%{linkEnd}',
     ),
-    link: helpPagePath('user/project/integrations/jira.html', {
+    link: helpPagePath('integration/jira/index.html', {
       anchor: 'automatic-issue-transitions',
     }),
   },
@@ -47,7 +47,7 @@ const issueTransitionOptions = [
     help: s__(
       'JiraService|Set a custom final state by using transition IDs. %{linkStart}Learn about transition IDs%{linkEnd}',
     ),
-    link: helpPagePath('user/project/integrations/jira.html', {
+    link: helpPagePath('integration/jira/index.html', {
       anchor: 'custom-issue-transitions',
     }),
   },

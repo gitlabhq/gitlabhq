@@ -242,6 +242,8 @@ FactoryBot.define do
             branch_name: evaluator.create_branch)
 
         end
+
+        project.track_project_repository
       end
     end
 

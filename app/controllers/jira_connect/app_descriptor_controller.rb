@@ -39,7 +39,7 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
   private
 
   HOME_URL = 'https://gitlab.com'
-  DOC_URL = 'https://docs.gitlab.com/ee/user/project/integrations/jira.html#gitlab-jira-integration'
+  DOC_URL = 'https://docs.gitlab.com/ee/integration/jira/'
 
   def modules
     modules = {

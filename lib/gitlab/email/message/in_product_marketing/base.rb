@@ -10,10 +10,11 @@ module Gitlab
 
           attr_accessor :format
 
-          def initialize(group:, series:, format: :html)
+          def initialize(group:, user:, series:, format: :html)
             raise ArgumentError, "Only #{total_series} series available for this track." unless series.between?(0, total_series - 1)
 
             @group = group
+            @user = user
             @series = series
             @format = format
           end
@@ -103,16 +104,16 @@ module Gitlab
 
           protected
 
-          attr_reader :group, :series
-
-          def total_series
-            3
-          end
+          attr_reader :group, :user, :series
 
           private
 
           def track
             self.class.name.demodulize.downcase.to_sym
+          end
+
+          def total_series
+            Namespaces::InProductMarketingEmailsService::TRACKS[track][:interval_days].size
           end
 
           def unsubscribe_com

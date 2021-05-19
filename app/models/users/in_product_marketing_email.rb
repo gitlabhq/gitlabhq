@@ -18,7 +18,8 @@ module Users
       create: 0,
       verify: 1,
       trial: 2,
-      team: 3
+      team: 3,
+      experience: 4
     }, _suffix: true
 
     scope :without_track_and_series, -> (track, series) do

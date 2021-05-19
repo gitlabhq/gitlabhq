@@ -852,17 +852,16 @@ module Gitlab
         sent_emails = count(Users::InProductMarketingEmail.group(:track, :series))
         clicked_emails = count(Users::InProductMarketingEmail.where.not(cta_clicked_at: nil).group(:track, :series))
 
-        series_amount = Namespaces::InProductMarketingEmailsService::INTERVAL_DAYS.count
-
         Users::InProductMarketingEmail.tracks.keys.each_with_object({}) do |track, result|
           # rubocop: enable UsageData/LargeTable:
+          series_amount = Namespaces::InProductMarketingEmailsService::TRACKS[track.to_sym][:interval_days].count
           0.upto(series_amount - 1).map do |series|
             # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
             sent_count = sent_emails.is_a?(Hash) ? sent_emails.fetch([track, series], 0) : sent_emails
             clicked_count = clicked_emails.is_a?(Hash) ? clicked_emails.fetch([track, series], 0) : clicked_emails
 
             result["in_product_marketing_email_#{track}_#{series}_sent"] = sent_count
-            result["in_product_marketing_email_#{track}_#{series}_cta_clicked"] = clicked_count
+            result["in_product_marketing_email_#{track}_#{series}_cta_clicked"] = clicked_count unless track == 'experience'
           end
         end
       end

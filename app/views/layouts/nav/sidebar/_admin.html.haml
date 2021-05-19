@@ -78,7 +78,7 @@
             = _('Monitoring')
 
         %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_monitoring_submenu_content' } }
-          = nav_link(controller: %w(system_info background_jobs health_check requests_profiles), html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: admin_monitoring_nav_links, html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_system_info_path do
               %strong.fly-out-top-item-name
                 = _('Monitoring')
@@ -87,6 +87,10 @@
             = link_to admin_system_info_path, title: _('System Info') do
               %span
                 = _('System Info')
+          = nav_link(controller: :background_migrations) do
+            = link_to admin_background_migrations_path, title: _('Background Migrations') do
+              %span
+                = _('Background Migrations')
           = nav_link(controller: :background_jobs) do
             = link_to admin_background_jobs_path, title: _('Background Jobs') do
               %span

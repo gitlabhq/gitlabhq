@@ -342,10 +342,10 @@ possible.
 
 ## Version-specific upgrading instructions
 
-Each month, a major or minor release of GitLab is published along with a
+Each month, major, minor or patch releases of GitLab are published along with a
 [release post](https://about.gitlab.com/releases/categories/releases/).
-You should check all the major and minor versions you're passing over.
-At the end of those release posts, there are three sections to look for:
+You should read the release posts for all versions you're passing over.
+At the end of major and minor release posts, there are three sections to look for specifically:
 
 - Deprecations
 - Removals

@@ -2446,6 +2446,18 @@ Status: `implemented`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `counts.in_product_marketing_email_experience_0_sent`
+
+Total sent emails of the experience track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210518081225_in_product_marketing_email_experience_0_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts.in_review_folder`
 
 Missing description
@@ -16366,7 +16378,7 @@ Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.project_imports.bitbucket_server`
 
@@ -16378,7 +16390,7 @@ Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.project_imports.git`
 
@@ -16390,7 +16402,7 @@ Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.project_imports.gitea`
 
@@ -16402,7 +16414,7 @@ Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.project_imports.github`
 
@@ -16414,7 +16426,7 @@ Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.project_imports.gitlab`
 
@@ -16426,7 +16438,7 @@ Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.project_imports.gitlab_migration`
 
@@ -16438,7 +16450,7 @@ Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.project_imports.gitlab_project`
 
@@ -16450,7 +16462,7 @@ Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.project_imports.manifest`
 
@@ -16462,7 +16474,7 @@ Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.projects_imported.bitbucket`
 
@@ -18088,15 +18100,15 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.manage.group_imports.group_import`
 
-Missing description
+Number of group import states
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183709_group_import.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.group_saml_enabled`
 
@@ -18128,7 +18140,7 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183737_groups_imported.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `deprecated`
 
@@ -18304,63 +18316,63 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.manage.project_imports.bitbucket`
 
-Missing description
+Count of projects imported from Bitbucket
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183650_bitbucket.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.project_imports.bitbucket_server`
 
-Missing description
+Count of projects imported from Bitbucket Server
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183652_bitbucket_server.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.project_imports.git`
 
-Missing description
+Count of projects imported from Git
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183655_git.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.project_imports.gitea`
 
-Missing description
+Count of projects imported from Gitea
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183653_gitea.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.project_imports.github`
 
-Missing description
+Count of projects imported from GitHub
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183648_github.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.project_imports.gitlab`
 
@@ -18368,11 +18380,11 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183646_gitlab.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.project_imports.gitlab_migration`
 
@@ -18380,11 +18392,11 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183659_gitlab_migration.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.project_imports.gitlab_project`
 
@@ -18392,11 +18404,11 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183644_gitlab_project.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.project_imports.manifest`
 
@@ -18404,35 +18416,35 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183657_manifest.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.projects_imported.bitbucket`
 
-Missing description
+Count of projects imported from Bitbucket
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183720_bitbucket.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `deprecated`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.projects_imported.bitbucket_server`
 
-Missing description
+Count of projects imported from Bitbucket Server
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183722_bitbucket_server.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `deprecated`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.projects_imported.git`
 
@@ -18532,15 +18544,15 @@ Tiers:
 
 ### `usage_activity_by_stage_monthly.manage.unique_users_all_imports`
 
-Missing description
+Number of users from projects imported
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183638_unique_users_all_imports.yml)
 
-Group: ``
+Group: `group::import`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.user_auth_by_provider.google_oauth2`
 

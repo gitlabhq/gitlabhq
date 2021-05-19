@@ -18,6 +18,7 @@ import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
 import { updateUserStatus } from '~/rest_api';
 import { timeRanges } from '~/vue_shared/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import EmojiMenuInModal from './emoji_menu_in_modal';
 import { isUserBusy } from './utils';
 
@@ -44,10 +45,12 @@ export default {
     GlFormCheckbox,
     GlDropdown,
     GlDropdownItem,
+    EmojiPicker: () => import('~/emoji/components/picker.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     defaultEmoji: {
       type: String,
@@ -102,7 +105,9 @@ export default {
     this.$root.$emit(BV_SHOW_MODAL, this.modalId);
   },
   beforeDestroy() {
-    this.emojiMenu.destroy();
+    if (this.emojiMenu) {
+      this.emojiMenu.destroy();
+    }
   },
   methods: {
     closeModal() {
@@ -121,13 +126,16 @@ export default {
           this.noEmoji = this.emoji === '';
           this.defaultEmojiTag = Emoji.glEmojiTag(this.defaultEmoji);
 
-          this.emojiMenu = new EmojiMenuInModal(
-            Emoji,
-            toggleEmojiMenuButtonSelector,
-            emojiMenuClass,
-            this.setEmoji,
-            this.$refs.userStatusForm,
-          );
+          if (!this.glFeatures.improvedEmojiPicker) {
+            this.emojiMenu = new EmojiMenuInModal(
+              Emoji,
+              toggleEmojiMenuButtonSelector,
+              emojiMenuClass,
+              this.setEmoji,
+              this.$refs.userStatusForm,
+            );
+          }
+
           this.setDefaultEmoji();
         })
         .catch(() => createFlash(__('Failed to load emoji list.')));
@@ -164,7 +172,12 @@ export default {
       this.emoji = emoji;
       this.noEmoji = false;
       this.clearEmoji();
-      this.emojiTag = emojiTag;
+
+      if (this.glFeatures.improvedEmojiPicker) {
+        this.emojiTag = Emoji.glEmojiTag(this.emoji);
+      } else {
+        this.emojiTag = emojiTag;
+      }
     },
     clearEmoji() {
       if (this.emojiTag) {
@@ -241,7 +254,26 @@ export default {
       <div ref="userStatusForm" class="form-group position-relative m-0">
         <div class="input-group gl-mb-5">
           <span class="input-group-prepend">
+            <emoji-picker
+              v-if="glFeatures.improvedEmojiPicker"
+              dropdown-class="gl-h-full"
+              toggle-class="btn emoji-menu-toggle-button gl-px-4! gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
+              @click="setEmoji"
+            >
+              <template #button-content>
+                <span v-html="emojiTag"></span>
+                <span
+                  v-show="noEmoji"
+                  class="js-no-emoji-placeholder no-emoji-placeholder position-relative"
+                >
+                  <gl-icon name="slight-smile" class="award-control-icon-neutral" />
+                  <gl-icon name="smiley" class="award-control-icon-positive" />
+                  <gl-icon name="smile" class="award-control-icon-super-positive" />
+                </span>
+              </template>
+            </emoji-picker>
             <button
+              v-else
               ref="toggleEmojiMenuButton"
               v-gl-tooltip.bottom.hover
               :title="s__('SetStatusModal|Add status emoji')"

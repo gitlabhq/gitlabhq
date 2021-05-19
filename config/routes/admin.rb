@@ -95,6 +95,7 @@ namespace :admin do
 
   get :instance_review, to: 'instance_review#index'
 
+  resources :background_migrations, only: [:index]
   resource :health_check, controller: 'health_check', only: [:show]
   resource :background_jobs, controller: 'background_jobs', only: [:show]
 

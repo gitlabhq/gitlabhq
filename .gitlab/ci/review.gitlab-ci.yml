@@ -111,8 +111,8 @@ review-stop:
 
 .review-qa-base:
   extends:
-    - .default-retry
     - .use-docker-in-docker
+  retry: 1  # This is confusing but this means "2 runs at max".
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7
   stage: qa
   needs: ["review-deploy"]

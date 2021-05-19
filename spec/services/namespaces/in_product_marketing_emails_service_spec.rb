@@ -41,22 +41,23 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
     using RSpec::Parameterized::TableSyntax
 
     where(:track, :interval, :actions_completed) do
-      :create | 1  | { created_at: frozen_time - 2.days }
-      :create | 5  | { created_at: frozen_time - 6.days }
-      :create | 10 | { created_at: frozen_time - 11.days }
-      :verify | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days }
-      :verify | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days }
-      :verify | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days }
-      :trial  | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days }
-      :trial  | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days }
-      :trial  | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days }
-      :team   | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days, trial_started_at: frozen_time - 2.days }
-      :team   | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days, trial_started_at: frozen_time - 6.days }
-      :team   | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days, trial_started_at: frozen_time - 11.days }
+      :create     | 1  | { created_at: frozen_time - 2.days }
+      :create     | 5  | { created_at: frozen_time - 6.days }
+      :create     | 10 | { created_at: frozen_time - 11.days }
+      :verify     | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days }
+      :verify     | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days }
+      :verify     | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days }
+      :trial      | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days }
+      :trial      | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days }
+      :trial      | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days }
+      :team       | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days, trial_started_at: frozen_time - 2.days }
+      :team       | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days, trial_started_at: frozen_time - 6.days }
+      :team       | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days, trial_started_at: frozen_time - 11.days }
+      :experience | 30 | { created_at: frozen_time - 31.days, git_write_at: frozen_time - 31.days }
     end
 
     with_them do
-      it { is_expected.to send_in_product_marketing_email(user.id, group.id, track, described_class::INTERVAL_DAYS.index(interval)) }
+      it { is_expected.to send_in_product_marketing_email(user.id, group.id, track, described_class::TRACKS[track][:interval_days].index(interval)) }
     end
   end
 
@@ -235,7 +236,7 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
     let(:track) { :foo }
 
     before do
-      stub_const("#{described_class}::TRACKS", { bar: :git_write })
+      stub_const("#{described_class}::TRACKS", { bar: {} })
     end
 
     it { expect { subject }.to raise_error(ArgumentError, 'Track foo not defined') }

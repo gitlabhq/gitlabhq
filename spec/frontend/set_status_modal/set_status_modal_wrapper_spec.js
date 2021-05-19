@@ -2,6 +2,7 @@ import { GlModal, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { initEmojiMock } from 'helpers/emoji';
 import * as UserApi from '~/api/user_api';
+import EmojiPicker from '~/emoji/components/picker.vue';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import SetStatusModalWrapper, {
   AVAILABILITY_STATUS,
@@ -25,7 +26,7 @@ describe('SetStatusModalWrapper', () => {
     defaultEmoji,
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, improvedEmojiPicker = false) => {
     return shallowMount(SetStatusModalWrapper, {
       propsData: {
         ...defaultProps,
@@ -33,6 +34,9 @@ describe('SetStatusModalWrapper', () => {
       },
       mocks: {
         $toast,
+      },
+      provide: {
+        glFeatures: { improvedEmojiPicker },
       },
     });
   };
@@ -103,6 +107,20 @@ describe('SetStatusModalWrapper', () => {
 
     it('does not display the clear status at message', () => {
       expect(findClearStatusAtMessage().exists()).toBe(false);
+    });
+  });
+
+  describe('improvedEmojiPicker is true', () => {
+    beforeEach(async () => {
+      mockEmoji = await initEmojiMock();
+      wrapper = createComponent({}, true);
+      return initModal();
+    });
+
+    it('sets emojiTag when clicking in emoji picker', async () => {
+      await wrapper.findComponent(EmojiPicker).vm.$emit('click', 'thumbsup');
+
+      expect(wrapper.vm.emojiTag).toContain('data-name="thumbsup"');
     });
   });
 

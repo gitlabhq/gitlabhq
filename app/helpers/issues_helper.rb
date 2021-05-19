@@ -197,7 +197,7 @@ module IssuesHelper
       initial_email: project.new_issuable_address(current_user, 'issue'),
       is_signed_in: current_user.present?.to_s,
       issues_path: project_issues_path(project),
-      jira_integration_path: help_page_url('user/project/integrations/jira', anchor: 'view-jira-issues'),
+      jira_integration_path: help_page_url('integration/jira/', anchor: 'view-jira-issues'),
       markdown_help_path: help_page_path('user/markdown'),
       max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
       new_issue_path: new_project_issue_path(project, issue: { assignee_id: finder.assignee.try(:id), milestone_id: finder.milestones.first.try(:id) }),

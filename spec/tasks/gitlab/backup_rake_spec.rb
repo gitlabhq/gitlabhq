@@ -301,10 +301,8 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       shared_examples 'includes repositories in all repository storages' do
         specify :aggregate_failures do
           project_a = create(:project, :repository)
-          project_a.track_project_repository
           project_snippet_a = create(:project_snippet, :repository, project: project_a, author: project_a.owner)
           project_b = create(:project, :repository, repository_storage: second_storage_name)
-          project_b.track_project_repository
           project_snippet_b = create(:project_snippet, :repository, project: project_b, author: project_b.owner)
           project_snippet_b.snippet_repository.update!(shard: project_b.project_repository.shard)
           create(:wiki_page, container: project_a)

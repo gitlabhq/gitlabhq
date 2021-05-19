@@ -58,15 +58,21 @@ module QA
       def comparable_group
         reload! if api_response.nil?
 
-        api_resource.except(
-          :id,
-          :web_url,
-          :visibility,
-          :full_name,
-          :full_path,
-          :created_at,
-          :parent_id,
-          :runners_token
+        api_resource.slice(
+          :name,
+          :path,
+          :description,
+          :emails_disabled,
+          :lfs_enabled,
+          :mentions_disabled,
+          :project_creation_level,
+          :request_access_enabled,
+          :require_two_factor_authentication,
+          :share_with_group_lock,
+          :subgroup_creation_level,
+          :two_factor_grace_perion
+          # TODO: Add back visibility comparison once https://gitlab.com/gitlab-org/gitlab/-/issues/331252 is fixed
+          # :visibility
         )
       end
     end
