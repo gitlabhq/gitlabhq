@@ -29,6 +29,7 @@
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/development/ @marcia
 /doc/development/documentation/ @cnorris
+/doc/development/i18n/ @ngaskill
 /doc/development/value_stream_analytics.md @msedlakjakubowski
 /doc/gitlab-basics/ @marcia
 /doc/install/ @axil
@@ -57,7 +58,7 @@
 /doc/user/profile/ @msedlakjakubowski
 /doc/user/project/ @aqualls @axil @eread @msedlakjakubowski @ngaskill
 /doc/user/project/clusters/ @ngaskill
-/doc/user/project/import/ @msedlakjakubowski
+/doc/user/project/import/ @ngaskill @msedlakjakubowski
 /doc/user/project/integrations/ @aqualls
 /doc/user/project/integrations/prometheus_library/ @ngaskill
 /doc/user/project/issues/ @msedlakjakubowski

@@ -370,6 +370,7 @@ HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
   --version="${CI_PIPELINE_ID}-${CI_JOB_ID}" \
   -f "${base_config_file}" \
+  -v "${HELM_LOG_VERBOSITY:-1}" \
   "${release}" "gitlab-${GITLAB_HELM_CHART_REF}"
 EOF
 )

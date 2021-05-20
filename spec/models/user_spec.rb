@@ -22,6 +22,8 @@ RSpec.describe User do
 
   describe 'constants' do
     it { expect(described_class::COUNT_CACHE_VALIDITY_PERIOD).to be_a(Integer) }
+    it { expect(described_class::MAX_USERNAME_LENGTH).to be_a(Integer) }
+    it { expect(described_class::MIN_USERNAME_LENGTH).to be_a(Integer) }
   end
 
   describe 'delegations' do

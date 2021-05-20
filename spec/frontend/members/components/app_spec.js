@@ -33,7 +33,7 @@ describe('MembersApp', () => {
 
     wrapper = shallowMount(MembersApp, {
       localVue,
-      provide: {
+      propsData: {
         namespace: MEMBER_TYPES.user,
       },
       store,

@@ -1,5 +1,5 @@
 import { createWrapper } from '@vue/test-utils';
-import MembersApp from '~/members/components/app.vue';
+import MembersTabs from '~/members/components/members_tabs.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 import { initMembersApp } from '~/members/index';
 import { members, pagination, dataAttribute } from './mock_data';
@@ -11,12 +11,13 @@ describe('initMembersApp', () => {
 
   const setup = () => {
     vm = initMembersApp(el, {
-      namespace: MEMBER_TYPES.user,
-      tableFields: ['account'],
-      tableAttrs: { table: { 'data-qa-selector': 'members_list' } },
-      tableSortableFields: ['account'],
-      requestFormatter: () => ({}),
-      filteredSearchBar: { show: false },
+      [MEMBER_TYPES.user]: {
+        tableFields: ['account'],
+        tableAttrs: { table: { 'data-qa-selector': 'members_list' } },
+        tableSortableFields: ['account'],
+        requestFormatter: () => ({}),
+        filteredSearchBar: { show: false },
+      },
     });
     wrapper = createWrapper(vm);
   };
@@ -35,10 +36,10 @@ describe('initMembersApp', () => {
     wrapper = null;
   });
 
-  it('renders `MembersApp`', () => {
+  it('renders `MembersTabs`', () => {
     setup();
 
-    expect(wrapper.find(MembersApp).exists()).toBe(true);
+    expect(wrapper.find(MembersTabs).exists()).toBe(true);
   });
 
   it('parses and sets `members` in Vuex store', () => {

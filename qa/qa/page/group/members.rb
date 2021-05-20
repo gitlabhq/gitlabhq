@@ -26,7 +26,7 @@ module QA
           element :delete_member_button
         end
 
-        view 'app/views/groups/group_members/index.html.haml' do
+        view 'app/assets/javascripts/members/components/members_tabs.vue' do
           element :groups_list_tab
         end
 

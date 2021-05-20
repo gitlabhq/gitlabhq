@@ -1,4 +1,4 @@
-import { DEFAULT_SORT } from '~/members/constants';
+import { DEFAULT_SORT, MEMBER_TYPES } from '~/members/constants';
 import {
   generateBadges,
   isGroup,
@@ -268,11 +268,13 @@ describe('Members Utils', () => {
 
     it('correctly parses the data attribute', () => {
       expect(parseDataAttributes(el)).toMatchObject({
-        members,
-        pagination,
+        [MEMBER_TYPES.user]: {
+          members,
+          pagination,
+          memberPath: '/groups/foo-bar/-/group_members/:id',
+        },
         sourceId: 234,
         canManageMembers: true,
-        memberPath: '/groups/foo-bar/-/group_members/:id',
       });
     });
   });

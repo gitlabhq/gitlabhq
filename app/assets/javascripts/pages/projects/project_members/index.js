@@ -42,46 +42,41 @@ initInviteMembersForm();
 new UsersSelect(); // eslint-disable-line no-new
 
 const SHARED_FIELDS = ['account', 'expires', 'maxRole', 'expiration', 'actions'];
-initMembersApp(document.querySelector('.js-project-members-list'), {
-  namespace: MEMBER_TYPES.user,
-  tableFields: SHARED_FIELDS.concat(['source', 'granted']),
-  tableAttrs: { tr: { 'data-qa-selector': 'member_row' } },
-  tableSortableFields: ['account', 'granted', 'maxRole', 'lastSignIn'],
-  requestFormatter: projectMemberRequestFormatter,
-  filteredSearchBar: {
-    show: true,
-    tokens: ['with_inherited_permissions'],
-    searchParam: 'search',
-    placeholder: s__('Members|Filter members'),
-    recentSearchesStorageKey: 'project_members',
+initMembersApp(document.querySelector('.js-project-members-list-app'), {
+  [MEMBER_TYPES.user]: {
+    tableFields: SHARED_FIELDS.concat(['source', 'granted']),
+    tableAttrs: { tr: { 'data-qa-selector': 'member_row' } },
+    tableSortableFields: ['account', 'granted', 'maxRole', 'lastSignIn'],
+    requestFormatter: projectMemberRequestFormatter,
+    filteredSearchBar: {
+      show: true,
+      tokens: ['with_inherited_permissions'],
+      searchParam: 'search',
+      placeholder: s__('Members|Filter members'),
+      recentSearchesStorageKey: 'project_members',
+    },
   },
-});
-
-initMembersApp(document.querySelector('.js-project-group-links-list'), {
-  namespace: MEMBER_TYPES.group,
-  tableFields: SHARED_FIELDS.concat('granted'),
-  tableAttrs: {
-    table: { 'data-qa-selector': 'groups_list' },
-    tr: { 'data-qa-selector': 'group_row' },
+  [MEMBER_TYPES.group]: {
+    tableFields: SHARED_FIELDS.concat('granted'),
+    tableAttrs: {
+      table: { 'data-qa-selector': 'groups_list' },
+      tr: { 'data-qa-selector': 'group_row' },
+    },
+    requestFormatter: groupLinkRequestFormatter,
+    filteredSearchBar: {
+      show: true,
+      tokens: [],
+      searchParam: 'search_groups',
+      placeholder: s__('Members|Search groups'),
+      recentSearchesStorageKey: 'project_group_links',
+    },
   },
-  requestFormatter: groupLinkRequestFormatter,
-  filteredSearchBar: {
-    show: true,
-    tokens: [],
-    searchParam: 'search_groups',
-    placeholder: s__('Members|Search groups'),
-    recentSearchesStorageKey: 'project_group_links',
+  [MEMBER_TYPES.invite]: {
+    tableFields: SHARED_FIELDS.concat('invited'),
+    requestFormatter: projectMemberRequestFormatter,
   },
-});
-
-initMembersApp(document.querySelector('.js-project-invited-members-list'), {
-  namespace: MEMBER_TYPES.invite,
-  tableFields: SHARED_FIELDS.concat('invited'),
-  requestFormatter: projectMemberRequestFormatter,
-});
-
-initMembersApp(document.querySelector('.js-project-access-requests-list'), {
-  namespace: MEMBER_TYPES.accessRequest,
-  tableFields: SHARED_FIELDS.concat('requested'),
-  requestFormatter: projectMemberRequestFormatter,
+  [MEMBER_TYPES.accessRequest]: {
+    tableFields: SHARED_FIELDS.concat('requested'),
+    requestFormatter: projectMemberRequestFormatter,
+  },
 });

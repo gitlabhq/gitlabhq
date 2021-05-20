@@ -7,10 +7,13 @@ module QA
         view 'app/views/devise/shared/_signup_box.html.haml' do
           element :new_user_first_name_field
           element :new_user_last_name_field
-          element :new_user_username_field
           element :new_user_email_field
           element :new_user_password_field
           element :new_user_register_button
+        end
+
+        view 'app/helpers/registrations_helper.rb' do
+          element :new_user_username_field
         end
 
         view 'app/views/registrations/welcome/show.html.haml' do

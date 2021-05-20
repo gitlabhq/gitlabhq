@@ -16,8 +16,6 @@ module Gitlab
             GENERAL_REJECTED_STATUS = (400..499).freeze
 
             def perform!
-              return unless enabled?
-
               pipeline_authorized = validate_external
 
               log_message = pipeline_authorized ? 'authorized' : 'not authorized'
@@ -31,12 +29,6 @@ module Gitlab
             end
 
             private
-
-            def enabled?
-              return true unless Gitlab.com?
-
-              ::Feature.enabled?(:ci_external_validation_service, project, default_enabled: :yaml)
-            end
 
             def validate_external
               return true unless validation_service_url

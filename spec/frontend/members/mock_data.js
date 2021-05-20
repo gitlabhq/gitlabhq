@@ -1,3 +1,5 @@
+import { MEMBER_TYPES } from '~/members/constants';
+
 export const member = {
   requestedAt: null,
   canUpdate: false,
@@ -97,10 +99,12 @@ export const pagination = {
 };
 
 export const dataAttribute = JSON.stringify({
-  members,
-  pagination: paginationData,
+  [MEMBER_TYPES.user]: {
+    members,
+    pagination: paginationData,
+    member_path: '/groups/foo-bar/-/group_members/:id',
+    ldap_override_path: '/groups/ldap-group/-/group_members/:id/override',
+  },
   source_id: 234,
   can_manage_members: true,
-  member_path: '/groups/foo-bar/-/group_members/:id',
-  ldap_override_path: '/groups/ldap-group/-/group_members/:id/override',
 });

@@ -6,7 +6,7 @@ import MembersTabs from '~/members/components/members_tabs.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 import { pagination } from '../mock_data';
 
-describe('MembersApp', () => {
+describe('MembersTabs', () => {
   Vue.use(Vuex);
 
   let wrapper;
@@ -111,10 +111,10 @@ describe('MembersApp', () => {
 
       const membersApps = wrapper.findAllComponents(MembersApp).wrappers;
 
-      expect(membersApps[0].attributes('namespace')).toBe(MEMBER_TYPES.user);
-      expect(membersApps[1].attributes('namespace')).toBe(MEMBER_TYPES.group);
-      expect(membersApps[2].attributes('namespace')).toBe(MEMBER_TYPES.invite);
-      expect(membersApps[3].attributes('namespace')).toBe(MEMBER_TYPES.accessRequest);
+      expect(membersApps[0].props('namespace')).toBe(MEMBER_TYPES.user);
+      expect(membersApps[1].props('namespace')).toBe(MEMBER_TYPES.group);
+      expect(membersApps[2].props('namespace')).toBe(MEMBER_TYPES.invite);
+      expect(membersApps[3].props('namespace')).toBe(MEMBER_TYPES.accessRequest);
     });
   });
 

@@ -1,8 +1,5 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _('Group members')
-- show_invited_members = can_manage_members? && @invited_members.load.any?
-- show_access_requests = can_manage_members? && @requesters.load.any?
-- invited_active = params[:search_invited].present? || params[:invited_members_page].present?
 
 .js-remove-member-modal
 .row.gl-mt-3
@@ -35,47 +32,9 @@
 
     = render_if_exists 'groups/group_members/ldap_sync'
 
-    %ul.nav-links.mobile-separator.nav.nav-tabs
-      %li.nav-item
-        = link_to '#tab-members', class: ['nav-link', ('active' unless invited_active)], data: { toggle: 'tab' } do
-          %span
-            = _('Members')
-          %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @members.total_count
-      - if @group.shared_with_group_links.present?
-        %li.nav-item
-          = link_to '#tab-groups', class: ['nav-link'] , data: { toggle: 'tab', qa_selector: 'groups_list_tab' } do
-            %span
-              = _('Groups')
-            %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @group.shared_with_group_links.count
-      - if show_invited_members
-        %li.nav-item
-          = link_to '#tab-invited-members', class: ['nav-link', ('active' if invited_active)], data: { toggle: 'tab' } do
-            %span
-              = _('Invited')
-            %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @invited_members.total_count
-      - if show_access_requests
-        %li.nav-item
-          = link_to '#tab-access-requests', class: 'nav-link', data: { toggle: 'tab' } do
-            %span
-              = _('Access requests')
-            %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @requesters.count
-    .tab-content
-      #tab-members.tab-pane{ class: ('active' unless invited_active) }
-        .js-group-members-list{ data: { members_data: group_members_list_data_json(@group, @members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }) } }
-          .loading
-            .gl-spinner.gl-spinner-md
-      - if @group.shared_with_group_links.present?
-        #tab-groups.tab-pane
-          .js-group-group-links-list{ data: { members_data: group_group_links_list_data_json(@group) } }
-            .loading
-              .gl-spinner.gl-spinner-md
-      - if show_invited_members
-        #tab-invited-members.tab-pane{ class: ('active' if invited_active) }
-          .js-group-invited-members-list{ data: { members_data: group_members_list_data_json(@group, @invited_members, { param_name: :invited_members_page, params: { page: nil } }) } }
-            .loading
-              .gl-spinner.gl-spinner-md
-      - if show_access_requests
-        #tab-access-requests.tab-pane
-          .js-group-access-requests-list{ data: { members_data: group_members_list_data_json(@group, @requesters) } }
-            .loading
-              .gl-spinner.gl-spinner-md
+    .js-group-members-list-app{ data: { members_data: group_members_app_data_json(@group,
+                                                                                  members: @members,
+                                                                                  invited: @invited_members,
+                                                                                  access_requests: @requesters) } }
+      .loading
+        .gl-spinner.gl-spinner-md

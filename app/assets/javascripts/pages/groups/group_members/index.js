@@ -29,46 +29,43 @@ function mountRemoveMemberModal() {
 
 const SHARED_FIELDS = ['account', 'expires', 'maxRole', 'expiration', 'actions'];
 
-initMembersApp(document.querySelector('.js-group-members-list'), {
-  namespace: MEMBER_TYPES.user,
-  tableFields: SHARED_FIELDS.concat(['source', 'granted']),
-  tableAttrs: { tr: { 'data-qa-selector': 'member_row' } },
-  tableSortableFields: ['account', 'granted', 'maxRole', 'lastSignIn'],
-  requestFormatter: groupMemberRequestFormatter,
-  filteredSearchBar: {
-    show: true,
-    tokens: ['two_factor', 'with_inherited_permissions'],
-    searchParam: 'search',
-    placeholder: s__('Members|Filter members'),
-    recentSearchesStorageKey: 'group_members',
+initMembersApp(document.querySelector('.js-group-members-list-app'), {
+  [MEMBER_TYPES.user]: {
+    tableFields: SHARED_FIELDS.concat(['source', 'granted']),
+    tableAttrs: { tr: { 'data-qa-selector': 'member_row' } },
+    tableSortableFields: ['account', 'granted', 'maxRole', 'lastSignIn'],
+    requestFormatter: groupMemberRequestFormatter,
+    filteredSearchBar: {
+      show: true,
+      tokens: ['two_factor', 'with_inherited_permissions'],
+      searchParam: 'search',
+      placeholder: s__('Members|Filter members'),
+      recentSearchesStorageKey: 'group_members',
+    },
   },
-});
-
-initMembersApp(document.querySelector('.js-group-group-links-list'), {
-  namespace: MEMBER_TYPES.group,
-  tableFields: SHARED_FIELDS.concat('granted'),
-  tableAttrs: {
-    table: { 'data-qa-selector': 'groups_list' },
-    tr: { 'data-qa-selector': 'group_row' },
+  [MEMBER_TYPES.group]: {
+    tableFields: SHARED_FIELDS.concat('granted'),
+    tableAttrs: {
+      table: { 'data-qa-selector': 'groups_list' },
+      tr: { 'data-qa-selector': 'group_row' },
+    },
+    requestFormatter: groupLinkRequestFormatter,
   },
-  requestFormatter: groupLinkRequestFormatter,
-});
-initMembersApp(document.querySelector('.js-group-invited-members-list'), {
-  namespace: MEMBER_TYPES.invite,
-  tableFields: SHARED_FIELDS.concat('invited'),
-  requestFormatter: groupMemberRequestFormatter,
-  filteredSearchBar: {
-    show: true,
-    tokens: [],
-    searchParam: 'search_invited',
-    placeholder: s__('Members|Search invited'),
-    recentSearchesStorageKey: 'group_invited_members',
+  [MEMBER_TYPES.invite]: {
+    tableFields: SHARED_FIELDS.concat('invited'),
+    requestFormatter: groupMemberRequestFormatter,
+    filteredSearchBar: {
+      show: true,
+      tokens: [],
+      searchParam: 'search_invited',
+      placeholder: s__('Members|Search invited'),
+      recentSearchesStorageKey: 'group_invited_members',
+    },
   },
-});
-initMembersApp(document.querySelector('.js-group-access-requests-list'), {
-  namespace: MEMBER_TYPES.accessRequest,
-  tableFields: SHARED_FIELDS.concat('requested'),
-  requestFormatter: groupMemberRequestFormatter,
+  [MEMBER_TYPES.accessRequest]: {
+    tableFields: SHARED_FIELDS.concat('requested'),
+    requestFormatter: groupMemberRequestFormatter,
+  },
 });
 
 groupsSelect();

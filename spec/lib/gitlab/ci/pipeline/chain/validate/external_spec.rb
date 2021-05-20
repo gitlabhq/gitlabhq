@@ -199,37 +199,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
       end
     end
 
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_external_validation_service: false)
-        stub_request(:post, validation_service_url)
-      end
-
-      it 'does not drop the pipeline' do
-        perform!
-
-        expect(pipeline.status).not_to eq('failed')
-        expect(pipeline.errors).to be_empty
-      end
-
-      it 'does not break the chain' do
-        perform!
-
-        expect(step.break?).to be false
-      end
-
-      it 'does not make requests' do
-        perform!
-
-        expect(WebMock).not_to have_requested(:post, validation_service_url)
-      end
-    end
-
     context 'when not on .com' do
       let(:dot_com) { false }
 
       before do
-        stub_feature_flags(ci_external_validation_service: false)
         stub_request(:post, validation_service_url).to_return(status: 404, body: "{}")
       end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > Members > Tabs' do
+RSpec.describe 'Groups > Members > Tabs', :js do
   using RSpec::Parameterized::TableSyntax
 
   shared_examples 'active "Members" tab' do
@@ -56,7 +56,7 @@ RSpec.describe 'Groups > Members > Tabs' do
     it_behaves_like 'active "Members" tab'
   end
 
-  context 'when searching "Invited"', :js do
+  context 'when searching "Invited"' do
     before do
       visit group_group_members_path(group)
 
@@ -86,7 +86,7 @@ RSpec.describe 'Groups > Members > Tabs' do
     end
   end
 
-  context 'when using "Invited" pagination', :js do
+  context 'when using "Invited" pagination' do
     before do
       visit group_group_members_path(group)
 
