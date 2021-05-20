@@ -2116,6 +2116,15 @@
   :idempotent: true
   :tags:
   - :exclude_from_kubernetes
+- :name: git_garbage_collect
+  :worker_name: GitGarbageCollectWorker
+  :feature_category: :gitaly
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: github_import_advance_stage
   :worker_name: Gitlab::GithubImport::AdvanceStageWorker
   :feature_category: :importers
