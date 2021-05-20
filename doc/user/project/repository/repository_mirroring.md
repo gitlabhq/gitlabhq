@@ -65,9 +65,9 @@ For an existing project, you can set up push mirroring as follows:
 ![Repository mirroring push settings screen](img/repository_mirroring_push_settings.png)
 
 When push mirroring is enabled, only push commits directly to the mirrored repository to prevent the
-mirror diverging. 
+mirror diverging.
 
-Unlike [pull mirroring](#how-it-works), the mirrored repository is not periodically auto-synced. 
+Unlike [pull mirroring](#how-it-works), the mirrored repository is not periodically auto-synced.
 The mirrored repository receives all changes only when:
 
 - Commits are pushed to GitLab.
@@ -93,14 +93,14 @@ You can also create and modify project push mirrors through the
 By default, if any ref on the remote mirror has diverged from the local
 repository, the *entire push* fails, and no updates occur.
 
-For example, if a repository has `master`, `develop`, and `stable` branches that
+For example, if a repository has `main`, `develop`, and `stable` branches that
 have been mirrored to a remote, and then a new commit is added to `develop` on
-the mirror, the next push attempt fails, leaving `master` and `stable`
+the mirror, the next push attempt fails, leaving `main` and `stable`
 out-of-date despite not having diverged. No change on any branch can be mirrored
 until the divergence is resolved.
 
 With the **Keep divergent refs** option enabled, the `develop` branch is
-skipped, allowing `master` and `stable` to be updated. The mirror status
+skipped, allowing `main` and `stable` to be updated. The mirror status
 reflects that `develop` has diverged and was skipped, and be marked as a failed
 update.
 

@@ -73,6 +73,7 @@ describe('DiffContent', () => {
             isParallelView: isParallelViewGetterMock,
             getCommentFormForDiffFile: getCommentFormForDiffFileGetterMock,
             diffLines: () => () => [...diffFileMockData.parallel_diff_lines],
+            fileLineCodequality: () => () => [],
           },
           actions: {
             saveDiffDiscussion: saveDiffDiscussionMock,

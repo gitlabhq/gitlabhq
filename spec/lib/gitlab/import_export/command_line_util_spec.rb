@@ -42,11 +42,34 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
       filename = File.basename(tempfile.path)
 
       subject.gzip(dir: path, filename: filename)
+
+      expect(File.exist?("#{tempfile.path}.gz")).to eq(true)
     end
 
     context 'when exception occurs' do
       it 'raises an exception' do
         expect { subject.gzip(dir: path, filename: 'test') }.to raise_error(Gitlab::ImportExport::Error)
+      end
+    end
+  end
+
+  describe '#gunzip' do
+    it 'decompresses specified file' do
+      tmpdir = Dir.mktmpdir
+      filename = 'labels.ndjson.gz'
+      gz_filepath = "spec/fixtures/bulk_imports/#{filename}"
+      FileUtils.copy_file(gz_filepath, File.join(tmpdir, filename))
+
+      subject.gunzip(dir: tmpdir, filename: filename)
+
+      expect(File.exist?(File.join(tmpdir, 'labels.ndjson'))).to eq(true)
+
+      FileUtils.remove_entry(tmpdir)
+    end
+
+    context 'when exception occurs' do
+      it 'raises an exception' do
+        expect { subject.gunzip(dir: path, filename: 'test') }.to raise_error(Gitlab::ImportExport::Error)
       end
     end
   end

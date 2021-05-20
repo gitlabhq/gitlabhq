@@ -136,6 +136,11 @@ export const fileLineCoverage = (state) => (file, line) => {
   return {};
 };
 
+// This function is overwritten for the inline codequality feature in EE
+export const fileLineCodequality = () => () => {
+  return null;
+};
+
 /**
  * Returns index of a currently selected diff in diffFiles
  * @returns {number}

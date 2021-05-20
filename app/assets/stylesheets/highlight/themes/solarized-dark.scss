@@ -135,6 +135,7 @@ $solarized-dark-il: #2aa198;
 
     .diff-td.diff-line-num.hll:not(.empty-cell),
     .diff-td.line-coverage.hll:not(.empty-cell),
+    .diff-td.line-codequality.hll:not(.empty-cell),
     .diff-td.line_content.hll:not(.empty-cell),
     td.diff-line-num.hll:not(.empty-cell),
     td.line-coverage.hll:not(.empty-cell),
@@ -156,6 +157,7 @@ $solarized-dark-il: #2aa198;
 
     .diff-line-num.new,
     .line-coverage.new,
+    .line-codequality.new,
     .line_content.new {
       @include diff-background($solarized-dark-new-bg, $solarized-dark-new-idiff, $solarized-dark-border);
 
@@ -167,6 +169,7 @@ $solarized-dark-il: #2aa198;
 
     .diff-line-num.old,
     .line-coverage.old,
+    .line-codequality.old,
     .line_content.old {
       @include diff-background($solarized-dark-old-bg, $solarized-dark-old-idiff, $solarized-dark-border);
 

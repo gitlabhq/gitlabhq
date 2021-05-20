@@ -225,7 +225,7 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project's snippet
-- `ref` (required) - The name of a branch, tag or commit, such as `master`
+- `ref` (required) - The name of a branch, tag or commit, such as `main`
 - `file_path` (required) - The URL-encoded path to the file, such as `snippet%2Erb`
 
 Example request:

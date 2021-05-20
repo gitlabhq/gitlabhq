@@ -39,8 +39,8 @@ highlighted:
 After all conflicts have been marked as using 'ours' or 'theirs', the conflict
 can be resolved. Resolving conflicts merges the target branch of the merge
 request into the source branch, using the options
-chosen. If the source branch is `feature` and the target branch is `master`,
-this is similar to performing `git checkout feature; git merge master` locally.
+chosen. If the source branch is `feature` and the target branch is `main`,
+this is similar to performing `git checkout feature; git merge main` locally.
 
 ## Resolve conflicts: inline editor
 

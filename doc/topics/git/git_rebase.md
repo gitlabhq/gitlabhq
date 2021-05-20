@@ -80,12 +80,13 @@ ensure that the changes you're adding to the codebase do not break any
 existing changes added to the target branch _after_ you created your feature
 branch.
 
-For example, to update your branch `my-feature-branch` with `master`:
+For example, to update your branch `my-feature-branch` with your
+[default branch](../../user/project/repository/branches/default.md) (here, using `main`):
 
-1. Fetch the latest changes from `master`:
+1. Fetch the latest changes from `main`:
 
    ```shell
-   git fetch origin master
+   git fetch origin main
    ```
 
 1. Checkout your feature branch:
@@ -94,24 +95,24 @@ For example, to update your branch `my-feature-branch` with `master`:
    git checkout my-feature-branch
    ```
 
-1. Rebase it against `master`:
+1. Rebase it against `main`:
 
    ```shell
-   git rebase origin/master
+   git rebase origin/main
    ```
 
 1. [Force-push](#force-push) to your branch.
 
 When you rebase:
 
-1. Git imports all the commits submitted to `master` _after_ the
+1. Git imports all the commits submitted to `main` _after_ the
    moment you created your feature branch until the present moment.
 1. Git puts the commits you have in your feature branch on top of all
-   the commits imported from `master`:
+   the commits imported from `main`:
 
 ![Git rebase illustration](img/git_rebase_v13_5.png)
 
-You can replace `master` with any other branch you want to rebase against, for
+You can replace `main` with any other branch you want to rebase against, for
 example, `release-10-3`. You can also replace `origin` with other remote
 repositories, for example, `upstream`. To check what remotes you have linked to your local
 repository, you can run `git remote -v`.

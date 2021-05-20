@@ -202,6 +202,9 @@ export default {
     externalUrlLabel() {
       return sprintf(__('View on %{url}'), { url: this.diffFile.formatted_external_url });
     },
+    showCodequalityBadge() {
+      return this.codequalityDiff?.length > 0 && !this.glFeatures.codequalityMrDiffAnnotations;
+    },
   },
   methods: {
     ...mapActions('diffs', [
@@ -334,7 +337,7 @@ export default {
       />
 
       <code-quality-badge
-        v-if="codequalityDiff.length"
+        v-if="showCodequalityBadge"
         :file-name="filePath"
         :codequality-diff="codequalityDiff"
         class="gl-mr-2"

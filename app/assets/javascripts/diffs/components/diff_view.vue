@@ -43,6 +43,7 @@ export default {
   },
   computed: {
     ...mapGetters('diffs', ['commitId']),
+    ...mapState('diffs', ['codequalityDiff']),
     ...mapState({
       selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
       selectedCommentPositionHover: ({ notes }) => notes.selectedCommentPositionHover,
@@ -55,6 +56,9 @@ export default {
         this.selectedCommentPosition || this.selectedCommentPositionHover,
         this.diffLines,
       );
+    },
+    hasCodequalityChanges() {
+      return this.codequalityDiff?.files?.[this.diffFile.file_path]?.length > 0;
     },
   },
   methods: {
@@ -98,7 +102,7 @@ export default {
 
 <template>
   <div
-    :class="[$options.userColorScheme, { inline }]"
+    :class="[$options.userColorScheme, { inline, 'with-codequality': hasCodequalityChanges }]"
     :data-commit-id="commitId"
     class="diff-grid diff-table code diff-wrap-lines js-syntax-highlight text-file"
   >

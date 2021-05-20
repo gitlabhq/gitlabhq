@@ -48,6 +48,7 @@ RSpec.describe BulkImports::Clients::Http do
         [
           'http://gitlab.example:80/api/v4/resource',
           hash_including(
+            follow_redirects: false,
             query: {
               page: described_class::DEFAULT_PAGE,
               per_page: described_class::DEFAULT_PER_PAGE
@@ -118,6 +119,7 @@ RSpec.describe BulkImports::Clients::Http do
           'http://gitlab.example:80/api/v4/resource',
           hash_including(
             body: {},
+            follow_redirects: false,
             headers: {
               'Content-Type' => 'application/json',
               'Authorization' => "Bearer #{token}"
@@ -125,6 +127,44 @@ RSpec.describe BulkImports::Clients::Http do
           )
         ]
       end
+    end
+  end
+
+  describe '#head' do
+    let(:method) { :head }
+
+    include_examples 'performs network request' do
+      let(:expected_args) do
+        [
+          'http://gitlab.example:80/api/v4/resource',
+          hash_including(
+            follow_redirects: false,
+            headers: {
+              'Content-Type' => 'application/json',
+              'Authorization' => "Bearer #{token}"
+            }
+          )
+        ]
+      end
+    end
+  end
+
+  describe '#stream' do
+    it 'performs network request with stream_body option' do
+      expected_args = [
+        'http://gitlab.example:80/api/v4/resource',
+        hash_including(
+          stream_body: true,
+          headers: {
+            'Content-Type' => 'application/json',
+            'Authorization' => "Bearer #{token}"
+          }
+        )
+      ]
+
+      expect(Gitlab::HTTP).to receive(:get).with(*expected_args).and_return(response_double)
+
+      subject.stream(resource)
     end
   end
 end

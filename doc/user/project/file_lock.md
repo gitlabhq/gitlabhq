@@ -201,8 +201,8 @@ This process allows you to lock one file at a time through the GitLab UI and
 requires access to [GitLab Premium](https://about.gitlab.com/pricing/)
 or higher tiers.
 
-Default branch file and directory locks only apply to the default branch set in
-the project's settings (usually `master`).
+Default branch file and directory locks only apply to the
+[default branch](repository/branches/default.md) set in the project's settings.
 
 Changes to locked files on the default branch are blocked, including merge
 requests that modify locked files. Unlock the file to allow changes.

@@ -598,7 +598,9 @@ table.code {
   .diff-grid-left,
   .diff-grid-right {
     display: grid;
-    grid-template-columns: 50px 8px 1fr;
+    // Zero width column is a placeholder for the EE inline code quality diff
+    // see ee/.../diffs.scss for more details
+    grid-template-columns: 50px 8px 0 1fr;
   }
 
   .diff-grid-comments {
@@ -628,7 +630,9 @@ table.code {
 
     .diff-grid-left,
     .diff-grid-right {
-      grid-template-columns: 50px 50px 8px 1fr;
+      // Zero width column is a placeholder for the EE inline code quality diff
+      // see ee/../diffs.scss for more details
+      grid-template-columns: 50px 50px 8px 0 1fr;
     }
   }
 }

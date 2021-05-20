@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def self.file_compression_error
-        self.new('File compression failed')
+        self.new('File compression/decompression failed')
       end
     end
   end

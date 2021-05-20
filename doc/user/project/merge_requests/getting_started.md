@@ -216,18 +216,18 @@ open merge request, if the destination branch merges while the merge request is
 open. Merge requests are often chained in this manner, with one merge request
 depending on another:
 
-- **Merge request 1**: merge `feature-alpha` into `master`.
+- **Merge request 1**: merge `feature-alpha` into `main`.
 - **Merge request 2**: merge `feature-beta` into `feature-alpha`.
 
 These merge requests are usually handled in one of these ways:
 
-- Merge request 1 is merged into `master` first. Merge request 2 is then
-  retargeted to `master`.
+- Merge request 1 is merged into `main` first. Merge request 2 is then
+  retargeted to `main`.
 - Merge request 2 is merged into `feature-alpha`. The updated merge request 1, which
-  now contains the contents of `feature-alpha` and `feature-beta`, is merged into `master`.
+  now contains the contents of `feature-alpha` and `feature-beta`, is merged into `main`.
 
 GitLab retargets up to four merge requests when their target branch is merged into
-`master`, so you don't need to perform this operation manually. Merge requests from
+`main`, so you don't need to perform this operation manually. Merge requests from
 forks are not retargeted.
 
 The feature today works only on merge. Clicking the **Remove source branch** button

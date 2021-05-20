@@ -18,25 +18,19 @@ module BulkImports
       end
 
       def get(resource, query = {})
-        with_error_handling do
-          Gitlab::HTTP.get(
-            resource_url(resource),
-            headers: request_headers,
-            follow_redirects: false,
-            query: query.reverse_merge(request_query)
-          )
-        end
+        request(:get, resource, query: query.reverse_merge(request_query))
       end
 
       def post(resource, body = {})
-        with_error_handling do
-          Gitlab::HTTP.post(
-            resource_url(resource),
-            headers: request_headers,
-            follow_redirects: false,
-            body: body
-          )
-        end
+        request(:post, resource, body: body)
+      end
+
+      def head(resource)
+        request(:head, resource)
+      end
+
+      def stream(resource, &block)
+        request(:get, resource, stream_body: true, &block)
       end
 
       def each_page(method, resource, query = {}, &block)
@@ -55,7 +49,35 @@ module BulkImports
         end
       end
 
+      def resource_url(resource)
+        Gitlab::Utils.append_path(api_url, resource)
+      end
+
       private
+
+      # rubocop:disable GitlabSecurity/PublicSend
+      def request(method, resource, options = {}, &block)
+        with_error_handling do
+          Gitlab::HTTP.public_send(
+            method,
+            resource_url(resource),
+            request_options(options),
+            &block
+          )
+        end
+      end
+      # rubocop:enable GitlabSecurity/PublicSend
+
+      def request_options(options)
+        default_options.merge(options)
+      end
+
+      def default_options
+        {
+          headers: request_headers,
+          follow_redirects: false
+        }
+      end
 
       def request_query
         {
@@ -87,10 +109,6 @@ module BulkImports
 
       def api_url
         Gitlab::Utils.append_path(base_uri, "/api/#{@api_version}")
-      end
-
-      def resource_url(resource)
-        Gitlab::Utils.append_path(api_url, resource)
       end
     end
   end

@@ -295,8 +295,9 @@ After you've done that, you can [stage your files](#add-and-commit-local-changes
 
 To work on an up-to-date copy of the project (it is important to do this every time
 you start working on a project), you `pull` to get all the changes made by users
-since the last time you cloned or pulled the project. Use `master` for the
-`<name-of-branch>` to get the main branch code, or the branch name of the branch
+since the last time you cloned or pulled the project. Replace `<name-of-branch>`
+with the name of your [default branch](../user/project/repository/branches/default.md)
+to get the main branch code, or replace it with the branch name of the branch
 you are currently working in.
 
 ```shell
@@ -305,7 +306,8 @@ git pull <REMOTE> <name-of-branch>
 
 When you clone a repository, `REMOTE` is typically `origin`. This is where the
 repository was cloned from, and it indicates the SSH or HTTPS URL of the repository
-on the remote server. `<name-of-branch>` is usually `master`, but it may be any
+on the remote server. `<name-of-branch>` is usually the name of your
+[default branch](../user/project/repository/branches/default.md), but it may be any
 existing branch. You can create additional named remotes and branches as necessary.
 
 You can learn more on how Git manages remote repositories in the
@@ -330,14 +332,14 @@ to work on a different **branch**.
 When you create a branch in a Git repository, you make a copy of its files at the time of branching. You're free
 to do whatever you want with the code in your branch without impacting the main branch or other branches. And when
 you're ready to bring your changes to the main codebase, you can merge your branch into the default branch
-used in your project (such as `master`).
+used in your project (such as `main`).
 
 A new branch is often called **feature branch** to differentiate from the
-**default branch**.
+[default branch](../user/project/repository/branches/default.md).
 
 ### Create a branch
 
-To create a new feature branch and work from without affecting the `master`
+To create a new feature branch and work from without affecting the default
 branch:
 
 ```shell
@@ -348,14 +350,15 @@ Note that Git does **not** accept empty spaces and special characters in branch
 names, so use only lowercase letters, numbers, hyphens (`-`), and underscores
 (`_`). Do not use capital letters, as it may cause duplications.
 
-### Switch to the master branch
+### Switch to the default branch
 
-You are always in a branch when working with Git. The main branch is the master
-branch, but you can use the same command to switch to a different branch by
-changing `master` to the branch name.
+You are always in a branch when working with Git. The
+[default branch](../user/project/repository/branches/default.md) can vary depending
+on your version of GitLab, but you can alter this command to switch to a different branch by
+changing `main` to the branch name:
 
 ```shell
-git checkout master
+git checkout main
 ```
 
 ### Work on an existing branch
@@ -417,10 +420,10 @@ To push all local commits (saved changes) to the remote repository:
 git push <remote> <name-of-branch>
 ```
 
-For example, to push your local commits to the _`master`_ branch of the _`origin`_ remote:
+For example, to push your local commits to the _`main`_ branch of the _`origin`_ remote:
 
 ```shell
-git push origin master
+git push origin main
 ```
 
 On certain occasions, Git disallows pushes to your repository, and then
@@ -464,14 +467,15 @@ A Git commit should not usually be reversed, particularly if you already pushed 
 to the remote repository. Although you can undo a commit, the best option is to avoid
 the situation altogether by working carefully.
 
-### Merge a branch with master branch
+### Merge a branch with default branch
 
 When you are ready to make all the changes in a branch a permanent addition to
-the master branch, you `merge` the two together:
+the default branch, you `merge` the two together, changing `<feature-branch>` and
+`<default-branch>` to your values:
 
 ```shell
-git checkout <name-of-branch>
-git merge master
+git checkout <feature-branch>
+git merge <default-branch>
 ```
 
 ## Advanced use of Git through the command line

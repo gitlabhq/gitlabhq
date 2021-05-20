@@ -219,7 +219,10 @@ pre.code,
 
   .line-coverage {
     @include line-coverage-border-color($green-400, $red-400);
+  }
 
+  .line-coverage,
+  .line-codequality {
     &.old {
       background-color: $line-removed;
     }

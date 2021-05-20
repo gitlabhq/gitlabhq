@@ -15,8 +15,17 @@ module Gitlab
       end
 
       def gzip(dir:, filename:)
+        gzip_with_options(dir: dir, filename: filename)
+      end
+
+      def gunzip(dir:, filename:)
+        gzip_with_options(dir: dir, filename: filename, options: 'd')
+      end
+
+      def gzip_with_options(dir:, filename:, options: nil)
         filepath = File.join(dir, filename)
         cmd = %W(gzip #{filepath})
+        cmd << "-#{options}" if options
 
         _, status = Gitlab::Popen.popen(cmd)
 

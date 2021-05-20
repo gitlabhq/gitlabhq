@@ -10,6 +10,9 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :authorize_download_code!, except: [:index]
   before_action :authorize_update_release!, only: %i[edit update]
   before_action :authorize_create_release!, only: :new
+  before_action only: :index do
+    push_frontend_feature_flag(:releases_index_apollo_client, project, default_enabled: :yaml)
+  end
 
   feature_category :release_orchestration
 

@@ -9,7 +9,7 @@ type: how-tos
 
 GitLab values encourage the use of [Minimal Viable Change (MVC)](https://about.gitlab.com/handbook/values/#minimal-viable-change-mvc).
 However, viable changes are not always small. In such cases, it can help to set up a dedicated feature branch.
-People can contribute MRs to that feature branch, without affecting the functionality of the default (usually `master`) branch.
+People can contribute MRs to that feature branch, without affecting the functionality of the [default branch](../../user/project/repository/branches/default.md).
 
 Once work on the development branch is complete, then the feature branch can be finally merged into the default branch.
 
@@ -19,14 +19,14 @@ GitLab frequently implements this process whenever there is an MVC that requires
 
 This section describes the use case with GitLab [release posts](https://about.gitlab.com/handbook/marketing/blog/release-posts/).
 Dozens of GitLab team members contribute to each monthly release post.
-In such cases, it may be more efficient to submit an MR on the release post feature branch instead of master.
+In such cases, it may be more efficient to submit an MR on the release post feature branch instead of the [default branch](../../user/project/repository/branches/default.md).
 
 In this case, the feature branch would be `release-X-Y`. Assuming the `release-X-Y` branch already exists, you can set up an MR against that branch, with the following steps:
 
-1. Navigate to the main (master) branch:
+1. Navigate to the [default branch](../../user/project/repository/branches/default.md) (here, `main`):
 
    ```shell
-   git checkout master
+   git checkout main
    ```
 
 1. Make sure you have the latest version of your repository:
@@ -101,8 +101,8 @@ we have selected `test-branch` as the source, and `release-13-0` as the target.
    Request to merge test-branch into release-13-0
    ```
 
-   That confirms you've set up the MR to merge into the specified branch, not master.
+   That confirms you've set up the MR to merge into the specified branch, not the [default branch](../../user/project/repository/branches/default.md).
 
 1. Proceed with the change as you would with any other MR.
 1. When your MR is approved, and an appropriate user merges that MR, you can rest assured that your work is incorporated directly into the feature branch.
-When the feature branch is ready, it can then be merged into master.
+When the feature branch is ready, it can then be merged into the [default branch](../../user/project/repository/branches/default.md).

@@ -46,7 +46,7 @@ them from pushing any changes to it.
 Developers create forks of the authoritative project and push their feature
 branches to their own forks.
 
-To get their changes into master they need to create a merge request across
+To get their changes into the default branch, they need to create a merge request across
 forks.
 
 **Advantages**

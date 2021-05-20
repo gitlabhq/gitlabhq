@@ -354,7 +354,7 @@ GitLab). There is a `git merge --squash` command which does exactly that
 at merge).
 
 NOTE:
-Never modify the commit history of `master` or shared branch.
+Never modify the commit history of your [default branch](../../../user/project/repository/branches/default.md) or shared branch.
 
 ### How modifying history is done
 

@@ -180,12 +180,13 @@ Git includes a complete set of [traces for debugging Git commands](https://git-s
 
 ## Rebasing
 
-### Rebase your branch onto master
+### Rebase your branch onto the default
 
-The `-i` flag stands for 'interactive':
+The `-i` flag stands for 'interactive'. Replace `<default-branch>` with the name
+of your [default branch](../../user/project/repository/branches/default.md):
 
 ```shell
-git rebase -i master
+git rebase -i <default-branch>
 ```
 
 ### Continue the rebase if paused

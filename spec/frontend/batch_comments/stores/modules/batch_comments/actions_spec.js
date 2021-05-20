@@ -139,9 +139,14 @@ describe('Batch comments store actions', () => {
 
     it('commits SET_BATCH_COMMENTS_DRAFTS with returned data', (done) => {
       const commit = jest.fn();
+      const dispatch = jest.fn();
       const context = {
         getters,
         commit,
+        dispatch,
+        state: {
+          drafts: [{ line_code: '123' }, { line_code: null, discussion_id: '1' }],
+        },
       };
       res = { id: 1 };
       mock.onAny().reply(200, res);
@@ -150,6 +155,7 @@ describe('Batch comments store actions', () => {
         .fetchDrafts(context)
         .then(() => {
           expect(commit).toHaveBeenCalledWith('SET_BATCH_COMMENTS_DRAFTS', { id: 1 });
+          expect(dispatch).toHaveBeenCalledWith('convertToDiscussion', '1', { root: true });
         })
         .then(done)
         .catch(done.fail);

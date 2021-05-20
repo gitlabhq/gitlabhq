@@ -15,6 +15,7 @@ RSpec.describe 'User views releases', :js do
   let_it_be(:guest) { create(:user) }
 
   before do
+    stub_feature_flags(releases_index_apollo_client: false)
     project.add_maintainer(maintainer)
     project.add_guest(guest)
   end
