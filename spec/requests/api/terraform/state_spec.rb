@@ -156,15 +156,6 @@ RSpec.describe API::Terraform::State do
           expect(response).to have_gitlab_http_status(:ok)
           expect(Gitlab::Json.parse(response.body)).to be_empty
         end
-
-        context 'on Unicorn', :unicorn do
-          it 'updates the state' do
-            expect { request }.to change { Terraform::State.count }.by(0)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(Gitlab::Json.parse(response.body)).to be_empty
-          end
-        end
       end
 
       context 'without body' do
@@ -199,15 +190,6 @@ RSpec.describe API::Terraform::State do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(Gitlab::Json.parse(response.body)).to be_empty
-        end
-
-        context 'on Unicorn', :unicorn do
-          it 'creates a new state' do
-            expect { request }.to change { Terraform::State.count }.by(1)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(Gitlab::Json.parse(response.body)).to be_empty
-          end
         end
       end
 

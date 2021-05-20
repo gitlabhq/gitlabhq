@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe OpenProjectService do
+RSpec.describe Integrations::OpenProject do
   describe 'Validations' do
     context 'when service is active' do
       before do

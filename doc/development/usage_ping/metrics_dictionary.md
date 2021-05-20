@@ -43,7 +43,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `milestone`         | no       | The milestone when the metric is introduced. |
 | `milestone_removed` | no       | The milestone when the metric is removed. |
 | `introduced_by_url` | no       | The URL to the Merge Request that introduced the metric. |
-| `extra`             | no       | `object`: extra information needed to calculate the metric value. |
+| `options`           | no       | `object`: options information needed to calculate the metric value. |
 | `skip_validation`   | no       | This should **not** be set. [Used for imported metrics until we review, update and make them valid](https://gitlab.com/groups/gitlab-org/-/epics/5425). |
 
 ### Metric statuses

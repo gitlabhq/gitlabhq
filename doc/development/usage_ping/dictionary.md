@@ -1020,39 +1020,39 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.design_management_designs_create`
 
-Missing description
+Number of designs that were created
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180740_design_management_designs_create.yml)
 
-Group: `group::knowledge`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.design_management_designs_delete`
 
-Missing description
+Number of designs that were deleted
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180743_design_management_designs_delete.yml)
 
-Group: `group::knowledge`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.design_management_designs_update`
 
-Missing description
+Number of updates to designs
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180741_design_management_designs_update.yml)
 
-Group: `group::knowledge`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.environments`
 
@@ -2182,6 +2182,18 @@ Status: `implemented`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `counts.in_product_marketing_email_experience_0_sent`
+
+Total sent emails of the experience track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210518081225_in_product_marketing_email_experience_0_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts.in_product_marketing_email_team_0_cta_clicked`
 
 Total clicks on the team track's first email
@@ -2391,18 +2403,6 @@ Tiers: `free`, `premium`, `ultimate`
 Total sent emails of the verify track's third email
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203015_in_product_marketing_email_verify_2_sent.yml)
-
-Group: `group::activation`
-
-Status: `implemented`
-
-Tiers: `free`, `premium`, `ultimate`
-
-### `counts.in_product_marketing_email_experience_0_sent`
-
-Total sent emails of the experience track's first email
-
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210518081225_in_product_marketing_email_experience_0_sent.yml)
 
 Group: `group::activation`
 
@@ -11994,7 +11994,7 @@ Count of unique users to receive a notification while on-call
 
 Group: `group::monitor`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -12006,7 +12006,7 @@ Count of unique users to receive a notification while on-call
 
 Group: `group::monitor`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -17680,15 +17680,15 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.action_monthly_active_users_design_management`
 
-Missing description
+Monthly active users for design management
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180745_action_monthly_active_users_design_management.yml)
 
-Group: `group::knowledge`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.action_monthly_active_users_git_write`
 

@@ -1086,7 +1086,7 @@ RSpec.describe Project, factory_default: :keep do
       project = create(:redmine_project)
 
       expect(project).to receive(:integrations).once.and_call_original
-      2.times { expect(project.external_issue_tracker).to be_a_kind_of(RedmineService) }
+      2.times { expect(project.external_issue_tracker).to be_a_kind_of(Integrations::Redmine) }
     end
   end
 

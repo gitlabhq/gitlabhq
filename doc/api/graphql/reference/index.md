@@ -14602,10 +14602,10 @@ Type of a snippet blob input action.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="snippetblobactionenumcreate"></a>`create` |  |
-| <a id="snippetblobactionenumdelete"></a>`delete` |  |
-| <a id="snippetblobactionenummove"></a>`move` |  |
-| <a id="snippetblobactionenumupdate"></a>`update` |  |
+| <a id="snippetblobactionenumcreate"></a>`create` | Create a snippet blob. |
+| <a id="snippetblobactionenumdelete"></a>`delete` | Delete a snippet blob. |
+| <a id="snippetblobactionenummove"></a>`move` | Move a snippet blob. |
+| <a id="snippetblobactionenumupdate"></a>`update` | Update a snippet blob. |
 
 ### `Sort`
 

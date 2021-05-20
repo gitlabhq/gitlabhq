@@ -23,7 +23,7 @@ RSpec.describe 'projects/services/_form' do
     end
 
     it 'display merge_request_events and commit_events descriptions' do
-      allow(RedmineService).to receive(:supported_events).and_return(%w(commit merge_request))
+      allow(Integrations::Redmine).to receive(:supported_events).and_return(%w(commit merge_request))
 
       render
 

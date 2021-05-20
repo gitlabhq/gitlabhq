@@ -11,7 +11,7 @@ All new configuration options that get added to Workhorse should go into the con
 
 Options:
   -apiCiLongPollingDuration duration
-      Long polling duration for job requesting for runners (default 50s - enabled) (default 50ns)
+      Long polling duration for job requesting for runners (default 50ns)
   -apiLimit uint
       Number of API requests allowed at single time
   -apiQueueDuration duration

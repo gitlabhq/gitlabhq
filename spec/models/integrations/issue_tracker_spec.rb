@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe IssueTrackerService do
+RSpec.describe Integrations::IssueTracker do
   describe 'Validations' do
     let(:project) { create :project }
 
     describe 'only one issue tracker per project' do
-      let(:service) { RedmineService.new(project: project, active: true, issue_tracker_data: build(:issue_tracker_data)) }
+      let(:service) { Integrations::Redmine.new(project: project, active: true, issue_tracker_data: build(:issue_tracker_data)) }
 
       before do
         create(:custom_issue_tracker_service, project: project)

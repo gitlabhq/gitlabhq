@@ -159,7 +159,7 @@ RSpec.describe Integration do
       context 'when instance-level service' do
         Integration.available_services_types.each do |service_type|
           let(:service) do
-            service_type.constantize.new(instance: true)
+            described_class.send(:service_type_to_model, service_type).new(instance: true)
           end
 
           it { is_expected.to be_falsey }
@@ -169,7 +169,7 @@ RSpec.describe Integration do
       context 'when group-level service' do
         Integration.available_services_types.each do |service_type|
           let(:service) do
-            service_type.constantize.new(group_id: group.id)
+            described_class.send(:service_type_to_model, service_type).new(group_id: group.id)
           end
 
           it { is_expected.to be_falsey }
@@ -672,7 +672,7 @@ RSpec.describe Integration do
       expect(described_class.service_name_to_model('asana')).to eq(Integrations::Asana)
       # TODO We can remove this test when all models have been namespaced:
       # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60968#note_570994955
-      expect(described_class.service_name_to_model('youtrack')).to eq(YoutrackService)
+      expect(described_class.service_name_to_model('webex_teams')).to eq(WebexTeamsService)
     end
 
     it 'raises an error if service name is invalid' do
@@ -802,7 +802,7 @@ RSpec.describe Integration do
 
   describe 'initialize service with no properties' do
     let(:service) do
-      BugzillaService.create!(
+      Integrations::Bugzilla.create!(
         project: project,
         project_url: 'http://gitlab.example.com'
       )

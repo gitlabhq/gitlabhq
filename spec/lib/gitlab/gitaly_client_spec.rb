@@ -33,14 +33,6 @@ RSpec.describe Gitlab::GitalyClient do
       it { expect(subject.long_timeout).to eq(6.hours) }
     end
 
-    context 'running in Unicorn' do
-      before do
-        allow(Gitlab::Runtime).to receive(:unicorn?).and_return(true)
-      end
-
-      it { expect(subject.long_timeout).to eq(55) }
-    end
-
     context 'running in Puma' do
       before do
         allow(Gitlab::Runtime).to receive(:puma?).and_return(true)

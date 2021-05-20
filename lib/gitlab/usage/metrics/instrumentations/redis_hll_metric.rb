@@ -7,20 +7,24 @@ module Gitlab
         class RedisHLLMetric < BaseMetric
           # Usage example
           #
-          # class CountUsersVisitingAnalyticsValuestreamMetric < RedisHLLMetric
-          #   event_names :g_analytics_valuestream
+          # In metric YAML defintion
+          # instrumentation_class: RedisHLLMetric
+          #   events:
+          #     - g_analytics_valuestream
           # end
-          class << self
-            def event_names(events = nil)
-              @metric_events = events
-            end
+          def initialize(time_frame:, options: {})
+            super
 
-            attr_reader :metric_events
+            raise ArgumentError, "options events are required" unless metric_events.present?
+          end
+
+          def metric_events
+            options[:events]
           end
 
           def value
             redis_usage_data do
-              event_params = time_constraints.merge(event_names: self.class.metric_events)
+              event_params = time_constraints.merge(event_names: metric_events)
 
               Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**event_params)
             end
@@ -35,7 +39,7 @@ module Gitlab
             when '7d'
               { start_date: 7.days.ago.to_date, end_date: Date.current }
             else
-              raise "Unknown time frame: #{time_frame} for TimeConstraint"
+              raise "Unknown time frame: #{time_frame} for RedisHLLMetric"
             end
           end
         end

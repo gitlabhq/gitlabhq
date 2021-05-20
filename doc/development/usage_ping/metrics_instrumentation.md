@@ -26,7 +26,7 @@ A metric definition has the [`instrumentation_class`](metrics_dictionary.md) fie
 
 The defined instrumentation class should have one of the existing metric classes: `DatabaseMetric`, `RedisHLLMetric`, or `GenericMetric`.
 
-Using the instrumentation classes ensures that metrics can fail safe individually, without breaking the entire 
+Using the instrumentation classes ensures that metrics can fail safe individually, without breaking the entire
  process of Usage Ping generation.
 
 We have built a domain-specific language (DSL) to define the metrics instrumentation.
@@ -53,20 +53,17 @@ end
 
 ## Redis HyperLogLog metrics
 
-[Example of a merge request that adds a `RedisHLL` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60089/diffs).
+[Example of a merge request that adds a `RedisHLL` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61685).
 
-```ruby
-module Gitlab
-  module Usage
-    module Metrics
-      module Instrumentations
-        class CountUsersUsingApproveQuickActionMetric < RedisHLLMetric
-          event_names :i_quickactions_approve
-        end
-      end
-    end
-  end
-end
+Count unique values for `i_quickactions_approve` event.
+
+```yaml
+time_frame: 28d
+data_source: redis_hll
+instrumentation_class: 'Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric'
+options:
+  events:
+    - i_quickactions_approve
 ```
 
 ## Generic metrics

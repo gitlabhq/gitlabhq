@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Accessible as Project#external_issue_tracker
-class JiraService < IssueTrackerService
+class JiraService < Integrations::IssueTracker
   extend ::Gitlab::Utils::Override
   include Gitlab::Routing
   include ApplicationHelper
