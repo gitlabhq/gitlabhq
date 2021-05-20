@@ -341,7 +341,6 @@ group :metrics do
 
   # Prometheus
   gem 'prometheus-client-mmap', '~> 0.12.0'
-  gem 'raindrops', '~> 0.18'
 end
 
 group :development do

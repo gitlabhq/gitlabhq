@@ -80,6 +80,11 @@ class WebHook < ApplicationRecord
     nil
   end
 
+  # Custom attributes to be included in the worker context.
+  def application_context
+    { related_class: type }
+  end
+
   private
 
   def web_hooks_disable_failed?

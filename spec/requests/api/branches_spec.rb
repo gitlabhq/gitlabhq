@@ -8,8 +8,8 @@ RSpec.describe API::Branches do
   let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
   let(:branch_name) { 'feature' }
   let(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
-  let(:branch_with_dot) { project.repository.find_branch('ends-with.json') }
-  let(:branch_with_slash) { project.repository.find_branch('improve/awesome') }
+  let(:branch_with_dot) { 'ends-with.json' }
+  let(:branch_with_slash) { 'improve/awesome' }
 
   let(:project_id) { project.id }
   let(:current_user) { nil }
@@ -285,6 +285,13 @@ RSpec.describe API::Branches do
           let(:request) { get api(route, current_user) }
         end
       end
+
+      context 'when repository does not exist' do
+        it_behaves_like '404 response' do
+          let(:project) { create(:project, creator: user) }
+          let(:request) { get api(route, current_user) }
+        end
+      end
     end
 
     context 'when unauthenticated', 'and project is public' do
@@ -320,19 +327,19 @@ RSpec.describe API::Branches do
       end
 
       context 'when branch contains a dot' do
-        let(:branch_name) { branch_with_dot.name }
+        let(:branch_name) { branch_with_dot }
 
         it_behaves_like 'repository branch'
       end
 
       context 'when branch contains dot txt' do
-        let(:branch_name) { project.repository.find_branch('ends-with.txt').name }
+        let(:branch_name) { 'ends-with.txt' }
 
         it_behaves_like 'repository branch'
       end
 
       context 'when branch contains a slash' do
-        let(:branch_name) { branch_with_slash.name }
+        let(:branch_name) { branch_with_slash }
 
         it_behaves_like '404 response' do
           let(:request) { get api(route, current_user) }
@@ -340,7 +347,7 @@ RSpec.describe API::Branches do
       end
 
       context 'when branch contains an escaped slash' do
-        let(:branch_name) { CGI.escape(branch_with_slash.name) }
+        let(:branch_name) { CGI.escape(branch_with_slash) }
 
         it_behaves_like 'repository branch'
       end
@@ -351,7 +358,7 @@ RSpec.describe API::Branches do
         it_behaves_like 'repository branch'
 
         context 'when branch contains a dot' do
-          let(:branch_name) { branch_with_dot.name }
+          let(:branch_name) { branch_with_dot }
 
           it_behaves_like 'repository branch'
         end
@@ -475,13 +482,13 @@ RSpec.describe API::Branches do
         it_behaves_like 'repository new protected branch'
 
         context 'when branch contains a dot' do
-          let(:branch_name) { branch_with_dot.name }
+          let(:branch_name) { branch_with_dot }
 
           it_behaves_like 'repository new protected branch'
         end
 
         context 'when branch contains a slash' do
-          let(:branch_name) { branch_with_slash.name }
+          let(:branch_name) { branch_with_slash }
 
           it_behaves_like '404 response' do
             let(:request) { put api(route, current_user) }
@@ -489,7 +496,7 @@ RSpec.describe API::Branches do
         end
 
         context 'when branch contains an escaped slash' do
-          let(:branch_name) { CGI.escape(branch_with_slash.name) }
+          let(:branch_name) { CGI.escape(branch_with_slash) }
 
           it_behaves_like 'repository new protected branch'
         end
@@ -500,7 +507,7 @@ RSpec.describe API::Branches do
           it_behaves_like 'repository new protected branch'
 
           context 'when branch contains a dot' do
-            let(:branch_name) { branch_with_dot.name }
+            let(:branch_name) { branch_with_dot }
 
             it_behaves_like 'repository new protected branch'
           end
@@ -609,13 +616,13 @@ RSpec.describe API::Branches do
         it_behaves_like 'repository unprotected branch'
 
         context 'when branch contains a dot' do
-          let(:branch_name) { branch_with_dot.name }
+          let(:branch_name) { branch_with_dot }
 
           it_behaves_like 'repository unprotected branch'
         end
 
         context 'when branch contains a slash' do
-          let(:branch_name) { branch_with_slash.name }
+          let(:branch_name) { branch_with_slash }
 
           it_behaves_like '404 response' do
             let(:request) { put api(route, current_user) }
@@ -623,7 +630,7 @@ RSpec.describe API::Branches do
         end
 
         context 'when branch contains an escaped slash' do
-          let(:branch_name) { CGI.escape(branch_with_slash.name) }
+          let(:branch_name) { CGI.escape(branch_with_slash) }
 
           it_behaves_like 'repository unprotected branch'
         end
@@ -634,7 +641,7 @@ RSpec.describe API::Branches do
           it_behaves_like 'repository unprotected branch'
 
           context 'when branch contains a dot' do
-            let(:branch_name) { branch_with_dot.name }
+            let(:branch_name) { branch_with_dot }
 
             it_behaves_like 'repository unprotected branch'
           end
@@ -732,7 +739,7 @@ RSpec.describe API::Branches do
     end
 
     it 'removes a branch with dots in the branch name' do
-      delete api("/projects/#{project.id}/repository/branches/#{branch_with_dot.name}", user)
+      delete api("/projects/#{project.id}/repository/branches/#{branch_with_dot}", user)
 
       expect(response).to have_gitlab_http_status(:no_content)
     end

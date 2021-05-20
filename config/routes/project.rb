@@ -386,7 +386,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         # The wiki and repository routing contains wildcard characters so
         # its preferable to keep it below all other project routes
         draw :repository_scoped
-        draw :repository
         draw :wiki
 
         namespace :import do
@@ -584,6 +583,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # Introduced in 12.0.
       # Should be removed with https://gitlab.com/gitlab-org/gitlab/issues/28848.
       Gitlab::Routing.redirect_legacy_paths(self, :mirror, :tags, :hooks,
+                                            :commits, :commit, :find_file, :files, :compare,
                                             :cycle_analytics, :mattermost, :variables, :triggers,
                                             :environments, :protected_environments, :error_tracking, :alert_management,
                                             :tracing,

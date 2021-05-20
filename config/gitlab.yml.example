@@ -33,7 +33,7 @@ production: &base
     host: localhost
     port: 80 # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
     https: false # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
-    # The maximum time unicorn/puma can spend on the request. This needs to be smaller than the worker timeout.
+    # The maximum time Puma can spend on the request. This needs to be smaller than the worker timeout.
     # Default is 95% of the worker timeout
     max_request_duration_seconds: 57
 
@@ -153,7 +153,7 @@ production: &base
     ### GraphQL Settings
     # Tells the rails application how long it has to complete a GraphQL request.
     # We suggest this value to be higher than the database timeout value
-    # and lower than the worker timeout set in unicorn/puma. (default: 30)
+    # and lower than the worker timeout set in Puma. (default: 30)
     # graphql_timeout: 30
 
     ## Repository downloads directory
@@ -1212,8 +1212,6 @@ production: &base
   ## Monitoring
   # Built in monitoring settings
   monitoring:
-    # Time between sampling of unicorn socket metrics, in seconds
-    # unicorn_sampler_interval: 10
     # IP whitelist to access monitoring endpoints
     ip_whitelist:
       - 127.0.0.0/8
@@ -1225,7 +1223,7 @@ production: &base
     #  address: localhost
     #  port: 8082
 
-    # Web exporter is webserver built in to Unicorn/Puma to expose Prometheus metrics
+    # Web exporter is a dedicated Rack server running alongside Puma to expose Prometheus metrics
     # It runs alongside the `/metrics` endpoints to ease the publish of metrics
     web_exporter:
     #  enabled: true

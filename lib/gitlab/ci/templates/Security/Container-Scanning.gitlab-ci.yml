@@ -1,10 +1,21 @@
-# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/container_scanning/
+# Use this template to enable container scanning in your project.
+# You should add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+# The template should work without modifications but you can customize the template settings if
+# needed: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+#
+# Requirements:
+# - You must define the image to be scanned in the DOCKER_IMAGE variable. If DOCKER_IMAGE is the
+#   same as $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG, you can skip this.
+# - Container registry credentials defined by `DOCKER_USER` and `DOCKER_PASSWORD` variables if the image to be scanned is in a private registry.
+# - For auto-remediation, a readable Dockerfile in the root of the project or as defined by the
+#   DOCKERFILE_PATH variable.
+#
+# For more information, see https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-variables
 
 variables:
-  # Setting this variable will affect all Security templates
-  # (SAST, Dependency Scanning, ...)
+  # Setting this variable will affect all Security templates (e.g.: SAST, Dependency Scanning)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
-  CS_MAJOR_VERSION: 3
+  CS_MAJOR_VERSION: 3  # The major version of the analyzer image to be used for scanning
 
 .cs_common:
   stage: test

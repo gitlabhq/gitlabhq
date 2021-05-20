@@ -109,20 +109,6 @@
             ]
         },
         {
-            "name": "kubesec",
-            "label": "Kubesec",
-            "enabled" : true,
-            "description": "Kubernetes manifests, Helm Charts",
-            "variables": []
-        },
-        {
-            "name": "nodejs-scan",
-            "label": "Node.js Scan",
-            "enabled" : true,
-            "description": "Node.js",
-            "variables": []
-        },
-        {
             "name": "gosec",
             "label": "Gosec",
             "enabled" : true,
@@ -138,6 +124,20 @@
                     "description": "Ignore Gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High."
                 }
             ]
+        },
+        {
+            "name": "kubesec",
+            "label": "Kubesec",
+            "enabled" : true,
+            "description": "Kubernetes manifests, Helm Charts",
+            "variables": []
+        },
+        {
+            "name": "nodejs-scan",
+            "label": "Node.js Scan",
+            "enabled" : true,
+            "description": "Node.js",
+            "variables": []
         },
         {
             "name": "phpcs-security-audit",

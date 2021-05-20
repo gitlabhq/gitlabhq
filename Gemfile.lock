@@ -1592,7 +1592,6 @@ DEPENDENCIES
   rails-controller-testing
   rails-i18n (~> 6.0)
   rainbow (~> 3.0)
-  raindrops (~> 0.18)
   rblineprof (~> 0.3.6)
   rbtrace (~> 0.4)
   rdoc (~> 6.1.2)

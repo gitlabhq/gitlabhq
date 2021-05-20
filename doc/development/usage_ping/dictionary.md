@@ -936,7 +936,7 @@ Tiers: `free`
 
 ### `counts.cycle_analytics_views`
 
-Missing description
+Total visits to VSA (both group- and project-level) all time
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174832_cycle_analytics_views.yml)
 
@@ -944,7 +944,7 @@ Group: `group::optimize`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.dast_jobs`
 
@@ -4128,7 +4128,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.productivity_analytics_views`
 
-Missing description
+Total visits to /groups/:group/-/analytics/productivity_analytics all time
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174834_productivity_analytics_views.yml)
 
@@ -4136,7 +4136,7 @@ Group: `group::optimize`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.project_clusters_disabled`
 

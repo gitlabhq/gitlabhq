@@ -444,7 +444,15 @@ There are several tools for developing and testing Snowplow Event
 
 **{check-circle}** Available, **{status_preparing}** In progress, **{dotted-circle}** Not Planned
 
-### Snowplow Analytics Debugger Chrome Extension
+### Test frontend events
+
+To test frontend events in development: 
+
+- [Enable Snowplow in the admin area](#enabling-snowplow).
+- Turn off any ad blockers that would prevent Snowplow JS from loading in your environment.
+- Turn off "Do Not Track" (DNT) in your browser.
+
+#### Snowplow Analytics Debugger Chrome Extension
 
 Snowplow Analytics Debugger is a browser extension for testing frontend events. This works on production, staging and local development environments.
 
@@ -452,7 +460,7 @@ Snowplow Analytics Debugger is a browser extension for testing frontend events. 
 1. Open Chrome DevTools to the Snowplow Analytics Debugger tab.
 1. Learn more at [Igloo Analytics](https://www.iglooanalytics.com/blog/snowplow-analytics-debugger-chrome-extension.html).
 
-### Snowplow Inspector Chrome Extension
+#### Snowplow Inspector Chrome Extension
 
 Snowplow Inspector Chrome Extension is a browser extension for testing frontend events. This works on production, staging and local development environments.
 

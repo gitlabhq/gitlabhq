@@ -23703,6 +23703,9 @@ msgstr ""
 msgid "Pages Domain"
 msgstr ""
 
+msgid "Pagination|First"
+msgstr ""
+
 msgid "Pagination|Go to first page"
 msgstr ""
 
@@ -23713,6 +23716,9 @@ msgid "Pagination|Go to next page"
 msgstr ""
 
 msgid "Pagination|Go to previous page"
+msgstr ""
+
+msgid "Pagination|Last"
 msgstr ""
 
 msgid "Pagination|Last »"

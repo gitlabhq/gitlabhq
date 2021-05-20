@@ -1,0 +1,5 @@
+---
+title: Redirect some of deprecated repository routes
+merge_request: 34867
+author:
+type: removed

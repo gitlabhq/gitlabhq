@@ -444,6 +444,40 @@ RSpec.describe Projects::BlobController do
     end
   end
 
+  describe 'POST preview' do
+    subject(:request) { post :preview, params: default_params }
+
+    let(:user) { create(:user) }
+    let(:filename) { 'preview.md' }
+    let(:default_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: "#{project.default_branch}/#{filename}",
+        content: "Bar\n"
+      }
+    end
+
+    before do
+      project.add_developer(user)
+      sign_in(user)
+
+      project.repository.create_file(
+        project.creator,
+        filename,
+        "Foo\n",
+        message: 'Test',
+        branch_name: project.default_branch
+      )
+    end
+
+    it 'is successful' do
+      request
+
+      expect(response).to be_successful
+    end
+  end
+
   describe 'POST create' do
     let(:user) { create(:user) }
     let(:default_params) do

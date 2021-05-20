@@ -863,55 +863,6 @@ license.save
 License.current # check to make sure it applied
 ```
 
-## Unicorn
-
-From [Zendesk ticket #91083](https://gitlab.zendesk.com/agent/tickets/91083) (internal)
-
-### Poll Unicorn requests by seconds
-
-```ruby
-require 'rubygems'
-require 'unicorn'
-
-# Usage for this program
-def usage
-  puts "ruby unicorn_status.rb <path to unix socket> <poll interval in seconds>"
-  puts "Polls the given Unix socket every interval in seconds. Will not allow you to drop below 3 second poll intervals."
-  puts "Example: /opt/gitlab/embedded/bin/ruby poll_unicorn.rb /var/opt/gitlab/gitlab-rails/sockets/gitlab.socket 10"
-end
-
-# Look for required args. Throw usage and exit if they don't exist.
-if ARGV.count < 2
-  usage
-  exit 1
-end
-
-# Get the socket and threshold values.
-socket = ARGV[0]
-threshold = (ARGV[1]).to_i
-
-# Check threshold - is it less than 3? If so, set to 3 seconds. Safety first!
-if threshold.to_i < 3
-  threshold = 3
-end
-
-# Check - does that socket exist?
-unless File.exist?(socket)
-  puts "Socket file not found: #{socket}"
-  exit 1
-end
-
-# Poll the given socket every THRESHOLD seconds as specified above.
-puts "Running infinite loop. Use CTRL+C to exit."
-puts "------------------------------------------"
-loop do
-  Raindrops::Linux.unix_listener_stats([socket]).each do |addr, stats|
-    puts DateTime.now.to_s + " Active: " + stats.active.to_s + " Queued: " + stats.queued.to_s
-  end
-  sleep threshold
-end
-```
-
 ## Registry
 
 ### Registry Disk Space Usage by Project

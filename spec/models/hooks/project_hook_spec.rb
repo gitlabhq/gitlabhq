@@ -39,4 +39,15 @@ RSpec.describe ProjectHook do
       expect(hook.rate_limit).to be(100)
     end
   end
+
+  describe '#application_context' do
+    let_it_be(:hook) { build(:project_hook) }
+
+    it 'includes the type and project' do
+      expect(hook.application_context).to include(
+        related_class: 'ProjectHook',
+        project: hook.project
+      )
+    end
+  end
 end

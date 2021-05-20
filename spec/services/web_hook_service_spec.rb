@@ -429,5 +429,19 @@ RSpec.describe WebHookService do
         end
       end
     end
+
+    context 'when hook has custom context attributes' do
+      it 'includes the attributes in the worker context' do
+        expect(WebHookWorker).to receive(:perform_async) do
+          expect(Gitlab::ApplicationContext.current).to include(
+            'meta.project' => project_hook.project.full_path,
+            'meta.root_namespace' => project.root_ancestor.path,
+            'meta.related_class' => 'ProjectHook'
+          )
+        end
+
+        service_instance.async_execute
+      end
+    end
   end
 end

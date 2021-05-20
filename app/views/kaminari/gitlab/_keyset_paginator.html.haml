@@ -1,0 +1,30 @@
+- previous_path = url_for(page_params.merge(cursor: paginator.cursor_for_previous_page))
+- next_path = url_for(page_params.merge(cursor: paginator.cursor_for_next_page))
+
+.gl-pagination.gl-mt-3
+  %ul.pagination.justify-content-center
+
+    - if paginator.has_previous_page?
+      - unless without_first_and_last_pages
+        %li.page-item
+          - first_page_path = url_for(page_params.merge(cursor: paginator.cursor_for_first_page))
+          = link_to first_page_path, rel: 'first', class: 'page-link' do
+            = sprite_icon('angle-double-left', size: 8)
+            = s_('Pagination|First')
+
+      %li.page-item.prev
+        = link_to previous_path, rel: 'prev', class: 'page-link' do
+          = sprite_icon('angle-left', size: 8)
+          = s_('Pagination|Prev')
+
+    - if paginator.has_next_page?
+      %li.page-item.next
+        = link_to next_path, rel: 'next', class: 'page-link' do
+          = s_('Pagination|Next')
+          = sprite_icon('angle-right', size: 8)
+      - unless without_first_and_last_pages
+        %li.page-item
+          - last_page_path = url_for(page_params.merge(cursor: paginator.cursor_for_last_page))
+          = link_to last_page_path, rel: 'last', class: 'page-link' do
+            = s_('Pagination|Last')
+            = sprite_icon('angle-double-right', size: 8)

@@ -120,7 +120,7 @@ export default {
       }, DEBOUNCE_DELAY);
     },
     handleTokenValueSelected(activeTokenValue) {
-      if (this.isRecentTokenValuesEnabled) {
+      if (this.isRecentTokenValuesEnabled && activeTokenValue) {
         setTokenValueToRecentlyUsed(this.recentTokenValuesStorageKey, activeTokenValue);
       }
     },

@@ -39,6 +39,11 @@ class ProjectHook < WebHook
   def rate_limit
     project.actual_limits.limit_for(:web_hook_calls)
   end
+
+  override :application_context
+  def application_context
+    super.merge(project: project)
+  end
 end
 
 ProjectHook.prepend_mod_with('ProjectHook')

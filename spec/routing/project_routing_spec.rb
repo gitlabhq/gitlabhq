@@ -202,6 +202,16 @@ RSpec.describe 'project routing' do
                        namespace_id: 'gitlab', project_id: 'gitlabhq',
                        id: "stable", path: "new\n\nline.txt" })
     end
+
+    it_behaves_like 'redirecting a legacy path', '/gitlab/gitlabhq/refs/switch', '/gitlab/gitlabhq/-/refs/switch'
+
+    it_behaves_like 'redirecting a legacy path',
+      '/gitlab/gitlabhq/refs/feature%2345/logs_tree',
+      '/gitlab/gitlabhq/-/refs/feature%2345/logs_tree'
+
+    it_behaves_like 'redirecting a legacy path',
+      '/gitlab/gitlabhq/refs/stable/logs_tree/new%0A%0Aline.txt',
+      '/gitlab/gitlabhq/-/refs/stable/logs_tree/new%0A%0Aline.txt'
   end
 
   describe Projects::MergeRequestsController, 'routing' do
@@ -357,9 +367,7 @@ RSpec.describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/commit/4246fbd13872934f72a8fd0d6fb1317b47b59cb5')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd13872934f72a8fd0d6fb1317b47b59cb5')
     end
 
-    it 'to #show unscoped routing' do
-      expect(get('/gitlab/gitlabhq/commit/4246fbd')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd')
-    end
+    it_behaves_like 'redirecting a legacy path', "/gitlab/gitlabhq/commit/4246fbd", "/gitlab/gitlabhq/-/commit/4246fbd"
   end
 
   #    patch_project_commit GET    /:project_id/commits/:id/patch(.:format) commits#patch
@@ -376,9 +384,7 @@ RSpec.describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/commits/master.atom')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master.atom')
     end
 
-    it 'to #show unscoped routing' do
-      expect(get('/gitlab/gitlabhq/commits/master.atom')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master.atom')
-    end
+    it_behaves_like 'redirecting a legacy path', "/gitlab/gitlabhq/commits/master", "/gitlab/gitlabhq/-/commits/master"
   end
 
   #     project_project_members GET    /:project_id/project_members(.:format)          project_members#index
@@ -517,6 +523,7 @@ RSpec.describe 'project routing' do
     end
 
     it 'to #show from unscoped routing' do
+      expect(get('/gitlab/gitlabhq/tree/master')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
       expect(get('/gitlab/gitlabhq/tree/master/app/models/project.rb')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
     end
   end
@@ -545,6 +552,9 @@ RSpec.describe 'project routing' do
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "#{newline_file}" })
     end
+
+    it_behaves_like 'redirecting a legacy path', "/gitlab/gitlabhq/find_file", "/gitlab/gitlabhq/-/find_file"
+    it_behaves_like 'redirecting a legacy path', "/gitlab/gitlabhq/files/master", "/gitlab/gitlabhq/-/files/master"
   end
 
   describe Projects::BlobController, 'routing' do
@@ -575,6 +585,9 @@ RSpec.describe 'project routing' do
                         namespace_id: 'gitlab', project_id: 'gitlabhq',
                         id: "master/docs/#{newline_file}" })
     end
+
+    it_behaves_like 'redirecting a legacy path', "/gitlab/gitlabhq/new/master", "/gitlab/gitlabhq/-/new/master"
+    it_behaves_like 'redirecting a legacy path', "/gitlab/gitlabhq/edit/master/README", "/gitlab/gitlabhq/-/edit/master/README"
   end
 
   # project_raw GET    /:project_id/-/raw/:id(.:format) raw#show {id: /[^\0]+/, project_id: /[^\/]+/}
@@ -610,6 +623,9 @@ RSpec.describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/compare/master...stable')).to     route_to('projects/compare#show', namespace_id: 'gitlab', project_id: 'gitlabhq', from: 'master', to: 'stable')
       expect(get('/gitlab/gitlabhq/-/compare/issue/1234...stable')).to route_to('projects/compare#show', namespace_id: 'gitlab', project_id: 'gitlabhq', from: 'issue/1234', to: 'stable')
     end
+
+    it_behaves_like 'redirecting a legacy path', '/gitlab/gitlabhq/compare', '/gitlab/gitlabhq/-/compare'
+    it_behaves_like 'redirecting a legacy path', '/gitlab/gitlabhq/compare/master...stable', '/gitlab/gitlabhq/-/compare/master...stable'
   end
 
   describe Projects::NetworkController, 'routing' do

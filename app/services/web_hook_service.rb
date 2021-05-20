@@ -93,7 +93,9 @@ class WebHookService
     if rate_limited?(hook)
       log_rate_limit(hook)
     else
-      WebHookWorker.perform_async(hook.id, data, hook_name)
+      Gitlab::ApplicationContext.with_context(hook.application_context) do
+        WebHookWorker.perform_async(hook.id, data, hook_name)
+      end
     end
   end
 

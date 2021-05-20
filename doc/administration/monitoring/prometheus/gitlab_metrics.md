@@ -308,19 +308,7 @@ Some basic Ruby runtime metrics are available:
 | `ruby_process_proportional_memory_bytes` | Gauge     | 13.0  | Memory usage by process (PSS/Proportional Set Size) |
 | `ruby_process_start_time_seconds`        | Gauge     | 12.0  | UNIX timestamp of process start time |
 
-## Unicorn Metrics
-
-Unicorn specific metrics, when Unicorn is used.
-
-| Metric                       | Type  | Since | Description                                        |
-|:-----------------------------|:------|:------|:---------------------------------------------------|
-| `unicorn_active_connections` | Gauge | 11.0  | The number of active Unicorn connections (workers) |
-| `unicorn_queued_connections` | Gauge | 11.0  | The number of queued Unicorn connections           |
-| `unicorn_workers`            | Gauge | 12.0  | The number of Unicorn workers                      |
-
 ## Puma Metrics
-
-When Puma is used instead of Unicorn, the following metrics are available:
 
 | Metric                            | Type    | Since | Description |
 |:--------------------------------- |:------- |:----- |:----------- |
@@ -352,8 +340,8 @@ instance (`cache`, `shared_state` etc.).
 ## Metrics shared directory
 
 The GitLab Prometheus client requires a directory to store metrics data shared between multi-process services.
-Those files are shared among all instances running under Unicorn server.
-The directory must be accessible to all running Unicorn's processes, or
+Those files are shared among all instances running under Puma server.
+The directory must be accessible to all running Puma's processes, or
 metrics can't function correctly.
 
 This directory's location is configured using environment variable `prometheus_multiproc_dir`.

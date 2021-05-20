@@ -8,8 +8,6 @@ def prometheus_default_multiproc_dir
 
   if Gitlab::Runtime.sidekiq?
     Rails.root.join('tmp/prometheus_multiproc_dir/sidekiq')
-  elsif Gitlab::Runtime.unicorn?
-    Rails.root.join('tmp/prometheus_multiproc_dir/unicorn')
   elsif Gitlab::Runtime.puma?
     Rails.root.join('tmp/prometheus_multiproc_dir/puma')
   else
@@ -49,9 +47,7 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
 
     ::Prometheus::Client.reinitialize_on_pid_change(force: true)
 
-    if Gitlab::Runtime.unicorn?
-      Gitlab::Metrics::Samplers::UnicornSampler.instance(Settings.monitoring.unicorn_sampler_interval).start
-    elsif Gitlab::Runtime.puma?
+    if Gitlab::Runtime.puma?
       Gitlab::Metrics::Samplers::PumaSampler.instance.start
     end
 
