@@ -200,8 +200,16 @@ RSpec.shared_context 'group navbar structure' do
     ]
   end
 
+  let(:group_context_nav_item) do
+    {
+      nav_item: "#{group.name[0, 1].upcase} #{group.name}",
+      nav_sub_items: []
+    }
+  end
+
   let(:structure) do
     [
+      group_context_nav_item,
       group_information_nav_item,
       {
         nav_item: _('Issues'),

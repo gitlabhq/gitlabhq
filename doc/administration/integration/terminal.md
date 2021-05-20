@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Web terminals **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7690) in GitLab 8.15.
-
 With the introduction of the [Kubernetes integration](../../user/project/clusters/index.md),
 GitLab can store and use credentials for a Kubernetes cluster.
 GitLab uses these credentials to provide access to
@@ -99,9 +97,9 @@ they receive a `Connection failed` message.
 
 ## Limiting WebSocket connection time
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8413) in GitLab 8.17.
+By default, terminal sessions do not expire. To limit the terminal session
+lifetime in your GitLab instance:
 
-Terminal sessions, by default, do not expire.
-You can limit terminal session lifetime in your GitLab instance. To do so,
-go to [**Admin Area > Settings > Web terminal**](../../user/admin_area/settings/index.md#general),
-and set a `max session time`.
+1. Go to the Admin Area (**{admin}**) and select
+   [**Settings > Web terminal**](../../user/admin_area/settings/index.md#general).
+1. Set a `max session time`.

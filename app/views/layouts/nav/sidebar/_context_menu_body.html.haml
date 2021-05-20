@@ -1,0 +1,5 @@
+= link_to group_path(@group), title: @group.name do
+  %span.avatar-container.rect-avatar.s40.group-avatar
+    = group_icon(@group, class: "avatar s40 avatar-tile")
+  %span.sidebar-context-title
+    = @group.name

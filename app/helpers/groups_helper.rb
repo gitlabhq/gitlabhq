@@ -3,14 +3,16 @@
 module GroupsHelper
   def group_overview_nav_link_paths
     %w[
-      groups#show
-      groups#details
       groups#activity
       groups#subgroups
     ].tap do |paths|
-      break paths if Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+      extra_routes = if sidebar_refactor_disabled?
+                       ['groups#show', 'groups#details']
+                     else
+                       ['labels#index', 'group_members#index']
+                     end
 
-      paths.concat(['labels#index', 'group_members#index'])
+      paths.concat(extra_routes)
     end
   end
 

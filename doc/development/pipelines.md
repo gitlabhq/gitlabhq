@@ -758,6 +758,7 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 | `if:` conditions | Description | Notes |
 |------------------|-------------|-------|
 | `if-not-canonical-namespace`                                 | Matches if the project isn't in the canonical (`gitlab-org/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success|manual`), or **not** create a job for forks (by using `when: never`). |
+| `if-not-ee`                                                  | Matches if the project isn't EE (i.e. project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success|manual`), or **not** create a job if the project is EE (by using `when: never`). |
 | `if-not-foss`                                                | Matches if the project isn't FOSS (i.e. project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success|manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
 | `if-default-refs`                                            | Matches if the pipeline is for `master`, `main`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs aren't created for branches with this default configuration. |
 | `if-master-refs`                                             | Matches if the current branch is `master` or `main`. | |
@@ -784,16 +785,6 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 | `if-rspec-fail-fast-disabled`                                | Limits jobs to pipelines with `$RSPEC_FAIL_FAST_ENABLED` CI/CD variable not set to `"true"`. | |
 | `if-rspec-fail-fast-skipped`                                 | Matches if the pipeline is for a merge request and the MR title includes "SKIP RSPEC FAIL-FAST". | |
 | `if-security-pipeline-merge-result`                          | Matches if the pipeline is for a security merge request triggered by `@gitlab-release-tools-bot`. | |
-
-<!-- vale gitlab.Substitutions = YES -->
-
-#### `exists:` conditions
-
-<!-- vale gitlab.Substitutions = NO -->
-
-| `exists:` conditions | Description | Notes |
-|----------------------|-------------|-------|
-| `exists-ee`          | Matches if the project is EE (i.e. project contains `ee/` directory). | Use to create a job only in the EE project. |
 
 <!-- vale gitlab.Substitutions = YES -->
 

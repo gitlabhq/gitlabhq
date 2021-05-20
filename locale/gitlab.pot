@@ -15233,9 +15233,6 @@ msgstr ""
 msgid "GitLabPages|GitLab Pages are disabled for this project. You can enable them on your project's %{strong_start}Settings &gt; General &gt; Visibility%{strong_end} page."
 msgstr ""
 
-msgid "GitLabPages|It may take up to 30 minutes before the site is available after the first deployment."
-msgstr ""
-
 msgid "GitLabPages|Maximum size of pages (MB)"
 msgstr ""
 

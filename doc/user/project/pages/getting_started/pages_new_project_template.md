@@ -26,7 +26,6 @@ configured to generate a Pages site.
    and click **Run pipeline** to trigger GitLab CI/CD to build and deploy your
    site.
 
-The site can take approximately 30 minutes to deploy.
 When the pipeline is finished, go to **Settings > Pages** to find the link to
 your Pages website.
 

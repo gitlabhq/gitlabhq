@@ -104,7 +104,6 @@ namespace :admin do
 
   resources :projects, only: [:index]
 
-  get '/instance_statistics', to: redirect('admin/usage_trends')
   resources :usage_trends, only: :index
   resource :dev_ops_report, controller: 'dev_ops_report', only: :show
   resources :cohorts, only: :index

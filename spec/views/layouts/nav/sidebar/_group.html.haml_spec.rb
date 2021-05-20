@@ -12,11 +12,19 @@ RSpec.describe 'layouts/nav/sidebar/_group' do
   it_behaves_like 'has nav sidebar'
   it_behaves_like 'sidebar includes snowplow attributes', 'render', 'groups_side_navigation', 'groups_side_navigation'
 
-  describe 'Group information' do
+  describe 'Group context menu' do
     it 'has a link to the group path' do
       render
 
-      expect(rendered).to have_link('Group information', href: group_path(group))
+      expect(rendered).to have_link(group.name, href: group_path(group))
+    end
+  end
+
+  describe 'Group information' do
+    it 'has a link to the group activity path' do
+      render
+
+      expect(rendered).to have_link('Group information', href: activity_group_path(group))
     end
 
     it 'does not have a link to the details menu item' do

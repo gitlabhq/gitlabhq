@@ -4,33 +4,36 @@
 
 %aside.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **sidebar_tracking_attributes_by_object(@group), 'aria-label': aside_title }
   .nav-sidebar-inner-scroll
-    .context-header
-      = link_to group_path(@group), title: @group.name do
-        %span.avatar-container.rect-avatar.s40.group-avatar
-          = group_icon(@group, class: "avatar s40 avatar-tile")
-        %span.sidebar-context-title
-          = @group.name
+    - if sidebar_refactor_disabled?
+      .context-header
+        = render 'layouts/nav/sidebar/context_menu_body'
+
     %ul.sidebar-top-level-items.qa-group-sidebar
+      - if sidebar_refactor_enabled?
+        = nav_link(path: ['groups#show', 'groups#details'], html_options: { class: 'context-header' }) do
+          = render 'layouts/nav/sidebar/context_menu_body'
+
       = render_if_exists 'layouts/nav/sidebar/group_trial_status_widget', group: @group
 
       - if group_sidebar_link?(:overview)
         - paths = group_overview_nav_link_paths
         = nav_link(path: paths, unless: -> { current_path?('groups/contribution_analytics#show') }, html_options: { class: 'home' }) do
-          = link_to group_path(@group) do
+          - information_link = sidebar_refactor_enabled? ? activity_group_path(@group) : group_path(@group)
+          = link_to information_link do
             .nav-icon-container
-              - sprite = Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml) ? 'group' : 'home'
+              - sprite = sidebar_refactor_enabled? ? 'group' : 'home'
               = sprite_icon(sprite)
             %span.nav-item-name
               = group_information_title(@group)
 
           %ul.sidebar-sub-level-items
             = nav_link(path: paths, html_options: { class: "fly-out-top-item" } ) do
-              = link_to group_path(@group) do
+              = link_to information_link do
                 %strong.fly-out-top-item-name
                   = group_information_title(@group)
             %li.divider.fly-out-top-item
 
-            - if Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+            - if sidebar_refactor_disabled?
               = nav_link(path: ['groups#show', 'groups#details', 'groups#subgroups'], html_options: { class: 'home' }) do
                 = link_to details_group_path(@group), title: _('Group details') do
                   %span
@@ -42,13 +45,13 @@
                   %span
                     = _('Activity')
 
-            - if group_sidebar_link?(:labels) && Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+            - if group_sidebar_link?(:labels) && sidebar_refactor_enabled?
               = nav_link(path: 'labels#index') do
                 = link_to group_labels_path(@group), title: _('Labels') do
                   %span
                     = _('Labels')
 
-            - if Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+            - if sidebar_refactor_enabled?
               - if group_sidebar_link?(:group_members)
                 = nav_link(path: 'group_members#index') do
                   = link_to group_group_members_path(@group), title: _('Members'), data: { qa_selector: 'group_members_item' } do
@@ -85,7 +88,7 @@
                   %span
                     = boards_link_text
 
-            - if group_sidebar_link?(:labels) && Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+            - if group_sidebar_link?(:labels) && sidebar_refactor_disabled?
               = nav_link(path: 'labels#index') do
                 = link_to group_labels_path(@group), title: _('Labels') do
                   %span
@@ -138,7 +141,7 @@
       - if group_sidebar_link?(:wiki)
         = render 'layouts/nav/sidebar/wiki_link', wiki_url: @group.wiki.web_url
 
-      - if Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+      - if sidebar_refactor_disabled?
         - if group_sidebar_link?(:group_members)
           = nav_link(path: 'group_members#index') do
             = link_to group_group_members_path(@group) do
