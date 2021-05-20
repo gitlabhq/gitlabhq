@@ -360,6 +360,17 @@ RSpec.describe ContainerRepository do
     it { is_expected.to contain_exactly(repository1, repository2, repository4) }
   end
 
+  describe '.with_stale_ongoing_cleanup' do
+    let_it_be(:repository1) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: 1.day.ago) }
+    let_it_be(:repository2) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: 25.minutes.ago) }
+    let_it_be(:repository3) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: 1.week.ago) }
+    let_it_be(:repository4) { create(:container_repository, :cleanup_unscheduled, expiration_policy_started_at: 25.minutes.ago) }
+
+    subject { described_class.with_stale_ongoing_cleanup(27.minutes.ago) }
+
+    it { is_expected.to contain_exactly(repository1, repository3) }
+  end
+
   describe '.waiting_for_cleanup' do
     let_it_be(:repository_cleanup_scheduled) { create(:container_repository, :cleanup_scheduled) }
     let_it_be(:repository_cleanup_unfinished) { create(:container_repository, :cleanup_unfinished) }

@@ -25,6 +25,9 @@ learn how to proceed to keep your apps up and running:
 - [One-click install method](#install-with-one-click-deprecated)
 - [CI/CD template method](#install-using-gitlab-cicd-deprecated)
 
+NOTE:
+Despite being deprecated, the recommended way for installing GitLab integrated applications is by the GitLab CI/CD method presented below. We are working on a [cluster management project template](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) with a simple upgrade path from the CI/CD based method.
+
 ## Install using GitLab CI/CD (DEPRECATED)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20822) in GitLab 12.6.

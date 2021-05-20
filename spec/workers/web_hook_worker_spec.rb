@@ -14,5 +14,10 @@ RSpec.describe WebHookWorker do
 
       subject.perform(project_hook.id, data, hook_name)
     end
+
+    it_behaves_like 'worker with data consistency',
+                  described_class,
+                  feature_flag: :load_balancing_for_web_hook_worker,
+                  data_consistency: :delayed
   end
 end

@@ -46,7 +46,7 @@ NOTE:
 Components marked with * can be optionally run on reputable
 third party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work.
 Components marked with ** can be optionally run on reputable
-third party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
+third party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
 
 ```plantuml
 @startuml 3k
@@ -1213,7 +1213,7 @@ Praefect requires several secret tokens to secure communications across the Clus
 
 Gitaly Cluster nodes are configured in Praefect via a `virtual storage`. Each storage contains
 the details of each Gitaly node that makes up the cluster. Each storage is also given a name
-and this name is used in several areas of the config. In this guide, the name of the storage will be
+and this name is used in several areas of the configuration. In this guide, the name of the storage will be
 `default`. Also, this guide is geared towards new installs, if upgrading an existing environment
 to use Gitaly Cluster, you may need to use a different name.
 Refer to the [Praefect documentation](../gitaly/praefect.md#praefect) for more info.
@@ -2074,7 +2074,7 @@ but with smaller performance requirements, several modifications can be consider
   - PostgreSQL: Can be run on reputable Cloud PaaS solutions such as Google Cloud SQL or AWS RDS. In this setup, the PgBouncer and Consul nodes are no longer required:
     - Consul may still be desired if [Prometheus](../monitoring/prometheus/index.md) auto discovery is a requirement, otherwise you would need to [manually add scrape configurations](../monitoring/prometheus/index.md#adding-custom-scrape-configurations) for all nodes.
       - As Redis Sentinel runs on the same box as Consul in this architecture, it may need to be run on a separate box if Redis is still being run via Omnibus.
-  - Redis: Can be run on reputable Cloud PaaS solutions such as Google Memorystore and AWS Elasticache. In this setup, the Redis Sentinel is no longer required.
+  - Redis: Can be run on reputable Cloud PaaS solutions such as Google Memorystore and AWS ElastiCache. In this setup, the Redis Sentinel is no longer required.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

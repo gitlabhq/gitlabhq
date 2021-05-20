@@ -831,8 +831,8 @@ or persistent errors, or the Pages Daemon serving old content.
 NOTE:
 Expiry, interval and timeout flags use [Golang's duration formatting](https://golang.org/pkg/time/#ParseDuration).
 A duration string is a possibly signed sequence of decimal numbers,
-each with optional fraction and a unit suffix, such as "300ms", "1.5h" or "2h45m".
-Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+each with optional fraction and a unit suffix, such as `300ms`, `1.5h` or `2h45m`.
+Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`.
 
 Examples:
 
@@ -938,7 +938,7 @@ In installations from source:
 
 ## ZIP storage
 
-In GitLab 14.0 the underlaying storage format of GitLab Pages is changing from
+In GitLab 14.0 the underlying storage format of GitLab Pages is changing from
 files stored directly in disk to a single ZIP archive per project.
 
 These ZIP archives can be stored either locally on disk storage or on the [object storage](#using-object-storage) if it is configured.
@@ -1210,7 +1210,7 @@ These are due to the Pages files not being among the
 It is possible to copy the subfolders and files in the [Pages path](#change-storage-path)
 to the new primary node to resolve this.
 For example, you can adapt the `rsync` strategy from the
-[moving repositories documenation](../operations/moving_repositories.md).
+[moving repositories documentation](../operations/moving_repositories.md).
 Alternatively, run the CI pipelines of those projects that contain a `pages` job again.
 
 ### Failed to connect to the internal GitLab API

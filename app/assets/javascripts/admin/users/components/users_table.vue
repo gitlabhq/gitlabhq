@@ -2,15 +2,12 @@
 import { GlSkeletonLoader, GlTable } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { convertNodeIdsFromGraphQLIds } from '~/graphql_shared/utils';
+import { thWidthClass } from '~/lib/utils/table_utility';
 import { s__, __ } from '~/locale';
 import UserDate from '~/vue_shared/components/user_date.vue';
 import getUsersGroupCountsQuery from '../graphql/queries/get_users_group_counts.query.graphql';
 import UserActions from './user_actions.vue';
 import UserAvatar from './user_avatar.vue';
-
-const DEFAULT_TH_CLASSES =
-  'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!';
-const thWidthClass = (width) => `gl-w-${width}p ${DEFAULT_TH_CLASSES}`;
 
 export default {
   components: {

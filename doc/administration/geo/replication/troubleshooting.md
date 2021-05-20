@@ -854,6 +854,11 @@ To resolve this issue:
   the **primary** node using IPv4 in the `/etc/hosts` file. Alternatively, you should
   [enable IPv6 on the **primary** node](https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-address-or-addresses).
 
+### Geo Admin Area shows 'Unknown' for health status and 'Request failed with status code 401'
+
+If using a load balancer, ensure that the load balancer's URL is set as the `external_url` in the
+`/etc/gitlab/gitlab.rb` of the nodes behind the load balancer.
+
 ### GitLab Pages return 404 errors after promoting
 
 This is due to [Pages data not being managed by Geo](datatypes.md#limitations-on-replicationverification).

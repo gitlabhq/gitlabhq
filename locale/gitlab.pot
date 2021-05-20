@@ -21619,6 +21619,9 @@ msgstr ""
 msgid "Name has already been taken"
 msgstr ""
 
+msgid "Name is already taken."
+msgstr ""
+
 msgid "Name new label"
 msgstr ""
 
@@ -24633,10 +24636,16 @@ msgstr ""
 msgid "Please provide a name"
 msgstr ""
 
+msgid "Please provide a name."
+msgstr ""
+
 msgid "Please provide a valid URL"
 msgstr ""
 
 msgid "Please provide a valid URL ending with .git"
+msgstr ""
+
+msgid "Please provide a valid URL."
 msgstr ""
 
 msgid "Please provide a valid YouTube URL or ID"
@@ -24673,6 +24682,9 @@ msgid "Please select a group."
 msgstr ""
 
 msgid "Please select a valid target branch"
+msgstr ""
+
+msgid "Please select a valid target branch."
 msgstr ""
 
 msgid "Please select and add a member"
@@ -31045,10 +31057,22 @@ msgstr ""
 msgid "StatusCheck|An error occurred fetching the status checks."
 msgstr ""
 
+msgid "StatusCheck|Apply this status check to any branch or a specific protected branch."
+msgstr ""
+
 msgid "StatusCheck|Check for a status response in Merge Requests. Failures do not block merges. %{link_start}Learn more%{link_end}."
 msgstr ""
 
+msgid "StatusCheck|Examples: QA, Security."
+msgstr ""
+
+msgid "StatusCheck|External API is already in use by another status check."
+msgstr ""
+
 msgid "StatusCheck|Invoke an external API as part of the approvals"
+msgstr ""
+
+msgid "StatusCheck|Invoke an external API as part of the pipeline process."
 msgstr ""
 
 msgid "StatusCheck|No status checks are defined yet."
@@ -31067,6 +31091,9 @@ msgid "StatusCheck|Status checks"
 msgstr ""
 
 msgid "StatusCheck|Status to check"
+msgstr ""
+
+msgid "StatusCheck|Target branch"
 msgstr ""
 
 msgid "StatusCheck|You are about to remove the %{name} status check."
@@ -34607,6 +34634,9 @@ msgid "Unable to create link to vulnerability"
 msgstr ""
 
 msgid "Unable to fetch branch list for this project."
+msgstr ""
+
+msgid "Unable to fetch branches list, please close the form and try again"
 msgstr ""
 
 msgid "Unable to fetch unscanned projects"

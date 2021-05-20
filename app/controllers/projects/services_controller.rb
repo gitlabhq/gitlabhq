@@ -85,7 +85,7 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def integration
     @integration ||= @project.find_or_initialize_service(params[:id])
-    @service ||= @integration # TODO: remove references to @service
+    @service ||= @integration # TODO: remove references to @service https://gitlab.com/gitlab-org/gitlab/-/issues/329759
   end
   alias_method :service, :integration
 

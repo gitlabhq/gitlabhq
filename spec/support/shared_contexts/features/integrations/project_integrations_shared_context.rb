@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'project service activation' do
+  include_context 'integration activation'
+
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
@@ -19,10 +21,6 @@ RSpec.shared_context 'project service activation' do
     within('#content-body') do
       click_link(name)
     end
-  end
-
-  def click_active_checkbox
-    find('label', text: 'Active').click
   end
 
   def click_save_integration

@@ -196,7 +196,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - Object pools for forked project deduplication work only on the **primary** site, and are duplicated on the **secondary** site.
 - GitLab Runners cannot register with a **secondary** site. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
 - Configuring Geo **secondary** sites to [use high-availability configurations of PostgreSQL](https://gitlab.com/groups/gitlab-org/-/epics/2536) is currently in **alpha** support.
-- [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accomodate compliance / export control use cases.
+- [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 
 ### Limitations on replication/verification
 

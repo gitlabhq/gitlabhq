@@ -39,7 +39,7 @@ NOTE:
 Components marked with * can be optionally run on reputable
 third party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work.
 Components marked with ** can be optionally run on reputable
-third party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
+third party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
 
 ```plantuml
 @startuml 50k

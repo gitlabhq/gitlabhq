@@ -63,6 +63,12 @@ including:
 - Snippets
 - Group wikis **(PREMIUM)**
 
+Backups do not include:
+
+- [Terraform state files](../administration/terraform_state.md)
+- [Package registry files](../administration/packages/index.md)
+- [Mattermost data](https://docs.mattermost.com/administration/config-settings.html#file-storage)
+
 WARNING:
 GitLab does not back up any configuration files, SSL certificates, or system
 files. You are highly advised to read about [storing configuration files](#storing-configuration-files).

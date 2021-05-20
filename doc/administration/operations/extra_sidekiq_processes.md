@@ -147,7 +147,7 @@ attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/all_q
 - `worker_name` - the worker name. The other attributes are typically more useful as
   they are more general, but this is available in case a particular worker needs
   to be selected.
-- `name` - the queue name. Similiarly, this is available in case a particular queue needs
+- `name` - the queue name. Similarly, this is available in case a particular queue needs
   to be selected.
 - `resource_boundary` - if the queue is bound by `cpu`, `memory`, or
   `unknown`. For example, the `project_export` queue is memory bound as it has

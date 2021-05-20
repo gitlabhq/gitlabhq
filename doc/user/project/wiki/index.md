@@ -7,7 +7,7 @@ type: reference, how-to
 
 # Wiki **(FREE)**
 
-If you don't want to keep your documentation in your repository, but you do want
+If you don't want to keep your documentation in your repository, but you want
 to keep it in the same project as your code, you can use the wiki GitLab provides
 in each GitLab project. Every wiki is a separate Git repository, so you can create
 wiki pages in the web interface, or [locally using Git](#create-or-edit-wiki-pages-locally).
@@ -34,8 +34,8 @@ with sibling pages listed in alphabetical order. To view a list of all pages, se
 When a wiki is created, it is empty. On your first visit, create the landing page
 users see when viewing the wiki:
 
-1. Go to the page for your project or group.
-1. In the left sidebar, select **Wiki**, then **Create your first page**.
+1. Go to your project or group and select **Wiki**.
+1. Select **Create your first page**.
 1. Select a **Format** for styling your text.
 1. Add a welcome message in the **Content** section. You can always edit it later.
 1. Add a **Commit message**. Git requires a commit message, so GitLab creates one
@@ -46,8 +46,7 @@ users see when viewing the wiki:
 
 Users with Developer [permissions](../../permissions.md) can create new wiki pages:
 
-1. Go to the page for your project or group.
-1. In the left sidebar, select **Wiki**.
+1. Go to your project or group and select **Wiki**.
 1. Select **New page** on this page, or any other wiki page.
 1. Select a content format.
 1. Add a title for your new page. Page titles use
@@ -111,8 +110,8 @@ may not be able to check out the wiki locally afterward.
 
 You need Developer [permissions](../../permissions.md) or higher to edit a wiki page:
 
-1. Go to the page for your project or group.
-1. In the left sidebar, select **Wiki**, and go to the page you want to edit.
+1. Go to your project or group and select **Wiki**.
+1. Go to the page you want to edit.
 1. Select the edit icon (**{pencil}**).
 1. Edit the content.
 1. Select **Save changes**.
@@ -126,8 +125,8 @@ For an example, read [Table of contents](../../markdown.md#table-of-contents).
 
 You need Maintainer [permissions](../../permissions.md) or higher to delete a wiki page:
 
-1. Go to the page for your project or group.
-1. In the left sidebar, select **Wiki**, and go to the page you want to delete.
+1. Go to your project or group and select **Wiki**.
+1. Go to the page you want to delete.
 1. Select **Delete page**.
 1. Confirm the deletion.
 
@@ -135,8 +134,8 @@ You need Maintainer [permissions](../../permissions.md) or higher to delete a wi
 
 You need Developer [permissions](../../permissions.md) or higher to move a wiki page:
 
-1. Go to the page for your project or group.
-1. In the left sidebar, select **Wiki**, and go to the page you want to move.
+1. Go to your project or group and select **Wiki**.
+1. Go to the page you want to move.
 1. Select the edit icon (**{pencil}**).
 1. Add the new path to the **Title** field. For example, if you have a wiki page
    called `about` under `company` and you want to move it to the wiki's root,
@@ -164,8 +163,8 @@ From the history page you can see:
 
 You can see the changes made in a version of a wiki page, similar to versioned diff file views:
 
-1. Go to the page for your project or group.
-1. In the left sidebar, select **Wiki**, and go to the wiki page you're interested in.
+1. Go to your project or group and select **Wiki**.
+1. Go to the wiki page you're interested in.
 1. Select **Page history** to see all page versions.
 1. Select the commit message in the **Changes** column for the version you're interested in.
 
@@ -192,8 +191,7 @@ You need Developer [permissions](../../permissions.md) or higher to customize th
 navigation sidebar. This process creates a wiki page named `_sidebar` which fully
 replaces the default sidebar navigation:
 
-1. Go to the page for your project or group.
-1. In the left sidebar, select **Wiki**.
+1. Go to your project or group and select **Wiki**.
 1. In the top right corner of the page, select **Edit sidebar**.
 1. When complete, select **Save changes**.
 
@@ -243,7 +241,7 @@ and above. Group wiki repositories can be moved using the
 
 To add a link to an external wiki from a project's left sidebar:
 
-1. In your project, go to **Settings > Integrations**.
+1. Go to your project and select **Settings > Integrations**.
 1. Select **External wiki**.
 1. Add the URL to your external wiki.
 1. (Optional) Select **Test settings** to verify the connection.
@@ -258,16 +256,16 @@ To hide the internal wiki from the sidebar, [disable the project's wiki](#disabl
 
 To hide the link to an external wiki:
 
-1. In your project, go to **Settings > Integrations**.
+1. Go to your project and select **Settings > Integrations**.
 1. Select **External wiki**.
-1. Unselect **Enable integration**.
+1. In the **Enable integration** section, clear the **Active** checkbox.
 1. Select **Save changes**.
 
 ## Disable the project's wiki
 
 To disable a project's internal wiki:
 
-1. In your project, go to **Settings > General**.
+1. Go to your project and select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll down to find **Wiki** and toggle it off (in gray).
 1. Select **Save changes**.

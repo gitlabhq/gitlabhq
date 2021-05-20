@@ -136,7 +136,7 @@ you can use tiers:
 | Environment tier | Environment name examples                          |
 |------------------|----------------------------------------------------|
 | `production`     | Production, Live                                   |
-| `staging`        | Staging, Model, Pre, Demo                          |
+| `staging`        | Staging, Model, Demo                               |
 | `testing`        | Test, QC                                           |
 | `development`    | Dev, [Review apps](../review_apps/index.md), Trunk |
 | `other`          |                                                    |

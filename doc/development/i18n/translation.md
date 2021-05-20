@@ -23,11 +23,11 @@ You may create a new account or use any of their supported sign in services.
 GitLab is being translated into many languages.
 
 1. Find the language that you want to contribute to, in our
-   [GitLab Crowdin project](https://crowdin.com/project/gitlab-ee).
+   [GitLab CrowdIn project](https://crowdin.com/project/gitlab-ee).
    - If the language that you're looking for is available, proceed
      to the next step.
    - If the language you are looking for is not available,
-      [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=✓&state=all&label_name[]=Category%3AInternationalization). Notify our Crowdin
+      [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=✓&state=all&label_name[]=Category%3AInternationalization). Notify our CrowdIn
       administrators by including `@gitlab-org/manage/import` in your issue.
    - After the issue/Merge Request is complete, restart this procedure.
 1. Next, you can view list of files and folders.

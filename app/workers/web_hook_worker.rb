@@ -8,6 +8,7 @@ class WebHookWorker
   feature_category :integrations
   worker_has_external_dependencies!
   loggable_arguments 2
+  data_consistency :delayed, feature_flag: :load_balancing_for_web_hook_worker
 
   sidekiq_options retry: 4, dead: false
 

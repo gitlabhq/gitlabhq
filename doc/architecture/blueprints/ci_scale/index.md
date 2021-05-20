@@ -28,7 +28,7 @@ store CI/CD data.
 We expect to see 20M builds created daily on GitLab.com in the first half of
 2024.
 
-![ci_builds cumulative with forecast](ci_builds_cumulative_forecast.png)
+![CI builds cumulative with forecast](ci_builds_cumulative_forecast.png)
 
 ## Goals
 
@@ -46,9 +46,9 @@ Historically, Rails used to use [integer](https://www.postgresql.org/docs/9.1/da
 type when creating primary keys for a table. We did use the default when we
 [created the `ci_builds` table in 2012](https://gitlab.com/gitlab-org/gitlab/-/blob/046b28312704f3131e72dcd2dbdacc5264d4aa62/db/ci/migrate/20121004165038_create_builds.rb).
 [The behavior of Rails has changed](https://github.com/rails/rails/pull/26266)
-since the release of Rails 5. The framework is now using bigint type that is 8
+since the release of Rails 5. The framework is now using `bigint` type that is 8
 bytes long, however we have not migrated primary keys for `ci_builds` table to
-bigint yet.
+`bigint` yet.
 
 We will run out of the capacity of the integer type to store primary keys in
 `ci_builds` table before December 2021. When it happens without a viable
@@ -89,7 +89,7 @@ Prophet](https://facebook.github.io/prophet/) shows that in the first half of
 to around 2M we see created today, this is 10x growth our product might need to
 sustain in upcoming years.
 
-![ci_builds daily forecast](ci_builds_daily_forecast.png)
+![CI builds daily forecast](ci_builds_daily_forecast.png)
 
 ### Queuing mechanisms are using the large table
 
@@ -101,7 +101,7 @@ want to process them.
 
 This mechanism is very inefficient, and it has been causing problems on the
 production environment frequently. This usually results in a significant drop
-of the CI/CD apdex score, and sometimes even causes a significant performance
+of the CI/CD Apdex score, and sometimes even causes a significant performance
 degradation in the production environment.
 
 There are multiple other strategies that can improve performance and

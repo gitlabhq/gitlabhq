@@ -70,3 +70,9 @@ Integration.available_services_names.each do |service|
     end
   end
 end
+
+RSpec.shared_context 'integration activation' do
+  def click_active_checkbox
+    find('label', text: 'Active').click
+  end
+end

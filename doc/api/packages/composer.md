@@ -71,7 +71,7 @@ Example response:
 
 ## V1 packages list
 
-Given the V1 provider sha, returns a list of packages within the repository. Using Composer V2 is
+Given the V1 provider SHA, returns a list of packages in the repository. Using Composer V2 is
 recommended over V1.
 
 ```plaintext
@@ -81,7 +81,7 @@ GET group/:id/-/packages/composer/p/:sha
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | string | yes | The ID or full path of the group. |
-| `sha`     | string | yes | The provider sha, provided by the Composer [base request](#base-repository-request). |
+| `sha`     | string | yes | The provider SHA, provided by the Composer [base request](#base-repository-request). |
 
 ```shell
 curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/group/1/-/packages/composer/p/082df4a5035f8725a12i4a3d2da5e6aaa966d06843d0a5c6d499313810427bd6"
@@ -115,7 +115,7 @@ the symbol `%24` (see example below).
 | -------------- | ------ | -------- | ----------- |
 | `id`           | string | yes      | The ID or full path of the group. |
 | `package_name` | string | yes      | The name of the package. |
-| `sha`          | string | yes      | The sha digest of the package, provided by the [V1 packages list](#v1-packages-list). |
+| `sha`          | string | yes      | The SHA digest of the package, provided by the [V1 packages list](#v1-packages-list). |
 
 ```shell
 curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/group/1/-/packages/composer/my-org/my-composer-package%245c873497cdaa82eda35af5de24b789be92dfb6510baf117c42f03899c166b6e7"
@@ -272,7 +272,7 @@ GET projects/:id/packages/composer/archives/:package_name
 | -------------- | ------ | -------- | ----------- |
 | `id`           | string | yes      | The ID or full path of the group. |
 | `package_name` | string | yes      | The name of the package. |
-| `sha`          | string | yes      | The target sha of the requested package version. |
+| `sha`          | string | yes      | The target SHA of the requested package version. |
 
 ```shell
 curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/composer/archives/my-org/my-composer-package.zip?sha=673594f85a55fe3c0eb45df7bd2fa9d95a1601ab"

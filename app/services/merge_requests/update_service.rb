@@ -293,7 +293,7 @@ module MergeRequests
 
     def attempt_specialized_update_services(merge_request, attribute)
       case attribute
-      when :assignee_ids
+      when :assignee_ids, :assignee_id
         assignees_service.execute(merge_request)
       when :spend_time
         add_time_spent_service.execute(merge_request)

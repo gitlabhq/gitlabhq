@@ -14,10 +14,17 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
   BATCH_SIZE = 1000
 
   def perform
+    process_stale_ongoing_cleanups
     throttling_enabled? ? perform_throttled : perform_unthrottled
   end
 
   private
+
+  def process_stale_ongoing_cleanups
+    threshold = delete_tags_service_timeout.seconds + 30.minutes
+    ContainerRepository.with_stale_ongoing_cleanup(threshold.ago)
+                       .update_all(expiration_policy_cleanup_status: :cleanup_unfinished)
+  end
 
   def perform_unthrottled
     with_runnable_policy(preloaded: true) do |policy|
@@ -85,5 +92,9 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
 
   def lease_timeout
     5.hours
+  end
+
+  def delete_tags_service_timeout
+    ::Gitlab::CurrentSettings.current_application_settings.container_registry_delete_tags_service_timeout || 0
   end
 end

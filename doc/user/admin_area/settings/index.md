@@ -28,6 +28,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | [External Authentication](external_authorization.md#configuration) | External Classification Policy Authorization |
 | [Web terminal](../../../administration/integration/terminal.md#limiting-websocket-connection-time) | Set max session time for web terminal. |
 | [Web IDE](../../project/web_ide/index.md#enabling-live-preview) | Manage Web IDE Features. |
+| [FLoC](floc.md) | Enable or disable [Federated Learning of Cohorts (FLoC)](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) tracking. |
 
 ## Integrations
 

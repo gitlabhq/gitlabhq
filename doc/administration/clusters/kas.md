@@ -127,5 +127,5 @@ time="2020-10-29T04:44:14Z" level=warning msg="Config: failed to fetch" agent_id
 It means that the path to the configuration project is incorrect,
 or the path to `config.yaml` inside the project is not valid.
 
-To fix this, ensure that the paths to the configuration repo and to the `config.yaml` file
+To fix this, ensure that the paths to the configuration repository and to the `config.yaml` file
 are correct.
