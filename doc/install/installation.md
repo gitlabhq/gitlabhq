@@ -45,6 +45,15 @@ You can select the branch in the version dropdown in the top left corner of GitL
 
 If the highest number stable branch is unclear, check the [GitLab blog](https://about.gitlab.com/blog/) for installation guide links by version.
 
+## Software requirements
+
+| Software | Minimum version | Notes |
+| -------- | --------------- | ----- |
+| [Ruby](#2-ruby)     | `2.7`             | From GitLab 13.6, Ruby 2.7 is required. Ruby 3.0 is not supported yet (see [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/5149) for the current status). You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
+| [Go](#3-go) | `1.15` | |
+| [Git](#git) | `2.31.x` | From GitLab 13.11, Git 2.31.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git). |
+| [Node.js](#4-node) | `12.22.1` | GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets. Node.js 14.x is recommended, as it's faster. You can check which version you're running with `node -v`. You need to update it to a newer version if needed. |
+
 ## GitLab directory structure
 
 This is the main directory structure you end up with following the instructions
@@ -207,7 +216,7 @@ sudo apt-get install -y libimage-exiftool-perl
 ## 2. Ruby
 
 The Ruby interpreter is required to run GitLab.
-See the [requirements page](requirements.md#ruby-versions) for the minimum
+See the [requirements section of this page](#software-requirements) for the minimum
 Ruby requirements.
 
 The use of Ruby version managers such as [`RVM`](https://rvm.io/), [`rbenv`](https://github.com/rbenv/rbenv) or [`chruby`](https://github.com/postmodern/chruby) with GitLab

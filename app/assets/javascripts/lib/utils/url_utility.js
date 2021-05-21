@@ -484,13 +484,17 @@ export const setUrlParams = (
       searchParams.delete(key);
     } else if (Array.isArray(params[key])) {
       const keyName = railsArraySyntax ? `${key}[]` : key;
-      params[key].forEach((val, idx) => {
-        if (idx === 0) {
-          searchParams.set(keyName, val);
-        } else {
-          searchParams.append(keyName, val);
-        }
-      });
+      if (params[key].length === 0) {
+        searchParams.delete(keyName);
+      } else {
+        params[key].forEach((val, idx) => {
+          if (idx === 0) {
+            searchParams.set(keyName, val);
+          } else {
+            searchParams.append(keyName, val);
+          }
+        });
+      }
     } else {
       searchParams.set(key, params[key]);
     }

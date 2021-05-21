@@ -1,4 +1,4 @@
-import { GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import StatusBox from '~/issuable/components/status_box.vue';
 
@@ -64,7 +64,7 @@ describe('Merge request status box component', () => {
           initialState: testCase.state,
         });
 
-        expect(wrapper.find('[data-testid="status-icon"]').props('name')).toBe(testCase.icon);
+        expect(wrapper.findComponent(GlIcon).props('name')).toBe(testCase.icon);
       });
     });
   });

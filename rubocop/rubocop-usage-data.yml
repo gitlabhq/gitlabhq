@@ -57,3 +57,11 @@ UsageData/DistinctCountByLargeForeignKey:
     - 'user_id'
     - 'resource_owner_id'
     - 'requirement_id'
+UsageData/InstrumentationSuperclass:
+  Enabled: true
+  Include:
+    - 'lib/gitlab/usage/metrics/instrumentations/**/*.rb'
+  AllowedClasses:
+    - :DatabaseMetric
+    - :GenericMetric
+    - :RedisHLLMetric

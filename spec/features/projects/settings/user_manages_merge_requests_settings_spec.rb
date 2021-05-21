@@ -116,7 +116,8 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         click_on('Save changes')
       end
 
-      find('.flash-notice')
+      wait_for_all_requests
+
       checkbox = find_field('project_printing_merge_request_link_enabled')
 
       expect(checkbox).not_to be_checked
@@ -139,7 +140,8 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         click_on('Save changes')
       end
 
-      find('.flash-notice')
+      wait_for_all_requests
+
       checkbox = find_field('project_remove_source_branch_after_merge')
 
       expect(checkbox).not_to be_checked

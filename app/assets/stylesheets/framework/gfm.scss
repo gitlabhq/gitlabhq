@@ -4,7 +4,8 @@
 
 .gfm-commit,
 .gfm-commit_range {
-  @extend .commit-sha;
+  @include gl-font-monospace;
+  font-size: 95%;
 }
 
 .gfm-project_member {

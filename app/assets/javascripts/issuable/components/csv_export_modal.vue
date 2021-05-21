@@ -51,7 +51,6 @@ export default {
     </template>
     <div
       v-if="issuableCount > -1"
-      data-testid="issuable-count-note"
       class="gl-justify-content-start gl-align-items-center gl-p-4 gl-border-b-solid gl-border-1 gl-border-gray-50"
     >
       <gl-icon name="check" class="gl-color-green-400" />

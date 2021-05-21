@@ -82,7 +82,7 @@ sudo make install
 
 ### 4. Update Node.js
 
-To check the minimum required Node.js version, see [Node.js versions](../install/requirements.md#nodejs-versions).
+To check the minimum required Node.js version, see [Node.js versions](../install/installation.md#software-requirements).
 
 GitLab also requires the use of Yarn `>= v1.10.0` to manage JavaScript
 dependencies.
@@ -99,7 +99,7 @@ More information can be found on the [Yarn website](https://classic.yarnpkg.com/
 
 ### 5. Update Go
 
-To check the minimum required Go version, see [Go versions](../install/requirements.md#go-versions).
+To check the minimum required Go version, see [Go versions](../install/installation.md#software-requirements).
 
 You can check which version you are running with `go version`.
 
@@ -119,12 +119,8 @@ rm go1.13.5.linux-amd64.tar.gz
 
 ### 6. Update Git
 
-WARNING:
-From GitLab 13.1, you must use at least Git v2.24 (previous minimum version was v2.22).
-Git v2.28 is recommended.
-
 To check you are running the minimum required Git version, see
-[Git versions](../install/requirements.md#git-versions).
+[Git versions](../install/installation.md#software-requirements).
 
 From GitLab 13.6, we recommend you use the [Git version provided by
 Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)

@@ -43,7 +43,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
   end
 
   let(:save_incompleted) { true }
-  let(:dot_com) { true }
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project, current_user: user, yaml_processor_result: yaml_processor_result, save_incompleted: save_incompleted
@@ -57,7 +56,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
 
     before do
       stub_env('EXTERNAL_VALIDATION_SERVICE_URL', validation_service_url)
-      allow(Gitlab).to receive(:com?).and_return(dot_com)
       allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('correlation-id')
     end
 
@@ -194,34 +192,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
       it 'logs exceptions' do
         expect(Gitlab::ErrorTracking).to receive(:track_exception)
           .with(instance_of(Net::OpenTimeout), { project_id: project.id })
-
-        perform!
-      end
-    end
-
-    context 'when not on .com' do
-      let(:dot_com) { false }
-
-      before do
-        stub_request(:post, validation_service_url).to_return(status: 404, body: "{}")
-      end
-
-      it 'drops the pipeline' do
-        perform!
-
-        expect(pipeline.status).to eq('failed')
-        expect(pipeline).to be_persisted
-        expect(pipeline.errors.to_a).to include('External validation failed')
-      end
-
-      it 'breaks the chain' do
-        perform!
-
-        expect(step.break?).to be true
-      end
-
-      it 'logs the authorization' do
-        expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline not authorized', project_id: project.id, user_id: user.id)
 
         perform!
       end

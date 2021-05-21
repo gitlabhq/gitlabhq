@@ -1,6 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
+import { GlButton, GlDropdown } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CsvExportModal from '~/issuable/components/csv_export_modal.vue';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import CsvImportModal from '~/issuable/components/csv_import_modal.vue';
@@ -14,35 +14,33 @@ describe('CsvImportExportButtons', () => {
 
   function createComponent(injectedProperties = {}) {
     glModalDirective = jest.fn();
-    return extendedWrapper(
-      shallowMount(CsvImportExportButtons, {
-        directives: {
-          GlTooltip: createMockDirective(),
-          glModal: {
-            bind(_, { value }) {
-              glModalDirective(value);
-            },
+    return mountExtended(CsvImportExportButtons, {
+      directives: {
+        GlTooltip: createMockDirective(),
+        glModal: {
+          bind(_, { value }) {
+            glModalDirective(value);
           },
         },
-        provide: {
-          ...injectedProperties,
-        },
-        propsData: {
-          exportCsvPath,
-          issuableCount,
-        },
-      }),
-    );
+      },
+      provide: {
+        ...injectedProperties,
+      },
+      propsData: {
+        exportCsvPath,
+        issuableCount,
+      },
+    });
   }
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  const findExportCsvButton = () => wrapper.findByTestId('export-csv-button');
-  const findImportDropdown = () => wrapper.findByTestId('import-csv-dropdown');
-  const findImportCsvButton = () => wrapper.findByTestId('import-csv-dropdown');
-  const findImportFromJiraLink = () => wrapper.findByTestId('import-from-jira-link');
+  const findExportCsvButton = () => wrapper.findComponent(GlButton);
+  const findImportDropdown = () => wrapper.findComponent(GlDropdown);
+  const findImportCsvButton = () => wrapper.findByRole('menuitem', { name: 'Import CSV' });
+  const findImportFromJiraLink = () => wrapper.findByRole('menuitem', { name: 'Import from Jira' });
   const findExportCsvModal = () => wrapper.findComponent(CsvExportModal);
   const findImportCsvModal = () => wrapper.findComponent(CsvImportModal);
 
@@ -97,7 +95,7 @@ describe('CsvImportExportButtons', () => {
         expect(findImportDropdown().exists()).toBe(true);
       });
 
-      it('renders the import button', () => {
+      it('renders the import csv menu item', () => {
         expect(findImportCsvButton().exists()).toBe(true);
       });
 
@@ -106,8 +104,11 @@ describe('CsvImportExportButtons', () => {
           wrapper = createComponent({ showImportButton: true, showLabel: false });
         });
 
-        it('does not have a button text', () => {
-          expect(findImportCsvButton().props('text')).toBe(null);
+        it('hides button text', () => {
+          expect(findImportDropdown().props()).toMatchObject({
+            text: 'Import issues',
+            textSrOnly: true,
+          });
         });
 
         it('import button has a tooltip', () => {
@@ -124,7 +125,10 @@ describe('CsvImportExportButtons', () => {
         });
 
         it('displays a button text', () => {
-          expect(findImportCsvButton().props('text')).toBe('Import issues');
+          expect(findImportDropdown().props()).toMatchObject({
+            text: 'Import issues',
+            textSrOnly: false,
+          });
         });
 
         it('import button has no tooltip', () => {

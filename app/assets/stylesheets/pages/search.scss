@@ -45,7 +45,6 @@ input[type='checkbox']:hover {
   margin: 0 8px;
 
   form {
-    @extend .form-control;
     margin: 0;
     padding: 4px;
     width: $search-input-width;
@@ -139,7 +138,6 @@ input[type='checkbox']:hover {
 
   &.search-active {
     form {
-      @extend .form-control:focus;
       border-color: $blue-300;
       box-shadow: none;
 

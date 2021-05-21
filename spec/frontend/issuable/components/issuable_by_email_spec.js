@@ -58,10 +58,11 @@ describe('IssuableByEmail', () => {
     mockAxios.restore();
   });
 
-  const findFormInputGroup = () => wrapper.find(GlFormInputGroup);
+  const findButton = () => wrapper.findComponent(GlButton);
+  const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
 
   const clickResetEmail = async () => {
-    wrapper.findByTestId('incoming-email-token-reset').vm.$emit('click');
+    wrapper.findAllComponents(GlButton).at(2).trigger('click');
 
     await waitForPromises();
   };
@@ -75,14 +76,14 @@ describe('IssuableByEmail', () => {
       'renders a link with "$buttonText" when type is "$issuableType"',
       ({ issuableType, buttonText }) => {
         wrapper = createComponent({ issuableType });
-        expect(wrapper.findByTestId('issuable-email-modal-btn').text()).toBe(buttonText);
+        expect(findButton().text()).toBe(buttonText);
       },
     );
 
     it('opens the modal when the user clicks the button', () => {
       wrapper = createComponent();
 
-      wrapper.findByTestId('issuable-email-modal-btn').vm.$emit('click');
+      findButton().trigger('click');
 
       expect(glModalDirective).toHaveBeenCalled();
     });
@@ -105,7 +106,7 @@ describe('IssuableByEmail', () => {
         initialEmail,
       });
 
-      expect(wrapper.findByTestId('mail-to-btn').attributes('href')).toBe(
+      expect(wrapper.findAllComponents(GlButton).at(1).attributes('href')).toBe(
         `mailto:${initialEmail}?subject=${subject}&body=${body}`,
       );
     });

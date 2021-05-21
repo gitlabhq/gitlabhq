@@ -17,7 +17,7 @@ data as payload. The response code from the external service determines if GitLa
 should accept or reject the pipeline. If the response is:
 
 - `200`, the pipeline is accepted.
-- `4XX`, the pipeline is rejected.
+- `406`, the pipeline is rejected.
 - Other codes, the pipeline is accepted and logged.
 
 If there's an error or the request times out, the pipeline is accepted.

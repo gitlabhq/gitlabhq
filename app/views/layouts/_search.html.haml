@@ -1,5 +1,5 @@
 .search.search-form{ data: { track_label: "navbar_search", track_event: "activate_form_input", track_value: "" } }
-  = form_tag search_path, method: :get, class: 'form-inline' do |_f|
+  = form_tag search_path, method: :get, class: 'form-inline form-control' do |_f|
     .search-input-container
       .search-input-wrap
         .dropdown{ data: { url: search_autocomplete_path } }

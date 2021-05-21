@@ -798,19 +798,41 @@ describe('URL utility', () => {
       );
     });
 
-    it('handles arrays properly', () => {
+    it('adds parameters from arrays', () => {
       const url = 'https://gitlab.com/test';
 
-      expect(urlUtils.setUrlParams({ label_name: ['foo', 'bar'] }, url)).toEqual(
-        'https://gitlab.com/test?label_name=foo&label_name=bar',
+      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url)).toEqual(
+        'https://gitlab.com/test?labels=foo&labels=bar',
       );
     });
 
-    it('handles arrays properly when railsArraySyntax=true', () => {
+    it('removes parameters from empty arrays', () => {
+      const url = 'https://gitlab.com/test?labels=foo&labels=bar';
+
+      expect(urlUtils.setUrlParams({ labels: [] }, url)).toEqual('https://gitlab.com/test');
+    });
+
+    it('removes parameters from empty arrays while keeping other parameters', () => {
+      const url = 'https://gitlab.com/test?labels=foo&labels=bar&unrelated=unrelated';
+
+      expect(urlUtils.setUrlParams({ labels: [] }, url)).toEqual(
+        'https://gitlab.com/test?unrelated=unrelated',
+      );
+    });
+
+    it('adds parameters from arrays when railsArraySyntax=true', () => {
       const url = 'https://gitlab.com/test';
 
       expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url, false, true)).toEqual(
         'https://gitlab.com/test?labels%5B%5D=foo&labels%5B%5D=bar',
+      );
+    });
+
+    it('removes parameters from empty arrays when railsArraySyntax=true', () => {
+      const url = 'https://gitlab.com/test?labels%5B%5D=foo&labels%5B%5D=bar';
+
+      expect(urlUtils.setUrlParams({ labels: [] }, url, false, true)).toEqual(
+        'https://gitlab.com/test',
       );
     });
 

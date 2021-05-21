@@ -12,8 +12,7 @@ module Gitlab
 
             DEFAULT_VALIDATION_REQUEST_TIMEOUT = 5
             ACCEPTED_STATUS = 200
-            DOT_COM_REJECTED_STATUS = 406
-            GENERAL_REJECTED_STATUS = (400..499).freeze
+            REJECTED_STATUS = 406
 
             def perform!
               pipeline_authorized = validate_external
@@ -34,14 +33,13 @@ module Gitlab
               return true unless validation_service_url
 
               # 200 - accepted
-              # 406 - not accepted on GitLab.com
-              # 4XX - not accepted for other installations
+              # 406 - rejected
               # everything else - accepted and logged
               response_code = validate_service_request.code
               case response_code
               when ACCEPTED_STATUS
                 true
-              when rejected_status
+              when REJECTED_STATUS
                 false
               else
                 raise InvalidResponseCode, "Unsupported response code received from Validation Service: #{response_code}"
@@ -50,14 +48,6 @@ module Gitlab
               Gitlab::ErrorTracking.track_exception(ex, project_id: project.id)
 
               true
-            end
-
-            def rejected_status
-              if Gitlab.com?
-                DOT_COM_REJECTED_STATUS
-              else
-                GENERAL_REJECTED_STATUS
-              end
             end
 
             def validate_service_request
