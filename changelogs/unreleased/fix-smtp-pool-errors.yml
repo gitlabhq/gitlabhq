@@ -1,6 +1,0 @@
----
-title: Fix SMTP errors when delivering service desk thank you emails with SMTP pool
-  enabled
-merge_request: 60843
-author:
-type: fixed

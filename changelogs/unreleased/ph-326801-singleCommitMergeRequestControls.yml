@@ -1,5 +1,0 @@
----
-title: Fixes merge request controls not visible when merge request has single commit
-merge_request: 61030
-author:
-type: fixed

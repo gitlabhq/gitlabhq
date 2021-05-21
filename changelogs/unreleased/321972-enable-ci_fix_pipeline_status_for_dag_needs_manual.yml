@@ -1,5 +1,0 @@
----
-title: Fix pipeline status when DAG jobs needs manual jobs
-merge_request: 59975
-author:
-type: fixed

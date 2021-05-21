@@ -1,5 +1,0 @@
----
-title: Fix RSpec/EmptyLineAfterFinalLetItBe rubocop offenses in spec/workers
-merge_request: 58421
-author: Abdul Wadood @abdulwd
-type: fixed

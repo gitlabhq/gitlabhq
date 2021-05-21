@@ -1,5 +1,0 @@
----
-title: Change conan token expiration from 1 hour to 24 hours
-merge_request: 60763
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Recreate index for deployments updated_at and finished_at
-merge_request: 59771
-author:
-type: performance

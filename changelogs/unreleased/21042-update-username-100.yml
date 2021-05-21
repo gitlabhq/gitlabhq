@@ -1,5 +1,0 @@
----
-title: Fix N+1 queries in namespace#any_project_has_container_registry_tags?
-merge_request: 59916
-author:
-type: performance

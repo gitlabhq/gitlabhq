@@ -1,5 +1,0 @@
----
-title: Fixes rubocop offenses Style/RescueStandardError
-merge_request: 57923
-author: Shubham Kumar (@imskr)
-type: fixed

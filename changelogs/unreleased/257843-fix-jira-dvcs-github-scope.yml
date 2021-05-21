@@ -1,5 +1,0 @@
----
-title: Use correct scope when authorizing with Jira GitHub DVCS connector
-merge_request: 61496
-author:
-type: fixed

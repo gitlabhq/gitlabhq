@@ -1,5 +1,0 @@
----
-title: Optimize AvailableLabelsService for multiple labels search
-merge_request: 59032
-author:
-type: performance

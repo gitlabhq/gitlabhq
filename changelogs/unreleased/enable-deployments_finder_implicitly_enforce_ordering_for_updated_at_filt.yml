@@ -1,5 +1,0 @@
----
-title: Enforce updated_at ordering in Deployment API for performance optimization
-merge_request: 61870
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Upgrade omniauth_openid_connect gem to our own fork
-merge_request: 60181
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Delete all label links asynchronously when issuable gets destroyed
-merge_request: 60487
-author:
-type: performance

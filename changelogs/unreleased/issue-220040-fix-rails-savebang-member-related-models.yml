@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang Rubocop offenses for member models
-merge_request: 57994
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Apply rate-limiting to webhook executions
-merge_request: 61151
-author:
-type: performance

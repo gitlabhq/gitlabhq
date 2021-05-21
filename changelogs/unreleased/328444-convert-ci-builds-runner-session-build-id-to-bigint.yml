@@ -1,5 +1,0 @@
----
-title: Initialize conversion of ci_builds_runner_session.build_id to bigint
-merge_request: 60366
-author:
-type: other

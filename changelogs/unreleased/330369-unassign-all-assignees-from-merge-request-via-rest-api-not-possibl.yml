@@ -1,5 +1,0 @@
----
-title: 'Merge Request API: Treat 0 as a non-assigning sentinel value'
-merge_request: 61301
-author:
-type: fixed

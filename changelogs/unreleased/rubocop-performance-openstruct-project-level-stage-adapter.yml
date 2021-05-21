@@ -1,5 +1,0 @@
----
-title: Replace OpenStruct with Struct in project_level_stage_adapter.rb
-merge_request: 59956
-author: Amit Patel @amit.savani
-type: performance

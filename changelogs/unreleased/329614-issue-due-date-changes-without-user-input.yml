@@ -1,5 +1,0 @@
----
-title: Fix due date being randomly set in issue page
-merge_request: 60917
-author:
-type: fixed

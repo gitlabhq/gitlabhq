@@ -1,5 +1,0 @@
----
-title: Exclude build dependency calculation when creating the pipeline
-merge_request: 59810
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Prevent loss of timelogs when deleting notes
-merge_request: 58525
-author: Lee Tickett @leetickett
-type: fixed

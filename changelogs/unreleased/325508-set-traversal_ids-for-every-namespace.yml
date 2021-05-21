@@ -1,5 +1,0 @@
----
-title: Set traversal_ids for every namespace
-merge_request: 57318
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Add indexes for cleanup policies on container_repositories and container_expiration_policies
-merge_request: 58123
-author:
-type: added

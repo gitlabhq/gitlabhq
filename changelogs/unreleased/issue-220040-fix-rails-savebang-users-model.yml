@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang Rubocop offenses for user related models
-merge_request: 57901
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: other

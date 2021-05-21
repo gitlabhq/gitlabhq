@@ -1,5 +1,0 @@
----
-title: Implement Sidekiq queue re-routing in the application
-merge_request: 59604
-author:
-type: added

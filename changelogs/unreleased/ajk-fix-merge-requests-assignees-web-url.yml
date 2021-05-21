@@ -1,5 +1,0 @@
----
-title: Fix regression in GraphQL field MergeRequest.assignees.webUrl
-merge_request: 60428
-author:
-type: fixed

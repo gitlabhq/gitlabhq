@@ -1,5 +1,0 @@
----
-title: Always resolve GitLab alerts when recovery alert payload is received
-merge_request: 57302
-author:
-type: changed

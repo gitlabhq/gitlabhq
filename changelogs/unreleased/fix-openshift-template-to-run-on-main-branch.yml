@@ -1,5 +1,0 @@
----
-title: Fix Openshift template to run on main branch
-merge_request: 60811
-author:
-type: fixed

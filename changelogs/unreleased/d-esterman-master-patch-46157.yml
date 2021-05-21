@@ -1,5 +1,0 @@
----
-title: Bumped image in the CI-Template Jobs/Build.gitlab-ci.yml to 0.6.0
-merge_request: 59882
-author: Daniel Estermann (@d.esterman)
-type: changed

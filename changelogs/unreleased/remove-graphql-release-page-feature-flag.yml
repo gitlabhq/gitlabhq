@@ -1,6 +1,0 @@
----
-title: Remove graphql_release_data, graphql_milestone_stats, and graphql_releases_page
-  feature flags
-merge_request: 60390
-author:
-type: other

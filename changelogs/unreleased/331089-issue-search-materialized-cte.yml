@@ -1,5 +1,0 @@
----
-title: Fix issuable search optimization in PG12
-merge_request: 61880
-author:
-type: fixed

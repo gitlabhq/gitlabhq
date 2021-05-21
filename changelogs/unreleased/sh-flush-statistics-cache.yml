@@ -1,5 +1,0 @@
----
-title: Flush statistics cache anytime it is updated
-merge_request: 52938
-author:
-type: fixed

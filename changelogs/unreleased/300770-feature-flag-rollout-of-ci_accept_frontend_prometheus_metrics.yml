@@ -1,5 +1,0 @@
----
-title: Allow frontend to observe Prometheus metrics
-merge_request: 60633
-author:
-type: added

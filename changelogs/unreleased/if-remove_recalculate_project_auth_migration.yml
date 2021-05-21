@@ -1,5 +1,0 @@
----
-title: Make RecalculateProjectAuthorizations background migration no-op
-merge_request: 60825
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Fix N+1 for commits with pipelines
-merge_request: 59234
-author:
-type: performance

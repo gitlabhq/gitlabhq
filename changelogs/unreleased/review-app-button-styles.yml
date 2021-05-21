@@ -1,6 +1,0 @@
----
-title: Remove extra padding and margin from merge request widget review app dropdown
-  chevron
-merge_request: 61302
-author:
-type: fixed

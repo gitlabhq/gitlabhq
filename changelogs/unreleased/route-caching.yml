@@ -1,5 +1,0 @@
----
-title: Cache path lookups for namespaces
-merge_request: 57027
-author:
-type: performance

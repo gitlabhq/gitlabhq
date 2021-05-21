@@ -1,5 +1,0 @@
----
-title: Prevent loading of cohorts data in the admin users list
-merge_request: 59890
-author:
-type: performance

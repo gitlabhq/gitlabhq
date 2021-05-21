@@ -1,5 +1,0 @@
----
-title: Filter out unconnected-to-user members from receiving on access request emails
-merge_request: 61819
-author:
-type: fixed

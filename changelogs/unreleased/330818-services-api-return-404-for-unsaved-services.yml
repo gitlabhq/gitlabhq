@@ -1,5 +1,0 @@
----
-title: Fix services API returning non-existing services
-merge_request: 61646
-author:
-type: fixed

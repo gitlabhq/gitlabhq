@@ -1,6 +1,0 @@
----
-title: Add support for create, updating, and filtering issues based on issue type
-  in REST API
-merge_request: 60687
-author:
-type: added

@@ -1,6 +1,0 @@
----
-title: Suppress all non-nullable field errors for assignee widget graphql queries
-  to remove assignee fetching error messages in boards
-merge_request: 61091
-author:
-type: fixed

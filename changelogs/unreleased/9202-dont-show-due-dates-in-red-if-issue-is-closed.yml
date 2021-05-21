@@ -1,4 +1,0 @@
-title: Don't show due dates in red if the issue is closed
-merge_request: 57647
-author: Daniel Ziegenberg <daniel@ziegenberg.at>
-type: fixed

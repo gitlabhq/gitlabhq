@@ -1,5 +1,0 @@
----
-title: Remove string duplication in BlobStitcher
-merge_request: 60406
-author:
-type: performance

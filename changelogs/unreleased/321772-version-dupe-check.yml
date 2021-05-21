@@ -1,5 +1,0 @@
----
-title: Check duplicate package regex against version as well as name
-merge_request: 60760
-author:
-type: fixed

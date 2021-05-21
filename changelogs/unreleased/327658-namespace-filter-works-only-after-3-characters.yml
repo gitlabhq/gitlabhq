@@ -1,6 +1,0 @@
----
-title: Require 3 or more characters in search term when searching groups in Jira Connect
-  app
-merge_request: 61099
-author:
-type: changed

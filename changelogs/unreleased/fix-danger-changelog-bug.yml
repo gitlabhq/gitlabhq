@@ -1,5 +1,0 @@
----
-title: Fix changelog Dangerfile to convert MR IID to a string before comparison
-merge_request: 60899
-author:
-type: fixed

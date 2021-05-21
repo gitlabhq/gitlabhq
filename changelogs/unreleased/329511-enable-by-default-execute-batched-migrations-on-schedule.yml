@@ -1,5 +1,0 @@
----
-title: Enable by default scheduled execution of batched background migrations
-merge_request: 61316
-author:
-type: added

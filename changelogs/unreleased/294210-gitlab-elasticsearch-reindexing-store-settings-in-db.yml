@@ -1,5 +1,0 @@
----
-title: Store slice multiplier and max slices running for reindex in DB
-merge_request: 60861
-author:
-type: changed

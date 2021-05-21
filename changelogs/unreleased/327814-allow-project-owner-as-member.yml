@@ -1,5 +1,0 @@
----
-title: Fix restrictive permissions for ProjectMembers who are owners
-merge_request: 59844
-author:
-type: fixed

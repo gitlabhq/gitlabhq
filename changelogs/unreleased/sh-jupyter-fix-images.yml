@@ -1,5 +1,0 @@
----
-title: Fix images not showing in Jupyter Markdown tables
-merge_request: 59551
-author:
-type: fixed

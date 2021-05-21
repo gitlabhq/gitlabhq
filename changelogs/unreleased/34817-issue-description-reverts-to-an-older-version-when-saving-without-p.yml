@@ -1,5 +1,0 @@
----
-title: Add warning when locally stored description is out of date.
-merge_request: 29438
-author:
-type: fixed

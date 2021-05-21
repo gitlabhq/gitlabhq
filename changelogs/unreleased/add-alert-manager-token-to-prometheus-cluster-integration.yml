@@ -1,5 +1,0 @@
----
-title: Keep new prometheus cluster integration in sync with old cluster application
-merge_request: 60877
-author:
-type: changed

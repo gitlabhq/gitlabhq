@@ -1,5 +1,0 @@
----
-title: Disable automatic setup of alerts for Prometheus cluster integration
-merge_request: 58853
-author:
-type: changed

@@ -1,7 +1,0 @@
----
-title: >
-  Create "projects/import-remote" to import a project using a remote object storage to fetch
-  the exported project
-merge_request: 59033
-author:
-type: added

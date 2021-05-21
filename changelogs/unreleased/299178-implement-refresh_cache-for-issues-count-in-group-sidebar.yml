@@ -1,5 +1,0 @@
----
-title: Clear group open issues count cache when bulk updating issues state
-merge_request: 56386
-author:
-type: added

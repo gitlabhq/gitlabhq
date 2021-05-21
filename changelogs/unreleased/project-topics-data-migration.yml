@@ -1,5 +1,0 @@
----
-title: Migrate 'tags' to 'topics' for project in the database context
-merge_request: 61237
-author: Jonas Wälter @wwwjon
-type: changed

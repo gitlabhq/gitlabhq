@@ -1,5 +1,0 @@
----
-title: Ensure iid is set before skipping ci pipeline
-merge_request: 61231
-author:
-type: performance

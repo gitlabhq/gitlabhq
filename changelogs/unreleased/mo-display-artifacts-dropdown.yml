@@ -1,5 +1,0 @@
----
-title: Stop exposing has_downloadable_artifacts in pipelines.json
-merge_request: 60950
-author:
-type: performance

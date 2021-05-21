@@ -1,5 +1,0 @@
----
-title: Disable autocomplete for due date in issue sidebar to prevent triggering updates on Chrome
-merge_request: 60973
-author:
-type: fixed
