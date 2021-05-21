@@ -1,5 +1,0 @@
----
-title: Improve the Maven API file endpoints response time when a non existing package is requested
-merge_request: 60142
-author:
-type: performance

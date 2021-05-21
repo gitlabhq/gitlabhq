@@ -1,6 +1,0 @@
----
-title: Fix permission check when setting issue/merge request subscription in GraphQL
-  API.
-merge_request: 61980
-author:
-type: fixed

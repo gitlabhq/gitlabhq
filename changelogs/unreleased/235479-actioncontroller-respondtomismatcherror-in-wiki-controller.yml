@@ -1,5 +1,0 @@
----
-title: Return an HTML response for a request with the Accept */* header
-merge_request: 56288
-author:
-type: fixed

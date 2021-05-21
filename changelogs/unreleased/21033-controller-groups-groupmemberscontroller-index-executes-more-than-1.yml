@@ -1,5 +1,0 @@
----
-title: Resolve admin_group_member group policy n+1
-merge_request: 58948
-author:
-type: performance

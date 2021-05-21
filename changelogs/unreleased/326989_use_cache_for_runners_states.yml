@@ -1,5 +1,0 @@
----
-title: Use cache for CI::Build runners check
-merge_request: 61998
-author:
-type: performance

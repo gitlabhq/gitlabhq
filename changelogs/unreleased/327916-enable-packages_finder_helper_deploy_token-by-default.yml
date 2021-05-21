@@ -1,5 +1,0 @@
----
-title: Improve the packages finder helper SQL queries when handling deploy tokens
-merge_request: 59739
-author:
-type: performance

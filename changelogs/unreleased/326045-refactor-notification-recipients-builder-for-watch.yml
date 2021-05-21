@@ -1,5 +1,0 @@
----
-title: Refactor notification recipients builder for watchers
-merge_request: 60572
-author:
-type: performance

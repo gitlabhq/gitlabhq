@@ -24,7 +24,7 @@ RSpec.describe RemoveExpiredGroupLinksWorker do
         expect(non_expiring_project_group_link.reload).to be_present
       end
 
-      it 'removes project authorization' do
+      it 'removes project authorization', :sidekiq_inline do
         user = create(:user)
 
         project = expired_project_group_link.project

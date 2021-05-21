@@ -1,5 +1,0 @@
----
-title: Remove unnecessary query from close_issue method
-merge_request: 61087
-author:
-type: performance

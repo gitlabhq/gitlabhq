@@ -1,5 +1,0 @@
----
-title: Initialize conversion of ci_build_trace_chunks.build_id to bigint
-merge_request: 60346
-author:
-type: other

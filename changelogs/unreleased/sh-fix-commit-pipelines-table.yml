@@ -1,5 +1,0 @@
----
-title: Fix artifacts dropdown for merge request and commits pipelines tables
-merge_request: 61045
-author:
-type: fixed

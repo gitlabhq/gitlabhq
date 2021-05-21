@@ -1,5 +1,0 @@
----
-title: Add kubernetes_agent_proxy_request to usage ping
-merge_request: 60978
-author:
-type: changed

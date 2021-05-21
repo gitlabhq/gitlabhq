@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe Rubocop offenses for projects module
-merge_request: 58187
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Add project_id foreign key to timelogs
-merge_request: 60040
-author: Lee Tickett @leetickett
-type: added

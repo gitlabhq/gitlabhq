@@ -1,5 +1,0 @@
----
-title: Enforce .git suffix when importing git repo
-merge_request: 61115
-author:
-type: changed

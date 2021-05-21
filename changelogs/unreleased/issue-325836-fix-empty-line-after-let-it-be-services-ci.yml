@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe offenses in spec/services/ci
-merge_request: 58411
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

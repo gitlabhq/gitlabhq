@@ -1,5 +1,0 @@
----
-title: Restrict issue creation via API by relevant permissions
-merge_request: 61281
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Ensure project iid is set before saving pipeline from web terminal
-merge_request: 61311
-author:
-type: performance

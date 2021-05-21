@@ -275,6 +275,34 @@ RSpec.describe WebHook do
     end
   end
 
+  describe 'backoff!' do
+    it 'sets disabled_until to the next backoff' do
+      expect { hook.backoff! }.to change(hook, :disabled_until).to(hook.next_backoff.from_now)
+    end
+
+    it 'increments the backoff count' do
+      expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
+    end
+
+    it 'does not let the backoff count exceed the maximum failure count' do
+      hook.backoff_count = described_class::MAX_FAILURES
+
+      expect { hook.backoff! }.not_to change(hook, :backoff_count)
+    end
+  end
+
+  describe 'failed!' do
+    it 'increments the failure count' do
+      expect { hook.failed! }.to change(hook, :recent_failures).by(1)
+    end
+
+    it 'does not allow the failure count to exceed the maximum value' do
+      hook.recent_failures = described_class::MAX_FAILURES
+
+      expect { hook.failed! }.not_to change(hook, :recent_failures)
+    end
+  end
+
   describe '#disable!' do
     it 'disables a hook' do
       expect { hook.disable! }.to change(hook, :executable?).from(true).to(false)

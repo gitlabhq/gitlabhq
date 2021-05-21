@@ -1,5 +1,0 @@
----
-title: Make MergeService idempotent
-merge_request: 55368
-author:
-type: performance

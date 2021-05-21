@@ -1,5 +1,0 @@
----
-title: Improve the performance of Release LIST v4 API endpoint by short-interval caching
-merge_request: 61223
-author:
-type: performance

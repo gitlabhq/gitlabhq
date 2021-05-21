@@ -1014,7 +1014,7 @@ Check if new metrics need to be added to the Versions Application. See `usage_da
 
 Add the `feature` label to the Merge Request for new Usage Ping metrics. These are user-facing changes and are part of expanding the Usage Ping feature.
 
-### 8. Add a changelog file
+### 8. Add a changelog
 
 Ensure you comply with the [Changelog entries guide](../changelog.md).
 

@@ -1,5 +1,0 @@
----
-title: Fix releases API N+1 in sorted_links usage
-merge_request: 60561
-author:
-type: performance

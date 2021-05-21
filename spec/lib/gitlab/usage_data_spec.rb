@@ -294,7 +294,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             gitlab: 2,
             gitlab_migration: 2,
             gitlab_project: 2,
-            manifest: 2
+            manifest: 2,
+            total: 18
           },
           issue_imports: {
             jira: 2,
@@ -341,7 +342,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             gitlab: 1,
             gitlab_migration: 1,
             gitlab_project: 1,
-            manifest: 1
+            manifest: 1,
+            total: 9
           },
           issue_imports: {
             jira: 1,
@@ -371,7 +373,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             csv: Gitlab::UsageData::DEPRECATED_VALUE
           },
           groups_imported: Gitlab::UsageData::DEPRECATED_VALUE
-
         }
       )
     end
@@ -706,10 +707,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   end
 
   describe '.system_usage_data_monthly' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project) { create(:project, created_at: 3.days.ago) }
 
     before do
-      project = create(:project)
       env = create(:environment)
       create(:package, project: project, created_at: 3.days.ago)
       create(:package, created_at: 2.months.ago, project: project)
@@ -742,6 +742,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(counts_monthly[:personal_snippets]).to eq(1)
       expect(counts_monthly[:project_snippets]).to eq(1)
       expect(counts_monthly[:projects_with_alerts_created]).to eq(1)
+      expect(counts_monthly[:projects]).to eq(1)
       expect(counts_monthly[:packages]).to eq(1)
       expect(counts_monthly[:promoted_issues]).to eq(1)
     end

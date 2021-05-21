@@ -1,5 +1,0 @@
----
-title: Fix repeating SQL queries when changing labels for a resource.
-merge_request: 60718
-author:
-type: performance

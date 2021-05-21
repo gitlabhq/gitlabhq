@@ -1,5 +1,0 @@
----
-title: Enable by default automatic optimization of batched background migrations
-merge_request: 61317
-author:
-type: added

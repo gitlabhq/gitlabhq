@@ -1,5 +1,0 @@
----
-title: Add new service to handle add_spent_time to MRs
-merge_request: 60043
-author:
-type: performance

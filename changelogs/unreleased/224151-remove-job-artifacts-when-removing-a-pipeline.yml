@@ -1,5 +1,0 @@
----
-title: Fast destroy job artifacts when destroying a pipeline
-merge_request: 60391
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Allow access to registry API of the current project using the job token
-merge_request: 49750
-author: Mathieu Parent
-type: added

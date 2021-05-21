@@ -1,5 +1,0 @@
----
-title: Tie-breaker in Deployment Finder should respect the original sort direction
-merge_request: 61444
-author:
-type: performance

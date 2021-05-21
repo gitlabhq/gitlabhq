@@ -1,5 +1,0 @@
----
-title: Remove feature flag api_always_use_application_json
-merge_request: 56777
-author:
-type: removed

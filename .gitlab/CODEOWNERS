@@ -21,7 +21,7 @@
 /doc/administration/redis/ @axil
 /doc/administration/reference_architectures/ @axil
 /doc/administration/snippets/ @aqualls
-/doc/administration/troubleshooting @axil @marcia
+/doc/administration/troubleshooting @axil @marcia @eread
 /doc/api/group_activity_analytics.md @msedlakjakubowski
 /doc/ci/ @marcel.amirault @sselhorn
 /doc/ci/environments/ @axil
@@ -33,7 +33,7 @@
 /doc/development/value_stream_analytics.md @msedlakjakubowski
 /doc/gitlab-basics/ @marcia
 /doc/install/ @axil
-/doc/integration/ @aqualls
+/doc/integration/ @aqualls @eread
 /doc/operations/ @ngaskill @axil
 /doc/push_rules/ @aqualls
 /doc/ssh/ @eread
@@ -44,7 +44,7 @@
 /doc/user/analytics/ @msedlakjakubowski @ngaskill
 /doc/user/application_security @rdickenson
 /doc/user/clusters/ @marcia
-/doc/user/compliance/ @rdickenson
+/doc/user/compliance/ @rdickenson @eread
 /doc/user/group/ @msedlakjakubowski
 /doc/user/group/bulk_editing/ @msedlakjakubowski
 /doc/user/group/devops_adoption/ @msedlakjakubowski
@@ -55,7 +55,7 @@
 /doc/user/group/value_stream_analytics/ @msedlakjakubowski
 /doc/user/infrastructure/ @marcia
 /doc/user/packages/ @ngaskill
-/doc/user/profile/ @msedlakjakubowski
+/doc/user/profile/ @msedlakjakubowski @eread
 /doc/user/project/ @aqualls @axil @eread @msedlakjakubowski @ngaskill
 /doc/user/project/clusters/ @ngaskill
 /doc/user/project/import/ @ngaskill @msedlakjakubowski
@@ -66,7 +66,7 @@
 /doc/user/project/milestones/ @msedlakjakubowski
 /doc/user/project/pages/ @axil
 /doc/user/project/repository/ @aqualls
-/doc/user/project/settings/ @aqualls
+/doc/user/project/settings/ @aqualls @eread
 /doc/user/project/static_site_editor/index.md @aqualls
 /doc/user/project/web_ide/index.md @aqualls
 /doc/user/project/wiki/index.md @aqualls

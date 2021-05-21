@@ -2,4 +2,5 @@
 
 %style
   = Rails.application.assets_manifest.find_sources("themes/#{user_application_theme_css_filename}.css").first.to_s.html_safe if user_application_theme_css_filename
-  = Rails.application.assets_manifest.find_sources("startup/startup-#{startup_filename}.css").first.to_s.html_safe
+  - if sidebar_refactor_disabled?
+    = Rails.application.assets_manifest.find_sources("startup/startup-#{startup_filename}.css").first.to_s.html_safe

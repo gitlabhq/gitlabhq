@@ -18,20 +18,34 @@ RSpec.describe Tooling::Danger::Changelog do
     allow(changelog).to receive(:project_helper).and_return(fake_project_helper)
   end
 
+  describe '#check_changelog_commit_categories' do
+    context 'when all changelog commits are correct' do
+      it 'does not produce any messages' do
+        commit = double(:commit, message: "foo\nChangelog: fixed")
+
+        allow(changelog).to receive(:changelog_commits).and_return([commit])
+
+        expect(changelog).not_to receive(:fail)
+
+        changelog.check_changelog_commit_categories
+      end
+    end
+
+    context 'when a commit has an incorrect trailer' do
+      it 'adds a message' do
+        commit = double(:commit, message: "foo\nChangelog: foo", sha: '123')
+
+        allow(changelog).to receive(:changelog_commits).and_return([commit])
+
+        expect(changelog).to receive(:fail)
+
+        changelog.check_changelog_commit_categories
+      end
+    end
+  end
+
   describe '#check_changelog_trailer' do
     subject { changelog.check_changelog_trailer(commit) }
-
-    context "when commit doesn't include a changelog trailer" do
-      let(:commit) { double('commit', message: "Hello world") }
-
-      it { is_expected.to be_nil }
-    end
-
-    context "when commit include a changelog trailer with no category" do
-      let(:commit) { double('commit', message: "Hello world\n\nChangelog:") }
-
-      it { is_expected.to be_nil }
-    end
 
     context "when commit include a changelog trailer with an unknown category" do
       let(:commit) { double('commit', message: "Hello world\n\nChangelog: foo", sha: "abc123") }
@@ -44,110 +58,6 @@ RSpec.describe Tooling::Danger::Changelog do
         let(:commit) { double('commit', message: "Hello world\n\nChangelog: #{category}", sha: "abc123") }
 
         it { is_expected.to have_attributes(errors: []) }
-      end
-    end
-  end
-
-  describe '#check_changelog_yaml' do
-    let(:changelog_path) { 'ee/changelogs/unreleased/entry.yml' }
-    let(:changes) { changes_class.new([change_class.new(changelog_path, :added, :changelog)]) }
-    let(:yaml_title) { 'Fix changelog Dangerfile to convert MR IID to a string before comparison' }
-    let(:yaml_merge_request) { 60899 }
-    let(:mr_iid) { '60899' }
-    let(:yaml_type) { 'fixed' }
-    let(:yaml) do
-      <<~YAML
-      ---
-      title: #{yaml_title}
-      merge_request: #{yaml_merge_request}
-      author:
-      type: #{yaml_type}
-      YAML
-    end
-
-    before do
-      allow(changelog).to receive(:present?).and_return(true)
-      allow(changelog).to receive(:changelog_path).and_return(changelog_path)
-      allow(changelog).to receive(:read_file).with(changelog_path).and_return(yaml)
-      allow(fake_helper).to receive(:security_mr?).and_return(false)
-      allow(fake_helper).to receive(:mr_iid).and_return(mr_iid)
-      allow(fake_helper).to receive(:cherry_pick_mr?).and_return(false)
-      allow(fake_helper).to receive(:stable_branch?).and_return(false)
-      allow(fake_helper).to receive(:html_link).with(changelog_path).and_return(changelog_path)
-    end
-
-    subject { changelog.check_changelog_yaml }
-
-    context "when changelog is not present" do
-      before do
-        allow(changelog).to receive(:present?).and_return(false)
-      end
-
-      it { is_expected.to have_attributes(errors: [], warnings: [], markdowns: [], messages: []) }
-    end
-
-    context "when YAML is invalid" do
-      let(:yaml) { '{ foo bar]' }
-
-      it { is_expected.to have_attributes(errors: ["#{changelog_path} isn't valid YAML! #{described_class::SEE_DOC}"]) }
-    end
-
-    context "when a StandardError is raised" do
-      before do
-        allow(changelog).to receive(:read_file).and_raise(StandardError, "Fail!")
-      end
-
-      it { is_expected.to have_attributes(warnings: ["There was a problem trying to check the Changelog. Exception: StandardError - Fail!"]) }
-    end
-
-    context "when YAML title is nil" do
-      let(:yaml_title) { '' }
-
-      it { is_expected.to have_attributes(errors: ["`title` should be set, in #{changelog_path}! #{described_class::SEE_DOC}"]) }
-    end
-
-    context "when YAML type is nil" do
-      let(:yaml_type) { '' }
-
-      it { is_expected.to have_attributes(errors: ["`type` should be set, in #{changelog_path}! #{described_class::SEE_DOC}"]) }
-    end
-
-    context "when on a security MR" do
-      let(:yaml_merge_request) { '' }
-
-      before do
-        allow(fake_helper).to receive(:security_mr?).and_return(true)
-      end
-
-      it { is_expected.to have_attributes(errors: [], warnings: [], markdowns: [], messages: []) }
-    end
-
-    context "when MR IID is empty" do
-      before do
-        allow(fake_helper).to receive(:mr_iid).and_return("")
-      end
-
-      it { is_expected.to have_attributes(errors: [], warnings: [], markdowns: [], messages: []) }
-    end
-
-    context "when YAML MR IID is empty" do
-      let(:yaml_merge_request) { '' }
-
-      context "and YAML includes a merge_request: line" do
-        it { is_expected.to have_attributes(markdowns: [{ msg: format(described_class::SUGGEST_MR_COMMENT, mr_iid: fake_helper.mr_iid), file: changelog_path, line: 3 }]) }
-      end
-
-      context "and YAML does not include a merge_request: line" do
-        let(:yaml) do
-          <<~YAML
-          ---
-          title: #{yaml_title}
-          author:
-          type: #{yaml_type}
-          YAML
-        end
-
-        it { is_expected.to have_attributes(messages: ["Consider setting `merge_request` to #{mr_iid} in #{changelog_path}. #{described_class::SEE_DOC}"]) }
       end
     end
   end
@@ -177,24 +87,25 @@ RSpec.describe Tooling::Danger::Changelog do
       let(:ee_change) { change_class.new('ee/app/models/foo.rb', :added, :backend) }
 
       context "and a non-EE changelog, and changelog not required" do
-        let(:changelog_change) { change_class.new('changelogs/unreleased/entry.yml', :added, :changelog) }
-
         before do
           allow(changelog).to receive(:required?).and_return(false)
+          allow(changelog).to receive(:ee_changelog?).and_return(false)
         end
 
-        it { is_expected.to have_attributes(warnings: ["This MR has a Changelog file outside `ee/`, but code changes in `ee/`. Consider moving the Changelog file into `ee/`."]) }
+        it { is_expected.to have_attributes(warnings: ["This MR changes code in `ee/`, but is missing a Changelog commit. Consider adding the Changelog trailer to at least one commit."]) }
       end
 
       context "and a EE changelog" do
-        let(:changelog_change) { change_class.new('ee/changelogs/unreleased/entry.yml', :added, :changelog) }
+        before do
+          allow(changelog).to receive(:ee_changelog?).and_return(true)
+        end
 
         it { is_expected.to have_attributes(errors: [], warnings: [], markdowns: [], messages: []) }
 
         context "and there are DB changes" do
           let(:foss_change) { change_class.new('db/migrate/foo.rb', :added, :migration) }
 
-          it { is_expected.to have_attributes(warnings: ["This MR has a Changelog file inside `ee/`, but there are database changes which [requires](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry) the Changelog placement to be outside of `ee/`. Consider moving the Changelog file outside `ee/`."]) }
+          it { is_expected.to have_attributes(warnings: ["This MR has a Changelog commit with the `EE: true` trailer, but there are database changes which [requires](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry) the Changelog commiot to not have the `EE: true` trailer. Consider removing the `EE: true` trailer."]) }
         end
       end
     end
@@ -203,15 +114,19 @@ RSpec.describe Tooling::Danger::Changelog do
       let(:foss_change) { change_class.new('app/models/foo.rb', :added, :backend) }
 
       context "and a non-EE changelog" do
-        let(:changelog_change) { change_class.new('changelogs/unreleased/entry.yml', :added, :changelog) }
+        before do
+          allow(changelog).to receive(:ee_changelog?).and_return(false)
+        end
 
         it { is_expected.to have_attributes(errors: [], warnings: [], markdowns: [], messages: []) }
       end
 
       context "and a EE changelog" do
-        let(:changelog_change) { change_class.new('ee/changelogs/unreleased/entry.yml', :added, :changelog) }
+        before do
+          allow(changelog).to receive(:ee_changelog?).and_return(true)
+        end
 
-        it { is_expected.to have_attributes(warnings: ["This MR has a Changelog file in `ee/`, but no code changes in `ee/`. Consider moving the Changelog file outside `ee/`."]) }
+        it { is_expected.to have_attributes(warnings: ["This MR has a Changelog commit for EE, but no code changes in `ee/`. Consider removing the use of the `EE: true` trailer from your commits."]) }
       end
     end
   end
@@ -325,50 +240,63 @@ RSpec.describe Tooling::Danger::Changelog do
   end
 
   describe '#present?' do
-    subject { changelog.present? }
+    it 'returns true when a Changelog commit is present' do
+      allow(changelog)
+        .to receive(:valid_changelog_commits)
+        .and_return([double(:commit)])
 
-    context 'added files contain a changelog' do
-      let(:changes) { changes_class.new([change_class.new('foo', :added, :changelog)]) }
-
-      it { is_expected.to be_truthy }
+      expect(changelog).to be_present
     end
 
-    context 'added files do not contain a changelog' do
-      let(:changes) { changes_class.new([change_class.new('foo', :added, :backend)]) }
+    it 'returns false when a Changelog commit is missing' do
+      allow(changelog).to receive(:valid_changelog_commits).and_return([])
 
-      it { is_expected.to be_falsy }
+      expect(changelog).not_to be_present
+    end
+  end
+
+  describe '#changelog_commits' do
+    it 'returns the commits that include a Changelog trailer' do
+      commit1 = double(:commit, message: "foo\nChangelog: fixed")
+      commit2 = double(:commit, message: "bar\nChangelog: kittens")
+      commit3 = double(:commit, message: 'testing')
+      git = double(:git)
+
+      allow(changelog).to receive(:git).and_return(git)
+      allow(git).to receive(:commits).and_return([commit1, commit2, commit3])
+
+      expect(changelog.changelog_commits).to eq([commit1, commit2])
+    end
+  end
+
+  describe '#valid_changelog_commits' do
+    it 'returns the commits with a valid Changelog trailer' do
+      commit1 = double(:commit, message: "foo\nChangelog: fixed")
+      commit2 = double(:commit, message: "bar\nChangelog: kittens")
+
+      allow(changelog)
+        .to receive(:changelog_commits)
+        .and_return([commit1, commit2])
+
+      expect(changelog.valid_changelog_commits).to eq([commit1])
     end
   end
 
   describe '#ee_changelog?' do
-    subject { changelog.ee_changelog? }
+    it 'returns true when an EE changelog commit is present' do
+      commit = double(:commit, message: "foo\nEE: true")
 
-    context 'is ee changelog' do
-      let(:changes) { changes_class.new([change_class.new('ee/changelogs/unreleased/entry.yml', :added, :changelog)]) }
+      allow(changelog).to receive(:changelog_commits).and_return([commit])
 
-      it { is_expected.to be_truthy }
+      expect(changelog.ee_changelog?).to eq(true)
     end
 
-    context 'is not ee changelog' do
-      let(:changes) { changes_class.new([change_class.new('changelogs/unreleased/entry.yml', :added, :changelog)]) }
+    it 'returns false when an EE changelog commit is missing' do
+      commit = double(:commit, message: 'foo')
 
-      it { is_expected.to be_falsy }
-    end
-  end
+      allow(changelog).to receive(:changelog_commits).and_return([commit])
 
-  describe '#changelog_path' do
-    subject { changelog.changelog_path }
-
-    context 'added files contain a changelog' do
-      let(:changes) { changes_class.new([change_class.new('foo', :added, :changelog)]) }
-
-      it { is_expected.to eq('foo') }
-    end
-
-    context 'added files do not contain a changelog' do
-      let(:changes) { changes_class.new([change_class.new('foo', :added, :backend)]) }
-
-      it { is_expected.to be_nil }
+      expect(changelog.ee_changelog?).to eq(false)
     end
   end
 
@@ -379,8 +307,8 @@ RSpec.describe Tooling::Danger::Changelog do
       shared_examples 'changelog modified text' do |key|
         specify do
           expect(subject).to include('CHANGELOG.md was edited')
-          expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
-          expect(subject).to include('bin/changelog --ee -m 1234 "Fake Title"')
+          expect(subject).to include('`Changelog` trailer')
+          expect(subject).to include('`EE: true`')
         end
       end
 
@@ -410,7 +338,7 @@ RSpec.describe Tooling::Danger::Changelog do
 
       specify do
         expect(subject).to include('CHANGELOG.md was edited')
-        expect(subject).not_to include('bin/changelog')
+        expect(subject).not_to include('`Changelog` trailer')
       end
     end
   end
@@ -429,8 +357,7 @@ RSpec.describe Tooling::Danger::Changelog do
         specify do
           expect(subject).to have_key(key)
           expect(subject[key]).to include('CHANGELOG missing')
-          expect(subject[key]).to include('bin/changelog -m 1234 "Fake Title"')
-          expect(subject[key]).not_to include('--ee')
+          expect(subject[key]).to include('`Changelog` trailer')
         end
       end
 
@@ -464,8 +391,7 @@ RSpec.describe Tooling::Danger::Changelog do
         specify do
           expect(subject).to have_key(key)
           expect(subject[key]).to include('CHANGELOG missing')
-          expect(subject[key]).not_to include('bin/changelog')
-          expect(subject[key]).not_to include('--ee')
+          expect(subject[key]).not_to include('`Changelog` trailer')
         end
       end
 
@@ -498,8 +424,8 @@ RSpec.describe Tooling::Danger::Changelog do
       shared_examples 'changelog optional text' do |key|
         specify do
           expect(subject).to include('CHANGELOG missing')
-          expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
-          expect(subject).to include('bin/changelog --ee -m 1234 "Fake Title"')
+          expect(subject).to include('`Changelog` trailer')
+          expect(subject).to include('EE: true')
         end
       end
 
@@ -529,7 +455,6 @@ RSpec.describe Tooling::Danger::Changelog do
 
       specify do
         expect(subject).to include('CHANGELOG missing')
-        expect(subject).not_to include('bin/changelog')
       end
     end
   end

@@ -1,5 +1,0 @@
----
-title: Fix atom feed with push events for multiple tags
-merge_request: 62059
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Add options events to Redis HLL metrics for filtering data
-merge_request: 61685
-author:
-type: other

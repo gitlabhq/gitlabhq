@@ -1,5 +1,0 @@
----
-title: Linear traversal query for Namespace#descendants
-merge_request: 59632
-author:
-type: performance

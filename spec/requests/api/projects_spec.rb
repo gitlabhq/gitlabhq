@@ -2755,7 +2755,7 @@ RSpec.describe API::Projects do
         expect(project.project_group_links).to be_empty
       end
 
-      it 'updates project authorization' do
+      it 'updates project authorization', :sidekiq_inline do
         expect do
           delete api("/projects/#{project.id}/share/#{group.id}", user)
         end.to(

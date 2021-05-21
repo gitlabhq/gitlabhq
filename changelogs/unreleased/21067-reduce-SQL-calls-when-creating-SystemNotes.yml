@@ -1,5 +1,0 @@
----
-title: Reduce number of SQL queries when creating SystemNotes
-merge_request: 59102
-author:
-type: performance

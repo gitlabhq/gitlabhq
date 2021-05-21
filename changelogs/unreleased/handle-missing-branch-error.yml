@@ -1,5 +1,0 @@
----
-title: Return 404 from branches API when repository does not exist
-merge_request:
-author:
-type: fixed

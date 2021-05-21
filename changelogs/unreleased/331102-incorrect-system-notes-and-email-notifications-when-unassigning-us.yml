@@ -1,5 +1,0 @@
----
-title: Ensure post-update actions are applied when assignees change
-merge_request: 61897
-author:
-type: fixed

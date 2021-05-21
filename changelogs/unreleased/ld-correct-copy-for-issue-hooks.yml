@@ -1,6 +1,0 @@
----
-title: Fix copy on webhook admin pages for "Issues events" and "Confidential issues
-  events"
-merge_request: 60453
-author:
-type: changed

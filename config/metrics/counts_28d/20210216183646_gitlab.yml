@@ -1,6 +1,6 @@
 ---
 key_path: usage_activity_by_stage_monthly.manage.project_imports.gitlab
-description: ''
+description: Count of projects imported from GitLab using Project Export/Import
 product_section: dev
 product_stage: manage
 product_group: group::import

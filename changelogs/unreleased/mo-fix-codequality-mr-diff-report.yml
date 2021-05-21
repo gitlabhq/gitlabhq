@@ -1,5 +1,0 @@
----
-title: 'Fix false positive for codequality mr diff report'
-merge_request: 59421
-author:
-type: fixed

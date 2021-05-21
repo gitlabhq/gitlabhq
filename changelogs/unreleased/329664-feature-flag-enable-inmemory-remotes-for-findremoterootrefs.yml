@@ -1,5 +1,0 @@
----
-title: Make find_remote_root_refs_inmemory feature flag enabled by default
-merge_request: 61824
-author:
-type: changed

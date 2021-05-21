@@ -1,5 +1,0 @@
----
-title: Remove unused :auto_create_cluster_management_project feature flag
-merge_request: 60550
-author:
-type: other

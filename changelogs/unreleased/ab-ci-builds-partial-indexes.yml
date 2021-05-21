@@ -1,5 +1,0 @@
----
-title: Create partial indexes for pending/running builds
-merge_request: 60942
-author:
-type: performance

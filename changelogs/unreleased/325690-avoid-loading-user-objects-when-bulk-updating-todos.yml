@@ -1,5 +1,0 @@
----
-title: Avoid loading user objects when bulk updating todos
-merge_request: 59909
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Fix bug where test report was not showing while pipeline was running
-merge_request: 60416
-author:
-type: fixed

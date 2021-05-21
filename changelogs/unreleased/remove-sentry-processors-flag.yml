@@ -1,6 +1,0 @@
----
-title: Make Sentry processors for GitLab-internal error tracking compatible with new
-  version of Sentry gem
-merge_request: 59565
-author:
-type: other

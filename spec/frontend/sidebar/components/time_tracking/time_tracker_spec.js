@@ -18,14 +18,18 @@ describe('Issuable Time Tracker', () => {
     humanTimeEstimate: '2h 46m',
     humanTimeSpent: '1h 23m',
     limitToHours: false,
+    issuableId: '1',
   };
 
-  const mountComponent = ({ props = {} } = {}) =>
+  const mountComponent = ({ props = {}, issuableType = 'issue' } = {}) =>
     mount(TimeTracker, {
       propsData: { ...defaultProps, ...props },
       directives: { GlTooltip: createMockDirective() },
       stubs: {
         transition: stubTransition(),
+      },
+      provide: {
+        issuableType,
       },
     });
 
@@ -210,12 +214,19 @@ describe('Issuable Time Tracker', () => {
       });
 
       describe('When time spent', () => {
-        beforeEach(() => {
+        it('link should appear on issue', () => {
           wrapper = mountComponent();
+          expect(findReportLink().exists()).toBe(true);
         });
 
-        it('link should appear', () => {
+        it('link should appear on merge request', () => {
+          wrapper = mountComponent({ issuableType: 'merge_request' });
           expect(findReportLink().exists()).toBe(true);
+        });
+
+        it('link should not appear on milestone', () => {
+          wrapper = mountComponent({ issuableType: 'milestone' });
+          expect(findReportLink().exists()).toBe(false);
         });
       });
     });

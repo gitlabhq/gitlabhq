@@ -1,5 +1,0 @@
----
-title: Improve diff_files endpoint performance
-merge_request: 59489
-author:
-type: performance

@@ -1,6 +1,0 @@
----
-title: Export issues sorted by relative position and recompute issue relative position
-  on project import
-merge_request: 59175
-author:
-type: changed

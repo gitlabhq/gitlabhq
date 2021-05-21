@@ -1,5 +1,0 @@
----
-title: Initialize conversion of ci_sources_pipelines.source_job_id to bigint
-merge_request: 59951
-author:
-type: other

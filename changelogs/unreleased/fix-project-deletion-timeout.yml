@@ -1,5 +1,0 @@
----
-title: Reorder source_project_id foreign key constraint in merge_requests table
-merge_request: 60313
-author:
-type: changed

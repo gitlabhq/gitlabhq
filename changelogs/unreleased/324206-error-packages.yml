@@ -1,6 +1,0 @@
----
-title: Update RubyGems and NuGet packages to error status upon metadata extraction
-  failure
-merge_request: 60172
-author:
-type: changed

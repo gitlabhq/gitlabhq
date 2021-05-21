@@ -1,5 +1,0 @@
----
-title: Resolve RuboCop offenses for Style/RedundantRegexpCharacterClass
-merge_request: 57914
-author: Shubham Kumar @imskr
-type: fixed

@@ -1,0 +1,20 @@
+---
+key_path: counts_monthly.projects
+description: 'Count number of projects created monthly'
+product_section: dev
+product_stage: plan
+product_group: group::project management
+product_category: ''
+value_type: number
+status: implemented
+milestone: "14.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61775
+time_frame: 28d
+data_source: database
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate

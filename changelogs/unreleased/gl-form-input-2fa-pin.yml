@@ -1,5 +1,0 @@
----
-title: Add gl-form-input utility class for pin code field in 2fa
-merge_request: 59220
-author: Yogi (@yo)
-type: changed

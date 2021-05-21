@@ -1,5 +1,0 @@
----
-title: Accelerate builds queuing using a denormalized accelerated table
-merge_request: 61581
-author:
-type: performance

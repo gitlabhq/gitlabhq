@@ -1,5 +1,0 @@
----
-title: Ensure we never error in web hook logs
-merge_request: 60408
-author:
-type: fixed

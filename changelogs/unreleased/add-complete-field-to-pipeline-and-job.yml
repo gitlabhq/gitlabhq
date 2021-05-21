@@ -1,5 +1,0 @@
----
-title: Add complete field to indicate if a pipeline/job is complete
-merge_request: 61209
-author: Cong Chen @gentcys
-type: added

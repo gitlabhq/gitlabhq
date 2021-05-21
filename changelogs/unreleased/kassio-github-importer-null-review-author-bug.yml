@@ -1,5 +1,0 @@
----
-title: 'GithubImport: Fix Review importer when the author does not exist anymore'
-merge_request: 61257
-author:
-type: fixed

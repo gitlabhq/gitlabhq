@@ -1,0 +1,20 @@
+---
+key_path: usage_activity_by_stage_monthly.manage.project_imports.total
+description: Total count of projects imported
+product_section: dev
+product_stage: manage
+product_group: group::import
+product_category:
+value_type: number
+status: implemented
+milestone: "14.0"
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61775"
+time_frame: 28d
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

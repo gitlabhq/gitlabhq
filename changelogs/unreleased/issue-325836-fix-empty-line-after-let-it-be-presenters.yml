@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe offenses in spec/presenters
-merge_request: 58405
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

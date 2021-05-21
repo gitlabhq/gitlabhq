@@ -180,7 +180,7 @@ You must have [Owner permissions](../../user/permissions.md#group-members-permis
 
    | Attribute    | Description |
    | ------------ | ----------- |
-   | Type         | One or more of the following states: shared, group, specific, locked, or paused |
+   | Type         | Displays the runner type: `group` or `specific`, together with the optional states `locked` and `paused` |
    | Runner token | Token used to identify the runner, and that the runner uses to communicate with the GitLab instance |
    | Description  | Description given to the runner when it was created |
    | Version      | GitLab Runner version |

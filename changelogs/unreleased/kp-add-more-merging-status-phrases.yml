@@ -1,5 +1,0 @@
----
-title: Show a random predefined message while MR merging is in progress
-merge_request: 60521
-author:
-type: added

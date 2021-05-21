@@ -2681,7 +2681,6 @@ Performance/OpenStruct:
     - 'ee/lib/gitlab/graphql/aggregations/epics/epic_node.rb'
     - 'lib/api/wikis.rb'
     - 'lib/gitlab/ci/ansi2html.rb'
-    - 'lib/gitlab/ci/reports/test_suite_comparer.rb'
     - 'lib/gitlab/git/diff_collection.rb'
     - 'lib/gitlab/import_export/after_export_strategies/base_after_export_strategy.rb'
     - 'lib/gitlab/testing/request_inspector_middleware.rb'

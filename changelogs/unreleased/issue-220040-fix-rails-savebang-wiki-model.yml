@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang Rubocop offenses for wiki_page models
-merge_request: 57899
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

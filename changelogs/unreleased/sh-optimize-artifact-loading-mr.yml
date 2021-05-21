@@ -1,5 +1,0 @@
----
-title: Optimize query for loading artifacts in pipeline
-merge_request: 62249
-author:
-type: performance

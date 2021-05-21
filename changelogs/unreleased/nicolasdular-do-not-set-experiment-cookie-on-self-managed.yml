@@ -1,5 +1,0 @@
----
-title: Do not set experiment cookie on self managed and delete existing cookies
-merge_request: 60419
-author:
-type: fixed

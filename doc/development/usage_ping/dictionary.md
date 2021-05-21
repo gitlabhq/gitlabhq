@@ -6718,6 +6718,18 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `counts_monthly.projects`
+
+Count number of projects created monthly
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210514141518_monthly_projects_creation.yml)
+
+Group: `group::project management`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts_monthly.projects_with_alerts_created`
 
 Monthly count of unique projects with HTTP alerting enabled
@@ -16548,6 +16560,18 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `usage_activity_by_stage.manage.project_imports.total`
+
+Count number of projects imported monthly
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210514141520_project_imports_total.yml)
+
+Group: `group::import`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `usage_activity_by_stage.manage.projects_imported.bitbucket`
 
 Distinct count of users that imported projects from Bitbucket Cloud
@@ -18460,7 +18484,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.project_imports.gitlab`
 
-Missing description
+Count of projects imported from GitLab using Project Export/Import
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183646_gitlab.yml)
 
@@ -18503,6 +18527,18 @@ Missing description
 Group: `group::import`
 
 Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `usage_activity_by_stage_monthly.manage.project_imports.total`
+
+Total count of projects imported
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210520111133_total.yml)
+
+Group: `group::import`
+
+Status: `implemented`
 
 Tiers: `free`, `premium`, `ultimate`
 

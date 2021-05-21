@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe offenses in spec/lib/gitlab/repository
-merge_request: 58308
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

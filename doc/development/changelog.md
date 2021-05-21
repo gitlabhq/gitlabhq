@@ -11,56 +11,84 @@ file, as well as information and history about our changelog process.
 
 ## Overview
 
-Each bullet point, or **entry**, in our [`CHANGELOG.md`](https://gitlab.com/gitlab-org/gitlab/blob/master/CHANGELOG.md) file is
-generated from a single data file in the [`changelogs/unreleased/`](https://gitlab.com/gitlab-org/gitlab/tree/master/changelogs/unreleased/).
-The file is expected to be a [YAML](https://en.wikipedia.org/wiki/YAML) file in the
-following format:
+Each bullet point, or **entry**, in our
+[`CHANGELOG.md`](https://gitlab.com/gitlab-org/gitlab/blob/master/CHANGELOG.md)
+file is generated from the subject line of a Git commit. Commits are included
+when they contain the `Changelog` [Git trailer](https://git-scm.com/docs/git-interpret-trailers).
+When generating the changelog, author and merge request details are added
+automatically.
 
-```yaml
----
-title: "Change[log]s"
-merge_request: 1972
-author: Black Sabbath @bsabbath
-type: added
+The `Changelog` trailer accepts the following values:
+
+- added
+- fixed
+- changed
+- deprecated
+- removed
+- security
+- performance
+- other
+
+An example of a Git commit to include in the changelog is the following:
+
+```plaintext
+Update git vendor to gitlab
+
+Now that we are using gitaly to compile git, the git version isn't known
+from the manifest, instead we are getting the gitaly version. Update our
+vendor field to be `gitlab` to avoid cve matching old versions.
+
+Changelog: changed
 ```
 
-The `merge_request` value is a reference to a merge request that adds this
-entry, and the `author` key (format: `<full name> <GitLab username>`) is used to give attribution to community
-contributors. **Both are optional**.
-The `type` field maps the category of the change,
-valid options are: added, fixed, changed, deprecated, removed, security, performance, other. **Type field is mandatory**.
+### Overriding the associated merge request
 
-Community contributors and core team members are encouraged to add their name to
-the `author` field. GitLab team members **should not**.
+GitLab automatically links the merge request to the commit when generating the
+changelog. If you want to override the merge request to link to, you can specify
+an alternative merge request using the `MR` trailer:
+
+```plaintext
+Update git vendor to gitlab
+
+Now that we are using gitaly to compile git, the git version isn't known
+from the manifest, instead we are getting the gitaly version. Update our
+vendor field to be `gitlab` to avoid cve matching old versions.
+
+Changelog: changed
+MR: https://gitlab.com/foo/bar/-/merge_requests/123
+```
+
+The value must be the full URL of the merge request.
+
+### GitLab Enterprise changes
+
+If a change is for GitLab Enterprise Edition, you must also add the trailer `EE:
+true`:
+
+```plaintext
+Update git vendor to gitlab
+
+Now that we are using gitaly to compile git, the git version isn't known
+from the manifest, instead we are getting the gitaly version. Update our
+vendor field to be `gitlab` to avoid cve matching old versions.
+
+Changelog: changed
+MR: https://gitlab.com/foo/bar/-/merge_requests/123
+EE: true
+```
 
 ## What warrants a changelog entry?
 
-- Any change that introduces a database migration, whether it's regular, post,
-  or data migration, **must** have a changelog entry, even if it is behind a
-  disabled feature flag. Since the migration is executed on [GitLab FOSS](https://gitlab.com/gitlab-org/gitlab-foss/),
-  the changelog for database schema changes should be written to the
-  `changelogs/unreleased/` directory, even when other elements of that change affect only GitLab EE.
-
-- [Security fixes](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md)
-  **must** have a changelog entry, without `merge_request` value
-  and with `type` set to `security`.
-- Any user-facing change **must** have a changelog entry. This includes both visual changes (regardless of how minor), and changes to the rendered DOM which impact how a screen reader may announce the content.
-- Any client-facing change to our REST and GraphQL APIs **must** have a changelog entry. See the [complete list what comprises a GraphQL breaking change](api_graphql_styleguide.md#breaking-changes).
-- Any change that introduces an [Advanced Search migration](elasticsearch.md#creating-a-new-advanced-search-migration) **must** have a changelog entry.
-- Performance improvements **should** have a changelog entry.
-- _Any_ contribution from a community member, no matter how small, **may** have
-  a changelog entry regardless of these guidelines if the contributor wants one.
-  Example: "Fixed a typo on the search results page."
-- Any docs-only changes **should not** have a changelog entry.
-- For changes related to feature flags, use [feature flag guide](feature_flags/index.md#changelog) to determine the changelog entry.
-- Any change that adds new Usage Data metrics, sets the status of existing ones to `removed`, and changes that need to be documented in Product Intelligence [Metrics Dictionary](usage_ping/dictionary.md) **should** have a changelog entry.
-- A change that adds snowplow events **should** have a changelog entry -
-- A fix for a regression introduced and then fixed in the same release (i.e.,
+- Any user-facing change **should** have a changelog entry. Example: "GitLab now
+  uses system fonts for all text."
+- A fix for a regression introduced and then fixed in the same release (such as
   fixing a bug introduced during a monthly release candidate) **should not**
   have a changelog entry.
-- Any developer-facing change (e.g., refactoring, technical debt remediation,
-  test suite changes) **should not** have a changelog entry. Example: "Reduce
+- Any developer-facing change (such as refactoring, technical debt remediation,
+  or test suite changes) **should not** have a changelog entry. Example: "Reduce
   database records created during Cycle Analytics model spec."
+- _Any_ contribution from a community member, no matter how small, **may** have
+  a changelog entry regardless of these guidelines if the contributor wants one.
 
 ## Writing good changelog entries
 
@@ -105,215 +133,49 @@ about _where_ and _why_ the change was made?
 
 ## How to generate a changelog entry
 
-A `bin/changelog` script is available to generate the changelog entry file
-automatically.
+Git trailers are added when committing your changes. This can be done using your
+text editor of choice. Adding the trailer to an existing commit requires either
+amending to the commit (if it's the most recent one), or an interactive rebase
+using `git rebase -i`.
 
-Its simplest usage is to provide the value for `title`:
+To update the last commit, run the following:
 
-```plaintext
-bin/changelog 'Hey DZ, I added a feature to GitLab!'
+```shell
+git commit --amend
 ```
 
-If you want to generate a changelog entry for GitLab EE, you must pass
-the `--ee` option:
+You can then add the `Changelog` trailer to the commit message. If you had
+already pushed prior commits to your remote branch, you have to force push
+the new commit:
 
-```plaintext
-bin/changelog --ee 'Hey DZ, I added a feature to GitLab!'
+```shell
+git push -f origin your-branch-name
 ```
 
-All entries in the `CHANGELOG.md` file apply to all editions of GitLab.
-Changelog updates are based on a common [GitLab codebase](https://gitlab.com/gitlab-org/gitlab/),
-and are mirrored without proprietary code to [GitLab FOSS](https://gitlab.com/gitlab-org/gitlab-foss/) (also known as GitLab Community Edition).
+To edit older (or multiple commits), use `git rebase -i HEAD~N` where `N` is the
+last N number of commits to rebase. Let's say you have 3 commits on your branch:
+A, B, and C. If you want to update commit B, you need to run:
 
-At this point the script would ask you to select the category of the change (mapped to the `type` field in the entry):
-
-```plaintext
->> Please specify the category of your change:
-1. New feature
-2. Bug fix
-3. Feature change
-4. New deprecation
-5. Feature removal
-6. Security fix
-7. Performance improvement
-8. Other
+```shell
+git rebase -i HEAD~2
 ```
 
-The entry filename is based on the name of the current Git branch. If you run
-the command above on a branch called `feature/hey-dz`, it generates a
-`changelogs/unreleased/feature-hey-dz.yml` file.
-
-The command outputs the path of the generated file and its contents:
+This starts an interactive rebase session for the last two commits. When
+started, Git presents you with a text editor with contents along the lines of
+the following:
 
 ```plaintext
-create changelogs/unreleased/my-feature.yml
----
-title: Hey DZ, I added a feature to GitLab!
-merge_request:
-author:
-type:
+pick B Subject of commit B
+pick C Subject of commit C
 ```
 
-### Arguments
+To update commit B, change the word `pick` to `reword`, then save and quit the
+editor. Once closed, Git presents you with a new text editor instance to edit
+the commit message of commit B. Add the trailer, then save and quit the editor.
+If all went well, commit B is now updated.
 
-| Argument            | Shorthand | Purpose                                                                                                                                 |
-| -----------------   | --------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [`--amend`](#--amend)         |           | Amend the previous commit                                                                                                               |
-| [`--force`](#--force-or--f)         | `-f`      | Overwrite an existing entry                                                                                                             |
-| [`--merge-request`](#--merge-request-or--m) | `-m`      | Set merge request ID                                                                                                                    |
-| [`--dry-run`](#--dry-run-or--n)       | `-n`      | Don't actually write anything, just print                                                                                               |
-| [`--git-username`](#--git-username-or--u)  | `-u`      | Use Git user.name configuration as the author                                                                                           |
-| [`--type`](#--type-or--t)          | `-t`      | The category of the change, valid options are: `added`, `fixed`, `changed`, `deprecated`, `removed`, `security`, `performance`, `other` |
-| [`--ee`](#how-to-generate-a-changelog-entry)          |       | Create an EE changelog
-| `--help`          | `-h`      | Print help message                                                                                                                      |
-
-#### `--amend`
-
-You can pass the **`--amend`** argument to automatically stage the generated
-file and amend it to the previous commit.
-
-If you use **`--amend`** and don't provide a title, it uses
-the "subject" of the previous commit, which is the first line of the commit
-message:
-
-```plaintext
-$ git show --oneline
-ab88683 Added an awesome new feature to GitLab
-
-$ bin/changelog --amend
-create changelogs/unreleased/feature-hey-dz.yml
----
-title: Added an awesome new feature to GitLab
-merge_request:
-author:
-type:
-```
-
-#### `--force` or `-f`
-
-Use **`--force`** or **`-f`** to overwrite an existing changelog entry if it
-already exists.
-
-```plaintext
-$ bin/changelog 'Hey DZ, I added a feature to GitLab!'
-error changelogs/unreleased/feature-hey-dz.yml already exists! Use `--force` to overwrite.
-
-$ bin/changelog 'Hey DZ, I added a feature to GitLab!' --force
-create changelogs/unreleased/feature-hey-dz.yml
----
-title: Hey DZ, I added a feature to GitLab!
-merge_request: 1983
-author:
-type:
-```
-
-#### `--merge-request` or `-m`
-
-Use the **`--merge-request`** or **`-m`** argument to provide the
-`merge_request` value:
-
-```plaintext
-$ bin/changelog 'Hey DZ, I added a feature to GitLab!' -m 1983
-create changelogs/unreleased/feature-hey-dz.yml
----
-title: Hey DZ, I added a feature to GitLab!
-merge_request: 1983
-author:
-type:
-```
-
-#### `--dry-run` or `-n`
-
-Use the **`--dry-run`** or **`-n`** argument to prevent actually writing or
-committing anything:
-
-```plaintext
-$ bin/changelog --amend --dry-run
-create changelogs/unreleased/feature-hey-dz.yml
----
-title: Added an awesome new feature to GitLab
-merge_request:
-author:
-type:
-
-$ ls changelogs/unreleased/
-```
-
-#### `--git-username` or `-u`
-
-Use the **`--git-username`** or **`-u`** argument to automatically fill in the
-`author` value with your configured Git `user.name` value:
-
-```plaintext
-$ git config user.name
-Jane Doe
-
-$ bin/changelog -u 'Hey DZ, I added a feature to GitLab!'
-create changelogs/unreleased/feature-hey-dz.yml
----
-title: Hey DZ, I added a feature to GitLab!
-merge_request:
-author: Jane Doe
-type:
-```
-
-#### `--type` or `-t`
-
-Use the **`--type`** or **`-t`** argument to provide the `type` value:
-
-```plaintext
-$ bin/changelog 'Hey DZ, I added a feature to GitLab!' -t added
-create changelogs/unreleased/feature-hey-dz.yml
----
-title: Hey DZ, I added a feature to GitLab!
-merge_request:
-author:
-type: added
-```
-
-#### `--ee`
-
-Use the **`--ee`** argument to create an EE changelog:
-
-```plaintext
-$ bin/changelog 'Hey DZ, I added a feature to GitLab!' -ee
-create ee/changelogs/unreleased/feature-hey-dz.yml
----
-title: Hey DZ, I added a feature to GitLab!
-merge_request:
-author:
-type: added
-```
-
-### History and Reasoning
-
-Our `CHANGELOG` file was previously updated manually by each contributor that
-felt their change warranted an entry. When two merge requests added their own
-entries at the same spot in the list, it created a merge conflict in one as soon
-as the other was merged. When we had dozens of merge requests fighting for the
-same changelog entry location, this quickly became a major source of merge
-conflicts and delays in development.
-
-This led us to a [boring solution](https://about.gitlab.com/handbook/values/#boring-solutions) of "add your entry in a random location in
-the list." This actually worked pretty well as we got further along in each
-monthly release cycle, but at the start of a new cycle, when a new version
-section was added and there were fewer places to "randomly" add an entry, the
-conflicts became a problem again until we had a sufficient number of entries.
-
-On top of all this, it created an entirely different headache for
-[release managers](https://gitlab.com/gitlab-org/release/docs/blob/master/quickstart/release-manager.md)
-when they cherry-picked a commit into a stable branch for a patch release. If
-the commit included an entry in the `CHANGELOG`, it would include the entire
-changelog for the latest version in `master`, so the release manager would have
-to manually remove the later entries. They often would have had to do this
-multiple times per patch release. This was compounded when we had to release
-multiple patches at once due to a security issue.
-
-We needed to automate all of this manual work. So we
-[started brainstorming](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/17826).
-After much discussion we settled on the current solution of one file per entry,
-and then compiling the entries into the overall `CHANGELOG.md` file during the
-[release process](https://gitlab.com/gitlab-org/release-tools).
+For more information about interactive rebases, take a look at [the Git
+documentation](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History).
 
 ---
 

@@ -1,5 +1,0 @@
----
-title: Execute member hooks only if an associated user is present
-merge_request: 62175
-author:
-type: fixed

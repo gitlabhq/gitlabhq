@@ -13,6 +13,12 @@ export default {
   components: {
     IssuableTimeTracker,
   },
+  props: {
+    issuableId: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       mediator: new Mediator(),
@@ -51,6 +57,7 @@ export default {
 <template>
   <div class="block">
     <issuable-time-tracker
+      :issuable-id="issuableId"
       :time-estimate="store.timeEstimate"
       :time-spent="store.totalTimeSpent"
       :human-time-estimate="store.humanTimeEstimate"

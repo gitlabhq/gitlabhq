@@ -1,5 +1,0 @@
----
-title: Remove the redundant update for API endpoint projects/:id/statuses/:sha
-merge_request: 61470
-author:
-type: performance

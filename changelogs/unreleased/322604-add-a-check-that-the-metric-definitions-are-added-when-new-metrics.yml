@@ -1,6 +1,0 @@
----
-title: Add specs ensuring all metric definition key paths are present in Usage Ping
-  structure
-merge_request: 59314
-author:
-type: other

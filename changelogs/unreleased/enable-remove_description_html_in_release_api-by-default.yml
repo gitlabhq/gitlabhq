@@ -1,5 +1,0 @@
----
-title: Remove description_html field from Release Rest API
-merge_request: 61327
-author:
-type: removed
