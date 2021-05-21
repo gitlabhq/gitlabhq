@@ -11,9 +11,11 @@ module Gitlab
     end
 
     def self.too_large?(size)
-      return false unless size.to_i > Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
+      file_size_limit = Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
 
-      over_highlight_size_limit.increment(source: "text highlighter") if Feature.enabled?(:track_file_size_over_highlight_limit)
+      return false unless size.to_i > file_size_limit
+
+      over_highlight_size_limit.increment(source: "file size: #{file_size_limit}") if Feature.enabled?(:track_file_size_over_highlight_limit)
 
       true
     end

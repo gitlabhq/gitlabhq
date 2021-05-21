@@ -23,13 +23,14 @@ const TEST_OTHER_PROPS = {
 describe('~/nav/components/top_nav_container_view.vue', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, options = {}) => {
     wrapper = shallowMount(TopNavContainerView, {
       propsData: {
         ...DEFAULT_PROPS,
         ...TEST_OTHER_PROPS,
         ...props,
       },
+      ...options,
     });
   };
 
@@ -44,6 +45,7 @@ describe('~/nav/components/top_nav_container_view.vue', () => {
     return {
       vuexModule: parent.props('vuexModule'),
       props: parent.findComponent(FrequentItemsApp).props(),
+      attributes: parent.findComponent(FrequentItemsApp).attributes(),
     };
   };
 
@@ -67,14 +69,23 @@ describe('~/nav/components/top_nav_container_view.vue', () => {
   );
 
   describe('default', () => {
+    const EXTRA_ATTRS = { 'data-test-attribute': 'foo' };
+
     beforeEach(() => {
-      createComponent();
+      createComponent({}, { attrs: EXTRA_ATTRS });
+    });
+
+    it('does not inherit extra attrs', () => {
+      expect(wrapper.attributes()).toEqual({
+        class: expect.any(String),
+      });
     });
 
     it('renders frequent items app', () => {
       expect(findFrequentItemsApp()).toEqual({
         vuexModule: DEFAULT_PROPS.frequentItemsVuexModule,
         props: TEST_OTHER_PROPS,
+        attributes: expect.objectContaining(EXTRA_ATTRS),
       });
     });
 

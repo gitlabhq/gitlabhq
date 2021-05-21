@@ -20,8 +20,8 @@ disabled by default, as they must usually be customized to match application-spe
 
 See the [installation guide](quick_start_guide.md) for the recommended steps to install GitLab
 Container Network Security. This guide shows the recommended way of installing Container Network
-Security through GMAv2. However, it's also possible to install Cilium manually through our Helm
-chart.
+Security through the Cluster Management Project. However, it's also possible to install Cilium
+manually through our Helm chart.
 
 ## Features
 

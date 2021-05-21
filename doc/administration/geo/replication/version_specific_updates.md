@@ -82,6 +82,12 @@ paused fails. Do not pause replication before promoting a secondary. If the
 node is paused, be sure to resume before promoting. To avoid this issue,
 upgrade to GitLab 13.4 or later.
 
+WARNING:
+Promoting the database during a failover can fail on XFS and filesystems ordering files lexically,
+when using `--force` or `--skip-preflight-checks`, due to [an issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6076) fixed in 13.5.
+The [troubleshooting steps](troubleshooting.md#errors-when-using---skip-preflight-checks-or---force)
+contain a workaround if you run into errors during the failover.
+
 ## Updating to GitLab 13.2
 
 In GitLab 13.2, promoting a secondary node to a primary while the secondary is

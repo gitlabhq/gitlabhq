@@ -33,7 +33,8 @@ In the Markdown doc for a resource (AKA endpoint):
 
 ## API topic template
 
-The following can be used as a template to get started:
+Use the following template to help you get started. Be sure to list any
+required attributes first in the table.
 
 ````markdown
 ## Descriptive title
@@ -50,8 +51,10 @@ Supported attributes:
 
 | Attribute   | Type     | Required | Description           |
 |:------------|:---------|:---------|:----------------------|
-| `attribute` | datatype | yes/no   | Detailed description. |
-| `attribute` | datatype | yes/no   | Detailed description. |
+| `attribute` | datatype | **{check-circle}** Yes | Detailed description. |
+| `attribute` | datatype | **{dotted-circle}** No | Detailed description. |
+| `attribute` | datatype | **{dotted-circle}** No | Detailed description. |
+| `attribute` | datatype | **{dotted-circle}** No | Detailed description. |
 
 Example request:
 

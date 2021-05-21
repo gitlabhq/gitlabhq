@@ -7,7 +7,8 @@ type: reference, howto
 
 # Threads **(FREE)**
 
-GitLab encourages communication through comments, threads, and suggestions.
+GitLab encourages communication through comments, threads, and
+[code suggestions](../project/merge_requests/reviews/suggestions.md).
 
 For example, you can create a comment in the following places:
 
@@ -22,7 +23,9 @@ There are standard comments, and you also have the option to create a comment
 in the form of a thread. A comment can also be [turned into a thread](#start-a-thread-by-replying-to-a-standard-comment)
 when it receives a reply.
 
-The comment area supports [Markdown](../markdown.md) and [quick actions](../project/quick_actions.md). You can edit your own
+The comment area supports [Markdown](../markdown.md) and [quick actions](../project/quick_actions.md).
+You can [suggest code changes](../project/merge_requests/reviews/suggestions.md) in your comment,
+which the user can accept through the user interface. You can edit your own
 comment at any time, and anyone with [Maintainer access level](../permissions.md) or
 higher can also edit a comment made by someone else.
 

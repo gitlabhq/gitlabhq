@@ -98,6 +98,9 @@ Note the following when promoting a secondary:
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
   error message during this process, for more information, see this
   [troubleshooting advice](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-node).
+- If you run into errors when using `--force` or `--skip-preflight-checks` before 13.5 during this process,
+  for more information, see this
+  [troubleshooting advice](../replication/troubleshooting.md#errors-when-using---skip-preflight-checks-or---force).
 
 #### Promoting a **secondary** node running on a single machine
 

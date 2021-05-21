@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 CrowdIn automatically syncs the `gitlab.pot` file with the CrowdIn service, presenting
 newly added externalized strings to the community of translators.
 
-[GitLab CrowdIn Bot](https://gitlab.com/gitlab-crowdin-bot) also creates merge requests
+The [GitLab CrowdIn Bot](https://gitlab.com/gitlab-crowdin-bot) also creates merge requests
 to take newly approved translation submissions and merge them into the `locale/<language>/gitlab.po`
 files. Check the [merge requests created by `gitlab-crowdin-bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&author_username=gitlab-crowdin-bot)
 to see new and merged merge requests.
@@ -17,35 +17,34 @@ to see new and merged merge requests.
 ## Validation
 
 By default CrowdIn commits translations with `[skip ci]` in the commit
-message. This is done to avoid a bunch of pipelines being run. Before
-merging translations, make sure to trigger a pipeline to validate
-translations, we have static analysis validating things CrowdIn
-doesn't do. Create a new pipeline at `https://gitlab.com/gitlab-org/gitlab/pipelines/new`
-(need Developer access permissions) for the `master-i18n` branch.
+message. This avoids an excessive number of pipelines from running.
+Before merging translations, make sure to trigger a pipeline to validate
+translations. Static analysis validates things CrowdIn doesn't do. Create
+a new pipeline at [`https://gitlab.com/gitlab-org/gitlab/pipelines/new`](https://gitlab.com/gitlab-org/gitlab/pipelines/new)
+(need developer permissions) for the `master-i18n` branch.
 
 If there are validation errors, the easiest solution is to disapprove
 the offending string in CrowdIn, leaving a comment with what is
-required to fix the offense. There is an
+required to fix the errors. There's an
 [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/23256)
-suggesting to automate this process. Disapproving excludes the
-invalid translation, the merge request is then updated within a few
+that suggests automating this process. Disapproving excludes the
+invalid translation. The merge request is then updated within a few
 minutes.
 
-If the translation has failed validation due to angle brackets `<` or `>`
-it should be disapproved on CrowdIn as our strings should be
-using [variables](externalization.md#html) for HTML instead.
+If the translation fails validation due to angle brackets (`<` or `>`),
+it should be disapproved in CrowdIn. Our strings must use [variables](externalization.md#html)
+for HTML instead.
 
-It might be handy to pause the integration on the CrowdIn side for a
-little while so translations don't keep coming. This can be done by
-clicking `Pause sync` on the [CrowdIn integration settings
-page](https://translate.gitlab.com/project/gitlab-ee/settings#integration).
+It might be useful to pause the integration on the CrowdIn side for a
+moment so translations don't keep coming. You can do this by clicking
+**Pause sync** on the [CrowdIn integration settings page](https://translate.gitlab.com/project/gitlab-ee/settings#integration).
 
 ## Merging translations
 
 After all translations are determined to be appropriate and the pipelines pass,
 you can merge the translations into the default branch. When merging translations,
-be sure to select the **Remove source branch** check box, which causes CrowdIn
-to recreate the `master-i18n` from the default branch after merging the new
+be sure to select the **Remove source branch** checkbox. This causes CrowdIn
+to recreate the `master-i18n` branch from the default branch after merging the new
 translation.
 
 We are discussing [automating this entire process](https://gitlab.com/gitlab-org/gitlab/-/issues/19896).
@@ -54,10 +53,8 @@ We are discussing [automating this entire process](https://gitlab.com/gitlab-org
 
 CrowdIn creates a new merge request as soon as the old one is closed
 or merged. But it does not recreate the `master-i18n` branch every
-time. To force CrowdIn to recreate the branch, close any [open merge
-request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&author_username=gitlab-crowdin-bot)
-and delete the
-[`master-18n`](https://gitlab.com/gitlab-org/gitlab/-/branches/all?utf8=✓&search=master-i18n).
+time. To force CrowdIn to recreate the branch, close any [open merge requests](https://gitlab.com/gitlab-org/gitlab/-/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&author_username=gitlab-crowdin-bot)
+and delete the [`master-18n`](https://gitlab.com/gitlab-org/gitlab/-/branches/all?utf8=✓&search=master-i18n) branch.
 
 This might be needed when the merge request contains failures that
 have been fixed on the default branch.
@@ -76,8 +73,8 @@ recreate it with the following steps:
 1. Sign in to CrowdIn with the GitLab integration.
 1. Go to **Settings > Integrations > GitLab > Set Up Integration**.
 1. Select the `gitlab-org/gitlab` repository.
-1. In `Select Branches for Translation`, select `master`.
-1. Ensure the `Service Branch Name` is `master-i18n`.
+1. In **Select Branches for Translation**, select `master`.
+1. Ensure the **Service Branch Name** is `master-i18n`.
 
 ## Manually update the translation levels
 

@@ -1,9 +1,9 @@
 ---
 key_path: git.version
-description: ''
-product_section: ''
-product_stage: ''
-product_group: ''
+description: Information about Git version
+product_section: enablement
+product_stage: enablement
+product_group: group::distribution
 product_category: ''
 value_type: string
 status: data_available
@@ -11,6 +11,8 @@ time_frame: none
 data_source: system
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

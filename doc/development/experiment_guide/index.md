@@ -60,3 +60,17 @@ feature flags, and there is currently no strong suggestion to use one over the o
 Historical Context: `Experimentation Module` was built iteratively with the needs that
 appeared while implementing Growth sub-department experiments, while GLEX was built
 with the findings of the team and an easier to use API.
+
+### Add new icons and illustrations for experiments
+
+Some experiments may require you to add custom icons or illustrations to our codebase.
+This process is lengthy and at this stage, the outcome of the experiment uncertain.
+Therefore, you should postpone this effort until the [experiment cleanup process](https://about.gitlab.com/handbook/engineering/development/growth/#experiment-cleanup-issue).
+
+We recommend the following workflow:
+
+1. Add an icon or illustration as an `.svg` file in the `/app/assets/images` (or EE) path in the GitLab repository.
+1. Use `image_tag` or `image_path` to render it via the asset pipeline.
+1. **If the experiment is a success**, designers add the new icon or illustration to the Pajamas UI kit as part of the cleanup process.
+   Engineers can then add it to the [SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/) and modify the implementation based on the
+   [Frontend Development Guidelines](../fe_guide/icons.md#usage-in-hamlrails-2).

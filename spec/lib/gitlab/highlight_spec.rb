@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Highlight do
       end
 
       it 'increments the metric for oversized files' do
-        expect { result }.to change { over_highlight_size_limit('text highlighter') }.by(1)
+        expect { result }.to change { over_highlight_size_limit('file size: 0.0001') }.by(1)
       end
 
       it 'returns plain version for long content' do

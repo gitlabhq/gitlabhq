@@ -38,8 +38,7 @@ class StaticAnalysis
     %w[yarn run block-dependencies] => 0.35,
     %w[scripts/lint-rugged] => 0.23,
     %w[scripts/gemfile_lock_changed.sh] => 0.02,
-    %w[scripts/frontend/check_no_partial_karma_jest.sh] => 0.01,
-    %w[scripts/lint-changelog-filenames] => 0.01
+    %w[scripts/frontend/check_no_partial_karma_jest.sh] => 0.01
   }.reject { |k| k.nil? }.sort_by { |a| -a[1] }.to_h.keys.freeze
 
   def run_tasks!

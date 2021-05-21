@@ -10,6 +10,7 @@ export default {
     TopNavMenuItem,
     VuexModuleProvider,
   },
+  inheritAttrs: false,
   props: {
     frequentItemsVuexModule: {
       type: String,

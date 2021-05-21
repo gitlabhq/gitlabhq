@@ -6960,15 +6960,15 @@ Tiers: `premium`, `ultimate`
 
 ### `git.version`
 
-Missing description
+Information about Git version
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/license/20210216183237_version.yml)
 
-Group: ``
+Group: `group::distribution`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `gitaly.clusters`
 

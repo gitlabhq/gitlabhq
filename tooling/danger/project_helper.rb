@@ -38,8 +38,6 @@ module Tooling
 
         %r{\A(ee/)?config/feature_flags/} => :feature_flag,
 
-        %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} => :changelog,
-
         %r{\Adoc/development/usage_ping/dictionary\.md\z} => [:docs, :product_intelligence],
         %r{\Adoc/.*(\.(md|png|gif|jpg))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
