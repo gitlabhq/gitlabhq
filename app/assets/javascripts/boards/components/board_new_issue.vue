@@ -102,7 +102,7 @@ export default {
             ref="submitButton"
             :disabled="disabled"
             class="float-left js-no-auto-disable"
-            variant="success"
+            variant="confirm"
             category="primary"
             type="submit"
           >

@@ -1,5 +1,6 @@
 ---
 redirect_to: '../../../user/project/issue_board.md'
+remove_date: '2021-07-23'
 ---
 
 Information about using Agile concepts in GitLab can be found in [another location](../../../user/project/issue_board.md).

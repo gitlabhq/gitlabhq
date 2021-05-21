@@ -1,5 +1,6 @@
 ---
 redirect_to: '../../ci/README.md'
+remove_date: '2021-06-01'
 ---
 
 This document is deprecated. See the latest [GitLab CI/CD documentation](../../ci/README.md).

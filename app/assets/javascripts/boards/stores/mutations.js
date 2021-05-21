@@ -166,8 +166,9 @@ export default {
 
   [mutationTypes.ADD_BOARD_ITEM_TO_LIST]: (
     state,
-    { itemId, listId, moveBeforeId, moveAfterId, atIndex },
+    { itemId, listId, moveBeforeId, moveAfterId, atIndex, inProgress = false },
   ) => {
+    Vue.set(state.listsFlags, listId, { ...state.listsFlags, addItemToListInProgress: inProgress });
     addItemToList({ state, listId, itemId, moveBeforeId, moveAfterId, atIndex });
   },
 

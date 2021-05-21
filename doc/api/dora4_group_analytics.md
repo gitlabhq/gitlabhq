@@ -1,5 +1,6 @@
 ---
 redirect_to: 'dora/metrics.md'
+remove_date: '2021-07-25'
 ---
 
 This document was moved to [another location](dora/metrics.md).

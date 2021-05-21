@@ -1,5 +1,6 @@
 ---
 redirect_to: '../ssh/README.md'
+remove_date: '2021-07-04'
 ---
 
 This document was moved to [another location](../ssh/README.md).

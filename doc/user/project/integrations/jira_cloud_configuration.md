@@ -1,5 +1,6 @@
 ---
 redirect_to: '../../../integration/jira/jira_cloud_configuration.md'
+remove_date: '2021-06-18'
 ---
 
 This document was moved to [another location](../../../integration/jira/jira_cloud_configuration.md).

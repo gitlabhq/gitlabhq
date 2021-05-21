@@ -1,5 +1,6 @@
 ---
 redirect_to: '../../../topics/git/merge_conflicts.md'
+remove_date: '2021-08-13'
 ---
 
 This document was moved to [another location](../../../topics/git/merge_conflicts.md).

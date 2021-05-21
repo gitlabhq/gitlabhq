@@ -1,6 +1,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - page_itemtype    'https://schema.org/Organization'
 - @skip_current_level_breadcrumb = true
+- add_page_specific_style 'page_bundles/group'
 
 - if show_thanks_for_purchase_banner?
   = render_if_exists 'shared/thanks_for_purchase_banner', plan_title: plan_title, quantity: params[:purchased_quantity].to_i

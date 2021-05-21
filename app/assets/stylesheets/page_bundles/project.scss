@@ -1,0 +1,82 @@
+@import 'page_bundles/mixins_and_variables_and_functions';
+
+.project-home-panel {
+  .home-panel-avatar {
+    flex-basis: $home-panel-title-row-height;
+  }
+
+  .home-panel-title {
+    .icon {
+      vertical-align: -1px;
+    }
+
+    .home-panel-topic-list {
+      .icon {
+        top: 3px;
+      }
+    }
+  }
+
+  .home-panel-title-row {
+    @include media-breakpoint-down(sm) {
+      .home-panel-avatar {
+        width: $home-panel-avatar-mobile-size;
+        height: $home-panel-avatar-mobile-size;
+        flex-basis: $home-panel-avatar-mobile-size;
+
+        .avatar {
+          font-size: 20px;
+          line-height: 46px;
+        }
+      }
+
+      .home-panel-title {
+        margin-top: 4px;
+        margin-bottom: 2px;
+        font-size: $gl-font-size;
+        line-height: $gl-font-size-large;
+      }
+    }
+  }
+
+  .home-panel-description {
+    @include media-breakpoint-up(md) {
+      font-size: $gl-font-size-large;
+    }
+  }
+}
+
+.project-repo-buttons {
+  .btn {
+    svg {
+      fill: $gray-500;
+    }
+  }
+
+  .download-button {
+    @include media-breakpoint-down(md) {
+      margin-left: 0;
+    }
+  }
+
+  .project-clone-holder {
+    display: inline-block;
+    margin: $gl-padding 0 0;
+
+    input {
+      height: $input-height;
+    }
+  }
+
+  .clone-options-dropdown {
+    min-width: 240px;
+
+    .dropdown-menu-inner-content {
+      min-width: 320px;
+    }
+  }
+
+  .mobile-git-clone {
+    margin-top: $gl-padding-8;
+  }
+}

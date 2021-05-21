@@ -1,5 +1,6 @@
 ---
 redirect_to: 'moderate_users.md'
+remove_date: '2021-08-12'
 ---
 
 This document was moved to [another location](moderate_users.md).

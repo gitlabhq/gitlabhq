@@ -1,0 +1,107 @@
+@import 'page_bundles/mixins_and_variables_and_functions';
+
+.group-home-panel {
+  margin-top: $gl-padding;
+  margin-bottom: $gl-padding;
+
+  .home-panel-avatar {
+    width: $home-panel-title-row-height;
+    height: $home-panel-title-row-height;
+    flex-shrink: 0;
+    flex-basis: $home-panel-title-row-height;
+  }
+
+  .home-panel-title {
+    font-size: 20px;
+    line-height: $gl-line-height-24;
+    font-weight: bold;
+
+    .icon {
+      vertical-align: -1px;
+    }
+
+    .home-panel-topic-list {
+      font-size: $gl-font-size;
+      font-weight: $gl-font-weight-normal;
+
+      .icon {
+        position: relative;
+        top: 3px;
+        margin-right: $gl-padding-4;
+      }
+    }
+  }
+
+  .home-panel-title-row {
+    @include media-breakpoint-down(sm) {
+      .home-panel-avatar {
+        width: $home-panel-avatar-mobile-size;
+        height: $home-panel-avatar-mobile-size;
+        flex-basis: $home-panel-avatar-mobile-size;
+
+        .avatar {
+          font-size: 20px;
+          line-height: 46px;
+        }
+      }
+
+      .home-panel-title {
+        margin-top: 4px;
+        margin-bottom: 2px;
+        font-size: $gl-font-size;
+        line-height: $gl-font-size-large;
+      }
+
+      .home-panel-topic-list,
+      .home-panel-metadata {
+        font-size: $gl-font-size-small;
+      }
+    }
+  }
+
+  .home-panel-metadata {
+    font-weight: normal;
+    font-size: 14px;
+    line-height: $gl-btn-line-height;
+  }
+
+  .home-panel-description {
+    @include media-breakpoint-up(md) {
+      font-size: $gl-font-size-large;
+    }
+  }
+}
+
+.group-nav-container .nav-controls {
+  .group-filter-form {
+    flex: 1 1 auto;
+    margin-right: $gl-padding-8;
+  }
+
+  .dropdown-menu-right {
+    margin-top: 0;
+  }
+
+  @include media-breakpoint-down(sm) {
+    .dropdown,
+    .dropdown .dropdown-toggle,
+    .btn-success {
+      display: block;
+    }
+
+    .group-filter-form,
+    .dropdown {
+      margin-bottom: 10px;
+      margin-right: 0;
+    }
+
+    &,
+    .group-filter-form,
+    .group-filter-form-field,
+    .dropdown,
+    .dropdown .dropdown-toggle,
+    .btn-success {
+      width: 100%;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 ---
 redirect_to: 'jira/index.md'
+remove_date: '2021-06-24'
 ---
 
 This document was moved to [another location](jira/index.md).

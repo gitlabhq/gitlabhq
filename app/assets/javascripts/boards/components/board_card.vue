@@ -40,6 +40,12 @@ export default {
         this.selectedBoardItems.findIndex((boardItem) => boardItem.id === this.item.id) > -1
       );
     },
+    isDisabled() {
+      return this.disabled || !this.item.id || this.item.isLoading;
+    },
+    isDraggable() {
+      return !this.disabled && this.item.id && !this.item.isLoading;
+    },
   },
   methods: {
     ...mapActions(['toggleBoardItemMultiSelection', 'toggleBoardItem']),
@@ -63,9 +69,10 @@ export default {
     data-qa-selector="board_card"
     :class="{
       'multi-select': multiSelectVisible,
-      'user-can-drag': !disabled && item.id,
-      'is-disabled': disabled || !item.id,
+      'user-can-drag': isDraggable,
+      'is-disabled': isDisabled,
       'is-active': isActive,
+      'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
     }"
     :index="index"
     :data-item-id="item.id"

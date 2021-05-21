@@ -1,5 +1,6 @@
 ---
 redirect_to: 'reviews/index.md'
+remove_date: '2021-08-03'
 ---
 
 This document was moved to [another location](reviews/index.md).

@@ -86,7 +86,9 @@ export default {
         : this.$options.i18n.showingAllIssues;
     },
     treeRootWrapper() {
-      return this.canAdminList ? Draggable : 'ul';
+      return this.canAdminList && !this.listsFlags[this.list.id]?.addItemToListInProgress
+        ? Draggable
+        : 'ul';
     },
     treeRootOptions() {
       const options = {

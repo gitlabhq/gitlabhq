@@ -1,5 +1,6 @@
 ---
 redirect_to: 'integrations.md'
+remove_date: '2021-05-03'
 ---
 
 This document was moved to [another location](integrations.md).

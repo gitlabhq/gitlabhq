@@ -1,4 +1,4 @@
-import { GlLabel } from '@gitlab/ui';
+import { GlLabel, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { range } from 'lodash';
 import Vuex from 'vuex';
@@ -63,6 +63,7 @@ describe('Board card component', () => {
       },
       stubs: {
         GlLabel: true,
+        GlLoadingIcon: true,
       },
       mocks: {
         $apollo: {
@@ -119,6 +120,10 @@ describe('Board card component', () => {
 
   it('does not render assignee', () => {
     expect(wrapper.find('.board-card-assignee .avatar').exists()).toBe(false);
+  });
+
+  it('does not render loading icon', () => {
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
   });
 
   describe('blocked', () => {
@@ -397,6 +402,19 @@ describe('Board card component', () => {
       it('does not emit updateTokens event', () => {
         expect(eventHub.$emit).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('loading', () => {
+    it('renders loading icon', async () => {
+      createWrapper({
+        item: {
+          ...issue,
+          isLoading: true,
+        },
+      });
+
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
   });
 });

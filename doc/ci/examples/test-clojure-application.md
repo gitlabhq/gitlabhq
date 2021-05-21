@@ -1,5 +1,6 @@
 ---
 redirect_to: 'README.md#contributed-examples'
+remove_date: '2021-05-26'
 ---
 
 This document was moved to [another location](README.md#contributed-examples).

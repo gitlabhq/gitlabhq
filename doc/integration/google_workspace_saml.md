@@ -1,5 +1,6 @@
 ---
 redirect_to: 'saml.md'
+remove_date: '2021-06-15'
 ---
 
 This document was moved to [another location](saml.md).

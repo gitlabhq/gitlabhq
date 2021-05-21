@@ -1,5 +1,6 @@
 ---
 redirect_to: '../../../topics/git/tags.md'
+remove_date: '2021-06-01'
 ---
 
 This document was moved to [another location](../../../topics/git/tags.md).

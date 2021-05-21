@@ -38,6 +38,18 @@ RUN unzip chromedriver_linux64.zip -d /usr/local/bin
 RUN rm -f chromedriver_linux64.zip
 
 ##
+# Install client certificate - Bug in Chrome Headless: https://gitlab.com/gitlab-org/gitlab/-/issues/331492
+#
+# RUN apt install -y libnss3-tools
+# RUN mkdir -p $HOME/.pki/nssdb
+# RUN certutil -N -d sql:$HOME/.pki/nssdb
+# COPY ./qa/tls_certificates/client/client.pfx /tmp/client.pfx
+# RUN pk12util -d sql:$HOME/.pki/nssdb -i /tmp/client.pfx -W ''
+# RUN mkdir -p /etc/opt/chrome/policies/managed
+# RUN echo '{ "AutoSelectCertificateForUrls": ["{\"pattern\":\"*\",\"filter\":{}}"] }' > /etc/opt/chrome/policies/managed/policy.json
+# RUN cat /etc/opt/chrome/policies/managed/policy.json
+
+##
 # Install root certificate
 #
 RUN mkdir -p /usr/share/ca-certificates/gitlab

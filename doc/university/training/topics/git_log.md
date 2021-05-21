@@ -1,5 +1,6 @@
 ---
 redirect_to: '../../../topics/git/git_log.md'
+remove_date: '2021-08-13'
 ---
 
 This document was moved to [another location](../../../topics/git/git_log.md).
