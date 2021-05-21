@@ -129,13 +129,28 @@ namespace :gitlab do
     end
 
     # Inform Rake that custom tasks should be run every time rake db:structure:dump is run
+    #
+    # Rails 6.1 deprecates db:structure:dump in favor of db:schema:dump
     Rake::Task['db:structure:dump'].enhance do
       Rake::Task['gitlab:db:clean_structure_sql'].invoke
       Rake::Task['gitlab:db:dump_custom_structure'].invoke
     end
 
+    # Inform Rake that custom tasks should be run every time rake db:schema:dump is run
+    Rake::Task['db:schema:dump'].enhance do
+      Rake::Task['gitlab:db:clean_structure_sql'].invoke
+      Rake::Task['gitlab:db:dump_custom_structure'].invoke
+    end
+
     # Inform Rake that custom tasks should be run every time rake db:structure:load is run
+    #
+    # Rails 6.1 deprecates db:structure:load in favor of db:schema:load
     Rake::Task['db:structure:load'].enhance do
+      Rake::Task['gitlab:db:load_custom_structure'].invoke
+    end
+
+    # Inform Rake that custom tasks should be run every time rake db:schema:load is run
+    Rake::Task['db:schema:load'].enhance do
       Rake::Task['gitlab:db:load_custom_structure'].invoke
     end
 
@@ -159,7 +174,13 @@ namespace :gitlab do
     #
     # Other than that it's helpful to create partitions early when bootstrapping
     # a new installation.
+    #
+    # Rails 6.1 deprecates db:structure:load in favor of db:schema:load
     Rake::Task['db:structure:load'].enhance do
+      Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+    end
+
+    Rake::Task['db:schema:load'].enhance do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
