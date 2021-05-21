@@ -80,7 +80,7 @@ describe('AlertIntegrationsList', () => {
       const cell = finsStatusCell().at(0);
       const activatedIcon = cell.find(GlIcon);
       expect(cell.text()).toBe(i18n.status.enabled.name);
-      expect(activatedIcon.attributes('name')).toBe('check-circle-filled');
+      expect(activatedIcon.attributes('name')).toBe('check');
       expect(activatedIcon.attributes('title')).toBe(i18n.status.enabled.tooltip);
     });
 

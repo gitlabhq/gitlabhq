@@ -66,20 +66,6 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
       
       </gl-modal-stub>
     </gl-form-group-stub>
-     
-    <gl-button-stub
-      buttontextclasses=""
-      category="primary"
-      class="js-no-auto-disable"
-      icon=""
-      size="medium"
-      type="submit"
-      variant="success"
-    >
-      
-      Save changes
-    
-    </gl-button-stub>
   </form>
 </div>
 `;

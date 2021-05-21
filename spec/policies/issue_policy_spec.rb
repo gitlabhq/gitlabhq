@@ -139,13 +139,14 @@ RSpec.describe IssuePolicy do
       create(:project_group_link, group: group, project: project)
     end
 
-    it 'does not allow guest to create todos' do
+    it 'does not allow anonymous user to create todos' do
       expect(permissions(nil, issue)).to be_allowed(:read_issue)
       expect(permissions(nil, issue)).to be_disallowed(:create_todo)
+      expect(permissions(nil, issue)).to be_disallowed(:update_subscription)
     end
 
     it 'allows guests to read issues' do
-      expect(permissions(guest, issue)).to be_allowed(:read_issue, :read_issue_iid, :create_todo)
+      expect(permissions(guest, issue)).to be_allowed(:read_issue, :read_issue_iid, :create_todo, :update_subscription)
       expect(permissions(guest, issue)).to be_disallowed(:update_issue, :admin_issue, :reopen_issue)
 
       expect(permissions(guest, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid)
@@ -205,11 +206,17 @@ RSpec.describe IssuePolicy do
       it 'forbids visitors from commenting' do
         expect(permissions(visitor, issue)).to be_disallowed(:create_note)
       end
+      it 'forbids visitors from subscribing' do
+        expect(permissions(visitor, issue)).to be_disallowed(:update_subscription)
+      end
       it 'allows guests to view' do
         expect(permissions(guest, issue)).to be_allowed(:read_issue)
       end
       it 'allows guests to comment' do
         expect(permissions(guest, issue)).to be_allowed(:create_note)
+      end
+      it 'allows guests to subscribe' do
+        expect(permissions(guest, issue)).to be_allowed(:update_subscription)
       end
 
       context 'when admin mode is enabled', :enable_admin_mode do

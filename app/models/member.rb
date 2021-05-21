@@ -336,7 +336,7 @@ class Member < ApplicationRecord
 
       return User.find_by(id: user) if user.is_a?(Integer)
 
-      User.find_by(email: user) || user
+      User.find_by_any_email(user) || user
     end
 
     def retrieve_member(source, user, existing_members)

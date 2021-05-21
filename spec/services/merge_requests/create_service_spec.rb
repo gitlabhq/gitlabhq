@@ -82,7 +82,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
           let(:opts) do
             {
               title: 'Awesome merge_request',
-              description: "well this is not done yet\n/wip",
+              description: "well this is not done yet\n/draft",
               source_branch: 'feature',
               target_branch: 'master',
               assignees: [user2]

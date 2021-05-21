@@ -134,7 +134,7 @@ export default {
         ref="submitBtn"
         data-qa-selector="save_changes_button"
         :disabled="loading"
-        variant="success"
+        variant="confirm"
         type="submit"
         class="js-no-auto-disable"
       >

@@ -111,7 +111,6 @@ threads. Some quick actions might not be available to all subscription tiers.
 | `/unlock`                             | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Unlock the discussions. |
 | `/unsubscribe`                        | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Unsubscribe from notifications. |
 | `/weight <value>`                     | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Set weight. Valid options for `<value>` include `0`, `1`, `2`, and so on. |
-| `/wip`                                | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Toggle the draft status. |
 | `/zoom <Zoom URL>`                    | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Add Zoom meeting to this issue ([introduced in GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16609)). |
 
 ## Commit messages

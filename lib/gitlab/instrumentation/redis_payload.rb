@@ -5,12 +5,6 @@ module Gitlab
     module RedisPayload
       include ::Gitlab::Utils::StrongMemoize
 
-      # Fetches payload keys from the lazy payload (this avoids
-      # unnecessary processing of the values).
-      def known_payload_keys
-        to_lazy_payload.keys
-      end
-
       def payload
         to_lazy_payload.transform_values do |value|
           result = value.call

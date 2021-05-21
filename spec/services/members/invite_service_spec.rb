@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_shared_state, :sidekiq_inline do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user) { project.owner }
   let_it_be(:project_user) { create(:user) }
   let_it_be(:namespace) { project.namespace }
@@ -21,6 +21,18 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     it_behaves_like 'records an onboarding progress action', :user_added
+  end
+
+  context 'when email belongs to an existing user as a secondary email' do
+    let(:secondary_email) { create(:email, email: 'secondary@example.com', user: project_user) }
+    let(:params) { { email: secondary_email.email } }
+
+    it 'adds an existing user to members', :aggregate_failures do
+      expect_to_create_members(count: 1)
+      expect(result[:status]).to eq(:success)
+      expect(project.users).to include project_user
+      expect(project.members.last).not_to be_invite
+    end
   end
 
   context 'when email is not a valid email' do

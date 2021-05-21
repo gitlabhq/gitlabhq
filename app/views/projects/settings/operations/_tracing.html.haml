@@ -1,23 +1,13 @@
 - setting = tracing_setting
-- has_jaeger_url = setting.external_url.present?
 
 %section.settings.border-0.no-animate
-  .settings-header{ :class => "border-top" }
+  .settings-header{ :class => 'border-top' }
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _("Jaeger tracing")
+      = _('Tracing')
     %button.btn.btn-default.gl-button.js-settings-toggle{ type: 'button' }
       = _('Expand')
     %p
-      - if has_jaeger_url
-        - tracing_link = link_to sanitize(setting.external_url, scrubber: Rails::Html::TextOnlyScrubber.new), target: "_blank", rel: 'noopener noreferrer' do
-          %span
-            = _('Tracing')
-            = sprite_icon('external-link', css_class: 'ml-1 vertical-align-middle')
-      - else
-        - tracing_link = link_to project_tracing_path(@project) do
-          %span
-            = _('Tracing')
-      = _("To open Jaeger from GitLab to view tracing from the %{link} page, add a URL to your Jaeger server.").html_safe % { link: tracing_link }
+      = _('Embed an image of your existing Jaeger server in GitLab.')
       = link_to _('Learn more.'), help_page_path('operations/tracing'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = form_for @project, url: project_settings_operations_path(@project), method: :patch do |f|
@@ -27,8 +17,8 @@
           = form.label :external_url, _('Jaeger URL'), class: 'label-bold'
           = form.url_field :external_url, class: 'form-control gl-form-input', placeholder: 'https://jaeger.example.com'
           %p.form-text.text-muted
-            - jaeger_help_url = "https://www.jaegertracing.io/docs/getting-started/"
+            - jaeger_help_url = 'https://www.jaegertracing.io/docs/getting-started/'
             - link_start_tag = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: jaeger_help_url }
-            - link_end_tag = "#{sprite_icon('external-link', css_class: 'ml-1 vertical-align-middle')}</a>".html_safe
-            = _("Learn more about %{link_start_tag}Jaeger configuration%{link_end_tag}.").html_safe % { link_start_tag: link_start_tag, link_end_tag: link_end_tag }
+            - link_end_tag = "#{sprite_icon('external-link', css_class: 'gl-ml-2 gl-vertical-align-middle')}</a>".html_safe
+            = _('Learn more about %{link_start_tag}Jaeger configuration%{link_end_tag}.').html_safe % { link_start_tag: link_start_tag, link_end_tag: link_end_tag }
       = f.submit _('Save changes'), class: 'gl-button btn btn-confirm'

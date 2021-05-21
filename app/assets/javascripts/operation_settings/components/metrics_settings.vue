@@ -34,19 +34,19 @@ export default {
       <h4
         class="js-section-header settings-title js-settings-toggle js-settings-toggle-trigger-only"
       >
-        {{ s__('MetricsSettings|Metrics dashboard') }}
+        {{ s__('MetricsSettings|Metrics') }}
       </h4>
       <gl-button class="js-settings-toggle">{{ __('Expand') }}</gl-button>
       <p class="js-section-sub-header">
-        {{ s__('MetricsSettings|Manage Metrics Dashboard settings.') }}
-        <gl-link :href="helpPage">{{ __('Learn more') }}</gl-link>
+        {{ s__('MetricsSettings|Manage metrics dashboard settings.') }}
+        <gl-link :href="helpPage">{{ __('Learn more.') }}</gl-link>
       </p>
     </div>
     <div class="settings-content">
       <form>
         <dashboard-timezone />
         <external-dashboard />
-        <gl-button variant="success" category="primary" @click="saveChanges">
+        <gl-button variant="confirm" category="primary" @click="saveChanges">
           {{ __('Save Changes') }}
         </gl-button>
       </form>

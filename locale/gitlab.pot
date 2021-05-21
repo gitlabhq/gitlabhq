@@ -2859,9 +2859,6 @@ msgid_plural "Alerts"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Alert integrations"
-msgstr ""
-
 msgid "AlertManagement|Acknowledged"
 msgstr ""
 
@@ -8424,6 +8421,9 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
+msgid "Configuration help"
+msgstr ""
+
 msgid "Configure GitLab runners to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
 msgstr ""
 
@@ -12130,6 +12130,9 @@ msgstr ""
 msgid "Embed"
 msgstr ""
 
+msgid "Embed an image of your existing Jaeger server in GitLab."
+msgstr ""
+
 msgid "Empty file"
 msgstr ""
 
@@ -12212,6 +12215,9 @@ msgid "Enable and disable Service Desk. Some additional configuration might be r
 msgstr ""
 
 msgid "Enable authenticated API request rate limit"
+msgstr ""
+
+msgid "Enable authentication"
 msgstr ""
 
 msgid "Enable automatic repository housekeeping (git repack, git gc)"
@@ -15509,7 +15515,7 @@ msgstr ""
 msgid "GrafanaIntegration|Active"
 msgstr ""
 
-msgid "GrafanaIntegration|Enter the Grafana API token."
+msgid "GrafanaIntegration|Enter the %{docLinkStart}Grafana API token%{docLinkEnd}."
 msgstr ""
 
 msgid "GrafanaIntegration|Enter the base URL of the Grafana instance."
@@ -17382,6 +17388,9 @@ msgstr ""
 msgid "IncidentSettings|Alert integration"
 msgstr ""
 
+msgid "IncidentSettings|Fine-tune incident settings and set up integrations with external tools to help better manage incidents."
+msgstr ""
+
 msgid "IncidentSettings|Grafana integration"
 msgstr ""
 
@@ -17395,9 +17404,6 @@ msgid "IncidentSettings|Introduce a countdown timer in incident issues to better
 msgstr ""
 
 msgid "IncidentSettings|PagerDuty integration"
-msgstr ""
-
-msgid "IncidentSettings|Set up integrations with external tools to help better manage incidents."
 msgstr ""
 
 msgid "IncidentSettings|Time limit"
@@ -18558,9 +18564,6 @@ msgid "I’m not familiar with the basics of DevOps."
 msgstr ""
 
 msgid "Jaeger URL"
-msgstr ""
-
-msgid "Jaeger tracing"
 msgstr ""
 
 msgid "Jan"
@@ -20907,10 +20910,10 @@ msgstr ""
 msgid "MetricsSettings|External dashboard URL"
 msgstr ""
 
-msgid "MetricsSettings|Manage Metrics Dashboard settings."
+msgid "MetricsSettings|Manage metrics dashboard settings."
 msgstr ""
 
-msgid "MetricsSettings|Metrics dashboard"
+msgid "MetricsSettings|Metrics"
 msgstr ""
 
 msgid "MetricsSettings|UTC (Coordinated Universal Time)"
@@ -31126,9 +31129,6 @@ msgstr ""
 msgid "StatusPage|Status page URL"
 msgstr ""
 
-msgid "StatusPage|Status page frontend documentation"
-msgstr ""
-
 msgid "StatusPage|To publish incidents to an external status page, GitLab stores a JSON file in your Amazon S3 account at a location that your external status page service can access. Make sure to also set up %{docsLink}"
 msgstr ""
 
@@ -34047,9 +34047,6 @@ msgid "To move or copy an entire GitLab project from another GitLab installation
 msgstr ""
 
 msgid "To only use CI/CD features for an external repository, choose %{strong_open}CI/CD for external repo%{strong_close}."
-msgstr ""
-
-msgid "To open Jaeger from GitLab to view tracing from the %{link} page, add a URL to your Jaeger server."
 msgstr ""
 
 msgid "To pass variables to the triggered pipeline, add %{code_start}variables[VARIABLE]=VALUE%{code_end} to the API request."

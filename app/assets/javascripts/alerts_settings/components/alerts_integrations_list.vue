@@ -155,7 +155,7 @@ export default {
         <span v-if="item.active" data-testid="integration-activated-status">
           <gl-icon
             v-gl-tooltip
-            name="check-circle-filled"
+            name="check"
             :size="16"
             class="gl-text-green-500 gl-hover-cursor-pointer gl-mr-3"
             :title="$options.i18n.status.enabled.tooltip"

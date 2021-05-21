@@ -20,7 +20,7 @@ to use this endpoint.
 
 With Maintainer or higher [permissions](../../user/permissions.md),
 you can view the list of configured alerts integrations by navigating to **Settings > Operations**
-in your project's sidebar menu, and expanding the **Alert integrations** section. The list displays
+in your project's sidebar menu, and expanding the **Alerts** section. The list displays
 the integration name, type, and status (enabled or disabled):
 
 ![Current Integrations](img/integrations_list_v13_5.png)
@@ -39,7 +39,7 @@ receive alert payloads in JSON format. You can always
 1. Sign in to GitLab as a user with maintainer [permissions](../../user/permissions.md)
    for a project.
 1. Navigate to **Settings > Operations** in your project.
-1. Expand the **Alert integrations** section, and in the **Select integration type** dropdown menu,
+1. Expand the **Alerts** section, and in the **Select integration type** dropdown menu,
    select **HTTP Endpoint**.
 1. Toggle the **Active** alert setting. The URL and Authorization Key for the webhook configuration
    are available in the **View credentials** tab after you save the integration. You must also input
@@ -56,7 +56,7 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
 1. Sign in to GitLab as a user with maintainer [permissions](../../user/permissions.md)
    for a project.
 1. Navigate to **Settings > Operations** in your project.
-1. Expand the **Alert integrations** section.
+1. Expand the **Alerts** section.
 1. For each endpoint you want to create:
 
    1. Click the **Add new integration** button.

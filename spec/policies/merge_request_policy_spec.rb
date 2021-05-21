@@ -26,7 +26,8 @@ RSpec.describe MergeRequestPolicy do
                 read_merge_request
                 create_todo
                 approve_merge_request
-                create_note].freeze
+                create_note
+                update_subscription].freeze
 
   shared_examples_for 'a denied user' do
     let(:perms) { permissions(subject, merge_request) }
@@ -55,7 +56,7 @@ RSpec.describe MergeRequestPolicy do
       subject { permissions(nil, merge_request) }
 
       it do
-        is_expected.to be_disallowed(:create_todo)
+        is_expected.to be_disallowed(:create_todo, :update_subscription)
       end
     end
   end

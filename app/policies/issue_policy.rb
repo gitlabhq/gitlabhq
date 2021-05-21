@@ -38,6 +38,7 @@ class IssuePolicy < IssuablePolicy
 
   rule { ~anonymous & can?(:read_issue) }.policy do
     enable :create_todo
+    enable :update_subscription
   end
 end
 

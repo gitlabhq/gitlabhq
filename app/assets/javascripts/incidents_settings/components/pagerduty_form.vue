@@ -11,7 +11,6 @@ import {
   GlModal,
   GlModalDirective,
 } from '@gitlab/ui';
-import { isEqual } from 'lodash';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { I18N_PAGERDUTY_SETTINGS_FORM, CONFIGURE_PAGERDUTY_WEBHOOK_DOCS_LINK } from '../constants';
 
@@ -50,14 +49,8 @@ export default {
         pagerduty_active: this.active,
       };
     },
-    isFormUpdated() {
-      return isEqual(this.pagerDutySettings, {
-        active: this.active,
-        webhookUrl: this.webhookUrl,
-      });
-    },
     isSaveDisabled() {
-      return this.isFormUpdated || this.loading || this.resettingWebhook;
+      return this.loading || this.resettingWebhook;
     },
     webhookUpdateAlertMsg() {
       return this.webhookUpdateFailed
@@ -123,13 +116,15 @@ export default {
         </template>
       </gl-sprintf>
     </p>
-    <form ref="settingsForm" @submit.prevent="updatePagerDutyIntegrationSettings">
+    <form ref="settingsForm">
       <gl-form-group class="col-8 col-md-9 gl-p-0">
         <gl-toggle
           id="active"
           v-model="active"
+          :disabled="isSaveDisabled"
           :is-loading="loading"
           :label="$options.i18n.activeToggle.label"
+          @change="updatePagerDutyIntegrationSettings"
         />
       </gl-form-group>
 
@@ -166,15 +161,6 @@ export default {
           {{ $options.i18n.webhookUrl.restKeyInfo }}
         </gl-modal>
       </gl-form-group>
-      <gl-button
-        ref="submitBtn"
-        :disabled="isSaveDisabled"
-        variant="success"
-        type="submit"
-        class="js-no-auto-disable"
-      >
-        {{ $options.i18n.saveBtnLabel }}
-      </gl-button>
     </form>
   </div>
 </template>

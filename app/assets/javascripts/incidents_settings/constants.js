@@ -23,7 +23,7 @@ export const I18N_INTEGRATION_TABS = {
   headerText: s__('IncidentSettings|Incidents'),
   expandBtnLabel: __('Expand'),
   subHeaderText: s__(
-    'IncidentSettings|Set up integrations with external tools to help better manage incidents.',
+    'IncidentSettings|Fine-tune incident settings and set up integrations with external tools to help better manage incidents.',
   ),
 };
 

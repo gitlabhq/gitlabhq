@@ -30,7 +30,7 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
      
     <p>
       
-      Set up integrations with external tools to help better manage incidents.
+      Fine-tune incident settings and set up integrations with external tools to help better manage incidents.
     
     </p>
   </div>

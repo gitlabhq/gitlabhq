@@ -21,10 +21,6 @@ module Gitlab
           nil
         end
 
-        def known_payload_keys
-          super + STORAGES.flat_map(&:known_payload_keys)
-        end
-
         def payload
           super.merge(*STORAGES.flat_map(&:payload))
         end

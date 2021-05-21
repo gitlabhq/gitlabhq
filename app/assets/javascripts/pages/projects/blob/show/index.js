@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import TableOfContents from '~/blob/components/table_contents.vue';
 import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
 import BlobViewer from '~/blob/viewer/index';
 import GpgBadges from '~/gpg_badges';
@@ -89,6 +90,18 @@ if (successPipelineEl) {
           ...successPipelineEl.dataset,
         },
       });
+    },
+  });
+}
+
+const tableContentsEl = document.querySelector('.js-table-contents');
+
+if (tableContentsEl) {
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: tableContentsEl,
+    render(h) {
+      return h(TableOfContents);
     },
   });
 }

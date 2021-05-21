@@ -1202,16 +1202,6 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     it_behaves_like 'draft command' do
-      let(:content) { '/wip' }
-      let(:issuable) { merge_request }
-    end
-
-    it_behaves_like 'undraft command' do
-      let(:content) { '/wip' }
-      let(:issuable) { merge_request }
-    end
-
-    it_behaves_like 'draft command' do
       let(:content) { '/draft' }
       let(:issuable) { merge_request }
     end

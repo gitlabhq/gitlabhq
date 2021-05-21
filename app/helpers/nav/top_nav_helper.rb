@@ -132,7 +132,7 @@ module Nav
             active: active_nav_link?(controller: 'admin/sessions'),
             icon: 'lock-open',
             href: destroy_admin_session_path,
-            method: :post
+            data: { method: 'post' }
           )
         elsif current_user.admin?
           builder.add_secondary_menu_item(

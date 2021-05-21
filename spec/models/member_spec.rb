@@ -594,6 +594,18 @@ RSpec.describe Member do
             end
           end
 
+          context 'when called with a known user secondary email' do
+            let(:secondary_email) { create(:email, email: 'secondary@example.com', user: user) }
+
+            it 'adds the user as a member' do
+              expect(source.users).not_to include(user)
+
+              described_class.add_user(source, secondary_email.email, :maintainer)
+
+              expect(source.users.reload).to include(user)
+            end
+          end
+
           context 'when called with an unknown user email' do
             it 'creates an invited member' do
               expect(source.users).not_to include(user)

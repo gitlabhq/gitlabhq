@@ -424,7 +424,7 @@ RSpec.describe Nav::TopNavHelper do
             title: 'Leave Admin Mode',
             icon: 'lock-open',
             href: '/admin/session/destroy',
-            method: :post
+            data: { method: 'post' }
           )
           expect(subject[:secondary].last).to eq(expected_leave_admin_mode_item)
         end

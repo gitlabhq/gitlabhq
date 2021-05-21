@@ -2,10 +2,32 @@
 
 module Mutations
   module MergeRequests
-    class SetSubscription < Base
+    class SetSubscription < BaseMutation
       graphql_name 'MergeRequestSetSubscription'
 
       include ResolvesSubscription
+      include Mutations::ResolvesIssuable
+
+      argument :project_path, GraphQL::ID_TYPE,
+               required: true,
+               description: "The project the merge request to mutate is in."
+
+      argument :iid, GraphQL::STRING_TYPE,
+               required: true,
+               description: "The IID of the merge request to mutate."
+
+      field :merge_request,
+            Types::MergeRequestType,
+            null: true,
+            description: "The merge request after mutation."
+
+      authorize :update_subscription
+
+      private
+
+      def find_object(project_path:, iid:)
+        resolve_issuable(type: :merge_request, parent_path: project_path, iid: iid)
+      end
     end
   end
 end

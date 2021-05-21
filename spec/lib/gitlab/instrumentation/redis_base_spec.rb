@@ -18,24 +18,6 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
     end
   end
 
-  describe '.known_payload_keys' do
-    it 'returns generated payload keys' do
-      expect(instrumentation_class_a.known_payload_keys).to eq([:redis_instance_a_calls,
-                                                                :redis_instance_a_duration_s,
-                                                                :redis_instance_a_read_bytes,
-                                                                :redis_instance_a_write_bytes])
-    end
-
-    it 'does not call calculation methods' do
-      expect(instrumentation_class_a).not_to receive(:get_request_count)
-      expect(instrumentation_class_a).not_to receive(:query_time)
-      expect(instrumentation_class_a).not_to receive(:read_bytes)
-      expect(instrumentation_class_a).not_to receive(:write_bytes)
-
-      instrumentation_class_a.known_payload_keys
-    end
-  end
-
   describe '.payload' do
     it 'returns values that are higher than 0' do
       allow(instrumentation_class_a).to receive(:get_request_count) { 1 }

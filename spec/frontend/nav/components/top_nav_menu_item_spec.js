@@ -7,6 +7,8 @@ const TEST_MENU_ITEM = {
   icon: 'search',
   href: '/pretty/good/burger',
   view: 'burger-view',
+  css_class: 'test-super-crazy test-class',
+  data: { qa_selector: 'not-a-real-selector', method: 'post', testFoo: 'test' },
 };
 
 describe('~/nav/components/top_nav_menu_item.vue', () => {
@@ -45,6 +47,22 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
 
       expect(button.attributes('href')).toBe(TEST_MENU_ITEM.href);
       expect(button.text()).toBe(TEST_MENU_ITEM.title);
+    });
+
+    it('renders button classes', () => {
+      const button = findButton();
+
+      expect(button.classes()).toEqual(expect.arrayContaining(TEST_MENU_ITEM.css_class.split(' ')));
+    });
+
+    it('renders button data attributes', () => {
+      const button = findButton();
+
+      expect(button.attributes()).toMatchObject({
+        'data-qa-selector': TEST_MENU_ITEM.data.qa_selector,
+        'data-method': TEST_MENU_ITEM.data.method,
+        'data-test-foo': TEST_MENU_ITEM.data.testFoo,
+      });
     });
 
     it('passes listeners to button', () => {

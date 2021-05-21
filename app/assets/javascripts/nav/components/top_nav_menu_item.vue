@@ -1,5 +1,8 @@
 <script>
 import { GlButton, GlIcon } from '@gitlab/ui';
+import { kebabCase, mapKeys } from 'lodash';
+
+const getDataKey = (key) => `data-${kebabCase(key)}`;
 
 export default {
   components: {
@@ -12,6 +15,11 @@ export default {
       required: true,
     },
   },
+  computed: {
+    dataAttrs() {
+      return mapKeys(this.menuItem.data || {}, (value, key) => getDataKey(key));
+    },
+  },
 };
 </script>
 
@@ -20,6 +28,8 @@ export default {
     category="tertiary"
     :href="menuItem.href"
     class="top-nav-menu-item gl-display-block"
+    :class="menuItem.css_class"
+    v-bind="dataAttrs"
     v-on="$listeners"
   >
     <span class="gl-display-flex">

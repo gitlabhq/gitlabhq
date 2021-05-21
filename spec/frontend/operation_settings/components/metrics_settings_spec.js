@@ -56,7 +56,7 @@ describe('operation settings external dashboard component', () => {
 
   it('renders header text', () => {
     mountComponent();
-    expect(wrapper.find('.js-section-header').text()).toBe('Metrics dashboard');
+    expect(wrapper.find('.js-section-header').text()).toBe('Metrics');
   });
 
   describe('expand/collapse button', () => {
@@ -77,13 +77,13 @@ describe('operation settings external dashboard component', () => {
     });
 
     it('renders descriptive text', () => {
-      expect(subHeader.text()).toContain('Manage Metrics Dashboard settings.');
+      expect(subHeader.text()).toContain('Manage metrics dashboard settings.');
     });
 
     it('renders help page link', () => {
       const link = subHeader.find(GlLink);
 
-      expect(link.text()).toBe('Learn more');
+      expect(link.text()).toBe('Learn more.');
       expect(link.attributes().href).toBe(helpPage);
     });
   });

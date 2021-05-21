@@ -1,5 +1,5 @@
-import { GlAlert, GlModal } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlAlert, GlModal, GlToggle } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PagerDutySettingsForm from '~/incidents_settings/components/pagerduty_form.vue';
 
@@ -8,13 +8,13 @@ describe('Alert integration settings form', () => {
   const resetWebhookUrl = jest.fn();
   const service = { updateSettings: jest.fn().mockResolvedValue(), resetWebhookUrl };
 
-  const findForm = () => wrapper.find({ ref: 'settingsForm' });
-  const findWebhookInput = () => wrapper.find('[data-testid="webhook-url"]');
-  const findModal = () => wrapper.find(GlModal);
-  const findAlert = () => wrapper.find(GlAlert);
+  const findWebhookInput = () => wrapper.findByTestId('webhook-url');
+  const findFormToggle = () => wrapper.findComponent(GlToggle);
+  const findModal = () => wrapper.findComponent(GlModal);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   beforeEach(() => {
-    wrapper = shallowMount(PagerDutySettingsForm, {
+    wrapper = shallowMountExtended(PagerDutySettingsForm, {
       provide: {
         service,
         pagerDutySettings: {
@@ -27,18 +27,15 @@ describe('Alert integration settings form', () => {
   });
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
   });
 
   it('should match the default snapshot', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('should call service `updateSettings` on form submit', () => {
-    findForm().trigger('submit');
+  it('should call service `updateSettings` on toggle change', () => {
+    findFormToggle().vm.$emit('change', true);
     expect(service.updateSettings).toHaveBeenCalledWith(
       expect.objectContaining({ pagerduty_active: wrapper.vm.active }),
     );

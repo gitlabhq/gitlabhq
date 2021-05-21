@@ -20,6 +20,7 @@ class MergeRequestPolicy < IssuablePolicy
 
   rule { ~anonymous & can?(:read_merge_request) }.policy do
     enable :create_todo
+    enable :update_subscription
   end
 
   condition(:can_merge) { @subject.can_be_merged_by?(@user) }

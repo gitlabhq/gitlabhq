@@ -14,8 +14,6 @@ module Gitlab
         COUNTER = :external_http_count
         DURATION = :external_http_duration_s
 
-        KNOWN_PAYLOAD_KEYS = [COUNTER, DURATION].freeze
-
         def self.detail_store
           ::Gitlab::SafeRequestStore[DETAIL_STORE] ||= []
         end

@@ -12828,21 +12828,21 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_committing_ciconfigfile_monthly`
 
-Missing description
+Monthly unique user count doing commits which contains the CI config file
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184303_o_pipeline_authoring_unique_users_committing_ciconfigfile_monthly.yml)
 
-Group: ``
+Group: `group::pipeline authoring`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_committing_ciconfigfile_weekly`
 
-Monthly unique user count doing commits which contains the CI config file
+Weekly unique user count doing commits which contains the CI config file
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184301_o_pipeline_authoring_unique_users_committing_ciconfigfile_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184301_o_pipeline_authoring_unique_users_committing_ciconfigfile_weekly.yml)
 
 Group: `group::pipeline authoring`
 
