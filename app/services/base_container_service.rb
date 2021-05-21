@@ -18,4 +18,12 @@ class BaseContainerService
     @current_user = current_user
     @params = params.dup
   end
+
+  def project_container?
+    container.is_a?(::Project)
+  end
+
+  def group_container?
+    container.is_a?(::Group)
+  end
 end

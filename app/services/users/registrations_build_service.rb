@@ -12,7 +12,7 @@ module Users
     end
 
     override :assign_skip_confirmation_from_settings?
-    def assign_skip_confirmation_from_settings?(user_params)
+    def assign_skip_confirmation_from_settings?
       user_params[:skip_confirmation].blank?
     end
   end

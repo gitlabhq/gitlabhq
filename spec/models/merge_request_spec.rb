@@ -296,7 +296,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
 
       it 'does not create duplicated metrics records when MR is concurrently updated' do
-        merge_request.metrics.destroy
+        merge_request.metrics.destroy!
 
         instance1 = MergeRequest.find(merge_request.id)
         instance2 = MergeRequest.find(merge_request.id)
@@ -347,7 +347,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
       let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
 
       it 'returns empty requests' do
-        latest_merge_request_diff = merge_request.merge_request_diffs.create
+        latest_merge_request_diff = merge_request.merge_request_diffs.create!
 
         MergeRequestDiffCommit.where(
           merge_request_diff_id: latest_merge_request_diff,
@@ -459,7 +459,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
       }
 
       create(:merge_request, params).tap do |mr|
-        diffs.times { mr.merge_request_diffs.create }
+        diffs.times { mr.merge_request_diffs.create! }
         mr.create_merge_head_diff
       end
     end
@@ -891,7 +891,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     context 'when there are MR diffs' do
       it 'delegates to the MR diffs' do
-        merge_request.save
+        merge_request.save!
 
         expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options)).and_call_original
 
@@ -1036,20 +1036,20 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     context 'when there are MR diffs' do
       it 'returns the correct count' do
-        merge_request.save
+        merge_request.save!
 
         expect(merge_request.diff_size).to eq('105')
       end
 
       it 'returns the correct overflow count' do
         allow(Commit).to receive(:max_diff_options).and_return(max_files: 2)
-        merge_request.save
+        merge_request.save!
 
         expect(merge_request.diff_size).to eq('2+')
       end
 
       it 'does not perform highlighting' do
-        merge_request.save
+        merge_request.save!
 
         expect(Gitlab::Diff::Highlight).not_to receive(:new)
 
@@ -1470,7 +1470,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     it "can't remove a root ref" do
-      subject.update(source_branch: 'master', target_branch: 'feature')
+      subject.update!(source_branch: 'master', target_branch: 'feature')
 
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
@@ -2501,7 +2501,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       context 'with a completely different branch' do
         before do
-          subject.update(target_branch: 'csv')
+          subject.update!(target_branch: 'csv')
         end
 
         it_behaves_like 'returning all SHA'
@@ -2509,7 +2509,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       context 'with a branch having no difference' do
         before do
-          subject.update(target_branch: 'branch-merged')
+          subject.update!(target_branch: 'branch-merged')
           subject.reload # make sure commits were not cached
         end
 
@@ -3207,7 +3207,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       context 'and a failed pipeline is associated' do
         before do
-          pipeline.update(status: 'failed', sha: subject.diff_head_sha)
+          pipeline.update!(status: 'failed', sha: subject.diff_head_sha)
           allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
@@ -3216,7 +3216,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       context 'and a successful pipeline is associated' do
         before do
-          pipeline.update(status: 'success', sha: subject.diff_head_sha)
+          pipeline.update!(status: 'success', sha: subject.diff_head_sha)
           allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
@@ -3225,7 +3225,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       context 'and a skipped pipeline is associated' do
         before do
-          pipeline.update(status: 'skipped', sha: subject.diff_head_sha)
+          pipeline.update!(status: 'skipped', sha: subject.diff_head_sha)
           allow(subject).to receive(:head_pipeline).and_return(pipeline)
         end
 
@@ -3530,7 +3530,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     before do
       # Update merge_request_diff so that #diff_refs will return commit.diff_refs
       allow(subject).to receive(:create_merge_request_diff) do
-        subject.merge_request_diffs.create(
+        subject.merge_request_diffs.create!(
           base_commit_sha: commit.parent_id,
           start_commit_sha: commit.parent_id,
           head_commit_sha: commit.sha
@@ -3800,7 +3800,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
         end
 
         it 'returns false if the merge request is merged' do
-          merge_request.update(state: 'merged')
+          merge_request.update!(state: 'merged')
 
           expect(merge_request.reload.reopenable?).to be_falsey
         end
@@ -4029,9 +4029,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     subject { create(:merge_request, importing: true, source_project: project) }
 
-    let!(:merge_request_diff1) { subject.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
-    let!(:merge_request_diff2) { subject.merge_request_diffs.create(head_commit_sha: nil) }
-    let!(:merge_request_diff3) { subject.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+    let!(:merge_request_diff1) { subject.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+    let!(:merge_request_diff2) { subject.merge_request_diffs.create!(head_commit_sha: nil) }
+    let!(:merge_request_diff3) { subject.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
 
     context 'with diff refs' do
       it 'returns the diffs' do
@@ -4062,9 +4062,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     subject { create(:merge_request, importing: true, source_project: project) }
 
-    let!(:merge_request_diff1) { subject.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
-    let!(:merge_request_diff2) { subject.merge_request_diffs.create(head_commit_sha: nil) }
-    let!(:merge_request_diff3) { subject.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+    let!(:merge_request_diff1) { subject.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+    let!(:merge_request_diff2) { subject.merge_request_diffs.create!(head_commit_sha: nil) }
+    let!(:merge_request_diff3) { subject.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
 
     context 'when the diff refs are for an older merge request version' do
       let(:diff_refs) { merge_request_diff1.diff_refs }
@@ -4108,7 +4108,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it 'refreshes the number of open merge requests of the target project' do
       project = subject.target_project
 
-      expect { subject.destroy }
+      expect { subject.destroy! }
         .to change { project.open_merge_requests_count }.from(1).to(0)
     end
   end

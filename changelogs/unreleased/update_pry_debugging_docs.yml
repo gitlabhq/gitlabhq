@@ -1,0 +1,5 @@
+---
+title: Fix `pry` debugging location with `pry-byebug` and `pry-shell` by updating the `pry-shell` gem
+merge_request: 62122
+author:
+type: fixed

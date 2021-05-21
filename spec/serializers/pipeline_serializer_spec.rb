@@ -212,18 +212,17 @@ RSpec.describe PipelineSerializer do
       context 'with build environments' do
         let(:ref) { 'feature' }
 
-        it 'verifies number of queries', :request_store do
-          stub_licensed_features(protected_environments: true)
+        let_it_be(:production) { create(:environment, :production, project: project) }
+        let_it_be(:staging) { create(:environment, :staging, project: project) }
 
-          env = create(:environment, project: project)
-          create(:ci_build, :scheduled, project: project, environment: env.name)
-          create(:ci_build, :scheduled, project: project, environment: env.name)
-          create(:ci_build, :scheduled, project: project, environment: env.name)
+        it 'executes one query to fetch all related environments', :request_store do
+          pipeline = create(:ci_pipeline, project: project)
+          create(:ci_build, :manual, pipeline: pipeline, environment: production.name)
+          create(:ci_build, :manual, pipeline: pipeline, environment: staging.name)
+          create(:ci_build, :scheduled, pipeline: pipeline, environment: production.name)
+          create(:ci_build, :scheduled, pipeline: pipeline, environment: staging.name)
 
-          recorded = ActiveRecord::QueryRecorder.new { subject }
-          expected_queries = Gitlab.ee? ? 56 : 52
-          expect(recorded.count).to be_within(1).of(expected_queries)
-          expect(recorded.cached_count).to eq(0)
+          expect { subject }.not_to exceed_query_limit(1).for_query /SELECT "environments".*/
         end
       end
 

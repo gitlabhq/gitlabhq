@@ -120,7 +120,7 @@ module Ci
       raise NotImplementedError
     end
 
-    def instantized_environment
+    def persisted_environment
       raise NotImplementedError
     end
 

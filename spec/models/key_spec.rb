@@ -139,7 +139,7 @@ RSpec.describe Key, :mailer do
     end
 
     with_them do
-      let!(:key) { create(factory) }
+      let!(:key) { create(factory) } # rubocop:disable Rails/SaveBang
       let!(:original_fingerprint) { key.fingerprint }
       let!(:original_fingerprint_sha256) { key.fingerprint_sha256 }
 
@@ -224,7 +224,7 @@ RSpec.describe Key, :mailer do
 
         expect(AuthorizedKeysWorker).to receive(:perform_async).with(:remove_key, key.shell_id)
 
-        key.destroy
+        key.destroy!
       end
     end
 
@@ -244,7 +244,7 @@ RSpec.describe Key, :mailer do
 
         expect(AuthorizedKeysWorker).not_to receive(:perform_async)
 
-        key.destroy
+        key.destroy!
       end
     end
   end

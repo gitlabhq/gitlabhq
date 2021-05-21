@@ -157,7 +157,7 @@ test-jdk11:
 coverage-jdk11:
   # Must be in a stage later than test-jdk11's stage.
   # The `visualize` stage does not exist by default.
-  # Please define it first, or chose an existing stage like `deploy`.
+  # Please define it first, or choose an existing stage like `deploy`.
   stage: visualize
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:

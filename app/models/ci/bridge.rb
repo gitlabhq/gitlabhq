@@ -163,7 +163,7 @@ module Ci
     def expanded_environment_name
     end
 
-    def instantized_environment
+    def persisted_environment
     end
 
     def execute_hooks

@@ -260,9 +260,9 @@ module QA
 
       def runners(tag_list: nil)
         response = if tag_list
-                     get Runtime::API::Request.new(api_client, "#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}").url
+                     get Runtime::API::Request.new(api_client, "#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}", per_page: '100').url
                    else
-                     get Runtime::API::Request.new(api_client, "#{api_runners_path}").url
+                     get Runtime::API::Request.new(api_client, "#{api_runners_path}", per_page: '100').url
                    end
 
         parse_body(response)

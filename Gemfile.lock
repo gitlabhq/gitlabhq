@@ -930,7 +930,7 @@ GEM
       pry (~> 0.13.0)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    pry-shell (0.4.0)
+    pry-shell (0.4.1)
       pry (~> 0.13.0)
       tty-markdown
       tty-prompt

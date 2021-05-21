@@ -158,7 +158,7 @@ RSpec.describe Milestone do
 
     it 'returns false if milestone active and not all nested issues closed' do
       issue.milestone = milestone
-      issue.save
+      issue.save!
 
       expect(milestone.can_be_closed?).to be_falsey
     end
