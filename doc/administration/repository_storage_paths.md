@@ -7,8 +7,6 @@ type: reference, howto
 
 # Repository storage **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4578) in GitLab 8.10.
-
 GitLab stores [repositories](../user/project/repository/index.md) on repository storage. Repository
 storage is either:
 
