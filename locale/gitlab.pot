@@ -11579,6 +11579,9 @@ msgstr ""
 msgid "DiscordService|Send notifications about project events to a Discord channel."
 msgstr ""
 
+msgid "Discover"
+msgstr ""
+
 msgid "Discover GitLab Geo"
 msgstr ""
 
