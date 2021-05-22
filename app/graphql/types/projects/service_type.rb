@@ -15,7 +15,7 @@ module Types
 
       definition_methods do
         def resolve_type(object, context)
-          if object.is_a?(::JiraService)
+          if object.is_a?(::Integrations::Jira)
             Types::Projects::Services::JiraServiceType
           else
             Types::Projects::Services::BaseServiceType

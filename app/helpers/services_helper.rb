@@ -107,7 +107,7 @@ module ServicesHelper
       reset_path: scoped_reset_integration_path(integration, group: group)
     }
 
-    if integration.is_a?(JiraService)
+    if integration.is_a?(Integrations::Jira)
       form_data[:jira_issue_transition_automatic] = integration.jira_issue_transition_automatic
       form_data[:jira_issue_transition_id] = integration.jira_issue_transition_id
     end

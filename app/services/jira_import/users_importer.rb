@@ -43,9 +43,9 @@ module JiraImport
     def user_mapper_service_factory
       # TODO: use deployment_type enum from jira service when https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37003 is merged
       case deployment_type.upcase
-      when JiraService::DEPLOYMENT_TYPES[:server]
+      when Integrations::Jira::DEPLOYMENT_TYPES[:server]
         ServerUsersMapperService.new(user, project, start_at)
-      when JiraService::DEPLOYMENT_TYPES[:cloud]
+      when Integrations::Jira::DEPLOYMENT_TYPES[:cloud]
         CloudUsersMapperService.new(user, project, start_at)
       else
         raise ArgumentError

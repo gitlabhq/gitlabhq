@@ -302,7 +302,7 @@ It contains information about [integrations](../user/project/integrations/overvi
 {
   "severity":"ERROR",
   "time":"2018-09-06T14:56:20.439Z",
-  "service_class":"JiraService",
+  "service_class":"Integrations::Jira",
   "project_id":8,
   "project_path":"h5bp/html5-boilerplate",
   "message":"Error sending message",
@@ -312,7 +312,7 @@ It contains information about [integrations](../user/project/integrations/overvi
 {
   "severity":"INFO",
   "time":"2018-09-06T17:15:16.365Z",
-  "service_class":"JiraService",
+  "service_class":"Integrations::Jira",
   "project_id":3,
   "project_path":"namespace2/project2",
   "message":"Successfully posted",

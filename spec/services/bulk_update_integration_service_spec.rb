@@ -17,14 +17,14 @@ RSpec.describe BulkUpdateIntegrationService do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:group_integration) do
-    JiraService.create!(
+    Integrations::Jira.create!(
       group: group,
       url: 'http://group.jira.com'
     )
   end
 
   let_it_be(:subgroup_integration) do
-    JiraService.create!(
+    Integrations::Jira.create!(
       inherit_from_id: group_integration.id,
       group: subgroup,
       url: 'http://subgroup.jira.com',
@@ -33,7 +33,7 @@ RSpec.describe BulkUpdateIntegrationService do
   end
 
   let_it_be(:excluded_integration) do
-    JiraService.create!(
+    Integrations::Jira.create!(
       group: create(:group),
       url: 'http://another.jira.com',
       push_events: false
@@ -41,7 +41,7 @@ RSpec.describe BulkUpdateIntegrationService do
   end
 
   let_it_be(:integration) do
-    JiraService.create!(
+    Integrations::Jira.create!(
       project: create(:project, group: subgroup),
       inherit_from_id: subgroup_integration.id,
       url: 'http://project.jira.com',

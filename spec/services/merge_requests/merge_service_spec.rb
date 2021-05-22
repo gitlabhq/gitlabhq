@@ -181,7 +181,7 @@ RSpec.describe MergeRequests::MergeService do
           commit = double('commit', safe_message: "Fixes #{jira_issue.to_reference}")
           allow(merge_request).to receive(:commits).and_return([commit])
 
-          expect_any_instance_of(JiraService).to receive(:close_issue).with(merge_request, jira_issue, user).once
+          expect_any_instance_of(Integrations::Jira).to receive(:close_issue).with(merge_request, jira_issue, user).once
 
           service.execute(merge_request)
         end
@@ -193,7 +193,7 @@ RSpec.describe MergeRequests::MergeService do
             commit = double('commit', safe_message: "Fixes #{jira_issue.to_reference}")
             allow(merge_request).to receive(:commits).and_return([commit])
 
-            expect_any_instance_of(JiraService).not_to receive(:close_issue)
+            expect_any_instance_of(Integrations::Jira).not_to receive(:close_issue)
 
             service.execute(merge_request)
           end

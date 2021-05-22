@@ -5,7 +5,7 @@ module Gitlab
     class StiType < ActiveRecord::Type::String
       NAMESPACED_INTEGRATIONS = Set.new(%w(
         Asana Assembla Bamboo Bugzilla Campfire Confluence CustomIssueTracker Datadog
-        EmailsOnPush Ewm IssueTracker Redmine Youtrack
+        EmailsOnPush Ewm IssueTracker Jira Redmine Youtrack
       )).freeze
 
       def cast(value)

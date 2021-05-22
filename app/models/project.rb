@@ -193,6 +193,7 @@ class Project < ApplicationRecord
   has_one :datadog_service, class_name: 'Integrations::Datadog'
   has_one :emails_on_push_service, class_name: 'Integrations::EmailsOnPush'
   has_one :ewm_service, class_name: 'Integrations::Ewm'
+  has_one :jira_service, class_name: 'Integrations::Jira'
   has_one :redmine_service, class_name: 'Integrations::Redmine'
   has_one :youtrack_service, class_name: 'Integrations::Youtrack'
   has_one :discord_service
@@ -209,7 +210,6 @@ class Project < ApplicationRecord
   has_one :teamcity_service
   has_one :pushover_service
   has_one :jenkins_service
-  has_one :jira_service
   has_one :external_wiki_service
   has_one :prometheus_service, inverse_of: :project
   has_one :mock_ci_service
@@ -560,7 +560,7 @@ class Project < ApplicationRecord
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
-  scope :with_active_jira_services, -> { joins(:integrations).merge(::JiraService.active) } # rubocop:disable CodeReuse/ServiceClass
+  scope :with_active_jira_services, -> { joins(:integrations).merge(::Integrations::Jira.active) } # rubocop:disable CodeReuse/ServiceClass
   scope :with_jira_dvcs_cloud, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: true)) }
   scope :with_jira_dvcs_server, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false)) }
   scope :inc_routes, -> { includes(:route, namespace: :route) }

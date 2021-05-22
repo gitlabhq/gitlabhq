@@ -18662,6 +18662,9 @@ msgstr ""
 msgid "JiraService|GitLab for Jira Configuration"
 msgstr ""
 
+msgid "JiraService|IDs must be a list of numbers that can be split with , or ;"
+msgstr ""
+
 msgid "JiraService|If different from Web URL."
 msgstr ""
 
@@ -18677,10 +18680,10 @@ msgstr ""
 msgid "JiraService|Jira Issues"
 msgstr ""
 
-msgid "JiraService|Jira comments will be created when an issue gets referenced in a commit."
+msgid "JiraService|Jira comments are created when an issue is referenced in a commit."
 msgstr ""
 
-msgid "JiraService|Jira comments will be created when an issue gets referenced in a merge request."
+msgid "JiraService|Jira comments are created when an issue is referenced in a merge request."
 msgstr ""
 
 msgid "JiraService|Jira issue type"
@@ -18768,9 +18771,6 @@ msgid "JiraService|Work on Jira issues without leaving GitLab. Adds a Jira menu 
 msgstr ""
 
 msgid "JiraService|You need to configure Jira before enabling this integration. For more details, read the %{jira_doc_link_start}Jira integration documentation%{link_end}."
-msgstr ""
-
-msgid "JiraService|transition ids can have only numbers which can be split with , or ;"
 msgstr ""
 
 msgid "Job"

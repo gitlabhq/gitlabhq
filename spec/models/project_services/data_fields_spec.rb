@@ -100,7 +100,7 @@ RSpec.describe DataFields do
 
   context 'when service and data_fields are not persisted' do
     let(:service) do
-      JiraService.new
+      Integrations::Jira.new
     end
 
     describe 'data_fields_present?' do

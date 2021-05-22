@@ -3,7 +3,7 @@ require 'spec_helper'
 
 RSpec.describe ProjectServiceWorker, '#perform' do
   let(:worker) { described_class.new }
-  let(:service) { JiraService.new }
+  let(:service) { Integrations::Jira.new }
 
   before do
     allow(Integration).to receive(:find).and_return(service)

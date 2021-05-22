@@ -45,7 +45,7 @@ FactoryBot.define do
     token { 'test' }
   end
 
-  factory :jira_service do
+  factory :jira_service, class: 'Integrations::Jira' do
     project
     active { true }
     type { 'JiraService' }

@@ -227,7 +227,7 @@ module Gitlab
         }
 
         # rubocop: disable CodeReuse/ActiveRecord
-        JiraService.active.includes(:jira_tracker_data).find_in_batches(batch_size: 100) do |services|
+        ::Integrations::Jira.active.includes(:jira_tracker_data).find_in_batches(batch_size: 100) do |services|
           counts = services.group_by do |service|
             # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
             service_url = service.data_fields&.url || (service.properties && service.properties['url'])

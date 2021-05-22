@@ -124,8 +124,8 @@ RSpec.describe Groups::Settings::IntegrationsController do
       end
 
       it 'deletes the integration and all inheriting integrations' do
-        expect { subject }.to change { JiraService.for_group(group.id).count }.by(-1)
-          .and change { JiraService.inherit_from_id(integration.id).count }.by(-1)
+        expect { subject }.to change { Integrations::Jira.for_group(group.id).count }.by(-1)
+          .and change { Integrations::Jira.inherit_from_id(integration.id).count }.by(-1)
       end
     end
   end

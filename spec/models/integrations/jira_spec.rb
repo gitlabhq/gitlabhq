@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraService do
+RSpec.describe Integrations::Jira do
   include AssetsHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -493,7 +493,7 @@ RSpec.describe JiraService do
       before do
         jira_service.jira_issue_transition_id = '999'
 
-        # These stubs are needed to test JiraService#close_issue.
+        # These stubs are needed to test Integrations::Jira#close_issue.
         # We close the issue then do another request to API to check if it got closed.
         # Here is stubbed the API return with a closed and an opened issues.
         open_issue   = JIRA::Resource::Issue.new(jira_service.client, attrs: issue_fields.deep_stringify_keys)
@@ -829,7 +829,7 @@ RSpec.describe JiraService do
 
       context 'when disabled' do
         before do
-          allow_next_instance_of(JiraService) do |instance|
+          allow_next_instance_of(described_class) do |instance|
             allow(instance).to receive(:commit_events) { false }
           end
         end
@@ -847,7 +847,7 @@ RSpec.describe JiraService do
 
       context 'when disabled' do
         before do
-          allow_next_instance_of(JiraService) do |instance|
+          allow_next_instance_of(described_class) do |instance|
             allow(instance).to receive(:merge_requests_events) { false }
           end
         end
