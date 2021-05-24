@@ -25,6 +25,8 @@ module Packages
             update_files_metadata
             update_changes_metadata
           end
+
+          ::Packages::Debian::GenerateDistributionWorker.perform_async(:project, package.debian_distribution.id)
         end
       end
 

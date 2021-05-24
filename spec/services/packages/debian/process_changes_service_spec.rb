@@ -13,6 +13,7 @@ RSpec.describe Packages::Debian::ProcessChangesService do
 
     context 'with valid package file' do
       it 'updates package and package file', :aggregate_failures do
+        expect(::Packages::Debian::GenerateDistributionWorker).to receive(:perform_async).with(:project, distribution.id)
         expect { subject.execute }
           .to change { Packages::Package.count }.from(1).to(2)
           .and not_change { Packages::PackageFile.count }
@@ -30,6 +31,7 @@ RSpec.describe Packages::Debian::ProcessChangesService do
       let(:package_file) { incoming.package_files.first }
 
       it 'raise ExtractionError', :aggregate_failures do
+        expect(::Packages::Debian::GenerateDistributionWorker).not_to receive(:perform_async)
         expect { subject.execute }
           .to not_change { Packages::Package.count }
           .and not_change { Packages::PackageFile.count }
@@ -47,6 +49,7 @@ RSpec.describe Packages::Debian::ProcessChangesService do
       end
 
       it 'remove the package file', :aggregate_failures do
+        expect(::Packages::Debian::GenerateDistributionWorker).not_to receive(:perform_async)
         expect { subject.execute }
           .to not_change { Packages::Package.count }
           .and not_change { Packages::PackageFile.count }

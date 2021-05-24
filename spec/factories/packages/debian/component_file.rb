@@ -2,6 +2,10 @@
 
 FactoryBot.define do
   factory :debian_project_component_file, class: 'Packages::Debian::ProjectComponentFile' do
+    transient do
+      file_fixture { 'spec/fixtures/packages/debian/distribution/Packages' }
+    end
+
     component { association(:debian_project_component) }
     architecture { association(:debian_project_architecture, distribution: component.distribution) }
 
@@ -13,7 +17,7 @@ FactoryBot.define do
     file_type { :packages }
 
     after(:build) do |component_file, evaluator|
-      component_file.file = fixture_file_upload('spec/fixtures/packages/debian/distribution/Packages')
+      component_file.file = fixture_file_upload(evaluator.file_fixture) if evaluator.file_fixture.present?
     end
 
     file_md5 { '12345abcde' }

@@ -9,6 +9,8 @@
       .form-group
         = label_tag group_link_field, _("Select a group to invite"), class: "label-bold"
         = groups_select_tag(group_link_field, data: { skip_groups: @skip_groups }, class: 'input-clamp qa-group-select-field', required: true)
+        .form-text.text-muted.gl-mb-3
+          = _('Group sharing provides access to all group members (including members who inherited group membership from a parent group).')
       .form-group
         = label_tag group_access_field, _("Max access level"), class: "label-bold"
         .select-wrapper

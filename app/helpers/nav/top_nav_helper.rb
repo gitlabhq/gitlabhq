@@ -44,6 +44,13 @@ module Nav
           **snippets_menu_item_attrs
         )
       end
+
+      builder.add_secondary_menu_item(
+        id: 'help',
+        title: _('Help'),
+        icon: 'question-o',
+        href: help_path
+      )
     end
 
     def build_view_model(builder:, project:, group:)

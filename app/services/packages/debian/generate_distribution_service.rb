@@ -6,6 +6,8 @@ module Packages
       include Gitlab::Utils::StrongMemoize
       include ExclusiveLeaseGuard
 
+      ONE_HOUR = 1.hour.freeze
+
       # used by ExclusiveLeaseGuard
       DEFAULT_LEASE_TIMEOUT = 1.hour.to_i.freeze
 
@@ -62,7 +64,7 @@ module Packages
 
       def initialize(distribution)
         @distribution = distribution
-        @last_generated_at = nil
+        @oldest_kept_generated_at = nil
         @md5sum = []
         @sha256 = []
       end
@@ -70,7 +72,10 @@ module Packages
       def execute
         try_obtain_lease do
           @distribution.transaction do
-            @last_generated_at = @distribution.component_files.maximum(:created_at)
+            # We consider `apt-get update` can take at most one hour
+            # We keep all generations younger than one hour
+            # and the previous generation
+            @oldest_kept_generated_at = @distribution.component_files.updated_before(release_date - ONE_HOUR).maximum(:updated_at)
             generate_component_files
             generate_release
             destroy_old_component_files
@@ -96,7 +101,7 @@ module Packages
                                   .with_debian_file_type(package_file_type)
                                   .find_each
                                   .map(&method(:package_stanza_from_fields))
-        create_component_file(component, component_file_type, architecture, package_file_type, paragraphs.join("\n"))
+        reuse_or_create_component_file(component, component_file_type, architecture, paragraphs.join("\n"))
       end
 
       def package_stanza_from_fields(package_file)
@@ -127,17 +132,32 @@ module Packages
         end
       end
 
-      def create_component_file(component, component_file_type, architecture, package_file_type, content)
-        component_file = component.files.create!(
-          file_type: component_file_type,
-          architecture: architecture,
-          compression_type: nil,
-          file: CarrierWaveStringFile.new(content),
-          file_md5: Digest::MD5.hexdigest(content),
-          file_sha256: Digest::SHA256.hexdigest(content)
-        )
-        @md5sum.append(" #{component_file.file_md5} #{component_file.size.to_s.rjust(8)} #{component_file.relative_path}")
-        @sha256.append(" #{component_file.file_sha256} #{component_file.size.to_s.rjust(8)} #{component_file.relative_path}")
+      def reuse_or_create_component_file(component, component_file_type, architecture, content)
+        file_md5 = Digest::MD5.hexdigest(content)
+        file_sha256 = Digest::SHA256.hexdigest(content)
+        component_file = component.files
+                                  .with_file_type(component_file_type)
+                                  .with_architecture(architecture)
+                                  .with_compression_type(nil)
+                                  .with_file_sha256(file_sha256)
+                                  .last
+
+        if component_file
+          component_file.touch(time: release_date)
+        else
+          component_file = component.files.create!(
+            updated_at: release_date,
+            file_type: component_file_type,
+            architecture: architecture,
+            compression_type: nil,
+            file: CarrierWaveStringFile.new(content),
+            file_md5: file_md5,
+            file_sha256: file_sha256
+          )
+        end
+
+        @md5sum.append(" #{file_md5} #{component_file.size.to_s.rjust(8)} #{component_file.relative_path}")
+        @sha256.append(" #{file_sha256} #{component_file.size.to_s.rjust(8)} #{component_file.relative_path}")
       end
 
       def generate_release
@@ -187,10 +207,9 @@ module Packages
       end
 
       def destroy_old_component_files
-        # Only keep the last generation and one hour before
-        return if @last_generated_at.nil?
+        return if @oldest_kept_generated_at.nil?
 
-        @distribution.component_files.created_before(@last_generated_at - 1.hour).destroy_all # rubocop:disable Cop/DestroyAll
+        @distribution.component_files.updated_before(@oldest_kept_generated_at).destroy_all # rubocop:disable Cop/DestroyAll
       end
 
       # used by ExclusiveLeaseGuard

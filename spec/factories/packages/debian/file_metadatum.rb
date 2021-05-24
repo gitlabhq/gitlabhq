@@ -33,7 +33,53 @@ FactoryBot.define do
       file_type { 'deb' }
       component { 'main' }
       architecture { 'amd64' }
-      fields { { 'a': 'b' } }
+      fields do
+        {
+        'Package' => 'libsample0',
+        'Source' => package_file.package.name,
+        'Version' => package_file.package.version,
+        'Architecture' => 'amd64',
+        'Maintainer' => "#{FFaker::Name.name} <#{FFaker::Internet.email}>",
+        'Installed-Size' => '7',
+        'Section' => 'libs',
+        'Priority' => 'optional',
+        'Multi-Arch' => 'same',
+        'Homepage' => FFaker::Internet.http_url,
+        'Description' => <<~EOF.rstrip
+        Some mostly empty lib
+        Used in GitLab tests.
+
+        Testing another paragraph.
+        EOF
+        }
+      end
+    end
+
+    trait(:deb_dev) do
+      file_type { 'deb' }
+      component { 'main' }
+      architecture { 'amd64' }
+      fields do
+        {
+          'Package' => 'sample-dev',
+          'Source' => "#{package_file.package.name} (#{package_file.package.version})",
+          'Version' => '1.2.3~binary',
+          'Architecture' => 'amd64',
+          'Maintainer' => "#{FFaker::Name.name} <#{FFaker::Internet.email}>",
+          'Installed-Size' => '7',
+          'Depends' => 'libsample0 (= 1.2.3~binary)',
+          'Section' => 'libdevel',
+          'Priority' => 'optional',
+          'Multi-Arch' => 'same',
+          'Homepage' => FFaker::Internet.http_url,
+          'Description' => <<~EOF.rstrip
+          Some mostly empty development files
+          Used in GitLab tests.
+
+          Testing another paragraph.
+          EOF
+        }
+      end
     end
 
     trait(:udeb) do

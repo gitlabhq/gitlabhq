@@ -238,6 +238,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
             aria-hidden="true"
             class="gl-icon s16"
             data-testid="slight-smile-icon"
+            role="img"
           >
             <use
               href="#slight-smile"
@@ -252,6 +253,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
             aria-hidden="true"
             class="gl-icon s16"
             data-testid="smiley-icon"
+            role="img"
           >
             <use
               href="#smiley"
@@ -266,6 +268,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
             aria-hidden="true"
             class="gl-icon s16"
             data-testid="smile-icon"
+            role="img"
           >
             <use
               href="#smile"

@@ -142,6 +142,14 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       end
     end
 
+    describe '.with_architecture' do
+      subject { described_class.with_architecture(architecture1_2) }
+
+      it do
+        expect(subject.to_a).to contain_exactly(component_file_other_architecture)
+      end
+    end
+
     describe '.with_architecture_name' do
       subject { described_class.with_architecture_name(architecture1_2.name) }
 
@@ -166,12 +174,12 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       end
     end
 
-    describe '.created_before' do
-      let_it_be(:component_file1) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, created_at: 4.hours.ago) }
-      let_it_be(:component_file2) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, created_at: 3.hours.ago) }
-      let_it_be(:component_file3) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, created_at: 1.hour.ago) }
+    describe '.updated_before' do
+      let_it_be(:component_file1) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, updated_at: 4.hours.ago) }
+      let_it_be(:component_file2) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, updated_at: 3.hours.ago) }
+      let_it_be(:component_file3) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, updated_at: 1.hour.ago) }
 
-      subject { described_class.created_before(2.hours.ago) }
+      subject { described_class.updated_before(2.hours.ago) }
 
       it do
         expect(subject.to_a).to contain_exactly(component_file1, component_file2)

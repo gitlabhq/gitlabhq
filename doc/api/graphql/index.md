@@ -78,6 +78,11 @@ where the deprecated part of the schema is supported for a period of time before
 
 Clients should familiarize themselves with the process to avoid breaking changes affecting their integrations.
 
+WARNING:
+While GitLab will make all attempts to follow the [deprecation and removal process](#deprecation-and-removal-process),
+GitLab may on very rare occasions need to make immediate breaking changes to the GraphQL API to patch critical security or performance
+concerns and where the deprecation process would be considered to pose significant risk.
+
 NOTE:
 Fields behind a feature flag and disabled by default are exempt from the deprecation process,
 and can be removed at any time without notice.

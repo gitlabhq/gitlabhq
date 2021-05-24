@@ -81,6 +81,7 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
               aria-hidden="true"
               class="gl-text-green-500 gl-icon s16"
               data-testid="completed-icon"
+              role="img"
             >
               <use
                 href="#check-circle-filled"
@@ -142,6 +143,7 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
               aria-hidden="true"
               class="gl-text-green-500 gl-icon s16"
               data-testid="completed-icon"
+              role="img"
             >
               <use
                 href="#check-circle-filled"

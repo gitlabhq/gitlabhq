@@ -50,6 +50,8 @@ module Packages
 
         scope :with_file_type, ->(file_type) { where(file_type: file_type) }
 
+        scope :with_architecture, ->(architecture) { where(architecture: architecture) }
+
         scope :with_architecture_name, ->(architecture_name) do
           left_outer_joins(:architecture)
             .where("packages_debian_#{container_type}_architectures" => { name: architecture_name })
@@ -60,7 +62,7 @@ module Packages
 
         scope :preload_distribution, -> { includes(component: :distribution) }
 
-        scope :created_before, ->(reference) { where("#{table_name}.created_at < ?", reference) }
+        scope :updated_before, ->(reference) { where("#{table_name}.updated_at < ?", reference) }
 
         mount_file_store_uploader Packages::Debian::ComponentFileUploader
 

@@ -26,6 +26,7 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
         aria-hidden="true"
         class="gl-icon s8"
         data-testid="angle-right-icon"
+        role="img"
       >
         <use
           href="#angle-right"

@@ -14,7 +14,7 @@ Section: libdevel
 Architecture: any
 Multi-Arch: same
 Depends: libsample0 (= ${binary:Version}), ${misc:Depends}
-Description: Some mostly empty developpement files
+Description: Some mostly empty development files
  Used in GitLab tests.
  .
  Testing another paragraph.

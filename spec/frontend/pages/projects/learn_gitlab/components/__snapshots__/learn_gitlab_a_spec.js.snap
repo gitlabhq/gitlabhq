@@ -92,6 +92,7 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
                 aria-hidden="true"
                 class="gl-icon s16"
                 data-testid="completed-icon"
+                role="img"
               >
                 <use
                   href="#check-circle-filled"
@@ -114,6 +115,7 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
                 aria-hidden="true"
                 class="gl-icon s16"
                 data-testid="completed-icon"
+                role="img"
               >
                 <use
                   href="#check-circle-filled"

@@ -10,30 +10,30 @@ Maintainer: John Doe <john.doe@example.com>
 Changed-By: John Doe <john.doe@example.com>
 Description:
  libsample0 - Some mostly empty lib
- sample-dev - Some mostly empty developpement files
+ sample-dev - Some mostly empty development files
  sample-udeb - Some mostly empty udeb (udeb)
 Changes:
  sample (1.2.3~alpha2) unstable; urgency=medium
  .
    * Initial release
 Checksums-Sha1:
- 32ecbd674f0bfd310df68484d87752490685a8d6 671 sample_1.2.3~alpha2.dsc
- 5f8bba5574eb01ac3b1f5e2988e8c29307788236 864 sample_1.2.3~alpha2.tar.xz
+ 375ba20ea1789e1e90d469c3454ce49a431d0442 671 sample_1.2.3~alpha2.dsc
+ c5cfc111ea924842a89a06d5673f07dfd07de8ca 864 sample_1.2.3~alpha2.tar.xz
  5248b95600e85bfe7f63c0dfce330a75f5777366 1124 libsample0_1.2.3~alpha2_amd64.deb
- f81e4f66c8c6bb899653a3340c157965ee69634f 1164 sample-dev_1.2.3~binary_amd64.deb
+ fcd5220b1501ec150ccf37f06e4da919a8612be4 1164 sample-dev_1.2.3~binary_amd64.deb
  e42e8f2fe04ed1bb73b44a187674480d0e49dcba 736 sample-udeb_1.2.3~alpha2_amd64.udeb
- 0d47e899f3cc67a2253a4629456ff927e0db5c60 5280 sample_1.2.3~alpha2_amd64.buildinfo
+ 661f7507efa6fdd3763c95581d0baadb978b7ef5 5507 sample_1.2.3~alpha2_amd64.buildinfo
 Checksums-Sha256:
- 844f79825b7e8aaa191e514b58a81f9ac1e58e2180134b0c9512fa66d896d7ba 671 sample_1.2.3~alpha2.dsc
- b5a599e88e7cbdda3bde808160a21ba1dd1ec76b2ec8d4912aae769648d68362 864 sample_1.2.3~alpha2.tar.xz
+ 81fc156ba937cdb6215362cc4bf6b8dc47be9b4253ba0f1a4ab10c7ea0c4c4e5 671 sample_1.2.3~alpha2.dsc
+ 40e4682bb24a73251ccd7c7798c0094a649091e5625d6a14bcec9b4e7174f3da 864 sample_1.2.3~alpha2.tar.xz
  1c383a525bfcba619c7305ccd106d61db501a6bbaf0003bf8d0c429fbdb7fcc1 1124 libsample0_1.2.3~alpha2_amd64.deb
- 9fbeee2191ce4dab5288fad5ecac1bd369f58fef9a992a880eadf0caf25f086d 1164 sample-dev_1.2.3~binary_amd64.deb
+ b8aa8b73a14bc1e0012d4c5309770f5160a8ea7f9dfe6f45222ea6b8a3c35325 1164 sample-dev_1.2.3~binary_amd64.deb
  2b0c152b3ab4cc07663350424de972c2b7621d69fe6df2e0b94308a191e4632f 736 sample-udeb_1.2.3~alpha2_amd64.udeb
- f9900d3c94e94b329232668dcbef3dba2d96c07147b15b6dc0533452e4dd8a43 5280 sample_1.2.3~alpha2_amd64.buildinfo
+ d0c169e9caa5b303a914b27b5adf69768fe6687d4925905b7d0cd9c0f9d4e56c 5507 sample_1.2.3~alpha2_amd64.buildinfo
 Files:
- 3b0817804f669e16cdefac583ad88f0e 671 libs optional sample_1.2.3~alpha2.dsc
- d79b34f58f61ff4ad696d9bd0b8daa68 864 libs optional sample_1.2.3~alpha2.tar.xz
+ ceccb6bb3e45ce6550b24234d4023e0f 671 libs optional sample_1.2.3~alpha2.dsc
+ d5ca476e4229d135a88f9c729c7606c9 864 libs optional sample_1.2.3~alpha2.tar.xz
  fb0842b21adc44207996296fe14439dd 1124 libs optional libsample0_1.2.3~alpha2_amd64.deb
- d2afbd28e4d74430d22f9504e18bfdf5 1164 libdevel optional sample-dev_1.2.3~binary_amd64.deb
+ 5fafc04dcae1525e1367b15413e5a5c7 1164 libdevel optional sample-dev_1.2.3~binary_amd64.deb
  72b1dd7d98229e2fb0355feda1d3a165 736 libs optional sample-udeb_1.2.3~alpha2_amd64.udeb
- 4e085dd67c120ca967ec314f65770a42 5280 libs optional sample_1.2.3~alpha2_amd64.buildinfo
+ 12a5ac4f16ad75f8741327ac23b4c0d7 5507 libs optional sample_1.2.3~alpha2_amd64.buildinfo

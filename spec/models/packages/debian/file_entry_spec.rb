@@ -7,11 +7,11 @@ RSpec.describe Packages::Debian::FileEntry, type: :model do
 
   let(:filename) { 'sample_1.2.3~alpha2.dsc' }
   let(:size) { 671 }
-  let(:md5sum) { '3b0817804f669e16cdefac583ad88f0e' }
+  let(:md5sum) { package_file.file_md5 }
   let(:section) { 'libs' }
   let(:priority) { 'optional' }
-  let(:sha1sum) { '32ecbd674f0bfd310df68484d87752490685a8d6' }
-  let(:sha256sum) { '844f79825b7e8aaa191e514b58a81f9ac1e58e2180134b0c9512fa66d896d7ba' }
+  let(:sha1sum) { package_file.file_sha1 }
+  let(:sha256sum) { package_file.file_sha256 }
 
   let(:file_entry) do
     described_class.new(
@@ -42,7 +42,7 @@ RSpec.describe Packages::Debian::FileEntry, type: :model do
 
     describe '#md5sum' do
       it { is_expected.to validate_presence_of(:md5sum) }
-      it { is_expected.not_to allow_value('12345678901234567890123456789012').for(:md5sum).with_message('mismatch for sample_1.2.3~alpha2.dsc: 3b0817804f669e16cdefac583ad88f0e != 12345678901234567890123456789012') }
+      it { is_expected.not_to allow_value('12345678901234567890123456789012').for(:md5sum).with_message("mismatch for sample_1.2.3~alpha2.dsc: #{package_file.file_md5} != 12345678901234567890123456789012") }
     end
 
     describe '#section' do
@@ -55,12 +55,12 @@ RSpec.describe Packages::Debian::FileEntry, type: :model do
 
     describe '#sha1sum' do
       it { is_expected.to validate_presence_of(:sha1sum) }
-      it { is_expected.not_to allow_value('1234567890123456789012345678901234567890').for(:sha1sum).with_message('mismatch for sample_1.2.3~alpha2.dsc: 32ecbd674f0bfd310df68484d87752490685a8d6 != 1234567890123456789012345678901234567890') }
+      it { is_expected.not_to allow_value('1234567890123456789012345678901234567890').for(:sha1sum).with_message("mismatch for sample_1.2.3~alpha2.dsc: #{package_file.file_sha1} != 1234567890123456789012345678901234567890") }
     end
 
     describe '#sha256sum' do
       it { is_expected.to validate_presence_of(:sha256sum) }
-      it { is_expected.not_to allow_value('1234567890123456789012345678901234567890123456789012345678901234').for(:sha256sum).with_message('mismatch for sample_1.2.3~alpha2.dsc: 844f79825b7e8aaa191e514b58a81f9ac1e58e2180134b0c9512fa66d896d7ba != 1234567890123456789012345678901234567890123456789012345678901234') }
+      it { is_expected.not_to allow_value('1234567890123456789012345678901234567890123456789012345678901234').for(:sha256sum).with_message("mismatch for sample_1.2.3~alpha2.dsc: #{package_file.file_sha256} != 1234567890123456789012345678901234567890123456789012345678901234") }
     end
 
     describe '#package_file' do

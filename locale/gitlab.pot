@@ -15719,6 +15719,9 @@ msgstr ""
 msgid "Group runners can be managed with the %{link}."
 msgstr ""
 
+msgid "Group sharing provides access to all group members (including members who inherited group membership from a parent group)."
+msgstr ""
+
 msgid "Group variables (inherited)"
 msgstr ""
 

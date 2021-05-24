@@ -94,6 +94,18 @@ RSpec.describe Nav::TopNavHelper do
         ]
         expect(subject[:shortcuts]).to eq(expected_shortcuts)
       end
+
+      it 'has expected :secondary' do
+        expected_secondary = [
+          ::Gitlab::Nav::TopNavMenuItem.build(
+            href: '/help',
+            id: 'help',
+            title: 'Help',
+            icon: 'question-o'
+          )
+        ]
+        expect(subject[:secondary]).to eq(expected_secondary)
+      end
     end
 
     context 'when current_user is non-admin' do

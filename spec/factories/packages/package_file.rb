@@ -125,9 +125,9 @@ FactoryBot.define do
 
       trait(:source) do
         file_name { 'sample_1.2.3~alpha2.tar.xz' }
-        file_md5 { 'd79b34f58f61ff4ad696d9bd0b8daa68' }
-        file_sha1 { '5f8bba5574eb01ac3b1f5e2988e8c29307788236' }
-        file_sha256 { 'b5a599e88e7cbdda3bde808160a21ba1dd1ec76b2ec8d4912aae769648d68362' }
+        file_md5 { 'd5ca476e4229d135a88f9c729c7606c9' }
+        file_sha1 { 'c5cfc111ea924842a89a06d5673f07dfd07de8ca' }
+        file_sha256 { '40e4682bb24a73251ccd7c7798c0094a649091e5625d6a14bcec9b4e7174f3da' }
 
         transient do
           file_metadatum_trait { :source }
@@ -136,9 +136,9 @@ FactoryBot.define do
 
       trait(:dsc) do
         file_name { 'sample_1.2.3~alpha2.dsc' }
-        file_md5 { '3b0817804f669e16cdefac583ad88f0e' }
-        file_sha1 { '32ecbd674f0bfd310df68484d87752490685a8d6' }
-        file_sha256 { '844f79825b7e8aaa191e514b58a81f9ac1e58e2180134b0c9512fa66d896d7ba' }
+        file_md5 { 'ceccb6bb3e45ce6550b24234d4023e0f' }
+        file_sha1 { '375ba20ea1789e1e90d469c3454ce49a431d0442' }
+        file_sha256 { '81fc156ba937cdb6215362cc4bf6b8dc47be9b4253ba0f1a4ab10c7ea0c4c4e5' }
 
         transient do
           file_metadatum_trait { :dsc }
@@ -156,14 +156,14 @@ FactoryBot.define do
         end
       end
 
-      trait(:deb2) do
+      trait(:deb_dev) do
         file_name { 'sample-dev_1.2.3~binary_amd64.deb' }
-        file_md5 { 'd2afbd28e4d74430d22f9504e18bfdf5' }
-        file_sha1 { 'f81e4f66c8c6bb899653a3340c157965ee69634f' }
-        file_sha256 { '9fbeee2191ce4dab5288fad5ecac1bd369f58fef9a992a880eadf0caf25f086d' }
+        file_md5 { '5fafc04dcae1525e1367b15413e5a5c7' }
+        file_sha1 { 'fcd5220b1501ec150ccf37f06e4da919a8612be4' }
+        file_sha256 { 'b8aa8b73a14bc1e0012d4c5309770f5160a8ea7f9dfe6f45222ea6b8a3c35325' }
 
         transient do
-          file_metadatum_trait { :deb }
+          file_metadatum_trait { :deb_dev }
         end
       end
 
@@ -180,9 +180,9 @@ FactoryBot.define do
 
       trait(:buildinfo) do
         file_name { 'sample_1.2.3~alpha2_amd64.buildinfo' }
-        file_md5 { '4e085dd67c120ca967ec314f65770a42' }
-        file_sha1 { '0d47e899f3cc67a2253a4629456ff927e0db5c60' }
-        file_sha256 { 'f9900d3c94e94b329232668dcbef3dba2d96c07147b15b6dc0533452e4dd8a43' }
+        file_md5 { '12a5ac4f16ad75f8741327ac23b4c0d7' }
+        file_sha1 { '661f7507efa6fdd3763c95581d0baadb978b7ef5' }
+        file_sha256 { 'd0c169e9caa5b303a914b27b5adf69768fe6687d4925905b7d0cd9c0f9d4e56c' }
 
         transient do
           file_metadatum_trait { :buildinfo }
