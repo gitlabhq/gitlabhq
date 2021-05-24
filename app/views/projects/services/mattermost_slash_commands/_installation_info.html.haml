@@ -1,5 +1,5 @@
 .services-installation-info
-  - unless @service.activated?
+  - unless integration.activated?
     .row
       .col-sm-9.offset-sm-3
         = link_to new_project_mattermost_path(@project), class: 'btn gl-button btn-lg' do

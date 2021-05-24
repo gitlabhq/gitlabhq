@@ -1,5 +1,5 @@
 - return unless can?(current_user, :read_prometheus_alerts, @project)
-- return unless @service.manual_configuration?
+- return unless integration.manual_configuration?
 
 - notify_url = notify_project_prometheus_alerts_url(@project, format: :json)
 - authorization_key = @project.alerting_setting.try(:token)

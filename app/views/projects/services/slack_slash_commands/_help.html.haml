@@ -11,7 +11,7 @@
     %p.inline
       = s_("SlackService|See list of available commands in Slack after setting up this service, by entering")
     %kbd.inline /&lt;command&gt; help
-    - if @service.project_level?
+    - if integration.project_level?
       %p= _("To set up this service:")
       %ul.list-unstyled.indent-list
         %li
@@ -39,7 +39,7 @@
         .form-group
           = label_tag :url, 'URL', class: 'col-12 col-form-label label-bold'
           .col-12.input-group
-            = text_field_tag :url, service_trigger_url(subject), class: 'form-control form-control-sm', readonly: 'readonly'
+            = text_field_tag :url, service_trigger_url(integration), class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
               = clipboard_button(target: '#url', class: 'input-group-text')
 

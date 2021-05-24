@@ -1,13 +1,13 @@
 %h4
   = s_('PrometheusService|Auto configuration')
 
-- if service.manual_configuration?
+- if integration.manual_configuration?
   .info-well
     = s_('PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration.')
 - else
   .container-fluid
     .row
-      - if service.prometheus_available?
+      - if integration.prometheus_available?
         .col-sm-2
           .svg-container
             = image_tag 'illustrations/monitoring/getting_started.svg'

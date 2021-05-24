@@ -7,7 +7,7 @@
     .js-integration-help-html.gl-display-none
       -# All content below will be repositioned in Vue
       - if lookup_context.template_exists?('help', "projects/services/#{integration.to_param}", true)
-        = render "projects/services/#{integration.to_param}/help", subject: integration
+        = render "projects/services/#{integration.to_param}/help", integration: integration
       - elsif integration.help.present?
         .info-well
           .well-segment
