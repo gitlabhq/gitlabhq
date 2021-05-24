@@ -51,6 +51,24 @@ For a web developer writing a webpage for your company's website:
 1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
 1. Your production team [cherry picks](cherry_pick_changes.md) the merge commit into production.
 
+## View merge requests
+
+You can view merge requests for a specific project, or for all projects in a group:
+
+- **Specific project**: Go to your project and select **Merge requests**.
+- **All projects in a group**: Go to your group and select **Merge requests**.
+  If your group contains subgroups, this view also displays merge requests from the subgroup projects.
+  GitLab displays a count of open merge requests in the left sidebar, but
+  [caches the value](reviews/index.md#cached-merge-request-count) for groups with a large number of
+  open merge requests.
+
+GitLab displays open merge requests, with tabs to filter the list by open and closed status:
+
+![Project merge requests list view](img/project_merge_requests_list_view_v13_5.png)
+
+You can [search and filter](../../search/index.md#filtering-issue-and-merge-request-lists),
+the results, or select a merge request to begin a review.
+
 ## Related topics
 
 - [Create a merge request](creating_merge_requests.md)

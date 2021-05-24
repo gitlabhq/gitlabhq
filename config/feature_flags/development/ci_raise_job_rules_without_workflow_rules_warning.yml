@@ -1,8 +1,0 @@
----
-name: ci_raise_job_rules_without_workflow_rules_warning
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38387
-rollout_issue_url: 
-milestone: '13.3'
-type: development
-group: group::continuous integration
-default_enabled: true

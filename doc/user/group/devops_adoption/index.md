@@ -25,6 +25,7 @@ To access Group DevOps Adoption, go to your group and select **Analytics > DevOp
 Group DevOps Adoption shows you how individual groups and sub-groups within your organization use the following features:
 
 - Approvals
+- Code owners
 - Deployments
 - Issues
 - Merge Requests

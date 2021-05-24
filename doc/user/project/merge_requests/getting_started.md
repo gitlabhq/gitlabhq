@@ -114,9 +114,6 @@ It is also possible to manage multiple assignees:
 
 ### Reviewer
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216054) in GitLab 13.5.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245190) in GitLab 13.9.
-
 WARNING:
 Requesting a code review is an important part of contributing code. However, deciding who should review
 your code and asking for a review are no easy tasks. Using the "assignee" field for both authors and
@@ -132,44 +129,7 @@ To request a review of a merge request, expand the **Reviewers** select box in
 the right-hand sidebar. Search for the users you want to request a review from.
 When selected, GitLab creates a [to-do list item](../../todos.md) for each reviewer.
 
-#### Approval Rule information for Reviewers **(PREMIUM)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
-
-When editing the **Reviewers** field in a new or existing merge request, GitLab
-displays the name of the matching [approval rule](approvals/rules.md)
-below the name of each suggested reviewer. [Code Owners](../code_owners.md) are displayed as `Codeowner` without group detail.
-
-This example shows reviewers and approval rules when creating a new merge request:
-
-![Reviewer approval rules in new/edit form](img/reviewer_approval_rules_form_v13_8.png)
-
-This example shows reviewers and approval rules in a merge request sidebar:
-
-![Reviewer approval rules in sidebar](img/reviewer_approval_rules_sidebar_v13_8.png)
-
-#### Requesting a new review
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293933) in GitLab 13.9.
-
-After a reviewer completes their [merge request reviews](../../discussions/index.md),
-the author of the merge request can request a new review from the reviewer:
-
-1. If the right sidebar in the merge request is collapsed, click the
-   **{chevron-double-lg-left}** **Expand Sidebar** icon to expand it.
-1. In the **Reviewers** section, click the **Re-request a review** icon (**{redo}**)
-   next to the reviewer's name.
-
-GitLab creates a new [to-do item](../../todos.md) for the reviewer, and sends
-them a notification email.
-
-#### Approval status
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292936) in GitLab 13.10.
-
-If a user in the reviewer list has approved the merge request, a green tick symbol is
-shown to the right of their name.
+To learn more, read [Review and manage merge requests](reviews/index.md).
 
 ### Merge requests to close issues
 

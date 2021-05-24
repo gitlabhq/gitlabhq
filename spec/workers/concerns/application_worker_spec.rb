@@ -182,24 +182,6 @@ RSpec.describe ApplicationWorker do
         worker.data_consistency(data_consistency)
       end
 
-      context 'when data_consistency_delayed_execution feature flag is disabled' do
-        before do
-          stub_feature_flags(data_consistency_delayed_execution: false)
-        end
-
-        it 'data_consistency_delayed_execution_feature_flag_enabled? should return false' do
-          expect(worker).to receive(:data_consistency_delayed_execution_feature_flag_enabled?).and_return(false)
-
-          worker.perform_async
-        end
-
-        it 'does not call perform_in' do
-          expect(worker).not_to receive(:perform_in)
-
-          worker.perform_async
-        end
-      end
-
       it 'call perform_in' do
         expect(worker).to receive(:perform_in).with(described_class::DEFAULT_DELAY_INTERVAL.seconds, 123)
 

@@ -22,10 +22,6 @@ module Gitlab
         Feature.enabled?(:merge_base_pipeline_for_metrics_comparison, project, default_enabled: :yaml)
       end
 
-      def self.raise_job_rules_without_workflow_rules_warning?
-        ::Feature.enabled?(:ci_raise_job_rules_without_workflow_rules_warning, default_enabled: true)
-      end
-
       # NOTE: The feature flag `disallow_to_create_merge_request_pipelines_in_target_project`
       # is a safe switch to disable the feature for a particular project when something went wrong,
       # therefore it's not supposed to be enabled by default.

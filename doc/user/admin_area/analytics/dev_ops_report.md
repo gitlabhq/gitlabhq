@@ -40,13 +40,14 @@ collected before this feature is available.
 
 The DevOps Adoption tab shows you which groups within your organization are using the most essential features of GitLab:
 
+- Approvals
+- Code owners
+- Deployments
 - Issues
 - Merge Requests
-- Approvals
-- Runners
 - Pipelines
-- Deploys
-- Scanning
+- Runners
+- Scans
 
 Buttons to manage your groups appear in the DevOps Adoption section of the page.
 

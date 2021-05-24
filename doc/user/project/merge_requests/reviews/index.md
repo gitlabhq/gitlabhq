@@ -7,29 +7,14 @@ type: index, reference
 
 # Review and manage merge requests **(FREE)**
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216054) in GitLab 13.5.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245190) in GitLab 13.9.
+
 [Merge requests](../index.md) are the primary method of making changes to files in a
 GitLab project. [Create and submit a merge request](../creating_merge_requests.md)
 to propose changes. Your team leaves [comments](../../../discussions/index.md), and
 makes [code suggestions](suggestions.md) you can accept from the user interface.
 When your work is reviewed, your team members can choose to accept or reject it.
-
-## View merge requests
-
-You can view merge requests for a specific project, or for all projects in a group:
-
-- **Specific project**: Go to your project and select **Merge requests**.
-- **All projects in a group**: Go to your group and select **Merge requests**.
-  If your group contains subgroups, this view also displays merge requests from the subgroup projects.
-  GitLab displays a count of open merge requests in the left sidebar, but
-  [caches the value](#cached-merge-request-count) for groups with a large number of
-  open merge requests.
-
-GitLab displays open merge requests, with tabs to filter the list by open and closed status:
-
-![Project merge requests list view](img/project_merge_requests_list_view_v13_5.png)
-
-You can [search and filter](../../../search/index.md#filtering-issue-and-merge-request-lists),
-the results, or select a merge request to begin a review.
 
 ## Bulk edit merge requests at the project level
 
@@ -135,6 +120,45 @@ comment itself.
 If you have a review in progress, you will be presented with the option to **Add to review**:
 
 ![New thread](img/mr_review_new_comment_v13_11.png)
+
+### Approval Rule information for Reviewers **(PREMIUM)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
+
+When editing the **Reviewers** field in a new or existing merge request, GitLab
+displays the name of the matching [approval rule](../approvals/rules.md)
+below the name of each suggested reviewer. [Code Owners](../../code_owners.md) are displayed as `Codeowner` without group detail.
+
+This example shows reviewers and approval rules when creating a new merge request:
+
+![Reviewer approval rules in new/edit form](img/reviewer_approval_rules_form_v13_8.png)
+
+This example shows reviewers and approval rules in a merge request sidebar:
+
+![Reviewer approval rules in sidebar](img/reviewer_approval_rules_sidebar_v13_8.png)
+
+### Requesting a new review
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293933) in GitLab 13.9.
+
+After a reviewer completes their [merge request reviews](../../../discussions/index.md),
+the author of the merge request can request a new review from the reviewer:
+
+1. If the right sidebar in the merge request is collapsed, click the
+   **{chevron-double-lg-left}** **Expand Sidebar** icon to expand it.
+1. In the **Reviewers** section, click the **Re-request a review** icon (**{redo}**)
+   next to the reviewer's name.
+
+GitLab creates a new [to-do item](../../../todos.md) for the reviewer, and sends
+them a notification email.
+
+#### Approval status
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292936) in GitLab 13.10.
+
+If a user in the reviewer list has approved the merge request, a green tick symbol is
+shown to the right of their name.
 
 ## Semi-linear history merge requests
 

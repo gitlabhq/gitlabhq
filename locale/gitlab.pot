@@ -11366,22 +11366,28 @@ msgstr ""
 msgid "DevopsAdoption|Are you sure that you would like to remove %{name} from the table?"
 msgstr ""
 
-msgid "DevopsAdoption|At least 1 MR opened"
+msgid "DevopsAdoption|At least one MR opened"
 msgstr ""
 
-msgid "DevopsAdoption|At least 1 approval on an MR"
+msgid "DevopsAdoption|At least one approval on an MR"
 msgstr ""
 
-msgid "DevopsAdoption|At least 1 deploy"
+msgid "DevopsAdoption|At least one deploy"
 msgstr ""
 
-msgid "DevopsAdoption|At least 1 issue opened"
+msgid "DevopsAdoption|At least one issue opened"
 msgstr ""
 
-msgid "DevopsAdoption|At least 1 pipeline successfully run"
+msgid "DevopsAdoption|At least one pipeline successfully run"
 msgstr ""
 
-msgid "DevopsAdoption|At least 1 security scan of any type run in pipeline"
+msgid "DevopsAdoption|At least one security scan of any type run in pipeline"
+msgstr ""
+
+msgid "DevopsAdoption|Code owners"
+msgstr ""
+
+msgid "DevopsAdoption|Code owners enabled for at least one project"
 msgstr ""
 
 msgid "DevopsAdoption|Confirm remove Group"

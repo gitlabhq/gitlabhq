@@ -271,10 +271,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
 
     context 'when workflow rules is not used' do
       let(:workflow) { double('workflow', 'has_rules?' => false) }
-      let(:feature_flag_value) { true }
 
       before do
-        stub_feature_flags(ci_raise_job_rules_without_workflow_rules_warning: feature_flag_value)
         entry.compose!(deps)
       end
 
@@ -297,12 +295,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
 
             it 'raises a warning' do
               expect(entry.warnings).to contain_exactly(/may allow multiple pipelines/)
-            end
-
-            context 'when feature flag is disabled' do
-              let(:feature_flag_value) { false }
-
-              it_behaves_like 'has no warnings'
             end
           end
 

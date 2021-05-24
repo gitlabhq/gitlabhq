@@ -252,7 +252,7 @@ You can also type in this search bar to see autocomplete suggestions for:
 - Recently viewed issues (try and type some word from the title of a recently viewed issue)
 - Recently viewed merge requests (try and type some word from the title of a recently viewed merge request)
 - Recently viewed epics (try and type some word from the title of a recently viewed epic)
-- [GitLab Flavored Markdown](../markdown.md#special-gitlab-references) (GFM) for issues in a project (try and type a GFM reference for an issue)
+- [GitLab Flavored Markdown](../markdown.md#gitlab-specific-references) (GFM) for issues in a project (try and type a GFM reference for an issue)
 
 ## Basic search
 

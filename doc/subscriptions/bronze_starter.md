@@ -66,7 +66,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Full code quality reports in the code quality tab](../user/project/merge_requests/code_quality.md#code-quality-reports)
   - [Merge request approvals](../user/project/merge_requests/approvals/index.md)
   - [Multiple assignees](../user/project/merge_requests/getting_started.md#multiple-assignees)
-  - [Approval Rule information for Reviewers](../user/project/merge_requests/getting_started.md#approval-rule-information-for-reviewers) **(PREMIUM)**
+  - [Approval Rule information for Reviewers](../user/project/merge_requests/reviews/index.md#approval-rule-information-for-reviewers) **(PREMIUM)**
   - [Required Approvals](../user/project/merge_requests/approvals/index.md#required-approvals)
   - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features

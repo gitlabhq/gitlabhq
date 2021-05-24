@@ -49,80 +49,24 @@ You can use GitLab Flavored Markdown in the following areas:
 You can also use other rich text files in GitLab. You might have to install a dependency
 to do so. For more information, see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup).
 
-### Transition from Redcarpet to CommonMark
+### Differences between GitLab Flavored Markdown and standard Markdown
 
-- In GitLab 11.8, the [Redcarpet Ruby library](https://github.com/vmg/redcarpet)
-  was removed. All issues and comments, including those in 11.1 and earlier, are now processed
-  by using the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker).
-- In GitLab 11.3 and later, CommonMark processes wiki pages and Markdown
-  files (`*.md`) in repositories.
-- In GitLab 11.1 and later, the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker)
-  for Markdown processes all new issues, merge requests, comments, and other Markdown
-  content.
+GitLab uses standard CommonMark formatting. However, GitLab Flavored Markdown
+extends standard Markdown with features made specifically for GitLab.
 
-The documentation website migrated its Markdown engine
-[from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/108)
-in October 2018.
-
-You may have older issues, merge requests, or Markdown documents in your
-repository that relied upon nuances of the GitLab RedCarpet version
-of Markdown. Because CommonMark uses slightly stricter syntax, these documents
-may now appear differently after the transition to CommonMark.
-
-For example, numbered lists with nested lists may
-render incorrectly:
-
-```markdown
-1. Chocolate
-  - dark
-  - milk
-```
-
-To fix this issue, add a space to each nested item. The `-` must be aligned with the first
-character of the top list item (`C` in this case):
-
-```markdown
-1. Chocolate
-   - dark
-   - milk
-```
-
-1. Chocolate
-   - dark
-   - milk
-
-We flag any significant differences between Redcarpet and CommonMark Markdown in this document.
-
-If you have many Markdown files, it can be tedious to determine
-if they display correctly or not. You can use the
-[`diff_redcarpet_cmark`](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark)
-tool to generate a list of files and the
-differences between how RedCarpet and CommonMark render the files. It indicates
-if any changes are needed.
-
-`diff_redcarpet_cmark` is not an officially supported product.
-
-### GitLab Flavored Markdown extends standard Markdown
-
-GitLab makes full use of the standard (CommonMark) formatting, but also includes more
-helpful features for GitLab users.
-
-It makes use of [new Markdown features](#new-gitlab-flavored-markdown-extensions),
-not found in standard Markdown:
+Features not found in standard Markdown:
 
 - [Color chips written in HEX, RGB or HSL](#colors)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
-- [Emoji](#emoji)
+- [Emoji](#emojis)
 - [Front matter](#front-matter)
 - [Inline diffs](#inline-diff)
 - [Math equations and symbols written in LaTeX](#math)
-- [Special GitLab references](#special-gitlab-references)
 - [Task Lists](#task-lists)
 - [Table of Contents](#table-of-contents)
 - [Wiki specific Markdown](#wiki-specific-markdown)
 
-It also has [extended Markdown features](#standard-markdown-and-extensions-in-gitlab), without
-changing how standard Markdown is used:
+Features [extended from standard Markdown](#features-extended-from-standard-markdown):
 
 | Standard Markdown                     | Extended Markdown in GitLab |
 | ------------------------------------- | ------------------------- |
@@ -134,22 +78,23 @@ changing how standard Markdown is used:
 | [line breaks](#line-breaks)           | [more line break control](#newlines) |
 | [links](#links)                       | [automatically linking URLs](#url-auto-linking) |
 
-## New GitLab Flavored Markdown extensions
+## Features not found in standard Markdown
+
+The following features are not found in standard Markdown.
 
 ### Colors
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#colors).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#colors).
 
-It's possible to have color written in HEX, RGB, or HSL format rendered with a color
-indicator.
+You can write a color in the formats: `HEX`, `RGB`, or `HSL`.
 
-Supported formats (named colors are not supported):
+- `HEX`: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
+- `RGB`: `` `RGB[A](R, G, B[, A])` ``
+- `HSL`: `` `HSL[A](H, S, L[, A])` ``
 
-- HEX: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
-- RGB: `` `RGB[A](R, G, B[, A])` ``
-- HSL: `` `HSL[A](H, S, L[, A])` ``
+Named colors are not supported.
 
-Color written inside backticks is followed by a color "chip":
+Colors in backticks are followed by a color indicator:
 
 ```markdown
 - `#F00`
@@ -175,8 +120,8 @@ Color written inside backticks is followed by a color "chip":
 
 ### Diagrams and flowcharts
 
-It's possible to generate diagrams and flowcharts from text in GitLab using [Mermaid](https://mermaidjs.github.io/) or [PlantUML](https://plantuml.com).
-It's also possible to use [Kroki](https://kroki.io) to create a wide variety of diagrams.
+You can generate diagrams and flowcharts from text by using [Mermaid](https://mermaidjs.github.io/) or [PlantUML](https://plantuml.com).
+You can also use [Kroki](https://kroki.io) to create a wide variety of diagrams.
 
 #### Mermaid
 
@@ -207,7 +152,7 @@ graph TD;
   C-->D;
 ```
 
-Subgraphs can also be included:
+You can also include subgraphs:
 
 ````markdown
 ```mermaid
@@ -247,16 +192,17 @@ end
 
 #### PlantUML
 
-To make PlantUML available in GitLab, a GitLab administrator needs to enable it first. Read more in [PlantUML & GitLab](../administration/integration/plantuml.md).
+To make PlantUML available in GitLab, a GitLab administrator must enable it. For more information, see the
+[PlantUML & GitLab](../administration/integration/plantuml.md) page.
 
 #### Kroki
 
-To make Kroki available in GitLab, a GitLab administrator needs to enable it first.
-Read more in the [Kroki integration](../administration/integration/kroki.md) page.
+To make Kroki available in GitLab, a GitLab administrator must enable it.
+For more information, see the [Kroki integration](../administration/integration/kroki.md) page.
 
-### Emoji
+### Emojis
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#emoji).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#emojis).
 
 ```markdown
 Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
@@ -280,13 +226,13 @@ If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-f
 
 Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">
 
-#### Emoji and your OS
+#### Emojis and your operating system
 
-The emoji example above uses hard-coded images for this documentation. Rendered emoji
-in GitLab may appear different depending on the OS and browser used.
+The previous emoji example uses hard-coded images. Rendered emojis
+in GitLab may be different depending on the OS and browser used.
 
-Most emoji are natively supported on macOS, Windows, iOS, Android, and fall back on image-based
-emoji where there is no support.
+Most emojis are natively supported on macOS, Windows, iOS, Android, and fall back on image-based
+emojis where there is no support.
 
 <!-- vale gitlab.Spelling = NO -->
 
@@ -301,17 +247,17 @@ this font installed by default.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23331) in GitLab 11.6.
 
 Front matter is metadata included at the beginning of a Markdown document, preceding
-its content. This data can be used by static site generators such as [Jekyll](https://jekyllrb.com/docs/front-matter/),
+the content. This data can be used by static site generators like [Jekyll](https://jekyllrb.com/docs/front-matter/),
 [Hugo](https://gohugo.io/content-management/front-matter/), and many other applications.
 
-When you view a Markdown file rendered by GitLab, any front matter is displayed as-is,
+When you view a Markdown file rendered by GitLab, front matter is displayed as-is,
 in a box at the top of the document. The HTML content displays after the front matter. To view an example,
 you can toggle between the source and rendered version of a
 [GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/README.md).
 
-In GitLab, front matter is only used in Markdown files and wiki pages, not the other
+In GitLab, front matter is used only in Markdown files and wiki pages, not the other
 places where Markdown formatting is supported. It must be at the very top of the document
-and must be between delimiters, as explained below.
+and must be between delimiters.
 
 The following delimiters are supported:
 
@@ -362,9 +308,9 @@ $example = array(
 
 ### Inline diff
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#inline-diff).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#inline-diff).
 
-With inline diff tags you can display `{+ additions +}` or `[- deletions -]`.
+With inline diff tags, you can display `{+ additions +}` or `[- deletions -]`.
 
 The wrapping tags can be either curly braces or square brackets:
 
@@ -379,7 +325,7 @@ The wrapping tags can be either curly braces or square brackets:
 
 ---
 
-However, the wrapping tags can't be mixed:
+However, you cannot mix the wrapping tags:
 
 ```markdown
 - {+ addition +]
@@ -389,7 +335,7 @@ However, the wrapping tags can't be mixed:
 ```
 
 If your diff includes words in `` `code` `` font, make sure to escape each backtick `` ` `` with a
-backslash `\`, otherwise the diff highlight don't render correctly:
+backslash `\`. Otherwise the diff highlight does not render correctly:
 
 ```markdown
 - {+ Just regular text +}
@@ -401,18 +347,18 @@ backslash `\`, otherwise the diff highlight don't render correctly:
 
 ### Math
 
-If this section is not rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#math).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#math).
 
-It's possible to have math written with LaTeX syntax rendered using [KaTeX](https://github.com/KaTeX/KaTeX).
+Math written in LaTeX syntax is rendered with [KaTeX](https://github.com/KaTeX/KaTeX).
 
-Math written between dollar signs `$` are rendered inline with the text. Math written
-inside a [code block](#code-spans-and-blocks) with the language declared as `math`, are rendered
+Math written between dollar signs `$` is rendered inline with the text. Math written
+in a [code block](#code-spans-and-blocks) with the language declared as `math` is rendered
 on a separate line:
 
 ````markdown
 This math is inline $`a^2+b^2=c^2`$.
 
-This is on a separate line
+This is on a separate line:
 
 ```math
 a^2+b^2=c^2
@@ -427,59 +373,10 @@ This is on a separate line
 a^2+b^2=c^2
 ```
 
-_Be advised that KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
+_KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
 
-This also works for the Asciidoctor `:stem: latexmath`. For details, see
+This syntax also works for the Asciidoctor `:stem: latexmath`. For details, see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
-
-### Special GitLab references
-
-GitLab Flavored Markdown recognizes special GitLab related references. For example, you can reference
-an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
-that reference into a link so you can navigate between them.
-
-Additionally, GitLab Flavored Markdown recognizes certain cross-project references and also has a shorthand
-version to reference other projects from the same namespace.
-
-GitLab Flavored Markdown recognizes the following:
-
-| references                      | input                      | cross-project reference                 | shortcut inside same namespace |
-| :------------------------------ | :------------------------- | :-------------------------------------- | :----------------------------- |
-| specific user                   | `@user_name`               |                                         |                                |
-| specific group                  | `@group_name`              |                                         |                                |
-| entire team                     | `@all`                     |                                         |                                |
-| project                         | `namespace/project>`       |                                         |                                |
-| issue                           | ``#123``                   | `namespace/project#123`                 | `project#123`                  |
-| merge request                   | `!123`                     | `namespace/project!123`                 | `project!123`                  |
-| snippet                         | `$123`                     | `namespace/project$123`                 | `project$123`                  |
-| epic **(ULTIMATE)**             | `&123`                     | `group1/subgroup&123`                   |                                |
-| vulnerability **(ULTIMATE)** (1)| `[vulnerability:123]`      | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`  |
-| feature flag                    | `[feature_flag:123]`       | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`   |
-| label by ID                     | `~123`                     | `namespace/project~123`                 | `project~123`                  |
-| one-word label by name          | `~bug`                     | `namespace/project~bug`                 | `project~bug`                  |
-| multi-word label by name        | `~"feature request"`       | `namespace/project~"feature request"`   | `project~"feature request"`    |
-| scoped label by name            | `~"priority::high"`        | `namespace/project~"priority::high"`    | `project~"priority::high"`     |
-| project milestone by ID         | `%123`                     | `namespace/project%123`                 | `project%123`                  |
-| one-word milestone by name      | `%v1.23`                   | `namespace/project%v1.23`               | `project%v1.23`                |
-| multi-word milestone by name    | `%"release candidate"`     | `namespace/project%"release candidate"` | `project%"release candidate"`  |
-| specific commit                 | `9ba12248`                 | `namespace/project@9ba12248`            | `project@9ba12248`             |
-| commit range comparison         | `9ba12248...b19a04f5`      | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`  |
-| repository file references      | `[README](doc/README.md)`  |                                         |                                |
-| repository file line references | `[README](doc/README.md#L13)` |                                      |                                |
-| [alert](../operations/incident_management/alerts.md) | `^alert#123` | `namespace/project^alert#123`    | `project^alert#123`            |
-
-1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222483) in GitLab 13.7.
-
-For example, referencing an issue by using `#123` formats the output as a link
-to issue number 123 with text `#123`. Likewise, a link to issue number 123 is
-recognized and formatted with text `#123`. If you don't want `#123` to link to an issue,
-add a leading backslash `\#123`.
-
-In addition to this, links to some objects are also recognized and formatted. Some examples of these are:
-
-- Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, which are rendered as `#1234 (comment 101075757)`
-- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, which are rendered as `#1234 (designs)`.
-- Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, which are rendered as `#1234[layout.png]`.
 
 ### Task lists
 
@@ -605,12 +502,61 @@ This snippet links to `<wiki_root>/miscellaneous.md`:
 [Link to Related Page](/miscellaneous.md)
 ```
 
+## GitLab-specific references
+
+GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
+an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
+that reference into a link so you can navigate between them.
+
+Additionally, GitLab Flavored Markdown recognizes certain cross-project references and also has a shorthand
+version to reference other projects from the same namespace.
+
+GitLab Flavored Markdown recognizes the following:
+
+| references                      | input                      | cross-project reference                 | shortcut inside same namespace |
+| :------------------------------ | :------------------------- | :-------------------------------------- | :----------------------------- |
+| specific user                   | `@user_name`               |                                         |                                |
+| specific group                  | `@group_name`              |                                         |                                |
+| entire team                     | `@all`                     |                                         |                                |
+| project                         | `namespace/project>`       |                                         |                                |
+| issue                           | ``#123``                   | `namespace/project#123`                 | `project#123`                  |
+| merge request                   | `!123`                     | `namespace/project!123`                 | `project!123`                  |
+| snippet                         | `$123`                     | `namespace/project$123`                 | `project$123`                  |
+| epic **(ULTIMATE)**             | `&123`                     | `group1/subgroup&123`                   |                                |
+| vulnerability **(ULTIMATE)** (1)| `[vulnerability:123]`      | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`  |
+| feature flag                    | `[feature_flag:123]`       | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`   |
+| label by ID                     | `~123`                     | `namespace/project~123`                 | `project~123`                  |
+| one-word label by name          | `~bug`                     | `namespace/project~bug`                 | `project~bug`                  |
+| multi-word label by name        | `~"feature request"`       | `namespace/project~"feature request"`   | `project~"feature request"`    |
+| scoped label by name            | `~"priority::high"`        | `namespace/project~"priority::high"`    | `project~"priority::high"`     |
+| project milestone by ID         | `%123`                     | `namespace/project%123`                 | `project%123`                  |
+| one-word milestone by name      | `%v1.23`                   | `namespace/project%v1.23`               | `project%v1.23`                |
+| multi-word milestone by name    | `%"release candidate"`     | `namespace/project%"release candidate"` | `project%"release candidate"`  |
+| specific commit                 | `9ba12248`                 | `namespace/project@9ba12248`            | `project@9ba12248`             |
+| commit range comparison         | `9ba12248...b19a04f5`      | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`  |
+| repository file references      | `[README](doc/README.md)`  |                                         |                                |
+| repository file line references | `[README](doc/README.md#L13)` |                                      |                                |
+| [alert](../operations/incident_management/alerts.md) | `^alert#123` | `namespace/project^alert#123`    | `project^alert#123`            |
+
+1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222483) in GitLab 13.7.
+
+For example, referencing an issue by using `#123` formats the output as a link
+to issue number 123 with text `#123`. Likewise, a link to issue number 123 is
+recognized and formatted with text `#123`. If you don't want `#123` to link to an issue,
+add a leading backslash `\#123`.
+
+In addition to this, links to some objects are also recognized and formatted. Some examples of these are:
+
+- Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, which are rendered as `#1234 (comment 101075757)`
+- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, which are rendered as `#1234 (designs)`.
+- Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, which are rendered as `#1234[layout.png]`.
+
 ### Embedding metrics in GitLab Flavored Markdown
 
 Metric charts can be embedded in GitLab Flavored Markdown. Read
 [Embedding Metrics in GitLab flavored Markdown](../operations/metrics/embed.md) for more details.
 
-## Standard Markdown and extensions in GitLab
+## Features extended from standard Markdown
 
 All standard Markdown formatting should work as expected in GitLab. Some standard
 functionality is extended with additional features, without affecting the standard usage.
@@ -1539,3 +1485,56 @@ entry and paste the spreadsheet:
   at Daring Fireball is an excellent resource for a detailed explanation of standard Markdown.
 - You can find the detailed specification for CommonMark in the [CommonMark Spec](https://spec.commonmark.org/current/).
 - The [CommonMark Dingus](https://spec.commonmark.org/dingus/) helps you test CommonMark syntax.
+
+## Transition from Redcarpet to CommonMark
+
+- In GitLab 11.8, the [Redcarpet Ruby library](https://github.com/vmg/redcarpet)
+  was removed. All issues and comments, including those in 11.1 and earlier, are now processed
+  by using the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker).
+- In GitLab 11.3 and later, CommonMark processes wiki pages and Markdown
+  files (`*.md`) in repositories.
+- In GitLab 11.1 and later, the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker)
+  for Markdown processes all new issues, merge requests, comments, and other Markdown
+  content.
+
+The documentation website migrated its Markdown engine
+[from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/108)
+in October 2018.
+
+You may have older issues, merge requests, or Markdown documents in your
+repository that relied upon nuances of the GitLab RedCarpet version
+of Markdown. Because CommonMark uses slightly stricter syntax, these documents
+may now appear differently after the transition to CommonMark.
+
+For example, numbered lists with nested lists may
+render incorrectly:
+
+```markdown
+1. Chocolate
+  - dark
+  - milk
+```
+
+To fix this issue, add a space to each nested item. The `-` must be aligned with the first
+character of the top list item (`C` in this case):
+
+```markdown
+1. Chocolate
+   - dark
+   - milk
+```
+
+1. Chocolate
+   - dark
+   - milk
+
+We flag any significant differences between Redcarpet and CommonMark Markdown in this document.
+
+If you have many Markdown files, it can be tedious to determine
+if they display correctly or not. You can use the
+[`diff_redcarpet_cmark`](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark)
+tool to generate a list of files and the
+differences between how RedCarpet and CommonMark render the files. It indicates
+if any changes are needed.
+
+`diff_redcarpet_cmark` is not an officially supported product.

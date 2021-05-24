@@ -485,10 +485,6 @@ module Gitlab
       end
 
       describe '#warnings' do
-        before do
-          stub_feature_flags(ci_raise_job_rules_without_workflow_rules_warning: true)
-        end
-
         context 'when a warning is raised in a given entry' do
           let(:config) do
             <<-EOYML
@@ -600,27 +596,6 @@ module Gitlab
             end
 
             it_behaves_like 'has warnings and expected error', /build job: need test is not defined in prior stages/
-          end
-        end
-
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_raise_job_rules_without_workflow_rules_warning: false)
-          end
-
-          context 'job rules used without workflow rules' do
-            let(:config) do
-              <<-EOYML
-                rspec:
-                  script: rspec
-                  rules:
-                    - when: always
-              EOYML
-            end
-
-            it 'does not raise the warning' do
-              expect(subject.warnings).to be_empty
-            end
           end
         end
       end

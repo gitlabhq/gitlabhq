@@ -1,8 +1,0 @@
----
-name: data_consistency_delayed_execution
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61501
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331110
-milestone: '14.0'
-type: development
-group: group::memory
-default_enabled: false

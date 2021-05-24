@@ -55,7 +55,7 @@ module ApplicationWorker
     def perform_async(*args)
       # Worker execution for workers with data_consistency set to :delayed or :sticky
       # will be delayed to give replication enough time to complete
-      if utilizes_load_balancing_capabilities? && data_consistency_delayed_execution_feature_flag_enabled?
+      if utilizes_load_balancing_capabilities?
         perform_in(delay_interval, *args)
       else
         super
@@ -124,10 +124,6 @@ module ApplicationWorker
     end
 
     protected
-
-    def data_consistency_delayed_execution_feature_flag_enabled?
-      Feature.enabled?(:data_consistency_delayed_execution, default_enabled: :yaml)
-    end
 
     def delay_interval
       DEFAULT_DELAY_INTERVAL.seconds

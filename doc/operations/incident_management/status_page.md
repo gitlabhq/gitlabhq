@@ -131,7 +131,7 @@ A background worker publishes the issue onto the Status Page using the credentia
 you provided during setup. As part of publication, GitLab:
 
 - Anonymizes user and group mentions with `Incident Responder`.
-- Removes titles of non-public [GitLab references](../../user/markdown.md#special-gitlab-references).
+- Removes titles of non-public [GitLab references](../../user/markdown.md#gitlab-specific-references).
 - Publishes any files attached to incident issue descriptions, up to 5000 per issue.
   ([Introduced in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/205166).)
 

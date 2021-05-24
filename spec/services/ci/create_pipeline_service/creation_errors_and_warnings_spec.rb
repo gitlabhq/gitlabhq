@@ -14,7 +14,6 @@ RSpec.describe Ci::CreatePipelineService do
 
     before do
       stub_ci_pipeline_yaml_file(config)
-      stub_feature_flags(ci_raise_job_rules_without_workflow_rules_warning: true)
     end
 
     context 'when created successfully' do
@@ -34,18 +33,6 @@ RSpec.describe Ci::CreatePipelineService do
           expect(pipeline.warning_messages.map(&:content)).to contain_exactly(
             /jobs:test may allow multiple pipelines to run/
           )
-        end
-
-        context 'when feature flag is disabled for the particular warning' do
-          before do
-            stub_feature_flags(ci_raise_job_rules_without_workflow_rules_warning: false)
-          end
-
-          it 'does not contain warnings' do
-            expect(pipeline.error_messages.map(&:content)).to be_empty
-
-            expect(pipeline.warning_messages.map(&:content)).to be_empty
-          end
         end
       end
 
