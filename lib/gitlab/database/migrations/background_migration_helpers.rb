@@ -137,6 +137,9 @@ module Gitlab
         # class must be present in the Gitlab::BackgroundMigration module, and the batch class (if specified) must be
         # present in the Gitlab::BackgroundMigration::BatchingStrategies module.
         #
+        # If migration with same job_class_name, table_name, column_name, and job_aruments already exists, this helper
+        # will log an warning and not create a new one.
+        #
         # job_class_name - The background migration job class as a string
         # batch_table_name - The name of the table the migration will batch over
         # batch_column_name - The name of the column the migration will batch over
@@ -180,6 +183,13 @@ module Gitlab
           sub_batch_size: SUB_BATCH_SIZE
         )
 
+          if Gitlab::Database::BackgroundMigration::BatchedMigration.for_configuration(job_class_name, batch_table_name, batch_column_name, job_arguments).exists?
+            Gitlab::AppLogger.warn "Batched background migration not enqueued because it already exists: " \
+              "job_class_name: #{job_class_name}, table_name: #{batch_table_name}, column_name: #{batch_column_name}, " \
+              "job_arguments: #{job_arguments.inspect}"
+            return
+          end
+
           job_interval = BATCH_MIN_DELAY if job_interval < BATCH_MIN_DELAY
 
           batch_max_value ||= connection.select_value(<<~SQL)
@@ -194,13 +204,13 @@ module Gitlab
             job_class_name: job_class_name,
             table_name: batch_table_name,
             column_name: batch_column_name,
+            job_arguments: job_arguments,
             interval: job_interval,
             min_value: batch_min_value,
             max_value: batch_max_value,
             batch_class_name: batch_class_name,
             batch_size: batch_size,
             sub_batch_size: sub_batch_size,
-            job_arguments: job_arguments,
             status: migration_status)
 
           # This guard is necessary since #total_tuple_count was only introduced schema-wise,

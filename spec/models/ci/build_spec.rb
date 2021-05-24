@@ -1880,6 +1880,26 @@ RSpec.describe Ci::Build do
 
           it { is_expected.not_to be_retryable }
         end
+
+        context 'when a canceled build has been retried already' do
+          before do
+            project.add_developer(user)
+            build.cancel!
+            described_class.retry(build, user)
+          end
+
+          context 'when prevent_retry_of_retried_jobs feature flag is enabled' do
+            it { is_expected.not_to be_retryable }
+          end
+
+          context 'when prevent_retry_of_retried_jobs feature flag is disabled' do
+            before do
+              stub_feature_flags(prevent_retry_of_retried_jobs: false)
+            end
+
+            it { is_expected.to be_retryable }
+          end
+        end
       end
     end
 

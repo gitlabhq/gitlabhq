@@ -74,6 +74,10 @@ RSpec.describe Mutations::Commits::Create do
           expect(commit_pipeline_path).to match(%r(pipelines/sha/\w+))
         end
 
+        it 'returns the content of the commit' do
+          expect(subject[:content]).to eq(actions.pluck(:content))
+        end
+
         it 'returns a new commit' do
           expect(mutated_commit).to have_attributes(message: message, project: project)
           expect(subject[:errors]).to be_empty
@@ -166,6 +170,7 @@ RSpec.describe Mutations::Commits::Create do
         it 'returns a new commit' do
           expect(mutated_commit).to have_attributes(message: message, project: project)
           expect(subject[:errors]).to be_empty
+          expect(subject[:content]).to eq(actions.pluck(:content))
 
           expect_to_contain_deltas([
             a_hash_including(a_mode: '0', b_mode: '100644', new_file: true, new_path: 'ANOTHER_FILE.md')

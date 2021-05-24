@@ -18,6 +18,15 @@ import {
   PAGE_SIZE_MANUAL,
   PARAM_DUE_DATE,
   RELATIVE_POSITION_DESC,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_EPIC,
+  TOKEN_TYPE_ITERATION,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_WEIGHT,
   urlSortParams,
 } from '~/issues_list/constants';
 import eventHub from '~/issues_list/eventhub';
@@ -39,8 +48,8 @@ describe('IssuesListApp component', () => {
     endpoint: 'api/endpoint',
     exportCsvPath: 'export/csv/path',
     hasBlockedIssuesFeature: true,
-    hasIssues: true,
     hasIssueWeightsFeature: true,
+    hasProjectIssues: true,
     isSignedIn: false,
     issuesPath: 'path/to/issues',
     jiraIntegrationPath: 'jira/integration/path',
@@ -320,7 +329,7 @@ describe('IssuesListApp component', () => {
         beforeEach(async () => {
           global.jsdom.reconfigure({ url: `${TEST_HOST}?search=no+results` });
 
-          wrapper = mountComponent({ provide: { hasIssues: true }, mountFn: mount });
+          wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
 
           await waitForPromises();
         });
@@ -336,7 +345,7 @@ describe('IssuesListApp component', () => {
 
       describe('when "Open" tab has no issues', () => {
         beforeEach(async () => {
-          wrapper = mountComponent({ provide: { hasIssues: true }, mountFn: mount });
+          wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
 
           await waitForPromises();
         });
@@ -356,7 +365,7 @@ describe('IssuesListApp component', () => {
             url: setUrlParams({ state: IssuableStates.Closed }, TEST_HOST),
           });
 
-          wrapper = mountComponent({ provide: { hasIssues: true }, mountFn: mount });
+          wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
 
           await waitForPromises();
         });
@@ -374,7 +383,7 @@ describe('IssuesListApp component', () => {
       describe('when user is logged in', () => {
         beforeEach(() => {
           wrapper = mountComponent({
-            provide: { hasIssues: false, isSignedIn: true },
+            provide: { hasProjectIssues: false, isSignedIn: true },
             mountFn: mount,
           });
         });
@@ -413,7 +422,7 @@ describe('IssuesListApp component', () => {
       describe('when user is logged out', () => {
         beforeEach(() => {
           wrapper = mountComponent({
-            provide: { hasIssues: false, isSignedIn: false },
+            provide: { hasProjectIssues: false, isSignedIn: false },
           });
         });
 
@@ -426,6 +435,100 @@ describe('IssuesListApp component', () => {
             primaryButtonLink: defaultProvide.signInPath,
           });
         });
+      });
+    });
+  });
+
+  describe('tokens', () => {
+    describe('when user is signed out', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          provide: {
+            isSignedIn: false,
+          },
+        });
+      });
+
+      it('does not render My-Reaction or Confidential tokens', () => {
+        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
+          { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_CONFIDENTIAL },
+        ]);
+      });
+    });
+
+    describe('when iterations are not available', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          provide: {
+            projectIterationsPath: '',
+          },
+        });
+      });
+
+      it('does not render Iteration token', () => {
+        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
+          { type: TOKEN_TYPE_ITERATION },
+        ]);
+      });
+    });
+
+    describe('when epics are not available', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          provide: {
+            groupEpicsPath: '',
+          },
+        });
+      });
+
+      it('does not render Epic token', () => {
+        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
+          { type: TOKEN_TYPE_EPIC },
+        ]);
+      });
+    });
+
+    describe('when weights are not available', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          provide: {
+            groupEpicsPath: '',
+          },
+        });
+      });
+
+      it('does not render Weight token', () => {
+        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
+          { type: TOKEN_TYPE_WEIGHT },
+        ]);
+      });
+    });
+
+    describe('when all tokens are available', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          provide: {
+            isSignedIn: true,
+            projectIterationsPath: 'project/iterations/path',
+            groupEpicsPath: 'group/epics/path',
+            hasIssueWeightsFeature: true,
+          },
+        });
+      });
+
+      it('renders all tokens', () => {
+        expect(findIssuableList().props('searchTokens')).toMatchObject([
+          { type: TOKEN_TYPE_AUTHOR },
+          { type: TOKEN_TYPE_ASSIGNEE },
+          { type: TOKEN_TYPE_MILESTONE },
+          { type: TOKEN_TYPE_LABEL },
+          { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_CONFIDENTIAL },
+          { type: TOKEN_TYPE_ITERATION },
+          { type: TOKEN_TYPE_EPIC },
+          { type: TOKEN_TYPE_WEIGHT },
+        ]);
       });
     });
   });

@@ -356,4 +356,29 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       subject
     end
   end
+
+  describe '.for_configuration' do
+    let!(:migration) do
+      create(
+        :batched_background_migration,
+        job_class_name: 'MyJobClass',
+        table_name: :projects,
+        column_name: :id,
+        job_arguments: [[:id], [:id_convert_to_bigint]]
+      )
+    end
+
+    before do
+      create(:batched_background_migration, job_class_name: 'OtherClass')
+      create(:batched_background_migration, table_name: 'other_table')
+      create(:batched_background_migration, column_name: 'other_column')
+      create(:batched_background_migration, job_arguments: %w[other arguments])
+    end
+
+    it 'finds the migration matching the given configuration parameters' do
+      actual = described_class.for_configuration('MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])
+
+      expect(actual).to contain_exactly(migration)
+    end
+  end
 end

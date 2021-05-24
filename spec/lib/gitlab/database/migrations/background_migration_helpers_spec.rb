@@ -269,6 +269,38 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       allow(Gitlab::Database::PgClass).to receive(:for_table).and_call_original
     end
 
+    context 'when such migration already exists' do
+      it 'does not create duplicate migration' do
+        create(
+          :batched_background_migration,
+          job_class_name: 'MyJobClass',
+          table_name: :projects,
+          column_name: :id,
+          interval: 10.minutes,
+          min_value: 5,
+          max_value: 1005,
+          batch_class_name: 'MyBatchClass',
+          batch_size: 200,
+          sub_batch_size: 20,
+          job_arguments: [[:id], [:id_convert_to_bigint]]
+        )
+
+        expect do
+          model.queue_batched_background_migration(
+            'MyJobClass',
+            :projects,
+            :id,
+            [:id], [:id_convert_to_bigint],
+            job_interval: 5.minutes,
+            batch_min_value: 5,
+            batch_max_value: 1000,
+            batch_class_name: 'MyBatchClass',
+            batch_size: 100,
+            sub_batch_size: 10)
+        end.not_to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }
+      end
+    end
+
     it 'creates the database record for the migration' do
       expect(Gitlab::Database::PgClass).to receive(:for_table).with(:projects).and_return(pgclass_info)
 

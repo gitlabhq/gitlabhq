@@ -88,11 +88,11 @@ run:
     - mkdir ~/.gem
     - echo "---" > ~/.gem/credentials
     - |
-      echo "https://gitlab.example.com/api/v4/projects/${CI_PROJECT_ID}/packages/rubygems: '${CI_JOB_TOKEN}'" >> ~/.gem/credentials
+      echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/rubygems: '${CI_JOB_TOKEN}'" >> ~/.gem/credentials
     - chmod 0600 ~/.gem/credentials # rubygems requires 0600 permissions on the credentials file
   script:
     - gem build my_gem
-    - gem push my_gem-0.0.1.gem --host https://gitlab.example.com/api/v4/projects/${CI_PROJECT_ID}/packages/rubygems
+    - gem push my_gem-0.0.1.gem --host ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/rubygems
 ```
 
 You can also use `CI_JOB_TOKEN` in a `~/.gem/credentials` file that you check in to

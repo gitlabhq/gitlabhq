@@ -5,24 +5,35 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# GitLab Markdown **(FREE)**
+# GitLab Flavored Markdown **(FREE)**
 
-This Markdown guide is **valid only for the GitLab internal Markdown rendering system for entries and files**.
-It is **not** valid for the [GitLab documentation website](https://docs.gitlab.com)
-or the [GitLab main website](https://about.gitlab.com), as they both use
-[Kramdown](https://kramdown.gettalong.org) as their Markdown engine. The documentation
-website uses an extended Kramdown gem, [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown).
-Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/markdown-guide/)
-for a complete Kramdown reference.
+GitLab automatically renders Markdown content. For example, when you add a comment to an issue,
+you type the text in the Markdown language. When you save the issue, the text is rendered
+with a set of styles. These styles are described on this page.
 
-NOTE:
-We encourage you to view this document as [rendered by GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).
+For example, in Markdown, an ordered list looks like this:
 
-## GitLab Flavored Markdown
+```markdown
+- Cat
+- Dog
+- Turtle
+```
 
-GitLab uses "GitLab Flavored Markdown". It extends the [CommonMark specification](https://spec.commonmark.org/current/)
-(which is based on standard Markdown) in several ways to add more features.
+When this list is rendered, it looks like this:
+
+- Cat
+- Dog
+- Turtle
+
+These styles are **valid for GitLab only**. The [GitLab documentation website](https://docs.gitlab.com)
+and the [main GitLab website](https://about.gitlab.com) use [Kramdown](https://kramdown.gettalong.org) instead.
+
+You should not view this page in the documentation, but instead [view these styles as they appear on GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).
+
+GitLab Flavored Markdown extends the [CommonMark specification](https://spec.commonmark.org/current/).
 It was inspired by [GitHub Flavored Markdown](https://docs.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax).
+
+## Where you can use GitLab Flavored Markdown
 
 You can use GitLab Flavored Markdown in the following areas:
 
@@ -33,22 +44,21 @@ You can use GitLab Flavored Markdown in the following areas:
 - Snippets (the snippet must be named with a `.md` extension)
 - Wiki pages
 - Markdown documents inside repositories
-- Epics **(ULTIMATE)**
+- Epics
 
 You can also use other rich text files in GitLab. You might have to install a dependency
-to do so. Please see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup)
-for more information.
+to do so. For more information, see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup).
 
 ### Transition from Redcarpet to CommonMark
 
-- In GitLab version 11.8, the [Redcarpet Ruby library](https://github.com/vmg/redcarpet)
-  was removed. All issues and comments, including those from pre-11.1, are now processed
-  using the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker).
-- GitLab versions 11.3 and greater use CommonMark to process wiki pages and Markdown
+- In GitLab 11.8, the [Redcarpet Ruby library](https://github.com/vmg/redcarpet)
+  was removed. All issues and comments, including those in 11.1 and earlier, are now processed
+  by using the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker).
+- In GitLab 11.3 and later, CommonMark processes wiki pages and Markdown
   files (`*.md`) in repositories.
-- GitLab versions 11.1 and greater use the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker)
-  for Markdown processing of all new issues, merge requests, comments, and other Markdown
-  content in the GitLab system.
+- In GitLab 11.1 and later, the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker)
+  for Markdown processes all new issues, merge requests, comments, and other Markdown
+  content.
 
 The documentation website migrated its Markdown engine
 [from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/108)
@@ -68,7 +78,7 @@ render incorrectly:
   - milk
 ```
 
-To correct their rendering, add a space to each nested item to align the `-` with the first
+To fix this issue, add a space to each nested item. The `-` must be aligned with the first
 character of the top list item (`C` in this case):
 
 ```markdown

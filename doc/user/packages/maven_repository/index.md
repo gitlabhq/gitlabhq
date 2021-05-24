@@ -341,7 +341,7 @@ file:
 ```groovy
 repositories {
     maven {
-        url "https://gitlab.example.com/api/v4/groups/<group>/-/packages/maven"
+        url "${CI_API_V4_URL}/groups/<group>/-/packages/maven"
         name "GitLab"
         credentials(HttpHeaderCredentials) {
             name = 'Job-Token'
@@ -742,17 +742,17 @@ You can create a new package each time the `master` branch is updated.
    <repositories>
      <repository>
        <id>gitlab-maven</id>
-       <url>${env.CI_SERVER_URL}/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+       <url>$env{CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
      </repository>
    </repositories>
    <distributionManagement>
      <repository>
        <id>gitlab-maven</id>
-       <url>${env.CI_SERVER_URL}/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+       <url>${CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
      </repository>
      <snapshotRepository>
        <id>gitlab-maven</id>
-       <url>${env.CI_SERVER_URL}/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+       <url>${CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
      </snapshotRepository>
    </distributionManagement>
    ```

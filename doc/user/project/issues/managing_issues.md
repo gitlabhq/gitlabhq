@@ -315,10 +315,15 @@ issues are still displayed, but are not closed automatically.
 
 ![disable issue auto close - settings](img/disable_issue_auto_close.png)
 
+The automatic issue closing is also disabled in a project if the project has the issue tracker
+disabled. If you want to enable automatic issue closing, make sure to
+[enable GitLab Issues](../settings/index.md#sharing-and-permissions).
+
 This only applies to issues affected by new merge requests or commits. Already
-closed issues remain as-is. Disabling automatic issue closing only affects merge
-requests *in* the project and does not prevent other projects from closing it
-via cross-project issues.
+closed issues remain as-is.
+If issue tracking is enabled, disabling automatic issue closing only applies to merge requests
+attempting to automatically close issues within the same project.
+Merge requests in other projects can still close another project's issues.
 
 #### Customizing the issue closing pattern **(FREE SELF)**
 

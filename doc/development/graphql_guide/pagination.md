@@ -223,6 +223,26 @@ the `order_due_date_and_labels_priority` method creates a very complex query.
 
 These types of queries are not supported. In these instances, you can use offset pagination.
 
+#### Gotchas
+
+Do not define a collection's order using the string syntax:
+
+```ruby
+# Bad
+items.order('created_at DESC')
+```
+
+Instead, use the hash syntax:
+
+```ruby
+# Good
+items.order(created_at: :desc)
+```
+
+The first example won't correctly embed the sort information (`created_at`, in
+the example above) into the pagination cursors, which will result in an
+incorrect sort order.
+
 ### Offset pagination
 
 There are times when the [complexity of sorting](#limitations-of-query-complexity)

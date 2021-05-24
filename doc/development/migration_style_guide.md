@@ -856,6 +856,37 @@ class BuildMetadata
 end
 ```
 
+## Encrypted attributes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227779) in GitLab 14.0.
+
+Do not store `attr_encrypted` attributes as `:text` in the database; use
+`:binary` instead. This uses the `bytea` type in PostgreSQL and makes storage more
+efficient:
+
+```ruby
+class AddSecretToSomething < ActiveRecord::Migration[5.0]
+  def change
+    add_column :something, :encrypted_secret, :binary
+    add_column :something, :encrypted_secret_iv, :binary
+  end
+end
+```
+
+When storing encrypted attributes in a binary column, we need to provide the
+`encode: false` and `encode_iv: false` options to `attr_encrypted`:
+
+```ruby
+class Something < ApplicationRecord
+  attr_encrypted :secret,
+    mode: :per_attribute_iv,
+    key: Settings.attr_encrypted_db_key_base_32,
+    algorithm: 'aes-256-gcm',
+    encode: false,
+    encode_iv: false
+end
+```
+
 ## Testing
 
 See the [Testing Rails migrations](testing_guide/testing_migrations_guide.md) style guide.

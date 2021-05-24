@@ -84,7 +84,7 @@ export default {
 
 <template>
   <div :class="containerClass">
-    <gl-button-group>
+    <gl-button-group class="gl-w-full">
       <gl-button
         v-if="showExportButton"
         v-gl-tooltip="$options.i18n.exportAsCsvButtonText"

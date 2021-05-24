@@ -147,7 +147,7 @@ Amazon Elastic Kubernetes Service (EKS) at the project, group, or instance level
    - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    - **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
-1. Click **Add Kubernetes cluster**.
+1. Click **Integrate with a cluster certificate**.
 1. Click the **Create new cluster** tab.
 1. Click either **Amazon EKS** or **Google GKE**, and follow the instructions for your desired service:
    - [Amazon EKS](add_eks_clusters.md#new-eks-cluster).

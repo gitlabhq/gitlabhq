@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     avatarUrlTitle(assignee) {
-      return sprintf(__('Avatar for %{assigneeName}'), {
+      return sprintf(__('Assigned to %{assigneeName}'), {
         assigneeName: assignee.name,
       });
     },

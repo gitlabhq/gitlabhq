@@ -1089,8 +1089,6 @@ production: &base
 
   # Gitaly settings
   gitaly:
-    # Path to the directory containing Gitaly client executables.
-    client_path: /home/git/gitaly
     # Default Gitaly authentication token. Can be overridden per storage. Can
     # be left blank when Gitaly is running locally on a Unix socket, which
     # is the normal way to deploy Gitaly.

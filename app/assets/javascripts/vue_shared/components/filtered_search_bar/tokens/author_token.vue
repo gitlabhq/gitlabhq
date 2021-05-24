@@ -39,6 +39,14 @@ export default {
     };
   },
   computed: {
+    currentUser() {
+      return {
+        id: gon.current_user_id,
+        name: gon.current_user_fullname,
+        username: gon.current_username,
+        avatar_url: gon.current_user_avatar_url,
+      };
+    },
     currentValue() {
       return this.value.data.toLowerCase();
     },
@@ -113,7 +121,18 @@ export default {
         {{ author.text }}
       </gl-filtered-search-suggestion>
       <gl-dropdown-divider v-if="defaultAuthors.length" />
-      <gl-loading-icon v-if="loading" />
+      <template v-if="loading">
+        <gl-filtered-search-suggestion v-if="currentUser.id" :value="currentUser.username">
+          <div class="gl-display-flex">
+            <gl-avatar :size="32" :src="avatarUrl(currentUser)" />
+            <div>
+              <div>{{ currentUser.name }}</div>
+              <div>@{{ currentUser.username }}</div>
+            </div>
+          </div>
+        </gl-filtered-search-suggestion>
+        <gl-loading-icon class="gl-mt-3" />
+      </template>
       <template v-else>
         <gl-filtered-search-suggestion
           v-for="author in authors"

@@ -3,6 +3,7 @@ import {
   GlFilteredSearchTokenSegment,
   GlFilteredSearchSuggestion,
   GlDropdownDivider,
+  GlLoadingIcon,
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
@@ -35,6 +36,7 @@ function createComponent(options = {}) {
     value = { data: '' },
     active = false,
     stubs = defaultStubs,
+    data = {},
   } = options;
   return mount(AuthorToken, {
     propsData: {
@@ -47,20 +49,32 @@ function createComponent(options = {}) {
       alignSuggestions: function fakeAlignSuggestions() {},
       suggestionsListClass: 'custom-class',
     },
+    data() {
+      return { ...data };
+    },
     stubs,
   });
 }
 
 describe('AuthorToken', () => {
+  const originalGon = window.gon;
+  const currentUserLength = 1;
   let mock;
   let wrapper;
 
   beforeEach(() => {
+    window.gon = {
+      ...originalGon,
+      current_user_id: 13,
+      current_user_fullname: 'Administrator',
+      current_username: 'root',
+      current_user_avatar_url: 'avatar/url',
+    };
     mock = new MockAdapter(axios);
-    wrapper = createComponent();
   });
 
   afterEach(() => {
+    window.gon = originalGon;
     mock.restore();
     wrapper.destroy();
   });
@@ -91,6 +105,8 @@ describe('AuthorToken', () => {
 
   describe('fetchAuthorBySearchTerm', () => {
     it('calls `config.fetchAuthors` with provided searchTerm param', () => {
+      wrapper = createComponent();
+
       jest.spyOn(wrapper.vm.config, 'fetchAuthors');
 
       wrapper.vm.fetchAuthorBySearchTerm(mockAuthors[0].username);
@@ -102,6 +118,8 @@ describe('AuthorToken', () => {
     });
 
     it('sets response to `authors` when request is succesful', () => {
+      wrapper = createComponent();
+
       jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockResolvedValue(mockAuthors);
 
       wrapper.vm.fetchAuthorBySearchTerm('root');
@@ -112,6 +130,8 @@ describe('AuthorToken', () => {
     });
 
     it('calls `createFlash` with flash error message when request fails', () => {
+      wrapper = createComponent();
+
       jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockRejectedValue({});
 
       wrapper.vm.fetchAuthorBySearchTerm('root');
@@ -122,6 +142,8 @@ describe('AuthorToken', () => {
     });
 
     it('sets `loading` to false when request completes', () => {
+      wrapper = createComponent();
+
       jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockRejectedValue({});
 
       wrapper.vm.fetchAuthorBySearchTerm('root');
@@ -133,21 +155,16 @@ describe('AuthorToken', () => {
   });
 
   describe('template', () => {
-    beforeEach(() => {
-      wrapper.setData({
-        authors: mockAuthors,
-      });
-
-      return wrapper.vm.$nextTick();
-    });
-
     it('renders gl-filtered-search-token component', () => {
+      wrapper = createComponent({ data: { authors: mockAuthors } });
+
       expect(wrapper.find(GlFilteredSearchToken).exists()).toBe(true);
     });
 
     it('renders token item when value is selected', () => {
-      wrapper.setProps({
+      wrapper = createComponent({
         value: { data: mockAuthors[0].username },
+        data: { authors: mockAuthors },
       });
 
       return wrapper.vm.$nextTick(() => {
@@ -172,7 +189,7 @@ describe('AuthorToken', () => {
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
-      expect(suggestions).toHaveLength(defaultAuthors.length);
+      expect(suggestions).toHaveLength(defaultAuthors.length + currentUserLength);
       defaultAuthors.forEach((label, index) => {
         expect(suggestions.at(index).text()).toBe(label.text);
       });
@@ -189,7 +206,6 @@ describe('AuthorToken', () => {
       suggestionsSegment.vm.$emit('activate');
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.find(GlFilteredSearchSuggestion).exists()).toBe(false);
       expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
     });
 
@@ -206,8 +222,28 @@ describe('AuthorToken', () => {
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
-      expect(suggestions).toHaveLength(1);
+      expect(suggestions).toHaveLength(1 + currentUserLength);
       expect(suggestions.at(0).text()).toBe(DEFAULT_LABEL_ANY.text);
+    });
+
+    describe('when loading', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          active: true,
+          config: { ...mockAuthorToken, defaultAuthors: [] },
+          stubs: { Portal: true },
+        });
+      });
+
+      it('shows loading icon', () => {
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+      });
+
+      it('shows current user', () => {
+        const firstSuggestion = wrapper.findComponent(GlFilteredSearchSuggestion).text();
+        expect(firstSuggestion).toContain('Administrator');
+        expect(firstSuggestion).toContain('@root');
+      });
     });
   });
 });

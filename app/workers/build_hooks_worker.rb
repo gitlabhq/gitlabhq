@@ -11,16 +11,6 @@ class BuildHooksWorker # rubocop:disable Scalability/IdempotentWorker
   urgency :high
   data_consistency :delayed
 
-  DATA_CONSISTENCY_DELAY = 3
-
-  def self.perform_async(*args)
-    if Feature.enabled?(:delayed_perform_for_build_hooks_worker, default_enabled: :yaml)
-      perform_in(DATA_CONSISTENCY_DELAY.seconds, *args)
-    else
-      super
-    end
-  end
-
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
     Ci::Build.includes({ runner: :tags })

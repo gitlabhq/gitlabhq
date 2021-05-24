@@ -52,6 +52,26 @@ component has 2 indicators:
 
 1. [Apdex](https://en.wikipedia.org/wiki/Apdex): The rate of
    operations that performed adequately.
+
+   The threshold for 'performed adequately' is stored in our [metrics
+   catalog](https://gitlab.com/gitlab-com/runbooks/-/tree/master/metrics-catalog)
+   and depends on the service in question. For the Puma (Rails)
+   component of the
+   [API](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/api.jsonnet#L127),
+   [Git](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/git.jsonnet#L216),
+   and
+   [Web](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/web.jsonnet#L154)
+   services, that threshold is **1 second**.
+
+   For Sidekiq job execution, the threshold depends on the [job
+   urgency](sidekiq_style_guide.md#job-urgency). It is
+   [currently](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/lib/sidekiq-helpers.libsonnet#L25-38)
+   **10 seconds** for high-urgency jobs and **5 minutes** for other
+   jobs.
+
+   Some stage groups may have more services than these, and the
+   thresholds for those will be in the metrics catalog as well.
+
 1. Error rate: The rate of operations that had errors.
 
 The calculation to a ratio then happens as follows:

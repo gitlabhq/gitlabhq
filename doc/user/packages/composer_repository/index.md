@@ -120,7 +120,7 @@ You can publish a Composer package to the Package Registry as part of your CI/CD
    deploy:
      stage: deploy
      script:
-       - 'curl --header "Job-Token: $CI_JOB_TOKEN" --data tag=<tag> "https://gitlab.example.com/api/v4/projects/$CI_PROJECT_ID/packages/composer"'
+       - 'curl --header "Job-Token: $CI_JOB_TOKEN" --data tag=<tag> "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
    ```
 
 1. Run the pipeline.

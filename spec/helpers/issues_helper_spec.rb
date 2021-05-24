@@ -304,7 +304,7 @@ RSpec.describe IssuesHelper do
         empty_state_svg_path: '#',
         endpoint: expose_path(api_v4_projects_issues_path(id: project.id)),
         export_csv_path: export_csv_project_issues_path(project),
-        has_issues: project_issues(project).exists?.to_s,
+        has_project_issues: project_issues(project).exists?.to_s,
         import_csv_issues_path: '#',
         initial_email: project.new_issuable_address(current_user, 'issue'),
         is_signed_in: current_user.present?.to_s,

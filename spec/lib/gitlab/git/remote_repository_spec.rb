@@ -58,45 +58,4 @@ RSpec.describe Gitlab::Git::RemoteRepository, :seed_helper do
       it { expect(subject.same_repository?(other_repository)).to eq(result) }
     end
   end
-
-  describe '#fetch_env' do
-    let(:remote_repository) { described_class.new(repository) }
-
-    let(:gitaly_client) { double(:gitaly_client) }
-    let(:address) { 'fake-address' }
-    let(:token) { 'fake-token' }
-
-    subject { remote_repository.fetch_env }
-
-    before do
-      allow(remote_repository).to receive(:gitaly_client).and_return(gitaly_client)
-
-      expect(gitaly_client).to receive(:address).with(repository.storage).and_return(address)
-      expect(gitaly_client).to receive(:token).with(repository.storage).and_return(token)
-    end
-
-    it { expect(subject).to be_a(Hash) }
-    it { expect(subject['GITALY_ADDRESS']).to eq(address) }
-    it { expect(subject['GITALY_TOKEN']).to eq(token) }
-    it { expect(subject['GITALY_WD']).to eq(Dir.pwd) }
-
-    it 'creates a plausible GIT_SSH_COMMAND' do
-      git_ssh_command = subject['GIT_SSH_COMMAND']
-
-      expect(git_ssh_command).to start_with('/')
-      expect(git_ssh_command).to end_with('/gitaly-ssh upload-pack')
-    end
-
-    it 'creates a plausible GITALY_PAYLOAD' do
-      req = Gitaly::SSHUploadPackRequest.decode_json(subject['GITALY_PAYLOAD'])
-
-      expect(remote_repository.gitaly_repository).to eq(req.repository)
-    end
-
-    context 'when the token is blank' do
-      let(:token) { '' }
-
-      it { expect(subject.keys).not_to include('GITALY_TOKEN') }
-    end
-  end
 end

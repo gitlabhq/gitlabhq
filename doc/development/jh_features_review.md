@@ -23,6 +23,12 @@ We have two kinds of changes related to JH:
 
 If needed, review the corresponding JH merge request located at [JH repository](https://gitlab.com/gitlab-jh/gitlab)
 
+## Process overview
+
+See the [merge request process](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/#merge-request-process)
+on the JiHu Support handbook.
+This page is the single source of truth for JiHu-related processes.
+
 ## Act as EE when `jh/` does not exist
 
 - In the case of EE repository, `jh/` does not exist so it should just act like EE (or CE when the license is absent)

@@ -16,6 +16,10 @@ module Gitlab
 
         scope :queue_order, -> { order(id: :asc) }
         scope :queued, -> { where(status: [:active, :paused]) }
+        scope :for_configuration, ->(job_class_name, table_name, column_name, job_arguments) do
+          where(job_class_name: job_class_name, table_name: table_name, column_name: column_name)
+            .where("job_arguments = ?", job_arguments.to_json) # rubocop:disable Rails/WhereEquals
+        end
 
         enum status: {
           paused: 0,
