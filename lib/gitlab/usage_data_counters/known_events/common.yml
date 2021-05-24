@@ -351,7 +351,6 @@
   category: pipeline_authoring
   redis_slot: pipeline_authoring
   aggregation: weekly
-  feature_flag: usage_data_unique_users_committing_ciconfigfile
 - name: o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
   category: pipeline_authoring
   redis_slot: pipeline_authoring

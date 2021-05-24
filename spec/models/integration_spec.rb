@@ -905,7 +905,7 @@ RSpec.describe Integration do
 
     with_them do
       it 'returns the right result' do
-        expect(build(:service, type: type, active: active).external_wiki?).to eq(result)
+        expect(create(:service, type: type, active: active).external_wiki?).to eq(result)
       end
     end
   end

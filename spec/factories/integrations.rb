@@ -127,9 +127,9 @@ FactoryBot.define do
     end
   end
 
-  factory :external_wiki_service do
+  factory :external_wiki_service, class: 'Integrations::ExternalWiki' do
     project
-    type { ExternalWikiService }
+    type { 'ExternalWikiService' }
     active { true }
     external_wiki_url { 'http://external-wiki-url.com' }
   end
@@ -167,7 +167,7 @@ FactoryBot.define do
     type { 'SlackService' }
   end
 
-  factory :pipelines_email_service do
+  factory :pipelines_email_service, class: 'Integrations::PipelinesEmail' do
     project
     active { true }
     type { 'PipelinesEmailService' }

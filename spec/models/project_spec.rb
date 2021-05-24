@@ -1158,7 +1158,7 @@ RSpec.describe Project, factory_default: :keep do
     it 'returns an active external wiki' do
       create(:service, project: project, type: 'ExternalWikiService', active: true)
 
-      is_expected.to be_kind_of(ExternalWikiService)
+      is_expected.to be_kind_of(Integrations::ExternalWiki)
     end
 
     it 'does not return an inactive external wiki' do

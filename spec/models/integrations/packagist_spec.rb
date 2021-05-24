@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PackagistService do
+RSpec.describe Integrations::Packagist do
   let(:packagist_params) do
     {
         active: true,

@@ -25,16 +25,6 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Need do
         it 'returns job needs configuration' do
           expect(need.value).to eq(name: 'job_name', artifacts: true, optional: false)
         end
-
-        context 'when the FF ci_needs_optional is disabled' do
-          before do
-            stub_feature_flags(ci_needs_optional: false)
-          end
-
-          it 'returns job needs configuration without `optional`' do
-            expect(need.value).to eq(name: 'job_name', artifacts: true)
-          end
-        end
       end
 
       it_behaves_like 'job type'
@@ -133,16 +123,6 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Need do
       describe '#value' do
         it 'returns job needs configuration' do
           expect(need.value).to eq(name: 'job_name', artifacts: true, optional: true)
-        end
-
-        context 'when the FF ci_needs_optional is disabled' do
-          before do
-            stub_feature_flags(ci_needs_optional: false)
-          end
-
-          it 'returns job needs configuration without `optional`' do
-            expect(need.value).to eq(name: 'job_name', artifacts: true)
-          end
         end
       end
     end

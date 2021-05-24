@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PivotaltrackerService do
+RSpec.describe Integrations::Pivotaltracker do
   include StubRequests
 
   describe 'Associations' do
@@ -35,7 +35,7 @@ RSpec.describe PivotaltrackerService do
       end
     end
 
-    let(:url) { PivotaltrackerService::API_ENDPOINT }
+    let(:url) { described_class::API_ENDPOINT }
 
     def push_data(branch: 'master')
       {

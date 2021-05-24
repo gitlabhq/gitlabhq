@@ -146,7 +146,7 @@ module Gitlab
             end
 
             @needs_attributes.flat_map do |need|
-              next if ::Feature.enabled?(:ci_needs_optional, default_enabled: :yaml) && need[:optional]
+              next if need[:optional]
 
               result = @previous_stages.any? do |stage|
                 stage.seeds_names.include?(need[:name])

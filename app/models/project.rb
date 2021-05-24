@@ -193,15 +193,17 @@ class Project < ApplicationRecord
   has_one :datadog_service, class_name: 'Integrations::Datadog'
   has_one :emails_on_push_service, class_name: 'Integrations::EmailsOnPush'
   has_one :ewm_service, class_name: 'Integrations::Ewm'
+  has_one :external_wiki_service, class_name: 'Integrations::ExternalWiki'
+  has_one :flowdock_service, class_name: 'Integrations::Flowdock'
+  has_one :irker_service, class_name: 'Integrations::Irker'
   has_one :jira_service, class_name: 'Integrations::Jira'
+  has_one :packagist_service, class_name: 'Integrations::Packagist'
+  has_one :pipelines_email_service, class_name: 'Integrations::PipelinesEmail'
+  has_one :pivotaltracker_service, class_name: 'Integrations::Pivotaltracker'
   has_one :redmine_service, class_name: 'Integrations::Redmine'
   has_one :youtrack_service, class_name: 'Integrations::Youtrack'
   has_one :discord_service
   has_one :drone_ci_service
-  has_one :pipelines_email_service
-  has_one :irker_service
-  has_one :pivotaltracker_service
-  has_one :flowdock_service
   has_one :mattermost_slash_commands_service
   has_one :mattermost_service
   has_one :slack_slash_commands_service
@@ -210,12 +212,10 @@ class Project < ApplicationRecord
   has_one :teamcity_service
   has_one :pushover_service
   has_one :jenkins_service
-  has_one :external_wiki_service
   has_one :prometheus_service, inverse_of: :project
   has_one :mock_ci_service
   has_one :mock_monitoring_service
   has_one :microsoft_teams_service
-  has_one :packagist_service
   has_one :hangouts_chat_service
   has_one :unify_circuit_service
   has_one :webex_teams_service

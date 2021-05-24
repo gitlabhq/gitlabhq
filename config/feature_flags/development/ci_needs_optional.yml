@@ -1,8 +1,0 @@
----
-name: ci_needs_optional
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55468
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323891
-milestone: '13.10'
-type: development
-group: group::pipeline authoring
-default_enabled: true

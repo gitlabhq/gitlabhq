@@ -573,6 +573,20 @@ Snowplow Mini can be used for testing frontend and backend events on a productio
 
 For GitLab.com, we're setting up a [QA and Testing environment](https://gitlab.com/gitlab-org/telemetry/-/issues/266) using Snowplow Mini.
 
+### Troubleshooting
+
+To control content security policy warnings when using an external host, you can allow or disallow them by modifying `config/gitlab.yml`. To allow them, add the relevant host for `connect_src`. For example, for `https://snowplow.trx.gitlab.net`:
+
+```yaml
+development:
+  <<: *base
+  gitlab:
+    content_security_policy:
+      enabled: true
+      directives:
+        connect_src: "'self' http://localhost:* http://127.0.0.1:* ws://localhost:* wss://localhost:* ws://127.0.0.1:* https://snowplow.trx.gitlab.net/"
+```
+
 ## Snowplow Schemas
 
 ### `gitlab_standard`

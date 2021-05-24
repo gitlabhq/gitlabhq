@@ -35,14 +35,9 @@ module Gitlab
             end
 
             def value
-              if ::Feature.enabled?(:ci_needs_optional, default_enabled: :yaml)
-                { name: @config,
-                  artifacts: true,
-                  optional: false }
-              else
-                { name: @config,
-                  artifacts: true }
-              end
+              { name: @config,
+                artifacts: true,
+                optional: false }
             end
           end
 
@@ -66,14 +61,9 @@ module Gitlab
             end
 
             def value
-              if ::Feature.enabled?(:ci_needs_optional, default_enabled: :yaml)
-                { name: job,
-                  artifacts: artifacts || artifacts.nil?,
-                  optional: !!optional }
-              else
-                { name: job,
-                  artifacts: artifacts || artifacts.nil? }
-              end
+              { name: job,
+                artifacts: artifacts || artifacts.nil?,
+                optional: !!optional }
             end
           end
 

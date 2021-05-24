@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'socket'
 require 'json'
 
-RSpec.describe IrkerService do
+RSpec.describe Integrations::Irker do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
