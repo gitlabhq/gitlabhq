@@ -20,6 +20,9 @@ If you are migrating from another CI/CD tool, view this documentation:
 - [Migrate from CircleCI](../migration/circleci.md).
 - [Migrate from Jenkins](../migration/jenkins.md).
 
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=553s). This includes a quick introduction to GitLab, the first steps with CI/CD, building a Go project, running tests, using the CI/CD pipeline editor, detecting secrets and security vulnerabilities and offers more exercises for async practice.
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [Intro to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=358s). This workshop uses the Web IDE to quickly get going with building source code using CI/CD, and run unit tests. 
+
 ## CI/CD process overview
 
 To use GitLab CI/CD:
@@ -162,3 +165,8 @@ To view your pipeline:
   ![Job details](img/job_details_v13_6.png)
 
 If the job status is `stuck`, check to ensure a runner is properly configured for the project.
+
+> To learn more about GitLab CI/CD, check out these video walkthroughs:
+>
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=150s).
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [Intro to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=358s).
