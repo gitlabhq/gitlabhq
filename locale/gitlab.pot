@@ -13093,13 +13093,37 @@ msgstr ""
 msgid "Escalation policies"
 msgstr ""
 
+msgid "EscalationPolicies|+ Add an additional rule"
+msgstr ""
+
 msgid "EscalationPolicies|Add an escalation policy"
+msgstr ""
+
+msgid "EscalationPolicies|Add escalation policy"
 msgstr ""
 
 msgid "EscalationPolicies|Create an escalation policy in GitLab"
 msgstr ""
 
+msgid "EscalationPolicies|Edit escalation policy"
+msgstr ""
+
+msgid "EscalationPolicies|Email on-call user in schedule"
+msgstr ""
+
+msgid "EscalationPolicies|Escalation rules"
+msgstr ""
+
+msgid "EscalationPolicies|IF alert is not %{alertStatus} in %{minutes} minutes"
+msgstr ""
+
+msgid "EscalationPolicies|Select schedule"
+msgstr ""
+
 msgid "EscalationPolicies|Set up escalation policies to define who is paged, and when, in the event the first users paged don't respond."
+msgstr ""
+
+msgid "EscalationPolicies|THEN %{doAction} %{schedule}"
 msgstr ""
 
 msgid "Estimate"

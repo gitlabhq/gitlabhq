@@ -139,6 +139,12 @@ If you want to change to another branch, you can use [`git stash`](https://www.g
 1. Commit, push, and test.
 1. Return to the branch where you want to resume your changes.
 1. Use `git stash list` to list all previously stashed commits.
+
+   ```shell
+   stash@{0}: WIP on submit: 6ebd0e2... Update git-stash documentation
+   stash@{1}: On master: 9cc0589... Add git-stash
+   ```
+
 1. Run a version of `git stash`:
 
    - Use `git stash pop` to redo previously stashed changes and remove them from stashed list.
