@@ -48,3 +48,17 @@
       %row.hidden#warning_external_automatically_set.hidden
         .badge.badge-warning.text-white
           = s_('AdminUsers|Automatically marked as default internal user')
+
+  .form-group.row
+    - @user.credit_card_validation || @user.build_credit_card_validation
+    = f.fields_for :credit_card_validation do |ff|
+      .col-sm-2.col-form-label.gl-pt-0
+        = ff.label s_("AdminUsers|Validate user account")
+      .col-sm-10.gl-display-flex.gl-align-items-baseline
+        = ff.check_box :credit_card_validated_at, checked: @user.credit_card_validated_at.present?
+        .gl-pl-2
+          .light
+            = s_('AdminUsers|User is validated and can use free CI minutes on shared runners.')
+          .gl-text-gray-600
+            = s_('AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user.')
+

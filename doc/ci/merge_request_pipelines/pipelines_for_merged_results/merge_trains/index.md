@@ -59,8 +59,7 @@ to run. If more merge requests are added to the train, they now include the `A`
 changes that are included in the target branch, and the `C` changes that are from
 the merge request already in the train.
 
-Read more about
-[how merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
+Read more about [how merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch this video for a demonstration on [how parallel execution

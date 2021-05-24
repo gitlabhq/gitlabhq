@@ -31,9 +31,9 @@ module QA
       let!(:runner) do
         Resource::Runner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{project.group.sandbox.name}"]
+          runner.tags = ["runner-for-#{project.group.name}"]
           runner.executor = :docker
-          runner.token = project.group.sandbox.runners_token
+          runner.token = project.group.runners_token
         end
       end
 
@@ -69,7 +69,7 @@ module QA
                         only:
                           - "#{project.default_branch}"
                         tags:
-                          - "runner-for-#{project.group.sandbox.name}"
+                          - "runner-for-#{project.group.name}"
                     YAML
                 }
             ]
@@ -128,7 +128,7 @@ module QA
                           only:
                             - "#{another_project.default_branch}"
                           tags:
-                            - "runner-for-#{project.group.sandbox.name}"
+                            - "runner-for-#{project.group.name}"
                     YAML
                 }
             ]
@@ -145,7 +145,7 @@ module QA
           expect(job).to be_successful(timeout: 800)
         end
 
-        project.group.sandbox.visit!
+        project.group.visit!
 
         Page::Group::Menu.perform(&:go_to_group_packages)
 

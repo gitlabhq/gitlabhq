@@ -321,7 +321,7 @@ class User < ApplicationRecord
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
-  accepts_nested_attributes_for :credit_card_validation, update_only: true
+  accepts_nested_attributes_for :credit_card_validation, update_only: true, allow_destroy: true
 
   state_machine :state, initial: :active do
     event :block do
@@ -1706,12 +1706,6 @@ class User < ApplicationRecord
 
   def invalidate_issue_cache_counts
     Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
-
-    if Feature.enabled?(:assigned_open_issues_cache, default_enabled: :yaml)
-      run_after_commit do
-        Users::UpdateOpenIssueCountWorker.perform_async(self.id)
-      end
-    end
   end
 
   def invalidate_merge_request_cache_counts

@@ -4260,45 +4260,16 @@ RSpec.describe User do
   end
 
   describe '#invalidate_issue_cache_counts' do
-    let_it_be(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
-    subject do
+    it 'invalidates cache for issue counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
       user.invalidate_issue_cache_counts
-      user.save!
-    end
-
-    shared_examples 'invalidates the cached value' do
-      it 'invalidates cache for issue counter' do
-        expect(Rails.cache).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
-
-        subject
-      end
-    end
-
-    it_behaves_like 'invalidates the cached value'
-
-    context 'if feature flag assigned_open_issues_cache is enabled' do
-      it 'calls the recalculate worker' do
-        expect(Users::UpdateOpenIssueCountWorker).to receive(:perform_async).with(user.id)
-
-        subject
-      end
-
-      it_behaves_like 'invalidates the cached value'
-    end
-
-    context 'if feature flag assigned_open_issues_cache is disabled' do
-      before do
-        stub_feature_flags(assigned_open_issues_cache: false)
-      end
-
-      it 'does not call the recalculate worker' do
-        expect(Users::UpdateOpenIssueCountWorker).not_to receive(:perform_async).with(user.id)
-
-        subject
-      end
-
-      it_behaves_like 'invalidates the cached value'
     end
   end
 

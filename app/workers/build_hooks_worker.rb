@@ -9,7 +9,7 @@ class BuildHooksWorker # rubocop:disable Scalability/IdempotentWorker
   queue_namespace :pipeline_hooks
   feature_category :continuous_integration
   urgency :high
-  data_consistency :delayed, feature_flag: :load_balancing_for_build_hooks_worker
+  data_consistency :delayed
 
   DATA_CONSISTENCY_DELAY = 3
 

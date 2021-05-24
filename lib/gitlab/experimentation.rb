@@ -48,9 +48,6 @@ module Gitlab
       invite_members_empty_project_version_a: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersEmptyProjectVersionA'
       },
-      trial_during_signup: {
-        tracking_category: 'Growth::Conversion::Experiment::TrialDuringSignup'
-      },
       invite_members_new_dropdown: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'
       },

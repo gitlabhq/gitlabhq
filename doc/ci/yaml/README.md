@@ -253,7 +253,7 @@ variables:
 
 workflow:
   rules:
-    - if: $CI_COMMIT_REF_NAME =~ /master/
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
       variables:
         DEPLOY_VARIABLE: "deploy-production"  # Override globally-defined DEPLOY_VARIABLE
     - if: $CI_COMMIT_REF_NAME =~ /feature/
@@ -265,7 +265,7 @@ job1:
   variables:
     DEPLOY_VARIABLE: "job1-default-deploy"
   rules:
-    - if: $CI_COMMIT_REF_NAME =~ /master/
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
       variables:                                   # Override DEPLOY_VARIABLE defined
         DEPLOY_VARIABLE: "job1-deploy-production"  # at the job level.
     - when: on_success                             # Run the job in other cases
@@ -279,7 +279,7 @@ job2:
     - echo "Run another script if $IS_A_FEATURE exists"
 ```
 
-When the branch is `master`:
+When the branch is the default branch:
 
 - job1's `DEPLOY_VARIABLE` is `job1-deploy-production`.
 - job2's `DEPLOY_VARIABLE` is `deploy-production`.
@@ -559,7 +559,7 @@ You can also specify a `ref`. If you do not specify a value, the ref defaults to
 ```yaml
 include:
   - project: 'my-group/my-project'
-    ref: master
+    ref: main
     file: '/templates/.gitlab-ci-template.yml'
 
   - project: 'my-group/my-project'
@@ -584,7 +584,7 @@ You can include multiple files from the same project:
 ```yaml
 include:
   - project: 'my-group/my-project'
-    ref: master
+    ref: main
     file:
       - '/templates/.builds.yml'
       - '/templates/.tests.yml'
@@ -598,7 +598,7 @@ authentication in the remote URL is not supported. For example:
 
 ```yaml
 include:
-  - remote: 'https://gitlab.com/example-project/-/raw/master/.gitlab-ci.yml'
+  - remote: 'https://gitlab.com/example-project/-/raw/main/.gitlab-ci.yml'
 ```
 
 All [nested includes](#nested-includes) execute without context as a public user,
@@ -1137,7 +1137,7 @@ For example:
 docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: delayed
       start_in: '3 hours'
       allow_failure: true
@@ -1335,7 +1335,7 @@ For example:
 job:
   script: echo "Hello, Rules!"
   rules:
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
       when: always
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/'
       when: manual
@@ -1533,7 +1533,7 @@ the particular rule triggers the job.
 job:
   script: echo "Hello, Rules!"
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
       when: manual
       allow_failure: true
 ```
@@ -1554,7 +1554,7 @@ job:
   variables:
     DEPLOY_VARIABLE: "default-deploy"
   rules:
-    - if: $CI_COMMIT_REF_NAME =~ /master/
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
       variables:                              # Override DEPLOY_VARIABLE defined
         DEPLOY_VARIABLE: "deploy-production"  # at the job level.
     - if: $CI_COMMIT_REF_NAME =~ /feature/
@@ -1602,7 +1602,7 @@ job1:
   script:
     - echo This rule uses parentheses.
   rules:
-    if: ($CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
+    if: ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
 ```
 
 WARNING:
@@ -1968,12 +1968,12 @@ build_job:
   needs:
     - project: namespace/group/project-name
       job: build-1
-      ref: master
+      ref: main
       artifacts: true
 ```
 
 `build_job` downloads the artifacts from the latest successful `build-1` job
-on the `master` branch in the `group/project-name` project. If the project is in the
+on the `main` branch in the `group/project-name` project. If the project is in the
 same group or namespace, you can omit them from the `project:` keyword. For example,
 `project: group/project-name` or `project: project-name`.
 
@@ -2084,9 +2084,9 @@ error similar to:
 
 In this example:
 
-- When the branch is `master`, the `build` job exists in the pipeline, and the `rspec`
+- When the branch is the default branch, the `build` job exists in the pipeline, and the `rspec`
   job waits for it to complete before starting.
-- When the branch is not `master`, the `build` job does not exist in the pipeline.
+- When the branch is not the default branch, the `build` job does not exist in the pipeline.
   The `rspec` job runs immediately (similar to `needs: []`) because its `needs`
   relationship to the `build` job is optional.
 
@@ -2094,7 +2094,7 @@ In this example:
 build:
   stage: build
   rules:
-    - if: $CI_COMMIT_REF_NAME == "master"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 rspec:
   stage: test
@@ -2330,7 +2330,7 @@ To protect a manual job:
        url: https://example.com
      when: manual
      only:
-       - master
+       - main
    ```
 
 1. In the [protected environments settings](../environments/protected_environments.md#protecting-environments),
@@ -4039,7 +4039,7 @@ child-pipeline:
   trigger:
     include:
       - project: 'my-group/my-pipeline-library'
-        ref: 'master'
+        ref: 'main'
         file: '/path/to/child-pipeline.yml'
 ```
 
@@ -4638,7 +4638,7 @@ pages:
     paths:
       - public
   only:
-    - master
+    - main
 ```
 
 View the [GitLab Pages user documentation](../../user/project/pages/index.md).

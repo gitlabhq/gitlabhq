@@ -2461,6 +2461,9 @@ msgstr ""
 msgid "AdminUsers|2FA Enabled"
 msgstr ""
 
+msgid "AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user."
+msgstr ""
+
 msgid "AdminUsers|Access"
 msgstr ""
 
@@ -2719,6 +2722,9 @@ msgstr ""
 msgid "AdminUsers|Unlock user %{username}?"
 msgstr ""
 
+msgid "AdminUsers|User is validated and can use free CI minutes on shared runners."
+msgstr ""
+
 msgid "AdminUsers|User will be blocked"
 msgstr ""
 
@@ -2732,6 +2738,9 @@ msgid "AdminUsers|Users"
 msgstr ""
 
 msgid "AdminUsers|Users can still be invited to your instance and/or add themselves if permitted based on your settings. They will not have access to your instance, nor count towards your subscribed seat count until you %{approve_link}."
+msgstr ""
+
+msgid "AdminUsers|Validate user account"
 msgstr ""
 
 msgid "AdminUsers|View pending member requests"

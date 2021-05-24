@@ -1,0 +1,127 @@
+- title: On-demand DAST GA launch
+  body: | 
+     After months of work, we are pleased to announce that our on-demand DAST scanning has reached a General Availability (GA) maturity level. It is ready for usage by anyone who needs to scan an already-deployed application or API outside of a CI/CD pipeline job. With the 13.11 release, we added to on-demand DAST Site profiles the ability to specify authentication information, exclude URLs, add additional request headers, and switch between scanning web applications and APIs. This is in addition to the ability to save scans for quick reusability that was added in 13.9, and the ability to select the branch that a scan is associated with that was added in 13.10. We believe this feature set meets the needs of a majority of GitLab customers.
+
+     As we continue to add features, such as scan scheduling, we expect on-demand DAST scanning to cover an ever-increasing range of use cases. As always, we would love as much feedback about these features as possible. Please let us know how things are working for you by leaving a comment in [issue 327396](https://gitlab.com/gitlab-org/gitlab/-/issues/327396).
+  stage: secure
+  self-managed: true
+  gitlab-com: true
+  packages: [Ultimate]
+  url: https://docs.gitlab.com/ee/user/application_security/dast/#on-demand-scans
+  image_url: https://about.gitlab.com/images/13_12/dast_on_demand_auth.png
+  published_at: 2021-05-22
+  release: 13.12
+- title: Filter Project Vulnerability Report by vendor name
+  body: | 
+     GitLab strives to play well with others and security is no exception. We provide many security scanners as part of our Secure offering. We also encourage 3rd party vendors to [integrate their scanning tools](https://docs.gitlab.com/ee/development/integrations/secure.html) using our open API and data interchange formats. A benefit of using GitLab is managing vulnerabilities from multiple scanners in a unified experience. While you were already able to filter by scanner type (SAST, DAST), it wasn't possible to drill down by the tool provider.
+
+     You now have even more granularity when managing vulnerabilities with the new ability to filter by scanner and vendor. You can look at all results across a single vendor's scanners or gain confidence in findings from one scan type (e.g. SAST) that are confirmed by both GitLab and the 3rd party tool. The new filtering capability is available now in Project Vulnerability Reports.
+  stage: secure
+  self-managed: true
+  gitlab-com: true
+  packages: [Ultimate]
+  url: https://docs.gitlab.com/ee/user/application_security/security_dashboard/#vulnerability-report
+  image_url: https://about.gitlab.com/images/13_12/select_scanner_by_vendor.png
+  published_at: 2021-05-22
+  release: 13.12
+- title: Lock latest pipeline artifact to prevent deletion
+  body: | 
+     GitLab now automatically locks the latest artifact produced from a successful pipeline on any active branch, merge request, or tag to prevent it from being deleted based on expiration if it is still the most recent artifact. 
+
+     This makes it easier to set a more aggressive expiration policy to clean up older artifacts, helps reduce disk space consumption, and ensures you have always got a copy of the latest artifact from your pipeline. 
+
+     Pipeline artifacts, such as those used by the [test coverage visualization feature](https://docs.gitlab.com/ee/user/project/merge_requests/test_coverage_visualization.html), are not explicitly managed by the `.gitlab-ci.yml` definitions.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/ci/yaml/README.html#artifactsexpire_in
+  image_url: https://about.gitlab.com/images/growth/verify.png
+  published_at: 2021-05-22
+  release: 13.12
+- title: Delete associated package files via API
+  body: | 
+     You use the GitLab Package Registry to publish, install, and share your dependencies. You may do this using a variety of package manager formats, such as Maven or npm. If you do this as part of your CI workflow, you may publish many packages to your registry. When you publish a dependency, it generates several files including the package archive.
+
+     Prior to GitLab 13.12, GitLab didn't provide a way to delete the files from a package. You could only delete the package itself. These extra files can clutter the user interface or result in someone installing an incorrect or outdated dependency.
+
+     In GitLab 13.12, you can now use the Packages API to delete files related to a given package, as well as the package itself. You can easily integrate this new endpoint into your CI workflow and start removing old, unused files. To give you another option for managing your registry, future releases will add the ability to [delete such files through the user interface](https://gitlab.com/gitlab-org/gitlab/-/issues/13537).
+  stage: package
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/api/packages.html#delete-a-package-file
+  image_url: https://about.gitlab.com/images/growth/package.png
+  published_at: 2021-05-22
+  release: 13.12
+- title: Configuration tool for Secret Detection
+  body: | 
+    Following in the footsteps of the [GitLab SAST configuration tool](https://docs.gitlab.com/ee/user/application_security/sast/index.html#configure-sast-in-the-ui) we are adding support for Secret Detection on the Security Configuration page. We believe that [security is a team effort](https://about.gitlab.com/direction/secure/#security-is-a-team-effort) and this configuration experience makes it easier for non-CI experts to get started with [GitLab Secret Detection](https://docs.gitlab.com/ee/user/application_security/secret_detection/). The tool helps a user create a merge request to enable Secret Detection scanning while leveraging best configuration practices like using the GitLab-managed [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml). The Configuration tool can create a new `.gitlab-ci.yml` file if one does not exist or update existing simple GitLab CI files, allowing the tool to be used with projects that already have GitLab CI setup.
+  stage: secure
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/application_security/configuration/
+  image_url: https://about.gitlab.com/images/13_12/secret_config_button_13_12.png
+  published_at: 2021-05-22
+  release: 13.12
+- title: Code quality violation notices in MR diffs
+  body: | 
+    During code reviews, you may have wanted to highlight Code Quality violations and how to resolve them. Previously, this involved having a browser window open to see the violations on the Merge Request summary and another window reviewing the changes in the MR or your IDE. You may have found switching between them too difficult and given up. 
+
+      Now, you can see if the file you are reviewing has new code quality violations that are part of the changes right in the Merge Request diff view. This gives you the necessary context to suggest a fix as part of your normal workflow within GitLab without having to keep additional windows open and context switch back and forth between them.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Ultimate]
+  url: https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#code-quality-in-diff-view
+  image_url: https://about.gitlab.com/images/13_12/code-quality-mr-diff-mvc.png
+  published_at: 2021-05-22
+  release: 13.12
+- title: Group-level deployment frequency CI/CD chart
+  body: | 
+    As part of our efforts to natively support [DORA4 metrics](https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html#devops-research-and-assessment-dora-key-metrics) in GitLab, the group-level deployment frequency chart is now available. This chart will show the aggregated deployment frequency metrics for all the projects that are part of the group, and allow you to get a full picture of the deployment frequency across multiple projects and teams, so that you can comprehend their efficiency more accurately. Monitoring deployment frequency helps you understand the efficiency of your deployments over time, find bottlenecks, and focus on improvement areas that span across your projects and teams.
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  packages: [Ultimate]
+  url: https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html#deployment-frequency-charts
+  image_url: https://about.gitlab.com/images/13_12/group_deployment_frequency.png
+  published_at: 2021-05-22
+  release: 13.12
+- title: Enforce delayed project removal for all subgroups
+  body: | 
+    Group owners can now enable and enforce [delayed project removal](https://docs.gitlab.com/ee/user/group/#enable-delayed-project-removal) for all subgroups and projects in their group. Delayed project removal protects your data by placing deleted projects in a read-only state after deletion and can be restored, if required. We plan to expand our settings model and allow more settings to be inherited and enforced in subgroups and projects in future milestones. Our new settings management model gives group owners a way to ensure that their subgroups and projects settings adhere to their organization's security and compliance needs. 
+  stage: manage
+  self-managed: true
+  gitlab-com: true
+  packages: [Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/group/#enable-delayed-project-removal
+  image_url: https://about.gitlab.com/images/13_12/mushakov_delayed_deletion.png
+  published_at: 2021-05-22
+  release: 13.12
+- title: Mobile application binary scanning support
+  body: | 
+     Since GitLab 13.6, we've offered [SAST for Android and iOS mobile projects](https://about.gitlab.com/releases/2020/10/22/gitlab-13-5-released/#sast-support-for-ios-and-android-mobile-apps). Initially our Mobile App SAST supported the automatic detection of Xcode projects and Android manifest files. With this release and contribution from community contributor [@proletarius101](https://gitlab.com/proletarius101), GitLab SAST now also supports the automatic detection of .ipa (iOS) and .apk (Android) binary files enabling the security scanning of fully built mobile application artifacts. This offers mobile teams more flexibility with how they build and scan their mobile projects with GitLab SAST for security vulnerabilities. 
+      Please note that mobile application scanning is still an experimental feature and [requires enabling the experimental flag](https://docs.gitlab.com/ee/user/application_security/sast/#experimental-features) in your CI template. We will make the mobile application scanner generally available without this flag [in the near future](https://gitlab.com/groups/gitlab-org/-/epics/5977). 
+  stage: secure 
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks
+  image_url: https://about.gitlab.com/images/growth/verify.png
+  published_at: 2021-05-22
+  release: 13.12
+- title: Instance-level Federated Learning of Cohorts (FLoC) opt-in
+  body: | 
+     [Federated Learning of Cohorts (FLoC)](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) is a new type of web tracking, intended to replace the use of third-party cookies. It does this by grouping users into cohorts based on their browsing history, for the primary purpose of interest-based advertising. FLoC is being activated in the Chrome browser in some regions.
+      
+     With GitLab 13.12, FLoC will not incorporate GitLab browsing activity by default. If an instance administrator would like their users' GitLab instance usage to contribute to FLoC, they can re-enable in instance settings.
+  stage: enablement
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/admin_area/settings/floc.html
+  image_url: https://about.gitlab.com/images/growth/enablement.png
+  published_at: 2021-05-22
+  release: 13.12
