@@ -16,9 +16,7 @@ class UserCallout < ApplicationRecord
     tabs_position_highlight: 10,
     threat_monitoring_info: 11,                # EE-only
     account_recovery_regular_check: 12,        # EE-only
-    webhooks_moved: 13,
     service_templates_deprecated_callout: 14,
-    admin_integrations_moved: 15,
     web_ide_alert_dismissed: 16,               # no longer in use
     active_user_count_threshold: 18,           # EE-only
     buy_pipeline_minutes_notification_dot: 19, # EE-only

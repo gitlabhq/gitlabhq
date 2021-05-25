@@ -24,8 +24,6 @@ module API
 
     helpers do
       def path_exists?(path)
-        # return true when FF disabled so that processing the request is not stopped
-        return true unless Feature.enabled?(:check_maven_path_first, default_enabled: :yaml)
         return false if path.blank?
 
         Packages::Maven::Metadatum.with_path(path)

@@ -77,12 +77,6 @@
 // https://gitlab.com/groups/gitlab-org/-/epics/2882
 .gl-h-200\! { height: px-to-rem($grid-size * 25) !important; }
 
-.d-sm-table-column {
-  @include media-breakpoint-up(sm) {
-    display: table-column !important;
-  }
-}
-
 .gl-bg-purple-light { background-color: $purple-light; }
 
 // move this to GitLab UI once onboarding experiment is considered a success

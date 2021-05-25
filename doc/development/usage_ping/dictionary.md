@@ -7084,11 +7084,11 @@ Whether gravatar is enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/settings/20210204124904_gravatar_enabled.yml)
 
-Group: `group::product intelligence`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `historical_max_users`
 

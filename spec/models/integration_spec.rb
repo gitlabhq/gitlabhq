@@ -896,20 +896,6 @@ RSpec.describe Integration do
     end
   end
 
-  describe '#external_wiki?' do
-    where(:type, :active, :result) do
-      'ExternalWikiService' | true  | true
-      'ExternalWikiService' | false | false
-      'SlackService'        | true  | false
-    end
-
-    with_them do
-      it 'returns the right result' do
-        expect(create(:service, type: type, active: active).external_wiki?).to eq(result)
-      end
-    end
-  end
-
   describe '.available_services_names' do
     it 'calls the right methods' do
       expect(described_class).to receive(:services_names).and_call_original

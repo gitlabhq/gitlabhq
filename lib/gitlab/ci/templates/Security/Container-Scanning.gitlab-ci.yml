@@ -58,7 +58,7 @@ container_scanning:
 container_scanning_new:
   extends: .cs_common
   variables:
-    CS_PROJECT: 'container-scanning'
+    CS_ANALYZER_IMAGE: registry.gitlab.com/security-products/container-scanning:4
   script:
     - gtcs scan
   artifacts:

@@ -2,16 +2,6 @@
 - breadcrumb_title _('Integration Settings')
 - page_title _('Integrations')
 
-- if show_webhooks_moved_alert?
-  .gl-alert.gl-alert-info.js-webhooks-moved-alert.gl-mt-3{ role: 'alert', data: { feature_id: UserCalloutsHelper::WEBHOOKS_MOVED, dismiss_endpoint: user_callouts_path } }
-    = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-      = sprite_icon('close', css_class: 'gl-icon')
-    .gl-alert-body
-      = _('Webhooks have moved. They can now be found under the Settings menu.')
-    .gl-alert-actions
-      = link_to _('Go to Webhooks'), project_hooks_path(@project), class: 'gl-button btn gl-alert-action btn-info'
-
 %h3= _('Integrations')
 - integrations_link_start = '<a href="%{url}">'.html_safe % { url: help_page_url('user/project/integrations/overview') }
 - webhooks_link_start = '<a href="%{url}">'.html_safe % { url: project_hooks_path(@project) }

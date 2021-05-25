@@ -8,6 +8,7 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
       cancelable
       userPermissions {
         destroyPipeline
+        updatePipeline
       }
       detailedStatus {
         detailsPath

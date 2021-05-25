@@ -14688,7 +14688,6 @@ Name of the feature that the callout is for.
 | ----- | ----------- |
 | <a id="usercalloutfeaturenameenumaccount_recovery_regular_check"></a>`ACCOUNT_RECOVERY_REGULAR_CHECK` | Callout feature name for account_recovery_regular_check. |
 | <a id="usercalloutfeaturenameenumactive_user_count_threshold"></a>`ACTIVE_USER_COUNT_THRESHOLD` | Callout feature name for active_user_count_threshold. |
-| <a id="usercalloutfeaturenameenumadmin_integrations_moved"></a>`ADMIN_INTEGRATIONS_MOVED` | Callout feature name for admin_integrations_moved. |
 | <a id="usercalloutfeaturenameenumbuy_pipeline_minutes_notification_dot"></a>`BUY_PIPELINE_MINUTES_NOTIFICATION_DOT` | Callout feature name for buy_pipeline_minutes_notification_dot. |
 | <a id="usercalloutfeaturenameenumcanary_deployment"></a>`CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
@@ -14712,7 +14711,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumthreat_monitoring_info"></a>`THREAT_MONITORING_INFO` | Callout feature name for threat_monitoring_info. |
 | <a id="usercalloutfeaturenameenumultimate_trial"></a>`ULTIMATE_TRIAL` | Callout feature name for ultimate_trial. |
 | <a id="usercalloutfeaturenameenumunfinished_tag_cleanup_callout"></a>`UNFINISHED_TAG_CLEANUP_CALLOUT` | Callout feature name for unfinished_tag_cleanup_callout. |
-| <a id="usercalloutfeaturenameenumwebhooks_moved"></a>`WEBHOOKS_MOVED` | Callout feature name for webhooks_moved. |
 | <a id="usercalloutfeaturenameenumweb_ide_alert_dismissed"></a>`WEB_IDE_ALERT_DISMISSED` | Callout feature name for web_ide_alert_dismissed. |
 | <a id="usercalloutfeaturenameenumweb_ide_ci_environments_guidance"></a>`WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
 

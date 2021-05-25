@@ -1,21 +1,15 @@
 # frozen_string_literal: true
 
 module UserCalloutsHelper
-  ADMIN_INTEGRATIONS_MOVED = 'admin_integrations_moved'
   GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'
   GCP_SIGNUP_OFFER = 'gcp_signup_offer'
   SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
   SERVICE_TEMPLATES_DEPRECATED_CALLOUT = 'service_templates_deprecated_callout'
   TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
-  WEBHOOKS_MOVED = 'webhooks_moved'
   CUSTOMIZE_HOMEPAGE = 'customize_homepage'
   FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
   REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
   UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
-
-  def show_admin_integrations_moved?
-    !user_dismissed?(ADMIN_INTEGRATIONS_MOVED)
-  end
 
   def show_gke_cluster_integration_callout?(project)
     active_nav_link?(controller: sidebar_operations_paths) &&
@@ -46,10 +40,6 @@ module UserCalloutsHelper
     current_user&.admin? &&
     Integration.for_template.active.exists? &&
     !user_dismissed?(SERVICE_TEMPLATES_DEPRECATED_CALLOUT)
-  end
-
-  def show_webhooks_moved_alert?
-    !user_dismissed?(WEBHOOKS_MOVED)
   end
 
   def show_customize_homepage_banner?

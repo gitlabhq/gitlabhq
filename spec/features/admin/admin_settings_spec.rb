@@ -315,19 +315,6 @@ RSpec.describe 'Admin updates settings' do
         visit integrations_admin_application_settings_path
       end
 
-      it 'allows user to dismiss deprecation notice' do
-        expect(page).to have_content('Some settings have moved')
-
-        click_button 'Dismiss'
-        wait_for_requests
-
-        expect(page).not_to have_content('Some settings have moved')
-
-        visit integrations_admin_application_settings_path
-
-        expect(page).not_to have_content('Some settings have moved')
-      end
-
       it 'shows integrations table' do
         expect(page).to have_selector '[data-testid="inactive-integrations-table"]'
       end

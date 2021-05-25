@@ -1057,6 +1057,7 @@ is the default starting from GitLab 14.0. Skip this step if you're already runni
 1. If you want to store your pages content in the [object storage](#using-object-storage), make sure to configure it.
 If you want to store the pages content locally or continue using an NFS server, skip this step.
 1. [Migrate legacy storage to ZIP storage.](#migrate-legacy-storage-to-zip-storage)
+1. Upgrade GitLab to 14.0.
 
 ## Backup
 

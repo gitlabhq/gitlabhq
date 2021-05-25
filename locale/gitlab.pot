@@ -2350,9 +2350,6 @@ msgstr ""
 msgid "AdminSettings|Feed token"
 msgstr ""
 
-msgid "AdminSettings|Go to General Settings"
-msgstr ""
-
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
 msgstr ""
 
@@ -2363,9 +2360,6 @@ msgid "AdminSettings|Moved to integrations"
 msgstr ""
 
 msgid "AdminSettings|No required pipeline"
-msgstr ""
-
-msgid "AdminSettings|PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings &gt; General."
 msgstr ""
 
 msgid "AdminSettings|Required pipeline configuration"
@@ -2390,9 +2384,6 @@ msgid "AdminSettings|Session duration for Git operations when 2FA is enabled (mi
 msgstr ""
 
 msgid "AdminSettings|Set an instance-wide auto included %{link_start}pipeline configuration%{link_end}. This pipeline configuration will be run after the project's own configuration."
-msgstr ""
-
-msgid "AdminSettings|Some settings have moved"
 msgstr ""
 
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
@@ -10060,7 +10051,13 @@ msgstr ""
 msgid "DAG visualization requires at least 3 dependent jobs."
 msgstr ""
 
+msgid "DAST Configuration"
+msgstr ""
+
 msgid "DAST Scans"
+msgstr ""
+
+msgid "DAST Settings"
 msgstr ""
 
 msgid "DNS"
@@ -15417,9 +15414,6 @@ msgid "Go back to configuration"
 msgstr ""
 
 msgid "Go full screen"
-msgstr ""
-
-msgid "Go to Webhooks"
 msgstr ""
 
 msgid "Go to commits"
@@ -36498,9 +36492,6 @@ msgid "Webhooks Help"
 msgstr ""
 
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
-msgstr ""
-
-msgid "Webhooks have moved. They can now be found under the Settings menu."
 msgstr ""
 
 msgid "Webhooks|Comments"

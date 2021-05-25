@@ -2,17 +2,6 @@
 - page_title _('Integrations')
 - @content_class = 'limit-container-width' unless fluid_layout
 
-- if show_admin_integrations_moved?
-  .gl-alert.gl-alert-info.js-admin-integrations-moved.mt-3{ role: 'alert', data: { feature_id: UserCalloutsHelper::ADMIN_INTEGRATIONS_MOVED, dismiss_endpoint: user_callouts_path } }
-    = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-      = sprite_icon('close', css_class: 'gl-icon')
-    .gl-alert-body
-      %h4.gl-alert-title= s_('AdminSettings|Some settings have moved')
-      = html_escape_once(s_('AdminSettings|PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings &gt; General.')).html_safe
-    .gl-alert-actions
-      = link_to s_('AdminSettings|Go to General Settings'), general_admin_application_settings_path, class: 'btn gl-alert-action btn-info gl-button'
-
 %h3= s_('Integrations|Project integration management')
 
 - integrations_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: integrations_help_page_path }

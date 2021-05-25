@@ -107,6 +107,20 @@ RSpec.describe 'Project members list', :js do
     end
   end
 
+  context 'as a signed out visitor viewing a public project' do
+    let_it_be(:project) { create(:project, :public) }
+
+    before do
+      sign_out(user1)
+    end
+
+    it 'does not show the Invite members button when not signed in' do
+      visit_members_page
+
+      expect(page).not_to have_button('Invite members')
+    end
+  end
+
   context 'project bots' do
     let(:project_bot) { create(:user, :project_bot, name: 'project_bot') }
 

@@ -480,10 +480,6 @@ class Integration < ApplicationRecord
     ProjectServiceWorker.perform_async(id, data)
   end
 
-  def external_wiki?
-    type == 'ExternalWikiService' && active?
-  end
-
   # override if needed
   def supports_data_fields?
     false
