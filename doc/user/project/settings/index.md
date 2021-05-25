@@ -93,25 +93,81 @@ variables: # can be overriden by a developer's local .gitlab-ci.yml
 sast: # none of these attributes can be overriden by a developer's local .gitlab-ci.yml
   variables:
     FOO: sast
+  image: ruby:2.6
   stage: pre-compliance
+  rules:
+        - when: always
+  allow_failure: false
+  before_script:
+  - "# No before scripts."
   script:
   - echo "running $FOO"
+  after_script:
+  - "# No after scripts."
 
 sanity check:
+  image: ruby:2.6
   stage: pre-deploy-compliance
+  rules:
+        - when: always
+  allow_failure: false
+  before_script:
+  - "# No before scripts."  
   script:
   - echo "running $FOO"
+  after_script:
+  - "# No after scripts."
 
 
 audit trail:
+  image: ruby:2.6
   stage: post-compliance
+  rules:
+        - when: always
+  allow_failure: false
+  before_script:
+  - "# No before scripts."
   script:
   - echo "running $FOO"
+  after_script:
+  - "# No after scripts."
 
 include: # Execute individual project's configuration
   project: '$CI_PROJECT_PATH'
   file: '$CI_PROJECT_CONFIG_PATH'
 ```
+
+##### Ensure compliance jobs are always run
+
+Compliance pipelines use GitLab CI/CD to give you an incredible amount of flexibility
+for defining any sort of compliance jobs you like. Depending on your goals, these jobs
+can be configured to be:
+
+- Modified by users.
+- Non-modifiable.
+
+At a high-level, if a value in a compliance job:
+
+- Is set, it cannot be changed or overridden by project-level configurations.
+- Is not set, a project-level configuration may set.
+
+Either might be wanted or not depending on your use case.
+
+There are a few best practices for ensuring that these jobs are always run exactly
+as you define them and that downstream, project-level pipeline configurations
+cannot change them:
+
+- Add a `rules:when:always` block to each of your compliance jobs. This ensures they are
+  non-modifiable and are always run.
+- Explicitly set any variables the job references. This:
+  - Ensures that project-level pipeline configurations do not set them and alter their
+    behavior.
+  - Includes any jobs that drive the logic of your job.
+- Explicitly set the container image file to run the job in. This ensures that your script
+  steps execute in the correct environment.
+- Explicitly set any relevant GitLab pre-defined [job keywords](../../../ci/yaml/README.md#job-keywords).
+  This ensures that your job uses the settings you intend and that they are not overriden by
+  project-level pipelines.
 
 ### Sharing and permissions
 

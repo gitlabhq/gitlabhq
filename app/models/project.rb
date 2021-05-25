@@ -1406,9 +1406,9 @@ class Project < ApplicationRecord
   end
 
   def disabled_services
-    return %w[datadog hipchat] unless Feature.enabled?(:datadog_ci_integration, self)
+    return %w[datadog] unless Feature.enabled?(:datadog_ci_integration, self)
 
-    %w[hipchat]
+    []
   end
 
   def find_or_initialize_service(name)

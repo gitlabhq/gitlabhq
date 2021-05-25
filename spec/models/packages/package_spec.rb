@@ -729,6 +729,49 @@ RSpec.describe Packages::Package, type: :model do
     end
   end
 
+  context 'sorting' do
+    let_it_be(:project) { create(:project, name: 'aaa' ) }
+    let_it_be(:project2) { create(:project, name: 'bbb' ) }
+    let_it_be(:package1) { create(:package, project: project ) }
+    let_it_be(:package2) { create(:package, project: project2 ) }
+    let_it_be(:package3) { create(:package, project: project2 ) }
+    let_it_be(:package4) { create(:package, project: project ) }
+
+    it 'orders packages by their projects name ascending' do
+      expect(Packages::Package.order_project_name).to eq([package1, package4, package2, package3])
+    end
+
+    it 'orders packages by their projects name descending' do
+      expect(Packages::Package.order_project_name_desc).to eq([package2, package3, package1, package4])
+    end
+
+    shared_examples 'order_project_path scope' do
+      it 'orders packages by their projects path asc, then package id asc' do
+        expect(Packages::Package.order_project_path).to eq([package1, package4, package2, package3])
+      end
+    end
+
+    shared_examples 'order_project_path_desc scope' do
+      it 'orders packages by their projects path desc, then package id desc' do
+        expect(Packages::Package.order_project_path_desc).to eq([package3, package2, package4, package1])
+      end
+    end
+
+    context 'with arel scope feature flag enabled' do
+      it_behaves_like 'order_project_path scope'
+      it_behaves_like 'order_project_path_desc scope'
+    end
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(arel_package_scopes: false)
+      end
+
+      it_behaves_like 'order_project_path scope'
+      it_behaves_like 'order_project_path_desc scope'
+    end
+  end
+
   describe '.order_by_package_file' do
     let_it_be(:project) { create(:project) }
     let_it_be(:package1) { create(:maven_package, project: project) }
@@ -740,6 +783,33 @@ RSpec.describe Packages::Package, type: :model do
       create(:package_file, :xml, package: package1)
 
       expect(project.packages.order_by_package_file).to match_array([package1, package1, package1, package2, package2, package2, package1])
+    end
+  end
+
+  describe '.keyset_pagination_order' do
+    let(:join_class) { nil }
+    let(:column_name) { nil }
+    let(:direction) { nil }
+
+    subject { described_class.keyset_pagination_order(join_class: join_class, column_name: column_name, direction: direction) }
+
+    it { expect { subject }.to raise_error(NoMethodError) }
+
+    context 'with valid params' do
+      let(:join_class) { Project }
+      let(:column_name) { :name }
+
+      context 'ascending direction' do
+        let(:direction) { :asc }
+
+        it { is_expected.to eq('projects.name asc NULLS LAST, "packages_packages"."id" ASC') }
+      end
+
+      context 'descending direction' do
+        let(:direction) { :desc }
+
+        it { is_expected.to eq('projects.name desc NULLS FIRST, "packages_packages"."id" DESC') }
+      end
     end
   end
 

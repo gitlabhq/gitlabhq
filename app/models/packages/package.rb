@@ -8,6 +8,23 @@ class Packages::Package < ApplicationRecord
   DISPLAYABLE_STATUSES = [:default, :error].freeze
   INSTALLABLE_STATUSES = [:default].freeze
 
+  enum package_type: {
+    maven: 1,
+    npm: 2,
+    conan: 3,
+    nuget: 4,
+    pypi: 5,
+    composer: 6,
+    generic: 7,
+    golang: 8,
+    debian: 9,
+    rubygems: 10,
+    helm: 11,
+    terraform_module: 12
+  }
+
+  enum status: { default: 0, hidden: 1, processing: 2, error: 3 }
+
   belongs_to :project
   belongs_to :creator, class_name: 'User'
 
@@ -72,12 +89,6 @@ class Packages::Package < ApplicationRecord
     if: :debian_package?
   validate :forbidden_debian_changes, if: :debian?
 
-  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5,
-                       composer: 6, generic: 7, golang: 8, debian: 9,
-                       rubygems: 10, helm: 11, terraform_module: 12 }
-
-  enum status: { default: 0, hidden: 1, processing: 2, error: 3 }
-
   scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
@@ -133,9 +144,27 @@ class Packages::Package < ApplicationRecord
   scope :order_type_desc, -> { reorder(package_type: :desc) }
   scope :order_project_name, -> { joins(:project).reorder('projects.name ASC') }
   scope :order_project_name_desc, -> { joins(:project).reorder('projects.name DESC') }
-  scope :order_project_path, -> { joins(:project).reorder('projects.path ASC, id ASC') }
-  scope :order_project_path_desc, -> { joins(:project).reorder('projects.path DESC, id DESC') }
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
+
+  scope :order_project_path, -> do
+    if Feature.enabled?(:arel_package_scopes)
+      keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :asc)
+
+      joins(:project).reorder(keyset_order)
+    else
+      joins(:project).reorder('projects.path ASC, id ASC')
+    end
+  end
+
+  scope :order_project_path_desc, -> do
+    if Feature.enabled?(:arel_package_scopes)
+      keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :desc)
+
+      joins(:project).reorder(keyset_order)
+    else
+      joins(:project).reorder('projects.path DESC, id DESC')
+    end
+  end
 
   after_commit :update_composer_cache, on: :destroy, if: -> { composer? }
 
@@ -194,6 +223,32 @@ class Packages::Package < ApplicationRecord
     else
       order_created_desc
     end
+  end
+
+  def self.keyset_pagination_order(join_class:, column_name:, direction: :asc)
+    join_table = join_class.table_name
+    asc_order_expression = Gitlab::Database.nulls_last_order("#{join_table}.#{column_name}", :asc)
+    desc_order_expression = Gitlab::Database.nulls_first_order("#{join_table}.#{column_name}", :desc)
+    order_direction = direction == :asc ? asc_order_expression : desc_order_expression
+    reverse_order_direction = direction == :asc ? desc_order_expression : asc_order_expression
+    arel_order_classes = ::Gitlab::Pagination::Keyset::ColumnOrderDefinition::AREL_ORDER_CLASSES.invert
+
+    ::Gitlab::Pagination::Keyset::Order.build([
+      ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: "#{join_table}_#{column_name}",
+        column_expression: join_class.arel_table[column_name],
+        order_expression: order_direction,
+        reversed_order_expression: reverse_order_direction,
+        order_direction: direction,
+        distinct: false,
+        add_to_projections: true
+      ),
+      ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: 'id',
+        order_expression: arel_order_classes[direction].new(Packages::Package.arel_table[:id]),
+        add_to_projections: true
+      )
+    ])
   end
 
   def versions

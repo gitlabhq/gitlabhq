@@ -1655,7 +1655,6 @@ Gitlab/NamespacedClass:
     - 'app/models/project_services/discord_service.rb'
     - 'app/models/project_services/drone_ci_service.rb'
     - 'app/models/project_services/hangouts_chat_service.rb'
-    - 'app/models/project_services/hipchat_service.rb'
     - 'app/models/project_services/issue_tracker_data.rb'
     - 'app/models/project_services/jenkins_service.rb'
     - 'app/models/project_services/jira_tracker_data.rb'

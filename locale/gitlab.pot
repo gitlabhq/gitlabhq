@@ -16446,9 +16446,6 @@ msgstr ""
 msgid "HighlightBar|Time to SLA:"
 msgstr ""
 
-msgid "HipChat endpoint is deprecated and should not be created or modified."
-msgstr ""
-
 msgid "History"
 msgstr ""
 
