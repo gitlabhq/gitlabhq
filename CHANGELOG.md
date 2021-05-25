@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.12.1 (2021-05-25)
+
+### Fixed (3 changes)
+
+- [Merge branch 'fix/pin-gke-version-to-1-18' into 'master'](gitlab-org/gitlab@44de5542ca82b371ed280db9ce03e0c4d4bd6135) ([merge request](gitlab-org/gitlab!62466))
+- [Merge branch '331562-fix-pipeline-security-tab-scanner-filter' into 'master'](gitlab-org/gitlab@1d70bf2efd574537d73b5fd80f92fd8dd939980b) ([merge request](gitlab-org/gitlab!62466))
+- [Update Gitaly's binary path in init.d scripts](gitlab-org/gitlab@0761e78434dbfa120c8ae14263bfe77f9ae48c71) ([merge request](gitlab-org/gitlab!62457))
+
 ## 13.12.0 (2021-05-22)
 
 ### Security (3 changes)
