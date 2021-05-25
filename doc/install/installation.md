@@ -688,7 +688,7 @@ gitlab_path=/home/git/gitlab
 gitaly_path=/home/git/gitaly
 
 sudo -u git -H sh -c "$gitlab_path/bin/daemon_with_pidfile $gitlab_path/tmp/pids/gitaly.pid \
-  $gitaly_path/gitaly $gitaly_path/config.toml >> $gitlab_path/log/gitaly.log 2>&1 &"
+  $gitaly_path/_build/bin/gitaly $gitaly_path/config.toml >> $gitlab_path/log/gitaly.log 2>&1 &"
 ```
 
 ### Initialize Database and Activate Advanced Features
