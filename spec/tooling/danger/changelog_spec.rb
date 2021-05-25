@@ -21,26 +21,20 @@ RSpec.describe Tooling::Danger::Changelog do
   describe '#required_reasons' do
     subject { changelog.required_reasons }
 
-    context "added files contain a migration" do
-      let(:changes) { changes_class.new([change_class.new('foo', :added, :migration)]) }
-
-      it { is_expected.to include(:db_changes) }
-    end
-
     context "removed files contains a feature flag" do
       let(:changes) { changes_class.new([change_class.new('foo', :deleted, :feature_flag)]) }
 
       it { is_expected.to include(:feature_flag_removed) }
     end
 
-    context "added files do not contain a migration" do
-      let(:changes) { changes_class.new([change_class.new('foo', :added, :frontend)]) }
+    context "removed files do not contain a feature flag" do
+      let(:changes) { changes_class.new([change_class.new('foo', :deleted, :backend)]) }
 
       it { is_expected.to be_empty }
     end
 
-    context "removed files do not contain a feature flag" do
-      let(:changes) { changes_class.new([change_class.new('foo', :deleted, :backend)]) }
+    context "added files contain a migration" do
+      let(:changes) { changes_class.new([change_class.new('foo', :added, :migration)]) }
 
       it { is_expected.to be_empty }
     end
@@ -49,26 +43,20 @@ RSpec.describe Tooling::Danger::Changelog do
   describe '#required?' do
     subject { changelog.required? }
 
-    context 'added files contain a migration' do
-      let(:changes) { changes_class.new([change_class.new('foo', :added, :migration)]) }
-
-      it { is_expected.to be_truthy }
-    end
-
     context "removed files contains a feature flag" do
       let(:changes) { changes_class.new([change_class.new('foo', :deleted, :feature_flag)]) }
 
       it { is_expected.to be_truthy }
     end
 
-    context 'added files do not contain a migration' do
-      let(:changes) { changes_class.new([change_class.new('foo', :added, :frontend)]) }
+    context "removed files do not contain a feature flag" do
+      let(:changes) { changes_class.new([change_class.new('foo', :deleted, :backend)]) }
 
       it { is_expected.to be_falsey }
     end
 
-    context "removed files do not contain a feature flag" do
-      let(:changes) { changes_class.new([change_class.new('foo', :deleted, :backend)]) }
+    context 'added files contain a migration' do
+      let(:changes) { changes_class.new([change_class.new('foo', :added, :migration)]) }
 
       it { is_expected.to be_falsey }
     end
@@ -196,17 +184,15 @@ RSpec.describe Tooling::Danger::Changelog do
       end
     end
 
-    context 'with a new migration file' do
-      let(:changes) { changes_class.new([change_class.new('foo', :added, :migration)]) }
-
-      context "when title is not changed from sanitization", :aggregate_failures do
-        it_behaves_like 'changelog required text', :db_changes
+    context 'when in CI context' do
+      before do
+        allow(fake_helper).to receive(:ci?).and_return(true)
       end
 
-      context "when title needs sanitization", :aggregate_failures do
-        let(:mr_title) { 'DRAFT: Fake Title' }
+      context 'with a removed feature flag file' do
+        let(:changes) { changes_class.new([change_class.new('foo', :deleted, :feature_flag)]) }
 
-        it_behaves_like 'changelog required text', :db_changes
+        it_behaves_like 'changelog required text', :feature_flag_removed
       end
     end
 
