@@ -34,7 +34,6 @@ module Tooling
       }.freeze
 
       REQUIRED_CHANGELOG_REASONS = {
-        db_changes: 'introduces a database migration',
         feature_flag_removed: 'removes a feature flag'
       }.freeze
       REQUIRED_CHANGELOG_MESSAGE = {
@@ -50,7 +49,6 @@ module Tooling
 
       def required_reasons
         [].tap do |reasons|
-          reasons << :db_changes if project_helper.changes.added.has_category?(:migration)
           reasons << :feature_flag_removed if project_helper.changes.deleted.has_category?(:feature_flag)
         end
       end
