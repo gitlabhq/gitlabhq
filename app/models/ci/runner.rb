@@ -433,13 +433,7 @@ module Ci
     end
 
     def matches_build?(build)
-      return false if self.ref_protected? && !build.protected?
-
-      accepting_tags?(build)
-    end
-
-    def accepting_tags?(build)
-      (run_untagged? || build.has_tags?) && (build.tag_list - tag_list).empty?
+      runner_matcher.matches?(build.build_matcher)
     end
   end
 end

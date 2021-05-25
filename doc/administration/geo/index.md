@@ -60,7 +60,7 @@ the difference between Geo and Gitaly Cluster, see [Gitaly Cluster compared to G
 
 ## How it works
 
-Your Geo instance can be used for cloning and fetching projects, in addition to reading any data. This will make working with large repositories over large distances much faster.
+Your Geo instance can be used for cloning and fetching projects, in addition to reading any data. This makes working with large repositories over large distances much faster.
 
 ![Geo overview](replication/img/geo_overview.png)
 
@@ -150,17 +150,17 @@ NOTE:
 When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../integration/terminal.md) integration guide for more details.
 
 NOTE:
-When using HTTPS protocol for port 443, you will need to add an SSL certificate to the load balancers.
+When using HTTPS protocol for port 443, you need to add an SSL certificate to the load balancers.
 If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
 
 ### LDAP
 
-We recommend that if you use LDAP on your **primary** site, you also set up secondary LDAP servers on each **secondary** site. Otherwise, users will not be able to perform Git operations over HTTP(s) on the **secondary** site using HTTP Basic Authentication. However, Git via SSH and personal access tokens will still work.
+We recommend that if you use LDAP on your **primary** site, you also set up secondary LDAP servers on each **secondary** site. Otherwise, users are unable to perform Git operations over HTTP(s) on the **secondary** site using HTTP Basic Authentication. However, Git via SSH and personal access tokens still works.
 
 NOTE:
-It is possible for all **secondary** sites to share an LDAP server, but additional latency can be an issue. Also, consider what LDAP server will be available in a [disaster recovery](disaster_recovery/index.md) scenario if a **secondary** site is promoted to be a **primary** site.
+It is possible for all **secondary** sites to share an LDAP server, but additional latency can be an issue. Also, consider what LDAP server is available in a [disaster recovery](disaster_recovery/index.md) scenario if a **secondary** site is promoted to be a **primary** site.
 
-Check for instructions on how to set up replication in your LDAP service. Instructions will be different depending on the software or service used. For example, OpenLDAP provides [these instructions](https://www.openldap.org/doc/admin24/replication.html).
+Check for instructions on how to set up replication in your LDAP service. Instructions are different depending on the software or service used. For example, OpenLDAP provides [these instructions](https://www.openldap.org/doc/admin24/replication.html).
 
 ### Geo Tracking Database
 
@@ -179,9 +179,9 @@ This daemon:
 - Reads a log of events replicated by the **primary** site to the **secondary** database instance.
 - Updates the Geo Tracking Database instance with changes that need to be executed.
 
-When something is marked to be updated in the tracking database instance, asynchronous jobs running on the **secondary** site will execute the required operations and update the state.
+When something is marked to be updated in the tracking database instance, asynchronous jobs running on the **secondary** site execute the required operations and update the state.
 
-This new architecture allows GitLab to be resilient to connectivity issues between the sites. It doesn't matter how long the **secondary** site is disconnected from the **primary** site as it will be able to replay all the events in the correct order and become synchronized with the **primary** site again.
+This new architecture allows GitLab to be resilient to connectivity issues between the sites. It doesn't matter how long the **secondary** site is disconnected from the **primary** site as it is able to replay all the events in the correct order and become synchronized with the **primary** site again.
 
 ## Limitations
 
@@ -280,7 +280,7 @@ For an example of how to set up a location-aware Git remote URL with AWS Route53
 
 ### Backfill
 
-Once a **secondary** site is set up, it will start replicating missing data from
+Once a **secondary** site is set up, it starts replicating missing data from
 the **primary** site in a process known as **backfill**. You can monitor the
 synchronization process on each Geo site from the **primary** site's **Geo Nodes**
 dashboard in your browser.

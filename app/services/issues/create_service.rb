@@ -40,6 +40,20 @@ module Issues
       super
     end
 
+    def handle_changes(issue, options)
+      super
+      old_associations = options.fetch(:old_associations, {})
+      old_assignees = old_associations.fetch(:assignees, [])
+
+      handle_assignee_changes(issue, old_assignees)
+    end
+
+    def handle_assignee_changes(issue, old_assignees)
+      return if issue.assignees == old_assignees
+
+      create_assignee_note(issue, old_assignees)
+    end
+
     def resolve_discussions_with_issue(issue)
       return if discussions_to_resolve.empty?
 

@@ -43,6 +43,7 @@ module Issues
     end
 
     def handle_changes(issue, options)
+      super
       old_associations = options.fetch(:old_associations, {})
       old_labels = old_associations.fetch(:labels, [])
       old_mentioned_users = old_associations.fetch(:mentioned_users, [])

@@ -38,11 +38,11 @@ To start multiple processes:
    process, and values in each item determine the queues it works on.
 
    For example, the following setting creates three Sidekiq processes, one to run on
-   `elastic_indexer`, one to run on `mailers`, and one process running on all queues:
+   `elastic_commit_indexer`, one to run on `mailers`, and one process running on all queues:
 
    ```ruby
    sidekiq['queue_groups'] = [
-     "elastic_indexer",
+     "elastic_commit_indexer",
      "mailers",
      "*"
    ]
@@ -53,7 +53,7 @@ To start multiple processes:
 
    ```ruby
    sidekiq['queue_groups'] = [
-     "elastic_indexer, elastic_commit_indexer",
+     "elastic_commit_indexer, elastic_association_indexer",
      "mailers",
      "*"
    ]

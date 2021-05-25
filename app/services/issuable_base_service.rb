@@ -184,7 +184,7 @@ class IssuableBaseService < ::BaseProjectService
       params[:assignee_ids] = process_assignee_ids(params, extra_assignee_ids: issuable.assignee_ids.to_a)
     end
 
-    issuable.assign_attributes(params)
+    issuable.assign_attributes(allowed_create_params(params))
 
     before_create(issuable)
 
@@ -194,6 +194,7 @@ class IssuableBaseService < ::BaseProjectService
 
     if issuable_saved
       create_system_notes(issuable, is_update: false) unless skip_system_notes
+      handle_changes(issuable, { params: params })
 
       after_create(issuable)
       execute_hooks(issuable)
@@ -233,7 +234,7 @@ class IssuableBaseService < ::BaseProjectService
     assign_requested_assignees(issuable)
 
     if issuable.changed? || params.present?
-      issuable.assign_attributes(params)
+      issuable.assign_attributes(allowed_update_params(params))
 
       if has_title_or_description_changed?(issuable)
         issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: current_user)
@@ -260,7 +261,7 @@ class IssuableBaseService < ::BaseProjectService
           issuable, old_labels: old_associations[:labels], old_milestone: old_associations[:milestone]
         )
 
-        handle_changes(issuable, old_associations: old_associations)
+        handle_changes(issuable, old_associations: old_associations, params: params)
 
         new_assignees = issuable.assignees.to_a
         affected_assignees = (old_associations[:assignees] + new_assignees) - (old_associations[:assignees] & new_assignees)
@@ -504,6 +505,14 @@ class IssuableBaseService < ::BaseProjectService
 
   def update_timestamp?(issuable)
     issuable.changes.keys != ["relative_position"]
+  end
+
+  def allowed_create_params(params)
+    params
+  end
+
+  def allowed_update_params(params)
+    params
   end
 end
 

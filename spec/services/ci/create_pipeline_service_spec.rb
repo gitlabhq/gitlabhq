@@ -7,6 +7,7 @@ RSpec.describe Ci::CreatePipelineService do
 
   let_it_be(:project, reload: true) { create(:project, :repository) }
   let_it_be(:user, reload: true) { project.owner }
+  let_it_be(:runner) { create(:ci_runner, :online, tag_list: %w[postgres mysql ruby]) }
 
   let(:ref_name) { 'refs/heads/master' }
 

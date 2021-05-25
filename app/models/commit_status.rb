@@ -174,8 +174,11 @@ class CommitStatus < ApplicationRecord
       next if commit_status.processed?
       next unless commit_status.project
 
+      last_arg = transition.args.last
+      transition_options = last_arg.is_a?(Hash) && last_arg.extractable_options? ? last_arg : {}
+
       commit_status.run_after_commit do
-        PipelineProcessWorker.perform_async(pipeline_id)
+        PipelineProcessWorker.perform_async(pipeline_id) unless transition_options[:skip_pipeline_processing]
         ExpireJobCacheWorker.perform_async(id)
       end
     end

@@ -8184,7 +8184,7 @@ Segment.
 | ---- | ---- | ----------- |
 | <a id="devopsadoptionsegmentid"></a>`id` | [`ID!`](#id) | ID of the segment. |
 | <a id="devopsadoptionsegmentlatestsnapshot"></a>`latestSnapshot` | [`DevopsAdoptionSnapshot`](#devopsadoptionsnapshot) | The latest adoption metrics for the segment. |
-| <a id="devopsadoptionsegmentnamespace"></a>`namespace` | [`Namespace`](#namespace) | Segment namespace. |
+| <a id="devopsadoptionsegmentnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace which should be calculated. |
 
 ### `DevopsAdoptionSnapshot`
 

@@ -25,7 +25,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     reached_max_descendant_pipelines_depth: 'You reached the maximum depth of child pipelines',
     project_deleted: 'The job belongs to a deleted project',
     user_blocked: 'The user who created this job is blocked',
-    ci_quota_exceeded: 'No more CI minutes available'
+    ci_quota_exceeded: 'No more CI minutes available',
+    no_matching_runner: 'No matching runner available'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES

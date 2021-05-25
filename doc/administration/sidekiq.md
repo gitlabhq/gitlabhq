@@ -26,7 +26,7 @@ you want using steps 1 and 2 from the GitLab downloads page.
    ## Optional: Enable extra Sidekiq processes
    sidekiq_cluster['enable'] = true
    sidekiq['queue_groups'] = [
-     "elastic_indexer",
+     "elastic_commit_indexer",
      "*"
    ]
    ```

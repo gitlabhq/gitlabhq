@@ -120,8 +120,6 @@
   - 1
 - - elastic_full_index
   - 1
-- - elastic_indexer
-  - 1
 - - elastic_indexing_control
   - 1
 - - elastic_namespace_indexer

@@ -25,6 +25,8 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
     }
   end
 
+  let_it_be(:runner) { create(:ci_runner, :online) }
+
   before do
     stub_application_setting(auto_devops_enabled: false)
     stub_ci_pipeline_yaml_file(YAML.dump(config))

@@ -30,7 +30,8 @@ module Gitlab
             reached_max_descendant_pipelines_depth: 'reached maximum depth of child pipelines',
             project_deleted: 'pipeline project was deleted',
             user_blocked: 'pipeline user was blocked',
-            ci_quota_exceeded: 'no more CI minutes available'
+            ci_quota_exceeded: 'no more CI minutes available',
+            no_matching_runner: 'no matching runner available'
           }.freeze
 
           private_constant :REASONS

@@ -9130,7 +9130,7 @@ ALTER SEQUENCE analytics_devops_adoption_segments_id_seq OWNED BY analytics_devo
 
 CREATE TABLE analytics_devops_adoption_snapshots (
     id bigint NOT NULL,
-    segment_id bigint NOT NULL,
+    segment_id bigint,
     recorded_at timestamp with time zone NOT NULL,
     issue_opened boolean NOT NULL,
     merge_request_opened boolean NOT NULL,
@@ -9142,7 +9142,8 @@ CREATE TABLE analytics_devops_adoption_snapshots (
     end_time timestamp with time zone NOT NULL,
     total_projects_count integer,
     code_owners_used_count integer,
-    namespace_id integer
+    namespace_id integer,
+    CONSTRAINT check_3f472de131 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE analytics_devops_adoption_snapshots_id_seq

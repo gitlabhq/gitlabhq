@@ -4512,4 +4512,17 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         .not_to exceed_query_limit(control_count)
     end
   end
+
+  describe '#build_matchers' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:builds) { create_list(:ci_build, 2, pipeline: pipeline, project: pipeline.project) }
+
+    subject(:matchers) { pipeline.build_matchers }
+
+    it 'returns build matchers' do
+      expect(matchers.size).to eq(1)
+      expect(matchers).to all be_a(Gitlab::Ci::Matching::BuildMatcher)
+      expect(matchers.first.build_ids).to match_array(builds.map(&:id))
+    end
+  end
 end

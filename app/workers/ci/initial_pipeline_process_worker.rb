@@ -15,7 +15,7 @@ module Ci
 
     def perform(pipeline_id)
       Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
-        Ci::ProcessPipelineService
+        Ci::PipelineCreation::StartPipelineService
           .new(pipeline)
           .execute
       end

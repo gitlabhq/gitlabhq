@@ -23334,6 +23334,9 @@ msgstr ""
 msgid "Otherwise, click the link below to complete the process:"
 msgstr ""
 
+msgid "Our team has been notified. Please try again."
+msgstr ""
+
 msgid "Out-of-compliance with this project's policies and should be removed"
 msgstr ""
 
@@ -36375,9 +36378,6 @@ msgid "We detected potential spam in the %{humanized_resource_name}. Please solv
 msgstr ""
 
 msgid "We don't have enough data to show this stage."
-msgstr ""
-
-msgid "We encountered an error and our team has been notified. Please try again."
 msgstr ""
 
 msgid "We have found the following errors:"

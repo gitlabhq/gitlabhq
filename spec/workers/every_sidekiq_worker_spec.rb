@@ -212,7 +212,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'ElasticCommitIndexerWorker' => 2,
         'ElasticDeleteProjectWorker' => 2,
         'ElasticFullIndexWorker' => 2,
-        'ElasticIndexerWorker' => 2,
         'ElasticIndexingControlWorker' => 3,
         'ElasticNamespaceIndexerWorker' => 2,
         'ElasticNamespaceRolloutWorker' => 2,

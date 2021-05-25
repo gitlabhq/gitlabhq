@@ -622,7 +622,7 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
 
    This enqueues a Sidekiq job for each project that needs to be indexed.
    You can view the jobs in **Admin Area > Monitoring > Background Jobs > Queues Tab**
-   and click `elastic_indexer`, or you can query indexing status using a Rake task:
+   and click `elastic_commit_indexer`, or you can query indexing status using a Rake task:
 
    ```shell
    # Omnibus installations

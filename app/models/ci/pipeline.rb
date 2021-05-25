@@ -1246,6 +1246,10 @@ module Ci
       end
     end
 
+    def build_matchers
+      self.builds.build_matchers(project)
+    end
+
     private
 
     def add_message(severity, content)
