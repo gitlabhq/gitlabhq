@@ -278,8 +278,9 @@ RSpec.describe 'Merge request > User creates image diff notes', :js do
   end
 
   def create_image_diff_note
-    expand_text = 'Click to expand it.'
-    page.all('a', text: expand_text, wait: false).each do |element|
+    wait_for_all_requests
+
+    page.all('a', text: 'Click to expand it.', wait: false).each do |element|
       element.click
     end
 

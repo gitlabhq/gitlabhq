@@ -91,6 +91,7 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
         cluster: {
           name: cluster_name,
           initial_node_count: cluster_size,
+          initial_cluster_version: '1.18',
           node_config: {
             machine_type: machine_type,
             oauth_scopes: [

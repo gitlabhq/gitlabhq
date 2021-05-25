@@ -194,8 +194,10 @@ NOTE:
 For a detailed flow diagram, see the [RFC specification](https://tools.ietf.org/html/rfc6749#section-4.2).
 
 WARNING:
-The Implicit grant flow is inherently insecure. The IETF plans to remove it in
-[OAuth 2.1](https://oauth.net/2.1/).
+Implicit grant flow is inherently insecure and the IETF has removed it in [OAuth 2.1](https://oauth.net/2.1/).
+For this reason, [support for it is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/288516).
+In GitLab 14.0, new applications can't be created using it. In GitLab 14.4, support for it is
+scheduled to be removed for existing applications.
 
 We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce) instead. If you choose to use Implicit flow, be sure to verify the
 `application id` (or `client_id`) associated with the access token before granting

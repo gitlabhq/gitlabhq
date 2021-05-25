@@ -40,7 +40,7 @@ module Gitlab
       def filter_signature_attachments(message)
         attachments = message.attachments
         content_type = normalize_mime(message.content_type)
-        protocol = normalize_mime(message.content_type_parameters[:protocol])
+        protocol = normalize_mime(message.content_type_parameters&.fetch(:protocol, nil))
 
         if content_type == 'multipart/signed' && protocol
           attachments.delete_if { |attachment| protocol == normalize_mime(attachment.content_type) }

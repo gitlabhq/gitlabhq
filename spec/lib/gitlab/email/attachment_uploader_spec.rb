@@ -46,5 +46,15 @@ RSpec.describe Gitlab::Email::AttachmentUploader do
         expect(image_link[:url]).to include('gitlab_logo.png')
       end
     end
+
+    context 'with a message with no content type' do
+      let(:message_raw) { fixture_file("emails/no_content_type.eml") }
+
+      it 'uploads all attachments except the signature' do
+        links = described_class.new(message).execute(upload_parent: project, uploader_class: FileUploader)
+
+        expect(links).to eq([])
+      end
+    end
   end
 end

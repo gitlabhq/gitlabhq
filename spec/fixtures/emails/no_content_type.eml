@@ -1,0 +1,18 @@
+Return-path: <frank@example.org>
+Envelope-to: gitlab+gitlab-instance-administrators-9a72b788-code-hello-world-php-2-issue-@qyber.black
+Delivery-date: Sun, 23 May 2021 10:28:57 +0100
+Received: from example.plus.com ([212.159.19.195] helo=nut.example.org)
+        by se.example.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <frank@example.org>)
+        id 1lkkPp-009OFG-9z
+        for gitlab+gitlab-instance-administrators-9a72b788-code-hello-world-php-2-issue-@qyber.black; Sun, 23 May 2021 10:28:57 +0100
+Received: ***REMOVED***
+To: <gitlab+gitlab-instance-administrators-9a72b788-code-hello-world-php-2-issue-@qyber.black>
+X-Mailer: mail (GNU Mailutils 3.10)
+Message-Id: <E1lkkPn-00DuvG-Rf@set>
+From: Frank C Example <frank@example.org>
+Date: Sun, 23 May 2021 10:28:55 +0100
+Subject: Testing Service Desk E-Mail
+
+Test.
