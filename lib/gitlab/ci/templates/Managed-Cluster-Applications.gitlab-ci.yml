@@ -9,8 +9,8 @@ apply:
   script:
     - gitlab-managed-apps /usr/local/share/gitlab-managed-apps/helmfile.yaml
   only:
-    refs:
-      - master
+    variables:
+      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   artifacts:
     reports:
       cluster_applications: gl-cluster-applications.json

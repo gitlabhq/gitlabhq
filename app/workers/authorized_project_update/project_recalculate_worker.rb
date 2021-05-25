@@ -7,7 +7,7 @@ module AuthorizedProjectUpdate
 
     feature_category :authentication_and_authorization
     urgency :high
-    queue_namespace :authorized_projects
+    queue_namespace :authorized_project_update
 
     deduplicate :until_executing, including_scheduled: true
     idempotent!

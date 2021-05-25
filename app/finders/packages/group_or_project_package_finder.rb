@@ -26,9 +26,9 @@ module Packages
 
     def base
       if project?
-        packages_for_project(@project_or_group)
+        project_packages
       elsif group?
-        packages_visible_to_user(@current_user, within_group: @project_or_group)
+        group_packages
       else
         ::Packages::Package.none
       end
@@ -40,6 +40,14 @@ module Packages
 
     def group?
       @project_or_group.is_a?(::Group)
+    end
+
+    def project_packages
+      packages_for_project(@project_or_group)
+    end
+
+    def group_packages
+      packages_visible_to_user(@current_user, within_group: @project_or_group)
     end
   end
 end

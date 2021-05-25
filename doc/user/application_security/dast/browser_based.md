@@ -44,7 +44,7 @@ dast:
     DAST_BROWSER_SCAN: "true"
 ```
 
-### Available variables
+### Available CI/CD variables
 
 The browser-based crawler can be configured using CI/CD variables.
 
@@ -72,7 +72,7 @@ The browser-based crawler can be configured using CI/CD variables.
 | `DAST_BROWSER_AUTH_VERIFICATION_SELECTOR`   | selector | `css:.user-photo`                | Verifies successful authentication by checking for presence of a selector once the login form has been submitted. |
 | `DAST_BROWSER_AUTH_VERIFICATION_LOGIN_FORM` | boolean  | `true`                            | Verifies successful authentication by checking for the lack of a login form once the login form has been submitted. |
 
-The [DAST variables](index.md#available-variables) `SECURE_ANALYZERS_PREFIX`, `DAST_FULL_SCAN_ENABLED`, `DAST_AUTO_UPDATE_ADDONS`, `DAST_EXCLUDE_RULES`, `DAST_REQUEST_HEADERS`, `DAST_HTML_REPORT`, `DAST_MARKDOWN_REPORT`, `DAST_XML_REPORT`,
+The [DAST variables](index.md#available-cicd-variables) `SECURE_ANALYZERS_PREFIX`, `DAST_FULL_SCAN_ENABLED`, `DAST_AUTO_UPDATE_ADDONS`, `DAST_EXCLUDE_RULES`, `DAST_REQUEST_HEADERS`, `DAST_HTML_REPORT`, `DAST_MARKDOWN_REPORT`, `DAST_XML_REPORT`,
 `DAST_INCLUDE_ALPHA_VULNERABILITIES`, `DAST_PATHS_FILE`, `DAST_PATHS`, `DAST_ZAP_CLI_OPTIONS`, and `DAST_ZAP_LOG_CONFIGURATION` are also compatible with browser-based crawler scans.   
 
 #### Selectors
@@ -284,9 +284,9 @@ This can come at a cost of increased scan time.
 
 You can manage the trade-off between coverage and scan time with the following measures:
 
-- Limit the number of actions executed by the browser with the [variable](#available-variables) `DAST_BROWSER_MAX_ACTIONS`. The default is `10,000`.
-- Limit the page depth that the browser-based crawler will check coverage on with the [variable](#available-variables) `DAST_BROWSER_MAX_DEPTH`. The crawler uses a breadth-first search strategy, so pages with smaller depth are crawled first. The default is `10`.
-- Vertically scaling the runner and using a higher number of browsers with [variable](#available-variables) `DAST_BROWSER_NUMBER_OF_BROWSERS`. The default is `3`.
+- Limit the number of actions executed by the browser with the [variable](#available-cicd-variables) `DAST_BROWSER_MAX_ACTIONS`. The default is `10,000`.
+- Limit the page depth that the browser-based crawler will check coverage on with the [variable](#available-cicd-variables) `DAST_BROWSER_MAX_DEPTH`. The crawler uses a breadth-first search strategy, so pages with smaller depth are crawled first. The default is `10`.
+- Vertically scaling the runner and using a higher number of browsers with [variable](#available-cicd-variables) `DAST_BROWSER_NUMBER_OF_BROWSERS`. The default is `3`.
 
 ## Debugging scans using logging
 

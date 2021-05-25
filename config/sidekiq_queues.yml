@@ -45,8 +45,6 @@
 - - authorized_project_update
   - 1
 - - authorized_projects
-  - 1
-- - authorized_projects
   - 2
 - - auto_devops
   - 2

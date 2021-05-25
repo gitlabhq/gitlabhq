@@ -112,7 +112,7 @@ always take the latest dependency scanning artifact available.
 
 ### Customizing the dependency scanning settings
 
-The dependency scanning settings can be changed through [CI/CD variables](#available-variables) by using the
+The dependency scanning settings can be changed through [CI/CD variables](#available-cicd-variables) by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 For example:
 
@@ -157,7 +157,7 @@ gemnasium-dependency_scanning:
   dependencies: ["build"]
 ```
 
-### Available variables
+### Available CI/CD variables
 
 Dependency scanning can be [configured](#customizing-the-dependency-scanning-settings)
 using environment variables.

@@ -297,8 +297,41 @@ module Trigger
   end
 
   class DatabaseTesting < Base
+    IDENTIFIABLE_NOTE_TAG = 'gitlab-org/database-team/gitlab-com-database-testing:identifiable-note'
+
     def self.access_token
       ENV['GITLABCOM_DATABASE_TESTING_ACCESS_TOKEN']
+    end
+
+    def invoke!(post_comment: false, downstream_job_name: nil)
+      pipeline = super
+      gitlab = gitlab_client(:upstream)
+      project_path = base_variables['TOP_UPSTREAM_SOURCE_PROJECT']
+      merge_request_id = base_variables['TOP_UPSTREAM_MERGE_REQUEST_IID']
+      comment = "<!-- #{IDENTIFIABLE_NOTE_TAG} --> \nStarted database testing [pipeline](https://ops.gitlab.net/#{downstream_project_path}/-/pipelines/#{pipeline.id}) " \
+                "(limited access). This comment will be updated once the pipeline has finished running."
+
+      # Look for a note to update
+      db_testing_notes = gitlab.merge_request_notes(project_path, merge_request_id).auto_paginate.select do |note|
+        note.body.include?(IDENTIFIABLE_NOTE_TAG)
+      end
+
+      note = db_testing_notes.max_by { |note| Time.parse(note.created_at) }
+
+      if note && note.type != 'DiscussionNote'
+        # The latest note has not led to a discussion. Update it.
+        gitlab.edit_merge_request_note(project_path, merge_request_id, note.id, comment)
+
+        puts "Updated comment:\n"
+      else
+        # This is the first note or the latest note has been discussed on the MR.
+        # Don't update, create new note instead.
+        note = gitlab.create_merge_request_note(project_path, merge_request_id, comment)
+
+        puts "Posted comment to:\n"
+      end
+
+      puts "https://gitlab.com/#{project_path}/-/merge_requests/#{merge_request_id}#note_#{note.id}"
     end
 
     private
@@ -356,6 +389,8 @@ module Trigger
     INTERVAL = 60 # seconds
     MAX_DURATION = 3600 * 3 # 3 hours
 
+    attr_reader :id
+
     def self.unscoped_class_name
       name.split('::').last
     end
@@ -405,7 +440,7 @@ module Trigger
 
     private
 
-    attr_reader :project, :id, :gitlab_client, :start_time
+    attr_reader :project, :gitlab_client, :start_time
   end
 
   Job = Class.new(Pipeline)

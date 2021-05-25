@@ -13,7 +13,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Checks if CI/CD YAML configuration is valid. This endpoint validates basic CI/CD
 configuration syntax. It doesn't have any namespace specific context.
 
-Access to this endpoint requires authentication.
+Access to this endpoint does not require authentication when the instance
+[allows new sign ups](../user/admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups)
+and:
+
+- Does not have an [allowlist or denylist](../user/admin_area/settings/sign_up_restrictions.md#allow-or-deny-sign-ups-using-specific-email-domains).
+- Does not [require administrator approval for new sign ups](../user/admin_area/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups).
+- Does not have additional [sign up
+  restrictions](../user/admin_area/settings/sign_up_restrictions.html#sign-up-restrictions).
+
+Otherwise, authentication is required.
 
 ```plaintext
 POST /ci/lint

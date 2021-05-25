@@ -40,10 +40,21 @@ RSpec.describe API::DebianProjectPackages do
       let(:method) { :put }
       let(:url) { "/projects/#{container.id}/packages/debian/#{file_name}" }
 
-      it_behaves_like 'Debian repository write endpoint', 'upload request', :created
+      context 'with a deb' do
+        let(:file_name) { 'libsample0_1.2.3~alpha2_amd64.deb' }
+
+        it_behaves_like 'Debian repository write endpoint', 'upload request', :created
+      end
+
+      context 'with a changes file' do
+        let(:file_name) { 'sample_1.2.3~alpha2_amd64.changes' }
+
+        it_behaves_like 'Debian repository write endpoint', 'upload request', :created
+      end
     end
 
     describe 'PUT projects/:id/packages/debian/:file_name/authorize' do
+      let(:file_name) { 'libsample0_1.2.3~alpha2_amd64.deb' }
       let(:method) { :put }
       let(:url) { "/projects/#{container.id}/packages/debian/#{file_name}/authorize" }
 

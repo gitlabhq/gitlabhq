@@ -375,6 +375,23 @@ RSpec.describe ProjectsController do
       end
     end
 
+    context 'when project is moved and git format is requested' do
+      let(:old_path) { project.path + 'old' }
+
+      before do
+        project.redirect_routes.create!(path: "#{project.namespace.full_path}/#{old_path}")
+
+        project.add_developer(user)
+        sign_in(user)
+      end
+
+      it 'redirects to new project path' do
+        get :show, params: { namespace_id: project.namespace, id: old_path }, format: :git
+
+        expect(response).to redirect_to(project_path(project, format: :git))
+      end
+    end
+
     context 'when the project is forked and has a repository', :request_store do
       let(:public_project) { create(:project, :public, :repository) }
       let(:other_user) { create(:user) }

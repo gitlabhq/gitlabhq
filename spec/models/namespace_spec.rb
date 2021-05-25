@@ -1042,17 +1042,6 @@ RSpec.describe Namespace do
     end
   end
 
-  describe '#all_pipelines' do
-    let(:group) { create(:group) }
-    let(:child) { create(:group, parent: group) }
-    let!(:project1) { create(:project_empty_repo, namespace: group) }
-    let!(:project2) { create(:project_empty_repo, namespace: child) }
-    let!(:pipeline1) { create(:ci_empty_pipeline, project: project1) }
-    let!(:pipeline2) { create(:ci_empty_pipeline, project: project2) }
-
-    it { expect(group.all_pipelines.to_a).to match_array([pipeline1, pipeline2]) }
-  end
-
   describe '#share_with_group_lock with subgroups' do
     context 'when creating a subgroup' do
       let(:subgroup) { create(:group, parent: root_group )}

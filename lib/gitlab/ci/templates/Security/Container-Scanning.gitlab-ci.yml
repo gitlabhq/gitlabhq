@@ -10,7 +10,8 @@
 # - For auto-remediation, a readable Dockerfile in the root of the project or as defined by the
 #   DOCKERFILE_PATH variable.
 #
-# For more information, see https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-variables
+# Configure container scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-variables
 
 variables:
   # Setting this variable will affect all Security templates (e.g.: SAST, Dependency Scanning)

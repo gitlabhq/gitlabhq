@@ -22,6 +22,14 @@ module API
           unauthorized_user_project || not_found!
         end
 
+        def unauthorized_user_group
+          @unauthorized_user_group ||= find_group(params[:id])
+        end
+
+        def unauthorized_user_group!
+          unauthorized_user_group || not_found!
+        end
+
         def authorized_user_project
           @authorized_user_project ||= authorized_project_find!
         end

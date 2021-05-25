@@ -1,8 +1,7 @@
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/
 #
-# Configure the scanning tool through the environment variables.
-# List of the variables: https://gitlab.com/gitlab-org/security-products/dependency-scanning#settings
-# How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
+# Configure dependency scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index.html#available-variables
 
 variables:
   # Setting this variable will affect all Security templates

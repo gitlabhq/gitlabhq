@@ -13,9 +13,8 @@
 
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast/
 
-# Configure the scanning tool through the environment variables.
-# List of the variables: https://docs.gitlab.com/ee/user/application_security/dast/#available-variables
-# How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
+# Configure DAST with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/dast/#available-variables
 
 variables:
   DAST_VERSION: 1

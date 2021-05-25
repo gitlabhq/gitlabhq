@@ -636,6 +636,12 @@ class Project < ApplicationRecord
   scope :with_tracing_enabled, -> { joins(:tracing_setting) }
   scope :with_enabled_error_tracking, -> { joins(:error_tracking_setting).where(project_error_tracking_settings: { enabled: true }) }
 
+  scope :with_service_desk_key, -> (key) do
+    # project_key is not indexed for now
+    # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24063#note_282435524 for details
+    joins(:service_desk_setting).where('service_desk_settings.project_key' => key)
+  end
+
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
@@ -836,12 +842,6 @@ class Project < ApplicationRecord
       with_merge_requests_enabled = with_merge_requests_available_for_user(user).select(:id)
 
       from_union([with_issues_enabled, with_merge_requests_enabled]).select(:id)
-    end
-
-    def find_by_service_desk_project_key(key)
-      # project_key is not indexed for now
-      # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24063#note_282435524 for details
-      joins(:service_desk_setting).find_by('service_desk_settings.project_key' => key)
     end
   end
 

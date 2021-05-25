@@ -102,7 +102,7 @@ How you enable container scanning depends on your GitLab version:
   `container_scanning` job's [`before_script`](../../../ci/yaml/README.md#before_script)
   and [`after_script`](../../../ci/yaml/README.md#after_script)
   blocks may not work with the new version. To roll back to the previous [`alpine:3.11.3`](https://hub.docker.com/_/alpine)-based
-  Docker image, you can specify the major version through the [`CS_MAJOR_VERSION`](#available-variables)
+  Docker image, you can specify the major version through the [`CS_MAJOR_VERSION`](#available-cicd-variables)
   variable.
 - GitLab 13.9 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322656) integration with
   [Trivy](https://github.com/aquasecurity/trivy) by upgrading `CS_MAJOR_VERSION` from `3` to `4`.
@@ -159,7 +159,7 @@ include:
 There may be cases where you want to customize how GitLab scans your containers. For example, you
 may want to enable more verbose output, access a Docker registry that requires
 authentication, and more. To change such settings, use the [`variables`](../../../ci/yaml/README.md#variables)
-parameter in your `.gitlab-ci.yml` to set [CI/CD variables](#available-variables).
+parameter in your `.gitlab-ci.yml` to set [CI/CD variables](#available-cicd-variables).
 The variables you set in your `.gitlab-ci.yml` overwrite those in
 `Container-Scanning.gitlab-ci.yml`.
 
@@ -201,7 +201,7 @@ variables:
      make a change to this heading, make sure to update the documentation URLs used in the"
      container scanning tool (https://gitlab.com/gitlab-org/security-products/analyzers/klar)" -->
 
-#### Available variables
+#### Available CI/CD variables
 
 You can [configure](#customizing-the-container-scanning-settings) both analyzers by using the following CI/CD variables:
 
@@ -289,7 +289,7 @@ taking the following steps:
      that instead of overriding this variable, you can use `CS_MAJOR_VERSION`.
 
 1. Remove any variables that are only applicable to Clair. For a complete list of these variables,
-   see the [available variables](#available-variables).
+   see the [available variables](#available-cicd-variables).
 1. Make any [necessary customizations](#customizing-the-container-scanning-settings) to the
    `Trivy` scanner. We strongly recommended that you minimize customizations, as they
    might require changes in future GitLab major releases.
@@ -711,7 +711,7 @@ Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.
 
 To enable remediation support, the scanning tool _must_ have access to the `Dockerfile` specified by
-the [`DOCKERFILE_PATH`](#available-variables) CI/CD variable. To ensure that the scanning tool
+the [`DOCKERFILE_PATH`](#available-cicd-variables) CI/CD variable. To ensure that the scanning tool
 has access to this
 file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/runners/README.md#git-strategy) in
 your `.gitlab-ci.yml` file by following the instructions described in this document's

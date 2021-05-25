@@ -202,7 +202,7 @@ page:
 
 ### Customizing the SAST settings
 
-The SAST settings can be changed through [CI/CD variables](#available-variables)
+The SAST settings can be changed through [CI/CD variables](#available-cicd-variables)
 by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 In the following example, we include the SAST template and at the same time we
@@ -411,7 +411,7 @@ the vendored directory. This configuration can vary per analyzer but in the case
 can use `MAVEN_REPO_PATH`. See
 [Analyzer settings](#analyzer-settings) for the complete list of available options.
 
-### Available variables
+### Available CI/CD variables
 
 SAST can be [configured](#customizing-the-sast-settings) using CI/CD variables.
 

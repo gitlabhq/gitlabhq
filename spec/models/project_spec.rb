@@ -1584,19 +1584,20 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '.find_by_service_desk_project_key' do
-    it 'returns the correct project' do
+  describe '.with_service_desk_key' do
+    it 'returns projects with given key' do
       project1 = create(:project)
       project2 = create(:project)
       create(:service_desk_setting, project: project1, project_key: 'key1')
-      create(:service_desk_setting, project: project2, project_key: 'key2')
+      create(:service_desk_setting, project: project2, project_key: 'key1')
+      create(:service_desk_setting, project_key: 'key2')
+      create(:service_desk_setting)
 
-      expect(Project.find_by_service_desk_project_key('key1')).to eq(project1)
-      expect(Project.find_by_service_desk_project_key('key2')).to eq(project2)
+      expect(Project.with_service_desk_key('key1')).to contain_exactly(project1, project2)
     end
 
-    it 'returns nil if there is no project with the key' do
-      expect(Project.find_by_service_desk_project_key('some_key')).to be_nil
+    it 'returns empty if there is no project with the key' do
+      expect(Project.with_service_desk_key('key1')).to be_empty
     end
   end
 

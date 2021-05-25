@@ -48,7 +48,7 @@ GitLab, but users can also integrate their own **custom images**.
 For an analyzer to be considered Generally Available, it is expected to minimally
 support the following features:
 
-- [Customizable configuration](index.md#available-variables)
+- [Customizable configuration](index.md#available-cicd-variables)
 - [Customizable rulesets](index.md#customize-rulesets)
 - [Scan projects](index.md#supported-languages-and-frameworks)
 - [Multi-project support](index.md#multi-project-support)

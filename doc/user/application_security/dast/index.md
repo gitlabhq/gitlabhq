@@ -270,7 +270,7 @@ authorization credentials. By default, the following headers are masked:
 - `Set-Cookie` (values only).
 - `Cookie` (values only).
 
-Using the [`DAST_MASK_HTTP_HEADERS` CI/CD variable](#available-variables), you can list the
+Using the [`DAST_MASK_HTTP_HEADERS` CI/CD variable](#available-cicd-variables), you can list the
 headers whose values you want masked. For details on how to mask headers, see
 [Customizing the DAST settings](#customizing-the-dast-settings).
 
@@ -348,7 +348,7 @@ and potentially damage them. You could even take down your production environmen
 For that reason, you should use domain validation.
 
 Domain validation is not required by default. It can be required by setting the
-[CI/CD variable](#available-variables) `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` to `"true"`.
+[CI/CD variable](#available-cicd-variables) `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` to `"true"`.
 
 ```yaml
 include:
@@ -661,7 +661,7 @@ is no longer supported. When overriding the template, you must use [`rules`](../
 
 The DAST settings can be changed through CI/CD variables by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
-These variables are documented in [available variables](#available-variables).
+These variables are documented in [available variables](#available-cicd-variables).
 
 For example:
 
@@ -677,7 +677,7 @@ variables:
 Because the template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
 configuration, the last mention of the variable takes precedence.
 
-### Available variables
+### Available CI/CD variables
 
 DAST can be [configured](#customizing-the-dast-settings) using CI/CD variables.
 

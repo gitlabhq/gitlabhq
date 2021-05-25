@@ -65,10 +65,9 @@ module Gitlab
         def project_from_key
           return unless match = service_desk_key.match(PROJECT_KEY_PATTERN)
 
-          project = Project.find_by_service_desk_project_key(match[:key])
-          return unless valid_project_key?(project, match[:slug])
-
-          project
+          Project.with_service_desk_key(match[:key]).find do |project|
+            valid_project_key?(project, match[:slug])
+          end
         end
 
         def valid_project_key?(project, slug)

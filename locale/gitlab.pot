@@ -14726,6 +14726,9 @@ msgstr ""
 msgid "Geo|Allowed Geo IP should contain valid IP addresses"
 msgstr ""
 
+msgid "Geo|Checksummed"
+msgstr ""
+
 msgid "Geo|Connection timeout can't be blank"
 msgstr ""
 
@@ -14828,6 +14831,9 @@ msgstr ""
 msgid "Geo|Next sync scheduled at"
 msgstr ""
 
+msgid "Geo|No available replication slots"
+msgstr ""
+
 msgid "Geo|Node name can't be blank"
 msgstr ""
 
@@ -14840,10 +14846,13 @@ msgstr ""
 msgid "Geo|Not synced yet"
 msgstr ""
 
+msgid "Geo|Nothing to checksum"
+msgstr ""
+
 msgid "Geo|Nothing to synchronize"
 msgstr ""
 
-msgid "Geo|Number of %{title}"
+msgid "Geo|Nothing to verify"
 msgstr ""
 
 msgid "Geo|Offline"
@@ -15033,6 +15042,9 @@ msgid "Geo|Verification information"
 msgstr ""
 
 msgid "Geo|Verification status"
+msgstr ""
+
+msgid "Geo|Verified"
 msgstr ""
 
 msgid "Geo|Waiting for scheduler"
@@ -34915,6 +34927,9 @@ msgstr ""
 msgid "Until"
 msgstr ""
 
+msgid "Unused"
+msgstr ""
+
 msgid "Unused, previous indices: %{index_names} will be deleted after %{time} automatically."
 msgstr ""
 
@@ -35396,6 +35411,9 @@ msgid "Use your global notification setting"
 msgstr ""
 
 msgid "Use your smart card to authenticate with the LDAP server."
+msgstr ""
+
+msgid "Used"
 msgstr ""
 
 msgid "Used by members to sign in to your group in GitLab"

@@ -160,7 +160,7 @@ that you can review and merge to complete the configuration.
 
 ### Customizing settings
 
-The Secret Detection scan settings can be changed through [CI/CD variables](#available-variables)
+The Secret Detection scan settings can be changed through [CI/CD variables](#available-cicd-variables)
 by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 
@@ -196,7 +196,7 @@ secret_detection:
 Because the template is [evaluated before](../../../ci/yaml/README.md#include)
 the pipeline configuration, the last mention of the variable takes precedence.
 
-#### Available variables
+#### Available CI/CD variables
 
 Secret Detection can be customized by defining available CI/CD variables:
 
@@ -298,7 +298,7 @@ want to perform a full secret scan. Running a secret scan on the full history ca
 especially for larger repositories with lengthy Git histories. We recommend not setting this CI/CD variable
 as part of your normal job definition.
 
-A new configuration variable ([`SECRET_DETECTION_HISTORIC_SCAN`](#available-variables))
+A new configuration variable ([`SECRET_DETECTION_HISTORIC_SCAN`](#available-cicd-variables))
 can be set to change the behavior of the GitLab Secret Detection scan to run on the entire Git history of a repository.
 
 We have created a [short video walkthrough](https://youtu.be/wDtc_K00Y0A) showcasing how you can perform a full history secret scan.

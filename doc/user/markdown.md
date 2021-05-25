@@ -1395,26 +1395,32 @@ while the equation for the theory of relativity is E = mc<sup>2</sup>.
 Tables are not part of the core Markdown spec, but they are part of GitLab Flavored Markdown.
 
 1. The first line contains the headers, separated by "pipes" (`|`).
-1. The second line separates the headers from the cells, and must contain three or more dashes.
+1. The second line separates the headers from the cells.
+   - The cells can contain only empty spaces, hyphens, and
+     (optionally) colons for horizontal alignment.
+   - Each cell must contain at least one hyphen, but adding more hyphens to a
+     cell does not change the cell's rendering.
+   - Any content other than hyphens, whitespace, or colons is not allowed
 1. The third, and any following lines, contain the cell values.
    - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines,
      but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
    - The cell sizes **don't** have to match each other. They are flexible, but must be separated
      by pipes (`|`).
    - You **can** have blank cells.
+1. Column widths are calculated dynamically based on the content of the cells.
 
 Example:
 
 ```markdown
 | header 1 | header 2 | header 3 |
-| ---      |  ------  |----------|
+| ---      | ---      | ---      |
 | cell 1   | cell 2   | cell 3   |
 | cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
 | cell 7   |          | cell 9   |
 ```
 
 | header 1 | header 2 | header 3 |
-| ---      |  ------  |----------|
+| ---      | ---      | ---      |
 | cell 1   | cell 2   | cell 3   |
 | cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
 | cell 7   |          | cell 9   |
@@ -1423,16 +1429,16 @@ Additionally, you can choose the alignment of text in columns by adding colons (
 to the sides of the "dash" lines in the second row. This affects every cell in the column:
 
 ```markdown
-| Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
-| :---         | :---:    | ---:          | :----------- | :------: | ------------: |
-| Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
-| Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
+| Left Aligned | Centered | Right Aligned |
+| :---         | :---:    | ---:          |
+| Cell 1       | Cell 2   | Cell 3        |
+| Cell 4       | Cell 5   | Cell 6        |
 ```
 
-| Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
-| :---         | :---:    | ---:          | :----------- | :------: | ------------: |
-| Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
-| Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
+| Left Aligned | Centered | Right Aligned |
+| :---         | :---:    | ---:          |
+| Cell 1       | Cell 2   | Cell 3        |
+| Cell 4       | Cell 5   | Cell 6        |
 
 [In GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#tables),
 the headers are always left-aligned in Chrome and Firefox, and centered in Safari.
@@ -1442,13 +1448,13 @@ use `<br>` tags to force a cell to have multiple lines:
 
 ```markdown
 | Name | Details |
-|------|---------|
+| ---  | ---     |
 | Item1 | This is on one line |
 | Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
 ```
 
 | Name | Details |
-|------|---------|
+| ---  | ---     |
 | Item1 | This is on one line |
 | Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
 
@@ -1457,7 +1463,7 @@ but they do not render properly on `docs.gitlab.com`:
 
 ```markdown
 | header 1 | header 2 |
-|----------|----------|
+| ---      | ---      |
 | cell 1   | cell 2   |
 | cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
 ```

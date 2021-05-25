@@ -357,27 +357,46 @@ describe('Flash', () => {
   });
 
   describe('removeFlashClickListener', () => {
-    beforeEach(() => {
-      document.body.innerHTML += `
-        <div class="flash-container">
-          <div class="flash">
-            <div class="close-icon js-close-icon"></div>
+    let el;
+
+    describe('with close icon', () => {
+      beforeEach(() => {
+        el = document.createElement('div');
+        el.innerHTML = `
+          <div class="flash-container">
+            <div class="flash">
+              <div class="close-icon js-close-icon"></div>
+            </div>
           </div>
-        </div>
-      `;
+        `;
+      });
+
+      it('removes global flash on click', (done) => {
+        removeFlashClickListener(el, false);
+
+        el.querySelector('.js-close-icon').click();
+
+        setImmediate(() => {
+          expect(document.querySelector('.flash')).toBeNull();
+
+          done();
+        });
+      });
     });
 
-    it('removes global flash on click', (done) => {
-      const flashEl = document.querySelector('.flash');
+    describe('without close icon', () => {
+      beforeEach(() => {
+        el = document.createElement('div');
+        el.innerHTML = `
+          <div class="flash-container">
+            <div class="flash">
+            </div>
+          </div>
+        `;
+      });
 
-      removeFlashClickListener(flashEl, false);
-
-      flashEl.querySelector('.js-close-icon').click();
-
-      setImmediate(() => {
-        expect(document.querySelector('.flash')).toBeNull();
-
-        done();
+      it('does not throw', () => {
+        expect(() => removeFlashClickListener(el, false)).not.toThrow();
       });
     });
   });

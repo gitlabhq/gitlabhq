@@ -11,7 +11,11 @@ module API
         optional :include_merged_yaml, type: Boolean, desc: 'Whether or not to include merged CI config yaml in the response'
       end
       post '/lint' do
-        unauthorized! if Gitlab::CurrentSettings.signup_disabled? && current_user.nil?
+        if Feature.enabled?(:security_ci_lint_authorization)
+          unauthorized! if (Gitlab::CurrentSettings.signup_disabled? || Gitlab::CurrentSettings.signup_limited?) && current_user.nil?
+        else
+          unauthorized! if Gitlab::CurrentSettings.signup_disabled? && current_user.nil?
+        end
 
         result = Gitlab::Ci::YamlProcessor.new(params[:content], user: current_user).execute
 

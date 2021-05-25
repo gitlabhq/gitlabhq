@@ -80,18 +80,22 @@ describe('Number Utils', () => {
   describe('numberToHumanSize', () => {
     it('should return bytes', () => {
       expect(numberToHumanSize(654)).toEqual('654 bytes');
+      expect(numberToHumanSize(-654)).toEqual('-654 bytes');
     });
 
     it('should return KiB', () => {
       expect(numberToHumanSize(1079)).toEqual('1.05 KiB');
+      expect(numberToHumanSize(-1079)).toEqual('-1.05 KiB');
     });
 
     it('should return MiB', () => {
       expect(numberToHumanSize(10485764)).toEqual('10.00 MiB');
+      expect(numberToHumanSize(-10485764)).toEqual('-10.00 MiB');
     });
 
     it('should return GiB', () => {
       expect(numberToHumanSize(10737418240)).toEqual('10.00 GiB');
+      expect(numberToHumanSize(-10737418240)).toEqual('-10.00 GiB');
     });
   });
 

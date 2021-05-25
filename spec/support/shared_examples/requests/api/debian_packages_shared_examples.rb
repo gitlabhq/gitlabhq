@@ -107,10 +107,19 @@ RSpec.shared_examples 'Debian repository upload request' do |status, body = nil|
 
   if status == :created
     it 'creates package files', :aggregate_failures do
-      pending "Debian package creation not implemented"
+      expect(::Packages::Debian::FindOrCreateIncomingService).to receive(:new).with(container, user).and_call_original
+      expect(::Packages::Debian::CreatePackageFileService).to receive(:new).with(be_a(Packages::Package), be_an(Hash)).and_call_original
+
+      if file_name.end_with? '.changes'
+        expect(::Packages::Debian::ProcessChangesWorker).to receive(:perform_async)
+      else
+        expect(::Packages::Debian::ProcessChangesWorker).not_to receive(:perform_async)
+      end
 
       expect { subject }
           .to change { container.packages.debian.count }.by(1)
+          .and change { container.packages.debian.where(name: 'incoming').count }.by(1)
+          .and change { container.package_files.count }.by(1)
 
       expect(response).to have_gitlab_http_status(status)
       expect(response.media_type).to eq('text/plain')
