@@ -42,7 +42,7 @@ module Security
           # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
           # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
           # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
+          # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
         YAML
       end
     end

@@ -126,7 +126,7 @@ These shortcuts are available when editing a file with the [Web IDE](project/web
 
 ### Repository graph
 
-These shortcuts are available when viewing the project [repository graph](project/repository/index.md#repository-graph)
+These shortcuts are available when viewing the project [repository graph](project/repository/index.md#repository-history-graph)
 page (navigate to **Repository > Graph**):
 
 | Keyboard shortcut                                                  | Description |

@@ -351,7 +351,7 @@ You can transfer groups in the following ways:
 
 When transferring groups, note:
 
-- Changing a group's parent can have unintended side effects. See [Redirects when changing repository paths](../project/repository/index.md#redirects-when-changing-repository-paths).
+- Changing a group's parent can have unintended side effects. See [what happens when a repository path changes](../project/repository/index.md#what-happens-when-a-repository-path-changes).
 - You can only transfer groups to groups you manage.
 - You must update your local repositories to point to the new location.
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.
@@ -361,7 +361,7 @@ When transferring groups, note:
 ## Change a group's path
 
 Changing a group's path (group URL) can have unintended side effects. Read
-[how redirects behave](../project/repository/index.md#redirects-when-changing-repository-paths)
+[how redirects behave](../project/repository/index.md#what-happens-when-a-repository-path-changes)
 before you proceed.
 
 If you are changing the path so it can be claimed by another group or user,

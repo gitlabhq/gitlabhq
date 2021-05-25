@@ -273,7 +273,7 @@ To rename a repository:
 
 Remember that this can have unintended side effects since everyone with the
 old URL can't push or pull. Read more about what happens with the
-[redirects when renaming repositories](../repository/index.md#redirects-when-changing-repository-paths).
+[redirects when renaming repositories](../repository/index.md#what-happens-when-a-repository-path-changes).
 
 #### Transferring an existing project into another namespace
 
@@ -297,7 +297,7 @@ To transfer a project:
 
 Once done, you are redirected to the new project's namespace. At this point,
 read what happens with the
-[redirects from the old project to the new one](../repository/index.md#redirects-when-changing-repository-paths).
+[redirects from the old project to the new one](../repository/index.md#what-happens-when-a-repository-path-changes).
 
 NOTE:
 GitLab administrators can use the administration interface to move any project to any

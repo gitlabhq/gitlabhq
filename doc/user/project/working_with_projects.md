@@ -333,7 +333,7 @@ For public projects, and to members of internal and private projects
 with [permissions to view the project's code](../permissions.md#project-members-permissions):
 
 - The content of a
-  [`README` or an index file](repository/#repository-readme-and-index-files)
+  [`README` or an index file](repository/index.md#readme-and-index-files)
   is displayed (if any), followed by the list of directories in the
   project's repository.
 - If the project doesn't contain either of these files, the
