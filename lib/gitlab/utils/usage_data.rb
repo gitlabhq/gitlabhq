@@ -42,9 +42,6 @@ module Gitlab
       FALLBACK = -1
       HISTOGRAM_FALLBACK = { '-1' => -1 }.freeze
       DISTRIBUTED_HLL_FALLBACK = -2
-      ALL_TIME_TIME_FRAME_NAME = "all"
-      SEVEN_DAYS_TIME_FRAME_NAME = "7d"
-      TWENTY_EIGHT_DAYS_TIME_FRAME_NAME = "28d"
       MAX_BUCKET_SIZE = 100
 
       def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BuildkiteService, :use_clean_rails_memory_store_caching do
+RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
   include StubRequests
 

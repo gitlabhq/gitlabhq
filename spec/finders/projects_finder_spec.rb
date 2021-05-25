@@ -137,13 +137,24 @@ RSpec.describe ProjectsFinder do
         end
       end
 
-      describe 'filter by tags' do
+      describe 'filter by tags (deprecated)' do
         before do
-          public_project.tag_list = 'foo'
+          public_project.topic_list = 'foo'
           public_project.save!
         end
 
         let(:params) { { tag: 'foo' } }
+
+        it { is_expected.to eq([public_project]) }
+      end
+
+      describe 'filter by topics' do
+        before do
+          public_project.topic_list = 'foo'
+          public_project.save!
+        end
+
+        let(:params) { { topic: 'foo' } }
 
         it { is_expected.to eq([public_project]) }
       end

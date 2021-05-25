@@ -778,40 +778,40 @@ module API
           ::Integrations::Assembla,
           ::Integrations::Bamboo,
           ::Integrations::Bugzilla,
+          ::Integrations::Buildkite,
           ::Integrations::Campfire,
           ::Integrations::Confluence,
           ::Integrations::CustomIssueTracker,
           ::Integrations::Datadog,
+          ::Integrations::DroneCi,
           ::Integrations::EmailsOnPush,
           ::Integrations::Ewm,
           ::Integrations::ExternalWiki,
           ::Integrations::Flowdock,
           ::Integrations::Irker,
+          ::Integrations::Jenkins,
           ::Integrations::Jira,
           ::Integrations::Packagist,
           ::Integrations::PipelinesEmail,
           ::Integrations::Pivotaltracker,
           ::Integrations::Redmine,
+          ::Integrations::Teamcity,
           ::Integrations::Youtrack,
-          ::BuildkiteService,
           ::DiscordService,
-          ::DroneCiService,
           ::HangoutsChatService,
-          ::JenkinsService,
           ::MattermostSlashCommandsService,
           ::SlackSlashCommandsService,
           ::PrometheusService,
           ::PushoverService,
           ::SlackService,
           ::MattermostService,
-          ::MicrosoftTeamsService,
-          ::TeamcityService
+          ::MicrosoftTeamsService
         ]
       end
 
       def self.development_service_classes
         [
-          ::MockCiService,
+          ::Integrations::MockCi,
           ::MockMonitoringService
         ]
       end

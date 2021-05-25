@@ -46,35 +46,37 @@
         title: s_('Branches|Compare') do
         = s_('Branches|Compare')
 
-    = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name]
+    = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name], class: 'gl-vertical-align-top'
 
     - if can?(current_user, :push_code, @project)
       - if branch.name == @project.repository.root_ref
         - delete_default_branch_tooltip = s_('Branches|The default branch cannot be deleted')
-        %span.has-tooltip{ title: delete_default_branch_tooltip }
-          %button{ class: "gl-button btn btn-danger disabled", disabled: true, 'aria-label' => delete_default_branch_tooltip }
-            = sprite_icon("remove")
+        %span.gl-display-inline-block.has-tooltip{ title: delete_default_branch_tooltip }
+          %button{ class: 'gl-button btn btn-default btn-icon disabled', disabled: true, 'aria-label' => delete_default_branch_tooltip }
+            = sprite_icon('remove', css_class: 'gl-button-icon gl-icon')
       - elsif protected_branch?(@project, branch)
         - if can?(current_user, :push_to_delete_protected_branch, @project)
-          %button{ class: "gl-button btn btn-danger has-tooltip",
-            title: s_('Branches|Delete protected branch'),
-            data: { toggle: "modal",
-              target: "#modal-delete-branch",
+          - delete_protected_branch_tooltip = s_('Branches|Delete protected branch')
+          %button{ class: 'gl-button btn btn-default btn-icon has-tooltip',
+            title: delete_protected_branch_tooltip,
+            'aria-label' => delete_protected_branch_tooltip,
+            data: { toggle: 'modal',
+              target: '#modal-delete-branch',
               delete_path: project_branch_path(@project, branch.name),
               branch_name: branch.name,
-              is_merged: ("true" if merged) } }
-            = sprite_icon("remove")
+              is_merged: ('true' if merged) } }
+            = sprite_icon('remove', css_class: 'gl-button-icon gl-icon')
         - else
-          - delete_protected_branch_tooltip = s_('Branches|Only a project maintainer or owner can delete a protected branch')
-          %span.has-tooltip{ title: delete_protected_branch_tooltip }
-            %button{ class: "gl-button btn btn-danger disabled", disabled: true, 'aria-label' => delete_protected_branch_tooltip }
-              = sprite_icon("remove")
+          - delete_protected_branch_disabled_tooltip = s_('Branches|Only a project maintainer or owner can delete a protected branch')
+          %span.has-tooltip{ title: delete_protected_branch_disabled_tooltip }
+            %button{ class: 'gl-button btn btn-default btn-icon disabled', disabled: true, 'aria-label' => delete_protected_branch_disabled_tooltip, data: { testid: 'remove-protected-branch' } }
+              = sprite_icon('remove', css_class: 'gl-button-icon gl-icon')
       - else
         = link_to project_branch_path(@project, branch.name),
-          class: "gl-button btn btn-danger js-remove-row qa-remove-btn js-ajax-loading-spinner has-tooltip",
+          class: 'gl-button btn btn-default btn-icon js-remove-row qa-remove-btn js-ajax-loading-spinner has-tooltip',
           title: s_('Branches|Delete branch'),
           method: :delete,
           data: { confirm: s_("Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?") % { branch_name: branch.name } },
           remote: true,
           'aria-label' => s_('Branches|Delete branch') do
-          = sprite_icon("remove")
+          = sprite_icon('remove', css_class: 'gl-button-icon gl-icon')

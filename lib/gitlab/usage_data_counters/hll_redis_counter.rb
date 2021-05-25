@@ -38,6 +38,7 @@ module Gitlab
       # * Get unique counts per user: Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'g_compliance_dashboard', start_date: 28.days.ago, end_date: Date.current)
       class << self
         include Gitlab::Utils::UsageData
+        include Gitlab::Usage::TimeFrame
 
         # Track unique events
         #
@@ -96,14 +97,6 @@ module Gitlab
 
             category_results["#{category}"] = event_results
           end
-        end
-
-        def weekly_time_range
-          { start_date: 7.days.ago.to_date, end_date: Date.current }
-        end
-
-        def monthly_time_range
-          { start_date: 4.weeks.ago.to_date, end_date: Date.current }
         end
 
         def known_event?(event_name)

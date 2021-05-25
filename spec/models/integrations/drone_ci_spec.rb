@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DroneCiService, :use_clean_rails_memory_store_caching do
+RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
   describe 'associations' do
@@ -32,7 +32,7 @@ RSpec.describe DroneCiService, :use_clean_rails_memory_store_caching do
   end
 
   shared_context :drone_ci_service do
-    let(:drone)      { DroneCiService.new }
+    let(:drone)      { described_class.new }
     let(:project)    { create(:project, :repository, name: 'project') }
     let(:path)       { project.full_path }
     let(:drone_url)  { 'http://drone.example.com' }
@@ -41,7 +41,7 @@ RSpec.describe DroneCiService, :use_clean_rails_memory_store_caching do
     let(:token)      { 'secret' }
     let(:iid)        { rand(1..9999) }
 
-    # URL's
+    # URLs
     let(:build_page) { "#{drone_url}/gitlab/#{path}/redirect/commits/#{sha}?branch=#{branch}" }
     let(:commit_status_path) { "#{drone_url}/gitlab/#{path}/commits/#{sha}?branch=#{branch}&access_token=#{token}" }
 

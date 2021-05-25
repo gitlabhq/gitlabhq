@@ -21,13 +21,13 @@ RSpec.describe 'Protected Branches', :js do
         expect(ProtectedBranch.count).to eq(1)
       end
 
-      it 'does not allow developer to removes protected branch' do
+      it 'does not allow developer to remove protected branch' do
         visit project_branches_path(project)
 
         find('input[data-testid="branch-search"]').set('fix')
         find('input[data-testid="branch-search"]').native.send_keys(:enter)
 
-        expect(page).to have_css('.btn-danger.disabled')
+        expect(page).to have_selector('button[data-testid="remove-protected-branch"][disabled]')
       end
     end
   end

@@ -104,7 +104,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     before do
       create(:service, project: project,
                        active: true,
-                       type: 'CiService',
+                       type: 'DroneCiService',
                        category: 'ci')
 
       visit project_merge_request_path(project, merge_request)

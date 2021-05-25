@@ -922,6 +922,12 @@ module Ci
       Ci::Build.latest.where(pipeline: self_and_descendants)
     end
 
+    def environments_in_self_and_descendants
+      environment_ids = self_and_descendants.joins(:deployments).select(:'deployments.environment_id')
+
+      Environment.where(id: environment_ids)
+    end
+
     # Without using `unscoped`, caller scope is also included into the query.
     # Using `unscoped` here will be redundant after Rails 6.1
     def self_and_descendants

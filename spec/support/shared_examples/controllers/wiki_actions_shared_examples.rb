@@ -486,7 +486,7 @@ RSpec.shared_examples 'wiki controller actions' do
           end.not_to change { wiki.list_pages.size }
 
           expect(response).to render_template('shared/wikis/edit')
-          expect(assigns(:error).message).to eq('Could not delete wiki page')
+          expect(assigns(:error)).to eq('Could not delete wiki page')
         end
       end
     end

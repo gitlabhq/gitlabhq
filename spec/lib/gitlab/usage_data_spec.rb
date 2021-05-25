@@ -91,7 +91,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(described_class.usage_activity_by_stage_package({})).to eq(
         projects_with_packages: 2
       )
-      expect(described_class.usage_activity_by_stage_package(described_class.last_28_days_time_period)).to eq(
+      expect(described_class.usage_activity_by_stage_package(described_class.monthly_time_range_db_params)).to eq(
         projects_with_packages: 1
       )
     end
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         project_clusters_disabled: 2,
         project_clusters_enabled: 10
       )
-      expect(described_class.usage_activity_by_stage_configure(described_class.last_28_days_time_period)).to include(
+      expect(described_class.usage_activity_by_stage_configure(described_class.monthly_time_range_db_params)).to include(
         clusters_applications_cert_managers: 1,
         clusters_applications_helm: 1,
         clusters_applications_ingress: 1,
@@ -185,7 +185,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         snippets: 2,
         suggestions: 2
       )
-      expect(described_class.usage_activity_by_stage_create(described_class.last_28_days_time_period)).to include(
+      expect(described_class.usage_activity_by_stage_create(described_class.monthly_time_range_db_params)).to include(
         deploy_keys: 1,
         keys: 1,
         merge_requests: 1,
@@ -225,7 +225,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         omniauth_providers: ['google_oauth2'],
         user_auth_by_provider: { 'group_saml' => 2, 'ldap' => 4, 'standard' => 0, 'two-factor' => 0, 'two-factor-via-u2f-device' => 0, "two-factor-via-webauthn-device" => 0 }
       )
-      expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period)).to include(
+      expect(described_class.usage_activity_by_stage_manage(described_class.monthly_time_range_db_params)).to include(
         events: 1,
         groups: 1,
         users_created: 3,
@@ -252,7 +252,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         unique_users_all_imports: 10
       )
 
-      expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period)).to include(
+      expect(described_class.usage_activity_by_stage_manage(described_class.monthly_time_range_db_params)).to include(
         unique_users_all_imports: 5
       )
     end
@@ -327,7 +327,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           groups_imported: Gitlab::UsageData::DEPRECATED_VALUE
         }
       )
-      expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period)).to include(
+      expect(described_class.usage_activity_by_stage_manage(described_class.monthly_time_range_db_params)).to include(
         {
           bulk_imports: {
             gitlab_v1: 1,
@@ -411,7 +411,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_with_enabled_alert_integrations_histogram: { '1' => 2 }
       )
 
-      data_28_days = described_class.usage_activity_by_stage_monitor(described_class.last_28_days_time_period)
+      data_28_days = described_class.usage_activity_by_stage_monitor(described_class.monthly_time_range_db_params)
       expect(data_28_days).to include(
         clusters: 1,
         clusters_applications_prometheus: 1,
@@ -450,7 +450,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_jira_dvcs_cloud_active: 2,
         projects_jira_dvcs_server_active: 2
       )
-      expect(described_class.usage_activity_by_stage_plan(described_class.last_28_days_time_period)).to include(
+      expect(described_class.usage_activity_by_stage_plan(described_class.monthly_time_range_db_params)).to include(
         issues: 2,
         notes: 1,
         projects: 1,
@@ -479,7 +479,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         releases: 2,
         successful_deployments: 2
       )
-      expect(described_class.usage_activity_by_stage_release(described_class.last_28_days_time_period)).to include(
+      expect(described_class.usage_activity_by_stage_release(described_class.monthly_time_range_db_params)).to include(
         deployments: 1,
         failed_deployments: 1,
         releases: 1,
@@ -513,7 +513,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         ci_triggers: 2,
         clusters_applications_runner: 2
       )
-      expect(described_class.usage_activity_by_stage_verify(described_class.last_28_days_time_period)).to include(
+      expect(described_class.usage_activity_by_stage_verify(described_class.monthly_time_range_db_params)).to include(
         ci_builds: 1,
         ci_external_pipelines: 1,
         ci_internal_pipelines: 1,

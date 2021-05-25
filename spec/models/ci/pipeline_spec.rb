@@ -3162,6 +3162,81 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '#environments_in_self_and_descendants' do
+    subject { pipeline.environments_in_self_and_descendants }
+
+    context 'when pipeline is not child nor parent' do
+      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+      let_it_be(:build) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+
+      it 'returns just the pipeline environment' do
+        expect(subject).to contain_exactly(build.deployment.environment)
+      end
+    end
+
+    context 'when pipeline is in extended family' do
+      let_it_be(:parent) { create(:ci_pipeline) }
+      let_it_be(:parent_build) { create(:ci_build, :with_deployment, environment: 'staging', pipeline: parent) }
+
+      let_it_be(:pipeline) { create(:ci_pipeline, child_of: parent) }
+      let_it_be(:build) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+
+      let_it_be(:child) { create(:ci_pipeline, child_of: pipeline) }
+      let_it_be(:child_build) { create(:ci_build, :with_deployment, environment: 'canary', pipeline: child) }
+
+      let_it_be(:grandchild) { create(:ci_pipeline, child_of: child) }
+      let_it_be(:grandchild_build) { create(:ci_build, :with_deployment, environment: 'test', pipeline: grandchild) }
+
+      let_it_be(:sibling) { create(:ci_pipeline, child_of: parent) }
+      let_it_be(:sibling_build) { create(:ci_build, :with_deployment, environment: 'review', pipeline: sibling) }
+
+      it 'returns its own environment and from all descendants' do
+        expected_environments = [
+          build.deployment.environment,
+          child_build.deployment.environment,
+          grandchild_build.deployment.environment
+        ]
+        expect(subject).to match_array(expected_environments)
+      end
+
+      it 'does not return parent environment' do
+        expect(subject).not_to include(parent_build.deployment.environment)
+      end
+
+      it 'does not return sibling environment' do
+        expect(subject).not_to include(sibling_build.deployment.environment)
+      end
+    end
+
+    context 'when each pipeline has multiple environments' do
+      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+      let_it_be(:build1) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+      let_it_be(:build2) { create(:ci_build, :with_deployment, environment: 'staging', pipeline: pipeline) }
+
+      let_it_be(:child) { create(:ci_pipeline, child_of: pipeline) }
+      let_it_be(:child_build1) { create(:ci_build, :with_deployment, environment: 'canary', pipeline: child) }
+      let_it_be(:child_build2) { create(:ci_build, :with_deployment, environment: 'test', pipeline: child) }
+
+      it 'returns all related environments' do
+        expected_environments = [
+          build1.deployment.environment,
+          build2.deployment.environment,
+          child_build1.deployment.environment,
+          child_build2.deployment.environment
+        ]
+        expect(subject).to match_array(expected_environments)
+      end
+    end
+
+    context 'when pipeline has no environment' do
+      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+
+      it 'returns empty' do
+        expect(subject).to be_empty
+      end
+    end
+  end
+
   describe '#root_ancestor' do
     subject { pipeline.root_ancestor }
 

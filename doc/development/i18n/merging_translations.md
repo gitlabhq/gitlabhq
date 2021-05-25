@@ -82,3 +82,9 @@ There's no automated way to pull the translation levels from CrowdIn, to display
 this information in the language selection dropdown. Therefore, the translation
 levels are hard-coded in the `TRANSLATION_LEVELS` constant in [`i18n.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/i18n.rb),
 and must be regularly updated.
+
+To update the translation levels:
+
+1. Get the translation levels (percentage of approved words) from [Crowdin](https://crowdin.com/project/gitlab-ee/settings#translations).
+
+1. Update the hard-coded translation levels in [`i18n.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/i18n.rb#L40).

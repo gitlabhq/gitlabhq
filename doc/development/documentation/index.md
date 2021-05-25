@@ -229,6 +229,7 @@ To add a redirect:
    ```markdown
    ---
    redirect_to: '../newpath/to/file/index.md'
+   remove_date: 'YYYY-MM-DD'
    ---
 
    This document was moved to [another location](../path/to/file/index.md).

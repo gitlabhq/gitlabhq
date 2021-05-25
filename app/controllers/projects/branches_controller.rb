@@ -152,7 +152,7 @@ class Projects::BranchesController < Projects::ApplicationController
       ref_escaped = strip_tags(sanitize(params[:ref]))
       Addressable::URI.unescape(ref_escaped)
     else
-      @project.default_branch || 'master'
+      @project.default_branch_or_main
     end
   end
 

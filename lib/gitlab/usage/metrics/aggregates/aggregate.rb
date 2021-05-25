@@ -22,9 +22,7 @@ module Gitlab
         }.freeze
 
         class Aggregate
-          delegate :weekly_time_range,
-                   :monthly_time_range,
-                   to: Gitlab::UsageDataCounters::HLLRedisCounter
+          include Gitlab::Usage::TimeFrame
 
           def initialize(recorded_at)
             @aggregated_metrics = load_metrics(AGGREGATED_METRICS_PATH)
@@ -32,15 +30,15 @@ module Gitlab
           end
 
           def all_time_data
-            aggregated_metrics_data(start_date: nil, end_date: nil, time_frame: Gitlab::Utils::UsageData::ALL_TIME_TIME_FRAME_NAME)
+            aggregated_metrics_data(start_date: nil, end_date: nil, time_frame: Gitlab::Usage::TimeFrame::ALL_TIME_TIME_FRAME_NAME)
           end
 
           def monthly_data
-            aggregated_metrics_data(**monthly_time_range.merge(time_frame: Gitlab::Utils::UsageData::TWENTY_EIGHT_DAYS_TIME_FRAME_NAME))
+            aggregated_metrics_data(**monthly_time_range.merge(time_frame: Gitlab::Usage::TimeFrame::TWENTY_EIGHT_DAYS_TIME_FRAME_NAME))
           end
 
           def weekly_data
-            aggregated_metrics_data(**weekly_time_range.merge(time_frame: Gitlab::Utils::UsageData::SEVEN_DAYS_TIME_FRAME_NAME))
+            aggregated_metrics_data(**weekly_time_range.merge(time_frame: Gitlab::Usage::TimeFrame::SEVEN_DAYS_TIME_FRAME_NAME))
           end
 
           private
@@ -54,7 +52,7 @@ module Gitlab
 
               case aggregation[:source]
               when REDIS_SOURCE
-                if time_frame == Gitlab::Utils::UsageData::ALL_TIME_TIME_FRAME_NAME
+                if time_frame == Gitlab::Usage::TimeFrame::ALL_TIME_TIME_FRAME_NAME
                   data[aggregation[:name]] = Gitlab::Utils::UsageData::FALLBACK
                   Gitlab::ErrorTracking
                     .track_and_raise_for_dev_exception(

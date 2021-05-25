@@ -2570,15 +2570,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: project_schedule_bulk_repository_shard_moves
-  :worker_name: ProjectScheduleBulkRepositoryShardMovesWorker
-  :feature_category: :gitaly
-  :has_external_dependencies:
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: project_service
   :worker_name: ProjectServiceWorker
   :feature_category: :integrations
@@ -2587,15 +2578,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
-- :name: project_update_repository_storage
-  :worker_name: ProjectUpdateRepositoryStorageWorker
-  :feature_category: :gitaly
-  :has_external_dependencies:
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: projects_git_garbage_collect
   :worker_name: Projects::GitGarbageCollectWorker
@@ -2810,24 +2792,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
-- :name: snippet_schedule_bulk_repository_shard_moves
-  :worker_name: SnippetScheduleBulkRepositoryShardMovesWorker
-  :feature_category: :gitaly
-  :has_external_dependencies:
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: snippet_update_repository_storage
-  :worker_name: SnippetUpdateRepositoryStorageWorker
-  :feature_category: :gitaly
-  :has_external_dependencies:
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: snippets_schedule_bulk_repository_shard_moves
   :worker_name: Snippets::ScheduleBulkRepositoryShardMovesWorker

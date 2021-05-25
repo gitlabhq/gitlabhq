@@ -35,9 +35,9 @@ module Gitlab
           def time_constraints
             case time_frame
             when '28d'
-              { start_date: 4.weeks.ago.to_date, end_date: Date.current }
+              monthly_time_range
             when '7d'
-              { start_date: 7.days.ago.to_date, end_date: Date.current }
+              weekly_time_range
             else
               raise "Unknown time frame: #{time_frame} for RedisHLLMetric"
             end

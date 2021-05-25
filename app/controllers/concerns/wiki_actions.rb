@@ -177,7 +177,7 @@ module WikiActions
       redirect_to wiki_path(wiki),
       status: :found
     else
-      @error = response
+      @error = response.message
       render 'shared/wikis/edit'
     end
   end

@@ -253,7 +253,7 @@ error message. Possible causes for a failed commit include:
   user tried to make an empty commit;
 - the branch was updated by a Git push while the file edit was in progress.
 
-Currently GitLab Shell has a boolean return code, preventing GitLab from specifying the error.
+GitLab Shell has a boolean return code, preventing GitLab from specifying the error.
 
 ## Delete existing file in repository
 

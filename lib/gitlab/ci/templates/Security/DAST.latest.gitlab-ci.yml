@@ -46,10 +46,13 @@ dast:
           $REVIEW_DISABLED && $DAST_WEBSITE == null &&
           $DAST_API_SPECIFICATION == null
       when: never
+    - if: $CI_MERGE_REQUEST_IID &&
+          $CI_KUBERNETES_ACTIVE &&
+          $GITLAB_FEATURES =~ /\bdast\b/
+    - if: $CI_MERGE_REQUEST_IID && ($DAST_WEBSITE || $DAST_API_SPECIFICATION)
+    - if: $CI_OPEN_MERGE_REQUESTS
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $CI_KUBERNETES_ACTIVE &&
           $GITLAB_FEATURES =~ /\bdast\b/
-    - if: $CI_COMMIT_BRANCH &&
-          $DAST_WEBSITE
-    - if: $CI_COMMIT_BRANCH &&
-          $DAST_API_SPECIFICATION
+    - if: $CI_COMMIT_BRANCH && ($DAST_WEBSITE || $DAST_API_SPECIFICATION)

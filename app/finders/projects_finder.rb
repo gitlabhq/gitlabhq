@@ -14,7 +14,8 @@
 #     starred: boolean
 #     sort: string
 #     visibility_level: int
-#     tags: string[]
+#     tag: string[] - deprecated, use 'topic' instead
+#     topic: string[]
 #     personal: boolean
 #     search: string
 #     search_namespaces: boolean
@@ -37,6 +38,8 @@ class ProjectsFinder < UnionFinder
     @params = params
     @current_user = current_user
     @project_ids_relation = project_ids_relation
+
+    @params[:topic] ||= @params.delete(:tag) if @params[:tag].present?
   end
 
   def execute
@@ -76,7 +79,7 @@ class ProjectsFinder < UnionFinder
     collection = by_starred(collection)
     collection = by_trending(collection)
     collection = by_visibility_level(collection)
-    collection = by_tags(collection)
+    collection = by_topics(collection)
     collection = by_search(collection)
     collection = by_archived(collection)
     collection = by_custom_attributes(collection)
@@ -176,8 +179,8 @@ class ProjectsFinder < UnionFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def by_tags(items)
-    params[:tag].present? ? items.tagged_with(params[:tag]) : items
+  def by_topics(items)
+    params[:topic].present? ? items.tagged_with(params[:topic]) : items
   end
 
   def by_search(items)

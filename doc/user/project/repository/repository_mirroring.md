@@ -8,7 +8,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.htm
 # Repository mirroring **(FREE)**
 
 Repository mirroring allows for the mirroring of repositories to and from external sources. You
-can use it to mirror branches, tags, and commits between repositories. It's useful when you want to use
+can use it to mirror branches, tags, and commits between repositories. It helps you use
 a repository outside of GitLab.
 
 A repository mirror at GitLab updates automatically. You can also manually trigger an update
@@ -36,7 +36,7 @@ Maintainer or Owner permissions to the mirrored project.
 The following are some possible use cases for repository mirroring:
 
 - You migrated to GitLab but still need to keep your project in another source. In that case, you
-  can simply set it up to mirror to GitLab (pull) and all the essential history of commits, tags,
+  can set it up to mirror to GitLab (pull) and all the essential history of commits, tags,
   and branches are available in your GitLab instance. **(PREMIUM)**
 - You have old projects in another source that you don't use actively anymore, but don't want to
   remove for archiving purposes. In that case, you can create a push mirror so that your active
@@ -105,7 +105,7 @@ reflects that `develop` has diverged and was skipped, and be marked as a failed
 update.
 
 NOTE:
-After the mirror is created, this option can currently only be modified via the [API](../../../api/remote_mirrors.md).
+After the mirror is created, this option can only be modified via the [API](../../../api/remote_mirrors.md).
 
 ### Setting up a push mirror from GitLab to GitHub
 
@@ -122,11 +122,15 @@ The repository pushes shortly thereafter. To force a push, select the **Update n
 
 ### Setting up a push mirror from GitLab to AWS CodeCommit
 
-AWS CodeCommit push mirroring is currently the best way to connect GitLab repositories to AWS CodePipeline, as GitLab isn't yet supported as one of their Source Code Management (SCM) providers.
+AWS CodeCommit push mirroring is the best way to connect GitLab repositories to
+AWS CodePipeline, as GitLab isn't yet supported as one of their Source Code Management (SCM) providers.
 
-Each new AWS CodePipeline needs significant AWS infrastructure setup. It also requires an individual pipeline per branch.
+Each new AWS CodePipeline needs significant AWS infrastructure setup. It also
+requires an individual pipeline per branch.
 
-If AWS CodeDeploy is the final step of a CodePipeline, you can, instead, leverage GitLab CI/CD pipelines and simply use the AWS CLI in the final job in `.gitlab-ci.yml` to deploy to CodeDeploy.
+If AWS CodeDeploy is the final step of a CodePipeline, you can, instead, leverage
+GitLab CI/CD pipelines and use the AWS CLI in the final job in `.gitlab-ci.yml`
+to deploy to CodeDeploy.
 
 NOTE:
 GitLab-to-AWS-CodeCommit push mirroring cannot use SSH authentication until [GitLab issue 34014](https://gitlab.com/gitlab-org/gitlab/-/issues/34014) is resolved.
@@ -214,10 +218,9 @@ If it isn't working correctly, a red `error` tag appears and shows the error mes
 You can set up a repository to automatically have its branches, tags, and commits updated from an
 upstream repository.
 
-This is useful when a repository you're interested in is located on a different server, and you want
-to be able to browse its content and its activity using the familiar GitLab interface.
-
-To configure mirror pulling for an existing project:
+If a repository you're interested in is located on a different server, and you want
+to browse its content and its activity using the GitLab interface, you can configure
+mirror pulling:
 
 1. If you [configured two-factor authentication (2FA)](https://docs.github.com/en/github/authenticating-to-github/securing-your-account-with-two-factor-authentication-2fa)
    for GitHub, create a [personal access token for GitHub](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
@@ -244,7 +247,7 @@ Because GitLab is now set to pull changes from the upstream repository, you shou
 directly to the repository on GitLab. Instead, any commits should be pushed to the remote repository.
 Changes pushed to the remote repository are pulled into the GitLab repository, either:
 
-- Automatically within a certain period of time.
+- Automatically in a certain period of time.
 - When a [forced update](#forcing-an-update) is initiated.
 
 WARNING:
@@ -254,7 +257,7 @@ Deleted branches and tags in the upstream repository are not reflected in the Gi
 
 ### How it works
 
-Once the pull mirroring feature has been enabled for a repository, the repository is added to a queue.
+After the pull mirroring feature has been enabled for a repository, the repository is added to a queue.
 
 Once per minute, a Sidekiq cron job schedules repository mirrors to update, based on:
 
@@ -556,7 +559,7 @@ Bidirectional mirroring should not be used as a permanent configuration. Refer t
 
 [Git Fusion](https://www.perforce.com/manuals/git-fusion/#Git-Fusion/section_avy_hyc_gl.html) provides a Git interface
 to [Perforce Helix](https://www.perforce.com/products) which can be used by GitLab to bidirectionally
-mirror projects with GitLab. This may be useful in some situations when migrating from Perforce Helix
+mirror projects with GitLab. This can help you in some situations when migrating from Perforce Helix
 to GitLab where overlapping Perforce Helix workspaces cannot be migrated simultaneously to GitLab.
 
 If using mirroring with Perforce Helix, you should only mirror protected branches. Perforce Helix

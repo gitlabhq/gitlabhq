@@ -18,7 +18,7 @@ See also:
 
 Start a new export.
 
-The endpoint also accepts an `upload` parameter. This parameter is a hash that contains
+The endpoint also accepts an `upload` parameter. This parameter is a hash. It contains
 all the necessary information to upload the exported project to a web server or
 to any S3-compatible platform. At the moment we only support binary
 data file uploads to the final server.
@@ -70,23 +70,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Status can be one of:
 
-- `none`
-- `queued`
-- `started`
-- `finished`
-- `regeneration_in_progress`
-
-`queued` state represents the request for export is received, and is currently in the queue to be processed.
-
-The `started` state represents that the export process has started and is currently in progress.
-It includes the process of exporting, actions performed on the resultant file such as sending
-an email notifying the user to download the file, uploading the exported file to a web server, etc.
-
-`finished` state is after the export process has completed and the user has been notified.
-
-`regeneration_in_progress` is when an export file is available to download, and a request to generate a new export is in process.
-
-`none` is when there are no exports _queued_, _started_, _finished_, or _being regenerated_
+- `none`: No exports _queued_, _started_, _finished_, or _being regenerated_.
+- `queued`: The request for export is received, and is in the queue to be processed.
+- `started`: The export process has started and is in progress. It includes:
+  - The process of exporting.
+  - Actions performed on the resulting file, such as sending an email notifying
+    the user to download the file, or uploading the exported file to a web server.
+- `finished`: After the export process has completed and the user has been notified.
+- `regeneration_in_progress`: An export file is available to download, and a request to generate a new export is in process.
 
 `_links` are only present when export has finished.
 
@@ -288,7 +279,7 @@ NOTE:
 An element's `id` field in `failed_relations` references the failure record, not the relation.
 
 NOTE:
-The `failed_relations` array is currently capped to 100 items.
+The `failed_relations` array is capped to 100 items.
 
 ```json
 {

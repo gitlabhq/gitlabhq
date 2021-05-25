@@ -99,11 +99,13 @@ RSpec.describe 'Branches' do
     end
 
     describe 'Delete unprotected branch on Overview' do
-      it 'removes branch after confirmation', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/239019' do
+      it 'removes branch after confirmation', :js do
         visit project_branches_filtered_path(project, state: 'all')
 
         expect(all('.all-branches').last).to have_selector('li', count: 20)
-        accept_confirm { first('.js-branch-item .btn-danger').click }
+        accept_confirm do
+          within('.js-branch-item', match: :first) { click_link(title: 'Delete branch') }
+        end
 
         expect(all('.all-branches').last).to have_selector('li', count: 19)
       end
@@ -172,7 +174,9 @@ RSpec.describe 'Branches' do
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
-        accept_confirm { find('.js-branch-fix .btn-danger').click }
+        accept_confirm do
+          within('.js-branch-fix') { click_link(title: 'Delete branch') }
+        end
 
         expect(page).not_to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 0)

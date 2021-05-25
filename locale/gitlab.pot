@@ -31147,6 +31147,9 @@ msgstr ""
 msgid "StatusCheck|Target branch"
 msgstr ""
 
+msgid "StatusCheck|Update status check"
+msgstr ""
+
 msgid "StatusCheck|You are about to remove the %{name} status check."
 msgstr ""
 

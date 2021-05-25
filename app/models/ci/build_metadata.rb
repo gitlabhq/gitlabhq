@@ -10,6 +10,7 @@ module Ci
     include Presentable
     include ChronicDurationAttribute
     include Gitlab::Utils::StrongMemoize
+    include IgnorableColumns
 
     self.table_name = 'ci_builds_metadata'
 
@@ -36,6 +37,8 @@ module Ci
         runner_timeout_source: 3,
         job_timeout_source: 4
     }
+
+    ignore_column :build_id_convert_to_bigint, remove_with: '14.2', remove_after: '2021-08-22'
 
     def update_timeout_state
       timeout = timeout_with_highest_precedence

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JenkinsService do
+RSpec.describe Integrations::Jenkins do
   let(:project) { create(:project) }
   let(:jenkins_url) { 'http://jenkins.example.com/' }
   let(:jenkins_hook_url) { jenkins_url + 'project/my_project' }

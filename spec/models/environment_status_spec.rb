@@ -245,6 +245,17 @@ RSpec.describe EnvironmentStatus do
         end
       end
 
+      context 'when there is a deployment in a child pipeline' do
+        let!(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let!(:child_build) { create(:ci_build, :with_deployment, :start_review_app, pipeline: child_pipeline) }
+        let(:child_environment) { child_build.deployment.environment }
+
+        it 'returns both parent and child entries' do
+          expect(subject.count).to eq(2)
+          expect(subject.map(&:id)).to contain_exactly(environment.id, child_environment.id)
+        end
+      end
+
       context 'when environment is stopped' do
         before do
           environment.stop!

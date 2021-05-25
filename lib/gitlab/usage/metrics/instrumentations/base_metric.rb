@@ -6,6 +6,7 @@ module Gitlab
       module Instrumentations
         class BaseMetric
           include Gitlab::Utils::UsageData
+          include Gitlab::Usage::TimeFrame
 
           attr_reader :time_frame
           attr_reader :options

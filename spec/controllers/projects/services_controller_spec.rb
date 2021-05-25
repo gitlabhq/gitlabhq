@@ -95,7 +95,7 @@ RSpec.describe Projects::ServicesController do
 
           expect(response).to be_successful
           expect(json_response).to be_empty
-          expect(BuildkiteService.first).to be_present
+          expect(Integrations::Buildkite.first).to be_present
         end
 
         it 'creates the ServiceHook object' do
@@ -103,7 +103,7 @@ RSpec.describe Projects::ServicesController do
 
           expect(response).to be_successful
           expect(json_response).to be_empty
-          expect(BuildkiteService.first.service_hook).to be_present
+          expect(Integrations::Buildkite.first.service_hook).to be_present
         end
 
         def do_put

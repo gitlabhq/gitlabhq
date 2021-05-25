@@ -25,14 +25,14 @@
             %span.access-request-links.gl-ml-3
               = render 'shared/members/access_request_links', source: @project
 
-          - if @project.tag_list.present?
-            = cache_if(cache_enabled, [@project, :tag_list], expires_in: 1.day) do
+          - if @project.topic_list.present?
+            = cache_if(cache_enabled, [@project, :topic_list], expires_in: 1.day) do
               %span.home-panel-topic-list.mt-2.w-100.d-inline-flex.gl-font-base.gl-font-weight-normal.gl-align-items-center
                 = sprite_icon('tag', css_class: 'icon gl-relative gl-mr-2')
 
                 - @project.topics_to_show.each do |topic|
                   - project_topics_classes = "badge badge-pill badge-secondary gl-mr-2"
-                  - explore_project_topic_path = explore_projects_path(tag: topic)
+                  - explore_project_topic_path = explore_projects_path(topic: topic)
                   - if topic.length > max_project_topic_length
                     %a{ class: "#{ project_topics_classes } str-truncated-30 has-tooltip", data: { container: "body" }, title: topic, href: explore_project_topic_path, itemprop: 'keywords' }
                       = topic.titleize

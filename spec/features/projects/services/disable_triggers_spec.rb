@@ -15,7 +15,7 @@ RSpec.describe 'Disable individual triggers', :js do
     let(:service_name) { 'Jenkins' }
 
     it 'shows trigger checkboxes' do
-      event_count = JenkinsService.supported_events.count
+      event_count = Integrations::Jenkins.supported_events.count
 
       expect(page).to have_content "Trigger"
       expect(page).to have_css(checkbox_selector, visible: :all, count: event_count)

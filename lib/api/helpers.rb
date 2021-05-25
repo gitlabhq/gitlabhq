@@ -599,6 +599,7 @@ module API
                  :custom_attributes,
                  :last_activity_after,
                  :last_activity_before,
+                 :topic,
                  :repository_storage)
           .symbolize_keys
           .compact
@@ -611,7 +612,6 @@ module API
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:id_after] = sanitize_id_param(params[:id_after]) if params[:id_after]
       finder_params[:id_before] = sanitize_id_param(params[:id_before]) if params[:id_before]
-      finder_params[:tag] = params[:topic] if params[:topic].present?
       finder_params
     end
 

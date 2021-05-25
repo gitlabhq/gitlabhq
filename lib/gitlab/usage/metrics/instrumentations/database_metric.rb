@@ -52,7 +52,7 @@ module Gitlab
           def time_constraints
             case time_frame
             when '28d'
-              { created_at: 30.days.ago..2.days.ago }
+              monthly_time_range_db_params
             when 'all'
               {}
             when 'none'

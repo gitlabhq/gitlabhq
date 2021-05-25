@@ -68,7 +68,8 @@ appears next to requests with warnings.
 
 ## Enable the Performance Bar via the Admin Area
 
-The GitLab Performance Bar is disabled by default. To enable it for a given group:
+The GitLab Performance Bar is disabled by default for non-administrators. To enable it
+for a given group:
 
 1. Sign in as a user with Administrator [permissions](../../../user/permissions.md).
 1. In the menu bar, click **Admin Area**.
