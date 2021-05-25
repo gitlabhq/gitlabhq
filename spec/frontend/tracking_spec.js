@@ -9,6 +9,7 @@ describe('Tracking', () => {
   let snowplowSpy;
   let bindDocumentSpy;
   let trackLoadEventsSpy;
+  let enableFormTracking;
 
   beforeEach(() => {
     getExperimentData.mockReturnValue(undefined);
@@ -38,6 +39,10 @@ describe('Tracking', () => {
         formTracking: false,
         linkClickTracking: false,
         pageUnloadTimer: 10,
+        formTrackingConfig: {
+          fields: { allow: [] },
+          forms: { allow: [] },
+        },
       });
     });
   });
@@ -46,6 +51,9 @@ describe('Tracking', () => {
     beforeEach(() => {
       bindDocumentSpy = jest.spyOn(Tracking, 'bindDocument').mockImplementation(() => null);
       trackLoadEventsSpy = jest.spyOn(Tracking, 'trackLoadEvents').mockImplementation(() => null);
+      enableFormTracking = jest
+        .spyOn(Tracking, 'enableFormTracking')
+        .mockImplementation(() => null);
     });
 
     it('should activate features based on what has been enabled', () => {
@@ -59,10 +67,11 @@ describe('Tracking', () => {
         ...window.snowplowOptions,
         formTracking: true,
         linkClickTracking: true,
+        formTrackingConfig: { forms: { whitelist: ['foo'] }, fields: { whitelist: ['bar'] } },
       };
 
       initDefaultTrackers();
-      expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking');
+      expect(enableFormTracking).toHaveBeenCalledWith(window.snowplowOptions.formTrackingConfig);
       expect(snowplowSpy).toHaveBeenCalledWith('enableLinkClickTracking');
     });
 
@@ -157,25 +166,22 @@ describe('Tracking', () => {
 
   describe('.enableFormTracking', () => {
     it('tells snowplow to enable form tracking', () => {
-      const config = { forms: { whitelist: [''] }, fields: { whitelist: [''] } };
+      const config = { forms: { allow: ['form-class1'] }, fields: { allow: ['input-class1'] } };
       Tracking.enableFormTracking(config, ['_passed_context_']);
 
-      expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking', config, [
-        { data: { source: 'gitlab-javascript' }, schema: undefined },
-        '_passed_context_',
-      ]);
+      expect(snowplowSpy).toHaveBeenCalledWith(
+        'enableFormTracking',
+        { forms: { whitelist: ['form-class1'] }, fields: { whitelist: ['input-class1'] } },
+        [{ data: { source: 'gitlab-javascript' }, schema: undefined }, '_passed_context_'],
+      );
     });
 
-    it('throws an error if no whitelist rules are provided', () => {
-      const expectedError = new Error(
-        'Unable to enable form event tracking without whitelist rules.',
-      );
+    it('throws an error if no allow rules are provided', () => {
+      const expectedError = new Error('Unable to enable form event tracking without allow rules.');
 
       expect(() => Tracking.enableFormTracking()).toThrow(expectedError);
-      expect(() => Tracking.enableFormTracking({ fields: { whitelist: [] } })).toThrow(
-        expectedError,
-      );
-      expect(() => Tracking.enableFormTracking({ fields: { whitelist: [1] } })).not.toThrow(
+      expect(() => Tracking.enableFormTracking({ fields: { allow: true } })).toThrow(expectedError);
+      expect(() => Tracking.enableFormTracking({ fields: { allow: [] } })).not.toThrow(
         expectedError,
       );
     });

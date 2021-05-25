@@ -32,14 +32,6 @@ RSpec.describe Groups::GroupMembersController do
         sign_in(user)
       end
 
-      it 'assigns max_access_for_group' do
-        allow(controller).to receive(:current_user).and_return(user)
-
-        get :index, params: { group_id: group }
-
-        expect(user.max_access_for_group[group.id]).to eq(Gitlab::Access::OWNER)
-      end
-
       it 'assigns invited members' do
         get :index, params: { group_id: group }
 

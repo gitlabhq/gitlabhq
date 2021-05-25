@@ -17,6 +17,7 @@ class Group < Namespace
   include GroupAPICompatibility
   include EachBatch
   include HasTimelogsReport
+  include BulkMemberAccessLoad
 
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
 
@@ -569,24 +570,8 @@ class Group < Namespace
   def max_member_access_for_user(user, only_concrete_membership: false)
     return GroupMember::NO_ACCESS unless user
     return GroupMember::OWNER if user.can_admin_all_resources? && !only_concrete_membership
-    # Use the preloaded value that exists instead of performing the db query again(cached or not).
-    # Groups::GroupMembersController#preload_max_access makes use of this by
-    # calling Group#max_member_access. This helps when we have a process
-    # that may query this multiple times from the outside through a policy query
-    # like the GroupPolicy#lookup_access_level! does as a condition for any role
-    return user.max_access_for_group[id] if user.max_access_for_group[id]
 
-    max_member_access(user)
-  end
-
-  def max_member_access(user)
-    max_member_access = members_with_parents
-                          .where(user_id: user)
-                          .reorder(access_level: :desc)
-                          .first
-                          &.access_level
-
-    max_member_access || GroupMember::NO_ACCESS
+    max_member_access([user.id])[user.id]
   end
 
   def mattermost_team_params
@@ -729,6 +714,12 @@ class Group < Namespace
   end
 
   private
+
+  def max_member_access(user_ids)
+    max_member_access_for_resource_ids(User, user_ids) do |user_ids|
+      members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
+    end
+  end
 
   def update_two_factor_requirement
     return unless saved_change_to_require_two_factor_authentication? || saved_change_to_two_factor_grace_period?

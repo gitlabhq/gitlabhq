@@ -14,6 +14,29 @@ module QA
       attribute :name
       attribute :full_path
 
+      # Get group labels
+      #
+      # @return [Array<QA::Resource::GroupLabel>]
+      def labels
+        parse_body(api_get_from("#{api_get_path}/labels")).map do |label|
+          GroupLabel.new.tap do |resource|
+            resource.api_client = api_client
+            resource.group = self
+            resource.id = label[:id]
+            resource.title = label[:name]
+            resource.description = label[:description]
+            resource.color = label[:color]
+          end
+        end
+      end
+
+      # API get path
+      #
+      # @return [String]
+      def api_get_path
+        raise NotImplementedError
+      end
+
       # API post path
       #
       # @return [String]

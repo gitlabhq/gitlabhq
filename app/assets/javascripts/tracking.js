@@ -25,6 +25,10 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
   formTracking: false,
   linkClickTracking: false,
   pageUnloadTimer: 10,
+  formTrackingConfig: {
+    forms: { allow: [] },
+    fields: { allow: [] },
+  },
 };
 
 const addExperimentContext = (opts) => {
@@ -156,13 +160,18 @@ export default class Tracking {
   static enableFormTracking(config, contexts = []) {
     if (!this.enabled()) return;
 
-    if (!config?.forms?.whitelist?.length && !config?.fields?.whitelist?.length) {
+    if (!Array.isArray(config?.forms?.allow) && !Array.isArray(config?.fields?.allow)) {
       // eslint-disable-next-line @gitlab/require-i18n-strings
-      throw new Error('Unable to enable form event tracking without whitelist rules.');
+      throw new Error('Unable to enable form event tracking without allow rules.');
     }
 
     contexts.unshift(STANDARD_CONTEXT);
-    const enabler = () => window.snowplow('enableFormTracking', config, contexts);
+    const mappedConfig = {
+      forms: { whitelist: config.forms?.allow || [] },
+      fields: { whitelist: config.fields?.allow || [] },
+    };
+
+    const enabler = () => window.snowplow('enableFormTracking', mappedConfig, contexts);
 
     if (document.readyState !== 'loading') enabler();
     else document.addEventListener('DOMContentLoaded', enabler);
@@ -207,11 +216,13 @@ export function initUserTracking() {
 export function initDefaultTrackers() {
   if (!Tracking.enabled()) return;
 
+  const opts = { ...DEFAULT_SNOWPLOW_OPTIONS, ...window.snowplowOptions };
+
   window.snowplow('enableActivityTracking', 30, 30);
   // must be after enableActivityTracking
   window.snowplow('trackPageView', null, [STANDARD_CONTEXT]);
 
-  if (window.snowplowOptions.formTracking) window.snowplow('enableFormTracking');
+  if (window.snowplowOptions.formTracking) Tracking.enableFormTracking(opts.formTrackingConfig);
   if (window.snowplowOptions.linkClickTracking) window.snowplow('enableLinkClickTracking');
 
   Tracking.bindDocument();

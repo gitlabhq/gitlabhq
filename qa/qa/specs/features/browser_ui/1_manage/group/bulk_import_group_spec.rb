@@ -37,8 +37,9 @@ module QA
       let(:imported_group) do
         Resource::Group.new.tap do |group|
           group.api_client = api_client
+          group.sandbox = sandbox
           group.path = source_group.path
-        end
+        end.reload!
       end
 
       let(:imported_subgroup) do
@@ -46,7 +47,7 @@ module QA
           group.api_client = api_client
           group.sandbox = imported_group
           group.path = subgroup.path
-        end
+        end.reload!
       end
 
       def staging?
@@ -59,6 +60,17 @@ module QA
       end
 
       before do
+        Resource::GroupLabel.fabricate_via_api! do |label|
+          label.api_client = api_client
+          label.group = source_group
+          label.title = "source-group-#{SecureRandom.hex(4)}"
+        end
+        Resource::GroupLabel.fabricate_via_api! do |label|
+          label.api_client = api_client
+          label.group = subgroup
+          label.title = "subgroup-#{SecureRandom.hex(4)}"
+        end
+
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
         source_group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
 
@@ -72,15 +84,22 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1785',
         exclude: { job: ['ce:relative_url', 'ee:relative_url'] },
         issue_1: "https://gitlab.com/gitlab-org/gitlab/-/issues/330344",
-        issue_2: "https://gitlab.com/gitlab-org/gitlab/-/issues/331252"
+        issue_2: "https://gitlab.com/gitlab-org/gitlab/-/issues/331252",
+        issue_3: "https://gitlab.com/gitlab-org/gitlab/-/issues/331704"
       ) do
         Page::Group::BulkImport.perform do |import_page|
           import_page.import_group(source_group.path, sandbox.path)
 
           aggregate_failures do
             expect(import_page).to have_imported_group(source_group.path, wait: 120)
+
             expect(imported_group).to eq(source_group)
             expect(imported_subgroup).to eq(subgroup)
+
+            # TODO: Improve validation logic with some potential retry mechanism built in to custom rspec matcher
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/331704
+            # expect(imported_group.labels).to include(*source_group.labels)
+            expect(imported_subgroup.labels).to include(*subgroup.labels)
           end
         end
       end

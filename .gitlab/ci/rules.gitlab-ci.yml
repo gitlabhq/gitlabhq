@@ -119,7 +119,7 @@
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*.yml"
   - "lib/gitlab/ci/templates/**/*.yml"
-  - "{,ee/}changelogs/**/*.yml"
+  - "{,ee/,jh/}changelogs/**/*.yml"
 
 .docs-patterns: &docs-patterns
   - ".gitlab/route-map.yml"
@@ -138,7 +138,7 @@
   - "config/webpack.config.js"
   - "config/**/*.js"
   - "vendor/assets/**/*"
-  - "{,ee/}app/assets/**/*"
+  - "{,ee/,jh/}app/assets/**/*"
 
 .frontend-patterns: &frontend-patterns
   - "{package.json,yarn.lock}"
@@ -148,45 +148,45 @@
   - "Dockerfile.assets"
   - "config/**/*.js"
   - "vendor/assets/**/*"
-  - "{,ee/}{app/assets,app/helpers,app/presenters,app/views,locale,public,symbol}/**/*"
+  - "{,ee/,jh/}{app/assets,app/helpers,app/presenters,app/views,locale,public,symbol}/**/*"
 
 .backend-patterns: &backend-patterns
   - "Gemfile{,.lock}"
   - "Rakefile"
   - "config.ru"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
-  - "{,ee/}{app/channels,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
-  - "{,ee/}{bin,cable,config,db,lib}/**/*"
-  - "{,ee/}spec/**/*.rb"
+  - "{,ee/,jh/}{app/channels,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
+  - "{,ee/,jh/}{bin,cable,config,db,lib}/**/*"
+  - "{,ee/,jh/}spec/**/*.rb"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
   - "*_VERSION"
 
 .db-patterns: &db-patterns
-  - "{,ee/}{,spec/}{db,migrations}/**/*"
-  - "{,ee/}{,spec/}lib/{,ee/}gitlab/database/**/*"
-  - "{,ee/}{,spec/}lib/{,ee/}gitlab/database{,_spec}.rb"
-  - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration/**/*"
-  - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration{,_spec}.rb"
-  - "{,ee/}spec/support/helpers/database/**/*"
+  - "{,ee/,jh/}{,spec/}{db,migrations}/**/*"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration{,_spec}.rb"
+  - "{,ee/,jh/}spec/support/helpers/database/**/*"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
-  - "{,ee/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
+  - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
 
 .db-library-patterns: &db-library-patterns
-  - "{,ee/}{,spec/}lib/{,ee/}gitlab/database/**/*"
-  - "{,ee/}{,spec/}lib/{,ee/}gitlab/database{,_spec}.rb"
-  - "{,ee/}spec/support/helpers/database/**/*"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
+  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
+  - "{,ee/,jh/}spec/support/helpers/database/**/*"
 
 .backstage-patterns: &backstage-patterns
   - "Dangerfile"
   - "danger/**/*"
-  - "{,ee/}fixtures/**/*"
-  - "{,ee/}rubocop/**/*"
-  - "{,ee/}spec/**/*"
+  - "{,ee/,jh/}fixtures/**/*"
+  - "{,ee/,jh/}rubocop/**/*"
+  - "{,ee/,jh/}spec/**/*"
   - "{,spec/}tooling/**/*"
 
 .code-patterns: &code-patterns
@@ -206,7 +206,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
 
@@ -231,15 +231,15 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
-  - "{,ee/}fixtures/**/*"
-  - "{,ee/}rubocop/**/*"
-  - "{,ee/}spec/**/*"
+  - "{,ee/,jh/}fixtures/**/*"
+  - "{,ee/,jh/}rubocop/**/*"
+  - "{,ee/,jh/}spec/**/*"
   - "{,spec/}tooling/**/*"
 
 .code-qa-patterns: &code-qa-patterns
@@ -259,7 +259,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
   # QA changes
@@ -283,15 +283,15 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
-  - "{,ee/}fixtures/**/*"
-  - "{,ee/}rubocop/**/*"
-  - "{,ee/}spec/**/*"
+  - "{,ee/,jh/}fixtures/**/*"
+  - "{,ee/,jh/}rubocop/**/*"
+  - "{,ee/,jh/}spec/**/*"
   - "{,spec/}tooling/**/*"
   # QA changes
   - ".dockerignore"

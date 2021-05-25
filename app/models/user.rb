@@ -99,12 +99,6 @@ class User < ApplicationRecord
   # Virtual attribute for impersonator
   attr_accessor :impersonator
 
-  attr_writer :max_access_for_group
-
-  def max_access_for_group
-    @max_access_for_group ||= {}
-  end
-
   #
   # Relations
   #
