@@ -65,7 +65,6 @@ module Tooling
       SUGGEST_COMMENT
 
       REQUIRED_CHANGELOG_REASONS = {
-        db_changes: 'introduces a database migration',
         feature_flag_removed: 'removes a feature flag'
       }.freeze
       REQUIRED_CHANGELOG_MESSAGE = {
@@ -235,16 +234,11 @@ module Tooling
           check_result.warning("This MR has a Changelog file in `ee/`, but no code changes in `ee/`. Consider moving the Changelog file outside `ee/`.")
         end
 
-        if ee_changes.any? && ee_changelog? && required_reasons.include?(:db_changes)
-          check_result.warning("This MR has a Changelog file inside `ee/`, but there are database changes which [requires](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry) the Changelog placement to be outside of `ee/`. Consider moving the Changelog file outside `ee/`.")
-        end
-
         check_result
       end
 
       def required_reasons
         [].tap do |reasons|
-          reasons << :db_changes if project_helper.changes.added.has_category?(:migration)
           reasons << :feature_flag_removed if project_helper.changes.deleted.has_category?(:feature_flag)
         end
       end
