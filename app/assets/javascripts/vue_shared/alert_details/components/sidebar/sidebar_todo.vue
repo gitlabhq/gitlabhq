@@ -4,7 +4,7 @@ import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.muta
 import { s__ } from '~/locale';
 import Todo from '~/sidebar/components/todo_toggle/todo.vue';
 import createAlertTodoMutation from '../../graphql/mutations/alert_todo_create.mutation.graphql';
-import alertQuery from '../../graphql/queries/alert_details.query.graphql';
+import alertQuery from '../../graphql/queries/alert_sidebar_details.query.graphql';
 
 export default {
   i18n: {

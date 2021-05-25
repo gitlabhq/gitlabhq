@@ -73,6 +73,14 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrence
 
       expect(vulnerabilities_findings.pluck(:uuid)).to eq([desired_uuid_v5])
     end
+
+    it 'logs recalculation' do
+      expect_next_instance_of(Gitlab::BackgroundMigration::Logger) do |instance|
+        expect(instance).to receive(:info).once
+      end
+
+      subject
+    end
   end
 
   context "when finding has a UUIDv5" do
@@ -96,6 +104,32 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrence
       subject
 
       expect(vulnerabilities_findings.pluck(:uuid)).to eq([known_uuid_v5])
+    end
+  end
+
+  context 'when recalculation fails' do
+    before do
+      @uuid_v4 = create_finding!(
+        vulnerability_id: vulnerability_for_uuidv4.id,
+        project_id: project.id,
+        scanner_id: different_scanner.id,
+        primary_identifier_id: different_vulnerability_identifier.id,
+        report_type: 0, # "sast"
+        location_fingerprint: "fa18f432f1d56675f4098d318739c3cd5b14eb3e",
+        uuid: known_uuid_v4
+      )
+
+      allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+      allow(::Gitlab::Database::BulkUpdate).to receive(:execute).and_raise(expected_error)
+    end
+
+    let(:finding) { @uuid_v4 }
+    let(:expected_error) { RuntimeError.new }
+
+    it 'captures the errors and does not crash entirely' do
+      expect { subject }.not_to raise_error
+
+      expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception).with(expected_error).once
     end
   end
 

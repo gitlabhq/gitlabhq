@@ -58,6 +58,13 @@ class Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid
     end
 
     ::Gitlab::Database::BulkUpdate.execute(%i[uuid], mappings)
+
+    logger.info(message: 'RecalculateVulnerabilitiesOccurrencesUuid Migration: recalculation is done for:',
+              finding_ids: mappings.keys.pluck(:id))
+
+    mark_job_as_succeeded(start_id, end_id)
+  rescue StandardError => error
+    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
   end
 
   private
@@ -75,5 +82,16 @@ class Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid
     name = uuid_v5_name_components.values.join('-')
 
     CalculateFindingUUID.call(name)
+  end
+
+  def logger
+    @logger ||= Gitlab::BackgroundMigration::Logger.build
+  end
+
+  def mark_job_as_succeeded(*arguments)
+    Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(
+      'RecalculateVulnerabilitiesOccurrencesUuid',
+      arguments
+    )
   end
 end

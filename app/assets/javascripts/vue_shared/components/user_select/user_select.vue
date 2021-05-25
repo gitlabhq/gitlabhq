@@ -74,6 +74,9 @@ export default {
       query() {
         return participantsQueries[this.issuableType].query;
       },
+      skip() {
+        return Boolean(participantsQueries[this.issuableType].skipQuery);
+      },
       variables() {
         return {
           iid: this.iid,

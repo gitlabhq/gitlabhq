@@ -129,19 +129,6 @@ RSpec.describe Ci::UpdateBuildQueueService do
 
           subject.tick(build)
         end
-
-        context 'when feature flag ci_reduce_queries_when_ticking_runner_queue is disabled' do
-          before do
-            stub_feature_flags(ci_reduce_queries_when_ticking_runner_queue: false)
-            stub_feature_flags(ci_runners_short_circuit_assignable_for: false)
-          end
-
-          it 'runs redundant queries using `owned_or_instance_wide` scope' do
-            expect(Ci::Runner).to receive(:owned_or_instance_wide).and_call_original
-
-            subject.tick(build)
-          end
-        end
       end
     end
 
@@ -218,10 +205,9 @@ RSpec.describe Ci::UpdateBuildQueueService do
       let!(:build) { create(:ci_build, pipeline: pipeline, tag_list: %w[a b]) }
       let!(:project_runner) { create(:ci_runner, :project, :online, projects: [project], tag_list: %w[a b c]) }
 
-      context 'when ci_preload_runner_tags and ci_reduce_queries_when_ticking_runner_queue are enabled' do
+      context 'when ci_preload_runner_tags is enabled' do
         before do
           stub_feature_flags(
-            ci_reduce_queries_when_ticking_runner_queue: true,
             ci_preload_runner_tags: true
           )
         end
@@ -235,10 +221,9 @@ RSpec.describe Ci::UpdateBuildQueueService do
         end
       end
 
-      context 'when ci_preload_runner_tags and ci_reduce_queries_when_ticking_runner_queue are disabled' do
+      context 'when ci_preload_runner_tags are disabled' do
         before do
           stub_feature_flags(
-            ci_reduce_queries_when_ticking_runner_queue: false,
             ci_preload_runner_tags: false
           )
         end

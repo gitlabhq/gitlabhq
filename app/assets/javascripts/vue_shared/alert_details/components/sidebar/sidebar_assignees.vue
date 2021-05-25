@@ -167,10 +167,10 @@ export default {
           variables: {
             iid: this.alert.iid,
             assigneeUsernames: [this.isActive(assignees) ? '' : assignees],
-            projectPath: this.projectPath,
+            fullPath: this.projectPath,
           },
         })
-        .then(({ data: { alertSetAssignees: { errors } = [] } = {} } = {}) => {
+        .then(({ data: { issuableSetAssignees: { errors } = [] } = {} } = {}) => {
           this.hideDropdown();
 
           if (errors[0]) {

@@ -16,6 +16,7 @@ export const IssuableType = {
   Issue: 'issue',
   Epic: 'epic',
   MergeRequest: 'merge_request',
+  Alert: 'alert',
 };
 
 export const IssueStateEvent = {

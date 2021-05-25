@@ -363,11 +363,7 @@ module Ci
     end
 
     def pick_build!(build)
-      if Feature.enabled?(:ci_reduce_queries_when_ticking_runner_queue, self, default_enabled: :yaml)
-        tick_runner_queue if matches_build?(build)
-      else
-        tick_runner_queue if can_pick?(build)
-      end
+      tick_runner_queue if matches_build?(build)
     end
 
     def uncached_contacted_at

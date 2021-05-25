@@ -16295,6 +16295,9 @@ msgstr ""
 msgid "Hashed storage can't be disabled anymore for new projects"
 msgstr ""
 
+msgid "Header cannot be associated with both a request and a response"
+msgstr ""
+
 msgid "Header logo"
 msgstr ""
 
@@ -16305,6 +16308,9 @@ msgid "Header logo will be removed. Are you sure?"
 msgstr ""
 
 msgid "Header message"
+msgstr ""
+
+msgid "Header must be associated with a request or response"
 msgstr ""
 
 msgid "Headings"

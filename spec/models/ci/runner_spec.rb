@@ -919,25 +919,9 @@ RSpec.describe Ci::Runner do
       end
     end
 
-    context 'build picking improvement enabled' do
-      before do
-        stub_feature_flags(ci_reduce_queries_when_ticking_runner_queue: true)
-      end
-
+    context 'build picking improvement' do
       it 'does not check if the build is assignable to a runner' do
         expect(runner).not_to receive(:can_pick?)
-
-        runner.pick_build!(build)
-      end
-    end
-
-    context 'build picking improvement disabled' do
-      before do
-        stub_feature_flags(ci_reduce_queries_when_ticking_runner_queue: false)
-      end
-
-      it 'checks if the build is assignable to a runner' do
-        expect(runner).to receive(:can_pick?).and_call_original
 
         runner.pick_build!(build)
       end

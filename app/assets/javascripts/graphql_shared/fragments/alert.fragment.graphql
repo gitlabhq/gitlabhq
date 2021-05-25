@@ -11,12 +11,4 @@ fragment AlertListItem on AlertManagementAlert {
     title
     webUrl
   }
-  assignees {
-    nodes {
-      name
-      username
-      avatarUrl
-      webUrl
-    }
-  }
 }

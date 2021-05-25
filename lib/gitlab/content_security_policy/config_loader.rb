@@ -14,7 +14,6 @@ module Gitlab
           'directives' => {
             'default_src' => "'self'",
             'base_uri' => "'self'",
-            'child_src' => "'none'",
             'connect_src' => "'self'",
             'font_src' => "'self'",
             'form_action' => "'self' https: http:",
@@ -30,6 +29,11 @@ module Gitlab
             'report_uri' => nil
           }
         }
+
+        # frame-src was deprecated in CSP level 2 in favor of child-src
+        # CSP level 3 "undeprecated" frame-src and browsers fall back on child-src if it's missing
+        # However Safari seems to read child-src first so we'll just keep both equal
+        settings_hash['directives']['child_src'] = settings_hash['directives']['frame_src']
 
         allow_webpack_dev_server(settings_hash) if Rails.env.development?
         allow_cdn(settings_hash) if ENV['GITLAB_CDN_HOST'].present?

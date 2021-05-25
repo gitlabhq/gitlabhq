@@ -1,10 +1,16 @@
-#import "../fragments/alert_detail_item.fragment.graphql"
+#import "~/graphql_shared/fragments/alert_detail_item.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
 
 mutation alertTodoCreate($projectPath: ID!, $iid: String!) {
   alertTodoCreate(input: { iid: $iid, projectPath: $projectPath }) {
     errors
     alert {
       ...AlertDetailItem
+      assignees {
+        nodes {
+          ...User
+        }
+      }
     }
   }
 }

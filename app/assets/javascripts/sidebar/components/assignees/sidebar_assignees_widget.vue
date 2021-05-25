@@ -61,7 +61,7 @@ export default {
       required: false,
       default: IssuableType.Issue,
       validator(value) {
-        return [IssuableType.Issue, IssuableType.MergeRequest].includes(value);
+        return [IssuableType.Issue, IssuableType.MergeRequest, IssuableType.Alert].includes(value);
       },
     },
     issuableId: {

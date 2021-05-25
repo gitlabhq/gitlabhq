@@ -35,6 +35,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
 
       expect(directives.has_key?('report_uri')).to be_truthy
       expect(directives['report_uri']).to be_nil
+      expect(directives['child_src']).to eq(directives['frame_src'])
     end
 
     context 'when GITLAB_CDN_HOST is set' do

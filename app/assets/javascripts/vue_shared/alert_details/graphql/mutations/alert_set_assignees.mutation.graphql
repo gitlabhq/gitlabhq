@@ -1,18 +1,18 @@
 #import "~/graphql_shared/fragments/alert_note.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
-mutation alertSetAssignees($projectPath: ID!, $assigneeUsernames: [String!]!, $iid: String!) {
-  alertSetAssignees(
-    input: { iid: $iid, assigneeUsernames: $assigneeUsernames, projectPath: $projectPath }
+mutation alertSetAssignees($fullPath: ID!, $assigneeUsernames: [String!]!, $iid: String!) {
+  issuableSetAssignees: alertSetAssignees(
+    input: { iid: $iid, assigneeUsernames: $assigneeUsernames, projectPath: $fullPath }
   ) {
     errors
-    alert {
+    issuable: alert {
       iid
       assignees {
         nodes {
-          username
-          name
-          avatarUrl
-          webUrl
+          ...User
+          ...UserAvailability
         }
       }
       notes {

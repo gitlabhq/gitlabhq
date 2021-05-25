@@ -112,13 +112,12 @@ namespace :gitlab do
         # The remove_date of redirects.yaml should be nine months in the future.
         # To not be confused with the remove_date of the Markdown page.
         #
-        if remove_date < today
-          File.delete(filename) if File.exist?(filename)
+        next unless remove_date < today
 
-          puts "  - from: #{old_path}"
-          puts "    to: #{new_path(frontmatter['redirect_to'], filename)}"
-          puts "    remove_date: #{remove_date >> 9}"
-        end
+        File.delete(filename) if File.exist?(filename)
+        puts "  - from: #{old_path}"
+        puts "    to: #{new_path(frontmatter['redirect_to'], filename)}"
+        puts "    remove_date: #{remove_date >> 9}"
       end
     end
   end

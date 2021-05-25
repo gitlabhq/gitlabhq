@@ -19,6 +19,8 @@ import updateIssueConfidentialMutation from '~/sidebar/queries/update_issue_conf
 import updateIssueDueDateMutation from '~/sidebar/queries/update_issue_due_date.mutation.graphql';
 import updateIssueSubscriptionMutation from '~/sidebar/queries/update_issue_subscription.mutation.graphql';
 import updateMergeRequestSubscriptionMutation from '~/sidebar/queries/update_merge_request_subscription.mutation.graphql';
+import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
+import getAlertAssignees from '~/vue_shared/components/sidebar/queries/get_alert_assignees.query.graphql';
 import getIssueAssignees from '~/vue_shared/components/sidebar/queries/get_issue_assignees.query.graphql';
 import issueParticipantsQuery from '~/vue_shared/components/sidebar/queries/get_issue_participants.query.graphql';
 import getIssueTimelogsQuery from '~/vue_shared/components/sidebar/queries/get_issue_timelogs.query.graphql';
@@ -40,6 +42,10 @@ export const assigneesQueries = {
     query: getMergeRequestAssignees,
     mutation: updateMergeRequestAssigneesMutation,
   },
+  [IssuableType.Alert]: {
+    query: getAlertAssignees,
+    mutation: updateAlertAssigneesMutation,
+  },
 };
 
 export const participantsQueries = {
@@ -51,6 +57,10 @@ export const participantsQueries = {
   },
   [IssuableType.Epic]: {
     query: epicParticipantsQuery,
+  },
+  [IssuableType.Alert]: {
+    query: '',
+    skipQuery: true,
   },
 };
 
