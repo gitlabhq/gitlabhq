@@ -37,7 +37,7 @@ class MergeRequest < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 
   ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON = {
-    'Ci::CompareMetricsReportsService'     => ->(project) { ::Gitlab::Ci::Features.merge_base_pipeline_for_metrics_comparison?(project) },
+    'Ci::CompareMetricsReportsService'     => ->(project) { true },
     'Ci::CompareCodequalityReportsService' => ->(project) { true }
   }.freeze
 

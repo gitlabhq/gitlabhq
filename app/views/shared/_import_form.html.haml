@@ -6,14 +6,8 @@
     = f.label :import_url, class: 'label-bold' do
       %span
         = _('Git repository URL')
-    = f.text_field :import_url,
-        value: import_url.sanitized_url,
-        autocomplete: 'off',
-        class: 'form-control gl-form-input',
-        placeholder: 'https://gitlab.company.com/group/project.git',
-        required: true,
-        pattern: '(?:git|https?):\/\/.*/.*\.git$',
-        title: _('Please provide a valid URL ending with .git')
+    = f.text_field :import_url, value: import_url.sanitized_url,
+        autocomplete: 'off', class: 'form-control gl-form-input', placeholder: 'https://gitlab.company.com/group/project.git', required: true
 
   .row
     .form-group.col-md-6

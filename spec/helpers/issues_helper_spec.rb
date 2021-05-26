@@ -312,7 +312,7 @@ RSpec.describe IssuesHelper do
         jira_integration_path: help_page_url('integration/jira/', anchor: 'view-jira-issues'),
         markdown_help_path: help_page_path('user/markdown'),
         max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
-        new_issue_path: new_project_issue_path(project, issue: { assignee_id: finder.assignee.id, milestone_id: finder.milestones.first.id }),
+        new_issue_path: new_project_issue_path(project, issue: { milestone_id: finder.milestones.first.id }),
         project_import_jira_path: project_import_jira_path(project),
         project_labels_path: project_labels_path(project, include_ancestor_groups: true, format: :json),
         project_milestones_path: project_milestones_path(project, format: :json),

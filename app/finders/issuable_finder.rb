@@ -50,7 +50,7 @@ class IssuableFinder
   attr_reader :original_params
   attr_writer :parent
 
-  delegate(*%i[assignee milestones], to: :params)
+  delegate(*%i[milestones], to: :params)
 
   class << self
     def scalar_params
@@ -148,7 +148,6 @@ class IssuableFinder
 
   # Negates all params found in `negatable_params`
   def filter_negated_items(items)
-    items = by_negated_assignee(items)
     items = by_negated_label(items)
     items = by_negated_milestone(items)
     items = by_negated_release(items)
@@ -365,32 +364,21 @@ class IssuableFinder
 
   def by_author(items)
     Issuables::AuthorFilter.new(
-      items,
       params: original_params,
       or_filters_enabled: or_filters_enabled?
-    ).filter
+    ).filter(items)
   end
 
   def by_assignee(items)
-    if params.filter_by_no_assignee?
-      items.unassigned
-    elsif params.filter_by_any_assignee?
-      items.assigned
-    elsif params.assignee
-      items.assigned_to(params.assignee)
-    elsif params.assignee_id? || params.assignee_username? # assignee not found
-      items.none
-    else
-      items
-    end
+    assignee_filter.filter(items)
   end
 
-  def by_negated_assignee(items)
-    # We want CE users to be able to say "Issues not assigned to either PersonA nor PersonB"
-    if not_params.assignees.present?
-      items.not_assigned_to(not_params.assignees)
-    else
-      items
+  def assignee_filter
+    strong_memoize(:assignee_filter) do
+      Issuables::AssigneeFilter.new(
+        params: original_params,
+        or_filters_enabled: or_filters_enabled?
+      )
     end
   end
 

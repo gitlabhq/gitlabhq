@@ -37,6 +37,10 @@ RSpec.describe GroupMember do
     end
   end
 
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:update_two_factor_requirement).to(:user).allow_nil }
+  end
+
   describe '.access_level_roles' do
     it 'returns Gitlab::Access.options_with_owner' do
       expect(described_class.access_level_roles).to eq(Gitlab::Access.options_with_owner)
@@ -90,6 +94,18 @@ RSpec.describe GroupMember do
       expect(user).to receive(:update_two_factor_requirement)
 
       group_member.destroy!
+    end
+  end
+
+  describe '#destroy' do
+    context 'for an orphaned member' do
+      let!(:orphaned_group_member) do
+        create(:group_member).tap { |member| member.update_column(:user_id, nil) }
+      end
+
+      it 'does not raise an error' do
+        expect { orphaned_group_member.destroy! }.not_to raise_error
+      end
     end
   end
 

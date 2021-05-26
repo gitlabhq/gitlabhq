@@ -15,8 +15,7 @@ module Gitlab
       :rails_runner,
       :rake,
       :sidekiq,
-      :test_suite,
-      :unicorn
+      :test_suite
     ].freeze
 
     class << self
@@ -34,11 +33,6 @@ module Gitlab
 
       def puma?
         !!defined?(::Puma)
-      end
-
-      # For unicorn, we need to check for actual server instances to avoid false positives.
-      def unicorn?
-        !!(defined?(::Unicorn) && defined?(::Unicorn::HttpServer))
       end
 
       def sidekiq?
@@ -66,7 +60,7 @@ module Gitlab
       end
 
       def web_server?
-        puma? || unicorn?
+        puma?
       end
 
       def action_cable?

@@ -121,6 +121,7 @@ review-stop:
     QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
     QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
     QA_DEBUG: "true"
+    QA_GENERATE_ALLURE_REPORT: "true"
     GITLAB_USERNAME: "root"
     GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
     GITLAB_ADMIN_USERNAME: "root"
@@ -140,6 +141,23 @@ review-stop:
       - ./qa/gitlab-qa-run-*
     expire_in: 7 days
     when: always
+
+.allure-report-base:
+  image:
+    name: ${GITLAB_DEPENDENCY_PROXY}andrcuns/allure-report-publisher:0.0.6
+    entrypoint: [""]
+  stage: post-qa
+  variables:
+    GIT_STRATEGY: none
+    STORAGE_CREDENTIALS: $QA_ALLURE_REPORT_GCS_CREDENTIALS
+  script:
+    - |
+      allure-report-publisher upload gcs \
+        --results-glob="qa/gitlab-qa-run-*/**/allure-results/*" \
+        --bucket="gitlab-qa-allure-reports" \
+        --prefix="$ALLURE_REPORT_PATH_PREFIX/$CI_COMMIT_REF_SLUG" \
+        --copy-latest \
+        --color
 
 review-qa-smoke:
   extends:
@@ -209,6 +227,22 @@ parallel-spec-reports:
     reports:
       junit: qa/gitlab-qa-run-*/**/rspec-*.xml
     expire_in: 31d
+
+allure-report-qa-smoke:
+  extends:
+    - .allure-report-base
+    - .review:rules:review-qa-smoke
+  needs: ["review-qa-smoke"]
+  variables:
+    ALLURE_REPORT_PATH_PREFIX: gitlab-review-smoke
+
+allure-report-qa-all:
+  extends:
+    - .allure-report-base
+    - .review:rules:review-qa-all
+  needs: ["review-qa-all"]
+  variables:
+    ALLURE_REPORT_PATH_PREFIX: gitlab-review-all
 
 danger-review:
   extends:

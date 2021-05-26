@@ -2,7 +2,6 @@
 
 require 'gitlab/qa'
 require 'uri'
-require 'active_support/core_ext/object/blank'
 
 module QA
   module Runtime
@@ -51,6 +50,10 @@ module QA
 
       def debug?
         enabled?(ENV['QA_DEBUG'], default: false)
+      end
+
+      def generate_allure_report?
+        enabled?(ENV['QA_GENERATE_ALLURE_REPORT'], default: false)
       end
 
       def default_branch

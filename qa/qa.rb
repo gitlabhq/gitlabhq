@@ -45,6 +45,7 @@ module QA
     autoload :IPAddress, 'qa/runtime/ip_address'
     autoload :Search, 'qa/runtime/search'
     autoload :ApplicationSettings, 'qa/runtime/application_settings'
+    autoload :AllureReport, 'qa/runtime/allure_report'
 
     module API
       autoload :Client, 'qa/runtime/api/client'

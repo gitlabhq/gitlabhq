@@ -356,16 +356,6 @@ RSpec.describe 'New project', :js do
             expect(git_import_instructions).to have_content 'Git repository URL'
           end
 
-          it 'reports error if repo URL does not end with .git' do
-            fill_in 'project_import_url', with: 'http://foo/bar'
-            fill_in 'project_name', with: 'import-project-without-git-suffix'
-            fill_in 'project_path', with: 'import-project-without-git-suffix'
-
-            click_button 'Create project'
-
-            expect(page).to have_text('Please provide a valid URL ending with .git')
-          end
-
           it 'keeps "Import project" tab open after form validation error' do
             collision_project = create(:project, name: 'test-name-collision', namespace: user.namespace)
 

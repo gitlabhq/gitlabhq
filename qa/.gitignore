@@ -3,3 +3,4 @@ tmp/
 .tool-versions
 .ruby-gemset
 urls.yml
+reports/

@@ -86,7 +86,7 @@ module DesignManagement
       def with_temporary_branch(&block)
         target_repository.create_if_not_exists
 
-        create_master_branch! if target_repository.empty?
+        create_default_branch! if target_repository.empty?
         create_temporary_branch!
 
         yield
@@ -95,9 +95,9 @@ module DesignManagement
       end
 
       # A project that does not have any designs will have a blank design
-      # repository. To create a temporary branch from `master` we need
-      # create `master` first by adding a file to it.
-      def create_master_branch!
+      # repository. To create a temporary branch from default branch we need to
+      # create default branch first by adding a file to it.
+      def create_default_branch!
         target_repository.create_file(
           git_user,
           ".CopyDesignCollectionService_#{Time.now.to_i}",
@@ -121,7 +121,7 @@ module DesignManagement
         target_repository.rm_branch(git_user, temporary_branch)
       end
 
-      # Merge the temporary branch containing the commits to `master`
+      # Merge the temporary branch containing the commits to default branch
       # and update the state of the target_design_collection.
       def finalize!
         source_sha = shas.last

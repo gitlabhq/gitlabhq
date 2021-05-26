@@ -163,6 +163,8 @@ module Ci
       numericality: { greater_than_or_equal_to: 0.0,
                       message: 'needs to be non-negative' }
 
+    validates :config, json_schema: { filename: 'ci_runner_config' }
+
     # Searches for runners matching the given query.
     #
     # This method uses ILIKE on PostgreSQL.
@@ -353,7 +355,7 @@ module Ci
     end
 
     def heartbeat(values)
-      values = values&.slice(:version, :revision, :platform, :architecture, :ip_address) || {}
+      values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config) || {}
       values[:contacted_at] = Time.current
 
       cache_attributes(values)

@@ -18,10 +18,6 @@ module Gitlab
         Feature.enabled?(:ci_pipeline_status_omit_commit_sha_in_cache_key, project, default_enabled: true)
       end
 
-      def self.merge_base_pipeline_for_metrics_comparison?(project)
-        Feature.enabled?(:merge_base_pipeline_for_metrics_comparison, project, default_enabled: :yaml)
-      end
-
       # NOTE: The feature flag `disallow_to_create_merge_request_pipelines_in_target_project`
       # is a safe switch to disable the feature for a particular project when something went wrong,
       # therefore it's not supposed to be enabled by default.

@@ -24645,9 +24645,6 @@ msgstr ""
 msgid "Please provide a valid URL"
 msgstr ""
 
-msgid "Please provide a valid URL ending with .git"
-msgstr ""
-
 msgid "Please provide a valid URL."
 msgstr ""
 

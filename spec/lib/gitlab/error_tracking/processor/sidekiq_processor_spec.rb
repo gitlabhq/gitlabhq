@@ -95,7 +95,15 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
   end
 
   describe '.call' do
-    let(:event) { Raven::Event.new(wrapped_value) }
+    let(:required_options) do
+      {
+        configuration: Raven.configuration,
+        context: Raven.context,
+        breadcrumbs: Raven.breadcrumbs
+      }
+    end
+
+    let(:event) { Raven::Event.new(required_options.merge(wrapped_value)) }
     let(:result_hash) { described_class.call(event).to_hash }
 
     context 'when there is Sidekiq data' do

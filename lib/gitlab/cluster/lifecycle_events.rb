@@ -162,9 +162,6 @@ module Gitlab
           # Sidekiq doesn't fork
           return false if Gitlab::Runtime.sidekiq?
 
-          # Unicorn always forks
-          return true if Gitlab::Runtime.unicorn?
-
           # Puma sometimes forks
           return true if in_clustered_puma?
 

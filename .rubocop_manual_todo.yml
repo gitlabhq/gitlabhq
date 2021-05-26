@@ -1309,7 +1309,6 @@ RSpec/AnyInstanceOf:
     - 'spec/support/shared_examples/workers/authorized_projects_worker_shared_example.rb'
     - 'spec/support/shared_examples/workers/reactive_cacheable_shared_examples.rb'
     - 'spec/support/snowplow.rb'
-    - 'spec/support/unicorn.rb'
     - 'spec/tasks/gitlab/cleanup_rake_spec.rb'
     - 'spec/tasks/gitlab/container_registry_rake_spec.rb'
     - 'spec/tasks/gitlab/db_rake_spec.rb'

@@ -25,6 +25,7 @@ module API
         return get_runner_ip unless params['info'].present?
 
         attributes_for_keys(%w(name version revision platform architecture), params['info'])
+          .merge(get_runner_config_from_request)
           .merge(get_runner_ip)
       end
 
@@ -90,6 +91,12 @@ module API
 
       def track_ci_minutes_usage!(_build, _runner)
         # noop: overridden in EE
+      end
+
+      private
+
+      def get_runner_config_from_request
+        { config: attributes_for_keys(%w(gpus), params.dig('info', 'config')) }
       end
     end
   end
