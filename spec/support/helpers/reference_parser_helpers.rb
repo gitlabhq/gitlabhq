@@ -21,6 +21,11 @@ module ReferenceParserHelpers
       end
 
       control = record_queries.call(control_links)
+
+      create(:group_member, group: project.group) if project.group
+      create(:project_member, project: project)
+      create(:project_group_link, project: project)
+
       actual = record_queries.call(actual_links)
 
       expect(actual.count).to be <= control.count

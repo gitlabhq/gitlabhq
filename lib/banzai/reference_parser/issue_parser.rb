@@ -66,14 +66,7 @@ module Banzai
               # These associations are primarily used for checking permissions.
               # Eager loading these ensures we don't end up running dozens of
               # queries in this process.
-              project: [
-                { namespace: :owner },
-                { group: [:owners, :group_members] },
-                :invited_groups,
-                :project_members,
-                :project_feature,
-                :route
-              ]
+              project: [:namespace, :project_feature, :route]
             }
           ),
           self.class.data_attribute

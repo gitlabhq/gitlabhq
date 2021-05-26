@@ -90,6 +90,5 @@ module FeatureFlagHelpers
 
   def expect_user_to_see_feature_flags_index_page
     expect(page).to have_text('Feature Flags')
-    expect(page).to have_text('Lists')
   end
 end

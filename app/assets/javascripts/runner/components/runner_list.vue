@@ -95,8 +95,8 @@ export default {
       stacked="md"
       fixed
     >
-      <template #table-busy>
-        <gl-skeleton-loader />
+      <template v-if="!runners.length" #table-busy>
+        <gl-skeleton-loader v-for="i in 4" :key="i" />
       </template>
 
       <template #cell(type)="{ item }">

@@ -1,16 +1,14 @@
-import { GlAlert, GlBadge, GlEmptyState, GlLink, GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import FeatureFlagsTab from '~/feature_flags/components/feature_flags_tab.vue';
+import EmptyState from '~/feature_flags/components/empty_state.vue';
 
 const DEFAULT_PROPS = {
-  title: 'test',
-  count: 5,
   alerts: ['an alert', 'another alert'],
   isLoading: false,
   loadingLabel: 'test loading',
   errorState: false,
   errorTitle: 'test title',
-  emptyState: true,
+  emptyState: false,
   emptyTitle: 'test empty',
   emptyDescription: 'empty description',
 };
@@ -27,13 +25,10 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
     mount(
       {
         components: {
-          GlTabs,
-          FeatureFlagsTab,
+          EmptyState,
         },
         render(h) {
-          return h(GlTabs, [
-            h(FeatureFlagsTab, { props: this.$attrs, on: this.$listeners }, this.$slots.default),
-          ]);
+          return h(EmptyState, { props: this.$attrs, on: this.$listeners }, this.$slots.default);
         },
       },
       {
@@ -72,7 +67,7 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
     it('should emit a dismiss event for a dismissed alert', () => {
       alerts.at(0).vm.$emit('dismiss');
 
-      expect(wrapper.find(FeatureFlagsTab).emitted('dismissAlert')).toEqual([[0]]);
+      expect(wrapper.find(EmptyState).emitted('dismissAlert')).toEqual([[0]]);
     });
   });
 
@@ -136,32 +131,6 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
     it('should display the passed slot', () => {
       expect(slot.exists()).toBe(true);
       expect(slot.text()).toBe('testing');
-    });
-  });
-
-  describe('count', () => {
-    it('should display a count if there is one', async () => {
-      wrapper = factory();
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.find(GlBadge).text()).toBe(DEFAULT_PROPS.count.toString());
-    });
-    it('should display 0 if there is no count', async () => {
-      wrapper = factory({ count: undefined });
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.find(GlBadge).text()).toBe('0');
-    });
-  });
-
-  describe('title', () => {
-    it('should show the title', async () => {
-      wrapper = factory();
-      await wrapper.vm.$nextTick();
-
-      expect(wrapper.find('[data-testid="feature-flags-tab-title"]').text()).toBe(
-        DEFAULT_PROPS.title,
-      );
     });
   });
 });

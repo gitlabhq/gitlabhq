@@ -146,7 +146,7 @@ module Tooling
         end
 
         if ee_changes.any? && ee_changelog? && required_reasons.include?(:db_changes)
-          check_result.warning("This MR has a Changelog commit with the `EE: true` trailer, but there are database changes which [requires](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry) the Changelog commiot to not have the `EE: true` trailer. Consider removing the `EE: true` trailer.")
+          check_result.warning("This MR has a Changelog commit with the `EE: true` trailer, but there are database changes which [requires](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry) the Changelog commit to not have the `EE: true` trailer. Consider removing the `EE: true` trailer.")
         end
 
         check_result

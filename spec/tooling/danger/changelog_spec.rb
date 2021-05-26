@@ -105,7 +105,7 @@ RSpec.describe Tooling::Danger::Changelog do
         context "and there are DB changes" do
           let(:foss_change) { change_class.new('db/migrate/foo.rb', :added, :migration) }
 
-          it { is_expected.to have_attributes(warnings: ["This MR has a Changelog commit with the `EE: true` trailer, but there are database changes which [requires](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry) the Changelog commiot to not have the `EE: true` trailer. Consider removing the `EE: true` trailer."]) }
+          it { is_expected.to have_attributes(warnings: ["This MR has a Changelog commit with the `EE: true` trailer, but there are database changes which [requires](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry) the Changelog commit to not have the `EE: true` trailer. Consider removing the `EE: true` trailer."]) }
         end
       end
     end

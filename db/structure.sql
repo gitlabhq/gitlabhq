@@ -18108,7 +18108,8 @@ ALTER SEQUENCE sprints_id_seq OWNED BY sprints.id;
 CREATE TABLE status_check_responses (
     id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
-    external_approval_rule_id bigint NOT NULL
+    external_approval_rule_id bigint NOT NULL,
+    sha bytea NOT NULL
 );
 
 CREATE SEQUENCE status_check_responses_id_seq

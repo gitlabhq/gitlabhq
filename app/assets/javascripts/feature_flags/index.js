@@ -22,7 +22,7 @@ export default () => {
     unleashApiUrl,
     canUserAdminFeatureFlag,
     newFeatureFlagPath,
-    newUserListPath,
+    userListPath,
     featureFlagsLimitExceeded,
     featureFlagsLimit,
   } = el.dataset;
@@ -40,9 +40,9 @@ export default () => {
       csrfToken: csrf.token,
       canUserConfigure: canUserAdminFeatureFlag !== undefined,
       newFeatureFlagPath,
-      newUserListPath,
       featureFlagsLimitExceeded: featureFlagsLimitExceeded !== undefined,
       featureFlagsLimit,
+      userListPath,
     },
     render(createElement) {
       return createElement(FeatureFlagsComponent);

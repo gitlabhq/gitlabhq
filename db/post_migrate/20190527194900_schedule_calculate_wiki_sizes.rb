@@ -18,12 +18,12 @@ class ScheduleCalculateWikiSizes < ActiveRecord::Migration[5.0]
 
   disable_ddl_transaction!
 
+  # Disabling this old migration because it should already run
+  # in 14.0. This will allow us to remove some `technical debt`
+  # in ProjectStatistics model, because of some columns
+  # not present by the time the migration is run.
   def up
-    queue_background_migration_jobs_by_range_at_intervals(
-      ::ScheduleCalculateWikiSizes::ProjectStatistics.without_wiki_size,
-      MIGRATION,
-      BATCH_TIME,
-      batch_size: BATCH_SIZE)
+    # no-op
   end
 
   def down

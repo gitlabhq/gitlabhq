@@ -19,21 +19,32 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
 
   it_behaves_like 'has nav sidebar'
 
-  describe 'Project information' do
+  describe 'Project context' do
     it 'has a link to the project path' do
       render
 
-      expect(rendered).to have_link('Project information', href: project_path(project), class: %w(shortcuts-project rspec-project-link))
+      expect(rendered).to have_link(project.name, href: project_path(project), class: %w(shortcuts-project rspec-project-link))
+      expect(rendered).to have_selector("[aria-label=\"#{project.name}\"]")
+    end
+  end
+
+  describe 'Project information' do
+    it 'has a link to the project activity path' do
+      render
+
+      expect(rendered).to have_link('Project information', href: activity_project_path(project), class: %w(shortcuts-project-information))
       expect(rendered).to have_selector('[aria-label="Project information"]')
     end
 
     context 'when feature flag :sidebar_refactor is disabled' do
-      it 'has a link to the project path' do
+      before do
         stub_feature_flags(sidebar_refactor: false)
+      end
 
+      it 'has a link to the project path' do
         render
 
-        expect(rendered).to have_link('Project overview', href: project_path(project), class: %w(shortcuts-project rspec-project-link))
+        expect(rendered).to have_link('Project overview', href: project_path(project), class: %w(shortcuts-project))
         expect(rendered).to have_selector('[aria-label="Project overview"]')
       end
     end
@@ -89,7 +100,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       it 'has a link to the labels path' do
         render
 
-        expect(page.at_css('.shortcuts-project').parent.css('[aria-label="Labels"]')).not_to be_empty
+        expect(page.at_css('.shortcuts-project-information').parent.css('[aria-label="Labels"]')).not_to be_empty
         expect(rendered).to have_link('Labels', href: project_labels_path(project))
       end
 
@@ -110,7 +121,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       it 'has a link to the members page' do
         render
 
-        expect(page.at_css('.shortcuts-project').parent.css('[aria-label="Members"]')).not_to be_empty
+        expect(page.at_css('.shortcuts-project-information').parent.css('[aria-label="Members"]')).not_to be_empty
         expect(rendered).to have_link('Members', href: project_project_members_path(project))
       end
 

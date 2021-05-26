@@ -6,6 +6,9 @@ class Projects::FeatureFlagsUserListsController < Projects::ApplicationControlle
 
   feature_category :feature_flags
 
+  def index
+  end
+
   def new
   end
 

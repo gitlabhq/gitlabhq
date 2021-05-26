@@ -53,18 +53,10 @@ module Emails
 
       return unless member_exists?
 
-      subject_line =
-        if member.created_by
-          subject(s_("MemberInviteEmail|%{member_name} invited you to join GitLab") % { member_name: member.created_by.name })
-        else
-          subject(s_("MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}") % { project_or_group: member_source.human_name, project_or_group_name: member_source.model_name.singular })
-        end
-
-      member_email_with_layout(
-        to: member.invite_email,
-        subject: subject_line,
-        layout: 'unknown_user_mailer'
-      )
+      mail(to: member.invite_email, subject: invite_email_subject, **invite_email_headers) do |format|
+        format.html { render layout: 'unknown_user_mailer' }
+        format.text { render layout: 'unknown_user_mailer' }
+      end
     end
 
     def member_invited_reminder_email(member_source_type, member_id, token, reminder_index)
@@ -148,6 +140,25 @@ module Emails
     end
 
     private
+
+    def invite_email_subject
+      if member.created_by
+        subject(s_("MemberInviteEmail|%{member_name} invited you to join GitLab") % { member_name: member.created_by.name })
+      else
+        subject(s_("MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}") % { project_or_group: member_source.human_name, project_or_group_name: member_source.model_name.singular })
+      end
+    end
+
+    def invite_email_headers
+      if Gitlab.dev_env_or_com?
+        {
+          'X-Mailgun-Tag' => 'invite_email',
+          'X-Mailgun-Variables' => { 'invite_token' => @token }.to_json
+        }
+      else
+        {}
+      end
+    end
 
     def member_exists?
       Gitlab::AppLogger.info("Tried to send an email invitation for a deleted group. Member id: #{@member_id}") if member.blank?

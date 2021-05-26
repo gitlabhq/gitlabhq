@@ -143,4 +143,41 @@ RSpec.describe PreferencesHelper do
         .and_return(double('user', messages))
     end
   end
+
+  describe '#integration_views' do
+    let(:gitpod_url) { 'http://gitpod.test' }
+
+    before do
+      allow(Gitlab::CurrentSettings).to receive(:gitpod_enabled).and_return(gitpod_enabled)
+      allow(Gitlab::CurrentSettings).to receive(:gitpod_url).and_return(gitpod_url)
+    end
+
+    context 'when Gitpod is not enabled' do
+      let(:gitpod_enabled) { false }
+
+      it 'does not include Gitpod integration' do
+        expect(helper.integration_views).to be_empty
+      end
+    end
+
+    context 'when Gitpod is enabled' do
+      let(:gitpod_enabled) { true }
+
+      it 'includes Gitpod integration' do
+        expect(helper.integration_views[0][:name]).to eq 'gitpod'
+      end
+
+      it 'returns the Gitpod url configured in settings' do
+        expect(helper.integration_views[0][:message_url]).to eq gitpod_url
+      end
+
+      context 'when Gitpod url is not set' do
+        let(:gitpod_url) { '' }
+
+        it 'returns the Gitpod default url' do
+          expect(helper.integration_views[0][:message_url]).to eq 'https://gitpod.io/'
+        end
+      end
+    end
+  end
 end

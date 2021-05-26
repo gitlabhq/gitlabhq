@@ -94,18 +94,14 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_storage_size
-    storage_size = repository_size + wiki_size + lfs_objects_size + build_artifacts_size + packages_size
-    # The `snippets_size` column was added on 20200622095419 but db/post_migrate/20190527194900_schedule_calculate_wiki_sizes.rb
-    # might try to update project statistics before the `snippets_size` column has been created.
-    storage_size += snippets_size if self.class.column_names.include?('snippets_size')
-
-    # The `pipeline_artifacts_size` column was added on 20200817142800 but db/post_migrate/20190527194900_schedule_calculate_wiki_sizes.rb
-    # might try to update project statistics before the `pipeline_artifacts_size` column has been created.
-    storage_size += pipeline_artifacts_size if self.class.column_names.include?('pipeline_artifacts_size')
-
-    # The `uploads_size` column was added on 20201105021637 but db/post_migrate/20190527194900_schedule_calculate_wiki_sizes.rb
-    # might try to update project statistics before the `uploads_size` column has been created.
-    storage_size += uploads_size if self.class.column_names.include?('uploads_size')
+    storage_size = repository_size +
+                   wiki_size +
+                   lfs_objects_size +
+                   build_artifacts_size +
+                   packages_size +
+                   snippets_size +
+                   pipeline_artifacts_size +
+                   uploads_size
 
     self.storage_size = storage_size
   end

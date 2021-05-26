@@ -16,6 +16,39 @@ RSpec.describe Projects::FeatureFlagsUserListsController do
     { namespace_id: project.namespace, project_id: project }.merge(extra_params)
   end
 
+  describe 'GET #index' do
+    it 'redirects when the user is unauthenticated' do
+      get(:index, params: request_params)
+
+      expect(response).to redirect_to(new_user_session_path)
+    end
+
+    it 'returns not found if the user does not belong to the project' do
+      user = create(:user)
+      sign_in(user)
+
+      get(:index, params: request_params)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns not found for a reporter' do
+      sign_in(reporter)
+
+      get(:index, params: request_params)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'renders the new page for a developer' do
+      sign_in(developer)
+
+      get(:index, params: request_params)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
   describe 'GET #new' do
     it 'redirects when the user is unauthenticated' do
       get(:new, params: request_params)

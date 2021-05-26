@@ -21,9 +21,6 @@ export const fetchUserIdParams = property(['parameters', 'userIds']);
 export const NEW_VERSION_FLAG = 'new_version_flag';
 export const LEGACY_FLAG = 'legacy_flag';
 
-export const FEATURE_FLAG_SCOPE = 'featureFlags';
-export const USER_LIST_SCOPE = 'userLists';
-
 export const EMPTY_PARAMETERS = { parameters: {}, userListId: undefined };
 
 export const STRATEGY_SELECTIONS = [

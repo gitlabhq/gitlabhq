@@ -1,5 +1,5 @@
-import { GlLink, GlSkeletonLoader } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlLink, GlTable, GlSkeletonLoader } from '@gitlab/ui';
+import { mount, shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
@@ -13,14 +13,15 @@ describe('RunnerList', () => {
 
   const findActiveRunnersMessage = () => wrapper.findByTestId('active-runners-message');
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findTable = () => wrapper.findComponent(GlTable);
   const findHeaders = () => wrapper.findAll('th');
   const findRows = () => wrapper.findAll('[data-testid^="runner-row-"]');
   const findCell = ({ row = 0, fieldKey }) =>
     findRows().at(row).find(`[data-testid="td-${fieldKey}"]`);
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {} } = {}, mountFn = shallowMount) => {
     wrapper = extendedWrapper(
-      mount(RunnerList, {
+      mountFn(RunnerList, {
         propsData: {
           runners: mockRunners,
           activeRunnersCount: mockActiveRunnersCount,
@@ -31,7 +32,7 @@ describe('RunnerList', () => {
   };
 
   beforeEach(() => {
-    createComponent();
+    createComponent({}, mount);
   });
 
   afterEach(() => {
@@ -104,12 +105,21 @@ describe('RunnerList', () => {
   });
 
   describe('When data is loading', () => {
-    beforeEach(() => {
-      createComponent({ props: { loading: true } });
+    it('shows a busy state', () => {
+      createComponent({ props: { runners: [], loading: true } });
+      expect(findTable().attributes('busy')).toBeTruthy();
     });
 
-    it('shows an skeleton loader', () => {
+    it('when there are no runners, shows an skeleton loader', () => {
+      createComponent({ props: { runners: [], loading: true } }, mount);
+
       expect(findSkeletonLoader().exists()).toBe(true);
+    });
+
+    it('when there are runners, shows a busy indicator skeleton loader', () => {
+      createComponent({ props: { loading: true } }, mount);
+
+      expect(findSkeletonLoader().exists()).toBe(false);
     });
   });
 });

@@ -271,7 +271,8 @@ class Namespace < ApplicationRecord
   # Includes projects from this namespace and projects from all subgroups
   # that belongs to this namespace
   def all_projects
-    namespace = user? ? self : self_and_descendants
+    namespace = user? ? self : self_and_descendant_ids
+
     Project.where(namespace: namespace)
   end
 

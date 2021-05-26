@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlModalDirective, GlSprintf, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlButton, GlModalDirective, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { mapState, mapActions } from 'vuex';
 
@@ -9,50 +9,40 @@ import {
   historyPushState,
 } from '~/lib/utils/common_utils';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
-import { FEATURE_FLAG_SCOPE, USER_LIST_SCOPE } from '../constants';
 import ConfigureFeatureFlagsModal from './configure_feature_flags_modal.vue';
-import FeatureFlagsTab from './feature_flags_tab.vue';
+import EmptyState from './empty_state.vue';
 import FeatureFlagsTable from './feature_flags_table.vue';
-import UserListsTable from './user_lists_table.vue';
-
-const SCOPES = { FEATURE_FLAG_SCOPE, USER_LIST_SCOPE };
 
 export default {
   components: {
     ConfigureFeatureFlagsModal,
-    FeatureFlagsTab,
+    EmptyState,
     FeatureFlagsTable,
     GlAlert,
+    GlBadge,
     GlButton,
     GlSprintf,
-    GlTabs,
     TablePagination,
-    UserListsTable,
   },
   directives: {
     GlModal: GlModalDirective,
   },
   inject: {
-    newUserListPath: { default: '' },
+    userListPath: { default: '' },
     newFeatureFlagPath: { default: '' },
     canUserConfigure: {},
     featureFlagsLimitExceeded: {},
     featureFlagsLimit: {},
   },
   data() {
-    const scope = getParameterByName('scope') || SCOPES.FEATURE_FLAG_SCOPE;
     return {
-      scope,
       page: getParameterByName('page') || '1',
-      isUserListAlertDismissed: false,
       shouldShowFeatureFlagsLimitWarning: this.featureFlagsLimitExceeded,
-      selectedTab: Object.values(SCOPES).indexOf(scope),
     };
   },
   computed: {
     ...mapState([
-      FEATURE_FLAG_SCOPE,
-      USER_LIST_SCOPE,
+      'featureFlags',
       'alerts',
       'count',
       'pageInfo',
@@ -69,64 +59,41 @@ export default {
     canUserRotateToken() {
       return this.rotateInstanceIdPath !== '';
     },
-    currentlyDisplayedData() {
-      return this.dataForScope(this.scope);
-    },
     shouldRenderPagination() {
       return (
         !this.isLoading &&
         !this.hasError &&
-        this.currentlyDisplayedData.length > 0 &&
-        this.pageInfo[this.scope].total > this.pageInfo[this.scope].perPage
+        this.featureFlags.length > 0 &&
+        this.pageInfo.total > this.pageInfo.perPage
       );
     },
     shouldShowEmptyState() {
-      return !this.isLoading && !this.hasError && this.currentlyDisplayedData.length === 0;
+      return !this.isLoading && !this.hasError && this.featureFlags.length === 0;
     },
     shouldRenderErrorState() {
       return this.hasError && !this.isLoading;
     },
     shouldRenderFeatureFlags() {
-      return this.shouldRenderTable(SCOPES.FEATURE_FLAG_SCOPE);
-    },
-    shouldRenderUserLists() {
-      return this.shouldRenderTable(SCOPES.USER_LIST_SCOPE);
+      return !this.isLoading && this.featureFlags.length > 0 && !this.hasError;
     },
     hasNewPath() {
       return !isEmpty(this.newFeatureFlagPath);
     },
   },
   created() {
-    this.setFeatureFlagsOptions({ scope: this.scope, page: this.page });
+    this.setFeatureFlagsOptions({ page: this.page });
     this.fetchFeatureFlags();
-    this.fetchUserLists();
   },
   methods: {
     ...mapActions([
       'setFeatureFlagsOptions',
       'fetchFeatureFlags',
-      'fetchUserLists',
       'rotateInstanceId',
       'toggleFeatureFlag',
-      'deleteUserList',
       'clearAlert',
     ]),
-    onChangeTab(scope) {
-      this.scope = scope;
-      this.updateFeatureFlagOptions({
-        scope,
-        page: '1',
-      });
-    },
-    onFeatureFlagsTab() {
-      this.onChangeTab(SCOPES.FEATURE_FLAG_SCOPE);
-    },
-    onUserListsTab() {
-      this.onChangeTab(SCOPES.USER_LIST_SCOPE);
-    },
     onChangePage(page) {
       this.updateFeatureFlagOptions({
-        scope: this.scope,
         /* URLS parameters are strings, we need to parse to match types */
         page: Number(page).toString(),
       });
@@ -141,22 +108,7 @@ export default {
 
       historyPushState(buildUrlWithCurrentLocation(`?${queryString}`));
       this.setFeatureFlagsOptions(parameters);
-      if (this.scope === SCOPES.FEATURE_FLAG_SCOPE) {
-        this.fetchFeatureFlags();
-      } else {
-        this.fetchUserLists();
-      }
-    },
-    shouldRenderTable(scope) {
-      return (
-        !this.isLoading &&
-        this.dataForScope(scope).length > 0 &&
-        !this.hasError &&
-        this.scope === scope
-      );
-    },
-    dataForScope(scope) {
-      return this[scope];
+      this.fetchFeatureFlags();
     },
     onDismissFeatureFlagsLimitWarning() {
       this.shouldShowFeatureFlagsLimitWarning = false;
@@ -200,6 +152,16 @@ export default {
     <div :class="topAreaBaseClasses">
       <div class="gl-display-flex gl-flex-direction-column gl-md-display-none!">
         <gl-button
+          v-if="userListPath"
+          :href="userListPath"
+          variant="confirm"
+          category="tertiary"
+          class="gl-mb-3"
+          data-testid="ff-new-list-button"
+        >
+          {{ s__('FeatureFlags|View user lists') }}
+        </gl-button>
+        <gl-button
           v-if="canUserConfigure"
           v-gl-modal="'configure-feature-flags'"
           variant="info"
@@ -212,17 +174,6 @@ export default {
         </gl-button>
 
         <gl-button
-          v-if="newUserListPath"
-          :href="newUserListPath"
-          variant="confirm"
-          category="secondary"
-          class="gl-mb-3"
-          data-testid="ff-new-list-button"
-        >
-          {{ s__('FeatureFlags|New user list') }}
-        </gl-button>
-
-        <gl-button
           v-if="hasNewPath"
           :href="featureFlagsLimitExceeded ? '' : newFeatureFlagPath"
           variant="confirm"
@@ -232,101 +183,70 @@ export default {
           {{ s__('FeatureFlags|New feature flag') }}
         </gl-button>
       </div>
-      <gl-tabs v-model="selectedTab" class="gl-align-items-center gl-w-full">
-        <feature-flags-tab
-          :title="s__('FeatureFlags|Feature Flags')"
-          :count="count.featureFlags"
-          :alerts="alerts"
-          :is-loading="isLoading"
-          :loading-label="s__('FeatureFlags|Loading feature flags')"
-          :error-state="shouldRenderErrorState"
-          :error-title="s__(`FeatureFlags|There was an error fetching the feature flags.`)"
-          :empty-state="shouldShowEmptyState"
-          :empty-title="s__('FeatureFlags|Get started with feature flags')"
-          :empty-description="
-            s__(
-              'FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality.',
-            )
-          "
-          data-testid="feature-flags-tab"
-          @dismissAlert="clearAlert"
-          @changeTab="onFeatureFlagsTab"
+      <div
+        class="gl-display-flex gl-align-items-baseline gl-flex-direction-row gl-justify-content-space-between gl-mt-6"
+      >
+        <div class="gl-display-flex gl-align-items-center">
+          <h2 data-testid="feature-flags-tab-title" class="gl-font-size-h2 gl-my-0">
+            {{ s__('FeatureFlags|Feature Flags') }}
+          </h2>
+          <gl-badge v-if="count" class="gl-ml-4">{{ count }}</gl-badge>
+        </div>
+        <div
+          class="gl-display-none gl-md-display-flex gl-align-items-center gl-justify-content-end"
         >
-          <feature-flags-table
-            v-if="shouldRenderFeatureFlags"
-            :feature-flags="featureFlags"
-            @toggle-flag="toggleFeatureFlag"
-          />
-        </feature-flags-tab>
-        <feature-flags-tab
-          :title="s__('FeatureFlags|User Lists')"
-          :count="count.userLists"
-          :alerts="alerts"
-          :is-loading="isLoading"
-          :loading-label="s__('FeatureFlags|Loading user lists')"
-          :error-state="shouldRenderErrorState"
-          :error-title="s__(`FeatureFlags|There was an error fetching the user lists.`)"
-          :empty-state="shouldShowEmptyState"
-          :empty-title="s__('FeatureFlags|Get started with user lists')"
-          :empty-description="
-            s__(
-              'FeatureFlags|User lists allow you to define a set of users to use with Feature Flags.',
-            )
-          "
-          data-testid="user-lists-tab"
-          @dismissAlert="clearAlert"
-          @changeTab="onUserListsTab"
-        >
-          <user-lists-table
-            v-if="shouldRenderUserLists"
-            :user-lists="userLists"
-            @delete="deleteUserList"
-          />
-        </feature-flags-tab>
-        <template #tabs-end>
-          <li
-            class="gl-display-none gl-md-display-flex gl-align-items-center gl-flex-fill-1 gl-justify-content-end"
+          <gl-button
+            v-if="userListPath"
+            :href="userListPath"
+            variant="confirm"
+            category="tertiary"
+            class="gl-mb-0 gl-mr-4"
+            data-testid="ff-user-list-button"
           >
-            <gl-button
-              v-if="canUserConfigure"
-              v-gl-modal="'configure-feature-flags'"
-              variant="info"
-              category="secondary"
-              data-qa-selector="configure_feature_flags_button"
-              data-testid="ff-configure-button"
-              class="gl-mb-0 gl-mr-4"
-            >
-              {{ s__('FeatureFlags|Configure') }}
-            </gl-button>
+            {{ s__('FeatureFlags|View user lists') }}
+          </gl-button>
+          <gl-button
+            v-if="canUserConfigure"
+            v-gl-modal="'configure-feature-flags'"
+            variant="info"
+            category="secondary"
+            data-qa-selector="configure_feature_flags_button"
+            data-testid="ff-configure-button"
+            class="gl-mb-0 gl-mr-4"
+          >
+            {{ s__('FeatureFlags|Configure') }}
+          </gl-button>
 
-            <gl-button
-              v-if="newUserListPath"
-              :href="newUserListPath"
-              variant="confirm"
-              category="secondary"
-              class="gl-mb-0 gl-mr-4"
-              data-testid="ff-new-list-button"
-            >
-              {{ s__('FeatureFlags|New user list') }}
-            </gl-button>
-
-            <gl-button
-              v-if="hasNewPath"
-              :href="featureFlagsLimitExceeded ? '' : newFeatureFlagPath"
-              variant="confirm"
-              data-testid="ff-new-button"
-              @click="onNewFeatureFlagCLick"
-            >
-              {{ s__('FeatureFlags|New feature flag') }}
-            </gl-button>
-          </li>
-        </template>
-      </gl-tabs>
+          <gl-button
+            v-if="hasNewPath"
+            :href="featureFlagsLimitExceeded ? '' : newFeatureFlagPath"
+            variant="confirm"
+            data-testid="ff-new-button"
+            @click="onNewFeatureFlagCLick"
+          >
+            {{ s__('FeatureFlags|New feature flag') }}
+          </gl-button>
+        </div>
+      </div>
+      <empty-state
+        :alerts="alerts"
+        :is-loading="isLoading"
+        :loading-label="s__('FeatureFlags|Loading feature flags')"
+        :error-state="shouldRenderErrorState"
+        :error-title="s__(`FeatureFlags|There was an error fetching the feature flags.`)"
+        :empty-state="shouldShowEmptyState"
+        :empty-title="s__('FeatureFlags|Get started with feature flags')"
+        :empty-description="
+          s__(
+            'FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality.',
+          )
+        "
+        data-testid="feature-flags-tab"
+        @dismissAlert="clearAlert"
+      >
+        <feature-flags-table :feature-flags="featureFlags" @toggle-flag="toggleFeatureFlag" />
+      </empty-state>
     </div>
-    <table-pagination
-      v-if="shouldRenderPagination"
-      :change="onChangePage"
-      :page-info="pageInfo[scope]"
-    />
+    <table-pagination v-if="shouldRenderPagination" :change="onChangePage" :page-info="pageInfo" />
   </div>
 </template>

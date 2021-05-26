@@ -71,8 +71,16 @@ RSpec.shared_context 'project navbar structure' do
     ]
   end
 
+  let(:project_context_nav_item) do
+    {
+      nav_item: "#{project.name[0, 1].upcase} #{project.name}",
+      nav_sub_items: []
+    }
+  end
+
   let(:structure) do
     [
+      project_context_nav_item,
       project_information_nav_item,
       {
         nav_item: _('Repository'),

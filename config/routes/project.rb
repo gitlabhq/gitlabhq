@@ -403,7 +403,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resource :feature_flags_client, only: [] do
           post :reset_token
         end
-        resources :feature_flags_user_lists, param: :iid, only: [:new, :edit, :show]
+        resources :feature_flags_user_lists, param: :iid, only: [:index, :new, :edit, :show]
 
         get '/schema/:branch/*filename',
           to: 'web_ide_schemas#show',

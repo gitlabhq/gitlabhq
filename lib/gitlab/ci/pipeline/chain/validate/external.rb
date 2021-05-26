@@ -89,7 +89,9 @@ module Gitlab
                   id: current_user.id,
                   username: current_user.username,
                   email: current_user.email,
-                  created_at: current_user.created_at&.iso8601
+                  created_at: current_user.created_at&.iso8601,
+                  current_sign_in_ip: current_user.current_sign_in_ip,
+                  last_sign_in_ip: current_user.last_sign_in_ip
                 },
                 pipeline: {
                   sha: pipeline.sha,

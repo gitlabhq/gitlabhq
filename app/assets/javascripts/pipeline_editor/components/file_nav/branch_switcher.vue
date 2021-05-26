@@ -146,7 +146,6 @@ export default {
 <template>
   <gl-dropdown
     v-if="showBranchSwitcher"
-    class="gl-ml-2"
     :header-text="$options.i18n.dropdownHeader"
     :text="currentBranch"
     icon="branch"

@@ -1,4 +1,3 @@
-import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import * as types from './mutation_types';
 
@@ -26,19 +25,6 @@ export const receiveFeatureFlagsSuccess = ({ commit }, response) =>
   commit(types.RECEIVE_FEATURE_FLAGS_SUCCESS, response);
 export const receiveFeatureFlagsError = ({ commit }) => commit(types.RECEIVE_FEATURE_FLAGS_ERROR);
 
-export const fetchUserLists = ({ state, dispatch }) => {
-  dispatch('requestUserLists');
-
-  return Api.fetchFeatureFlagUserLists(state.projectId, state.options.page)
-    .then(({ data, headers }) => dispatch('receiveUserListsSuccess', { data, headers }))
-    .catch(() => dispatch('receiveUserListsError'));
-};
-
-export const requestUserLists = ({ commit }) => commit(types.REQUEST_USER_LISTS);
-export const receiveUserListsSuccess = ({ commit }, response) =>
-  commit(types.RECEIVE_USER_LISTS_SUCCESS, response);
-export const receiveUserListsError = ({ commit }) => commit(types.RECEIVE_USER_LISTS_ERROR);
-
 export const toggleFeatureFlag = ({ dispatch }, flag) => {
   dispatch('updateFeatureFlag', flag);
 
@@ -56,26 +42,6 @@ export const receiveUpdateFeatureFlagSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_UPDATE_FEATURE_FLAG_SUCCESS, data);
 export const receiveUpdateFeatureFlagError = ({ commit }, id) =>
   commit(types.RECEIVE_UPDATE_FEATURE_FLAG_ERROR, id);
-
-export const deleteUserList = ({ state, dispatch }, list) => {
-  dispatch('requestDeleteUserList', list);
-
-  return Api.deleteFeatureFlagUserList(state.projectId, list.iid)
-    .then(() => dispatch('fetchUserLists'))
-    .catch((error) =>
-      dispatch('receiveDeleteUserListError', {
-        list,
-        error: error?.response?.data ?? error,
-      }),
-    );
-};
-
-export const requestDeleteUserList = ({ commit }, list) =>
-  commit(types.REQUEST_DELETE_USER_LIST, list);
-
-export const receiveDeleteUserListError = ({ commit }, { error, list }) => {
-  commit(types.RECEIVE_DELETE_USER_LIST_ERROR, { error, list });
-};
 
 export const rotateInstanceId = ({ state, dispatch }) => {
   dispatch('requestRotateInstanceId');

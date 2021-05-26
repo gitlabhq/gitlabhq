@@ -23,9 +23,9 @@ module Groups
     end
 
     def group_members
-      return [] unless noteable
+      return [] unless group
 
-      @group_members ||= sorted(noteable.group.direct_and_indirect_users)
+      @group_members ||= sorted(group.direct_and_indirect_users)
     end
   end
 end

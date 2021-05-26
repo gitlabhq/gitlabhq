@@ -146,7 +146,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def member_invited_email
-    Notify.member_invited_email('project', user.id, '1234').message
+    Notify.member_invited_email('project', member.id, '1234').message
   end
 
   def pages_domain_enabled_email

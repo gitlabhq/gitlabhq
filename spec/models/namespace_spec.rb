@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Namespace do
   include ProjectForksHelper
   include GitHelpers
+  include ReloadHelpers
 
   let!(:namespace) { create(:namespace, :with_namespace_settings) }
   let(:gitlab_shell) { Gitlab::Shell.new }
@@ -198,6 +199,8 @@ RSpec.describe Namespace do
     it { is_expected.to include_module(Namespaces::Traversal::Recursive) }
     it { is_expected.to include_module(Namespaces::Traversal::Linear) }
   end
+
+  it_behaves_like 'linear namespace traversal'
 
   context 'traversal_ids on create' do
     context 'default traversal_ids' do
@@ -1010,35 +1013,51 @@ RSpec.describe Namespace do
     end
   end
 
-  describe '#all_projects' do
+  shared_examples '#all_projects' do
     context 'when namespace is a group' do
-      let(:namespace) { create(:group) }
-      let(:child) { create(:group, parent: namespace) }
-      let!(:project1) { create(:project_empty_repo, namespace: namespace) }
-      let!(:project2) { create(:project_empty_repo, namespace: child) }
+      let_it_be(:namespace) { create(:group) }
+      let_it_be(:child) { create(:group, parent: namespace) }
+      let_it_be(:project1) { create(:project_empty_repo, namespace: namespace) }
+      let_it_be(:project2) { create(:project_empty_repo, namespace: child) }
+      let_it_be(:other_project) { create(:project_empty_repo) }
+
+      before do
+        reload_models(namespace, child)
+      end
 
       it { expect(namespace.all_projects.to_a).to match_array([project2, project1]) }
       it { expect(child.all_projects.to_a).to match_array([project2]) }
-
-      it 'queries for the namespace and its descendants' do
-        expect(Project).to receive(:where).with(namespace: [namespace, child])
-
-        namespace.all_projects
-      end
     end
 
     context 'when namespace is a user namespace' do
       let_it_be(:user) { create(:user) }
       let_it_be(:user_namespace) { create(:namespace, owner: user) }
       let_it_be(:project) { create(:project, namespace: user_namespace) }
+      let_it_be(:other_project) { create(:project_empty_repo) }
+
+      before do
+        reload_models(user_namespace)
+      end
 
       it { expect(user_namespace.all_projects.to_a).to match_array([project]) }
+    end
+  end
 
-      it 'only queries for the namespace itself' do
-        expect(Project).to receive(:where).with(namespace: user_namespace)
-
-        user_namespace.all_projects
+  describe '#all_projects' do
+    context 'with use_traversal_ids feature flag enabled' do
+      before do
+        stub_feature_flags(use_traversal_ids: true)
       end
+
+      include_examples '#all_projects'
+    end
+
+    context 'with use_traversal_ids feature flag disabled' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
+
+      include_examples '#all_projects'
     end
   end
 

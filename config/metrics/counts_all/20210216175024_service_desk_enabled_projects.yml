@@ -14,4 +14,3 @@ distribution:
 - ee
 tier:
 - free
-skip_validation: true

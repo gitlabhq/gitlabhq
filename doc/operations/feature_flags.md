@@ -184,14 +184,16 @@ For example:
 
 #### Create a user list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322425) in GitLab 14.0.
 
 To create a user list:
 
 1. In your project, navigate to **Operations > Feature Flags**.
-1. Click on **New list**.
+1. Select **View user lists**
+1. Select **New user list**.
 1. Enter a name for the list.
-1. Click **Create**.
+1. Select **Create**.
 
 You can view a list's User IDs by clicking the **{pencil}** (edit) button next to it.
 When viewing a list, you can rename it by clicking the **Edit** button.

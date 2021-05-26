@@ -16,6 +16,7 @@ RSpec.describe 'GFM autocomplete', :js do
       fill_in 'Description', with: User.reference_prefix
       wait_for_requests
       expect(find_autocomplete_menu).to be_visible
+      expect_autocomplete_entry(user.name)
       expect_autocomplete_entry(group.name)
 
       fill_in 'Description', with: Label.reference_prefix

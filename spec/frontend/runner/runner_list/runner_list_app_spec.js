@@ -2,12 +2,22 @@ import * as Sentry from '@sentry/browser';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
+import { updateHistory } from '~/lib/utils/url_utility';
 
+import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerManualSetupHelp from '~/runner/components/runner_manual_setup_help.vue';
 import RunnerTypeHelp from '~/runner/components/runner_type_help.vue';
 
+import {
+  CREATED_ASC,
+  DEFAULT_SORT,
+  INSTANCE_TYPE,
+  PARAM_KEY_STATUS,
+  STATUS_ACTIVE,
+} from '~/runner/constants';
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
 import RunnerListApp from '~/runner/runner_list/runner_list_app.vue';
 
@@ -18,6 +28,10 @@ const mockActiveRunnersCount = 2;
 const mocKRunners = runnersData.data.runners.nodes;
 
 jest.mock('@sentry/browser');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  updateHistory: jest.fn(),
+}));
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
@@ -25,10 +39,12 @@ localVue.use(VueApollo);
 describe('RunnerListApp', () => {
   let wrapper;
   let mockRunnersQuery;
+  let originalLocation;
 
   const findRunnerTypeHelp = () => wrapper.findComponent(RunnerTypeHelp);
   const findRunnerManualSetupHelp = () => wrapper.findComponent(RunnerManualSetupHelp);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
+  const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
 
   const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
     const handlers = [[getRunnersQuery, mockRunnersQuery]];
@@ -44,7 +60,23 @@ describe('RunnerListApp', () => {
     });
   };
 
+  const setQuery = (query) => {
+    window.location.href = `${TEST_HOST}/admin/runners/${query}`;
+    window.location.search = query;
+  };
+
+  beforeAll(() => {
+    originalLocation = window.location;
+    Object.defineProperty(window, 'location', { writable: true, value: { href: '', search: '' } });
+  });
+
+  afterAll(() => {
+    window.location = originalLocation;
+  });
+
   beforeEach(async () => {
+    setQuery('');
+
     Sentry.withScope.mockImplementation((fn) => {
       const scope = { setTag: jest.fn() };
       fn(scope);
@@ -64,6 +96,14 @@ describe('RunnerListApp', () => {
     expect(mocKRunners).toMatchObject(findRunnerList().props('runners'));
   });
 
+  it('requests the runners with no filters', () => {
+    expect(mockRunnersQuery).toHaveBeenLastCalledWith({
+      status: undefined,
+      type: undefined,
+      sort: DEFAULT_SORT,
+    });
+  });
+
   it('shows the runner type help', () => {
     expect(findRunnerTypeHelp().exists()).toBe(true);
   });
@@ -71,6 +111,56 @@ describe('RunnerListApp', () => {
   it('shows the runner setup instructions', () => {
     expect(findRunnerManualSetupHelp().exists()).toBe(true);
     expect(findRunnerManualSetupHelp().props('registrationToken')).toBe(mockRegistrationToken);
+  });
+
+  describe('when a filter is preselected', () => {
+    beforeEach(async () => {
+      window.location.search = `?status[]=${STATUS_ACTIVE}&runner_type[]=${INSTANCE_TYPE}`;
+
+      createComponentWithApollo();
+      await waitForPromises();
+    });
+
+    it('sets the filters in the search bar', () => {
+      expect(findRunnerFilteredSearchBar().props('value')).toEqual({
+        filters: [
+          { type: 'status', value: { data: STATUS_ACTIVE, operator: '=' } },
+          { type: 'runner_type', value: { data: INSTANCE_TYPE, operator: '=' } },
+        ],
+        sort: 'CREATED_DESC',
+      });
+    });
+
+    it('requests the runners with filter parameters', () => {
+      expect(mockRunnersQuery).toHaveBeenLastCalledWith({
+        status: STATUS_ACTIVE,
+        type: INSTANCE_TYPE,
+        sort: DEFAULT_SORT,
+      });
+    });
+  });
+
+  describe('when a filter is selected by the user', () => {
+    beforeEach(() => {
+      findRunnerFilteredSearchBar().vm.$emit('input', {
+        filters: [{ type: PARAM_KEY_STATUS, value: { data: 'ACTIVE', operator: '=' } }],
+        sort: CREATED_ASC,
+      });
+    });
+
+    it('updates the browser url', () => {
+      expect(updateHistory).toHaveBeenLastCalledWith({
+        title: expect.any(String),
+        url: 'http://test.host/admin/runners/?status[]=ACTIVE&sort=CREATED_ASC',
+      });
+    });
+
+    it('requests the runners with filters', () => {
+      expect(mockRunnersQuery).toHaveBeenLastCalledWith({
+        status: STATUS_ACTIVE,
+        sort: CREATED_ASC,
+      });
+    });
   });
 
   describe('when no runners are found', () => {

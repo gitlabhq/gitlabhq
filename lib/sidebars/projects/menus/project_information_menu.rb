@@ -17,14 +17,16 @@ module Sidebars
 
         override :link
         def link
-          project_path(context.project)
+          renderable_items.first.link
         end
 
         override :extra_container_html_options
         def extra_container_html_options
-          {
-            class: 'shortcuts-project rspec-project-link'
-          }
+          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
+            { class: 'shortcuts-project-information' }
+          else
+            { class: 'shortcuts-project rspec-project-link' }
+          end
         end
 
         override :nav_link_html_options
@@ -48,13 +50,6 @@ module Sidebars
           else
             'home'
           end
-        end
-
-        override :active_routes
-        def active_routes
-          return {} if Feature.disabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
-
-          { path: 'projects#show' }
         end
 
         private

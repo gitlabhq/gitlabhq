@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe 'User uses shortcuts', :js do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+
+  let(:user) { project.owner }
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
 
     visit(project_path(project))
@@ -74,7 +74,7 @@ RSpec.describe 'User uses shortcuts', :js do
       find('body').native.send_key('g')
       find('body').native.send_key('p')
 
-      expect(page).to have_active_navigation('Project')
+      expect(page).to have_active_navigation(project.name)
     end
 
     context 'when feature flag :sidebar_refactor is disabled' do

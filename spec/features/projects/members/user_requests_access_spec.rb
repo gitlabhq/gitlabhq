@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Members > User requests access', :js do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :public, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public, :repository) }
+
   let(:maintainer) { project.owner }
 
   before do
@@ -46,6 +47,8 @@ RSpec.describe 'Projects > Members > User requests access', :js do
     click_link 'Request Access'
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
+
+    click_link 'Project information'
 
     page.within('.nav-sidebar') do
       click_link('Members')

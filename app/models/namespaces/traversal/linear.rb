@@ -46,6 +46,12 @@ module Namespaces
         after_update :sync_traversal_ids, if: -> { sync_traversal_ids? && saved_change_to_parent_id? }
 
         scope :traversal_ids_contains, ->(ids) { where("traversal_ids @> (?)", ids) }
+        # When filtering namespaces by the traversal_ids column to compile a
+        # list of namespace IDs, it's much faster to reference the ID in
+        # traversal_ids than the primary key ID column.
+        # WARNING This scope must be used behind a linear query feature flag
+        # such as `use_traversal_ids`.
+        scope :as_ids, -> { select('traversal_ids[array_length(traversal_ids, 1)] AS id') }
       end
 
       def sync_traversal_ids?
@@ -62,6 +68,12 @@ module Namespaces
         return super unless use_traversal_ids?
 
         lineage(top: self)
+      end
+
+      def self_and_descendant_ids
+        return super unless use_traversal_ids?
+
+        self_and_descendants.as_ids
       end
 
       def descendants

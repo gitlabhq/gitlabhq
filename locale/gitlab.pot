@@ -13782,6 +13782,9 @@ msgstr ""
 msgid "FeatureFlags|Feature Flag User List Details"
 msgstr ""
 
+msgid "FeatureFlags|Feature Flag User Lists"
+msgstr ""
+
 msgid "FeatureFlags|Feature Flag behavior is built up by creating a set of rules to define the status of target environments. A default wildcard rule %{codeStart}*%{codeEnd} for %{boldStart}All Environments%{boldEnd} is set, and you are able to add as many rules as you need by choosing environment specs below. You can toggle the behavior for each of your rules to set them %{boldStart}Active%{boldEnd} or %{boldStart}Inactive%{boldEnd}."
 msgstr ""
 
@@ -13804,9 +13807,6 @@ msgid "FeatureFlags|Flag is read-only"
 msgstr ""
 
 msgid "FeatureFlags|Get started with feature flags"
-msgstr ""
-
-msgid "FeatureFlags|Get started with user lists"
 msgstr ""
 
 msgid "FeatureFlags|GitLab is moving to a new way of managing feature flags. This feature flag is read-only, and it will be removed in 14.0. Please create a new feature flag."
@@ -13836,9 +13836,6 @@ msgstr ""
 msgid "FeatureFlags|Loading feature flags"
 msgstr ""
 
-msgid "FeatureFlags|Loading user lists"
-msgstr ""
-
 msgid "FeatureFlags|More information"
 msgstr ""
 
@@ -13855,9 +13852,6 @@ msgid "FeatureFlags|New User List"
 msgstr ""
 
 msgid "FeatureFlags|New feature flag"
-msgstr ""
-
-msgid "FeatureFlags|New user list"
 msgstr ""
 
 msgid "FeatureFlags|No user list selected"
@@ -13902,9 +13896,6 @@ msgstr ""
 msgid "FeatureFlags|There was an error fetching the feature flags."
 msgstr ""
 
-msgid "FeatureFlags|There was an error fetching the user lists."
-msgstr ""
-
 msgid "FeatureFlags|To prevent accidental actions we ask you to confirm your intention. Please type %{projectName} to proceed or close this modal to cancel."
 msgstr ""
 
@@ -13920,7 +13911,7 @@ msgstr ""
 msgid "FeatureFlags|User Lists"
 msgstr ""
 
-msgid "FeatureFlags|User lists allow you to define a set of users to use with Feature Flags."
+msgid "FeatureFlags|View user lists"
 msgstr ""
 
 msgid "FeatureFlag|Percentage"
@@ -28310,6 +28301,18 @@ msgstr ""
 msgid "Runners|New runner, has not connected yet"
 msgstr ""
 
+msgid "Runners|Not connected"
+msgstr ""
+
+msgid "Runners|Offline"
+msgstr ""
+
+msgid "Runners|Online"
+msgstr ""
+
+msgid "Runners|Paused"
+msgstr ""
+
 msgid "Runners|Platform"
 msgstr ""
 
@@ -35542,7 +35545,13 @@ msgstr ""
 msgid "UserLists|Feature flag user list"
 msgstr ""
 
+msgid "UserLists|Get started with user lists"
+msgstr ""
+
 msgid "UserLists|Lists allow you to define a set of users to be used with feature flags. %{linkStart}Read more about feature flag lists.%{linkEnd}"
+msgstr ""
+
+msgid "UserLists|Loading user lists"
 msgstr ""
 
 msgid "UserLists|Name"
@@ -35551,16 +35560,28 @@ msgstr ""
 msgid "UserLists|New list"
 msgstr ""
 
+msgid "UserLists|New user list"
+msgstr ""
+
 msgid "UserLists|Save"
 msgstr ""
 
 msgid "UserLists|There are no users"
 msgstr ""
 
+msgid "UserLists|There was an error fetching the user lists."
+msgstr ""
+
 msgid "UserLists|User ID"
 msgstr ""
 
 msgid "UserLists|User IDs"
+msgstr ""
+
+msgid "UserLists|User Lists"
+msgstr ""
+
+msgid "UserLists|User lists allow you to define a set of users to use with Feature Flags."
 msgstr ""
 
 msgid "UserList|Delete %{name}?"

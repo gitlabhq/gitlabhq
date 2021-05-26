@@ -1,14 +1,10 @@
 <script>
-import { GlAlert, GlBadge, GlEmptyState, GlLink, GlLoadingIcon, GlTab } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlLink, GlLoadingIcon } from '@gitlab/ui';
 
 export default {
-  components: { GlAlert, GlBadge, GlEmptyState, GlLink, GlLoadingIcon, GlTab },
+  components: { GlAlert, GlEmptyState, GlLink, GlLoadingIcon },
   inject: ['errorStateSvgPath', 'featureFlagsHelpPagePath'],
   props: {
-    title: {
-      required: true,
-      type: String,
-    },
     count: {
       required: false,
       type: Number,
@@ -56,18 +52,11 @@ export default {
     clearAlert(index) {
       this.$emit('dismissAlert', index);
     },
-    onClick(event) {
-      return this.$emit('changeTab', event);
-    },
   },
 };
 </script>
 <template>
-  <gl-tab @click="onClick">
-    <template #title>
-      <span data-testid="feature-flags-tab-title">{{ title }}</span>
-      <gl-badge size="sm" class="gl-tab-counter-badge">{{ itemCount }}</gl-badge>
-    </template>
+  <div>
     <gl-alert
       v-for="(message, index) in alerts"
       :key="index"
@@ -83,7 +72,7 @@ export default {
     <gl-empty-state
       v-else-if="errorState"
       :title="errorTitle"
-      :description="s__(`FeatureFlags|Try again in a few moments or contact your support team.`)"
+      :description="s__('FeatureFlags|Try again in a few moments or contact your support team.')"
       :svg-path="errorStateSvgPath"
       data-testid="error-state"
     />
@@ -101,6 +90,6 @@ export default {
         </gl-link>
       </template>
     </gl-empty-state>
-    <slot> </slot>
-  </gl-tab>
+    <slot v-else> </slot>
+  </div>
 </template>

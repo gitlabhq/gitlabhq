@@ -831,6 +831,19 @@ RSpec.describe Notify do
           is_expected.to have_body_text project_member.invite_token
         end
       end
+
+      context 'when on gitlab.com' do
+        before do
+          allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+        end
+
+        it 'has custom headers' do
+          aggregate_failures do
+            expect(subject).to have_header('X-Mailgun-Tag', 'invite_email')
+            expect(subject).to have_header('X-Mailgun-Variables', { 'invite_token' => project_member.invite_token }.to_json)
+          end
+        end
+      end
     end
 
     describe 'project invitation accepted' do

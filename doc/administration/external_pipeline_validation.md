@@ -74,7 +74,9 @@ required number of seconds.
         "id": { "type": "integer" },
         "username": { "type": "string" },
         "email": { "type": "string" },
-        "created_at": { "type": ["string", "null"], "format": "date-time" }
+        "created_at": { "type": ["string", "null"], "format": "date-time" },
+        "current_sign_in_ip": { "type": ["string", "null"] },
+        "last_sign_in_ip": { "type": ["string", "null"] }
       }
     },
     "pipeline": {

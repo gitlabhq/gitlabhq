@@ -334,3 +334,11 @@ Dangerfile @gl-quality/eng-prod
 
 [Application Security]
 /lib/gitlab/content_security_policy/ @gitlab-com/gl-security/appsec
+
+[Gitaly]
+lib/gitlab/git_access.rb @proglottis @toon @zj-gitlab
+lib/gitlab/git_access_*.rb @proglottis @toon @zj-gitlab
+ee/lib/ee/gitlab/git_access.rb @proglottis @toon @zj-gitlab
+ee/lib/ee/gitlab/git_access_*.rb @proglottis @toon @zj-gitlab
+ee/lib/ee/gitlab/checks/** @proglottis @toon @zj-gitlab
+lib/gitlab/checks/** @proglottis @toon @zj-gitlab

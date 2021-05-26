@@ -83,12 +83,16 @@ module PreferencesHelper
 
   def integration_views
     [].tap do |views|
-      views << { name: 'gitpod', message: gitpod_enable_description, message_url: 'https://gitpod.io/', help_link: help_page_path('integration/gitpod.md') } if Gitlab::CurrentSettings.gitpod_enabled
+      views << { name: 'gitpod', message: gitpod_enable_description, message_url: gitpod_url_placeholder, help_link: help_page_path('integration/gitpod.md') } if Gitlab::CurrentSettings.gitpod_enabled
       views << { name: 'sourcegraph', message: sourcegraph_url_message, message_url: Gitlab::CurrentSettings.sourcegraph_url, help_link: help_page_path('user/profile/preferences.md', anchor: 'sourcegraph') } if Gitlab::Sourcegraph.feature_available? && Gitlab::CurrentSettings.sourcegraph_enabled
     end
   end
 
   private
+
+  def gitpod_url_placeholder
+    Gitlab::CurrentSettings.gitpod_url.presence || 'https://gitpod.io/'
+  end
 
   # Ensure that anyone adding new options updates `DASHBOARD_CHOICES` too
   def validate_dashboard_choices!(user_dashboards)
