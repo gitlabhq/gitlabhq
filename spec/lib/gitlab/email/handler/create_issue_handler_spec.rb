@@ -128,6 +128,14 @@ RSpec.describe Gitlab::Email::Handler::CreateIssueHandler do
         expect { receiver.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
       end
     end
+
+    context 'when project ID is invalid' do
+      it 'raises a ProjectNotFound' do
+        handler = described_class.new(email_raw, "gitlabhq-gitlabhq-#{Gitlab::Database::MAX_INT_VALUE}-#{user.incoming_email_token}-issue")
+
+        expect { handler.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
+      end
+    end
   end
 
   def email_fixture(path)

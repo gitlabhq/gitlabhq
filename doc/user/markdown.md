@@ -56,7 +56,7 @@ extends standard Markdown with features made specifically for GitLab.
 
 Features not found in standard Markdown:
 
-- [Color chips written in HEX, RGB or HSL](#colors)
+- [Color chips written in `HEX`, `RGB` or `HSL`](#colors)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
 - [Emoji](#emojis)
 - [Front matter](#front-matter)
@@ -380,15 +380,15 @@ the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 
 ### Task lists
 
-If this section isn't rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#task-lists).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#task-lists).
 
-You can add task lists anywhere Markdown is supported, but only issues, merge requests, and
-comments support clicking to toggle the boxes. In other
-places, you must edit the Markdown manually to change the status by adding or
-removing an `x` inside the square brackets.
+You can add task lists anywhere Markdown is supported.
 
-To create a task list, add a specially-formatted Markdown list. You can use either
-unordered or ordered lists:
+- In issues, merge requests, and comments, you can click to select the boxes.
+- In all other places, you cannot click to select the boxes. You must edit the Markdown manually
+  by adding or removing an `x` in the brackets.
+
+To create a task list, follow the format of an ordered or unordered list:
 
 ```markdown
 - [x] Completed task
@@ -403,13 +403,14 @@ unordered or ordered lists:
    1. [x] Sub-task 2
 ```
 
-![Task list as rendered by the GitLab interface](img/completed_tasks_v13_3.png)
+![Task list as rendered by GitLab](img/completed_tasks_v13_3.png)
 
 ### Table of contents
 
-Add a table of contents to a Markdown file, wiki page, issue request, or merge request
-description by adding the tag `[[_TOC_]]` on its own line.
-It displays an unordered list that links to subheadings in the document.
+A table of contents is an unordered list that links to subheadings in the document.
+
+To add a table of contents to a Markdown file, wiki page, issue request, or merge request
+description, add the `[[_TOC_]]` tag on its own line.
 
 ```markdown
 This is an intro sentence to my Wiki page.
@@ -429,14 +430,14 @@ Second section content.
 
 ### Wiki-specific Markdown
 
-The following examples show how links inside wikis behave.
+The following topics show how links inside wikis behave.
 
 #### Wiki - direct page link
 
-A link which just includes the slug for a page points to that page,
-_at the base level of the wiki_.
+A direct page link includes the slug for a page that points to that page,
+at the base level of the wiki.
 
-This snippet would link to a `documentation` page at the root of your wiki:
+This example links to a `documentation` page at the root of your wiki:
 
 ```markdown
 [Link to Documentation](documentation)
@@ -444,10 +445,10 @@ This snippet would link to a `documentation` page at the root of your wiki:
 
 #### Wiki - direct file link
 
-Links with a file extension point to that file, _relative to the current page_.
+A direct file link points to a file extension for a file, relative to the current page.
 
-If the snippet below was placed on a page at `<your_wiki>/documentation/related`,
-it would link to `<your_wiki>/documentation/file.md`:
+If the following example is on a page at `<your_wiki>/documentation/related`,
+it links to `<your_wiki>/documentation/file.md`:
 
 ```markdown
 [Link to File](file.md)
@@ -455,32 +456,32 @@ it would link to `<your_wiki>/documentation/file.md`:
 
 #### Wiki - hierarchical link
 
-A link can be constructed relative to the current wiki page using `./<page>`,
+A hierarchical link can be constructed relative to the current wiki page by using `./<page>`,
 `../<page>`, and so on.
 
-If this snippet was placed on a page at `<your_wiki>/documentation/main`,
-it would link to `<your_wiki>/documentation/related`:
+If this example is on a page at `<your_wiki>/documentation/main`,
+it links to `<your_wiki>/documentation/related`:
 
 ```markdown
 [Link to Related Page](related)
 ```
 
-If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
-it would link to `<your_wiki>/documentation/main`:
+If this example is on a page at `<your_wiki>/documentation/related/content`,
+it links to `<your_wiki>/documentation/main`:
 
 ```markdown
 [Link to Related Page](../main)
 ```
 
-If this snippet was placed on a page at `<your_wiki>/documentation/main`,
-it would link to `<your_wiki>/documentation/related.md`:
+If this example is on a page at `<your_wiki>/documentation/main`,
+it links to `<your_wiki>/documentation/related.md`:
 
 ```markdown
 [Link to Related Page](related.md)
 ```
 
-If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
-it would link to `<your_wiki>/documentation/main.md`:
+If this example is on a page at `<your_wiki>/documentation/related/content`,
+it links to `<your_wiki>/documentation/main.md`:
 
 ```markdown
 [Link to Related Page](../main.md)
@@ -488,15 +489,15 @@ it would link to `<your_wiki>/documentation/main.md`:
 
 #### Wiki - root link
 
-A link starting with a `/` is relative to the wiki root.
+A root link starts with a `/` and is relative to the wiki root.
 
-This snippet links to `<wiki_root>/documentation`:
+This example links to `<wiki_root>/documentation`:
 
 ```markdown
 [Link to Related Page](/documentation)
 ```
 
-This snippet links to `<wiki_root>/miscellaneous.md`:
+This example links to `<wiki_root>/miscellaneous.md`:
 
 ```markdown
 [Link to Related Page](/miscellaneous.md)

@@ -27,7 +27,10 @@ describe('ContentEditor', () => {
   it('renders editor content component and attaches editor instance', () => {
     createWrapper(editor);
 
-    expect(wrapper.findComponent(EditorContent).props().editor).toBe(editor.tiptapEditor);
+    const editorContent = wrapper.findComponent(EditorContent);
+
+    expect(editorContent.props().editor).toBe(editor.tiptapEditor);
+    expect(editorContent.classes()).toContain('md');
   });
 
   it('renders top toolbar component and attaches editor instance', () => {
@@ -38,8 +41,8 @@ describe('ContentEditor', () => {
 
   it.each`
     isFocused | classes
-    ${true}   | ${['md', 'md-area', 'is-focused']}
-    ${false}  | ${['md', 'md-area']}
+    ${true}   | ${['md-area', 'is-focused']}
+    ${false}  | ${['md-area']}
   `(
     'has $classes class selectors when tiptapEditor.isFocused = $isFocused',
     ({ isFocused, classes }) => {

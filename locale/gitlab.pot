@@ -16244,6 +16244,15 @@ msgstr ""
 msgid "Header must be associated with a request or response"
 msgstr ""
 
+msgid "Heading 1"
+msgstr ""
+
+msgid "Heading 2"
+msgstr ""
+
+msgid "Heading 3"
+msgstr ""
+
 msgid "Headings"
 msgstr ""
 
@@ -22467,6 +22476,9 @@ msgid "None"
 msgstr ""
 
 msgid "None of the group milestones have the same project as the release"
+msgstr ""
+
+msgid "Normal text"
 msgstr ""
 
 msgid "Not Implemented"
@@ -32218,6 +32230,9 @@ msgid "TestReports|You can configure your job to use unit test reports, and GitL
 msgstr ""
 
 msgid "Tests"
+msgstr ""
+
+msgid "Text style"
 msgstr ""
 
 msgid "Thank you for signing up for your free trial! You will get additional instructions in your inbox shortly."

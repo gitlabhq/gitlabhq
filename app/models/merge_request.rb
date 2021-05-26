@@ -125,6 +125,8 @@ class MergeRequest < ApplicationRecord
   ].freeze
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
+  before_validation :set_draft_status
+
   after_create :ensure_merge_request_diff
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
@@ -1907,6 +1909,10 @@ class MergeRequest < ApplicationRecord
   end
 
   private
+
+  def set_draft_status
+    self.draft = draft?
+  end
 
   def missing_report_error(report_type)
     { status: :error, status_reason: "This merge request does not have #{report_type} reports" }

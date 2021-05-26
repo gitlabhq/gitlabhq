@@ -1,5 +1,6 @@
 <script>
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlSprintf, GlLink } from '@gitlab/ui';
+import { mapGetters } from 'vuex';
 import eventHub from '../event_hub';
 import JiraUpgradeCta from './jira_upgrade_cta.vue';
 
@@ -70,6 +71,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isInheriting']),
     validProjectKey() {
       return !this.enableJiraIssues || Boolean(this.projectKey) || !this.validated;
     },
@@ -116,7 +118,7 @@ export default {
         </p>
         <template v-if="showJiraIssuesIntegration">
           <input name="service[issues_enabled]" type="hidden" :value="enableJiraIssues || false" />
-          <gl-form-checkbox v-model="enableJiraIssues">
+          <gl-form-checkbox v-model="enableJiraIssues" :disabled="isInheriting">
             {{ s__('JiraService|Enable Jira issues') }}
             <template #help>
               {{
@@ -161,6 +163,7 @@ export default {
           :required="enableJiraIssues"
           :state="validProjectKey"
           :disabled="!enableJiraIssues"
+          :readonly="isInheriting"
         />
       </gl-form-group>
       <p v-if="gitlabIssuesEnabled">

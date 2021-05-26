@@ -7,7 +7,7 @@ class LfsObject < ApplicationRecord
   include ObjectStorage::BackgroundMove
   include FileStoreMounter
 
-  has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :lfs_objects_projects
   has_many :projects, -> { distinct }, through: :lfs_objects_projects
 
   scope :with_files_stored_locally, -> { where(file_store: LfsObjectUploader::Store::LOCAL) }

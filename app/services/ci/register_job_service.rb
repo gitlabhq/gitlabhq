@@ -182,13 +182,7 @@ module Ci
     end
 
     def max_queue_depth
-      @max_queue_depth ||= begin
-        if Feature.enabled?(:gitlab_ci_builds_queue_limit, runner, default_enabled: true)
-          MAX_QUEUE_DEPTH
-        else
-          ::Gitlab::Database::MAX_INT_VALUE
-        end
-      end
+      MAX_QUEUE_DEPTH
     end
 
     # Force variables evaluation to occur now

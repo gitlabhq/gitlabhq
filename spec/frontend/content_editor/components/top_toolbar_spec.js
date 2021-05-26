@@ -39,32 +39,33 @@ describe('content_editor/components/top_toolbar', () => {
   });
 
   describe.each`
-    testId            | buttonProps
+    testId            | controlProps
     ${'bold'}         | ${{ contentType: 'bold', iconName: 'bold', label: 'Bold text', editorCommand: 'toggleBold' }}
     ${'italic'}       | ${{ contentType: 'italic', iconName: 'italic', label: 'Italic text', editorCommand: 'toggleItalic' }}
     ${'code'}         | ${{ contentType: 'code', iconName: 'code', label: 'Code', editorCommand: 'toggleCode' }}
     ${'blockquote'}   | ${{ contentType: 'blockquote', iconName: 'quote', label: 'Insert a quote', editorCommand: 'toggleBlockquote' }}
     ${'bullet-list'}  | ${{ contentType: 'bulletList', iconName: 'list-bulleted', label: 'Add a bullet list', editorCommand: 'toggleBulletList' }}
     ${'ordered-list'} | ${{ contentType: 'orderedList', iconName: 'list-numbered', label: 'Add a numbered list', editorCommand: 'toggleOrderedList' }}
-  `('given a $testId toolbar control', ({ testId, buttonProps }) => {
+    ${'text-styles'}  | ${{}}
+  `('given a $testId toolbar control', ({ testId, controlProps }) => {
     beforeEach(() => {
       buildWrapper();
     });
 
     it('renders the toolbar control with the provided properties', () => {
       expect(wrapper.findByTestId(testId).props()).toEqual({
-        ...buttonProps,
+        ...controlProps,
         tiptapEditor: contentEditor.tiptapEditor,
       });
     });
 
     it.each`
-      control         | eventData
-      ${'bold'}       | ${{ contentType: 'bold' }}
-      ${'blockquote'} | ${{ contentType: 'blockquote', value: 1 }}
-    `('tracks the execution of toolbar controls', ({ control, eventData }) => {
+      eventData
+      ${{ contentType: 'bold' }}
+      ${{ contentType: 'blockquote', value: 1 }}
+    `('tracks the execution of toolbar controls', ({ eventData }) => {
       const { contentType, value } = eventData;
-      wrapper.findByTestId(control).vm.$emit('execute', eventData);
+      wrapper.findByTestId(testId).vm.$emit('execute', eventData);
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, TOOLBAR_CONTROL_TRACKING_ACTION, {
         label: CONTENT_EDITOR_TRACKING_LABEL,

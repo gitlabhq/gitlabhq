@@ -178,4 +178,17 @@ RSpec.describe LfsObject do
       expect(described_class.calculate_oid(path)).to eq expected
     end
   end
+
+  context 'when an lfs object is associated with a project' do
+    let!(:lfs_object) { create(:lfs_object) }
+    let!(:lfs_object_project) { create(:lfs_objects_project, lfs_object: lfs_object) }
+
+    it 'cannot be deleted' do
+      expect { lfs_object.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
+
+      lfs_object_project.destroy!
+
+      expect { lfs_object.destroy! }.not_to raise_error
+    end
+  end
 end

@@ -6310,6 +6310,29 @@ The edge type for [`Scan`](#scan).
 | <a id="scanedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="scanedgenode"></a>`node` | [`Scan`](#scan) | The item at the end of the edge. |
 
+#### `ScanExecutionPolicyConnection`
+
+The connection type for [`ScanExecutionPolicy`](#scanexecutionpolicy).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="scanexecutionpolicyconnectionedges"></a>`edges` | [`[ScanExecutionPolicyEdge]`](#scanexecutionpolicyedge) | A list of edges. |
+| <a id="scanexecutionpolicyconnectionnodes"></a>`nodes` | [`[ScanExecutionPolicy]`](#scanexecutionpolicy) | A list of nodes. |
+| <a id="scanexecutionpolicyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ScanExecutionPolicyEdge`
+
+The edge type for [`ScanExecutionPolicy`](#scanexecutionpolicy).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="scanexecutionpolicyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="scanexecutionpolicyedgenode"></a>`node` | [`ScanExecutionPolicy`](#scanexecutionpolicy) | The item at the end of the edge. |
+
 #### `ScannedResourceConnection`
 
 The connection type for [`ScannedResource`](#scannedresource).
@@ -10951,6 +10974,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindingscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
 | <a id="pipelinesecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingsolution"></a>`solution` | [`String`](#string) | URL to the vulnerability's details page. |
+| <a id="pipelinesecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | The finding status. |
 | <a id="pipelinesecurityreportfindinguuid"></a>`uuid` | [`String`](#string) | Name of the vulnerability finding. |
 
 ### `Project`
@@ -11012,6 +11036,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectrequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request member access to the project. |
 | <a id="projectrequirementstatescount"></a>`requirementStatesCount` | [`RequirementStatesCount`](#requirementstatescount) | Number of requirements for the project by their state. |
 | <a id="projectsastciconfiguration"></a>`sastCiConfiguration` | [`SastCiConfiguration`](#sastciconfiguration) | SAST CI configuration for the project. |
+| <a id="projectscanexecutionpolicies"></a>`scanExecutionPolicies` | [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection) | Scan Execution Policies of the project. (see [Connections](#connections)) |
 | <a id="projectsecuritydashboardpath"></a>`securityDashboardPath` | [`String`](#string) | Path to project's security dashboard. |
 | <a id="projectsecurityscanners"></a>`securityScanners` | [`SecurityScanners`](#securityscanners) | Information about security analyzers used in the project. |
 | <a id="projectsentryerrors"></a>`sentryErrors` | [`SentryErrorCollection`](#sentryerrorcollection) | Paginated collection of Sentry errors on the project. |
@@ -12282,6 +12307,20 @@ Represents the security scan information.
 | ---- | ---- | ----------- |
 | <a id="scanerrors"></a>`errors` | [`[String!]!`](#string) | List of errors. |
 | <a id="scanname"></a>`name` | [`String!`](#string) | Name of the scan. |
+
+### `ScanExecutionPolicy`
+
+Represents the scan execution policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="scanexecutionpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
+| <a id="scanexecutionpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="scanexecutionpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
+| <a id="scanexecutionpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
+| <a id="scanexecutionpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
 ### `ScannedResource`
 

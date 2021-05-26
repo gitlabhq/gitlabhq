@@ -1,34 +1,3 @@
-.page-with-contextual-sidebar {
-  transition: padding-left $sidebar-transition-duration;
-
-  @include media-breakpoint-up(md) {
-    padding-left: $contextual-sidebar-collapsed-width;
-  }
-
-  @include media-breakpoint-up(xl) {
-    padding-left: $contextual-sidebar-width;
-  }
-
-  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
-    padding: 10px 0 15px;
-  }
-}
-
-.page-with-icon-sidebar {
-  @include media-breakpoint-up(md) {
-    padding-left: $contextual-sidebar-collapsed-width;
-  }
-}
-
-.settings-avatar {
-  background-color: $white;
-
-  svg {
-    fill: $gl-text-color-secondary;
-    margin: auto;
-  }
-}
-
 @mixin collapse-contextual-sidebar-content {
 
   @include context-header-collapsed;
@@ -61,6 +30,62 @@
   }
 }
 
+@mixin collapse-contextual-sidebar {
+  width: $contextual-sidebar-collapsed-width;
+
+  .nav-sidebar-inner-scroll {
+    overflow-x: hidden;
+  }
+
+  .badge.badge-pill:not(.fly-out-badge),
+  .nav-item-name {
+    @include gl-sr-only;
+  }
+
+  .sidebar-top-level-items > li > a {
+    min-height: 45px;
+  }
+
+  .fly-out-top-item {
+    display: block;
+  }
+
+  .avatar-container {
+    margin: 0 auto;
+  }
+}
+
+.page-with-contextual-sidebar {
+  transition: padding-left $sidebar-transition-duration;
+
+  @include media-breakpoint-up(md) {
+    padding-left: $contextual-sidebar-collapsed-width;
+  }
+
+  @include media-breakpoint-up(xl) {
+    padding-left: $contextual-sidebar-width;
+  }
+
+  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
+    padding: 10px 0 15px;
+  }
+}
+
+.page-with-icon-sidebar {
+  @include media-breakpoint-up(md) {
+    padding-left: $contextual-sidebar-collapsed-width;
+  }
+}
+
+.settings-avatar {
+  background-color: $white;
+
+  svg {
+    fill: $gl-text-color-secondary;
+    margin: auto;
+  }
+}
+
 .nav-sidebar {
   transition: width $sidebar-transition-duration, left $sidebar-transition-duration;
   position: fixed;
@@ -76,31 +101,6 @@
   &:not(.sidebar-collapsed-desktop) {
     @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, sm)) {
       box-shadow: inset -1px 0 0 $border-color, 2px 1px 3px $dropdown-shadow-color;
-    }
-  }
-
-  @mixin collapse-contextual-sidebar {
-    width: $contextual-sidebar-collapsed-width;
-
-    .nav-sidebar-inner-scroll {
-      overflow-x: hidden;
-    }
-
-    .badge.badge-pill:not(.fly-out-badge),
-    .nav-item-name {
-      @include gl-sr-only;
-    }
-
-    .sidebar-top-level-items > li > a {
-      min-height: 45px;
-    }
-
-    .fly-out-top-item {
-      display: block;
-    }
-
-    .avatar-container {
-      margin: 0 auto;
     }
   }
 
@@ -381,3 +381,4 @@
     }
   }
 }
+

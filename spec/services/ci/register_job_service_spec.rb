@@ -839,34 +839,13 @@ module Ci
         stub_const("#{described_class}::MAX_QUEUE_DEPTH", 2)
       end
 
-      context 'when feature is enabled' do
-        before do
-          stub_feature_flags(gitlab_ci_builds_queue_limit: true)
-        end
+      it 'returns 409 conflict' do
+        expect(Ci::Build.pending.unstarted.count).to eq 3
 
-        it 'returns 409 conflict' do
-          expect(Ci::Build.pending.unstarted.count).to eq 3
+        result = described_class.new(specific_runner).execute
 
-          result = described_class.new(specific_runner).execute
-
-          expect(result).not_to be_valid
-          expect(result.build).to be_nil
-        end
-      end
-
-      context 'when feature is disabled' do
-        before do
-          stub_feature_flags(gitlab_ci_builds_queue_limit: false)
-        end
-
-        it 'returns a valid result' do
-          expect(Ci::Build.pending.unstarted.count).to eq 3
-
-          result = described_class.new(specific_runner).execute
-
-          expect(result).to be_valid
-          expect(result.build).to eq pending_job_3
-        end
+        expect(result).not_to be_valid
+        expect(result.build).to be_nil
       end
     end
 

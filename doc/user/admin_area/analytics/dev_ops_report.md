@@ -59,18 +59,18 @@ DevOps Adoption allows you to:
 
 ### Disable or enable DevOps Adoption
 
-DevOps Adoption is deployed behind a feature flag that is **disabled by default**.
+DevOps Adoption is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:devops_adoption_feature)
-```
+can opt to disable it.
 
 To disable it:
 
 ```ruby
 Feature.disable(:devops_adoption_feature)
+```
+
+To reenable it:
+
+```ruby
+Feature.enable(:devops_adoption_feature)
 ```

@@ -54,7 +54,6 @@ RSpec.describe 'Database schema' do
     keys: %w[user_id],
     label_links: %w[target_id],
     ldap_group_links: %w[group_id],
-    lfs_objects_projects: %w[lfs_object_id project_id],
     members: %w[source_id created_by_id],
     merge_requests: %w[last_edited_by_id state_id],
     namespaces: %w[owner_id parent_id],

@@ -574,7 +574,26 @@ See [Environment Dashboard](../ci/environments/environments_dashboard.md#adding-
 Pods and Deployments. However, data over 10 MB for a certain environment read from
 Kubernetes won't be shown.
 
-## Merge request reports
+## Merge requests
+
+### Diff limits
+
+GitLab has limits around:
+
+- The patch size for a single file. [This is configurable on self-managed instance](../user/admin_area/diff_limits.md).
+- The total size of all the diffs for a merge request.
+
+An upper and lower limit applies to each of these:
+
+- The number of changed files.
+- The number of changed lines.
+- The cumulative size of the changes displayed.
+
+The lower limits result in additional diffs being collapsed. The higher limits
+prevent any more changes from rendering. For more information about these limits,
+[read the development documentation](../development/diffs.md#diff-limits).
+
+### Merge request reports size limit
 
 Reports that go over the 20 MB limit won't be loaded. Affected reports:
 
@@ -607,18 +626,17 @@ amount of memory during indexing.
 
 You can set a limit on the content of text fields indexed for Advanced Search.
 Setting a maximum helps to reduce the load of the indexing processes. If any
-text field exceeds this limit then the text will be truncated to this number of
-characters and the rest will not be indexed and hence will not be searchable.
-This is applicable to all indexed data except repository files that get
-indexed, which have a separate limit (see [Maximum file size
-indexed](#maximum-file-size-indexed)).
+text field exceeds this limit, then the text is truncated to this number of
+characters. The rest of the text is not indexed, and not searchable.
+This applies to all indexed data except repository files that get
+indexed, which have a separate limit. For more information, read
+[Maximum file size indexed](#maximum-file-size-indexed).
 
-- On GitLab.com, this is limited to 20,000 characters
-- For self-managed installations, this is unlimited by default
+- On GitLab.com, the field length limit is 20,000 characters.
+- For self-managed installations, the field length is unlimited by default.
 
-This limit can be configured for self-managed installations when [enabling
-Elasticsearch](../integration/elasticsearch.md#enabling-advanced-search).
-
+You can configure this limit for self-managed installations when you
+[enable Elasticsearch](../integration/elasticsearch.md#enabling-advanced-search).
 Set the limit to `0` to disable it.
 
 ## Wiki limits
