@@ -30,32 +30,12 @@
 
   .col-headers {
     ul {
-      @include clearfix;
       margin: 0;
       padding: 0;
     }
 
     li {
-      display: inline-block;
-      float: left;
       line-height: 50px;
-      width: 20%;
-    }
-
-    .stage-header {
-      width: 20.5%;
-    }
-
-    .median-header {
-      width: 19.5%;
-    }
-
-    .event-header {
-      width: 45%;
-    }
-
-    .total-time-header {
-      width: 15%;
     }
   }
 
@@ -120,7 +100,6 @@
     }
 
     li {
-      @include clearfix;
       list-style-type: none;
     }
 
@@ -169,7 +148,6 @@
 
     .events-description {
       line-height: 65px;
-      padding: 0 $gl-padding;
     }
 
     .events-info {
@@ -178,7 +156,6 @@
   }
 
   .stage-events {
-    width: 60%;
     min-height: 467px;
   }
 
@@ -190,8 +167,8 @@
   .stage-event-item {
     @include clearfix;
     list-style-type: none;
-    padding: 0 0 $gl-padding;
-    margin: 0 $gl-padding $gl-padding;
+    padding-bottom: $gl-padding;
+    margin-bottom: $gl-padding;
     border-bottom: 1px solid var(--gray-50, $gray-50);
 
     &:last-child {

@@ -159,7 +159,7 @@ In some cases, such as building a Go project for it to act as a dependency of a
 CI run for another project, removing the `vendor/` directory means the code must
 be downloaded repeatedly, which can lead to intermittent problems due to rate
 limiting or network failures. In these circumstances, you should [cache the
-downloaded code between](../../ci/caching/index.md#caching-go-dependencies).
+downloaded code between](../../ci/caching/index.md#cache-go-dependencies).
 
 There was a
 [bug on modules checksums](https://github.com/golang/go/issues/29278) in Go versions earlier than v1.11.4, so make

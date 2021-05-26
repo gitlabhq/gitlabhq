@@ -1483,6 +1483,9 @@ msgstr ""
 msgid "A rebase is already in progress."
 msgstr ""
 
+msgid "A rule must be provided to create an escalation policy"
+msgstr ""
+
 msgid "A secure token that identifies an external storage request."
 msgstr ""
 
@@ -13105,6 +13108,9 @@ msgstr ""
 msgid "Escalation policies"
 msgstr ""
 
+msgid "Escalation policies are not supported for this project"
+msgstr ""
+
 msgid "EscalationPolicies|+ Add an additional rule"
 msgstr ""
 
@@ -20460,9 +20466,6 @@ msgstr ""
 msgid "Measured in bytes of code. Excludes generated and vendored code."
 msgstr ""
 
-msgid "Median"
-msgstr ""
-
 msgid "Medium Timeout Period"
 msgstr ""
 
@@ -25666,9 +25669,6 @@ msgid "ProjectFileTree|Show more"
 msgstr ""
 
 msgid "ProjectLastActivity|Never"
-msgstr ""
-
-msgid "ProjectLifecycle|Stage"
 msgstr ""
 
 msgid "ProjectOverview|Fork"
@@ -32563,9 +32563,6 @@ msgstr ""
 msgid "The password for your GitLab account on %{link_to_gitlab} has successfully been changed."
 msgstr ""
 
-msgid "The phase of the development lifecycle."
-msgstr ""
-
 msgid "The pipeline has been deleted"
 msgstr ""
 
@@ -32708,9 +32705,6 @@ msgid "The user you are trying to deactivate has been active in the past %{minim
 msgstr ""
 
 msgid "The username for the Jenkins server."
-msgstr ""
-
-msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
 msgid "The value of the provided variable exceeds the %{count} character limit"
@@ -37433,6 +37427,9 @@ msgid "You have insufficient permissions to create a Todo for this alert"
 msgstr ""
 
 msgid "You have insufficient permissions to create an HTTP integration for this project"
+msgstr ""
+
+msgid "You have insufficient permissions to create an escalation policy for this project"
 msgstr ""
 
 msgid "You have insufficient permissions to create an on-call schedule for this project"
