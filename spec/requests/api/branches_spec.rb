@@ -105,7 +105,7 @@ RSpec.describe API::Branches do
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('public_api/v4/branches')
-              expect(response.headers).not_to include('Link', 'Links')
+              expect(response.headers).not_to include('Link')
               branch_names = json_response.map { |x| x['name'] }
               expect(branch_names).to match_array(project.repository.branch_names)
             end
@@ -116,7 +116,7 @@ RSpec.describe API::Branches do
               get api(route, current_user), params: base_params.merge(per_page: 2)
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect(response.headers).to include('Link', 'Links')
+              expect(response.headers).to include('Link')
               expect(json_response.count).to eq 2
 
               check_merge_status(json_response)

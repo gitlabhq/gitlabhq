@@ -13,7 +13,6 @@ module Gitlab
 
         def add_next_page_header(query_params)
           link = next_page_link(page_href(query_params))
-          header('Links', link)
           header('Link', link)
         end
 

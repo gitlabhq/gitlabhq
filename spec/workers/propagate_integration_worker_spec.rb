@@ -21,11 +21,5 @@ RSpec.describe PropagateIntegrationWorker do
 
       subject.perform(integration.id)
     end
-
-    it 'ignores overwrite parameter from previous version' do
-      expect(Admin::PropagateIntegrationService).to receive(:propagate).with(integration)
-
-      subject.perform(integration.id, true)
-    end
   end
 end

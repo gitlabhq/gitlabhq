@@ -742,10 +742,6 @@ RSpec.describe API::Projects do
         it 'includes a pagination header with link to the next page' do
           get api('/projects', current_user), params: params
 
-          expect(response.header).to include('Links')
-          expect(response.header['Links']).to include('pagination=keyset')
-          expect(response.header['Links']).to include("id_after=#{first_project_id}")
-
           expect(response.header).to include('Link')
           expect(response.header['Link']).to include('pagination=keyset')
           expect(response.header['Link']).to include("id_after=#{first_project_id}")
@@ -762,10 +758,6 @@ RSpec.describe API::Projects do
         it 'still includes a link if the end has reached and there is no more data after this page' do
           get api('/projects', current_user), params: params.merge(id_after: project2.id)
 
-          expect(response.header).to include('Links')
-          expect(response.header['Links']).to include('pagination=keyset')
-          expect(response.header['Links']).to include("id_after=#{project3.id}")
-
           expect(response.header).to include('Link')
           expect(response.header['Link']).to include('pagination=keyset')
           expect(response.header['Link']).to include("id_after=#{project3.id}")
@@ -774,7 +766,6 @@ RSpec.describe API::Projects do
         it 'does not include a next link when the page does not have any records' do
           get api('/projects', current_user), params: params.merge(id_after: Project.maximum(:id))
 
-          expect(response.header).not_to include('Links')
           expect(response.header).not_to include('Link')
         end
 
@@ -797,10 +788,6 @@ RSpec.describe API::Projects do
 
         it 'includes a pagination header with link to the next page' do
           get api('/projects', current_user), params: params
-
-          expect(response.header).to include('Links')
-          expect(response.header['Links']).to include('pagination=keyset')
-          expect(response.header['Links']).to include("id_before=#{last_project_id}")
 
           expect(response.header).to include('Link')
           expect(response.header['Link']).to include('pagination=keyset')
@@ -827,11 +814,6 @@ RSpec.describe API::Projects do
           while url && requests <= 5 # circuit breaker
             requests += 1
             get api(url, current_user), params: params
-
-            links = response.header['Links']
-            url = links&.match(/<[^>]+(\/projects\?[^>]+)>; rel="next"/) do |match|
-              match[1]
-            end
 
             link = response.header['Link']
             url = link&.match(/<[^>]+(\/projects\?[^>]+)>; rel="next"/) do |match|
