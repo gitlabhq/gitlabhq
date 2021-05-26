@@ -411,12 +411,16 @@ module Gitlab
             mapping = {}
 
             schema.types.each do |type_name, type|
-              next unless type.kind.fields?
-
-              type.fields.each do |field_name, field|
-                mapping["#{type_name}.#{field_name}"] = field.try(:deprecation)
-                field.arguments.each do |arg_name, arg|
-                  mapping["#{type_name}.#{field_name}.#{arg_name}"] = arg.try(:deprecation)
+              if type.kind.fields?
+                type.fields.each do |field_name, field|
+                  mapping["#{type_name}.#{field_name}"] = field.try(:deprecation)
+                  field.arguments.each do |arg_name, arg|
+                    mapping["#{type_name}.#{field_name}.#{arg_name}"] = arg.try(:deprecation)
+                  end
+                end
+              elsif type.kind.enum?
+                type.values.each do |member_name, enum|
+                  mapping["#{type_name}.#{member_name}"] = enum.try(:deprecation)
                 end
               end
             end

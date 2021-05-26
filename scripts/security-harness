@@ -4,6 +4,7 @@
 
 require 'digest'
 require 'fileutils'
+require 'open3'
 
 if ENV['NO_COLOR']
   SHELL_RED    = ''
@@ -18,7 +19,7 @@ else
 end
 
 LEFTHOOK_GLOBAL_CONFIG_PATH = File.expand_path("../lefthook.yml", __dir__)
-HOOK_PATH = File.expand_path("../.git/hooks/pre-push", __dir__)
+HOOK_PATH = Open3.capture3("git rev-parse --path-format=absolute --git-path hooks/pre-push")[0].strip
 HOOK_DATA = <<~HOOK
   #!/usr/bin/env bash
 

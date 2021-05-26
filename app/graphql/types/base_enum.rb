@@ -2,7 +2,19 @@
 
 module Types
   class BaseEnum < GraphQL::Schema::Enum
-    extend GitlabStyleDeprecations
+    class CustomValue < GraphQL::Schema::EnumValue
+      include ::GitlabStyleDeprecations
+
+      attr_reader :deprecation
+
+      def initialize(name, desc = nil, **kwargs)
+        @deprecation = gitlab_deprecation(kwargs)
+
+        super(name, desc, **kwargs)
+      end
+    end
+
+    enum_value_class(CustomValue)
 
     class << self
       # Registers enum definition by the given DeclarativeEnum module
@@ -41,7 +53,6 @@ module Types
 
       def value(*args, **kwargs, &block)
         enum[args[0].downcase] = kwargs[:value] || args[0]
-        gitlab_deprecation(kwargs)
 
         super(*args, **kwargs, &block)
       end

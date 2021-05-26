@@ -432,15 +432,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: cronjob:prune_web_hook_logs
-  :worker_name: PruneWebHookLogsWorker
-  :feature_category: :integrations
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: cronjob:releases_manage_evidence
   :worker_name: Releases::ManageEvidenceWorker
   :feature_category: :release_evidence

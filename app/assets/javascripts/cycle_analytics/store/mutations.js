@@ -1,4 +1,4 @@
-import { decorateData, decorateEvents, formatMedianValues } from '../utils';
+import { decorateData, decorateEvents } from '../utils';
 import * as types from './mutation_types';
 
 export default {
@@ -20,10 +20,9 @@ export default {
   },
   [types.RECEIVE_CYCLE_ANALYTICS_DATA_SUCCESS](state, data) {
     state.isLoading = false;
-    const { stages, summary, medians } = decorateData(data);
+    const { stages, summary } = decorateData(data);
     state.stages = stages;
     state.summary = summary;
-    state.medians = formatMedianValues(medians);
     state.hasError = false;
   },
   [types.RECEIVE_CYCLE_ANALYTICS_DATA_ERROR](state) {

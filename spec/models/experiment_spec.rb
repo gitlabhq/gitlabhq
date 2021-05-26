@@ -79,7 +79,7 @@ RSpec.describe Experiment do
     context 'when an experiment with the provided name does not exist' do
       it 'creates a new experiment record' do
         allow_next(described_class, name: :experiment_key)
-          .to receive(:record_group_and_variant!).with(group, variant)
+          .to receive(:record_subject_and_variant!).with(group, variant)
 
         expect { add_group }.to change(described_class, :count).by(1)
       end
@@ -235,23 +235,23 @@ RSpec.describe Experiment do
     end
   end
 
-  describe '#record_group_and_variant!' do
-    let_it_be(:group) { create(:group) }
+  describe '#record_subject_and_variant!' do
+    let_it_be(:subject_to_record) { create(:group) }
     let_it_be(:variant) { :control }
     let_it_be(:experiment) { create(:experiment) }
 
-    subject(:record_group_and_variant!) { experiment.record_group_and_variant!(group, variant) }
+    subject(:record_subject_and_variant!) { experiment.record_subject_and_variant!(subject_to_record, variant) }
 
-    context 'when no existing experiment_subject record exists for the given group' do
+    context 'when no existing experiment_subject record exists for the given subject' do
       it 'creates an experiment_subject record' do
-        expect { record_group_and_variant! }.to change(ExperimentSubject, :count).by(1)
+        expect { record_subject_and_variant! }.to change(ExperimentSubject, :count).by(1)
         expect(ExperimentSubject.last.variant).to eq(variant.to_s)
       end
     end
 
-    context 'when an existing experiment_subject exists for the given group' do
+    context 'when an existing experiment_subject exists for the given subject' do
       let_it_be(:experiment_subject) do
-        create(:experiment_subject, experiment: experiment, group: group, user: nil, variant: :experimental)
+        create(:experiment_subject, experiment: experiment, group: subject_to_record, user: nil, variant: :experimental)
       end
 
       context 'when it belongs to the same variant' do
@@ -266,7 +266,55 @@ RSpec.describe Experiment do
 
       context 'but it belonged to a different variant' do
         it 'updates the variant value' do
-          expect { record_group_and_variant! }.to change { experiment_subject.reload.variant }.to('control')
+          expect { record_subject_and_variant! }.to change { experiment_subject.reload.variant }.to('control')
+        end
+      end
+    end
+
+    describe 'providing a subject to record' do
+      context 'when given a group as subject' do
+        it 'saves the namespace owner as experiment_subject user' do
+          expect(record_subject_and_variant!.group).to eq(subject_to_record)
+        end
+      end
+
+      context 'when given a users namespace as subject' do
+        let_it_be(:subject_to_record) { build(:namespace) }
+
+        it 'saves the namespace owner as experiment_subject user' do
+          expect(record_subject_and_variant!.user).to eq(subject_to_record.owner)
+        end
+      end
+
+      context 'when given a user as subject' do
+        let_it_be(:subject_to_record) { build(:user) }
+
+        it 'saves the user as experiment_subject user' do
+          expect(record_subject_and_variant!.user).to eq(subject_to_record)
+        end
+      end
+
+      context 'when given a project as subject' do
+        let_it_be(:subject_to_record) { build(:project) }
+
+        it 'saves the project as experiment_subject user' do
+          expect(record_subject_and_variant!.project).to eq(subject_to_record)
+        end
+      end
+
+      context 'when given no subject' do
+        let_it_be(:subject_to_record) { nil }
+
+        it 'raises an error' do
+          expect { record_subject_and_variant! }.to raise_error('Incompatible subject provided!')
+        end
+      end
+
+      context 'when given an incompatible subject' do
+        let_it_be(:subject_to_record) { build(:ci_build) }
+
+        it 'raises an error' do
+          expect { record_subject_and_variant! }.to raise_error('Incompatible subject provided!')
         end
       end
     end

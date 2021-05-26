@@ -355,7 +355,6 @@
   category: pipeline_authoring
   redis_slot: pipeline_authoring
   aggregation: weekly
-  feature_flag: usage_data_o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
 # Merge request widgets
 - name: users_expanding_secure_security_report
   redis_slot: secure

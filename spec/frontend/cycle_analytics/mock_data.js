@@ -1,25 +1,4 @@
-import { getJSONFixture } from 'helpers/fixtures';
-import { transformStagesForPathNavigation } from '~/cycle_analytics/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-
-export const fixtureEndpoints = {
-  customizableCycleAnalyticsStagesAndEvents: 'analytics/value_stream_analytics/stages.json', // customizable stages and events endpoint
-  stageEvents: (stage) => `analytics/value_stream_analytics/stages/${stage}/records.json`,
-  stageMedian: (stage) => `analytics/value_stream_analytics/stages/${stage}/median.json`,
-  stageCount: (stage) => `analytics/value_stream_analytics/stages/${stage}/count.json`,
-  recentActivityData: 'analytics/metrics/value_stream_analytics/summary.json',
-  timeMetricsData: 'analytics/metrics/value_stream_analytics/time_summary.json',
-  groupLabels: 'api/group_labels.json',
-};
-
-export const getStageByTitle = (stages, title) =>
-  stages.find((stage) => stage.title && stage.title.toLowerCase().trim() === title) || {};
-
-export const defaultStages = ['issue', 'plan', 'review', 'code', 'test', 'staging'];
-export const rawStageMedians = defaultStages.map((id) => ({
-  id,
-  ...getJSONFixture(fixtureEndpoints.stageMedian(id)),
-}));
 
 export const summary = [
   { value: '20', title: 'New Issues' },
@@ -29,7 +8,6 @@ export const summary = [
 ];
 
 const issueStage = {
-  id: 'issue',
   title: 'Issue',
   name: 'issue',
   legend: '',
@@ -38,34 +16,30 @@ const issueStage = {
 };
 
 const planStage = {
-  id: 'plan',
   title: 'Plan',
   name: 'plan',
   legend: '',
   description: 'Time before an issue starts implementation',
-  value: 75600,
+  value: 'about 21 hours',
 };
 
 const codeStage = {
-  id: 'code',
   title: 'Code',
   name: 'code',
   legend: '',
   description: 'Time until first merge request',
-  value: 172800,
+  value: '2 days',
 };
 
 const testStage = {
-  id: 'test',
   title: 'Test',
   name: 'test',
   legend: '',
   description: 'Total test time for all commits/merges',
-  value: 17550,
+  value: 'about 5 hours',
 };
 
 const reviewStage = {
-  id: 'review',
   title: 'Review',
   name: 'review',
   legend: '',
@@ -74,12 +48,11 @@ const reviewStage = {
 };
 
 const stagingStage = {
-  id: 'staging',
   title: 'Staging',
   name: 'staging',
   legend: '',
   description: 'From merge request merge until deploy to production',
-  value: 172800,
+  value: '2 days',
 };
 
 export const selectedStage = {
@@ -211,29 +184,3 @@ export const rawEvents = [
 export const convertedEvents = rawEvents.map((ev) =>
   convertObjectPropsToCamelCase(ev, { deep: true }),
 );
-
-export const pathNavIssueMetric = 172800;
-
-export const stageMediansWithNumericIds = rawStageMedians.reduce((acc, { id, value }) => {
-  const { id: stageId } = getStageByTitle(convertedData.stages, id);
-  return {
-    ...acc,
-    [stageId]: value,
-  };
-}, {});
-
-export const stageMedians = rawStageMedians.reduce(
-  (acc, { id, value }) => ({
-    ...acc,
-    [id]: value,
-  }),
-  {},
-);
-
-export const allowedStages = [issueStage, planStage, codeStage];
-
-export const transformedProjectStagePathData = transformStagesForPathNavigation({
-  stages: allowedStages,
-  medians: stageMedians,
-  selectedStage: issueStage,
-});

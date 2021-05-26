@@ -394,6 +394,26 @@ You may be asked from time to time to track a specific record ID in experiments.
 The approach is largely up to the PM and engineer creating the implementation.
 No recommendations are provided here at this time.
 
+### Record experiment subjects
+
+Snowplow tracking of identifiable users or groups is prohibited, but you can still
+determine if an experiment is successful or not. We're allowed to record the ID of
+a group, project or user in our database. Therefore, we can tell the experiment
+to record their ID together with the assigned experiment variant in the
+`experiment_subjects` database table for later analysis.
+
+For the recording to work, the experiment's context must include a `namespace`,
+`group`, `project`, `user`, or `actor`.
+
+To record the experiment subject when you first assign a variant, call `record!` in
+the experiment's block:
+
+```ruby
+experiment(:pill_color, actor: current_user) do |e|
+  e.record!
+end
+```
+
 ## Test with RSpec
 
 This gem provides some RSpec helpers and custom matchers. These are in flux as of GitLab 13.10.

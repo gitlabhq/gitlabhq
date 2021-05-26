@@ -70,21 +70,6 @@ merge request:
 This change overrides the choice you made in your user preferences and persists until you clear your
 browser's cookies or change this behavior again.
 
-## Merge requests commit navigation
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18140) in GitLab 13.0.
-
-To seamlessly navigate among commits in a merge request:
-
-1. Select the **Commits** tab.
-1. Select a commit to open it in the single-commit view.
-1. Navigate through the commits by either:
-
-   - Selecting **Prev** and **Next** buttons below the tab buttons.
-   - Using the <kbd>X</kbd> and <kbd>C</kbd> keyboard shortcuts.
-
-![Merge requests commit navigation](img/commit_nav_v13_11.png)
-
 ## Incrementally expand merge request diffs
 
 By default, the diff shows only the parts of a file which are changed.

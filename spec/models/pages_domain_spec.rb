@@ -12,6 +12,15 @@ RSpec.describe PagesDomain do
     it { is_expected.to have_many(:serverless_domain_clusters) }
   end
 
+  describe '.for_project' do
+    it 'returns domains assigned to project' do
+      domain = create(:pages_domain, :with_project)
+      create(:pages_domain) # unrelated domain
+
+      expect(described_class.for_project(domain.project)).to eq([domain])
+    end
+  end
+
   describe 'validate domain' do
     subject(:pages_domain) { build(:pages_domain, domain: domain) }
 

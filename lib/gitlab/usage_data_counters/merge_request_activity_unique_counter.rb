@@ -189,7 +189,6 @@ module Gitlab
         end
 
         def track_mr_including_ci_config(user:, merge_request:)
-          return unless Feature.enabled?(:usage_data_o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile, user, default_enabled: :yaml)
           return unless merge_request.includes_ci_config?
 
           track_unique_action_by_user(MR_INCLUDING_CI_CONFIG_ACTION, user)

@@ -64,9 +64,9 @@ Once a vulnerability is found, you can interact with it. Read more on how to
 Please note that in some cases the reported vulnerabilities provide metadata that can contain
 external links exposed in the UI. These links might not be accessible within an offline environment.
 
-### Automatic remediation for vulnerabilities
+### Resolving vulnerabilities
 
-The [automatic remediation for vulnerabilities](../vulnerabilities/index.md#remediate-a-vulnerability-automatically) feature is available for offline Dependency Scanning and Container Scanning, but may not work
+The [resolving vulnerabilities](../vulnerabilities/index.md#resolve-a-vulnerability) feature is available for offline Dependency Scanning and Container Scanning, but may not work
 depending on your instance's configuration. We can only suggest solutions, which are generally more
 current versions that have been patched, when we are able to access up-to-date registry services
 hosting the latest versions of that dependency or image.

@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_options';
@@ -21,6 +21,7 @@ export default {
     BoardCard,
     BoardNewIssue,
     GlLoadingIcon,
+    GlIntersectionObserver,
   },
   props: {
     disabled: {
@@ -65,7 +66,7 @@ export default {
       return this.list.maxIssueCount > 0 && this.listItemsCount > this.list.maxIssueCount;
     },
     hasNextPage() {
-      return this.pageInfoByListId[this.list.id].hasNextPage;
+      return this.pageInfoByListId[this.list.id]?.hasNextPage;
     },
     loading() {
       return this.listsFlags[this.list.id]?.isLoading;
@@ -115,14 +116,9 @@ export default {
     eventHub.$on(`toggle-issue-form-${this.list.id}`, this.toggleForm);
     eventHub.$on(`scroll-board-list-${this.list.id}`, this.scrollToTop);
   },
-  mounted() {
-    // Scroll event on list to load more
-    this.listRef.addEventListener('scroll', this.onScroll);
-  },
   beforeDestroy() {
     eventHub.$off(`toggle-issue-form-${this.list.id}`, this.toggleForm);
     eventHub.$off(`scroll-board-list-${this.list.id}`, this.scrollToTop);
-    this.listRef.removeEventListener('scroll', this.onScroll);
   },
   methods: {
     ...mapActions(['fetchItemsForList', 'moveItem']),
@@ -144,16 +140,10 @@ export default {
     toggleForm() {
       this.showIssueForm = !this.showIssueForm;
     },
-    onScroll() {
-      window.requestAnimationFrame(() => {
-        if (
-          !this.loadingMore &&
-          this.scrollTop() > this.scrollHeight() - this.scrollOffset &&
-          this.hasNextPage
-        ) {
-          this.loadNextPage();
-        }
-      });
+    onReachingListBottom() {
+      if (!this.loadingMore && this.hasNextPage) {
+        this.loadNextPage();
+      }
     },
     handleDragOnStart() {
       sortableStart();
@@ -249,7 +239,9 @@ export default {
           data-testid="count-loading-icon"
         />
         <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
-        <span v-else>{{ paginatedIssueText }}</span>
+        <gl-intersection-observer v-else @update="onReachingListBottom">
+          <span>{{ paginatedIssueText }}</span>
+        </gl-intersection-observer>
       </li>
     </component>
   </div>

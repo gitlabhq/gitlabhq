@@ -32,7 +32,7 @@ RSpec.describe 'Value Stream Analytics', :js do
       end
 
       it 'shows active stage with empty message' do
-        expect(page).to have_selector('.gl-path-active-item-indigo', text: 'Issue')
+        expect(page).to have_selector('.stage-nav-item.active', text: 'Issue')
         expect(page).to have_content("We don't have enough data to show this stage.")
       end
     end
@@ -171,7 +171,7 @@ RSpec.describe 'Value Stream Analytics', :js do
   end
 
   def click_stage(stage_name)
-    find('.gl-path-nav-list-item', text: stage_name).click
+    find('.stage-nav li', text: stage_name).click
     wait_for_requests
   end
 end

@@ -41,7 +41,7 @@ module Gitlab
         parts = [
           "#{deprecated_in(format: :markdown)}.",
           reason_text,
-          replacement.then { |r| "Use: [`#{r}`](##{r.downcase.tr('.', '')})." if r }
+          replacement_markdown.then { |r| "Use: #{r}." if r }
         ].compact
 
         case context
@@ -50,6 +50,13 @@ module Gitlab
         when :inline
           parts.join(' ')
         end
+      end
+
+      def replacement_markdown
+        return unless replacement.present?
+        return "`#{replacement}`" unless replacement.include?('.') # only fully qualified references can be linked
+
+        "[`#{replacement}`](##{replacement.downcase.tr('.', '')})"
       end
 
       def edit_description(original_description)

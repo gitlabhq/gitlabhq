@@ -64,13 +64,33 @@ RSpec.describe ApplicationExperiment, :experiment do
   end
 
   describe "publishing results" do
-    it "doesn't track or push data to the client if we shouldn't track", :snowplow do
+    it "doesn't record, track or push data to the client if we shouldn't track", :snowplow do
       allow(subject).to receive(:should_track?).and_return(false)
+      subject.record!
+
+      expect(subject).not_to receive(:record_experiment)
+      expect(subject).not_to receive(:track)
       expect(Gon).not_to receive(:push)
 
       subject.publish(:action)
 
       expect_no_snowplow_event
+    end
+
+    describe 'recording the experiment' do
+      it 'does not record the experiment if we do not tell it to' do
+        expect(subject).not_to receive(:record_experiment)
+
+        subject.publish
+      end
+
+      it 'records the experiment if we tell it to' do
+        subject.record!
+
+        expect(subject).to receive(:record_experiment)
+
+        subject.publish
+      end
     end
 
     it "tracks the assignment" do
@@ -94,6 +114,49 @@ RSpec.describe ApplicationExperiment, :experiment do
 
   it "can exclude from within the block" do
     expect(described_class.new('namespaced/stub') { |e| e.exclude! }).to be_excluded
+  end
+
+  describe 'recording the experiment subject' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.new('namespaced/stub', nil, **context) }
+
+    before do
+      subject.record!
+    end
+
+    context 'when providing a compatible context' do
+      where(:context_key, :object_type) do
+        :namespace | :group
+        :group     | :group
+        :project   | :project
+        :user      | :user
+        :actor     | :user
+      end
+
+      with_them do
+        let(:context) { { context_key => build(object_type) }}
+
+        it 'records the experiment and the experiment subject from the context' do
+          expect { subject.publish }.to change(Experiment, :count).by(1)
+
+          expect(Experiment.last.name).to eq('namespaced/stub')
+          expect(ExperimentSubject.last.send(object_type)).to eq(context[context_key])
+        end
+      end
+    end
+
+    context 'when providing an incompatible or no context' do
+      where(context_hash: [{ foo: :bar }, {}])
+
+      with_them do
+        let(:context) { context_hash }
+
+        it 'does not record the experiment' do
+          expect { subject.publish }.not_to change(Experiment, :count)
+        end
+      end
+    end
   end
 
   describe "tracking events", :snowplow do

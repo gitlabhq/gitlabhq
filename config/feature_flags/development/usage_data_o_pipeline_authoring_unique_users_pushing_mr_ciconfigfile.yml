@@ -1,8 +1,0 @@
----
-name: usage_data_o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54707
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/322166
-milestone: '13.10'
-type: development
-group: group::pipeline authoring
-default_enabled: true

@@ -11,7 +11,11 @@ class Experiment < ApplicationRecord
   end
 
   def self.add_group(name, variant:, group:)
-    find_or_create_by!(name: name).record_group_and_variant!(group, variant)
+    add_subject(name, variant: variant, subject: group)
+  end
+
+  def self.add_subject(name, variant:, subject:)
+    find_or_create_by!(name: name).record_subject_and_variant!(subject, variant)
   end
 
   def self.record_conversion_event(name, user, context = {})
@@ -37,8 +41,11 @@ class Experiment < ApplicationRecord
     experiment_user.update!(converted_at: Time.current, context: merged_context(experiment_user, context))
   end
 
-  def record_group_and_variant!(group, variant)
-    experiment_subject = experiment_subjects.find_or_initialize_by(group: group)
+  def record_subject_and_variant!(subject, variant)
+    subject = subject.owner if subject.is_a?(Namespace) && subject.user?
+    raise 'Incompatible subject provided!' unless subject.is_a?(Group) || subject.is_a?(User) || subject.is_a?(Project)
+
+    experiment_subject = experiment_subjects.find_or_initialize_by(subject.class.name.downcase => subject)
     experiment_subject.assign_attributes(variant: variant)
     # We only call save when necessary because this causes the request to stick to the primary DB
     # even when the save is a no-op

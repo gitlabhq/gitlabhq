@@ -352,14 +352,6 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       it_behaves_like 'a tracked merge request unique event' do
         let(:action) { described_class::MR_INCLUDING_CI_CONFIG_ACTION }
       end
-
-      context 'when FF usage_data_o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile is disabled' do
-        before do
-          stub_feature_flags(usage_data_o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile: false)
-        end
-
-        it_behaves_like 'not tracked merge request unique event'
-      end
     end
 
     context 'when merge request does not include any ci config change' do

@@ -717,7 +717,7 @@ file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/runners/README.m
 your `.gitlab-ci.yml` file by following the instructions described in this document's
 [overriding the container scanning template](#overriding-the-container-scanning-template) section.
 
-Read more about the [solutions for vulnerabilities](../vulnerabilities/index.md#remediate-a-vulnerability-automatically).
+Read more about the [solutions for vulnerabilities](../vulnerabilities/index.md#resolve-a-vulnerability).
 
 ## Troubleshooting
 

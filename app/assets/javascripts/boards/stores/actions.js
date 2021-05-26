@@ -298,7 +298,7 @@ export default {
       filters: filterParams,
       isGroup: boardType === BoardType.group,
       isProject: boardType === BoardType.project,
-      first: 20,
+      first: 10,
       after: fetchNext ? state.pageInfoByListId[listId].endCursor : undefined,
     };
 

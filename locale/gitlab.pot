@@ -20391,6 +20391,9 @@ msgstr ""
 msgid "Measured in bytes of code. Excludes generated and vendored code."
 msgstr ""
 
+msgid "Median"
+msgstr ""
+
 msgid "Medium Timeout Period"
 msgstr ""
 
@@ -25597,6 +25600,9 @@ msgid "ProjectFileTree|Show more"
 msgstr ""
 
 msgid "ProjectLastActivity|Never"
+msgstr ""
+
+msgid "ProjectLifecycle|Stage"
 msgstr ""
 
 msgid "ProjectOverview|Fork"
@@ -32569,6 +32575,9 @@ msgstr ""
 msgid "The password for your GitLab account on %{link_to_gitlab} has successfully been changed."
 msgstr ""
 
+msgid "The phase of the development lifecycle."
+msgstr ""
+
 msgid "The pipeline has been deleted"
 msgstr ""
 
@@ -32711,6 +32720,9 @@ msgid "The user you are trying to deactivate has been active in the past %{minim
 msgstr ""
 
 msgid "The username for the Jenkins server."
+msgstr ""
+
+msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
 msgid "The value of the provided variable exceeds the %{count} character limit"

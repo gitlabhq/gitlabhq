@@ -358,6 +358,9 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
           value 'BAR',
                 description: 'A description of BAR.',
                 deprecated: { reason: 'This is deprecated', milestone: '1.10' }
+          value 'BOOP',
+                description: 'A description of BOOP.',
+                deprecated: { reason: :renamed, replacement: 'MyEnum.BAR', milestone: '1.10' }
         end
 
         Class.new(Types::BaseObject) do
@@ -375,8 +378,9 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
           | Value | Description |
           | ----- | ----------- |
-          | <a id="myenumbar"></a>`BAR` **{warning-solid}** | **Deprecated:** This is deprecated. Deprecated in 1.10. |
+          | <a id="myenumbar"></a>`BAR` **{warning-solid}** | **Deprecated** in 1.10. This is deprecated. |
           | <a id="myenumbaz"></a>`BAZ` | A description of BAZ. |
+          | <a id="myenumboop"></a>`BOOP` **{warning-solid}** | **Deprecated** in 1.10. This was renamed. Use: [`MyEnum.BAR`](#myenumbar). |
         DOC
       end
 

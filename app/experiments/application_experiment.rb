@@ -12,6 +12,8 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
   def publish(_result = nil)
     return unless should_track? # don't track events for excluded contexts
 
+    record_experiment if @record # record the subject in the database if the context contains a namespace, group, project, actor or user
+
     track(:assignment) # track that we've assigned a variant for this context
 
     begin
@@ -32,6 +34,10 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     ))
   end
 
+  def record!
+    @record = true
+  end
+
   def exclude!
     @excluded = true
   end
@@ -48,5 +54,14 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
 
   def experiment_group?
     Feature.enabled?(feature_flag_name, self, type: :experiment, default_enabled: :yaml)
+  end
+
+  def record_experiment
+    subject = context.value[:namespace] || context.value[:group] || context.value[:project] || context.value[:user] || context.value[:actor]
+    return unless subject.is_a?(Group) || subject.is_a?(User) || subject.is_a?(Project)
+
+    variant = :experimental if @variant_name != :control
+
+    Experiment.add_subject(name, variant: variant || :control, subject: subject)
   end
 end

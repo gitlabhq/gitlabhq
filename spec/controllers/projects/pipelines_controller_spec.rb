@@ -274,15 +274,15 @@ RSpec.describe Projects::PipelinesController do
   end
 
   describe 'GET #index' do
-    context 'pipeline_empty_state_templates experiment' do
-      before do
-        stub_application_setting(auto_devops_enabled: false)
-      end
+    before do
+      stub_application_setting(auto_devops_enabled: false)
+    end
 
-      it 'tracks the view', :experiment do
+    context 'pipeline_empty_state_templates experiment' do
+      it 'tracks the assignment', :experiment do
         expect(experiment(:pipeline_empty_state_templates))
-          .to track(:view, value: project.namespace_id)
-          .with_context(actor: user)
+          .to track(:assignment)
+          .with_context(namespace: project.root_ancestor)
           .on_next_instance
 
         get :index, params: { namespace_id: project.namespace, project_id: project }
@@ -290,9 +290,9 @@ RSpec.describe Projects::PipelinesController do
     end
 
     context 'code_quality_walkthrough experiment' do
-      it 'tracks the view', :experiment do
+      it 'tracks the assignment', :experiment do
         expect(experiment(:code_quality_walkthrough))
-          .to track(:view, property: project.root_ancestor.id.to_s)
+          .to track(:assignment)
           .with_context(namespace: project.root_ancestor)
           .on_next_instance
 

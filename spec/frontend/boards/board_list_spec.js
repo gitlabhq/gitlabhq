@@ -181,12 +181,6 @@ describe('Board list component', () => {
       });
     });
 
-    it('loads more issues after scrolling', () => {
-      wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
-
-      expect(actions.fetchItemsForList).toHaveBeenCalled();
-    });
-
     it('does not load issues if already loading', () => {
       wrapper = createComponent({
         state: { listsFlags: { 'gid://gitlab/List/1': { isLoadingMore: true } } },
