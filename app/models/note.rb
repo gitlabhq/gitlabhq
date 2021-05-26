@@ -96,7 +96,9 @@ class Note < ApplicationRecord
 
   validate :does_not_exceed_notes_limit?, on: :create, unless: [:system?, :importing?]
 
-  # @deprecated attachments are handler by the MarkdownUploader
+  # @deprecated attachments are handled by the Upload model.
+  #
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/20830
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes

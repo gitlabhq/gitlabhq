@@ -631,30 +631,11 @@ RSpec.describe API::Groups do
         end
       end
 
-      context 'when limiting feature is enabled' do
-        before do
-          stub_feature_flags(limit_projects_in_groups_api: true)
-        end
+      it 'limits projects and shared_projects' do
+        get api("/groups/#{group1.id}")
 
-        it 'limits projects and shared_projects' do
-          get api("/groups/#{group1.id}")
-
-          expect(json_response['projects'].count).to eq(limit)
-          expect(json_response['shared_projects'].count).to eq(limit)
-        end
-      end
-
-      context 'when limiting feature is not enabled' do
-        before do
-          stub_feature_flags(limit_projects_in_groups_api: false)
-        end
-
-        it 'does not limit projects and shared_projects' do
-          get api("/groups/#{group1.id}")
-
-          expect(json_response['projects'].count).to eq(3)
-          expect(json_response['shared_projects'].count).to eq(3)
-        end
+        expect(json_response['projects'].count).to eq(limit)
+        expect(json_response['shared_projects'].count).to eq(limit)
       end
     end
   end

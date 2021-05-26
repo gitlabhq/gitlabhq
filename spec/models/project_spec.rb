@@ -28,7 +28,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:project_members).dependent(:delete_all) }
     it { is_expected.to have_many(:users).through(:project_members) }
     it { is_expected.to have_many(:requesters).dependent(:delete_all) }
-    it { is_expected.to have_many(:notes) }
+    it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:snippets).class_name('ProjectSnippet') }
     it { is_expected.to have_many(:deploy_keys_projects) }
     it { is_expected.to have_many(:deploy_keys) }

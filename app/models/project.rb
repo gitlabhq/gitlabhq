@@ -234,7 +234,15 @@ class Project < ApplicationRecord
   has_many :events
   has_many :milestones
   has_many :iterations
-  has_many :notes
+
+  # Projects with a very large number of notes may time out destroying them
+  # through the foreign key. Additionally, the deprecated attachment uploader
+  # for notes requires us to use dependent: :destroy to avoid orphaning uploaded
+  # files.
+  #
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/207222
+  has_many :notes, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
   has_many :snippets, class_name: 'ProjectSnippet'
   has_many :hooks, class_name: 'ProjectHook'
   has_many :protected_branches
