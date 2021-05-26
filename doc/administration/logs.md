@@ -611,41 +611,6 @@ This file lives in `/var/log/gitlab/puma/puma_stderr.log` for
 Omnibus GitLab packages, or in `/home/git/gitlab/log/puma_stderr.log` for
 installations from source.
 
-## Unicorn Logs
-
-Starting with GitLab 13.0, Puma is the default web server used in GitLab
-all-in-one package based installations, and GitLab Helm chart deployments.
-
-### `unicorn_stdout.log`
-
-This file lives in `/var/log/gitlab/unicorn/unicorn_stdout.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/unicorn_stdout.log` for
-for installations from source.
-
-### `unicorn_stderr.log`
-
-This file lives in `/var/log/gitlab/unicorn/unicorn_stderr.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/unicorn_stderr.log` for
-for installations from source.
-
-These logs contain all information about the state of Unicorn processes at any given time.
-
-```plaintext
-I, [2015-02-13T06:14:46.680381 #9047]  INFO -- : Refreshing Gem list
-I, [2015-02-13T06:14:56.931002 #9047]  INFO -- : listening on addr=127.0.0.1:8080 fd=12
-I, [2015-02-13T06:14:56.931381 #9047]  INFO -- : listening on addr=/var/opt/gitlab/gitlab-rails/sockets/gitlab.socket fd=13
-I, [2015-02-13T06:14:56.936638 #9047]  INFO -- : master process ready
-I, [2015-02-13T06:14:56.946504 #9092]  INFO -- : worker=0 spawned pid=9092
-I, [2015-02-13T06:14:56.946943 #9092]  INFO -- : worker=0 ready
-I, [2015-02-13T06:14:56.947892 #9094]  INFO -- : worker=1 spawned pid=9094
-I, [2015-02-13T06:14:56.948181 #9094]  INFO -- : worker=1 ready
-W, [2015-02-13T07:16:01.312916 #9094]  WARN -- : #<Unicorn::HttpServer:0x0000000208f618>: worker (pid: 9094) exceeds memory limit (320626688 bytes > 247066940 bytes)
-W, [2015-02-13T07:16:01.313000 #9094]  WARN -- : Unicorn::WorkerKiller send SIGQUIT (pid: 9094) alive: 3621 sec (trial 1)
-I, [2015-02-13T07:16:01.530733 #9047]  INFO -- : reaped #<Process::Status: pid 9094 exit 0> worker=1
-I, [2015-02-13T07:16:01.534501 #13379]  INFO -- : worker=1 spawned pid=13379
-I, [2015-02-13T07:16:01.534848 #13379]  INFO -- : worker=1 ready
-```
-
 ## `repocheck.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/repocheck.log` for

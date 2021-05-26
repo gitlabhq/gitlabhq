@@ -508,20 +508,6 @@ of proposed changes can be found at
 
 GitLab.com uses the default of 60 seconds for [Puma request timeouts](https://docs.gitlab.com/omnibus/settings/puma.html#worker-timeout).
 
-## Unicorn
-
-GitLab.com adjusts the memory limits for the [unicorn-worker-killer](https://rubygems.org/gems/unicorn-worker-killer) gem.
-
-Base default:
-
-- `memory_limit_min` = 750MiB
-- `memory_limit_max` = 1024MiB
-
-Web front-ends:
-
-- `memory_limit_min` = 1024MiB
-- `memory_limit_max` = 1280MiB
-
 ## GitLab.com-specific rate limits
 
 NOTE:

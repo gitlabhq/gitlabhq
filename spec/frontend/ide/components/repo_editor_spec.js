@@ -656,7 +656,7 @@ describe('RepoEditor', () => {
     });
 
     it("does not add file to state or set markdown image syntax if the file isn't markdown", async () => {
-      wrapper.setProps({
+      await wrapper.setProps({
         file: setFileName('myfile.txt'),
       });
       pasteImage();

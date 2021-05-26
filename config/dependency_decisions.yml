@@ -131,13 +131,6 @@
     :versions: []
     :when: 2016-05-02 05:45:28.817510000 Z
 - - :license
-  - unicorn-worker-killer
-  - ruby
-  - :who: Connor Shea
-    :why: https://github.com/kzk/unicorn-worker-killer/blob/master/LICENSE
-    :versions: []
-    :when: 2016-05-02 05:45:38.323867000 Z
-- - :license
   - unf
   - BSD
   - :who: Connor Shea

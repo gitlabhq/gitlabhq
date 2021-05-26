@@ -20,7 +20,7 @@ const createUnallowedNote = () =>
 
 describe('DiscussionActions', () => {
   let wrapper;
-  const createComponentFactory = (shallow = true) => (props) => {
+  const createComponentFactory = (shallow = true) => (props, options) => {
     const store = createStore();
     const mountFn = shallow ? shallowMount : mount;
 
@@ -34,6 +34,7 @@ describe('DiscussionActions', () => {
         shouldShowJumpToNextDiscussion: true,
         ...props,
       },
+      ...options,
     });
   };
 
@@ -90,17 +91,17 @@ describe('DiscussionActions', () => {
   describe('events handling', () => {
     const createComponent = createComponentFactory(false);
 
-    beforeEach(() => {
-      createComponent();
-    });
-
     it('emits showReplyForm event when clicking on reply placeholder', () => {
+      createComponent({}, { attachTo: document.body });
+
       jest.spyOn(wrapper.vm, '$emit');
       wrapper.find(ReplyPlaceholder).find('textarea').trigger('focus');
       expect(wrapper.vm.$emit).toHaveBeenCalledWith('showReplyForm');
     });
 
     it('emits resolve event when clicking on resolve button', () => {
+      createComponent();
+
       jest.spyOn(wrapper.vm, '$emit');
       wrapper.find(ResolveDiscussionButton).find('button').trigger('click');
       expect(wrapper.vm.$emit).toHaveBeenCalledWith('resolve');

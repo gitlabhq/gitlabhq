@@ -185,7 +185,6 @@ gem 'rack-timeout', '~> 0.5.1', require: 'rack/timeout/base'
 
 group :unicorn do
   gem 'unicorn', '~> 5.5'
-  gem 'unicorn-worker-killer', '~> 0.4.4'
 end
 
 group :puma do

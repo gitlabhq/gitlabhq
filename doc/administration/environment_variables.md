@@ -32,8 +32,6 @@ You can use the following environment variables to override certain values:
 | `GITLAB_HOST`                              | string  | The full URL of the GitLab server (including `http://` or `https://`).                                  |
 | `GITLAB_ROOT_PASSWORD`                     | string  | Sets the password for the `root` user on installation.                                                  |
 | `GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` | string  | Sets the initial registration token used for runners.                                                   |
-| `GITLAB_UNICORN_MEMORY_MAX`                | integer | The maximum memory threshold (in bytes) for the [unicorn-worker-killer](operations/unicorn.md#unicorn-worker-killer). |
-| `GITLAB_UNICORN_MEMORY_MIN`                | integer | The minimum memory threshold (in bytes) for the [unicorn-worker-killer](operations/unicorn.md#unicorn-worker-killer). |
 | `RAILS_ENV`                                | string  | The Rails environment; can be one of `production`, `development`, `staging`, or `test`.                 |
 | `UNSTRUCTURED_RAILS_LOG`                   | string  | Enables the unstructured log in addition to JSON logs (defaults to `true`).                             |
 

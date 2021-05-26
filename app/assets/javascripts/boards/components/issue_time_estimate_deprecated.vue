@@ -10,7 +10,7 @@ export default {
   },
   props: {
     estimate: {
-      type: Number,
+      type: [Number, String],
       required: true,
     },
   },

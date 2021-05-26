@@ -6,31 +6,34 @@ const placeholderText = 'Test Button Text';
 describe('ReplyPlaceholder', () => {
   let wrapper;
 
-  const findTextarea = () => wrapper.find({ ref: 'textarea' });
-
-  beforeEach(() => {
+  const createComponent = ({ options = {} } = {}) => {
     wrapper = shallowMount(ReplyPlaceholder, {
       propsData: {
         placeholderText,
       },
+      ...options,
     });
-  });
+  };
+
+  const findTextarea = () => wrapper.find({ ref: 'textarea' });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('emits focus event on button click', () => {
-    findTextarea().trigger('focus');
+  it('emits focus event on button click', async () => {
+    createComponent({ options: { attachTo: document.body } });
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted()).toEqual({
-        focus: [[]],
-      });
+    await findTextarea().trigger('focus');
+
+    expect(wrapper.emitted()).toEqual({
+      focus: [[]],
     });
   });
 
   it('should render reply button', () => {
+    createComponent();
+
     expect(findTextarea().attributes('placeholder')).toEqual(placeholderText);
   });
 });

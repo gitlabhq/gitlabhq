@@ -60,7 +60,7 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown v-if="!isHidden && items.length" icon="list-bulleted" class="gl-mr-2">
+  <gl-dropdown v-if="!isHidden && items.length" icon="list-bulleted" class="gl-mr-2" lazy>
     <gl-dropdown-item v-for="(item, index) in items" :key="index" :href="`#${item.anchor}`">
       <span
         :style="{ 'padding-left': `${item.spacing}px` }"

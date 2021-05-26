@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Performance Bar **(FREE SELF)**
 
-> The **Stats** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271551) in GitLab SaaS 13.9.
+> The **Stats** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271551) in GitLab 13.9.
+> The **Memory** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330736) in GitLab 14.0.
 
 You can display the GitLab Performance Bar to see statistics for the performance
 of a page. When activated, it looks as follows:
@@ -40,9 +41,11 @@ From left to right, it displays:
     Time until something was visible to the user.
   - [**DomContentLoaded**](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/measure-crp) Event.
   - **Total number of requests** the page loaded.
-- **Trace**: If Jaeger is integrated, **Trace** links to a Jaeger tracing page
+- **Memory**: the amount of memory consumed and objects allocated during the selected request.
+  Select it to display a window with more details.
+- **Trace**: if Jaeger is integrated, **Trace** links to a Jaeger tracing page
   with the current request's `correlation_id` included.
-- **+**: A link to add a request's details to the performance bar. The request
+- **+**: a link to add a request's details to the performance bar. The request
   can be added by its full URL (authenticated as the current user), or by the value of
   its `X-Request-Id` header.
 - **Download**: a link to download the raw JSON used to generate the Performance Bar reports.
@@ -51,6 +54,11 @@ From left to right, it displays:
   the current page was open. Only the first two requests per unique URL are captured.
 - **Stats** (optional): if the `GITLAB_PERFORMANCE_BAR_STATS_URL` environment variable is set,
   this URL is displayed in the bar. In GitLab 13.9 and later, used only in GitLab SaaS.
+
+NOTE:
+Not all indicators are available in all environments. For instance, the memory view
+requires to run Ruby with [specific patches](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/patches/ruby/2.7.2/thread-memory-allocations-2.7.patch) applied.
+When running GitLab locally using the GDK this is typically not the case and the memory view cannot be used.
 
 ## Request warnings
 

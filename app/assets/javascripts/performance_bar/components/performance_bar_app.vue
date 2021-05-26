@@ -74,6 +74,11 @@ export default {
       keys: ['label', 'code', 'proxy', 'error'],
     },
     {
+      metric: 'memory',
+      header: s__('PerformanceBar|Memory'),
+      keys: ['item_header', 'item_content'],
+    },
+    {
       metric: 'total',
       header: s__('PerformanceBar|Frontend resources'),
       keys: ['name', 'size'],

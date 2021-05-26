@@ -1,5 +1,5 @@
 import * as testingLibrary from '@testing-library/dom';
-import { createWrapper, WrapperArray, mount, shallowMount } from '@vue/test-utils';
+import { createWrapper, WrapperArray, ErrorWrapper, mount, shallowMount } from '@vue/test-utils';
 import { isArray, upperFirst } from 'lodash';
 
 const vNodeContainsText = (vnode, text) =>
@@ -81,14 +81,9 @@ export const extendedWrapper = (wrapper) => {
               options,
             );
 
-            // Return VTU `ErrorWrapper` if element is not found
-            // https://github.com/vuejs/vue-test-utils/blob/dev/packages/test-utils/src/error-wrapper.js
-            // VTU does not expose `ErrorWrapper` so, as of now, this is the best way to
-            // create an `ErrorWrapper`
+            // Element not found, return an `ErrorWrapper`
             if (!elements.length) {
-              const emptyElement = document.createElement('div');
-
-              return createWrapper(emptyElement).find('testing-library-element-not-found');
+              return new ErrorWrapper(query);
             }
 
             return createWrapper(elements[0], this.options || {});
