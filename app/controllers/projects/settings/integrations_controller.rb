@@ -9,7 +9,7 @@ module Projects
       feature_category :integrations
 
       def show
-        @services = @project.find_or_initialize_services
+        @integrations = @project.find_or_initialize_services
       end
     end
   end

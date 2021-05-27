@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Kubernetes, GitLab and You
+# Kubernetes, GitLab, and you **(FREE SELF)**
 
 This is a list of useful information regarding Kubernetes that the GitLab Support
 Team sometimes uses while troubleshooting. GitLab is making this public, so that anyone

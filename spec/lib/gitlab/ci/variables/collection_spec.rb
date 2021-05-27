@@ -44,6 +44,30 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
     end
   end
 
+  describe '#compact' do
+    subject do
+      described_class.new
+        .append(key: 'STRING', value: 'string')
+        .append(key: 'NIL', value: nil)
+        .append(key: nil, value: 'string')
+    end
+
+    it 'returns a new Collection instance', :aggregate_failures do
+      collection = subject.compact
+
+      expect(collection).to be_an_instance_of(described_class)
+      expect(collection).not_to eql(subject)
+    end
+
+    it 'rejects pair that has nil value', :aggregate_failures do
+      collection = subject.compact
+
+      expect(collection).not_to include(key: 'NIL', value: nil, public: true)
+      expect(collection).to include(key: 'STRING', value: 'string', public: true)
+      expect(collection).to include(key: nil, value: 'string', public: true)
+    end
+  end
+
   describe '#concat' do
     it 'appends all elements from an array' do
       collection = described_class.new([{ key: 'VAR_1', value: '1' }])

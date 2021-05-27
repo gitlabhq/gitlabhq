@@ -101,6 +101,7 @@ export const i18n = {
 export const JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY = 'jira-import-success-alert-hide-map';
 
 export const PARAM_DUE_DATE = 'due_date';
+export const PARAM_PAGE = 'page';
 export const PARAM_SORT = 'sort';
 export const PARAM_STATE = 'state';
 
@@ -124,21 +125,21 @@ export const CREATED_ASC = 'CREATED_ASC';
 export const CREATED_DESC = 'CREATED_DESC';
 export const DUE_DATE_ASC = 'DUE_DATE_ASC';
 export const DUE_DATE_DESC = 'DUE_DATE_DESC';
-export const LABEL_PRIORITY_ASC = 'LABEL_PRIORITY_ASC';
 export const LABEL_PRIORITY_DESC = 'LABEL_PRIORITY_DESC';
 export const MILESTONE_DUE_ASC = 'MILESTONE_DUE_ASC';
 export const MILESTONE_DUE_DESC = 'MILESTONE_DUE_DESC';
 export const POPULARITY_ASC = 'POPULARITY_ASC';
 export const POPULARITY_DESC = 'POPULARITY_DESC';
-export const PRIORITY_ASC = 'PRIORITY_ASC';
 export const PRIORITY_DESC = 'PRIORITY_DESC';
-export const RELATIVE_POSITION_ASC = 'RELATIVE_POSITION_ASC';
+export const RELATIVE_POSITION_DESC = 'RELATIVE_POSITION_DESC';
 export const UPDATED_ASC = 'UPDATED_ASC';
 export const UPDATED_DESC = 'UPDATED_DESC';
 export const WEIGHT_ASC = 'WEIGHT_ASC';
 export const WEIGHT_DESC = 'WEIGHT_DESC';
 
-const PRIORITY_ASC_SORT = 'priority_asc';
+const SORT_ASC = 'asc';
+const SORT_DESC = 'desc';
+
 const CREATED_DATE_SORT = 'created_date';
 const CREATED_ASC_SORT = 'created_asc';
 const UPDATED_DESC_SORT = 'updated_desc';
@@ -146,30 +147,129 @@ const UPDATED_ASC_SORT = 'updated_asc';
 const MILESTONE_SORT = 'milestone';
 const MILESTONE_DUE_DESC_SORT = 'milestone_due_desc';
 const DUE_DATE_DESC_SORT = 'due_date_desc';
-const LABEL_PRIORITY_ASC_SORT = 'label_priority_asc';
 const POPULARITY_ASC_SORT = 'popularity_asc';
 const WEIGHT_DESC_SORT = 'weight_desc';
 const BLOCKING_ISSUES_DESC_SORT = 'blocking_issues_desc';
+const BLOCKING_ISSUES = 'blocking_issues';
+
+export const apiSortParams = {
+  [PRIORITY_DESC]: {
+    order_by: PRIORITY,
+    sort: SORT_DESC,
+  },
+  [CREATED_ASC]: {
+    order_by: CREATED_AT,
+    sort: SORT_ASC,
+  },
+  [CREATED_DESC]: {
+    order_by: CREATED_AT,
+    sort: SORT_DESC,
+  },
+  [UPDATED_ASC]: {
+    order_by: UPDATED_AT,
+    sort: SORT_ASC,
+  },
+  [UPDATED_DESC]: {
+    order_by: UPDATED_AT,
+    sort: SORT_DESC,
+  },
+  [MILESTONE_DUE_ASC]: {
+    order_by: MILESTONE_DUE,
+    sort: SORT_ASC,
+  },
+  [MILESTONE_DUE_DESC]: {
+    order_by: MILESTONE_DUE,
+    sort: SORT_DESC,
+  },
+  [DUE_DATE_ASC]: {
+    order_by: DUE_DATE,
+    sort: SORT_ASC,
+  },
+  [DUE_DATE_DESC]: {
+    order_by: DUE_DATE,
+    sort: SORT_DESC,
+  },
+  [POPULARITY_ASC]: {
+    order_by: POPULARITY,
+    sort: SORT_ASC,
+  },
+  [POPULARITY_DESC]: {
+    order_by: POPULARITY,
+    sort: SORT_DESC,
+  },
+  [LABEL_PRIORITY_DESC]: {
+    order_by: LABEL_PRIORITY,
+    sort: SORT_DESC,
+  },
+  [RELATIVE_POSITION_DESC]: {
+    order_by: RELATIVE_POSITION,
+    per_page: 100,
+    sort: SORT_ASC,
+  },
+  [WEIGHT_ASC]: {
+    order_by: WEIGHT,
+    sort: SORT_ASC,
+  },
+  [WEIGHT_DESC]: {
+    order_by: WEIGHT,
+    sort: SORT_DESC,
+  },
+  [BLOCKING_ISSUES_DESC]: {
+    order_by: BLOCKING_ISSUES,
+    sort: SORT_DESC,
+  },
+};
 
 export const urlSortParams = {
-  [PRIORITY_ASC]: PRIORITY_ASC_SORT,
-  [PRIORITY_DESC]: PRIORITY,
-  [CREATED_ASC]: CREATED_ASC_SORT,
-  [CREATED_DESC]: CREATED_DATE_SORT,
-  [UPDATED_ASC]: UPDATED_ASC_SORT,
-  [UPDATED_DESC]: UPDATED_DESC_SORT,
-  [MILESTONE_DUE_ASC]: MILESTONE_SORT,
-  [MILESTONE_DUE_DESC]: MILESTONE_DUE_DESC_SORT,
-  [DUE_DATE_ASC]: DUE_DATE,
-  [DUE_DATE_DESC]: DUE_DATE_DESC_SORT,
-  [POPULARITY_ASC]: POPULARITY_ASC_SORT,
-  [POPULARITY_DESC]: POPULARITY,
-  [LABEL_PRIORITY_ASC]: LABEL_PRIORITY_ASC_SORT,
-  [LABEL_PRIORITY_DESC]: LABEL_PRIORITY,
-  [RELATIVE_POSITION_ASC]: RELATIVE_POSITION,
-  [WEIGHT_ASC]: WEIGHT,
-  [WEIGHT_DESC]: WEIGHT_DESC_SORT,
-  [BLOCKING_ISSUES_DESC]: BLOCKING_ISSUES_DESC_SORT,
+  [PRIORITY_DESC]: {
+    sort: PRIORITY,
+  },
+  [CREATED_ASC]: {
+    sort: CREATED_ASC_SORT,
+  },
+  [CREATED_DESC]: {
+    sort: CREATED_DATE_SORT,
+  },
+  [UPDATED_ASC]: {
+    sort: UPDATED_ASC_SORT,
+  },
+  [UPDATED_DESC]: {
+    sort: UPDATED_DESC_SORT,
+  },
+  [MILESTONE_DUE_ASC]: {
+    sort: MILESTONE_SORT,
+  },
+  [MILESTONE_DUE_DESC]: {
+    sort: MILESTONE_DUE_DESC_SORT,
+  },
+  [DUE_DATE_ASC]: {
+    sort: DUE_DATE,
+  },
+  [DUE_DATE_DESC]: {
+    sort: DUE_DATE_DESC_SORT,
+  },
+  [POPULARITY_ASC]: {
+    sort: POPULARITY_ASC_SORT,
+  },
+  [POPULARITY_DESC]: {
+    sort: POPULARITY,
+  },
+  [LABEL_PRIORITY_DESC]: {
+    sort: LABEL_PRIORITY,
+  },
+  [RELATIVE_POSITION_DESC]: {
+    sort: RELATIVE_POSITION,
+    per_page: 100,
+  },
+  [WEIGHT_ASC]: {
+    sort: WEIGHT,
+  },
+  [WEIGHT_DESC]: {
+    sort: WEIGHT_DESC_SORT,
+  },
+  [BLOCKING_ISSUES_DESC]: {
+    sort: BLOCKING_ISSUES_DESC_SORT,
+  },
 };
 
 export const MAX_LIST_SIZE = 10;
@@ -194,7 +294,12 @@ export const TOKEN_TYPE_WEIGHT = 'weight';
 export const filters = {
   [TOKEN_TYPE_AUTHOR]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'authorUsername',
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'author_username',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[author_username]',
+      },
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -207,8 +312,13 @@ export const filters = {
   },
   [TOKEN_TYPE_ASSIGNEE]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'assigneeUsernames',
-      [SPECIAL_FILTER]: 'assigneeId',
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'assignee_username',
+        [SPECIAL_FILTER]: 'assignee_id',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[assignee_username]',
+      },
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -223,7 +333,12 @@ export const filters = {
   },
   [TOKEN_TYPE_MILESTONE]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'milestoneTitle',
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'milestone',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[milestone]',
+      },
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -236,13 +351,16 @@ export const filters = {
   },
   [TOKEN_TYPE_LABEL]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'labelName',
-      [SPECIAL_FILTER]: 'labelName',
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'labels',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[labels]',
+      },
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'label_name[]',
-        [SPECIAL_FILTER]: 'label_name[]',
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[label_name][]',
@@ -251,8 +369,10 @@ export const filters = {
   },
   [TOKEN_TYPE_MY_REACTION]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'myReactionEmoji',
-      [SPECIAL_FILTER]: 'myReactionEmoji',
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'my_reaction_emoji',
+        [SPECIAL_FILTER]: 'my_reaction_emoji',
+      },
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -263,7 +383,9 @@ export const filters = {
   },
   [TOKEN_TYPE_CONFIDENTIAL]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'confidential',
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'confidential',
+      },
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -273,23 +395,33 @@ export const filters = {
   },
   [TOKEN_TYPE_ITERATION]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'iterationId',
-      [SPECIAL_FILTER]: 'iterationWildcardId',
-    },
-    [URL_PARAM]: {
       [OPERATOR_IS]: {
-        [NORMAL_FILTER]: 'iteration_id',
+        [NORMAL_FILTER]: 'iteration_title',
         [SPECIAL_FILTER]: 'iteration_id',
       },
       [OPERATOR_IS_NOT]: {
-        [NORMAL_FILTER]: 'not[iteration_id]',
+        [NORMAL_FILTER]: 'not[iteration_title]',
+      },
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'iteration_title',
+        [SPECIAL_FILTER]: 'iteration_id',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[iteration_title]',
       },
     },
   },
   [TOKEN_TYPE_EPIC]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'epicId',
-      [SPECIAL_FILTER]: 'epicId',
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'epic_id',
+        [SPECIAL_FILTER]: 'epic_id',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[epic_id]',
+      },
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -303,8 +435,13 @@ export const filters = {
   },
   [TOKEN_TYPE_WEIGHT]: {
     [API_PARAM]: {
-      [NORMAL_FILTER]: 'weight',
-      [SPECIAL_FILTER]: 'weight',
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'weight',
+        [SPECIAL_FILTER]: 'weight',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[weight]',
+      },
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {

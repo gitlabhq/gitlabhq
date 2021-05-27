@@ -43,6 +43,10 @@ To make full use of Auto DevOps with Kubernetes, you need:
      the NGINX Ingress deployment to be scraped by Prometheus using
      `prometheus.io/scrape: "true"` and `prometheus.io/port: "10254"`.
 
+     NOTE:
+     If your cluster is installed on bare metal, see
+     [Auto DevOps Requirements for bare metal](#auto-devops-requirements-for-bare-metal).
+
 - **Base domain** (for [Auto Review Apps](stages.md#auto-review-apps),
   [Auto Deploy](stages.md#auto-deploy), and [Auto Monitoring](stages.md#auto-monitoring))
 
@@ -149,3 +153,18 @@ specific CI/CD variable.
 
 For more details, see [Custom build job for Auto DevOps](../../ci/cloud_deployment/index.md#custom-build-job-for-auto-devops)
 for deployments to AWS EC2.
+
+## Auto DevOps requirements for bare metal
+
+According to the [Kubernetes Ingress-NGINX docs](https://kubernetes.github.io/ingress-nginx/deploy/baremetal/):
+
+> In traditional cloud environments, where network load balancers are available on-demand,
+a single Kubernetes manifest suffices to provide a single point of contact to the NGINX Ingress
+controller to external clients and, indirectly, to any application running inside the cluster.
+Bare-metal environments lack this commodity, requiring a slightly different setup to offer the
+same kind of access to external consumers.
+
+The docs linked above explain the issue and present possible solutions, for example:
+
+- Through [MetalLB](https://github.com/metallb/metallb). 
+- Through [PorterLB](https://github.com/kubesphere/porterlb).

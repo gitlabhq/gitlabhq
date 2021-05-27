@@ -24,6 +24,10 @@ module Gitlab
           self
         end
 
+        def compact
+          Collection.new(select { |variable| !variable.value.nil? })
+        end
+
         def concat(resources)
           return self if resources.nil?
 

@@ -85,14 +85,13 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def integration
     @integration ||= @project.find_or_initialize_service(params[:id])
-    @service ||= @integration # TODO: remove references to @service https://gitlab.com/gitlab-org/gitlab/-/issues/329759
   end
   alias_method :service, :integration
 
   def web_hook_logs
-    return unless @service.service_hook.present?
+    return unless integration.service_hook.present?
 
-    @web_hook_logs ||= @service.service_hook.web_hook_logs.recent.page(params[:page])
+    @web_hook_logs ||= integration.service_hook.web_hook_logs.recent.page(params[:page])
   end
 
   def ensure_service_enabled
@@ -101,8 +100,8 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def serialize_as_json
     integration
-      .as_json(only: @service.json_fields)
-      .merge(errors: @service.errors.as_json)
+      .as_json(only: integration.json_fields)
+      .merge(errors: integration.errors.as_json)
   end
 
   def redirect_deprecated_prometheus_service

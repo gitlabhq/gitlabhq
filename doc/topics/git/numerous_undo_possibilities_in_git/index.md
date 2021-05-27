@@ -36,7 +36,7 @@ You can undo changes at any point in this workflow:
 - [When you're working locally](#undo-local-changes) and haven't yet pushed to a remote repository.
 - When you have already pushed to a remote repository and you want to:
   - [Keep the history intact](#undo-remote-changes-without-changing-history) (preferred).
-  - [Change the history](#undo-remote-changes-with-modifying-history) (requires
+  - [Change the history](#undo-remote-changes-while-changing-history) (requires
     coordination with team and force pushes).
 
 ## Undo local changes
@@ -152,7 +152,7 @@ If you want to change to another branch, you can use [`git stash`](https://www.g
 
 ## Undo committed local changes
 
-When you commit to your local repository (`git commit`), the version control system records
+When you commit to your local repository (`git commit`), Git records
 your changes. Because you did not push to a remote repository yet, your changes are
 not public (or shared with other developers). At this point, you can undo your changes.
 
@@ -218,64 +218,53 @@ which clashes with what other developers have locally.
 
 ### Undo staged local changes with history modification
 
-You can rewrite history in Git, but you should avoid it, because it can cause problems
-when multiple developers are contributing to the same codebase.
+The following tasks rewrite Git history.
 
-There is one command for history modification and that is `git rebase`. Command
-provides interactive mode (`-i` flag) which enables you to:
+#### Delete a specific commit
 
-- **reword** commit messages (there is also `git commit --amend` for editing
-  last commit message).
-- **edit** the commit content (changes introduced by commit) and message.
-- **squash** multiple commits into a single one, and have a custom or aggregated
-  commit message.
-- **drop** commits - delete them.
-- and few more options.
+You can delete a specific commit. For example, if you have
+commits `A-B-C-D` and you want to delete commit `B`.
 
-Let us check few examples. Again there are commits `A-B-C-D` where you want to
-delete commit `B`.
+1. Rebase the range from current commit `D` to `B`:
 
-- Rebase the range from current commit D to A:
+   ```shell
+   git rebase -i A
+   ```
 
-  ```shell
-  git rebase -i A
-  ```
+   A list of commits is displayed in your editor.
 
-- Command opens your favorite editor where you write `drop` in front of commit
- `B`, but you leave default `pick` with all other commits. Save and exit the
- editor to perform a rebase. Remember: if you want to cancel delete whole
- file content before saving and exiting the editor
+1. In front of commit `B`, replace `pick` with `drop`.
+1. Leave the default, `pick`, for all other commits.
+1. Save and exit the editor.
 
-In case you want to modify something introduced in commit `B`.
+#### Modify a specific commit
 
-- Rebase the range from current commit D to A:
+You can modify a specific commit. For example, if you have
+commits `A-B-C-D` and you want to modify something introduced in commit `B`.
 
-  ```shell
-  git rebase -i A
-  ```
+1. Rebase the range from current commit `D` to `B`:
 
-- Command opens your favorite text editor where you write `edit` in front of commit
- `B`, but leave default `pick` with all other commits. Save and exit the editor to
- perform a rebase.
+   ```shell
+   git rebase -i A
+   ```
 
-- Now do your edits and commit changes:
+   A list of commits is displayed in your editor.
+   
+1. In front of commit `B`, replace `pick` with `edit`.
+1. Leave the default, `pick`, for all other commits.
+1. Save and exit the editor.
+1. Open the file in your editor, make your edits, and commit the changes:
 
-  ```shell
-  git commit -a
-  ```
-
-You can find some more examples in the section explaining
-[how to modify history](#how-modifying-history-is-done).
+   ```shell
+   git commit -a
+   ```
 
 ### Redoing the undo
 
-Sometimes you realize that the changes you undid were useful and you want them
-back. Well because of first paragraph you are in luck. Command `git reflog`
-enables you to *recall* detached local commits by referencing or applying them
-via commit ID. Although, do not expect to see really old commits in reflog, because
-Git regularly [cleans the commits which are *unreachable* by branches or tags](https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery).
+You can recall previous local commits. However, not all previous commits are available, because
+Git regularly [cleans the commits that are unreachable by branches or tags](https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery).
 
-To view repository history and to track older commits you can use below command:
+To view repository history and track prior commits, run `git reflog show`. For example:
 
 ```shell
 $ git reflog show
@@ -293,63 +282,46 @@ eb37e74 HEAD@{6}: rebase -i (pick): Commit C
 6e43d59 HEAD@{16}: commit: Commit B
 ```
 
-Output of command shows repository history. In first column there is commit ID,
-in following column, number next to `HEAD` indicates how many commits ago something
-was made, after that indicator of action that was made (commit, rebase, merge, ...)
-and then on end description of that action.
+This output shows the repository history, including:
+
+- The commit SHA.
+- How many `HEAD`-changing actions ago the commit was made (`HEAD@{12}` was 12 `HEAD`-changing actions ago).
+- The action that was taken, for example: commit, rebase, merge.
+- A description of the action that changed `HEAD`.
 
 ## Undo remote changes without changing history
 
-This topic is roughly same as modifying committed local changes without modifying
-history. **It should be the preferred way of undoing changes on any remote repository
-or public branch.** Keep in mind that branching is the best solution when you want
-to retain the history of faulty development, yet start anew from certain point.
-
-Branching
-enables you to include the existing changes in new development (by merging) and
-it also provides a clear timeline and development structure.
+To undo changes in the remote repository, you can create a new commit with the changes you
+want to undo. You should follow this process, which preserves the history and
+provides a clear timeline and development structure. However, you only
+need to follow this procedure if your work was merged into a branch that
+other developers are using as the base for their work (for example, `main`).
 
 ![Use revert to keep branch flowing](img/revert.png)
 
-If you want to revert changes introduced in certain `commit-id`, you can
-revert that `commit-id` (swap additions and deletions) in newly created commit:
-You can do this with
+To revert changes introduced in a specific commit `B`:
 
 ```shell
-git revert commit-id
+git revert B
 ```
 
-or creating a new branch:
+## Undo remote changes while changing history
 
-```shell
-git checkout commit-id
-git checkout -b new-path-of-feature
-```
+You can undo remote changes and change history.
 
-## Undo remote changes with modifying history
-
-This is useful when you want to *hide* certain things - like secret keys,
-passwords, and SSH keys. It is and should not be used to hide mistakes, as
-it makes it harder to debug in case there are some other bugs. The main
-reason for this is that you loose the real development progress. Keep in
-mind that, even with modified history, commits are just detached and can still be
-accessed through commit ID - at least until all repositories perform
-the automated cleanup of detached commits.
+Even with an updated history, old commits can still be
+accessed by commit SHA, at least until all the automated cleanup
+of detached commits is performed, or a cleanup is run manually. Even the cleanup might not remove old commits if there are still refs pointing to them.
 
 ![Modifying history causes problems on remote branch](img/rebase_reset.png)
 
-### Where modifying history is generally acceptable
+### When changing history is acceptable
 
-Modified history breaks the development chain of other developers, as changed
-history does not have matching commit IDs. For that reason it should not be
-used on any public branch or on branch that might be used by other developers.
-When contributing to big open source repositories (for example, [GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria)
-itself), it is acceptable to squash commits into a single one, to present a
-nicer history of your contribution.
+You should not change the history when you're working in a public branch
+or a branch that might be used by other developers.
 
-Keep in mind that this also removes the comments attached to certain commits
-in merge requests, so if you need to retain traceability in GitLab, then
-modifying history is not acceptable.
+When you contribute to large open source repositories, like [GitLab](https://gitlab.com/gitlab-org/gitlab),
+you can squash your commits into a single one.
 
 A feature branch of a merge request is a public branch and might be used by
 other developers, but project process and rules might allow or require
@@ -362,20 +334,12 @@ at merge).
 NOTE:
 Never modify the commit history of your [default branch](../../../user/project/repository/branches/default.md) or shared branch.
 
-### How modifying history is done
+### How to change history
 
-After you know what you want to modify (how far in history or how which range of
-old commits), use `git rebase -i commit-id`. This command displays all the commits from
-current version to chosen commit ID and allow modification, squashing, deletion
-of that commits.
+You can modify history by using `git rebase -i`. This command allows modification, squashing, deletion
+of commits.
 
 ```shell
-$ git rebase -i commit1-id..commit3-id
-pick <commit1-id> <commit1-commit-message>
-pick <commit2-id> <commit2-commit-message>
-pick <commit3-id> <commit3-commit-message>
-
-# Rebase commit1-id..commit3-id onto <commit4-id> (3 command(s))
 #
 # Commands:
 # p, pick = use commit
@@ -388,17 +352,16 @@ pick <commit3-id> <commit3-commit-message>
 #
 # These lines can be re-ordered; they are executed from top to bottom.
 #
-# If you remove a line here THAT COMMIT WILL BE LOST.
+# If you remove a line THAT COMMIT WILL BE LOST.
 #
 # However, if you remove everything, the rebase will be aborted.
 #
-# Note that empty commits are commented out
+# Empty commits are commented out
 ```
 
 NOTE:
-The comment from the output clearly states that, if
-you decide to abort, don't just close your editor (as that
-modifies history), but remove all uncommented lines and save.
+If you decide to abort, do not close your editor, because the history
+will change. Instead, remove all uncommented lines and save.
 
 Use `git rebase` carefully on
 shared and remote branches, but rest assured: nothing is broken until

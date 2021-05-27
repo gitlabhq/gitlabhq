@@ -39,7 +39,7 @@ export default {
       return this.value.data;
     },
     activeIteration() {
-      return this.iterations.find((iteration) => iteration.id === Number(this.currentValue));
+      return this.iterations.find((iteration) => iteration.title === this.currentValue);
     },
   },
   watch: {
@@ -99,8 +99,8 @@ export default {
       <template v-else>
         <gl-filtered-search-suggestion
           v-for="iteration in iterations"
-          :key="iteration.id"
-          :value="String(iteration.id)"
+          :key="iteration.title"
+          :value="iteration.title"
         >
           {{ iteration.title }}
         </gl-filtered-search-suggestion>

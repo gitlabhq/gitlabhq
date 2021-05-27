@@ -42,9 +42,6 @@ export default {
       }
       return __('Milestone');
     },
-    milestoneLink() {
-      return this.issue.milestone.webPath || this.issue.milestone.webUrl;
-    },
     dueDate() {
       return this.issue.dueDate && dateInWords(new Date(this.issue.dueDate), true);
     },
@@ -52,7 +49,7 @@ export default {
       return isInPast(new Date(this.issue.dueDate));
     },
     timeEstimate() {
-      return this.issue.humanTimeEstimate || this.issue.timeStats?.humanTimeEstimate;
+      return this.issue.timeStats?.humanTimeEstimate;
     },
     showHealthStatus() {
       return this.hasIssuableHealthStatusFeature && this.issue.healthStatus;
@@ -88,7 +85,7 @@ export default {
       class="issuable-milestone gl-display-none gl-sm-display-inline-block! gl-mr-3"
       data-testid="issuable-milestone"
     >
-      <gl-link v-gl-tooltip :href="milestoneLink" :title="milestoneDate">
+      <gl-link v-gl-tooltip :href="issue.milestone.webUrl" :title="milestoneDate">
         <gl-icon name="clock" />
         {{ issue.milestone.title }}
       </gl-link>

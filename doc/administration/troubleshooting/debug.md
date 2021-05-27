@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Debugging Tips
+# Debugging tips **(FREE SELF)**
 
 Sometimes things don't work the way they should. Here are some tips on debugging issues out
 in production.

@@ -1,18 +1,9 @@
 import { GlButton, GlEmptyState, GlLink } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
-import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
-import {
-  filteredTokens,
-  getIssuesQueryResponse,
-  locationSearch,
-  urlParams,
-} from 'jest/issues_list/mock_data';
+import { apiParams, filteredTokens, locationSearch, urlParams } from 'jest/issues_list/mock_data';
 import createFlash from '~/flash';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
@@ -20,9 +11,13 @@ import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
 import {
+  apiSortParams,
   CREATED_DESC,
   DUE_DATE_OVERDUE,
+  PAGE_SIZE,
+  PAGE_SIZE_MANUAL,
   PARAM_DUE_DATE,
+  RELATIVE_POSITION_DESC,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -45,14 +40,12 @@ describe('IssuesListApp component', () => {
   let axiosMock;
   let wrapper;
 
-  const localVue = createLocalVue();
-  localVue.use(VueApollo);
-
   const defaultProvide = {
     autocompleteUsersPath: 'autocomplete/users/path',
     calendarPath: 'calendar/path',
     canBulkUpdate: false,
     emptyStateSvgPath: 'empty-state.svg',
+    endpoint: 'api/endpoint',
     exportCsvPath: 'export/csv/path',
     hasBlockedIssuesFeature: true,
     hasIssueWeightsFeature: true,
@@ -68,6 +61,22 @@ describe('IssuesListApp component', () => {
     signInPath: 'sign/in/path',
   };
 
+  const state = 'opened';
+  const xPage = 1;
+  const xTotal = 25;
+  const tabCounts = {
+    opened: xTotal,
+    closed: undefined,
+    all: undefined,
+  };
+  const fetchIssuesResponse = {
+    data: [],
+    headers: {
+      'x-page': xPage,
+      'x-total': xTotal,
+    },
+  };
+
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
   const findGlButton = () => wrapper.findComponent(GlButton);
@@ -77,26 +86,19 @@ describe('IssuesListApp component', () => {
   const findGlLink = () => wrapper.findComponent(GlLink);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
 
-  const mountComponent = ({
-    provide = {},
-    response = getIssuesQueryResponse,
-    mountFn = shallowMount,
-  } = {}) => {
-    const requestHandlers = [[getIssuesQuery, jest.fn().mockResolvedValue(response)]];
-    const apolloProvider = createMockApollo(requestHandlers);
-
-    return mountFn(IssuesListApp, {
-      localVue,
-      apolloProvider,
+  const mountComponent = ({ provide = {}, mountFn = shallowMount } = {}) =>
+    mountFn(IssuesListApp, {
       provide: {
         ...defaultProvide,
         ...provide,
       },
     });
-  };
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
+    axiosMock
+      .onGet(defaultProvide.endpoint)
+      .reply(200, fetchIssuesResponse.data, fetchIssuesResponse.headers);
   });
 
   afterEach(() => {
@@ -106,37 +108,28 @@ describe('IssuesListApp component', () => {
   });
 
   describe('IssuableList', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       wrapper = mountComponent();
-      jest.runOnlyPendingTimers();
+      await waitForPromises();
     });
 
     it('renders', () => {
       expect(findIssuableList().props()).toMatchObject({
         namespace: defaultProvide.projectPath,
         recentSearchesStorageKey: 'issues',
-        searchInputPlaceholder: IssuesListApp.i18n.searchPlaceholder,
+        searchInputPlaceholder: 'Search or filter results…',
         sortOptions: getSortOptions(true, true),
         initialSortBy: CREATED_DESC,
-        issuables: getIssuesQueryResponse.data.project.issues.nodes,
         tabs: IssuableListTabs,
         currentTab: IssuableStates.Opened,
-        tabCounts: {
-          opened: 1,
-          closed: undefined,
-          all: undefined,
-        },
-        issuablesLoading: false,
-        isManualOrdering: false,
-        showBulkEditSidebar: false,
-        showPaginationControls: true,
-        currentPage: 1,
-        previousPage: Number(getIssuesQueryResponse.data.project.issues.pageInfo.hasPreviousPage),
-        nextPage: Number(getIssuesQueryResponse.data.project.issues.pageInfo.hasNextPage),
-        urlParams: {
-          sort: urlSortParams[CREATED_DESC],
-          state: IssuableStates.Opened,
-        },
+        tabCounts,
+        showPaginationControls: false,
+        issuables: [],
+        totalItems: xTotal,
+        currentPage: xPage,
+        previousPage: xPage - 1,
+        nextPage: xPage + 1,
+        urlParams: { page: xPage, state },
       });
     });
   });
@@ -164,9 +157,9 @@ describe('IssuesListApp component', () => {
 
     describe('csv import/export component', () => {
       describe('when user is signed in', () => {
-        const search = '?search=refactor&sort=created_date&state=opened';
+        it('renders', async () => {
+          const search = '?page=1&search=refactor&state=opened&sort=created_date';
 
-        beforeEach(() => {
           global.jsdom.reconfigure({ url: `${TEST_HOST}${search}` });
 
           wrapper = mountComponent({
@@ -174,13 +167,11 @@ describe('IssuesListApp component', () => {
             mountFn: mount,
           });
 
-          jest.runOnlyPendingTimers();
-        });
+          await waitForPromises();
 
-        it('renders', () => {
           expect(findCsvImportExportButtons().props()).toMatchObject({
             exportCsvPath: `${defaultProvide.exportCsvPath}${search}`,
-            issuableCount: 1,
+            issuableCount: xTotal,
           });
         });
       });
@@ -198,7 +189,7 @@ describe('IssuesListApp component', () => {
       it('renders when user has permissions', () => {
         wrapper = mountComponent({ provide: { canBulkUpdate: true }, mountFn: mount });
 
-        expect(findGlButtonAt(2).text()).toBe(IssuesListApp.i18n.editIssues);
+        expect(findGlButtonAt(2).text()).toBe('Edit issues');
       });
 
       it('does not render when user does not have permissions', () => {
@@ -224,7 +215,7 @@ describe('IssuesListApp component', () => {
       it('renders when user has permissions', () => {
         wrapper = mountComponent({ provide: { showNewIssueLink: true }, mountFn: mount });
 
-        expect(findGlButtonAt(2).text()).toBe(IssuesListApp.i18n.newIssueLabel);
+        expect(findGlButtonAt(2).text()).toBe('New issue');
         expect(findGlButtonAt(2).attributes('href')).toBe(defaultProvide.newIssuePath);
       });
 
@@ -247,6 +238,18 @@ describe('IssuesListApp component', () => {
       });
     });
 
+    describe('page', () => {
+      it('is set from the url params', () => {
+        const page = 5;
+
+        global.jsdom.reconfigure({ url: setUrlParams({ page }, TEST_HOST) });
+
+        wrapper = mountComponent();
+
+        expect(findIssuableList().props('currentPage')).toBe(page);
+      });
+    });
+
     describe('search', () => {
       it('is set from the url params', () => {
         global.jsdom.reconfigure({ url: `${TEST_HOST}${locationSearch}` });
@@ -259,15 +262,13 @@ describe('IssuesListApp component', () => {
 
     describe('sort', () => {
       it.each(Object.keys(urlSortParams))('is set as %s from the url params', (sortKey) => {
-        global.jsdom.reconfigure({
-          url: setUrlParams({ sort: urlSortParams[sortKey] }, TEST_HOST),
-        });
+        global.jsdom.reconfigure({ url: setUrlParams(urlSortParams[sortKey], TEST_HOST) });
 
         wrapper = mountComponent();
 
         expect(findIssuableList().props()).toMatchObject({
           initialSortBy: sortKey,
-          urlParams: { sort: urlSortParams[sortKey] },
+          urlParams: urlSortParams[sortKey],
         });
       });
     });
@@ -325,10 +326,12 @@ describe('IssuesListApp component', () => {
   describe('empty states', () => {
     describe('when there are issues', () => {
       describe('when search returns no results', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           global.jsdom.reconfigure({ url: `${TEST_HOST}?search=no+results` });
 
           wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
+
+          await waitForPromises();
         });
 
         it('shows empty state', () => {
@@ -341,8 +344,10 @@ describe('IssuesListApp component', () => {
       });
 
       describe('when "Open" tab has no issues', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
+
+          await waitForPromises();
         });
 
         it('shows empty state', () => {
@@ -355,12 +360,14 @@ describe('IssuesListApp component', () => {
       });
 
       describe('when "Closed" tab has no issues', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           global.jsdom.reconfigure({
             url: setUrlParams({ state: IssuableStates.Closed }, TEST_HOST),
           });
 
           wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
+
+          await waitForPromises();
         });
 
         it('shows empty state', () => {
@@ -529,67 +536,74 @@ describe('IssuesListApp component', () => {
   describe('events', () => {
     describe('when "click-tab" event is emitted by IssuableList', () => {
       beforeEach(() => {
+        axiosMock.onGet(defaultProvide.endpoint).reply(200, fetchIssuesResponse.data, {
+          'x-page': 2,
+          'x-total': xTotal,
+        });
+
         wrapper = mountComponent();
 
         findIssuableList().vm.$emit('click-tab', IssuableStates.Closed);
       });
 
-      it('updates to the new tab', () => {
-        expect(findIssuableList().props('currentTab')).toBe(IssuableStates.Closed);
+      it('makes API call to filter the list by the new state and resets the page to 1', () => {
+        expect(axiosMock.history.get[1].params).toMatchObject({
+          page: 1,
+          state: IssuableStates.Closed,
+        });
       });
     });
 
     describe('when "page-change" event is emitted by IssuableList', () => {
-      beforeEach(() => {
+      const data = [{ id: 10, title: 'title', state }];
+      const page = 2;
+      const totalItems = 21;
+
+      beforeEach(async () => {
+        axiosMock.onGet(defaultProvide.endpoint).reply(200, data, {
+          'x-page': page,
+          'x-total': totalItems,
+        });
+
         wrapper = mountComponent();
 
-        findIssuableList().vm.$emit('page-change', 2);
+        findIssuableList().vm.$emit('page-change', page);
+
+        await waitForPromises();
       });
 
-      it('updates to the new page', () => {
-        expect(findIssuableList().props('currentPage')).toBe(2);
+      it('fetches issues with expected params', () => {
+        expect(axiosMock.history.get[1].params).toMatchObject({
+          page,
+          per_page: PAGE_SIZE,
+          state,
+          with_labels_details: true,
+        });
+      });
+
+      it('updates IssuableList with response data', () => {
+        expect(findIssuableList().props()).toMatchObject({
+          issuables: data,
+          totalItems,
+          currentPage: page,
+          previousPage: page - 1,
+          nextPage: page + 1,
+          urlParams: { page, state },
+        });
       });
     });
 
     describe('when "reorder" event is emitted by IssuableList', () => {
-      const issueOne = {
-        ...getIssuesQueryResponse.data.project.issues.nodes[0],
-        id: 1,
-        iid: 101,
-        title: 'Issue one',
-      };
-      const issueTwo = {
-        ...getIssuesQueryResponse.data.project.issues.nodes[0],
-        id: 2,
-        iid: 102,
-        title: 'Issue two',
-      };
-      const issueThree = {
-        ...getIssuesQueryResponse.data.project.issues.nodes[0],
-        id: 3,
-        iid: 103,
-        title: 'Issue three',
-      };
-      const issueFour = {
-        ...getIssuesQueryResponse.data.project.issues.nodes[0],
-        id: 4,
-        iid: 104,
-        title: 'Issue four',
-      };
-      const response = {
-        data: {
-          project: {
-            issues: {
-              ...getIssuesQueryResponse.data.project.issues,
-              nodes: [issueOne, issueTwo, issueThree, issueFour],
-            },
-          },
-        },
-      };
+      const issueOne = { id: 1, iid: 101, title: 'Issue one' };
+      const issueTwo = { id: 2, iid: 102, title: 'Issue two' };
+      const issueThree = { id: 3, iid: 103, title: 'Issue three' };
+      const issueFour = { id: 4, iid: 104, title: 'Issue four' };
+      const issues = [issueOne, issueTwo, issueThree, issueFour];
 
-      beforeEach(() => {
-        wrapper = mountComponent({ response });
-        jest.runOnlyPendingTimers();
+      beforeEach(async () => {
+        axiosMock.onGet(defaultProvide.endpoint).reply(200, issues, fetchIssuesResponse.headers);
+        wrapper = mountComponent();
+        await waitForPromises();
       });
 
       describe('when successful', () => {
@@ -630,18 +644,21 @@ describe('IssuesListApp component', () => {
     });
 
     describe('when "sort" event is emitted by IssuableList', () => {
-      it.each(Object.keys(urlSortParams))(
-        'updates to the new sort when payload is `%s`',
+      it.each(Object.keys(apiSortParams))(
+        'fetches issues with correct params with payload `%s`',
         async (sortKey) => {
           wrapper = mountComponent();
 
           findIssuableList().vm.$emit('sort', sortKey);
 
-          jest.runOnlyPendingTimers();
-          await nextTick();
+          await waitForPromises();
 
-          expect(findIssuableList().props('urlParams')).toMatchObject({
-            sort: urlSortParams[sortKey],
+          expect(axiosMock.history.get[1].params).toEqual({
+            page: xPage,
+            per_page: sortKey === RELATIVE_POSITION_DESC ? PAGE_SIZE_MANUAL : PAGE_SIZE,
+            state,
+            with_labels_details: true,
+            ...apiSortParams[sortKey],
           });
         },
       );
@@ -651,11 +668,13 @@ describe('IssuesListApp component', () => {
       beforeEach(() => {
         wrapper = mountComponent();
         jest.spyOn(eventHub, '$emit');
-
-        findIssuableList().vm.$emit('update-legacy-bulk-edit');
       });
 
-      it('emits an "issuables:updateBulkEdit" event to the legacy bulk edit class', () => {
+      it('emits an "issuables:updateBulkEdit" event to the legacy bulk edit class', async () => {
+        findIssuableList().vm.$emit('update-legacy-bulk-edit');
+
+        await waitForPromises();
+
         expect(eventHub.$emit).toHaveBeenCalledWith('issuables:updateBulkEdit');
       });
     });
@@ -665,6 +684,10 @@ describe('IssuesListApp component', () => {
         wrapper = mountComponent();
 
         findIssuableList().vm.$emit('filter', filteredTokens);
+      });
+
+      it('makes an API call to search for issues with the search term', () => {
+        expect(axiosMock.history.get[1].params).toMatchObject(apiParams);
       });
 
       it('updates IssuableList with url params', () => {

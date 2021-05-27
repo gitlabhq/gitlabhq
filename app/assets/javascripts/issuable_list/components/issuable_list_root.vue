@@ -2,7 +2,6 @@
 import { GlSkeletonLoading, GlPagination } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
@@ -212,7 +211,7 @@ export default {
   },
   methods: {
     issuableId(issuable) {
-      return getIdFromGraphQLId(issuable.id) || issuable.iid || uniqueId();
+      return issuable.id || issuable.iid || uniqueId();
     },
     issuableChecked(issuable) {
       return this.checkedIssuables[this.issuableId(issuable)]?.checked;

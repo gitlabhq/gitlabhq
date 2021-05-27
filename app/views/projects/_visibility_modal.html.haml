@@ -7,7 +7,7 @@
       .modal-header
         %h3.page-title= _('Reduce this project’s visibility?')
         %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
-          %span{ "aria-hidden": true }= sprite_icon("close")
+          %span{ "aria-hidden": "true" }= sprite_icon("close")
       .modal-body
         %p
           - if @project.group

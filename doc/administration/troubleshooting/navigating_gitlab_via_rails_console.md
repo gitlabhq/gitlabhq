@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Navigating GitLab via Rails console
+# Navigating GitLab via Rails console **(FREE SELF)**
 
 At the heart of GitLab is a web application [built using the Ruby on Rails
 framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).

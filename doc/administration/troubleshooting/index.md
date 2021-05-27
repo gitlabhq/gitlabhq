@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting a GitLab installation
+# Troubleshooting a GitLab installation **(FREE SELF)**
 
 This page documents a collection of resources to help you troubleshoot a GitLab
 installation.
