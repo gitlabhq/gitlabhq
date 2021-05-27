@@ -453,6 +453,7 @@ Parameters:
 | `twitter`                            | No       | Twitter account                                                                                                                                         |
 | `username`                           | Yes      | Username                                                                                                                                                |
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
+| `show_whitespace_in_diffs`           | No       | Flag indicating the user sees whitespace changes in diffs
 | `website_url`                        | No       | Website URL                                                                                                                                             |
 
 ## User modification

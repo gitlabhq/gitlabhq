@@ -8,11 +8,19 @@ RSpec.describe API::Users do
   describe 'PUT /user/preferences/' do
     context "with correct attributes and a logged in user" do
       it 'returns a success status and the value has been changed' do
-        put api("/user/preferences", user), params: { view_diffs_file_by_file: true }
+        put api("/user/preferences", user), params: {
+          view_diffs_file_by_file: true,
+          show_whitespace_in_diffs: true
+        }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['view_diffs_file_by_file']).to eq(true)
-        expect(user.reload.view_diffs_file_by_file).to be_truthy
+        expect(json_response['show_whitespace_in_diffs']).to eq(true)
+
+        user.reload
+
+        expect(user.view_diffs_file_by_file).to be_truthy
+        expect(user.show_whitespace_in_diffs).to be_truthy
       end
     end
 

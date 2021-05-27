@@ -153,16 +153,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: cronjob:analytics_instance_statistics_count_job_trigger
-  :worker_name: Analytics::InstanceStatistics::CountJobTriggerWorker
-  :feature_category: :devops_reports
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
 - :name: cronjob:analytics_usage_trends_count_job_trigger
   :worker_name: Analytics::UsageTrends::CountJobTriggerWorker
   :feature_category: :devops_reports
@@ -1786,16 +1776,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: analytics_instance_statistics_counter_job
-  :worker_name: Analytics::InstanceStatistics::CounterJobWorker
-  :feature_category: :devops_reports
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
 - :name: analytics_usage_trends_counter_job
   :worker_name: Analytics::UsageTrends::CounterJobWorker
   :feature_category: :devops_reports

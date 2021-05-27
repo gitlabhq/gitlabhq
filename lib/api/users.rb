@@ -1025,7 +1025,9 @@ module API
         detail 'This feature was introduced in GitLab 13.10.'
       end
       params do
-        requires :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
+        optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
+        optional :show_whitespace_in_diffs, type: Boolean, desc: 'Flag indicating the user sees whitespace changes in diffs'
+        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs
       end
       put "preferences", feature_category: :users do
         authenticate!

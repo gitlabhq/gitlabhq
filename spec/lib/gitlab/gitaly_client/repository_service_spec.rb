@@ -122,67 +122,89 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
   end
 
   describe '#fetch_remote' do
-    let(:remote) { 'remote-name' }
+    shared_examples 'a fetch' do
+      it 'sends a fetch_remote_request message' do
+        expected_remote_params = Gitaly::Remote.new(
+          url: url, http_authorization_header: "", mirror_refmaps: [])
 
-    it 'sends a fetch_remote_request message' do
-      expected_request = gitaly_request_with_params(
-        remote: remote,
-        ssh_key: '',
-        known_hosts: '',
-        force: false,
-        no_tags: false,
-        no_prune: false,
-        check_tags_changed: false
-      )
+        expected_request = gitaly_request_with_params(
+          remote: remote,
+          remote_params: url ? expected_remote_params : nil,
+          ssh_key: '',
+          known_hosts: '',
+          force: false,
+          no_tags: false,
+          no_prune: false,
+          check_tags_changed: false
+        )
 
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:fetch_remote)
-        .with(expected_request, kind_of(Hash))
-        .and_return(double(value: true))
+        expect_any_instance_of(Gitaly::RepositoryService::Stub)
+          .to receive(:fetch_remote)
+          .with(expected_request, kind_of(Hash))
+          .and_return(double(value: true))
 
-      client.fetch_remote(remote, ssh_auth: nil, forced: false, no_tags: false, timeout: 1, check_tags_changed: false)
-    end
-
-    context 'SSH auth' do
-      where(:ssh_mirror_url, :ssh_key_auth, :ssh_private_key, :ssh_known_hosts, :expected_params) do
-        false | false | 'key' | 'known_hosts' | {}
-        false | true  | 'key' | 'known_hosts' | {}
-        true  | false | 'key' | 'known_hosts' | { known_hosts: 'known_hosts' }
-        true  | true  | 'key' | 'known_hosts' | { ssh_key: 'key', known_hosts: 'known_hosts' }
-        true  | true  | 'key' | nil           | { ssh_key: 'key' }
-        true  | true  | nil   | 'known_hosts' | { known_hosts: 'known_hosts' }
-        true  | true  | nil   | nil           | {}
-        true  | true  | ''    | ''            | {}
+        client.fetch_remote(remote, url: url, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, timeout: 1, check_tags_changed: false)
       end
 
-      with_them do
-        let(:ssh_auth) do
-          double(
-            :ssh_auth,
-            ssh_mirror_url?: ssh_mirror_url,
-            ssh_key_auth?: ssh_key_auth,
-            ssh_private_key: ssh_private_key,
-            ssh_known_hosts: ssh_known_hosts
-          )
+      context 'SSH auth' do
+        where(:ssh_mirror_url, :ssh_key_auth, :ssh_private_key, :ssh_known_hosts, :expected_params) do
+          false | false | 'key' | 'known_hosts' | {}
+          false | true  | 'key' | 'known_hosts' | {}
+          true  | false | 'key' | 'known_hosts' | { known_hosts: 'known_hosts' }
+          true  | true  | 'key' | 'known_hosts' | { ssh_key: 'key', known_hosts: 'known_hosts' }
+          true  | true  | 'key' | nil           | { ssh_key: 'key' }
+          true  | true  | nil   | 'known_hosts' | { known_hosts: 'known_hosts' }
+          true  | true  | nil   | nil           | {}
+          true  | true  | ''    | ''            | {}
         end
 
-        it do
-          expected_request = gitaly_request_with_params({
-            remote: remote,
-            ssh_key: '',
-            known_hosts: '',
-            force: false,
-            no_tags: false,
-            no_prune: false
-          }.update(expected_params))
+        with_them do
+          let(:ssh_auth) do
+            double(
+              :ssh_auth,
+              ssh_mirror_url?: ssh_mirror_url,
+              ssh_key_auth?: ssh_key_auth,
+              ssh_private_key: ssh_private_key,
+              ssh_known_hosts: ssh_known_hosts
+            )
+          end
 
-          expect_any_instance_of(Gitaly::RepositoryService::Stub)
-            .to receive(:fetch_remote)
-            .with(expected_request, kind_of(Hash))
-            .and_return(double(value: true))
+          it do
+            expected_remote_params = Gitaly::Remote.new(
+              url: url, http_authorization_header: "", mirror_refmaps: [])
 
-          client.fetch_remote(remote, ssh_auth: ssh_auth, forced: false, no_tags: false, timeout: 1)
+            expected_request = gitaly_request_with_params({
+              remote: remote,
+              remote_params: url ? expected_remote_params : nil,
+              ssh_key: '',
+              known_hosts: '',
+              force: false,
+              no_tags: false,
+              no_prune: false
+            }.update(expected_params))
+
+            expect_any_instance_of(Gitaly::RepositoryService::Stub)
+              .to receive(:fetch_remote)
+              .with(expected_request, kind_of(Hash))
+              .and_return(double(value: true))
+
+            client.fetch_remote(remote, url: url, refmap: nil, ssh_auth: ssh_auth, forced: false, no_tags: false, timeout: 1)
+          end
         end
+      end
+    end
+
+    context 'with remote' do
+      it_behaves_like 'a fetch' do
+        let(:remote) { 'remote-name' }
+        let(:url) { nil }
+      end
+    end
+
+    context 'with URL' do
+      it_behaves_like 'a fetch' do
+        let(:remote) { "" }
+        let(:url) { 'https://example.com/git/repo.git' }
       end
     end
   end

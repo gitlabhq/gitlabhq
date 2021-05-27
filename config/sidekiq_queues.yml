@@ -32,8 +32,6 @@
   - 1
 - - analytics_devops_adoption_create_snapshot
   - 1
-- - analytics_instance_statistics_counter_job
-  - 1
 - - analytics_usage_trends_counter_job
   - 1
 - - approval_rules_external_approval_rule_payload

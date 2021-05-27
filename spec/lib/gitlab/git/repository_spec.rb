@@ -521,7 +521,9 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         no_tags: true,
         timeout: described_class::GITLAB_PROJECTS_TIMEOUT,
         prune: false,
-        check_tags_changed: false
+        check_tags_changed: false,
+        url: nil,
+        refmap: nil
       }
 
       expect(repository.gitaly_repository_client).to receive(:fetch_remote).with('remote-name', expected_opts)

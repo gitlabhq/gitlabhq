@@ -129,18 +129,16 @@ This method requires a runner with access to both `gitlab.com` (including
 to be able to use the `docker` command inside the jobs. This runner can be installed in a DMZ or on
 a bastion, and used only for this specific project.
 
+WARNING:
+This template does not include updates for the container scanning analyzer. Please see
+[Container scanning offline directions](../container_scanning/index.md#running-container-scanning-in-an-offline-environment).
+
 #### Scheduling the updates
 
 By default, this project's pipeline runs only once, when the `.gitlab-ci.yml` is added to the
 repository. To update the GitLab security scanners and signatures, it's necessary to run this pipeline
 regularly. GitLab provides a way to [schedule pipelines](../../../ci/pipelines/schedules.md). For
 example, you can set this up to download and store the Docker images every week.
-
-Some images can be updated more frequently than others. For example, the [vulnerability database](https://hub.docker.com/r/arminc/clair-db/tags)
-for Container Scanning is updated daily. To update this single image, create a new Scheduled
-Pipeline that runs daily and set `SECURE_BINARIES_ANALYZERS` to `clair-vulnerabilities-db`. Only
-this job is triggered, and the image is updated daily and made available in the project
-registry.
 
 #### Using the secure bundle created
 

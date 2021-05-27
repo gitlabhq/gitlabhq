@@ -1123,6 +1123,70 @@ RSpec.describe Repository do
     end
   end
 
+  describe '#fetch_as_mirror' do
+    let(:url) { "http://example.com" }
+
+    context 'when :fetch_remote_params is enabled' do
+      let(:remote_name) { "remote-name" }
+
+      before do
+        stub_feature_flags(fetch_remote_params: true)
+      end
+
+      it 'fetches the URL without creating a remote' do
+        expect(repository).not_to receive(:add_remote)
+        expect(repository)
+          .to receive(:fetch_remote)
+          .with(remote_name, url: url, forced: false, prune: true, refmap: :all_refs)
+          .and_return(nil)
+
+        repository.fetch_as_mirror(url, remote_name: remote_name)
+      end
+    end
+
+    context 'when :fetch_remote_params is disabled' do
+      before do
+        stub_feature_flags(fetch_remote_params: false)
+      end
+
+      shared_examples 'a fetch' do
+        it 'adds and fetches a remote' do
+          expect(repository)
+            .to receive(:add_remote)
+            .with(expected_remote, url, mirror_refmap: :all_refs)
+            .and_return(nil)
+          expect(repository)
+            .to receive(:fetch_remote)
+            .with(expected_remote, forced: false, prune: true)
+            .and_return(nil)
+
+          repository.fetch_as_mirror(url, remote_name: remote_name)
+        end
+      end
+
+      context 'with temporary remote' do
+        let(:remote_name) { nil }
+        let(:expected_remote_suffix) { "123456" }
+        let(:expected_remote) { "tmp-#{expected_remote_suffix}" }
+
+        before do
+          expect(repository)
+            .to receive(:async_remove_remote).with(expected_remote).and_return(nil)
+          allow(SecureRandom).to receive(:hex).and_return(expected_remote_suffix)
+        end
+
+        it_behaves_like 'a fetch'
+      end
+
+      context 'with remote name' do
+        let(:remote_name) { "foo" }
+        let(:expected_remote) { "foo" }
+
+        it_behaves_like 'a fetch'
+      end
+    end
+  end
+
   describe '#fetch_ref' do
     let(:broken_repository) { create(:project, :broken_storage).repository }
 

@@ -89,12 +89,6 @@ RSpec.describe ChatNotificationService do
 
       let(:data) { Gitlab::DataBuilder::Note.build(note, user) }
 
-      it 'notifies the chat service' do
-        expect(chat_service).to receive(:notify).with(any_args)
-
-        chat_service.execute(data)
-      end
-
       shared_examples 'notifies the chat service' do
         specify do
           expect(chat_service).to receive(:notify).with(any_args)
@@ -108,6 +102,26 @@ RSpec.describe ChatNotificationService do
           expect(chat_service).not_to receive(:notify).with(any_args)
 
           chat_service.execute(data)
+        end
+      end
+
+      it_behaves_like 'notifies the chat service'
+
+      context 'with label filter' do
+        subject(:chat_service) { described_class.new(labels_to_be_notified: '~Bug') }
+
+        it_behaves_like 'notifies the chat service'
+
+        context 'MergeRequest events' do
+          let(:data) { create(:merge_request, labels: [label]).to_hook_data(user) }
+
+          it_behaves_like 'notifies the chat service'
+        end
+
+        context 'Issue events' do
+          let(:data) { issue.to_hook_data(user) }
+
+          it_behaves_like 'notifies the chat service'
         end
       end
 

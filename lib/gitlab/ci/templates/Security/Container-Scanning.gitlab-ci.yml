@@ -1,12 +1,15 @@
 # Use this template to enable container scanning in your project.
-# You should add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+# You should add this template to an existing `.gitlab-ci.yml` file by using the `include:`
+# keyword.
 # The template should work without modifications but you can customize the template settings if
 # needed: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
 #
 # Requirements:
+# - A `test` stage to be present in the pipeline.
 # - You must define the image to be scanned in the DOCKER_IMAGE variable. If DOCKER_IMAGE is the
 #   same as $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG, you can skip this.
-# - Container registry credentials defined by `DOCKER_USER` and `DOCKER_PASSWORD` variables if the image to be scanned is in a private registry.
+# - Container registry credentials defined by `DOCKER_USER` and `DOCKER_PASSWORD` variables if the
+# image to be scanned is in a private registry.
 # - For auto-remediation, a readable Dockerfile in the root of the project or as defined by the
 #   DOCKERFILE_PATH variable.
 #
@@ -14,59 +17,27 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-variables
 
 variables:
-  # Setting this variable will affect all Security templates (e.g.: SAST, Dependency Scanning)
-  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
-  CS_MAJOR_VERSION: 3  # The major version of the analyzer image to be used for scanning
+  CS_ANALYZER_IMAGE: registry.gitlab.com/security-products/container-scanning:4
 
-.cs_common:
-  stage: test
+container_scanning:
   image: "$CS_ANALYZER_IMAGE"
+  stage: test
   variables:
-    # Override the GIT_STRATEGY variable in your `.gitlab-ci.yml` file and set it to `fetch` if you want to provide a `clair-whitelist.yml`
-    # file. See https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html#overriding-the-container-scanning-template
-    # for details
+    # To provide a `vulnerability-allowlist.yml` file, override the GIT_STRATEGY variable in your
+    # `.gitlab-ci.yml` file and set it to `fetch`.
+    # For details, see the following links:
+    # https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html#overriding-the-container-scanning-template
+    # https://docs.gitlab.com/ee/user/application_security/container_scanning/#vulnerability-allowlisting
     GIT_STRATEGY: none
-    # CS_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
-    # override the analyzer image with a custom value. This may be subject to change or
-    # breakage across GitLab releases.
-    CS_ANALYZER_IMAGE: $SECURE_ANALYZERS_PREFIX/$CS_PROJECT:$CS_MAJOR_VERSION
   allow_failure: true
   artifacts:
     reports:
       container_scanning: gl-container-scanning-report.json
+    paths: [gl-container-scanning-report.json]
   dependencies: []
-
-container_scanning:
-  extends: .cs_common
-  variables:
-    # By default, use the latest clair vulnerabilities database, however, allow it to be overridden here with a specific image
-    # to enable container scanning to run offline, or to provide a consistent list of vulnerabilities for integration testing purposes
-    CLAIR_DB_IMAGE_TAG: "latest"
-    CLAIR_DB_IMAGE: "$SECURE_ANALYZERS_PREFIX/clair-vulnerabilities-db:$CLAIR_DB_IMAGE_TAG"
-    CS_PROJECT: 'klar'
-  services:
-    - name: $CLAIR_DB_IMAGE
-      alias: clair-vulnerabilities-db
-  script:
-    - /analyzer run
-  rules:
-    - if: $CONTAINER_SCANNING_DISABLED
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bcontainer_scanning\b/ &&
-          $CS_MAJOR_VERSION =~ /^[0-3]$/
-
-container_scanning_new:
-  extends: .cs_common
-  variables:
-    CS_ANALYZER_IMAGE: registry.gitlab.com/security-products/container-scanning:4
   script:
     - gtcs scan
-  artifacts:
-    paths: [gl-container-scanning-report.json]
   rules:
     - if: $CONTAINER_SCANNING_DISABLED
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bcontainer_scanning\b/ &&
-          $CS_MAJOR_VERSION !~ /^[0-3]$/
+    - if: $GITLAB_FEATURES =~ /\bcontainer_scanning\b/

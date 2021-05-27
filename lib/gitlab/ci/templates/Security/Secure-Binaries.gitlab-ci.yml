@@ -15,7 +15,6 @@ variables:
   SECURE_BINARIES_ANALYZERS: >-
     bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kubesec, semgrep,
     bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python,
-    klar, clair-vulnerabilities-db,
     license-finder,
     dast, api-fuzzing
 
@@ -161,28 +160,6 @@ kubesec:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bkubesec\b/
-#
-# Container Scanning jobs
-#
-
-klar:
-  extends: .download_images
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bklar\b/
-  variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "3"
-
-clair-vulnerabilities-db:
-  extends: .download_images
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bclair-vulnerabilities-db\b/
-  variables:
-    SECURE_BINARIES_IMAGE: arminc/clair-db
-    SECURE_BINARIES_ANALYZER_VERSION: latest
 
 #
 # Dependency Scanning jobs

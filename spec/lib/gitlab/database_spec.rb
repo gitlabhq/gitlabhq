@@ -65,6 +65,28 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.disable_prepared_statements' do
+    around do |example|
+      original_config = ::Gitlab::Database.config
+
+      example.run
+
+      ActiveRecord::Base.establish_connection(original_config)
+    end
+
+    it 'disables prepared statements' do
+      ActiveRecord::Base.establish_connection(::Gitlab::Database.config.merge(prepared_statements: true))
+      expect(ActiveRecord::Base.connection.prepared_statements).to eq(true)
+
+      expect(ActiveRecord::Base).to receive(:establish_connection)
+        .with(a_hash_including({ 'prepared_statements' => false })).and_call_original
+
+      described_class.disable_prepared_statements
+
+      expect(ActiveRecord::Base.connection.prepared_statements).to eq(false)
+    end
+  end
+
   describe '.postgresql?' do
     subject { described_class.postgresql? }
 

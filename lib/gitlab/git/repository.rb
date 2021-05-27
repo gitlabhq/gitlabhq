@@ -797,15 +797,19 @@ module Gitlab
       # Fetch remote for repository
       #
       # remote - remote name
+      # url - URL of the remote to fetch. `remote` is not used in this case.
+      # refmap - if url is given, determines which references should get fetched where
       # ssh_auth - SSH known_hosts data and a private key to use for public-key authentication
       # forced - should we use --force flag?
       # no_tags - should we use --no-tags flag?
       # prune - should we use --prune flag?
       # check_tags_changed - should we ask gitaly to calculate whether any tags changed?
-      def fetch_remote(remote, ssh_auth: nil, forced: false, no_tags: false, prune: true, check_tags_changed: false)
+      def fetch_remote(remote, url: nil, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, prune: true, check_tags_changed: false)
         wrapped_gitaly_errors do
           gitaly_repository_client.fetch_remote(
             remote,
+            url: url,
+            refmap: refmap,
             ssh_auth: ssh_auth,
             forced: forced,
             no_tags: no_tags,

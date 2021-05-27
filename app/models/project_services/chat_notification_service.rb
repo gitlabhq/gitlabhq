@@ -92,13 +92,13 @@ class ChatNotificationService < Integration
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    return unless notify_label?(data)
-
     return unless webhook.present?
 
     object_kind = data[:object_kind]
 
     data = custom_data(data)
+
+    return unless notify_label?(data)
 
     # WebHook events often have an 'update' event that follows a 'open' or
     # 'close' action. Ignore update events for now to prevent duplicate
@@ -156,9 +156,9 @@ class ChatNotificationService < Integration
   def notify_label?(data)
     return true unless SUPPORTED_EVENTS_FOR_LABEL_FILTER.include?(data[:object_kind]) && labels_to_be_notified.present?
 
-    labels = data.dig(:issue, :labels) || data.dig(:merge_request, :labels)
+    labels = data[:labels] || data.dig(:issue, :labels) || data.dig(:merge_request, :labels) || data.dig(:object_attributes, :labels)
 
-    return false if labels.nil?
+    return false if labels.blank?
 
     matching_labels = labels_to_be_notified_list & labels.pluck(:title)
 
@@ -179,7 +179,7 @@ class ChatNotificationService < Integration
   end
 
   def custom_data(data)
-    data.merge(project_url: project_url, project_name: project_name)
+    data.merge(project_url: project_url, project_name: project_name).with_indifferent_access
   end
 
   def get_message(object_kind, data)

@@ -330,7 +330,7 @@ start_gitlab() {
       echo "Gitaly is already running with pid $gapid, not restarting"
     else
       $app_root/bin/daemon_with_pidfile $gitaly_pid_path \
-        $gitaly_dir/gitaly $gitaly_dir/config.toml >> $gitaly_log 2>&1 &
+        $gitaly_dir/_build/bin/gitaly $gitaly_dir/config.toml >> $gitaly_log 2>&1 &
     fi
   fi
 

@@ -89,6 +89,11 @@ module Gitlab
       end
     end
 
+    # Disables prepared statements for the current database connection.
+    def self.disable_prepared_statements
+      ActiveRecord::Base.establish_connection(config.merge(prepared_statements: false))
+    end
+
     # @deprecated
     def self.postgresql?
       adapter_name.casecmp('postgresql') == 0
