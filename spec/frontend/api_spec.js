@@ -1503,33 +1503,55 @@ describe('Api', () => {
       'Content-Type': 'application/json',
     };
 
-    describe('when usage data increment unique users is called with feature flag disabled', () => {
+    describe('when user is set', () => {
       beforeEach(() => {
-        gon.features = { ...gon.features, usageDataApi: false };
+        window.gon.current_user_id = 1;
       });
 
-      it('returns null', () => {
-        jest.spyOn(axios, 'post');
-        mock.onPost(expectedUrl).replyOnce(httpStatus.OK, true);
+      describe('when usage data increment unique users is called with feature flag disabled', () => {
+        beforeEach(() => {
+          gon.features = { ...gon.features, usageDataApi: false };
+        });
 
-        expect(axios.post).toHaveBeenCalledTimes(0);
-        expect(Api.trackRedisHllUserEvent(event)).toEqual(null);
+        it('returns null and does not call the endpoint', () => {
+          jest.spyOn(axios, 'post');
+
+          const result = Api.trackRedisHllUserEvent(event);
+
+          expect(result).toEqual(null);
+          expect(axios.post).toHaveBeenCalledTimes(0);
+        });
+      });
+
+      describe('when usage data increment unique users is called', () => {
+        beforeEach(() => {
+          gon.features = { ...gon.features, usageDataApi: true };
+        });
+
+        it('resolves the Promise', () => {
+          jest.spyOn(axios, 'post');
+          mock.onPost(expectedUrl, { event }).replyOnce(httpStatus.OK, true);
+
+          return Api.trackRedisHllUserEvent(event).then(({ data }) => {
+            expect(data).toEqual(true);
+            expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData, { headers });
+          });
+        });
       });
     });
 
-    describe('when usage data increment unique users is called', () => {
+    describe('when user is not set and feature flag enabled', () => {
       beforeEach(() => {
         gon.features = { ...gon.features, usageDataApi: true };
       });
 
-      it('resolves the Promise', () => {
+      it('returns null and does not call the endpoint', () => {
         jest.spyOn(axios, 'post');
-        mock.onPost(expectedUrl, { event }).replyOnce(httpStatus.OK, true);
 
-        return Api.trackRedisHllUserEvent(event).then(({ data }) => {
-          expect(data).toEqual(true);
-          expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData, { headers });
-        });
+        const result = Api.trackRedisHllUserEvent(event);
+
+        expect(result).toEqual(null);
+        expect(axios.post).toHaveBeenCalledTimes(0);
       });
     });
   });

@@ -113,10 +113,10 @@ nginx-ingress:
       ssl-ciphers: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
     resources:
       requests:
-        cpu: 100m
+        cpu: 300m
         memory: 450M
       limits:
-        cpu: 200m
+        cpu: 600m
         memory: 675M
     service:
       enableHttp: false

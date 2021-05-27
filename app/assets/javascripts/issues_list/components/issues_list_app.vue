@@ -288,6 +288,7 @@ export default {
           icon: 'epic',
           token: EpicToken,
           unique: true,
+          idProperty: 'id',
           fetchEpics: this.fetchEpics,
         });
       }
@@ -320,13 +321,23 @@ export default {
       );
     },
     urlParams() {
+      const filterParams = {
+        ...this.urlFilterParams,
+      };
+
+      if (filterParams.epic_id) {
+        filterParams.epic_id = encodeURIComponent(filterParams.epic_id);
+      } else if (filterParams['not[epic_id]']) {
+        filterParams['not[epic_id]'] = encodeURIComponent(filterParams['not[epic_id]']);
+      }
+
       return {
         due_date: this.dueDateFilter,
         page: this.page,
         search: this.searchQuery,
         state: this.state,
         ...urlSortParams[this.sortKey],
-        ...this.urlFilterParams,
+        ...filterParams,
       };
     },
   },
@@ -358,7 +369,7 @@ export default {
     fetchEmojis(search) {
       return this.fetchWithCache(this.autocompleteAwardEmojisPath, 'emojis', 'name', search);
     },
-    async fetchEpics(search) {
+    async fetchEpics({ search }) {
       const epics = await this.fetchWithCache(this.groupEpicsPath, 'epics');
       if (!search) {
         return epics.slice(0, MAX_LIST_SIZE);
@@ -387,6 +398,16 @@ export default {
 
       this.isLoading = true;
 
+      const filterParams = {
+        ...this.apiFilterParams,
+      };
+
+      if (filterParams.epic_id) {
+        filterParams.epic_id = filterParams.epic_id.split('::&').pop();
+      } else if (filterParams['not[epic_id]']) {
+        filterParams['not[epic_id]'] = filterParams['not[epic_id]'].split('::&').pop();
+      }
+
       return axios
         .get(this.endpoint, {
           params: {
@@ -397,7 +418,7 @@ export default {
             state: this.state,
             with_labels_details: true,
             ...apiSortParams[this.sortKey],
-            ...this.apiFilterParams,
+            ...filterParams,
           },
         })
         .then(({ data, headers }) => {

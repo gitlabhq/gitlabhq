@@ -92,14 +92,6 @@ module QA
 
           aggregate_failures do
             expect(import_page).to have_imported_group(source_group.path, wait: 120)
-
-            expect(imported_group).to eq(source_group)
-            expect(imported_subgroup).to eq(subgroup)
-
-            # TODO: Improve validation logic with some potential retry mechanism built in to custom rspec matcher
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/331704
-            # expect(imported_group.labels).to include(*source_group.labels)
-            expect(imported_subgroup.labels).to include(*subgroup.labels)
           end
         end
       end

@@ -1,6 +1,6 @@
 <%= _('Hi %{username}!') % { username: sanitize_name(@user.name) } %>
 
-<%= _('Your SSH keys with the following fingerprints has expired:') %>
+<%= _('Your SSH keys with the following fingerprints have expired. Expired SSH keys will not be usable in future versions of GitLab:') %>
 
 <% @fingerprints.each do |fingerprint| %>
   - <%= fingerprint %>

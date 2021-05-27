@@ -43,8 +43,6 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-section {
-  border-radius: $border-radius-default $border-radius-default 0 0;
-
   .code-text {
     flex: 1;
   }
@@ -88,7 +86,6 @@ $tabs-holder-z-index: 250;
 .mr-section-container {
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
-  border-top: 0;
   background: var(--white, $white);
 }
 
@@ -110,7 +107,6 @@ $tabs-holder-z-index: 250;
     border-radius: $border-radius-default;
   }
 
-  .mr-widget-section,
   .mr-widget-footer {
     border-top: solid 1px $border-color;
   }
@@ -525,9 +521,7 @@ $tabs-holder-z-index: 250;
 
 .mr-source-target {
   flex-wrap: wrap;
-  border-radius: $border-radius-default;
   padding: $gl-padding;
-  border: 1px solid $border-color;
   background: var(--white, $white);
   min-height: $mr-widget-min-height;
 
@@ -1025,5 +1019,15 @@ $tabs-holder-z-index: 250;
 
   > svg {
     vertical-align: middle;
+  }
+}
+
+.mr-widget-alert-container {
+  $radius: $border-radius-default - 1px;
+
+  border-radius: $radius $radius 0 0;
+
+  .gl-alert:not(:last-child) {
+    margin-bottom: 1px;
   }
 }

@@ -3,6 +3,7 @@ import { mapGetters, mapState, mapActions } from 'vuex';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DiffCommentCell from './diff_comment_cell.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
 import DiffRow from './diff_row.vue';
@@ -14,7 +15,7 @@ export default {
     DiffCommentCell,
     DraftNote,
   },
-  mixins: [draftCommentsMixin],
+  mixins: [draftCommentsMixin, glFeatureFlagsMixin()],
   props: {
     diffFile: {
       type: Object,
@@ -58,7 +59,10 @@ export default {
       );
     },
     hasCodequalityChanges() {
-      return this.codequalityDiff?.files?.[this.diffFile.file_path]?.length > 0;
+      return (
+        this.glFeatures.codequalityMrDiffAnnotations &&
+        this.codequalityDiff?.files?.[this.diffFile.file_path]?.length > 0
+      );
     },
   },
   methods: {

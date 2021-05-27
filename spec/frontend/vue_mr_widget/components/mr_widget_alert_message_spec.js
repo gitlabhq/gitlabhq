@@ -1,76 +1,45 @@
-import { GlLink } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { GlLink, GlAlert } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import MrWidgetAlertMessage from '~/vue_merge_request_widget/components/mr_widget_alert_message.vue';
 
-describe('MrWidgetAlertMessage', () => {
-  let wrapper;
+let wrapper;
 
-  beforeEach(() => {
-    const localVue = createLocalVue();
-
-    wrapper = shallowMount(localVue.extend(MrWidgetAlertMessage), {
-      propsData: {},
-      localVue,
-    });
+function createComponent(propsData = {}) {
+  wrapper = shallowMount(MrWidgetAlertMessage, {
+    propsData,
   });
+}
 
+describe('MrWidgetAlertMessage', () => {
   afterEach(() => {
     wrapper.destroy();
   });
 
-  describe('when type is not provided', () => {
-    it('should render a red message', (done) => {
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.classes()).toContain('danger_message');
-        expect(wrapper.classes()).not.toContain('warning_message');
-        done();
-      });
-    });
-  });
+  it('should render a GlAert', () => {
+    createComponent({ type: 'danger' });
 
-  describe('when type === "danger"', () => {
-    it('should render a red message', (done) => {
-      wrapper.setProps({ type: 'danger' });
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.classes()).toContain('danger_message');
-        expect(wrapper.classes()).not.toContain('warning_message');
-        done();
-      });
-    });
-  });
-
-  describe('when type === "warning"', () => {
-    it('should render a red message', (done) => {
-      wrapper.setProps({ type: 'warning' });
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.classes()).toContain('warning_message');
-        expect(wrapper.classes()).not.toContain('danger_message');
-        done();
-      });
-    });
+    expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
+    expect(wrapper.findComponent(GlAlert).props('variant')).toBe('danger');
   });
 
   describe('when helpPath is not provided', () => {
-    it('should not render a help icon/link', (done) => {
-      wrapper.vm.$nextTick(() => {
-        const link = wrapper.find(GlLink);
+    it('should not render a help link', () => {
+      createComponent({ type: 'info' });
 
-        expect(link.exists()).toBe(false);
-        done();
-      });
+      const link = wrapper.findComponent(GlLink);
+
+      expect(link.exists()).toBe(false);
     });
   });
 
   describe('when helpPath is provided', () => {
-    it('should render a help icon/link', (done) => {
-      wrapper.setProps({ helpPath: '/path/to/help/docs' });
-      wrapper.vm.$nextTick(() => {
-        const link = wrapper.find(GlLink);
+    it('should render a help link', () => {
+      createComponent({ type: 'info', helpPath: 'https://gitlab.com' });
 
-        expect(link.exists()).toBe(true);
-        expect(link.attributes().href).toBe('/path/to/help/docs');
-        done();
-      });
+      const link = wrapper.findComponent(GlLink);
+
+      expect(link.exists()).toBe(true);
+      expect(link.attributes('href')).toBe('https://gitlab.com');
     });
   });
 });

@@ -43,39 +43,37 @@ RSpec.describe JiraImport::UsersImporter do
       end
     end
 
-    RSpec.shared_examples 'maps jira users to gitlab users' do
+    RSpec.shared_examples 'maps Jira users to GitLab users' do |users_mapper_service:|
       context 'when Jira import is configured correctly' do
-        let_it_be(:jira_service) { create(:jira_service, project: project, active: true) }
-        let(:client) { double }
+        let_it_be(:jira_service) { create(:jira_service, project: project, active: true, url: "http://jira.example.net") }
 
-        before do
-          expect(importer).to receive(:client).at_least(1).and_return(client)
-          allow(client).to receive_message_chain(:ServerInfo, :all, :deploymentType).and_return(deployment_type)
-        end
-
-        context 'when jira client raises an error' do
+        context 'when users mapper service raises an error' do
           let(:error) { Timeout::Error.new }
 
           it 'returns an error response' do
-            expect(client).to receive(:get).and_raise(error)
-            expect(Gitlab::ErrorTracking).to receive(:log_exception).with(error, project_id: project.id)
+            expect_next_instance_of(users_mapper_service) do |instance|
+              expect(instance).to receive(:execute).and_raise(error)
+            end
 
+            expect(Gitlab::ErrorTracking).to receive(:log_exception).with(error, project_id: project.id)
             expect(subject.error?).to be_truthy
             expect(subject.message).to include('There was an error when communicating to Jira')
           end
         end
 
-        context 'when jira client returns result' do
-          context 'when jira client returns an empty array' do
-            let(:jira_users) { [] }
-
+        context 'when users mapper service returns result' do
+          context 'when users mapper service returns an empty array' do
             it 'returns nil payload' do
+              expect_next_instance_of(users_mapper_service) do |instance|
+                expect(instance).to receive(:execute).and_return([])
+              end
+
               expect(subject.success?).to be_truthy
               expect(subject.payload).to be_empty
             end
           end
 
-          context 'when jira client returns an results' do
+          context 'when Jira client returns any users' do
             let_it_be(:project_member) { create(:user, email: 'sample@jira.com') }
             let_it_be(:group_member) { create(:user, name: 'user-name2') }
             let_it_be(:other_user) { create(:user) }
@@ -86,6 +84,10 @@ RSpec.describe JiraImport::UsersImporter do
             end
 
             it 'returns the mapped users' do
+              expect_next_instance_of(users_mapper_service) do |instance|
+                expect(instance).to receive(:execute).and_return(mapped_users)
+              end
+
               expect(subject.success?).to be_truthy
               expect(subject.payload).to eq(mapped_users)
             end
@@ -95,43 +97,23 @@ RSpec.describe JiraImport::UsersImporter do
     end
 
     context 'when Jira instance is of Server deployment type' do
-      let(:deployment_type) { 'Server' }
-      let(:url) { "/rest/api/2/user/search?username=''&maxResults=50&startAt=#{start_at}" }
-      let(:jira_users) do
-        [
-          { 'key' => 'acc1', 'name' => 'user-name1', 'emailAddress' => 'sample@jira.com' },
-          { 'key' => 'acc2', 'name' => 'user-name2' }
-        ]
-      end
-
       before do
-        allow_next_instance_of(JiraImport::ServerUsersMapperService) do |instance|
-          allow(instance).to receive(:client).and_return(client)
-          allow(client).to receive(:get).with(url).and_return(jira_users)
-        end
+        allow(project).to receive(:jira_service).and_return(jira_service)
+
+        jira_service.data_fields.deployment_server!
       end
 
-      it_behaves_like 'maps jira users to gitlab users'
+      it_behaves_like 'maps Jira users to GitLab users', users_mapper_service: JiraImport::ServerUsersMapperService
     end
 
-    context 'when Jira instance is of Cloud deploymet type' do
-      let(:deployment_type) { 'Cloud' }
-      let(:url) { "/rest/api/2/users?maxResults=50&startAt=#{start_at}" }
-      let(:jira_users) do
-        [
-          { 'accountId' => 'acc1', 'displayName' => 'user-name1', 'emailAddress' => 'sample@jira.com' },
-          { 'accountId' => 'acc2', 'displayName' => 'user-name2' }
-        ]
-      end
-
+    context 'when Jira instance is of Cloud deployment type' do
       before do
-        allow_next_instance_of(JiraImport::CloudUsersMapperService) do |instance|
-          allow(instance).to receive(:client).and_return(client)
-          allow(client).to receive(:get).with(url).and_return(jira_users)
-        end
+        allow(project).to receive(:jira_service).and_return(jira_service)
+
+        jira_service.data_fields.deployment_cloud!
       end
 
-      it_behaves_like 'maps jira users to gitlab users'
+      it_behaves_like 'maps Jira users to GitLab users', users_mapper_service: JiraImport::CloudUsersMapperService
     end
   end
 end

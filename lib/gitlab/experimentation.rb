@@ -45,9 +45,6 @@ module Gitlab
       remove_known_trial_form_fields: {
         tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFields'
       },
-      invite_members_empty_project_version_a: {
-        tracking_category: 'Growth::Expansion::Experiment::InviteMembersEmptyProjectVersionA'
-      },
       invite_members_new_dropdown: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'
       },

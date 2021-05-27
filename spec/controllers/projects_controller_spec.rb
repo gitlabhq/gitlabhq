@@ -243,9 +243,8 @@ RSpec.describe ProjectsController do
             get :show, params: { namespace_id: empty_project.namespace, id: empty_project }
           end
 
-          it "renders the empty project view and records the experiment user", :aggregate_failures do
+          it "renders the empty project view" do
             expect(response).to render_template('empty')
-            expect(controller).to have_received(:record_experiment_user).with(:invite_members_empty_project_version_a)
           end
         end
       end

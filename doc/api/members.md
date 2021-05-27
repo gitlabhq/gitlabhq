@@ -415,6 +415,7 @@ POST /projects/:id/members
 | `user_id` | integer/string | yes | The user ID of the new member or multiple IDs separated by commas |
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
+| `invite_source` | string | no | The source of the invitation that starts the member creation process. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327120). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" "https://gitlab.example.com/api/v4/groups/:id/members"

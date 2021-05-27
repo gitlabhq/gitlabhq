@@ -92,7 +92,7 @@ RSpec.describe Tooling::Danger::Changelog do
           allow(changelog).to receive(:ee_changelog?).and_return(false)
         end
 
-        it { is_expected.to have_attributes(warnings: ["This MR changes code in `ee/`, but is missing a Changelog commit. Consider adding the Changelog trailer to at least one commit."]) }
+        it { is_expected.to have_attributes(warnings: ["This MR changes code in `ee/`, but its Changelog commit is missing the [`EE: true` trailer](https://docs.gitlab.com/ee/development/changelog.html#gitlab-enterprise-changes). Consider adding it to your Changelog commits."]) }
       end
 
       context "and a EE changelog" do
@@ -105,7 +105,7 @@ RSpec.describe Tooling::Danger::Changelog do
         context "and there are DB changes" do
           let(:foss_change) { change_class.new('db/migrate/foo.rb', :added, :migration) }
 
-          it { is_expected.to have_attributes(warnings: ["This MR has a Changelog commit with the `EE: true` trailer, but there are database changes which [requires](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry) the Changelog commit to not have the `EE: true` trailer. Consider removing the `EE: true` trailer."]) }
+          it { is_expected.to have_attributes(warnings: ["This MR has a Changelog commit with the `EE: true` trailer, but there are database changes which [requires](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry) the Changelog commit to not have the `EE: true` trailer. Consider removing the `EE: true` trailer from your commits."]) }
         end
       end
     end
@@ -126,7 +126,7 @@ RSpec.describe Tooling::Danger::Changelog do
           allow(changelog).to receive(:ee_changelog?).and_return(true)
         end
 
-        it { is_expected.to have_attributes(warnings: ["This MR has a Changelog commit for EE, but no code changes in `ee/`. Consider removing the use of the `EE: true` trailer from your commits."]) }
+        it { is_expected.to have_attributes(warnings: ["This MR has a Changelog commit for EE, but no code changes in `ee/`. Consider removing the `EE: true` trailer from your commits."]) }
       end
     end
   end

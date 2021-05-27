@@ -25,7 +25,19 @@ import {
 } from '../mock_data';
 
 const TEST_ERROR_MESSAGE = 'Test error message';
-jest.mock('~/flash');
+const mockFlashClose = jest.fn();
+jest.mock('~/flash', () => {
+  const flash = jest.fn().mockImplementation(() => {
+    return {
+      close: mockFlashClose,
+    };
+  });
+
+  return {
+    createFlash: flash,
+    deprecatedCreateFlash: flash,
+  };
+});
 
 describe('Actions Notes Store', () => {
   let commit;
@@ -254,42 +266,144 @@ describe('Actions Notes Store', () => {
   });
 
   describe('poll', () => {
-    beforeEach((done) => {
-      axiosMock
-        .onGet(notesDataMock.notesPath)
-        .reply(200, { notes: [], last_fetched_at: '123456' }, { 'poll-interval': '1000' });
+    const pollInterval = 6000;
+    const pollResponse = { notes: [], last_fetched_at: '123456' };
+    const pollHeaders = { 'poll-interval': `${pollInterval}` };
+    const successMock = () =>
+      axiosMock.onGet(notesDataMock.notesPath).reply(200, pollResponse, pollHeaders);
+    const failureMock = () => axiosMock.onGet(notesDataMock.notesPath).reply(500);
+    const advanceAndRAF = async (time) => {
+      if (time) {
+        jest.advanceTimersByTime(time);
+      }
 
+      return new Promise((resolve) => requestAnimationFrame(resolve));
+    };
+    const advanceXMoreIntervals = async (number) => {
+      const timeoutLength = pollInterval * number;
+
+      return advanceAndRAF(timeoutLength);
+    };
+    const startPolling = async () => {
+      await store.dispatch('poll');
+      await advanceAndRAF(2);
+    };
+    const cleanUp = async () => {
+      jest.clearAllTimers();
+
+      return store.dispatch('stopPolling');
+    };
+
+    beforeEach((done) => {
       store.dispatch('setNotesData', notesDataMock).then(done).catch(done.fail);
     });
 
-    it('calls service with last fetched state', (done) => {
-      store
-        .dispatch('poll')
-        .then(() => {
-          jest.advanceTimersByTime(2);
-        })
-        .then(() => new Promise((resolve) => requestAnimationFrame(resolve)))
-        .then(() => {
-          expect(store.state.lastFetchedAt).toBe('123456');
+    afterEach(() => {
+      return cleanUp();
+    });
 
-          jest.advanceTimersByTime(1500);
-        })
-        .then(
-          () =>
-            new Promise((resolve) => {
-              requestAnimationFrame(resolve);
-            }),
-        )
-        .then(() => {
-          const expectedGetRequests = 2;
-          expect(axiosMock.history.get.length).toBe(expectedGetRequests);
-          expect(axiosMock.history.get[expectedGetRequests - 1].headers).toMatchObject({
-            'X-Last-Fetched-At': '123456',
-          });
-        })
-        .then(() => store.dispatch('stopPolling'))
-        .then(done)
-        .catch(done.fail);
+    it('calls service with last fetched state', async () => {
+      successMock();
+
+      await startPolling();
+
+      expect(store.state.lastFetchedAt).toBe('123456');
+
+      await advanceXMoreIntervals(1);
+
+      expect(axiosMock.history.get).toHaveLength(2);
+      expect(axiosMock.history.get[1].headers).toMatchObject({
+        'X-Last-Fetched-At': '123456',
+      });
+    });
+
+    describe('polling side effects', () => {
+      it('retries twice', async () => {
+        failureMock();
+
+        await startPolling();
+
+        // This is the first request, not a retry
+        expect(axiosMock.history.get).toHaveLength(1);
+
+        await advanceXMoreIntervals(1);
+
+        // Retry #1
+        expect(axiosMock.history.get).toHaveLength(2);
+
+        await advanceXMoreIntervals(1);
+
+        // Retry #2
+        expect(axiosMock.history.get).toHaveLength(3);
+
+        await advanceXMoreIntervals(10);
+
+        // There are no more retries
+        expect(axiosMock.history.get).toHaveLength(3);
+      });
+
+      it('shows the error display on the second failure', async () => {
+        failureMock();
+
+        await startPolling();
+
+        expect(axiosMock.history.get).toHaveLength(1);
+        expect(Flash).not.toHaveBeenCalled();
+
+        await advanceXMoreIntervals(1);
+
+        expect(axiosMock.history.get).toHaveLength(2);
+        expect(Flash).toHaveBeenCalled();
+        expect(Flash).toHaveBeenCalledTimes(1);
+      });
+
+      it('resets the failure counter on success', async () => {
+        // We can't get access to the actual counter in the polling closure.
+        // So we can infer that it's reset by ensuring that the error is only
+        //  shown when we cause two failures in a row - no successes between
+
+        axiosMock
+          .onGet(notesDataMock.notesPath)
+          .replyOnce(500) // cause one error
+          .onGet(notesDataMock.notesPath)
+          .replyOnce(200, pollResponse, pollHeaders) // then a success
+          .onGet(notesDataMock.notesPath)
+          .reply(500); // and then more errors
+
+        await startPolling(); // Failure #1
+        await advanceXMoreIntervals(1); // Success #1
+        await advanceXMoreIntervals(1); // Failure #2
+
+        // That was the first failure AFTER a success, so we should NOT see the error displayed
+        expect(Flash).not.toHaveBeenCalled();
+
+        // Now we'll allow another failure
+        await advanceXMoreIntervals(1); // Failure #3
+
+        // Since this is the second failure in a row, the error should happen
+        expect(Flash).toHaveBeenCalled();
+        expect(Flash).toHaveBeenCalledTimes(1);
+      });
+
+      it('hides the error display if it exists on success', async () => {
+        jest.mock();
+        failureMock();
+
+        await startPolling();
+        await advanceXMoreIntervals(2);
+
+        // After two errors, the error should be displayed
+        expect(Flash).toHaveBeenCalled();
+        expect(Flash).toHaveBeenCalledTimes(1);
+
+        axiosMock.reset();
+        successMock();
+
+        await advanceXMoreIntervals(1);
+
+        expect(mockFlashClose).toHaveBeenCalled();
+        expect(mockFlashClose).toHaveBeenCalledTimes(1);
+      });
     });
   });
 

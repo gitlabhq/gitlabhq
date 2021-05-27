@@ -82,7 +82,10 @@ describe('getFilterTokens', () => {
 
 describe('convertToParams', () => {
   it('returns api params given filtered tokens', () => {
-    expect(convertToParams(filteredTokens, API_PARAM)).toEqual(apiParams);
+    expect(convertToParams(filteredTokens, API_PARAM)).toEqual({
+      ...apiParams,
+      epic_id: 'gitlab-org::&12',
+    });
   });
 
   it('returns api params given filtered tokens with special values', () => {
@@ -92,7 +95,10 @@ describe('convertToParams', () => {
   });
 
   it('returns url params given filtered tokens', () => {
-    expect(convertToParams(filteredTokens, URL_PARAM)).toEqual(urlParams);
+    expect(convertToParams(filteredTokens, URL_PARAM)).toEqual({
+      ...urlParams,
+      epic_id: 'gitlab-org::&12',
+    });
   });
 
   it('returns url params given filtered tokens with special values', () => {

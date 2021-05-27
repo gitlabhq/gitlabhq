@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'issuable invite members experiments' do
+RSpec.shared_examples 'issuable invite members' do
   context 'when a privileged user can invite' do
-    it 'shows a link for inviting members and launches invite modal' do
+    before do
       project.add_maintainer(user)
+    end
+
+    it 'shows a link for inviting members and launches invite modal' do
       visit issuable_path
 
       find('.block.assignee .edit-link').click
@@ -23,8 +26,11 @@ RSpec.shared_examples 'issuable invite members experiments' do
   end
 
   context 'when user cannot invite members in assignee dropdown' do
-    it 'shows author in assignee dropdown and no invite link' do
+    before do
       project.add_developer(user)
+    end
+
+    it 'shows author in assignee dropdown and no invite link' do
       visit issuable_path
 
       find('.block.assignee .edit-link').click

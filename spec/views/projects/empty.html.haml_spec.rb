@@ -46,47 +46,32 @@ RSpec.describe 'projects/empty' do
     end
   end
 
-  describe 'invite_members_empty_project_version_a experiment' do
+  context 'with invite button on empty projects' do
     let(:can_import_members) { true }
 
     before do
       allow(view).to receive(:can_import_members?).and_return(can_import_members)
     end
 
-    shared_examples_for 'no invite member info' do
+    it 'shows invite members info', :aggregate_failures do
+      render
+
+      expect(rendered).to have_selector('[data-track-event=render]')
+      expect(rendered).to have_selector('[data-track-label=invite_members_empty_project]', count: 2)
+      expect(rendered).to have_content('Invite your team')
+      expect(rendered).to have_content('Add members to this project and start collaborating with your team.')
+      expect(rendered).to have_link('Invite members', href: project_project_members_path(project, sort: :access_level_desc))
+      expect(rendered).to have_selector('[data-track-event=click_button]')
+    end
+
+    context 'when user does not have permissions to invite members' do
+      let(:can_import_members) { false }
+
       it 'does not show invite member info' do
         render
 
         expect(rendered).not_to have_content('Invite your team')
       end
-    end
-
-    context 'when experiment is enabled' do
-      it 'shows invite members info', :aggregate_failures do
-        render
-
-        expect(rendered).to have_selector('[data-track-event=render]')
-        expect(rendered).to have_selector('[data-track-label=invite_members_empty_project]', count: 2)
-        expect(rendered).to have_content('Invite your team')
-        expect(rendered).to have_content('Add members to this project and start collaborating with your team.')
-        expect(rendered).to have_link('Invite members', href: project_project_members_path(project, sort: :access_level_desc))
-        expect(rendered).to have_selector('[data-track-event=click_button]')
-      end
-
-      context 'when user does not have permissions to invite members' do
-        let(:can_import_members) { false }
-
-        it_behaves_like 'no invite member info'
-      end
-    end
-
-    context 'when experiment is not enabled' do
-      before do
-        allow(view).to receive(:experiment_enabled?)
-                         .with(:invite_members_empty_project_version_a).and_return(false)
-      end
-
-      it_behaves_like 'no invite member info'
     end
   end
 end

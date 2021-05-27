@@ -4184,6 +4184,9 @@ msgstr ""
 msgid "Approvers"
 msgstr ""
 
+msgid "Approvers from private group(s) not shown"
+msgstr ""
+
 msgid "Apr"
 msgstr ""
 
@@ -11770,6 +11773,24 @@ msgstr ""
 msgid "Drop your files to start your upload."
 msgstr ""
 
+msgid "DropdownWidget|An error occurred while fetching the assigned %{issuableAttribute} of the selected %{issuableType}."
+msgstr ""
+
+msgid "DropdownWidget|Assign %{issuableAttribute}"
+msgstr ""
+
+msgid "DropdownWidget|Failed to fetch the %{issuableAttribute} for this %{issuableType}. Please try again."
+msgstr ""
+
+msgid "DropdownWidget|Failed to set %{issuableAttribute} on this %{issuableType}. Please try again."
+msgstr ""
+
+msgid "DropdownWidget|No %{issuableAttribute}"
+msgstr ""
+
+msgid "DropdownWidget|No %{issuableAttribute} found"
+msgstr ""
+
 msgid "Due Date"
 msgstr ""
 
@@ -14597,9 +14618,6 @@ msgstr ""
 msgid "Geo|%{component} verified"
 msgstr ""
 
-msgid "Geo|%{eventId} (%{timeAgo})"
-msgstr ""
-
 msgid "Geo|%{itemTitle} checksum progress"
 msgstr ""
 
@@ -14625,6 +14643,9 @@ msgid "Geo|%{timeAgoStr} (%{pendingEvents} events)"
 msgstr ""
 
 msgid "Geo|%{title} checksum progress"
+msgstr ""
+
+msgid "Geo|(%{timeAgo})"
 msgstr ""
 
 msgid "Geo|Add site"
@@ -18300,12 +18321,6 @@ msgid "IssueAnalytics|Status"
 msgstr ""
 
 msgid "IssueAnalytics|Weight"
-msgstr ""
-
-msgid "IssueBoards|An error occurred while assigning the selected epic to the issue."
-msgstr ""
-
-msgid "IssueBoards|An error occurred while fetching the assigned epic of the selected issue."
 msgstr ""
 
 msgid "IssueBoards|An error occurred while setting notifications status. Please try again."
@@ -31066,6 +31081,9 @@ msgstr ""
 msgid "StatusCheck|Add status check"
 msgstr ""
 
+msgid "StatusCheck|An error occurred deleting the %{name} status check."
+msgstr ""
+
 msgid "StatusCheck|An error occurred fetching the status checks."
 msgstr ""
 
@@ -37765,10 +37783,10 @@ msgstr ""
 msgid "Your SSH keys (%{count})"
 msgstr ""
 
-msgid "Your SSH keys with the following fingerprints are scheduled to expire soon:"
+msgid "Your SSH keys with the following fingerprints are scheduled to expire soon. Expired SSH keys will not be usable in future versions of GitLab:"
 msgstr ""
 
-msgid "Your SSH keys with the following fingerprints has expired:"
+msgid "Your SSH keys with the following fingerprints have expired. Expired SSH keys will not be usable in future versions of GitLab:"
 msgstr ""
 
 msgid "Your To-Do List"
@@ -38896,9 +38914,6 @@ msgstr ""
 msgid "mrWidget|Added to the merge train. There are %{mergeTrainPosition} merge requests waiting to be merged"
 msgstr ""
 
-msgid "mrWidget|Allows commits from members who can merge to the target branch"
-msgstr ""
-
 msgid "mrWidget|An error occurred while removing your approval."
 msgstr ""
 
@@ -38968,9 +38983,6 @@ msgstr ""
 msgid "mrWidget|Fast-forward merge is not possible. To merge this request, first rebase locally."
 msgstr ""
 
-msgid "mrWidget|Fork project merge requests do not create merge request pipelines that validate a post merge result unless invoked by a project member."
-msgstr ""
-
 msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
 msgstr ""
 
@@ -38984,6 +38996,9 @@ msgid "mrWidget|Loading deployment statistics"
 msgstr ""
 
 msgid "mrWidget|Mark as ready"
+msgstr ""
+
+msgid "mrWidget|Members who can merge are allowed to add commits."
 msgstr ""
 
 msgid "mrWidget|Mentions"

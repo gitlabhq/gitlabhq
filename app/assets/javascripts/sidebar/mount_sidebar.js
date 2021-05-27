@@ -2,6 +2,8 @@ import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createFlash from '~/flash';
+import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
+import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { IssuableType } from '~/issue_show/constants';
 import {
   isInIssuePage,
@@ -17,6 +19,7 @@ import SidebarDueDateWidget from '~/sidebar/components/date/sidebar_date_widget.
 import SidebarParticipantsWidget from '~/sidebar/components/participants/sidebar_participants_widget.vue';
 import SidebarReferenceWidget from '~/sidebar/components/reference/sidebar_reference_widget.vue';
 import { apolloProvider } from '~/sidebar/graphql';
+import trackShowInviteMemberLink from '~/sidebar/track_invite_members';
 import Translate from '../vue_shared/translate';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
@@ -123,6 +126,12 @@ function mountAssigneesComponent() {
         },
       }),
   });
+
+  const assigneeDropdown = document.querySelector('.js-sidebar-assignee-dropdown');
+
+  if (assigneeDropdown) {
+    trackShowInviteMemberLink(assigneeDropdown);
+  }
 }
 
 function mountReviewersComponent(mediator) {
@@ -149,6 +158,12 @@ function mountReviewersComponent(mediator) {
         },
       }),
   });
+
+  const reviewerDropdown = document.querySelector('.js-sidebar-reviewer-dropdown');
+
+  if (reviewerDropdown) {
+    trackShowInviteMemberLink(reviewerDropdown);
+  }
 }
 
 export function mountSidebarLabels() {
@@ -438,6 +453,9 @@ const isAssigneesWidgetShown =
   (isInIssuePage() || isInDesignPage()) && gon.features.issueAssigneesWidget;
 
 export function mountSidebar(mediator) {
+  initInviteMembersModal();
+  initInviteMembersTrigger();
+
   if (isAssigneesWidgetShown) {
     mountAssigneesComponent();
   } else {

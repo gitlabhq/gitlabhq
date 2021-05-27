@@ -30,7 +30,8 @@
         .block.reviewer.qa-reviewer-block
           = render "shared/issuable/sidebar_reviewers", issuable_sidebar: issuable_sidebar, reviewers: reviewers, signed_in: signed_in
 
-      = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar
+      - if @project.group.present?
+        = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
 
       - if issuable_sidebar[:supports_milestone]
         - milestone = issuable_sidebar[:milestone] || {}

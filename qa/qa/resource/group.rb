@@ -57,7 +57,7 @@ module QA
       end
 
       def api_get_path
-        "/groups/#{CGI.escape("#{sandbox.path}/#{path}")}"
+        "/groups/#{CGI.escape("#{determine_full_path}")}"
       end
 
       def api_post_body
@@ -99,6 +99,32 @@ module QA
           Runtime::API::RepositoryStorageMoves::RepositoryStorageMovesError,
           'Timed out while waiting for the group repository storage move to finish'
         )
+      end
+
+      private
+
+      # Determine the path up to the root group.
+      #
+      # This is equivalent to the full_path API attribute. We can't use the full_path attribute
+      # because it depends on the group being fabricated first, and we use this method to help
+      # _check_ if the group exists.
+      #
+      # @param [QA::Resource::GroupBase] sandbox the immediate parent group of this group
+      # @param [String] path the path name of this group (the leaf, not the full path)
+      # @return [String]
+      def determine_full_path
+        determine_parent_group_paths(sandbox, path)
+      end
+
+      # Recursively traverse the parents of this group up to the root group.
+      #
+      # @param [QA::Resource::GroupBase] parent the immediate parent group
+      # @param [String] path the path traversed so far
+      # @return [String]
+      def determine_parent_group_paths(parent, path)
+        return "#{parent.path}/#{path}" unless parent.respond_to?(:sandbox)
+
+        determine_parent_group_paths(parent.sandbox, "#{parent.path}/#{path}")
       end
     end
   end

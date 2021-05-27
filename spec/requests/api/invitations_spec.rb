@@ -61,7 +61,7 @@ RSpec.describe API::Invitations do
         context 'and new member is already a requester' do
           it 'does not transform the requester into a proper member' do
             expect do
-              post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
+              post invitations_url(source, maintainer),
                    params: { email: access_requester.email, access_level: Member::MAINTAINER }
 
               expect(response).to have_gitlab_http_status(:created)
@@ -71,7 +71,7 @@ RSpec.describe API::Invitations do
 
         it 'invites a new member' do
           expect do
-            post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
+            post invitations_url(source, maintainer),
                  params: { email: email, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
@@ -82,7 +82,7 @@ RSpec.describe API::Invitations do
           expect do
             email_list = [email, email2].join(',')
 
-            post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
+            post invitations_url(source, maintainer),
                  params: { email: email_list, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
@@ -98,7 +98,7 @@ RSpec.describe API::Invitations do
           project.update!(group: group)
           parent.add_developer(stranger)
 
-          post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
+          post invitations_url(source, maintainer),
                params: { email: stranger.email, access_level: Member::REPORTER }
 
           expect(response).to have_gitlab_http_status(:created)
@@ -113,7 +113,7 @@ RSpec.describe API::Invitations do
           project.update!(group: group)
           parent.add_developer(stranger)
 
-          post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
+          post invitations_url(source, maintainer),
                params: { email: stranger.email, access_level: Member::MAINTAINER }
 
           expect(response).to have_gitlab_http_status(:created)
@@ -122,7 +122,7 @@ RSpec.describe API::Invitations do
 
       context 'access expiry date' do
         subject do
-          post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
+          post invitations_url(source, maintainer),
                params: { email: email, access_level: Member::DEVELOPER, expires_at: expires_at }
         end
 
@@ -152,8 +152,34 @@ RSpec.describe API::Invitations do
         end
       end
 
+      context 'with invite_source considerations', :snowplow do
+        let(:params) { { email: email, access_level: Member::DEVELOPER } }
+
+        it 'tracks the invite source as api' do
+          post invitations_url(source, maintainer), params: params
+
+          expect_snowplow_event(
+            category: 'Members::InviteService',
+            action: 'create_member',
+            label: 'api',
+            property: 'net_new_user'
+          )
+        end
+
+        it 'tracks the invite source from params' do
+          post invitations_url(source, maintainer), params: params.merge(invite_source: '_invite_source_')
+
+          expect_snowplow_event(
+            category: 'Members::InviteService',
+            action: 'create_member',
+            label: '_invite_source_',
+            property: 'net_new_user'
+          )
+        end
+      end
+
       it "returns a message if member already exists" do
-        post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
+        post invitations_url(source, maintainer),
              params: { email: developer.email, access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:created)
@@ -161,7 +187,7 @@ RSpec.describe API::Invitations do
       end
 
       it 'returns 404 when the email is not valid' do
-        post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
+        post invitations_url(source, maintainer),
              params: { email: '', access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:created)
@@ -169,7 +195,7 @@ RSpec.describe API::Invitations do
       end
 
       it 'returns 404 when the email list is not a valid format' do
-        post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
+        post invitations_url(source, maintainer),
              params: { email: 'email1@example.com,not-an-email', access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -177,14 +203,14 @@ RSpec.describe API::Invitations do
       end
 
       it 'returns 400 when email is not given' do
-        post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
+        post invitations_url(source, maintainer),
              params: { access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when access_level is not given' do
-        post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
+        post invitations_url(source, maintainer),
              params: { email: email }
 
         expect(response).to have_gitlab_http_status(:bad_request)

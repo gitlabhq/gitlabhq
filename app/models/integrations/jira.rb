@@ -10,12 +10,7 @@ module Integrations
     include Gitlab::Utils::StrongMemoize
 
     PROJECTS_PER_PAGE = 50
-
-    # TODO: use jira_service.deployment_type enum when https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37003 is merged
-    DEPLOYMENT_TYPES = {
-      server: 'SERVER',
-      cloud: 'CLOUD'
-    }.freeze
+    JIRA_CLOUD_HOST = '.atlassian.net'
 
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true
@@ -517,15 +512,38 @@ module Integrations
     def update_deployment_type
       clear_memoization(:server_info) # ensure we run the request when we try to update deployment type
       results = server_info
-      return data_fields.deployment_unknown! unless results.present?
 
-      case results['deploymentType']
-      when 'Server'
-        data_fields.deployment_server!
-      when 'Cloud'
+      unless results.present?
+        Gitlab::AppLogger.warn(message: "Jira API returned no ServerInfo, setting deployment_type from URL", server_info: results, url: client_url)
+
+        return set_deployment_type_from_url
+      end
+
+      if jira_cloud?
         data_fields.deployment_cloud!
       else
-        data_fields.deployment_unknown!
+        data_fields.deployment_server!
+      end
+    end
+
+    def jira_cloud?
+      server_info['deploymentType'] == 'Cloud' || URI(client_url).hostname.end_with?(JIRA_CLOUD_HOST)
+    end
+
+    def set_deployment_type_from_url
+      # This shouldn't happen but of course it will happen when an integration is removed.
+      # Instead of deleting the integration we set all fields to null
+      # and mark it as inactive
+      return data_fields.deployment_unknown! unless client_url
+
+      # If API-based detection methods fail here then
+      # we can only assume it's either Cloud or Server
+      # based on the URL being *.atlassian.net
+
+      if URI(client_url).hostname.end_with?(JIRA_CLOUD_HOST)
+        data_fields.deployment_cloud!
+      else
+        data_fields.deployment_server!
       end
     end
 

@@ -32,7 +32,7 @@ RSpec.describe 'Issue Sidebar' do
           stub_feature_flags(issue_assignees_widget: false)
         end
 
-        include_examples 'issuable invite members experiments' do
+        include_examples 'issuable invite members' do
           let(:issuable_path) { project_issue_path(project, issue2) }
         end
 

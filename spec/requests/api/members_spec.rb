@@ -255,11 +255,39 @@ RSpec.describe API::Members do
           expect(json_response['access_level']).to eq(Member::DEVELOPER)
         end
 
-        describe 'executes the Members::CreateService for multiple user_ids' do
+        context 'with invite_source considerations', :snowplow do
+          let(:params) { { user_id: stranger.id, access_level: Member::DEVELOPER } }
+
+          it 'tracks the invite source as api' do
+            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                 params: params
+
+            expect_snowplow_event(
+              category: 'Members::CreateService',
+              action: 'create_member',
+              label: 'api',
+              property: 'existing_user'
+            )
+          end
+
+          it 'tracks the invite source from params' do
+            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                 params: params.merge(invite_source: '_invite_source_')
+
+            expect_snowplow_event(
+              category: 'Members::CreateService',
+              action: 'create_member',
+              label: '_invite_source_',
+              property: 'existing_user'
+            )
+          end
+        end
+
+        context 'when executing the Members::CreateService for multiple user_ids' do
+          let(:user_ids) { [stranger.id, access_requester.id].join(',') }
+
           it 'returns success when it successfully create all members' do
             expect do
-              user_ids = [stranger.id, access_requester.id].join(',')
-
               post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
                    params: { user_id: user_ids, access_level: Member::DEVELOPER }
 
@@ -270,8 +298,6 @@ RSpec.describe API::Members do
 
           it 'returns the error message if there was an error adding members to group' do
             error_message = 'Unable to find User ID'
-            user_ids = [stranger.id, access_requester.id].join(',')
-
             allow_next_instance_of(::Members::CreateService) do |service|
               expect(service).to receive(:execute).and_return({ status: :error, message: error_message })
             end
@@ -282,6 +308,34 @@ RSpec.describe API::Members do
             end.not_to change { source.members.count }
             expect(json_response['status']).to eq('error')
             expect(json_response['message']).to eq(error_message)
+          end
+
+          context 'with invite_source considerations', :snowplow do
+            let(:params) { { user_id: user_ids, access_level: Member::DEVELOPER } }
+
+            it 'tracks the invite source as api' do
+              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                   params: params
+
+              expect_snowplow_event(
+                category: 'Members::CreateService',
+                action: 'create_member',
+                label: 'api',
+                property: 'existing_user'
+              )
+            end
+
+            it 'tracks the invite source from params' do
+              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                   params: params.merge(invite_source: '_invite_source_')
+
+              expect_snowplow_event(
+                category: 'Members::CreateService',
+                action: 'create_member',
+                label: '_invite_source_',
+                property: 'existing_user'
+              )
+            end
           end
         end
       end

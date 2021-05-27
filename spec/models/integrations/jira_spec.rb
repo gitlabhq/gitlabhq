@@ -117,7 +117,8 @@ RSpec.describe Integrations::Jira do
     let(:params) do
       {
         project: project,
-        url: url, api_url: api_url,
+        url: url,
+        api_url: api_url,
         username: username, password: password,
         jira_issue_transition_id: transition_id
       }
@@ -141,9 +142,9 @@ RSpec.describe Integrations::Jira do
     end
 
     context 'when loading serverInfo' do
-      let!(:jira_service) { subject }
+      let(:jira_service) { subject }
 
-      context 'Cloud instance' do
+      context 'from a Cloud instance' do
         let(:server_info_results) { { 'deploymentType' => 'Cloud' } }
 
         it 'is detected' do
@@ -151,7 +152,7 @@ RSpec.describe Integrations::Jira do
         end
       end
 
-      context 'Server instance' do
+      context 'from a Server instance' do
         let(:server_info_results) { { 'deploymentType' => 'Server' } }
 
         it 'is detected' do
@@ -159,11 +160,45 @@ RSpec.describe Integrations::Jira do
         end
       end
 
-      context 'Unknown instance' do
+      context 'from an Unknown instance' do
         let(:server_info_results) { { 'deploymentType' => 'FutureCloud' } }
 
-        it 'is detected' do
-          expect(jira_service.jira_tracker_data.deployment_unknown?).to be_truthy
+        context 'and URL ends in .atlassian.net' do
+          let(:api_url) { 'http://example-api.atlassian.net' }
+
+          it 'deployment_type is set to cloud' do
+            expect(jira_service.jira_tracker_data.deployment_cloud?).to be_truthy
+          end
+        end
+
+        context 'and URL is something else' do
+          let(:api_url) { 'http://my-jira-api.someserver.com' }
+
+          it 'deployment_type is set to server' do
+            expect(jira_service.jira_tracker_data.deployment_server?).to be_truthy
+          end
+        end
+      end
+
+      context 'and no ServerInfo response is received' do
+        let(:server_info_results) { {} }
+
+        context 'and URL ends in .atlassian.net' do
+          let(:api_url) { 'http://example-api.atlassian.net' }
+
+          it 'deployment_type is set to cloud' do
+            expect(Gitlab::AppLogger).to receive(:warn).with(message: "Jira API returned no ServerInfo, setting deployment_type from URL", server_info: server_info_results, url: api_url)
+            expect(jira_service.jira_tracker_data.deployment_cloud?).to be_truthy
+          end
+        end
+
+        context 'and URL is something else' do
+          let(:api_url) { 'http://my-jira-api.someserver.com' }
+
+          it 'deployment_type is set to server' do
+            expect(Gitlab::AppLogger).to receive(:warn).with(message: "Jira API returned no ServerInfo, setting deployment_type from URL", server_info: server_info_results, url: api_url)
+            expect(jira_service.jira_tracker_data.deployment_server?).to be_truthy
+          end
         end
       end
     end
@@ -229,17 +264,31 @@ RSpec.describe Integrations::Jira do
         end
 
         context 'when updating the url, api_url, username, or password' do
-          it 'updates deployment type' do
-            service.update!(url: 'http://first.url')
-            service.jira_tracker_data.update!(deployment_type: 'server')
+          context 'when updating the integration' do
+            it 'updates deployment type' do
+              service.update!(url: 'http://first.url')
+              service.jira_tracker_data.update!(deployment_type: 'server')
 
-            expect(service.jira_tracker_data.deployment_server?).to be_truthy
+              expect(service.jira_tracker_data.deployment_server?).to be_truthy
 
-            service.update!(api_url: 'http://another.url')
-            service.jira_tracker_data.reload
+              service.update!(api_url: 'http://another.url')
+              service.jira_tracker_data.reload
 
-            expect(service.jira_tracker_data.deployment_cloud?).to be_truthy
-            expect(WebMock).to have_requested(:get, /serverInfo/).twice
+              expect(service.jira_tracker_data.deployment_cloud?).to be_truthy
+              expect(WebMock).to have_requested(:get, /serverInfo/).twice
+            end
+          end
+
+          context 'when removing the integration' do
+            let(:server_info_results) { {} }
+
+            it 'updates deployment type' do
+              service.update!(url: nil, api_url: nil, active: false)
+
+              service.jira_tracker_data.reload
+
+              expect(service.jira_tracker_data.deployment_unknown?).to be_truthy
+            end
           end
 
           it 'calls serverInfo for url' do

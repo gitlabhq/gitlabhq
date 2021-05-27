@@ -24,12 +24,12 @@ export default {
     BoardSidebarDueDate,
     SidebarSubscriptionsWidget,
     BoardSidebarMilestoneSelect,
-    BoardSidebarEpicSelect: () =>
-      import('ee_component/boards/components/sidebar/board_sidebar_epic_select.vue'),
     BoardSidebarWeightInput: () =>
       import('ee_component/boards/components/sidebar/board_sidebar_weight_input.vue'),
     SidebarIterationWidget: () =>
       import('ee_component/sidebar/components/sidebar_iteration_widget.vue'),
+    SidebarDropdownWidget: () =>
+      import('ee_component/sidebar/components/sidebar_dropdown_widget.vue'),
   },
   inject: {
     multipleAssigneesFeatureAvailable: {
@@ -89,7 +89,15 @@ export default {
         :allow-multiple-assignees="multipleAssigneesFeatureAvailable"
         @assignees-updated="setAssignees"
       />
-      <board-sidebar-epic-select v-if="epicFeatureAvailable" class="epic" />
+      <sidebar-dropdown-widget
+        v-if="epicFeatureAvailable"
+        :iid="activeBoardItem.iid"
+        issuable-attribute="epic"
+        :workspace-path="projectPathForActiveIssue"
+        :attr-workspace-path="groupPathForActiveIssue"
+        :issuable-type="issuableType"
+        data-testid="sidebar-epic"
+      />
       <div>
         <board-sidebar-milestone-select />
         <sidebar-iteration-widget

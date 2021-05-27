@@ -42,22 +42,7 @@
   - data['max-select'] = dropdown_options[:data][:'max-select'] if dropdown_options[:data][:'max-select']
   - options[:data].merge!(data)
 
-  - if directly_invite_members?
-    - options[:dropdown_class] += ' dropdown-extended-height'
-    - options[:footer_content] = true
-    - options[:wrapper_class] = 'js-sidebar-assignee-dropdown'
-    - options[:toggle_class] += ' js-invite-members-track'
-    - data['track-event'] = 'show_invite_members'
-    - options[:data].merge!(data)
-    - invite_text = _('Invite Members')
-    - track_label = 'edit_assignee'
-
-    = dropdown_tag(title, options: options) do
-      %ul.dropdown-footer-list
-        %li
-          .js-invite-members-trigger{ data: { trigger_element: 'anchor',
-            display_text: invite_text,
-            event: 'click_invite_members',
-            label: track_label } }
-  - else
-    = dropdown_tag(title, options: options)
+  = render 'shared/issuable/sidebar_user_dropdown',
+    options: options,
+    wrapper_class: 'js-sidebar-assignee-dropdown',
+    track_label: 'edit_assignee'

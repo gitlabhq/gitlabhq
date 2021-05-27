@@ -866,7 +866,7 @@ const Api = {
   },
 
   trackRedisHllUserEvent(event) {
-    if (!gon.features?.usageDataApi) {
+    if (!gon.current_user_id || !gon.features?.usageDataApi) {
       return null;
     }
 

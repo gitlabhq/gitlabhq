@@ -26,7 +26,7 @@ describe('MrWidgetOptions', () => {
   let wrapper;
   let mock;
 
-  const COLLABORATION_MESSAGE = 'Allows commits from members who can merge to the target branch';
+  const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
 
   beforeEach(() => {
     gl.mrWidgetData = { ...mockData };

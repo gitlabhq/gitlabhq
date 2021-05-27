@@ -1,8 +1,6 @@
 import loadAwardsHandler from '~/awards_handler';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import initIssuableSidebar from '~/init_issuable_sidebar';
-import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
-import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { IssuableType } from '~/issuable_show/constants';
 import Issue from '~/issue';
 import '~/notes/index';
@@ -34,8 +32,6 @@ export default function initShowIssue() {
   initIssueHeaderActions(store);
   initSentryErrorStackTraceApp();
   initRelatedMergeRequestsApp();
-  initInviteMembersModal();
-  initInviteMembersTrigger();
 
   import(/* webpackChunkName: 'design_management' */ '~/design_management')
     .then((module) => module.default())

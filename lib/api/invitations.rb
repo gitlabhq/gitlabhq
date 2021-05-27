@@ -23,6 +23,7 @@ module API
           requires :email, types: [String, Array[String]], email_or_email_list: true, desc: 'The email address to invite, or multiple emails separated by comma'
           requires :access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'A valid access level (defaults: `30`, developer access level)'
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
+          optional :invite_source, type: String, desc: 'Source that triggered the member creation process', default: 'api'
         end
         post ":id/invitations" do
           params[:source] = find_source(source_type, params[:id])

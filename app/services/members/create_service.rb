@@ -72,6 +72,23 @@ module Members
       errors << "#{prefix}#{member.errors.full_messages.to_sentence}"
     end
 
+    def after_execute(member:)
+      super
+
+      Gitlab::Tracking.event(self.class.name, 'create_member', label: invite_source, property: tracking_property(member))
+    end
+
+    def invite_source
+      params[:invite_source] || 'unknown'
+    end
+
+    def tracking_property(member)
+      # ideally invites go down the invite service class instead, but there is nothing that limits an invite
+      # from being used in this class and if you send emails as a comma separated list to the api/members
+      # endpoint, it will support invites
+      member.invite? ? 'net_new_user' : 'existing_user'
+    end
+
     def user_limit
       limit = params.fetch(:limit, DEFAULT_INVITE_LIMIT)
 

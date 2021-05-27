@@ -12,6 +12,7 @@ import loadAwardsHandler from '../../awards_handler';
 import { deprecatedCreateFlash as Flash } from '../../flash';
 import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import Poll from '../../lib/utils/poll';
+import { create } from '../../lib/utils/recurrence';
 import { mergeUrlParams } from '../../lib/utils/url_utility';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import TaskList from '../../task_list';
@@ -21,6 +22,7 @@ import eventHub from '../event_hub';
 import * as types from './mutation_types';
 import * as utils from './utils';
 
+const NOTES_POLLING_INTERVAL = 6000;
 let eTagPoll;
 
 export const updateLockedAttribute = ({ commit, getters }, { locked, fullPath }) => {
@@ -469,6 +471,19 @@ const getFetchDataParams = (state) => {
 };
 
 export const poll = ({ commit, state, getters, dispatch }) => {
+  const notePollOccurrenceTracking = create();
+  let flashContainer;
+
+  notePollOccurrenceTracking.handle(1, () => {
+    // Since polling halts internally after 1 failure, we manually try one more time
+    setTimeout(() => eTagPoll.restart(), NOTES_POLLING_INTERVAL);
+  });
+  notePollOccurrenceTracking.handle(2, () => {
+    // On the second failure in a row, show the alert and try one more time (hoping to succeed and clear the error)
+    flashContainer = Flash(__('Something went wrong while fetching latest comments.'));
+    setTimeout(() => eTagPoll.restart(), NOTES_POLLING_INTERVAL);
+  });
+
   eTagPoll = new Poll({
     resource: {
       poll: () => {
@@ -477,8 +492,15 @@ export const poll = ({ commit, state, getters, dispatch }) => {
       },
     },
     method: 'poll',
-    successCallback: ({ data }) => pollSuccessCallBack(data, commit, state, getters, dispatch),
-    errorCallback: () => Flash(__('Something went wrong while fetching latest comments.')),
+    successCallback: ({ data }) => {
+      pollSuccessCallBack(data, commit, state, getters, dispatch);
+
+      if (notePollOccurrenceTracking.count) {
+        notePollOccurrenceTracking.reset();
+      }
+      flashContainer?.close();
+    },
+    errorCallback: () => notePollOccurrenceTracking.occur(),
   });
 
   if (!Visibility.hidden()) {

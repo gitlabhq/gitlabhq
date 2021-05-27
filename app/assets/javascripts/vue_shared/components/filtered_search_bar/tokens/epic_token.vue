@@ -11,6 +11,7 @@ import { __ } from '~/locale';
 import { DEBOUNCE_DELAY, DEFAULT_NONE_ANY } from '../constants';
 
 export default {
+  separator: '::&',
   components: {
     GlDropdownDivider,
     GlFilteredSearchToken,
@@ -34,17 +35,35 @@ export default {
     };
   },
   computed: {
+    idProperty() {
+      return this.config.idProperty || 'iid';
+    },
     currentValue() {
-      return Number(this.value.data);
+      const epicIid = Number(this.value.data);
+      if (epicIid) {
+        return epicIid;
+      }
+      return this.value.data;
     },
     defaultEpics() {
       return this.config.defaultEpics || DEFAULT_NONE_ANY;
     },
-    idProperty() {
-      return this.config.idProperty || 'id';
-    },
     activeEpic() {
-      return this.epics.find((epic) => epic[this.idProperty] === this.currentValue);
+      if (this.currentValue && this.epics.length) {
+        // Check if current value is an epic ID.
+        if (typeof this.currentValue === 'number') {
+          return this.epics.find((epic) => epic[this.idProperty] === this.currentValue);
+        }
+
+        // Current value is a string.
+        const [groupPath, idProperty] = this.currentValue?.split('::&');
+        return this.epics.find(
+          (epic) =>
+            epic.group_full_path === groupPath &&
+            epic[this.idProperty] === parseInt(idProperty, 10),
+        );
+      }
+      return null;
     },
   },
   watch: {
@@ -58,10 +77,10 @@ export default {
     },
   },
   methods: {
-    fetchEpicsBySearchTerm(searchTerm = '') {
+    fetchEpicsBySearchTerm({ epicPath = '', search = '' }) {
       this.loading = true;
       this.config
-        .fetchEpics(searchTerm)
+        .fetchEpics({ epicPath, search })
         .then((response) => {
           this.epics = Array.isArray(response) ? response : response.data;
         })
@@ -71,11 +90,21 @@ export default {
         });
     },
     searchEpics: debounce(function debouncedSearch({ data }) {
-      this.fetchEpicsBySearchTerm(data);
+      let epicPath = this.activeEpic?.web_url;
+
+      // When user visits the page with token value already included in filters
+      // We don't have any information about selected token except for its
+      // group path and iid joined by separator, so we need to manually
+      // compose epic path from it.
+      if (data.includes(this.$options.separator)) {
+        const [groupPath, epicIid] = data.split(this.$options.separator);
+        epicPath = `/groups/${groupPath}/-/epics/${epicIid}`;
+      }
+      this.fetchEpicsBySearchTerm({ epicPath, search: data });
     }, DEBOUNCE_DELAY),
 
     getEpicDisplayText(epic) {
-      return `${epic.title}::&${epic[this.idProperty]}`;
+      return `${epic.title}${this.$options.separator}${epic.iid}`;
     },
   },
 };
@@ -104,8 +133,8 @@ export default {
       <template v-else>
         <gl-filtered-search-suggestion
           v-for="epic in epics"
-          :key="epic[idProperty]"
-          :value="String(epic[idProperty])"
+          :key="epic.id"
+          :value="`${epic.group_full_path}::&${epic[idProperty]}`"
         >
           {{ epic.title }}
         </gl-filtered-search-suggestion>

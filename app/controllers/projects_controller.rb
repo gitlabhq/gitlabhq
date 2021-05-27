@@ -330,11 +330,7 @@ class ProjectsController < Projects::ApplicationController
         experiment(:empty_repo_upload, project: @project).track(:view_project_show, property: property)
       end
 
-      if @project.empty_repo?
-        record_experiment_user(:invite_members_empty_project_version_a)
-
-        render 'projects/empty'
-      end
+      render 'projects/empty' if @project.empty_repo?
     else
       if can?(current_user, :read_wiki, @project)
         @wiki = @project.wiki
