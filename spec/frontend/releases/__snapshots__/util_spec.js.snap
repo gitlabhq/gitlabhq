@@ -121,10 +121,10 @@ Object {
     },
   ],
   "paginationInfo": Object {
-    "endCursor": "eyJpZCI6IjEifQ",
+    "endCursor": "eyJyZWxlYXNlZF9hdCI6IjIwMTgtMTItMTAgMDA6MDA6MDAuMDAwMDAwMDAwIFVUQyIsImlkIjoiMSJ9",
     "hasNextPage": false,
     "hasPreviousPage": false,
-    "startCursor": "eyJpZCI6IjEifQ",
+    "startCursor": "eyJyZWxlYXNlZF9hdCI6IjIwMTgtMTItMTAgMDA6MDA6MDAuMDAwMDAwMDAwIFVUQyIsImlkIjoiMSJ9",
   },
 }
 `;

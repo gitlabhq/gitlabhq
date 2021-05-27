@@ -39,10 +39,10 @@ class Release < ApplicationRecord
   scope :released_within_2hrs, -> { where(released_at: Time.zone.now - 1.hour..Time.zone.now + 1.hour) }
 
   # Sorting
-  scope :order_created, -> { reorder('created_at ASC') }
-  scope :order_created_desc, -> { reorder('created_at DESC') }
-  scope :order_released, -> { reorder('released_at ASC') }
-  scope :order_released_desc, -> { reorder('released_at DESC') }
+  scope :order_created, -> { reorder(created_at: :asc) }
+  scope :order_created_desc, -> { reorder(created_at: :desc) }
+  scope :order_released, -> { reorder(released_at: :asc) }
+  scope :order_released_desc, -> { reorder(released_at: :desc) }
 
   delegate :repository, to: :project
 

@@ -11,7 +11,7 @@ GitLab stores [repositories](../user/project/repository/index.md) on repository 
 storage is either:
 
 - A `gitaly_address`, which points to a [Gitaly node](gitaly/index.md).
-- A `path`, which points directly a directory where the repositories are stored. This method is
+- A `path`, which points directly to the directory where the repositories are stored. This method is
   deprecated and [scheduled to be removed](https://gitlab.com/gitlab-org/gitaly/-/issues/1690) in
   GitLab 14.0.
 

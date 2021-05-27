@@ -6,7 +6,7 @@ class Integration < ApplicationRecord
   include Sortable
   include Importable
   include ProjectServicesLoggable
-  include DataFields
+  include Integrations::HasDataFields
   include FromUnion
   include EachBatch
 

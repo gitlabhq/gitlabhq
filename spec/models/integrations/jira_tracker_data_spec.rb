@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraTrackerData do
+RSpec.describe Integrations::JiraTrackerData do
   describe 'associations' do
     it { is_expected.to belong_to(:integration) }
   end

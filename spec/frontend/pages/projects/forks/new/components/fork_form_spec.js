@@ -1,4 +1,4 @@
-import { GlFormInputGroup, GlFormInput, GlForm } from '@gitlab/ui';
+import { GlFormInputGroup, GlFormInput, GlForm, GlFormRadio } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -14,6 +14,13 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 describe('ForkForm component', () => {
   let wrapper;
   let axiosMock;
+
+  const PROJECT_VISIBILITY_TYPE = {
+    private:
+      'Private Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.',
+    internal: 'Internal The project can be accessed by any logged in user.',
+    public: 'Public The project can be accessed without any authentication.',
+  };
 
   const GON_GITLAB_URL = 'https://gitlab.com';
   const GON_API_VERSION = 'v7';
@@ -61,6 +68,7 @@ describe('ForkForm component', () => {
       stubs: {
         GlFormInputGroup,
         GlFormInput,
+        GlFormRadio,
       },
     });
   };
@@ -203,6 +211,24 @@ describe('ForkForm component', () => {
   });
 
   describe('visibility level', () => {
+    it('displays the correct description', () => {
+      mockGetRequest();
+      createComponent();
+
+      const formRadios = wrapper.findAll(GlFormRadio);
+
+      Object.keys(PROJECT_VISIBILITY_TYPE).forEach((visibilityType, index) => {
+        expect(formRadios.at(index).text()).toBe(PROJECT_VISIBILITY_TYPE[visibilityType]);
+      });
+    });
+
+    it('displays all 3 visibility levels', () => {
+      mockGetRequest();
+      createComponent();
+
+      expect(wrapper.findAll(GlFormRadio)).toHaveLength(3);
+    });
+
     it.each`
       project       | namespace     | privateIsDisabled | internalIsDisabled | publicIsDisabled
       ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}

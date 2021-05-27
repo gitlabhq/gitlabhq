@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
-module Services
-  module DataFields
+module Integrations
+  module BaseDataFields
     extend ActiveSupport::Concern
 
     included do
-      belongs_to :integration, inverse_of: self.name.underscore.to_sym, foreign_key: :service_id
+      # TODO: Once we rename the tables we can't rely on `table_name` anymore.
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/331953
+      belongs_to :integration, inverse_of: self.table_name.to_sym, foreign_key: :service_id
 
       delegate :activated?, to: :integration, allow_nil: true
 

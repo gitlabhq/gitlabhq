@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe OpenProjectTrackerData do
+RSpec.describe Integrations::OpenProjectTrackerData do
   describe 'associations' do
     it { is_expected.to belong_to(:integration) }
   end
