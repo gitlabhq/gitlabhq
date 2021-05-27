@@ -82,7 +82,7 @@ job1:
     - echo This rule uses parentheses.
   only:
     variables:
-      - ($CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
+      - ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
 ```
 
 ### `only:changes` / `except:changes` examples

@@ -209,7 +209,7 @@ jobs:
   deploy:
     branches:
       only:
-        - master
+        - main
         - /rc-.*/
 ```
 
@@ -221,7 +221,7 @@ deploy_prod:
   script:
     - echo "Deploy to production server"
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
 ```
 
 ### Caching

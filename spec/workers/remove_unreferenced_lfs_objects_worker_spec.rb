@@ -34,14 +34,14 @@ RSpec.describe RemoveUnreferencedLfsObjectsWorker do
     end
 
     it 'removes unreferenced lfs objects' do
-      worker.perform
+      expect(worker.perform).to eq(2)
 
       expect(LfsObject.where(id: unreferenced_lfs_object1.id)).to be_empty
       expect(LfsObject.where(id: unreferenced_lfs_object2.id)).to be_empty
     end
 
     it 'leaves referenced lfs objects' do
-      worker.perform
+      expect(worker.perform).to eq(2)
 
       expect(referenced_lfs_object1.reload).to be_present
       expect(referenced_lfs_object2.reload).to be_present
@@ -50,10 +50,12 @@ RSpec.describe RemoveUnreferencedLfsObjectsWorker do
     it 'removes unreferenced lfs objects after project removal' do
       project1.destroy!
 
-      worker.perform
+      expect(worker.perform).to eq(3)
 
       expect(referenced_lfs_object1.reload).to be_present
       expect(LfsObject.where(id: referenced_lfs_object2.id)).to be_empty
     end
   end
+
+  it_behaves_like 'an idempotent worker'
 end

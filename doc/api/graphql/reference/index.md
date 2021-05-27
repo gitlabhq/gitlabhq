@@ -11933,6 +11933,17 @@ Represents rules that commit pushes must follow.
 | ---- | ---- | ----------- |
 | <a id="pushrulesrejectunsignedcommits"></a>`rejectUnsignedCommits` | [`Boolean!`](#boolean) | Indicates whether commits not signed through GPG will be rejected. |
 
+### `PypiMetadata`
+
+Pypi metadata.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pypimetadataid"></a>`id` | [`PackagesPypiMetadatumID!`](#packagespypimetadatumid) | ID of the metadatum. |
+| <a id="pypimetadatarequiredpython"></a>`requiredPython` | [`String`](#string) | Required Python version of the Pypi package. |
+
 ### `RecentFailures`
 
 Recent failure history of a test case.
@@ -15298,6 +15309,12 @@ A `PackagesPackageID` is a global ID. It is encoded as a string.
 
 An example `PackagesPackageID` is: `"gid://gitlab/Packages::Package/1"`.
 
+### `PackagesPypiMetadatumID`
+
+A `PackagesPypiMetadatumID` is a global ID. It is encoded as a string.
+
+An example `PackagesPypiMetadatumID` is: `"gid://gitlab/Packages::Pypi::Metadatum/1"`.
+
 ### `PathLockID`
 
 A `PathLockID` is a global ID. It is encoded as a string.
@@ -15429,6 +15446,7 @@ One of:
 - [`ConanMetadata`](#conanmetadata)
 - [`MavenMetadata`](#mavenmetadata)
 - [`NugetMetadata`](#nugetmetadata)
+- [`PypiMetadata`](#pypimetadata)
 
 #### `VulnerabilityDetail`
 

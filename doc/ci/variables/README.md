@@ -434,7 +434,7 @@ Example job log output:
 export CI_JOB_ID="50"
 export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_COMMIT_SHORT_SHA="1ecfd275"
-export CI_COMMIT_REF_NAME="master"
+export CI_COMMIT_REF_NAME="main"
 export CI_REPOSITORY_URL="https://gitlab-ci-token:[masked]@example.com/gitlab-org/gitlab-foss.git"
 export CI_COMMIT_TAG="1.0.0"
 export CI_JOB_NAME="spec:other"
@@ -815,7 +815,7 @@ as well as from in a variable:
 
 ```yaml
 variables:
-  MYSTRING: 'master'
+  MYSTRING: 'main'
   MYREGEX: '/^mast.*/'
 
 testdirect:
@@ -943,8 +943,8 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ++ CI_PROJECT_VISIBILITY=public
 ++ export CI_PROJECT_REPOSITORY_LANGUAGES=
 ++ CI_PROJECT_REPOSITORY_LANGUAGES=
-++ export CI_DEFAULT_BRANCH=master
-++ CI_DEFAULT_BRANCH=master
+++ export CI_DEFAULT_BRANCH=main
+++ CI_DEFAULT_BRANCH=main
 ++ export CI_REGISTRY=registry.gitlab.com
 ++ CI_REGISTRY=registry.gitlab.com
 ++ export CI_API_V4_URL=https://gitlab.com/api/v4
@@ -961,10 +961,10 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ++ CI_COMMIT_SHORT_SHA=dd648b2e
 ++ export CI_COMMIT_BEFORE_SHA=0000000000000000000000000000000000000000
 ++ CI_COMMIT_BEFORE_SHA=0000000000000000000000000000000000000000
-++ export CI_COMMIT_REF_NAME=master
-++ CI_COMMIT_REF_NAME=master
-++ export CI_COMMIT_REF_SLUG=master
-++ CI_COMMIT_REF_SLUG=master
+++ export CI_COMMIT_REF_NAME=main
+++ CI_COMMIT_REF_NAME=main
+++ export CI_COMMIT_REF_SLUG=main
+++ CI_COMMIT_REF_SLUG=main
 ...
 ```
 

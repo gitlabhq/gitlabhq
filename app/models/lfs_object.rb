@@ -18,6 +18,8 @@ class LfsObject < ApplicationRecord
 
   mount_file_store_uploader LfsObjectUploader
 
+  BATCH_SIZE = 3000
+
   def self.not_linked_to_project(project)
     where('NOT EXISTS (?)',
           project.lfs_objects_projects.select(1).where('lfs_objects_projects.lfs_object_id = lfs_objects.id'))
@@ -37,13 +39,14 @@ class LfsObject < ApplicationRecord
     file_store == LfsObjectUploader::Store::LOCAL
   end
 
-  # rubocop: disable Cop/DestroyAll
-  def self.destroy_unreferenced
-    joins("LEFT JOIN lfs_objects_projects ON lfs_objects_projects.lfs_object_id = #{table_name}.id")
-        .where(lfs_objects_projects: { id: nil })
-        .destroy_all
+  def self.unreferenced_in_batches
+    each_batch(of: BATCH_SIZE, order: :desc) do |lfs_objects|
+      relation = lfs_objects.where('NOT EXISTS (?)',
+              LfsObjectsProject.select(1).where('lfs_objects_projects.lfs_object_id = lfs_objects.id'))
+
+      yield relation if relation.any?
+    end
   end
-  # rubocop: enable Cop/DestroyAll
 
   def self.calculate_oid(path)
     self.hexdigest(path)

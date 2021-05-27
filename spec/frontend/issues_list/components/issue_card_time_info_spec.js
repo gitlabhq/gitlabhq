@@ -13,12 +13,10 @@ describe('IssuesListApp component', () => {
       dueDate: '2020-12-17',
       startDate: '2020-12-10',
       title: 'My milestone',
-      webUrl: '/milestone/webUrl',
+      webPath: '/milestone/webPath',
     },
     dueDate: '2020-12-12',
-    timeStats: {
-      humanTimeEstimate: '1w',
-    },
+    humanTimeEstimate: '1w',
   };
 
   const findMilestone = () => wrapper.find('[data-testid="issuable-milestone"]');
@@ -56,7 +54,7 @@ describe('IssuesListApp component', () => {
 
       expect(milestone.text()).toBe(issue.milestone.title);
       expect(milestone.find(GlIcon).props('name')).toBe('clock');
-      expect(milestone.find(GlLink).attributes('href')).toBe(issue.milestone.webUrl);
+      expect(milestone.find(GlLink).attributes('href')).toBe(issue.milestone.webPath);
     });
 
     describe.each`
@@ -102,7 +100,7 @@ describe('IssuesListApp component', () => {
 
     const timeEstimate = wrapper.find('[data-testid="time-estimate"]');
 
-    expect(timeEstimate.text()).toBe(issue.timeStats.humanTimeEstimate);
+    expect(timeEstimate.text()).toBe(issue.humanTimeEstimate);
     expect(timeEstimate.attributes('title')).toBe('Estimate');
     expect(timeEstimate.find(GlIcon).props('name')).toBe('timer');
   });

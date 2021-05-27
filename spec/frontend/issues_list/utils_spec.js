@@ -8,19 +8,20 @@ import {
   urlParams,
   urlParamsWithSpecialValues,
 } from 'jest/issues_list/mock_data';
-import { API_PARAM, DUE_DATE_VALUES, URL_PARAM, urlSortParams } from '~/issues_list/constants';
+import { DUE_DATE_VALUES, urlSortParams } from '~/issues_list/constants';
 import {
-  convertToParams,
+  convertToUrlParams,
   convertToSearchQuery,
   getDueDateValue,
   getFilterTokens,
   getSortKey,
   getSortOptions,
+  convertToApiParams,
 } from '~/issues_list/utils';
 
 describe('getSortKey', () => {
   it.each(Object.keys(urlSortParams))('returns %s given the correct inputs', (sortKey) => {
-    const { sort } = urlSortParams[sortKey];
+    const sort = urlSortParams[sortKey];
     expect(getSortKey(sort)).toBe(sortKey);
   });
 });
@@ -80,31 +81,26 @@ describe('getFilterTokens', () => {
   });
 });
 
-describe('convertToParams', () => {
+describe('convertToApiParams', () => {
   it('returns api params given filtered tokens', () => {
-    expect(convertToParams(filteredTokens, API_PARAM)).toEqual({
-      ...apiParams,
-      epic_id: 'gitlab-org::&12',
-    });
+    expect(convertToApiParams(filteredTokens)).toEqual(apiParams);
   });
 
   it('returns api params given filtered tokens with special values', () => {
-    expect(convertToParams(filteredTokensWithSpecialValues, API_PARAM)).toEqual(
-      apiParamsWithSpecialValues,
-    );
+    expect(convertToApiParams(filteredTokensWithSpecialValues)).toEqual(apiParamsWithSpecialValues);
   });
+});
 
+describe('convertToUrlParams', () => {
   it('returns url params given filtered tokens', () => {
-    expect(convertToParams(filteredTokens, URL_PARAM)).toEqual({
+    expect(convertToUrlParams(filteredTokens)).toEqual({
       ...urlParams,
       epic_id: 'gitlab-org::&12',
     });
   });
 
   it('returns url params given filtered tokens with special values', () => {
-    expect(convertToParams(filteredTokensWithSpecialValues, URL_PARAM)).toEqual(
-      urlParamsWithSpecialValues,
-    );
+    expect(convertToUrlParams(filteredTokensWithSpecialValues)).toEqual(urlParamsWithSpecialValues);
   });
 });
 

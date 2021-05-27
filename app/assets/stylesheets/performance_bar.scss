@@ -11,16 +11,24 @@
   height: $performance-bar-height;
   background: $black;
   line-height: $performance-bar-height;
-  color: $gray-300;
+  color: $gray-100;
 
   select {
-    color: $white;
     width: 200px;
   }
 
   input {
-    color: $gray-300;
     width: $input-short-width - 60px;
+  }
+
+  select,
+  input {
+    color: inherit;
+    background-color: inherit;
+  }
+
+  option {
+    color: initial;
   }
 
   &.disabled {
@@ -29,29 +37,14 @@
 
   &.production {
     background-color: $perf-bar-production;
-
-    select,
-    input {
-      background: $perf-bar-production;
-    }
   }
 
   &.staging {
     background-color: $perf-bar-staging;
-
-    select,
-    input {
-      background: $perf-bar-staging;
-    }
   }
 
   &.development {
     background-color: $perf-bar-development;
-
-    select,
-    input {
-      background: $perf-bar-development;
-    }
   }
 
   // UI Elements
@@ -61,7 +54,6 @@
     padding: 4px 6px;
     font-family: Consolas, 'Liberation Mono', Courier, monospace;
     line-height: 1;
-    color: $gray-100;
     border-radius: 3px;
     box-shadow: 0 1px 0 $perf-bar-bucket-box-shadow-from,
       inset 0 1px 2px $perf-bar-bucket-box-shadow-to;

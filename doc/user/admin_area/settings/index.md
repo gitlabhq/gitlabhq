@@ -15,7 +15,7 @@ documentation for all current settings and limits on the GitLab.com instance.
 
 ## General
 
-Access the default page for admin area settings by navigating to **Admin Area > Settings > General**:
+Access the default page for Admin Area settings by navigating to **Admin Area > Settings > General**:
 
 | Option | Description |
 | ------ | ----------- |
@@ -27,7 +27,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | [Terms of Service and Privacy Policy](terms.md) | Include a Terms of Service agreement and Privacy Policy that all users must accept. |
 | [External Authentication](external_authorization.md#configuration) | External Classification Policy Authorization |
 | [Web terminal](../../../administration/integration/terminal.md#limiting-websocket-connection-time) | Set max session time for web terminal. |
-| [Web IDE](../../project/web_ide/index.md#enabling-live-preview) | Manage Web IDE Features. |
+| [Web IDE](../../project/web_ide/index.md#enable-live-preview) | Manage Web IDE features. |
 | [FLoC](floc.md) | Enable or disable [Federated Learning of Cohorts (FLoC)](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) tracking. |
 
 ## Integrations

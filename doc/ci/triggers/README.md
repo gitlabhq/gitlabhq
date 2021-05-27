@@ -56,7 +56,7 @@ and it creates a dependent pipeline relation visible on the
 trigger_pipeline:
   stage: deploy
   script:
-    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
+    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
   only:
     - tags
 ```
@@ -81,7 +81,7 @@ build_submodule:
   stage: test
   script:
     - apt update && apt install -y unzip
-    - curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test&job_token=$CI_JOB_TOKEN"
+    - curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN"
     - unzip artifacts.zip
   only:
     - tags
@@ -178,7 +178,7 @@ To trigger a job from a webhook of another project you need to add the following
 webhook URL for Push and Tag events (change the project ID, ref and token):
 
 ```plaintext
-https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=TOKEN
+https://gitlab.example.com/api/v4/projects/9/ref/main/trigger/pipeline?token=TOKEN
 ```
 
 You should pass `ref` as part of the URL, to take precedence over `ref` from
@@ -250,7 +250,7 @@ and the script of the `upload_package` job is run:
 ```shell
 curl --request POST \
   --form token=TOKEN \
-  --form ref=master \
+  --form ref=main \
   --form "variables[UPLOAD_TO_S3]=true" \
   "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
 ```

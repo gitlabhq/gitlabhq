@@ -99,7 +99,7 @@ Example of response
   "id": 46,
   "project_id": 1,
   "status": "success",
-  "ref": "master",
+  "ref": "main",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
   "before_sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
   "tag": false,
@@ -226,7 +226,7 @@ POST /projects/:id/pipeline
 | `variables` | array   | no       | An array containing the variables available in the pipeline, matching the structure `[{ 'key': 'UPLOAD_TO_S3', 'variable_type': 'file', 'value': 'true' }]` |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=master"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
 ```
 
 Example of response
@@ -236,7 +236,7 @@ Example of response
   "id": 61,
   "project_id": 1,
   "sha": "384c444e840a515b23f21915ee5766b87068a70d",
-  "ref": "master",
+  "ref": "main",
   "status": "pending",
   "before_sha": "0000000000000000000000000000000000000000",
   "tag": false,
@@ -285,7 +285,7 @@ Response:
   "id": 46,
   "project_id": 1,
   "status": "pending",
-  "ref": "master",
+  "ref": "main",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
   "before_sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
   "tag": false,
@@ -334,7 +334,7 @@ Response:
   "id": 46,
   "project_id": 1,
   "status": "canceled",
-  "ref": "master",
+  "ref": "main",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
   "before_sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
   "tag": false,

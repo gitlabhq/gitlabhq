@@ -73,6 +73,13 @@ export function mountIssuesListApp() {
     return false;
   }
 
+  Vue.use(VueApollo);
+
+  const defaultClient = createDefaultClient({}, { assumeImmutableResults: true });
+  const apolloProvider = new VueApollo({
+    defaultClient,
+  });
+
   const {
     autocompleteAwardEmojisPath,
     autocompleteUsersPath,
@@ -83,7 +90,6 @@ export function mountIssuesListApp() {
     email,
     emailsHelpPagePath,
     emptyStateSvgPath,
-    endpoint,
     exportCsvPath,
     groupEpicsPath,
     hasBlockedIssuesFeature,
@@ -115,14 +121,13 @@ export function mountIssuesListApp() {
     el,
     // Currently does not use Vue Apollo, but need to provide {} for now until the
     // issue is fixed upstream in https://github.com/vuejs/vue-apollo/pull/1153
-    apolloProvider: {},
+    apolloProvider,
     provide: {
       autocompleteAwardEmojisPath,
       autocompleteUsersPath,
       calendarPath,
       canBulkUpdate: parseBoolean(canBulkUpdate),
       emptyStateSvgPath,
-      endpoint,
       groupEpicsPath,
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),

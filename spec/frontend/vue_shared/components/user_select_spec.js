@@ -49,10 +49,13 @@ describe('User select dropdown', () => {
   const findUnassignLink = () => wrapper.find('[data-testid="unassign"]');
   const findEmptySearchResults = () => wrapper.find('[data-testid="empty-results"]');
 
+  const searchQueryHandlerSuccess = jest.fn().mockResolvedValue(projectMembersResponse);
+  const participantsQueryHandlerSuccess = jest.fn().mockResolvedValue(participantsQueryResponse);
+
   const createComponent = ({
     props = {},
-    searchQueryHandler = jest.fn().mockResolvedValue(projectMembersResponse),
-    participantsQueryHandler = jest.fn().mockResolvedValue(participantsQueryResponse),
+    searchQueryHandler = searchQueryHandlerSuccess,
+    participantsQueryHandler = participantsQueryHandlerSuccess,
   } = {}) => {
     fakeApollo = createMockApollo([
       [searchUsersQuery, searchQueryHandler],
@@ -89,6 +92,14 @@ describe('User select dropdown', () => {
     createComponent();
 
     expect(findParticipantsLoading().exists()).toBe(true);
+  });
+
+  it('skips the queries if `isEditing` prop is false', () => {
+    createComponent({ props: { isEditing: false } });
+
+    expect(findParticipantsLoading().exists()).toBe(false);
+    expect(searchQueryHandlerSuccess).not.toHaveBeenCalled();
+    expect(participantsQueryHandlerSuccess).not.toHaveBeenCalled();
   });
 
   it('emits an `error` event if participants query was rejected', async () => {

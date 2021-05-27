@@ -1029,7 +1029,7 @@ levels. For example:
     URL: "http://my-url.internal"
     IMPORTANT_VAR: "the details"
   only:
-    - master
+    - main
     - stable
   tags:
     - production
@@ -1062,7 +1062,7 @@ rspec:
     IMPORTANT_VAR: "the details"
     GITLAB: "is-awesome"
   only:
-    - master
+    - main
     - stable
   tags:
     - docker
@@ -2390,7 +2390,7 @@ For example:
 ```yaml
 deploy to production:
   stage: deploy
-  script: git push production HEAD:master
+  script: git push production HEAD:main
   environment: production
 ```
 
@@ -2412,7 +2412,7 @@ Set a name for an [environment](../environments/index.md). For example:
 ```yaml
 deploy to production:
   stage: deploy
-  script: git push production HEAD:master
+  script: git push production HEAD:main
   environment:
     name: production
 ```
@@ -2447,7 +2447,7 @@ Set a URL for an [environment](../environments/index.md). For example:
 ```yaml
 deploy to production:
   stage: deploy
-  script: git push production HEAD:master
+  script: git push production HEAD:main
   environment:
     name: production
     url: https://prod.example.com

@@ -229,7 +229,7 @@ export default {
           @expand-widget="expandWidget"
         />
       </template>
-      <template #default>
+      <template #default="{ edit }">
         <user-select
           ref="userSelect"
           v-model="selected"
@@ -240,6 +240,7 @@ export default {
           :allow-multiple-assignees="allowMultipleAssignees"
           :current-user="currentUser"
           :issuable-type="issuableType"
+          :is-editing="edit"
           class="gl-w-full dropdown-menu-user"
           @toggle="collapseWidget"
           @error="showError"

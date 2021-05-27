@@ -1503,6 +1503,13 @@ RSpec.describe API::Commits do
           expect(json_response).to eq("dry_run" => "success")
           expect(project.commit(branch)).to eq(head)
         end
+
+        it 'supports the use of a custom commit message' do
+          post api(route, user), params: { branch: branch, message: 'foo' }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response["message"]).to eq('foo')
+        end
       end
 
       context 'when repository is disabled' do

@@ -70,7 +70,7 @@ build:
   stage: build
   script: ./build
   only:
-    - master
+    - main
 
 test:
   stage: test
@@ -82,7 +82,7 @@ deploy:
   stage: deploy
   script: ./deploy
   only:
-    - master
+    - main
 ```
 
 #### Excluding certain jobs
@@ -103,7 +103,7 @@ To achieve this, you can configure your `.gitlab-ci.yml` file as follows:
 ``` yaml
 .only-default: &only-default
   only:
-    - master
+    - main
     - merge_requests
     - tags
 

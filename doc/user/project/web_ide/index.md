@@ -259,19 +259,27 @@ Additionally, for public projects an **Open in CodeSandbox** button is available
 to transfer the contents of the project into a public CodeSandbox project to
 quickly share your project with others.
 
-### Enabling Live Preview
+### Enable Live Preview
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268288) in GitLab 12.9, third-party assets and libraries required for Live Preview are hosted at `https://sandbox-prod.gitlab-static.net` when it is enabled. However, some libraries are still served from other third-party services which may or may not be desirable in your environment.
+With Live Preview enabled, you can preview projects with a `package.json` file and
+a `main` entry point inside the Web IDE.
 
-The Live Preview feature needs to be enabled in the GitLab instance's
-Admin Area. Live Preview is enabled for all projects on
-GitLab.com
+Live Preview is enabled for all projects on GitLab.com. If you are an administrator
+of a self-managed GitLab instance, and you want to enable Live Preview:
 
-![Administrator Live Preview setting](img/admin_live_preview_v13_0.png)
+1. In the top navigation bar, go to **Admin Area**.
+1. In the left sidebar, select **Settings > General**.
+1. Scroll to **Web IDE** and select **Expand**:
+   ![Administrator Live Preview setting](img/admin_live_preview_v13_0.png)
+1. Select **Enable Live Preview** and select **Save changes**.
 
-After you have done that, you can preview projects with a `package.json` file and
-a `main` entry point inside the Web IDE. An example `package.json` is shown
-below.
+[In GitLab 12.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/268288),
+third-party assets and libraries required for Live Preview are hosted at
+`https://sandbox-prod.gitlab-static.net` when it is enabled. However, some libraries
+are still served from other third-party services, which may or may not be desirable
+in your environment.
+
+An example `package.json`:
 
 ```json
 {

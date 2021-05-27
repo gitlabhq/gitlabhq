@@ -13157,7 +13157,9 @@ msgid "Every two weeks"
 msgstr ""
 
 msgid "Every week"
-msgstr ""
+msgid_plural "Every %d weeks"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Every week (%{weekday} at %{time})"
 msgstr ""
@@ -16533,9 +16535,6 @@ msgstr ""
 msgid "IDE"
 msgstr ""
 
-msgid "IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox Live Preview."
-msgstr ""
-
 msgid "IDE|Back"
 msgstr ""
 
@@ -18536,6 +18535,9 @@ msgstr ""
 msgid "Iterations|No iteration cadences to show."
 msgstr ""
 
+msgid "Iterations|No iterations in cadence."
+msgstr ""
+
 msgid "Iterations|Number of future iterations you would like to have scheduled"
 msgstr ""
 
@@ -20034,7 +20036,7 @@ msgstr ""
 msgid "Manage"
 msgstr ""
 
-msgid "Manage Web IDE features"
+msgid "Manage Web IDE features."
 msgstr ""
 
 msgid "Manage access"
@@ -24934,6 +24936,9 @@ msgid "Prevent users from performing write operations on GitLab while performing
 msgstr ""
 
 msgid "Preview"
+msgstr ""
+
+msgid "Preview JavaScript projects in the Web IDE with CodeSandbox Live Preview. %{link_start}Learn more.%{link_end} "
 msgstr ""
 
 msgid "Preview Markdown"

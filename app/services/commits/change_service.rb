@@ -6,6 +6,7 @@ module Commits
       super
 
       @commit = params[:commit]
+      @message = params[:message]
     end
 
     private
@@ -14,7 +15,9 @@ module Commits
       raise NotImplementedError unless repository.respond_to?(action)
 
       # rubocop:disable GitlabSecurity/PublicSend
-      message = @commit.public_send(:"#{action}_message", current_user)
+      message =
+        @message || @commit.public_send(:"#{action}_message", current_user)
+
       repository.public_send(
         action,
         current_user,

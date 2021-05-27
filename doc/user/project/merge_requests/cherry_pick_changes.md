@@ -100,6 +100,11 @@ To disable it:
 Feature.disable(:pick_into_project)
 ```
 
+## Related links
+
+- The [Commits API](../../../api/commits.md) enables you to add custom messages
+  to changes you cherry-pick through the API.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

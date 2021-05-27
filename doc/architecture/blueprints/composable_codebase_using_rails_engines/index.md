@@ -30,7 +30,7 @@ and allow us to have much better resiliency and much easier way to scale applica
 
 The actual split was tested with the usage of [Rails Engines](https://guides.rubyonrails.org/engines.html)
 implementing separate gems in a single repository. The [Rails Engines](https://guides.rubyonrails.org/engines.html)
-allowed us to well describe the indivdual components with its dependencies and run an application
+allowed us to well describe the individual components with its dependencies and run an application
 consisting of many Rails Engines.
 
 The blueprint aims to retain all key aspects of GitLab success: single and monolithic codebase (with a [single data-store](https://about.gitlab.com/handbook/product/single-application/#single-data-store)),
@@ -52,7 +52,7 @@ codebase without clear boundaries results in a number of problems and inefficien
 - The high memory usage results in slowing the whole application as it increases GC cycles duration
   creating significantly longer latency for processing requests or worse cache usage of CPUs
 - Increased application boot-up times as we need to load and parse significantly more files
-- Longer boot-up times slows down the development, as running application or tests takes singificantly longer
+- Longer boot-up times slows down the development, as running application or tests takes significantly longer
   reducing velocity and amount of iterations
 
 ## Composable codebase dimensions
@@ -123,8 +123,8 @@ application layers. This list is not exhaustive, but shows a general list of the
 - Services/Models/DB: all code required to maintain our database structure, data validation, business logic and policies models that needs to be shared with other components
 
 The best way to likely describe how the actual GitLab Rails split would look like. It is a satellite model.
-Where we have a single core, that is shared across all satelitte components. The design of that implies
-that satelitte components have a limited way to communicate with each other. In a single monolithic application
+Where we have a single core, that is shared across all satellite components. The design of that implies
+that satellite components have a limited way to communicate with each other. In a single monolithic application
 in most of cases application would communicate with a code. In a satellite model the communication needs
 to be performed externally to the component. This can be via Database, Redis or using a well defined exposed API.
 
@@ -293,7 +293,7 @@ This allowed us to run Web Nodes with all dependencies, but measure the impact o
 All work can be found in these merge requests:
 
 - [Provide mechanism to load GraphQL with all dependencies only when needed](https://gitlab.com/gitlab-org/gitlab/-/issues/288044)
-- [Draft: PoC - Move Graphql to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180)
+- [Draft: PoC - Move GraphQL to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180)
 - [Draft: PoC - Move Controllers and Grape API:API to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53720)
 - [Draft: PoC - Move only Grape API:API to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53982)
 - [Measure performance impact for proposed web_engine](https://gitlab.com/gitlab-org/gitlab/-/issues/300548)
@@ -310,20 +310,20 @@ What was done?
 
 #### Implementation details for proposed solution
 
-1. Introduce new Rails Engine for each application layer. 
+1. Introduce new Rails Engine for each application layer.
 
     We created `engines` folder, which could contain different engines for each application layer we introduce in the future.
 
-    In the above PoCs we introuced the new Web Application Layer, located in `engines/web_engine` folder.
+    In the above PoCs we introduced the new Web Application Layer, located in `engines/web_engine` folder.
 
 1. Move all code and specs into `engines/web_engine/`
 
-    - We moved all Graphql code and specs into `engines/web_engine/` without changing files itself
+    - We moved all GraphQL code and specs into `engines/web_engine/` without changing files itself
     - We moved all Grape API and Controllers code into `engines/web_engine/` without changing files itself
 
 1. Move gems to the `engines/web_engine/`
 
-    - We moved all Graphql gems to the actual web_engine Gemfile
+    - We moved all GraphQL gems to the actual web_engine Gemfile
     - We moved Grape API gem to the actual web_engine Gemfile
 
     ```ruby
@@ -331,7 +331,7 @@ What was done?
       spec.add_dependency 'apollo_upload_server'
       spec.add_dependency 'graphql'
       spec.add_dependency 'graphiql-rails'
-    
+
       spec.add_dependency 'graphql-docs'
       spec.add_dependency 'grape'
     end
@@ -339,31 +339,31 @@ What was done?
 
 1. Move routes to the `engines/web_engine/config/routes.rb` file
 
-    - We moved Graphql routes to the web_engine routes.
+    - We moved GraphQL routes to the web_engine routes.
     - We moved API routes to the web_engine routes.
     - We moved most of the controller routes to the web_engine routes.
 
     ```ruby
     Rails.application.routes.draw do
       post '/api/graphql', to: 'graphql#execute'
-      mount GraphiQL::Rails::Engine, at: '/-/graphql-explorer', graphql_path: 
+      mount GraphiQL::Rails::Engine, at: '/-/graphql-explorer', graphql_path:
       Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, '/api/graphql')
-    
+
       draw :api
-    
+
       #...
     end
     ```
 
 1. Move initializers to the `engines/web_engine/config/initializers` folder
 
-    - We moved graphql.rb initializer to the `web_engine` initializers folder
-    - We moved grape_patch.rb and graphe_validators to the `web_engine` initializers folder
+    - We moved `graphql.rb` initializer to the `web_engine` initializers folder
+    - We moved `grape_patch.rb` and `graphe_validators` to the `web_engine` initializers folder
 
 1. Connect GitLab application with the WebEngine
 
     In GitLab Gemfile.rb, add web_engine to the engines group
-  
+
     ```ruby
     # Gemfile
     group :engines, :test do
@@ -376,7 +376,7 @@ What was done?
 1. Configure GitLab when to load the engine.
 
     In GitLab `config/engines.rb`, we can configure when do we want to load our engines by relying on our `Gitlab::Runtime`
-  
+
     ```ruby
     # config/engines.rb
     # Load only in case we are running web_server or rails console
@@ -392,11 +392,11 @@ What was done?
     the application, performing tasks such as adding the app directory of the engine to
     the load path for models, mailers, controllers, and views.
     A file at `lib/web_engine/engine.rb`, is identical in function to a standard Rails
-    application's `config/application.rb` file. This way engines can access a config
+    application's `config/application.rb` file. This way engines can access a configuration
     object which contains configuration shared by all railties and the application.
-    Additionally, each engine can access autoload_paths, eager_load_paths, and autoload_once_paths
+    Additionally, each engine can access `autoload_paths`, `eager_load_paths`, and `autoload_once_paths`
     settings which are scoped to that engine.
-  
+
     ```ruby
     module WebEngine
       class Engine < ::Rails::Engine
@@ -404,7 +404,7 @@ What was done?
                                          #{config.root}/app/graphql/resolvers/concerns
                                          #{config.root}/app/graphql/mutations/concerns
                                          #{config.root}/app/graphql/types/concerns])
-    
+
         if Gitlab.ee?
           ee_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
             ee_path = config.root
@@ -422,11 +422,11 @@ What was done?
 
     We adapted CI to test `engines/web_engine/` as a self-sufficient component of stack.
 
-    - We moved spec as-is files to the `engines/web_engine/spec` folder 
-    - We moved ee/spec as-is files to the `engines/web_engine/ee/spec` folder
+    - We moved `spec` as-is files to the `engines/web_engine/spec` folder
+    - We moved `ee/spec` as-is files to the `engines/web_engine/ee/spec` folder
     - We control specs from main application using environment variable `TEST_WEB_ENGINE`
-    - We added new CI job that will run `engines/web_engine/spec` tests separately using `TEST_WEB_ENGINE` env variable.
-    - We added new CI job that will run `engines/web_engine/ee/spec` tests separately using `TEST_WEB_ENGINE` env variable.
+    - We added new CI job that will run `engines/web_engine/spec` tests separately using `TEST_WEB_ENGINE` environment variable.
+    - We added new CI job that will run `engines/web_engine/ee/spec` tests separately using `TEST_WEB_ENGINE` environment variable.
     - We are running all whitebox frontend tests with `TEST_WEB_ENGINE=true`
 
 #### Results
@@ -482,12 +482,12 @@ Pros:
 
 - Significantly lower memory usage
 - Significantly shorter application load time for Sidekiq
-- Significantly improved responsivness of Sidekiq service due to much shorter GC cycles
+- Significantly improved responsiveness of Sidekiq service due to much shorter GC cycles
 - Significantly easier testing of a portion of application, ex. changing `web_engines/` does require
   re-running test only for this application layer
 - We retained a monolithic architecture of the codebase, but sharing database and application models
-- A significant saving from the infrastracture side
-- Ability to comfortably run on constrainted environments by reducing application footprint
+- A significant saving from the infrastructure side
+- Ability to comfortably run on constrained environments by reducing application footprint
 
 Cons:
 
@@ -497,7 +497,7 @@ Cons:
 
 #### Example: GraphQL
 
-[Draft: PoC - Move Graphql to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180)
+[Draft: PoC - Move GraphQL to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180)
 
 - The [99% of changes](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180/diffs?commit_id=49c9881c6696eb620dccac71532a3173f5702ea8) as visible in the above MRs is moving files as-is.
 - The [actual work](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180/diffs?commit_id=1d9a9edfa29ea6638e7d8a6712ddf09f5be77a44) on fixing cross-dependencies, specs, and configuring web_engine
@@ -506,8 +506,8 @@ Cons:
 Today, loading GraphQL requires a bunch of [dependencies](https://gitlab.com/gitlab-org/gitlab/-/issues/288044):
 
 > We also discovered that we load/require 14480 files, [memory-team-2gb-week#9](https://gitlab.com/gitlab-org/memory-team/memory-team-2gb-week/-/issues/9#note_452530513)
-> when we start GitLab. 1274 files belong to Graphql. This means that if we don't load 1274 application files
-> and all related Graphql gems when we don't need them (Sidekiq), we could save a lot of memory.
+> when we start GitLab. 1274 files belong to GraphQL. This means that if we don't load 1274 application files
+> and all related GraphQL gems when we don't need them (Sidekiq), we could save a lot of memory.
 
 GraphQL only needs to run in a specific context. If we could limit when it is being loaded we could effectively improve application efficiency, by reducing application load time and required memory. This, for example, is applicable for every size installation.
 
@@ -524,9 +524,9 @@ An alternative way is to use a notification system that would always make an `Ac
 
 Grape::API is another example that only needs to run only in a web server context.
 
-Potential chalenges with Grape API:
+Potential challenges with Grape API:
 
-- Currently there are some API::API dependencies in the models (e.g. `API::Helpers::Version` dependency in [project model](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/project.rb#L2019) or API::API dependency in GeoNode model for [geo_retrieve_url](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/geo_node.rb#L183))
+- Currently there are some API::API dependencies in the models (e.g. `API::Helpers::Version` dependency in [project model](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/project.rb#L2019) or API::API dependency in GeoNode model for [`geo_retrieve_url`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/geo_node.rb#L183))
 - `api_v4` paths are used in helpers, presenters, and views (e.g. `api_v4_projects_path` in [PackagesHelper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/packages_helper.rb#L17))
 
 #### Example: Controllers
@@ -538,7 +538,7 @@ Potential chalenges with Grape API:
 
 Controllers, Serializers, some presenters and some of the Grape:Entities are also good examples that only need to be run in web server context.
 
-Potential chalenges with moving Controllers:
+Potential challenges with moving Controllers:
 
 - We needed to extend `Gitlab::Patch::DrawRoute` in order to support `engines/web_engine/config/routes` and `engines/web_engine/ee/config/routes` in case when `web_engine` is loaded. Here is potential [solution](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53720#note_506957398).
 - `Gitlab::Routing.url_helpers` paths are used in models and services, that could be used by Sidekiq (e.g. `Gitlab::Routing.url_helpers.project_pipelines_path` is used by [ExpirePipelineCacheService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/expire_pipeline_cache_service.rb#L20) in [ExpirePipelineCacheWorker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/expire_pipeline_cache_worker.rb#L18)))
@@ -552,7 +552,7 @@ Packwerk is currently accepting bug fixes only, and it is not being actively dev
 
 **Application Layers** and this proposal currently defines only `web_engine`. Following the same pattern we could easily introduce
 additional engines dedicated for supporting that would allow us to maintain much better separation, lower memory usage
-and much better maintanability of GitLab Rails into the future.
+and much better maintainability of GitLab Rails into the future.
 
 This would be a framework for introducing all new interfaces for features that do not need to be part of the core codebase,
 like support for additional Package services. Allowing us to better scale application in the future, but retaining a single codebase
@@ -564,7 +564,7 @@ As of today, it seems reasonable to define three **application layers**:
 - `gitlab-web`: a Controllers/API/GraphQL/ActionCable functionality needed to run in a web server context (depends on `gitlab-core`)
 - `gitlab-sidekiq`: a background jobs functionality needed to run Sidekiq Workers (depends on `gitlab-core`)
 
-This model is best described today as a shared core with satellite. The shared core defines data access layer, where as satellites define a way to present and process this data. Satelites can only talk with Core. They cannot directly load or talk to another satelitte unless they use a well defined interface in form of API, GraphQL or Redis (as for scheduling Sidekiq jobs).
+This model is best described today as a shared core with satellite. The shared core defines data access layer, where as satellites define a way to present and process this data. Satellites can only talk with Core. They cannot directly load or talk to another satellite unless they use a well defined interface in form of API, GraphQL or Redis (as for scheduling Sidekiq jobs).
 
 It is reasonable to assume that we limit how many `engines` we allow. Initial proposal is to allow up to 5 engines
 to be created to ensure that we do not have explosion of engines.
@@ -573,7 +573,7 @@ to be created to ensure that we do not have explosion of engines.
 
 - [Split application into functional parts to ensure that only needed code is loaded with all dependencies](https://gitlab.com/gitlab-org/gitlab/-/issues/290935)
 - [Provide mechanism to load GraphQL with all dependencies only when needed](https://gitlab.com/gitlab-org/gitlab/-/issues/288044)
-- [Draft: PoC - Move Graphql to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180)
+- [Draft: PoC - Move GraphQL to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180)
 - [Draft: PoC - Move Controllers and Grape API:API to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53720)
 - [Draft: PoC - Move only Grape API:API to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53982)
 - [Measure performance impact for proposed web_engine](https://gitlab.com/gitlab-org/gitlab/-/issues/300548)

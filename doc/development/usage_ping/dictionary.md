@@ -16778,15 +16778,15 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.manage.value_stream_management_customized_group_stages`
 
-Missing description
+Number of custom value stream analytics stages.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216180803_value_stream_management_customized_group_stages.yml)
 
-Group: `group::manage`
+Group: `group::optimize`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.monitor.clusters`
 

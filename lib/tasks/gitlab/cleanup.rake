@@ -92,9 +92,9 @@ namespace :gitlab do
     task orphan_lfs_files: :gitlab_environment do
       warn_user_is_not_gitlab
 
-      removed_files = RemoveUnreferencedLfsObjectsWorker.new.perform
+      number_of_removed_files = RemoveUnreferencedLfsObjectsWorker.new.perform
 
-      logger.info "Removed unreferenced LFS files: #{removed_files.count}".color(:green)
+      logger.info "Removed unreferenced LFS files: #{number_of_removed_files}".color(:green)
     end
 
     namespace :sessions do

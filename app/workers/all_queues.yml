@@ -467,7 +467,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: cronjob:repository_archive_cache
   :worker_name: RepositoryArchiveCacheWorker
@@ -1071,15 +1071,6 @@
   - :exclude_from_kubernetes
 - :name: incident_management:incident_management_pager_duty_process_incident
   :worker_name: IncidentManagement::PagerDuty::ProcessIncidentWorker
-  :feature_category: :incident_management
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent:
-  :tags: []
-- :name: incident_management:incident_management_process_alert
-  :worker_name: IncidentManagement::ProcessAlertWorker
   :feature_category: :incident_management
   :has_external_dependencies:
   :urgency: :low
