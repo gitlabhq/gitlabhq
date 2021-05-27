@@ -10,9 +10,13 @@ module QA
         Page::Dashboard::Groups.perform do |groups|
           groups.click_new_group
 
-          expect(groups).to have_content(
-            /Create a Mattermost team for this group/
-          )
+          Page::Group::New.perform do |group_new|
+            group_new.click_create_group
+
+            expect(group_new).to have_content(
+              /Create a Mattermost team for this group/
+            )
+          end
         end
       end
     end

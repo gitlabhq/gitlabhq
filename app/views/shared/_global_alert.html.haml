@@ -1,0 +1,20 @@
+- icons = { info: 'information-o', warning: 'warning', success: 'check-circle', danger: 'error', tip: 'bulb' }
+
+- title = local_assigns.fetch(:title, nil)
+- variant = local_assigns.fetch(:variant, :info)
+- alert_class = local_assigns.fetch(:alert_class, nil)
+- alert_data = local_assigns.fetch(:alert_data, nil)
+- close_button_class = local_assigns.fetch(:close_button_class, nil)
+- close_button_data = local_assigns.fetch(:close_button_data, nil)
+- icon = icons[variant]
+
+%div{ role: 'alert', class: ["gl-alert-#{variant}", alert_class], data: alert_data }
+  %div{ class: [container_class, @content_class, 'gl-px-0!'] }
+    .gl-alert
+      = sprite_icon(icon, size: 16, css_class: "gl-alert-icon#{' gl-alert-icon-no-title' if title.nil?}")
+      %button.gl-alert-dismiss.js-close{ type: 'button', aria: { label: _('Close') }, class: close_button_class, data: close_button_data }
+        = sprite_icon('close', size: 16)
+      - if title
+        .gl-alert-title
+          = title
+      = yield

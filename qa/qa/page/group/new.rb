@@ -38,6 +38,14 @@ module QA
           fill_element(:import_gitlab_token, token)
         end
 
+        def click_import_group
+          click_on 'Import group'
+        end
+
+        def click_create_group
+          click_on 'Create group'
+        end
+
         # Connect gitlab instance
         #
         # @param [String] gitlab_url

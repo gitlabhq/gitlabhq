@@ -2,47 +2,24 @@
 - @hide_top_links = true
 - page_title    _('New Group')
 - header_title  _("Groups"), dashboard_groups_path
-- active_tab = local_assigns.fetch(:active_tab, 'create')
+- add_page_specific_style 'page_bundles/new_namespace'
 
-.group-edit-container.gl-mt-3
-  .row
-    .col-lg-3.group-settings-sidebar
-      %h4.prepend-top-0
-        = _('New group')
-      %p
-        - group_docs_path = help_page_path('user/group/index')
-        - group_docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: group_docs_path }
-        = s_('%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects.').html_safe % { group_docs_link_start: group_docs_link_start, group_docs_link_end: '</a>'.html_safe }
-      %p
-        - subgroup_docs_path = help_page_path('user/group/subgroups/index')
-        - subgroup_docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: subgroup_docs_path }
-        = s_('Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}.').html_safe % { subgroup_docs_link_start: subgroup_docs_link_start, subgroup_docs_link_end: '</a>'.html_safe }
-      %p
-        = _('Projects that belong to a group are prefixed with the group namespace. Existing projects may be moved into a group.')
+.group-edit-container.gl-mt-5
 
-    .col-lg-9.js-toggle-container
-      %ul.nav.nav-tabs.nav-links.gitlab-tabs{ role: 'tablist' }
-        %li.nav-item{ role: 'presentation' }
-          %a.nav-link.active{ href: '#create-group-pane', id: 'create-group-tab', role: 'tab', data: { toggle: 'tab', track_label: 'create_group', track_event: 'click_tab', track_value: '' } }
-            %span.d-none.d-sm-block= s_('GroupsNew|Create group')
-            %span.d-block.d-sm-none= s_('GroupsNew|Create')
-        %li.nav-item{ role: 'presentation' }
-          %a.nav-link{ href: '#import-group-pane', id: 'import-group-tab', role: 'tab', data: { toggle: 'tab', track_label: 'import_group', track_event: 'click_tab', track_value: '' } }
-            %span.d-none.d-sm-block= s_('GroupsNew|Import group')
-            %span.d-block.d-sm-none= s_('GroupsNew|Import')
+  .js-new-group-creation{ data: { has_errors: @group.errors.any?.to_s } }
 
-      .tab-content.gitlab-tab-content.gl-border-none
-        .tab-pane.js-toggle-container{ id: 'create-group-pane', class: active_when(active_tab == 'create'), role: 'tabpanel' }
-          = form_for @group, html: { class: 'group-form gl-show-field-errors' } do |f|
-            = render 'new_group_fields', f: f, group_name_id: 'create-group-name'
+  .row{ 'v-cloak': true }
+    #create-group-pane.tab-pane
+      = form_for @group, html: { class: 'group-form gl-show-field-errors' } do |f|
+        = render 'new_group_fields', f: f, group_name_id: 'create-group-name'
 
-        .tab-pane.no-padding.js-toggle-container{ id: 'import-group-pane', class: active_when(active_tab) == 'import', role: 'tabpanel' }
-          - if import_sources_enabled?
-            - if Feature.enabled?(:bulk_import)
-              = render 'import_group_from_another_instance_panel'
-              .gl-mt-7.gl-border-b-solid.gl-border-gray-100.gl-border-1
-            = render 'import_group_from_file_panel'
-          - else
-            .nothing-here-block
-              %h4= s_('GroupsNew|No import options available')
-              %p= s_('GroupsNew|Contact an administrator to enable options for importing your group.')
+    #import-group-pane.tab-pane
+      - if import_sources_enabled?
+        - if Feature.enabled?(:bulk_import)
+          = render 'import_group_from_another_instance_panel'
+          .gl-mt-7.gl-border-b-solid.gl-border-gray-100.gl-border-1
+        = render 'import_group_from_file_panel'
+      - else
+        .nothing-here-block
+          %h4= s_('GroupsNew|No import options available')
+          %p= s_('GroupsNew|Contact an administrator to enable options for importing your group.')

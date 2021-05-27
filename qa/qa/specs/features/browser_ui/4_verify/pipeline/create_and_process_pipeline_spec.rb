@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner do
+  # TODO: Remove `:requires_admin` meta when the feature flag is removed
+  RSpec.describe 'Verify', :runner, :requires_admin do
     describe 'Pipeline creation and processing' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:max_wait) { 30 }
+      let(:feature_flag) { :ci_drop_new_builds_when_ci_quota_exceeded }
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -20,8 +22,13 @@ module QA
         end
       end
 
+      before do
+        Runtime::Feature.enable(feature_flag, project: project)
+      end
+
       after do
         runner.remove_via_api!
+        Runtime::Feature.disable(feature_flag, project: project)
       end
 
       it 'users creates a pipeline which gets processed', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1849' do
@@ -47,7 +54,7 @@ module QA
                       - echo 'FAILURE'
                       - exit 1
 
-                  test-tags:
+                  test-tags-mismatch:
                     tags:
                      - invalid
                     script: echo 'NOOP'
@@ -70,7 +77,7 @@ module QA
         {
           'test-success': :passed,
           'test-failure': :failed,
-          'test-tags': :pending,
+          'test-tags-mismatch': :failed,
           'test-artifacts': :passed
         }.each do |job, status|
           Page::Project::Pipeline::Show.perform do |pipeline|

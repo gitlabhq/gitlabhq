@@ -768,6 +768,13 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           update_merge_request({ target_branch: 'target' })
         end
+
+        it "does not try to mark as unchecked if it's already unchecked" do
+          expect(merge_request).to receive(:unchecked?).and_return(true)
+          expect(merge_request).not_to receive(:mark_as_unchecked)
+
+          update_merge_request({ target_branch: "target" })
+        end
       end
 
       context 'when auto merge is enabled and target branch changed' do

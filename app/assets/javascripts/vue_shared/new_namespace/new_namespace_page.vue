@@ -129,7 +129,7 @@ export default {
           <gl-icon name="chevron-right" :size="8" />
         </template>
       </gl-breadcrumb>
-      <legacy-container :key="activePanel.name" class="gl-mt-3" :selector="activePanel.selector" />
+      <legacy-container :key="activePanel.name" :selector="activePanel.selector" />
     </div>
   </div>
 </template>

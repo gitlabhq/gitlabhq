@@ -15,9 +15,10 @@ RSpec.describe 'Group' do
     end
   end
 
-  describe 'create a group' do
+  describe 'create a group', :js do
     before do
       visit new_group_path
+      click_link 'Create group'
     end
 
     describe 'as a non-admin' do
@@ -50,13 +51,14 @@ RSpec.describe 'Group' do
         fill_in 'Group URL', with: 'space group'
         click_button 'Create group'
 
-        expect(current_path).to eq(groups_path)
-        expect(page).to have_namespace_error_message
+        expect(current_path).to eq(new_group_path)
+        expect(page).to have_text('Please choose a group URL with no special characters.')
       end
     end
 
     describe 'with .atom at end of group path' do
       it 'renders new group form with validation errors' do
+        fill_in 'Group name', with: 'test-group'
         fill_in 'Group URL', with: 'atom_group.atom'
         click_button 'Create group'
 
@@ -67,6 +69,7 @@ RSpec.describe 'Group' do
 
     describe 'with .git at end of group path' do
       it 'renders new group form with validation errors' do
+        fill_in 'Group name', with: 'test-group'
         fill_in 'Group URL', with: 'git_group.git'
         click_button 'Create group'
 
@@ -109,6 +112,7 @@ RSpec.describe 'Group' do
         stub_mattermost_setting(enabled: mattermost_enabled)
 
         visit new_group_path
+        click_link 'Create group'
       end
 
       context 'Mattermost enabled' do
@@ -119,7 +123,7 @@ RSpec.describe 'Group' do
         end
 
         it 'unchecks the checkbox by default' do
-          expect(find('#group_create_chat_team')['checked']).to eq(false)
+          expect(find('#group_create_chat_team')).not_to be_checked
         end
 
         it 'updates the team URL on graph path update', :js do
@@ -147,6 +151,7 @@ RSpec.describe 'Group' do
         stub_application_setting(recaptcha_enabled: true)
         allow(Gitlab::Recaptcha).to receive(:load_configurations!)
         visit new_group_path
+        click_link 'Create group'
       end
 
       it 'renders recaptcha' do
@@ -159,6 +164,7 @@ RSpec.describe 'Group' do
         stub_feature_flags(recaptcha_on_top_level_group_creation: false)
         stub_application_setting(recaptcha_enabled: true)
         visit new_group_path
+        click_link 'Create group'
       end
 
       it 'does not render recaptcha' do
@@ -167,30 +173,30 @@ RSpec.describe 'Group' do
     end
   end
 
-  describe 'create a nested group' do
+  describe 'create a nested group', :js do
     let_it_be(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
       let(:user) { create(:admin) }
 
       before do
-        visit new_group_path(group, parent_id: group.id)
+        visit new_group_path(parent_id: group.id)
       end
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it 'creates a nested group' do
+          click_link 'Create group'
           fill_in 'Group name', with: 'bar'
-          fill_in 'Group URL', with: 'bar'
           click_button 'Create group'
 
           expect(current_path).to eq(group_path('foo/bar'))
-          expect(page).to have_content("Group 'bar' was successfully created.")
+          expect(page).to have_selector 'h1', text: 'bar'
         end
       end
 
       context 'when admin mode is disabled' do
         it 'is not allowed' do
-          expect(page).to have_gitlab_http_status(:not_found)
+          expect(page).not_to have_button('Create group')
         end
       end
     end
@@ -203,14 +209,14 @@ RSpec.describe 'Group' do
         sign_out(:user)
         sign_in(user)
 
-        visit new_group_path(group, parent_id: group.id)
+        visit new_group_path(parent_id: group.id)
+        click_link 'Create group'
 
         fill_in 'Group name', with: 'bar'
-        fill_in 'Group URL', with: 'bar'
         click_button 'Create group'
 
         expect(current_path).to eq(group_path('foo/bar'))
-        expect(page).to have_content("Group 'bar' was successfully created.")
+        expect(page).to have_selector 'h1', text: 'bar'
       end
     end
 
@@ -221,7 +227,7 @@ RSpec.describe 'Group' do
       end
 
       context 'when creating subgroup' do
-        let(:path) { new_group_path(group, parent_id: group.id) }
+        let(:path) { new_group_path(parent_id: group.id) }
 
         it 'does not render recaptcha' do
           visit path
@@ -237,6 +243,7 @@ RSpec.describe 'Group' do
       before do
         group.add_owner(user)
         visit new_group_path(parent_id: group.id)
+        click_link 'Create group'
       end
 
       it 'shows a message if group url is available' do
@@ -255,14 +262,15 @@ RSpec.describe 'Group' do
     end
   end
 
-  it 'checks permissions to avoid exposing groups by parent_id' do
+  it 'checks permissions to avoid exposing groups by parent_id', :js do
     group = create(:group, :private, path: 'secret-group')
 
     sign_out(:user)
     sign_in(create(:user))
     visit new_group_path(parent_id: group.id)
 
-    expect(page).not_to have_content('secret-group')
+    expect(page).to have_title('Not Found')
+    expect(page).to have_content('Page Not Found')
   end
 
   describe 'group edit', :js do

@@ -339,12 +339,12 @@ If parsing JUnit report XML results in an error, an indicator is shown next to t
 Upload your screenshots as [artifacts](yaml/README.md#artifactsreportsjunit) to GitLab. If JUnit
 report format XML files contain an `attachment` tag, GitLab parses the attachment. Note that:
 
-- The `attachment` tag **must** contain the absolute path to the screenshots you uploaded. For
+- The `attachment` tag **must** contain the relative path to `$CI_PROJECT_DIR` of the screenshots you uploaded. For
   example:
 
   ```xml
   <testcase time="1.00" name="Test">
-    <system-out>[[ATTACHMENT|/absolute/path/to/some/file]]</system-out>
+    <system-out>[[ATTACHMENT|/path/to/some/file]]</system-out>
   </testcase>
   ```
 

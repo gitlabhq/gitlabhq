@@ -54,8 +54,6 @@ docs-lint links:
   extends:
     - .docs:rules:docs-lint
   image: registry.gitlab.com/gitlab-org/gitlab-docs/lint-html:alpine-3.13-ruby-2.7.2
-  # TODO: revert to .default-retry when https://gitlab.com/gitlab-org/gitlab/-/issues/331002 is fixed.
-  retry: 2
   stage: test
   needs: []
   script:

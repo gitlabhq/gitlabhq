@@ -15,7 +15,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
 
     visit new_group_path
 
-    find('#import-group-tab').click
+    click_link 'Import group'
   end
 
   context 'when the user provides valid credentials' do

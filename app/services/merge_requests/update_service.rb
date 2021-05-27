@@ -49,7 +49,7 @@ module MergeRequests
       #
       if merge_request.previous_changes.include?('target_branch') ||
           merge_request.previous_changes.include?('source_branch')
-        merge_request.mark_as_unchecked
+        merge_request.mark_as_unchecked unless merge_request.unchecked?
       end
     end
 

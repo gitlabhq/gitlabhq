@@ -29,6 +29,7 @@ module QA
             group_show.go_to_new_subgroup
 
             Page::Group::New.perform do |group_new|
+              group_new.click_create_group
               group_new.set_path(path)
               group_new.set_visibility('Public')
               group_new.create

@@ -51,6 +51,7 @@ To create a group:
 1. From the top menu, either:
    - Select **Groups > Your Groups**, and on the right, select the **New group** button.
    - To the left of the search box, select the plus sign and then **New group**.
+1. Select **Create group**.
 1. For the **Group name**, use only:
    - Alphanumeric characters
    - Emojis
