@@ -106,9 +106,10 @@ instance or the project's parent groups.
 ### Set instance-level description templates **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56737) in GitLab 13.11.
-> - It's enabled by default on GitLab.com.
+> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56737) in GitLab 13.11.
+> - Enabled by default on GitLab.com.
+> - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-issue-and-merge-request-description-templates-at-group-and-instance-level). **(PREMIUM SELF)**
 
 You can set a description template at the **instance level** for issues
@@ -131,9 +132,10 @@ Learn more about [instance template repository](../admin_area/settings/instance_
 ### Set group-level description templates **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56737) in GitLab 13.11.
-> - It's enabled by default on GitLab.com.
+> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56737) in GitLab 13.11.
+> - Enabled by default on GitLab.com.
+> - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-issue-and-merge-request-description-templates-at-group-and-instance-level). **(PREMIUM SELF)**
 
 With **group-level** description templates, you can store your templates in a single repository and
@@ -230,24 +232,24 @@ it's very hard to read otherwise.)
 /assign @qa-tester
 ```
 
-## Enable or disable issue and merge request description templates at group and instance level
+## Enable or disable issue and merge request description templates at group and instance level **(PREMIUM SELF)**
 
 Setting issue and merge request description templates at group and instance levels
-is under development and not ready for production use. It is deployed behind a
+is under development but ready for production use. It is deployed behind a
 feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:inherited_issuable_templates)
-```
 
 To disable it:
 
 ```ruby
 Feature.disable(:inherited_issuable_templates)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:inherited_issuable_templates)
 ```
 
 The feature flag affects these features:
