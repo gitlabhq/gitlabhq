@@ -5,12 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Custom password length limits
+# Custom password length limits **(FREE SELF)**
 
-By default, GitLab supports passwords with:
+By default, GitLab supports passwords with the following lengths:
 
-- A minimum length of 8.
-- A maximum length of 128.
+- Minimum: 8 characters
+- Maximum: 128 characters
 
 GitLab administrators can modify password lengths:
 
@@ -29,11 +29,12 @@ The user password length is set to a minimum of 8 characters by default.
 
 To change the minimum password length using GitLab UI:
 
-1. Go to **Admin Area > Settings**, then select **Sign-up restrictions**.
+1. Go to the Admin Area (**{admin}**) and select **Settings > Sign-up restrictions**.
 
    ![Minimum password length settings](../user/admin_area/img/minimum_password_length_settings_v12_6.png)
 
-1. Input a **Minimum password length** value greater than or equal to 8, then select **Save changes**.
+1. Enter a **Minimum password length** value greater than or equal to `8`.
+1. Select **Save changes**.
 
 ## Modify maximum password length using configuration file
 

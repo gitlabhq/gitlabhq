@@ -6,7 +6,7 @@ comments: false
 type: index, howto
 ---
 
-# Migrating from CircleCI
+# Migrating from CircleCI **(FREE)**
 
 If you are currently using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../introduction/index.md),
 and start making use of all its powerful features. Check out our

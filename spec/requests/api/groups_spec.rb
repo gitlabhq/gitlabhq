@@ -506,7 +506,7 @@ RSpec.describe API::Groups do
       end
 
       it "does not return a non existing group" do
-        get api("/groups/1328", user1)
+        get api("/groups/#{non_existing_record_id}", user1)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -586,7 +586,7 @@ RSpec.describe API::Groups do
       end
 
       it "does not return a non existing group" do
-        get api("/groups/1328", admin)
+        get api("/groups/#{non_existing_record_id}", admin)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -729,7 +729,7 @@ RSpec.describe API::Groups do
       end
 
       it 'returns 404 for a non existing group' do
-        put api('/groups/1328', user1), params: { name: new_group_name }
+        put api("/groups/#{non_existing_record_id}", user1), params: { name: new_group_name }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -954,7 +954,7 @@ RSpec.describe API::Groups do
       end
 
       it "does not return a non existing group" do
-        get api("/groups/1328/projects", user1)
+        get api("/groups/#{non_existing_record_id}/projects", user1)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -1008,7 +1008,7 @@ RSpec.describe API::Groups do
       end
 
       it "does not return a non existing group" do
-        get api("/groups/1328/projects", admin)
+        get api("/groups/#{non_existing_record_id}/projects", admin)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -1667,7 +1667,7 @@ RSpec.describe API::Groups do
       end
 
       it "does not remove a non existing group" do
-        delete api("/groups/1328", user1)
+        delete api("/groups/#{non_existing_record_id}", user1)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -1687,7 +1687,7 @@ RSpec.describe API::Groups do
       end
 
       it "does not remove a non existing group" do
-        delete api("/groups/1328", admin)
+        delete api("/groups/#{non_existing_record_id}", admin)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

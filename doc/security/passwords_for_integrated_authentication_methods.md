@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Generated passwords for users created through integrated authentication
+# Generated passwords for users created through integrated authentication **(FREE)**
 
 GitLab allows users to set up accounts through integration with external [authentication and authorization providers](../administration/auth/README.md).
 

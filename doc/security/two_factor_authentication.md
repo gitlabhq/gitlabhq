@@ -77,11 +77,6 @@ Disabling 2FA for everyone does not disable the [enforce 2FA for all users](#enf
 or [enforce 2FA for all users in a group](#enforcing-2fa-for-all-users-in-a-group)
 settings. In addition to the steps in this section, you must disable any enforced 2FA
 settings so users aren't asked to set up 2FA again, the next time the user signs in to GitLab.
-Disabling 2FA for everyone does not disable the [enforce 2FA for all users](#enforcing-2fa-for-all-users)
-or [enforce 2FA for all users in a group](#enforcing-2fa-for-all-users-in-a-group)
-settings if they have been configured. In addition to the steps in this section,
-you must disable any enforced 2FA settings so users aren't asked to setup
-2FA again when the next login to GitLab.
 
 There may be some special situations where you want to disable 2FA for everyone
 even when forced 2FA is disabled. There is a Rake task for that:

@@ -6,7 +6,7 @@ comments: false
 type: index, howto
 ---
 
-# Migrating from Jenkins
+# Migrating from Jenkins **(FREE)**
 
 A lot of GitLab users have successfully migrated to GitLab CI/CD from Jenkins. To make this
 easier if you're just getting started, we've collected several resources here that you might find useful
