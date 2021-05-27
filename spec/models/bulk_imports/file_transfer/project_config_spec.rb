@@ -12,8 +12,8 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig do
 
   subject { described_class.new(exportable) }
 
-  describe '#exportable_tree' do
-    it 'returns exportable tree' do
+  describe 'portable_tree' do
+    it 'returns portable tree' do
       expect_next_instance_of(::Gitlab::ImportExport::AttributesFinder) do |finder|
         expect(finder).to receive(:find_root).with(:project).and_call_original
       end
@@ -30,9 +30,21 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig do
     end
   end
 
-  describe '#exportable_relations' do
+  describe '#portable_relations' do
     it 'returns a list of top level exportable relations' do
       expect(subject.portable_relations).to include('issues', 'labels', 'milestones', 'merge_requests')
+    end
+  end
+
+  describe '#top_relation_tree' do
+    it 'returns relation tree of a top level relation' do
+      expect(subject.top_relation_tree('labels')).to eq('priorities' => {})
+    end
+  end
+
+  describe '#relation_excluded_keys' do
+    it 'returns excluded keys for relation' do
+      expect(subject.relation_excluded_keys('project')).to include('creator_id')
     end
   end
 end

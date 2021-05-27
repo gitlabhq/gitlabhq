@@ -32,11 +32,21 @@ RSpec.describe BulkImports::FileDownloadService do
       end
     end
 
-    it 'downloads file' do
-      subject.execute
+    shared_examples 'downloads file' do
+      it 'downloads file' do
+        subject.execute
 
-      expect(File.exist?(filepath)).to eq(true)
-      expect(File.read(filepath)).to include('chunk')
+        expect(File.exist?(filepath)).to eq(true)
+        expect(File.read(filepath)).to include('chunk')
+      end
+    end
+
+    include_examples 'downloads file'
+
+    context 'when content-type is application/gzip' do
+      let_it_be(:content_type) { 'application/gzip' }
+
+      include_examples 'downloads file'
     end
 
     context 'when url is not valid' do

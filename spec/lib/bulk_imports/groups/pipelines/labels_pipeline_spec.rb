@@ -5,98 +5,87 @@ require 'spec_helper'
 RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:timestamp) { Time.new(2020, 01, 01).utc }
-
+  let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+  let_it_be(:filepath) { 'spec/fixtures/bulk_imports/labels.ndjson.gz' }
   let_it_be(:entity) do
     create(
       :bulk_import_entity,
+      group: group,
+      bulk_import: bulk_import,
       source_full_path: 'source/full/path',
       destination_name: 'My Destination Group',
-      destination_namespace: group.full_path,
-      group: group
+      destination_namespace: group.full_path
     )
   end
 
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
+  let(:tmpdir) { Dir.mktmpdir }
+
+  before do
+    FileUtils.copy_file(filepath, File.join(tmpdir, 'labels.ndjson.gz'))
+    group.add_owner(user)
+  end
+
   subject { described_class.new(context) }
 
   describe '#run' do
-    it 'imports a group labels' do
-      first_page = extracted_data(title: 'label1', has_next_page: true)
-      last_page = extracted_data(title: 'label2')
-
-      allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
-        allow(extractor)
-          .to receive(:extract)
-          .and_return(first_page, last_page)
+    it 'imports group labels into destination group and removes tmpdir' do
+      allow(Dir).to receive(:mktmpdir).and_return(tmpdir)
+      allow_next_instance_of(BulkImports::FileDownloadService) do |service|
+        allow(service).to receive(:execute)
       end
 
-      expect { subject.run }.to change(Label, :count).by(2)
+      expect { subject.run }.to change(::GroupLabel, :count).by(1)
 
-      label = group.labels.order(:created_at).last
+      label = group.labels.first
 
-      expect(label.title).to eq('label2')
-      expect(label.description).to eq('desc')
-      expect(label.color).to eq('#428BCA')
-      expect(label.created_at).to eq(timestamp)
-      expect(label.updated_at).to eq(timestamp)
+      expect(label.title).to eq('Label 1')
+      expect(label.description).to eq('Label 1')
+      expect(label.color).to eq('#6699cc')
+      expect(File.directory?(tmpdir)).to eq(false)
     end
   end
 
   describe '#load' do
-    it 'creates the label' do
-      data = label_data('label')
+    context 'when label is not persisted' do
+      it 'saves the label' do
+        label = build(:group_label, group: group)
 
-      expect { subject.load(context, data) }.to change(Label, :count).by(1)
+        expect(label).to receive(:save!)
 
-      label = group.labels.first
+        subject.load(context, label)
+      end
+    end
 
-      data.each do |key, value|
-        expect(label[key]).to eq(value)
+    context 'when label is persisted' do
+      it 'does not save label' do
+        label = create(:group_label, group: group)
+
+        expect(label).not_to receive(:save!)
+
+        subject.load(context, label)
+      end
+    end
+
+    context 'when label is missing' do
+      it 'returns' do
+        expect(subject.load(context, nil)).to be_nil
       end
     end
   end
 
   describe 'pipeline parts' do
-    it { expect(described_class).to include_module(BulkImports::Pipeline) }
+    it { expect(described_class).to include_module(BulkImports::NdjsonPipeline) }
     it { expect(described_class).to include_module(BulkImports::Pipeline::Runner) }
 
-    it 'has extractors' do
+    it 'has extractor' do
       expect(described_class.get_extractor)
         .to eq(
-          klass: BulkImports::Common::Extractors::GraphqlExtractor,
-          options: {
-            query: BulkImports::Groups::Graphql::GetLabelsQuery
-          }
+          klass: BulkImports::Common::Extractors::NdjsonExtractor,
+          options: { relation: described_class::RELATION }
         )
     end
-
-    it 'has transformers' do
-      expect(described_class.transformers)
-        .to contain_exactly(
-          { klass: BulkImports::Common::Transformers::ProhibitedAttributesTransformer, options: nil }
-        )
-    end
-  end
-
-  def label_data(title)
-    {
-      'title' => title,
-      'description' => 'desc',
-      'color' => '#428BCA',
-      'created_at' => timestamp.to_s,
-      'updated_at' => timestamp.to_s
-    }
-  end
-
-  def extracted_data(title:, has_next_page: false)
-    page_info = {
-      'has_next_page' => has_next_page,
-      'next_page' => has_next_page ? 'cursor' : nil
-    }
-
-    BulkImports::Pipeline::ExtractedData.new(data: [label_data(title)], page_info: page_info)
   end
 end

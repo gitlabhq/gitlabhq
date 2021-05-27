@@ -4,6 +4,10 @@ module BulkImports
   module Groups
     module Pipelines
       class EntityFinisher
+        def self.ndjson_pipeline?
+          false
+        end
+
         def initialize(context)
           @context = context
         end

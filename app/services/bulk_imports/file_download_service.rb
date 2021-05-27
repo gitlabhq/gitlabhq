@@ -3,7 +3,7 @@
 module BulkImports
   class FileDownloadService
     FILE_SIZE_LIMIT = 5.gigabytes
-    ALLOWED_CONTENT_TYPES = ['application/octet-stream'].freeze
+    ALLOWED_CONTENT_TYPES = %w(application/gzip application/octet-stream).freeze
 
     ServiceError = Class.new(StandardError)
 

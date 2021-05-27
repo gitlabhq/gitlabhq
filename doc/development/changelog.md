@@ -79,8 +79,17 @@ EE: true
 
 ## What warrants a changelog entry?
 
-- Any user-facing change **should** have a changelog entry. Example: "GitLab now
+- Any change that introduces a database migration, whether it's regular, post,
+  or data migration, **must** have a changelog entry, even if it is behind a
+  disabled feature flag. 
+- [Security fixes](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md)
+  **must** have a changelog entry, with `Changelog` trailer set to `security`.
+- Any user-facing change **must** have a changelog entry. Example: "GitLab now
   uses system fonts for all text."
+- Any client-facing change to our REST and GraphQL APIs **must** have a changelog entry.
+  See the [complete list what comprises a GraphQL breaking change](api_graphql_styleguide.md#breaking-changes).
+- Any change that introduces an [Advanced Search migration](elasticsearch.md#creating-a-new-advanced-search-migration)
+  **must** have a changelog entry.
 - A fix for a regression introduced and then fixed in the same release (such as
   fixing a bug introduced during a monthly release candidate) **should not**
   have a changelog entry.

@@ -1,6 +1,6 @@
 !!! 5
 %html.devise-layout-html{ class: system_message_class }
-  = render "layouts/head"
+  = render "layouts/head", { startup_filename: 'signin' }
   %body.ui-indigo.login-page.application.navless{ class: "#{client_class_list}", data: { page: body_data_page, qa_selector: 'login_page' } }
     = header_message
     = render "layouts/init_client_detection_flags"

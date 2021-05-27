@@ -583,7 +583,15 @@ When dragging issues between lists, different behavior occurs depending on the s
 
 ### Multi-select issue cards
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18954) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18954) in GitLab 12.4.
+> - [Placed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61955) behind a [feature flag](../feature_flags.md), disabled by default in GitLab 14.0.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-multi-selecting-issue-cards). **(FREE SELF)**
+
+This in-development feature might not be available for your use. There can be
+[risks when enabling features still in development](../feature_flags.md#risks-when-enabling-features-still-in-development).
+Refer to this feature's version history for more details.
 
 You can select multiple issue cards, then drag the group to another position within the list, or to
 another list. This makes it faster to reorder many issues at once.
@@ -684,4 +692,23 @@ To disable it:
 
 ```ruby
 Feature.disable(:iteration_board_lists)
+```
+
+### Enable or disable multi-selecting issue cards **(FREE SELF)**
+
+Multi-selecting issue cards is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:board_multi_select)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:board_multi_select)
 ```

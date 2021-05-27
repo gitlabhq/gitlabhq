@@ -8,8 +8,11 @@ module BulkImports
     include Runner
 
     NotAllowedError = Class.new(StandardError)
+    ExpiredError = Class.new(StandardError)
+    FailedError = Class.new(StandardError)
 
     CACHE_KEY_EXPIRATION = 2.hours
+    NDJSON_EXPORT_TIMEOUT = 30.minutes
 
     def initialize(context)
       @context = context
@@ -17,6 +20,14 @@ module BulkImports
 
     def tracker
       @tracker ||= context.tracker
+    end
+
+    def portable
+      @portable ||= context.portable
+    end
+
+    def import_export_config
+      @import_export_config ||= context.import_export_config
     end
 
     included do
@@ -111,7 +122,7 @@ module BulkImports
         options = class_config[:options]
 
         if options
-          class_config[:klass].new(class_config[:options])
+          class_config[:klass].new(**class_config[:options])
         else
           class_config[:klass].new
         end
@@ -153,6 +164,14 @@ module BulkImports
 
       def abort_on_failure?
         class_attributes[:abort_on_failure]
+      end
+
+      def ndjson_pipeline!
+        class_attributes[:ndjson_pipeline] = true
+      end
+
+      def ndjson_pipeline?
+        class_attributes[:ndjson_pipeline]
       end
 
       private

@@ -1087,15 +1087,6 @@
   :weight: 2
   :idempotent: true
   :tags: []
-- :name: incident_management:incident_management_process_prometheus_alert
-  :worker_name: IncidentManagement::ProcessPrometheusAlertWorker
-  :feature_category: :incident_management
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 2
-  :idempotent:
-  :tags: []
 - :name: jira_connect:jira_connect_sync_branch
   :worker_name: JiraConnect::SyncBranchWorker
   :feature_category: :integrations

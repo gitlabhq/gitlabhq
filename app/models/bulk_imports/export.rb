@@ -4,6 +4,10 @@ module BulkImports
   class Export < ApplicationRecord
     include Gitlab::Utils::StrongMemoize
 
+    STARTED = 0
+    FINISHED = 1
+    FAILED = -1
+
     self.table_name = 'bulk_import_exports'
 
     belongs_to :project, optional: true
@@ -18,9 +22,9 @@ module BulkImports
     validate :portable_relation?
 
     state_machine :status, initial: :started do
-      state :started, value: 0
-      state :finished, value: 1
-      state :failed, value: -1
+      state :started, value: STARTED
+      state :finished, value: FINISHED
+      state :failed, value: FAILED
 
       event :start do
         transition any => :started

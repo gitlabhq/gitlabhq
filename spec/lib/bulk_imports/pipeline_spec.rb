@@ -63,6 +63,7 @@ RSpec.describe BulkImports::Pipeline do
         BulkImports::MyPipeline.transformer(klass, options)
         BulkImports::MyPipeline.loader(klass, options)
         BulkImports::MyPipeline.abort_on_failure!
+        BulkImports::MyPipeline.ndjson_pipeline!
 
         expect(BulkImports::MyPipeline.get_extractor).to eq({ klass: klass, options: options })
 
@@ -74,6 +75,7 @@ RSpec.describe BulkImports::Pipeline do
         expect(BulkImports::MyPipeline.get_loader).to eq({ klass: klass, options: options })
 
         expect(BulkImports::MyPipeline.abort_on_failure?).to eq(true)
+        expect(BulkImports::MyPipeline.ndjson_pipeline?).to eq(true)
       end
     end
   end

@@ -72,6 +72,10 @@ describe('Board card', () => {
     await wrapper.vm.$nextTick();
   };
 
+  beforeEach(() => {
+    window.gon = { features: {} };
+  });
+
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
@@ -140,6 +144,10 @@ describe('Board card', () => {
     });
 
     describe('when using multi-select', () => {
+      beforeEach(() => {
+        window.gon = { features: { boardMultiSelect: true } };
+      });
+
       it('should call vuex action "multiSelectBoardItem" with correct parameters', async () => {
         await multiSelectCard();
 

@@ -16,6 +16,14 @@ module BulkImports
         @entity ||= tracker.entity
       end
 
+      def portable
+        @portable ||= entity.group || entity.project
+      end
+
+      def import_export_config
+        @import_export_config ||= ::BulkImports::FileTransfer.config_for(portable)
+      end
+
       def group
         @group ||= entity.group
       end

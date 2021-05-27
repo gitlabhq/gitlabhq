@@ -54,7 +54,7 @@ export default {
       if (e.target.closest('.js-no-trigger')) return;
 
       const isMultiSelect = e.ctrlKey || e.metaKey;
-      if (isMultiSelect) {
+      if (isMultiSelect && gon?.features?.boardMultiSelect) {
         this.toggleBoardItemMultiSelection(this.item);
       } else {
         this.toggleBoardItem({ boardItem: this.item });

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Application security **(ULTIMATE)**
+# Secure your application **(ULTIMATE)**
 
 GitLab can check your application for security vulnerabilities including:
 
