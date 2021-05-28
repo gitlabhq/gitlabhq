@@ -16997,7 +16997,7 @@ CREATE TABLE projects (
     pages_https_only boolean DEFAULT true,
     external_webhook_token character varying,
     packages_enabled boolean,
-    merge_requests_author_approval boolean,
+    merge_requests_author_approval boolean DEFAULT false,
     pool_repository_id bigint,
     runners_token_encrypted character varying,
     bfg_object_map character varying,

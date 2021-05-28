@@ -31662,6 +31662,9 @@ msgstr ""
 msgid "SuperSonics|Sync subscription details"
 msgstr ""
 
+msgid "SuperSonics|The activation code is not valid. Please make sure to copy it exactly from the Customers Portal or confirmation email. Learn more about %{linkStart}activating your subscription%{linkEnd}."
+msgstr ""
+
 msgid "SuperSonics|The subscription details synced successfully."
 msgstr ""
 
@@ -31696,6 +31699,9 @@ msgid "SuperSonics|Users with a Guest role or those who don't belong to a Projec
 msgstr ""
 
 msgid "SuperSonics|Valid From"
+msgstr ""
+
+msgid "SuperSonics|You can learn more about %{activationLinkStart}activating your subscription%{activationLinkEnd}. If you need further assistance, please %{supportLinkStart}contact GitLab Support%{supportLinkEnd}."
 msgstr ""
 
 msgid "SuperSonics|You can no longer sync your subscription details with GitLab. Get help for the most common connectivity issues by %{connectivityHelpLinkStart}troubleshooting the activation code%{connectivityHelpLinkEnd}."

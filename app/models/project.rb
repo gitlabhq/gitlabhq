@@ -2606,6 +2606,10 @@ class Project < ApplicationRecord
     ProjectStatistics.increment_statistic(self, statistic, delta)
   end
 
+  def merge_requests_author_approval
+    !!read_attribute(:merge_requests_author_approval)
+  end
+
   private
 
   def set_container_registry_access_level

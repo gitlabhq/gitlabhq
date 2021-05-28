@@ -5,3 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/321947
 group: group::access
 type: development
 default_enabled: true
+milestone: '13.11'

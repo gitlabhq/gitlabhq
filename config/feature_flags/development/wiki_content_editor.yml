@@ -5,3 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/255919
 group: group::editor
 type: development
 default_enabled: false
+milestone: '13.12'

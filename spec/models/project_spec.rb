@@ -472,6 +472,23 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#merge_requests_author_approval' do
+    where(:attribute_value, :return_value) do
+      true  | true
+      false | false
+      nil   | false
+    end
+
+    with_them do
+      let(:project) { create(:project, merge_requests_author_approval: attribute_value) }
+
+      it 'returns expected value' do
+        expect(project.merge_requests_author_approval).to eq(return_value)
+        expect(project.merge_requests_author_approval?).to eq(return_value)
+      end
+    end
+  end
+
   describe '#all_pipelines' do
     let_it_be(:project) { create(:project) }
 
