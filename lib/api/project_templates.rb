@@ -26,7 +26,7 @@ module API
         use :pagination
       end
       get ':id/templates/:type' do
-        templates = TemplateFinder.all_template_names_array(user_project, params[:type])
+        templates = TemplateFinder.all_template_names(user_project, params[:type]).values.flatten
 
         present paginate(::Kaminari.paginate_array(templates)), with: Entities::TemplatesList
       end

@@ -29,17 +29,12 @@ module IssuablesDescriptionTemplatesHelper
   def issuable_templates(project, issuable_type)
     @template_types ||= {}
     @template_types[project.id] ||= {}
-    @template_types[project.id][issuable_type] ||= TemplateFinder.all_template_names_hash_or_array(project, issuable_type)
+    @template_types[project.id][issuable_type] ||= TemplateFinder.all_template_names(project, issuable_type.pluralize)
   end
 
   def issuable_templates_names(issuable)
     all_templates = issuable_templates(ref_project, issuable.to_ability_name)
-
-    if ref_project.inherited_issuable_templates_enabled?
-      all_templates.values.flatten.map { |tpl| tpl[:name] if tpl[:project_id] == ref_project.id }.compact.uniq
-    else
-      all_templates.map { |template| template[:name] }
-    end
+    all_templates.values.flatten.map { |tpl| tpl[:name] if tpl[:project_id] == ref_project.id }.compact.uniq
   end
 
   def selected_template(issuable)

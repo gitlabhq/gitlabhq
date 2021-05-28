@@ -106,11 +106,7 @@ instance or the project's parent groups.
 ### Set instance-level description templates **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
-> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56737) in GitLab 13.11.
-> - Enabled by default on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-issue-and-merge-request-description-templates-at-group-and-instance-level). **(PREMIUM SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321247) in GitLab 14.0.
 
 You can set a description template at the **instance level** for issues
 and merge requests.
@@ -132,11 +128,7 @@ Learn more about [instance template repository](../admin_area/settings/instance_
 ### Set group-level description templates **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
-> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56737) in GitLab 13.11.
-> - Enabled by default on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-issue-and-merge-request-description-templates-at-group-and-instance-level). **(PREMIUM SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321247) in GitLab 14.0.
 
 With **group-level** description templates, you can store your templates in a single repository and
 configure the group file templates setting to point to that repository.
@@ -231,28 +223,3 @@ it's very hard to read otherwise.)
 /cc @project-manager
 /assign @qa-tester
 ```
-
-## Enable or disable issue and merge request description templates at group and instance level **(PREMIUM SELF)**
-
-Setting issue and merge request description templates at group and instance levels
-is under development but ready for production use. It is deployed behind a
-feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:inherited_issuable_templates)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:inherited_issuable_templates)
-```
-
-The feature flag affects these features:
-
-- Setting a templates project as issue and merge request description templates source at group level.
-- Setting a templates project as issue and merge request description templates source at instance level.

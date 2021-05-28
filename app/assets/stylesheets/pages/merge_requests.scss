@@ -107,8 +107,13 @@ $tabs-holder-z-index: 250;
     border-radius: $border-radius-default;
   }
 
+  .mr-widget-section:not(:first-child),
   .mr-widget-footer {
     border-top: solid 1px $border-color;
+  }
+
+  .mr-widget-alert-container + .mr-widget-section {
+    border-top: 0;
   }
 
   .mr-fast-forward-message {

@@ -1,8 +1,0 @@
----
-name: inherited_issuable_templates
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/321247
-milestone: '13.9'
-type: development
-group: group::project management
-default_enabled: true

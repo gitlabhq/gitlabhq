@@ -160,28 +160,12 @@ RSpec.describe Projects::TemplatesController do
     end
 
     shared_examples 'template names request' do
-      context 'when feature flag enabled' do
-        it 'returns the template names', :aggregate_failures do
-          get(:names, params: { namespace_id: project.namespace, template_type: template_type, project_id: project }, format: :json)
+      it 'returns the template names', :aggregate_failures do
+        get(:names, params: { namespace_id: project.namespace, template_type: template_type, project_id: project }, format: :json)
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['Project Templates'].size).to eq(2)
-          expect(json_response['Project Templates'].map { |x| x.slice('name') }).to match(expected_template_names)
-        end
-      end
-
-      context 'when feature flag disabled' do
-        before do
-          stub_feature_flags(inherited_issuable_templates: false)
-        end
-
-        it 'returns the template names', :aggregate_failures do
-          get(:names, params: { namespace_id: project.namespace, template_type: template_type, project_id: project }, format: :json)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.size).to eq(2)
-          expect(json_response.map { |x| x.slice('name') }).to match(expected_template_names)
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['Project Templates'].size).to eq(2)
+        expect(json_response['Project Templates'].map { |x| x.slice('name') }).to match(expected_template_names)
       end
 
       it 'fails for user with no access' do

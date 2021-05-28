@@ -22,7 +22,9 @@
             = f.label :gitpod_enabled, s_('Gitpod|Enable Gitpod integration'), class: 'form-check-label'
         .form-group
           = f.label :gitpod_url, s_('Gitpod|Gitpod URL'), class: 'label-bold'
-          = f.text_field :gitpod_url, class: 'form-control gl-form-input', placeholder: s_('Gitpod|e.g. https://gitpod.example.com')
+          = f.text_field :gitpod_url, class: 'form-control gl-form-input', placeholder: s_('Gitpod|https://gitpod.example.com')
           .form-text.text-muted
-            = s_('Gitpod|Add the URL to your Gitpod instance configured to read your GitLab projects.')
+            = s_('Gitpod|The URL to your Gitpod instance configured to read your GitLab projects, such as https://gitpod.example.com.')
+            - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('integration/gitpod', anchor: 'enable-gitpod-in-your-user-settings') }
+            = s_('Gitpod|To use the integration, each user must also enable Gitpod on their GitLab account. %{link_start}How do I enable it?%{link_end} ').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
       = f.submit s_('Save changes'), class: 'gl-button btn btn-confirm'

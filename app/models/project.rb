@@ -2592,10 +2592,6 @@ class Project < ApplicationRecord
     Projects::GitGarbageCollectWorker
   end
 
-  def inherited_issuable_templates_enabled?
-    Feature.enabled?(:inherited_issuable_templates, self, default_enabled: :yaml)
-  end
-
   def activity_path
     Gitlab::Routing.url_helpers.activity_project_path(self)
   end

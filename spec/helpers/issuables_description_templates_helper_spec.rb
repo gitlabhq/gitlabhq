@@ -13,24 +13,8 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
     let_it_be(:group_member) { create(:group_member, :developer, group: parent_group, user: user) }
     let_it_be(:project_member) { create(:project_member, :developer, user: user, project: project) }
 
-    context 'when feature flag disabled' do
-      before do
-        stub_feature_flags(inherited_issuable_templates: false)
-      end
-
-      it 'returns empty array when template type does not exist' do
-        expect(helper.issuable_templates(project, 'non-existent-template-type')).to eq([])
-      end
-    end
-
-    context 'when feature flag enabled' do
-      before do
-        stub_feature_flags(inherited_issuable_templates: true)
-      end
-
-      it 'returns empty hash when template type does not exist' do
-        expect(helper.issuable_templates(build(:project), 'non-existent-template-type')).to eq({})
-      end
+    it 'returns empty hash when template type does not exist' do
+      expect(helper.issuable_templates(build(:project), 'non-existent-template-type')).to eq({})
     end
 
     context 'with cached issuable templates' do
@@ -81,16 +65,18 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
       allow(helper).to receive(:issuable_templates).and_return(templates)
     end
 
-    context 'when feature flag disabled' do
+    context 'with matching project templates' do
       let(:templates) do
-        [
-          { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
-          { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
-        ]
-      end
-
-      before do
-        stub_feature_flags(inherited_issuable_templates: false)
+        {
+          "" => [
+            { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
+            { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
+          ],
+          "Instance" => [
+            { name: "first_issue_issue_template", id: "first_issue_issue_template", project_id: non_existing_record_id },
+            { name: "second_instance_issue_template", id: "second_instance_issue_template", project_id: non_existing_record_id }
+          ]
+        }
       end
 
       it 'returns project templates only' do
@@ -98,47 +84,22 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
       end
     end
 
-    context 'when feature flag enabled' do
-      before do
-        stub_feature_flags(inherited_issuable_templates: true)
+    context 'without matching project templates' do
+      let(:templates) do
+        {
+          "Project Templates" => [
+            { name: "another_issue_template", id: "another_issue_template", project_id: non_existing_record_id },
+            { name: "custom_issue_template", id: "custom_issue_template", project_id: non_existing_record_id }
+          ],
+          "Instance" => [
+            { name: "first_issue_issue_template", id: "first_issue_issue_template", project_id: non_existing_record_id },
+            { name: "second_instance_issue_template", id: "second_instance_issue_template", project_id: non_existing_record_id }
+          ]
+        }
       end
 
-      context 'with matching project templates' do
-        let(:templates) do
-          {
-            "" => [
-              { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
-              { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
-            ],
-            "Instance" => [
-              { name: "first_issue_issue_template", id: "first_issue_issue_template", project_id: non_existing_record_id },
-              { name: "second_instance_issue_template", id: "second_instance_issue_template", project_id: non_existing_record_id }
-            ]
-          }
-        end
-
-        it 'returns project templates only' do
-          expect(helper.issuable_templates_names(Issue.new)).to eq(%w[another_issue_template custom_issue_template])
-        end
-      end
-
-      context 'without matching project templates' do
-        let(:templates) do
-          {
-            "Project Templates" => [
-              { name: "another_issue_template", id: "another_issue_template", project_id: non_existing_record_id },
-              { name: "custom_issue_template", id: "custom_issue_template", project_id: non_existing_record_id }
-            ],
-            "Instance" => [
-              { name: "first_issue_issue_template", id: "first_issue_issue_template", project_id: non_existing_record_id },
-              { name: "second_instance_issue_template", id: "second_instance_issue_template", project_id: non_existing_record_id }
-            ]
-          }
-        end
-
-        it 'returns empty array' do
-          expect(helper.issuable_templates_names(Issue.new)).to eq([])
-        end
+      it 'returns empty array' do
+        expect(helper.issuable_templates_names(Issue.new)).to eq([])
       end
     end
 
