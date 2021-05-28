@@ -224,6 +224,7 @@ module API
       mount ::API::NpmInstancePackages
       mount ::API::GenericPackages
       mount ::API::GoProxy
+      mount ::API::HelmPackages
       mount ::API::Pages
       mount ::API::PagesDomains
       mount ::API::ProjectClusters

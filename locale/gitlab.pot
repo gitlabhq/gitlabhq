@@ -5051,6 +5051,9 @@ msgstr ""
 msgid "BillingPlans|Learn more about each plan by visiting our %{pricing_page_link}."
 msgstr ""
 
+msgid "BillingPlans|Looking to purchase or manage a subscription for your group? Navigate to your %{groups_link} and go to %{strong_open}Settings &gt; Billing.%{strong_close}"
+msgstr ""
+
 msgid "BillingPlans|Manage plan"
 msgstr ""
 
@@ -5085,6 +5088,9 @@ msgid "BillingPlans|for the remainder of your subscription"
 msgstr ""
 
 msgid "BillingPlans|frequently asked questions"
+msgstr ""
+
+msgid "BillingPlans|group"
 msgstr ""
 
 msgid "BillingPlans|monthly"

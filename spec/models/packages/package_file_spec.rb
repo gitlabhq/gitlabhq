@@ -116,6 +116,22 @@ RSpec.describe Packages::PackageFile, type: :model do
     end
   end
 
+  describe '.for_helm_with_channel' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:non_helm_package) { create(:nuget_package, project: project, package_type: :nuget) }
+    let_it_be(:helm_package1) { create(:helm_package, project: project, package_type: :helm) }
+    let_it_be(:helm_package2) { create(:helm_package, project: project, package_type: :helm) }
+    let_it_be(:channel) { 'some-channel' }
+
+    let_it_be(:non_helm_file) { create(:package_file, :nuget, package: non_helm_package) }
+    let_it_be(:helm_file1) { create(:helm_package_file, package: helm_package1) }
+    let_it_be(:helm_file2) { create(:helm_package_file, package: helm_package2, channel: channel) }
+
+    it 'returns the matching file only for Helm packages' do
+      expect(described_class.for_helm_with_channel(project, channel)).to contain_exactly(helm_file2)
+    end
+  end
+
   describe '#update_file_store callback' do
     let_it_be(:package_file) { build(:package_file, :nuget, size: nil) }
 

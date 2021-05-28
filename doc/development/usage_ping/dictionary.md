@@ -3718,6 +3718,18 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `counts.package_events_i_package_helm_pull_package`
+
+Total count of pull Helm packages events
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210517073546_package_events_i_package_helm_pull_package.yml)
+
+Group: `group::package`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts.package_events_i_package_maven_delete_package`
 
 Missing description
@@ -10198,6 +10210,30 @@ Status: `data_available`
 
 Tiers:
 
+### `redis_hll_counters.deploy_token_packages.i_package_helm_deploy_token_monthly`
+
+Distinct Helm pakages deployed in recent 28 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210517074859_i_package_helm_deploy_token_monthly.yml)
+
+Group: `group::package`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.deploy_token_packages.i_package_helm_deploy_token_weekly`
+
+Distinct Helm pakages deployed in recent 7 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210517074851_i_package_helm_deploy_token_weekly.yml)
+
+Group: `group::package`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `redis_hll_counters.deploy_token_packages.i_package_maven_deploy_token_monthly`
 
 Missing description
@@ -15285,6 +15321,30 @@ Group: ``
 Status: `data_available`
 
 Tiers:
+
+### `redis_hll_counters.user_packages.i_package_helm_user_monthly`
+
+Distinct user count events for Helm packages in recent 28 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210517075259_i_package_helm_user_monthly.yml)
+
+Group: `group::package`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.user_packages.i_package_helm_user_weekly`
+
+Distinct user count events for Helm packages in recent 7 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210517075252_i_package_helm_user_weekly.yml)
+
+Group: `group::package`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.user_packages.i_package_maven_user_monthly`
 
