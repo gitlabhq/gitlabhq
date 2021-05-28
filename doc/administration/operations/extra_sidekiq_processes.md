@@ -116,83 +116,10 @@ you list:
 > - [Sidekiq cluster, including queue selector, moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab Free in 12.10.
 > - [Renamed from `experimental_queue_selector` to `queue_selector`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/147) in GitLab 13.6.
 
-In addition to selecting queues by name, as above, the `queue_selector`
-option allows queue groups to be selected in a more general way using
-the following components:
-
-- Attributes that can be selected.
-- Operators used to construct a query.
-
-When `queue_selector` is set, all `queue_groups` must be in the queue
-selector syntax.
-
-### Available attributes
-
-- [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/261) in GitLab 13.1, `tags`.
-
-From the [list of all available
-attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/all_queues.yml),
-`queue_selector` allows selecting of queues by the following attributes:
-
-- `feature_category` - the [GitLab feature
-  category](https://about.gitlab.com/direction/maturity/#category-maturity) the
-  queue belongs to. For example, the `merge` queue belongs to the
-  `source_code_management` category.
-- `has_external_dependencies` - whether or not the queue connects to external
-  services. For example, all importers have this set to `true`.
-- `urgency` - how important it is that this queue's jobs run
-  quickly. Can be `high`, `low`, or `throttled`. For example, the
-  `authorized_projects` queue is used to refresh user permissions, and
-  is high urgency.
-- `worker_name` - the worker name. The other attributes are typically more useful as
-  they are more general, but this is available in case a particular worker needs
-  to be selected.
-- `name` - the queue name. Similarly, this is available in case a particular queue needs
-  to be selected.
-- `resource_boundary` - if the queue is bound by `cpu`, `memory`, or
-  `unknown`. For example, the `project_export` queue is memory bound as it has
-  to load data in memory before saving it for export.
-- `tags` - short-lived annotations for queues. These are expected to frequently
-  change from release to release, and may be removed entirely.
-
-`has_external_dependencies` is a boolean attribute: only the exact
-string `true` is considered true, and everything else is considered
-false.
-
-`tags` is a set, which means that `=` checks for intersecting sets, and
-`!=` checks for disjoint sets. For example, `tags=a,b` selects queues
-that have tags `a`, `b`, or both. `tags!=a,b` selects queues that have
-neither of those tags.
-
-### Available operators
-
-`queue_selector` supports the following operators, listed from highest
-to lowest precedence:
-
-- `|` - the logical OR operator. For example, `query_a|query_b` (where `query_a`
-  and `query_b` are queries made up of the other operators here) will include
-  queues that match either query.
-- `&` - the logical AND operator. For example, `query_a&query_b` (where
-  `query_a` and `query_b` are queries made up of the other operators here) will
-  only include queues that match both queries.
-- `!=` - the NOT IN operator. For example, `feature_category!=issue_tracking`
-  excludes all queues from the `issue_tracking` feature category.
-- `=` - the IN operator. For example, `resource_boundary=cpu` includes all
-  queues that are CPU bound.
-- `,` - the concatenate set operator. For example,
-  `feature_category=continuous_integration,pages` includes all queues from
-  either the `continuous_integration` category or the `pages` category. This
-  example is also possible using the OR operator, but allows greater brevity, as
-  well as being lower precedence.
-
-The operator precedence for this syntax is fixed: it's not possible to make AND
-have higher precedence than OR.
-
-[In GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26594) and
-later, as with the standard queue group syntax above, a single `*` as the
-entire queue group selects all queues.
-
-### Example queries
+In addition to selecting queues by name, as above, the `queue_selector` option
+allows queue groups to be selected in a more general way using a [worker matching
+query](extra_sidekiq_routing.md#worker-matching-query). After `queue_selector`
+is set, all `queue_groups` must follow the aforementioned syntax.
 
 In `/etc/gitlab/gitlab.rb`:
 

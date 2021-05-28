@@ -40,7 +40,7 @@ module Gitlab
       # queue defined in the input routing rules. The input routing rules, as
       # described above, is an order-matter array of tuples [query, queue_name].
       #
-      # - The query syntax is the same as the "queue selector" detailedly
+      # - The query syntax follows "worker matching query" detailedly
       # denoted in doc/administration/operations/extra_sidekiq_processes.md.
       #
       # - The queue_name must be a valid Sidekiq queue name. If the queue name

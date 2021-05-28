@@ -101,13 +101,13 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: [])}
 
     describe '.review_requested' do
-      it 'returns MRs that has any review requests' do
+      it 'returns MRs that have any review requests' do
         expect(described_class.review_requested).to eq([merge_request1, merge_request2])
       end
     end
 
     describe '.no_review_requested' do
-      it 'returns MRs that has no review requests' do
+      it 'returns MRs that have no review requests' do
         expect(described_class.no_review_requested).to eq([merge_request3])
       end
     end
@@ -119,7 +119,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     describe '.no_review_requested_to' do
-      it 'returns MRs that the user has been requested to review' do
+      it 'returns MRs that the user has not been requested to review' do
         expect(described_class.no_review_requested_to(user1)).to eq([merge_request2, merge_request3])
       end
     end
