@@ -150,7 +150,7 @@ When you committed your changes, a pipeline started.
 
 To view your pipeline:
 
-- Go **CI/CD > Pipelines**.
+- Go to **CI/CD > Pipelines**.
 
   A pipeline with three stages should be displayed:
 

@@ -127,6 +127,5 @@ Feature.disabled?(:my_awesome_feature)
 => false
 ```
 
-When the feature is ready, GitLab will remove the feature flag, the option for
-enabling and disabling it will no longer exist, and the feature will become
-available in all instances.
+When the feature is ready, GitLab removes the feature flag, and the option for
+enabling and disabling it no longer exists. The feature becomes available in all instances.

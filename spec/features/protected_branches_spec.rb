@@ -27,7 +27,22 @@ RSpec.describe 'Protected Branches', :js do
         find('input[data-testid="branch-search"]').set('fix')
         find('input[data-testid="branch-search"]').native.send_keys(:enter)
 
-        expect(page).to have_selector('button[data-testid="remove-protected-branch"][disabled]')
+        expect(page).to have_button('Only a project maintainer or owner can delete a protected branch', disabled: true)
+      end
+
+      context 'when feature flag :delete_branch_confirmation_modals is disabled' do
+        before do
+          stub_feature_flags(delete_branch_confirmation_modals: false)
+        end
+
+        it 'does not allow developer to remove protected branch' do
+          visit project_branches_path(project)
+
+          find('input[data-testid="branch-search"]').set('fix')
+          find('input[data-testid="branch-search"]').native.send_keys(:enter)
+
+          expect(page).to have_selector('button[data-testid="remove-protected-branch"][disabled]')
+        end
       end
     end
   end
@@ -52,16 +67,43 @@ RSpec.describe 'Protected Branches', :js do
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
-        page.find('[data-target="#modal-delete-branch"]').click
 
-        expect(page).to have_css('.js-delete-branch[disabled]')
+        expect(page).to have_button('Delete protected branch', disabled: false)
+
+        page.find('.js-delete-branch-button').click
         fill_in 'delete_branch_input', with: 'fix'
-        click_link 'Delete protected branch'
+        click_button 'Yes, delete protected branch'
 
         find('input[data-testid="branch-search"]').set('fix')
         find('input[data-testid="branch-search"]').native.send_keys(:enter)
 
         expect(page).to have_content('No branches to show')
+      end
+
+      context 'when the feature flag :delete_branch_confirmation_modals is disabled' do
+        before do
+          stub_feature_flags(delete_branch_confirmation_modals: false)
+        end
+
+        it 'removes branch after modal confirmation' do
+          visit project_branches_path(project)
+
+          find('input[data-testid="branch-search"]').set('fix')
+          find('input[data-testid="branch-search"]').native.send_keys(:enter)
+
+          expect(page).to have_content('fix')
+          expect(find('.all-branches')).to have_selector('li', count: 1)
+          page.find('[data-target="#modal-delete-branch"]').click
+
+          expect(page).to have_css('.js-delete-branch[disabled]')
+          fill_in 'delete_branch_input', with: 'fix'
+          click_link 'Delete protected branch'
+
+          find('input[data-testid="branch-search"]').set('fix')
+          find('input[data-testid="branch-search"]').native.send_keys(:enter)
+
+          expect(page).to have_content('No branches to show')
+        end
       end
     end
   end

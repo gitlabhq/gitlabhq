@@ -1,0 +1,18 @@
+- if branch.name == @project.repository.root_ref
+  .js-delete-branch-button{ data: { tooltip: s_('Branches|The default branch cannot be deleted'),
+    disabled: true.to_s } }
+- elsif protected_branch?(@project, branch)
+  - if can?(current_user, :push_to_delete_protected_branch, @project)
+    .js-delete-branch-button{ data: { branch_name: branch.name,
+      is_protected_branch: true.to_s,
+      merged: merged.to_s,
+      default_branch_name: @project.repository.root_ref,
+      delete_path: project_branch_path(@project, branch.name) } }
+  - else
+    .js-delete-branch-button{ data: { is_protected_branch: true.to_s,
+      disabled: true.to_s } }
+- else
+  .js-delete-branch-button{ data: { branch_name: branch.name,
+    merged: merged.to_s,
+    default_branch_name: @project.repository.root_ref,
+    delete_path: project_branch_path(@project, branch.name) } }

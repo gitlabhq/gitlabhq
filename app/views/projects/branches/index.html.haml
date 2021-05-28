@@ -54,4 +54,7 @@
   .nothing-here-block
     = s_('Branches|No branches to show')
 
-= render 'projects/branches/delete_protected_modal'
+- if Feature.enabled?(:delete_branch_confirmation_modals, @project, default_enabled: :yaml) && can?(current_user, :push_code, @project)
+  .js-delete-branch-modal
+- elsif can?(current_user, :push_code, @project)
+  = render 'projects/branches/delete_protected_modal'

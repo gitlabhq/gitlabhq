@@ -48,7 +48,10 @@
 
     = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name], class: 'gl-vertical-align-top'
 
-    - if can?(current_user, :push_code, @project)
+    - if Feature.enabled?(:delete_branch_confirmation_modals, @project, default_enabled: :yaml)
+      = render 'projects/branches/delete_branch_modal_button', project: @project, branch: branch, merged: merged
+
+    - elsif can?(current_user, :push_code, @project)
       - if branch.name == @project.repository.root_ref
         - delete_default_branch_tooltip = s_('Branches|The default branch cannot be deleted')
         %span.gl-display-inline-block.has-tooltip{ title: delete_default_branch_tooltip }

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Create, list, and delete branches via web' do
+    describe 'Create, list, and delete branches via web', :requires_admin do
       master_branch = nil
       second_branch = 'second-branch'
       third_branch = 'third-branch'
@@ -23,6 +23,8 @@ module QA
           proj.description = 'project for qa test'
           proj.initialize_with_readme = true
         end
+
+        Runtime::Feature.enable(:delete_branch_confirmation_modals, project: project)
 
         master_branch = project.default_branch
 
