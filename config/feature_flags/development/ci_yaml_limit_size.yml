@@ -1,6 +1,6 @@
 ---
 name: ci_yaml_limit_size
-introduced_by_url: 
+introduced_by_url: https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/3126
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56018
 milestone: '12.0'
 type: development

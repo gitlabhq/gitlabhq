@@ -1,6 +1,6 @@
 ---
 name: releases_index_apollo_client
-introduced_by_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61828
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331006
 milestone: '14.0'
 type: development

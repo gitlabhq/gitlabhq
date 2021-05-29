@@ -1,6 +1,6 @@
 ---
 name: arel_package_scopes
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62042
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331306
 milestone: '13.12'
 type: development
