@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Pipeline triggers API
+# Pipeline triggers API **(FREE)**
 
 You can read more about [triggering pipelines through the API](../ci/triggers/README.md).
 

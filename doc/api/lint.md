@@ -4,11 +4,9 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# CI Lint API
+# CI Lint API **(FREE)**
 
 ## Validate the CI YAML configuration
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5953) in GitLab 8.12.
 
 Checks if CI/CD YAML configuration is valid. This endpoint validates basic CI/CD
 configuration syntax. It doesn't have any namespace specific context.

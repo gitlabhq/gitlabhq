@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Pipelines API
+# Pipelines API **(FREE)**
 
 ## Single Pipeline Requests
 
@@ -22,8 +22,6 @@ are paginated.
 Read more on [pagination](README.md#pagination).
 
 ## List project pipelines
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5837) in GitLab 8.11
 
 ```plaintext
 GET /projects/:id/pipelines
@@ -76,8 +74,6 @@ Example of response
 ```
 
 ## Get a single pipeline
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5837) in GitLab 8.11
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id
@@ -213,8 +209,6 @@ Sample response:
 
 ## Create a new pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7209) in GitLab 8.14
-
 ```plaintext
 POST /projects/:id/pipeline
 ```
@@ -263,8 +257,6 @@ Example of response
 
 ## Retry jobs in a pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5837) in GitLab 8.11
-
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/retry
 ```
@@ -311,8 +303,6 @@ Response:
 ```
 
 ## Cancel a pipeline's jobs
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5837) in GitLab 8.11
 
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/cancel
