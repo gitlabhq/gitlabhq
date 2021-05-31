@@ -15,10 +15,11 @@ module Banzai
                                 .map { |diagram_type| %(pre[lang="#{diagram_type}"] > code) }
                                 .join(', ')
 
-        return doc unless doc.at(diagram_selectors)
+        xpath = Gitlab::Utils::Nokogiri.css_to_xpath(diagram_selectors)
+        return doc unless doc.at_xpath(xpath)
 
         diagram_format = "svg"
-        doc.css(diagram_selectors).each do |node|
+        doc.xpath(xpath).each do |node|
           diagram_type = node.parent['lang']
           img_tag = Nokogiri::HTML::DocumentFragment.parse(%(<img src="#{create_image_src(diagram_type, diagram_format, node.content)}"/>))
           node.parent.replace(img_tag)
