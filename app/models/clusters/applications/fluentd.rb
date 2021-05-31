@@ -16,6 +16,7 @@ module Clusters
       default_value_for :version, VERSION
       default_value_for :port, 514
       default_value_for :protocol, :tcp
+      default_value_for :waf_log_enabled, false
 
       enum protocol: { tcp: 0, udp: 1 }
 

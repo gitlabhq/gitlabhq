@@ -269,6 +269,7 @@ class MergeRequest < ApplicationRecord
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
   scope :open_and_closed, -> { with_states(:opened, :closed) }
+  scope :drafts, -> { where(draft: true) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
   scope :by_commit_sha, ->(sha) do
     where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)

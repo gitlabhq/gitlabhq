@@ -1,16 +1,7 @@
 import { omitBy, isUndefined } from 'lodash';
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
 import { getExperimentData } from '~/experimentation/utils';
-
-const standardContext = { ...window.gl?.snowplowStandardContext };
-
-export const STANDARD_CONTEXT = {
-  schema: standardContext.schema,
-  data: {
-    ...(standardContext.data || {}),
-    source: 'gitlab-javascript',
-  },
-};
+import getStandardContext from './get_standard_context';
 
 const DEFAULT_SNOWPLOW_OPTIONS = {
   namespace: 'gl',
@@ -44,19 +35,41 @@ const addExperimentContext = (opts) => {
 };
 
 const createEventPayload = (el, { suffix = '' } = {}) => {
-  const action = (el.dataset.trackAction || el.dataset.trackEvent) + (suffix || '');
-  let value = el.dataset.trackValue || el.value || undefined;
+  const {
+    trackAction,
+    trackEvent,
+    trackValue,
+    trackExtra,
+    trackExperiment,
+    trackContext,
+    trackLabel,
+    trackProperty,
+  } = el?.dataset || {};
+
+  const action = (trackAction || trackEvent) + (suffix || '');
+  let value = trackValue || el.value || undefined;
   if (el.type === 'checkbox' && !el.checked) value = false;
 
+  let extra = trackExtra;
+
+  if (extra !== undefined) {
+    try {
+      extra = JSON.parse(extra);
+    } catch (e) {
+      extra = undefined;
+    }
+  }
+
   const context = addExperimentContext({
-    experiment: el.dataset.trackExperiment,
-    context: el.dataset.trackContext,
+    experiment: trackExperiment,
+    context: trackContext,
   });
 
   const data = {
-    label: el.dataset.trackLabel,
-    property: el.dataset.trackProperty,
+    label: trackLabel,
+    property: trackProperty,
     value,
+    extra,
     ...context,
   };
 
@@ -88,8 +101,10 @@ const dispatchEvent = (category = document.body.dataset.page, action = 'generic'
   // eslint-disable-next-line @gitlab/require-i18n-strings
   if (!category) throw new Error('Tracking: no category provided for tracking.');
 
-  const { label, property, value } = data;
-  const contexts = [STANDARD_CONTEXT];
+  const { label, property, value, extra = {} } = data;
+
+  const standardContext = getStandardContext({ extra });
+  const contexts = [standardContext];
 
   if (data.context) {
     contexts.push(data.context);
@@ -165,13 +180,18 @@ export default class Tracking {
       throw new Error('Unable to enable form event tracking without allow rules.');
     }
 
-    contexts.unshift(STANDARD_CONTEXT);
+    // Ignore default/standard schema
+    const standardContext = getStandardContext();
+    const userProvidedContexts = contexts.filter(
+      (context) => context.schema !== standardContext.schema,
+    );
+
     const mappedConfig = {
       forms: { whitelist: config.forms?.allow || [] },
       fields: { whitelist: config.fields?.allow || [] },
     };
 
-    const enabler = () => window.snowplow('enableFormTracking', mappedConfig, contexts);
+    const enabler = () => window.snowplow('enableFormTracking', mappedConfig, userProvidedContexts);
 
     if (document.readyState !== 'loading') enabler();
     else document.addEventListener('DOMContentLoaded', enabler);
@@ -220,7 +240,8 @@ export function initDefaultTrackers() {
 
   window.snowplow('enableActivityTracking', 30, 30);
   // must be after enableActivityTracking
-  window.snowplow('trackPageView', null, [STANDARD_CONTEXT]);
+  const standardContext = getStandardContext();
+  window.snowplow('trackPageView', null, [standardContext]);
 
   if (window.snowplowOptions.formTracking) Tracking.enableFormTracking(opts.formTrackingConfig);
   if (window.snowplowOptions.linkClickTracking) window.snowplow('enableLinkClickTracking');

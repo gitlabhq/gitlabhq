@@ -5,7 +5,7 @@ module Clusters
     class BaseService
       InvalidApplicationError = Class.new(StandardError)
 
-      FLUENTD_KNOWN_ATTRS = %i[host protocol port waf_log_enabled cilium_log_enabled].freeze
+      FLUENTD_KNOWN_ATTRS = %i[host protocol port cilium_log_enabled].freeze
 
       attr_reader :cluster, :current_user, :params
 

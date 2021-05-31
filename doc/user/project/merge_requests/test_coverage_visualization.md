@@ -65,53 +65,65 @@ to draw the visualization on the merge request expires **one week** after creati
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217664) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284822) in GitLab 13.9.
 
-For the coverage report to properly match the files displayed on a merge request diff, the `filename` of a `class` element
-must contain the full path relative to the project root. But in some coverage analysis frameworks, the generated
-Cobertura XML has the `filename` path relative to the class package directory instead.
+The coverage report properly matches changed files only if the `filename` of a `class` element
+contains the full path relative to the project root. However, in some coverage analysis frameworks,
+the generated Cobertura XML has the `filename` path relative to the class package directory instead.
 
-To make an intelligent guess on the project root relative `class` path, the Cobertura XML parser attempts to build the
-full path by doing the following:
+To make an intelligent guess on the project root relative `class` path, the Cobertura XML parser
+attempts to build the full path by:
 
-1. Extract a portion of the `source` paths from the `sources` element and combine them with the class `filename` path.
-1. Check if the candidate path exists in the project.
-1. Use the first candidate that matches as the class full path.
+- Extracting a portion of the `source` paths from the `sources` element and combining them with the
+  class `filename` path.
+- Checking if the candidate path exists in the project.
+- Using the first candidate that matches as the class full path.
 
-As an example scenario, given the project's full path is `test-org/test-project`, and has the following file tree relative
-to the project root:
+#### Path correction example
 
-```shell
-Auth/User.cs
-Lib/Utils/User.cs
-src/main/java
-```
+As an example, a project with:
 
-In the Cobertura XML, the `filename` attribute in the `class` element assumes the value is a
-relative path to project's root.
+- A full path of `test-org/test-project`.
+- The following files relative to the project root:
 
-```xml
-<class name="packet.name" filename="src/main/java" line-rate="0.0" branch-rate="0.0" complexity="5">
-```
+  ```shell
+  Auth/User.cs
+  Lib/Utils/User.cs
+  src/main/java
+  ```
 
-And the `sources` from Cobertura XML with paths in the format of `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`:
+In the:
 
-```xml
-<sources>
-  <source>/builds/test-org/test-project/Auth</source>
-  <source>/builds/test-org/test-project/Lib/Utils</source>
-</sources>
-```
+- Cobertura XML, the `filename` attribute in the `class` element assumes the value is a relative
+  path to the project's root:
 
-The parser extracts `Auth` and `Lib/Utils` from the sources and use these as basis to determine the class path relative to
-the project root, combining these extracted sources and the class filename.
+  ```xml
+  <class name="packet.name" filename="src/main/java" line-rate="0.0" branch-rate="0.0" complexity="5">
+  ```
 
-If for example there is a `class` element with the `filename` value of `User.cs`, the parser takes the first candidate path
-that matches, which is `Auth/User.cs`.
+- `sources` from Cobertura XML, the following paths in the format
+  `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`:
 
-For each `class` element, the parser attempts to look for a match for each extracted `source` path up to `100` iterations. If it reaches this limit without finding a matching path in the file tree, the class will not be included in the final coverage report.
+  ```xml
+  <sources>
+    <source>/builds/test-org/test-project/Auth</source>
+    <source>/builds/test-org/test-project/Lib/Utils</source>
+  </sources>
+  ```
+
+The parser:
+
+- Extracts `Auth` and `Lib/Utils` from the `sources` and uses these to determine the `class` path
+  relative to the project root.
+- Combines these extracted `sources` and the class filename. For example, if there is a `class`
+  element with the `filename` value of `User.cs`, the parser takes the first candidate path that
+  matches, which is `Auth/User.cs`.
+- For each `class` element, attempts to look for a match for each extracted `source` path up to
+  100 iterations. If it reaches this limit without finding a matching path in the file tree, the
+  class is not included in the final coverage report.
 
 NOTE:
-The automatic class path correction only works on `source` paths in the format of `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`. If `source` will be ignored if the path does not follow this pattern. The parser assumes that
-the `filename` of a `class` element contains the full path relative to the project root.
+Automatic class path correction only works on `source` paths in the format `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`.
+The `source` is ignored if the path does not follow this pattern. The parser assumes that the
+`filename` of a `class` element contains the full path relative to the project root.
 
 ## Example test coverage configurations
 

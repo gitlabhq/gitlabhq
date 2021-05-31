@@ -99,6 +99,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let_it_be(:merge_request1) { create(:merge_request, :unique_branches, reviewers: [user1])}
     let_it_be(:merge_request2) { create(:merge_request, :unique_branches, reviewers: [user2])}
     let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: [])}
+    let_it_be(:merge_request4) { create(:merge_request, :draft_merge_request)}
 
     describe '.review_requested' do
       it 'returns MRs that have any review requests' do
@@ -108,7 +109,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     describe '.no_review_requested' do
       it 'returns MRs that have no review requests' do
-        expect(described_class.no_review_requested).to eq([merge_request3])
+        expect(described_class.no_review_requested).to eq([merge_request3, merge_request4])
       end
     end
 
@@ -120,7 +121,14 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     describe '.no_review_requested_to' do
       it 'returns MRs that the user has not been requested to review' do
-        expect(described_class.no_review_requested_to(user1)).to eq([merge_request2, merge_request3])
+        expect(described_class.no_review_requested_to(user1))
+          .to eq([merge_request2, merge_request3, merge_request4])
+      end
+    end
+
+    describe '.drafts' do
+      it 'returns MRs where draft == true' do
+        expect(described_class.drafts).to eq([merge_request4])
       end
     end
   end

@@ -155,13 +155,13 @@ Snowplow JS adds many [web-specific parameters](https://docs.snowplowanalytics.c
 
 ## Implementing Snowplow JS (Frontend) tracking
 
-GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. The simplest way to use it is to add `data-` attributes to clickable elements and dropdowns. There is also a Vue mixin (exposing a `track` method), and the static method `Tracking.event`. Each of these requires at minimum a `category` and an `action`. Additional data can be provided that adheres to our [Structured event taxonomy](#structured-event-taxonomy).
+GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. The simplest way to use it is to add `data-` attributes to clickable elements and dropdowns. There is also a Vue mixin (exposing a `track` method), and the static method `Tracking.event`. Each of these requires at minimum a `category` and an `action`. You can provide additional [Structured event taxonomy](#structured-event-taxonomy) properties along with an `extra` object that accepts key-value pairs.
 
 | field      | type   | default value              | description                                                                                                                                                                                                    |
 |:-----------|:-------|:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `category` | string | `document.body.dataset.page` | Page or subsection of a page that events are being captured within.                                                                                                                                            |
 | `action`   | string | generic                  | Action the user is taking. Clicks should be `click` and activations should be `activate`, so for example, focusing a form field would be `activate_form_input`, and clicking a button would be `click_button`. |
-| `data`     | object | `{}`                         | Additional data such as `label`, `property`, `value`, and `context` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
+| `data`     | object | `{}`                         | Additional data such as `label`, `property`, `value`, `context` (as described in our [Structured event taxonomy](#structured-event-taxonomy)), and `extra` (key-value pairs object). |
 
 ### Usage recommendations
 
@@ -171,7 +171,7 @@ GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tra
 
 ### Tracking with data attributes
 
-When working within HAML (or Vue templates) we can add `data-track-*` attributes to elements of interest. All elements that have a `data-track-action` attribute automatically have event tracking bound on clicks.
+When working within HAML (or Vue templates) we can add `data-track-*` attributes to elements of interest. All elements that have a `data-track-action` attribute automatically have event tracking bound on clicks. You can provide extra data as a valid JSON string using `data-track-extra`.
 
 Below is an example of `data-track-*` attributes assigned to a button:
 
@@ -184,6 +184,7 @@ Below is an example of `data-track-*` attributes assigned to a button:
   data-track-action="click_button"
   data-track-label="template_preview"
   data-track-property="my-template"
+  data-track-extra='{ "template_variant": "primary" }'
 />
 ```
 
@@ -197,6 +198,7 @@ Below is a list of supported `data-track-*` attributes:
 | `data-track-label`    | false    | The `label` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
 | `data-track-property` | false    | The `property` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
 | `data-track-value`    | false    | The `value` as described in our [Structured event taxonomy](#structured-event-taxonomy). If omitted, this is the element's `value` property or an empty string. For checkboxes, the default value is the element's checked attribute or `false` when unchecked. |
+| `data-track-extra` | false    | A key-value pairs object passed as a valid JSON string. This is added to the `extra` property in our [`gitlab_standard`](#gitlab_standard) schema. |
 | `data-track-context`  | false    | The `context` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
 
 #### Available helpers
@@ -287,6 +289,7 @@ export default {
         // category: '',
         // property: '',
         // value: '',
+        // extra: {},
       },
     };
   },
@@ -357,6 +360,10 @@ button.addEventListener('click', () => {
   Tracking.event('dashboard:projects:index', 'click_button', {
     label: 'create_from_template',
     property: 'template_preview',
+    extra: {
+      templateVariant: 'primary',
+      valid: true,
+    },
   });
 });
 ```
@@ -381,6 +388,10 @@ describe('MyTracking', () => {
     expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
       label: 'create_from_template',
       property: 'template_preview',
+      extra: {
+        templateVariant: 'primary',
+        valid: true,
+      },
     });
   });
 });
@@ -446,7 +457,7 @@ There are several tools for developing and testing Snowplow Event
 
 ### Test frontend events
 
-To test frontend events in development: 
+To test frontend events in development:
 
 - [Enable Snowplow in the admin area](#enabling-snowplow).
 - Turn off any ad blockers that would prevent Snowplow JS from loading in your environment.

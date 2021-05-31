@@ -13,7 +13,6 @@ describe('FluentdOutputSettings', () => {
     protocol: 'tcp',
     host: '127.0.0.1',
     port: 514,
-    wafLogEnabled: true,
     ciliumLogEnabled: false,
   };
   const defaultProps = {
@@ -52,9 +51,8 @@ describe('FluentdOutputSettings', () => {
   const changePort = (val) => changeInput(findPort(), val);
   const changeHost = (val) => changeInput(findHost(), val);
   const changeProtocol = (idx) => findProtocolDropdown().vm.$children[idx].$emit('click');
-  const toApplicationSettings = ({ wafLogEnabled, ciliumLogEnabled, ...settings }) => ({
+  const toApplicationSettings = ({ ciliumLogEnabled, ...settings }) => ({
     ...settings,
-    waf_log_enabled: wafLogEnabled,
     cilium_log_enabled: ciliumLogEnabled,
   });
 
@@ -74,7 +72,6 @@ describe('FluentdOutputSettings', () => {
       ${'when protocol dropdown is triggered'} | ${() => changeProtocol(1)}                                                    | ${'protocol'}         | ${'udp'}
       ${'when host is changed'}                | ${() => changeHost('test-host')}                                              | ${'host'}             | ${'test-host'}
       ${'when port is changed'}                | ${() => changePort(123)}                                                      | ${'port'}             | ${123}
-      ${'when wafLogEnabled changes'}          | ${() => changeCheckbox(findCheckbox('Send Web Application Firewall Logs'))}   | ${'wafLogEnabled'}    | ${!defaultSettings.wafLogEnabled}
       ${'when ciliumLogEnabled changes'}       | ${() => changeCheckbox(findCheckbox('Send Container Network Policies Logs'))} | ${'ciliumLogEnabled'} | ${!defaultSettings.ciliumLogEnabled}
     `('$desc', ({ changeFn, key, value }) => {
       beforeEach(() => {

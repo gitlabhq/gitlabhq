@@ -55,7 +55,6 @@ export default class Clusters {
       helmHelpPath,
       ingressHelpPath,
       ingressDnsHelpPath,
-      ingressModSecurityHelpPath,
       environmentsHelpPath,
       clustersHelpPath,
       deployBoardsHelpPath,
@@ -74,7 +73,6 @@ export default class Clusters {
       helmHelpPath,
       ingressHelpPath,
       ingressDnsHelpPath,
-      ingressModSecurityHelpPath,
       environmentsHelpPath,
       clustersHelpPath,
       deployBoardsHelpPath,
@@ -168,7 +166,6 @@ export default class Clusters {
             ingressHelpPath: this.state.ingressHelpPath,
             managePrometheusPath: this.state.managePrometheusPath,
             ingressDnsHelpPath: this.state.ingressDnsHelpPath,
-            ingressModSecurityHelpPath: this.state.ingressModSecurityHelpPath,
             cloudRunHelpPath: this.state.cloudRunHelpPath,
             providerType: this.state.providerType,
             preInstalledKnative: this.state.preInstalledKnative,
@@ -253,9 +250,6 @@ export default class Clusters {
     eventHub.$on('setKnativeDomain', (data) => this.setKnativeDomain(data));
     eventHub.$on('uninstallApplication', (data) => this.uninstallApplication(data));
     eventHub.$on('setCrossplaneProviderStack', (data) => this.setCrossplaneProviderStack(data));
-    eventHub.$on('setIngressModSecurityEnabled', (data) => this.setIngressModSecurityEnabled(data));
-    eventHub.$on('setIngressModSecurityMode', (data) => this.setIngressModSecurityMode(data));
-    eventHub.$on('resetIngressModSecurityChanges', (id) => this.resetIngressModSecurityChanges(id));
     eventHub.$on('setFluentdSettings', (data) => this.setFluentdSettings(data));
     // Add event listener to all the banner close buttons
     this.addBannerCloseHandler(this.unreachableContainer, 'unreachable');
@@ -273,12 +267,6 @@ export default class Clusters {
     eventHub.$off('setCrossplaneProviderStack');
     // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('uninstallApplication');
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    eventHub.$off('setIngressModSecurityEnabled');
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    eventHub.$off('setIngressModSecurityMode');
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    eventHub.$off('resetIngressModSecurityChanges');
     // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('setFluentdSettings');
   }
@@ -517,21 +505,6 @@ export default class Clusters {
     const appId = data.id;
     this.store.updateAppProperty(appId, 'stack', data.stack.code);
     this.store.updateAppProperty(appId, 'validationError', null);
-  }
-
-  setIngressModSecurityEnabled({ id, modSecurityEnabled }) {
-    this.store.updateAppProperty(id, 'isEditingModSecurityEnabled', true);
-    this.store.updateAppProperty(id, 'modsecurity_enabled', modSecurityEnabled);
-  }
-
-  setIngressModSecurityMode({ id, modSecurityMode }) {
-    this.store.updateAppProperty(id, 'isEditingModSecurityMode', true);
-    this.store.updateAppProperty(id, 'modsecurity_mode', modSecurityMode);
-  }
-
-  resetIngressModSecurityChanges(id) {
-    this.store.updateAppProperty(id, 'isEditingModSecurityEnabled', false);
-    this.store.updateAppProperty(id, 'isEditingModSecurityMode', false);
   }
 
   destroy() {
