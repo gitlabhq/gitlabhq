@@ -14,8 +14,11 @@ module Banzai
       PARAMS_DELIMITER = ':'
       LANG_PARAMS_ATTR = 'data-lang-params'
 
+      CSS   = 'pre:not([data-math-style]):not([data-mermaid-style]):not([data-kroki-style]) > code'
+      XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
+
       def call
-        doc.search('pre:not([data-math-style]):not([data-mermaid-style]):not([data-kroki-style]) > code').each do |node|
+        doc.xpath(XPATH).each do |node|
           highlight_node(node)
         end
 

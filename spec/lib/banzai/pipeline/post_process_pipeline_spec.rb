@@ -36,9 +36,11 @@ RSpec.describe Banzai::Pipeline::PostProcessPipeline do
     end
 
     let(:doc) { HTML::Pipeline.parse(html) }
+    let(:non_related_xpath_calls) { 2 }
 
     it 'searches for attributes only once' do
-      expect(doc).to receive(:search).once.and_call_original
+      expect(doc).to receive(:xpath).exactly(non_related_xpath_calls + 1).times
+        .and_call_original
 
       subject
     end
@@ -49,7 +51,8 @@ RSpec.describe Banzai::Pipeline::PostProcessPipeline do
       end
 
       it 'searches for attributes twice' do
-        expect(doc).to receive(:search).twice.and_call_original
+        expect(doc).to receive(:xpath).exactly(non_related_xpath_calls + 2).times
+          .and_call_original
 
         subject
       end

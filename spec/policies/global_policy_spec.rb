@@ -239,6 +239,14 @@ RSpec.describe GlobalPolicy do
       it { is_expected.not_to be_allowed(:access_api) }
     end
 
+    context 'user with expired password' do
+      before do
+        current_user.update!(password_expires_at: 2.minutes.ago)
+      end
+
+      it { is_expected.not_to be_allowed(:access_api) }
+    end
+
     context 'when terms are enforced' do
       before do
         enforce_terms
@@ -418,6 +426,14 @@ RSpec.describe GlobalPolicy do
 
       it { is_expected.not_to be_allowed(:access_git) }
     end
+
+    context 'user with expired password' do
+      before do
+        current_user.update!(password_expires_at: 2.minutes.ago)
+      end
+
+      it { is_expected.not_to be_allowed(:access_git) }
+    end
   end
 
   describe 'read instance metadata' do
@@ -490,6 +506,14 @@ RSpec.describe GlobalPolicy do
     context 'user blocked pending approval' do
       before do
         current_user.block_pending_approval
+      end
+
+      it { is_expected.not_to be_allowed(:use_slash_commands) }
+    end
+
+    context 'user with expired password' do
+      before do
+        current_user.update!(password_expires_at: 2.minutes.ago)
       end
 
       it { is_expected.not_to be_allowed(:use_slash_commands) }

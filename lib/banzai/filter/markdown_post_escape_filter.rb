@@ -8,6 +8,11 @@ module Banzai
       NOT_LITERAL_REGEX = %r{#{LITERAL_KEYWORD}-((%5C|\\).+?)-#{LITERAL_KEYWORD}}.freeze
       SPAN_REGEX        = %r{<span>(.*?)</span>}.freeze
 
+      CSS_A      = 'a'
+      XPATH_A    = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_A).freeze
+      CSS_CODE   = 'code'
+      XPATH_CODE = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_CODE).freeze
+
       def call
         return doc unless result[:escaped_literals]
 
@@ -24,12 +29,12 @@ module Banzai
         # Banzai::Renderer::CommonMark::HTML.  However, we eventually want to use
         # the built-in compiled renderer, rather than the ruby version, for speed.
         # So let's do this work here.
-        doc.css('a').each do |node|
+        doc.xpath(XPATH_A).each do |node|
           node.attributes['href'].value  = node.attributes['href'].value.gsub(SPAN_REGEX, '\1') if node.attributes['href']
           node.attributes['title'].value = node.attributes['title'].value.gsub(SPAN_REGEX, '\1') if node.attributes['title']
         end
 
-        doc.css('code').each do |node|
+        doc.xpath(XPATH_CODE).each do |node|
           node.attributes['lang'].value  = node.attributes['lang'].value.gsub(SPAN_REGEX, '\1') if node.attributes['lang']
         end
 
