@@ -153,8 +153,14 @@ module Gitlab
           second_storage_nodes = [{ storage: 'test_second_storage', address: "unix:#{gitaly_dir}/gitaly2.socket", primary: true, token: 'secret' }]
 
           storages = [{ name: 'default', node: nodes }, { name: 'test_second_storage', node: second_storage_nodes }]
-          failover = { enabled: false }
-          config = { socket_path: "#{gitaly_dir}/praefect.socket", memory_queue_enabled: true, virtual_storage: storages, failover: failover }
+          failover = { enabled: false, election_strategy: 'local' }
+          config = {
+            i_understand_my_election_strategy_is_unsupported_and_will_be_removed_without_warning: true,
+            socket_path: "#{gitaly_dir}/praefect.socket",
+            memory_queue_enabled: true,
+            virtual_storage: storages,
+            failover: failover
+          }
           config[:token] = 'secret' if Rails.env.test?
 
           TomlRB.dump(config)

@@ -14311,6 +14311,9 @@ msgstr ""
 msgid "ForkProject|A fork is a copy of a project."
 msgstr ""
 
+msgid "ForkProject|An error occurred while forking the project. Please try again."
+msgstr ""
+
 msgid "ForkProject|Cancel"
 msgstr ""
 

@@ -34,6 +34,11 @@ module Sidebars
 
           { class: 'context-header' }
         end
+
+        override :render?
+        def render?
+          true
+        end
       end
     end
   end

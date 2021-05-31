@@ -39,8 +39,8 @@ export default {
   components: {
     IntegrationsList,
     AlertSettingsForm,
-    GlButton,
     GlAlert,
+    GlButton,
   },
   inject: {
     projectPath: {

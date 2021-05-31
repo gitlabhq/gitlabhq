@@ -1770,13 +1770,13 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#shared_runners' do
-    let!(:runner) { create(:ci_runner, :instance) }
+  shared_examples 'shared_runners' do
+    let_it_be(:runner) { create(:ci_runner, :instance) }
 
     subject { project.shared_runners }
 
     context 'when shared runners are enabled for project' do
-      let!(:project) { create(:project, shared_runners_enabled: true) }
+      let(:project) { build_stubbed(:project, shared_runners_enabled: true) }
 
       it "returns a list of shared runners" do
         is_expected.to eq([runner])
@@ -1784,11 +1784,21 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'when shared runners are disabled for project' do
-      let!(:project) { create(:project, shared_runners_enabled: false) }
+      let(:project) { build_stubbed(:project, shared_runners_enabled: false) }
 
       it "returns a empty list" do
         is_expected.to be_empty
       end
+    end
+  end
+
+  describe '#shared_runners' do
+    it_behaves_like 'shared_runners'
+  end
+
+  describe '#available_shared_runners' do
+    it_behaves_like 'shared_runners' do
+      subject { project.available_shared_runners }
     end
   end
 
@@ -6913,6 +6923,67 @@ RSpec.describe Project, factory_default: :keep do
         expect(project.tags.first.class.name).to eq('ActsAsTaggableOn::Tag')
         expect(project.tags.map(&:name)).to match_array(%w[topic1 topic2 topic3])
       end
+    end
+  end
+
+  shared_examples 'all_runners' do
+    let_it_be_with_refind(:project) { create(:project, group: create(:group)) }
+    let_it_be(:instance_runner) { create(:ci_runner, :instance) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [project.group]) }
+    let_it_be(:other_group_runner) { create(:ci_runner, :group) }
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be(:other_project_runner) { create(:ci_runner, :project) }
+
+    subject { project.all_runners }
+
+    context 'when shared runners are enabled for project' do
+      before do
+        project.update!(shared_runners_enabled: true)
+      end
+
+      it 'returns a list with all runners' do
+        is_expected.to match_array([instance_runner, group_runner, project_runner])
+      end
+    end
+
+    context 'when shared runners are disabled for project' do
+      before do
+        project.update!(shared_runners_enabled: false)
+      end
+
+      it 'returns a list without shared runners' do
+        is_expected.to match_array([group_runner, project_runner])
+      end
+    end
+
+    context 'when group runners are enabled for project' do
+      before do
+        project.update!(group_runners_enabled: true)
+      end
+
+      it 'returns a list with all runners' do
+        is_expected.to match_array([instance_runner, group_runner, project_runner])
+      end
+    end
+
+    context 'when group runners are disabled for project' do
+      before do
+        project.update!(group_runners_enabled: false)
+      end
+
+      it 'returns a list without group runners' do
+        is_expected.to match_array([instance_runner, project_runner])
+      end
+    end
+  end
+
+  describe '#all_runners' do
+    it_behaves_like 'all_runners'
+  end
+
+  describe '#all_available_runners' do
+    it_behaves_like 'all_runners' do
+      subject { project.all_available_runners }
     end
   end
 

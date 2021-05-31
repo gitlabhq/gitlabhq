@@ -13,9 +13,7 @@ RSpec.describe Gitlab::UsageDataQueries do
     end
 
     it 'does not mix a nil column with keyword arguments' do
-      expect(described_class).to receive(:raw_sql).with(User, nil)
-
-      described_class.count(User, start: 1, finish: 2)
+      expect(described_class.count(User, nil)).to eq('SELECT COUNT("users"."id") FROM "users"')
     end
   end
 
@@ -25,9 +23,7 @@ RSpec.describe Gitlab::UsageDataQueries do
     end
 
     it 'does not mix a nil column with keyword arguments' do
-      expect(described_class).to receive(:raw_sql).with(Issue, nil, :distinct)
-
-      described_class.distinct_count(Issue, nil, start: 1, finish: 2)
+      expect(described_class.distinct_count(Issue, nil, start: 1, finish: 2)).to eq('SELECT COUNT(DISTINCT "issues"."id") FROM "issues"')
     end
   end
 

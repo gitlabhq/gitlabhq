@@ -144,4 +144,50 @@ RSpec.describe Sidebars::Menu do
       end
     end
   end
+
+  describe '#container_html_options' do
+    before do
+      allow(menu).to receive(:title).and_return('Foo Menu')
+    end
+
+    context 'when menu can be rendered' do
+      before do
+        allow(menu).to receive(:render?).and_return(true)
+      end
+
+      context 'when menu has renderable items' do
+        before do
+          menu.add_item(Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: { path: 'bar' }))
+        end
+
+        it 'contains the special class' do
+          expect(menu.container_html_options[:class]).to eq 'has-sub-items'
+        end
+
+        context 'when menu already has other classes' do
+          it 'appends special class' do
+            allow(menu).to receive(:extra_container_html_options).and_return(class: 'foo')
+
+            expect(menu.container_html_options[:class]).to eq 'foo has-sub-items'
+          end
+        end
+      end
+
+      context 'when menu does not have renderable items' do
+        it 'does not contain the special class' do
+          expect(menu.container_html_options[:class]).to be_nil
+        end
+      end
+    end
+
+    context 'when menu cannot be rendered' do
+      before do
+        allow(menu).to receive(:render?).and_return(false)
+      end
+
+      it 'does not contain special class' do
+        expect(menu.container_html_options[:class]).to be_nil
+      end
+    end
+  end
 end

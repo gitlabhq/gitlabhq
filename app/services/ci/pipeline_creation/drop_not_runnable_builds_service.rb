@@ -47,7 +47,7 @@ module Ci
 
       def validate_build_matcher(build_matcher)
         return if matching_private_runners?(build_matcher)
-        return if matching_instance_runners_available?(build_matcher)
+        return if matching_instance_runners?(build_matcher)
 
         matching_failure_reason(build_matcher)
       end
@@ -69,15 +69,15 @@ module Ci
           .present?
       end
 
-      # Overridden in EE to include more conditions
-      def matching_instance_runners_available?(build_matcher)
-        matching_instance_runners?(build_matcher)
-      end
-
       def matching_instance_runners?(build_matcher)
         instance_runners
-          .find { |matcher| matcher.matches?(build_matcher) }
+          .find { |matcher| matching_criteria(matcher, build_matcher) }
           .present?
+      end
+
+      # Overridden in EE
+      def matching_criteria(runner_matcher, build_matcher)
+        runner_matcher.matches?(build_matcher)
       end
 
       # Overridden in EE

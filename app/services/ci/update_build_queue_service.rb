@@ -52,7 +52,7 @@ module Ci
     # Unblock runner associated with given project / build
     #
     def tick(build)
-      tick_for(build, build.project.all_runners)
+      tick_for(build, build.project.all_available_runners)
     end
 
     private

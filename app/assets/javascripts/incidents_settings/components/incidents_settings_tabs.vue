@@ -42,6 +42,7 @@ export default {
 
     <div class="settings-content">
       <gl-tabs>
+        <service-level-agreement-form />
         <gl-tab
           v-for="(tab, index) in $options.tabs"
           v-if="tab.active"
@@ -50,7 +51,6 @@ export default {
         >
           <component :is="tab.component" class="gl-pt-3" :data-testid="`${tab.component}-tab`" />
         </gl-tab>
-        <service-level-agreement-form />
       </gl-tabs>
     </div>
   </section>

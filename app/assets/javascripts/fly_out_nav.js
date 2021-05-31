@@ -79,6 +79,7 @@ export const hideMenu = (el) => {
   el.style.display = '';
   el.style.transform = '';
   el.classList.remove(IS_ABOVE_CLASS);
+  el.classList.remove('fly-out-list');
   parentEl.classList.remove(IS_OVER_CLASS);
   parentEl.classList.remove(IS_SHOWING_FLY_OUT_CLASS);
 

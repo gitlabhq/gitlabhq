@@ -1,3 +1,32 @@
+//
+// TEMPORARY OVERRIDES
+// Needed while we serve both *_base and *_variant stylesheets
+// TODO: These have to be removed during the feature flag rollout
+//
+&.gl-dark .nav-sidebar li.active {
+  box-shadow: none;
+}
+
+&.gl-dark .nav-sidebar li a,
+.toggle-sidebar-button .collapse-text,
+.toggle-sidebar-button .icon-chevron-double-lg-left,
+.toggle-sidebar-button .icon-chevron-double-lg-right {
+  color: $gray-darkest;
+}
+
+.nav-sidebar {
+  box-shadow: none;
+
+  li.active {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+//
+// MIXINS
+//
+
 @mixin collapse-contextual-sidebar-content {
 
   @include context-header-collapsed;
@@ -55,6 +84,63 @@
   }
 }
 
+@mixin sub-level-items-flyout {
+  .sidebar-sub-level-items {
+    @include media-breakpoint-up(sm) {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 150px;
+      margin-top: -1px;
+      padding: 4px 1px;
+      background-color: $white;
+      box-shadow: 2px 1px 3px $dropdown-shadow-color;
+      border: 1px solid $gray-darker;
+      border-left: 0;
+      border-radius: 0 3px 3px 0;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: -30px;
+        bottom: -30px;
+        left: -10px;
+        right: -30px;
+        z-index: -1;
+      }
+
+      &.is-above {
+        margin-top: 1px;
+      }
+
+      .divider {
+        height: 1px;
+        margin: 4px -1px;
+        padding: 0;
+        background-color: $dropdown-divider-bg;
+      }
+    }
+
+    .fly-out-top-item {
+      > a {
+        display: flex;
+      }
+
+      .fly-out-badge {
+        margin-left: 8px;
+      }
+    }
+
+    .fly-out-top-item-name {
+      flex: 1;
+    }
+  }
+}
+
+//
+// PAGE-LAYOUT
+//
+
 .page-with-contextual-sidebar {
   transition: padding-left $sidebar-transition-duration;
 
@@ -77,14 +163,9 @@
   }
 }
 
-.settings-avatar {
-  background-color: $white;
-
-  svg {
-    fill: $gl-text-color-secondary;
-    margin: auto;
-  }
-}
+//
+// THE PANEL
+//
 
 .nav-sidebar {
   transition: width $sidebar-transition-duration, left $sidebar-transition-duration;
@@ -94,8 +175,7 @@
   top: $header-height;
   bottom: 0;
   left: 0;
-  background: linear-gradient($purple-200, $orange-200);
-  box-shadow: inset -1px 0 0 $border-color;
+  background-color: $gray-50;
   transform: translate3d(0, 0, 0);
 
   &:not(.sidebar-collapsed-desktop) {
@@ -113,34 +193,48 @@
   }
 
   a {
-    text-decoration: none;
-  }
-
-  ul {
-    padding-left: 0;
-    list-style: none;
+    @include gl-text-decoration-none;
+    @include gl-line-height-normal;
+    color: $purple-900;
   }
 
   li {
     white-space: nowrap;
 
-    a {
-      transition: padding $sidebar-transition-duration;
-      display: flex;
-      align-items: center;
-      padding: 12px $gl-padding;
-      color: $gl-text-color-secondary;
-    }
-
     .nav-item-name {
       flex: 1;
+    }
+
+    > a {
+      @include gl-mx-2;
+      @include gl-px-4;
+      @include gl-py-3;
+      @include gl-display-flex;
+      @include gl-align-items-center;
+      @include gl-rounded-base;
+      @include gl-w-auto;
+      transition: padding $sidebar-transition-duration;
+      margin-bottom: 1px;
+
+      &:hover {
+        background-color: $indigo-900-alpha-008;
+      }
     }
 
     &.active {
       > a {
         font-weight: $gl-font-weight-bold;
       }
+
+      > a:not(.has-sub-items) {
+        background-color: $indigo-900-alpha-008;
+      }
     }
+  }
+
+  ul {
+    padding-left: 0;
+    list-style: none;
   }
 
   @include media-breakpoint-down(sm) {
@@ -175,143 +269,69 @@
   overflow: auto;
 }
 
-.sidebar-sub-level-items {
-  display: none;
-  padding-bottom: 8px;
-
-  > li {
-    a {
-      padding: 8px 16px 8px 40px;
-
-      &:hover,
-      &:focus {
-        background: $link-active-background;
-        color: $gl-text-color;
-      }
-    }
-
-    &.active {
-      a {
-        &,
-        &:hover,
-        &:focus {
-          background: $link-active-background;
-        }
-      }
-    }
-  }
-}
-
 .sidebar-top-level-items {
   margin-bottom: 60px;
 
   > li {
-    > a {
-      @include media-breakpoint-up(sm) {
-        margin-right: 1px;
-      }
-
-      &:hover {
-        color: $gl-text-color;
-      }
-    }
-
-    &.is-showing-fly-out {
-      > a {
-        margin-right: 1px;
-      }
-
-      .sidebar-sub-level-items {
-        @include media-breakpoint-up(sm) {
-          position: fixed;
-          top: 0;
-          left: 0;
-          min-width: 150px;
-          margin-top: -1px;
-          padding: 4px 1px;
-          background-color: $white;
-          box-shadow: 2px 1px 3px $dropdown-shadow-color;
-          border: 1px solid $gray-darker;
-          border-left: 0;
-          border-radius: 0 3px 3px 0;
-
-          &::before {
-            content: '';
-            position: absolute;
-            top: -30px;
-            bottom: -30px;
-            left: -10px;
-            right: -30px;
-            z-index: -1;
-          }
-
-          &.is-above {
-            margin-top: 1px;
-          }
-
-          .divider {
-            height: 1px;
-            margin: 4px -1px;
-            padding: 0;
-            background-color: $dropdown-divider-bg;
-          }
-
-          > .active {
-            box-shadow: none;
-
-            > a {
-              background-color: transparent;
-            }
-          }
-
-          a {
-            padding: 8px 16px;
-            color: $gl-text-color;
-
-            &:hover,
-            &:focus {
-              background-color: $gray-darker;
-            }
-          }
-        }
-      }
-    }
-
     .badge.badge-pill {
-      background-color: $inactive-badge-background;
-      color: $gl-text-color-secondary;
+      @include gl-rounded-lg;
+      @include gl-py-1;
+      @include gl-px-3;
+      background-color: $blue-100;
+      color: $blue-700;
     }
 
     &.active {
-      background: $link-active-background;
-
-      > a {
-        margin-left: 4px;
-        // Subtract width of left border on active element
-        padding-left: $gl-padding-12;
-      }
-
-      .badge.badge-pill {
-        font-weight: $gl-font-weight-bold;
-      }
-
       .sidebar-sub-level-items:not(.is-fly-out-only) {
         display: block;
       }
-    }
 
-    &.active > a:hover,
-    &.is-over > a {
-      background-color: $link-hover-background;
+      .badge.badge-pill {
+        @include gl-font-weight-normal; // TODO: update in `theme_indigo.scss`
+        color: $blue-700; // TODO: update in `theme_indigo.scss`
+      }
     }
   }
 }
 
-// Collapsed nav
+.sidebar-sub-level-items {
+  @include gl-pb-0;
+  display: none;
+
+  &:not(.fly-out-list) {
+    li > a {
+      // The calculation formula:
+      // 12px: normal padding on the menu anchors
+      // +
+      // 16px: the width of the SVG icon in the top-level links
+      // +
+      // 8px: margin-right on the SVG icon in the top-level links
+      // =
+      // 36px (4.5 times the $grid-size)
+      padding-left: $grid-size * 4.5;
+    }
+  }
+}
+
+.is-showing-fly-out {
+  @include sub-level-items-flyout;
+}
+
+//
+// COLLAPSED STATE
+//
 
 .toggle-sidebar-button,
 .close-nav-button {
   @include side-panel-toggle;
+  background-color: $gray-50;
+  color: $purple-900;
+
+  .collapse-text,
+  .icon-chevron-double-lg-left,
+  .icon-chevron-double-lg-right {
+    color: inherit;
+  }
 }
 
 .toggle-sidebar-button,
@@ -339,21 +359,9 @@
   @include collapse-contextual-sidebar-content;
 }
 
-.fly-out-top-item {
-  > a {
-    display: flex;
-  }
-
-  .fly-out-badge {
-    margin-left: 8px;
-  }
-}
-
-.fly-out-top-item-name {
-  flex: 1;
-}
-
-// Mobile nav
+//
+// MOBILE PANEL
+//
 
 .close-nav-button {
   display: none;
@@ -379,6 +387,20 @@
       width: 100%;
       z-index: $zindex-dropdown-menu;
     }
+  }
+}
+
+//
+// PANELS-SPECIFIC
+// TODO: Check whether we can remove these in favor of the utility-classes
+//
+
+.settings-avatar {
+  background-color: $white;
+
+  svg {
+    fill: $gl-text-color-secondary;
+    margin: auto;
   }
 }
 

@@ -356,7 +356,7 @@ describe('ForkForm component', () => {
 
         expect(urlUtility.redirectTo).not.toHaveBeenCalled();
         expect(createFlash).toHaveBeenCalledWith({
-          message: dummyError,
+          message: 'An error occurred while forking the project. Please try again.',
         });
       });
     });

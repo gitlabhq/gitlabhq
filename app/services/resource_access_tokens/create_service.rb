@@ -48,7 +48,7 @@ module ResourceAccessTokens
       # since someone like a project maintainer does not inherently have the ability
       # to create a new user in the system.
 
-      Users::CreateService.new(current_user, default_user_params).execute(skip_authorization: true)
+      ::Users::AuthorizedCreateService.new(current_user, default_user_params).execute
     end
 
     def delete_failed_user(user)

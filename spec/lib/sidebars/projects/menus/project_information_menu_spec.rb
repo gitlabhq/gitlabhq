@@ -11,14 +11,14 @@ RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu do
   describe '#container_html_options' do
     subject { described_class.new(context).container_html_options }
 
-    specify { is_expected.to match(hash_including(class: 'shortcuts-project-information')) }
+    specify { is_expected.to match(hash_including(class: 'shortcuts-project-information has-sub-items')) }
 
     context 'when feature flag :sidebar_refactor is disabled' do
       before do
         stub_feature_flags(sidebar_refactor: false)
       end
 
-      specify { is_expected.to match(hash_including(class: 'shortcuts-project rspec-project-link')) }
+      specify { is_expected.to match(hash_including(class: 'shortcuts-project rspec-project-link has-sub-items')) }
     end
   end
 

@@ -12,9 +12,7 @@ module Users
       @identity_params = params.slice(*identity_attributes)
     end
 
-    def execute(skip_authorization: false)
-      @skip_authorization = skip_authorization
-
+    def execute
       build_user
       build_identity
       update_canonical_email
@@ -24,7 +22,7 @@ module Users
 
     private
 
-    attr_reader :skip_authorization, :identity_params, :user_params, :user
+    attr_reader :identity_params, :user_params, :user
 
     def identity_attributes
       [:extern_uid, :provider]
@@ -97,7 +95,6 @@ module Users
     end
 
     def validate_access!
-      return if skip_authorization
       return if can_create_user?
 
       raise Gitlab::Access::AccessDeniedError
@@ -108,16 +105,9 @@ module Users
     end
 
     def build_user_params_for_non_admin
-      allowed_signup_params = signup_params
-      allowed_signup_params << :skip_confirmation if allow_caller_to_request_skip_confirmation?
-
-      @user_params = params.slice(*allowed_signup_params)
+      @user_params = params.slice(*signup_params)
       @user_params[:skip_confirmation] = skip_user_confirmation_email_from_setting if assign_skip_confirmation_from_settings?
       @user_params[:name] = fallback_name if use_fallback_name?
-    end
-
-    def allow_caller_to_request_skip_confirmation?
-      skip_authorization
     end
 
     def assign_skip_confirmation_from_settings?

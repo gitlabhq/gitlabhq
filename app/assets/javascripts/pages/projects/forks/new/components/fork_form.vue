@@ -222,7 +222,11 @@ export default {
         redirectTo(data.web_url);
         return;
       } catch (error) {
-        createFlash({ message: error });
+        createFlash({
+          message: s__(
+            'ForkProject|An error occurred while forking the project. Please try again.',
+          ),
+        });
       }
     },
   },

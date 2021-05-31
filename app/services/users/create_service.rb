@@ -9,8 +9,8 @@ module Users
       @params = params.dup
     end
 
-    def execute(skip_authorization: false)
-      user = Users::BuildService.new(current_user, params).execute(skip_authorization: skip_authorization)
+    def execute
+      user = build_class.new(current_user, params).execute
       reset_token = user.generate_reset_token if user.recently_sent_password_reset?
 
       after_create_hook(user, reset_token) if user.save
@@ -22,6 +22,11 @@ module Users
 
     def after_create_hook(user, reset_token)
       notify_new_user(user, reset_token)
+    end
+
+    def build_class
+      # overridden by inheriting classes
+      Users::BuildService
     end
   end
 end

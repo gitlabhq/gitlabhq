@@ -241,7 +241,7 @@ module API
         authenticated_as_admin!
 
         params = declared_params(include_missing: false)
-        user = ::Users::CreateService.new(current_user, params).execute(skip_authorization: true)
+        user = ::Users::AuthorizedCreateService.new(current_user, params).execute
 
         if user.persisted?
           present user, with: Entities::UserWithAdmin, current_user: current_user
