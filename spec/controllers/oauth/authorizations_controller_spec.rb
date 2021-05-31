@@ -70,11 +70,28 @@ RSpec.describe Oauth::AuthorizationsController do
   describe 'GET #new' do
     subject { get :new, params: params }
 
-    include_examples 'OAuth Authorizations require confirmed user'
     include_examples "Implicit grant can't be used in confidential application"
 
     context 'when the user is confirmed' do
       let(:confirmed_at) { 1.hour.ago }
+
+      context 'when there is already an access token for the application with a matching scope' do
+        before do
+          scopes = Doorkeeper::OAuth::Scopes.from_string('api')
+
+          allow(Doorkeeper.configuration).to receive(:scopes).and_return(scopes)
+
+          create(:oauth_access_token, application: application, resource_owner_id: user.id, scopes: scopes)
+        end
+
+        it 'authorizes the request and shows the user a page that redirects' do
+          subject
+
+          expect(request.session['user_return_to']).to be_nil
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/redirect')
+        end
+      end
 
       context 'without valid params' do
         it 'returns 200 code and renders error view' do
@@ -102,7 +119,8 @@ RSpec.describe Oauth::AuthorizationsController do
           subject
 
           expect(request.session['user_return_to']).to be_nil
-          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/redirect')
         end
       end
     end
