@@ -3,7 +3,6 @@ import { shallowMount } from '@vue/test-utils';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { createStore } from '~/boards/stores';
-import createFlash from '~/flash';
 
 const TEST_TITLE = 'New item title';
 const TEST_ISSUE_A = {
@@ -18,8 +17,6 @@ const TEST_ISSUE_B = {
   title: 'Issue 2',
   referencePath: 'h/b#2',
 };
-
-jest.mock('~/flash');
 
 describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
   let wrapper;
@@ -168,6 +165,7 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
       jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {
         throw new Error(['failed mutation']);
       });
+      jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
       findFormInput().vm.$emit('input', 'Invalid title');
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await wrapper.vm.$nextTick();
@@ -176,7 +174,7 @@ describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
     it('collapses sidebar and renders former item title', () => {
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findTitle().text()).toContain(TEST_ISSUE_B.title);
-      expect(createFlash).toHaveBeenCalled();
+      expect(wrapper.vm.setError).toHaveBeenCalled();
     });
   });
 });

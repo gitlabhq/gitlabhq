@@ -4120,9 +4120,9 @@ Count the total number of log views
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175021_pod_logs_usages_total.yml)
 
-Group: `group::apm`
+Group: `group::monitor`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -5500,9 +5500,9 @@ Projects with Prometheus alerting enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175019_projects_with_prometheus_alerts.yml)
 
-Group: `group::apm`
+Group: `group::monitor`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`
 
@@ -15896,7 +15896,7 @@ Projects with Prometheus alerting enabled
 
 Group: `group::configure`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -17758,7 +17758,7 @@ Projects with Prometheus alerting enabled
 
 Group: `group::monitor`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`, `premium`, `ultimate`
 

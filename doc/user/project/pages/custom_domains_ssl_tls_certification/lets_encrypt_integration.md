@@ -67,7 +67,7 @@ associated Pages domain. GitLab also renews it automatically.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30146) in GitLab 13.0.
 
-If you get an error **Something went wrong while obtaining the Let's Encrypt certificate**, you can try obtaining the certificate again by following these steps:
+If you get an error **Something went wrong while obtaining the Let's Encrypt certificate**, first, make sure that your pages site is set to "Everyone" in your project's **Settings > General > Visbility**. This allows the Let's Encrypt Servers reach your pages site. Once this is confirmed, you can try obtaining the certificate again by following these steps:
 
 1. Go to your project's **Settings > Pages**.
 1. Click **Edit** on your domain.

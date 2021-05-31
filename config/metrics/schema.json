@@ -30,7 +30,7 @@
     },
     "status": {
       "type": ["string"],
-      "enum": ["data_available", "implemented", "not_used", "deprecated", "removed"]
+      "enum": ["data_available", "implemented", "not_used", "deprecated", "removed", "broken"]
     },
     "milestone": {
       "type": ["string", "null"],
@@ -42,6 +42,9 @@
     },
     "introduced_by_url": {
       "type": ["string", "null"]
+    },
+    "repair_issue_url": {
+      "type": ["string"]
     },
     "options": {
       "type": "object"
@@ -78,5 +81,17 @@
     "value_json_schema": {
       "type": "string"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "broken" }
+        }
+      },
+      "then": {
+        "required": ["repair_issue_url"]
+      }
+    }
+  ]
 }

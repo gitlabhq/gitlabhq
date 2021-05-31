@@ -3,14 +3,11 @@ import { shallowMount } from '@vue/test-utils';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import BoardSidebarDueDate from '~/boards/components/sidebar/board_sidebar_due_date.vue';
 import { createStore } from '~/boards/stores';
-import createFlash from '~/flash';
 
 const TEST_DUE_DATE = '2020-02-20';
 const TEST_FORMATTED_DUE_DATE = 'Feb 20, 2020';
 const TEST_PARSED_DATE = new Date(2020, 1, 20);
 const TEST_ISSUE = { id: 'gid://gitlab/Issue/1', iid: 9, dueDate: null, referencePath: 'h/b#2' };
-
-jest.mock('~/flash');
 
 describe('~/boards/components/sidebar/board_sidebar_due_date.vue', () => {
   let wrapper;
@@ -124,6 +121,7 @@ describe('~/boards/components/sidebar/board_sidebar_due_date.vue', () => {
       jest.spyOn(wrapper.vm, 'setActiveIssueDueDate').mockImplementation(() => {
         throw new Error(['failed mutation']);
       });
+      jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
       findDatePicker().vm.$emit('input', 'Invalid date');
       await wrapper.vm.$nextTick();
     });
@@ -131,7 +129,7 @@ describe('~/boards/components/sidebar/board_sidebar_due_date.vue', () => {
     it('collapses sidebar and renders former issue due date', () => {
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findCollapsed().text()).toContain(TEST_FORMATTED_DUE_DATE);
-      expect(createFlash).toHaveBeenCalled();
+      expect(wrapper.vm.setError).toHaveBeenCalled();
     });
   });
 });

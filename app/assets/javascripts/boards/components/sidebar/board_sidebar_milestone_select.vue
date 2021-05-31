@@ -9,7 +9,6 @@ import {
 } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
 import projectMilestones from '../../graphql/project_milestones.query.graphql';
 
@@ -50,8 +49,8 @@ export default {
         const edges = data?.project?.milestones?.edges ?? [];
         return edges.map((item) => item.node);
       },
-      error() {
-        createFlash({ message: this.$options.i18n.fetchMilestonesError });
+      error(error) {
+        this.setError({ error, message: this.$options.i18n.fetchMilestonesError });
       },
     },
   },
@@ -73,7 +72,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setActiveIssueMilestone']),
+    ...mapActions(['setActiveIssueMilestone', 'setError']),
     handleOpen() {
       this.edit = true;
       this.$refs.dropdown.show();
@@ -91,7 +90,7 @@ export default {
         const input = { milestoneId, projectPath: this.projectPath };
         await this.setActiveIssueMilestone(input);
       } catch (e) {
-        createFlash({ message: this.$options.i18n.updateMilestoneError });
+        this.setError({ error: e, message: this.$options.i18n.updateMilestoneError });
       } finally {
         this.loading = false;
       }

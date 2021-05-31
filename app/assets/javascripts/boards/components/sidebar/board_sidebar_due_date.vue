@@ -2,7 +2,6 @@
 import { GlButton, GlDatepicker } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import createFlash from '~/flash';
 import { dateInWords, formatDate, parsePikadayDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 
@@ -38,7 +37,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setActiveIssueDueDate']),
+    ...mapActions(['setActiveIssueDueDate', 'setError']),
     async openDatePicker() {
       await this.$nextTick();
       this.$refs.datePicker.calendar.show();
@@ -51,7 +50,7 @@ export default {
         const dueDate = date ? formatDate(date, 'yyyy-mm-dd') : null;
         await this.setActiveIssueDueDate({ dueDate, projectPath: this.projectPathForActiveIssue });
       } catch (e) {
-        createFlash({ message: this.$options.i18n.updateDueDateError });
+        this.setError({ message: this.$options.i18n.updateDueDateError });
       } finally {
         this.loading = false;
       }

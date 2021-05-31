@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Object Storage
+# Object storage **(FREE SELF)**
 
 GitLab supports using an object storage service for holding numerous types of data.
 It's recommended over NFS and
@@ -29,7 +29,7 @@ GitLab has been tested on a number of object storage providers:
 
 - Dell EMC ECS: Prior to GitLab 13.3, there is a [known bug in GitLab Workhorse that prevents
   HTTP Range Requests from working with CI job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/223806).
-  Be sure to upgrade to GitLab v13.3.0 or above if you use S3 storage with this hardware.
+  Be sure to upgrade to GitLab 13.3.0 or above if you use S3 storage with this hardware.
 
 - Ceph S3 prior to [Kraken 11.0.2](https://ceph.com/releases/kraken-11-0-2-released/) does not support the [Upload Copy Part API](https://gitlab.com/gitlab-org/gitlab/-/issues/300604). You may need to [disable multi-threaded copying](#multi-threaded-copying).
 
@@ -47,7 +47,7 @@ For more information on the differences and to transition from one form to anoth
 
 ### Consolidated object storage configuration
 
-> Introduced in [GitLab 13.2](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4368).
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4368) in GitLab 13.2.
 
 Using the consolidated object storage configuration has a number of advantages:
 
@@ -209,13 +209,13 @@ gitlab_rails['object_store']['connection'] = {
 }
 ```
 
-| Setting | Description |
-|---------|-------------|
-| `enabled` | Enable/disable object storage |
-| `proxy_download` | Set to `true` to [enable proxying all files served](#proxy-download). Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data |
-| `connection` | Various [connection options](#connection-settings) described below |
-| `storage_options` | Options to use when saving new objects, such as [server side encryption](#server-side-encryption-headers). Introduced in GitLab 13.3 |
-| `objects` | [Object-specific configuration](#object-specific-configuration)
+| Setting           | Description                       |
+|-------------------|-----------------------------------|
+| `enabled`         | Enable or disable object storage. |
+| `proxy_download`  | Set to `true` to [enable proxying all files served](#proxy-download). Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data. |
+| `connection`      | Various [connection options](#connection-settings) described below. |
+| `storage_options` | Options to use when saving new objects, such as [server side encryption](#server-side-encryption-headers). Introduced in GitLab 13.3. |
+| `objects`         | [Object-specific configuration](#object-specific-configuration). |
 
 ### Connection settings
 
@@ -226,27 +226,27 @@ in the `connection` setting.
 
 The connection settings match those provided by [fog-aws](https://github.com/fog/fog-aws):
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| `provider` | Always `AWS` for compatible hosts | `AWS` |
-| `aws_access_key_id` | AWS credentials, or compatible | |
-| `aws_secret_access_key` | AWS credentials, or compatible | |
-| `aws_signature_version` | AWS signature version to use. `2` or `4` are valid options. Digital Ocean Spaces and other providers may need `2`. | `4` |
-| `enable_signature_v4_streaming` | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`. | `true` |
-| `region` | AWS region. | |
-| `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
-| `endpoint` | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. | (optional) |
-| `path_style` | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as `false` for AWS S3. | `false` |
-| `use_iam_profile` | Set to `true` to use IAM profile instead of access keys | `false`
+| Setting                         | Description                        | Default |
+|---------------------------------|------------------------------------|---------|
+| `provider`                      | Always `AWS` for compatible hosts. | `AWS` |
+| `aws_access_key_id`             | AWS credentials, or compatible.    | |
+| `aws_secret_access_key`         | AWS credentials, or compatible.    | |
+| `aws_signature_version`         | AWS signature version to use. `2` or `4` are valid options. Digital Ocean Spaces and other providers may need `2`. | `4` |
+| `enable_signature_v4_streaming` | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`.       | `true` |
+| `region`                        | AWS region.                        | |
+| `host`                          | S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
+| `endpoint`                      | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. | (optional) |
+| `path_style`                    | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as `false` for AWS S3. | `false`. |
+| `use_iam_profile`               | Set to `true` to use IAM profile instead of access keys. | `false` |
 
 #### Oracle Cloud S3 connection settings
 
 Note that Oracle Cloud S3 must be sure to use the following settings:
 
-| Setting | Value |
-|---------|-------|
+| Setting                         | Value   |
+|---------------------------------|---------|
 | `enable_signature_v4_streaming` | `false` |
-| `path_style` | `true` |
+| `path_style`                    | `true`  |
 
 If `enable_signature_v4_streaming` is set to `true`, you may see the
 following error in `production.log`:
@@ -259,13 +259,13 @@ STREAMING-AWS4-HMAC-SHA256-PAYLOAD is not supported
 
 Here are the valid connection parameters for GCS:
 
-| Setting | Description | example |
-|---------|-------------|---------|
-| `provider` | The provider name | `Google` |
-| `google_project` | GCP project name | `gcp-project-12345` |
-| `google_client_email` | The email address of the service account | `foo@gcp-project-12345.iam.gserviceaccount.com` |
-| `google_json_key_location` | The JSON key path | `/path/to/gcp-project-12345-abcde.json` |
-| `google_application_default` | Set to `true` to use [Google Cloud Application Default Credentials](https://cloud.google.com/docs/authentication/production#automatically) to locate service account credentials. |
+| Setting                      | Description       | Example |
+|------------------------------|-------------------|---------|
+| `provider`                   | Provider name.    | `Google` |
+| `google_project`             | GCP project name. | `gcp-project-12345` |
+| `google_client_email`        | Email address of the service account. | `foo@gcp-project-12345.iam.gserviceaccount.com` |
+| `google_json_key_location`   | JSON key path.    | `/path/to/gcp-project-12345-abcde.json` |
+| `google_application_default` | Set to `true` to use [Google Cloud Application Default Credentials](https://cloud.google.com/docs/authentication/production#automatically) to locate service account credentials. | |
 
 The service account must have permission to access the bucket. Learn more
 in Google's
@@ -328,12 +328,12 @@ The following are the valid connection parameters for Azure. Read the
 [Azure Blob storage documentation](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 to learn more.
 
-| Setting | Description | Example |
-|---------|-------------|---------|
-| `provider` | Provider name | `AzureRM` |
-| `azure_storage_account_name` | Name of the Azure Blob Storage account used to access the storage | `azuretest` |
-| `azure_storage_access_key` | Storage account access key used to access the container. This is typically a secret, 512-bit encryption key encoded in base64. | `czV2OHkvQj9FKEgrTWJRZVRoV21ZcTN0Nnc5eiRDJkYpSkBOY1JmVWpYbjJy\nNHU3eCFBJUQqRy1LYVBkU2dWaw==\n` |
-| `azure_storage_domain` | Domain name used to contact the Azure Blob Storage API (optional). Defaults to `blob.core.windows.net`. Set this if you are using Azure China, Azure Germany, Azure US Government, or some other custom Azure domain. | `blob.core.windows.net` |
+| Setting                      | Description    | Example   |
+|------------------------------|----------------|-----------|
+| `provider`                   | Provider name. | `AzureRM` |
+| `azure_storage_account_name` | Name of the Azure Blob Storage account used to access the storage. | `azuretest` |
+| `azure_storage_access_key`   | Storage account access key used to access the container. This is typically a secret, 512-bit encryption key encoded in base64. | `czV2OHkvQj9FKEgrTWJRZVRoV21ZcTN0Nnc5eiRDJkYpSkBOY1JmVWpYbjJy\nNHU3eCFBJUQqRy1LYVBkU2dWaw==\n` |
+| `azure_storage_domain`       | Domain name used to contact the Azure Blob Storage API (optional). Defaults to `blob.core.windows.net`. Set this if you are using Azure China, Azure Germany, Azure US Government, or some other custom Azure domain. | `blob.core.windows.net` |
 
 ##### Azure example (consolidated form)
 
@@ -382,15 +382,15 @@ consolidated form, see the [S3 settings](#s3-compatible-connection-settings).
 Here are the valid connection settings for the Swift API, provided by
 [fog-openstack](https://github.com/fog/fog-openstack):
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| `provider` | Always `OpenStack` for compatible hosts | `OpenStack` |
-| `openstack_username` | OpenStack username | |
-| `openstack_api_key` | OpenStack API key  | |
+| Setting                  | Description          | Default |
+|--------------------------|----------------------|---------|
+| `provider`               | Always `OpenStack` for compatible hosts. | `OpenStack` |
+| `openstack_username`     | OpenStack username.  | |
+| `openstack_api_key`      | OpenStack API key.   | |
 | `openstack_temp_url_key` | OpenStack key for generating temporary URLs | |
-| `openstack_auth_url` | OpenStack authentication endpoint | |
-| `openstack_region` | OpenStack region | |
-| `openstack_tenant` | OpenStack tenant ID |
+| `openstack_auth_url`     | OpenStack authentication endpoint | |
+| `openstack_region`       | OpenStack region.    | |
+| `openstack_tenant`       | OpenStack tenant ID. | |
 
 #### Rackspace Cloud Files
 
@@ -400,13 +400,13 @@ Rackspace Cloud, provided by [fog-rackspace](https://github.com/fog/fog-rackspac
 This isn't compatible with the consolidated object storage form.
 Rackspace Cloud is supported only with the storage-specific form.
 
-| Setting | Description | example |
-|---------|-------------|---------|
-| `provider` | The provider name | `Rackspace` |
-| `rackspace_username` | The username of the Rackspace account with access to the container | `joe.smith` |
-| `rackspace_api_key` | The API key of the Rackspace account with access to the container | `ABC123DEF456ABC123DEF456ABC123DE` |
-| `rackspace_region` | The Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://docs.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/) | `iad` |
-| `rackspace_temp_url_key` | The private key you have set in the Rackspace API for [temporary URLs](https://docs.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl). | `ABC123DEF456ABC123DEF456ABC123DE` |
+| Setting                  | Description    | Example     |
+|--------------------------|----------------|-------------|
+| `provider`               | Provider name. | `Rackspace` |
+| `rackspace_username`     | Username of the Rackspace account with access to the container. | `joe.smith` |
+| `rackspace_api_key`      | API key of the Rackspace account with access to the container. | `ABC123DEF456ABC123DEF456ABC123DE` |
+| `rackspace_region`       | Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://docs.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/). | `iad` |
+| `rackspace_temp_url_key` | Private key you set in the Rackspace API for [temporary URLs](https://docs.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl). | `ABC123DEF456ABC123DEF456ABC123DE` |
 
 Regardless of whether the container has public access enabled or disabled, Fog
 uses the TempURL method to grant access to LFS objects. If you see error
@@ -465,24 +465,24 @@ gitlab_rails['object_store']['objects']['pages']['bucket'] = 'pages'
 
 This is the list of valid `objects` that can be used:
 
-|  Type              | Description |
-|--------------------|---------------|
-| `artifacts`        | [CI artifacts](job_artifacts.md) |
-| `external_diffs`   | [Merge request diffs](merge_request_diffs.md) |
-| `uploads`          | [User uploads](uploads.md) |
-| `lfs`              | [Git Large File Storage objects](lfs/index.md) |
-| `packages`         | [Project packages (e.g. PyPI, Maven, NuGet, etc.)](packages/index.md) |
-| `dependency_proxy` | [GitLab Dependency Proxy](packages/dependency_proxy.md) |
-| `terraform_state`  | [Terraform state files](terraform_state.md) |
-| `pages`            | [GitLab Pages](pages/index.md) |
+|  Type              | Description                                                                |
+|--------------------|----------------------------------------------------------------------------|
+| `artifacts`        | [CI artifacts](job_artifacts.md)                                           |
+| `external_diffs`   | [Merge request diffs](merge_request_diffs.md)                              |
+| `uploads`          | [User uploads](uploads.md)                                                 |
+| `lfs`              | [Git Large File Storage objects](lfs/index.md)                             |
+| `packages`         | [Project packages (for example, PyPI, Maven, or NuGet)](packages/index.md) |
+| `dependency_proxy` | [GitLab Dependency Proxy](packages/dependency_proxy.md)                    |
+| `terraform_state`  | [Terraform state files](terraform_state.md)                                |
+| `pages`            | [GitLab Pages](pages/index.md)                                             |
 
 Within each object type, three parameters can be defined:
 
-| Setting          | Required? | Description |
-|------------------|-----------|-------------|
-| `bucket`         | Yes       | The bucket name for the object storage. |
-| `enabled`        | No        | Overrides the common parameter |
-| `proxy_download` | No        | Overrides the common parameter |
+| Setting          | Required?              | Description                         |
+|------------------|------------------------|-------------------------------------|
+| `bucket`         | **{check-circle}** Yes | Bucket name for the object storage. |
+| `enabled`        | **{dotted-circle}** No | Overrides the common parameter.     |
+| `proxy_download` | **{dotted-circle}** No | Overrides the common parameter.     |
 
 #### Selectively disabling object storage
 
@@ -542,21 +542,21 @@ original configuration (for example, `artifacts_object_store_enabled`, or
 For configuring object storage in GitLab 13.1 and earlier, or for storage types not
 supported by consolidated configuration form, refer to the following guides:
 
-|Object storage type|Supported by consolidated configuration?|
-|-------------------|----------------------------------------|
-| [Backups](../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage) | No |
-| [Job artifacts](job_artifacts.md#using-object-storage) including archived job logs | Yes |
-| [LFS objects](lfs/index.md#storing-lfs-objects-in-remote-object-storage) | Yes |
-| [Uploads](uploads.md#using-object-storage) | Yes |
-| [Container Registry](packages/container_registry.md#use-object-storage) (optional feature) | No |
-| [Merge request diffs](merge_request_diffs.md#using-object-storage) | Yes |
-| [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
-| [Packages](packages/index.md#using-object-storage) (optional feature) | Yes |
-| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM SELF)** | Yes |
-| [Pseudonymizer](pseudonymizer.md#configuration) (optional feature) **(ULTIMATE SELF)** | No |
-| [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |
-| [Terraform state files](terraform_state.md#using-object-storage) | Yes |
-| [GitLab Pages content](pages/index.md#using-object-storage) | Yes |
+| Object storage type | Supported by consolidated configuration? |
+|---------------------|------------------------------------------|
+| [Backups](../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
+| [Job artifacts](job_artifacts.md#using-object-storage) including archived job logs | **{check-circle}** Yes |
+| [LFS objects](lfs/index.md#storing-lfs-objects-in-remote-object-storage) | **{check-circle}** Yes |
+| [Uploads](uploads.md#using-object-storage) | **{check-circle}** Yes |
+| [Container Registry](packages/container_registry.md#use-object-storage) (optional feature) | **{dotted-circle}** No |
+| [Merge request diffs](merge_request_diffs.md#using-object-storage) | **{check-circle}** Yes |
+| [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| **{dotted-circle}** No |
+| [Packages](packages/index.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
+| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM SELF)** | **{check-circle}** Yes |
+| [Pseudonymizer](pseudonymizer.md#configuration) (optional feature) **(ULTIMATE SELF)** | **{dotted-circle}** No |
+| [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |
+| [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
+| [GitLab Pages content](pages/index.md#using-object-storage) | **{check-circle}** Yes |
 
 ### Other alternatives to file system storage
 
@@ -709,10 +709,10 @@ only encrypted objects are uploaded](https://aws.amazon.com/premiumsupport/knowl
 To do this, you must configure GitLab to send the proper encryption headers
 in the `storage_options` configuration section:
 
-|            Setting                  | Description |
-|-------------------------------------|-------------|
-| `server_side_encryption`            | Encryption mode (`AES256` or `aws:kms`) |
-| `server_side_encryption_kms_key_id` | Amazon Resource Name. Only needed when `aws:kms` is used in `server_side_encryption`. See the [Amazon documentation on using KMS encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html) |
+| Setting                             | Description                              |
+|-------------------------------------|------------------------------------------|
+| `server_side_encryption`            | Encryption mode (`AES256` or `aws:kms`). |
+| `server_side_encryption_kms_key_id` | Amazon Resource Name. Only needed when `aws:kms` is used in `server_side_encryption`. See the [Amazon documentation on using KMS encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html). |
 
 As with the case for default encryption, these options only work when
 the Workhorse S3 client is enabled. One of the following two conditions

@@ -73,6 +73,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       :distribution       | 'test'
       :tier               | %w(test ee)
       :name               | 'count_<adjective_describing>_boards'
+      :repair_issue_url   | nil
 
       :instrumentation_class | 'Metric_Class'
       :instrumentation_class | 'metricClass'
@@ -100,6 +101,19 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
           expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
 
           described_class.new(path, attributes.merge( { skip_validation: true } )).validate!
+        end
+      end
+    end
+
+    context 'conditional validations' do
+      context 'when metric has broken status' do
+        it 'has to have repair issue url provided' do
+          attributes[:status] = 'broken'
+          attributes.delete(:repair_issue_url)
+
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::Metric::InvalidMetricError))
+
+          described_class.new(path, attributes).validate!
         end
       end
     end
@@ -153,7 +167,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       is_expected.to be_one
     end
 
-    it 'when the same meric is defined multiple times raises exception' do
+    it 'when the same metric is defined multiple times raises exception' do
       write_metric(metric1, path, yaml_content)
       write_metric(metric2, path, yaml_content)
 

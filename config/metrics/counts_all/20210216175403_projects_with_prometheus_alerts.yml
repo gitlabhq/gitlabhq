@@ -6,7 +6,7 @@ product_stage:
 product_group: group::configure
 product_category: kubernetes_management
 value_type: number
-status: data_available
+status: deprecated
 time_frame: all
 data_source:
 distribution:

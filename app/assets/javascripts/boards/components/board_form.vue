@@ -1,7 +1,6 @@
 <script>
-import { GlModal } from '@gitlab/ui';
-import { mapGetters } from 'vuex';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import { GlModal, GlAlert } from '@gitlab/ui';
+import { mapGetters, mapActions, mapState } from 'vuex';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -44,6 +43,7 @@ export default {
     BoardScope: () => import('ee_component/boards/components/board_scope.vue'),
     GlModal,
     BoardConfigurationOptions,
+    GlAlert,
   },
   inject: {
     fullPath: {
@@ -107,6 +107,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(['error']),
     ...mapGetters(['isIssueBoard', 'isGroupBoard', 'isProjectBoard']),
     isNewForm() {
       return this.currentPage === formType.new;
@@ -222,6 +223,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['setError', 'unsetError']),
     setIteration(iterationId) {
       this.board.iteration_id = iterationId;
     },
@@ -263,7 +265,7 @@ export default {
           await this.deleteBoard();
           visitUrl(this.rootPath);
         } catch {
-          Flash(this.$options.i18n.deleteErrorMessage);
+          this.setError({ message: this.$options.i18n.deleteErrorMessage });
         } finally {
           this.isLoading = false;
         }
@@ -272,7 +274,7 @@ export default {
           const url = await this.createOrUpdateBoard();
           visitUrl(url);
         } catch {
-          Flash(this.$options.i18n.saveErrorMessage);
+          this.setError({ message: this.$options.i18n.saveErrorMessage });
         } finally {
           this.isLoading = false;
         }
@@ -308,6 +310,15 @@ export default {
     @close="cancel"
     @hide.prevent
   >
+    <gl-alert
+      v-if="error"
+      class="gl-mb-3"
+      variant="danger"
+      :dismissible="true"
+      @dismiss="unsetError"
+    >
+      {{ error }}
+    </gl-alert>
     <p v-if="isDeleteForm" data-testid="delete-confirmation-message">
       {{ $options.i18n.deleteConfirmationMessage }}
     </p>

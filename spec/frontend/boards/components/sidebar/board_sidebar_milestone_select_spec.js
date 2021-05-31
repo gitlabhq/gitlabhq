@@ -4,11 +4,8 @@ import { mockMilestone as TEST_MILESTONE } from 'jest/boards/mock_data';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import BoardSidebarMilestoneSelect from '~/boards/components/sidebar/board_sidebar_milestone_select.vue';
 import { createStore } from '~/boards/stores';
-import createFlash from '~/flash';
 
 const TEST_ISSUE = { id: 'gid://gitlab/Issue/1', iid: 9, referencePath: 'h/b#2' };
-
-jest.mock('~/flash');
 
 describe('~/boards/components/sidebar/board_sidebar_milestone_select.vue', () => {
   let wrapper;
@@ -165,6 +162,7 @@ describe('~/boards/components/sidebar/board_sidebar_milestone_select.vue', () =>
       jest.spyOn(wrapper.vm, 'setActiveIssueMilestone').mockImplementation(() => {
         throw new Error(['failed mutation']);
       });
+      jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
       findDropdownItem().vm.$emit('click');
       await wrapper.vm.$nextTick();
     });
@@ -172,7 +170,7 @@ describe('~/boards/components/sidebar/board_sidebar_milestone_select.vue', () =>
     it('collapses sidebar and renders former milestone', () => {
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findCollapsed().text()).toContain(testMilestone.title);
-      expect(createFlash).toHaveBeenCalled();
+      expect(wrapper.vm.setError).toHaveBeenCalled();
     });
   });
 });

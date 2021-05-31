@@ -3,7 +3,7 @@
     .todo-avatar.gl-display-none.gl-sm-display-inline-block
       = author_avatar(todo, size: 40)
 
-    .todo-item.flex-fill.gl-overflow-auto.gl-align-self-center{ data: { qa_selector: "todo_item_container" } }
+    .todo-item.flex-fill.gl-overflow-hidden.gl-overflow-x-auto.gl-align-self-center{ data: { qa_selector: "todo_item_container" } }
       .todo-title.gl-mb-3.gl-md-mb-0
         - if todo_author_display?(todo)
           = todo_target_state_pill(todo)

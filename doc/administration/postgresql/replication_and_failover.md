@@ -118,11 +118,10 @@ When using default setup, minimum configuration requires:
 Few notes on the service itself:
 
 - The service runs under a system account, by default `gitlab-consul`.
-  - If you are using a different username, you will have to specify it. We
-    will refer to it with `CONSUL_USERNAME`,
-- There will be a database user created with read-only access to the repmgr
-  database
-- Passwords will be stored in the following locations:
+  - If you are using a different username, you have to specify it through the
+    `CONSUL_USERNAME` variable.
+- A database user is created with read-only access to the `repmgr` database.
+- Passwords are stored in the following locations:
   - `/etc/gitlab/gitlab.rb`: hashed
   - `/var/opt/gitlab/pgbouncer/pg_auth`: hashed
   - `/var/opt/gitlab/consul/.pgpass`: plaintext
@@ -178,7 +177,7 @@ Few notes on the service itself:
 - If you use a non-default user account for PgBouncer service (by default `pgbouncer`), you will have to specify this username. We will refer to this requirement with `PGBOUNCER_USERNAME`.
 - The service will have a regular database user account generated for it
   - This defaults to `repmgr`
-- Passwords will be stored in the following locations:
+- Passwords are stored in the following locations:
   - `/etc/gitlab/gitlab.rb`: hashed, and in plain text
   - `/var/opt/gitlab/pgbouncer/pg_auth`: hashed
 
@@ -198,8 +197,8 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
 #### Configuring Patroni cluster
 
-You must enable Patroni explicitly to be able to use it (with `patroni['enable'] = true`). When Patroni is enabled
-repmgr will be disabled automatically.
+You must enable Patroni explicitly to be able to use it (with `patroni['enable'] = true`). When Patroni is enabled,
+`repmgr` is automatically disabled.
 
 Any PostgreSQL configuration item that controls replication, for example `wal_level`, `max_wal_senders`, etc, are strictly
 controlled by Patroni and will override the original settings that you make with the `postgresql[...]` configuration key.
@@ -210,7 +209,7 @@ configuration key.
 
 NOTE:
 The configuration of a Patroni node is very similar to a repmgr but shorter. When Patroni is enabled, first you can ignore
-any replication setting of PostgreSQL (it will be overwritten anyway). Then you can remove any `repmgr[...]` or
+any replication setting of PostgreSQL (it is overwritten anyway). Then you can remove any `repmgr[...]` or
 repmgr-specific configuration as well. Especially, make sure that you remove `postgresql['shared_preload_libraries'] = 'repmgr_funcs'`.
 
 Here is an example similar to [the one that was done with repmgr](#configuring-repmgr-nodes):
@@ -348,7 +347,7 @@ If you enable Monitoring, it must be enabled on **all** database servers.
 1. Ensure each node is talking to the current master:
 
    ```shell
-   gitlab-ctl pgb-console # You will be prompted for PGBOUNCER_PASSWORD
+   gitlab-ctl pgb-console # Supply PGBOUNCER_PASSWORD when prompted
    ```
 
    If there is an error `psql: ERROR:  Auth failed` after typing in the
@@ -415,7 +414,7 @@ Refer to your preferred Load Balancer's documentation for further guidance.
 
 ### Configuring the Application nodes
 
-These will be the nodes running the `gitlab-rails` service. You may have other
+Application nodes run the `gitlab-rails` service. You may have other
 attributes set, but the following need to be set.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
@@ -448,7 +447,7 @@ in the Troubleshooting section before proceeding.
 
 ### Backups
 
-Do not backup or restore GitLab through a PgBouncer connection: this will cause a GitLab outage.
+Do not backup or restore GitLab through a PgBouncer connection: this causes a GitLab outage.
 
 [Read more about this and how to reconfigure backups](../../raketasks/backup_restore.md#backup-and-restore-for-installations-using-pgbouncer).
 
@@ -720,8 +719,8 @@ Using Patroni instead of Repmgr is supported for PostgreSQL 11 and required for 
 
 Patroni is an opinionated solution for PostgreSQL high-availability. It takes the control of PostgreSQL, overrides its
 configuration and manages its lifecycle (start, stop, restart). This is a more active approach when compared to repmgr.
-Both repmgr and Patroni are both supported and available. But Patroni will be the default (and perhaps the only) option
-for PostgreSQL 12 clustering and cascading replication for Geo deployments.
+Both `repmgr` and Patroni are supported and available. Patroni is the only option for PostgreSQL 12 clustering and
+for cascading replication for Geo deployments.
 
 The [architecture](#example-recommended-setup-manual-steps) (that was mentioned above) does not change for Patroni.
 You do not need any special consideration for Patroni while provisioning your database nodes. Patroni heavily relies on
@@ -891,8 +890,8 @@ You can switch an exiting database cluster to use Patroni instead of repmgr with
 
 1. On the primary node, [configure Patroni](#configuring-patroni-cluster). Remove `repmgr` and any other
    repmgr-specific configuration. Also remove any configuration that is related to PostgreSQL replication.
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on the primary node. It will become
-   the leader. You can check this with:
+1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on the primary node.
+   It makes it the leader. You can check this with:
 
    ```shell
    sudo gitlab-ctl tail patroni
@@ -920,13 +919,13 @@ upgrading PostgreSQL.
 Here are a few key facts that you must consider before upgrading PostgreSQL:
 
 - The main point is that you will have to **shut down the Patroni cluster**. This means that your
-  GitLab deployment will be down for the duration of database upgrade or, at least, as long as your leader
+  GitLab deployment is down for the duration of database upgrade or, at least, as long as your leader
   node is upgraded. This can be **a significant downtime depending on the size of your database**.
 
 - Upgrading PostgreSQL creates a new data directory with a new control data. From Patroni's perspective
   this is a new cluster that needs to be bootstrapped again. Therefore, as part of the upgrade procedure,
-  the cluster state, which is stored in Consul, will be wiped out. Once the upgrade is completed, Patroni
-  will be instructed to bootstrap a new cluster. **Note that this will change your _cluster ID_**.
+  the cluster state (stored in Consul) is wiped out. Once the upgrade is completed, Patroni
+  bootstraps a new cluster. **Note that this changes your _cluster ID_**.
 
 - The procedures for upgrading leader and replicas are not the same. That is why it is important to use the
   right procedure on each node.
@@ -1284,7 +1283,7 @@ after it has been restored to service.
   When the server is brought back online, and before
   you switch it to a standby node, repmgr will report that there are two masters.
   If there are any clients that are still attempting to write to the old master,
-  this will cause a split, and the old master will need to be resynced from
+  there can be a split. The old master has to be resynced from
   scratch by performing a `gitlab-ctl repmgr standby setup NEW_MASTER`.
 
 #### Add a failed master back into the cluster as a standby node
@@ -1313,12 +1312,12 @@ after it has been restored to service.
 
 #### Database authorization
 
-By default, we give any host on the database network the permission to perform
+By default, any host on the database network has permission to perform
 repmgr operations using PostgreSQL's `trust` method. If you do not want this
-level of trust, there are alternatives.
+level of trust, there are alternatives:
 
-You can trust only the specific nodes that will be database clusters, or you
-can require md5 authentication.
+- Trust only specific database cluster nodes.
+- Require md5 authentication.
 
 #### Trust specific addresses
 
@@ -1400,7 +1399,7 @@ steps to fix the problem:
 1. On the master database node, connect to the database prompt - `gitlab-psql -d template1`
 1. Delete the `gitlab-consul` user - `DROP USER "gitlab-consul";`
 1. Exit the database prompt - `\q`
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) and the user will be re-added with the proper permissions.
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) to re-add the user with the proper permissions.
 1. Change to the `gitlab-consul` user - `su - gitlab-consul`
 1. Try the check command again - `gitlab-ctl repmgr-check-master`.
 

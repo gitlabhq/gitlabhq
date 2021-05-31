@@ -6,7 +6,7 @@ product_stage:
 product_group: group::monitor
 product_category: metrics
 value_type: number
-status: data_available
+status: deprecated
 time_frame: 28d
 data_source: database
 distribution:

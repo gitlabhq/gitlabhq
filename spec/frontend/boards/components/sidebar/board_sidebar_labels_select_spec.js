@@ -9,10 +9,7 @@ import {
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import BoardSidebarLabelsSelect from '~/boards/components/sidebar/board_sidebar_labels_select.vue';
 import { createStore } from '~/boards/stores';
-import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-
-jest.mock('~/flash');
 
 const TEST_LABELS_PAYLOAD = TEST_LABELS.map((label) => ({ ...label, set: true }));
 const TEST_LABELS_TITLES = TEST_LABELS.map((label) => label.title);
@@ -154,6 +151,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
       jest.spyOn(wrapper.vm, 'setActiveBoardItemLabels').mockImplementation(() => {
         throw new Error(['failed mutation']);
       });
+      jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
       findLabelsSelect().vm.$emit('updateSelectedLabels', [{ id: '?' }]);
       await wrapper.vm.$nextTick();
     });
@@ -161,7 +159,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
     it('collapses sidebar and renders former issue weight', () => {
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findLabelsTitles()).toEqual(TEST_LABELS_TITLES);
-      expect(createFlash).toHaveBeenCalled();
+      expect(wrapper.vm.setError).toHaveBeenCalled();
     });
   });
 });

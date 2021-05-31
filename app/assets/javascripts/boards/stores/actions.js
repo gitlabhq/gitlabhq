@@ -726,7 +726,7 @@ export default {
     }
   },
 
-  setError: ({ commit }, { message, error, captureError = false }) => {
+  setError: ({ commit }, { message, error, captureError = true }) => {
     commit(types.SET_ERROR, message);
 
     if (captureError) {
