@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Admin mode' do
   include MobileHelpers
+  include Spec::Support::Helpers::Features::TopNavSpecHelpers
   include StubENV
 
   let(:admin) { create(:admin) }
@@ -21,6 +22,7 @@ RSpec.describe 'Admin mode' do
       context 'when not in admin mode' do
         it 'has no leave admin mode button' do
           visit new_admin_session_path
+          open_top_nav
 
           page.within('.navbar-sub-nav') do
             expect(page).not_to have_link(href: destroy_admin_session_path)
@@ -28,12 +30,11 @@ RSpec.describe 'Admin mode' do
         end
 
         it 'can open pages not in admin scope' do
-          pending_on_combined_menu_flag
-
           visit new_admin_session_path
+          open_top_nav_projects
 
-          page.within('.navbar-sub-nav') do
-            find_all('a', text: 'Projects').first.click
+          within_top_nav do
+            click_link('Your projects')
           end
 
           expect(page).to have_current_path(dashboard_projects_path)
@@ -78,71 +79,64 @@ RSpec.describe 'Admin mode' do
         end
 
         it 'contains link to leave admin mode' do
-          pending_on_combined_menu_flag
+          open_top_nav
 
-          page.within('.navbar-sub-nav') do
+          within_top_nav do
             expect(page).to have_link(href: destroy_admin_session_path)
           end
         end
 
         it 'can leave admin mode using main dashboard link', :js do
-          pending_on_combined_menu_flag
+          gitlab_disable_admin_mode
 
-          page.within('.navbar-sub-nav') do
-            click_on 'Leave Admin Mode'
+          open_top_nav
 
+          within_top_nav do
             expect(page).to have_link(href: new_admin_session_path)
           end
         end
 
         it 'can leave admin mode using dropdown menu on smaller screens', :js do
-          pending_on_combined_menu_flag
-
           resize_screen_xs
           visit root_dashboard_path
 
-          find('.header-more').click
+          find('.header-more').click unless Feature.enabled?(:combined_menu)
 
-          page.within '.navbar-sub-nav' do
-            click_on 'Leave Admin Mode'
+          gitlab_disable_admin_mode
 
-            find('.header-more').click
+          open_top_nav
+          find('.header-more').click unless Feature.enabled?(:combined_menu)
 
-            expect(page).to have_link(href: new_admin_session_path)
-          end
+          expect(page).to have_link(href: new_admin_session_path)
         end
 
         it 'can open pages not in admin scope' do
-          pending_on_combined_menu_flag
+          open_top_nav_projects
 
-          page.within('.navbar-sub-nav') do
-            find_all('a', text: 'Projects').first.click
-
-            expect(page).to have_current_path(dashboard_projects_path)
+          within_top_nav do
+            click_link('Your projects')
           end
+
+          expect(page).to have_current_path(dashboard_projects_path)
         end
 
         context 'nav bar' do
           it 'shows admin dashboard links on bigger screen' do
-            pending_on_combined_menu_flag
-
             visit root_dashboard_path
+            open_top_nav
 
-            page.within '.navbar' do
-              expect(page).to have_link(text: 'Admin Area', href: admin_root_path, visible: true)
-              expect(page).to have_link(text: 'Leave Admin Mode', href: destroy_admin_session_path, visible: true)
-            end
+            link_text = Feature.enabled?(:combined_menu) ? 'Admin' : 'Admin Area'
+            expect(page).to have_link(text: link_text, href: admin_root_path, visible: true)
+            expect(page).to have_link(text: 'Leave Admin Mode', href: destroy_admin_session_path, visible: true)
           end
 
           it 'relocates admin dashboard links to dropdown list on smaller screen', :js do
-            pending_on_combined_menu_flag
+            skip('not applicable with :combined_menu feature flag enabled') if Feature.enabled?(:combined_menu)
 
             resize_screen_xs
             visit root_dashboard_path
 
-            page.within '.navbar' do
-              expect(page).not_to have_link(text: 'Leave Admin Mode', href: destroy_admin_session_path, visible: true)
-            end
+            expect(page).not_to have_link(text: 'Leave Admin Mode', href: destroy_admin_session_path, visible: true)
 
             find('.header-more').click
 
@@ -159,11 +153,11 @@ RSpec.describe 'Admin mode' do
           end
 
           it 'can leave admin mode', :js do
-            pending_on_combined_menu_flag
+            gitlab_disable_admin_mode
 
-            page.within('.navbar-sub-nav') do
-              click_on 'Leave Admin Mode'
+            open_top_nav
 
+            within_top_nav do
               expect(page).to have_link(href: new_admin_session_path)
             end
           end
@@ -179,16 +173,15 @@ RSpec.describe 'Admin mode' do
 
       it 'shows no admin mode buttons in navbar' do
         visit admin_root_path
+        open_top_nav
 
-        page.within('.navbar-sub-nav') do
-          expect(page).not_to have_link(href: new_admin_session_path)
-          expect(page).not_to have_link(href: destroy_admin_session_path)
-        end
+        expect(page).not_to have_link(href: new_admin_session_path)
+        expect(page).not_to have_link(href: destroy_admin_session_path)
       end
     end
   end
 
-  context 'with combined_menu: feature flag on' do
+  context 'with combined_menu feature flag on', :js do
     let(:needs_rewrite_for_combined_menu_flag_on) { true }
 
     before do
@@ -206,9 +199,5 @@ RSpec.describe 'Admin mode' do
     end
 
     it_behaves_like 'combined_menu: feature flag examples'
-  end
-
-  def pending_on_combined_menu_flag
-    pending 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587' if needs_rewrite_for_combined_menu_flag_on
   end
 end

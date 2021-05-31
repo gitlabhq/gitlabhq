@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
+import { GlAvatarLabeled, GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
@@ -8,8 +8,8 @@ const createComponent = () => {
   return mount(GroupSelect, {});
 };
 
-const group1 = { id: 1, full_name: 'Group One' };
-const group2 = { id: 2, full_name: 'Group Two' };
+const group1 = { id: 1, full_name: 'Group One', avatar_url: 'test' };
+const group2 = { id: 2, full_name: 'Group Two', avatar_url: 'test' };
 const allGroups = [group1, group2];
 
 describe('GroupSelect', () => {
@@ -29,10 +29,10 @@ describe('GroupSelect', () => {
   const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDropdownToggle = () => findDropdown().find('button[aria-haspopup="true"]');
-  const findDropdownItemByText = (text) =>
+  const findAvatarByLabel = (text) =>
     wrapper
-      .findAllComponents(GlDropdownItem)
-      .wrappers.find((dropdownItemWrapper) => dropdownItemWrapper.text() === text);
+      .findAllComponents(GlAvatarLabeled)
+      .wrappers.find((dropdownItemWrapper) => dropdownItemWrapper.props('label') === text);
 
   it('renders GlSearchBoxByType with default attributes', () => {
     expect(findSearchBoxByType().exists()).toBe(true);
@@ -74,9 +74,20 @@ describe('GroupSelect', () => {
     });
   });
 
+  describe('avatar label', () => {
+    it('includes the correct attributes with name and avatar_url', () => {
+      expect(findAvatarByLabel(group1.full_name).attributes()).toMatchObject({
+        src: group1.avatar_url,
+        'entity-id': `${group1.id}`,
+        'entity-name': group1.full_name,
+        size: '32',
+      });
+    });
+  });
+
   describe('when group is selected from the dropdown', () => {
     beforeEach(() => {
-      findDropdownItemByText(group1.full_name).vm.$emit('click');
+      findAvatarByLabel(group1.full_name).trigger('click');
     });
 
     it('emits `input` event used by `v-model`', () => {

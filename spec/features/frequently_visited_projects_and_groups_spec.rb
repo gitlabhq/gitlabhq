@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Frequently visited items', :js do
+  include Spec::Support::Helpers::Features::TopNavSpecHelpers
+
   let_it_be(:user) { create(:user) }
 
   shared_examples 'combined_menu: feature flag examples' do
@@ -14,9 +16,8 @@ RSpec.describe 'Frequently visited items', :js do
       let_it_be(:project) { create(:project, :public) }
 
       it 'increments localStorage counter when visiting the project' do
-        pending_on_combined_menu_flag
-
         visit project_path(project)
+        open_top_nav_projects
 
         frequent_projects = nil
 
@@ -34,9 +35,8 @@ RSpec.describe 'Frequently visited items', :js do
       let_it_be(:group) { create(:group, :public) }
 
       it 'increments localStorage counter when visiting the group' do
-        pending_on_combined_menu_flag
-
         visit group_path(group)
+        open_top_nav_groups
 
         frequent_groups = nil
 
@@ -51,7 +51,7 @@ RSpec.describe 'Frequently visited items', :js do
     end
   end
 
-  context 'with combined_menu: feature flag on' do
+  context 'with combined_menu feature flag on' do
     let(:needs_rewrite_for_combined_menu_flag_on) { true }
 
     before do
@@ -69,9 +69,5 @@ RSpec.describe 'Frequently visited items', :js do
     end
 
     it_behaves_like 'combined_menu: feature flag examples'
-  end
-
-  def pending_on_combined_menu_flag
-    pending 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587' if needs_rewrite_for_combined_menu_flag_on
   end
 end

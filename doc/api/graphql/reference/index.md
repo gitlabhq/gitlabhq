@@ -3568,6 +3568,34 @@ Input type: `RunDASTScanInput`
 | <a id="mutationrundastscanerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationrundastscanpipelineurl"></a>`pipelineUrl` | [`String`](#string) | URL of the pipeline that was created. |
 
+### `Mutation.runnerUpdate`
+
+Available only when feature flag `runner_graphql_query` is enabled.
+
+Input type: `RunnerUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnerupdateaccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel`](#cirunneraccesslevel) | Access level of the runner. |
+| <a id="mutationrunnerupdateactive"></a>`active` | [`Boolean`](#boolean) | Indicates the runner is allowed to receive jobs. |
+| <a id="mutationrunnerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnerupdatedescription"></a>`description` | [`String`](#string) | Description of the runner. |
+| <a id="mutationrunnerupdateid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner to update. |
+| <a id="mutationrunnerupdatelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
+| <a id="mutationrunnerupdatemaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
+| <a id="mutationrunnerupdaterununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Indicates the runner is able to run untagged jobs. |
+| <a id="mutationrunnerupdatetaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnerupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationrunnerupdaterunner"></a>`runner` | [`CiRunner`](#cirunner) | The runner after mutation. |
+
 ### `Mutation.terraformStateDelete`
 
 Input type: `TerraformStateDeleteInput`

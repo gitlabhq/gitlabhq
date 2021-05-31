@@ -33,7 +33,7 @@ class ReleaseHighlight
       next unless include_item?(item)
 
       begin
-        item.tap {|i| i['body'] = Kramdown::Document.new(i['body']).to_html }
+        item.tap {|i| i['body'] = Banzai.render(i['body'], { project: nil }) }
       rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, file_path: file_path)
 

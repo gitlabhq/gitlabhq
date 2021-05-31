@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'New project', :js do
   include Select2Helper
+  include Spec::Support::Helpers::Features::TopNavSpecHelpers
 
   shared_examples 'combined_menu: feature flag examples' do
     context 'as a user' do
@@ -45,34 +46,39 @@ RSpec.describe 'New project', :js do
         end
 
         it 'when in control it renders "project" in the new projects dropdown' do
-          pending_on_combined_menu_flag
-
           stub_experiments(new_repo: :control)
 
           visit new_project_path
 
-          find('#nav-projects-dropdown').click
+          open_top_nav_projects
 
-          page.within('#nav-projects-dropdown') do
-            expect(page).to have_selector('a', text: 'Create blank project')
-            expect(page).to have_selector('a', text: 'Import project')
-            expect(page).to have_no_selector('a', text: 'Create blank project/repository')
-            expect(page).to have_no_selector('a', text: 'Import project/repository')
+          within_top_nav do
+            if Feature.enabled?(:combined_menu)
+              expect(page).to have_selector('a', text: 'Create new project')
+              expect(page).to have_no_selector('a', text: 'Create blank project/repository')
+            else
+              expect(page).to have_selector('a', text: 'Create blank project')
+              expect(page).to have_selector('a', text: 'Import project')
+              expect(page).to have_no_selector('a', text: 'Create blank project/repository')
+              expect(page).to have_no_selector('a', text: 'Import project/repository')
+            end
           end
         end
 
         it 'when in candidate it renders "project/repository" in the new projects dropdown' do
-          pending_on_combined_menu_flag
-
           stub_experiments(new_repo: :candidate)
 
           visit new_project_path
 
-          find('#nav-projects-dropdown').click
+          open_top_nav_projects
 
-          page.within('#nav-projects-dropdown') do
-            expect(page).to have_selector('a', text: 'Create blank project/repository')
-            expect(page).to have_selector('a', text: 'Import project/repository')
+          within_top_nav do
+            if Feature.enabled?(:combined_menu)
+              expect(page).to have_selector('a', text: 'Create new project')
+            else
+              expect(page).to have_selector('a', text: 'Create blank project/repository')
+              expect(page).to have_selector('a', text: 'Import project/repository')
+            end
           end
         end
       end
@@ -412,7 +418,7 @@ RSpec.describe 'New project', :js do
     end
   end
 
-  context 'with combined_menu: feature flag on' do
+  context 'with combined_menu feature flag on' do
     let(:needs_rewrite_for_combined_menu_flag_on) { true }
 
     before do
@@ -430,9 +436,5 @@ RSpec.describe 'New project', :js do
     end
 
     it_behaves_like 'combined_menu: feature flag examples'
-  end
-
-  def pending_on_combined_menu_flag
-    pending 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587' if needs_rewrite_for_combined_menu_flag_on
   end
 end

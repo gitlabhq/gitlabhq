@@ -38,6 +38,10 @@ RSpec.describe 'Dashboard shortcuts', :js do
         find('body').send_keys([:shift, 'A'])
 
         check_page_title('Activity')
+
+        find('body').send_keys([:shift, 'L'])
+
+        check_page_title('Milestones')
       end
     end
 
@@ -69,7 +73,7 @@ RSpec.describe 'Dashboard shortcuts', :js do
     end
   end
 
-  context 'with combined_menu: feature flag on' do
+  context 'with combined_menu feature flag on' do
     before do
       stub_feature_flags(combined_menu: true)
     end

@@ -180,7 +180,6 @@
   category: testing
   redis_slot: testing
   aggregation: weekly
-  feature_flag: usage_data_i_testing_group_code_coverage_project_click_total
 - name: i_testing_load_performance_widget_total
   category: testing
   redis_slot: testing

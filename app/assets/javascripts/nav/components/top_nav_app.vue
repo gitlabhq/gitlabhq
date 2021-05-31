@@ -36,7 +36,7 @@ export default {
     <gl-nav-item-dropdown
       :text="navData.activeTitle"
       icon="dot-grid"
-      menu-class="gl-mt-3! gl-max-w-none! gl-max-h-none! gl-sm-w-auto!"
+      menu-class="gl-mt-3! gl-max-w-none! gl-max-h-none! gl-sm-w-auto! js-top-nav-dropdown-menu"
       toggle-class="top-nav-toggle js-top-nav-dropdown-toggle gl-px-3!"
       no-flip
     >

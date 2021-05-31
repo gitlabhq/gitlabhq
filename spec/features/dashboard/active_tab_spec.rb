@@ -2,6 +2,9 @@
 
 require 'spec_helper'
 
+# TODO: This entire spec file can be deleted once the combined_menu feature is fully rolled
+#   out and the flag is removed, because it will then be irrelevant (there will be no more tabs).
+#   Feature flag removal issue: https://gitlab.com/gitlab-org/gitlab/-/issues/324086
 RSpec.describe 'Dashboard Active Tab', :js do
   shared_examples 'combined_menu: feature flag examples' do
     before do
@@ -10,8 +13,6 @@ RSpec.describe 'Dashboard Active Tab', :js do
 
     shared_examples 'page has active tab' do |title|
       it "#{title} tab" do
-        pending_on_combined_menu_flag
-
         subject
 
         expect(page).to have_selector('.navbar-sub-nav li.active', count: 1)
@@ -32,27 +33,11 @@ RSpec.describe 'Dashboard Active Tab', :js do
     end
   end
 
-  context 'with combined_menu: feature flag on' do
-    let(:needs_rewrite_for_combined_menu_flag_on) { true }
-
-    before do
-      stub_feature_flags(combined_menu: true)
-    end
-
-    it_behaves_like 'combined_menu: feature flag examples'
-  end
-
   context 'with combined_menu feature flag off' do
-    let(:needs_rewrite_for_combined_menu_flag_on) { false }
-
     before do
       stub_feature_flags(combined_menu: false)
     end
 
     it_behaves_like 'combined_menu: feature flag examples'
-  end
-
-  def pending_on_combined_menu_flag
-    pending 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587' if needs_rewrite_for_combined_menu_flag_on
   end
 end

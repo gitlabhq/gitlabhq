@@ -1,8 +1,0 @@
----
-name: usage_data_i_testing_group_code_coverage_project_click_total
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51411
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/299893
-milestone: '13.8'
-type: development
-group: group::testing
-default_enabled: true
