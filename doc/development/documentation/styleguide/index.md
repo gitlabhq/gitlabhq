@@ -1585,6 +1585,15 @@ elements:
 |:------------|:--------------------------------|:----------------------|
 | _go to_     | making a browser go to location | "navigate to", "open" |
 
+### Permissions vs roles
+
+GitLab users are [assigned roles](../../../user/permissions.md) that confer specific permissions:
+
+- _Maintainer_ is an example of a role.
+- _Create new issue_ is an example of a permission.
+
+[Do not use](#usage-list) these terms interchangeably.
+
 ## GitLab versions
 
 GitLab product documentation pages (not including [Contributor and Development](../../README.md)

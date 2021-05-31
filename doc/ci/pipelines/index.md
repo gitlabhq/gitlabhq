@@ -229,7 +229,7 @@ This functionality is only available:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.
 
-Users with [owner permissions](../../user/permissions.md) in a project can delete a pipeline
+Users with the [Owner role](../../user/permissions.md) in a project can delete a pipeline
 by clicking on the pipeline in the **CI/CD > Pipelines** to get to the **Pipeline Details**
 page, then using the **Delete** button.
 

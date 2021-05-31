@@ -79,7 +79,7 @@ You can give a user access to all projects in a group.
 1. Find your group and select it.
 1. From the left sidebar, select **Members**.
 1. Fill in the fields.
-   - The role applies to all projects in the group. [Learn more about permissions](../permissions.md#permissions).
+   - The role applies to all projects in the group. [Learn more about permissions](../permissions.md).
    - On the **Access expiration date**, the user can no longer access projects in the group.
 
 ## Request access to a group
@@ -111,22 +111,22 @@ your group.
 ## Change the owner of a group
 
 You can change the owner of a group. Each group must always have at least one
-member with [Owner permission](../permissions.md#group-members-permissions).
+member with the [Owner role](../permissions.md#group-members-permissions).
 
 - As an administrator:
   1. Go to the group and from the left menu, select **Members**.
-  1. Give a different member **Owner** permissions.
-  1. Refresh the page. You can now remove **Owner** permissions from the original owner.
+  1. Give a different member the **Owner** role.
+  1. Refresh the page. You can now remove the **Owner** role from the original owner.
 - As the current group's owner:
   1. Go to the group and from the left menu, select **Members**.
-  1. Give a different member **Owner** permissions.
-  1. Have the new owner sign in and remove **Owner** permissions from you.
+  1. Give a different member the **Owner** role.
+  1. Have the new owner sign in and remove the **Owner** role from you.
 
 ## Remove a member from the group
 
 Prerequisites:
 
-- You must have [Owner permissions](../permissions.md#group-members-permissions).
+- You must have the [Owner role](../permissions.md#group-members-permissions).
 - The member must have direct membership in the group. If
   membership is inherited from a parent group, then the member can be removed
   from the parent group only.

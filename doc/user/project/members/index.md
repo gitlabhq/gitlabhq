@@ -17,7 +17,7 @@ to perform actions.
 
 Prerequisite:
 
-- You must have maintainer or owner [permissions](../../permissions.md).
+- You must have the [Maintainer role or Owner role](../../permissions.md).
 
 To add a user to a project:
 
@@ -38,7 +38,7 @@ limited by the maximum role you choose when you invite the group.
 
 Prerequisite:
 
-- You must have maintainer or owner [permissions](../../permissions.md).
+- You must have the [Maintainer role or Owner role](../../permissions.md).
 
 To add groups to a project:
 
@@ -61,7 +61,7 @@ retain the same permissions as the project you import them from.
 
 Prerequisite:
 
-- You must have maintainer or owner [permissions](../../permissions.md).
+- You must have the [Maintainer role or Owner role](../../permissions.md).
 
 To import users:
 
@@ -87,7 +87,7 @@ From the image above, we can deduce the following things:
 - User1 is shown as a **Direct member** in the **Source** column, therefore they belong directly
   to the project we're inspecting.
 - Administrator is the Owner and member of **all** groups and for that reason,
-  there is an indication of an ancestor group and inherited Owner permissions.
+  there is an indication of an ancestor group and inherited the [Owner role](../../permissions.md).
 
 ## Filter and sort members
 

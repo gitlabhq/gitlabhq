@@ -20,7 +20,8 @@ GitLab instance.
 
 All administrators at the time of creation of the project and group are
 added as maintainers of the group and project, and as an administrator, you can
-add new members to the group to give them maintainer access to the project.
+add new members to the group to give them the [Maintainer role](../../../user/permissions.md) for
+the project.
 
 This project is used to self monitor your GitLab instance. The metrics dashboard
 of the project shows some basic resource usage charts, such as CPU and memory usage

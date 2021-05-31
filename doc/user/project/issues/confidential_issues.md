@@ -77,11 +77,11 @@ least [Reporter access](../../permissions.md#project-members-permissions). Howev
 confidential issues, but can only view the ones that they created themselves.
 
 Confidential issues are also hidden in search results for unprivileged users.
-For example, here's what a user with Maintainer and Guest access sees in the
-project's search results respectively.
+For example, here's what a user with the [Maintainer role](../../permissions.md) and Guest access
+sees in the project's search results respectively.
 
-| Maintainer access | Guest access |
-| :-----------: | :----------: |
+| Maintainer role                                                                        | Guest access                                                                     |
+|:---------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------|
 | ![Confidential issues search by maintainer](img/confidential_issues_search_master.png) | ![Confidential issues search by guest](img/confidential_issues_search_guest.png) |
 
 ## Merge Requests for Confidential Issues

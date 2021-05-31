@@ -302,8 +302,6 @@ module Gitlab
       private :archive_file_path
 
       def archive_version_path
-        return '' unless Feature.enabled?(:include_lfs_blobs_in_archive, default_enabled: true)
-
         '@v2'
       end
       private :archive_version_path

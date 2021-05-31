@@ -85,8 +85,8 @@ If you are a member of the GitLab Slack workspace, you can request help in `#doc
 
 ### Reviewing and merging
 
-Anyone with Maintainer access to the relevant GitLab project can merge documentation changes.
-Maintainers must make a good-faith effort to ensure that the content:
+Anyone with the [Maintainer role](../../user/permissions.md) to the relevant GitLab project can
+merge documentation changes. Maintainers must make a good-faith effort to ensure that the content:
 
 - Is clear and sufficiently easy for the intended audience to navigate and understand.
 - Meets the [Documentation Guidelines](index.md) and [Style Guide](styleguide/index.md).

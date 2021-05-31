@@ -13,7 +13,7 @@ GitLab [continuous integration](https://about.gitlab.com/stages-devops-lifecycle
 Before you start, make sure you have:
 
 - A project in GitLab that you would like to use CI/CD for.
-- Maintainer or owner access for the project.
+- The [Maintainer or Owner role](../../user/permissions.md) for the project.
 
 If you are migrating from another CI/CD tool, view this documentation:
 

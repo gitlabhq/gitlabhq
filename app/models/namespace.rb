@@ -437,12 +437,6 @@ class Namespace < ApplicationRecord
   end
 
   def all_projects_with_pages
-    if all_projects.pages_metadata_not_migrated.exists?
-      Gitlab::BackgroundMigration::MigratePagesMetadata.new.perform_on_relation(
-        all_projects.pages_metadata_not_migrated
-      )
-    end
-
     all_projects.with_pages_deployed
   end
 

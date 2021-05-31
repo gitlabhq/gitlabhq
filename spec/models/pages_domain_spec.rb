@@ -664,25 +664,16 @@ RSpec.describe PagesDomain do
       end
     end
 
-    context 'when there are pages deployed for the project' do
-      before do
-        generic_commit_status = create(:generic_commit_status, :success, stage: 'deploy', name: 'pages:deploy')
-        generic_commit_status.update!(project: project)
-        project.pages_metadatum.destroy!
-        project.reload
-      end
+    it 'returns the virual domain when there are pages deployed for the project' do
+      project.mark_pages_as_deployed
+      project.update_pages_deployment!(create(:pages_deployment, project: project))
 
-      it 'returns the virual domain' do
-        expect(Pages::VirtualDomain).to receive(:new).with([project], domain: pages_domain).and_call_original
+      expect(Pages::VirtualDomain).to receive(:new).with([project], domain: pages_domain).and_call_original
 
-        expect(pages_domain.pages_virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-      end
+      virtual_domain = pages_domain.pages_virtual_domain
 
-      it 'migrates project pages metadata' do
-        expect { pages_domain.pages_virtual_domain }.to change {
-          project.reload.pages_metadatum&.deployed
-        }.from(nil).to(true)
-      end
+      expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+      expect(virtual_domain.lookup_paths).not_to be_empty
     end
   end
 

@@ -23,8 +23,8 @@ with the right privileges can deploy to it, thus keeping it safe.
 NOTE:
 A GitLab admin is always allowed to use environments, even if they are protected.
 
-To protect, update, or unprotect an environment, you need to have at least
-[Maintainer permissions](../../user/permissions.md).
+To protect, update, or unprotect an environment, you need to have at least the
+[Maintainer role](../../user/permissions.md).
 
 ## Protecting environments
 

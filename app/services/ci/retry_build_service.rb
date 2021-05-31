@@ -34,15 +34,9 @@ module Ci
       attributes[:user] = current_user
 
       Ci::Build.transaction do
-        # mark all other builds of that name as retried
-        build.pipeline.builds.latest
-          .where(name: build.name)
-          .update_all(retried: true, processed: true)
-
-        create_build!(attributes).tap do
-          # mark existing object as retried/processed without a reload
-          build.retried = true
-          build.processed = true
+        create_build!(attributes).tap do |new_build|
+          new_build.update_older_statuses_retried!
+          build.reset # refresh the data to get new values of `retried` and `processed`.
         end
       end
     end
@@ -59,7 +53,6 @@ module Ci
     def create_build!(attributes)
       build = project.builds.new(attributes)
       build.assign_attributes(::Gitlab::Ci::Pipeline::Seed::Build.environment_attributes_for(build))
-      build.retried = false
       BulkInsertableAssociations.with_bulk_insert do
         build.save!
       end

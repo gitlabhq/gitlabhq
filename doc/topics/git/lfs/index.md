@@ -114,11 +114,9 @@ See the documentation on [File Locking](../../../user/project/file_lock.md).
 ## LFS objects in project archives
 
 > - Support for including Git LFS blobs inside [project source downloads](../../../user/project/repository/index.md) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
-> - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/268409) in GitLab 13.6.
 > - Enabled on GitLab.com.
 > - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-lfs-objects-in-project-archives).
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -134,30 +132,10 @@ oid sha256:3ea5dd307f195f449f0e08234183b82e92c3d5f4cff11c2a6bb014f9e0de12aa
 size 177735
 ```
 
-Starting with GitLab 13.5, these pointers are converted to the uploaded
-LFS object if the `include_lfs_blobs_in_archive` feature flag is
-enabled.
+In GitLab version 13.5 and later, these pointers are converted to the uploaded
+LFS object.
 
 Technical details about how this works can be found in the [development documentation for LFS](../../../development/lfs.md#including-lfs-blobs-in-project-archives).
-
-### Enable or disable LFS objects in project archives
-
-_LFS objects in project archives_ is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:include_lfs_blobs_in_archive)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:include_lfs_blobs_in_archive)
-```
 
 ## Troubleshooting
 

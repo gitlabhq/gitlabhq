@@ -13,7 +13,7 @@ Similarly to [project-level](../user/project/clusters/index.md) and
 group-level Kubernetes clusters allow you to connect a Kubernetes cluster to
 your group, enabling you to use the same cluster across multiple projects.
 
-Users need at least [Maintainer](../user/permissions.md) access for the group to use these endpoints.
+Users need at least the [Maintainer role](../user/permissions.md) for the group to use these endpoints.
 
 ## List group clusters
 

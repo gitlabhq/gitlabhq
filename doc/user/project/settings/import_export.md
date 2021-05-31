@@ -43,7 +43,7 @@ Note the following:
   and are moved to your configured `uploads_directory`. Every 24 hours, a specific worker deletes these export files.
 - Group members are exported as project members, as long as the user has
   maintainer or administrator access to the group where the exported project lives.
-- Project members with owner access are imported as maintainers.
+- Project members with the [Owner role](../../permissions.md) are imported as Maintainers.
 - Imported users can be mapped by their primary email on self-managed instances, if an administrative user (not an owner) does the import.
   Otherwise, a supplementary comment is left to mention that the original author and
   the MRs, notes, or issues are owned by the importer.

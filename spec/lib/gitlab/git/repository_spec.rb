@@ -133,32 +133,10 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       expect(metadata['ArchivePrefix']).to eq(expected_prefix)
     end
 
-    context 'when :include_lfs_blobs_in_archive feature flag is disabled' do
-      let(:expected_path) { File.join(storage_path, cache_key, expected_filename) }
+    it 'sets ArchivePath to the expected globally-unique path' do
+      expect(expected_path).to include(File.join(repository.gl_repository, SeedRepo::LastCommit::ID))
 
-      before do
-        stub_feature_flags(include_lfs_blobs_in_archive: false)
-      end
-
-      it 'sets ArchivePath to the expected globally-unique path' do
-        # This is really important from a security perspective. Think carefully
-        # before changing it: https://gitlab.com/gitlab-org/gitlab-foss/issues/45689
-        expect(expected_path).to include(File.join(repository.gl_repository, SeedRepo::LastCommit::ID))
-
-        expect(metadata['ArchivePath']).to eq(expected_path)
-      end
-    end
-
-    context 'when :include_lfs_blobs_in_archive feature flag is enabled' do
-      before do
-        stub_feature_flags(include_lfs_blobs_in_archive: true)
-      end
-
-      it 'sets ArchivePath to the expected globally-unique path' do
-        expect(expected_path).to include(File.join(repository.gl_repository, SeedRepo::LastCommit::ID))
-
-        expect(metadata['ArchivePath']).to eq(expected_path)
-      end
+      expect(metadata['ArchivePath']).to eq(expected_path)
     end
 
     context 'path is set' do

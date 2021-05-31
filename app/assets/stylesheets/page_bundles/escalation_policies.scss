@@ -2,13 +2,14 @@
   width: 640px;
 }
 
-.escalation-policy-rules {
-  .rule-control {
-    width: 240px;
-  }
-
-  .rule-elapsed-minutes {
-    width: 56px;
-  }
+.rule-control {
+  width: 240px;
 }
 
+.rule-elapsed-minutes {
+  width: 56px;
+}
+
+.rule-close-icon {
+  right: 1rem;
+}

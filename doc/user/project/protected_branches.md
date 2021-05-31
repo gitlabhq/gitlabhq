@@ -36,7 +36,7 @@ The default branch protection level is set in the [Admin Area](../admin_area/set
 
 Prerequisite:
 
-- You must have at least maintainer permissions.
+- You must have at least the [Maintainer role](../permissions.md).
 
 To protect a branch:
 
@@ -163,7 +163,7 @@ To create a new branch through the user interface:
 ## Delete a protected branch
 
 From time to time, you may need to delete or clean up protected branches.
-User with [Maintainer permissions](../permissions.md) and greater can manually delete protected
+User with the [Maintainer role](../permissions.md) and greater can manually delete protected
 branches by using the GitLab web interface:
 
 1. Go to **Repository > Branches**.

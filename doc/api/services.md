@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Services API **(FREE)**
 
 NOTE:
-This API requires an access token with Maintainer or Owner permissions.
+This API requires an access token with the [Maintainer or Owner role](../user/permissions.md).
 
 ## List all active services
 

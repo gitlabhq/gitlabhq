@@ -274,10 +274,10 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'has info button when MWBS button' do
+    it 'has confirm button when MWBS button' do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
-      expect(page).to have_selector('.accept-merge-request.btn-info')
+      expect(page).to have_selector('.accept-merge-request.btn-confirm')
     end
   end
 

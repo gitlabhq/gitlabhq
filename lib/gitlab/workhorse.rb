@@ -270,7 +270,7 @@ module Gitlab
               prefix: metadata['ArchivePrefix'],
               format: format,
               path: path.presence || "",
-              include_lfs_blobs: Feature.enabled?(:include_lfs_blobs_in_archive, default_enabled: true)
+              include_lfs_blobs: true
             ).to_proto
           )
         }

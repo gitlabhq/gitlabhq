@@ -339,7 +339,7 @@ to transfer a project.
 
 You can transfer an existing project into a [group](../../group/index.md) if:
 
-- You have at least **Maintainer** [permissions](../../permissions.md#project-members-permissions) to that group.
+- You have at least the Maintainer** role in that group.
 - You're at least an **Owner** of the project to be transferred.
 - The group to which the project is being transferred to must allow creation of new projects.
 
@@ -362,7 +362,7 @@ namespace if needed.
 #### Delete a project
 
 NOTE:
-Only project owners and administrators have [permissions](../../permissions.md#project-members-permissions) to delete a project.
+Only project Owners and administrators have [permissions](../../permissions.md#project-members-permissions) to delete a project.
 
 To delete a project:
 
@@ -374,10 +374,10 @@ This action:
 
 - Deletes a project including all associated resources (issues, merge requests etc).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
-group owners can [configure](../../group/index.md#enable-delayed-project-removal) projects within a group
-to be deleted after a delayed period.
-When enabled, actual deletion happens after number of days
-specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+  group Owners can [configure](../../group/index.md#enable-delayed-project-removal) projects within a group
+  to be deleted after a delayed period.
+  When enabled, actual deletion happens after number of days
+  specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
 WARNING:
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
@@ -410,7 +410,7 @@ To do so:
 1. Confirm the action by typing the project's path as instructed.
 
 NOTE:
-Only project owners have the [permissions](../../permissions.md#project-members-permissions)
+Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to remove a fork relationship.
 
 ## Operations settings

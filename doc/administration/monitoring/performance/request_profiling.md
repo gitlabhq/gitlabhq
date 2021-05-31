@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To profile a request:
 
-1. Sign in to GitLab as a user with Administrator or Maintainer [permissions](../../../user/permissions.md).
+1. Sign in to GitLab as an Administrator or a user with the [Maintainer role](../../../user/permissions.md).
 1. In the navigation bar, click **Admin area**.
 1. Go to **Monitoring > Requests Profiles**.
 1. In the **Requests Profiles** section, copy the token.

@@ -4,6 +4,7 @@ export const SUCCESS = 'success';
 export const WARNING = 'warning';
 export const DANGER = 'danger';
 export const INFO = 'info';
+export const CONFIRM = 'confirm';
 
 export const MWPS_MERGE_STRATEGY = 'merge_when_pipeline_succeeds';
 export const MTWPS_MERGE_STRATEGY = 'add_to_merge_train_when_pipeline_succeeds';

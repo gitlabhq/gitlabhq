@@ -227,16 +227,6 @@ class PagesDomain < ApplicationRecord
   def pages_deployed?
     return false unless project
 
-    # TODO: remove once `pages_metadatum` is migrated
-    # https://gitlab.com/gitlab-org/gitlab/issues/33106
-    unless project.pages_metadatum
-      Gitlab::BackgroundMigration::MigratePagesMetadata
-        .new
-        .perform_on_relation(Project.where(id: project_id))
-
-      project.reset
-    end
-
     project.pages_metadatum&.deployed?
   end
 

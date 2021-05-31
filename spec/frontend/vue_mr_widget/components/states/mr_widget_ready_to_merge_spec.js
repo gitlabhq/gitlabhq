@@ -123,26 +123,26 @@ describe('ReadyToMerge', () => {
     });
 
     describe('mergeButtonVariant', () => {
-      it('defaults to success class', () => {
+      it('defaults to confirm class', () => {
         createComponent({
           mr: { availableAutoMergeStrategies: [] },
         });
 
-        expect(wrapper.vm.mergeButtonVariant).toEqual('success');
+        expect(wrapper.vm.mergeButtonVariant).toEqual('confirm');
       });
 
-      it('returns success class for success status', () => {
+      it('returns confirm class for success status', () => {
         createComponent({
           mr: { availableAutoMergeStrategies: [], pipeline: true },
         });
 
-        expect(wrapper.vm.mergeButtonVariant).toEqual('success');
+        expect(wrapper.vm.mergeButtonVariant).toEqual('confirm');
       });
 
-      it('returns info class for pending status', () => {
+      it('returns confirm class for pending status', () => {
         createComponent();
 
-        expect(wrapper.vm.mergeButtonVariant).toEqual('info');
+        expect(wrapper.vm.mergeButtonVariant).toEqual('confirm');
       });
 
       it('returns danger class for failed status', () => {

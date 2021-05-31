@@ -209,7 +209,7 @@ deploy_to_production:
 
 To set a deploy freeze window in the UI, complete these steps:
 
-1. Sign in to GitLab as a user with project Maintainer [permissions](../../permissions.md).
+1. Sign in to GitLab as a user with the [Maintainer role](../../permissions.md).
 1. Navigate to **Project overview**.
 1. In the left navigation menu, navigate to **Settings > CI/CD**.
 1. Scroll to **Deploy freezes**.

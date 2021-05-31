@@ -13072,6 +13072,9 @@ msgstr ""
 msgid "Errors:"
 msgstr ""
 
+msgid "Escalation Policies"
+msgstr ""
+
 msgid "Escalation policies"
 msgstr ""
 
@@ -13079,6 +13082,9 @@ msgid "Escalation policies are not supported for this project"
 msgstr ""
 
 msgid "EscalationPolicies|+ Add an additional rule"
+msgstr ""
+
+msgid "EscalationPolicies|A schedule is required for adding an escalation policy."
 msgstr ""
 
 msgid "EscalationPolicies|Add an escalation policy"
@@ -13097,6 +13103,9 @@ msgid "EscalationPolicies|Email on-call user in schedule"
 msgstr ""
 
 msgid "EscalationPolicies|Escalation rules"
+msgstr ""
+
+msgid "EscalationPolicies|Failed to load oncall-schedules"
 msgstr ""
 
 msgid "EscalationPolicies|IF alert is not %{alertStatus} in %{minutes} minutes"

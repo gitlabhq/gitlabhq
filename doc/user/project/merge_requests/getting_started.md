@@ -153,7 +153,7 @@ enabled by default for all new merge requests, enable it in the
 
 This option is also visible in an existing merge request next to
 the merge request button and can be selected or deselected before merging.
-It is only visible to users with [Maintainer permissions](../../permissions.md)
+It is only visible to users with the [Maintainer role](../../permissions.md)
 in the source project.
 
 If the user viewing the merge request does not have the correct

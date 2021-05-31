@@ -26,7 +26,7 @@ when it receives a reply.
 The comment area supports [Markdown](../markdown.md) and [quick actions](../project/quick_actions.md).
 You can [suggest code changes](../project/merge_requests/reviews/suggestions.md) in your comment,
 which the user can accept through the user interface. You can edit your own
-comment at any time, and anyone with [Maintainer access level](../permissions.md) or
+comment at any time, and anyone with the [Maintainer role](../permissions.md) or
 higher can also edit a comment made by someone else.
 
 You can also reply to a comment notification email to reply to the comment if

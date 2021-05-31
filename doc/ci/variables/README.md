@@ -125,8 +125,8 @@ for [manually-triggered pipelines](../pipelines/index.md#run-a-pipeline-manually
 
 ### Project CI/CD variables
 
-You can add CI/CD variables to a project's settings. Only project members with
-[maintainer permissions](../../user/permissions.md#project-members-permissions)
+You can add CI/CD variables to a project's settings. Only project members with the
+[Maintainer role](../../user/permissions.md#project-members-permissions)
 can add or update project CI/CD variables. To keep a CI/CD variable secret, put it
 in the project settings, not in the `.gitlab-ci.yml` file.
 

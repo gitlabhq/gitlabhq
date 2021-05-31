@@ -41,7 +41,7 @@ Before beginning, make sure:
 
 To follow this tutorial, you need:
 
-- Maintainer permissions to the existing Git repository
+- The [Maintainer role](../../../user/permissions.md) for the existing Git repository
   you'd like to migrate to LFS with access through the command line.
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
   and [Java Runtime Environment](https://www.java.com/en/download/manual.jsp)

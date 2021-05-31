@@ -469,11 +469,6 @@ This series of PowerShell commands enables [sub-addressing](#email-sub-addressin
 at the organization level in Office 365. This allows all mailboxes in the organization
 to receive sub-addressed mail:
 
-NOTE:
-This series of commands enables sub-addressing at the organization
-level in Office 365. This allows all mailboxes in the organization
-to receive sub-addressed mail.
-
 ```powershell
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 

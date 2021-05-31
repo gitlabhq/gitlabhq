@@ -22,7 +22,7 @@ import { __ } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MergeRequest from '../../../merge_request';
-import { AUTO_MERGE_STRATEGIES, DANGER, INFO, WARNING } from '../../constants';
+import { AUTO_MERGE_STRATEGIES, DANGER, CONFIRM, WARNING } from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import MergeRequestStore from '../../stores/mr_widget_store';
@@ -227,11 +227,7 @@ export default {
         return DANGER;
       }
 
-      if (this.status === PIPELINE_PENDING_STATE) {
-        return INFO;
-      }
-
-      return PIPELINE_SUCCESS_STATE;
+      return CONFIRM;
     },
     iconClass() {
       if (this.shouldRenderMergeTrainHelperText && !this.mr.preventMerge) {

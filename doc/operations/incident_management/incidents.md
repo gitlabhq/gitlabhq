@@ -69,7 +69,7 @@ You can set up a webhook with PagerDuty to automatically create a GitLab inciden
 for each PagerDuty incident. This configuration requires you to make changes
 in both PagerDuty and GitLab:
 
-1. Sign in as a user with Maintainer [permissions](../../user/permissions.md).
+1. Sign in as a user with the [Maintainer role](../../user/permissions.md).
 1. Navigate to **Settings > Operations > Incidents** and expand **Incidents**.
 1. Select the **PagerDuty integration** tab:
 

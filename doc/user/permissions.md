@@ -4,11 +4,11 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Permissions
+# Permissions and roles
 
-Users have different abilities depending on the access level they have in a
+Users have different abilities depending on the role they have in a
 particular group or project. If a user is both in a project's group and the
-project itself, the highest permission level is used.
+project itself, the highest role is used.
 
 On public and internal projects, the Guest role is not enforced. All users can:
 
@@ -39,11 +39,11 @@ usernames. A GitLab administrator can configure the GitLab instance to
 NOTE:
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
-The Owner permission is only available at the group or personal namespace level (and for instance administrators) and is inherited by its projects.
+The Owner role is only available at the group or personal namespace level (and for instance administrators) and is inherited by its projects.
 While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner, or an instance administrator, who receives all permissions.
 For more information, see [projects members documentation](project/members/index.md).
 
-The following table depicts the various user permission levels in a project.
+The following table lists project permissions available for each role:
 
 | Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner  |
 |---------------------------------------------------|---------|------------|-------------|----------|--------|
@@ -256,8 +256,9 @@ NOTE:
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
 Any user can remove themselves from a group, unless they are the last Owner of
-the group. The following table depicts the various user permission levels in a
-group.
+the group.
+
+The following table lists group permissions available for each role:
 
 | Action                                                 | Guest | Reporter | Developer | Maintainer | Owner |
 |--------------------------------------------------------|-------|----------|-----------|------------|-------|

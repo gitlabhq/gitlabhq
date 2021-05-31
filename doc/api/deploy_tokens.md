@@ -49,7 +49,8 @@ Example response:
 
 ## Project deploy tokens
 
-Project deploy token API endpoints require project maintainer access or higher.
+Project deploy token API endpoints require the [Maintainer role](../user/permissions.md) or higher
+for the project.
 
 ### List project deploy tokens
 

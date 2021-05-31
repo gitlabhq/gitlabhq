@@ -102,7 +102,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the tag or wildcard |
-| `create_access_level` | string | no | Access levels allowed to create (defaults: `40`, maintainer access level) |
+| `create_access_level` | string | no | Access levels allowed to create (defaults: `40`, Maintainer role) |
 
 Example response:
 

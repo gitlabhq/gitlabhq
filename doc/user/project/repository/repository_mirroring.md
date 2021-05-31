@@ -22,14 +22,15 @@ There are two kinds of repository mirroring supported by GitLab:
 When the mirror repository is updated, all new branches, tags, and commits are visible in the
 project's activity feed.
 
-Users with [Maintainer access](../../permissions.md) to the project can also force an
+Users with the [Maintainer role](../../permissions.md) for the project can also force an
 immediate update, unless:
 
 - The mirror is already being updated.
 - The [limit for pull mirroring interval seconds](../../../administration/instance_limits.md#pull-mirroring-interval) has not elapsed since its last update.
 
-For security reasons, the URL to the original repository is only displayed to users with
-Maintainer or Owner permissions to the mirrored project.
+For security reasons, the URL to the original repository is only displayed to users with the
+[Maintainer role](../../permissions.md) or the [Owner role](../../permissions.md) for the mirrored
+project.
 
 ## Use cases
 

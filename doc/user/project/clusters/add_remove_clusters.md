@@ -35,9 +35,9 @@ Before [adding a Kubernetes cluster](#create-new-cluster) using GitLab, you need
   - A [self-managed installation](https://about.gitlab.com/pricing/#self-managed) with GitLab version
     12.5 or later. This ensures the GitLab UI can be used for cluster creation.
 - The following GitLab access:
-  - [Maintainer access to a project](../../permissions.md#project-members-permissions) for a
+  - [Maintainer role for a project](../../permissions.md#project-members-permissions) for a
     project-level cluster.
-  - [Maintainer access to a group](../../permissions.md#group-members-permissions) for a
+  - [Maintainer role for a group](../../permissions.md#group-members-permissions) for a
     group-level cluster.
   - [Admin Area access](../../admin_area/index.md) for a self-managed instance-level
     cluster. **(FREE SELF)**

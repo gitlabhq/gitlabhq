@@ -344,7 +344,7 @@ can change an issue's type. To do this, edit the issue and select an issue type 
 
 ## Deleting issues
 
-Users with [project owner permission](../../permissions.md) can delete an issue by
+Users with the [Owner role](../../permissions.md) can delete an issue by
 editing it and selecting **Delete issue**.
 
 ![delete issue - button](img/delete_issue_v13_11.png)

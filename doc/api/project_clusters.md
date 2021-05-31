@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23922) in GitLab 11.7.
 
-Users need at least [Maintainer](../user/permissions.md) access to use these endpoints.
+Users need at least the [Maintainer](../user/permissions.md) role to use these endpoints.
 
 ## List project clusters
 
