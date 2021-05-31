@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Secure and Protect terminology
+# Secure and Protect terminology **(FREE)**
 
 This terminology list for GitLab Secure and Protect aims to:
 

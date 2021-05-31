@@ -1,10 +1,10 @@
 ---
-stage: Secure
-group: None
+stage: Verify
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# CI/CD Variables
+# CI/CD variables **(FREE)**
 
 CI/CD variables are applied to environments via the runner and can be set from the project's **Settings > CI/CD** page.
 

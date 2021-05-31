@@ -5,7 +5,7 @@ group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Vulnerability severity levels
+# Vulnerability severity levels **(ULTIMATE)**
 
 GitLab vulnerability analyzers attempt to return vulnerability severity level values whenever
 possible. The following is a list of available GitLab vulnerability severity levels, ranked from

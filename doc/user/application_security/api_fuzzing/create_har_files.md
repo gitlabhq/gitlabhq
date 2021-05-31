@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# HTTP Archive format
+# HTTP Archive format **(ULTIMATE)**
 
 HTTP Archive (HAR) format files are an industry standard for exchanging information about HTTP
 requests and HTTP responses. A HAR file's content is JSON formatted, containing browser interactions
@@ -15,7 +15,7 @@ The HAR files can be used to perform [web API Fuzz Testing](index.md#http-archiv
 your [GitLab CI/CD](../../../ci/README.md) pipelines.
 
 WARNING:
-**DANGER** A HAR file stores information exchanged between web client and web server. It could also
+A HAR file stores information exchanged between web client and web server. It could also
 store sensitive information such as authentication tokens, API keys, and session cookies. We
 recommend that you review the HAR file contents before adding them to a repository.
 
@@ -36,7 +36,7 @@ automatically record your network activity and generate the HAR file:
 1. [Firefox web browser](#firefox-web-browser).
 
 WARNING:
-**DANGER** HAR files may contain sensitive information such as authentication tokens, API keys, and
+HAR files may contain sensitive information such as authentication tokens, API keys, and
 session cookies. We recommend that you review the HAR file contents before adding them to a
 repository.
 

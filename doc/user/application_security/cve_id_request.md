@@ -5,7 +5,7 @@ group: Vulnerability Research
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# CVE ID Requests
+# CVE ID Requests **(ULTIMATE SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
 

@@ -5,7 +5,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Offline environments
+# Offline environments **(ULTIMATE SELF)**
 
 It's possible to run most of the GitLab security scanners when not connected to the internet.
 
