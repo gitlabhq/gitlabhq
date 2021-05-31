@@ -7,6 +7,10 @@ module Gitlab
         !signup_enabled?
       end
 
+      def signup_limited?
+        domain_allowlist.present? || email_restrictions_enabled? || require_admin_approval_after_user_signup?
+      end
+
       def current_application_settings
         Gitlab::SafeRequestStore.fetch(:current_application_settings) { ensure_application_settings! }
       end
