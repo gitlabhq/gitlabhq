@@ -268,10 +268,28 @@ RSpec.describe WebHook do
   end
 
   describe '#enable!' do
-    it 'makes a hook executable' do
+    it 'makes a hook executable if it was marked as failed' do
       hook.recent_failures = 1000
 
       expect { hook.enable! }.to change(hook, :executable?).from(false).to(true)
+    end
+
+    it 'makes a hook executable if it is currently backed off' do
+      hook.disabled_until = 1.hour.from_now
+
+      expect { hook.enable! }.to change(hook, :executable?).from(false).to(true)
+    end
+
+    it 'does not update hooks unless necessary' do
+      expect(hook).not_to receive(:update!)
+
+      hook.enable!
+    end
+
+    it 'is idempotent on executable hooks' do
+      expect(hook).not_to receive(:update!)
+
+      expect { hook.enable! }.not_to change(hook, :executable?)
     end
   end
 
@@ -298,6 +316,7 @@ RSpec.describe WebHook do
 
     it 'does not allow the failure count to exceed the maximum value' do
       hook.recent_failures = described_class::MAX_FAILURES
+      expect(hook).not_to receive(:update!)
 
       expect { hook.failed! }.not_to change(hook, :recent_failures)
     end

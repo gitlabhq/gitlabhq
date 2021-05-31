@@ -160,7 +160,7 @@ class Projects::IssuesController < Projects::ApplicationController
       new_project = Project.find(params[:move_to_project_id])
       return render_404 unless issue.can_move?(current_user, new_project)
 
-      @issue = ::Issues::UpdateService.new(project: project, current_user: current_user, params: { target_project: new_project }).execute(issue)
+      @issue = ::Issues::MoveService.new(project: project, current_user: current_user).execute(issue, new_project)
     end
 
     respond_to do |format|

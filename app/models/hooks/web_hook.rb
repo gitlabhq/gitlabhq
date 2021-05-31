@@ -73,6 +73,8 @@ class WebHook < ApplicationRecord
   end
 
   def enable!
+    return if recent_failures == 0 && disabled_until.nil? && backoff_count == 0
+
     update!(recent_failures: 0, disabled_until: nil, backoff_count: 0)
   end
 

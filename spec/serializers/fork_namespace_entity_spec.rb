@@ -9,12 +9,15 @@ RSpec.describe ForkNamespaceEntity do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:namespace) { create(:group, :with_avatar, description: 'test') }
+  let_it_be(:forked_project) { build(:project) }
 
   let(:memberships) do
     user.members.index_by(&:source_id)
   end
 
-  let(:entity) { described_class.new(namespace, current_user: user, project: project, memberships: memberships) }
+  let(:forked_projects) { { namespace.id => forked_project } }
+
+  let(:entity) { described_class.new(namespace, current_user: user, project: project, memberships: memberships, forked_projects: forked_projects) }
 
   subject(:json) { entity.as_json }
 
@@ -46,10 +49,7 @@ RSpec.describe ForkNamespaceEntity do
   end
 
   it 'exposes forked_project_path when fork exists in namespace' do
-    namespace.add_maintainer(user)
-    fork_in_namespace = fork_project(project, user, namespace: namespace)
-
-    expect(json[:forked_project_path]).to eql project_path(fork_in_namespace)
+    expect(json[:forked_project_path]).to eql project_path(forked_project)
   end
 
   it 'exposes relative path to the namespace' do

@@ -195,6 +195,29 @@ RSpec.describe Projects::ForksController do
           expect(json_response['namespaces'].length).to eq(1)
           expect(json_response['namespaces'][0]['id']).to eq(group.id)
         end
+
+        context 'N+1 queries' do
+          before do
+            create(:fork_network, root_project: project)
+          end
+
+          it 'avoids N+1 queries' do
+            do_request = -> { get :new, format: format, params: { namespace_id: project.namespace, project_id: project } }
+
+            # warm up
+            do_request.call
+
+            control = ActiveRecord::QueryRecorder.new { do_request.call }
+
+            create(:group, :public).add_owner(user)
+
+            # TODO: There is another N+1 caused by user.can?(:create_projects, namespace)
+            # Defined in ForkNamespaceEntity
+            extra_count = 1
+
+            expect { do_request.call }.not_to exceed_query_limit(control.count + extra_count)
+          end
+        end
       end
     end
 

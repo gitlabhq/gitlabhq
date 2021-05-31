@@ -255,7 +255,7 @@ module Trigger
     end
 
     def ref
-      ENV['DOCS_BRANCH'] || 'master'
+      ENV['DOCS_BRANCH'] || 'main'
     end
 
     # `gitlab-org/gitlab-docs` pipeline trigger "Triggered from gitlab-org/gitlab 'review-docs-deploy' job"
