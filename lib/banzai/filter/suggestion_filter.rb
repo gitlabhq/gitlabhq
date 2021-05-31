@@ -7,10 +7,13 @@ module Banzai
       # Class used for tagging elements that should be rendered
       TAG_CLASS = 'js-render-suggestion'
 
+      CSS   = 'pre.suggestion > code'
+      XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
+
       def call
         return doc unless suggestions_filter_enabled?
 
-        doc.search('pre.suggestion > code').each do |node|
+        doc.xpath(XPATH).each do |node|
           node.add_class(TAG_CLASS)
         end
 
