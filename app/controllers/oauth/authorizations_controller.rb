@@ -14,8 +14,9 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     if pre_auth.authorizable?
       if skip_authorization? || matching_token?
         auth = authorization.authorize
+        parsed_redirect_uri = URI.parse(auth.redirect_uri)
         session.delete(:user_return_to)
-        redirect_to auth.redirect_uri
+        render "doorkeeper/authorizations/redirect", locals: { redirect_uri: parsed_redirect_uri }, layout: false
       else
         render "doorkeeper/authorizations/new"
       end
