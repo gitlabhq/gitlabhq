@@ -935,7 +935,7 @@ GEM
       tty-markdown
       tty-prompt
     public_suffix (4.0.6)
-    puma (5.1.1)
+    puma (5.3.2)
       nio4r (~> 2.0)
     puma_worker_killer (0.3.1)
       get_process_mem (~> 0.2)
@@ -1577,7 +1577,7 @@ DEPENDENCIES
   pry-byebug
   pry-rails (~> 0.3.9)
   pry-shell (~> 0.4.0)
-  puma (~> 5.1.1)
+  puma (~> 5.3.1)
   puma_worker_killer (~> 0.3.1)
   rack (~> 2.2.3)
   rack-attack (~> 6.3.0)
