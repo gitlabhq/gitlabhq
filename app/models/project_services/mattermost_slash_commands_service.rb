@@ -22,17 +22,17 @@ class MattermostSlashCommandsService < SlashCommandsService
   end
 
   def configure(user, params)
-    token = Mattermost::Command.new(user)
+    token = ::Mattermost::Command.new(user)
       .create(command(params))
 
     update(active: true, token: token) if token
-  rescue Mattermost::Error => e
+  rescue ::Mattermost::Error => e
     [false, e.message]
   end
 
   def list_teams(current_user)
-    [Mattermost::Team.new(current_user).all, nil]
-  rescue Mattermost::Error => e
+    [::Mattermost::Team.new(current_user).all, nil]
+  rescue ::Mattermost::Error => e
     [[], e.message]
   end
 

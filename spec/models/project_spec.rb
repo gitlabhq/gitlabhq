@@ -5250,7 +5250,7 @@ RSpec.describe Project, factory_default: :keep do
     it 'executes services with the specified scope' do
       data = 'any data'
 
-      expect_next_found_instance_of(SlackService) do |instance|
+      expect_next_found_instance_of(Integrations::Slack) do |instance|
         expect(instance).to receive(:async_execute).with(data).once
       end
 
@@ -5258,7 +5258,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'does not execute services that don\'t match the specified scope' do
-      expect(SlackService).not_to receive(:allocate).and_wrap_original do |method|
+      expect(Integrations::Slack).not_to receive(:allocate).and_wrap_original do |method|
         method.call.tap do |instance|
           expect(instance).not_to receive(:async_execute)
         end

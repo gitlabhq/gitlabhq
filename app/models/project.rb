@@ -166,33 +166,33 @@ class Project < ApplicationRecord
   has_one :confluence_service, class_name: 'Integrations::Confluence'
   has_one :custom_issue_tracker_service, class_name: 'Integrations::CustomIssueTracker'
   has_one :datadog_service, class_name: 'Integrations::Datadog'
+  has_one :discord_service, class_name: 'Integrations::Discord'
   has_one :drone_ci_service, class_name: 'Integrations::DroneCi'
   has_one :emails_on_push_service, class_name: 'Integrations::EmailsOnPush'
   has_one :ewm_service, class_name: 'Integrations::Ewm'
   has_one :external_wiki_service, class_name: 'Integrations::ExternalWiki'
   has_one :flowdock_service, class_name: 'Integrations::Flowdock'
+  has_one :hangouts_chat_service, class_name: 'Integrations::HangoutsChat'
   has_one :irker_service, class_name: 'Integrations::Irker'
   has_one :jenkins_service, class_name: 'Integrations::Jenkins'
   has_one :jira_service, class_name: 'Integrations::Jira'
+  has_one :mattermost_service, class_name: 'Integrations::Mattermost'
+  has_one :microsoft_teams_service, class_name: 'Integrations::MicrosoftTeams'
   has_one :mock_ci_service, class_name: 'Integrations::MockCi'
   has_one :packagist_service, class_name: 'Integrations::Packagist'
   has_one :pipelines_email_service, class_name: 'Integrations::PipelinesEmail'
   has_one :pivotaltracker_service, class_name: 'Integrations::Pivotaltracker'
   has_one :redmine_service, class_name: 'Integrations::Redmine'
+  has_one :slack_service, class_name: 'Integrations::Slack'
   has_one :teamcity_service, class_name: 'Integrations::Teamcity'
+  has_one :unify_circuit_service, class_name: 'Integrations::UnifyCircuit'
+  has_one :webex_teams_service, class_name: 'Integrations::WebexTeams'
   has_one :youtrack_service, class_name: 'Integrations::Youtrack'
-  has_one :discord_service
   has_one :mattermost_slash_commands_service
-  has_one :mattermost_service
   has_one :slack_slash_commands_service
-  has_one :slack_service
   has_one :pushover_service
   has_one :prometheus_service, inverse_of: :project
   has_one :mock_monitoring_service
-  has_one :microsoft_teams_service
-  has_one :hangouts_chat_service
-  has_one :unify_circuit_service
-  has_one :webex_teams_service
 
   has_one :root_of_fork_network,
           foreign_key: 'root_project_id',

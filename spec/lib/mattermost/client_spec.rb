@@ -14,13 +14,13 @@ RSpec.describe Mattermost::Client do
 
     it 'yields an error on malformed JSON' do
       bad_json = Struct::Request.new("I'm not json", true)
-      expect { subject.send(:json_response, bad_json) }.to raise_error(Mattermost::ClientError)
+      expect { subject.send(:json_response, bad_json) }.to raise_error(::Mattermost::ClientError)
     end
 
     it 'shows a client error if the request was unsuccessful' do
       bad_request = Struct::Request.new("true", false)
 
-      expect { subject.send(:json_response, bad_request) }.to raise_error(Mattermost::ClientError)
+      expect { subject.send(:json_response, bad_request) }.to raise_error(::Mattermost::ClientError)
     end
   end
 end

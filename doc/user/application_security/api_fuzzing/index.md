@@ -778,7 +778,7 @@ variables:
 ```
 
 In this example `.gitlab-ci.yml`, the `SECRET_OVERRIDES` variable provides the JSON. This is a
-[group or instance level CI/CD variable defined in the UI](../../../ci/variables/README.md#instance-cicd-variables):
+[group or instance level CI/CD variable defined in the UI](../../../ci/variables/README.md#add-a-cicd-variable-to-an-instance):
 
 ```yaml
 stages:

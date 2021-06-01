@@ -2,8 +2,8 @@
 
 require "spec_helper"
 
-RSpec.describe WebexTeamsService do
-  it_behaves_like "chat service", "Webex Teams" do
+RSpec.describe Integrations::WebexTeams do
+  it_behaves_like "chat integration", "Webex Teams" do
     let(:client_arguments) { webhook_url }
     let(:payload) do
       {

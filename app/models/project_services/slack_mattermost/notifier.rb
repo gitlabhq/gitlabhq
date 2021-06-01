@@ -6,7 +6,7 @@ module SlackMattermost
 
     def notify(message, opts)
       # See https://gitlab.com/gitlab-org/slack-notifier/#custom-http-client
-      notifier = Slack::Messenger.new(webhook, opts.merge(http_client: HTTPClient))
+      notifier = ::Slack::Messenger.new(webhook, opts.merge(http_client: HTTPClient))
       notifier.ping(
         message.pretext,
         attachments: message.attachments,

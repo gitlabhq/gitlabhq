@@ -253,7 +253,7 @@ gem 'flowdock', '~> 0.7'
 gem 'slack-messenger', '~> 2.3.4'
 
 # Hangouts Chat integration
-gem 'hangouts-chat', '~> 0.0.5'
+gem 'hangouts-chat', '~> 0.0.5', require: 'hangouts_chat'
 
 # Asana integration
 gem 'asana', '~> 0.10.3'

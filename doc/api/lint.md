@@ -118,7 +118,7 @@ Example response:
 {
   "status": "valid",
   "errors": [],
-  "merged_config": "---\n:another_test:\n  :stage: test\n  :script: echo 2\n:test:\n  :stage: test\n  :script: echo 1\n"
+  "merged_yaml": "---\n:another_test:\n  :stage: test\n  :script: echo 2\n:test:\n  :stage: test\n  :script: echo 1\n"
 }
 ```
 

@@ -29,6 +29,6 @@ class SlackSlashCommandsService < SlashCommandsService
   private
 
   def format(text)
-    Slack::Messenger::Util::LinkFormatter.format(text) if text
+    ::Slack::Messenger::Util::LinkFormatter.format(text) if text
   end
 end

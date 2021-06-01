@@ -11,10 +11,10 @@ RSpec.describe MattermostSlashCommandsService do
     let(:user) { create(:user) }
 
     before do
-      session = Mattermost::Session.new(nil)
+      session = ::Mattermost::Session.new(nil)
       session.base_uri = 'http://mattermost.example.com'
 
-      allow_any_instance_of(Mattermost::Client).to receive(:with_session)
+      allow_any_instance_of(::Mattermost::Client).to receive(:with_session)
         .and_yield(session)
     end
 

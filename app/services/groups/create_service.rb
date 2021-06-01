@@ -28,7 +28,7 @@ module Groups
       @group.name ||= @group.path.dup
 
       if create_chat_team?
-        response = Mattermost::CreateTeamService.new(@group, current_user).execute
+        response = ::Mattermost::CreateTeamService.new(@group, current_user).execute
         return @group if @group.errors.any?
 
         @group.build_chat_team(name: response['name'], team_id: response['id'])

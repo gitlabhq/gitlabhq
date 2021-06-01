@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MicrosoftTeamsService do
+RSpec.describe Integrations::MicrosoftTeams do
   let(:chat_service) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 
@@ -64,7 +64,7 @@ RSpec.describe MicrosoftTeamsService do
       end
 
       it 'specifies the webhook when it is configured' do
-        expect(MicrosoftTeams::Notifier).to receive(:new).with(webhook_url).and_return(double(:microsoft_teams_service).as_null_object)
+        expect(::MicrosoftTeams::Notifier).to receive(:new).with(webhook_url).and_return(double(:microsoft_teams_service).as_null_object)
 
         chat_service.execute(push_sample_data)
       end

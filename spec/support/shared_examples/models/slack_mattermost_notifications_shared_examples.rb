@@ -81,7 +81,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
     shared_examples 'calls the service API with the event message' do |event_message|
       specify do
-        expect_next_instance_of(Slack::Messenger) do |messenger|
+        expect_next_instance_of(::Slack::Messenger) do |messenger|
           expect(messenger).to receive(:ping).with(event_message, anything).and_call_original
         end
 
@@ -95,7 +95,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       let(:chat_service_params) { { username: 'slack_username' } }
 
       it 'uses the username as an option' do
-        expect(Slack::Messenger).to execute_with_options(username: 'slack_username')
+        expect(::Slack::Messenger).to execute_with_options(username: 'slack_username')
 
         execute_service
       end
@@ -110,7 +110,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
         let(:chat_service_params) { { push_channel: 'random' } }
 
         it 'uses the right channel for push event' do
-          expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+          expect(::Slack::Messenger).to execute_with_options(channel: ['random'])
 
           execute_service
         end
@@ -136,7 +136,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
         let(:chat_service_params) { { issue_channel: 'random' } }
 
         it 'uses the right channel for issue event' do
-          expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+          expect(::Slack::Messenger).to execute_with_options(channel: ['random'])
 
           execute_service
         end
@@ -147,7 +147,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
           end
 
           it 'falls back to issue channel' do
-            expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+            expect(::Slack::Messenger).to execute_with_options(channel: ['random'])
 
             execute_service
           end
@@ -156,7 +156,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
             let(:chat_service_params) { { issue_channel: 'random', confidential_issue_channel: 'confidential' } }
 
             it 'uses the confidential issue channel when it is defined' do
-              expect(Slack::Messenger).to execute_with_options(channel: ['confidential'])
+              expect(::Slack::Messenger).to execute_with_options(channel: ['confidential'])
 
               execute_service
             end
@@ -175,7 +175,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
         let(:chat_service_params) { { merge_request_channel: 'random' } }
 
         it 'uses the right channel for merge request event' do
-          expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+          expect(::Slack::Messenger).to execute_with_options(channel: ['random'])
 
           execute_service
         end
@@ -192,7 +192,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
         let(:chat_service_params) { { wiki_page_channel: 'random' } }
 
         it 'uses the right channel for wiki event' do
-          expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+          expect(::Slack::Messenger).to execute_with_options(channel: ['random'])
 
           execute_service
         end
@@ -216,7 +216,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
         let(:chat_service_params) { { note_channel: 'random' } }
 
         it 'uses the right channel' do
-          expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+          expect(::Slack::Messenger).to execute_with_options(channel: ['random'])
 
           execute_service
         end
@@ -227,7 +227,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
           end
 
           it 'falls back to note channel' do
-            expect(Slack::Messenger).to execute_with_options(channel: ['random'])
+            expect(::Slack::Messenger).to execute_with_options(channel: ['random'])
 
             execute_service
           end
@@ -236,7 +236,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
             let(:chat_service_params) { { note_channel: 'random', confidential_note_channel: 'confidential' } }
 
             it 'uses confidential channel' do
-              expect(Slack::Messenger).to execute_with_options(channel: ['confidential'])
+              expect(::Slack::Messenger).to execute_with_options(channel: ['confidential'])
 
               execute_service
             end

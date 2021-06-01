@@ -6,10 +6,10 @@ RSpec.describe Mattermost::Command do
   let(:params) { { 'token' => 'token', team_id: 'abc' } }
 
   before do
-    session = Mattermost::Session.new(nil)
+    session = ::Mattermost::Session.new(nil)
     session.base_uri = 'http://mattermost.example.com'
 
-    allow_any_instance_of(Mattermost::Client).to receive(:with_session)
+    allow_any_instance_of(::Mattermost::Client).to receive(:with_session)
       .and_yield(session)
   end
 
@@ -57,7 +57,7 @@ RSpec.describe Mattermost::Command do
       end
 
       it 'raises an error with message' do
-        expect { subject }.to raise_error(Mattermost::Error, 'This trigger word is already in use. Please choose another word.')
+        expect { subject }.to raise_error(::Mattermost::Error, 'This trigger word is already in use. Please choose another word.')
       end
     end
   end

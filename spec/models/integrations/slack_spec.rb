@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SlackService do
+RSpec.describe Integrations::Slack do
   it_behaves_like "slack or mattermost notifications", 'Slack'
 
   describe '#execute' do

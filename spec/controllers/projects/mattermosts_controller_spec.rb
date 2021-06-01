@@ -53,7 +53,7 @@ RSpec.describe Projects::MattermostsController do
 
     context 'the request is succesull' do
       before do
-        allow_next_instance_of(Mattermost::Command) do |instance|
+        allow_next_instance_of(::Mattermost::Command) do |instance|
           allow(instance).to receive(:create).and_return('token')
         end
       end

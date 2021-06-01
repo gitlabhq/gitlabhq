@@ -2,8 +2,8 @@
 
 require "spec_helper"
 
-RSpec.describe UnifyCircuitService do
-  it_behaves_like "chat service", "Unify Circuit" do
+RSpec.describe Integrations::UnifyCircuit do
+  it_behaves_like "chat integration", "Unify Circuit" do
     let(:client_arguments) { webhook_url }
     let(:payload) do
       {

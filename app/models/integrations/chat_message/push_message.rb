@@ -49,7 +49,7 @@ module Integrations
       end
 
       def format(string)
-        Slack::Messenger::Util::LinkFormatter.format(string)
+        ::Slack::Messenger::Util::LinkFormatter.format(string)
       end
 
       def commit_messages
