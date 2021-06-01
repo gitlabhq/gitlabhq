@@ -82,7 +82,7 @@ This writes the downloaded file to `MyNuGetPkg.1.3.0.17.nupkg` in the current di
 
 > Introduced in GitLab 12.8.
 
-Download a NuGet package file:
+Upload a NuGet package file:
 
 ```plaintext
 PUT projects/:id/packages/nuget

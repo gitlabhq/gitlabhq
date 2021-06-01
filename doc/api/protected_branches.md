@@ -22,7 +22,7 @@ The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` 
 
 ## List protected branches
 
-Gets a list of protected branches from a project.
+Gets a list of protected branches from a project as they are defined [in the UI](../user/project/protected_branches.md#configure-a-protected-branch). If a wildcard is set, it is returned instead of the exact name of the branches that match that wildcard.
 
 ```plaintext
 GET /projects/:id/protected_branches
@@ -44,6 +44,24 @@ Example response:
   {
     "id": 1,
     "name": "master",
+    "push_access_levels": [
+      {
+        "access_level": 40,
+        "access_level_description": "Maintainers"
+      }
+    ],
+    "merge_access_levels": [
+      {
+        "access_level": 40,
+        "access_level_description": "Maintainers"
+      }
+    ],
+    "allow_force_push":false,
+    "code_owner_approval_required": false
+  },
+  {
+    "id": 1,
+    "name": "release/*",
     "push_access_levels": [
       {
         "access_level": 40,

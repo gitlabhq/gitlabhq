@@ -22,7 +22,7 @@ import EditorTab from './ui/editor_tab.vue';
 
 export default {
   i18n: {
-    tabEdit: s__('Pipelines|Write pipeline configuration'),
+    tabEdit: s__('Pipelines|Edit'),
     tabGraph: s__('Pipelines|Visualize'),
     tabLint: s__('Pipelines|Lint'),
     tabMergedYaml: s__('Pipelines|View merged YAML'),

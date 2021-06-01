@@ -1,12 +1,12 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlSprintf } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
-import { __, s__, sprintf } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export default {
   components: {
     GlModal,
+    GlSprintf,
   },
   props: {
     actionUrl: {
@@ -32,33 +32,8 @@ export default {
     csrfToken() {
       return csrf.token;
     },
-    inputLabel() {
-      let confirmationValue;
-      if (this.confirmWithPassword) {
-        confirmationValue = __('password');
-      } else {
-        confirmationValue = __('username');
-      }
-
-      confirmationValue = `<code>${confirmationValue}</code>`;
-
-      return sprintf(
-        s__('Profiles|Type your %{confirmationValue} to confirm:'),
-        { confirmationValue },
-        false,
-      );
-    },
-    text() {
-      return sprintf(
-        s__(`Profiles|
-You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account.
-Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
-        {
-          yourAccount: `<strong>${s__('Profiles|your account')}</strong>`,
-          deleteAccount: `<strong>${s__('Profiles|Delete account')}</strong>`,
-        },
-        false,
-      );
+    confirmationValue() {
+      return this.confirmWithPassword ? __('password') : __('username');
     },
     primaryProps() {
       return {
@@ -90,6 +65,12 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
       this.$refs.form.submit();
     },
   },
+  i18n: {
+    text: s__(`Profiles|
+You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account.
+Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
+    inputLabel: s__('Profiles|Type your %{confirmationValue} to confirm:'),
+  },
 };
 </script>
 
@@ -102,13 +83,29 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
     :ok-disabled="!canSubmit"
     @primary="onSubmit"
   >
-    <p v-html="text"></p>
+    <p>
+      <gl-sprintf :message="$options.i18n.text">
+        <template #yourAccount>
+          <strong>{{ s__('Profiles|your account') }}</strong>
+        </template>
+
+        <template #deleteAccount>
+          <strong>{{ s__('Profiles|Delete account') }}</strong>
+        </template>
+      </gl-sprintf>
+    </p>
 
     <form ref="form" :action="actionUrl" method="post">
       <input type="hidden" name="_method" value="delete" />
       <input :value="csrfToken" type="hidden" name="authenticity_token" />
 
-      <p id="input-label" v-html="inputLabel"></p>
+      <p id="input-label">
+        <gl-sprintf :message="$options.i18n.inputLabel">
+          <template #confirmationValue>
+            <code>{{ confirmationValue }}</code>
+          </template>
+        </gl-sprintf>
+      </p>
 
       <input
         v-if="confirmWithPassword"

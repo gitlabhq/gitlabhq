@@ -24395,9 +24395,6 @@ msgstr ""
 msgid "Pipelines|Visualize"
 msgstr ""
 
-msgid "Pipelines|Write pipeline configuration"
-msgstr ""
-
 msgid "Pipelines|invalid"
 msgstr ""
 

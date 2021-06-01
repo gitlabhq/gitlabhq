@@ -45,25 +45,32 @@ We have many definitions of Snowplow's schema. We have an active issue to [stand
 - [Iglu schema](https://gitlab.com/gitlab-org/iglu/)
 - [Snowplow authored events](https://github.com/snowplow/snowplow/wiki/Snowplow-authored-events)
 
-## Enabling Snowplow
+## Enable Snowplow tracking
 
 Tracking can be enabled at:
 
 - The instance level, which enables tracking on both the frontend and backend layers.
-- User level, though user tracking can be disabled on a per-user basis. GitLab tracking respects the [Do Not Track](https://www.eff.org/issues/do-not-track) standard, so any user who has enabled the Do Not Track option in their browser is not tracked at a user level.
+- The user level, though user tracking can be disabled on a per-user basis.
+  GitLab respects the [Do Not Track](https://www.eff.org/issues/do-not-track) standard, so any user who has enabled the Do Not Track option in their browser is not tracked at a user level.
 
-We use Snowplow for the majority of our tracking strategy and it is enabled on GitLab.com. On a self-managed instance, Snowplow can be enabled by navigating to:
+Snowplow tracking is enabled on GitLab.com, and we use it for most of our tracking strategy.
 
-- **Admin Area > Settings > General** in the UI.
-- `admin/application_settings/integrations` in your browser.
+To enable Snowplow tracking on a self-managed instance:
 
-Example configuration:
+1. Go to the Admin Area (**{admin}**) and select **Settings > General**.  
+   Alternatively, go to `admin/application_settings/general` in your browser.
 
-| Name          | Value                         |
-|---------------|-------------------------------|
-| Collector     | `your-snowplow-collector.net` |
-| Site ID       | `gitlab`                      |
-| Cookie domain | `.your-gitlab-instance.com`   |
+1. Expand **Snowplow**.
+
+1. Select **Enable snowplow tracking** and enter your Snowplow configuration information. For example:
+
+   | Name               | Value                         |
+   |--------------------|-------------------------------|
+   | Collector hostname | `your-snowplow-collector.net` |
+   | App ID             | `gitlab`                      |
+   | Cookie domain      | `.your-gitlab-instance.com`   |
+
+1. Select **Save changes**.
 
 ## Snowplow request flow
 
@@ -459,7 +466,7 @@ There are several tools for developing and testing Snowplow Event
 
 To test frontend events in development:
 
-- [Enable Snowplow in the admin area](#enabling-snowplow).
+- [Enable Snowplow tracking in the Admin Area](#enable-snowplow-tracking).
 - Turn off any ad blockers that would prevent Snowplow JS from loading in your environment.
 - Turn off "Do Not Track" (DNT) in your browser.
 

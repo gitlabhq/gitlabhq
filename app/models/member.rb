@@ -14,6 +14,7 @@ class Member < ApplicationRecord
   include UpdateHighestRole
 
   AVATAR_SIZE = 40
+  ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
 
   attr_accessor :raw_invite_token
 

@@ -6229,14 +6229,16 @@ RSpec.describe Project, factory_default: :keep do
     let_it_be(:project) { create(:project, group: create(:group, :public)) }
 
     it 'returns a maximum of ten maintainers of the project in recent_sign_in descending order' do
-      users = create_list(:user, 12, :with_sign_ins)
+      limit = 2
+      stub_const("Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT", limit)
+      users = create_list(:user, limit + 1, :with_sign_ins)
       active_maintainers = users.map do |user|
         create(:project_member, :maintainer, user: user, project: project)
       end
 
       active_maintainers_in_recent_sign_in_desc_order = project.members_and_requesters
                                                                .id_in(active_maintainers)
-                                                               .order_recent_sign_in.limit(10)
+                                                               .order_recent_sign_in.limit(limit)
 
       expect(project.access_request_approvers_to_be_notified).to eq(active_maintainers_in_recent_sign_in_desc_order)
     end

@@ -233,6 +233,14 @@ username = gitlab-ci-token
 password = ${env.CI_JOB_TOKEN}
 ```
 
+### Authenticate to access packages within a group
+
+Follow the instructions above for the token type, but use the group URL in place of the project URL:
+
+```shell
+https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/pypi
+```
+
 ## Publish a PyPI package
 
 Prerequisites:
@@ -357,7 +365,7 @@ Successfully installed mypypipackage-0.0.1
 To install the latest version of a package from a group, use the following command:
 
 ```shell
-pip install --index-url https://<personal_access_token_name>:<personal_access_token>@gitlab.example.com/api/v4/groups/<group_id>/packages/pypi/simple --no-deps <package_name>
+pip install --index-url https://<personal_access_token_name>:<personal_access_token>@gitlab.example.com/api/v4/groups/<group_id>/-/packages/pypi/simple --no-deps <package_name>
 ```
 
 In this command:
@@ -376,7 +384,7 @@ provided URL as an additional registry which the client checks if the package is
 If you're following the guide and want to install the `MyPyPiPackage` package, you can run:
 
 ```shell
-pip install mypypipackage --no-deps --index-url https://<personal_access_token_name>:<personal_access_token>@gitlab.example.com/api/v4/groups/<your_group_id>/packages/pypi/simple
+pip install mypypipackage --no-deps --index-url https://<personal_access_token_name>:<personal_access_token>@gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/pypi/simple
 ```
 
 ### Package names

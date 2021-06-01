@@ -151,7 +151,7 @@ export default {
     },
   },
   i18n: {
-    tabEdit: s__('Pipelines|Write pipeline configuration'),
+    tabEdit: s__('Pipelines|Edit'),
     tabGraph: s__('Pipelines|Visualize'),
     tabLint: s__('Pipelines|Lint'),
   },
