@@ -433,6 +433,13 @@ RSpec.describe Gitlab::GitAccess do
       expect { pull_access_check }.to raise_forbidden("Your account has been deactivated by your administrator. Please log back in from a web browser to reactivate your account at #{Gitlab.config.gitlab.url}")
     end
 
+    it 'disallows users with expired password to pull' do
+      project.add_maintainer(user)
+      user.update!(password_expires_at: 2.minutes.ago)
+
+      expect { pull_access_check }.to raise_forbidden("Your password expired. Please access GitLab from a web browser to update your password.")
+    end
+
     context 'when the project repository does not exist' do
       before do
         project.add_guest(user)
@@ -967,6 +974,13 @@ RSpec.describe Gitlab::GitAccess do
         user.deactivate!
 
         expect { push_access_check }.to raise_forbidden("Your account has been deactivated by your administrator. Please log back in from a web browser to reactivate your account at #{Gitlab.config.gitlab.url}")
+      end
+
+      it 'disallows users with expired password to push' do
+        project.add_maintainer(user)
+        user.update!(password_expires_at: 2.minutes.ago)
+
+        expect { push_access_check }.to raise_forbidden("Your password expired. Please access GitLab from a web browser to update your password.")
       end
 
       it 'cleans up the files' do

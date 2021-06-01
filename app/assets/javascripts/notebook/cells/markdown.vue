@@ -195,6 +195,7 @@ export default {
           'var',
         ],
         ALLOWED_ATTR: ['class', 'style', 'href', 'src'],
+        ALLOW_DATA_ATTR: false,
       });
     },
   },

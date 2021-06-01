@@ -23,6 +23,9 @@ module Gitlab
           "Your primary email address is not confirmed. "\
           "Please check your inbox for the confirmation instructions. "\
           "In case the link is expired, you can request a new confirmation email at #{Rails.application.routes.url_helpers.new_user_confirmation_url}"
+        when :password_expired
+          "Your password expired. "\
+          "Please access GitLab from a web browser to update your password."
         else
           "Your account has been blocked."
         end
@@ -41,6 +44,8 @@ module Gitlab
           :deactivated
         elsif !@user.confirmed?
           :unconfirmed
+        elsif @user.password_expired?
+          :password_expired
         else
           :blocked
         end

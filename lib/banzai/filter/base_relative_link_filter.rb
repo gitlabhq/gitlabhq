@@ -7,6 +7,9 @@ module Banzai
     class BaseRelativeLinkFilter < HTML::Pipeline::Filter
       include Gitlab::Utils::StrongMemoize
 
+      CSS   = 'a:not(.gfm), img:not(.gfm), video:not(.gfm), audio:not(.gfm)'
+      XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
+
       protected
 
       def linkable_attributes
@@ -41,7 +44,7 @@ module Banzai
       def fetch_linkable_attributes
         attrs = []
 
-        attrs += doc.search('a:not(.gfm), img:not(.gfm), video:not(.gfm), audio:not(.gfm)').flat_map do |el|
+        attrs += doc.xpath(XPATH).flat_map do |el|
           [el.attribute('href'), el.attribute('src'), el.attribute('data-src')]
         end
 

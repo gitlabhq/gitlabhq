@@ -346,9 +346,7 @@ RSpec.describe 'Git LFS API and storage' do
               let_it_be(:user) { create(:user, password_expires_at: 1.minute.ago)}
               let(:role) { :reporter}
 
-              # TODO: This should return a 404 response
-              # https://gitlab.com/gitlab-org/gitlab/-/issues/292006
-              it_behaves_like 'LFS http 200 response'
+              it_behaves_like 'LFS http 401 response'
             end
 
             context 'when user is blocked' do

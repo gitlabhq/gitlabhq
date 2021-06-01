@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.12.2 (2021-06-01)
+
+### Security (11 changes)
+
+- [Bump BinData version](gitlab-org/security/gitlab@609303ac4904cad6bbcc776bb809a46a66891d53) ([merge request](gitlab-org/security/gitlab!1414))
+- [Block access to GitLab for users with expired password](gitlab-org/security/gitlab@f0a07ce8a596a4dd6f1311dff893c896b0cdf82f) ([merge request](gitlab-org/security/gitlab!1446))
+- [Adds redirect page to OAuth](gitlab-org/security/gitlab@6ed6dfc8f9ba785fd5337ee0f4701c983b6f07b0) ([merge request](gitlab-org/security/gitlab!1441))
+- [Update users two factor required from group](gitlab-org/security/gitlab@8c3fe378289d2dced2139c9db396b6270d3bc0ab) ([merge request](gitlab-org/security/gitlab!1432))
+- [Updates authorization for lint](gitlab-org/security/gitlab@be33caed9684af07ac715038d7a2865d9d0c7247) ([merge request](gitlab-org/security/gitlab!1429))
+- [Opt in to Atlassians new context qsh](gitlab-org/security/gitlab@f1d06250fbef6fa2af8a8c88d3b3f9391c332089) ([merge request](gitlab-org/security/gitlab!1408))
+- [Limit oncall projects shown to scope of source](gitlab-org/security/gitlab@a70859aaac44c9b3bd3cc673737e01e2a3aba99c) ([merge request](gitlab-org/security/gitlab!1410)) **GitLab Enterprise Edition**
+- [Only verify commit signatures if the user email is verified](gitlab-org/security/gitlab@9039fdffdf109cdf667be8db3d792a502aad8bb9) ([merge request](gitlab-org/security/gitlab!1385))
+- [Prevent XSS on notebooks](gitlab-org/security/gitlab@9a2dc30920c2a271257ccec92aebcfabec276096) ([merge request](gitlab-org/security/gitlab!1421))
+- [Truncate all non-blob markdown to 1MB by default](gitlab-org/security/gitlab@e9e6bc0450639ee25fd0ced983da231700a4d4f9) ([merge request](gitlab-org/security/gitlab!1420))
+- [Use xpath search of Nokogiri instead of css search](gitlab-org/security/gitlab@7e5c79021ab54ffc70d22bba3c663ce38ae83a88) ([merge request](gitlab-org/security/gitlab!1416))
+
 ## 13.12.1 (2021-05-25)
 
 ### Fixed (3 changes)

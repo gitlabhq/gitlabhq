@@ -11,7 +11,7 @@ module Banzai
         return doc unless context[:project]
         return doc unless Feature.enabled?(:custom_emoji, context[:project])
 
-        doc.search(".//text()").each do |node|
+        doc.xpath('descendant-or-self::text()').each do |node|
           content = node.to_html
 
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
