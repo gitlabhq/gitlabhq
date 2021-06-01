@@ -6,6 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Create an A/B test with `Experimentation Module`
 
+NOTE:
+We recommend using [GLEX](gitlab_experiment.md) for new experiments.
+
 ## Implement the experiment
 
 1. Add the experiment to the `Gitlab::Experimentation::EXPERIMENTS` hash in

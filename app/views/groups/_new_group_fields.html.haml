@@ -20,7 +20,7 @@
 - if captcha_required?
   .row.recaptcha
     .col-sm-4
-      = recaptcha_tags
+      = recaptcha_tags nonce: content_security_policy_nonce
 .row
   .col-sm-12
     = f.submit _('Create group'), class: "btn gl-button btn-confirm"

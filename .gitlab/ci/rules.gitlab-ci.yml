@@ -1130,6 +1130,22 @@
       changes: *code-qa-patterns
       allow_failure: true
 
+.review:rules:review-qa-smoke-report:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *ci-review-patterns
+      when: always
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *frontend-patterns
+      allow_failure: true
+      when: always
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+      allow_failure: true
+      when: always
+
 .review:rules:review-qa-all:
   rules:
     - <<: *if-not-ee
@@ -1141,6 +1157,19 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
       allow_failure: true
+
+.review:rules:review-qa-all-report:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *qa-patterns
+      allow_failure: true
+      when: always
 
 .review:rules:review-cleanup:
   rules:

@@ -66,14 +66,16 @@ RSpec.describe Mutations::Ci::Runner::Update do
 
       context 'with valid arguments' do
         it 'updates runner with correct values' do
-          expected_attributes = mutation_params.except(:id)
+          expected_attributes = mutation_params.except(:id, :tag_list)
 
           subject
 
           expect(subject[:errors]).to be_empty
           expect(subject[:runner]).to be_an_instance_of(Ci::Runner)
           expect(subject[:runner]).to have_attributes(expected_attributes)
+          expect(subject[:runner].tag_list).to contain_exactly(*mutation_params[:tag_list])
           expect(runner.reload).to have_attributes(expected_attributes)
+          expect(runner.tag_list).to contain_exactly(*mutation_params[:tag_list])
         end
       end
 

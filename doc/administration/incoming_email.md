@@ -21,9 +21,8 @@ GitLab has several features based on receiving incoming emails:
 
 ## Requirements
 
-It is **not** recommended to use an email address that receives any
-messages not intended for the GitLab instance. Any incoming emails not intended
-for GitLab receive a reject notice.
+We recommend using an email address that receives **only** messages that are intended for
+the GitLab instance. Any incoming emails not intended for GitLab receive a reject notice.
 
 Handling incoming emails requires an [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)-enabled
 email account. GitLab requires one of the following three strategies:
@@ -131,6 +130,9 @@ list.
 
    ```shell
    sudo gitlab-ctl reconfigure
+
+   # Needed when enabling or disabling for the first time but not for password changes.
+   # See https://gitlab.com/gitlab-org/gitlab-foss/-/issues/23560#note_61966788
    sudo gitlab-ctl restart
    ```
 

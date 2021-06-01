@@ -40,7 +40,9 @@ module AuthorizedProjectUpdate
     private
 
     def use_primary_database
-      # no-op in CE, overriden in EE
+      if ::Gitlab::Database::LoadBalancing.enable?
+        ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
+      end
     end
 
     def project_authorizations_needs_refresh?(user)
@@ -54,5 +56,3 @@ module AuthorizedProjectUpdate
     end
   end
 end
-
-AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker.prepend_mod_with('AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker')

@@ -17,7 +17,7 @@
           = link_to _('Forgot your password?'), new_password_path(:user)
     %div
     - if captcha_enabled? || captcha_on_login_required?
-      = recaptcha_tags
+      = recaptcha_tags nonce: content_security_policy_nonce
 
   .submit-container.move-submit-down
     = f.submit _('Sign in'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'sign_in_button' }

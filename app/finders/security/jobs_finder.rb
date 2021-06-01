@@ -15,7 +15,7 @@ module Security
     attr_reader :pipeline
 
     def self.allowed_job_types
-      # Example return: [:sast, :dast, :dependency_scanning, :container_scanning, :license_management, :coverage_fuzzing]
+      # Example return: [:sast, :dast, :dependency_scanning, :container_scanning, :license_scanning, :coverage_fuzzing]
       raise NotImplementedError, 'allowed_job_types must be overwritten to return an array of job types'
     end
 

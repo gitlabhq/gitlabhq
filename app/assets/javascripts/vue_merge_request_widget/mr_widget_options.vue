@@ -435,9 +435,7 @@ export default {
 </script>
 <template>
   <div v-if="isLoaded" class="mr-state-widget gl-mt-3">
-    <header
-      class="gl-overflow-hidden gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100"
-    >
+    <header class="gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100">
       <mr-widget-alert-message v-if="shouldRenderCollaborationStatus" type="info">
         {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}
       </mr-widget-alert-message>

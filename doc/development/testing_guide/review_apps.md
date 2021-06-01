@@ -132,6 +132,9 @@ the QA smoke suite.
 
 You can also manually start the `review-qa-all`: it runs the full QA suite.
 
+After the end-to-end test runs have finished, [Allure reports](https://github.com/allure-framework/allure2) are generated and published by
+the `allure-report-qa-smoke` and `allure-report-qa-all` jobs. A comment with links to the reports are added to the merge request.
+
 ## Performance Metrics
 
 On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage, the

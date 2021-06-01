@@ -21,7 +21,7 @@ The following are the requirements for providing your own Redis instance:
   [requirements page](../../install/requirements.md).
 - Standalone Redis or Redis high availability with Sentinel are supported. Redis
   Cluster is not supported.
-- Managed Redis from cloud providers such as AWS ElastiCache will work. If these
+- Managed Redis from cloud providers such as AWS ElastiCache works fine. If these
   services support high availability, be sure it is **not** the Redis Cluster type.
 
 Note the Redis node's IP address or hostname, port, and password (if required).
@@ -53,7 +53,7 @@ Note the Redis node's IP address or hostname, port, and password (if required).
 This is the documentation for configuring a scalable Redis setup when
 you have installed Redis all by yourself and not using the bundled one that
 comes with the Omnibus packages, although using the Omnibus GitLab packages is
-highly recommend as we optimize them specifically for GitLab, and we will take
+highly recommend as we optimize them specifically for GitLab, and we take
 care of upgrading Redis to the latest supported version.
 
 Note also that you may elect to override all references to
@@ -76,7 +76,7 @@ requirements:
   (e.g., one from an internal network).
 - Since Redis 3.2, you must define a password to receive external connections
   (`requirepass`).
-- If you are using Redis with Sentinel, you will also need to define the same
+- If you are using Redis with Sentinel, you also need to define the same
   password for the replica password definition (`masterauth`) in the same instance.
 
 In addition, read the prerequisites as described in the
@@ -176,7 +176,7 @@ primary with IP `10.0.0.1` (some settings might overlap with the primary):
    sentinel monitor gitlab-redis 10.0.0.1 6379 2
 
    ## Define with `sentinel down-after-milliseconds` the time in `ms`
-   ## that an unresponsive server will be considered down.
+   ## that an unresponsive server is considered down.
    sentinel down-after-milliseconds gitlab-redis 10000
 
    ## Define a value for `sentinel failover_timeout` in `ms`. This has multiple
@@ -197,7 +197,7 @@ primary with IP `10.0.0.1` (some settings might overlap with the primary):
    ##
    ## * The maximum time a failover in progress waits for all the replicas to be
    ##   reconfigured as replicas of the new primary. However even after this time
-   ##   the replicas will be reconfigured by the Sentinels anyway, but not with
+   ##   the replicas are reconfigured by the Sentinels anyway, but not with
    ##   the exact parallel-syncs progression as specified.
    sentinel failover_timeout 30000
    ```
@@ -249,7 +249,7 @@ In a real world usage, you would also set up firewall rules to prevent
 unauthorized access from other machines, and block traffic from the
 outside ([Internet](https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png)).
 
-For this example, **Sentinel 1** will be configured in the same machine as the
+For this example, **Sentinel 1** is configured in the same machine as the
 **Redis Primary**, **Sentinel 2** and **Sentinel 3** in the same machines as the
 **Replica 1** and **Replica 2** respectively.
 
@@ -261,11 +261,11 @@ Here is a list and description of each **machine** and the assigned **IP**:
 - `10.0.0.4`: GitLab application
 
 Please note that after the initial configuration, if a failover is initiated
-by the Sentinel nodes, the Redis nodes will be reconfigured and the **Primary**
-will change permanently (including in `redis.conf`) from one node to the other,
+by the Sentinel nodes, the Redis nodes are reconfigured and the **Primary**
+changes permanently (including in `redis.conf`) from one node to the other,
 until a new failover is initiated again.
 
-The same thing will happen with `sentinel.conf` that will be overridden after the
+The same thing happens with `sentinel.conf` that is overridden after the
 initial execution, after any new sentinel node starts watching the **Primary**,
 or a failover promotes a different **Primary** node.
 
