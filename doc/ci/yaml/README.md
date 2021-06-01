@@ -1251,8 +1251,11 @@ causes duplicated pipelines.
 
 To avoid duplicate pipelines, you can:
 
-- Use [`workflow`](#workflow) to specify which types of pipelines
-  can run.
+- Use the `CI_OPEN_MERGE_REQUESTS` CI/CD variable in [`workflow:rules`](#workflow) to
+  [switch between branch and merge request pipelines](#switch-between-branch-pipelines-and-merge-request-pipelines)
+  without duplication. You can also use this variable in individual job rules.
+- Use [`workflow`](#workflow) to specify that only branch pipelines or only merge request
+  pipelines should run.
 - Rewrite the rules to run the job only in very specific cases,
   and avoid a final `when:` rule:
 

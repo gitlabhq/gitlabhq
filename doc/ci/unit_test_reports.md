@@ -307,6 +307,25 @@ test:
         - report.xml
 ```
 
+### PHP example
+
+This example uses [PHPUnit](https://phpunit.de/) with the `--log-junit` flag.
+You can also add this option using
+[XML](https://phpunit.readthedocs.io/en/stable/configuration.html#the-junit-element)
+in the `phpunit.xml` configuration file.
+
+```yaml
+phpunit:
+  stage: test
+  script:
+    - composer install
+    - vendor/bin/phpunit --log-junit report.xml
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+```
+
 ## Viewing Unit test reports on GitLab
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5 behind a feature flag (`junit_pipeline_view`), disabled by default.

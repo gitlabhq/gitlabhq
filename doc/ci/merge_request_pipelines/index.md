@@ -225,9 +225,9 @@ which helps you get your starting configuration correct.
 If you are seeing two pipelines when using `only/except`, please see the caveats
 related to using `only/except` above (or, consider moving to `rules`).
 
-It is not possible to run a job for branch pipelines first, then only for merge request
-pipelines after the merge request is created (skipping the duplicate branch pipeline). See
-the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) for more details.
+In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) and later,
+you can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/README.md#switch-between-branch-pipelines-and-merge-request-pipelines)
+after a merge request is open on the branch.
 
 ### Two pipelines created when pushing an invalid CI configuration file
 
