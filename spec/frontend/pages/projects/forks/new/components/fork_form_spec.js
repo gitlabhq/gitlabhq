@@ -261,7 +261,7 @@ describe('ForkForm component', () => {
   });
 
   describe('onSubmit', () => {
-    beforeEach(() => {
+    const setupComponent = (fields = {}) => {
       jest.spyOn(urlUtility, 'redirectTo').mockImplementation();
 
       mockGetRequest();
@@ -271,9 +271,14 @@ describe('ForkForm component', () => {
           namespaces: MOCK_NAMESPACES_RESPONSE,
           form: {
             state: true,
+            ...fields,
           },
         },
       );
+    };
+
+    beforeEach(() => {
+      setupComponent();
     });
 
     const selectedMockNamespaceIndex = 1;
@@ -304,6 +309,23 @@ describe('ForkForm component', () => {
         await submitForm();
 
         expect(urlUtility.redirectTo).not.toHaveBeenCalled();
+      });
+
+      it('does not make POST request if no visbility is checked', async () => {
+        jest.spyOn(axios, 'post');
+
+        setupComponent({
+          fields: {
+            visibility: {
+              value: null,
+            },
+          },
+        });
+
+        await submitForm();
+
+        expect(wrapper.find('[name="visibility"]:checked').exists()).toBe(false);
+        expect(axios.post).not.toHaveBeenCalled();
       });
     });
 

@@ -48,7 +48,7 @@ const createEventPayload = (el, { suffix = '' } = {}) => {
 
   const action = (trackAction || trackEvent) + (suffix || '');
   let value = trackValue || el.value || undefined;
-  if (el.type === 'checkbox' && !el.checked) value = false;
+  if (el.type === 'checkbox' && !el.checked) value = 0;
 
   let extra = trackExtra;
 

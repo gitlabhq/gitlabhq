@@ -96,9 +96,11 @@ RSpec.describe SnippetsController, "routing" do
     expect(get("/-/snippets/1")).to route_to('snippets#show', id: '1')
   end
 
-  it 'to #show from unscoped routing' do
-    expect(get("/snippets/1")).to route_to('snippets#show', id: '1')
+  it 'to #raw from unscoped routing' do
+    expect(get("/snippets/1/raw")).to route_to('snippets#raw', id: '1')
   end
+
+  it_behaves_like 'redirecting a legacy path', '/snippets/1', '/-/snippets/1'
 end
 
 #            help GET /help(.:format)                 help#index

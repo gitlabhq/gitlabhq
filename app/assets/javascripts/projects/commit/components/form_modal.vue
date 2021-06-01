@@ -3,7 +3,6 @@ import { GlModal, GlForm, GlFormCheckbox, GlSprintf, GlFormGroup } from '@gitlab
 import { mapActions, mapState } from 'vuex';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import csrf from '~/lib/utils/csrf';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import BranchesDropdown from './branches_dropdown.vue';
 import ProjectsDropdown from './projects_dropdown.vue';
@@ -18,7 +17,6 @@ export default {
     GlSprintf,
     GlFormGroup,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     prependedText: {
       default: '',
@@ -116,7 +114,7 @@ export default {
       <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
 
       <gl-form-group
-        v-if="glFeatures.pickIntoProject && isCherryPick"
+        v-if="isCherryPick"
         :label="i18n.projectLabel"
         label-for="start_project"
         data-testid="dropdown-group"

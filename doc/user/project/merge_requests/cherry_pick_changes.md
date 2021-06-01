@@ -63,10 +63,7 @@ git cherry-pick -m 2 7a39eb0
 ### Cherry-pick into a project
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21268) in GitLab 13.11.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cherry-picking-into-a-project). **(FREE SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/324154) in GitLab 14.0
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -80,25 +77,6 @@ merge request is from a fork:
    ![Cherry-pick commit](img/cherry_pick_into_project_v13_11.png)
 1. (Optional) Select **Start a new merge request** if you're ready to create a merge request.
 1. Click **Cherry-pick**.
-
-### Enable or disable cherry-picking into a project **(FREE SELF)**
-
-Cherry-picking into a project is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:pick_into_project)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:pick_into_project)
-```
 
 ## Related links
 

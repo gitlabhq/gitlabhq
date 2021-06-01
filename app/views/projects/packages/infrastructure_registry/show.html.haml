@@ -1,0 +1,13 @@
+- add_to_breadcrumbs _("Infrastructure Registry"), project_packages_path(@project)
+- add_to_breadcrumbs @package.name, project_packages_path(@project)
+- breadcrumb_title @package.version
+- page_title _("Infrastructure Registry")
+- @content_class = "limit-container-width" unless fluid_layout
+
+.row
+  .col-12
+    #js-vue-packages-detail{ data: { package: package_from_presenter(@package),
+      can_delete: can?(current_user, :destroy_package, @project).to_s,
+      svg_path: image_path('illustrations/no-packages.svg'),
+      project_name: @project.name,
+      project_list_url: project_infrastructure_registry_index_path(@project)} }

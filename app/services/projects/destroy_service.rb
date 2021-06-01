@@ -116,7 +116,7 @@ module Projects
       log_destroy_event
       trash_relation_repositories!
       trash_project_repositories!
-      destroy_web_hooks! if Feature.enabled?(:destroy_webhooks_before_the_project, project, default_enabled: :yaml)
+      destroy_web_hooks!
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510

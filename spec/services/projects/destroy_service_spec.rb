@@ -447,23 +447,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
 
       it_behaves_like 'handles errors thrown during async destroy', "Failed to remove webhooks"
     end
-
-    context 'when "destroy_webhooks_before_the_project" flag is disabled' do
-      before do
-        stub_feature_flags(destroy_webhooks_before_the_project: false)
-      end
-
-      it 'does not call WebHooks::DestroyService' do
-        expect(WebHooks::DestroyService).not_to receive(:new)
-
-        expect do
-          destroy_project(project, user)
-        end.to change(WebHook, :count).by(-2)
-           .and change(WebHookLog, :count).by(-1)
-
-        expect(another_project_web_hook.reload).to be
-      end
-    end
   end
 
   context 'error while destroying', :sidekiq_inline do

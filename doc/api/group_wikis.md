@@ -64,7 +64,7 @@ GET /groups/:id/wikis/:slug
 | Attribute | Type           | Required | Description                                                                   |
 | --------- | -------        | -------- | ---------------------                                                         |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
-| `slug`    | string         | yes      | The slug (a unique string) of the wiki page                                   |
+| `slug`    | string         | yes      | URL-encoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name`      |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/wikis/home"
@@ -127,7 +127,7 @@ PUT /groups/:id/wikis/:slug
 | `content`       | string         | yes if `title` is not provided    | The content of the wiki page                                                                           |
 | `title`         | string         | yes if `content` is not provided  | The title of the wiki page                                                                             |
 | `format`        | string         | no                                | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc` and `org` |
-| `slug`          | string         | yes                               | The slug (a unique identifier) of the wiki page                                                        |
+| `slug`          | string         | yes                               | URL encoded slug (a unique string) of the wiki page. Ex. dir%2Fpage_name                                                        |
 
 ```shell
 curl --request PUT --data "format=rdoc&content=documentation&title=Docs" \
@@ -157,7 +157,7 @@ DELETE /groups/:id/wikis/:slug
 | Attribute | Type           | Required | Description                                                                   |
 | --------- | -------        | -------- | ---------------------                                                         |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
-| `slug`    | string         | yes      | The slug (a unique identifier) of the wiki page                               |
+| `slug`    | string         | yes      | URL-encoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name`      |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/wikis/foo"

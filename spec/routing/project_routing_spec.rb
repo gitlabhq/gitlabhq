@@ -320,9 +320,11 @@ RSpec.describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/snippets/1')).to route_to('projects/snippets#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
-    it 'to #show from unscope routing' do
-      expect(get('/gitlab/gitlabhq/snippets/1')).to route_to('projects/snippets#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
+    it 'to #raw from unscope routing' do
+      expect(get('/gitlab/gitlabhq/snippets/1/raw')).to route_to('projects/snippets#raw', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
+
+    it_behaves_like 'redirecting a legacy path', '/gitlab/gitlabhq/snippets/1', '/gitlab/gitlabhq/-/snippets/1'
   end
 
   # test_project_hook POST   /:project_id/-/hooks/:id/test(.:format) hooks#test

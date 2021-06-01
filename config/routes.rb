@@ -279,9 +279,13 @@ Rails.application.routes.draw do
 
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
   scope as: 'deprecated' do
-    draw :snippets
+    # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/223719
+    get '/snippets/:id/raw',
+      to: 'snippets#raw',
+      format: false,
+      constraints: { id: /\d+/ }
 
-    Gitlab::Routing.redirect_legacy_paths(self, :profile)
+    Gitlab::Routing.redirect_legacy_paths(self, :profile, :snippets)
   end
 
   Gitlab.ee do

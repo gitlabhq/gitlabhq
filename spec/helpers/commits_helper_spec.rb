@@ -205,16 +205,6 @@ RSpec.describe CommitsHelper do
         { id: forked_project.id.to_s, name: forked_project.full_path, refsUrl: refs_project_path(forked_project) }
       ])
     end
-
-    context 'pick_into_project is disabled' do
-      before do
-        stub_feature_flags(pick_into_project: false)
-      end
-
-      it 'does not calculate target projects' do
-        expect(helper.cherry_pick_projects_data(project)).to eq([])
-      end
-    end
   end
 
   describe "#commit_options_dropdown_data" do

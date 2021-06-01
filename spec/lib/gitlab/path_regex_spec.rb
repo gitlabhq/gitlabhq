@@ -113,7 +113,7 @@ RSpec.describe Gitlab::PathRegex do
 
   let(:deprecated_routes) do
     # profile was deprecated in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51646
-    %w(profile)
+    %w(profile s)
   end
 
   let(:ee_top_level_words) do

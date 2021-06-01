@@ -159,12 +159,7 @@ describe('CommitFormModal', () => {
     });
 
     it('Changes the target_project_id input value', async () => {
-      createComponent(
-        shallowMount,
-        {},
-        { glFeatures: { pickIntoProject: true } },
-        { isCherryPick: true },
-      );
+      createComponent(shallowMount, {}, {}, { isCherryPick: true });
       findProjectsDropdown().vm.$emit('selectProject', '_changed_project_value_');
 
       await wrapper.vm.$nextTick();

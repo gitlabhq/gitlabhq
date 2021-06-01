@@ -302,7 +302,6 @@ describe('Issuables list component', () => {
       my_reaction_emoji: 'airplane',
       scope: 'all',
       state: 'opened',
-      utf8: '✓',
       weight: '0',
       milestone: 'v3.0',
       labels: 'Aquapod,Astro',
@@ -312,7 +311,7 @@ describe('Issuables list component', () => {
 
     describe('when page is not present in params', () => {
       const query =
-        '?assignee_username=root&author_username=root&confidential=yes&label_name%5B%5D=Aquapod&label_name%5B%5D=Astro&milestone_title=v3.0&my_reaction_emoji=airplane&scope=all&sort=priority&state=opened&utf8=%E2%9C%93&weight=0&not[label_name][]=Afterpod&not[milestone_title][]=13';
+        '?assignee_username=root&author_username=root&confidential=yes&label_name%5B%5D=Aquapod&label_name%5B%5D=Astro&milestone_title=v3.0&my_reaction_emoji=airplane&scope=all&sort=priority&state=opened&weight=0&not[label_name][]=Afterpod&not[milestone_title][]=13';
 
       beforeEach(() => {
         setUrl(query);
@@ -356,7 +355,7 @@ describe('Issuables list component', () => {
 
     describe('when page is present in the param', () => {
       const query =
-        '?assignee_username=root&author_username=root&confidential=yes&label_name%5B%5D=Aquapod&label_name%5B%5D=Astro&milestone_title=v3.0&my_reaction_emoji=airplane&scope=all&sort=priority&state=opened&utf8=%E2%9C%93&weight=0&page=3';
+        '?assignee_username=root&author_username=root&confidential=yes&label_name%5B%5D=Aquapod&label_name%5B%5D=Astro&milestone_title=v3.0&my_reaction_emoji=airplane&scope=all&sort=priority&state=opened&weight=0&page=3';
 
       beforeEach(() => {
         setUrl(query);

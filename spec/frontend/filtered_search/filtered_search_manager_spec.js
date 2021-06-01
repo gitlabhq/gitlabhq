@@ -185,7 +185,7 @@ describe('Filtered Search Manager', () => {
   });
 
   describe('search', () => {
-    const defaultParams = '?scope=all&utf8=%E2%9C%93';
+    const defaultParams = '?scope=all';
     const defaultState = '&state=opened';
 
     it('should search with a single word', (done) => {
