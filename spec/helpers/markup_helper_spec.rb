@@ -396,6 +396,13 @@ RSpec.describe MarkupHelper do
   describe '#markup' do
     let(:content) { 'Noël' }
 
+    it 'sets the :text_source to :blob in the context' do
+      context = {}
+      helper.markup('foo.md', content, context)
+
+      expect(context).to include(text_source: :blob)
+    end
+
     it 'preserves encoding' do
       expect(content.encoding.name).to eq('UTF-8')
       expect(helper.markup('foo.rst', content).encoding.name).to eq('UTF-8')

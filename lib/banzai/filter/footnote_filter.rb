@@ -23,17 +23,23 @@ module Banzai
       FOOTNOTE_LINK_REFERENCE_PATTERN = /\A#{FOOTNOTE_LINK_ID_PREFIX}\d+\z/.freeze
       FOOTNOTE_START_NUMBER           = 1
 
+      CSS_SECTION    = "ol > li[id=#{FOOTNOTE_ID_PREFIX}#{FOOTNOTE_START_NUMBER}]"
+      XPATH_SECTION  = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_SECTION).freeze
+      CSS_FOOTNOTE   = 'sup > a[id]'
+      XPATH_FOOTNOTE = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_FOOTNOTE).freeze
+
       def call
-        return doc unless first_footnote = doc.at_css("ol > li[id=#{fn_id(FOOTNOTE_START_NUMBER)}]")
+        return doc unless first_footnote = doc.at_xpath(XPATH_SECTION)
 
         # Sanitization stripped off the section wrapper - add it back in
         first_footnote.parent.wrap('<section class="footnotes">')
         rand_suffix = "-#{random_number}"
         modified_footnotes = {}
 
-        doc.css('sup > a[id]').each do |link_node|
+        doc.xpath(XPATH_FOOTNOTE).each do |link_node|
           ref_num       = link_node[:id].delete_prefix(FOOTNOTE_LINK_ID_PREFIX)
-          footnote_node = doc.at_css("li[id=#{fn_id(ref_num)}]")
+          node_xpath    = Gitlab::Utils::Nokogiri.css_to_xpath("li[id=#{fn_id(ref_num)}]")
+          footnote_node = doc.at_xpath(node_xpath)
 
           if INTEGER_PATTERN.match?(ref_num) && (footnote_node || modified_footnotes[ref_num])
             link_node[:href] += rand_suffix

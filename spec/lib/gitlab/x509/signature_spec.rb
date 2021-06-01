@@ -12,18 +12,28 @@ RSpec.describe Gitlab::X509::Signature do
   end
 
   shared_examples "a verified signature" do
-    it 'returns a verified signature if email does match' do
-      signature = described_class.new(
+    let_it_be(:user) { create(:user, email: X509Helpers::User1.certificate_email) }
+
+    subject(:signature) do
+      described_class.new(
         X509Helpers::User1.signed_commit_signature,
         X509Helpers::User1.signed_commit_base_data,
         X509Helpers::User1.certificate_email,
         X509Helpers::User1.signed_commit_time
       )
+    end
 
+    it 'returns a verified signature if email does match' do
       expect(signature.x509_certificate).to have_attributes(certificate_attributes)
       expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
       expect(signature.verified_signature).to be_truthy
       expect(signature.verification_status).to eq(:verified)
+    end
+
+    it "returns an unverified signature if the email matches but isn't confirmed" do
+      user.update!(confirmed_at: nil)
+
+      expect(signature.verification_status).to eq(:unverified)
     end
 
     it 'returns an unverified signature if email does not match' do
@@ -55,13 +65,6 @@ RSpec.describe Gitlab::X509::Signature do
     end
 
     it 'returns an unverified signature if certificate is revoked' do
-      signature = described_class.new(
-        X509Helpers::User1.signed_commit_signature,
-        X509Helpers::User1.signed_commit_base_data,
-        X509Helpers::User1.certificate_email,
-        X509Helpers::User1.signed_commit_time
-      )
-
       expect(signature.verification_status).to eq(:verified)
 
       signature.x509_certificate.revoked!
@@ -253,23 +256,25 @@ RSpec.describe Gitlab::X509::Signature do
   end
 
   describe '#user' do
-    signature = described_class.new(
-      X509Helpers::User1.signed_tag_signature,
-      X509Helpers::User1.signed_tag_base_data,
-      X509Helpers::User1.certificate_email,
-      X509Helpers::User1.signed_commit_time
-    )
+    subject do
+      described_class.new(
+        X509Helpers::User1.signed_tag_signature,
+        X509Helpers::User1.signed_tag_base_data,
+        X509Helpers::User1.certificate_email,
+        X509Helpers::User1.signed_commit_time
+      ).user
+    end
 
     context 'if email is assigned to a user' do
       let!(:user) { create(:user, email: X509Helpers::User1.certificate_email) }
 
       it 'returns user' do
-        expect(signature.user).to eq(user)
+        is_expected.to eq(user)
       end
     end
 
     it 'if email is not assigned to a user, return nil' do
-      expect(signature.user).to be_nil
+      is_expected.to be_nil
     end
   end
 
@@ -292,6 +297,17 @@ RSpec.describe Gitlab::X509::Signature do
     end
 
     context 'verified signature' do
+      let_it_be(:user) { create(:user, email: X509Helpers::User1.certificate_email) }
+
+      subject(:signature) do
+        described_class.new(
+          X509Helpers::User1.signed_tag_signature,
+          X509Helpers::User1.signed_tag_base_data,
+          X509Helpers::User1.certificate_email,
+          X509Helpers::User1.signed_commit_time
+        )
+      end
+
       context 'with trusted certificate store' do
         before do
           store = OpenSSL::X509::Store.new
@@ -301,17 +317,16 @@ RSpec.describe Gitlab::X509::Signature do
         end
 
         it 'returns a verified signature if email does match' do
-          signature = described_class.new(
-            X509Helpers::User1.signed_tag_signature,
-            X509Helpers::User1.signed_tag_base_data,
-            X509Helpers::User1.certificate_email,
-            X509Helpers::User1.signed_commit_time
-          )
-
           expect(signature.x509_certificate).to have_attributes(certificate_attributes)
           expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
           expect(signature.verified_signature).to be_truthy
           expect(signature.verification_status).to eq(:verified)
+        end
+
+        it "returns an unverified signature if the email matches but isn't confirmed" do
+          user.update!(confirmed_at: nil)
+
+          expect(signature.verification_status).to eq(:unverified)
         end
 
         it 'returns an unverified signature if email does not match' do
@@ -343,13 +358,6 @@ RSpec.describe Gitlab::X509::Signature do
         end
 
         it 'returns an unverified signature if certificate is revoked' do
-          signature = described_class.new(
-            X509Helpers::User1.signed_tag_signature,
-            X509Helpers::User1.signed_tag_base_data,
-            X509Helpers::User1.certificate_email,
-            X509Helpers::User1.signed_commit_time
-          )
-
           expect(signature.verification_status).to eq(:verified)
 
           signature.x509_certificate.revoked!
@@ -368,13 +376,6 @@ RSpec.describe Gitlab::X509::Signature do
         end
 
         it 'returns an unverified signature' do
-          signature = described_class.new(
-            X509Helpers::User1.signed_tag_signature,
-            X509Helpers::User1.signed_tag_base_data,
-            X509Helpers::User1.certificate_email,
-            X509Helpers::User1.signed_commit_time
-          )
-
           expect(signature.x509_certificate).to have_attributes(certificate_attributes)
           expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
           expect(signature.verified_signature).to be_falsey

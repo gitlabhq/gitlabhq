@@ -15,6 +15,10 @@ class GlobalPolicy < BasePolicy
     @user&.required_terms_not_accepted?
   end
 
+  condition(:password_expired, scope: :user) do
+    @user&.password_expired?
+  end
+
   condition(:project_bot, scope: :user) { @user&.project_bot? }
   condition(:migration_bot, scope: :user) { @user&.migration_bot? }
 
@@ -71,6 +75,12 @@ class GlobalPolicy < BasePolicy
   rule { required_terms_not_accepted }.policy do
     prevent :access_api
     prevent :access_git
+  end
+
+  rule { password_expired }.policy do
+    prevent :access_api
+    prevent :access_git
+    prevent :use_slash_commands
   end
 
   rule { can_create_group }.policy do

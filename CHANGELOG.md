@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.10.5 (2021-06-01)
+
+### Security (10 changes)
+
+- [Bump BinData version](gitlab-org/security/gitlab@784ebe7cbbad4fceef3e5438a7a537003f7840d2) ([merge request](gitlab-org/security/gitlab!1402))
+- [Updates authorization for lint](gitlab-org/security/gitlab@c588e94585f3f9666729cae4ba7be700bfd073f0) ([merge request](gitlab-org/security/gitlab!1449))
+- [Adds redirect page to OAuth](gitlab-org/security/gitlab@7881e5bc040919d165e51a09dcb8895b42bc036a) ([merge request](gitlab-org/security/gitlab!1443))
+- [Block access to GitLab for users with expired password](gitlab-org/security/gitlab@aaee1c5ac0eaac9a4eb4c89fca70c12a81381171) ([merge request](gitlab-org/security/gitlab!1444))
+- [Update users two factor required from group](gitlab-org/security/gitlab@a5ae9d82fc9088ab971efb2adc0366efbf33f5bd) ([merge request](gitlab-org/security/gitlab!1434))
+- [Opt in to Atlassians new context qsh](gitlab-org/security/gitlab@0ea617b799c80a15f7d02ddcb4d89cc2e38894d4) ([merge request](gitlab-org/security/gitlab!1406))
+- [Only verify commit signatures if the user email is verified](gitlab-org/security/gitlab@416d70aa3be490f9bf07e7a381e5526515193dec) ([merge request](gitlab-org/security/gitlab!1387))
+- [Prevent XSS on notebooks](gitlab-org/security/gitlab@9029bfc7bd83e3d69e825b16d6f5d08c2b97fd8e) ([merge request](gitlab-org/security/gitlab!1423))
+- [Use xpath search of Nokogiri instead of css search](gitlab-org/security/gitlab@bad2794269c233e11cc7171416a2234d46fa166f) ([merge request](gitlab-org/security/gitlab!1417))
+- [Truncate all non-blob markdown to 1MB by default](gitlab-org/security/gitlab@2e9f9506f8d0f1c2be0a7b0a7b894a888cd98518) ([merge request](gitlab-org/security/gitlab!1418))
+
 ## 13.10.4 (2021-04-27)
 
 ### Security (6 changes)

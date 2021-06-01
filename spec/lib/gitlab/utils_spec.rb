@@ -415,6 +415,29 @@ RSpec.describe Gitlab::Utils do
     end
   end
 
+  describe '.removes_sensitive_data_from_url' do
+    it 'returns string object' do
+      expect(described_class.removes_sensitive_data_from_url('http://gitlab.com')).to be_instance_of(String)
+    end
+
+    it 'returns nil when URI cannot be parsed' do
+      expect(described_class.removes_sensitive_data_from_url('://gitlab.com')).to be nil
+    end
+
+    it 'returns nil with invalid parameter' do
+      expect(described_class.removes_sensitive_data_from_url(1)).to be nil
+    end
+
+    it 'returns string with filtered access_token param' do
+      expect(described_class.removes_sensitive_data_from_url('http://gitlab.com/auth.html#access_token=secret_token')).to eq('http://gitlab.com/auth.html#access_token=filtered')
+    end
+
+    it 'returns string with filtered access_token param but other params preserved' do
+      expect(described_class.removes_sensitive_data_from_url('http://gitlab.com/auth.html#access_token=secret_token&token_type=Bearer&state=test'))
+        .to include('&token_type=Bearer', '&state=test')
+    end
+  end
+
   describe 'multiple_key_invert' do
     it 'invert keys with array values' do
       hash = {

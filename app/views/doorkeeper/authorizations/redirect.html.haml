@@ -1,0 +1,10 @@
+%h3.page-title= _("Redirecting")
+
+%div
+  -# haml-lint:disable NoPlainNodes
+  %a{ :href => redirect_uri } Click here to redirect to #{redirect_uri}
+  -# haml-lint:enable NoPlainNodes
+
+= javascript_tag do
+  :plain
+    window.location= "#{redirect_uri}";

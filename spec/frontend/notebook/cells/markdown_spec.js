@@ -39,7 +39,7 @@ describe('Markdown component', () => {
     expect(vm.$el.querySelector('.markdown h1')).not.toBeNull();
   });
 
-  it('sanitizes output', () => {
+  it('sanitizes Markdown output', () => {
     Object.assign(cell, {
       source: [
         '[XSS](data:text/html;base64,PHNjcmlwdD5hbGVydChkb2N1bWVudC5kb21haW4pPC9zY3JpcHQ+Cg==)\n',
@@ -49,6 +49,17 @@ describe('Markdown component', () => {
     return vm.$nextTick().then(() => {
       expect(vm.$el.querySelector('a').getAttribute('href')).toBeNull();
     });
+  });
+
+  it('sanitizes HTML', async () => {
+    const findLink = () => vm.$el.querySelector('.xss-link');
+    Object.assign(cell, {
+      source: ['<a href="test.js" data-remote=true data-type="script" class="xss-link">XSS</a>\n'],
+    });
+
+    await vm.$nextTick();
+    expect(findLink().getAttribute('data-remote')).toBe(null);
+    expect(findLink().getAttribute('data-type')).toBe(null);
   });
 
   describe('katex', () => {

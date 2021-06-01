@@ -195,6 +195,24 @@ module Gitlab
     rescue Addressable::URI::InvalidURIError, TypeError
     end
 
+    def removes_sensitive_data_from_url(uri_string)
+      uri = parse_url(uri_string)
+
+      return unless uri
+      return uri_string unless uri.fragment
+
+      stripped_params = CGI.parse(uri.fragment)
+      if stripped_params['access_token']
+        stripped_params['access_token'] = 'filtered'
+        filtered_query = Addressable::URI.new
+        filtered_query.query_values = stripped_params
+
+        uri.fragment = filtered_query.query
+      end
+
+      uri.to_s
+    end
+
     # Invert a hash, collecting all keys that map to a given value in an array.
     #
     # Unlike `Hash#invert`, where the last encountered pair wins, and which has the

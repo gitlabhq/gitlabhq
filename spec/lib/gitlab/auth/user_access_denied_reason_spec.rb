@@ -57,5 +57,13 @@ RSpec.describe Gitlab::Auth::UserAccessDeniedReason do
 
       it { is_expected.to eq('Your account is pending approval from your administrator and hence blocked.') }
     end
+
+    context 'when the user has expired password' do
+      before do
+        user.update!(password_expires_at: 2.days.ago)
+      end
+
+      it { is_expected.to eq('Your password expired. Please access GitLab from a web browser to update your password.') }
+    end
   end
 end

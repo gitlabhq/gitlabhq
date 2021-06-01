@@ -6,10 +6,13 @@ module Banzai
   module Filter
     # HTML filter that converts relative urls into absolute ones.
     class AbsoluteLinkFilter < HTML::Pipeline::Filter
+      CSS   = 'a.gfm'
+      XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
+
       def call
         return doc unless context[:only_path] == false
 
-        doc.search('a.gfm').each do |el|
+        doc.xpath(XPATH).each do |el|
           process_link_attr el.attribute('href')
         end
 

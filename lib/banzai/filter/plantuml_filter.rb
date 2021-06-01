@@ -8,12 +8,15 @@ module Banzai
     # HTML that replaces all `code plantuml` tags with PlantUML img tags.
     #
     class PlantumlFilter < HTML::Pipeline::Filter
+      CSS   = 'pre > code[lang="plantuml"]'
+      XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
+
       def call
-        return doc unless settings.plantuml_enabled? && doc.at('pre > code[lang="plantuml"]')
+        return doc unless settings.plantuml_enabled? && doc.at_xpath(XPATH)
 
         plantuml_setup
 
-        doc.css('pre > code[lang="plantuml"]').each do |node|
+        doc.xpath(XPATH).each do |node|
           img_tag = Nokogiri::HTML::DocumentFragment.parse(
             Asciidoctor::PlantUml::Processor.plantuml_content(node.content, {}))
           node.parent.replace(img_tag)
