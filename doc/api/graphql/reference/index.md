@@ -97,8 +97,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querydevopsadoptionsegmentsdirectdescendantsonly"></a>`directDescendantsOnly` | [`Boolean`](#boolean) | Limits segments to direct descendants of specified parent. |
-| <a id="querydevopsadoptionsegmentsparentnamespaceid"></a>`parentNamespaceId` | [`NamespaceID`](#namespaceid) | Filter by ancestor namespace. |
+| <a id="querydevopsadoptionsegmentsdisplaynamespaceid"></a>`displayNamespaceId` | [`NamespaceID`](#namespaceid) | Filter by display namespace. |
 
 ### `Query.echo`
 
@@ -770,6 +769,7 @@ Input type: `BulkFindOrCreateDevopsAdoptionSegmentsInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationbulkfindorcreatedevopsadoptionsegmentsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbulkfindorcreatedevopsadoptionsegmentsdisplaynamespaceid"></a>`displayNamespaceId` | [`NamespaceID`](#namespaceid) | Display namespace ID. |
 | <a id="mutationbulkfindorcreatedevopsadoptionsegmentsnamespaceids"></a>`namespaceIds` | [`[NamespaceID!]!`](#namespaceid) | List of Namespace IDs for the segments. |
 
 #### Fields
@@ -1105,6 +1105,7 @@ Input type: `CreateDevopsAdoptionSegmentInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatedevopsadoptionsegmentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatedevopsadoptionsegmentdisplaynamespaceid"></a>`displayNamespaceId` | [`NamespaceID`](#namespaceid) | Display namespace ID. |
 | <a id="mutationcreatedevopsadoptionsegmentnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Namespace ID to set for the segment. |
 
 #### Fields
@@ -8276,6 +8277,7 @@ Segment.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="devopsadoptionsegmentdisplaynamespace"></a>`displayNamespace` | [`Namespace`](#namespace) | Namespace where data should be displayed. |
 | <a id="devopsadoptionsegmentid"></a>`id` | [`ID!`](#id) | ID of the segment. |
 | <a id="devopsadoptionsegmentlatestsnapshot"></a>`latestSnapshot` | [`DevopsAdoptionSnapshot`](#devopsadoptionsnapshot) | The latest adoption metrics for the segment. |
 | <a id="devopsadoptionsegmentnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace which should be calculated. |

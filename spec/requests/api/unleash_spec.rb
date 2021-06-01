@@ -590,6 +590,32 @@ RSpec.describe API::Unleash do
             }]
           }])
         end
+
+        it 'returns new flags when legacy flags are disabled' do
+          stub_feature_flags(remove_legacy_flags_override: false, remove_legacy_flags: true)
+
+          feature_flag_a = create(:operations_feature_flag, :new_version_flag, project: project,
+                                  name: 'feature_a', active: true)
+          strategy = create(:operations_strategy, feature_flag: feature_flag_a,
+                            name: 'userWithId', parameters: { userIds: 'user8' })
+          create(:operations_scope, strategy: strategy, environment_scope: 'staging')
+          feature_flag_b = create(:operations_feature_flag, :legacy_flag, project: project,
+                                  name: 'feature_b', active: true)
+          create(:operations_feature_flag_scope, feature_flag: feature_flag_b,
+                 active: true, strategies: [{ name: 'default', parameters: {} }], environment_scope: 'staging')
+
+          get api(features_url), headers: { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'staging' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['features'].sort_by {|f| f['name']}).to eq([{
+            'name' => 'feature_a',
+            'enabled' => true,
+            'strategies' => [{
+              'name' => 'userWithId',
+              'parameters' => { 'userIds' => 'user8' }
+            }]
+          }])
+        end
       end
     end
   end

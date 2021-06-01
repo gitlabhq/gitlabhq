@@ -1,5 +1,5 @@
-import { GlNavItemDropdown, GlTooltip } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { GlNavItemDropdown } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import TopNavApp from '~/nav/components/top_nav_app.vue';
 import TopNavDropdownMenu from '~/nav/components/top_nav_dropdown_menu.vue';
 import { TEST_NAV_DATA } from '../mock_data';
@@ -7,8 +7,8 @@ import { TEST_NAV_DATA } from '../mock_data';
 describe('~/nav/components/top_nav_app.vue', () => {
   let wrapper;
 
-  const createComponent = (mountFn = shallowMount) => {
-    wrapper = mountFn(TopNavApp, {
+  const createComponent = () => {
+    wrapper = shallowMount(TopNavApp, {
       propsData: {
         navData: TEST_NAV_DATA,
       },
@@ -17,7 +17,6 @@ describe('~/nav/components/top_nav_app.vue', () => {
 
   const findNavItemDropdown = () => wrapper.findComponent(GlNavItemDropdown);
   const findMenu = () => wrapper.findComponent(TopNavDropdownMenu);
-  const findTooltip = () => wrapper.findComponent(GlTooltip);
 
   afterEach(() => {
     wrapper.destroy();
@@ -43,26 +42,6 @@ describe('~/nav/components/top_nav_app.vue', () => {
         secondary: TEST_NAV_DATA.secondary,
         views: TEST_NAV_DATA.views,
       });
-    });
-
-    it('renders tooltip', () => {
-      expect(findTooltip().attributes()).toMatchObject({
-        'boundary-padding': '0',
-        placement: 'right',
-        title: TopNavApp.TOOLTIP,
-      });
-    });
-  });
-
-  describe('when full mounted', () => {
-    beforeEach(() => {
-      createComponent(mount);
-    });
-
-    it('has dropdown toggle as tooltip target', () => {
-      const targetFn = findTooltip().props('target');
-
-      expect(targetFn()).toBe(wrapper.find('.js-top-nav-dropdown-toggle').element);
     });
   });
 });

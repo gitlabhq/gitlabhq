@@ -32,6 +32,10 @@ module Gitlab
           end
         end
 
+        def delete_export?
+          false
+        end
+
         private
 
         def send_file

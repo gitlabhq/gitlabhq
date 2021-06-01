@@ -213,9 +213,6 @@ actors.
 Feature.enabled?(:some_feature, group)
 ```
 
-**Percentage of time** rollout is not a good idea if what you want is to make sure a feature
-is always on or off to the users. In that case, **Percentage of actors** rollout is a better method.
-
 Lastly, to verify that the feature is deemed stable in as many cases as possible,
 you should fully roll out the feature by enabling the flag **globally** by running:
 
@@ -225,6 +222,15 @@ you should fully roll out the feature by enabling the flag **globally** by runni
 
 This changes the feature flag state to be **enabled** always, which overrides the
 existing gates (e.g. `--group=gitlab-org`) in the above processes.
+
+##### Percentage of actors vs percentage of time rollouts
+
+If you want to make sure a feature is always on or off for users, use a **Percentage of actors**
+rollout. Avoid using percentage of _time_ rollouts in this case.
+
+A percentage of _time_ rollout can introduce inconsistent behavior when `Feature.enabled?`
+is used multiple times in the code because the feature flag value is randomized each time
+`Feature.enabled?` is called on your code path.
 
 ##### Disabling feature flags
 
