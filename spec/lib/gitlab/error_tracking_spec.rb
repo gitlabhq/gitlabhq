@@ -204,6 +204,23 @@ RSpec.describe Gitlab::ErrorTracking do
 
         expect(sentry_event.dig('extra', 'sql')).to eq('SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
       end
+
+      context 'when SQL cannot be parsed' do
+        let(:pg12_query) do
+          <<-SQL
+            CREATE INDEX CONCURRENTLY my_index ON merge_requests
+                USING btree (target_project_id) INCLUDE (id, latest_merge_request_diff_id)
+          SQL
+        end
+
+        let(:exception) { ActiveRecord::StatementInvalid.new(sql: pg12_query) }
+
+        it 'injects the raw sql query into extra' do
+          track_exception
+
+          expect(sentry_event.dig('extra', 'sql')).to eq(pg12_query)
+        end
+      end
     end
 
     context 'when the `ActiveRecord::StatementInvalid` is wrapped in another exception' do

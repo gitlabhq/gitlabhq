@@ -146,6 +146,9 @@ module Gitlab
         else
           inject_context_for_exception(event, ex.cause) if ex.cause.present?
         end
+      # This should only happen on PostgreSQL v12 queries
+      rescue PgQuery::ParseError
+        event.extra[:sql] = ex.sql.to_s
       end
     end
   end
