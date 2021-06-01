@@ -17,8 +17,37 @@ RSpec.describe 'Timelogs through GroupQuery' do
 
     let(:timelogs_data)   { graphql_data['group']['timelogs']['nodes'] }
 
-    before do
-      group.add_developer(user)
+    context 'when the project is private' do
+      let_it_be(:group2)    { create(:group) }
+      let_it_be(:project2)  { create(:project, :private, group: group2) }
+      let_it_be(:issue2)    { create(:issue, project: project2) }
+      let_it_be(:timelog3)  { create(:timelog, issue: issue2, spent_at: '2019-08-13 14:00:00') }
+
+      subject { post_graphql(query(full_path: group2.full_path), current_user: user) }
+
+      context 'when the user is not a member of the project' do
+        it 'returns no timelogs' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(graphql_errors).to be_nil
+          expect(timelog_array.size).to eq 0
+        end
+      end
+
+      context 'when the user is a member of the project' do
+        before do
+          project2.add_developer(user)
+        end
+
+        it 'returns timelogs' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(graphql_errors).to be_nil
+          expect(timelog_array.size).to eq 1
+        end
+      end
     end
 
     context 'when the request is correct' do
@@ -74,18 +103,6 @@ RSpec.describe 'Timelogs through GroupQuery' do
           expect(timelogs_data).to be_empty
         end
       end
-
-      context 'when user has no permission to read group timelogs' do
-        it 'returns empty result' do
-          guest = create(:user)
-          group.add_guest(guest)
-          post_graphql(query, current_user: guest)
-
-          expect(response).to have_gitlab_http_status(:success)
-          expect(graphql_errors).to be_nil
-          expect(timelogs_data).to be_empty
-        end
-      end
     end
   end
 
@@ -95,7 +112,7 @@ RSpec.describe 'Timelogs through GroupQuery' do
     end
   end
 
-  def query(timelog_params = params)
+  def query(timelog_params: params, full_path: group.full_path)
     timelog_nodes = <<~NODE
       nodes {
         spentAt
@@ -114,7 +131,7 @@ RSpec.describe 'Timelogs through GroupQuery' do
 
     graphql_query_for(
       :group,
-      { full_path: group.full_path },
+      { full_path: full_path },
       query_graphql_field(:timelogs, timelog_params, timelog_nodes)
     )
   end

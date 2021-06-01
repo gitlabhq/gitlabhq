@@ -131,7 +131,6 @@ class GroupPolicy < BasePolicy
     enable :read_prometheus
     enable :read_package
     enable :read_package_settings
-    enable :read_group_timelogs
   end
 
   rule { maintainer }.policy do

@@ -173,6 +173,27 @@ RSpec.describe 'lograge', type: :request do
       end
     end
 
+    describe 'with access token in url' do
+      before do
+        event.payload[:location] = 'http://example.com/auth.html#access_token=secret_token&token_type=Bearer'
+      end
+
+      it 'strips location from sensitive information' do
+        subscriber.redirect_to(event)
+        subscriber.process_action(event)
+
+        expect(log_data['location']).not_to include('secret_token')
+        expect(log_data['location']).to include('filtered')
+      end
+
+      it 'leaves non-sensitive information from location' do
+        subscriber.redirect_to(event)
+        subscriber.process_action(event)
+
+        expect(log_data['location']).to include('&token_type=Bearer')
+      end
+    end
+
     context 'with db payload' do
       context 'when RequestStore is enabled', :request_store do
         it 'includes db counters' do

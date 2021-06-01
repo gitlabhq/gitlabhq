@@ -80,6 +80,7 @@ The following table lists project permissions available for each role:
 | Label issues                                      |         | ✓          | ✓           | ✓        | ✓      |
 | Set issue weight                                  |         | ✓          | ✓           | ✓        | ✓      |
 | [Set issue estimate and record time spent](project/time_tracking.md) | | ✓ | ✓         | ✓        | ✓      |
+| View a time tracking report                       | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Lock issue threads                                |         | ✓          | ✓           | ✓        | ✓      |
 | Manage issue tracker                              |         | ✓          | ✓           | ✓        | ✓      |
 | Manage linked issues                              |         | ✓          | ✓           | ✓        | ✓      |

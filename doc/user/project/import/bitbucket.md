@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Import your project from Bitbucket Cloud to GitLab
+# Import your project from Bitbucket Cloud to GitLab **(FREE)**
 
 NOTE:
 The Bitbucket Cloud importer works only with Bitbucket.org, not with Bitbucket

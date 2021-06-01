@@ -263,7 +263,6 @@ class ProjectPolicy < BasePolicy
     enable :read_confidential_issues
     enable :read_package
     enable :read_product_analytics
-    enable :read_group_timelogs
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee

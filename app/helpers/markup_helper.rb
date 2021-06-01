@@ -118,6 +118,7 @@ module MarkupHelper
 
   def markup(file_name, text, context = {})
     context[:project] ||= @project
+    context[:text_source] ||= :blob
     html = context.delete(:rendered) || markup_unsafe(file_name, text, context)
     prepare_for_rendering(html, context)
   end

@@ -18,8 +18,12 @@ class Timelog < ApplicationRecord
     joins(:project).where(projects: { namespace: group.self_and_descendants })
   end
 
-  scope :between_times, -> (start_time, end_time) do
-    where('spent_at BETWEEN ? AND ?', start_time, end_time)
+  scope :at_or_after, -> (start_time) do
+    where('spent_at >= ?', start_time)
+  end
+
+  scope :at_or_before, -> (end_time) do
+    where('spent_at <= ?', end_time)
   end
 
   def issuable

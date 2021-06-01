@@ -82,6 +82,10 @@ To remove all the time spent at once, use `/remove_time_spent`.
 
 You can view a breakdown of time spent on an issue or merge request.
 
+Prerequisites:
+
+- A minimum of [Reporter](../permissions.md#project-members-permissions) access to a private project in GitLab.
+
 To view a time tracking report, go to an issue or a merge request and select **Time tracking report**
 in the right sidebar.
 

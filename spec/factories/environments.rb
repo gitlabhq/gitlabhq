@@ -16,19 +16,19 @@ FactoryBot.define do
     end
 
     trait :production do
-      tier { :production }
+      name { 'production' }
     end
 
     trait :staging do
-      tier { :staging }
+      name { 'staging' }
     end
 
     trait :testing do
-      tier { :testing }
+      name { 'testing' }
     end
 
     trait :development do
-      tier { :development }
+      name { 'development' }
     end
 
     trait :with_review_app do |environment|

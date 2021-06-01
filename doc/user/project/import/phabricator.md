@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Import Phabricator tasks into a GitLab project
+# Import Phabricator tasks into a GitLab project **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/60562) in GitLab 12.0.
 

@@ -11,7 +11,7 @@ module Banzai
       IGNORE_UNICODE_EMOJIS = %w(™ © ®).freeze
 
       def call
-        doc.search(".//text()").each do |node|
+        doc.xpath('descendant-or-self::text()').each do |node|
           content = node.to_html
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
 

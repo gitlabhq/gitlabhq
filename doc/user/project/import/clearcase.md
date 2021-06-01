@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Migrating from ClearCase
+# Migrating from ClearCase **(FREE)**
 
 [ClearCase](https://www.ibm.com/products/rational-clearcase) is a set of
 tools developed by IBM which also include a centralized version control system

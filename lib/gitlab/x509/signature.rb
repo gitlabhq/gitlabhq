@@ -23,7 +23,7 @@ module Gitlab
       end
 
       def user
-        User.find_by_any_email(@email)
+        strong_memoize(:user) { User.find_by_any_email(@email) }
       end
 
       def verified_signature
@@ -31,9 +31,13 @@ module Gitlab
       end
 
       def verification_status
-        return :unverified if x509_certificate.nil? || x509_certificate.revoked?
+        return :unverified if
+          x509_certificate.nil? ||
+          x509_certificate.revoked? ||
+          !verified_signature ||
+          user.nil?
 
-        if verified_signature && certificate_email == @email
+        if user.verified_emails.include?(@email) && certificate_email == @email
           :verified
         else
           :unverified

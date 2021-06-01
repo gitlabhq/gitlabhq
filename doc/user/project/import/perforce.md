@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Migrating from Perforce Helix
+# Migrating from Perforce Helix **(FREE)**
 
 [Perforce Helix](https://www.perforce.com/) provides a set of tools which also
 include a centralized, proprietary version control system similar to Git.

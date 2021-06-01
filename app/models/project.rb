@@ -900,6 +900,10 @@ class Project < ApplicationRecord
 
   alias_method :ancestors, :ancestors_upto
 
+  def ancestors_upto_ids(...)
+    ancestors_upto(...).pluck(:id)
+  end
+
   def emails_disabled?
     strong_memoize(:emails_disabled) do
       # disabling in the namespace overrides the project setting

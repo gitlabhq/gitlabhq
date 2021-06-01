@@ -5,7 +5,10 @@
 
 = render_if_exists "shared/shared_runners_minutes_limit_flash_message"
 
-#pipelines-list-vue{ data: { endpoint: project_pipelines_path(@project, format: :json, code_quality_walkthrough: params[:code_quality_walkthrough]),
+- list_url = project_pipelines_path(@project, format: :json, code_quality_walkthrough: params[:code_quality_walkthrough])
+- add_page_startup_api_call list_url
+
+#pipelines-list-vue{ data: { endpoint: list_url,
   project_id: @project.id,
   params: params.to_json,
   "artifacts-endpoint" => downloadable_artifacts_project_pipeline_path(@project, artifacts_endpoint_placeholder, format: :json),

@@ -7,8 +7,11 @@ module Banzai
     class ColorFilter < HTML::Pipeline::Filter
       COLOR_CHIP_CLASS = 'gfm-color_chip'
 
+      CSS   = 'code'
+      XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
+
       def call
-        doc.css('code').each do |node|
+        doc.xpath(XPATH).each do |node|
           color = ColorParser.parse(node.content)
           node << color_chip(color) if color
         end

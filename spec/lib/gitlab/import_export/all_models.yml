@@ -624,6 +624,7 @@ metrics_setting:
 - project
 protected_environments:
 - project
+- group
 - deploy_access_levels
 deploy_access_levels:
 - protected_environment

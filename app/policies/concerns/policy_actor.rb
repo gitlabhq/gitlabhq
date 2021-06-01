@@ -80,6 +80,10 @@ module PolicyActor
   def can_read_all_resources?
     false
   end
+
+  def password_expired?
+    false
+  end
 end
 
 PolicyActor.prepend_mod_with('PolicyActor')

@@ -701,6 +701,7 @@ ProjectSetting:
 ProtectedEnvironment:
 - id
 - project_id
+- group_id
 - name
 - created_at
 - updated_at

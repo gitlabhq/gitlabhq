@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Import project from repository by URL
+# Import project from repository by URL **(FREE)**
 
 You can import your existing repositories by providing the Git URL:
 

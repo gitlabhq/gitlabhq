@@ -40,7 +40,9 @@ class MemberEntity < Grape::Entity
 
   expose :valid_level_roles, as: :valid_roles
 
-  expose :user, if: -> (member) { member.user.present? }, using: MemberUserEntity
+  expose :user, if: -> (member) { member.user.present? } do |member, options|
+    MemberUserEntity.represent(member.user, source: options[:source])
+  end
 
   expose :invite, if: -> (member) { member.invite? } do
     expose :email do |member|

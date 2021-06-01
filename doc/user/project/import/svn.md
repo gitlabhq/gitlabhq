@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Migrating from SVN to GitLab
+# Migrating from SVN to GitLab **(FREE)**
 
 Subversion (SVN) is a central version control system (VCS) while
 Git is a distributed version control system. There are some major differences

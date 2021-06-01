@@ -128,7 +128,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Environment do
 
       context 'when environment has already been created' do
         before do
-          create(:environment, :staging, project: project, name: 'customer-portal')
+          create(:environment, project: project, name: 'customer-portal', tier: :staging)
         end
 
         it 'does not overwrite the specified deployment tier' do

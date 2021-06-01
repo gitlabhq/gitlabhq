@@ -84,7 +84,7 @@ module Gitlab
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 
-          break if user && !user.can?(:log_in)
+          break if user && !can_user_login_with_non_expired_password?(user)
 
           authenticators = []
 
@@ -182,7 +182,7 @@ module Gitlab
 
           if valid_oauth_token?(token)
             user = User.id_in(token.resource_owner_id).first
-            return unless user&.can?(:log_in)
+            return unless user && can_user_login_with_non_expired_password?(user)
 
             Gitlab::Auth::Result.new(user, nil, :oauth, full_authentication_abilities)
           end
@@ -200,7 +200,7 @@ module Gitlab
 
         return if project && token.user.project_bot? && !project.bots.include?(token.user)
 
-        if token.user.can?(:log_in) || token.user.project_bot?
+        if can_user_login_with_non_expired_password?(token.user) || token.user.project_bot?
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
         end
       end
@@ -285,7 +285,7 @@ module Gitlab
         return unless build.project.builds_enabled?
 
         if build.user
-          return unless build.user.can?(:log_in) || (build.user.project_bot? && build.project.bots&.include?(build.user))
+          return unless can_user_login_with_non_expired_password?(build.user) || (build.user.project_bot? && build.project.bots&.include?(build.user))
 
           # If user is assigned to build, use restricted credentials of user
           Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities)
@@ -379,6 +379,10 @@ module Gitlab
         return user.unlock_access! if success
 
         user.increment_failed_attempts!
+      end
+
+      def can_user_login_with_non_expired_password?(user)
+        user.can?(:log_in) && !user.password_expired?
       end
     end
   end

@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Import your project from GitHub to GitLab
+# Import your project from GitHub to GitLab **(FREE)**
 
 Using the importer, you can import your GitHub repositories to GitLab.com or to
 your self-managed GitLab instance.

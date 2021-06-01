@@ -16,7 +16,6 @@ class Group < Namespace
   include Gitlab::Utils::StrongMemoize
   include GroupAPICompatibility
   include EachBatch
-  include HasTimelogsReport
   include BulkMemberAccessLoad
 
   has_many :all_group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
