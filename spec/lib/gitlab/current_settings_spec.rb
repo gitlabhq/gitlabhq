@@ -24,6 +24,42 @@ RSpec.describe Gitlab::CurrentSettings do
     end
   end
 
+  describe '.signup_limited?' do
+    subject { described_class.signup_limited? }
+
+    context 'when there are allowed domains' do
+      before do
+        create(:application_setting, domain_allowlist: ['www.gitlab.com'])
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when there are email restrictions' do
+      before do
+        create(:application_setting, email_restrictions_enabled: true)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when the admin has to approve signups' do
+      before do
+        create(:application_setting, require_admin_approval_after_user_signup: true)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when there are no restrictions' do
+      before do
+        create(:application_setting, domain_allowlist: [], email_restrictions_enabled: false, require_admin_approval_after_user_signup: false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '.signup_disabled?' do
     subject { described_class.signup_disabled? }
 

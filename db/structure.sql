@@ -24170,6 +24170,8 @@ CREATE INDEX index_users_ops_dashboard_projects_on_project_id ON users_ops_dashb
 
 CREATE UNIQUE INDEX index_users_ops_dashboard_projects_on_user_id_and_project_id ON users_ops_dashboard_projects USING btree (user_id, project_id);
 
+CREATE INDEX index_users_require_two_factor_authentication_from_group_false ON users USING btree (require_two_factor_authentication_from_group) WHERE (require_two_factor_authentication_from_group = false);
+
 CREATE INDEX index_users_security_dashboard_projects_on_user_id ON users_security_dashboard_projects USING btree (user_id);
 
 CREATE INDEX index_users_star_projects_on_project_id ON users_star_projects USING btree (project_id);

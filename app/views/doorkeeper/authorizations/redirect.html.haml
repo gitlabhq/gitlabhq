@@ -1,0 +1,8 @@
+%h3.page-title= _("Redirecting")
+
+%div
+  %a{ :href => redirect_uri } Click here to redirect to #{redirect_uri}
+
+= javascript_tag do
+  :plain
+    window.location= "#{redirect_uri}";

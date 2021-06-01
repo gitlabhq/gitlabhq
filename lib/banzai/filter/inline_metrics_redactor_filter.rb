@@ -8,6 +8,7 @@ module Banzai
       include Gitlab::Utils::StrongMemoize
 
       METRICS_CSS_CLASS = '.js-render-metrics'
+      XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(METRICS_CSS_CLASS).freeze
       EMBED_LIMIT = 100
 
       Route = Struct.new(:regex, :permission)
@@ -41,7 +42,7 @@ module Banzai
       # @return [Nokogiri::XML::NodeSet]
       def nodes
         strong_memoize(:nodes) do
-          nodes = doc.css(METRICS_CSS_CLASS)
+          nodes = doc.xpath(XPATH)
           nodes.drop(EMBED_LIMIT).each(&:remove)
 
           nodes

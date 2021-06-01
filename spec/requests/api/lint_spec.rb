@@ -27,9 +27,10 @@ RSpec.describe API::Lint do
       end
     end
 
-    context 'when signup settings are enabled' do
+    context 'when signup is enabled and not limited' do
       before do
         Gitlab::CurrentSettings.signup_enabled = true
+        stub_application_setting(domain_allowlist: [], email_restrictions_enabled: false, require_admin_approval_after_user_signup: false)
       end
 
       context 'when unauthenticated' do
@@ -42,6 +43,31 @@ RSpec.describe API::Lint do
 
       context 'when authenticated' do
         let_it_be(:api_user) { create(:user) }
+        it 'returns authentication success' do
+          post api('/ci/lint', api_user), params: { content: 'content' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
+    context 'when limited signup is enabled' do
+      before do
+        stub_application_setting(domain_allowlist: ['www.gitlab.com'])
+        Gitlab::CurrentSettings.signup_enabled = true
+      end
+
+      context 'when unauthenticated' do
+        it 'returns unauthorized' do
+          post api('/ci/lint'), params: { content: 'content' }
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      context 'when authenticated' do
+        let_it_be(:api_user) { create(:user) }
+
         it 'returns authentication success' do
           post api('/ci/lint', api_user), params: { content: 'content' }
 

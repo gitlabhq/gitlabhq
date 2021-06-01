@@ -7,23 +7,20 @@ module Banzai
     class BaseRelativeLinkFilter < HTML::Pipeline::Filter
       include Gitlab::Utils::StrongMemoize
 
+      CSS   = 'a:not(.gfm), img:not(.gfm), video:not(.gfm), audio:not(.gfm)'
+      XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
+
       protected
 
       def linkable_attributes
         strong_memoize(:linkable_attributes) do
           attrs = []
 
-          attrs += doc.search('a:not(.gfm)').map do |el|
-            el.attribute('href')
+          attrs += doc.xpath(XPATH).flat_map do |el|
+            [el.attribute('href'), el.attribute('src'), el.attribute('data-src')]
           end
 
-          attrs += doc.search('img:not(.gfm), video:not(.gfm), audio:not(.gfm)').flat_map do |el|
-            [el.attribute('src'), el.attribute('data-src')]
-          end
-
-          attrs.reject do |attr|
-            attr.blank? || attr.value.start_with?('//')
-          end
+          attrs.reject { |attr| attr.blank? || attr.value.start_with?('//') }
         end
       end
 

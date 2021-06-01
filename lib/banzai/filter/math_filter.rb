@@ -10,6 +10,11 @@ module Banzai
     # HTML filter that adds class="code math" and removes the dollar sign in $`2+2`$.
     #
     class MathFilter < HTML::Pipeline::Filter
+      CSS_MATH   = 'pre.code.language-math'
+      XPATH_MATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_MATH).freeze
+      CSS_CODE   = 'code'
+      XPATH_CODE = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_CODE).freeze
+
       # Attribute indicating inline or display math.
       STYLE_ATTRIBUTE = 'data-math-style'
 
@@ -21,7 +26,7 @@ module Banzai
       DOLLAR_SIGN = '$'
 
       def call
-        doc.css('code').each do |code|
+        doc.xpath(XPATH_CODE).each do |code|
           closing = code.next
           opening = code.previous
 
@@ -39,7 +44,7 @@ module Banzai
           end
         end
 
-        doc.css('pre.code.language-math').each do |el|
+        doc.xpath(XPATH_MATH).each do |el|
           el[STYLE_ATTRIBUTE] = 'display'
           el[:class] += " #{TAG_CLASS}"
         end
