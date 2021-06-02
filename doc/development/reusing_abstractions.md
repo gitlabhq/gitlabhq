@@ -143,7 +143,7 @@ Service classes usually have an `execute` method, which can return a
 
 In a successful case:
 
-``` ruby
+```ruby
 response = ServiceResponse.success(message: 'Branch was deleted')
 
 response.success? # => true
@@ -154,7 +154,7 @@ response.message # => 'Branch was deleted'
 
 In a failed case:
 
-``` ruby
+```ruby
 response = ServiceResponse.error(message: 'Unsupported operation')
 
 response.success? # => false
@@ -165,7 +165,7 @@ response.message # => 'Unsupported operation'
 
 An additional payload can also be attached:
 
-``` ruby
+```ruby
 response = ServiceResponse.success(payload: { issue: issue })
 
 response.payload[:issue] # => issue

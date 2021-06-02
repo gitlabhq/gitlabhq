@@ -434,6 +434,14 @@ RSpec.describe ContainerRepository do
 
         it { is_expected.to eq([repository]) }
       end
+
+      context 'with repository cleanup started at after policy next run at' do
+        before do
+          repository.update!(expiration_policy_started_at: policy.next_run_at + 5.minutes)
+        end
+
+        it { is_expected.to eq([]) }
+      end
     end
 
     describe '.with_unfinished_cleanup' do

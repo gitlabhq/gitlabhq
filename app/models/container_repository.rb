@@ -43,16 +43,15 @@ class ContainerRepository < ApplicationRecord
   end
 
   def self.with_enabled_policy
-    joins("INNER JOIN container_expiration_policies ON container_repositories.project_id = container_expiration_policies.project_id")
+    joins('INNER JOIN container_expiration_policies ON container_repositories.project_id = container_expiration_policies.project_id')
       .where(container_expiration_policies: { enabled: true })
   end
 
   def self.requiring_cleanup
-    where(
-      container_repositories: { expiration_policy_cleanup_status: REQUIRING_CLEANUP_STATUSES },
-      project_id: ::ContainerExpirationPolicy.runnable_schedules
-                                             .select(:project_id)
-    )
+    with_enabled_policy
+      .where(container_repositories: { expiration_policy_cleanup_status: REQUIRING_CLEANUP_STATUSES })
+      .where('container_repositories.expiration_policy_started_at IS NULL OR container_repositories.expiration_policy_started_at < container_expiration_policies.next_run_at')
+      .where('container_expiration_policies.next_run_at < ?', Time.zone.now)
   end
 
   def self.with_unfinished_cleanup

@@ -275,7 +275,7 @@ installations from source.
 
 It contains the JSON version of the logs in `application.log` like the example below:
 
-``` json
+```json
 {
   "severity":"INFO",
   "time":"2020-01-14T13:35:15.466Z",

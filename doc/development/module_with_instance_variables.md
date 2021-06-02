@@ -68,7 +68,7 @@ objects are touching them, then it would be an acceptable use.
 We especially allow the case where a single instance variable is used with
 `||=` to set up the value. This would look like:
 
-``` ruby
+```ruby
 module M
   def f
     @f ||= true
@@ -85,7 +85,7 @@ we could easily add to the cop, we should do it.
 Even if we could just disable the cop, we should avoid doing so. Some code
 could be easily rewritten in simple form. Consider this acceptable method:
 
-``` ruby
+```ruby
 module Gitlab
   module Emoji
     def emoji_unicode_version(name)
@@ -104,7 +104,7 @@ cop is not smart enough to judge that this is fine.
 
 On the other hand, we could split this method into two:
 
-``` ruby
+```ruby
 module Gitlab
   module Emoji
     def emoji_unicode_version(name)
@@ -127,7 +127,7 @@ Now the cop doesn't complain.
 
 Put the disabling comment right after your code in the same line:
 
-``` ruby
+```ruby
 module M
   def violating_method
     @f + @g # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -137,7 +137,7 @@ end
 
 If there are multiple lines, you could also enable and disable for a section:
 
-``` ruby
+```ruby
 module M
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def violating_method
@@ -167,13 +167,13 @@ point of view), making it extremely hard to track data dependency.
 
 We're trying to use something like this instead:
 
-``` haml
+```haml
 = render 'projects/commits/commit', commit: commit, ref: ref, project: project
 ```
 
 And in the partial:
 
-``` haml
+```haml
 - ref = local_assigns.fetch(:ref)
 - commit = local_assigns.fetch(:commit)
 - project = local_assigns.fetch(:project)

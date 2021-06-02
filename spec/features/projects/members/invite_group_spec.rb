@@ -32,6 +32,14 @@ RSpec.describe 'Project > Members > Invite group', :js do
 
       expect(page).to have_selector(expected_invite_group_selector)
     end
+
+    it 'does not display either the form or the button when visiting the page not signed in' do
+      project = create(:project, namespace: create(:group))
+
+      visit project_project_members_path(project)
+
+      expect(page).not_to have_selector(expected_invite_group_selector)
+    end
   end
 
   describe 'Share with group lock' do

@@ -323,7 +323,7 @@ at the logs that are produced by the container scanning analyzer in `container_s
 
 The log contains a list of found vulnerabilities as a table, for example:
 
-```plainttext
+```plaintext
 +------------+-------------------------+------------------------+-----------------------+------------------------------------------------------------------------+
 |   STATUS   |      CVE SEVERITY       |      PACKAGE NAME      |    PACKAGE VERSION    |                            CVE DESCRIPTION                             |
 +------------+-------------------------+------------------------+-----------------------+------------------------------------------------------------------------+

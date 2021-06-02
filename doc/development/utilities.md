@@ -14,7 +14,7 @@ Refer to [`merge_hash.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/
 
 - Deep merges an array of hashes:
 
-  ``` ruby
+  ```ruby
   Gitlab::Utils::MergeHash.merge(
     [{ hello: ["world"] },
      { hello: "Everyone" },
@@ -25,7 +25,7 @@ Refer to [`merge_hash.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/
 
   Gives:
 
-  ``` ruby
+  ```ruby
   [
     {
       hello:
@@ -41,7 +41,7 @@ Refer to [`merge_hash.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/
 
 - Extracts all keys and values from a hash into an array:
 
-  ``` ruby
+  ```ruby
   Gitlab::Utils::MergeHash.crush(
     { hello: "world", this: { crushes: ["an entire", "hash"] } }
   )
@@ -49,7 +49,7 @@ Refer to [`merge_hash.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/
 
   Gives:
 
-  ``` ruby
+  ```ruby
   [:hello, "world", :this, :crushes, "an entire", "hash"]
   ```
 
@@ -69,7 +69,7 @@ Refer to [`override.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gi
 
     Here's a simple example:
 
-    ``` ruby
+    ```ruby
     class Base
       def execute
       end
@@ -86,7 +86,7 @@ Refer to [`override.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gi
 
     This also works on modules:
 
-    ``` ruby
+    ```ruby
     module Extension
       extend ::Gitlab::Utils::Override
 
@@ -164,7 +164,7 @@ Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/
 
   Instead of writing patterns like this:
 
-  ``` ruby
+  ```ruby
   class Find
     def result
       return @result if defined?(@result)
@@ -176,7 +176,7 @@ Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/
 
   You could write it like:
 
-  ``` ruby
+  ```ruby
   class Find
     include Gitlab::Utils::StrongMemoize
 
@@ -190,7 +190,7 @@ Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/
 
 - Clear memoization
 
-  ``` ruby
+  ```ruby
   class Find
     include Gitlab::Utils::StrongMemoize
   end
@@ -209,7 +209,7 @@ method level values, and optional method arguments.
 
 A simple example that only uses the instance level customised values is:
 
-``` ruby
+```ruby
 class UserAccess
   extend Gitlab::Cache::RequestCache
 
@@ -230,7 +230,7 @@ instance variable so the cache logic would be the same.
 
 We can also set different strategies for different methods:
 
-``` ruby
+```ruby
 class Commit
   extend Gitlab::Cache::RequestCache
 

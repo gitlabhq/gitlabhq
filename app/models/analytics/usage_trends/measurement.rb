@@ -3,7 +3,7 @@
 module Analytics
   module UsageTrends
     class Measurement < ApplicationRecord
-      self.table_name = 'analytics_instance_statistics_measurements'
+      self.table_name = 'analytics_usage_trends_measurements'
 
       enum identifier: {
         projects: 1,

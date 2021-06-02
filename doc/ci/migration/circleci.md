@@ -41,7 +41,7 @@ jobs:
 
 Example of the same job definition in GitLab CI/CD:
 
-``` yaml
+```yaml
 job1:
   script: "execute-script-for-job1"
 ```

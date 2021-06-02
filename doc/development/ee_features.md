@@ -538,7 +538,7 @@ In this case, we could as well just use `render_ce` which would ignore any EE
 partials. One example would be
 `ee/app/views/shared/issuable/form/_default_templates.html.haml`:
 
-``` haml
+```haml
 - if @project.feature_available?(:issuable_default_templates)
   = render_ce 'shared/issuable/form/default_templates'
 - elsif show_promotions?

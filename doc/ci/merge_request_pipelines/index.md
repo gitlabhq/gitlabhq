@@ -100,7 +100,7 @@ Consider the following pipeline, with jobs `A`, `B`, and `C`. Imagine you want:
 
 To achieve this, you can configure your `.gitlab-ci.yml` file as follows:
 
-``` yaml
+```yaml
 .only-default: &only-default
   only:
     - main
