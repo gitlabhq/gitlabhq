@@ -113,6 +113,7 @@ export default {
       this.$emit('input', {
         filters,
         sort,
+        pagination: { page: 1 },
       });
     },
     onSort(sort) {
@@ -121,6 +122,7 @@ export default {
       this.$emit('input', {
         filters,
         sort,
+        pagination: { page: 1 },
       });
     },
   },

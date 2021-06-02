@@ -20,6 +20,13 @@ RSpec.describe BulkInsertSafe do
 
         t.index :name, unique: true
       end
+
+      create_table :bulk_insert_items_with_composite_pk, id: false, force: true do |t|
+        t.integer :id, null: true
+        t.string :name, null: true
+      end
+
+      execute("ALTER TABLE bulk_insert_items_with_composite_pk ADD PRIMARY KEY (id,name);")
     end
   end
 
@@ -27,6 +34,7 @@ RSpec.describe BulkInsertSafe do
     ActiveRecord::Schema.define do
       drop_table :bulk_insert_items, force: true
       drop_table :bulk_insert_parent_items, force: true
+      drop_table :bulk_insert_items_with_composite_pk, force: true
     end
   end
 
@@ -225,6 +233,29 @@ RSpec.describe BulkInsertSafe do
 
           expect(existing_object.reload.secret_value).to eq('new value')
         end
+      end
+    end
+
+    context 'when a model with composite primary key is inserted' do
+      let_it_be(:bulk_insert_items_with_composite_pk_class) do
+        Class.new(ActiveRecord::Base) do
+          self.table_name = 'bulk_insert_items_with_composite_pk'
+
+          include BulkInsertSafe
+        end
+      end
+
+      let(:new_object) { bulk_insert_items_with_composite_pk_class.new(id: 1, name: 'composite') }
+
+      it 'successfully inserts an item' do
+        expect(ActiveRecord::InsertAll).to receive(:new)
+          .with(
+            bulk_insert_items_with_composite_pk_class, [new_object.as_json], on_duplicate: :raise, returning: false, unique_by: %w[id name]
+          ).and_call_original
+
+        expect { bulk_insert_items_with_composite_pk_class.bulk_insert!([new_object]) }.to(
+          change(bulk_insert_items_with_composite_pk_class, :count).from(0).to(1)
+        )
       end
     end
   end

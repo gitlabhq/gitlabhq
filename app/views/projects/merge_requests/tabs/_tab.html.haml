@@ -2,6 +2,8 @@
 - tab_class = local_assigns.fetch(:class, nil)
 - qa_selector = local_assigns.fetch(:qa_selector, nil)
 - id = local_assigns.fetch(:id, nil)
+- attrs = { class: [tab_class, ("active" if params[:tab] == tab_name)], data: { qa_selector: qa_selector } }
+- attrs[:id] = id if id.present?
 
-%li{ class: [tab_class, ("active" if params[:tab] == tab_name)], id: id, data: { qa_selector: qa_selector } }
+%li{ attrs }
   = yield

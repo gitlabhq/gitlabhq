@@ -31,6 +31,13 @@ export const runnersData = {
           __typename: 'CiRunner',
         },
       ],
+      pageInfo: {
+        endCursor: 'GRAPHQL_END_CURSOR',
+        startCursor: 'GRAPHQL_START_CURSOR',
+        hasNextPage: true,
+        hasPreviousPage: false,
+        __typename: 'PageInfo',
+      },
       __typename: 'CiRunnerConnection',
     },
   },

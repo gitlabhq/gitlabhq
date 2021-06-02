@@ -136,7 +136,5 @@ export default {
         <!-- TODO add actions to update runners -->
       </template>
     </gl-table>
-
-    <!-- TODO implement pagination -->
   </div>
 </template>

@@ -1,8 +1,0 @@
----
-name: cluster_management_project
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17866
-rollout_issue_url: 
-milestone: '12.4'
-type: development
-group: group::configure
-default_enabled: true

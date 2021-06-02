@@ -329,7 +329,7 @@ RSpec.describe Gitlab::Database do
         expect(pool)
           .to be_kind_of(ActiveRecord::ConnectionAdapters::ConnectionPool)
 
-        expect(pool.spec.config[:pool]).to eq(5)
+        expect(pool.db_config.pool).to eq(5)
       ensure
         pool.disconnect!
       end
@@ -339,7 +339,7 @@ RSpec.describe Gitlab::Database do
       pool = described_class.create_connection_pool(5, '127.0.0.1')
 
       begin
-        expect(pool.spec.config[:host]).to eq('127.0.0.1')
+        expect(pool.db_config.host).to eq('127.0.0.1')
       ensure
         pool.disconnect!
       end
@@ -349,8 +349,8 @@ RSpec.describe Gitlab::Database do
       pool = described_class.create_connection_pool(5, '127.0.0.1', 5432)
 
       begin
-        expect(pool.spec.config[:host]).to eq('127.0.0.1')
-        expect(pool.spec.config[:port]).to eq(5432)
+        expect(pool.db_config.host).to eq('127.0.0.1')
+        expect(pool.db_config.configuration_hash[:port]).to eq(5432)
       ensure
         pool.disconnect!
       end

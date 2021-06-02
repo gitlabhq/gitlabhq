@@ -1,5 +1,7 @@
 import { s__ } from '~/locale';
 
+export const RUNNER_PAGE_SIZE = 20;
+
 export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
 
 export const RUNNER_ENTITY_TYPE = 'Ci::Runner';
@@ -11,6 +13,9 @@ export const RUNNER_ENTITY_TYPE = 'Ci::Runner';
 export const PARAM_KEY_STATUS = 'status';
 export const PARAM_KEY_RUNNER_TYPE = 'runner_type';
 export const PARAM_KEY_SORT = 'sort';
+export const PARAM_KEY_PAGE = 'page';
+export const PARAM_KEY_AFTER = 'after';
+export const PARAM_KEY_BEFORE = 'before';
 
 // CiRunnerType
 

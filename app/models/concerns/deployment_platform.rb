@@ -10,10 +10,6 @@ module DeploymentPlatform
 
   private
 
-  def cluster_management_project_enabled?
-    Feature.enabled?(:cluster_management_project, self, default_enabled: true)
-  end
-
   def find_deployment_platform(environment)
     find_platform_kubernetes_with_cte(environment) ||
       find_instance_cluster_platform_kubernetes(environment: environment)
@@ -21,13 +17,13 @@ module DeploymentPlatform
 
   def find_platform_kubernetes_with_cte(environment)
     if environment
-      ::Clusters::ClustersHierarchy.new(self, include_management_project: cluster_management_project_enabled?)
+      ::Clusters::ClustersHierarchy.new(self)
         .base_and_ancestors
         .enabled
         .on_environment(environment, relevant_only: true)
         .first&.platform_kubernetes
     else
-      Clusters::ClustersHierarchy.new(self, include_management_project: cluster_management_project_enabled?).base_and_ancestors
+      Clusters::ClustersHierarchy.new(self).base_and_ancestors
       .enabled.default_environment
       .first&.platform_kubernetes
     end

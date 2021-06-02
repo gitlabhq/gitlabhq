@@ -580,7 +580,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       it 'idempotently cleans up after failed background migrations' do
         expect(partitioned_model.count).to eq(0)
 
-        partitioned_model.insert!(record2.attributes)
+        partitioned_model.insert(record2.attributes, unique_by: [:id, :created_at])
 
         expect_next_instance_of(Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable) do |backfill|
           allow(backfill).to receive(:transaction_open?).and_return(false)

@@ -45,8 +45,8 @@ module Gitlab
 
         def labels_for_class(klass)
           {
-            host: klass.connection_config[:host],
-            port: klass.connection_config[:port],
+            host: klass.connection_db_config.host,
+            port: klass.connection_db_config.configuration_hash[:port],
             class: klass.to_s
           }
         end

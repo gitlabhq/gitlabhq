@@ -558,8 +558,7 @@ RSpec.describe API::Files do
 
         get api(url, current_user), params: params
 
-        expect(response.headers["Cache-Control"]).to include("no-store")
-        expect(response.headers["Cache-Control"]).to include("no-cache")
+        expect(response.headers["Cache-Control"]).to eq("max-age=0, private, must-revalidate, no-store, no-cache")
         expect(response.headers["Pragma"]).to eq("no-cache")
         expect(response.headers["Expires"]).to eq("Fri, 01 Jan 1990 00:00:00 GMT")
       end

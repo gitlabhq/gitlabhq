@@ -85,14 +85,8 @@ module Ci
       # change the behavior in CE.
       #
       def with_read_consistency(build, &block)
-        return yield unless consistent_reads_enabled?(build)
-
         ::Gitlab::Database::Consistency
           .with_read_consistency(&block)
-      end
-
-      def consistent_reads_enabled?(build)
-        Feature.enabled?(:gitlab_ci_trace_read_consistency, build.project, type: :development, default_enabled: true)
       end
 
       ##

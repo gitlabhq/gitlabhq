@@ -35,8 +35,6 @@ RSpec.configure do |config|
       puts "Recreating the database"
       start = Gitlab::Metrics::System.monotonic_time
 
-      ActiveRecord::AdvisoryLockBase.clear_all_connections!
-
       ActiveRecord::Tasks::DatabaseTasks.drop_current
       ActiveRecord::Tasks::DatabaseTasks.create_current
       ActiveRecord::Tasks::DatabaseTasks.load_schema_current

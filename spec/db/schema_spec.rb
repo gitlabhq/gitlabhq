@@ -269,7 +269,7 @@ RSpec.describe 'Database schema' do
     sql = <<~SQL
         SELECT table_name, column_name, data_type
           FROM information_schema.columns
-        WHERE table_catalog = '#{ApplicationRecord.connection_config[:database]}'
+        WHERE table_catalog = '#{ApplicationRecord.connection_db_config.database}'
           AND table_schema = 'public'
           AND table_name NOT LIKE 'pg_%'
           AND data_type = 'jsonb'

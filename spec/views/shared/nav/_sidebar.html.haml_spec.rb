@@ -25,13 +25,11 @@ RSpec.describe 'shared/nav/_sidebar.html.haml' do
   context 'when sidebar does not have a scope menu' do
     let(:scope_menu_view_path) { 'shared/nav/' }
     let(:scope_menu_view_name) { 'scope_menu.html.haml' }
-    let(:scope_menu_view) { "#{scope_menu_view_path}#{scope_menu_view_name}" }
     let(:scope_menu_partial) { "#{scope_menu_view_path}_#{scope_menu_view_name}" }
     let(:content) { 'Custom test content' }
 
     context 'when sidebar has a custom scope menu partial defined' do
       it 'renders the custom partial' do
-        allow(sidebar).to receive(:render_raw_scope_menu_partial).and_return(scope_menu_view)
         allow(view).to receive(:scope_menu).and_return(nil)
         stub_template(scope_menu_partial => content)
 

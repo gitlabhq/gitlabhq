@@ -7075,7 +7075,7 @@ msgstr ""
 msgid "ClusterIntegration|Cluster Region"
 msgstr ""
 
-msgid "ClusterIntegration|Cluster management project (alpha)"
+msgid "ClusterIntegration|Cluster management project"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster name is required."

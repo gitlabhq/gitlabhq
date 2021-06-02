@@ -254,20 +254,8 @@ RSpec.describe DeploymentPlatform do
         create(:cluster, :provided_by_user, projects: [another_project], management_project: project)
       end
 
-      context 'cluster_management_project feature is enabled' do
-        it 'returns the cluster with management project' do
-          is_expected.to eq(cluster_with_management_project.platform_kubernetes)
-        end
-      end
-
-      context 'cluster_management_project feature is disabled' do
-        before do
-          stub_feature_flags(cluster_management_project: false)
-        end
-
-        it 'returns nothing' do
-          is_expected.to be_nil
-        end
+      it 'returns the cluster with management project' do
+        is_expected.to eq(cluster_with_management_project.platform_kubernetes)
       end
     end
 
@@ -311,20 +299,8 @@ RSpec.describe DeploymentPlatform do
           create(:cluster, :provided_by_user, projects: [another_project], management_project: project)
         end
 
-        context 'cluster_management_project feature is enabled' do
-          it 'returns the cluster with management project' do
-            is_expected.to eq(cluster_with_management_project.platform_kubernetes)
-          end
-        end
-
-        context 'cluster_management_project feature is disabled' do
-          before do
-            stub_feature_flags(cluster_management_project: false)
-          end
-
-          it 'returns the group cluster' do
-            is_expected.to eq(group_cluster.platform_kubernetes)
-          end
+        it 'returns the cluster with management project' do
+          is_expected.to eq(cluster_with_management_project.platform_kubernetes)
         end
       end
 

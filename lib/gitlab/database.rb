@@ -61,7 +61,7 @@ module Gitlab
     end
 
     def self.config
-      default_config_hash = ActiveRecord::Base.configurations.find_db_config(Rails.env)&.config || {}
+      default_config_hash = ActiveRecord::Base.configurations.find_db_config(Rails.env)&.configuration_hash || {}
 
       default_config_hash.with_indifferent_access.tap do |hash|
         # Match config/initializers/database_config.rb

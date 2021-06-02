@@ -147,6 +147,17 @@ recorded:
 
 Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 
+### Sign-in events **(FREE)**
+
+Successful sign-in events are the only Audit Events available at all tiers. To see
+successful sign-in events:
+
+1. Select your avatar.
+1. Select **Edit profile > Authentication log**.
+
+After upgrading from GitLab Free to a paid tier, successful sign-in events are the only Audit
+Events visible in Audit Events views until more events are logged.
+
 ### Missing events
 
 Some events are not tracked in Audit Events. See the following

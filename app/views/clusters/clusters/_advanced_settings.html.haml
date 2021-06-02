@@ -16,7 +16,7 @@
   .sub-section.form-group
     = form_for @cluster, url: clusterable.cluster_path(@cluster), as: :cluster, html: { class: 'cluster_management_form' } do |field|
       %h4
-        = s_('ClusterIntegration|Cluster management project (alpha)')
+        = s_('ClusterIntegration|Cluster management project')
 
       %p
         = project_select_tag('cluster[management_project_id]', class: 'hidden-filter-value', toggle_class: 'js-project-search js-project-filter js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',

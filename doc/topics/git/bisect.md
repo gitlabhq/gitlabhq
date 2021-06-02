@@ -1,11 +1,11 @@
 ---
-stage: none
-group: unassigned
+stage: Create
+group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 ---
 
-# Bisect
+# Bisect **(FREE)**
 
 - Find a commit that introduced a bug
 - Works through a process of elimination

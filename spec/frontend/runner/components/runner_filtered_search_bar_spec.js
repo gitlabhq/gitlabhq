@@ -118,6 +118,7 @@ describe('RunnerList', () => {
       {
         filters: mockFilters,
         sort: mockDefaultSort,
+        pagination: { page: 1 },
       },
     ]);
   });
@@ -129,6 +130,7 @@ describe('RunnerList', () => {
       {
         filters: [],
         sort: mockOtherSort,
+        pagination: { page: 1 },
       },
     ]);
   });

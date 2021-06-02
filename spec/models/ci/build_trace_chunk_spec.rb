@@ -18,7 +18,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   it_behaves_like 'having unique enum values'
 
   before do
-    stub_feature_flags(ci_enable_live_trace: true, gitlab_ci_trace_read_consistency: true)
+    stub_feature_flags(ci_enable_live_trace: true)
     stub_artifacts_object_storage
   end
 

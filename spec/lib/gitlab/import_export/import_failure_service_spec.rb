@@ -43,7 +43,7 @@ RSpec.describe Gitlab::ImportExport::ImportFailureService do
       let(:importable) { create(:merge_request) }
 
       it 'raise exception' do
-        expect { subject }.to raise_exception(ActiveRecord::AssociationNotFoundError, "Association named 'import_failures' was not found on MergeRequest; perhaps you misspelled it?")
+        expect { subject }.to raise_exception(ActiveRecord::AssociationNotFoundError, /Association named 'import_failures' was not found on MergeRequest/)
       end
     end
   end

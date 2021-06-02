@@ -2597,3 +2597,28 @@ GET /projects/:id/snapshot
 |-----------|----------------|------------------------|-------------|
 | `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `wiki`    | boolean        | **{dotted-circle}** No | Whether to download the wiki, rather than project, repository. |
+
+## Get the path to repository storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29861) in GitLab 14.0.
+
+Get the path to repository storage for specified project. Available for administrators only.
+
+```plaintext
+GET /projects/:id/storage
+```
+
+| Attribute    | Type           | Required               | Description |
+|--------------|----------------|------------------------|-------------|
+| `id`         | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+
+```json
+[
+  {
+    "project_id": 1,
+    "disk_path": "@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "created_at": "2012-10-12T17:04:47Z",
+    "repository_storage": "default"
+  }
+]
+```

@@ -1,5 +1,23 @@
-query getRunners($status: CiRunnerStatus, $type: CiRunnerType, $sort: CiRunnerSort) {
-  runners(status: $status, type: $type, sort: $sort) {
+#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+
+query getRunners(
+  $before: String
+  $after: String
+  $first: Int
+  $last: Int
+  $status: CiRunnerStatus
+  $type: CiRunnerType
+  $sort: CiRunnerSort
+) {
+  runners(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    status: $status
+    type: $type
+    sort: $sort
+  ) {
     nodes {
       id
       description
@@ -12,6 +30,9 @@ query getRunners($status: CiRunnerStatus, $type: CiRunnerType, $sort: CiRunnerSo
       locked
       tagList
       contactedAt
+    }
+    pageInfo {
+      ...PageInfo
     }
   }
 }
