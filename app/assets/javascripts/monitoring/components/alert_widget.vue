@@ -1,7 +1,7 @@
 <script>
 import { GlBadge, GlLoadingIcon, GlModalDirective, GlIcon, GlTooltip, GlSprintf } from '@gitlab/ui';
 import { values, get } from 'lodash';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import { OPERATORS } from '../constants';
@@ -130,7 +130,9 @@ export default {
           this.isLoading = false;
         })
         .catch(() => {
-          createFlash(s__('PrometheusAlerts|Error fetching alert'));
+          createFlash({
+            message: s__('PrometheusAlerts|Error fetching alert'),
+          });
           this.isLoading = false;
         });
     },

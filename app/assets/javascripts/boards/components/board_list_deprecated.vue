@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { Sortable, MultiDrag } from 'sortablejs';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { sprintf, __ } from '~/locale';
 import eventHub from '../eventhub';
@@ -295,7 +295,9 @@ export default {
         }
 
         if (!toList) {
-          createFlash(__('Something went wrong while performing the action.'));
+          createFlash({
+            message: __('Something went wrong while performing the action.'),
+          });
         }
 
         if (!isSameList) {

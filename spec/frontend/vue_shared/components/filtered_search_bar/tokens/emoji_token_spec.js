@@ -7,7 +7,7 @@ import {
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import {
@@ -121,7 +121,9 @@ describe('EmojiToken', () => {
         wrapper.vm.fetchEmojiBySearchTerm('foo');
 
         return waitForPromises().then(() => {
-          expect(createFlash).toHaveBeenCalledWith('There was a problem fetching emojis.');
+          expect(createFlash).toHaveBeenCalledWith({
+            message: 'There was a problem fetching emojis.',
+          });
         });
       });
 

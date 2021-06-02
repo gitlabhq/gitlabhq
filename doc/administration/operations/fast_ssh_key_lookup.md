@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Fast lookup of authorized SSH keys in the database
+# Fast lookup of authorized SSH keys in the database **(FREE SELF)**
 
 NOTE:
 This document describes a drop-in replacement for the

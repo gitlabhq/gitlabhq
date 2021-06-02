@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Using NFS with GitLab
+# Using NFS with GitLab **(FREE SELF)**
 
 NFS can be used as an alternative for object storage but this isn't typically
 recommended for performance reasons. Note however it is required for [GitLab

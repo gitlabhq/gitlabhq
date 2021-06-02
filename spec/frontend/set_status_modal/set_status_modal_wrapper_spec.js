@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { initEmojiMock } from 'helpers/emoji';
 import * as UserApi from '~/api/user_api';
 import EmojiPicker from '~/emoji/components/picker.vue';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import SetStatusModalWrapper, {
   AVAILABILITY_STATUS,
 } from '~/set_status_modal/set_status_modal_wrapper.vue';
@@ -289,9 +289,9 @@ describe('SetStatusModalWrapper', () => {
         findModal().vm.$emit('ok');
         await wrapper.vm.$nextTick();
 
-        expect(createFlash).toHaveBeenCalledWith(
-          "Sorry, we weren't able to set your status. Please try again later.",
-        );
+        expect(createFlash).toHaveBeenCalledWith({
+          message: "Sorry, we weren't able to set your status. Please try again later.",
+        });
       });
     });
   });

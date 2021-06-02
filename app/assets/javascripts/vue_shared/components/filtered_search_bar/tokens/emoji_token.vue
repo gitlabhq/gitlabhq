@@ -7,7 +7,7 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 
 import { DEBOUNCE_DELAY, DEFAULT_NONE_ANY } from '../constants';
@@ -65,7 +65,11 @@ export default {
         .then((res) => {
           this.emojis = Array.isArray(res) ? res : res.data;
         })
-        .catch(() => createFlash(__('There was a problem fetching emojis.')))
+        .catch(() =>
+          createFlash({
+            message: __('There was a problem fetching emojis.'),
+          }),
+        )
         .finally(() => {
           this.loading = false;
         });

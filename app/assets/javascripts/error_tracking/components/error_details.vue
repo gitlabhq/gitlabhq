@@ -13,7 +13,7 @@ import {
   GlIcon,
 } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { __, sprintf, n__ } from '~/locale';
 import Tracking from '~/tracking';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -88,7 +88,10 @@ export default {
       },
       pollInterval: 2000,
       update: (data) => data.project.sentryErrors.detailedError,
-      error: () => createFlash(__('Failed to load error details from Sentry.')),
+      error: () =>
+        createFlash({
+          message: __('Failed to load error details from Sentry.'),
+        }),
       result(res) {
         if (res.data.project?.sentryErrors?.detailedError) {
           this.$apollo.queries.error.stopPolling();
@@ -225,7 +228,10 @@ export default {
       if (Date.now() > this.errorPollTimeout) {
         this.$apollo.queries.error.stopPolling();
         this.errorLoading = false;
-        createFlash(__('Could not connect to Sentry. Refresh the page to try again.'), 'warning');
+        createFlash({
+          message: __('Could not connect to Sentry. Refresh the page to try again.'),
+          type: 'warning',
+        });
       }
     },
     trackPageViews() {

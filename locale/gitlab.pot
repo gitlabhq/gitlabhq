@@ -13108,6 +13108,9 @@ msgstr ""
 msgid "EscalationPolicies|IF alert is not %{alertStatus} in %{minutes} minutes"
 msgstr ""
 
+msgid "EscalationPolicies|Remove escalation rule"
+msgstr ""
+
 msgid "EscalationPolicies|Select schedule"
 msgstr ""
 

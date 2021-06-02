@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -316,7 +316,9 @@ export default {
           this.store.updateState(data);
         })
         .catch(() => {
-          createFlash(this.defaultErrorMessage);
+          createFlash({
+            message: this.defaultErrorMessage,
+          });
         });
     },
 
@@ -341,7 +343,9 @@ export default {
           this.updateAndShowForm(res.data);
         })
         .catch(() => {
-          createFlash(this.defaultErrorMessage);
+          createFlash({
+            message: this.defaultErrorMessage,
+          });
           this.updateAndShowForm();
         });
     },
@@ -406,7 +410,9 @@ export default {
             errMsg += `. ${message}`;
           }
 
-          this.flashContainer = createFlash(errMsg);
+          this.flashContainer = createFlash({
+            message: errMsg,
+          });
         });
     },
 
@@ -421,9 +427,11 @@ export default {
           visitUrl(data.web_url);
         })
         .catch(() => {
-          createFlash(
-            sprintf(s__('Error deleting %{issuableType}'), { issuableType: this.issuableType }),
-          );
+          createFlash({
+            message: sprintf(s__('Error deleting %{issuableType}'), {
+              issuableType: this.issuableType,
+            }),
+          });
         });
     },
 

@@ -8,7 +8,7 @@ import {
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import {
@@ -137,7 +137,9 @@ describe('AuthorToken', () => {
       wrapper.vm.fetchAuthorBySearchTerm('root');
 
       return waitForPromises().then(() => {
-        expect(createFlash).toHaveBeenCalledWith('There was a problem fetching users.');
+        expect(createFlash).toHaveBeenCalledWith({
+          message: 'There was a problem fetching users.',
+        });
       });
     });
 

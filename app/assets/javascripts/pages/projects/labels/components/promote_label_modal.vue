@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlModal } from '@gitlab/ui';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, sprintf } from '~/locale';
@@ -70,7 +70,9 @@ export default {
             labelUrl: this.url,
             successful: false,
           });
-          createFlash(error);
+          createFlash({
+            message: error,
+          });
         });
     },
   },

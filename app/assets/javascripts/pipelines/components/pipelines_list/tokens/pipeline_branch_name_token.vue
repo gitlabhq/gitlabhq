@@ -2,7 +2,7 @@
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import Api from '~/api';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { FETCH_BRANCH_ERROR_MESSAGE, FILTER_PIPELINES_SEARCH_DELAY } from '../../../constants';
 
 export default {
@@ -38,7 +38,9 @@ export default {
           this.loading = false;
         })
         .catch((err) => {
-          createFlash(FETCH_BRANCH_ERROR_MESSAGE);
+          createFlash({
+            message: FETCH_BRANCH_ERROR_MESSAGE,
+          });
           this.loading = false;
           throw err;
         });

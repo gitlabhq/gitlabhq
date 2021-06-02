@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Environment variables
+# Environment variables **(FREE SELF)**
 
 GitLab exposes certain environment variables which can be used to override
 their defaults values.

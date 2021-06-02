@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import eventHub from '../../event_hub';
@@ -120,7 +120,11 @@ export default {
       .then(() => {
         this.fetchingApprovals = false;
       })
-      .catch(() => createFlash(FETCH_ERROR));
+      .catch(() =>
+        createFlash({
+          message: FETCH_ERROR,
+        }),
+      );
   },
   methods: {
     approve() {
@@ -131,7 +135,10 @@ export default {
 
       this.updateApproval(
         () => this.service.approveMergeRequest(),
-        () => createFlash(APPROVE_ERROR),
+        () =>
+          createFlash({
+            message: APPROVE_ERROR,
+          }),
       );
     },
     approveWithAuth(data) {
@@ -142,14 +149,19 @@ export default {
             this.hasApprovalAuthError = true;
             return;
           }
-          createFlash(APPROVE_ERROR);
+          createFlash({
+            message: APPROVE_ERROR,
+          });
         },
       );
     },
     unapprove() {
       this.updateApproval(
         () => this.service.unapproveMergeRequest(),
-        () => createFlash(UNAPPROVE_ERROR),
+        () =>
+          createFlash({
+            message: UNAPPROVE_ERROR,
+          }),
       );
     },
     updateApproval(serviceFn, errFn) {

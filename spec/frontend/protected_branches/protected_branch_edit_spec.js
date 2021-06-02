@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { TEST_HOST } from 'helpers/test_constants';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import ProtectedBranchEdit from '~/protected_branches/protected_branch_edit';
 
@@ -69,7 +69,7 @@ describe('ProtectedBranchEdit', () => {
           expect(mock.history.patch).toHaveLength(1);
 
           expect(toggle).not.toBeDisabled();
-          expect(flash).not.toHaveBeenCalled();
+          expect(createFlash).not.toHaveBeenCalled();
         }));
     });
 
@@ -81,7 +81,7 @@ describe('ProtectedBranchEdit', () => {
 
       it('flashes error', () =>
         axios.waitForAll().then(() => {
-          expect(flash).toHaveBeenCalled();
+          expect(createFlash).toHaveBeenCalled();
         }));
     });
   });

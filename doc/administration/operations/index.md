@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Performing Operations in GitLab
+# Performing operations in GitLab **(FREE SELF)**
 
 Keep your GitLab instance up and running smoothly.
 

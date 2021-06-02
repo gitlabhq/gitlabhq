@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab application limits
+# GitLab application limits **(FREE SELF)**
 
 GitLab, like most large applications, enforces limits within certain features to maintain a
 minimum quality of performance. Allowing some features to be limitless could affect security,

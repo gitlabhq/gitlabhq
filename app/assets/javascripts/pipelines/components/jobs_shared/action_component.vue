@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlButton, GlLoadingIcon, GlIcon } from '@gitlab/ui';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { dasherize } from '~/lib/utils/text_utility';
@@ -81,7 +81,9 @@ export default {
 
           reportToSentry('action_component', err);
 
-          createFlash(__('An error occurred while making the request.'));
+          createFlash({
+            message: __('An error occurred while making the request.'),
+          });
         });
     },
   },

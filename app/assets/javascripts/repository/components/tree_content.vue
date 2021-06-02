@@ -1,6 +1,6 @@
 <script>
 import filesQuery from 'shared_queries/repository/files.query.graphql';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '../../locale';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
@@ -114,7 +114,9 @@ export default {
           }
         })
         .catch((error) => {
-          createFlash(__('An error occurred while fetching folder content.'));
+          createFlash({
+            message: __('An error occurred while fetching folder content.'),
+          });
           throw error;
         });
     },

@@ -59,6 +59,7 @@ Examples of various configurations can be found here:
 - [Example HTTP Archive (HAR) project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/har-example)
 - [Example Postman Collection project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/postman-example)
 - [Example GraphQL project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/graphql-example)
+- [Example SOAP project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/soap-example)
 
 WARNING:
 GitLab 14.0 will require that you place DAST API configuration files (for example,

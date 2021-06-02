@@ -143,6 +143,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_77f5e1d20482() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."deployable_id_convert_to_bigint" := NEW."deployable_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_8485e97c00e3() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -12288,7 +12297,8 @@ CREATE TABLE deployments (
     on_stop character varying,
     status smallint NOT NULL,
     finished_at timestamp with time zone,
-    cluster_id integer
+    cluster_id integer,
+    deployable_id_convert_to_bigint bigint
 );
 
 CREATE SEQUENCE deployments_id_seq
@@ -25279,6 +25289,8 @@ CREATE TRIGGER trigger_3f6129be01d2 BEFORE INSERT OR UPDATE ON ci_builds FOR EAC
 CREATE TRIGGER trigger_51ab7cef8934 BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE FUNCTION trigger_51ab7cef8934();
 
 CREATE TRIGGER trigger_69523443cc10 BEFORE INSERT OR UPDATE ON events FOR EACH ROW EXECUTE FUNCTION trigger_69523443cc10();
+
+CREATE TRIGGER trigger_77f5e1d20482 BEFORE INSERT OR UPDATE ON deployments FOR EACH ROW EXECUTE FUNCTION trigger_77f5e1d20482();
 
 CREATE TRIGGER trigger_8485e97c00e3 BEFORE INSERT OR UPDATE ON ci_sources_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_8485e97c00e3();
 

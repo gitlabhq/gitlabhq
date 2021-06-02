@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Switching to Puma
+# Switching to Puma **(FREE SELF)**
 
 As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced [Unicorn](https://yhbt.net/unicorn/)
 as the default web server. From GitLab 13.0, the following run Puma instead of Unicorn unless

@@ -24,7 +24,12 @@ deprecated.
 
 A feature can be deprecated at any time, provided there is a viable alternative.
 
+Deprecations should be announced via [release posts](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
+
 ## When can a feature be removed/changed?
+
+Generally, feature or configuration can be removed/changed only on major release.
+It also should be [deprecated in advance](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
 
 For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../../api/README.md#compatibility-guidelines) guidelines.
 

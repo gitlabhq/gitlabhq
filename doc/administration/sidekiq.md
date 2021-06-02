@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Configuring Sidekiq
+# Configuring Sidekiq **(FREE SELF)**
 
 This section discusses how to configure an external Sidekiq instance using the
 bundled Sidekiq in the GitLab package.

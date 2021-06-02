@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
-import * as flash from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import PromoteMilestoneModal from '~/pages/milestones/shared/components/promote_milestone_modal.vue';
@@ -103,7 +103,7 @@ describe('Promote milestone modal', () => {
       wrapper.findComponent(GlModal).vm.$emit('primary');
       await waitForPromises();
 
-      expect(flash.deprecatedCreateFlash).toHaveBeenCalledWith(dummyError);
+      expect(createFlash).toHaveBeenCalledWith({ message: dummyError });
     });
   });
 });

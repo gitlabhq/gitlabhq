@@ -1,7 +1,7 @@
 <script>
 import { GlToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
 
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 
@@ -78,7 +78,11 @@ export default {
           // return response differently.
           this.labels = Array.isArray(res) ? res : res.data;
         })
-        .catch(() => createFlash(__('There was a problem fetching labels.')))
+        .catch(() =>
+          createFlash({
+            message: __('There was a problem fetching labels.'),
+          }),
+        )
         .finally(() => {
           this.loading = false;
         });
