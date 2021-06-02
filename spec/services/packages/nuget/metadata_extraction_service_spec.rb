@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::MetadataExtractionService do
-  let(:package_file) { create(:nuget_package).package_files.first }
+  let_it_be(:package_file) { create(:nuget_package).package_files.first }
+
   let(:service) { described_class.new(package_file.id) }
 
   describe '#execute' do
@@ -23,12 +24,27 @@ RSpec.describe Packages::Nuget::MetadataExtractionService do
         package_tags: []
       }
 
-      it { is_expected.to eq(expected_metadata) }
+      context 'with packages_nuget_archive_new_file_reader enabled' do
+        before do
+          expect(service).to receive(:with_new_file_reader).and_call_original
+        end
+
+        it { is_expected.to eq(expected_metadata) }
+      end
+
+      context 'with packages_nuget_archive_new_file_reader disabled' do
+        before do
+          stub_feature_flags(packages_nuget_archive_new_file_reader: false)
+          expect(service).to receive(:with_legacy_file_reader).and_call_original
+        end
+
+        it { is_expected.to eq(expected_metadata) }
+      end
     end
 
     context 'with nuspec file' do
       before do
-        allow(service).to receive(:nuspec_file).and_return(fixture_file(nuspec_filepath))
+        allow(service).to receive(:nuspec_file_content).and_return(fixture_file(nuspec_filepath))
       end
 
       context 'with dependencies' do
@@ -57,7 +73,7 @@ RSpec.describe Packages::Nuget::MetadataExtractionService do
       let_it_be(:nuspec_filepath) { 'packages/nuget/with_metadata.nuspec' }
 
       before do
-        allow(service).to receive(:nuspec_file).and_return(fixture_file(nuspec_filepath))
+        allow(service).to receive(:nuspec_file_content).and_return(fixture_file(nuspec_filepath))
       end
 
       it { expect(subject[:license_url]).to eq('https://opensource.org/licenses/MIT') }

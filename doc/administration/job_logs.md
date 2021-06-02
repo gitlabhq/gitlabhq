@@ -128,6 +128,11 @@ This command permanently deletes the log files and is irreversible.
 find /var/opt/gitlab/gitlab-rails/shared/artifacts -name "job.log" -mtime +60 -delete
 ```
 
+NOTE:
+After execution, broken file references can be reported when running
+[`sudo gitlab-rake gitlab:artifacts:check`](raketasks/check.md#uploaded-files-integrity).
+For more information, see [delete references to missing artifacts](raketasks/check.md#delete-references-to-missing-artifacts).
+
 ## Incremental logging architecture
 
 > - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.

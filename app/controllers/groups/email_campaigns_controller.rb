@@ -26,7 +26,7 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
       }
       context = SnowplowTracker::SelfDescribingJson.new(EMAIL_CAMPAIGNS_SCHEMA_URL, data)
 
-      ::Gitlab::Tracking.event(self.class.name, 'click', context: [context])
+      ::Gitlab::Tracking.event(self.class.name, 'click', context: [context], user: current_user, namespace: group)
     else
       ::Users::InProductMarketingEmail.save_cta_click(current_user, @track, @series)
     end

@@ -26,7 +26,8 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'users creates a pipeline which gets processed', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1849' do
+      it 'users creates a pipeline which gets processed', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1849' do
+        # TODO: Convert back to :smoke once proved to be stable. Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300909
         tags_mismatch_status = Runtime::Feature.enabled?(feature_flag, project: project) ? :failed : :pending
 
         Flow::Login.sign_in

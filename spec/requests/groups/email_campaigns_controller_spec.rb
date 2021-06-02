@@ -52,7 +52,9 @@ RSpec.describe Groups::EmailCampaignsController do
             context: [{
                         schema: described_class::EMAIL_CAMPAIGNS_SCHEMA_URL,
                         data: { namespace_id: group.id, series: series.to_i, subject_line: subject_line_text, track: track.to_s }
-                      }]
+                      }],
+            user: user,
+            namespace: group
           )
         end
 

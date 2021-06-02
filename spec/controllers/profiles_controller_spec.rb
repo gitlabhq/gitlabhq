@@ -110,7 +110,8 @@ RSpec.describe ProfilesController, :request_store do
 
       expect_snowplow_event(
         category: 'ProfilesController',
-        action: 'search_audit_event'
+        action: 'search_audit_event',
+        user: user
       )
     end
   end

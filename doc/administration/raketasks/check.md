@@ -246,6 +246,41 @@ end
 p "#{uploads_deleted} remote objects were destroyed."
 ```
 
+### Delete references to missing artifacts
+
+`gitlab-rake gitlab:artifacts:check VERBOSE=1` detects when artifacts (or `job.log` files):
+
+- Are deleted outside of GitLab.
+- Have references still in the GitLab database.
+
+When this scenario is detected, the Rake task displays an error message. For example:
+
+```shell
+Checking integrity of Job artifacts
+- 3..8: Failures: 2
+  - Job artifact: 3: #<Errno::ENOENT: No such file or directory @ rb_sysopen - /var/opt/gitlab/gitlab-rails/shared/artifacts/4e/07/4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce/2021_05_26/5/3/job.log>
+  - Job artifact: 8: #<Errno::ENOENT: No such file or directory @ rb_sysopen - /var/opt/gitlab/gitlab-rails/shared/artifacts/4e/07/4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce/2021_05_26/6/8/job.log>
+Done!
+
+```
+
+To delete these references to missing local artifacts (`job.log` files):
+
+1. Open the [GitLab Rails Console](../operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following Ruby code:
+
+   ```ruby
+   artifacts_deleted = 0
+   ::Ci::JobArtifact.all.each do |artifact|                       ### Iterate artifacts
+   #  next if artifact.file.filename != "job.log"                 ### Uncomment if only `job.log` files' references are to be processed
+     next if artifact.file.exists?                                ### Skip if the file reference is valid
+     artifacts_deleted += 1
+     puts "#{artifact.id}  #{artifact.file.path} is missing."     ### Allow verification before destroy
+   #  artifact.destroy!                                           ### Uncomment to actually destroy
+   end
+   puts "Count of identified/destroyed invalid references: #{artifacts_deleted}" 
+   ```
+
 ### Delete references to missing LFS objects
 
 If `gitlab-rake gitlab:lfs:check VERBOSE=1` detects LFS objects that exist in the database

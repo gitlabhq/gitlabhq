@@ -28,7 +28,7 @@ module Packages
       def execute
         raise ExtractionError, 'invalid package file' unless valid_package_file?
 
-        extract_metadata(nuspec_file)
+        extract_metadata(nuspec_file_content)
       end
 
       private
@@ -37,6 +37,10 @@ module Packages
         strong_memoize(:package_file) do
           ::Packages::PackageFile.find_by_id(@package_file_id)
         end
+      end
+
+      def project
+        package_file.package.project
       end
 
       def valid_package_file?
@@ -89,16 +93,37 @@ module Packages
         tags.split(::Packages::Tag::NUGET_TAGS_SEPARATOR)
       end
 
-      def nuspec_file
+      def nuspec_file_content
+        with_zip_file do |zip_file|
+          entry = zip_file.glob('*.nuspec').first
+
+          raise ExtractionError, 'nuspec file not found' unless entry
+          raise ExtractionError, 'nuspec file too big' if entry.size > MAX_FILE_SIZE
+
+          entry.get_input_stream.read
+        end
+      end
+
+      def with_zip_file(&block)
+        if ::Feature.enabled?(:packages_nuget_archive_new_file_reader, project, default_enabled: :yaml)
+          with_new_file_reader(&block)
+        else
+          with_legacy_file_reader(&block)
+        end
+      end
+
+      def with_legacy_file_reader
         package_file.file.use_file do |file_path|
           Zip::File.open(file_path) do |zip_file|
-            entry = zip_file.glob('*.nuspec').first
-
-            raise ExtractionError, 'nuspec file not found' unless entry
-            raise ExtractionError, 'nuspec file too big' if entry.size > MAX_FILE_SIZE
-
-            entry.get_input_stream.read
+            yield(zip_file)
           end
+        end
+      end
+
+      def with_new_file_reader
+        package_file.file.use_open_file do |open_file|
+          zip_file = Zip::File.new(open_file, false, true)
+          yield(zip_file)
         end
       end
     end
