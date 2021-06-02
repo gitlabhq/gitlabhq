@@ -4,13 +4,15 @@ description: Identifies the version of the external registry being used
 product_section: ops
 product_stage: package
 product_group: group::package
-product_category:
-value_type: string
+product_category: container registry
+value_type: number
 status: data_available
 time_frame: none
 data_source: system
 distribution:
+- ee
 - ce
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

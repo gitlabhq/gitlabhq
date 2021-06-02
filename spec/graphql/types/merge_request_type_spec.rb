@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['MergeRequest'] do
+  include GraphqlHelpers
+
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::MergeRequest) }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_merge_request) }
@@ -19,7 +21,9 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
       target_branch work_in_progress draft merge_when_pipeline_succeeds diff_head_sha
       merge_commit_sha user_notes_count user_discussions_count should_remove_source_branch
       diff_refs diff_stats diff_stats_summary
-      force_remove_source_branch merge_status in_progress_merge_commit_sha
+      force_remove_source_branch
+      merge_status merge_status_enum
+      in_progress_merge_commit_sha
       merge_error allow_collaboration should_be_rebased rebase_commit_sha
       rebase_in_progress default_merge_commit_message
       merge_ongoing mergeable_discussions_state web_url
@@ -104,6 +108,29 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
       end
 
       execute_query
+    end
+  end
+
+  describe 'merge_status_enum' do
+    let(:type) { GitlabSchema.types['MergeStatus'] }
+
+    it 'has the type MergeStatus' do
+      expect(described_class.fields['mergeStatusEnum']).to have_graphql_type(type)
+    end
+
+    let_it_be(:project) { create(:project, :public) }
+
+    %i[preparing unchecked cannot_be_merged_recheck checking cannot_be_merged_rechecking can_be_merged cannot_be_merged].each do |state|
+      context "when the the DB value is #{state}" do
+        let(:merge_request) { create(:merge_request, :unique_branches, source_project: project, merge_status: state.to_s) }
+
+        it 'serializes correctly' do
+          value = resolve_field(:merge_status_enum, merge_request)
+          value = type.coerce_isolated_result(value)
+
+          expect(value).to eq(merge_request.public_merge_status.upcase)
+        end
+      end
     end
   end
 end

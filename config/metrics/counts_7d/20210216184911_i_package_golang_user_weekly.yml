@@ -1,0 +1,18 @@
+---
+key_path: redis_hll_counters.user_packages.i_package_golang_user_weekly
+description: A weekly count of users that have published a Go module to the registry
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category: package registry
+value_type: number
+status: deprecated
+time_frame: 7d
+data_source: redis_hll
+distribution:
+- ee
+- ce
+tier:
+- free
+- premium
+- ultimate

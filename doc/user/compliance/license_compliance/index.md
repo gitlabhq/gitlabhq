@@ -95,7 +95,7 @@ For GitLab 12.8 and later, to enable License Compliance, you must
 that's provided as a part of your GitLab installation.
 For older versions of GitLab from 11.9 to 12.7, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml).
+[`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/d2cc841c55d65bc8134bfb3a467e66c36ac32b0a/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml).
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
 
@@ -108,11 +108,6 @@ include:
 
 The included template creates a `license_scanning` job in your CI/CD pipeline and scans your
 dependencies to find their licenses.
-
-NOTE:
-Before GitLab 12.8, the `license_scanning` job was named `license_management`. GitLab 13.0 removes
-the `license_management` job, so you must migrate to the `license_scanning` job and use the new
-`License-Scanning.gitlab-ci.yml` template.
 
 The results are saved as a
 [License Compliance report artifact](../../../ci/yaml/README.md#artifactsreportslicense_scanning)
@@ -153,7 +148,7 @@ License Compliance can be configured using CI/CD variables.
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.
 
-The `license_management` image already embeds many auto-detection scripts, languages,
+The `license_finder` image already embeds many auto-detection scripts, languages,
 and packages. Nevertheless, it's almost impossible to cover all cases for all projects.
 That's why sometimes it's necessary to install extra packages, or to have extra steps
 in the project automated setup, like the download and installation of a certificate.
@@ -557,51 +552,6 @@ For example:
 
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
-
-### Migration from `license_management` to `license_scanning`
-
-In GitLab 12.8 a new name for `license_management` job was introduced. This change was made to improve clarity around the purpose of the scan, which is to scan and collect the types of licenses present in a projects dependencies.
-GitLab 13.0 drops support for `license_management`.
-If you're using a custom setup for License Compliance, you're required
-to update your CI configuration accordingly:
-
-1. Change the CI template to `License-Scanning.gitlab-ci.yml`.
-1. Change the job name to `license_scanning` (if you mention it in `.gitlab-ci.yml`).
-1. Change the artifact name to `license_scanning`, and the filename to `gl-license-scanning-report.json` (if you mention it in `.gitlab-ci.yml`).
-
-For example, the following `.gitlab-ci.yml`:
-
-```yaml
-include:
-  - template: License-Management.gitlab-ci.yml
-
-license_management:
-  artifacts:
-    reports:
-      license_management: gl-license-management-report.json
-```
-
-Should be changed to:
-
-```yaml
-include:
-  - template: Security/License-Scanning.gitlab-ci.yml
-
-license_scanning:
-  artifacts:
-    reports:
-      license_scanning: gl-license-scanning-report.json
-```
-
-If you use the `license_management` artifact in GitLab 13.0 or later, the License Compliance job generates this error:
-
-```plaintext
-WARNING: Uploading artifacts to coordinator... failed id=:id responseStatus=400 Bad Request status=400 Bad Request token=:sha
-
-FATAL: invalid_argument
-```
-
-If you encounter this error, follow the instructions described in this section.
 
 ## Running License Compliance in an offline environment
 

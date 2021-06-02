@@ -180,6 +180,7 @@ class Project < ApplicationRecord
   has_one :packagist_service, class_name: 'Integrations::Packagist'
   has_one :pipelines_email_service, class_name: 'Integrations::PipelinesEmail'
   has_one :pivotaltracker_service, class_name: 'Integrations::Pivotaltracker'
+  has_one :pushover_service, class_name: 'Integrations::Pushover'
   has_one :redmine_service, class_name: 'Integrations::Redmine'
   has_one :slack_service, class_name: 'Integrations::Slack'
   has_one :teamcity_service, class_name: 'Integrations::Teamcity'
@@ -188,7 +189,6 @@ class Project < ApplicationRecord
   has_one :youtrack_service, class_name: 'Integrations::Youtrack'
   has_one :mattermost_slash_commands_service
   has_one :slack_slash_commands_service
-  has_one :pushover_service
   has_one :prometheus_service, inverse_of: :project
   has_one :mock_monitoring_service
 

@@ -16129,6 +16129,9 @@ msgstr ""
 msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
+msgid "GroupTemplate|The selected group's repositories and databases are copied into the projects created in this group. %{link_start}What should I add to my template group?%{link_end} "
+msgstr ""
+
 msgid "Groups"
 msgstr ""
 
@@ -29384,6 +29387,9 @@ msgstr ""
 msgid "Select a shared template repository for all projects on this instance."
 msgstr ""
 
+msgid "Select a subgroup to use as a template when creating new projects in the group."
+msgstr ""
+
 msgid "Select a template repository"
 msgstr ""
 
@@ -29484,9 +29490,6 @@ msgid "Select subscription"
 msgstr ""
 
 msgid "Select target branch"
-msgstr ""
-
-msgid "Select the custom project template source group."
 msgstr ""
 
 msgid "Select timezone"

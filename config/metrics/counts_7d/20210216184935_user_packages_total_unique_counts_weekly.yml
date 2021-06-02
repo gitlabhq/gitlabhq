@@ -1,0 +1,18 @@
+---
+key_path: redis_hll_counters.user_packages.user_packages_total_unique_counts_weekly
+description: A weekly count of users that have published a package to the registry
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category: package registry
+value_type: number
+status: data_available
+time_frame: 7d
+data_source: redis_hll
+distribution:
+- ee
+- ce
+tier:
+- free
+- premium
+- ultimate

@@ -81,7 +81,7 @@
   <<: *rubocop-cache
   # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up but RuboCop has a mechanism
   # for keeping only the N latest cache files, so we take advantage of it with `pull-push`.
-  policy: pull-push
+  policy: push
 
 .qa-ruby-gems-cache: &qa-ruby-gems-cache
   key: "qa-ruby-gems-v1"

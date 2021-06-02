@@ -46,6 +46,7 @@ exports[`grafana integration component default state to match the default snapsh
       <gl-form-group-stub
         label="Enable authentication"
         label-for="grafana-integration-enabled"
+        labeldescription=""
       >
         <gl-form-checkbox-stub
           id="grafana-integration-enabled"
@@ -60,6 +61,7 @@ exports[`grafana integration component default state to match the default snapsh
         description="Enter the base URL of the Grafana instance."
         label="Grafana URL"
         label-for="grafana-url"
+        labeldescription=""
       >
         <gl-form-input-stub
           id="grafana-url"
@@ -71,6 +73,7 @@ exports[`grafana integration component default state to match the default snapsh
       <gl-form-group-stub
         label="API token"
         label-for="grafana-token"
+        labeldescription=""
       >
         <gl-form-input-stub
           id="grafana-token"

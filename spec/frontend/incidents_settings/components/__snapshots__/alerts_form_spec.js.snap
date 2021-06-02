@@ -11,6 +11,7 @@ exports[`Alert integration settings form default state should match the default 
   <form>
     <gl-form-group-stub
       class="gl-pl-0"
+      labeldescription=""
     >
       <gl-form-checkbox-stub
         checked="true"
@@ -26,6 +27,7 @@ exports[`Alert integration settings form default state should match the default 
       class="col-8 col-md-9 gl-px-6"
       label-for="alert-integration-settings-issue-template"
       label-size="sm"
+      labeldescription=""
     >
       <label
         class="gl-display-inline-flex"
@@ -75,6 +77,7 @@ exports[`Alert integration settings form default state should match the default 
      
     <gl-form-group-stub
       class="gl-pl-0 gl-mb-5"
+      labeldescription=""
     >
       <gl-form-checkbox-stub>
         <span>
@@ -85,6 +88,7 @@ exports[`Alert integration settings form default state should match the default 
      
     <gl-form-group-stub
       class="gl-pl-0 gl-mb-5"
+      labeldescription=""
     >
       <gl-form-checkbox-stub
         checked="true"

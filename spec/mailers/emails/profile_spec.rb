@@ -337,7 +337,7 @@ RSpec.describe Emails::Profile do
     end
 
     it 'mentioned the time' do
-      is_expected.to have_body_text current_time.strftime('%Y-%m-%d %k:%M:%S %Z')
+      is_expected.to have_body_text current_time.strftime('%Y-%m-%d %H:%M:%S %Z')
     end
 
     it 'includes a link to the change password documentation' do

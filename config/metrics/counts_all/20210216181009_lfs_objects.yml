@@ -2,8 +2,8 @@
 key_path: counts.lfs_objects
 description:
 product_section: ops
-product_stage: package
-product_group: group::package
+product_stage: create
+product_group: group::create
 product_category:
 value_type: number
 status: data_available

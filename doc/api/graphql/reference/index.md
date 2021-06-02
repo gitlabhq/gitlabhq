@@ -9992,7 +9992,8 @@ Maven metadata.
 | <a id="mergerequestmergecommitsha"></a>`mergeCommitSha` | [`String`](#string) | SHA of the merge request commit (set once merged). |
 | <a id="mergerequestmergeerror"></a>`mergeError` | [`String`](#string) | Error message due to a merge error. |
 | <a id="mergerequestmergeongoing"></a>`mergeOngoing` | [`Boolean!`](#boolean) | Indicates if a merge is currently occurring. |
-| <a id="mergerequestmergestatus"></a>`mergeStatus` | [`String`](#string) | Status of the merge request. |
+| <a id="mergerequestmergestatus"></a>`mergeStatus` **{warning-solid}** | [`String`](#string) | **Deprecated** in 14.0. This was renamed. Use: [`MergeRequest.mergeStatusEnum`](#mergerequestmergestatusenum). |
+| <a id="mergerequestmergestatusenum"></a>`mergeStatusEnum` | [`MergeStatus`](#mergestatus) | Merge status of the merge request. |
 | <a id="mergerequestmergetrainscount"></a>`mergeTrainsCount` | [`Int`](#int) | Number of merge requests in the merge train. |
 | <a id="mergerequestmergeuser"></a>`mergeUser` | [`UserCore`](#usercore) | User who merged this merge request. |
 | <a id="mergerequestmergewhenpipelinesucceeds"></a>`mergeWhenPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if the merge has been set to be merged when its pipeline succeeds (MWPS). |
@@ -14424,6 +14425,18 @@ State of a GitLab merge request.
 | <a id="mergerequeststatelocked"></a>`locked` | Discussion has been locked. |
 | <a id="mergerequeststatemerged"></a>`merged` | Merge request has been merged. |
 | <a id="mergerequeststateopened"></a>`opened` | In open state. |
+
+### `MergeStatus`
+
+Representation of whether a GitLab merge request can be merged.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="mergestatuscannot_be_merged"></a>`CANNOT_BE_MERGED` | There are conflicts between the source and target branches. |
+| <a id="mergestatuscannot_be_merged_recheck"></a>`CANNOT_BE_MERGED_RECHECK` | Currently unchecked. The previous state was `CANNOT_BE_MERGED`. |
+| <a id="mergestatuscan_be_merged"></a>`CAN_BE_MERGED` | There are no conflicts between the source and target branches. |
+| <a id="mergestatuschecking"></a>`CHECKING` | Currently checking for mergeability. |
+| <a id="mergestatusunchecked"></a>`UNCHECKED` | Merge status has not been checked. |
 
 ### `MergeStrategyEnum`
 

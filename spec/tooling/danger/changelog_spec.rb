@@ -53,6 +53,12 @@ RSpec.describe Tooling::Danger::Changelog do
       it { is_expected.to have_attributes(errors: ["Commit #{commit.sha} uses an invalid changelog category: foo"]) }
     end
 
+    context 'when a commit uses the wrong casing for a trailer' do
+      let(:commit) { double('commit', message: "Hello world\n\nchangelog: foo", sha: "abc123") }
+
+      it { is_expected.to have_attributes(errors: ["The changelog trailer for commit #{commit.sha} must be `Changelog` (starting with a capital C), not `changelog`"]) }
+    end
+
     described_class::CATEGORIES.each do |category|
       context "when commit include a changelog trailer with category set to '#{category}'" do
         let(:commit) { double('commit', message: "Hello world\n\nChangelog: #{category}", sha: "abc123") }

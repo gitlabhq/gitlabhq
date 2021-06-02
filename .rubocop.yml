@@ -36,8 +36,9 @@ AllCops:
     - 'plugins/**/*'
     - 'file_hooks/**/*'
     - 'workhorse/**/*'
+    - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
   CacheRootDirectory: tmp
-  MaxFilesInCache: 18000
+  MaxFilesInCache: 25000
 
 Cop/AvoidKeywordArgumentsInSidekiqWorkers:
   Enabled: true

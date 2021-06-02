@@ -26,8 +26,6 @@ export default {
     BoardSidebarMilestoneSelect,
     BoardSidebarWeightInput: () =>
       import('ee_component/boards/components/sidebar/board_sidebar_weight_input.vue'),
-    SidebarIterationWidget: () =>
-      import('ee_component/sidebar/components/sidebar_iteration_widget.vue'),
     SidebarDropdownWidget: () =>
       import('ee_component/sidebar/components/sidebar_dropdown_widget.vue'),
   },
@@ -100,13 +98,16 @@ export default {
       />
       <div>
         <board-sidebar-milestone-select />
-        <sidebar-iteration-widget
+        <sidebar-dropdown-widget
           v-if="iterationFeatureAvailable"
           :iid="activeBoardItem.iid"
+          issuable-attribute="iteration"
           :workspace-path="projectPathForActiveIssue"
-          :iterations-workspace-path="groupPathForActiveIssue"
+          :attr-workspace-path="groupPathForActiveIssue"
           :issuable-type="issuableType"
           class="gl-mt-5"
+          data-testid="iteration-edit"
+          data-qa-selector="iteration_container"
         />
       </div>
       <board-sidebar-time-tracker class="swimlanes-sidebar-time-tracker" />

@@ -405,6 +405,16 @@ Parameters:
 ]
 ```
 
+The `merge_status` field may hold one of the following values:
+
+| Value                      | Interpretation                                                        |
+|----------------------------|-----------------------------------------------------------------------|
+| `unchecked`                | We have not checked this yet                                          |
+| `checking`                 | We are currently checking if the merge request can be merged          |
+| `can_be_merged`            | This merge request can be merged without conflict                     |
+| `cannot_be_merged`         | There are merge conflicts between the source and target branches      |
+| `cannot_be_merged_recheck` | Currently unchecked. Before the current changes, there were conflicts |
+
 Users on GitLab Premium or higher also see
 the `approvals_before_merge` parameter:
 

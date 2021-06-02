@@ -231,9 +231,9 @@ describe('Tracking', () => {
       eventSpy = jest.spyOn(Tracking, 'event');
       Tracking.bindDocument('_category_'); // only happens once
       setHTMLFixture(`
-        <input data-track-${term}="click_input1" data-track-label="_label_" value="_value_"/>
-        <input data-track-${term}="click_input2" data-track-value="_value_override_" value=0/>
-        <input type="checkbox" data-track-${term}="toggle_checkbox" value="_value_" checked/>
+        <input data-track-${term}="click_input1" data-track-label="_label_" value=0 />
+        <input data-track-${term}="click_input2" data-track-value=0 value=0/>
+        <input type="checkbox" data-track-${term}="toggle_checkbox" value=1 checked/>
         <input class="dropdown" data-track-${term}="toggle_dropdown"/>
         <div data-track-${term}="nested_event"><span class="nested"></span></div>
         <input data-track-bogus="click_bogusinput" data-track-label="_label_" value="_value_"/>
@@ -248,7 +248,7 @@ describe('Tracking', () => {
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input1', {
         label: '_label_',
-        value: '_value_',
+        value: '0',
       });
     });
 
@@ -262,7 +262,7 @@ describe('Tracking', () => {
       document.querySelector(`[data-track-${term}="click_input2"]`).click();
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input2', {
-        value: '_value_override_',
+        value: '0',
       });
     });
 
@@ -278,7 +278,7 @@ describe('Tracking', () => {
       checkbox.click(); // checking
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_checkbox', {
-        value: '_value_',
+        value: '1',
       });
     });
 
@@ -341,8 +341,8 @@ describe('Tracking', () => {
     beforeEach(() => {
       eventSpy = jest.spyOn(Tracking, 'event');
       setHTMLFixture(`
-        <input data-track-${term}="render" data-track-label="label1" value="_value_" data-track-property="_property_"/>
-        <span data-track-${term}="render" data-track-label="label2" data-track-value="_value_">
+        <input data-track-${term}="render" data-track-label="label1" value=1 data-track-property="_property_"/>
+        <span data-track-${term}="render" data-track-label="label2" data-track-value=1>
           Something
         </span>
         <input data-track-${term}="_render_bogus_" data-track-label="label3" value="_value_" data-track-property="_property_"/>
@@ -357,7 +357,7 @@ describe('Tracking', () => {
           'render',
           {
             label: 'label1',
-            value: '_value_',
+            value: '1',
             property: '_property_',
           },
         ],
@@ -366,7 +366,7 @@ describe('Tracking', () => {
           'render',
           {
             label: 'label2',
-            value: '_value_',
+            value: '1',
           },
         ],
       ]);

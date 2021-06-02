@@ -7,7 +7,7 @@ module Gitlab
         Asana Assembla Bamboo Bugzilla Buildkite Campfire Confluence CustomIssueTracker Datadog
         Discord DroneCi EmailsOnPush Ewm ExternalWiki Flowdock HangoutsChat IssueTracker Irker
         Jenkins Jira Mattermost MicrosoftTeams MockCi Packagist PipelinesEmail Pivotaltracker
-        Redmine Slack Teamcity UnifyCircuit Youtrack WebexTeams
+        Pushover Redmine Slack Teamcity UnifyCircuit Youtrack WebexTeams
       )).freeze
 
       def cast(value)

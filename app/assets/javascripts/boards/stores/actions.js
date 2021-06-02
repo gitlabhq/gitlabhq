@@ -7,11 +7,11 @@ import {
   ISSUABLE,
   titleQueries,
   subscriptionQueries,
-  SupportedFilters,
   deleteListQueries,
   listsQuery,
   updateListQueries,
   issuableTypes,
+  FilterFields,
 } from 'ee_else_ce/boards/constants';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
@@ -26,10 +26,10 @@ import {
   formatIssue,
   formatIssueInput,
   updateListPosition,
-  transformNotFilters,
   moveItemListHelper,
   getMoveData,
-  getSupportedParams,
+  FiltersInfo,
+  filterVariables,
 } from '../boards_util';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
 import groupProjectsQuery from '../graphql/group_projects.query.graphql';
@@ -60,13 +60,16 @@ export default {
     dispatch('setActiveId', { id: inactiveId, sidebarType: '' });
   },
 
-  setFilters: ({ commit }, filters) => {
-    const filterParams = {
-      ...getSupportedParams(filters, SupportedFilters),
-      not: transformNotFilters(filters),
-    };
-
-    commit(types.SET_FILTERS, filterParams);
+  setFilters: ({ commit, state: { issuableType } }, filters) => {
+    commit(
+      types.SET_FILTERS,
+      filterVariables({
+        filters,
+        issuableType,
+        filterInfo: FiltersInfo,
+        filterFields: FilterFields,
+      }),
+    );
   },
 
   performSearch({ dispatch }) {

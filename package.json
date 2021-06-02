@@ -55,7 +55,7 @@
     "@gitlab/favicon-overlay": "2.0.0",
     "@gitlab/svgs": "1.199.0",
     "@gitlab/tributejs": "1.0.0",
-    "@gitlab/ui": "29.31.0",
+    "@gitlab/ui": "29.32.0",
     "@gitlab/visual-review-tools": "1.6.1",
     "@rails/actioncable": "6.1.3-2",
     "@rails/ujs": "6.1.3-2",

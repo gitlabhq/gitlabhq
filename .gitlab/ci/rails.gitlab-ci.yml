@@ -218,6 +218,13 @@ update-static-analysis-cache:
     - .shared:rules:update-cache
   stage: prepare
   script:
+    - git log -n 1 --pretty=format:%H -- .rubocop.yml
+    - git log -n 1 --pretty=format:%H -- .rubocop_manual_todo.yml
+    - git log -n 1 --pretty=format:%H -- .rubocop_todo.yml
+    - git log -n 1 --pretty=format:%H -- rubocop/rubocop-migrations.yml
+    - git log -n 1 --pretty=format:%H -- rubocop/rubocop-usage-data.yml
+    - git log -n 1 --pretty=format:%H -- rubocop/rubocop-code_reuse.yml
+    - bundle exec scripts/debug-rubocop spec/factories/namespace/aggregation_schedules.rb
     - run_timed_command "bundle exec rubocop --parallel"  # For the moment we only cache `tmp/rubocop_cache` so we don't need to run all the tasks.
 
 static-analysis:
@@ -228,6 +235,13 @@ static-analysis:
   parallel: 4
   script:
     - run_timed_command "retry yarn install --frozen-lockfile"
+    - git log -n 1 --pretty=format:%H -- .rubocop.yml
+    - git log -n 1 --pretty=format:%H -- .rubocop_manual_todo.yml
+    - git log -n 1 --pretty=format:%H -- .rubocop_todo.yml
+    - git log -n 1 --pretty=format:%H -- rubocop/rubocop-migrations.yml
+    - git log -n 1 --pretty=format:%H -- rubocop/rubocop-usage-data.yml
+    - git log -n 1 --pretty=format:%H -- rubocop/rubocop-code_reuse.yml
+    - bundle exec scripts/debug-rubocop spec/factories/namespace/aggregation_schedules.rb
     - scripts/static-analysis
 
 static-analysis as-if-foss:

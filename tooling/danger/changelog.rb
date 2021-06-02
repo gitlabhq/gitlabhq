@@ -13,7 +13,7 @@ module Tooling
         'meta'
       ].freeze
       NO_CHANGELOG_CATEGORIES = %i[docs none].freeze
-      CHANGELOG_TRAILER_REGEX = /^Changelog:\s*(?<category>.+)$/.freeze
+      CHANGELOG_TRAILER_REGEX = /^(?<name>Changelog):\s*(?<category>.+)$/i.freeze
       CHANGELOG_EE_TRAILER_REGEX = /^EE: true$/.freeze
       CHANGELOG_MODIFIED_URL_TEXT = "**CHANGELOG.md was edited.** Please remove the additions and follow the [changelog guidelines](https://docs.gitlab.com/ee/development/changelog.html).\n\n"
       CHANGELOG_MISSING_URL_TEXT = "**[CHANGELOG missing](https://docs.gitlab.com/ee/development/changelog.html)**:\n\n"
@@ -124,7 +124,12 @@ module Tooling
 
       def check_changelog_trailer(commit)
         trailer = commit.message.match(CHANGELOG_TRAILER_REGEX)
+        name = trailer[:name]
         category = trailer[:category]
+
+        unless name == 'Changelog'
+          return ChangelogCheckResult.error("The changelog trailer for commit #{commit.sha} must be `Changelog` (starting with a capital C), not `#{name}`")
+        end
 
         return ChangelogCheckResult.empty if CATEGORIES.include?(category)
 

@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'rubocop'
+
+file = ARGV[0]
+
+unless file
+  warn('Error: missing file, please supply one')
+  abort
+end
+
+# Taken from https://github.com/rubocop/rubocop/blob/v0.93.1/lib/rubocop/result_cache.rb#L159-L171
+def file_checksum(file, config_store)
+  digester = Digest::SHA1.new
+  mode = File.stat(file).mode
+
+  puts "mode of #{file} is #{mode}"
+  puts "signature of #{file} is #{config_store.for_file(file).signature}"
+  puts "config is:"
+  puts config_store.for_file(file).to_h
+
+  digester.update(
+    "#{file}#{mode}#{config_store.for_file(file).signature}"
+  )
+  digester.file(file)
+  digester.hexdigest
+rescue Errno::ENOENT
+  # Spurious files that come and go should not cause a crash, at least not
+  # here.
+  '_'
+end
+
+config_store = RuboCop::ConfigStore.new
+checksum = file_checksum(file, config_store)
+puts "File checksum for #{file} is #{checksum}"

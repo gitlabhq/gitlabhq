@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe PropagateIntegrationWorker do
   describe '#perform' do
     let(:integration) do
-      PushoverService.create!(
+      Integrations::Pushover.create!(
         template: true,
         active: true,
         device: 'MyDevice',

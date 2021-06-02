@@ -9,17 +9,6 @@ import updateBoardListMutation from './graphql/board_list_update.mutation.graphq
 import issueSetSubscriptionMutation from './graphql/issue_set_subscription.mutation.graphql';
 import issueSetTitleMutation from './graphql/issue_set_title.mutation.graphql';
 
-export const SupportedFilters = [
-  'assigneeUsername',
-  'authorUsername',
-  'labelName',
-  'milestoneTitle',
-  'releaseTag',
-  'search',
-  'myReactionEmoji',
-  'assigneeId',
-];
-
 /* eslint-disable-next-line @gitlab/require-i18n-strings */
 export const AssigneeIdParamValues = ['Any', 'None'];
 
@@ -59,8 +48,6 @@ export const inactiveId = 0;
 
 export const ISSUABLE = 'issuable';
 export const LIST = 'list';
-
-export const NOT_FILTER = 'not[';
 
 export const flashAnimationDuration = 2000;
 
@@ -104,6 +91,19 @@ export const subscriptionQueries = {
   [issuableTypes.epic]: {
     mutation: updateEpicSubscriptionMutation,
   },
+};
+
+export const FilterFields = {
+  [issuableTypes.issue]: [
+    'assigneeUsername',
+    'assigneeWildcardId',
+    'authorUsername',
+    'labelName',
+    'milestoneTitle',
+    'myReactionEmoji',
+    'releaseTag',
+    'search',
+  ],
 };
 
 export default {

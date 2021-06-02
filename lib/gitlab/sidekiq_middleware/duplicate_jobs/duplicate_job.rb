@@ -51,6 +51,8 @@ module Gitlab
             end
           end
 
+          job['idempotency_key'] = idempotency_key
+
           self.existing_jid = read_jid.value
         end
 
@@ -117,7 +119,7 @@ module Gitlab
         end
 
         def idempotency_key
-          @idempotency_key ||= "#{namespace}:#{idempotency_hash}"
+          @idempotency_key ||= job['idempotency_key'] || "#{namespace}:#{idempotency_hash}"
         end
 
         def idempotency_hash
@@ -129,6 +131,10 @@ module Gitlab
         end
 
         def idempotency_string
+          # TODO: dump the argument's JSON using `Sidekiq.dump_json` instead
+          # this should be done in the next release so all jobs are written
+          # with their idempotency key.
+          # see https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1090
           "#{worker_class_name}:#{arguments.join('-')}"
         end
       end

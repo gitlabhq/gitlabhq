@@ -51,6 +51,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
                 .from([nil, -2])
                 .to(['123', be_within(1).of(described_class::DUPLICATE_KEY_TTL)])
       end
+
+      it "adds the idempotency key to the jobs payload" do
+        expect { duplicate_job.check! }.to change { job['idempotency_key'] }.from(nil).to(idempotency_key)
+      end
     end
 
     context 'when there was already a job with same arguments in the same queue' do
@@ -81,14 +85,39 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
 
     context 'when the key exists in redis' do
       before do
-        set_idempotency_key(idempotency_key, 'existing-key')
+        set_idempotency_key(idempotency_key, 'existing-jid')
       end
 
-      it 'removes the key from redis' do
-        expect { duplicate_job.delete! }
-          .to change { read_idempotency_key_with_ttl(idempotency_key) }
-                .from(['existing-key', -1])
-                .to([nil, -2])
+      shared_examples 'deleting the duplicate job' do
+        it 'removes the key from redis' do
+          expect { duplicate_job.delete! }
+            .to change { read_idempotency_key_with_ttl(idempotency_key) }
+                  .from(['existing-jid', -1])
+                  .to([nil, -2])
+        end
+      end
+
+      context 'when the idempotency key is not part of the job' do
+        it_behaves_like 'deleting the duplicate job'
+
+        it 'recalculates the idempotency hash' do
+          expect(duplicate_job).to receive(:idempotency_hash).and_call_original
+
+          duplicate_job.delete!
+        end
+      end
+
+      context 'when the idempotency key is part of the job' do
+        let(:idempotency_key) { 'not the same as what we calculate' }
+        let(:job) { super().merge('idempotency_key' => idempotency_key) }
+
+        it_behaves_like 'deleting the duplicate job'
+
+        it 'does not recalculate the idempotency hash' do
+          expect(duplicate_job).not_to receive(:idempotency_hash)
+
+          duplicate_job.delete!
+        end
       end
     end
   end

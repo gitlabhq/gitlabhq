@@ -1,16 +1,18 @@
 ---
 key_path: counts.package_events_i_package_push_package_by_deploy_token
-description: ''
-product_section: ''
-product_stage: ''
-product_group: ''
-product_category: ''
+description: A count of packages that have been published to the package registry using a deploy token
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category: package registry
 value_type: number
 status: data_available
 time_frame: all
-data_source: database
+data_source: redis
 distribution:
+- ee
 - ce
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

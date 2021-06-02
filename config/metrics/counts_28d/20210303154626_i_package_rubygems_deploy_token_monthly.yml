@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.deploy_token_packages.i_package_rubygems_deploy_token_monthly
-description: Distinct user count events for RubyGems packages in recent 28 days
+description: Distinct count events for RubyGems packages published using a Deploy token in recent 28 days
 product_section: ops
 product_stage: package
 product_group: group::package
@@ -18,4 +18,3 @@ tier:
 - free
 - premium
 - ultimate
-

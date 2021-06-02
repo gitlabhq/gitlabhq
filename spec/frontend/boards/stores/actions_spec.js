@@ -70,27 +70,28 @@ describe('setFilters', () => {
     [
       'with correct filters as payload',
       {
-        filters: { labelName: 'label' },
-        updatedFilters: { labelName: 'label', not: {} },
+        filters: { labelName: 'label', foobar: 'not-a-filter', search: 'quick brown fox' },
+        filterVariables: { labelName: 'label', search: 'quick brown fox', not: {} },
       },
     ],
     [
-      'and updates assigneeWildcardId',
+      "and use 'assigneeWildcardId' as filter variable for 'assigneId' param",
       {
         filters: { assigneeId: 'None' },
-        updatedFilters: { assigneeWildcardId: 'NONE', not: {} },
+        filterVariables: { assigneeWildcardId: 'NONE', not: {} },
       },
     ],
-  ])('should commit mutation SET_FILTERS %s', (_, { filters, updatedFilters }) => {
+  ])('should commit mutation SET_FILTERS %s', (_, { filters, filterVariables }) => {
     const state = {
       filters: {},
+      issuableType: issuableTypes.issue,
     };
 
     testAction(
       actions.setFilters,
       filters,
       state,
-      [{ type: types.SET_FILTERS, payload: updatedFilters }],
+      [{ type: types.SET_FILTERS, payload: filterVariables }],
       [],
     );
   });

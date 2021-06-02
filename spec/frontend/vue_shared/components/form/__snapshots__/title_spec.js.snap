@@ -4,6 +4,7 @@ exports[`Title edit field matches the snapshot 1`] = `
 <gl-form-group-stub
   label="Title"
   label-for="title-field-edit"
+  labeldescription=""
 >
   <gl-form-input-stub />
 </gl-form-group-stub>

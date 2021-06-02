@@ -46,13 +46,22 @@ guides you through the process.
 | Puppet    | [#36897](https://gitlab.com/gitlab-org/gitlab/-/issues/36897) |
 | RPM       | [#5932](https://gitlab.com/gitlab-org/gitlab/-/issues/5932) |
 | SBT       | [#36898](https://gitlab.com/gitlab-org/gitlab/-/issues/36898) |
-| Terraform | [Draft: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834) |
 | Vagrant   | [#36899](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) |
 
 <!-- vale gitlab.Spelling = YES -->
 ## Container Registry
 
 The GitLab [Container Registry](container_registry/index.md) is a secure and private registry for container images. It's built on open source software and completely integrated within GitLab. Use GitLab CI/CD to create and publish images. Use the GitLab [API](../../api/container_registry.md) to manage the registry across groups and projects.
+
+## Infrastructure Registry
+
+The GitLab [Infrastructure Registry](infrastructure_registry/index.md) is a secure and private registry for infrastructure packages. You can use GitLab CI/CD to create and publish infrastructure packages.
+
+The Infrastructure Registry supports the following formats:
+
+| Package type | GitLab version |
+| ------------ | -------------- |
+| [Terraform Module](terraform_module_registry/index.md) | 14.0+ |
 
 ## Dependency Proxy
 

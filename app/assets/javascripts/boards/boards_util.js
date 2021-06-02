@@ -1,6 +1,6 @@
 import { sortBy, cloneDeep } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ListType, NOT_FILTER, AssigneeIdParamValues } from './constants';
+import { ListType } from './constants';
 
 export function getMilestone() {
   return null;
@@ -175,45 +175,106 @@ export function isListDraggable(list) {
   return list.listType !== ListType.backlog && list.listType !== ListType.closed;
 }
 
-export function transformNotFilters(filters) {
-  return Object.keys(filters)
-    .filter((key) => key.startsWith(NOT_FILTER))
-    .reduce((obj, key) => {
-      return {
-        ...obj,
-        [key.substring(4, key.length - 1)]: filters[key],
-      };
-    }, {});
-}
+export const FiltersInfo = {
+  assigneeUsername: {
+    negatedSupport: true,
+  },
+  assigneeId: {
+    // assigneeId should be renamed to assigneeWildcardId.
+    // Classic boards used 'assigneeId'
+    remap: () => 'assigneeWildcardId',
+  },
+  assigneeWildcardId: {
+    negatedSupport: false,
+    transform: (val) => val.toUpperCase(),
+  },
+  authorUsername: {
+    negatedSupport: true,
+  },
+  labelName: {
+    negatedSupport: true,
+  },
+  milestoneTitle: {
+    negatedSupport: true,
+  },
+  myReactionEmoji: {
+    negatedSupport: true,
+  },
+  releaseTag: {
+    negatedSupport: true,
+  },
+  search: {
+    negatedSupport: false,
+  },
+};
 
-export function getSupportedParams(filters, supportedFilters) {
-  return supportedFilters.reduce((acc, f) => {
-    /**
-     * TODO the API endpoint for the classic boards
-     * accepts assignee wildcard value as 'assigneeId' param -
-     * while the GraphQL query accepts the value in 'assigneWildcardId' field.
-     * Once we deprecate the classics boards,
-     * we should change the filtered search bar to use 'asssigneeWildcardId' as a token name.
-     */
-    if (f === 'assigneeId' && filters[f]) {
-      return AssigneeIdParamValues.includes(filters[f])
-        ? {
-            ...acc,
-            assigneeWildcardId: filters[f].toUpperCase(),
-          }
-        : acc;
-    }
+/**
+ * @param {Object} filters - ex. { search: "foobar", "not[authorUsername]": "root", }
+ * @returns {Object} - ex. [ ["search", "foobar", false], ["authorUsername", "root", true], ]
+ */
+const parseFilters = (filters) => {
+  /* eslint-disable-next-line @gitlab/require-i18n-strings */
+  const isNegated = (x) => x.startsWith('not[') && x.endsWith(']');
 
-    if (filters[f]) {
-      return {
-        ...acc,
-        [f]: filters[f],
-      };
-    }
+  return Object.entries(filters).map(([k, v]) => {
+    const isNot = isNegated(k);
+    const filterKey = isNot ? k.slice(4, -1) : k;
 
-    return acc;
-  }, {});
-}
+    return [filterKey, v, isNot];
+  });
+};
+
+/**
+ * Returns an object of filter key/value pairs used as variables in GraphQL requests.
+ * (warning: filter values are not validated)
+ *
+ * @param {Object} objParam.filters - filters extracted from url params. ex. { search: "foobar", "not[authorUsername]": "root", }
+ * @param {string} objParam.issuableType - issuable type e.g., issue.
+ * @param {Object} objParam.filterInfo - data on filters such as how to transform filter value, if filter can be negated, etc.
+ * @param {Object} objParam.filterFields - data on what filters are available for given issuableType (based on GraphQL schema)
+ */
+export const filterVariables = ({ filters, issuableType, filterInfo, filterFields }) =>
+  parseFilters(filters)
+    .map(([k, v, negated]) => {
+      // for legacy reasons, some filters need to be renamed to correct GraphQL fields.
+      const remapAvailable = filterInfo[k]?.remap;
+      const remappedKey = remapAvailable ? filterInfo[k].remap(k, v) : k;
+
+      return [remappedKey, v, negated];
+    })
+    .filter(([k, , negated]) => {
+      // remove unsupported filters (+ check if the filters support negation)
+      const supported = filterFields[issuableType].includes(k);
+      if (supported) {
+        return negated ? filterInfo[k].negatedSupport : true;
+      }
+
+      return false;
+    })
+    .map(([k, v, negated]) => {
+      // if the filter value needs a special transformation, apply it (e.g., capitalization)
+      const transform = filterInfo[k]?.transform;
+      const newVal = transform ? transform(v) : v;
+
+      return [k, newVal, negated];
+    })
+    .reduce(
+      (acc, [k, v, negated]) => {
+        return negated
+          ? {
+              ...acc,
+              not: {
+                ...acc.not,
+                [k]: v,
+              },
+            }
+          : {
+              ...acc,
+              [k]: v,
+            };
+      },
+      { not: {} },
+    );
 
 // EE-specific feature. Find the implementation in the `ee/`-folder
 export function transformBoardConfig() {
@@ -228,5 +289,4 @@ export default {
   fullLabelId,
   fullIterationId,
   isListDraggable,
-  transformNotFilters,
 };

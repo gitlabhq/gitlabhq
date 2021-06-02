@@ -20,25 +20,25 @@ class StaticAnalysis
   # contain values that a FOSS installation won't find. To work
   # around this we will only enable this task on EE installations.
   TASKS_BY_DURATIONS_SECONDS_DESC = {
-    %w[bin/rake lint:haml] => 338,
-    (Gitlab.ee? ? %w[bin/rake gettext:updated_check] : nil) => 308,
+    %w[bin/rake lint:haml] => 488,
+    (Gitlab.ee? ? %w[bin/rake gettext:updated_check] : nil) => 410,
     # Most of the time, RuboCop finishes in 30 seconds, but sometimes it can take around 1200 seconds so we set a
     # duration of 300 to lower the likelihood that it will run in the same job as another long task...
     %w[bundle exec rubocop --parallel] => 300,
-    %w[yarn run lint:eslint:all] => 197,
-    %w[yarn run lint:prettier] => 124,
-    %w[bin/rake gettext:lint] => 96,
+    %w[yarn run lint:eslint:all] => 264,
+    %w[yarn run lint:prettier] => 134,
+    %w[bin/rake gettext:lint] => 81,
     %w[bundle exec license_finder] => 49,
-    %w[bin/rake lint:static_verification] => 22,
-    %w[bin/rake gitlab:sidekiq:all_queues_yml:check] => 13,
-    (Gitlab.ee? ? %w[bin/rake gitlab:sidekiq:sidekiq_queues_yml:check] : nil) => 13,
+    %w[bin/rake lint:static_verification] => 24,
+    %w[bin/rake gitlab:sidekiq:all_queues_yml:check] => 12,
+    (Gitlab.ee? ? %w[bin/rake gitlab:sidekiq:sidekiq_queues_yml:check] : nil) => 11,
     %w[bin/rake config_lint] => 11,
-    %w[yarn run internal:stylelint] => 9,
-    %w[scripts/lint-conflicts.sh] => 0.59,
-    %w[yarn run block-dependencies] => 0.35,
-    %w[scripts/lint-rugged] => 0.23,
-    %w[scripts/gemfile_lock_changed.sh] => 0.02,
-    %w[scripts/frontend/check_no_partial_karma_jest.sh] => 0.01
+    %w[yarn run internal:stylelint] => 8,
+    %w[scripts/lint-conflicts.sh] => 1,
+    %w[yarn run block-dependencies] => 1,
+    %w[scripts/lint-rugged] => 1,
+    %w[scripts/gemfile_lock_changed.sh] => 1,
+    %w[scripts/frontend/check_no_partial_karma_jest.sh] => 1
   }.reject { |k| k.nil? }.sort_by { |a| -a[1] }.to_h.keys.freeze
 
   def run_tasks!

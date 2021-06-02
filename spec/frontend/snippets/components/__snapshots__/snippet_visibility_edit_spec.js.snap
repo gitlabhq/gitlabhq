@@ -22,6 +22,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
   <gl-form-group-stub
     class="gl-mb-0"
     id="visibility-level-setting"
+    labeldescription=""
   >
     <gl-form-radio-group-stub
       checked="private"

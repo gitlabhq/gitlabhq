@@ -798,14 +798,14 @@ module API
           ::Integrations::Packagist,
           ::Integrations::PipelinesEmail,
           ::Integrations::Pivotaltracker,
+          ::Integrations::Pushover,
           ::Integrations::Redmine,
           ::Integrations::Slack,
           ::Integrations::Teamcity,
           ::Integrations::Youtrack,
           ::MattermostSlashCommandsService,
           ::SlackSlashCommandsService,
-          ::PrometheusService,
-          ::PushoverService
+          ::PrometheusService
         ]
       end
 
