@@ -1,7 +1,8 @@
 <script>
 import { GlIcon, GlEmptyState, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import Cookies from 'js-cookie';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
+import PathNavigation from '~/cycle_analytics/components/path_navigation.vue';
 import { __ } from '~/locale';
 import banner from './banner.vue';
 import stageCodeComponent from './stage_code_component.vue';
@@ -29,6 +30,7 @@ export default {
     'stage-staging-component': stageStagingComponent,
     'stage-production-component': stageComponent,
     'stage-nav-item': stageNavItem,
+    PathNavigation,
   },
   props: {
     noDataSvgPath: {
@@ -56,17 +58,19 @@ export default {
       'summary',
       'startDate',
     ]),
+    ...mapGetters(['pathNavigationData']),
     displayStageEvents() {
       const { selectedStageEvents, isLoadingStage, isEmptyStage } = this;
       return selectedStageEvents.length && !isLoadingStage && !isEmptyStage;
     },
     displayNotEnoughData() {
-      const { selectedStage, isEmptyStage, isLoadingStage } = this;
-      return selectedStage && isEmptyStage && !isLoadingStage;
+      return this.selectedStageReady && this.isEmptyStage;
     },
     displayNoAccess() {
-      const { selectedStage } = this;
-      return selectedStage && !selectedStage.isUserAllowed;
+      return this.selectedStageReady && !this.selectedStage.isUserAllowed;
+    },
+    selectedStageReady() {
+      return !this.isLoadingStage && this.selectedStage;
     },
   },
   methods: {
@@ -83,8 +87,8 @@ export default {
     isActiveStage(stage) {
       return stage.slug === this.selectedStage.slug;
     },
-    selectStage(stage) {
-      if (this.selectedStage === stage) return;
+    onSelectStage(stage) {
+      if (this.isLoadingStage || this.selectedStage?.slug === stage?.slug) return;
 
       this.setSelectedStage(stage);
       if (!stage.isUserAllowed) {
@@ -106,9 +110,23 @@ export default {
 </script>
 <template>
   <div class="cycle-analytics">
+    <path-navigation
+      v-if="selectedStageReady"
+      class="js-path-navigation gl-w-full gl-pb-2"
+      :loading="isLoading"
+      :stages="pathNavigationData"
+      :selected-stage="selectedStage"
+      :with-stage-counts="false"
+      @selected="onSelectStage"
+    />
     <gl-loading-icon v-if="isLoading" size="lg" />
     <div v-else class="wrapper">
-      <div class="card">
+      <!--
+        We wont have access to the stage counts until we move to a default value stream
+        For now we can use the `withStageCounts` flag to ensure we don't display empty stage counts
+        Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/326705
+      -->
+      <div class="card" data-testid="vsa-stage-overview-metrics">
         <div class="card-header">{{ __('Recent Project Activity') }}</div>
         <div class="d-flex justify-content-between">
           <div v-for="item in summary" :key="item.title" class="gl-flex-grow-1 gl-text-center">
@@ -139,40 +157,12 @@ export default {
           </div>
         </div>
       </div>
-      <div class="stage-panel-container">
-        <div class="card stage-panel">
+      <div class="stage-panel-container" data-testid="vsa-stage-table">
+        <div class="card stage-panel gl-px-5">
           <div class="card-header border-bottom-0">
             <nav class="col-headers">
-              <ul>
-                <li class="stage-header pl-5">
-                  <span class="stage-name font-weight-bold">{{
-                    s__('ProjectLifecycle|Stage')
-                  }}</span>
-                  <span
-                    class="has-tooltip"
-                    data-placement="top"
-                    :title="__('The phase of the development lifecycle.')"
-                    aria-hidden="true"
-                  >
-                    <gl-icon name="question-o" class="gl-text-gray-500" />
-                  </span>
-                </li>
-                <li class="median-header">
-                  <span class="stage-name font-weight-bold">{{ __('Median') }}</span>
-                  <span
-                    class="has-tooltip"
-                    data-placement="top"
-                    :title="
-                      __(
-                        'The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.',
-                      )
-                    "
-                    aria-hidden="true"
-                  >
-                    <gl-icon name="question-o" class="gl-text-gray-500" />
-                  </span>
-                </li>
-                <li class="event-header pl-3">
+              <ul class="gl-display-flex gl-justify-content-space-between gl-list-style-none">
+                <li>
                   <span v-if="selectedStage" class="stage-name font-weight-bold">{{
                     selectedStage.legend ? __(selectedStage.legend) : __('Related Issues')
                   }}</span>
@@ -187,7 +177,7 @@ export default {
                     <gl-icon name="question-o" class="gl-text-gray-500" />
                   </span>
                 </li>
-                <li class="total-time-header pr-5 text-right">
+                <li>
                   <span class="stage-name font-weight-bold">{{ __('Time') }}</span>
                   <span
                     class="has-tooltip"
@@ -201,45 +191,31 @@ export default {
               </ul>
             </nav>
           </div>
-
           <div class="stage-panel-body">
-            <nav class="stage-nav">
-              <ul>
-                <stage-nav-item
-                  v-for="stage in stages"
-                  :key="stage.title"
-                  :title="stage.title"
-                  :is-user-allowed="stage.isUserAllowed"
-                  :value="stage.value"
-                  :is-active="isActiveStage(stage)"
-                  @select="selectStage(stage)"
-                />
-              </ul>
-            </nav>
-            <section class="stage-events overflow-auto">
-              <gl-loading-icon v-show="isLoadingStage" size="lg" />
-              <template v-if="displayNoAccess">
+            <section class="stage-events gl-overflow-auto gl-w-full">
+              <gl-loading-icon v-if="isLoadingStage" size="lg" />
+              <template v-else>
                 <gl-empty-state
+                  v-if="displayNoAccess"
                   class="js-empty-state"
                   :title="__('You need permission.')"
                   :svg-path="noAccessSvgPath"
                   :description="__('Want to see the data? Please ask an administrator for access.')"
                 />
-              </template>
-              <template v-else>
-                <template v-if="displayNotEnoughData">
+                <template v-else>
                   <gl-empty-state
+                    v-if="displayNotEnoughData"
                     class="js-empty-state"
                     :description="selectedStage.emptyStageText"
                     :svg-path="noDataSvgPath"
                     :title="__('We don\'t have enough data to show this stage.')"
                   />
-                </template>
-                <template v-if="displayStageEvents">
                   <component
                     :is="selectedStage.component"
+                    v-if="displayStageEvents"
                     :stage="selectedStage"
                     :items="selectedStageEvents"
+                    data-testid="stage-table-events"
                   />
                 </template>
               </template>

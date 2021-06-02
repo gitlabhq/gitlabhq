@@ -40,4 +40,5 @@ container_scanning:
   rules:
     - if: $CONTAINER_SCANNING_DISABLED
       when: never
-    - if: $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bcontainer_scanning\b/

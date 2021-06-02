@@ -191,7 +191,7 @@ export default {
     },
     squashIsSelected() {
       if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.squashReadOnly ? this.state.squashOnMerge : this.state.squash;
+        return this.isSquashReadOnly ? this.state.squashOnMerge : this.state.squash;
       }
 
       return this.mr.squashIsSelected;

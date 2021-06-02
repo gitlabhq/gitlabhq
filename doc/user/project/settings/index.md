@@ -179,7 +179,7 @@ section.
 You can now change the [Project visibility](../../../public_access/public_access.md).
 If you set **Project Visibility** to public, you can limit access to some features
 to **Only Project Members**. In addition, you can select the option to
-[Allow users to request access](../members/index.md#project-membership-and-requesting-access).
+[Allow users to request access](../members/index.md#prevent-users-from-requesting-access-to-a-project).
 
 Use the switches to enable or disable the following features:
 

@@ -1,5 +1,10 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
+export const getStageByTitle = (stages, title) =>
+  stages.find((stage) => stage.title && stage.title.toLowerCase().trim() === title) || {};
+
+export const defaultStages = ['issue', 'plan', 'review', 'code', 'test', 'staging'];
+
 export const summary = [
   { value: '20', title: 'New Issues' },
   { value: null, title: 'Commits' },
@@ -8,6 +13,7 @@ export const summary = [
 ];
 
 const issueStage = {
+  id: 'issue',
   title: 'Issue',
   name: 'issue',
   legend: '',
@@ -16,30 +22,34 @@ const issueStage = {
 };
 
 const planStage = {
+  id: 'plan',
   title: 'Plan',
   name: 'plan',
   legend: '',
   description: 'Time before an issue starts implementation',
-  value: 'about 21 hours',
+  value: 75600,
 };
 
 const codeStage = {
+  id: 'code',
   title: 'Code',
   name: 'code',
   legend: '',
   description: 'Time until first merge request',
-  value: '2 days',
+  value: 172800,
 };
 
 const testStage = {
+  id: 'test',
   title: 'Test',
   name: 'test',
   legend: '',
   description: 'Total test time for all commits/merges',
-  value: 'about 5 hours',
+  value: 17550,
 };
 
 const reviewStage = {
+  id: 'review',
   title: 'Review',
   name: 'review',
   legend: '',
@@ -48,11 +58,12 @@ const reviewStage = {
 };
 
 const stagingStage = {
+  id: 'staging',
   title: 'Staging',
   name: 'staging',
   legend: '',
   description: 'From merge request merge until deploy to production',
-  value: '2 days',
+  value: 172800,
 };
 
 export const selectedStage = {
@@ -184,3 +195,64 @@ export const rawEvents = [
 export const convertedEvents = rawEvents.map((ev) =>
   convertObjectPropsToCamelCase(ev, { deep: true }),
 );
+
+export const pathNavIssueMetric = 172800;
+
+export const rawStageMedians = [
+  { id: 'issue', value: 172800 },
+  { id: 'plan', value: 86400 },
+  { id: 'review', value: 1036800 },
+  { id: 'code', value: 129600 },
+  { id: 'test', value: 259200 },
+  { id: 'staging', value: 388800 },
+];
+
+export const stageMedians = {
+  issue: 172800,
+  plan: 86400,
+  review: 1036800,
+  code: 129600,
+  test: 259200,
+  staging: 388800,
+};
+
+export const allowedStages = [issueStage, planStage, codeStage];
+
+export const transformedProjectStagePathData = [
+  {
+    metric: 172800,
+    selected: true,
+    stageCount: undefined,
+    icon: null,
+    id: 'issue',
+    title: 'Issue',
+    name: 'issue',
+    legend: '',
+    description: 'Time before an issue gets scheduled',
+    value: null,
+  },
+  {
+    metric: 86400,
+    selected: false,
+    stageCount: undefined,
+    icon: null,
+    id: 'plan',
+    title: 'Plan',
+    name: 'plan',
+    legend: '',
+    description: 'Time before an issue starts implementation',
+    value: 75600,
+  },
+  {
+    metric: 129600,
+    selected: false,
+    stageCount: undefined,
+    icon: null,
+    id: 'code',
+    title: 'Code',
+    name: 'code',
+    legend: '',
+    description: 'Time until first merge request',
+    value: 172800,
+  },
+];

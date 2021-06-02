@@ -130,6 +130,17 @@ RSpec.describe Notes::QuickActionsService do
       end
     end
 
+    describe '/estimate' do
+      let(:note_text) { '/estimate 1h' }
+
+      it 'adds time estimate to noteable' do
+        content = execute(note)
+
+        expect(content).to be_empty
+        expect(note.noteable.time_estimate).to eq(3600)
+      end
+    end
+
     describe 'note with command & text' do
       describe '/close, /label, /assign & /milestone' do
         let(:note_text) do
@@ -299,6 +310,11 @@ RSpec.describe Notes::QuickActionsService do
     it_behaves_like 'note on noteable that supports quick actions' do
       let_it_be(:issue, reload: true) { create(:issue, project: project) }
       let(:note) { build(:note_on_issue, project: project, noteable: issue) }
+    end
+
+    it_behaves_like 'note on noteable that supports quick actions' do
+      let_it_be(:incident, reload: true) { create(:incident, project: project) }
+      let(:note) { build(:note_on_issue, project: project, noteable: incident) }
     end
 
     it_behaves_like 'note on noteable that supports quick actions' do

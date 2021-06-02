@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::Slack do
-  it_behaves_like "slack or mattermost notifications", 'Slack'
+  it_behaves_like Integrations::SlackMattermostNotifier, "Slack"
 
   describe '#execute' do
     before do

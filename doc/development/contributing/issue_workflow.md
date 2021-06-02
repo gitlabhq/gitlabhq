@@ -311,12 +311,12 @@ We automatically add the ~"Accepting merge requests" label to issues
 that match the [triage policy](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#accepting-merge-requests).
 
 We recommend people that have never contributed to any open source project to
-look for issues labeled `~"Accepting merge requests"` with a [weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1) or the `~"Good for new contributors"` [label](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=good%20for%20new%20contributors&assignee_id=None) attached to it.
+look for issues labeled `~"Accepting merge requests"` with a [weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1) or the `~"Good for new contributors"` [label](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&label_name[]=good%20for%20new%20contributors&assignee_id=None) attached to it.
 More experienced contributors are very welcome to tackle
 [any of them](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None).
 
 For more complex features that have a weight of 2 or more and clear scope, we recommend looking at issues
-with the [label `~"Community Challenge"`](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Accepting%20merge%20requests&label_name[]=Community%20challenge).
+with the [label `~"Community Challenge"`](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&label_name[]=Accepting%20merge%20requests&label_name[]=Community%20challenge).
 If your MR for the `~"Community Challenge"` issue gets merged, you will also have a chance to win a custom
 GitLab merchandise.
 

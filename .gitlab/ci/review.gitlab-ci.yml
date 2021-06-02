@@ -113,7 +113,6 @@ review-stop:
 .review-qa-base:
   extends:
     - .use-docker-in-docker
-  retry: 1  # This is confusing but this means "2 runs at max".
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7
   stage: qa
   needs: ["review-deploy"]
@@ -165,6 +164,7 @@ review-qa-smoke:
   extends:
     - .review-qa-base
     - .review:rules:review-qa-smoke
+  retry: 1  # This is confusing but this means "2 runs at max".
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 

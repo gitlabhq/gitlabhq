@@ -33,6 +33,6 @@ RSpec.describe CycleAnalytics::ProjectLevelStageAdapter, type: :model do
   end
 
   it 'presents the data as json' do
-    expect(subject.as_json).to include({ title: 'Review', value: 'about 1 hour' })
+    expect(subject.as_json).to include({ title: 'Review', value: 1.hour })
   end
 end

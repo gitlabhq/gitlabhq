@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
+RSpec.shared_examples Integrations::SlackMattermostNotifier do |service_name|
   include StubRequests
 
   let(:chat_service) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com' }
 
   def execute_with_options(options)
-    receive(:new).with(webhook_url, options.merge(http_client: SlackMattermost::Notifier::HTTPClient))
+    receive(:new).with(webhook_url, options.merge(http_client: Integrations::SlackMattermostNotifier::HTTPClient))
      .and_return(double(:slack_service).as_null_object)
   end
 
@@ -128,6 +128,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
     context 'issue events' do
       let_it_be(:issue) { create(:issue) }
+
       let(:data) { issue.to_hook_data(user) }
 
       it_behaves_like 'calls the service API with the event message', /Issue (.*?) opened by/
@@ -167,6 +168,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
     context 'merge request events' do
       let_it_be(:merge_request) { create(:merge_request) }
+
       let(:data) { merge_request.to_hook_data(user) }
 
       it_behaves_like 'calls the service API with the event message', /opened merge request/
@@ -184,9 +186,10 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
     context 'wiki page events' do
       let_it_be(:wiki_page) { create(:wiki_page, wiki: project.wiki, message: 'user created page: Awesome wiki_page') }
+
       let(:data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
 
-      it_behaves_like 'calls the service API with the event message', / created (.*?)wikis\/(.*?)|wiki page> in/
+      it_behaves_like 'calls the service API with the event message', %r{ created (.*?)wikis/(.*?)|wiki page> in}
 
       context 'with event channel' do
         let(:chat_service_params) { { wiki_page_channel: 'random' } }
@@ -201,6 +204,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
     context 'deployment events' do
       let_it_be(:deployment) { create(:deployment) }
+
       let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, Time.current) }
 
       it_behaves_like 'calls the service API with the event message', /Deploy to (.*?) created/
@@ -208,6 +212,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
     context 'note event' do
       let_it_be(:issue_note) { create(:note_on_issue, project: project, note: "issue note") }
+
       let(:data) { Gitlab::DataBuilder::Note.build(issue_note, user) }
 
       it_behaves_like 'calls the service API with the event message', /commented on issue/

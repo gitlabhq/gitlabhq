@@ -464,6 +464,10 @@ class Issue < ApplicationRecord
     issue_type_supports?(:assignee)
   end
 
+  def supports_time_tracking?
+    issue_type_supports?(:time_tracking)
+  end
+
   def email_participants_emails
     issue_email_participants.pluck(:email)
   end

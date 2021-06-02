@@ -722,7 +722,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - spec/services/wiki_pages/event_create_service_spec.rb
     - spec/support/shared_examples/graphql/design_fields_shared_examples.rb
     - spec/support/shared_examples/graphql/mutations/set_assignees_shared_examples.rb
-    - spec/support/shared_examples/models/slack_mattermost_notifications_shared_examples.rb
     - spec/support/shared_examples/quick_actions/issuable/issuable_quick_actions_shared_examples.rb
     - spec/support/shared_examples/services/container_registry_auth_service_shared_examples.rb
     - spec/support/shared_examples/services/packages_shared_examples.rb
@@ -2917,5 +2916,4 @@ Style/RegexpLiteralMixedPreserve:
     - 'spec/support/helpers/grafana_api_helpers.rb'
     - 'spec/support/helpers/query_recorder.rb'
     - 'spec/support/helpers/require_migration.rb'
-    - 'spec/support/shared_examples/models/slack_mattermost_notifications_shared_examples.rb'
     - 'spec/views/layouts/_head.html.haml_spec.rb'

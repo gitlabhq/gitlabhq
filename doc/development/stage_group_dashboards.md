@@ -186,7 +186,7 @@ stageGroupDashboards.dashboard('source_code')
     mode='markdown',
     content=|||
       Useful link for the Source Code Management group dashboard:
-      - [Issue list](https://gitlab.com/groups/gitlab-org/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name%5B%5D=repository)
+      - [Issue list](https://gitlab.com/groups/gitlab-org/-/issues?scope=all&state=opened&label_name%5B%5D=repository)
       - [Epic list](https://gitlab.com/groups/gitlab-org/-/epics?label_name[]=repository)
     |||,
   ),

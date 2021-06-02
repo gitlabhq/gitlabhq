@@ -20,7 +20,7 @@ In addition to this page, the following resources can help you craft and contrib
 - [GitLab Handbook style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
 - [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
 - [Google Developer Documentation Style Guide](https://developers.google.com/style)
-- [Recent updates to this guide](https://gitlab.com/dashboard/merge_requests?scope=all&utf8=%E2%9C%93&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix)
+- [Recent updates to this guide](https://gitlab.com/dashboard/merge_requests?scope=all&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix)
 
 ## Documentation is the single source of truth (SSOT)
 

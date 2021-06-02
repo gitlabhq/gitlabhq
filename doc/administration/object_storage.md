@@ -618,20 +618,20 @@ This can result in some of the following problems:
 
 - If GitLab is using non-secure HTTP to access the object storage, clients may generate
 `https->http` downgrade errors and refuse to process the redirect. The solution to this
-is for GitLab to use HTTPS. LFS, for example, will generate this error:
+is for GitLab to use HTTPS. LFS, for example, generates this error:
 
    ```plaintext
    LFS: lfsapi/client: refusing insecure redirect, https->http
    ```
 
-- Clients will need to trust the certificate authority that issued the object storage
+- Clients need to trust the certificate authority that issued the object storage
 certificate, or may return common TLS errors such as:
 
    ```plaintext
    x509: certificate signed by unknown authority
    ```
 
-- Clients will need network access to the object storage.
+- Clients need network access to the object storage.
 Network firewalls could block access.
 Errors that might result
 if this access is not in place include:
@@ -667,7 +667,7 @@ The first option is recommended for MinIO. Otherwise, the
 is to use the `--compat` parameter on the server.
 
 Without consolidated object store configuration or instance profiles enabled,
-GitLab Workhorse will upload files to S3 using pre-signed URLs that do
+GitLab Workhorse uploads files to S3 using pre-signed URLs that do
 not have a `Content-MD5` HTTP header computed for them. To ensure data
 is not corrupted, Workhorse checks that the MD5 hash of the data sent
 equals the ETag header returned from the S3 server. When encryption is
@@ -683,7 +683,7 @@ eliminates the need to compare ETag headers returned from the S3 server.
 Instead of supplying AWS access and secret keys in object storage
 configuration, GitLab can be configured to use IAM roles to set up an
 [Amazon instance profile](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html).
-When this is used, GitLab will fetch temporary credentials each time an
+When this is used, GitLab fetches temporary credentials each time an
 S3 bucket is accessed, so no hard-coded values are needed in the
 configuration.
 
@@ -721,7 +721,7 @@ must be fulfilled:
 - `use_iam_profile` is `true` in the connection settings.
 - Consolidated object storage settings are in use.
 
-[ETag mismatch errors](#etag-mismatch) will occur if server side
+[ETag mismatch errors](#etag-mismatch) occur if server side
 encryption headers are used without enabling the Workhorse S3 client.
 
 ##### Disabling the feature

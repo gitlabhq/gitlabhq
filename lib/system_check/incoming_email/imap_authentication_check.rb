@@ -52,7 +52,7 @@ module SystemCheck
       def load_config
         erb = ERB.new(File.read(mail_room_config_path))
         erb.filename = mail_room_config_path
-        config_file = YAML.safe_load(erb.result)
+        config_file = YAML.safe_load(erb.result, permitted_classes: [Symbol])
 
         config_file[:mailboxes]
       end

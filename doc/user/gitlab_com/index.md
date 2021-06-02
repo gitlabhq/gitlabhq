@@ -502,7 +502,7 @@ for `shared_buffers` is quite high and as such we are looking into adjusting it.
 More information on this particular change can be found at
 <https://gitlab.com/gitlab-com/infrastructure/-/issues/1555>. An up to date list
 of proposed changes can be found at
-<https://gitlab.com/gitlab-com/infrastructure/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=database&label_name[]=change>.
+<https://gitlab.com/gitlab-com/infrastructure/-/issues?scope=all&state=opened&label_name[]=database&label_name[]=change>.
 
 ## Puma
 

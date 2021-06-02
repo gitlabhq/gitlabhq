@@ -113,7 +113,7 @@ For source installations the following settings are nested under `artifacts:` an
 | Setting             | Default | Description |
 |---------------------|---------|-------------|
 | `enabled`           | `false` | Enable or disable object storage. |
-| `remote_directory`  |         | The bucket name where Artifacts are stored. |
+| `remote_directory`  |         | The bucket name where Artifacts are stored. Use the name only, do not include the path. |
 | `direct_upload`     | `false` | Set to `true` to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. |
 | `background_upload` | `true`  | Set to `false` to disable automatic upload. Option may be removed once upload is direct to S3. |
 | `proxy_download`    | `false` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data. |

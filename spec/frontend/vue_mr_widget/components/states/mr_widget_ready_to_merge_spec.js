@@ -59,11 +59,16 @@ const createTestService = () => ({
 });
 
 let wrapper;
-const createComponent = (customConfig = {}) => {
+const createComponent = (customConfig = {}, mergeRequestWidgetGraphql = false) => {
   wrapper = shallowMount(ReadyToMerge, {
     propsData: {
       mr: createTestMr(customConfig),
       service: createTestService(),
+    },
+    provide: {
+      glFeatures: {
+        mergeRequestWidgetGraphql,
+      },
     },
   });
 };
@@ -669,6 +674,34 @@ describe('ReadyToMerge', () => {
             enableSquashBeforeMerge: true,
           },
         });
+
+        expect(findCommitEditElements().length).toBe(2);
+      });
+
+      it('should have two edit components when squash is enabled and there is more than 1 commit and mergeRequestWidgetGraphql is enabled', async () => {
+        createComponent(
+          {
+            mr: {
+              commitsCount: 2,
+              squashIsSelected: true,
+              enableSquashBeforeMerge: true,
+            },
+          },
+          true,
+        );
+
+        wrapper.setData({
+          loading: false,
+          state: {
+            ...createTestMr({}),
+            userPermissions: {},
+            squash: true,
+            mergeable: true,
+            commitCount: 2,
+            commitsWithoutMergeCommits: {},
+          },
+        });
+        await wrapper.vm.$nextTick();
 
         expect(findCommitEditElements().length).toBe(2);
       });

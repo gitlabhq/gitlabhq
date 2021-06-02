@@ -115,7 +115,7 @@
     "deckar01-task_list": "^2.3.1",
     "diff": "^3.4.0",
     "document-register-element": "1.14.3",
-    "dompurify": "^2.2.8",
+    "dompurify": "^2.2.9",
     "dropzone": "^4.2.0",
     "editorconfig": "^0.15.3",
     "emoji-regex": "^7.0.3",

@@ -2,7 +2,7 @@
 
 module Integrations
   class Mattermost < BaseChatNotification
-    include SlackMattermost::Notifier
+    include SlackMattermostNotifier
     include ActionView::Helpers::UrlHelper
 
     def title

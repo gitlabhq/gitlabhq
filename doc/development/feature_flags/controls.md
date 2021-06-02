@@ -99,7 +99,7 @@ Guidelines:
 Before toggling any feature flag, check that there are no ongoing
 significant incidents on GitLab.com. You can do this by checking the
 `#production` and `#incident-management` Slack channels, or looking for
-[open incident issues](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=incident)
+[open incident issues](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/?scope=all&state=opened&label_name[]=incident)
 (although check the dates and times).
 
 We do not want to introduce changes during an incident, as it can make
@@ -256,7 +256,7 @@ Any feature flag change that affects GitLab.com (production) via [ChatOps](https
 is automatically logged in an issue.
 
 The issue is created in the
-[gl-infra/feature-flag-log](https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/-/issues?scope=all&utf8=%E2%9C%93&state=closed)
+[gl-infra/feature-flag-log](https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/-/issues?scope=all&state=closed)
 project, and it will at minimum log the Slack handle of person enabling
 a feature flag, the time, and the name of the flag being changed.
 

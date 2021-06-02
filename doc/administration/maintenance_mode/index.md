@@ -143,25 +143,25 @@ is turned off.
 
 ### Deployments
 
-Deployments won't go through because pipelines will be unfinished.
+Deployments don't go through because pipelines are unfinished.
 
 It is recommended to disable auto deploys during Maintenance Mode, and enable them once it is disabled.
 
 #### Terraform integration
 
-Terraform integration depends on running CI pipelines, hence it will be blocked.
+Terraform integration depends on running CI pipelines, hence it is blocked.
 
 ### Container Registry
 
-`docker push` will fail with this error: `denied: requested access to the resource is denied`, but `docker pull` will work.
+`docker push` fails with this error: `denied: requested access to the resource is denied`, but `docker pull` works.
 
 ### Package Registry
 
-Package Registry will allow you to install but not publish packages.
+Package Registry allows you to install but not publish packages.
 
 ### Background jobs
 
-Background jobs (cron jobs, Sidekiq) will continue running as is, because background jobs are not automatically disabled.
+Background jobs (cron jobs, Sidekiq) continue running as is, because background jobs are not automatically disabled.
 
 [During a planned Geo failover](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-node),
 it is recommended that you disable all cron jobs except for those related to Geo.
@@ -170,34 +170,34 @@ You can monitor queues and disable jobs in **Admin Area > Monitoring > Backgroun
 
 ### Incident management
 
-[Incident management](../../operations/incident_management/index.md) functions will be limited. The creation of [alerts](../../operations/incident_management/alerts.md) and [incidents](../../operations/incident_management/incidents.md#incident-creation) will be paused entirely. Notifications and paging on alerts and incidents will therefore be disabled.
+[Incident management](../../operations/incident_management/index.md) functions are limited. The creation of [alerts](../../operations/incident_management/alerts.md) and [incidents](../../operations/incident_management/incidents.md#incident-creation) are paused entirely. Notifications and paging on alerts and incidents are therefore disabled.
 
 ### Feature flags
 
 - [Development feature flags](../../development/feature_flags/index.md) cannot be turned on or off through the API, but can be toggled through the Rails console.
-- [The feature flag service](../../operations/feature_flags.md) will respond to feature flag checks but feature flags cannot be toggled
+- [The feature flag service](../../operations/feature_flags.md) responds to feature flag checks but feature flags cannot be toggled
 
 ### Geo secondaries
 
-When primary is in Maintenance Mode, secondary will also automatically go into Maintenance Mode.
+When primary is in Maintenance Mode, secondary also automatically goes into Maintenance Mode.
 
 It is important that you do not disable replication before enabling Maintenance Mode.
 
-Replication and verification will continue to work but proxied Git pushes to primary will not work.
+Replication and verification continues to work but proxied Git pushes to primary do not work.
 
 ### Secure features
 
-Features that depend on creating issues or creating or approving Merge Requests, will not work.
+Features that depend on creating issues or creating or approving Merge Requests, do not work.
 
-Exporting a vulnerability list from a Vulnerability Report page will not work.
+Exporting a vulnerability list from a Vulnerability Report page does not work.
 
-Changing the status on a finding or vulnerability object will not work, even though no error is shown in the UI.
+Changing the status on a finding or vulnerability object does not work, even though no error is shown in the UI.
 
 SAST and Secret Detection cannot be initiated because they depend on passing CI jobs to create artifacts.
 
 ## An example use case: a planned failover
 
-In the use case of [a planned failover](../geo/disaster_recovery/planned_failover.md), a few writes in the primary database are acceptable, since they will be replicated quickly and are not significant in number.
+In the use case of [a planned failover](../geo/disaster_recovery/planned_failover.md), a few writes in the primary database are acceptable, since they are replicated quickly and are not significant in number.
 
 For the same reason we don't automatically block background jobs when Maintenance Mode is enabled.
 

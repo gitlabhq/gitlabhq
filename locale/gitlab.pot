@@ -13087,6 +13087,9 @@ msgstr ""
 msgid "EscalationPolicies|A schedule is required for adding an escalation policy."
 msgstr ""
 
+msgid "EscalationPolicies|A schedule is required for adding an escalation policy. Please create an on-call schedule first."
+msgstr ""
+
 msgid "EscalationPolicies|Add an escalation policy"
 msgstr ""
 
@@ -17749,9 +17752,6 @@ msgstr ""
 msgid "Integrations|All projects inheriting these settings will also be reset."
 msgstr ""
 
-msgid "Integrations|As a GitLab administrator, you can set default configuration parameters for a given integration that all projects can inherit and use. When you set these parameters, your changes update the integration for all projects that are not already using custom settings. Learn more about %{integrations_link_start}Project integration management%{link_end}."
-msgstr ""
-
 msgid "Integrations|Browser limitations"
 msgstr ""
 
@@ -17789,6 +17789,9 @@ msgid "Integrations|Failed to load namespaces. Please try again."
 msgstr ""
 
 msgid "Integrations|Failed to unlink namespace. Please try again."
+msgstr ""
+
+msgid "Integrations|GitLab administrators can set up integrations that all projects inherit and use by default. These integrations apply to all projects that don't already use custom settings. You can override custom settings for a group or project if the settings are necessary at that level. Learn more about %{integrations_link_start}project integration management%{link_end}."
 msgstr ""
 
 msgid "Integrations|Includes Standard, plus the entire commit message, commit hash, and issue IDs"
@@ -18556,10 +18559,19 @@ msgstr ""
 msgid "Iterations|Cadence name"
 msgstr ""
 
+msgid "Iterations|Couldn't find iteration cadence"
+msgstr ""
+
 msgid "Iterations|Create cadence"
 msgstr ""
 
 msgid "Iterations|Duration"
+msgstr ""
+
+msgid "Iterations|Edit cadence"
+msgstr ""
+
+msgid "Iterations|Edit iteration cadence"
 msgstr ""
 
 msgid "Iterations|Error loading iteration cadences."
@@ -18581,6 +18593,9 @@ msgid "Iterations|No iterations in cadence."
 msgstr ""
 
 msgid "Iterations|Number of future iterations you would like to have scheduled"
+msgstr ""
+
+msgid "Iterations|Save cadence"
 msgstr ""
 
 msgid "Iterations|Select duration"
@@ -20460,9 +20475,6 @@ msgid "Mean time to merge"
 msgstr ""
 
 msgid "Measured in bytes of code. Excludes generated and vendored code."
-msgstr ""
-
-msgid "Median"
 msgstr ""
 
 msgid "Medium Timeout Period"
@@ -25665,9 +25677,6 @@ msgid "ProjectFileTree|Show more"
 msgstr ""
 
 msgid "ProjectLastActivity|Never"
-msgstr ""
-
-msgid "ProjectLifecycle|Stage"
 msgstr ""
 
 msgid "ProjectOverview|Fork"
@@ -32667,9 +32676,6 @@ msgstr ""
 msgid "The password for your GitLab account on %{link_to_gitlab} has successfully been changed."
 msgstr ""
 
-msgid "The phase of the development lifecycle."
-msgstr ""
-
 msgid "The pipeline has been deleted"
 msgstr ""
 
@@ -32812,9 +32818,6 @@ msgid "The user you are trying to deactivate has been active in the past %{minim
 msgstr ""
 
 msgid "The username for the Jenkins server."
-msgstr ""
-
-msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
 msgid "The value of the provided variable exceeds the %{count} character limit"

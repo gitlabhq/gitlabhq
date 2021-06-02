@@ -156,7 +156,7 @@ RSpec.describe Projects::CompareController do
       it 'shows a flash message and redirects' do
         show_request
 
-        expect(flash[:alert]).to eq('Invalid branch name')
+        expect(flash[:alert]).to eq("Invalid branch name(s): master%' AND 2554=4423 AND '%'='")
         expect(response).to have_gitlab_http_status(:found)
       end
     end
@@ -169,7 +169,20 @@ RSpec.describe Projects::CompareController do
       it 'shows a flash message and redirects' do
         show_request
 
-        expect(flash[:alert]).to eq('Invalid branch name')
+        expect(flash[:alert]).to eq("Invalid branch name(s): master%' AND 2554=4423 AND '%'='")
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when the both refs are invalid' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { "master%' AND 2554=4423 AND '%'='" }
+      let(:to_ref) { "improve%' =,awesome" }
+
+      it 'shows a flash message and redirects' do
+        show_request
+
+        expect(flash[:alert]).to eq("Invalid branch name(s): improve%' =,awesome, master%' AND 2554=4423 AND '%'='")
         expect(response).to have_gitlab_http_status(:found)
       end
     end

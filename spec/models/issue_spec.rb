@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Issue do
   include ExternalAuthorizationServiceHelpers
 
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user) }
   let_it_be(:reusable_project) { create(:project) }
 
@@ -1330,6 +1332,26 @@ RSpec.describe Issue do
 
     it 'raises error when feature is invalid' do
       expect { issue.issue_type_supports?(:unkown_feature) }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe '#supports_time_tracking?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:issue) { create(:incident, project: project) }
+
+    where(:issue_type, :supports_time_tracking) do
+      :issue | true
+      :incident | true
+    end
+
+    with_them do
+      before do
+        issue.update!(issue_type: issue_type)
+      end
+
+      it do
+        expect(issue.supports_time_tracking?).to eq(supports_time_tracking)
+      end
     end
   end
 

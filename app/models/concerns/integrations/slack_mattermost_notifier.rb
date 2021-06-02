@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module SlackMattermost
-  module Notifier
+module Integrations
+  module SlackMattermostNotifier
     private
 
     def notify(message, opts)

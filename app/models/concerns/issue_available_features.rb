@@ -11,7 +11,8 @@ module IssueAvailableFeatures
     def available_features_for_issue_types
       {
         assignee: %w(issue incident),
-        confidentiality: %(issue incident)
+        confidentiality: %(issue incident),
+        time_tracking: %(issue incident)
       }.with_indifferent_access
     end
   end
