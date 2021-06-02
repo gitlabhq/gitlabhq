@@ -371,7 +371,9 @@ module Gitlab
       end
 
       def find_build_by_token(token)
-        ::Ci::AuthJobFinder.new(token: token).execute
+        ::Gitlab::Database::LoadBalancing::Session.current.use_primary do
+          ::Ci::AuthJobFinder.new(token: token).execute
+        end
       end
 
       def user_auth_attempt!(user, success:)

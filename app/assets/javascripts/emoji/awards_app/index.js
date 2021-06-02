@@ -32,7 +32,7 @@ export default (el) => {
           canAwardEmoji: this.canAwardEmoji,
           currentUserId: this.currentUserId,
           defaultAwards: ['thumbsup', 'thumbsdown'],
-          selectedClass: 'gl-bg-blue-50! is-active',
+          selectedClass: 'selected',
         },
         on: {
           award: this.toggleAward,

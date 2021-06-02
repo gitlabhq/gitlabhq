@@ -6,7 +6,7 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:bulk_import) { create(:bulk_import, user: user) }
-  let_it_be(:filepath) { 'spec/fixtures/bulk_imports/labels.ndjson.gz' }
+  let_it_be(:filepath) { 'spec/fixtures/bulk_imports/gz/labels.ndjson.gz' }
   let_it_be(:entity) do
     create(
       :bulk_import_entity,
@@ -73,19 +73,6 @@ RSpec.describe BulkImports::Groups::Pipelines::LabelsPipeline do
       it 'returns' do
         expect(subject.load(context, nil)).to be_nil
       end
-    end
-  end
-
-  describe 'pipeline parts' do
-    it { expect(described_class).to include_module(BulkImports::NdjsonPipeline) }
-    it { expect(described_class).to include_module(BulkImports::Pipeline::Runner) }
-
-    it 'has extractor' do
-      expect(described_class.get_extractor)
-        .to eq(
-          klass: BulkImports::Common::Extractors::NdjsonExtractor,
-          options: { relation: described_class::RELATION }
-        )
     end
   end
 end

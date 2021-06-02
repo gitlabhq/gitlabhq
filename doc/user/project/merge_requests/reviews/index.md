@@ -360,32 +360,7 @@ All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) 
 ## Cached merge request count
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299542) in GitLab 13.11.
-> - It's [deployed behind a feature flag](../../../feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-cached-merge-request-count).
-
-WARNING:
-This feature might not be available to you. Refer to the previous **version history** note for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/327319) in GitLab 14.0.
 
 In a group, the sidebar displays the total count of open merge requests. This value is cached if it's greater than
 than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
-
-### Enable or disable cached merge request count **(FREE SELF)**
-
-Cached merge request count in the left sidebar is under development but ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../../administration/feature_flags.md)
-can disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:cached_sidebar_merge_requests_count)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:cached_sidebar_merge_requests_count)
-```

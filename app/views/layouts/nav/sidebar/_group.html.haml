@@ -1,5 +1,5 @@
 - issues_count = cached_issuables_count(@group, type: :issues)
-- merge_requests_count = group_open_merge_requests_count(@group)
+- merge_requests_count = cached_issuables_count(@group, type: :merge_requests)
 - aside_title = @group.subgroup? ? _('Subgroup navigation') : _('Group navigation')
 
 %aside.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **sidebar_tracking_attributes_by_object(@group), 'aria-label': aside_title }

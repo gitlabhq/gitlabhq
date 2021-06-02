@@ -24,11 +24,19 @@ developed and tested. We aim to be compatible with most external
    sudo -i
    ```
 
-1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** ID for your node (arbitrary value):
+1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
-   # The unique identifier for the Geo node.
-   gitlab_rails['geo_node_name'] = '<node_name_here>'
+   ##
+   ## Geo Primary role
+   ## - configure dependent flags automatically to enable Geo
+   ##
+   roles ['geo_primary_role']
+
+   ##
+   ## The unique identifier for the Geo site.
+   ##
+   gitlab_rails['geo_node_name'] = '<geo_site_name_here>'
    ```
 
 1. Reconfigure the **primary** node for the change to take effect:

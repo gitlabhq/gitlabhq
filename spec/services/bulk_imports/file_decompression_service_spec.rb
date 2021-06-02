@@ -7,7 +7,7 @@ RSpec.describe BulkImports::FileDecompressionService do
   let_it_be(:ndjson_filename) { 'labels.ndjson' }
   let_it_be(:ndjson_filepath) { File.join(tmpdir, ndjson_filename) }
   let_it_be(:gz_filename) { "#{ndjson_filename}.gz" }
-  let_it_be(:gz_filepath) { "spec/fixtures/bulk_imports/#{gz_filename}" }
+  let_it_be(:gz_filepath) { "spec/fixtures/bulk_imports/gz/#{gz_filename}" }
 
   before do
     FileUtils.copy_file(gz_filepath, File.join(tmpdir, gz_filename))

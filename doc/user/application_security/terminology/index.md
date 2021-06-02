@@ -101,7 +101,7 @@ of the finding's [first identifier](https://gitlab.com/gitlab-org/security-produ
 combine to create the value.
 
 Examples of primary identifiers include `PluginID` for OWASP Zed Attack Proxy (ZAP), or `CVE` for
-Klar. Note that the identifier must be stable. Subsequent scans must return the same value for the
+Trivy. Note that the identifier must be stable. Subsequent scans must return the same value for the
 same finding, even if the location has slightly changed.
 
 ### Report finding
@@ -122,7 +122,7 @@ The type of scan. This must be one of the following:
 ### Scanner
 
 Software that can scan for vulnerabilities. The resulting scan report is typically not in the
-[Secure report format](#secure-report-format). Examples include ESLint, Klar, and ZAP.
+[Secure report format](#secure-report-format). Examples include ESLint, Trivy, and ZAP.
 
 ### Secure product
 

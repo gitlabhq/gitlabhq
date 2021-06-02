@@ -140,6 +140,10 @@ RSpec.describe BulkImports::PipelineWorker do
         def self.ndjson_pipeline?
           true
         end
+
+        def self.relation
+          'test'
+        end
       end
     end
 
@@ -153,7 +157,6 @@ RSpec.describe BulkImports::PipelineWorker do
 
     before do
       stub_const('NdjsonPipeline', ndjson_pipeline)
-      stub_const('NdjsonPipeline::RELATION', 'test')
       allow(BulkImports::Stage)
         .to receive(:pipeline_exists?)
         .with('NdjsonPipeline')

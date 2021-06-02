@@ -11,13 +11,12 @@ RSpec.describe 'Startup CSS fixtures', type: :controller do
 
   before(:all) do
     stub_feature_flags(combined_menu: true)
-    stub_feature_flags(sidebar_refactor: true)
     clean_frontend_fixtures('startup_css/')
   end
 
   shared_examples 'startup css project fixtures' do |type|
     let(:user) { create(:user, :admin) }
-    let(:project) { create(:project, :public, :repository, description: 'Code and stuff', creator: user) }
+    let(:project) { create(:project, :public, :repository, description: 'Code and stuff', avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png'), creator: user) }
 
     before do
       sign_in(user)
@@ -35,17 +34,6 @@ RSpec.describe 'Startup CSS fixtures', type: :controller do
     end
 
     it "startup_css/project-#{type}.html" do
-      get :show, params: {
-        namespace_id: project.namespace.to_param,
-        id: project
-      }
-
-      expect(response).to be_successful
-    end
-
-    it "startup_css/project-#{type}-legacy-sidebar.html" do
-      stub_feature_flags(sidebar_refactor: false)
-
       get :show, params: {
         namespace_id: project.namespace.to_param,
         id: project

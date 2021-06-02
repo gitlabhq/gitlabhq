@@ -136,7 +136,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
             bridge_id: bridge.id, project_id: bridge.project.id)
           .and_call_original
         expect(Ci::CreatePipelineService).not_to receive(:new)
-        expect(service.execute(bridge)).to be_nil
+        expect(service.execute(bridge)).to eq({ message: "Already has a downstream pipeline", status: :error })
       end
     end
 
@@ -391,6 +391,51 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
             pipeline.variables.map(&:key).tap do |variables|
               expect(variables).to include 'BRIDGE'
             end
+          end
+        end
+
+        context 'when multi-project pipeline runs from child pipelines bridge job' do
+          before do
+            stub_ci_pipeline_yaml_file(YAML.dump(rspec: { script: 'rspec' }))
+          end
+
+          # instantiate new service, to clear memoized values from child pipeline run
+          subject(:execute_with_trigger_project_bridge) do
+            described_class.new(upstream_project, user).execute(trigger_project_bridge)
+          end
+
+          let!(:child_pipeline) do
+            service.execute(bridge)
+            bridge.downstream_pipeline
+          end
+
+          let!(:trigger_downstream_project) do
+            {
+              trigger: {
+                project: downstream_project.full_path,
+                branch: 'feature'
+              }
+            }
+          end
+
+          let!(:trigger_project_bridge) do
+            create(
+              :ci_bridge, status: :pending,
+              user: user,
+              options: trigger_downstream_project,
+              pipeline: child_pipeline
+            )
+          end
+
+          it 'creates a new pipeline' do
+            expect { execute_with_trigger_project_bridge }
+              .to change { Ci::Pipeline.count }.by(1)
+
+            new_pipeline = trigger_project_bridge.downstream_pipeline
+
+            expect(new_pipeline.child?).to eq(false)
+            expect(new_pipeline.triggered_by_pipeline).to eq child_pipeline
+            expect(trigger_project_bridge.reload).not_to be_failed
           end
         end
       end

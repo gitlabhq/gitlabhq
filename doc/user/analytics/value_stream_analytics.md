@@ -45,11 +45,9 @@ The stages tracked by Value Stream Analytics by default represent the [GitLab fl
 
 ### Date ranges
 
-To filter analytics results based on a date range, select one of these options:
-
-- **Last 7 days**
-- **Last 30 days** (default)
-- **Last 90 days**
+To filter analytics results based on a date range,
+select different **From** and **To** days
+from the date picker (default: last 30 days).
 
 ## How Time metrics are measured
 

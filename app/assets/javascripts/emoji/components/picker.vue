@@ -85,7 +85,7 @@ export default {
       :boundary="getBoundaryElement()"
       :class="dropdownClass"
       menu-class="dropdown-extended-height"
-      category="tertiary"
+      category="secondary"
       no-flip
       right
       lazy

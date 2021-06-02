@@ -100,6 +100,7 @@ module Types
     mount_mutation Mutations::Ci::Job::Play
     mount_mutation Mutations::Ci::Job::Retry
     mount_mutation Mutations::Ci::Runner::Update, feature_flag: :runner_graphql_query
+    mount_mutation Mutations::Ci::Runner::Delete, feature_flag: :runner_graphql_query
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::UserCallouts::Create
   end

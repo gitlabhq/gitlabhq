@@ -83,9 +83,9 @@ Fields related to design management.
 
 Returns [`DesignManagement!`](#designmanagement).
 
-### `Query.devopsAdoptionSegments`
+### `Query.devopsAdoptionEnabledNamespaces`
 
-Get configured DevOps adoption segments on the instance. **BETA** This endpoint is subject to change without notice.
+Get configured DevOps adoption namespaces. **BETA** This endpoint is subject to change without notice.
 
 Returns [`DevopsAdoptionSegmentConnection`](#devopsadoptionsegmentconnection).
 
@@ -97,7 +97,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querydevopsadoptionsegmentsdisplaynamespaceid"></a>`displayNamespaceId` | [`NamespaceID`](#namespaceid) | Filter by display namespace. |
+| <a id="querydevopsadoptionenablednamespacesdisplaynamespaceid"></a>`displayNamespaceId` | [`NamespaceID`](#namespaceid) | Filter by display namespace. |
 
 ### `Query.echo`
 
@@ -758,27 +758,27 @@ Input type: `BoardListUpdateLimitMetricsInput`
 | <a id="mutationboardlistupdatelimitmetricserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationboardlistupdatelimitmetricslist"></a>`list` | [`BoardList`](#boardlist) | The updated list. |
 
-### `Mutation.bulkFindOrCreateDevopsAdoptionSegments`
+### `Mutation.bulkEnableDevopsAdoptionNamespaces`
 
 **BETA** This endpoint is subject to change without notice.
 
-Input type: `BulkFindOrCreateDevopsAdoptionSegmentsInput`
+Input type: `BulkEnableDevopsAdoptionNamespacesInput`
 
 #### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationbulkfindorcreatedevopsadoptionsegmentsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationbulkfindorcreatedevopsadoptionsegmentsdisplaynamespaceid"></a>`displayNamespaceId` | [`NamespaceID`](#namespaceid) | Display namespace ID. |
-| <a id="mutationbulkfindorcreatedevopsadoptionsegmentsnamespaceids"></a>`namespaceIds` | [`[NamespaceID!]!`](#namespaceid) | List of Namespace IDs for the segments. |
+| <a id="mutationbulkenabledevopsadoptionnamespacesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbulkenabledevopsadoptionnamespacesdisplaynamespaceid"></a>`displayNamespaceId` | [`NamespaceID`](#namespaceid) | Display namespace ID. |
+| <a id="mutationbulkenabledevopsadoptionnamespacesnamespaceids"></a>`namespaceIds` | [`[NamespaceID!]!`](#namespaceid) | List of Namespace IDs. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationbulkfindorcreatedevopsadoptionsegmentsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationbulkfindorcreatedevopsadoptionsegmentserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationbulkfindorcreatedevopsadoptionsegmentssegments"></a>`segments` | [`[DevopsAdoptionSegment!]`](#devopsadoptionsegment) | Created segments after mutation. |
+| <a id="mutationbulkenabledevopsadoptionnamespacesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbulkenabledevopsadoptionnamespacesenablednamespaces"></a>`enabledNamespaces` | [`[DevopsAdoptionSegment!]`](#devopsadoptionsegment) | Enabled namespaces after mutation. |
+| <a id="mutationbulkenabledevopsadoptionnamespaceserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.ciCdSettingsUpdate`
 
@@ -1093,28 +1093,6 @@ Input type: `CreateCustomEmojiInput`
 | <a id="mutationcreatecustomemojiclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatecustomemojicustomemoji"></a>`customEmoji` | [`CustomEmoji`](#customemoji) | The new custom emoji. |
 | <a id="mutationcreatecustomemojierrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-
-### `Mutation.createDevopsAdoptionSegment`
-
-**BETA** This endpoint is subject to change without notice.
-
-Input type: `CreateDevopsAdoptionSegmentInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationcreatedevopsadoptionsegmentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatedevopsadoptionsegmentdisplaynamespaceid"></a>`displayNamespaceId` | [`NamespaceID`](#namespaceid) | Display namespace ID. |
-| <a id="mutationcreatedevopsadoptionsegmentnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Namespace ID to set for the segment. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationcreatedevopsadoptionsegmentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatedevopsadoptionsegmenterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatedevopsadoptionsegmentsegment"></a>`segment` | [`DevopsAdoptionSegment`](#devopsadoptionsegment) | The segment after mutation. |
 
 ### `Mutation.createDiffNote`
 
@@ -1678,26 +1656,6 @@ Input type: `DeleteAnnotationInput`
 | <a id="mutationdeleteannotationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdeleteannotationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
-### `Mutation.deleteDevopsAdoptionSegment`
-
-**BETA** This endpoint is subject to change without notice.
-
-Input type: `DeleteDevopsAdoptionSegmentInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationdeletedevopsadoptionsegmentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdeletedevopsadoptionsegmentid"></a>`id` | [`[AnalyticsDevopsAdoptionSegmentID!]!`](#analyticsdevopsadoptionsegmentid) | One or many IDs of the segments to delete. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationdeletedevopsadoptionsegmentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdeletedevopsadoptionsegmenterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-
 ### `Mutation.designManagementDelete`
 
 Input type: `DesignManagementDeleteInput`
@@ -1914,6 +1872,26 @@ Input type: `DestroySnippetInput`
 | <a id="mutationdestroysnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationdestroysnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | The snippet after mutation. |
 
+### `Mutation.disableDevopsAdoptionNamespace`
+
+**BETA** This endpoint is subject to change without notice.
+
+Input type: `DisableDevopsAdoptionNamespaceInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdisabledevopsadoptionnamespaceclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdisabledevopsadoptionnamespaceid"></a>`id` | [`[AnalyticsDevopsAdoptionEnabledNamespaceID!]!`](#analyticsdevopsadoptionenablednamespaceid) | One or many IDs of the enabled namespaces to disable. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdisabledevopsadoptionnamespaceclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdisabledevopsadoptionnamespaceerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.discussionToggleResolve`
 
 Toggles the resolved state of a discussion.
@@ -1960,6 +1938,28 @@ Input type: `DismissVulnerabilityInput`
 | <a id="mutationdismissvulnerabilityclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdismissvulnerabilityerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationdismissvulnerabilityvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | The vulnerability after dismissal. |
+
+### `Mutation.enableDevopsAdoptionNamespace`
+
+**BETA** This endpoint is subject to change without notice.
+
+Input type: `EnableDevopsAdoptionNamespaceInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationenabledevopsadoptionnamespaceclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationenabledevopsadoptionnamespacedisplaynamespaceid"></a>`displayNamespaceId` | [`NamespaceID`](#namespaceid) | Display namespace ID. |
+| <a id="mutationenabledevopsadoptionnamespacenamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Namespace ID. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationenabledevopsadoptionnamespaceclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationenabledevopsadoptionnamespaceenablednamespace"></a>`enabledNamespace` | [`DevopsAdoptionSegment`](#devopsadoptionsegment) | Enabled namespace after mutation. |
+| <a id="mutationenabledevopsadoptionnamespaceerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.environmentsCanaryIngressUpdate`
 
@@ -3568,6 +3568,26 @@ Input type: `RunDASTScanInput`
 | <a id="mutationrundastscanclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrundastscanerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationrundastscanpipelineurl"></a>`pipelineUrl` | [`String`](#string) | URL of the pipeline that was created. |
+
+### `Mutation.runnerDelete`
+
+Available only when feature flag `runner_graphql_query` is enabled.
+
+Input type: `RunnerDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnerdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnerdeleteid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnerdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnerdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.runnerUpdate`
 
@@ -8271,15 +8291,15 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ### `DevopsAdoptionSegment`
 
-Segment.
+Enabled namespace for DevopsAdoption.
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="devopsadoptionsegmentdisplaynamespace"></a>`displayNamespace` | [`Namespace`](#namespace) | Namespace where data should be displayed. |
-| <a id="devopsadoptionsegmentid"></a>`id` | [`ID!`](#id) | ID of the segment. |
-| <a id="devopsadoptionsegmentlatestsnapshot"></a>`latestSnapshot` | [`DevopsAdoptionSnapshot`](#devopsadoptionsnapshot) | The latest adoption metrics for the segment. |
+| <a id="devopsadoptionsegmentid"></a>`id` | [`ID!`](#id) | ID of the enabled namespace. |
+| <a id="devopsadoptionsegmentlatestsnapshot"></a>`latestSnapshot` | [`DevopsAdoptionSnapshot`](#devopsadoptionsnapshot) | The latest adoption metrics for the enabled namespace. |
 | <a id="devopsadoptionsegmentnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace which should be calculated. |
 
 ### `DevopsAdoptionSnapshot`
@@ -15010,11 +15030,11 @@ A `AlertManagementHttpIntegrationID` is a global ID. It is encoded as a string.
 
 An example `AlertManagementHttpIntegrationID` is: `"gid://gitlab/AlertManagement::HttpIntegration/1"`.
 
-### `AnalyticsDevopsAdoptionSegmentID`
+### `AnalyticsDevopsAdoptionEnabledNamespaceID`
 
-A `AnalyticsDevopsAdoptionSegmentID` is a global ID. It is encoded as a string.
+A `AnalyticsDevopsAdoptionEnabledNamespaceID` is a global ID. It is encoded as a string.
 
-An example `AnalyticsDevopsAdoptionSegmentID` is: `"gid://gitlab/Analytics::DevopsAdoption::Segment/1"`.
+An example `AnalyticsDevopsAdoptionEnabledNamespaceID` is: `"gid://gitlab/Analytics::DevopsAdoption::EnabledNamespace/1"`.
 
 ### `AwardableID`
 

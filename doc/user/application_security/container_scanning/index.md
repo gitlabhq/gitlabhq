@@ -46,12 +46,7 @@ To enable container scanning in your pipeline, you need the following:
   or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 - Docker `18.09.03` or higher installed on the same computer as the runner. If you're using the
   shared runners on GitLab.com, then this is already the case.
-- An image matching the following supported distributions (depending on the scanner being used):
-
-  | Scanning Engine | Supported distributions |
-  | --- | --- |
-  | [Trivy](https://github.com/aquasecurity/trivy) | Supported [operating systems](https://aquasecurity.github.io/trivy/latest/vuln-detection/os/) and [languages](https://aquasecurity.github.io/trivy/latest/vuln-detection/library/) |
-
+- An image matching the [supported distributions](https://aquasecurity.github.io/trivy/latest/vuln-detection/os/)).
 - [Build and push](../../packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd)
   your Docker image to your project's container registry. The name of the Docker image should use
   the following [predefined CI/CD variables](../../../ci/variables/predefined_variables.md):
@@ -98,14 +93,16 @@ How you enable container scanning depends on your GitLab version:
   variable.
 - GitLab 13.9 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322656) integration with
   [Trivy](https://github.com/aquasecurity/trivy) by upgrading `CS_MAJOR_VERSION` from `3` to `4`.
-- GitLab 14.0 makes Trivy the default scanner.
+- GitLab 14.0 [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61850)
+  integration with [Trivy](https://github.com/aquasecurity/trivy)
+  as the default for container scanning.
 
 To include the `Container-Scanning.gitlab-ci.yml` template (GitLab 11.9 and later), add the
 following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 ```
 
 The included template:
@@ -144,7 +141,7 @@ build:
     - docker push $IMAGE
 
 include:
-  - template: Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 ```
 
 ### Customizing the container scanning settings
@@ -161,7 +158,7 @@ enables verbose output for the analyzer:
 
 ```yaml
 include:
-  - template: Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 
 variables:
     SECURE_LOG_LEVEL: 'debug'
@@ -169,7 +166,7 @@ variables:
 
 #### Available CI/CD variables
 
-You can [configure](#customizing-the-container-scanning-settings) both analyzers by using the following CI/CD variables:
+You can [configure](#customizing-the-container-scanning-settings) analyzers by using the following CI/CD variables:
 
 | CI/CD Variable                 | Default       | Description | Scanner |
 | ------------------------------ | ------------- | ----------- | ------------ |
@@ -195,7 +192,7 @@ This example sets `GIT_STRATEGY` to `fetch`:
 
 ```yaml
 include:
-  - template: Container-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -224,7 +221,7 @@ your CI file:
    offline environment, see
    [Running container scanning in an offline environment](#running-container-scanning-in-an-offline-environment).
 
-1. If present, remove the `.cs_common` configuration section.
+1. If present, remove the `.cs_common` and `container_scanning_new` configuration sections.
 
 1. If the `container_scanning` section is present, it's safer to create one from scratch based on
    the new version of the [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
@@ -408,7 +405,7 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 
    ```yaml
    include:
-     - template: Container-Scanning.gitlab-ci.yml
+     - template: Security/Container-Scanning.gitlab-ci.yml
 
    container_scanning:
      image: $CI_REGISTRY/namespace/gitlab-container-scanning
@@ -432,7 +429,7 @@ variables:
 
 image: docker:stable
 
-update-vulnerabilities-db:
+update-scanner-image:
   services:
     - docker:19-dind
   script:
@@ -574,8 +571,8 @@ the security vulnerabilities in your groups, projects and pipelines.
 
 ## Vulnerabilities database update
 
-If you're using Klar and want more information about the vulnerabilities database update, see the
-[maintenance table](../vulnerabilities/index.md#vulnerability-scanner-maintenance).
+If you use container scanning and want more information about the vulnerabilities database update,
+see the [maintenance table](../vulnerabilities/index.md#vulnerability-scanner-maintenance).
 
 ## Interacting with the vulnerabilities
 

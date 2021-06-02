@@ -19,13 +19,14 @@ module Ci
           DuplicateDownstreamPipelineError.new,
           bridge_id: @bridge.id, project_id: @bridge.project_id
         )
-        return
+
+        return error('Already has a downstream pipeline')
       end
 
       pipeline_params = @bridge.downstream_pipeline_params
       target_ref = pipeline_params.dig(:target_revision, :ref)
 
-      return unless ensure_preconditions!(target_ref)
+      return error('Pre-conditions not met') unless ensure_preconditions!(target_ref)
 
       service = ::Ci::CreatePipelineService.new(
         pipeline_params.fetch(:project),
@@ -119,8 +120,11 @@ module Ci
       return false if @bridge.triggers_child_pipeline?
 
       if Feature.enabled?(:ci_drop_cyclical_triggered_pipelines, @bridge.project, default_enabled: :yaml)
-        checksums = @bridge.pipeline.base_and_ancestors.map { |pipeline| config_checksum(pipeline) }
-        checksums.uniq.length != checksums.length
+        pipeline_checksums = @bridge.pipeline.base_and_ancestors.filter_map do |pipeline|
+          config_checksum(pipeline) unless pipeline.child?
+        end
+
+        pipeline_checksums.uniq.length != pipeline_checksums.length
       end
     end
 

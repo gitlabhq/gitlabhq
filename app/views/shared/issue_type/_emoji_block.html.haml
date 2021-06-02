@@ -4,7 +4,7 @@
   .row.gl-m-0.gl-justify-content-space-between
     .js-noteable-awards
       = render 'award_emoji/awards_block', awardable: issuable, inline: true, api_awards_path: api_awards_path
-    .new-branch-col
+    .new-branch-col.gl-my-2
       = render_if_exists "projects/issues/timeline_toggle", issuable: issuable
       #js-vue-sort-issue-discussions
       #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(issuable), notes_filters: UserPreference.notes_filters.to_json } }

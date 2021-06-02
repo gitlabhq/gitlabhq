@@ -62,11 +62,11 @@ RSpec.describe 'User interacts with awards' do
 
       page.within('.awards') do
         expect(page).to have_selector('[data-testid="award-button"]')
-        expect(page.find('[data-testid="award-button"].is-active .js-counter')).to have_content('1')
-        expect(page).to have_css('[data-testid="award-button"].is-active[title="You"]')
+        expect(page.find('[data-testid="award-button"].selected .js-counter')).to have_content('1')
+        expect(page).to have_css('[data-testid="award-button"].selected[title="You"]')
 
         expect do
-          page.find('[data-testid="award-button"].is-active').click
+          page.find('[data-testid="award-button"].selected').click
           wait_for_requests
         end.to change { page.all('[data-testid="award-button"]').size }.from(3).to(2)
       end
@@ -205,7 +205,7 @@ RSpec.describe 'User interacts with awards' do
       it 'adds award to issue' do
         first('[data-testid="award-button"]').click
 
-        expect(page).to have_selector('[data-testid="award-button"].is-active')
+        expect(page).to have_selector('[data-testid="award-button"].selected')
         expect(first('[data-testid="award-button"]')).to have_content '1'
 
         visit project_issue_path(project, issue)
@@ -215,7 +215,7 @@ RSpec.describe 'User interacts with awards' do
 
       it 'removes award from issue' do
         first('[data-testid="award-button"]').click
-        find('[data-testid="award-button"].is-active').click
+        find('[data-testid="award-button"].selected').click
 
         expect(first('[data-testid="award-button"]')).to have_content '0'
 

@@ -13,7 +13,7 @@ RSpec.describe BulkImports::ExportUpload do
     method = 'export_file'
     filename = 'labels.ndjson.gz'
 
-    subject.public_send("#{method}=", fixture_file_upload("spec/fixtures/bulk_imports/#{filename}"))
+    subject.public_send("#{method}=", fixture_file_upload("spec/fixtures/bulk_imports/gz/#{filename}"))
     subject.save!
 
     url = "/uploads/-/system/bulk_imports/export_upload/export_file/#{subject.id}/#{filename}"

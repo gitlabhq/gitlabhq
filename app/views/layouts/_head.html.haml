@@ -36,7 +36,7 @@
 
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
-  = render 'layouts/startup_css', { startup_filename: local_assigns.fetch(:startup_filename, nil) }
+  = render 'layouts/startup_css'
   - if user_application_theme == 'gl-dark'
     = stylesheet_link_tag_defer "application_dark"
     = yield :page_specific_styles

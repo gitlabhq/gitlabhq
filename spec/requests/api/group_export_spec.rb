@@ -215,7 +215,7 @@ RSpec.describe API::GroupExport do
 
       context 'when export file exists' do
         it 'downloads exported group archive' do
-          upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/labels.ndjson.gz'))
+          upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
 
           get api(download_path, user)
 

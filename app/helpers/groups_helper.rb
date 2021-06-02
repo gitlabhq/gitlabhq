@@ -88,14 +88,6 @@ module GroupsHelper
       .count
   end
 
-  def group_open_merge_requests_count(group)
-    if Feature.enabled?(:cached_sidebar_merge_requests_count, group, default_enabled: :yaml)
-      cached_issuables_count(@group, type: :merge_requests)
-    else
-      number_with_delimiter(group_merge_requests_count(state: 'opened'))
-    end
-  end
-
   def group_merge_requests_count(state:)
     MergeRequestsFinder
       .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Common::Extractors::NdjsonExtractor do
   let_it_be(:tmpdir) { Dir.mktmpdir }
-  let_it_be(:filepath) { 'spec/fixtures/bulk_imports/labels.ndjson.gz' }
+  let_it_be(:filepath) { 'spec/fixtures/bulk_imports/gz/labels.ndjson.gz' }
   let_it_be(:import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: import) }
   let_it_be(:entity) { create(:bulk_import_entity, bulk_import: import) }

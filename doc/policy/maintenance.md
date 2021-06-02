@@ -149,6 +149,8 @@ This decision is made on a case-by-case basis.
 
 ## More information
 
-More information about the release procedures can be found in our
-[release documentation](https://gitlab.com/gitlab-org/release/docs). You may also want to read our
-[Responsible Disclosure Policy](https://about.gitlab.com/security/disclosure/).
+You may also want to read our:
+
+- [Release documentation](https://gitlab.com/gitlab-org/release/docs) describing release procedures
+- [Deprecation guidelines](../development/deprecation_guidelines/index.md)
+- [Responsible Disclosure Policy](https://about.gitlab.com/security/disclosure/)

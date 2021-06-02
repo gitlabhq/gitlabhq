@@ -173,7 +173,7 @@ export default {
       v-for="awardList in groupedAwards"
       :key="awardList.name"
       v-gl-tooltip.viewport
-      class="gl-mr-3"
+      class="gl-mr-3 gl-my-2"
       :class="awardList.classes"
       :title="awardList.title"
       data-testid="award-button"
@@ -184,10 +184,10 @@ export default {
       </template>
       <span class="js-counter">{{ awardList.list.length }}</span>
     </gl-button>
-    <div v-if="canAwardEmoji" class="award-menu-holder">
+    <div v-if="canAwardEmoji" class="award-menu-holder gl-my-2">
       <emoji-picker
         v-if="glFeatures.improvedEmojiPicker"
-        :toggle-class="['add-reaction-button gl-relative!', { 'is-active': isMenuOpen }]"
+        :toggle-class="['add-reaction-button btn-icon gl-relative!', { 'is-active': isMenuOpen }]"
         @click="handleAward"
         @shown="setIsMenuOpen(true)"
         @hidden="setIsMenuOpen(false)"

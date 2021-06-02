@@ -30,6 +30,10 @@ module BulkImports
       @import_export_config ||= context.import_export_config
     end
 
+    def current_user
+      @current_user ||= context.current_user
+    end
+
     included do
       private
 
@@ -172,6 +176,14 @@ module BulkImports
 
       def ndjson_pipeline?
         class_attributes[:ndjson_pipeline]
+      end
+
+      def relation_name(name)
+        class_attributes[:relation_name] = name
+      end
+
+      def relation
+        class_attributes[:relation_name]
       end
 
       private

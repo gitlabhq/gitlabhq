@@ -208,9 +208,9 @@ documentation.
 
 ## Auto Container Scanning **(ULTIMATE)**
 
-Vulnerability Static Analysis for containers uses either [Clair](https://github.com/quay/clair)
-or [Trivy](https://aquasecurity.github.io/trivy/latest/) to check for potential security issues in
-Docker images. The Auto Container Scanning stage is skipped on licenses other than [Ultimate](https://about.gitlab.com/pricing/).
+Vulnerability static analysis for containers uses [Trivy](https://aquasecurity.github.io/trivy/latest/)
+to check for potential security issues in Docker images. The Auto Container Scanning stage is
+skipped on licenses other than [Ultimate](https://about.gitlab.com/pricing/).
 
 After creating the report, it's uploaded as an artifact which you can later download and
 check out. The merge request displays any detected security issues.

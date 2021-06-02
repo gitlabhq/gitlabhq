@@ -4,26 +4,11 @@ module BulkImports
   module Groups
     module Pipelines
       class MilestonesPipeline
-        include Pipeline
+        include NdjsonPipeline
 
-        extractor BulkImports::Common::Extractors::GraphqlExtractor,
-          query: BulkImports::Groups::Graphql::GetMilestonesQuery
+        relation_name 'milestones'
 
-        transformer Common::Transformers::ProhibitedAttributesTransformer
-
-        def load(context, data)
-          return unless data
-
-          raise ::BulkImports::Pipeline::NotAllowedError unless authorized?
-
-          context.group.milestones.create!(data)
-        end
-
-        private
-
-        def authorized?
-          context.current_user.can?(:admin_milestone, context.group)
-        end
+        extractor ::BulkImports::Common::Extractors::NdjsonExtractor, relation: relation
       end
     end
   end

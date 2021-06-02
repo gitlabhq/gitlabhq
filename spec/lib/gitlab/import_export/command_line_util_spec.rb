@@ -57,7 +57,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
     it 'decompresses specified file' do
       tmpdir = Dir.mktmpdir
       filename = 'labels.ndjson.gz'
-      gz_filepath = "spec/fixtures/bulk_imports/#{filename}"
+      gz_filepath = "spec/fixtures/bulk_imports/gz/#{filename}"
       FileUtils.copy_file(gz_filepath, File.join(tmpdir, filename))
 
       subject.gunzip(dir: tmpdir, filename: filename)

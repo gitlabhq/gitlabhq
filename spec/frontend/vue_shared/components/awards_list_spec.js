@@ -41,7 +41,14 @@ const TEST_AWARDS = [
 ];
 const TEST_ADD_BUTTON_CLASS = 'js-test-add-button-class';
 
-const REACTION_CONTROL_CLASSES = ['btn', 'gl-mr-3', 'btn-default', 'btn-md', 'gl-button'];
+const REACTION_CONTROL_CLASSES = [
+  'btn',
+  'gl-mr-3',
+  'gl-my-2',
+  'btn-default',
+  'btn-md',
+  'gl-button',
+];
 
 describe('vue_shared/components/awards_list', () => {
   let wrapper;

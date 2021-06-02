@@ -5,7 +5,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   class="awards js-awards-block"
 >
   <button
-    class="btn gl-mr-3 btn-default btn-md gl-button"
+    class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button"
     data-testid="award-button"
     title="Ada, Leonardo, and Marie"
     type="button"
@@ -35,7 +35,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
   </button>
   <button
-    class="btn gl-mr-3 btn-default btn-md gl-button selected"
+    class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button selected"
     data-testid="award-button"
     title="You, Ada, and Marie"
     type="button"
@@ -65,7 +65,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
   </button>
   <button
-    class="btn gl-mr-3 btn-default btn-md gl-button"
+    class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button"
     data-testid="award-button"
     title="Ada and Jane"
     type="button"
@@ -95,7 +95,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
   </button>
   <button
-    class="btn gl-mr-3 btn-default btn-md gl-button selected"
+    class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button selected"
     data-testid="award-button"
     title="You, Ada, Jane, and Leonardo"
     type="button"
@@ -125,7 +125,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
   </button>
   <button
-    class="btn gl-mr-3 btn-default btn-md gl-button selected"
+    class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button selected"
     data-testid="award-button"
     title="You"
     type="button"
@@ -155,7 +155,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
   </button>
   <button
-    class="btn gl-mr-3 btn-default btn-md gl-button"
+    class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button"
     data-testid="award-button"
     title="Marie"
     type="button"
@@ -185,7 +185,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
   </button>
   <button
-    class="btn gl-mr-3 btn-default btn-md gl-button selected"
+    class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button selected"
     data-testid="award-button"
     title="You"
     type="button"
@@ -216,7 +216,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   </button>
    
   <div
-    class="award-menu-holder"
+    class="award-menu-holder gl-my-2"
   >
     <button
       aria-label="Add reaction"

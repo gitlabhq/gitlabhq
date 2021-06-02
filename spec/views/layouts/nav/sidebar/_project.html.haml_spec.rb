@@ -1338,4 +1338,22 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
   end
 
   it_behaves_like 'sidebar includes snowplow attributes', 'render', 'projects_side_navigation', 'projects_side_navigation'
+
+  describe 'Collapsed menu items' do
+    it 'does not render the collapsed top menu as a link' do
+      render
+
+      expect(rendered).not_to have_selector('.sidebar-sub-level-items > li.fly-out-top-item > a')
+    end
+
+    context 'when feature flag :sidebar_refactor is disabled' do
+      it 'renders the collapsed top menu as a link' do
+        stub_feature_flags(sidebar_refactor: false)
+
+        render
+
+        expect(rendered).to have_selector('.sidebar-sub-level-items > li.fly-out-top-item > a')
+      end
+    end
+  end
 end

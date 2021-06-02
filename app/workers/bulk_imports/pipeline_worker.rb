@@ -43,7 +43,7 @@ module BulkImports
 
     def run(pipeline_tracker)
       if ndjson_pipeline?(pipeline_tracker)
-        status = ExportStatus.new(pipeline_tracker, pipeline_tracker.pipeline_class::RELATION)
+        status = ExportStatus.new(pipeline_tracker, pipeline_tracker.pipeline_class.relation)
 
         raise(Pipeline::ExpiredError, 'Pipeline timeout') if job_timeout?(pipeline_tracker)
         raise(Pipeline::FailedError, status.error) if status.failed?

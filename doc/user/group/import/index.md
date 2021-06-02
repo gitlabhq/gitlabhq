@@ -69,6 +69,8 @@ The following resources are migrated to the target instance:
   - name
   - link URL
   - image URL
+- Boards
+- Board Lists
 
 Any other items are **not** migrated.
 

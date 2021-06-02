@@ -485,17 +485,6 @@
       changes: *frontend-build-patterns
       allow_failure: true
 
-.frontend:rules:startup-css-check:
-  rules:
-    - changes: *code-backstage-qa-patterns
-
-.frontend:rules:startup-css-check-as-if-foss:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request
-      changes: *code-backstage-qa-patterns
-
 ################
 # Memory rules #
 ################
