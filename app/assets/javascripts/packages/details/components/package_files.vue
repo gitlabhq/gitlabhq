@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlTable } from '@gitlab/ui';
+import { GlLink, GlTable, GlDropdownItem, GlDropdown, GlIcon } from '@gitlab/ui';
 import { last } from 'lodash';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
@@ -12,6 +12,9 @@ export default {
   components: {
     GlLink,
     GlTable,
+    GlIcon,
+    GlDropdown,
+    GlDropdownItem,
     FileIcon,
     TimeAgoTooltip,
   },
@@ -21,6 +24,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    canDelete: {
+      type: Boolean,
+      default: false,
+      required: false,
     },
   },
   computed: {
@@ -39,7 +47,6 @@ export default {
         {
           key: 'name',
           label: __('Name'),
-          tdClass: 'gl-display-flex gl-align-items-center',
         },
         {
           key: 'commit',
@@ -55,6 +62,13 @@ export default {
           label: __('Created'),
           class: 'gl-text-right',
         },
+        {
+          key: 'actions',
+          label: '',
+          hide: !this.canDelete,
+          class: 'gl-text-right',
+          tdClass: 'gl-w-4',
+        },
       ].filter((c) => !c.hide);
     },
   },
@@ -62,6 +76,9 @@ export default {
     formatSize(size) {
       return numberToHumanSize(size);
     },
+  },
+  i18n: {
+    deleteFile: __('Delete file'),
   },
 };
 </script>
@@ -77,7 +94,7 @@ export default {
       <template #cell(name)="{ item }">
         <gl-link
           :href="item.download_path"
-          class="gl-relative gl-text-gray-500"
+          class="gl-text-gray-500"
           data-testid="download-link"
           @click="$emit('download-file')"
         >
@@ -86,7 +103,7 @@ export default {
             css-classes="gl-relative file-icon"
             class="gl-mr-1 gl-relative"
           />
-          <span class="gl-relative">{{ item.file_name }}</span>
+          <span>{{ item.file_name }}</span>
         </gl-link>
       </template>
 
@@ -102,6 +119,17 @@ export default {
 
       <template #cell(created)="{ item }">
         <time-ago-tooltip :time="item.created_at" />
+      </template>
+
+      <template #cell(actions)="{ item }">
+        <gl-dropdown category="tertiary" right>
+          <template #button-content>
+            <gl-icon name="ellipsis_v" />
+          </template>
+          <gl-dropdown-item data-testid="delete-file" @click="$emit('delete-file', item)">
+            {{ $options.i18n.deleteFile }}
+          </gl-dropdown-item>
+        </gl-dropdown>
       </template>
     </gl-table>
   </div>

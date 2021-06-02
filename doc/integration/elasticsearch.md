@@ -603,11 +603,12 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
    This step is optional but may help significantly speed up large indexing operations.
 
    ```shell
-   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
-       "index" : {
-           "refresh_interval" : "-1",
-           "number_of_replicas" : 0
-       } }'
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
+        --data '{
+          "index" : {
+              "refresh_interval" : "-1",
+              "number_of_replicas" : 0
+          } }'
    ```
 
 1. Index projects and their associated data:
@@ -684,11 +685,12 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
 1. Enable replication and refreshing again after indexing (only if you previously disabled it):
 
    ```shell
-   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
-       "index" : {
-           "number_of_replicas" : 1,
-           "refresh_interval" : "1s"
-       } }'
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
+        --data '{
+          "index" : {
+              "number_of_replicas" : 1,
+              "refresh_interval" : "1s"
+          } }'
    ```
 
    A force merge should be called after enabling the refreshing above.
@@ -696,10 +698,11 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
    For Elasticsearch 6.x, the index should be in read-only mode before proceeding with the force merge:
 
    ```shell
-   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
-     "settings": {
-       "index.blocks.write": true
-     } }'
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
+        --data '{
+          "settings": {
+            "index.blocks.write": true
+          } }'
    ```
 
    Then, initiate the force merge:
@@ -711,10 +714,11 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
    After this, if your index is in read-only mode, switch back to read-write:
 
    ```shell
-   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
-     "settings": {
-       "index.blocks.write": false
-     } }'
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
+        --data '{
+          "settings": {
+            "index.blocks.write": false
+          } }'
    ```
 
 1. After the indexing has completed, enable [**Search with Elasticsearch enabled**](#enabling-advanced-search).
@@ -730,21 +734,23 @@ However, some larger installations may wish to tune the merge policy settings:
 - Consider reducing the `index.merge.policy.max_merged_segment` size from the default 5 GB to maybe 2 GB or 3 GB. Merging only happens when a segment has at least 50% deletions. Smaller segment sizes will allow merging to happen more frequently.
 
   ```shell
-  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
-    "index" : {
-      "merge.policy.max_merged_segment": "2gb"
-    }
-  }'
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
+       --data '{
+         "index" : {
+           "merge.policy.max_merged_segment": "2gb"
+         }
+       }'
   ```
 
 - You can also adjust `index.merge.policy.reclaim_deletes_weight`, which controls how aggressively deletions are targeted. But this can lead to costly merge decisions, so we recommend not changing this unless you understand the tradeoffs.
 
   ```shell
-  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
-    "index" : {
-      "merge.policy.reclaim_deletes_weight": "3.0"
-    }
-  }'
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
+       --data '{
+         "index" : {
+           "merge.policy.reclaim_deletes_weight": "3.0"
+         }
+       }'
   ```
 
 - Do not do a [force merge](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") to remove deleted documents. A warning in the [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") states that this can lead to very large segments that may never get reclaimed, and can also cause significant performance or availability issues.
@@ -917,11 +923,12 @@ Setting the number of replicas to `0` is discouraged (this is not allowed in the
 If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, please make sure you understand the risks outlined in the previous paragraph and then run the following query to set the number of replicas to `0`(the cluster will no longer try to create any shard replicas):
 
 ```shell
-curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
-"index" : {
-   "number_of_replicas" : 0
-  }
-}'
+curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
+     --data '{
+       "index" : {
+         "number_of_replicas" : 0
+       }
+     }'
 ```
 
 ### `health check timeout: no Elasticsearch node available` error in Sidekiq

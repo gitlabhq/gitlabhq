@@ -109,17 +109,17 @@ module Security
         yaml_result = Gitlab::Ci::YamlProcessor.new(content, options).execute
         return {} unless yaml_result.valid?
 
-        sast_attributes = yaml_result.build_attributes(:sast)
-        extract_required_attributes(sast_attributes)
+        extract_required_attributes(yaml_result)
       end
 
-      def extract_required_attributes(attributes)
+      def extract_required_attributes(yaml_result)
         result = {}
-        attributes[:yaml_variables].each do |variable|
+
+        yaml_result.yaml_variables_for(:sast).each do |variable|
           result[variable[:key]] = variable[:value]
         end
 
-        result[:stage] = attributes[:stage]
+        result[:stage] = yaml_result.stage_for(:sast)
         result.with_indifferent_access
       end
     end

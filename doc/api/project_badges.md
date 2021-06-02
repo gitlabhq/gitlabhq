@@ -109,7 +109,9 @@ POST /projects/:id/badges
 | `name` | string | no | Name of the badge |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "link_url=https://gitlab.com/gitlab-org/gitlab-foss/commits/master&image_url=https://shields.io/my/badge1&name=mybadge" "https://gitlab.example.com/api/v4/projects/:id/badges"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "link_url=https://gitlab.com/gitlab-org/gitlab-foss/commits/master&image_url=https://shields.io/my/badge1&name=mybadge" \
+     "https://gitlab.example.com/api/v4/projects/:id/badges"
 ```
 
 Example response:

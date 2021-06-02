@@ -323,17 +323,13 @@ testing the rendered output.
 Here's an example of a well structured unit test for [this Vue component](#appendix---vue-component-subject-under-test):
 
 ```javascript
-import { shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import App from '~/todos/app.vue';
 
-const TEST_TODOS = [
-  { text: 'Lorem ipsum test text' },
-  { text: 'Lorem ipsum 2' },
-];
+const TEST_TODOS = [{ text: 'Lorem ipsum test text' }, { text: 'Lorem ipsum 2' }];
 const TEST_NEW_TODO = 'New todo title';
 const TEST_TODO_PATH = '/todos';
 
@@ -351,28 +347,27 @@ describe('~/todos/app.vue', () => {
   afterEach(() => {
     // IMPORTANT: Clean up the component instance and axios mock adapter
     wrapper.destroy();
-    wrapper = null;
-
     mock.restore();
   });
 
   // It is very helpful to separate setting up the component from
   // its collaborators (for example, Vuex and axios).
   const createWrapper = (props = {}) => {
-    wrapper = extendedWrapper(
-      shallowMount(App, {
-        propsData: {
-          path: TEST_TODO_PATH,
-          ...props,
-        },
-      })
-    );
+    wrapper = shallowMountExtended(App, {
+      propsData: {
+        path: TEST_TODO_PATH,
+        ...props,
+      },
+    });
   };
   // Helper methods greatly help test maintainability and readability.
-  const findLoader = () => wrapper.find(GlLoadingIcon);
+  const findLoader = () => wrapper.findComponent(GlLoadingIcon);
   const findAddButton = () => wrapper.findByTestId('add-button');
   const findTextInput = () => wrapper.findByTestId('text-input');
-  const findTodoData = () => wrapper.findAll('[data-testid="todo-item"]').wrappers.map(wrapper => ({ text: wrapper.text() }));
+  const findTodoData = () =>
+    wrapper
+      .findAllByTestId('todo-item')
+      .wrappers.map((item) => ({ text: item.text() }));
 
   describe('when mounted and loading', () => {
     beforeEach(() => {
@@ -401,14 +396,13 @@ describe('~/todos/app.vue', () => {
       expect(findTodoData()).toEqual(TEST_TODOS);
     });
 
-    it('when todo is added, should post new todo', () => {
-      findTextInput().vm.$emit('update', TEST_NEW_TODO)
+    it('when todo is added, should post new todo', async () => {
+      findTextInput().vm.$emit('update', TEST_NEW_TODO);
       findAddButton().vm.$emit('click');
 
-      return wrapper.vm.$nextTick()
-        .then(() => {
-          expect(mock.history.post.map(x => JSON.parse(x.data))).toEqual([{ text: TEST_NEW_TODO }]);
-        });
+      await wrapper.vm.$nextTick();
+
+      expect(mock.history.post.map((x) => JSON.parse(x.data))).toEqual([{ text: TEST_NEW_TODO }]);
     });
   });
 });

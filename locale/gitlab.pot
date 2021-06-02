@@ -1543,16 +1543,7 @@ msgstr ""
 msgid "APIFuzzing|Code snippet could not be generated. Try again later."
 msgstr ""
 
-msgid "APIFuzzing|Code snippet for the API Fuzzing configuration"
-msgstr ""
-
 msgid "APIFuzzing|Configure HTTP basic authentication values. Other authentication methods are supported. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "APIFuzzing|Copy code and open .gitlab-ci.yml file"
-msgstr ""
-
-msgid "APIFuzzing|Copy code only"
 msgstr ""
 
 msgid "APIFuzzing|Customize common API fuzzing settings to suit your requirements. For details of more advanced configuration options, see the %{docsLinkStart}GitLab API Fuzzing documentation%{docsLinkEnd}."
@@ -10618,6 +10609,9 @@ msgid "Delete comment"
 msgstr ""
 
 msgid "Delete domain"
+msgstr ""
+
+msgid "Delete file"
 msgstr ""
 
 msgid "Delete image repository"
@@ -23552,6 +23546,9 @@ msgstr ""
 msgid "PackageRegistry|Created by commit %{link} on branch %{branch}"
 msgstr ""
 
+msgid "PackageRegistry|Delete Package File"
+msgstr ""
+
 msgid "PackageRegistry|Delete Package Version"
 msgstr ""
 
@@ -23630,6 +23627,9 @@ msgstr ""
 msgid "PackageRegistry|Package Registry"
 msgstr ""
 
+msgid "PackageRegistry|Package file deleted successfully"
+msgstr ""
+
 msgid "PackageRegistry|Package has %{number} archived update"
 msgstr ""
 
@@ -23693,6 +23693,12 @@ msgstr ""
 msgid "PackageRegistry|Show Yarn commands"
 msgstr ""
 
+msgid "PackageRegistry|Something went wrong while deleting the package file."
+msgstr ""
+
+msgid "PackageRegistry|Something went wrong while deleting the package."
+msgstr ""
+
 msgid "PackageRegistry|Sorry, your filter produced no results"
 msgstr ""
 
@@ -23721,6 +23727,9 @@ msgid "PackageRegistry|Unable to fetch package version information."
 msgstr ""
 
 msgid "PackageRegistry|Unable to load package"
+msgstr ""
+
+msgid "PackageRegistry|You are about to delete %{filename}. This is a destructive action that may render your package unusable. Are you sure?"
 msgstr ""
 
 msgid "PackageRegistry|You are about to delete %{name}, this operation is irreversible, are you sure?"
@@ -28979,6 +28988,9 @@ msgstr ""
 msgid "SecurityConfiguration|By default, all analyzers are applied in order to cover all languages across your project, and only run if the language is detected in the Merge Request."
 msgstr ""
 
+msgid "SecurityConfiguration|Code snippet for the %{scanType} configuration"
+msgstr ""
+
 msgid "SecurityConfiguration|Compliance"
 msgstr ""
 
@@ -28992,6 +29004,12 @@ msgid "SecurityConfiguration|Configure %{feature}"
 msgstr ""
 
 msgid "SecurityConfiguration|Configure via Merge Request"
+msgstr ""
+
+msgid "SecurityConfiguration|Copy code and open .gitlab-ci.yml file"
+msgstr ""
+
+msgid "SecurityConfiguration|Copy code only"
 msgstr ""
 
 msgid "SecurityConfiguration|Could not retrieve configuration data. Please refresh the page, or try again later."
@@ -30484,9 +30502,6 @@ msgid "Something went wrong while creating a requirement."
 msgstr ""
 
 msgid "Something went wrong while deleting description changes. Please try again."
-msgstr ""
-
-msgid "Something went wrong while deleting the package."
 msgstr ""
 
 msgid "Something went wrong while deleting the source branch. Please try again."

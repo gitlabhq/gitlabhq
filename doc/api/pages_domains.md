@@ -134,19 +134,24 @@ POST /projects/:id/pages/domains
 Create a new Pages domain with a certificate from a `.pem` file:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "domain=ssl.domain.example" --form "certificate=@/path/to/cert.pem" \
+     --form "key=@/path/to/key.pem" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
 Create a new Pages domain by using a variable containing the certificate:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "domain=ssl.domain.example" --form "certificate=$CERT_PEM" \
+     --form "key=$KEY_PEM" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
 Create a new Pages domain with an [automatic certificate](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md#enabling-lets-encrypt-integration-for-your-custom-domain):
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "auto_ssl_enabled=true" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" \
+     --form "auto_ssl_enabled=true" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
 ```json
@@ -184,13 +189,15 @@ PUT /projects/:id/pages/domains/:domain
 Add a certificate for a Pages domain from a `.pem` file:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=@/path/to/cert.pem" \
+     --form "key=@/path/to/key.pem" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
 Add a certificate for a Pages domain by using a variable containing the certificate:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=$CERT_PEM" \
+     --form "key=$KEY_PEM" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
 ```json
@@ -210,7 +217,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certifi
 ### Enabling Let's Encrypt integration for Pages custom domains
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "auto_ssl_enabled=true" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "auto_ssl_enabled=true" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
 ```json
@@ -226,7 +234,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "auto_ss
 To remove the SSL certificate attached to the Pages domain, run:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=" --form "key=" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=" \
+     --form "key=" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
 ```json

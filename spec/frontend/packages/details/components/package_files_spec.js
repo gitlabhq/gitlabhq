@@ -1,3 +1,4 @@
+import { GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import stubChildren from 'helpers/stub_children';
 import component from '~/packages/details/components/package_files.vue';
@@ -12,16 +13,19 @@ describe('Package Files', () => {
   const findAllRows = () => wrapper.findAll('[data-testid="file-row"');
   const findFirstRow = () => findAllRows().at(0);
   const findSecondRow = () => findAllRows().at(1);
-  const findFirstRowDownloadLink = () => findFirstRow().find('[data-testid="download-link"');
-  const findFirstRowCommitLink = () => findFirstRow().find('[data-testid="commit-link"');
-  const findSecondRowCommitLink = () => findSecondRow().find('[data-testid="commit-link"');
+  const findFirstRowDownloadLink = () => findFirstRow().find('[data-testid="download-link"]');
+  const findFirstRowCommitLink = () => findFirstRow().find('[data-testid="commit-link"]');
+  const findSecondRowCommitLink = () => findSecondRow().find('[data-testid="commit-link"]');
   const findFirstRowFileIcon = () => findFirstRow().find(FileIcon);
   const findFirstRowCreatedAt = () => findFirstRow().find(TimeAgoTooltip);
+  const findFirstActionMenu = () => findFirstRow().findComponent(GlDropdown);
+  const findActionMenuDelete = () => findFirstActionMenu().find('[data-testid="delete-file"]');
 
-  const createComponent = (packageFiles = npmFiles) => {
+  const createComponent = ({ packageFiles = npmFiles, canDelete = true } = {}) => {
     wrapper = mount(component, {
       propsData: {
         packageFiles,
+        canDelete,
       },
       stubs: {
         ...stubChildren(component),
@@ -43,7 +47,7 @@ describe('Package Files', () => {
     });
 
     it('renders multiple files for a package that contains more than one file', () => {
-      createComponent(mavenFiles);
+      createComponent({ packageFiles: mavenFiles });
 
       expect(findAllRows()).toHaveLength(2);
     });
@@ -123,7 +127,7 @@ describe('Package Files', () => {
     });
     describe('when package file has no pipeline associated', () => {
       it('does not exist', () => {
-        createComponent(mavenFiles);
+        createComponent({ packageFiles: mavenFiles });
 
         expect(findFirstRowCommitLink().exists()).toBe(false);
       });
@@ -131,10 +135,49 @@ describe('Package Files', () => {
 
     describe('when only one file lacks an associated pipeline', () => {
       it('renders the commit when it exists and not otherwise', () => {
-        createComponent([npmFiles[0], mavenFiles[0]]);
+        createComponent({ packageFiles: [npmFiles[0], mavenFiles[0]] });
 
         expect(findFirstRowCommitLink().exists()).toBe(true);
         expect(findSecondRowCommitLink().exists()).toBe(false);
+      });
+    });
+
+    describe('action menu', () => {
+      describe('when the user can delete', () => {
+        it('exists', () => {
+          createComponent();
+
+          expect(findFirstActionMenu().exists()).toBe(true);
+        });
+
+        describe('menu items', () => {
+          describe('delete file', () => {
+            it('exists', () => {
+              createComponent();
+
+              expect(findActionMenuDelete().exists()).toBe(true);
+            });
+
+            it('emits a delete event when clicked', () => {
+              createComponent();
+
+              findActionMenuDelete().vm.$emit('click');
+
+              const [[{ id }]] = wrapper.emitted('delete-file');
+              expect(id).toBe(npmFiles[0].id);
+            });
+          });
+        });
+      });
+
+      describe('when the user can not delete', () => {
+        const canDelete = false;
+
+        it('does not exist', () => {
+          createComponent({ canDelete });
+
+          expect(findFirstActionMenu().exists()).toBe(false);
+        });
       });
     });
   });

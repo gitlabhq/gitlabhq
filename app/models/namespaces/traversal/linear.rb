@@ -64,6 +64,18 @@ module Namespaces
         traversal_ids.present?
       end
 
+      def root_ancestor
+        return super if parent.nil?
+        return super unless persisted?
+
+        return super if traversal_ids.blank?
+        return super unless Feature.enabled?(:use_traversal_ids_for_root_ancestor, default_enabled: :yaml)
+
+        strong_memoize(:root_ancestor) do
+          Namespace.find_by(id: traversal_ids.first)
+        end
+      end
+
       def self_and_descendants
         return super unless use_traversal_ids?
 
@@ -100,7 +112,8 @@ module Namespaces
         # Clear any previously memoized root_ancestor as our ancestors have changed.
         clear_memoization(:root_ancestor)
 
-        Namespace::TraversalHierarchy.for_namespace(root_ancestor).sync_traversal_ids!
+        # We cannot rely on Namespaces::Traversal::Linear#root_ancestor because it might be stale
+        Namespace::TraversalHierarchy.for_namespace(recursive_root_ancestor).sync_traversal_ids!
       end
 
       # Lock the root of the hierarchy we just left, and lock the root of the hierarchy

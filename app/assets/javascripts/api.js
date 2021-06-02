@@ -23,6 +23,8 @@ const Api = {
   groupPackagesPath: '/api/:version/groups/:id/packages',
   projectPackagesPath: '/api/:version/projects/:id/packages',
   projectPackagePath: '/api/:version/projects/:id/packages/:package_id',
+  projectPackageFilePath:
+    '/api/:version/projects/:id/packages/:package_id/package_files/:package_file_id',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   groupSharePath: '/api/:version/groups/:id/share',
   projectsPath: '/api/:version/projects.json',
@@ -121,6 +123,15 @@ const Api = {
 
   deleteProjectPackage(projectId, packageId) {
     const url = this.buildProjectPackageUrl(projectId, packageId);
+    return axios.delete(url);
+  },
+
+  deleteProjectPackageFile(projectId, packageId, fileId) {
+    const url = Api.buildUrl(this.projectPackageFilePath)
+      .replace(':id', projectId)
+      .replace(':package_id', packageId)
+      .replace(':package_file_id', fileId);
+
     return axios.delete(url);
   },
 

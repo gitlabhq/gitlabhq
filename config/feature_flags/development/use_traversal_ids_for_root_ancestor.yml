@@ -1,0 +1,8 @@
+---
+name: use_traversal_ids_for_root_ancestor
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61163
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331907
+milestone: '14.0'
+type: development
+group: group::access
+default_enabled: false

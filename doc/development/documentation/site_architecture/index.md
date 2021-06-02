@@ -196,11 +196,11 @@ The links pointing to the files should be similar to:
 ```
 
 Nanoc then builds and renders those links correctly according with what's
-defined in [`Rules`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/Rules).
+defined in [`Rules`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/Rules).
 
 ## Linking to source files
 
-A helper called [`edit_on_gitlab`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/lib/helpers/edit_on_gitlab.rb) can be used
+A helper called [`edit_on_gitlab`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/lib/helpers/edit_on_gitlab.rb) can be used
 to link to a page's source file. We can link to both the simple editor and the
 web IDE. Here's how you can use it in a Nanoc layout:
 
@@ -223,9 +223,9 @@ for its search function. This is how it works:
    every 24h and [stores](https://community.algolia.com/docsearch/inside-the-engine.html)
    the [DocSearch index](https://community.algolia.com/docsearch/how-do-we-build-an-index.html)
    on [Algolia's servers](https://community.algolia.com/docsearch/faq.html#where-is-my-data-hosted%3F).
-1. On the docs side, we use a [DocSearch layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/docsearch.html) which
+1. On the docs side, we use a [DocSearch layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/layouts/docsearch.html) which
    is present on pretty much every page except <https://docs.gitlab.com/search/>,
-   which uses its [own layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/instantsearch.html). In those layouts,
+   which uses its [own layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/layouts/instantsearch.html). In those layouts,
    there's a JavaScript snippet which initiates DocSearch by using an API key
    and an index name (`gitlab`) that are needed for Algolia to show the results.
 

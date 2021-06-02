@@ -1999,7 +1999,8 @@ cURL to post data using the header `Content-Type: multipart/form-data`. The
 `@`. For example:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "file=@dk.png" "https://gitlab.example.com/api/v4/projects/5/uploads"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "file=@dk.png" "https://gitlab.example.com/api/v4/projects/5/uploads"
 ```
 
 Returned object:
@@ -2073,7 +2074,8 @@ preceded by `@`. For example:
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "avatar=@dk.png" "https://gitlab.example.com/api/v4/projects/5"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "avatar=@dk.png" "https://gitlab.example.com/api/v4/projects/5"
 ```
 
 Returned object:

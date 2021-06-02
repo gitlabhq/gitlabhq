@@ -682,7 +682,6 @@ GEM
       activerecord
       kaminari-core (= 1.2.1)
     kaminari-core (1.2.1)
-    kgio (2.11.3)
     knapsack (1.21.1)
       rake
     kramdown (2.3.1)
@@ -1001,7 +1000,6 @@ GEM
       rake (>= 0.8.7)
       thor (~> 1.0)
     rainbow (3.0.0)
-    raindrops (0.19.1)
     rake (13.0.3)
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
@@ -1319,9 +1317,6 @@ GEM
     unf_ext (0.0.7.7)
     unicode-display_width (1.7.0)
     unicode_utils (1.4.0)
-    unicorn (5.5.5)
-      kgio (~> 2.6)
-      raindrops (~> 0.7)
     uniform_notifier (1.13.0)
     unleash (0.1.5)
       murmurhash3 (~> 0.1.6)
@@ -1653,7 +1648,6 @@ DEPENDENCIES
   truncato (~> 0.7.11)
   u2f (~> 0.2.1)
   unf (~> 0.1.4)
-  unicorn (~> 5.5)
   unleash (~> 0.1.5)
   valid_email (~> 0.1)
   validates_hostname (~> 1.0.11)

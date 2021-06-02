@@ -16,6 +16,7 @@ module Namespaces
           parent.root_ancestor
         end
       end
+      alias_method :recursive_root_ancestor, :root_ancestor
 
       # Returns all ancestors, self, and descendants of the current namespace.
       def self_and_hierarchy

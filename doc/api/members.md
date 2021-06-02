@@ -418,8 +418,10 @@ POST /projects/:id/members
 | `invite_source` | string | no | The source of the invitation that starts the member creation process. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327120). |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" "https://gitlab.example.com/api/v4/groups/:id/members"
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" "https://gitlab.example.com/api/v4/projects/:id/members"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "user_id=1&access_level=30" "https://gitlab.example.com/api/v4/groups/:id/members"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "user_id=1&access_level=30" "https://gitlab.example.com/api/v4/projects/:id/members"
 ```
 
 Example response:

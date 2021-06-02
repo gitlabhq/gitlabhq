@@ -28,4 +28,13 @@ describe('Mutations package details Store', () => {
       expect(mockState.packageEntity.versions).toEqual(fakeVersions);
     });
   });
+  describe('UPDATE_PACKAGE_FILES', () => {
+    it('should update the packageFiles', () => {
+      const files = [1, 2, 3];
+
+      mutations[types.UPDATE_PACKAGE_FILES](mockState, files);
+
+      expect(mockState.packageFiles).toEqual(files);
+    });
+  });
 });

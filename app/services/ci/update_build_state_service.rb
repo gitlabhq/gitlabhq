@@ -19,8 +19,6 @@ module Ci
     end
 
     def execute
-      overwrite_trace! if has_trace?
-
       unless accept_available?
         return update_build_state!
       end
@@ -33,12 +31,6 @@ module Ci
     end
 
     private
-
-    def overwrite_trace!
-      metrics.increment_trace_operation(operation: :overwrite)
-
-      build.trace.set(params[:trace]) if Gitlab::Ci::Features.trace_overwrite?
-    end
 
     def ensure_pending_state!
       pending_state.created_at
@@ -149,10 +141,6 @@ module Ci
 
     def build_state
       params.dig(:state).to_s
-    end
-
-    def has_trace?
-      params.dig(:trace).present?
     end
 
     def has_checksum?

@@ -62,8 +62,6 @@ module Gitlab
                   data[aggregation[:name]] = calculate_count_for_aggregation(aggregation: aggregation, start_date: start_date, end_date: end_date)
                 end
               when DATABASE_SOURCE
-                next unless Feature.enabled?('database_sourced_aggregated_metrics', default_enabled: false, type: :development)
-
                 data[aggregation[:name]] = calculate_count_for_aggregation(aggregation: aggregation, start_date: start_date, end_date: end_date)
               else
                 Gitlab::ErrorTracking

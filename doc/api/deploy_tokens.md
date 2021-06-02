@@ -117,7 +117,9 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"name": "My deploy token", "expires_at": "2021-01-01", "username": "custom-user", "scopes": ["read_repository"]}' "https://gitlab.example.com/api/v4/projects/5/deploy_tokens/"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+     --data '{"name": "My deploy token", "expires_at": "2021-01-01", "username": "custom-user", "scopes": ["read_repository"]}' \
+     "https://gitlab.example.com/api/v4/projects/5/deploy_tokens/"
 ```
 
 Example response:
@@ -157,7 +159,8 @@ Parameters:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_tokens/13"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+    "https://gitlab.example.com/api/v4/projects/5/deploy_tokens/13"
 ```
 
 ## Group deploy tokens
@@ -230,7 +233,9 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"name": "My deploy token", "expires_at": "2021-01-01", "username": "custom-user", "scopes": ["read_repository"]}' "https://gitlab.example.com/api/v4/groups/5/deploy_tokens/"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+     --data '{"name": "My deploy token", "expires_at": "2021-01-01", "username": "custom-user", "scopes": ["read_repository"]}' \
+     "https://gitlab.example.com/api/v4/groups/5/deploy_tokens/"
 ```
 
 Example response:

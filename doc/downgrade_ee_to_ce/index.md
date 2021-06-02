@@ -23,7 +23,7 @@ alternative authentication methods to your users.
 
 ### Remove Service Integration entries from the database
 
-The `GithubService` class is only available in the Enterprise Edition codebase,
+The GitHub integration is only available in the Enterprise Edition codebase,
 so if you downgrade to the Community Edition, the following error displays:
 
 ```plaintext
@@ -35,8 +35,8 @@ column if you didn't intend it to be used for storing the inheritance class or o
 use another column for that information.)
 ```
 
-All services are created automatically for every project you have, so in order
-to avoid getting this error, you need to remove all instances of the
+All integrations are created automatically for every project you have, so in order
+to avoid getting this error, you need to remove all records with the type set to
 `GithubService` from your database:
 
 **Omnibus Installation**

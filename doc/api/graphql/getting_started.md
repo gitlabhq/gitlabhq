@@ -29,7 +29,9 @@ Example:
 
 ```shell
 GRAPHQL_TOKEN=<your-token>
-curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_TOKEN" --header "Content-Type: application/json" --request POST --data "{\"query\": \"query {currentUser {name}}\"}"
+curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_TOKEN" \
+     --header "Content-Type: application/json" --request POST \
+     --data "{\"query\": \"query {currentUser {name}}\"}"
 ```
 
 ### GraphiQL

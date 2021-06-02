@@ -317,3 +317,30 @@ bundle-size-review:
     expire_in: 31d
     paths:
       - bundle-size-review
+
+.startup-css-check-base:
+  extends:
+    - .frontend-test-base
+  script:
+    - *yarn-install
+    - run_timed_command "yarn generate:startup_css"
+    - yarn check:startup_css
+
+startup-css-check:
+  extends:
+    - .startup-css-check-base
+    - .frontend:rules:startup-css-check
+  needs:
+    - job: "compile-test-assets"
+    - job: "rspec frontend_fixture"
+    - job: "rspec-ee frontend_fixture"
+      optional: true
+
+startup-css-check as-if-foss:
+  extends:
+    - .startup-css-check-base
+    - .as-if-foss
+    - .frontend:rules:startup-css-check-as-if-foss
+  needs:
+    - job: "compile-test-assets as-if-foss"
+    - job: "rspec frontend_fixture as-if-foss"

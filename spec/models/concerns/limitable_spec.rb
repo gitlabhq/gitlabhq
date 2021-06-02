@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'active_model'
 
 RSpec.describe Limitable do
   let(:minimal_test_class) do
@@ -34,6 +35,28 @@ RSpec.describe Limitable do
       expect(instance).to receive(:validate_scoped_plan_limit_not_exceeded)
 
       instance.valid?(:create)
+    end
+
+    context 'with custom relation' do
+      before do
+        MinimalTestClass.limit_relation = :custom_relation
+      end
+
+      it 'triggers custom limit_relation' do
+        instance = MinimalTestClass.new
+
+        def instance.project
+          @project ||= Object.new
+        end
+
+        limits = Object.new
+        custom_relation = Object.new
+        expect(instance).to receive(:custom_relation).and_return(custom_relation)
+        expect(instance.project).to receive(:actual_limits).and_return(limits)
+        expect(limits).to receive(:exceeded?).with(instance.class.name.demodulize.tableize, custom_relation).and_return(false)
+
+        instance.valid?(:create)
+      end
     end
   end
 

@@ -207,7 +207,8 @@ your cluster either using [Cloud Shell](https://cloud.google.com/shell/) or the 
    NAME  HOSTS  PORTS
    production-auto-deploy  fjdiaz-auto-devv-2.34.68.60.207.nip.io,le-16730183.34.68.60.207.nip.io  80, 443
 
-   $ curl --location --insecure "fjdiaz-auto-devv-2.34.68.60.207.nip.io" | grep 'Rails!' --after 2 --before 2
+   $ curl --location --insecure "fjdiaz-auto-devv-2.34.68.60.207.nip.io" | grep 'Rails!' --after 2 \
+          --before 2
    <body>
        <p>You're on Rails!</p>
    </body>
@@ -222,7 +223,8 @@ Now let's send a potentially malicious request, as if we were a scanner,
 checking for vulnerabilities within our application and examine the ModSecurity logs:
 
 ```shell
-$ curl --location --insecure "fjdiaz-auto-devv-2.34.68.60.207.nip.io" --header "User-Agent: absinthe" | grep 'Rails!' --after 2 --before 2
+$ curl --location --insecure "fjdiaz-auto-devv-2.34.68.60.207.nip.io" --header "User-Agent: absinthe" | grep 'Rails!' --after 2 \
+       --before 2
 <body>
     <p>You're on Rails!</p>
 </body>

@@ -81,13 +81,15 @@ POST /project_aliases
 | `name`       | string         | yes      | The name of the alias. Must be unique. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=1" --form "name=gitlab"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=1" --form "name=gitlab"
 ```
 
 or
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=gitlab-org/gitlab" --form "name=gitlab"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=gitlab-org/gitlab" --form "name=gitlab"
 ```
 
 Example response:

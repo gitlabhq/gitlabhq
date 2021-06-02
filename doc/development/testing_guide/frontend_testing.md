@@ -249,7 +249,7 @@ it('exists', () => {
   wrapper.findByText(/Click Me/i)
 
   // Good (especially for unit tests)
-  wrapper.find(FooComponent);
+  wrapper.findComponent(FooComponent);
   wrapper.find('input[name=foo]');
   wrapper.find('[data-testid="my-foo-id"]');
   wrapper.findByTestId('my-foo-id'); // with shallowMountExtended or mountExtended – check below
@@ -281,7 +281,7 @@ Example:
 
 ```javascript
 it('exists', () => {
-    wrapper.find(FooComponent);
+  wrapper.findComponent(FooComponent);
 });
 ```
 

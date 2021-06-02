@@ -111,9 +111,7 @@ export default {
           required: false,
           skipValidation: true,
         }),
-        visibility: initFormField({
-          value: this.projectVisibility,
-        }),
+        visibility: initFormField({ value: this.projectVisibility }),
       },
     };
     return {
@@ -165,12 +163,8 @@ export default {
   },
   watch: {
     // eslint-disable-next-line func-names
-    'form.fields.namespace.value': function (newVal) {
-      const { visibility } = newVal;
-
-      if (this.projectAllowedVisibility.includes(visibility)) {
-        this.form.fields.visibility.value = visibility;
-      }
+    'form.fields.namespace.value': function () {
+      this.form.fields.visibility.value = PRIVATE_VISIBILITY;
     },
     // eslint-disable-next-line func-names
     'form.fields.name.value': function (newVal) {

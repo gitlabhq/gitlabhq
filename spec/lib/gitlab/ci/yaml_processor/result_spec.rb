@@ -39,6 +39,45 @@ module Gitlab
             expect(expanded_config).to include(*included_config.keys)
           end
         end
+
+        describe '#yaml_variables_for' do
+          let(:config_content) do
+            <<~YAML
+              variables:
+                VAR1: value 1
+                VAR2: value 2
+
+              job:
+                script: echo 'hello'
+                variables:
+                  VAR1: value 11
+            YAML
+          end
+
+          subject(:yaml_variables_for) { result.yaml_variables_for(:job) }
+
+          it do
+            is_expected.to match_array([
+              { key: 'VAR1', value: 'value 11', public: true },
+              { key: 'VAR2', value: 'value 2', public: true }
+            ])
+          end
+        end
+
+        describe '#stage_for' do
+          let(:config_content) do
+            <<~YAML
+              job:
+                script: echo 'hello'
+            YAML
+          end
+
+          subject(:stage_for) { result.stage_for(:job) }
+
+          it do
+            is_expected.to eq('test')
+          end
+        end
       end
     end
   end

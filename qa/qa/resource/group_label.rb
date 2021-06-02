@@ -14,11 +14,11 @@ module QA
       end
 
       def api_post_path
-        "/groups/#{group.id}/labels"
+        "/groups/#{CGI.escape(group.full_path)}/labels"
       end
 
       def api_get_path
-        "/groups/#{group.id}/labels/#{id}"
+        "/groups/#{CGI.escape(group.full_path)}/labels/#{id}"
       end
     end
   end

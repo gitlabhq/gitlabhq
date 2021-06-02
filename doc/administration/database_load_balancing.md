@@ -4,9 +4,10 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Database Load Balancing **(PREMIUM SELF)**
+# Database Load Balancing **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1283) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1283) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60894) from GitLab Premium to GitLab Free in 14.0. See the [instructions below](#load-balancing-in-gitlab).
 
 Distribute read-only queries among multiple database servers.
 
@@ -102,6 +103,17 @@ the following. This will balance the load between `host1.example.com` and
    ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+
+### Load balancing in GitLab Free
+
+Database load balancing was moved from GitLab Premium to GitLab Free in
+14.0 with some [known limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/327902).
+For example, requesting new jobs for runners may fail. Hence, this feature is **not ready for production use** in GitLab Free.
+
+To use database load balancing in GitLab Free, set the `ENABLE_LOAD_BALANCING_FOR_FOSS`
+[environment
+variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
+to `true`.
 
 ### Enable the load balancer for Sidekiq
 

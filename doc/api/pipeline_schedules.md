@@ -119,7 +119,9 @@ POST /projects/:id/pipeline_schedules
 | `active`        | boolean        | no       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`). |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form description="Build packages" --form ref="main" --form cron="0 1 * * 5" --form cron_timezone="UTC" --form active="true" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form description="Build packages" --form ref="main" --form cron="0 1 * * 5" --form cron_timezone="UTC" \
+     --form active="true" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
 ```
 
 ```json
@@ -164,7 +166,8 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `active`               | boolean        | no       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated.            |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form cron="0 2 * * *" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form cron="0 2 * * *" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ```json
@@ -334,7 +337,8 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
 | `variable_type`        | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "key=NEW_VARIABLE" --form "value=new value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "key=NEW_VARIABLE" \
+     --form "value=new value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables"
 ```
 
 ```json
@@ -362,7 +366,9 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 | `variable_type`        | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "value=updated value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "value=updated value" \
+     "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
 ```
 
 ```json

@@ -13,7 +13,7 @@ import {
 import { mapActions, mapState } from 'vuex';
 import { objectToQueryString } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import PackageListRow from '../../shared/components/package_list_row.vue';
 import PackagesListLoader from '../../shared/components/packages_list_loader.vue';
@@ -51,6 +51,11 @@ export default {
   },
   mixins: [Tracking.mixin()],
   trackingActions: { ...TrackingActions },
+  data() {
+    return {
+      fileToDelete: null,
+    };
+  },
   computed: {
     ...mapState([
       'projectName',
@@ -86,12 +91,9 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['deletePackage', 'fetchPackageVersions']),
+    ...mapActions(['deletePackage', 'fetchPackageVersions', 'deletePackageFile']),
     formatSize(size) {
       return numberToHumanSize(size);
-    },
-    cancelDelete() {
-      this.$refs.deleteModal.hide();
     },
     getPackageVersions() {
       if (!this.packageEntity.versions) {
@@ -108,12 +110,43 @@ export default {
       const modalQuery = objectToQueryString({ [SHOW_DELETE_SUCCESS_ALERT]: true });
       window.location.replace(`${returnTo}?${modalQuery}`);
     },
+    handleFileDelete(file) {
+      this.track(TrackingActions.REQUEST_DELETE_PACKAGE_FILE);
+      this.fileToDelete = { ...file };
+      this.$refs.deleteFileModal.show();
+    },
+    confirmFileDelete() {
+      this.track(TrackingActions.DELETE_PACKAGE_FILE);
+      this.deletePackageFile(this.fileToDelete.id);
+      this.fileToDelete = null;
+    },
   },
   i18n: {
     deleteModalTitle: s__(`PackageRegistry|Delete Package Version`),
     deleteModalContent: s__(
       `PackageRegistry|You are about to delete version %{version} of %{name}. Are you sure?`,
     ),
+    deleteFileModalTitle: s__(`PackageRegistry|Delete Package File`),
+    deleteFileModalContent: s__(
+      `PackageRegistry|You are about to delete %{filename}. This is a destructive action that may render your package unusable. Are you sure?`,
+    ),
+  },
+  modal: {
+    packageDeletePrimaryAction: {
+      text: __('Delete'),
+      attributes: [
+        { variant: 'danger' },
+        { category: 'primary' },
+        { 'data-qa-selector': 'delete_modal_button' },
+      ],
+    },
+    fileDeletePrimaryAction: {
+      text: __('Delete'),
+      attributes: [{ variant: 'danger' }, { category: 'primary' }],
+    },
+    cancelAction: {
+      text: __('Cancel'),
+    },
   },
 };
 </script>
@@ -159,7 +192,9 @@ export default {
         <package-files
           v-if="showFiles"
           :package-files="packageFiles"
+          :can-delete="canDelete"
           @download-file="track($options.trackingActions.PULL_PACKAGE)"
+          @delete-file="handleFileDelete"
         />
       </gl-tab>
 
@@ -210,7 +245,15 @@ export default {
       </gl-tab>
     </gl-tabs>
 
-    <gl-modal ref="deleteModal" class="js-delete-modal" modal-id="delete-modal">
+    <gl-modal
+      ref="deleteModal"
+      class="js-delete-modal"
+      modal-id="delete-modal"
+      :action-primary="$options.modal.packageDeletePrimaryAction"
+      :action-cancel="$options.modal.cancelAction"
+      @primary="confirmPackageDeletion"
+      @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE)"
+    >
       <template #modal-title>{{ $options.i18n.deleteModalTitle }}</template>
       <gl-sprintf :message="$options.i18n.deleteModalContent">
         <template #version>
@@ -221,23 +264,22 @@ export default {
           <strong>{{ packageEntity.name }}</strong>
         </template>
       </gl-sprintf>
+    </gl-modal>
 
-      <template #modal-footer>
-        <div class="gl-w-full">
-          <div class="float-right">
-            <gl-button @click="cancelDelete">{{ __('Cancel') }}</gl-button>
-            <gl-button
-              ref="modal-delete-button"
-              variant="danger"
-              category="primary"
-              data-qa-selector="delete_modal_button"
-              @click="confirmPackageDeletion"
-            >
-              {{ __('Delete') }}
-            </gl-button>
-          </div>
-        </div>
-      </template>
+    <gl-modal
+      ref="deleteFileModal"
+      modal-id="delete-file-modal"
+      :action-primary="$options.modal.fileDeletePrimaryAction"
+      :action-cancel="$options.modal.cancelAction"
+      @primary="confirmFileDelete"
+      @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE_FILE)"
+    >
+      <template #modal-title>{{ $options.i18n.deleteFileModalTitle }}</template>
+      <gl-sprintf v-if="fileToDelete" :message="$options.i18n.deleteFileModalContent">
+        <template #filename>
+          <strong>{{ fileToDelete.file_name }}</strong>
+        </template>
+      </gl-sprintf>
     </gl-modal>
   </div>
 </template>

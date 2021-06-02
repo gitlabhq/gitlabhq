@@ -464,7 +464,6 @@ describe('component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   it('should show a user', async () => {

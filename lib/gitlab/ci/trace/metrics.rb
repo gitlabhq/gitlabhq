@@ -11,7 +11,6 @@ module Gitlab
           :streamed,  # new trace data has been sent by a runner
           :chunked,   # new trace chunk has been created
           :mutated,   # trace has been mutated when removing secrets
-          :overwrite, # runner requested overwritting a build trace
           :accepted,  # scheduled chunks for migration and responded with 202
           :finalized, # all live build trace chunks have been persisted
           :discarded, # failed to persist live chunks before timeout

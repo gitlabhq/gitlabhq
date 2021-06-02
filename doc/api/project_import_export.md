@@ -113,7 +113,8 @@ GET /projects/:id/export/download
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name --remote-name "https://gitlab.example.com/api/v4/projects/5/export/download"
+curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name \
+     --remote-name "https://gitlab.example.com/api/v4/projects/5/export/download"
 ```
 
 ```shell
@@ -144,7 +145,8 @@ The `file=` parameter must point to a file on your file system and be preceded
 by `@`. For example:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "path=api-project" --form "file=@/path/to/file" "https://gitlab.example.com/api/v4/projects/import"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "path=api-project" \
+     --form "file=@/path/to/file" "https://gitlab.example.com/api/v4/projects/import"
 ```
 
 cURL doesn't support posting a file from a remote server. Importing a project from a remote server can be accomplished through something like the following:

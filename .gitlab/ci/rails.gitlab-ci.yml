@@ -8,7 +8,7 @@
 
 .minimal-bundle-install:
   script:
-    - export BUNDLE_WITHOUT="${BUNDLE_WITHOUT}:default:test:puma:unicorn:kerberos:metrics:omnibus:ed25519"
+    - export BUNDLE_WITHOUT="${BUNDLE_WITHOUT}:default:test:puma:kerberos:metrics:omnibus:ed25519"
     - bundle_install_script
 
 .base-script:

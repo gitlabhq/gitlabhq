@@ -222,7 +222,7 @@ build pipelines:
    ```
 
    We recommend installing the version of `markdownlint-cli`
-   [used](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/.gitlab-ci.yml#L447) when building
+   [used (see `variables:` section)](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/.gitlab-ci.yml) when building
    the `image:docs-lint-markdown`.
 
 1. Install [`vale`](https://github.com/errata-ai/vale/releases). For example, to install using
@@ -240,7 +240,7 @@ It's important to use linter versions that are the same or newer than those run 
 CI/CD. This provides access to new features and possible bug fixes.
 
 To match the versions of `markdownlint-cli` and `vale` used in the GitLab projects, refer to the
-[versions used](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/.gitlab-ci.yml#L447)
+[versions used (see `variables:` section)](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/.gitlab-ci.yml)
 when building the `image:docs-lint-markdown` Docker image containing these tools for CI/CD.
 
 | Tool               | Version   | Command                                   | Additional information |

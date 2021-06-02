@@ -70,7 +70,8 @@ GET /-/chaos/leakmem?memory_mb=1024&duration_s=50&async=true
 | `async`      | boolean | no       | Set to true to leak memory in a Sidekiq background worker process                    |
 
 ```shell
-curl "http://localhost:3000/-/chaos/leakmem?memory_mb=1024&duration_s=10" --header 'X-Chaos-Secret: secret'
+curl "http://localhost:3000/-/chaos/leakmem?memory_mb=1024&duration_s=10" \
+     --header 'X-Chaos-Secret: secret'
 curl "http://localhost:3000/-/chaos/leakmem?memory_mb=1024&duration_s=10&token=secret"
 ```
 
@@ -93,7 +94,8 @@ GET /-/chaos/cpu_spin?duration_s=50&async=true
 | `async`      | boolean | no       | Set to true to consume CPU in a Sidekiq background worker process     |
 
 ```shell
-curl "http://localhost:3000/-/chaos/cpu_spin?duration_s=60" --header 'X-Chaos-Secret: secret'
+curl "http://localhost:3000/-/chaos/cpu_spin?duration_s=60" \
+     --header 'X-Chaos-Secret: secret'
 curl "http://localhost:3000/-/chaos/cpu_spin?duration_s=60&token=secret"
 ```
 
@@ -118,7 +120,8 @@ GET /-/chaos/db_spin?duration_s=50&async=true
 | `async`      | boolean | no       | Set to true to perform the operation in a Sidekiq background worker process |
 
 ```shell
-curl "http://localhost:3000/-/chaos/db_spin?interval_s=1&duration_s=60" --header 'X-Chaos-Secret: secret'
+curl "http://localhost:3000/-/chaos/db_spin?interval_s=1&duration_s=60" \
+     --header 'X-Chaos-Secret: secret'
 curl "http://localhost:3000/-/chaos/db_spin?interval_s=1&duration_s=60&token=secret"
 ```
 
@@ -140,7 +143,8 @@ GET /-/chaos/sleep?duration_s=50&async=true
 | `async`      | boolean | no       | Set to true to sleep in a Sidekiq background worker process            |
 
 ```shell
-curl "http://localhost:3000/-/chaos/sleep?duration_s=60" --header 'X-Chaos-Secret: secret'
+curl "http://localhost:3000/-/chaos/sleep?duration_s=60" \
+     --header 'X-Chaos-Secret: secret'
 curl "http://localhost:3000/-/chaos/sleep?duration_s=60&token=secret"
 ```
 
@@ -200,7 +204,8 @@ POST /-/chaos/gc
 Example request:
 
 ```shell
-curl --request POST "http://localhost:3000/-/chaos/gc" --header 'X-Chaos-Secret: secret'
+curl --request POST "http://localhost:3000/-/chaos/gc" \
+     --header 'X-Chaos-Secret: secret'
 curl --request POST "http://localhost:3000/-/chaos/gc?token=secret"
 ```
 

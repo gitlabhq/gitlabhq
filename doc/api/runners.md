@@ -232,7 +232,8 @@ PUT /runners/:id
 | `maximum_timeout` | integer | no   | Maximum timeout set when this runner handles the job |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" \
+     --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
 ```
 
 NOTE:
@@ -289,7 +290,8 @@ PUT --form "active=false"  /runners/:runner_id
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "active=false"  "https://gitlab.example.com/api/v4/runners/6"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "active=false"  "https://gitlab.example.com/api/v4/runners/6"
 ```
 
 ## List runner's jobs
@@ -449,7 +451,8 @@ POST /projects/:id/runners
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners" --form "runner_id=9"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners" \
+     --form "runner_id=9"
 ```
 
 Example response:
@@ -567,7 +570,9 @@ POST /runners
 | `maximum_timeout` | integer | no  | Maximum timeout set when this runner handles the job |
 
 ```shell
-curl --request POST "https://gitlab.example.com/api/v4/runners" --form "token=<registration_token>" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
+curl --request POST "https://gitlab.example.com/api/v4/runners" \
+     --form "token=<registration_token>" --form "description=test-1-20150125-test" \
+     --form "tag_list=ruby,mysql,tag1,tag2"
 ```
 
 Response:
@@ -621,7 +626,8 @@ DELETE /runners
 | `token`     | string  | yes      | The runner's [authentication token](#registration-and-authentication-tokens). |
 
 ```shell
-curl --request DELETE "https://gitlab.example.com/api/v4/runners" --form "token=<authentication_token>"
+curl --request DELETE "https://gitlab.example.com/api/v4/runners" \
+     --form "token=<authentication_token>"
 ```
 
 Response:
@@ -643,7 +649,8 @@ POST /runners/verify
 | `token`     | string  | yes      | Runner's [authentication token](#registration-and-authentication-tokens).  |
 
 ```shell
-curl --request POST "https://gitlab.example.com/api/v4/runners/verify" --form "token=<authentication_token>"
+curl --request POST "https://gitlab.example.com/api/v4/runners/verify" \
+     --form "token=<authentication_token>"
 ```
 
 Response:

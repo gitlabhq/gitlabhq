@@ -1,4 +1,4 @@
-import { GlFormInputGroup, GlFormInput, GlForm, GlFormRadio } from '@gitlab/ui';
+import { GlFormInputGroup, GlFormInput, GlForm, GlFormRadio, GlFormSelect } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -89,6 +89,7 @@ describe('ForkForm component', () => {
     axiosMock.restore();
   });
 
+  const findFormSelect = () => wrapper.find(GlFormSelect);
   const findPrivateRadio = () => wrapper.find('[data-testid="radio-private"]');
   const findInternalRadio = () => wrapper.find('[data-testid="radio-internal"]');
   const findPublicRadio = () => wrapper.find('[data-testid="radio-public"]');
@@ -229,6 +230,37 @@ describe('ForkForm component', () => {
       expect(wrapper.findAll(GlFormRadio)).toHaveLength(3);
     });
 
+    it('resets the visibility to default "private" when the namespace is changed', async () => {
+      const namespaces = [
+        {
+          visibility: 'private',
+        },
+        {
+          visibility: 'internal',
+        },
+        {
+          visibility: 'public',
+        },
+      ];
+
+      mockGetRequest();
+      createComponent(
+        {
+          projectVisibility: 'public',
+        },
+        {
+          namespaces,
+        },
+      );
+
+      expect(wrapper.vm.form.fields.visibility.value).toBe('public');
+      findFormSelect().vm.$emit('input', namespaces[1]);
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.form.fields.visibility.value).toBe('private');
+    });
+
     it.each`
       project       | namespace     | privateIsDisabled | internalIsDisabled | publicIsDisabled
       ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}
@@ -324,7 +356,6 @@ describe('ForkForm component', () => {
 
         await submitForm();
 
-        expect(wrapper.find('[name="visibility"]:checked').exists()).toBe(false);
         expect(axios.post).not.toHaveBeenCalled();
       });
     });

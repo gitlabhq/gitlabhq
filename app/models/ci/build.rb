@@ -214,6 +214,8 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
+    after_save :stick_build_if_status_changed
+
     after_create unless: :importing? do |build|
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
@@ -1081,6 +1083,13 @@ module Ci
     end
 
     private
+
+    def stick_build_if_status_changed
+      return unless saved_change_to_status?
+      return unless running?
+
+      ::Gitlab::Database::LoadBalancing::Sticking.stick(:build, id)
+    end
 
     def status_commit_hooks
       @status_commit_hooks ||= []

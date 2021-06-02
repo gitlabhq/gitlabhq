@@ -8196,27 +8196,27 @@ Tiers:
 
 ### `redis_hll_counters.ci_templates.ci_templates_total_unique_counts_monthly`
 
-Missing description
+Total count of pipelines runs
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184559_ci_templates_total_unique_counts_monthly.yml)
 
-Group: ``
+Group: `group::configure`
 
-Status: `data_available`
+Status: `broken`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.ci_templates_total_unique_counts_weekly`
 
-Missing description
+Total count of pipelines runs
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184557_ci_templates_total_unique_counts_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184557_ci_templates_total_unique_counts_weekly.yml)
 
-Group: ``
+Group: `group::configure`
 
-Status: `data_available`
+Status: `broken`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_5_min_production_app_monthly`
 

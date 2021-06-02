@@ -124,7 +124,9 @@ POST /projects/:id/deploy_keys
 | `can_push` | boolean | no  | Can deploy key push to the project's repository |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": "true"}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+     --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": "true"}' \
+     "https://gitlab.example.com/api/v4/projects/5/deploy_keys/"
 ```
 
 Example response:
@@ -154,7 +156,8 @@ PUT /projects/:id/deploy_keys/:key_id
 | `can_push` | boolean | no  | Can deploy key push to the project's repository |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"title": "New deploy key", "can_push": true}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+     --data '{"title": "New deploy key", "can_push": true}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
 ```
 
 Example response:
@@ -238,7 +241,9 @@ With those IDs, add the same deploy key to all:
 
 ```shell
 for project_id in 321 456 987; do
-    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-    --data '{"title": "my key", "key": "ssh-rsa AAAA..."}' "https://gitlab.example.com/api/v4/projects/${project_id}/deploy_keys"
+    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+         --header "Content-Type: application/json" \
+         --data '{"title": "my key", "key": "ssh-rsa AAAA..."}' \
+         "https://gitlab.example.com/api/v4/projects/${project_id}/deploy_keys"
 done
 ```

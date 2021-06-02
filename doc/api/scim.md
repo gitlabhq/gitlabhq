@@ -39,7 +39,9 @@ Pagination follows the [SCIM spec](https://tools.ietf.org/html/rfc7644#section-3
 Example request:
 
 ```shell
-curl "https://gitlab.example.com/api/scim/v2/groups/test_group/Users?filter=id%20eq%20%220b1d561c-21ff-4092-beab-8154b17f82f2%22" --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+curl "https://gitlab.example.com/api/scim/v2/groups/test_group/Users?filter=id%20eq%20%220b1d561c-21ff-4092-beab-8154b17f82f2%22" \
+     --header "Authorization: Bearer <your_scim_token>" \
+     --header "Content-Type: application/scim+json"
 ```
 
 Example response:
@@ -90,7 +92,8 @@ Parameters:
 Example request:
 
 ```shell
-curl "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+curl "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
 ```
 
 Example response:
@@ -134,7 +137,9 @@ Parameters:
 Example request:
 
 ```shell
-curl --verbose --request POST "https://gitlab.example.com/api/scim/v2/groups/test_group/Users" --data '{"externalId":"test_uid","active":null,"userName":"username","emails":[{"primary":true,"type":"work","value":"name@example.com"}],"name":{"formatted":"Test User","familyName":"User","givenName":"Test"},"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"meta":{"resourceType":"User"}}' --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+curl --verbose --request POST "https://gitlab.example.com/api/scim/v2/groups/test_group/Users" \
+     --data '{"externalId":"test_uid","active":null,"userName":"username","emails":[{"primary":true,"type":"work","value":"name@example.com"}],"name":{"formatted":"Test User","familyName":"User","givenName":"Test"},"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"meta":{"resourceType":"User"}}' \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
 ```
 
 Example response:
@@ -188,7 +193,9 @@ Parameters:
 Example request:
 
 ```shell
-curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" --data '{ "Operations": [{"op":"Add","path":"name.formatted","value":"New Name"}] }' --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" \
+     --data '{ "Operations": [{"op":"Add","path":"name.formatted","value":"New Name"}] }' \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
 ```
 
 Returns an empty response with a `204` status code if successful.
@@ -211,7 +218,8 @@ Parameters:
 Example request:
 
 ```shell
-curl --verbose --request DELETE "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+curl --verbose --request DELETE "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
 ```
 
 Returns an empty response with a `204` status code if successful.

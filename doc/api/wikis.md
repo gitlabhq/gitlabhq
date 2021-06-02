@@ -97,7 +97,8 @@ POST /projects/:id/wikis
 | `format` | string  | no       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc` and `org` |
 
 ```shell
-curl --data "format=rdoc&title=Hello&content=Hello world" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis"
+curl --data "format=rdoc&title=Hello&content=Hello world" \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis"
 ```
 
 Example response:
@@ -128,7 +129,8 @@ PUT /projects/:id/wikis/:slug
 | `slug` | string  | yes       | URL-encoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name` |
 
 ```shell
-curl --request PUT --data "format=rdoc&content=documentation&title=Docs" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
+curl --request PUT --data "format=rdoc&content=documentation&title=Docs" \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
 ```
 
 Example response:
@@ -182,7 +184,8 @@ The `file=` parameter must point to a file on your file system and be preceded
 by `@`. For example:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "file=@dk.png" "https://gitlab.example.com/api/v4/projects/1/wikis/attachments"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "file=@dk.png" "https://gitlab.example.com/api/v4/projects/1/wikis/attachments"
 ```
 
 Example response:

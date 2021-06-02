@@ -222,7 +222,8 @@ PUT /projects/:id/labels/:label_id
 | `priority`    | integer | no       | The new priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
 
 ```shell
-curl --request PUT --data "new_name=docs&color=#8E44AD&description=Documentation" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels/documentation"
+curl --request PUT --data "new_name=docs&color=#8E44AD&description=Documentation" \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels/documentation"
 ```
 
 Example response:

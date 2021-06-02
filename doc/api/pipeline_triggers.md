@@ -81,7 +81,8 @@ POST /projects/:id/triggers
 | `description` | string  | yes      | The trigger name         |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form description="my description" "https://gitlab.example.com/api/v4/projects/1/triggers"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form description="my description" "https://gitlab.example.com/api/v4/projects/1/triggers"
 ```
 
 ```json
@@ -111,7 +112,8 @@ PUT /projects/:id/triggers/:trigger_id
 | `description` | string  | no       | The trigger name         |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form description="my description" "https://gitlab.example.com/api/v4/projects/1/triggers/10"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form description="my description" "https://gitlab.example.com/api/v4/projects/1/triggers/10"
 ```
 
 ```json

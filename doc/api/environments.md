@@ -164,7 +164,8 @@ POST /projects/:id/environments
 | `external_url` | string  | no     | Place to link to for this environment |
 
 ```shell
-curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments"
+curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments"
 ```
 
 Example response:
@@ -197,7 +198,8 @@ PUT /projects/:id/environments/:environments_id
 | `external_url`  | string  | no                                | The new `external_url`           |
 
 ```shell
-curl --request PUT --data "name=staging&external_url=https://staging.gitlab.example.com" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
+curl --request PUT --data "name=staging&external_url=https://staging.gitlab.example.com" \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
 Example response:

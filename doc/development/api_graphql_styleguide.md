@@ -1575,6 +1575,41 @@ deprecated aliased mutations.
 EE mutations should follow the same process. For an example of the merge request
 process, read [merge request !42588](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42588).
 
+## Subscriptions
+
+We use subscriptions to push updates to clients. We use the [Action Cable implementation](https://graphql-ruby.org/subscriptions/action_cable_implementation)
+to deliver the messages over websockets.
+
+When a client subscribes to a subscription, we store their query in-memory within Puma workers. Then when the subscription is triggered,
+the Puma workers execute the stored GraphQL queries and push the results to the clients.
+
+NOTE:
+We cannot test subscriptions using GraphiQL, because they require an Action Cable client, which GraphiQL does not support at the moment.
+
+### Building subscriptions
+
+All fields under `Types::SubscriptionType` are subscriptions that clients can subscribe to. These fields require a subscription class,
+which is a descendant of `Subscriptions::BaseSubscription` and is stored under `app/graphql/subscriptions`.
+
+The arguments required to subscribe and the fields that are returned are defined within the subscription class. Multiple fields can share
+the same subscription class if they have the same arguments and return the same fields.
+
+This class runs during the initial subscription request and subsequent updates. You can read more about this in the
+[GraphQL Ruby guides](https://graphql-ruby.org/subscriptions/subscription_classes).
+
+### Authorization
+
+You should implement the `#authorized?` method of the subscription class so that the initial subscription and subsequent updates are authorized.
+
+When a user is not authorized, you should call the `unauthorized!` helper so that execution is halted and the user is unsubscribed. Returning `false`
+results in redaction of the response but we leak information that some updates are happening. This is due to a
+[bug in the GraphQL gem](https://github.com/rmosolgo/graphql-ruby/issues/3390).
+
+### Triggering subscriptions
+
+Define a method under the `GraphqlTriggers` module to trigger a subscription. Do not call `GitlabSchema.subscriptions.trigger` directly in application
+code so that we have a single source of truth and we do not trigger a subscription with different arguments and objects.
+
 ## Pagination implementation
 
 To learn more, visit [GraphQL pagination](graphql_guide/pagination.md).

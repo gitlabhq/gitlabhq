@@ -67,7 +67,7 @@ For GitLab 12.10 and earlier, the [artifact generated is named `accessibility.js
 
 NOTE:
 For GitLab versions earlier than 12.9, you can use `include:remote` and use a
-link to the [current template in `master`](https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
+link to the [current template in the default branch](https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
 
 NOTE:
 The job definition provided by the template does not support Kubernetes yet.

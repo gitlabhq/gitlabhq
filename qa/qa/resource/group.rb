@@ -5,6 +5,10 @@ module QA
     class Group < GroupBase
       attr_accessor :description
 
+      attribute :full_path do
+        determine_full_path
+      end
+
       attribute :sandbox do
         Sandbox.fabricate_via_api! do |sandbox|
           sandbox.api_client = api_client
@@ -57,7 +61,7 @@ module QA
       end
 
       def api_get_path
-        "/groups/#{CGI.escape("#{determine_full_path}")}"
+        "/groups/#{CGI.escape(determine_full_path)}"
       end
 
       def api_post_body

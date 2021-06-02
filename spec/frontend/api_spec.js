@@ -116,6 +116,24 @@ describe('Api', () => {
         });
       });
     });
+
+    describe('deleteProjectPackageFile', () => {
+      const packageFileId = 'package_file_id';
+
+      it('delete a package', () => {
+        const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/packages/${packageId}/package_files/${packageFileId}`;
+
+        jest.spyOn(axios, 'delete');
+        mock.onDelete(expectedUrl).replyOnce(httpStatus.OK, true);
+
+        return Api.deleteProjectPackageFile(projectId, packageId, packageFileId).then(
+          ({ data }) => {
+            expect(data).toEqual(true);
+            expect(axios.delete).toHaveBeenCalledWith(expectedUrl);
+          },
+        );
+      });
+    });
   });
 
   describe('container registry', () => {

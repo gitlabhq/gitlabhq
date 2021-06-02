@@ -23,7 +23,7 @@ Global navigation (the left-most pane in our three pane documentation) provides:
 ## Adding new items
 
 To add a topic to the global nav, edit
-[`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/navigation.yaml)
+[`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml)
 and add your item.
 
 All new pages need a new navigation item. Without a navigation, the page becomes "orphaned". That
@@ -109,7 +109,7 @@ the data among the nav in containers properly [styled](#css-classes).
 ### Data file
 
 The data file describes the structure of the navigation for the applicable project.
-It is stored at <https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/navigation.yaml>
+It is stored at <https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml>
 and comprises of three main components:
 
 - Sections
@@ -267,9 +267,9 @@ Examples of relative URLs:
 
 ### Layout file (logic)
 
-The [layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/global_nav.html)
+The [layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/layouts/global_nav.html)
 is fed by the [data file](#data-file), builds the global nav, and is rendered by the
-[default](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/default.html) layout.
+[default](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/layouts/default.html) layout.
 
 The global nav contains links from all [four upstream projects](index.md#architecture).
 The [global nav URL](#urls) has a different prefix depending on the documentation file you change.

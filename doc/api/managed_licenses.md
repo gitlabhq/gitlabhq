@@ -128,7 +128,8 @@ PATCH /projects/:id/managed_licenses/:managed_license_id
 | `approval_status`       | string  | yes      | The approval status. "approved" or "blacklisted" |
 
 ```shell
-curl --request PATCH --data "approval_status=blacklisted" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/managed_licenses/6"
+curl --request PATCH --data "approval_status=blacklisted" \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/managed_licenses/6"
 ```
 
 Example response:

@@ -46,8 +46,8 @@ The key performance metrics that the merge request widget shows after the test c
 NOTE:
 If the Load Performance report has no data to compare, such as when you add the
 Load Performance job in your `.gitlab-ci.yml` for the very first time,
-the Load Performance report widget won't show. It must have run at least
-once on the target branch (`master`, for example), before it will display in a
+the Load Performance report widget doesn't display. It must have run at least
+once on the target branch (`main`, for example), before it displays in a
 merge request targeting that branch.
 
 ## Configure the Load Performance Testing job

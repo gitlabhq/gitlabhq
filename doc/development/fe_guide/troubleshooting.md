@@ -27,15 +27,15 @@ See [this video](https://youtu.be/-BkEhghP-kM) for an in-depth overview and inve
 **Remedy - Try cloning the object that has Vue watchers**
 
 ```patch
-- expect(wrapper.find(ChildComponent).props()).toEqual(...);
-+ expect(cloneDeep(wrapper.find(ChildComponent).props())).toEqual(...)
+- expect(wrapper.findComponent(ChildComponent).props()).toEqual(...);
++ expect(cloneDeep(wrapper.findComponent(ChildComponent).props())).toEqual(...)
 ```
 
 **Remedy - Try using `toMatchObject` instead of `toEqual`**
 
 ```patch
-- expect(wrapper.find(ChildComponent).props()).toEqual(...);
-+ expect(wrapper.find(ChildComponent).props()).toMatchObject(...);
+- expect(wrapper.findComponent(ChildComponent).props()).toEqual(...);
++ expect(wrapper.findComponent(ChildComponent).props()).toMatchObject(...);
 ```
 
 Please note that `toMatchObject` actually changes the nature of the assertion and won't fail if some items are **missing** from the expectation.

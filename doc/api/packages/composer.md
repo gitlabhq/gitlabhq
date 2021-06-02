@@ -247,7 +247,8 @@ POST projects/:id/packages/composer
 | `branch`  | string | no       | The name of the branch to target for the package. |
 
 ```shell
-curl --request POST --user <username>:<personal_access_token> --data tag=v1.0.0 "https://gitlab.example.com/api/v4/projects/1/packages/composer"
+curl --request POST --user <username>:<personal_access_token> \
+     --data tag=v1.0.0 "https://gitlab.example.com/api/v4/projects/1/packages/composer"
 ```
 
 Example response:

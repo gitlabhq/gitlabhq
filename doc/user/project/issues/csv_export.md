@@ -78,3 +78,4 @@ Data is encoded with a comma as the column delimiter, with `"` used to quote fie
 
 - Export Issues to CSV is not available at the Group's Issues List.
 - As the issues are sent as an email attachment, there is a limit on how much data can be exported. Currently this limit is 15MB to ensure successful delivery across a range of email providers. If this limit is reached we suggest narrowing the search before export, perhaps by exporting open and closed issues separately.
+- As CSV files are plain text files, this means that the exported CSV file does not contain any attachments that have been added to an issue.
