@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe MattermostSlashCommandsService do
-  it_behaves_like "chat slash commands service"
+RSpec.describe Integrations::MattermostSlashCommands do
+  it_behaves_like Integrations::BaseSlashCommands
 
   context 'Mattermost API' do
     let(:project) { create(:project) }

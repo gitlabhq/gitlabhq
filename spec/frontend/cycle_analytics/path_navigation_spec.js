@@ -1,11 +1,13 @@
 import { GlPath, GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import Component from '~/cycle_analytics/components/path_navigation.vue';
 import { transformedProjectStagePathData, selectedStage } from './mock_data';
 
 describe('Project PathNavigation', () => {
   let wrapper = null;
+  let trackingSpy = null;
 
   const createComponent = (props) => {
     return extendedWrapper(
@@ -43,9 +45,11 @@ describe('Project PathNavigation', () => {
 
   beforeEach(() => {
     wrapper = createComponent();
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   });
 
   afterEach(() => {
+    unmockTracking();
     wrapper.destroy();
     wrapper = null;
   });
@@ -131,6 +135,14 @@ describe('Project PathNavigation', () => {
         [transformedProjectStagePathData[1]],
         [transformedProjectStagePathData[2]],
       ]);
+    });
+
+    it('sends tracking information', () => {
+      clickItemAt(0);
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_path_navigation', {
+        extra: { stage_id: selectedStage.slug },
+      });
     });
   });
 });

@@ -5,6 +5,7 @@ import {
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
+import Tracking from '~/tracking';
 import { OVERVIEW_STAGE_ID } from '../constants';
 
 export default {
@@ -17,6 +18,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  mixins: [Tracking.mixin()],
   props: {
     loading: {
       type: Boolean,
@@ -45,6 +47,14 @@ export default {
     hasStageCount({ stageCount = null }) {
       return stageCount !== null;
     },
+    onSelectStage($event) {
+      this.$emit('selected', $event);
+      this.track('click_path_navigation', {
+        extra: {
+          stage_id: $event.id,
+        },
+      });
+    },
   },
   popoverOptions: {
     triggers: 'hover',
@@ -54,7 +64,7 @@ export default {
 </script>
 <template>
   <gl-skeleton-loading v-if="loading" :lines="2" class="h-auto pt-2 pb-1" />
-  <gl-path v-else :key="selectedStage.id" :items="stages" @selected="$emit('selected', $event)">
+  <gl-path v-else :key="selectedStage.id" :items="stages" @selected="onSelectStage">
     <template #default="{ pathItem, pathId }">
       <gl-popover
         v-if="showPopover(pathItem)"

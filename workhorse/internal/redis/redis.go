@@ -113,21 +113,9 @@ var poolDialFunc func() (redis.Conn, error)
 var workerDialFunc func() (redis.Conn, error)
 
 func timeoutDialOptions(cfg *config.RedisConfig) []redis.DialOption {
-	readTimeout := defaultReadTimeout
-	writeTimeout := defaultWriteTimeout
-
-	if cfg != nil {
-		if cfg.ReadTimeout != nil {
-			readTimeout = cfg.ReadTimeout.Duration
-		}
-
-		if cfg.WriteTimeout != nil {
-			writeTimeout = cfg.WriteTimeout.Duration
-		}
-	}
 	return []redis.DialOption{
-		redis.DialReadTimeout(readTimeout),
-		redis.DialWriteTimeout(writeTimeout),
+		redis.DialReadTimeout(defaultReadTimeout),
+		redis.DialWriteTimeout(defaultWriteTimeout),
 	}
 }
 
@@ -148,47 +136,45 @@ func dialOptionsBuilder(cfg *config.RedisConfig, setTimeouts bool) []redis.DialO
 	return dopts
 }
 
-func keepAliveDialer(timeout time.Duration) func(string, string) (net.Conn, error) {
-	return func(network, address string) (net.Conn, error) {
-		addr, err := net.ResolveTCPAddr(network, address)
-		if err != nil {
-			return nil, err
-		}
-		tc, err := net.DialTCP(network, nil, addr)
-		if err != nil {
-			return nil, err
-		}
-		if err := tc.SetKeepAlive(true); err != nil {
-			return nil, err
-		}
-		if err := tc.SetKeepAlivePeriod(timeout); err != nil {
-			return nil, err
-		}
-		return tc, nil
+func keepAliveDialer(network, address string) (net.Conn, error) {
+	addr, err := net.ResolveTCPAddr(network, address)
+	if err != nil {
+		return nil, err
 	}
+	tc, err := net.DialTCP(network, nil, addr)
+	if err != nil {
+		return nil, err
+	}
+	if err := tc.SetKeepAlive(true); err != nil {
+		return nil, err
+	}
+	if err := tc.SetKeepAlivePeriod(defaultKeepAlivePeriod); err != nil {
+		return nil, err
+	}
+	return tc, nil
 }
 
 type redisDialerFunc func() (redis.Conn, error)
 
-func sentinelDialer(dopts []redis.DialOption, keepAlivePeriod time.Duration) redisDialerFunc {
+func sentinelDialer(dopts []redis.DialOption) redisDialerFunc {
 	return func() (redis.Conn, error) {
 		address, err := sntnl.MasterAddr()
 		if err != nil {
 			errorCounter.WithLabelValues("master", "sentinel").Inc()
 			return nil, err
 		}
-		dopts = append(dopts, redis.DialNetDial(keepAliveDialer(keepAlivePeriod)))
+		dopts = append(dopts, redis.DialNetDial(keepAliveDialer))
 		return redisDial("tcp", address, dopts...)
 	}
 }
 
-func defaultDialer(dopts []redis.DialOption, keepAlivePeriod time.Duration, url url.URL) redisDialerFunc {
+func defaultDialer(dopts []redis.DialOption, url url.URL) redisDialerFunc {
 	return func() (redis.Conn, error) {
 		if url.Scheme == "unix" {
 			return redisDial(url.Scheme, url.Path, dopts...)
 		}
 
-		dopts = append(dopts, redis.DialNetDial(keepAliveDialer(keepAlivePeriod)))
+		dopts = append(dopts, redis.DialNetDial(keepAliveDialer))
 
 		// redis.DialURL only works with redis[s]:// URLs
 		if url.Scheme == "redis" || url.Scheme == "rediss" {
@@ -231,15 +217,11 @@ func countDialer(dialer redisDialerFunc) redisDialerFunc {
 
 // DefaultDialFunc should always used. Only exception is for unit-tests.
 func DefaultDialFunc(cfg *config.RedisConfig, setReadTimeout bool) func() (redis.Conn, error) {
-	keepAlivePeriod := defaultKeepAlivePeriod
-	if cfg.KeepAlivePeriod != nil {
-		keepAlivePeriod = cfg.KeepAlivePeriod.Duration
-	}
 	dopts := dialOptionsBuilder(cfg, setReadTimeout)
 	if sntnl != nil {
-		return countDialer(sentinelDialer(dopts, keepAlivePeriod))
+		return countDialer(sentinelDialer(dopts))
 	}
-	return countDialer(defaultDialer(dopts, keepAlivePeriod, cfg.URL.URL))
+	return countDialer(defaultDialer(dopts, cfg.URL.URL))
 }
 
 // Configure redis-connection

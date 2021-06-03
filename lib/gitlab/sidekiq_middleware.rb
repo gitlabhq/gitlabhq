@@ -20,6 +20,7 @@ module Gitlab
         chain.add ::Gitlab::SidekiqMiddleware::BatchLoader
         chain.add ::Labkit::Middleware::Sidekiq::Server
         chain.add ::Gitlab::SidekiqMiddleware::InstrumentationLogger
+        chain.add ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware if load_balancing_enabled?
         chain.add ::Gitlab::SidekiqMiddleware::AdminMode::Server
         chain.add ::Gitlab::SidekiqVersioning::Middleware
         chain.add ::Gitlab::SidekiqStatus::ServerMiddleware
@@ -41,9 +42,13 @@ module Gitlab
         # Size limiter should be placed at the bottom, but before the metrics midleware
         chain.add ::Gitlab::SidekiqMiddleware::SizeLimiter::Client
         chain.add ::Gitlab::SidekiqMiddleware::ClientMetrics
+        chain.add ::Gitlab::Database::LoadBalancing::SidekiqClientMiddleware if load_balancing_enabled?
       end
     end
+
+    def self.load_balancing_enabled?
+      ::Gitlab::Database::LoadBalancing.enable?
+    end
+    private_class_method :load_balancing_enabled?
   end
 end
-
-Gitlab::SidekiqMiddleware.singleton_class.prepend_mod_with('Gitlab::SidekiqMiddleware')

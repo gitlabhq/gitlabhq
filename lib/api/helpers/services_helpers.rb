@@ -794,6 +794,7 @@ module API
           ::Integrations::Jenkins,
           ::Integrations::Jira,
           ::Integrations::Mattermost,
+          ::Integrations::MattermostSlashCommands,
           ::Integrations::MicrosoftTeams,
           ::Integrations::Packagist,
           ::Integrations::PipelinesEmail,
@@ -801,10 +802,9 @@ module API
           ::Integrations::Pushover,
           ::Integrations::Redmine,
           ::Integrations::Slack,
+          ::Integrations::SlackSlashCommands,
           ::Integrations::Teamcity,
           ::Integrations::Youtrack,
-          ::MattermostSlashCommandsService,
-          ::SlackSlashCommandsService,
           ::PrometheusService
         ]
       end

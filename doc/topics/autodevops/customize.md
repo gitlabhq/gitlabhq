@@ -255,6 +255,27 @@ base template is migrated to use the `rules` syntax.
 For users who cannot migrate just yet, you can alternatively pin your templates to
 the [GitLab 12.10 based templates](https://gitlab.com/gitlab-org/auto-devops-v12-10).
 
+## Use images hosted in a local Docker registry
+
+You can configure many Auto DevOps jobs to run in an [offline environment](../../user/application_security/offline_deployments/index.md):
+
+1. Copy the required Auto DevOps Docker images from Docker Hub and `registry.gitlab.com` to their local GitLab container registry.
+1. After the images are hosted and available in a local registry, edit `.gitlab-ci.yml` to point to the locally-hosted images. For example:
+
+   ```yaml
+   include:
+     - template: Auto-DevOps.gitlab-ci.yml
+
+   variables:
+     REGISTRY_URL: "registry.gitlab.example"
+
+   build:
+     image: "$REGISTRY_URL/docker/auto-build-image:v0.6.0"
+     services:
+       - name: "$REGISTRY_URL/greg/docker/docker:20.10.6-dind"
+         command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+   ```
+
 ## PostgreSQL database support
 
 To support applications requiring a database,

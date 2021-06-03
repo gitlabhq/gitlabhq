@@ -10,14 +10,11 @@ Users have different abilities depending on the role they have in a
 particular group or project. If a user is both in a project's group and the
 project itself, the highest role is used.
 
-On public and internal projects, the Guest role is not enforced. All users can:
+On [public and internal projects](../api/projects.md#project-visibility-level), the Guest role
+(not to be confused with [Guest user](#free-guest-users)) is not enforced.
 
-- Create issues.
-- Leave comments.
-- Clone or download the project code.
-
-When a member leaves a team's project, all the assigned [Issues](project/issues/index.md) and [Merge Requests](project/merge_requests/index.md)
-are unassigned automatically.
+When a member leaves a team's project, all the assigned [issues](project/issues/index.md) and
+[merge requests](project/merge_requests/index.md) are automatically unassigned.
 
 GitLab [administrators](../administration/index.md) receive all permissions.
 

@@ -175,6 +175,7 @@ class Project < ApplicationRecord
   has_one :jenkins_service, class_name: 'Integrations::Jenkins'
   has_one :jira_service, class_name: 'Integrations::Jira'
   has_one :mattermost_service, class_name: 'Integrations::Mattermost'
+  has_one :mattermost_slash_commands_service, class_name: 'Integrations::MattermostSlashCommands'
   has_one :microsoft_teams_service, class_name: 'Integrations::MicrosoftTeams'
   has_one :mock_ci_service, class_name: 'Integrations::MockCi'
   has_one :packagist_service, class_name: 'Integrations::Packagist'
@@ -183,12 +184,11 @@ class Project < ApplicationRecord
   has_one :pushover_service, class_name: 'Integrations::Pushover'
   has_one :redmine_service, class_name: 'Integrations::Redmine'
   has_one :slack_service, class_name: 'Integrations::Slack'
+  has_one :slack_slash_commands_service, class_name: 'Integrations::SlackSlashCommands'
   has_one :teamcity_service, class_name: 'Integrations::Teamcity'
   has_one :unify_circuit_service, class_name: 'Integrations::UnifyCircuit'
   has_one :webex_teams_service, class_name: 'Integrations::WebexTeams'
   has_one :youtrack_service, class_name: 'Integrations::Youtrack'
-  has_one :mattermost_slash_commands_service
-  has_one :slack_slash_commands_service
   has_one :prometheus_service, inverse_of: :project
   has_one :mock_monitoring_service
 

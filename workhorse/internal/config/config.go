@@ -70,16 +70,13 @@ type AzureCredentials struct {
 }
 
 type RedisConfig struct {
-	URL             TomlURL
-	Sentinel        []TomlURL
-	SentinelMaster  string
-	Password        string
-	DB              *int
-	ReadTimeout     *TomlDuration
-	WriteTimeout    *TomlDuration
-	KeepAlivePeriod *TomlDuration
-	MaxIdle         *int
-	MaxActive       *int
+	URL            TomlURL
+	Sentinel       []TomlURL
+	SentinelMaster string
+	Password       string
+	DB             *int
+	MaxIdle        *int
+	MaxActive      *int
 }
 
 type ImageResizerConfig struct {

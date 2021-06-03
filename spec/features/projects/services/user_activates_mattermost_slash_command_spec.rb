@@ -84,7 +84,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
       end
 
       it 'shows an error alert with the error message if there is an error requesting teams' do
-        allow_any_instance_of(MattermostSlashCommandsService).to receive(:list_teams) { [[], 'test mattermost error message'] }
+        allow_any_instance_of(Integrations::MattermostSlashCommands).to receive(:list_teams) { [[], 'test mattermost error message'] }
 
         click_link 'Add to Mattermost'
 
@@ -113,7 +113,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
       def stub_teams(count: 0)
         teams = create_teams(count)
 
-        allow_any_instance_of(MattermostSlashCommandsService).to receive(:list_teams) { [teams, nil] }
+        allow_any_instance_of(Integrations::MattermostSlashCommands).to receive(:list_teams) { [teams, nil] }
 
         teams
       end

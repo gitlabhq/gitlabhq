@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe SlackSlashCommandsService do
-  it_behaves_like "chat slash commands service"
+RSpec.describe Integrations::SlackSlashCommands do
+  it_behaves_like Integrations::BaseSlashCommands
 
   describe '#trigger' do
     context 'when an auth url is generated' do

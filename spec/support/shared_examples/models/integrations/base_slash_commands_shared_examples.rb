@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'chat slash commands service' do
+RSpec.shared_examples Integrations::BaseSlashCommands do
   describe "Associations" do
     it { is_expected.to respond_to :token }
     it { is_expected.to have_many :chat_names }
