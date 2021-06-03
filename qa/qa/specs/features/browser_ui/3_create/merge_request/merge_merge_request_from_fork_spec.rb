@@ -2,7 +2,8 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Merge request creation from fork', :smoke do
+    describe 'Merge request creation from fork' do
+      # TODO: Please add this back to :smoke suite as soon as https://gitlab.com/gitlab-org/gitlab/-/issues/332588 is addressed
       it 'can merge feature branch fork to mainline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1701' do
         merge_request = Resource::MergeRequestFromFork.fabricate_via_browser_ui! do |merge_request|
           merge_request.fork_branch = 'feature-branch'

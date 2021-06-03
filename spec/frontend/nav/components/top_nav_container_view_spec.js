@@ -4,7 +4,7 @@ import FrequentItemsApp from '~/frequent_items/components/app.vue';
 import { FREQUENT_ITEMS_PROJECTS } from '~/frequent_items/constants';
 import eventHub from '~/frequent_items/event_hub';
 import TopNavContainerView from '~/nav/components/top_nav_container_view.vue';
-import TopNavMenuItem from '~/nav/components/top_nav_menu_item.vue';
+import TopNavMenuSections from '~/nav/components/top_nav_menu_sections.vue';
 import VuexModuleProvider from '~/vue_shared/components/vuex_module_provider.vue';
 import { TEST_NAV_DATA } from '../mock_data';
 
@@ -34,11 +34,7 @@ describe('~/nav/components/top_nav_container_view.vue', () => {
     });
   };
 
-  const findMenuItems = (parent = wrapper) => parent.findAll(TopNavMenuItem);
-  const findMenuItemsModel = (parent = wrapper) =>
-    findMenuItems(parent).wrappers.map((x) => x.props());
-  const findMenuItemGroups = () => wrapper.findAll('[data-testid="menu-item-group"]');
-  const findMenuItemGroupsModel = () => findMenuItemGroups().wrappers.map(findMenuItemsModel);
+  const findMenuSections = () => wrapper.findComponent(TopNavMenuSections);
   const findFrequentItemsApp = () => {
     const parent = wrapper.findComponent(VuexModuleProvider);
 
@@ -89,23 +85,16 @@ describe('~/nav/components/top_nav_container_view.vue', () => {
       });
     });
 
-    it('renders menu item groups', () => {
-      expect(findMenuItemGroupsModel()).toEqual([
-        TEST_NAV_DATA.primary.map((menuItem) => ({ menuItem })),
-        TEST_NAV_DATA.secondary.map((menuItem) => ({ menuItem })),
-      ]);
-    });
+    it('renders menu sections', () => {
+      const sections = [
+        { id: 'primary', menuItems: TEST_NAV_DATA.primary },
+        { id: 'secondary', menuItems: TEST_NAV_DATA.secondary },
+      ];
 
-    it('only the first group does not have margin top', () => {
-      expect(findMenuItemGroups().wrappers.map((x) => x.classes('gl-mt-3'))).toEqual([false, true]);
-    });
-
-    it('only the first menu item does not have margin top', () => {
-      const actual = findMenuItems(findMenuItemGroups().at(1)).wrappers.map((x) =>
-        x.classes('gl-mt-1'),
-      );
-
-      expect(actual).toEqual([false, ...TEST_NAV_DATA.secondary.slice(1).fill(true)]);
+      expect(findMenuSections().props()).toEqual({
+        sections,
+        withTopBorder: true,
+      });
     });
   });
 
@@ -117,8 +106,8 @@ describe('~/nav/components/top_nav_container_view.vue', () => {
     });
 
     it('renders one menu item group', () => {
-      expect(findMenuItemGroupsModel()).toEqual([
-        TEST_NAV_DATA.primary.map((menuItem) => ({ menuItem })),
+      expect(findMenuSections().props('sections')).toEqual([
+        { id: 'primary', menuItems: TEST_NAV_DATA.primary },
       ]);
     });
   });

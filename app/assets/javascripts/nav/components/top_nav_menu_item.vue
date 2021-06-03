@@ -4,6 +4,8 @@ import { kebabCase, mapKeys } from 'lodash';
 
 const getDataKey = (key) => `data-${kebabCase(key)}`;
 
+const ACTIVE_CLASS = 'gl-shadow-none! gl-font-weight-bold! active';
+
 export default {
   components: {
     GlButton,
@@ -20,6 +22,7 @@ export default {
       return mapKeys(this.menuItem.data || {}, (value, key) => getDataKey(key));
     },
   },
+  ACTIVE_CLASS,
 };
 </script>
 
@@ -28,7 +31,7 @@ export default {
     category="tertiary"
     :href="menuItem.href"
     class="top-nav-menu-item gl-display-block"
-    :class="menuItem.css_class"
+    :class="[menuItem.css_class, { [$options.ACTIVE_CLASS]: menuItem.active }]"
     v-bind="dataAttrs"
     v-on="$listeners"
   >

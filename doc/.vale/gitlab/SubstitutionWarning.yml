@@ -19,3 +19,9 @@ swap:
   info: information
   repo: repository
   utilize: use
+  owner access: the Owner role
+  owner permission: the Owner role
+  owner permissions: the Owner role
+  maintainer access: the Maintainer role
+  maintainer permission: the Maintainer role
+  maintainer permissions: the Maintainer role

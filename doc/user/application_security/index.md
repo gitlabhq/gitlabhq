@@ -210,11 +210,9 @@ request contains a denied license. For more details, see [Enabling license appro
 Prerequisites:
 
 - At least one [security scanner job](#security-scanning-tools) must be enabled.
-- Maintainer or Owner [permissions](../permissions.md#project-members-permissions).
+- Maintainer or Owner [role](../permissions.md#project-members-permissions).
 
-For this approval group, you must set the number of approvals required to greater than zero. You
-must have Maintainer or Owner [permissions](../permissions.md#project-members-permissions)
-to manage approval rules.
+For this approval group, you must set the number of approvals required to greater than zero.
 
 Follow these steps to enable `Vulnerability-Check`:
 

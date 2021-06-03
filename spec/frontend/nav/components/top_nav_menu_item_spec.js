@@ -7,7 +7,6 @@ const TEST_MENU_ITEM = {
   icon: 'search',
   href: '/pretty/good/burger',
   view: 'burger-view',
-  css_class: 'test-super-crazy test-class',
   data: { qa_selector: 'not-a-real-selector', method: 'post', testFoo: 'test' },
 };
 
@@ -49,12 +48,6 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
       expect(button.text()).toBe(TEST_MENU_ITEM.title);
     });
 
-    it('renders button classes', () => {
-      const button = findButton();
-
-      expect(button.classes()).toEqual(expect.arrayContaining(TEST_MENU_ITEM.css_class.split(' ')));
-    });
-
     it('renders button data attributes', () => {
       const button = findButton();
 
@@ -87,6 +80,31 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
 
     it(`renders expected icons ${JSON.stringify(expectedIcons)}`, () => {
       expect(findButtonIcons()).toEqual(expectedIcons);
+    });
+  });
+
+  describe.each`
+    desc                         | active   | cssClass                        | expectedClasses
+    ${'default'}                 | ${false} | ${''}                           | ${[]}
+    ${'with css class'}          | ${false} | ${'test-css-class testing-123'} | ${['test-css-class', 'testing-123']}
+    ${'with css class & active'} | ${true}  | ${'test-css-class'}             | ${['test-css-class', ...TopNavMenuItem.ACTIVE_CLASS.split(' ')]}
+  `('$desc', ({ active, cssClass, expectedClasses }) => {
+    beforeEach(() => {
+      createComponent({
+        menuItem: {
+          ...TEST_MENU_ITEM,
+          active,
+          css_class: cssClass,
+        },
+      });
+    });
+
+    it('renders expected classes', () => {
+      expect(wrapper.classes()).toStrictEqual([
+        'top-nav-menu-item',
+        'gl-display-block',
+        ...expectedClasses,
+      ]);
     });
   });
 });

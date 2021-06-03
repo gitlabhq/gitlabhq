@@ -40,14 +40,16 @@ authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
 CI/CD templates, which you can use to get started, are in [this repository](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-Learn more about using CI/CD to build:
+Learn more about using the GitLab Package Registry with CI/CD:
 
-- [Composer packages](../composer_repository/index.md#publish-a-composer-package-by-using-cicd)
-- [Conan packages](../conan_repository/index.md#publish-a-conan-package-by-using-cicd)
-- [Generic packages](../generic_packages/index.md#publish-a-generic-package-by-using-cicd)
-- [Maven packages](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
-- [npm packages](../npm_registry/index.md#publish-an-npm-package-by-using-cicd)
-- [NuGet packages](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
+- [Composer](../composer_repository/index.md#publish-a-composer-package-by-using-cicd)
+- [Conan](../conan_repository/index.md#publish-a-conan-package-by-using-cicd)
+- [Generic](../generic_packages/index.md#publish-a-generic-package-by-using-cicd)
+- [Maven](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
+- [npm](../npm_registry/index.md#publish-an-npm-package-by-using-cicd)
+- [NuGet](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
+- [PyPI](../pypi_repository/#authenticate-with-a-ci-job-token)
+- [RubyGems](../rubygems_registry/#authenticate-with-a-ci-job-token)
 
 If you use CI/CD to build a package, extended activity information is displayed
 when you view the package details:
@@ -80,6 +82,22 @@ To delete a package in the UI, from your group or project:
 1. Click **Delete**.
 
 The package is permanently deleted.
+
+## Delete files associated with a package
+
+To delete package files, you must have suitable [permissions](../../permissions.md).
+
+You can delete packages by using [the API](../../../api/packages.md#delete-a-package-file) or the UI.
+
+To delete package files in the UI, from your group or project:
+
+1. Go to **Packages & Registries > Package Registry**.
+1. Find the name of the package you want to delete.
+1. Select the package to view additional details.
+1. Find the name of the file you would like to delete. 
+1. Expand the ellipsis and select **Delete file**.
+
+The package files are permanently deleted.
 
 ## Disable the Package Registry
 

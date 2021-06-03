@@ -204,7 +204,9 @@ un-threaded and ordered chronologically, newest to oldest:
 You can enable the Service Level Agreement Countdown timer on incidents to track
 the Service Level Agreements (SLAs) you hold with your customers. The timer is
 automatically started when the incident is created, and shows the time
-remaining before the SLA period expires. To configure the timer:
+remaining before the SLA period expires. The timer is also dynamically updated
+every 15 minutes so you do not have to refresh the page to see the time remaining.
+To configure the timer:
 
 1. Navigate to **Settings > Operations**.
 1. Scroll to **Incidents** and click **Expand**, then select the

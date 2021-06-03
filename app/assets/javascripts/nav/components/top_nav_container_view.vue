@@ -2,12 +2,12 @@
 import FrequentItemsApp from '~/frequent_items/components/app.vue';
 import eventHub from '~/frequent_items/event_hub';
 import VuexModuleProvider from '~/vue_shared/components/vuex_module_provider.vue';
-import TopNavMenuItem from './top_nav_menu_item.vue';
+import TopNavMenuSections from './top_nav_menu_sections.vue';
 
 export default {
   components: {
     FrequentItemsApp,
-    TopNavMenuItem,
+    TopNavMenuSections,
     VuexModuleProvider,
   },
   inheritAttrs: false,
@@ -32,11 +32,11 @@ export default {
     },
   },
   computed: {
-    linkGroups() {
+    menuSections() {
       return [
-        { key: 'primary', links: this.linksPrimary },
-        { key: 'secondary', links: this.linksSecondary },
-      ].filter((x) => x.links?.length);
+        { id: 'primary', menuItems: this.linksPrimary },
+        { id: 'secondary', menuItems: this.linksSecondary },
+      ].filter((x) => x.menuItems?.length);
     },
   },
   mounted() {
@@ -57,19 +57,6 @@ export default {
         </vuex-module-provider>
       </div>
     </div>
-    <div
-      v-for="({ key, links }, groupIndex) in linkGroups"
-      :key="key"
-      :class="{ 'gl-mt-3': groupIndex !== 0 }"
-      class="gl-mt-auto gl-pt-3 gl-border-1 gl-border-t-solid gl-border-gray-100"
-      data-testid="menu-item-group"
-    >
-      <top-nav-menu-item
-        v-for="(link, linkIndex) in links"
-        :key="link.title"
-        :menu-item="link"
-        :class="{ 'gl-mt-1': linkIndex !== 0 }"
-      />
-    </div>
+    <top-nav-menu-sections class="gl-mt-auto" :sections="menuSections" with-top-border />
   </div>
 </template>

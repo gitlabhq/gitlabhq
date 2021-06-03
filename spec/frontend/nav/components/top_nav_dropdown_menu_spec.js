@@ -1,58 +1,47 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import TopNavDropdownMenu from '~/nav/components/top_nav_dropdown_menu.vue';
+import TopNavMenuItem from '~/nav/components/top_nav_menu_item.vue';
+import TopNavMenuSections from '~/nav/components/top_nav_menu_sections.vue';
 import KeepAliveSlots from '~/vue_shared/components/keep_alive_slots.vue';
 import { TEST_NAV_DATA } from '../mock_data';
-
-const SECONDARY_GROUP_CLASSES = TopNavDropdownMenu.SECONDARY_GROUP_CLASS.split(' ');
 
 describe('~/nav/components/top_nav_dropdown_menu.vue', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
-    wrapper = shallowMount(TopNavDropdownMenu, {
+  const createComponent = (props = {}, mountFn = shallowMount) => {
+    wrapper = mountFn(TopNavDropdownMenu, {
       propsData: {
         primary: TEST_NAV_DATA.primary,
         secondary: TEST_NAV_DATA.secondary,
         views: TEST_NAV_DATA.views,
         ...props,
       },
+      stubs: {
+        // Stub the keep-alive-slots so we don't render frequent items which uses a store
+        KeepAliveSlots: true,
+      },
     });
   };
 
-  const findMenuItems = (parent = wrapper) => parent.findAll('[data-testid="menu-item"]');
-  const findMenuItemsModel = (parent = wrapper) =>
-    findMenuItems(parent).wrappers.map((x) => ({
-      menuItem: x.props('menuItem'),
-      isActive: x.classes('active'),
-    }));
-  const findMenuItemGroups = () => wrapper.findAll('[data-testid="menu-item-group"]');
-  const findMenuItemGroupsModel = () =>
-    findMenuItemGroups().wrappers.map((x) => ({
-      classes: x.classes(),
-      items: findMenuItemsModel(x),
-    }));
+  const findMenuItems = () => wrapper.findAllComponents(TopNavMenuItem);
+  const findMenuSections = () => wrapper.find(TopNavMenuSections);
   const findMenuSidebar = () => wrapper.find('[data-testid="menu-sidebar"]');
   const findMenuSubview = () => wrapper.findComponent(KeepAliveSlots);
   const hasFullWidthMenuSidebar = () => findMenuSidebar().classes('gl-w-full');
 
-  const createItemsGroupModelExpectation = ({
-    primary = TEST_NAV_DATA.primary,
-    secondary = TEST_NAV_DATA.secondary,
-    activeIndex = -1,
-  } = {}) => [
-    {
-      classes: [],
-      items: primary.map((menuItem, index) => ({ isActive: index === activeIndex, menuItem })),
-    },
-    {
-      classes: SECONDARY_GROUP_CLASSES,
-      items: secondary.map((menuItem) => ({ isActive: false, menuItem })),
-    },
-  ];
+  const withActiveIndex = (menuItems, activeIndex) =>
+    menuItems.map((x, idx) => ({
+      ...x,
+      active: idx === activeIndex,
+    }));
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  beforeEach(() => {
+    jest.spyOn(console, 'error').mockImplementation();
   });
 
   describe('default', () => {
@@ -60,8 +49,14 @@ describe('~/nav/components/top_nav_dropdown_menu.vue', () => {
       createComponent();
     });
 
-    it('renders menu item groups', () => {
-      expect(findMenuItemGroupsModel()).toEqual(createItemsGroupModelExpectation());
+    it('renders menu sections', () => {
+      expect(findMenuSections().props()).toEqual({
+        sections: [
+          { id: 'primary', menuItems: TEST_NAV_DATA.primary },
+          { id: 'secondary', menuItems: TEST_NAV_DATA.secondary },
+        ],
+        withTopBorder: false,
+      });
     });
 
     it('has full width menu sidebar', () => {
@@ -74,36 +69,25 @@ describe('~/nav/components/top_nav_dropdown_menu.vue', () => {
       expect(subview.isVisible()).toBe(false);
       expect(subview.props()).toEqual({ slotKey: '' });
     });
-
-    it('the first menu item in a group does not render margin top', () => {
-      const actual = findMenuItems(findMenuItemGroups().at(0)).wrappers.map((x) =>
-        x.classes('gl-mt-1'),
-      );
-
-      expect(actual).toEqual([false, ...TEST_NAV_DATA.primary.slice(1).fill(true)]);
-    });
   });
 
   describe('with pre-initialized active view', () => {
-    const primaryWithActive = [
-      TEST_NAV_DATA.primary[0],
-      {
-        ...TEST_NAV_DATA.primary[1],
-        active: true,
-      },
-      ...TEST_NAV_DATA.primary.slice(2),
-    ];
-
     beforeEach(() => {
-      createComponent({
-        primary: primaryWithActive,
-      });
+      // We opt for a small integration test, to make sure the event is handled correctly
+      // as it would in prod.
+      createComponent(
+        {
+          primary: withActiveIndex(TEST_NAV_DATA.primary, 1),
+        },
+        mount,
+      );
     });
 
-    it('renders menu item groups', () => {
-      expect(findMenuItemGroupsModel()).toEqual(
-        createItemsGroupModelExpectation({ primary: primaryWithActive, activeIndex: 1 }),
-      );
+    it('renders menu sections', () => {
+      expect(findMenuSections().props('sections')).toStrictEqual([
+        { id: 'primary', menuItems: withActiveIndex(TEST_NAV_DATA.primary, 1) },
+        { id: 'secondary', menuItems: TEST_NAV_DATA.secondary },
+      ]);
     });
 
     it('does not have full width menu sidebar', () => {
@@ -114,11 +98,11 @@ describe('~/nav/components/top_nav_dropdown_menu.vue', () => {
       const subview = findMenuSubview();
 
       expect(subview.isVisible()).toBe(true);
-      expect(subview.props('slotKey')).toBe(primaryWithActive[1].view);
+      expect(subview.props('slotKey')).toBe(TEST_NAV_DATA.primary[1].view);
     });
 
     it('does not change view if non-view menu item is clicked', async () => {
-      const secondaryLink = findMenuItems().at(primaryWithActive.length);
+      const secondaryLink = findMenuItems().at(TEST_NAV_DATA.primary.length);
 
       // Ensure this doesn't have a view
       expect(secondaryLink.props('menuItem').view).toBeUndefined();
@@ -127,10 +111,10 @@ describe('~/nav/components/top_nav_dropdown_menu.vue', () => {
 
       await nextTick();
 
-      expect(findMenuSubview().props('slotKey')).toBe(primaryWithActive[1].view);
+      expect(findMenuSubview().props('slotKey')).toBe(TEST_NAV_DATA.primary[1].view);
     });
 
-    describe('when other view menu item is clicked', () => {
+    describe('when menu item is clicked', () => {
       let primaryLink;
 
       beforeEach(async () => {
@@ -144,13 +128,20 @@ describe('~/nav/components/top_nav_dropdown_menu.vue', () => {
       });
 
       it('changes active view', () => {
-        expect(findMenuSubview().props('slotKey')).toBe(primaryWithActive[0].view);
+        expect(findMenuSubview().props('slotKey')).toBe(TEST_NAV_DATA.primary[0].view);
       });
 
       it('changes active status on menu item', () => {
-        expect(findMenuItemGroupsModel()).toStrictEqual(
-          createItemsGroupModelExpectation({ primary: primaryWithActive, activeIndex: 0 }),
-        );
+        expect(findMenuSections().props('sections')).toStrictEqual([
+          {
+            id: 'primary',
+            menuItems: withActiveIndex(TEST_NAV_DATA.primary, 0),
+          },
+          {
+            id: 'secondary',
+            menuItems: withActiveIndex(TEST_NAV_DATA.secondary, -1),
+          },
+        ]);
       });
     });
   });
