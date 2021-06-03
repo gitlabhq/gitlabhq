@@ -323,9 +323,9 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching, :snowpl
   end
 
   describe '#prometheus_available?' do
-    context 'clusters with installed prometheus' do
+    context 'clusters with enabled prometheus' do
       before do
-        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+        create(:clusters_integrations_prometheus, cluster: cluster)
       end
 
       context 'cluster belongs to project' do
@@ -340,7 +340,7 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching, :snowpl
         let_it_be(:group) { create(:group) }
 
         let(:project) { create(:prometheus_project, group: group) }
-        let(:cluster) { create(:cluster_for_group, :with_installed_helm, groups: [group]) }
+        let(:cluster) { create(:cluster_for_group, groups: [group]) }
 
         it 'returns true' do
           expect(service.prometheus_available?).to be(true)
@@ -349,8 +349,8 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching, :snowpl
         it 'avoids N+1 queries' do
           service
           5.times do |i|
-            other_cluster = create(:cluster_for_group, :with_installed_helm, groups: [group], environment_scope: i)
-            create(:clusters_applications_prometheus, :installing, cluster: other_cluster)
+            other_cluster = create(:cluster_for_group, groups: [group], environment_scope: i)
+            create(:clusters_integrations_prometheus, cluster: other_cluster)
           end
           expect { service.prometheus_available? }.not_to exceed_query_limit(1)
         end
@@ -365,18 +365,9 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching, :snowpl
       end
     end
 
-    context 'clusters with updated prometheus' do
-      let!(:cluster) { create(:cluster, projects: [project]) }
-      let!(:prometheus) { create(:clusters_applications_prometheus, :updated, cluster: cluster) }
-
-      it 'returns true' do
-        expect(service.prometheus_available?).to be(true)
-      end
-    end
-
-    context 'clusters without prometheus installed' do
+    context 'clusters with prometheus disabled' do
       let(:cluster) { create(:cluster, projects: [project]) }
-      let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
+      let!(:prometheus) { create(:clusters_integrations_prometheus, :disabled, cluster: cluster) }
 
       it 'returns false' do
         expect(service.prometheus_available?).to be(false)
@@ -491,13 +482,13 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching, :snowpl
       expect(service.editable?).to be(true)
     end
 
-    context 'when cluster exists with prometheus installed' do
+    context 'when cluster exists with prometheus enabled' do
       let(:cluster) { create(:cluster, projects: [project]) }
 
       before do
         service.update!(manual_configuration: false)
 
-        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+        create(:clusters_integrations_prometheus, cluster: cluster)
       end
 
       it 'remains editable' do

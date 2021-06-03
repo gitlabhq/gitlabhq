@@ -105,9 +105,9 @@ module Projects
 
           cluster = alert.environment.deployment_platform&.cluster
           return unless cluster&.enabled?
-          return unless cluster.application_prometheus_available?
+          return unless cluster.integration_prometheus_available?
 
-          cluster.application_prometheus || cluster.integration_prometheus
+          cluster.integration_prometheus
         end
 
         def find_alert(project, metric)

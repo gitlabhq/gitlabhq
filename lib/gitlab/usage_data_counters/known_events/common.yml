@@ -344,7 +344,6 @@
   category: terraform
   redis_slot: terraform
   aggregation: weekly
-  feature_flag: usage_data_p_terraform_state_api_unique_users
 # Pipeline Authoring
 - name: o_pipeline_authoring_unique_users_committing_ciconfigfile
   category: pipeline_authoring

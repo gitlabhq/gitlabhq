@@ -227,7 +227,7 @@ To use an external Prometheus server:
    gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
    ```
 
-1. On **all** GitLab Rails(Puma/Unicorn, Sidekiq) servers, set the Prometheus server IP address and listen port. For example:
+1. On **all** GitLab Rails(Puma, Sidekiq) servers, set the Prometheus server IP address and listen port. For example:
 
    ```ruby
    gitlab_rails['prometheus_address'] = '192.168.0.1:9090'

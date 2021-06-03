@@ -7,7 +7,6 @@ exports[`Dashboard template matches the default snapshot 1`] = `
   environmentstate="available"
   metricsdashboardbasepath="/monitoring/monitor-project/-/environments/1/metrics"
   metricsendpoint="/monitoring/monitor-project/-/environments/1/additional_metrics.json"
-  prometheusstatus=""
 >
   <alerts-deprecation-warning-stub />
    

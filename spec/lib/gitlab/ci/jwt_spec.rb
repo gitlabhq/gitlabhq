@@ -42,6 +42,7 @@ RSpec.describe Gitlab::Ci::Jwt do
         expect(payload[:user_email]).to eq(user.email)
         expect(payload[:user_login]).to eq(user.username)
         expect(payload[:pipeline_id]).to eq(pipeline.id.to_s)
+        expect(payload[:pipeline_source]).to eq(pipeline.source.to_s)
         expect(payload[:job_id]).to eq(build.id.to_s)
         expect(payload[:ref]).to eq(pipeline.source_ref)
         expect(payload[:ref_protected]).to eq(build.protected.to_s)

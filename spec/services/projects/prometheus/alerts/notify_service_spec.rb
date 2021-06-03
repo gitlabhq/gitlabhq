@@ -45,9 +45,9 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       end
 
       before do
-        create(:clusters_applications_prometheus, :installed,
+        create(:clusters_integrations_prometheus,
                cluster: prd_cluster, alert_manager_token: token)
-        create(:clusters_applications_prometheus, :installed,
+        create(:clusters_integrations_prometheus,
                cluster: stg_cluster, alert_manager_token: nil)
       end
 
@@ -59,41 +59,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
 
       context 'with token' do
         it_behaves_like 'alerts service responds with an error and takes no actions', :unauthorized
-      end
-    end
-
-    context 'with project specific cluster using prometheus application' do
-      where(:cluster_enabled, :status, :configured_token, :token_input, :result) do
-        true  | :installed | token | token | :success
-        true  | :installed | nil   | nil   | :success
-        true  | :updated   | token | token | :success
-        true  | :updating  | token | token | :failure
-        true  | :installed | token | 'x'   | :failure
-        true  | :installed | nil   | token | :failure
-        true  | :installed | token | nil   | :failure
-        true  | nil        | token | token | :failure
-        false | :installed | token | token | :failure
-      end
-
-      with_them do
-        before do
-          cluster.update!(enabled: cluster_enabled)
-
-          if status
-            create(:clusters_applications_prometheus, status,
-                   cluster: cluster,
-                   alert_manager_token: configured_token)
-          end
-        end
-
-        case result = params[:result]
-        when :success
-          include_examples 'processes one firing and one resolved prometheus alerts'
-        when :failure
-          it_behaves_like 'alerts service responds with an error and takes no actions', :unauthorized
-        else
-          raise "invalid result: #{result.inspect}"
-        end
       end
     end
 

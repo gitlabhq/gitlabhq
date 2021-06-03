@@ -51,10 +51,10 @@ RSpec.describe DeploymentMetrics do
 
       context 'with a cluster Prometheus' do
         let(:deployment) { create(:deployment, :success, :on_cluster) }
-        let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: deployment.cluster) }
+        let!(:prometheus) { create(:clusters_integrations_prometheus, cluster: deployment.cluster) }
 
         before do
-          expect(deployment.cluster.application_prometheus).to receive(:configured?).and_return(true)
+          expect(deployment.cluster.integration_prometheus).to receive(:configured?).and_return(true)
         end
 
         it { is_expected.to be_truthy }
@@ -118,7 +118,7 @@ RSpec.describe DeploymentMetrics do
         expect(prometheus_adapter).to receive(:query).with(:additional_metrics_deployment, deployment).and_return(simple_metrics)
       end
 
-      it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.created_at.to_i })) }
+      it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.finished_at.to_i })) }
     end
   end
 end

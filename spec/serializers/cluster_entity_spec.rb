@@ -91,9 +91,9 @@ RSpec.describe ClusterEntity do
         end
       end
 
-      context 'elastic stack is installed on cluster' do
+      context 'elastic stack is enabled on cluster' do
         it 'returns true' do
-          create(:clusters_applications_elastic_stack, :installed, cluster: cluster)
+          create(:clusters_integrations_elastic_stack, cluster: cluster)
 
           expect(subject[:enable_advanced_logs_querying]).to be true
         end

@@ -8,13 +8,13 @@ RSpec.describe Clusters::Applications::ActivateServiceWorker, '#perform' do
       let(:service_name) { 'prometheus' }
 
       before do
-        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+        create(:clusters_integrations_prometheus, cluster: cluster)
       end
 
       context 'cluster type: group' do
         let(:group) { create(:group) }
         let(:project) { create(:project, group: group) }
-        let(:cluster) { create(:cluster_for_group, :with_installed_helm, groups: [group]) }
+        let(:cluster) { create(:cluster_for_group, groups: [group]) }
 
         it 'ensures Prometheus service is activated' do
           expect { described_class.new.perform(cluster.id, service_name) }
@@ -24,7 +24,7 @@ RSpec.describe Clusters::Applications::ActivateServiceWorker, '#perform' do
 
       context 'cluster type: project' do
         let(:project) { create(:project) }
-        let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
+        let(:cluster) { create(:cluster, projects: [project]) }
 
         it 'ensures Prometheus service is activated' do
           expect { described_class.new.perform(cluster.id, service_name) }

@@ -27,7 +27,7 @@ RSpec.describe 'Cluster Health board', :js, :kubeclient, :use_clean_rails_memory
     expect(page).to have_css('.cluster-health-graphs')
   end
 
-  context 'no prometheus installed' do
+  context 'no prometheus enabled' do
     it 'shows install prometheus message' do
       visit cluster_path
 
@@ -37,9 +37,9 @@ RSpec.describe 'Cluster Health board', :js, :kubeclient, :use_clean_rails_memory
     end
   end
 
-  context 'when there is cluster with installed prometheus' do
+  context 'when there is cluster with enabled prometheus' do
     before do
-      create(:clusters_applications_prometheus, :installed, cluster: cluster)
+      create(:clusters_integrations_prometheus, enabled: true, cluster: cluster)
       stub_kubeclient_discover(cluster.platform.api_url)
     end
 

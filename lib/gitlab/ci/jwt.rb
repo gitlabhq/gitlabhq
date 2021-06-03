@@ -54,6 +54,7 @@ module Gitlab
           user_login: user&.username,
           user_email: user&.email,
           pipeline_id: build.pipeline.id.to_s,
+          pipeline_source: build.pipeline.source.to_s,
           job_id: build.id.to_s,
           ref: source_ref,
           ref_type: ref_type,

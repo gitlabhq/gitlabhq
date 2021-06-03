@@ -88,6 +88,7 @@ FactoryBot.define do
 
     trait :with_installed_prometheus do
       application_prometheus factory: %i(clusters_applications_prometheus installed)
+      integration_prometheus factory: %i(clusters_integrations_prometheus)
     end
 
     trait :with_all_applications do

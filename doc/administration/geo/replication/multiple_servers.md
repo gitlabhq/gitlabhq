@@ -222,7 +222,6 @@ the **primary** database. Use the following as a guide.
    sidekiq['enable'] = false
    sidekiq_cluster['enable'] = false
    puma['enable'] = false
-   unicorn['enable'] = false
    ```
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
@@ -294,7 +293,6 @@ Configure the tracking database.
    sidekiq['enable'] = false
    sidekiq_cluster['enable'] = false
    puma['enable'] = false
-   unicorn['enable'] = false
    ```
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
@@ -440,7 +438,6 @@ application servers above, with some changes to run only the `sidekiq` service:
    redis_exporter['enable'] = false
    repmgr['enable'] = false
    puma['enable'] = false
-   unicorn['enable'] = false
 
    ##
    ## The unique identifier for the Geo node.

@@ -50,7 +50,7 @@ to the relevant internal client.
 
 All calls to the Kubernetes API must be in a background process. Don't
 perform Kubernetes API calls within a web request. This blocks
-Unicorn, and can lead to a denial-of-service (DoS) attack in GitLab as
+webserver, and can lead to a denial-of-service (DoS) attack in GitLab as
 the Kubernetes cluster response times are outside of our control.
 
 The easiest way to ensure your calls happen a background process is to

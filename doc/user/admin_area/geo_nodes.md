@@ -82,7 +82,7 @@ In GitLab 11.11, **secondary** nodes can use identical external URLs as long as
 a unique `name` is set for each Geo node. The `gitlab.rb` setting
 `gitlab_rails['geo_node_name']` must:
 
-- Be set for each GitLab instance that runs `unicorn`, `sidekiq`, or `geo_logcursor`.
+- Be set for each GitLab instance that runs `puma`, `sidekiq`, or `geo_logcursor`.
 - Match a Geo node name.
 
 The load balancer must use sticky sessions in order to avoid authentication

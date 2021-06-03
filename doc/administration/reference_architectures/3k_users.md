@@ -169,7 +169,7 @@ To set up GitLab and its components to accommodate up to 3,000 users:
    provides access to the Git repositories.
 1. [Configure Sidekiq](#configure-sidekiq).
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
-   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend
+   to run Puma, Workhorse, GitLab Shell, and to serve all frontend
    requests (which include UI, API, and Git over HTTP/SSH).
 1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab
    environment.
@@ -1238,7 +1238,6 @@ To configure the Praefect nodes, on each one:
    redis['enable'] = false
    nginx['enable'] = false
    puma['enable'] = false
-   unicorn['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
    grafana['enable'] = false
@@ -1367,7 +1366,6 @@ On each node:
    redis['enable'] = false
    nginx['enable'] = false
    puma['enable'] = false
-   unicorn['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
    grafana['enable'] = false
@@ -1916,7 +1914,6 @@ running [Prometheus](../monitoring/prometheus/index.md) and
    redis_exporter['enable'] = false
    sidekiq['enable'] = false
    puma['enable'] = false
-   unicorn['enable'] = false
    node_exporter['enable'] = false
    gitlab_exporter['enable'] = false
 

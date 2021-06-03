@@ -2854,6 +2854,16 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#mark_primary_write_location' do
+    let(:project) { create(:project) }
+
+    it 'marks the location with project ID' do
+      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:mark_primary_write_location).with(:project, project.id)
+
+      project.mark_primary_write_location
+    end
+  end
+
   describe '#mark_stuck_remote_mirrors_as_failed!' do
     it 'fails stuck remote mirrors' do
       project = create(:project, :repository, :remote_mirror)

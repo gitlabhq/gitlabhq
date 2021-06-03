@@ -141,13 +141,13 @@ module Clusters
       end
 
       def install_knative_metrics
-        return [] unless cluster.application_prometheus_available?
+        return [] unless cluster.application_prometheus&.available?
 
         [Gitlab::Kubernetes::KubectlCmd.apply_file(METRICS_CONFIG)]
       end
 
       def delete_knative_istio_metrics
-        return [] unless cluster.application_prometheus_available?
+        return [] unless cluster.application_prometheus&.available?
 
         [Gitlab::Kubernetes::KubectlCmd.delete("--ignore-not-found", "-f", METRICS_CONFIG)]
       end

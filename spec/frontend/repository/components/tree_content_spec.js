@@ -1,7 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import FilePreview from '~/repository/components/preview/index.vue';
 import FileTable from '~/repository/components/table/index.vue';
-import TreeContent, { INITIAL_FETCH_COUNT } from '~/repository/components/tree_content.vue';
+import TreeContent from '~/repository/components/tree_content.vue';
+import { TREE_INITIAL_FETCH_COUNT } from '~/repository/constants';
 
 let vm;
 let $apollo;
@@ -128,7 +129,7 @@ describe('Repository table component', () => {
     it('has limit of 1000 files on initial load', () => {
       factory('/');
 
-      expect(INITIAL_FETCH_COUNT * vm.vm.pageSize).toBe(1000);
+      expect(TREE_INITIAL_FETCH_COUNT * vm.vm.pageSize).toBe(1000);
     });
   });
 });

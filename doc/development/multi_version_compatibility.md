@@ -4,47 +4,120 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Compatibility with multiple versions of the application running at the same time
+# Backwards compatibility across updates
 
-When adding or changing features, we must be aware that there may be multiple versions of the application running
-at the same time and connected to the same PostgreSQL and Redis databases. This could happen during a rolling deploy
-when the servers are updated one by one.
+GitLab deployments can be broken down into many components. Updating GitLab is not atomic. Therefore, **many components must be backwards-compatible**.
 
-During a rolling deploy, post-deployment DB migrations are run after all the servers have been updated. This means the
-servers could be in these intermediate states:
+## Common gotchas
 
-1. Old application code running with new DB migrations already executed
-1. New application code running with new DB migrations but without new post-deployment DB migrations
+In a sense, these scenarios are all transient states. But they can often persist for several hours in a live, production environment. Therefore we must treat them with the same care as permanent states.
 
-We must make sure that the application works properly in these states.
+### When modifying a Sidekiq worker
 
-For GitLab.com, we also run a set of canary servers which run a more recent version of the application. Users with
-the canary cookie set would be handled by these servers. Some URL patterns may also be forced to the canary servers,
-even without the cookie being set. This also means that some pages may match the pattern and get handled by canary servers,
-but AJAX requests to URLs (like the GraphQL endpoint) fail to match the pattern.
+For example when [changing arguments](sidekiq_style_guide.md#changing-the-arguments-for-a-worker):
 
-With this canary setup, we'd be in this mixed-versions state for an extended period of time until canary is promoted to
-production and post-deployment migrations run.
+- Is it ok if jobs are being enqueued with the old signature but executed by the new monthly release?
+- Is it ok if jobs are being enqueued with the new signature but executed by the previous monthly release?
 
-Also be aware that during a deployment to production, Web, API, and
-Sidekiq nodes are updated in parallel, but they may finish at
-different times. That means there may be a window of time when the
-application code is not in sync across the whole fleet. Changes that
-cut across Sidekiq, Web, and/or the API may [introduce unexpected
-errors until the deployment is complete](#builds-failing-due-to-varying-deployment-times-across-node-types).
+### When adding a new Sidekiq worker
+
+Is it ok if these jobs don't get executed for several hours because [Sidekiq nodes are not yet updated](sidekiq_style_guide.md#adding-new-workers)?
+
+### When modifying JavaScript
+
+Is it ok when a browser has the new JavaScript code, but the Rails code is running the previous monthly release on:
+
+- the REST API?
+- the GraphQL API?
+- internal APIs in controllers?
+
+### When adding a pre-deployment migration
+
+Is it ok if the pre-deployment migration has executed, but the web, Sidekiq, and API nodes are running the previous release?
+
+### When adding a post-deployment migration
+
+Is it ok if all GitLab nodes have been updated, but the post-deployment migrations don't get executed until a couple days later?
+
+### When adding a background migration
+
+Is it ok if all nodes have been updated, and then the post-deployment migrations get executed a couple days later, and then the background migrations take a week to finish?
+
+## A walkthrough of an update
+
+Backwards compatibility problems during updates are often very subtle. This is why it is worth familiarizing yourself with [update instructions](../update/index.md), [reference architectures](../administration/reference_architectures/index.md), and [GitLab.com's architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/). But to illustrate how these problems arise, take a look at this example of a simple update.
+
+- 🚢 New version
+- 🙂 Old version
+
+In this example, you can imagine that we are updating by one monthly release. But refer to [How long must code be backwards-compatible?](#how-long-must-code-be-backwards-compatible).
+
+| Update step | Postgres DB | Web nodes | API nodes | Sidekiq nodes | Compatibility concerns |
+| --- | --- | --- | --- | --- | --- |
+| Initial state | 🙂 | 🙂 | 🙂 | 🙂 | |
+| Ran pre-deployment migrations | 🚢 except post-deploy migrations | 🙂 | 🙂 | 🙂 | Rails code in 🙂 is making DB calls to 🚢 |
+| Update web nodes | 🚢 except post-deploy migrations | 🚢 | 🙂 | 🙂 | JavaScript in 🚢 is making API calls to 🙂. Rails code in 🚢 is enqueuing jobs that are getting run by Sidekiq nodes in 🙂 |
+| Update API and Sidekiq nodes | 🚢 except post-deploy migrations | 🚢 | 🚢 | 🚢 | Rails code in 🚢 is making DB calls without post-deployment migrations or background migrations |
+| Run post-deployment migrations | 🚢 | 🚢 | 🚢 | 🚢 | Rails code in 🚢 is making DB calls without background migrations |
+| Background migrations finish | 🚢 | 🚢 | 🚢 | 🚢 | |
+
+This example is not exhaustive. GitLab can be deployed in many different ways. Even each update step is not atomic. For example, with rolling deploys, nodes within a group are temporarily on different versions. You should assume that a lot of time passes between update steps. This is often true on GitLab.com.
+
+## How long must code be backwards-compatible?
+
+For users following [zero-downtime update instructions](../update/index.md#upgrading-without-downtime), the answer is one monthly release. For example:
+
+- 13.11 => 13.12
+- 13.12 => 14.0
+- 14.0 => 14.1
+
+For GitLab.com, there can be multiple tiny version updates per day, so GitLab.com doesn't constrain how far changes must be backwards-compatible.
+
+Many users [skip some monthly releases](../update/index.md#upgrading-to-a-new-major-version), for example:
+
+- 13.0 => 13.12
+
+These users accept some downtime during the update. Unfortunately we can't ignore this case completely. For example, 13.12 may execute Sidekiq jobs from 13.0, which illustrates why [we avoid removing arguments from jobs until a major release](sidekiq_style_guide.md#deprecate-and-remove-an-argument). The main question is: Will the deployment get to a good state after the update is complete?
+
+## What kind of components can GitLab be broken down into?
+
+The [50,000 reference architecture](../administration/reference_architectures/50k_users.md) runs GitLab on 48+ nodes. GitLab.com is [bigger than that](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/), plus a portion of the [infrastructure runs on Kubernetes](https://about.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/), plus there is a ["canary" stage which receives updates first](https://about.gitlab.com/handbook/engineering/#sts=Canary%20Testing).
+
+But the problem isn't just that there are many nodes. The bigger problem is that a deployment can be divided into different contexts. And GitLab.com is not the only one that does this. Some possible divisions:
+
+- "Canary web app nodes": Handle non-API requests from a subset of users
+- "Git app nodes": Handle Git requests
+- "Web app nodes": Handle web requests
+- "API app nodes": Handle API requests
+- "Sidekiq app nodes": Handle Sidekiq jobs
+- "Postgres database": Handle internal Postgres calls
+- "Redis database": Handle internal Redis calls
+- "Gitaly nodes": Handle internal Gitaly calls
+
+During an update, there will be [two different versions of GitLab running in different contexts](#a-walkthrough-of-an-update). For example, [a web node may enqueue jobs which get run on an old Sidekiq node](#when-modifying-a-sidekiq-worker).
+
+## Doesn't the order of update steps matter?
+
+Yes! We have specific instructions for [zero-downtime updates](../update/index.md#upgrading-without-downtime) because it allows us to ignore some permutations of compatibility. This is why we don't worry about Rails code making DB calls to an old Postgres database schema.
+
+## I've identified a potential backwards compatibility problem, what can I do about it?
+
+### Feature flags
 
 One way to handle this is to use a feature flag that is disabled by
 default. The feature flag can be enabled when the deployment is in a
-consistent state. However, this method of synchronization doesn't
-guarantee that customers with on-premise instances can [upgrade with
+consistent state. However, this method of synchronization **does not
+guarantee** that customers with on-premise instances can [update with
 zero downtime](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates)
-because point releases bundle many changes together. Minimizing the time
-between when versions are out of sync across the fleet may help mitigate
-errors caused by upgrades.
+because point releases bundle many changes together.
 
-## Requirements for zero downtime upgrades
+### Graceful degradation
 
-One way to guarantee zero downtime upgrades for on-premise instances is following the
+As an example, when adding a new feature with frontend and API changes, it may be possible to write the frontend such that the new feature degrades gracefully against old API responses. This may help avoid needing to spread a change over 3 releases.
+
+### Expand and contract pattern
+
+One way to guarantee zero downtime updates for on-premise instances is following the
 [expand and contract pattern](https://martinfowler.com/bliki/ParallelChange.html).
 
 This means that every breaking change is broken down in three phases: expand, migrate, and contract.
@@ -53,7 +126,7 @@ This means that every breaking change is broken down in three phases: expand, mi
 1. **migrate**: all consumers are updated to make use of the new implementation.
 1. **contract**: backward compatibility is removed.
 
-Those three phases **must be part of different milestones**, to allow zero downtime upgrades.
+Those three phases **must be part of different milestones**, to allow zero downtime updates.
 
 Depending on the support level for the feature, the contract phase could be delayed until the next major release.
 

@@ -43,7 +43,7 @@ The following are GitLab upgrade validation tests we performed.
 - Outcome: Partial success because we observed downtime during the upgrade of the primary and secondary sites.
 - Follow up issues/actions:
   - [Fix zero-downtime upgrade process/instructions for multi-node Geo deployments](https://gitlab.com/gitlab-org/gitlab/-/issues/225684)
-  - [Geo:check Rake task: Exclude AuthorizedKeysCommand check if node not running Puma/Unicorn](https://gitlab.com/gitlab-org/gitlab/-/issues/225454)
+  - [Geo:check Rake task: Exclude AuthorizedKeysCommand check if node not running Puma](https://gitlab.com/gitlab-org/gitlab/-/issues/225454)
   - [Update instructions in the next upgrade issue to include monitoring HAProxy dashboards](https://gitlab.com/gitlab-org/gitlab/-/issues/225359)
 
 [Upgrade Geo multi-node installation](https://gitlab.com/gitlab-org/gitlab/-/issues/208104):
@@ -53,7 +53,7 @@ The following are GitLab upgrade validation tests we performed.
 - Outcome: Partial success because we did not run the looping pipeline during the demo to validate
   zero-downtime.
 - Follow up issues:
-  - [Clarify how Puma/Unicorn should include deploy node](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5460)
+  - [Clarify how Puma should include deploy node](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5460)
   - [Investigate MR creation failure after upgrade to 12.9.10](https://gitlab.com/gitlab-org/gitlab/-/issues/223282) Closed as false positive.
 
 ### February 2020

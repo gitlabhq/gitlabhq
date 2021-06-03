@@ -1,8 +1,0 @@
----
-name: remove_description_html_in_release_api_override
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60380
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/329188
-milestone: '13.12'
-type: development
-group: group::release
-default_enabled: false

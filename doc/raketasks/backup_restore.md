@@ -122,7 +122,7 @@ Similar to the Kubernetes case, if you have scaled out your GitLab cluster to
 use multiple application servers, you should pick a designated node (that isn't
 auto-scaled away) for running the backup Rake task. Because the backup Rake
 task is tightly coupled to the main Rails application, this is typically a node
-on which you're also running Unicorn/Puma or Sidekiq.
+on which you're also running Puma or Sidekiq.
 
 Example output:
 
@@ -928,7 +928,6 @@ Stop the processes that are connected to the database. Leave the rest of GitLab
 running:
 
 ```shell
-sudo gitlab-ctl stop unicorn
 sudo gitlab-ctl stop puma
 sudo gitlab-ctl stop sidekiq
 # Verify
@@ -996,7 +995,6 @@ For Docker installations, the restore task can be run from host:
 
 ```shell
 # Stop the processes that are connected to the database
-docker exec -it <name of container> gitlab-ctl stop unicorn
 docker exec -it <name of container> gitlab-ctl stop puma
 docker exec -it <name of container> gitlab-ctl stop sidekiq
 

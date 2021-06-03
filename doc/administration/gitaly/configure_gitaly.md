@@ -82,7 +82,7 @@ The following list depicts the network architecture of Gitaly:
 - Gitaly addresses must be specified in such a way that they resolve correctly for **all** Gitaly
   clients.
 - Gitaly clients are:
-  - Puma or Unicorn.
+  - Puma.
   - Sidekiq.
   - GitLab Workhorse.
   - GitLab Shell.

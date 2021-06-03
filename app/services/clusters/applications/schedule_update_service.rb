@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# DEPRECATED: To be removed as part of https://gitlab.com/groups/gitlab-org/-/epics/5877
 module Clusters
   module Applications
     class ScheduleUpdateService
@@ -7,14 +8,14 @@ module Clusters
 
       attr_accessor :application, :project
 
-      def initialize(application, project)
-        @application = application
+      def initialize(cluster_prometheus_adapter, project)
+        @application = cluster_prometheus_adapter&.cluster&.application_prometheus
         @project = project
       end
 
       def execute
         return unless application
-        return unless application.managed_prometheus?
+        return if application.externally_installed?
 
         if recently_scheduled?
           worker_class.perform_in(BACKOFF_DELAY, application.name, application.id, project.id, Time.current)

@@ -813,13 +813,13 @@ the CSRF check.
 
 To bypass this you can add `skip_before_action :verify_authenticity_token` to the
 `omniauth_callbacks_controller.rb` file immediately after the `class` line and
-comment out the `protect_from_forgery` line using a `#`. Restart Unicorn for this
+comment out the `protect_from_forgery` line using a `#`. Restart Puma for this
 change to take effect. This allows the error to hit GitLab, where it can then
 be seen in the usual logs, or as a flash message on the login screen.
 
 That file is located in `/opt/gitlab/embedded/service/gitlab-rails/app/controllers`
 for Omnibus installations and by default in `/home/git/gitlab/app/controllers` for
-installations from source. Restart Unicorn using the `sudo gitlab-ctl restart unicorn`
+installations from source. Restart Puma using the `sudo gitlab-ctl restart puma`
 command on Omnibus installations and `sudo service gitlab restart` on installations
 from source.
 

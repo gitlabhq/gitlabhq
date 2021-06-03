@@ -18,7 +18,8 @@ module Gitlab
           wiki: wiki.hook_attrs,
           object_attributes: wiki_page.hook_attrs.merge(
             url: Gitlab::UrlBuilder.build(wiki_page),
-            action: action
+            action: action,
+            diff_url: Gitlab::UrlBuilder.build(wiki_page, action: :diff, version_id: wiki_page.version.id)
           )
         }
       end

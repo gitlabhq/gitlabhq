@@ -545,7 +545,6 @@ sudo -u git -H editor config/resque.yml
 ```
 
 Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
-If you want to use the Unicorn web server, see [Using Unicorn](#using-unicorn) for the additional steps.
 
 If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
 
@@ -995,24 +994,6 @@ You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, 
 ### Additional Markup Styles
 
 Apart from the always supported Markdown style, there are other rich text files that GitLab can display. But you might have to install a dependency to do so. See the [`github-markup` gem README](https://github.com/gitlabhq/markup#markups) for more information.
-
-### Using Unicorn
-
-As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced Unicorn as the default web server for installations from source.
-If you want to switch back to Unicorn, follow these steps:
-
-1. Finish the GitLab setup so you have it up and running.
-1. Copy the supplied example Unicorn configuration file into place:
-
-   ```shell
-   cd /home/git/gitlab
-
-   # Copy config file for the web server
-   sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
-   ```
-
-1. Edit the system `init.d` script and set `USE_WEB_SERVER="unicorn"`. If you have `/etc/default/gitlab`, then you should edit it instead.
-1. Restart GitLab.
 
 ### Using Sidekiq instead of Sidekiq Cluster
 

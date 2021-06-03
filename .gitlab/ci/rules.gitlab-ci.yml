@@ -1125,10 +1125,8 @@
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
-      allow_failure: true
 
 .review:rules:review-qa-smoke-report:
   rules:
@@ -1139,11 +1137,9 @@
       when: always
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
-      allow_failure: true
       when: always
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
-      allow_failure: true
       when: always
 
 .review:rules:review-qa-all:

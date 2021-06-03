@@ -739,7 +739,7 @@ When enabled, access logs are generated in
 packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
 installations from source.
 
-If Prometheus metrics and the Web Exporter are both enabled, Puma/Unicorn
+If Prometheus metrics and the Web Exporter are both enabled, Puma
 starts a Web server and listen to the defined port (default: `8083`), and access logs
 are generated:
 

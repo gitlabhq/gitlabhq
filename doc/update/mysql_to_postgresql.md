@@ -91,10 +91,10 @@ need to enable the bundled PostgreSQL:
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 
-1. Start Unicorn and PostgreSQL so that we can prepare the schema:
+1. Start Puma and PostgreSQL so that we can prepare the schema:
 
    ```shell
-   sudo gitlab-ctl start unicorn
+   sudo gitlab-ctl start puma
    sudo gitlab-ctl start postgresql
    ```
 
@@ -104,10 +104,10 @@ need to enable the bundled PostgreSQL:
    sudo gitlab-rake db:create db:migrate
    ```
 
-1. Stop Unicorn to prevent other database access from interfering with the loading of data:
+1. Stop Puma to prevent other database access from interfering with the loading of data:
 
    ```shell
-   sudo gitlab-ctl stop unicorn
+   sudo gitlab-ctl stop puma
    ```
 
 After these steps, you have a fresh PostgreSQL database with up-to-date schema.

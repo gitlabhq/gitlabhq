@@ -1157,51 +1157,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#prometheus_status' do
-    context 'when a cluster is present' do
-      context 'when a deployment platform is present' do
-        let(:cluster) { create(:cluster, :provided_by_user, :project) }
-        let(:environment) { create(:environment, project: cluster.project) }
-
-        subject { environment.prometheus_status }
-
-        context 'when the prometheus application status is :updating' do
-          let!(:prometheus) { create(:clusters_applications_prometheus, :updating, cluster: cluster) }
-
-          it { is_expected.to eq(:updating) }
-        end
-
-        context 'when the prometheus application state is :updated' do
-          let!(:prometheus) { create(:clusters_applications_prometheus, :updated, cluster: cluster) }
-
-          it { is_expected.to eq(:updated) }
-        end
-
-        context 'when the prometheus application is not installed' do
-          it { is_expected.to be_nil }
-        end
-      end
-
-      context 'when a deployment platform is not present' do
-        let(:cluster) { create(:cluster, :project) }
-        let(:environment) { create(:environment, project: cluster.project) }
-
-        subject { environment.prometheus_status }
-
-        it { is_expected.to be_nil }
-      end
-    end
-
-    context 'when a cluster is not present' do
-      let(:project) { create(:project, :stubbed_repository) }
-      let(:environment) { create(:environment, project: project) }
-
-      subject { environment.prometheus_status }
-
-      it { is_expected.to be_nil }
-    end
-  end
-
   describe '#additional_metrics' do
     let(:project) { create(:prometheus_project) }
     let(:metric_params) { [] }
@@ -1434,30 +1389,14 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     let!(:cluster) { create(:cluster, :project, :provided_by_user, projects: [project]) }
     let!(:deployment) { create(:deployment, :success, environment: environment, project: project, cluster: cluster) }
 
-    context 'when app does not exist' do
+    context 'when integration does not exist' do
       it 'returns false' do
         expect(environment.elastic_stack_available?).to be(false)
       end
     end
 
-    context 'when app exists' do
-      let!(:application) { create(:clusters_applications_elastic_stack, cluster: cluster) }
-
-      it 'returns false' do
-        expect(environment.elastic_stack_available?).to be(false)
-      end
-    end
-
-    context 'when app is installed' do
-      let!(:application) { create(:clusters_applications_elastic_stack, :installed, cluster: cluster) }
-
-      it 'returns true' do
-        expect(environment.elastic_stack_available?).to be(true)
-      end
-    end
-
-    context 'when app is updated' do
-      let!(:application) { create(:clusters_applications_elastic_stack, :updated, cluster: cluster) }
+    context 'when integration is enabled' do
+      let!(:integration) { create(:clusters_integrations_elastic_stack, cluster: cluster) }
 
       it 'returns true' do
         expect(environment.elastic_stack_available?).to be(true)

@@ -276,6 +276,10 @@ class Note < ApplicationRecord
     noteable_type == 'AlertManagement::Alert'
   end
 
+  def for_vulnerability?
+    noteable_type == "Vulnerability"
+  end
+
   def for_project_snippet?
     noteable.is_a?(ProjectSnippet)
   end
@@ -411,6 +415,8 @@ class Note < ApplicationRecord
       'snippet'
     elsif for_alert_mangement_alert?
       'alert_management_alert'
+    elsif for_vulnerability?
+      'security_resource'
     else
       noteable_type.demodulize.underscore
     end

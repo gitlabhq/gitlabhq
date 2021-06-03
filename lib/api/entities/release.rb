@@ -8,7 +8,7 @@ module API
       expose :name
       expose :tag, as: :tag_name, if: ->(_, _) { can_download_code? }
       expose :description
-      expose :description_html, unless: ->(_, _) { remove_description_html? } do |entity|
+      expose :description_html, if: -> (_, options) { options[:include_html_description] } do |entity|
         MarkupHelper.markdown_field(entity, :description, current_user: options[:current_user])
       end
       expose :created_at
@@ -44,11 +44,6 @@ module API
 
       def can_read_milestone?
         Ability.allowed?(options[:current_user], :read_milestone, object.project)
-      end
-
-      def remove_description_html?
-        ::Feature.enabled?(:remove_description_html_in_release_api, object.project, default_enabled: :yaml) &&
-          ::Feature.disabled?(:remove_description_html_in_release_api_override, object.project)
       end
     end
   end

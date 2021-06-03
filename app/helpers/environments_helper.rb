@@ -74,7 +74,6 @@ module EnvironmentsHelper
       'metrics_dashboard_base_path' => metrics_dashboard_base_path(environment, project),
       'current_environment_name'    => environment.name,
       'has_metrics'                 => "#{environment.has_metrics?}",
-      'prometheus_status'           => "#{environment.prometheus_status}",
       'environment_state'           => "#{environment.state}"
     }
   end

@@ -150,6 +150,7 @@ review-stop:
     GIT_STRATEGY: none
     STORAGE_CREDENTIALS: $QA_ALLURE_REPORT_GCS_CREDENTIALS
     GITLAB_AUTH_TOKEN: $GITLAB_QA_MR_ALLURE_REPORT_TOKEN
+  allow_failure: true
   script:
     - |
       allure-report-publisher upload gcs \

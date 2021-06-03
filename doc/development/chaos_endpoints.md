@@ -47,7 +47,7 @@ Replace `secret` with your own secret token.
 After you have enabled the chaos endpoints and restarted the application, you can start testing using the endpoints.
 
 By default, when invoking a chaos endpoint, the web worker process which receives the request handles it. This means, for example, that if the Kill
-operation is invoked, the Puma or Unicorn worker process handling the request is killed. To test these operations in Sidekiq, the `async` parameter on
+operation is invoked, the Puma worker process handling the request is killed. To test these operations in Sidekiq, the `async` parameter on
 each endpoint can be set to `true`. This runs the chaos process in a Sidekiq worker.
 
 ## Memory leaks
@@ -80,7 +80,6 @@ curl "http://localhost:3000/-/chaos/leakmem?memory_mb=1024&duration_s=10&token=s
 This endpoint attempts to fully utilise a single core, at 100%, for the given period.
 
 Depending on your rack server setup, your request may timeout after a predetermined period (normally 60 seconds).
-If you're using Unicorn, this is done by killing the worker process.
 
 ```plaintext
 GET /-/chaos/cpu_spin
@@ -105,7 +104,6 @@ This endpoint attempts to fully utilise a single core, and interleave it with DB
 This endpoint can be used to model yielding execution to another threads when running concurrently.
 
 Depending on your rack server setup, your request may timeout after a predetermined period (normally 60 seconds).
-If you're using Unicorn, this is done by killing the worker process.
 
 ```plaintext
 GET /-/chaos/db_spin

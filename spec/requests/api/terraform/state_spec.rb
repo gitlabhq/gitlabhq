@@ -25,10 +25,6 @@ RSpec.describe API::Terraform::State do
     context 'without authentication' do
       let(:auth_header) { basic_auth_header('bad', 'token') }
 
-      before do
-        stub_feature_flags(usage_data_p_terraform_state_api_unique_users: false)
-      end
-
       it 'does not track unique event' do
         expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
 

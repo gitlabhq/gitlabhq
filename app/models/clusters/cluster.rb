@@ -104,8 +104,8 @@ module Clusters
     delegate :available?, to: :application_helm, prefix: true, allow_nil: true
     delegate :available?, to: :application_ingress, prefix: true, allow_nil: true
     delegate :available?, to: :application_knative, prefix: true, allow_nil: true
-    delegate :available?, to: :application_elastic_stack, prefix: true, allow_nil: true
     delegate :available?, to: :integration_elastic_stack, prefix: true, allow_nil: true
+    delegate :available?, to: :integration_prometheus, prefix: true, allow_nil: true
     delegate :external_ip, to: :application_ingress, prefix: true, allow_nil: true
     delegate :external_hostname, to: :application_ingress, prefix: true, allow_nil: true
 
@@ -142,7 +142,7 @@ module Clusters
     scope :with_available_elasticstack, -> { joins(:application_elastic_stack).merge(::Clusters::Applications::ElasticStack.available) }
     scope :with_available_cilium, -> { joins(:application_cilium).merge(::Clusters::Applications::Cilium.available) }
     scope :distinct_with_deployed_environments, -> { joins(:environments).merge(::Deployment.success).distinct }
-    scope :preload_elasticstack, -> { preload(:application_elastic_stack) }
+    scope :preload_elasticstack, -> { preload(:integration_elastic_stack) }
     scope :preload_environments, -> { preload(:environments) }
 
     scope :managed, -> { where(managed: true) }
@@ -325,7 +325,7 @@ module Clusters
     end
 
     def elastic_stack_adapter
-      application_elastic_stack || integration_elastic_stack
+      integration_elastic_stack
     end
 
     def elasticsearch_client
@@ -333,11 +333,7 @@ module Clusters
     end
 
     def elastic_stack_available?
-      if application_elastic_stack_available? || integration_elastic_stack_available?
-        true
-      else
-        false
-      end
+      !!integration_elastic_stack_available?
     end
 
     def kubernetes_namespace_for(environment, deployable: environment.last_deployable)
@@ -391,12 +387,8 @@ module Clusters
       end
     end
 
-    def application_prometheus_available?
-      integration_prometheus&.available? || application_prometheus&.available?
-    end
-
     def prometheus_adapter
-      integration_prometheus || application_prometheus
+      integration_prometheus
     end
 
     private

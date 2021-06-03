@@ -207,28 +207,6 @@ Some nameservers (like [Consul](https://www.consul.io/docs/discovery/dns#udp-bas
 queried over UDP. To overcome this issue, you can use TCP for querying by setting
 `use_tcp` to `true`.
 
-### Forking
-
-NOTE:
-Starting with GitLab 13.0, Puma is the default web server used in GitLab
-all-in-one package based installations as well as GitLab Helm chart deployments.
-
-If you use an application server that forks, such as Unicorn, you _have to_
-update your Unicorn configuration to start service discovery _after_ a fork.
-Failure to do so leads to service discovery only running in the parent
-process. If you are using Unicorn, then you can add the following to your
-Unicorn configuration file:
-
-```ruby
-after_fork do |server, worker|
-  defined?(Gitlab::Database::LoadBalancing) &&
-    Gitlab::Database::LoadBalancing.start_service_discovery
-end
-```
-
-This ensures that service discovery is started in both the parent and all
-child processes.
-
 ## Balancing queries
 
 Read-only `SELECT` queries balance among all the secondary hosts.

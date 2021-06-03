@@ -165,7 +165,7 @@ RSpec.describe Projects::Serverless::FunctionsFinder do
     context 'has prometheus' do
       let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
       let!(:knative) { create(:clusters_applications_knative, :installed, cluster: cluster) }
-      let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+      let!(:prometheus) { create(:clusters_integrations_prometheus, cluster: cluster) }
       let(:finder) { described_class.new(project) }
 
       before do

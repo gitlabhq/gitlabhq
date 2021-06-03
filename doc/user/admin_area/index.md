@@ -344,7 +344,7 @@ For multi-node systems we recommend ingesting the logs into services like Elasti
 |:------------------------|:---------|
 | `application.log`       | GitLab user activity |
 | `git_json.log`          | Failed GitLab interaction with Git repositories |
-| `production.log`        | Requests received from Unicorn, and the actions taken to serve those requests |
+| `production.log`        | Requests received from Puma, and the actions taken to serve those requests |
 | `sidekiq.log`           | Background jobs |
 | `repocheck.log`         | Repository activity |
 | `integrations_json.log` | Activity between GitLab and integrated systems |

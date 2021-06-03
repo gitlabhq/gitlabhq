@@ -49,7 +49,7 @@ module Projects
 
       def has_prometheus?(environment_scope)
         finders_for_scope(environment_scope).any? do |finder|
-          finder.cluster.application_prometheus_available?
+          finder.cluster.integration_prometheus_available?
         end
       end
 

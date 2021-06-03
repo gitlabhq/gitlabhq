@@ -226,5 +226,5 @@ the database. The following instructions can be used to build OpenSSH 7.5:
 GitLab supports `authorized_keys` database lookups with [SELinux](https://en.wikipedia.org/wiki/Security-Enhanced_Linux).
 
 Because the SELinux policy is static, GitLab doesn't support the ability to change
-internal Unicorn ports at the moment. Administrators would have to create a special `.te`
+internal webserver ports at the moment. Administrators would have to create a special `.te`
 file for the environment, since it isn't generated dynamically.

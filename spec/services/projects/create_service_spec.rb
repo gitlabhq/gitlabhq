@@ -663,7 +663,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       stub_feature_flags(projects_post_creation_worker: false)
     end
 
-    context 'Prometheus application is shared via group cluster' do
+    context 'Prometheus integration is shared via group cluster' do
       let(:cluster) { create(:cluster, :group, groups: [group]) }
       let(:group) do
         create(:group).tap do |group|
@@ -672,7 +672,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       end
 
       before do
-        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+        create(:clusters_integrations_prometheus, cluster: cluster)
       end
 
       it 'creates PrometheusService record', :aggregate_failures do
@@ -685,11 +685,11 @@ RSpec.describe Projects::CreateService, '#execute' do
       end
     end
 
-    context 'Prometheus application is shared via instance cluster' do
+    context 'Prometheus integration is shared via instance cluster' do
       let(:cluster) { create(:cluster, :instance) }
 
       before do
-        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+        create(:clusters_integrations_prometheus, cluster: cluster)
       end
 
       it 'creates PrometheusService record', :aggregate_failures do
@@ -712,7 +712,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       end
     end
 
-    context 'shared Prometheus application is not available' do
+    context 'shared Prometheus integration is not available' do
       it 'does not persist PrometheusService record', :aggregate_failures do
         project = create_project(user, opts)
 

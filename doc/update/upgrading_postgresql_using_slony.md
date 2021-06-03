@@ -371,7 +371,7 @@ First, let's stop all of GitLab. Omnibus users can do so by running the
 following on their GitLab servers:
 
 ```shell
-sudo gitlab-ctl stop unicorn
+sudo gitlab-ctl stop puma
 sudo gitlab-ctl stop sidekiq
 sudo gitlab-ctl stop mailroom
 ```

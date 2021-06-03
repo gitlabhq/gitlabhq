@@ -129,7 +129,7 @@ way that increases execution time by several orders of magnitude.
 
 ### Impact
 
-The resource, for example Unicorn, Puma, or Sidekiq, can be made to hang as it takes
+The resource, for example Puma, or Sidekiq, can be made to hang as it takes
 a long time to evaluate the bad regex match. The evaluation time may require manual
 termination of the resource.
 

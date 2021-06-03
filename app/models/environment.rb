@@ -335,10 +335,6 @@ class Environment < ApplicationRecord
     prometheus_adapter.query(:environment, self) if has_metrics_and_can_query?
   end
 
-  def prometheus_status
-    deployment_platform&.cluster&.application_prometheus&.status_name
-  end
-
   def additional_metrics(*args)
     return unless has_metrics_and_can_query?
 
