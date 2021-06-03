@@ -4122,7 +4122,7 @@ Count the total number of log views
 
 Group: `group::monitor`
 
-Status: `deprecated`
+Status: `removed`
 
 Tiers: `free`
 
@@ -5502,7 +5502,7 @@ Projects with Prometheus alerting enabled
 
 Group: `group::monitor`
 
-Status: `deprecated`
+Status: `removed`
 
 Tiers: `free`
 
@@ -15896,7 +15896,7 @@ Projects with Prometheus alerting enabled
 
 Group: `group::configure`
 
-Status: `deprecated`
+Status: `removed`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -17758,7 +17758,7 @@ Projects with Prometheus alerting enabled
 
 Group: `group::monitor`
 
-Status: `deprecated`
+Status: `removed`
 
 Tiers: `free`, `premium`, `ultimate`
 

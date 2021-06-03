@@ -6,7 +6,8 @@ product_stage: monitor
 product_group: group::monitor
 product_category: metrics
 value_type: number
-status: deprecated
+status: removed
+milestone_removed: '14.0'
 time_frame: all
 data_source: database
 distribution:

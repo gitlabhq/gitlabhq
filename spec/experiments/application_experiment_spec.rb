@@ -127,8 +127,8 @@ RSpec.describe ApplicationExperiment, :experiment do
 
     context 'when providing a compatible context' do
       where(:context_key, :object_type) do
-        :namespace | :group
-        :group     | :group
+        :namespace | :namespace
+        :group     | :namespace
         :project   | :project
         :user      | :user
         :actor     | :user

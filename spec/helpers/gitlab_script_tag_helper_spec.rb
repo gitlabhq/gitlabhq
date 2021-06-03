@@ -41,4 +41,11 @@ RSpec.describe GitlabScriptTagHelper do
       expect(helper.javascript_tag( '// ignored', type: 'application/javascript') { 'alert(1)' }.to_s).to eq tag_with_nonce_and_type
     end
   end
+
+  describe '#preload_link_tag' do
+    it 'returns a link tag with a nonce' do
+      expect(helper.preload_link_tag('https://example.com/script.js').to_s)
+        .to eq "<link rel=\"preload\" href=\"https://example.com/script.js\" as=\"script\" type=\"text/javascript\" nonce=\"noncevalue\">"
+    end
+  end
 end

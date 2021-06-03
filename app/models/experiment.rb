@@ -42,10 +42,10 @@ class Experiment < ApplicationRecord
   end
 
   def record_subject_and_variant!(subject, variant)
-    subject = subject.owner if subject.is_a?(Namespace) && subject.user?
-    raise 'Incompatible subject provided!' unless subject.is_a?(Group) || subject.is_a?(User) || subject.is_a?(Project)
+    raise 'Incompatible subject provided!' unless ExperimentSubject.valid_subject?(subject)
 
-    experiment_subject = experiment_subjects.find_or_initialize_by(subject.class.name.downcase => subject)
+    attr_name = subject.class.table_name.singularize.to_sym
+    experiment_subject = experiment_subjects.find_or_initialize_by(attr_name => subject)
     experiment_subject.assign_attributes(variant: variant)
     # We only call save when necessary because this causes the request to stick to the primary DB
     # even when the save is a no-op

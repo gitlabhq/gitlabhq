@@ -203,7 +203,7 @@ When visiting a board, issues appear ordered in any list. You're able to change
 that order by dragging the issues. The changed order is saved, so that anybody who visits the same
 board later sees the reordering, with some exceptions.
 
-The first time a given issue appears in any board (that is, the first time a user
+The first time an issue appears in any board (that is, the first time a user
 loads a board containing that issue), it is ordered in relation to other issues in that list.
 The order is done according to [label priority](labels.md#label-priority).
 
@@ -221,6 +221,28 @@ board, for example.
 This ordering also affects [issue lists](issues/sorting_issue_lists.md).
 Changing the order in an issue board changes the ordering in an issue list,
 and vice versa.
+
+### GraphQL-based issue boards
+
+<!-- This anchor is linked from #blocked-issues as well. -->
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285074) in GitLab 13.9.
+> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-graphql-based-issue-boards). **(FREE SELF)**
+
+This in-development feature might not be available for your use. There can be
+[risks when enabling features still in development](../feature_flags.md#risks-when-enabling-features-still-in-development).
+Refer to this feature's version history for more details.
+
+The work-in-progress GraphQL-based boards come with these features:
+
+- [Edit more issue attributes](#edit-an-issue)
+- [View blocked issues](#blocked-issues)
+
+The GraphQL-based Issue Board is a work in progress.
+Learn more about the known issues in [epic 5596](https://gitlab.com/groups/gitlab-org/-/epics/5596).
 
 ## GitLab Enterprise features for issue boards
 
@@ -269,40 +291,12 @@ especially in combination with [assignee lists](#assignee-lists).
 
 ![issue board summed weights](img/issue_board_summed_weights_v13_6.png)
 
-### Group issue boards **(PREMIUM)**
+### Group issue boards
 
 Accessible at the group navigation level, a group issue board offers the same features as a project-level board.
-It can display issues from all projects in that
-group and its descendant subgroups. Similarly, you can only filter by group labels for these
-boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
-group-level objects are available.
+It can display issues from all projects that fall under the group and its descendant subgroups.
 
-#### GraphQL-based sidebar for group issue boards **(PREMIUM)**
-
-<!-- When the feature flag is removed, integrate this section into the above ("Group issue boards"). -->
-<!-- This anchor is linked from #blocked-issues as well. -->
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285074) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-graphql-based-sidebar-for-group-issue-boards). **(PREMIUM SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-The work-in-progress GraphQL-based sidebar for group issue boards brings better performance and the
-ability to edit issue titles in the issue sidebar.
-
-To **edit an issue's title** in the issue sidebar:
-
-1. In a group issue board, select the issue card. The issue sidebar opens on the right.
-1. Next to the issue's title, select **Edit**.
-
-This is work in progress as of GitLab 13.9. Learn more about the known issues in
-[MR 51480](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51480).
-
-<!-- Add this at the end of the file -->
+Users on GitLab Free can use a single group issue board.
 
 ### Assignee lists **(PREMIUM)**
 
@@ -386,19 +380,6 @@ To group issues by epic in an issue board:
 
 ![Epics Swimlanes](img/epics_swimlanes_v13.6.png)
 
-To edit an issue without leaving this view, select the issue card (not its title), and a sidebar
-appears on the right. There you can see and edit the issue's:
-
-- Title
-- Assignees
-- Epic **PREMIUM**
-- Milestone
-- Time tracking value (view only)
-- Due date
-- Labels
-- Weight
-- Notifications setting
-
 You can also [drag issues](#drag-issues-between-lists) to change their position and epic assignment:
 
 - To reorder an issue, drag it to the new position within a list.
@@ -442,13 +423,13 @@ status.
 
 When you hover over the blocked icon (**{issue-block}**), a detailed information popover is displayed.
 
-To enable this in group issue boards, enable the [GraphQL-based sidebar](#graphql-based-sidebar-for-group-issue-boards).
-The feature is enabled by default when you use group issue boards with epic swimlanes.
+This feature is only supported when using the [GraphQL-based boards](#graphql-based-issue-boards). The feature is enabled by default regardless when you use group issue boards in epic swimlanes mode.
 
 ![Blocked issues](img/issue_boards_blocked_icon_v13_10.png)
 
 ## Actions you can take on an issue board
 
+- [Edit an issue](#edit-an-issue).
 - [Create a new list](#create-a-new-list).
 - [Remove an existing list](#remove-a-list).
 - [Remove an issue from a list](#remove-an-issue-from-a-list).
@@ -462,6 +443,28 @@ The feature is enabled by default when you use group issue boards with epic swim
 
 If you're not able to do some of the things above, make sure you have the right
 [permissions](#permissions).
+
+### Edit an issue
+
+You can edit an issue without leaving the board view.
+To open the right sidebar, select an issue card (not its title).
+
+You can edit the following issue attributes in the right sidebar:
+
+- Assignees
+- [Epic](../group/epics/index.md)
+- Milestone
+- Time tracking value (view only)
+- Due date
+- Labels
+- [Weight](issues/issue_weight.md)
+- Notifications setting
+
+When you use [GraphQL-based boards](#graphql-based-issue-boards), you can also edit the following issue attributes:
+
+- Title
+- [Iteration](../group/iterations/index.md)
+- Confidentiality
 
 ### Create a new list
 
@@ -516,9 +519,8 @@ The steps depend on the scope of the list:
 
 ### Filter issues
 
-You should be able to use the filters on top of your issue board to show only
-the results you want. It's similar to the filtering used in the issue tracker,
-as the metadata from the issues and labels is re-used in the issue board.
+You can use the filters on top of your issue board to show only
+the results you want. It's similar to the filtering used in the [issue tracker](issues/index.md).
 
 You can filter by the following:
 
@@ -531,6 +533,16 @@ You can filter by the following:
 - My Reaction
 - Release
 - Weight
+
+#### Filtering issues in a group board
+
+When [filtering issues](#filter-issues) in a **group** board, keep this behavior in mind:
+
+- Milestones: you can filter by the milestones belonging to the group and its descendant groups.
+- Labels: you can only filter by the labels belonging to the group but not its descendant groups.
+
+When you edit issues individually using the right sidebar, you can additionally select the
+milestones and labels from the **project** that the issue is from.
 
 ### Create workflows
 
@@ -634,10 +646,14 @@ A few things to remember:
   by default. If you have more than 20 issues, start scrolling down and the next
   20 appear.
 
-## Enable or disable GraphQL-based sidebar for group issue boards **(PREMIUM SELF)**
+### Enable or disable GraphQL-based issue boards **(FREE SELF)**
 
-GraphQL-based sidebar for group issue boards is under development and not ready for production use.
-It is deployed behind a feature flag that is **disabled by default**.
+NOTE:
+When enabling GraphQL-based issue boards, you must also enable the
+[new add list form](#enable-or-disable-new-add-list-form).
+
+GraphQL-based issue boards is not ready for production use.
+It is deployed behind a feature flag that is **disabled by default** as of GitLab 13.12.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can enable it.
 

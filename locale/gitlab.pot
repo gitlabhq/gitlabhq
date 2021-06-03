@@ -13308,7 +13308,7 @@ msgstr ""
 msgid "Experienced"
 msgstr ""
 
-msgid "ExperimentSubject|Must have exactly one of User, Group, or Project."
+msgid "ExperimentSubject|Must have exactly one of User, Namespace, or Project."
 msgstr ""
 
 msgid "Expiration"

@@ -24,7 +24,7 @@ module Gitlab
             'media_src' => "'self'",
             'script_src' => "'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net https://apis.google.com",
             'style_src' => "'self' 'unsafe-inline'",
-            'worker_src' => "'self'",
+            'worker_src' => "'self' blob: data:",
             'object_src' => "'none'",
             'report_uri' => nil
           }
@@ -37,6 +37,7 @@ module Gitlab
 
         allow_webpack_dev_server(settings_hash) if Rails.env.development?
         allow_cdn(settings_hash) if ENV['GITLAB_CDN_HOST'].present?
+        allow_snowplow(settings_hash) if Gitlab::CurrentSettings.snowplow_enabled?
 
         settings_hash
       end
@@ -79,6 +80,11 @@ module Gitlab
 
         append_to_directive(settings_hash, 'script_src', cdn_host)
         append_to_directive(settings_hash, 'style_src', cdn_host)
+        append_to_directive(settings_hash, 'font_src', cdn_host)
+      end
+
+      def self.allow_snowplow(settings_hash)
+        append_to_directive(settings_hash, 'connect_src', Gitlab::CurrentSettings.snowplow_collector_hostname)
       end
 
       def self.append_to_directive(settings_hash, directive, text)

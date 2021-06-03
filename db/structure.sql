@@ -12761,14 +12761,14 @@ CREATE TABLE experiment_subjects (
     id bigint NOT NULL,
     experiment_id bigint NOT NULL,
     user_id bigint,
-    group_id bigint,
     project_id bigint,
     variant smallint DEFAULT 0 NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     converted_at timestamp with time zone,
     context jsonb DEFAULT '{}'::jsonb NOT NULL,
-    CONSTRAINT chk_has_one_subject CHECK ((num_nonnulls(user_id, group_id, project_id) = 1))
+    namespace_id bigint,
+    CONSTRAINT check_f6411bc4b5 CHECK ((num_nonnulls(user_id, namespace_id, project_id) = 1))
 );
 
 CREATE SEQUENCE experiment_subjects_id_seq
@@ -14964,6 +14964,7 @@ CREATE TABLE namespace_settings (
     delayed_project_removal boolean,
     resource_access_token_creation_allowed boolean DEFAULT true NOT NULL,
     lock_delayed_project_removal boolean DEFAULT false NOT NULL,
+    prevent_sharing_groups_outside_hierarchy boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255))
 );
 
@@ -23230,7 +23231,7 @@ CREATE INDEX index_evidences_on_release_id ON evidences USING btree (release_id)
 
 CREATE INDEX index_experiment_subjects_on_experiment_id ON experiment_subjects USING btree (experiment_id);
 
-CREATE INDEX index_experiment_subjects_on_group_id ON experiment_subjects USING btree (group_id);
+CREATE INDEX index_experiment_subjects_on_namespace_id ON experiment_subjects USING btree (namespace_id);
 
 CREATE INDEX index_experiment_subjects_on_project_id ON experiment_subjects USING btree (project_id);
 
@@ -25655,6 +25656,9 @@ ALTER TABLE ONLY import_export_uploads
 ALTER TABLE ONLY push_rules
     ADD CONSTRAINT fk_83b29894de FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY experiment_subjects
+    ADD CONSTRAINT fk_842649f2f5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT fk_8483f3258f FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -25669,9 +25673,6 @@ ALTER TABLE ONLY packages_package_files
 
 ALTER TABLE ONLY ci_builds
     ADD CONSTRAINT fk_87f4cefcda FOREIGN KEY (upstream_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY experiment_subjects
-    ADD CONSTRAINT fk_88489af1b1 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_88b4d546ef FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;

@@ -58,7 +58,7 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
 
   def record_experiment
     subject = context.value[:namespace] || context.value[:group] || context.value[:project] || context.value[:user] || context.value[:actor]
-    return unless subject.is_a?(Group) || subject.is_a?(User) || subject.is_a?(Project)
+    return unless ExperimentSubject.valid_subject?(subject)
 
     variant = :experimental if @variant_name != :control
 

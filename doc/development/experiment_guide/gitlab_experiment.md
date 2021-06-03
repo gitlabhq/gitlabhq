@@ -398,7 +398,7 @@ No recommendations are provided here at this time.
 
 Snowplow tracking of identifiable users or groups is prohibited, but you can still
 determine if an experiment is successful or not. We're allowed to record the ID of
-a group, project or user in our database. Therefore, we can tell the experiment
+a namespace, project or user in our database. Therefore, we can tell the experiment
 to record their ID together with the assigned experiment variant in the
 `experiment_subjects` database table for later analysis.
 
