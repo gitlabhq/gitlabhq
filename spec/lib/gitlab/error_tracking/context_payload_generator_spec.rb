@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 require 'rspec-parameterized'
 
 RSpec.describe Gitlab::ErrorTracking::ContextPayloadGenerator do

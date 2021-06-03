@@ -283,6 +283,8 @@ RSpec.shared_examples 'variable list' do
   end
 
   def fill_variable(key, value, protected: false, masked: false)
+    wait_for_requests
+
     page.within('#add-ci-variable') do
       find('[data-qa-selector="ci_variable_key_field"] input').set(key)
       find('[data-qa-selector="ci_variable_value_field"]').set(value) if value.present?

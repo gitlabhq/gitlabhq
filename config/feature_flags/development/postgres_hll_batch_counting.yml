@@ -1,8 +1,0 @@
----
-name: postgres_hll_batch_counting
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48233
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/285485
-milestone: '13.7'
-type: development
-group: group::product analytics
-default_enabled: false

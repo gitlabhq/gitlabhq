@@ -17,8 +17,7 @@ module Gitlab
           # Sentry can report multiple exceptions in an event. Sanitize
           # only the first one since that's what is used for grouping.
           def process_first_exception_value(event)
-            # Better in new version, will be event.exception.values
-            exceptions = event.instance_variable_get(:@interfaces)[:exception]&.values
+            exceptions = event.exception&.instance_variable_get(:@values)
 
             return unless exceptions.is_a?(Array)
 
@@ -33,9 +32,7 @@ module Gitlab
 
             message, debug_str = split_debug_error_string(raw_message)
 
-            # Worse in new version, no setter! Have to poke at the
-            # instance variable
-            exception.value = message if message
+            exception.instance_variable_set(:@value, message) if message
             event.extra[:grpc_debug_error_string] = debug_str if debug_str
           end
 
@@ -66,7 +63,7 @@ module Gitlab
 
           def valid_exception?(exception)
             case exception
-            when Raven::SingleExceptionInterface
+            when Sentry::SingleExceptionInterface
               exception&.value
             else
               false

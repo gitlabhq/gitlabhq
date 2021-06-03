@@ -95,16 +95,18 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SidekiqProcessor do
   end
 
   describe '.call' do
-    let(:required_options) do
-      {
-        configuration: Raven.configuration,
-        context: Raven.context,
-        breadcrumbs: Raven.breadcrumbs
-      }
+    let(:exception) { StandardError.new('Test exception') }
+    let(:event) { Sentry.get_current_client.event_from_exception(exception) }
+    let(:result_hash) { described_class.call(event).to_hash }
+
+    before do
+      Sentry.get_current_scope.update_from_options(**wrapped_value)
+      Sentry.get_current_scope.apply_to_event(event)
     end
 
-    let(:event) { Raven::Event.new(required_options.merge(wrapped_value)) }
-    let(:result_hash) { described_class.call(event).to_hash }
+    after do
+      Sentry.get_current_scope.clear
+    end
 
     context 'when there is Sidekiq data' do
       let(:wrapped_value) { { extra: { sidekiq: value } } }

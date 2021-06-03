@@ -25,7 +25,7 @@ RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request do
       let(:markdown) { markdown_example.fetch(:markdown) }
 
       it "#{fixture_subdir}/#{name}.json" do
-        post api("/markdown"), params: { text: markdown }
+        post api("/markdown"), params: { text: markdown, gfm: true }
 
         expect(response).to be_successful
       end
