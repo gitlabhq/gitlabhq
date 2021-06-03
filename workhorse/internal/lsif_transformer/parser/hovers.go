@@ -18,7 +18,7 @@ type Hovers struct {
 }
 
 type RawResult struct {
-	Contents []json.RawMessage `json:"contents"`
+	Contents json.RawMessage `json:"contents"`
 }
 
 type RawData struct {
@@ -107,14 +107,9 @@ func (h *Hovers) addData(line []byte) error {
 		return err
 	}
 
-	codeHovers := []*codeHover{}
-	for _, rawContent := range rawData.Result.Contents {
-		c, err := newCodeHover(rawContent)
-		if err != nil {
-			return err
-		}
-
-		codeHovers = append(codeHovers, c)
+	codeHovers, err := newCodeHovers(rawData.Result.Contents)
+	if err != nil {
+		return err
 	}
 
 	codeHoversData, err := json.Marshal(codeHovers)

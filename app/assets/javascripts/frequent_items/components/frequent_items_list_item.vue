@@ -58,7 +58,7 @@ export default {
   <li class="frequent-items-list-item-container">
     <a
       :href="webUrl"
-      class="clearfix"
+      class="clearfix dropdown-item"
       @click="track('click_link', { label: `${dropdownType}_dropdown_frequent_items_list_item` })"
     >
       <div

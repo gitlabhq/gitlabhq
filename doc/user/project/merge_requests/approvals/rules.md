@@ -144,7 +144,7 @@ approve in these ways:
   [**Prevent committers approval**](settings.md#prevent-committers-from-approving-their-own-work)
   project setting.
 
-### Code owners as eligible approvers
+### Code owners as eligible approvers **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7933) in GitLab 11.5.
 > - Moved to GitLab Premium in 13.9.
@@ -162,7 +162,7 @@ You can also
 [require code owner approval](../../protected_branches.md#protected-branches-approval-by-code-owners)
 for protected branches. **(PREMIUM)**
 
-## Merge request approval segregation of duties
+## Merge request approval segregation of duties **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40491) in GitLab 13.4.
 > - Moved to GitLab Premium in 13.9.

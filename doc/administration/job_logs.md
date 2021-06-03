@@ -10,7 +10,7 @@ type: reference
 > [Renamed from job traces to job logs](https://gitlab.com/gitlab-org/gitlab/-/issues/29121) in GitLab 12.5.
 
 Job logs are sent by a runner while it's processing a job. You can see
-logs in job pages, pipelines, email notifications, etc.
+logs in job pages, pipelines, email notifications, and so on.
 
 ## Data flow
 

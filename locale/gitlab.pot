@@ -10464,6 +10464,9 @@ msgstr ""
 msgid "Days to merge"
 msgstr ""
 
+msgid "Deactivate dormant users after 90 days of inactivity. Users can return to active status by signing in to their account. While inactive, a user is not counted as an active user in the instance."
+msgstr ""
+
 msgid "Deactivate this user"
 msgstr ""
 
@@ -11705,6 +11708,9 @@ msgid "Don't show again"
 msgstr ""
 
 msgid "Done"
+msgstr ""
+
+msgid "Dormant users"
 msgstr ""
 
 msgid "Download"
@@ -36232,7 +36238,10 @@ msgstr ""
 msgid "Visit settings page"
 msgstr ""
 
-msgid "Visual Studio Code"
+msgid "Visual Studio Code (HTTPS)"
+msgstr ""
+
+msgid "Visual Studio Code (SSH)"
 msgstr ""
 
 msgid "VisualReviewApp|%{stepStart}Step 1%{stepEnd}. Copy the following script:"

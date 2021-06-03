@@ -16,8 +16,8 @@ const DEFAULT_PROPS = {
 };
 const TEST_OTHER_PROPS = {
   namespace: 'projects',
-  currentUserName: '',
-  currentItem: {},
+  currentUserName: 'test-user',
+  currentItem: { id: 'test' },
 };
 
 describe('~/nav/components/top_nav_container_view.vue', () => {
@@ -84,7 +84,7 @@ describe('~/nav/components/top_nav_container_view.vue', () => {
     it('renders frequent items app', () => {
       expect(findFrequentItemsApp()).toEqual({
         vuexModule: DEFAULT_PROPS.frequentItemsVuexModule,
-        props: TEST_OTHER_PROPS,
+        props: expect.objectContaining(TEST_OTHER_PROPS),
         attributes: expect.objectContaining(EXTRA_ATTRS),
       });
     });

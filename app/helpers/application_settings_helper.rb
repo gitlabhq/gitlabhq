@@ -368,7 +368,9 @@ module ApplicationSettingsHelper
       :container_registry_cleanup_tags_service_max_list_size,
       :keep_latest_artifact,
       :whats_new_variant
-    ]
+    ].tap do |settings|
+      settings << :deactivate_dormant_users unless Gitlab.com?
+    end
   end
 
   def external_authorization_service_attributes

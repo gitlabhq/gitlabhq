@@ -13,7 +13,8 @@ RSpec.describe ::Gitlab::Nav::TopNavMenuItem do
         href: 'href',
         view: 'view',
         css_class: 'css_class',
-        data: {}
+        data: {},
+        emoji: 'smile'
       }
 
       expect(described_class.build(**item)).to eq(item)

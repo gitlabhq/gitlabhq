@@ -39,6 +39,11 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
   end
 
+  before_action only: [:new] do
+    # Run experiment before render so it will be written to the `gon` for FE
+    helpers.new_repo_experiment_text
+  end
+
   layout :determine_layout
 
   feature_category :projects, [

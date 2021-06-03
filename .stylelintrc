@@ -3,6 +3,7 @@
    "ignoreFiles": [
      "app/assets/stylesheets/pages/emojis.scss",
      "app/assets/stylesheets/startup/startup-*.scss",
+     "ee/app/assets/stylesheets/startup/startup-*.scss",
      "app/assets/stylesheets/lazy_bundles/select2.scss",
      "app/assets/stylesheets/highlight/themes/*.scss",
      "app/assets/stylesheets/lazy_bundles/cropper.css"

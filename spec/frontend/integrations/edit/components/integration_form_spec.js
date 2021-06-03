@@ -1,6 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
 import { setHTMLFixture } from 'helpers/fixtures';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+
 import { mockIntegrationProps } from 'jest/integrations/edit/mock_data';
 import ActiveCheckbox from '~/integrations/edit/components/active_checkbox.vue';
 import ConfirmationModal from '~/integrations/edit/components/confirmation_modal.vue';
@@ -23,42 +23,37 @@ describe('IntegrationForm', () => {
     initialState = {},
     props = {},
   } = {}) => {
-    wrapper = extendedWrapper(
-      shallowMount(IntegrationForm, {
-        propsData: { ...props },
-        store: createStore({
-          customState: { ...mockIntegrationProps, ...customStateProps },
-          ...initialState,
-        }),
-        stubs: {
-          OverrideDropdown,
-          ActiveCheckbox,
-          ConfirmationModal,
-          JiraTriggerFields,
-          TriggerFields,
-        },
-        provide: {
-          glFeatures: featureFlags,
-        },
+    wrapper = shallowMountExtended(IntegrationForm, {
+      propsData: { ...props },
+      store: createStore({
+        customState: { ...mockIntegrationProps, ...customStateProps },
+        ...initialState,
       }),
-    );
+      stubs: {
+        OverrideDropdown,
+        ActiveCheckbox,
+        ConfirmationModal,
+        JiraTriggerFields,
+        TriggerFields,
+      },
+      provide: {
+        glFeatures: featureFlags,
+      },
+    });
   };
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
   });
 
-  const findOverrideDropdown = () => wrapper.find(OverrideDropdown);
-  const findActiveCheckbox = () => wrapper.find(ActiveCheckbox);
-  const findConfirmationModal = () => wrapper.find(ConfirmationModal);
-  const findResetConfirmationModal = () => wrapper.find(ResetConfirmationModal);
-  const findResetButton = () => wrapper.find('[data-testid="reset-button"]');
-  const findJiraTriggerFields = () => wrapper.find(JiraTriggerFields);
-  const findJiraIssuesFields = () => wrapper.find(JiraIssuesFields);
-  const findTriggerFields = () => wrapper.find(TriggerFields);
+  const findOverrideDropdown = () => wrapper.findComponent(OverrideDropdown);
+  const findActiveCheckbox = () => wrapper.findComponent(ActiveCheckbox);
+  const findConfirmationModal = () => wrapper.findComponent(ConfirmationModal);
+  const findResetConfirmationModal = () => wrapper.findComponent(ResetConfirmationModal);
+  const findResetButton = () => wrapper.findByTestId('reset-button');
+  const findJiraTriggerFields = () => wrapper.findComponent(JiraTriggerFields);
+  const findJiraIssuesFields = () => wrapper.findComponent(JiraIssuesFields);
+  const findTriggerFields = () => wrapper.findComponent(TriggerFields);
 
   describe('template', () => {
     describe('showActive is true', () => {
@@ -286,7 +281,7 @@ describe('IntegrationForm', () => {
         </div>
       `);
 
-      it('renders `helpHtml`', async () => {
+      it('renders `helpHtml`', () => {
         const mockHelpHtml = document.querySelector(`[data-testid="${mockTestId}"]`);
 
         createComponent({

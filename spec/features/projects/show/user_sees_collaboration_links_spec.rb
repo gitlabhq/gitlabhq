@@ -12,6 +12,10 @@ RSpec.describe 'Projects > Show > Collaboration links', :js do
     sign_in(user)
   end
 
+  def find_new_menu_toggle
+    find('#js-onboarding-new-project-link')
+  end
+
   context 'with developer user' do
     before do
       project.add_developer(user)
@@ -22,7 +26,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js do
 
       # The navigation bar
       page.within('.header-new') do
-        find('.qa-new-menu-toggle').click
+        find_new_menu_toggle.click
 
         aggregate_failures 'dropdown links in the navigation bar' do
           expect(page).to have_link('New issue')
@@ -30,7 +34,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js do
           expect(page).to have_link('New snippet', href: new_project_snippet_path(project))
         end
 
-        find('.qa-new-menu-toggle').click
+        find_new_menu_toggle.click
       end
 
       # The dropdown above the tree
@@ -56,7 +60,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js do
       visit project_path(project)
 
       page.within('.header-new') do
-        find('.qa-new-menu-toggle').click
+        find_new_menu_toggle.click
 
         aggregate_failures 'dropdown links' do
           expect(page).not_to have_link('New issue')
@@ -64,7 +68,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js do
           expect(page).not_to have_link('New snippet', href: new_project_snippet_path(project))
         end
 
-        find('.qa-new-menu-toggle').click
+        find_new_menu_toggle.click
       end
 
       expect(page).not_to have_selector('.qa-add-to-tree')

@@ -21,17 +21,6 @@ module InviteMembersHelper
     experiment_enabled?(:invite_members_empty_group_version_a) && Ability.allowed?(current_user, :admin_group_member, group)
   end
 
-  def dropdown_invite_members_link(form_model)
-    link_to invite_members_url(form_model),
-            data: {
-              'track-event': 'click_link',
-              'track-label': tracking_label,
-              'track-property': experiment_tracking_category_and_group(:invite_members_new_dropdown)
-            } do
-      invite_member_link_content
-    end
-  end
-
   def invite_accepted_notice(member)
     case member.source
     when Project
@@ -41,24 +30,5 @@ module InviteMembersHelper
       _("You have been granted %{member_human_access} access to group %{name}.") %
         { member_human_access: member.human_access, name: member.source.name }
     end
-  end
-
-  private
-
-  def invite_members_url(form_model)
-    case form_model
-    when Project
-      project_project_members_path(form_model)
-    when Group
-      group_group_members_path(form_model)
-    end
-  end
-
-  def invite_member_link_content
-    text = s_('InviteMember|Invite members')
-
-    return text unless experiment_enabled?(:invite_members_new_dropdown)
-
-    "#{text} #{emoji_icon('shaking_hands', 'aria-hidden': true, class: 'gl-font-base gl-vertical-align-baseline')}".html_safe
   end
 end

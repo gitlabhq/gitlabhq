@@ -39,7 +39,7 @@ export default {
 </script>
 
 <template>
-  <div class="search-input-container d-none d-sm-block">
+  <div class="search-input-container">
     <gl-search-box-by-type
       v-model="searchQuery"
       :placeholder="translations.searchInputPlaceholder"

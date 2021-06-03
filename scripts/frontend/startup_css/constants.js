@@ -27,7 +27,6 @@ const CSS_TO_REMOVE = [
   /\.commit/,
   /\.md/,
   /\.with-performance-bar/,
-  /\.identicon/,
 ];
 const APPLICATION_CSS_PREFIX = 'application';
 const APPLICATION_DARK_CSS_PREFIX = 'application_dark';
@@ -36,49 +35,55 @@ const UTILITIES_DARK_CSS_PREFIX = 'application_utilities_dark';
 
 // paths -----------------------------------------------------------------------
 const ROOT = path.resolve(__dirname, '../../..');
+const ROOT_RAILS = IS_EE ? path.join(ROOT, 'ee') : ROOT;
 const FIXTURES_FOLDER_NAME = IS_EE ? 'fixtures-ee' : 'fixtures';
 const FIXTURES_ROOT = path.join(ROOT, 'tmp/tests/frontend', FIXTURES_FOLDER_NAME);
 const PATH_SIGNIN_HTML = path.join(FIXTURES_ROOT, 'startup_css/sign-in.html');
 const PATH_ASSETS = path.join(ROOT, 'tmp/startup_css_assets');
-const PATH_STARTUP_SCSS = path.join(ROOT, 'app/assets/stylesheets/startup');
+const PATH_STARTUP_SCSS = path.join(ROOT_RAILS, 'app/assets/stylesheets/startup');
+
+// helpers ---------------------------------------------------------------------
+const createMainOutput = ({ outFile, cssKeys, type }) => ({
+  outFile,
+  htmlPaths: [
+    path.join(FIXTURES_ROOT, `startup_css/project-${type}.html`),
+    path.join(FIXTURES_ROOT, `startup_css/project-${type}-legacy-menu.html`),
+    path.join(FIXTURES_ROOT, `startup_css/project-${type}-legacy-sidebar.html`),
+    path.join(FIXTURES_ROOT, `startup_css/project-${type}-signed-out.html`),
+  ],
+  cssKeys,
+  purgeOptions: {
+    safelist: {
+      standard: [
+        'page-with-icon-sidebar',
+        'sidebar-collapsed-desktop',
+        // We want to include the root dropdown-menu style since it should be hidden by default
+        'dropdown-menu',
+      ],
+      // We want to include the identicon backgrounds
+      greedy: [/^bg[0-9]$/],
+    },
+  },
+});
+
 const OUTPUTS = [
-  {
+  createMainOutput({
+    type: 'general',
     outFile: 'startup-general',
-    htmlPaths: [
-      path.join(FIXTURES_ROOT, 'startup_css/project-general.html'),
-      path.join(FIXTURES_ROOT, 'startup_css/project-general-legacy-menu.html'),
-      path.join(FIXTURES_ROOT, 'startup_css/project-general-signed-out.html'),
-    ],
     cssKeys: [APPLICATION_CSS_PREFIX, UTILITIES_CSS_PREFIX],
-    // We want to include the root dropdown-menu style since it should be hidden by default
-    purgeOptions: {
-      safelist: {
-        standard: ['dropdown-menu'],
-      },
-    },
-  },
-  {
+  }),
+  createMainOutput({
+    type: 'dark',
     outFile: 'startup-dark',
-    htmlPaths: [
-      path.join(FIXTURES_ROOT, 'startup_css/project-dark.html'),
-      path.join(FIXTURES_ROOT, 'startup_css/project-dark-legacy-menu.html'),
-      path.join(FIXTURES_ROOT, 'startup_css/project-dark-signed-out.html'),
-    ],
     cssKeys: [APPLICATION_DARK_CSS_PREFIX, UTILITIES_DARK_CSS_PREFIX],
-    // We want to include the root dropdown-menu styles since it should be hidden by default
-    purgeOptions: {
-      safelist: {
-        standard: ['dropdown-menu'],
-      },
-    },
-  },
+  }),
   {
     outFile: 'startup-signin',
     htmlPaths: [PATH_SIGNIN_HTML],
     cssKeys: [APPLICATION_CSS_PREFIX, UTILITIES_CSS_PREFIX],
     purgeOptions: {
       safelist: {
-        standard: ['fieldset'],
+        standard: ['fieldset', 'hidden'],
         deep: [/login-page$/],
       },
     },

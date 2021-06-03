@@ -1,5 +1,6 @@
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
 import JiraUpgradeCta from '~/integrations/edit/components/jira_upgrade_cta.vue';
 import eventHub from '~/integrations/edit/event_hub';
@@ -20,7 +21,7 @@ describe('JiraIssuesFields', () => {
       defaultState: isInheriting ? {} : undefined,
     });
 
-    wrapper = mount(JiraIssuesFields, {
+    wrapper = mountExtended(JiraIssuesFields, {
       propsData: { ...defaultProps, ...props },
       store,
       stubs: ['jira-issue-creation-vulnerabilities'],
@@ -37,7 +38,7 @@ describe('JiraIssuesFields', () => {
     findEnableCheckbox().find('[type=checkbox]').attributes('disabled');
   const findProjectKey = () => wrapper.findComponent(GlFormInput);
   const findJiraUpgradeCta = () => wrapper.findComponent(JiraUpgradeCta);
-  const findJiraForVulnerabilities = () => wrapper.find('[data-testid="jira-for-vulnerabilities"]');
+  const findJiraForVulnerabilities = () => wrapper.findByTestId('jira-for-vulnerabilities');
   const setEnableCheckbox = async (isEnabled = true) =>
     findEnableCheckbox().vm.$emit('input', isEnabled);
 

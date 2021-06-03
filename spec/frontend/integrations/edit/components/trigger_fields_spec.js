@@ -1,5 +1,6 @@
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 
 describe('TriggerFields', () => {
@@ -10,7 +11,7 @@ describe('TriggerFields', () => {
   };
 
   const createComponent = (props, isInheriting = false) => {
-    wrapper = mount(TriggerFields, {
+    wrapper = mountExtended(TriggerFields, {
       propsData: { ...defaultProps, ...props },
       computed: {
         isInheriting: () => isInheriting,
@@ -19,21 +20,19 @@ describe('TriggerFields', () => {
   };
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
   });
 
+  const findTriggerLabel = () => wrapper.findByTestId('trigger-fields-group').find('label');
   const findAllGlFormGroups = () => wrapper.find('#trigger-fields').findAll(GlFormGroup);
-  const findAllGlFormCheckboxes = () => wrapper.findAll(GlFormCheckbox);
-  const findAllGlFormInputs = () => wrapper.findAll(GlFormInput);
+  const findAllGlFormCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
+  const findAllGlFormInputs = () => wrapper.findAllComponents(GlFormInput);
 
   describe.each([true, false])('template, isInheriting = `%p`', (isInheriting) => {
     it('renders a label with text "Trigger"', () => {
       createComponent();
 
-      const triggerLabel = wrapper.find('[data-testid="trigger-fields-group"]').find('label');
+      const triggerLabel = findTriggerLabel();
       expect(triggerLabel.exists()).toBe(true);
       expect(triggerLabel.text()).toBe('Trigger');
     });
@@ -68,7 +67,7 @@ describe('TriggerFields', () => {
       });
 
       it('renders GlFormInput with description for each event', () => {
-        const groups = wrapper.find('#trigger-fields').findAll(GlFormGroup);
+        const groups = findAllGlFormGroups();
 
         expect(groups).toHaveLength(2);
         groups.wrappers.forEach((group, index) => {

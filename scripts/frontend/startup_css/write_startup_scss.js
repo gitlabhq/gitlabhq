@@ -9,7 +9,7 @@ const buildFinalContent = (raw) => {
 // https://gitlab.com/gitlab-org/gitlab/-/issues/331812
 @charset "UTF-8";
 ${raw}
-@import 'cloaking';
+@import 'startup/cloaking';
 @include cloak-startup-scss(none);
 `;
 

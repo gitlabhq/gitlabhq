@@ -30,6 +30,11 @@ export default {
       type: Object,
       required: true,
     },
+    searchClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     ...mapVuexModuleState((vm) => vm.vuexModule, [
@@ -115,7 +120,11 @@ export default {
 
 <template>
   <div class="gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch gl-h-full">
-    <frequent-items-search-input :namespace="namespace" data-testid="frequent-items-search-input" />
+    <frequent-items-search-input
+      :namespace="namespace"
+      :class="searchClass"
+      data-testid="frequent-items-search-input"
+    />
     <gl-loading-icon
       v-if="isLoadingItems"
       :label="translations.loadingMessage"

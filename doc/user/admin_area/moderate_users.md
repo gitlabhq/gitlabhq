@@ -95,6 +95,20 @@ Users can also be deactivated using the [GitLab API](../../api/users.md#deactiva
 NOTE:
 A deactivated user does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
 
+### Automatically deactivate dormant users
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320875) in GitLab 14.0.
+
+Administrators can enable automatic deactivation of users who have not signed in, or have no activity in the last 90 days. To do this:
+
+1. Navigate to  **Admin Area > Settings > General > Account and Limit**.
+1. Under the **Dormant users** tab, check **Deactivate dormant users after 90 days of inactivity**.
+1. Click **Save changes**.
+
+When this feature is enabled, GitLab runs a job once a day to deactivate the dormant users.
+
+A maximum of 100,000 users can be deactivated per day.
+
 ### Activating a user
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.

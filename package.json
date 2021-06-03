@@ -3,6 +3,7 @@
   "scripts": {
     "check-dependencies": "scripts/frontend/check_dependencies.sh",
     "block-dependencies": "node scripts/frontend/block_dependencies.js",
+    "check:startup_css": "scripts/frontend/startup_css/startup_css_changed.sh",
     "clean": "rm -rf public/assets tmp/cache/*-loader",
     "dev-server": "NODE_OPTIONS=\"--max-old-space-size=3584\" node scripts/frontend/webpack_dev_server.js",
     "file-coverage": "scripts/frontend/file_test_coverage.js",

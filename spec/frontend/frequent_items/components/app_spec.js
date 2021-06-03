@@ -21,13 +21,14 @@ const TEST_NAMESPACE = 'projects';
 const TEST_VUEX_MODULE = 'frequentProjects';
 const TEST_PROJECT = currentSession[TEST_NAMESPACE].project;
 const TEST_STORAGE_KEY = currentSession[TEST_NAMESPACE].storageKey;
+const TEST_SEARCH_CLASS = 'test-search-class';
 
 describe('Frequent Items App Component', () => {
   let wrapper;
   let mock;
   let store;
 
-  const createComponent = ({ currentItem = null } = {}) => {
+  const createComponent = (props = {}) => {
     const session = currentSession[TEST_NAMESPACE];
     gon.api_version = session.apiVersion;
 
@@ -36,7 +37,8 @@ describe('Frequent Items App Component', () => {
       propsData: {
         namespace: TEST_NAMESPACE,
         currentUserName: session.username,
-        currentItem: currentItem || session.project,
+        currentItem: session.project,
+        ...props,
       },
       provide: {
         vuexModule: TEST_VUEX_MODULE,
@@ -88,7 +90,7 @@ describe('Frequent Items App Component', () => {
     });
 
     it('should render search input', () => {
-      expect(findSearchInput().exists()).toBe(true);
+      expect(findSearchInput().classes()).toEqual(['search-input-container']);
     });
 
     it('should render loading animation', async () => {
@@ -156,6 +158,16 @@ describe('Frequent Items App Component', () => {
           matcher: 'gitlab',
         }),
       );
+    });
+  });
+
+  describe('with searchClass', () => {
+    beforeEach(() => {
+      createComponent({ searchClass: TEST_SEARCH_CLASS });
+    });
+
+    it('should render search input with searchClass', () => {
+      expect(findSearchInput().classes()).toEqual(['search-input-container', TEST_SEARCH_CLASS]);
     });
   });
 

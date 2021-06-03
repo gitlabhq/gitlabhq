@@ -1,5 +1,6 @@
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
 
 describe('DynamicField', () => {
@@ -24,17 +25,14 @@ describe('DynamicField', () => {
   };
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
   });
 
-  const findGlFormGroup = () => wrapper.find(GlFormGroup);
-  const findGlFormCheckbox = () => wrapper.find(GlFormCheckbox);
-  const findGlFormInput = () => wrapper.find(GlFormInput);
-  const findGlFormSelect = () => wrapper.find(GlFormSelect);
-  const findGlFormTextarea = () => wrapper.find(GlFormTextarea);
+  const findGlFormGroup = () => wrapper.findComponent(GlFormGroup);
+  const findGlFormCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findGlFormInput = () => wrapper.findComponent(GlFormInput);
+  const findGlFormSelect = () => wrapper.findComponent(GlFormSelect);
+  const findGlFormTextarea = () => wrapper.findComponent(GlFormTextarea);
 
   describe('template', () => {
     describe.each([
