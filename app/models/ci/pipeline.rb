@@ -994,7 +994,7 @@ module Ci
     end
 
     def latest_test_report_builds
-      latest_report_builds(Ci::JobArtifact.test_reports).preload(:project, :job_variables, :metadata)
+      latest_report_builds(Ci::JobArtifact.test_reports).preload(:project)
     end
 
     def builds_with_coverage

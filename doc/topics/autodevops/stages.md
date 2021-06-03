@@ -645,42 +645,6 @@ ciliumNetworkPolicy:
 For more information on installing Network Policies, see
 [Install Cilium using GitLab CI/CD](../../user/clusters/applications.md#install-cilium-using-gitlab-cicd).
 
-### Web Application Firewall (ModSecurity) customization
-
-> [Introduced](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/44) in GitLab 12.8.
-
-Customization on an [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
-or on a deployment base is available for clusters with
-[ModSecurity installed](../../user/clusters/applications.md#web-application-firewall-modsecurity).
-
-To enable ModSecurity with Auto Deploy, you must create a `.gitlab/auto-deploy-values.yaml`
-file in your project with the following attributes.
-
-|Attribute | Description | Default |
------------|-------------|---------|
-|`enabled` | Enables custom configuration for ModSecurity, defaulting to the [Core Rule Set](https://coreruleset.org/) | `false` |
-|`secRuleEngine` | Configures the [rules engine](https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-(v2.x)#secruleengine) | `DetectionOnly` |
-|`secRules` | Creates one or more additional [rule](https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-(v2.x)#SecRule) | `nil` |
-
-In the following `auto-deploy-values.yaml` example, some custom settings
-are enabled for ModSecurity. Those include setting its engine to
-process rules instead of only logging them, while adding two specific
-header-based rules:
-
-```yaml
-ingress:
-  modSecurity:
-    enabled: true
-    secRuleEngine: "On"
-    secRules:
-      - variable: "REQUEST_HEADERS:User-Agent"
-        operator: "printer"
-        action: "log,deny,id:'2010',status:403,msg:'printer is an invalid agent'"
-      - variable: "REQUEST_HEADERS:Content-Type"
-        operator: "text/plain"
-        action: "log,deny,id:'2011',status:403,msg:'Text is not supported as content type'"
-```
-
 ### Running commands in the container
 
 Applications built with [Auto Build](#auto-build) using Herokuish, the default

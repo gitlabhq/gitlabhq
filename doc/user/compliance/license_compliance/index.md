@@ -680,8 +680,9 @@ Developers of the project can view the policies configured in a project.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
-`License-Check` is a [security approval](../../application_security/index.md#enabling-security-approvals-within-a-project) rule you can enable to allow an individual or group to approve a
-merge request that contains a `denied` license.
+`License-Check` is a [merge request approval](../../project/merge_requests/approvals/index.md) rule
+you can enable to allow an individual or group to approve a merge request that contains a `denied`
+license.
 
 You can enable `License-Check` one of two ways:
 

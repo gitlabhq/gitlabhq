@@ -39,8 +39,8 @@ export default {
   <searchable-dropdown
     data-testid="group-filter"
     :header-text="$options.GROUP_DATA.headerText"
-    :selected-display-value="$options.GROUP_DATA.selectedDisplayValue"
-    :items-display-value="$options.GROUP_DATA.itemsDisplayValue"
+    :name="$options.GROUP_DATA.name"
+    :full-name="$options.GROUP_DATA.fullName"
     :loading="fetchingGroups"
     :selected-item="selectedGroup"
     :items="groups"

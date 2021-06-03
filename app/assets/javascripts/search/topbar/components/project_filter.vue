@@ -42,8 +42,8 @@ export default {
   <searchable-dropdown
     data-testid="project-filter"
     :header-text="$options.PROJECT_DATA.headerText"
-    :selected-display-value="$options.PROJECT_DATA.selectedDisplayValue"
-    :items-display-value="$options.PROJECT_DATA.itemsDisplayValue"
+    :name="$options.PROJECT_DATA.name"
+    :full-name="$options.PROJECT_DATA.fullName"
     :loading="fetchingProjects"
     :selected-item="selectedProject"
     :items="projects"

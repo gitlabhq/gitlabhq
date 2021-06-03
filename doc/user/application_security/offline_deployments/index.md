@@ -93,8 +93,7 @@ above. You can find more information at each of the pages below:
 
 ## Loading Docker images onto your offline host
 
-To use many GitLab features, including
-[security scans](../index.md#working-in-an-offline-environment)
+To use many GitLab features, including security scans
 and [Auto DevOps](../../../topics/autodevops/index.md), the runner must be able to fetch the
 relevant Docker images.
 

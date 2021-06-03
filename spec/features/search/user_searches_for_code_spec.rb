@@ -32,7 +32,7 @@ RSpec.describe 'User searches for code' do
         wait_for_requests
 
         page.within('[data-testid="project-filter"]') do
-          click_on(project.full_name)
+          click_on(project.name)
         end
       end
 

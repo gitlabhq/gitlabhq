@@ -8,14 +8,8 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
 
     let(:test_suite) { Gitlab::Ci::Reports::TestSuite.new('rspec') }
     let(:test_cases) { flattened_test_cases(test_suite) }
-    let(:variables) { [{ key: 'CI_PROJECT_DIR', value: '/builds/group/project' }] }
+    let(:job) { double(max_test_cases_per_report: max_test_cases) }
     let(:max_test_cases) { 0 }
-    let(:job) do
-      double(
-        max_test_cases_per_report: max_test_cases,
-        variables: Gitlab::Ci::Variables::Collection.new.concat(variables)
-      )
-    end
 
     context 'when data is JUnit style XML' do
       context 'when there are no <testcases> in <testsuite>' do
@@ -420,27 +414,6 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
 
         expect(test_cases[0].has_attachment?).to be_falsy
         expect(test_cases[0].attachment).to be_nil
-      end
-    end
-
-    context 'when paths contains the build group project path' do
-      let(:junit) do
-        <<~EOF
-          <testsuites>
-            <testsuite>
-              <testcase classname='Calculator' name='sumTest1' time='0.01'>
-                <failure>Some failure</failure>
-                <system-out>[[ATTACHMENT|/builds/group/project/some/path.png]]</system-out>
-              </testcase>
-            </testsuite>
-          </testsuites>
-        EOF
-      end
-
-      it 'removes the builds group project path prefix' do
-        expect { subject }.not_to raise_error
-
-        expect(test_cases[0].attachment).to eq("/some/path.png")
       end
     end
 

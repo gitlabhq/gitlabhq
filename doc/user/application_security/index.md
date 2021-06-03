@@ -184,57 +184,14 @@ By default, the vulnerability report does not show vulnerabilities of `dismissed
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9928) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.2.
 
-Merge Request Approvals can be configured to require approval from a member of your
-security team when a merge request would introduce one of the following security issues:
+You can implement merge request approvals to require approval by selected users or a group when a
+merge request would introduce one of the following security issues:
 
 - A security vulnerability
 - A software license compliance violation
 
-The security vulnerability threshold is defined as `high`, `critical`, or `unknown` severity. The
-`Vulnerability-Check` approver group must approve merge requests that contain vulnerabilities.
-
-When GitLab can assess vulnerability severity, the rating can be one of the following:
-
-- `unknown`
-- `low`
-- `medium`
-- `high`
-- `critical`
-
-The rating `unknown` indicates that the underlying scanner doesn't contain or provide a severity
-rating.
-
-### Enabling Security Approvals within a project
-
-To enable the `Vulnerability-Check` or `License-Check` Security Approvals, a [project approval rule](../project/merge_requests/approvals/rules.md#add-an-approval-rule)
-must be created. A [security scanner job](#security-scanning-tools) must be enabled for
-`Vulnerability-Check`, and a [license scanning](../compliance/license_compliance/index.md#configuration)
-job must be enabled for `License-Check`. When the proper jobs aren't configured, the following
-appears:
-
-![Un-configured Approval Rules](img/unconfigured_security_approval_rules_and_jobs_v13_4.png)
-
-If at least one security scanner is enabled, you can enable the `Vulnerability-Check` approval rule. If a license scanning job is enabled, you can enable the `License-Check` rule.
-
-![Un-configured Approval Rules with valid pipeline jobs](img/unconfigured_security_approval_rules_and_enabled_jobs_v13_4.png)
-
-For this approval group, you must set the number of approvals required to greater than zero. You
-must have Maintainer or Owner [permissions](../permissions.md#project-members-permissions)
-to manage approval rules.
-
-Follow these steps to enable `Vulnerability-Check`:
-
-1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
-1. Click **Enable**, or **Edit**.
-1. Add or change the **Rule name** to `Vulnerability-Check` (case sensitive).
-
-![Vulnerability Check Approver Rule](img/vulnerability-check_v13_4.png)
-
-Once this group is added to your project, the approval rule is enabled for all merge requests.
-
-Any code changes cause the approvals required to reset.
-
-An approval is required when the latest security report in a merge request:
+When the Vulnerability-Check merge request rule is enabled, additional merge request approval
+is required when the latest security report in a merge request:
 
 - Contains a vulnerability of `high`, `critical`, or `unknown` severity that is not present in the
   target branch. Note that approval is still required for dismissed vulnerabilities.
@@ -245,23 +202,35 @@ An approval is optional when the security report:
 - Contains no new vulnerabilities when compared to the target branch.
 - Contains only new vulnerabilities of `low` or `medium` severity.
 
-### Enabling License Approvals within a project
+When the License-Check merge request rule is enabled, additional approval is required if a merge
+request contains a denied license. For more details, see [Enabling license approvals within a project](../compliance/license_compliance/index.md#enabling-license-approvals-within-a-project).
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
+### Enable the Vulnerability-Check rule
 
-`License-Check` is a [security approval rule](#enabling-security-approvals-within-a-project)
-you can enable to allow an individual or group to approve a merge request that contains a `denied`
-license. For instructions on enabling this rule, see
-[Enabling license approvals within a project](../compliance/license_compliance/index.md#enabling-license-approvals-within-a-project).
+Prerequisites:
 
-## Working in an offline environment
+- At least one [security scanner job](#security-scanning-tools) must be enabled.
+- Maintainer or Owner [permissions](../permissions.md#project-members-permissions).
 
-It is possible to run most of the GitLab security scanners when not
-connected to the internet, in what is sometimes known as an offline,
-limited connectivity, Local Area Network (LAN), Intranet, or "air-gap"
-environment.
+For this approval group, you must set the number of approvals required to greater than zero. You
+must have Maintainer or Owner [permissions](../permissions.md#project-members-permissions)
+to manage approval rules.
 
-Read how to [operate the Secure scanners in an offline environment](offline_deployments/index.md).
+Follow these steps to enable `Vulnerability-Check`:
+
+1. Go to your project and select **Settings > General**.
+1. Expand **Merge request approvals**.
+1. Select **Enable** or **Edit**.
+1. Add or change the **Rule name** to `Vulnerability-Check` (case sensitive).
+1. Set the **No. of approvals required** to greater than zero.
+1. Select the **Target branch**.
+1. Select the users or groups to provide approval.
+1. Select **Add approval rule**.
+
+Once this group is added to your project, the approval rule is enabled for all merge requests.
+Any code changes cause the approvals required to reset.
+
+![Vulnerability Check Approver Rule](img/vulnerability-check_v13_4.png)
 
 ## Using private Maven repositories
 
@@ -292,35 +261,6 @@ under your project's settings:
 </settings>
 ```
 
-## Outdated security reports
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4913) in GitLab 12.7.
-
-When a security report generated for a merge request becomes outdated, the merge request shows a warning
-message in the security widget and prompts you to take an appropriate action.
-
-This can happen in two scenarios:
-
-1. Your [source branch is behind the target branch](#source-branch-is-behind-the-target-branch).
-1. The [target branch security report is out of date](#target-branch-security-report-is-out-of-date).
-
-### Source branch is behind the target branch
-
-This means the most recent common ancestor commit between the target branch and the source branch is
-not the most recent commit on the target branch. This is by far the most common situation.
-
-In this case you must rebase or merge to incorporate the changes from the target branch.
-
-![Incorporate target branch changes](img/outdated_report_branch_v12_9.png)
-
-### Target branch security report is out of date
-
-This can happen for many reasons, including failed jobs or new advisories. When the merge request shows that a
-security report is out of date, you must run a new pipeline on the target branch.
-You can do it quickly by following the hyperlink given to run a new pipeline.
-
-![Run a new pipeline](img/outdated_report_pipeline_v12_9.png)
-
 ## DAST On-Demand Scans
 
 If you don’t want scans running in your normal DevOps process you can use on-demand scans instead. For more details, see [on-demand scans](dast/index.md#on-demand-scans). This feature is only available for DAST. If you run an on-demand scan against the default branch, it is reported as a "successful pipeline" and these results are included in the security dashboard and vulnerability report.
@@ -329,10 +269,10 @@ If you don’t want scans running in your normal DevOps process you can use on-d
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321918) in GitLab 13.11.
 
-As of GitLab 13.11, we've introduced the **optional** validation of the security report artifacts based on the
+You can optionally enable validation of the security report artifacts based on the
 [report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/tree/master/dist).
 If you enable validation, GitLab validates the report artifacts before ingesting the vulnerabilities.
-This prevents ingesting broken vulnerability data into the database.
+This prevents ingestion of broken vulnerability data into the database.
 
 ### Enable security report validation
 
@@ -386,6 +326,33 @@ For more details about which findings or vulnerabilities you can view in each of
 - [Resolve the vulnerability](vulnerabilities/index.md#resolve-a-vulnerability), if a solution is known.
 
 ## Troubleshooting
+
+### Outdated security reports
+
+When a security report generated for a merge request becomes outdated, the merge request shows a warning
+message in the security widget and prompts you to take an appropriate action.
+
+This can happen in two scenarios:
+
+- Your [source branch is behind the target branch](#source-branch-is-behind-the-target-branch).
+- The [target branch security report is out of date](#target-branch-security-report-is-out-of-date).
+
+#### Source branch is behind the target branch
+
+This means the most recent common ancestor commit between the target branch and the source branch is
+not the most recent commit on the target branch. This is by far the most common situation.
+
+In this case you must rebase or merge to incorporate the changes from the target branch.
+
+![Incorporate target branch changes](img/outdated_report_branch_v12_9.png)
+
+#### Target branch security report is out of date
+
+This can happen for many reasons, including failed jobs or new advisories. When the merge request shows that a
+security report is out of date, you must run a new pipeline on the target branch.
+You can do it quickly by following the hyperlink given to run a new pipeline.
+
+![Run a new pipeline](img/outdated_report_pipeline_v12_9.png)
 
 ### Getting error message `sast job: stage parameter should be [some stage name here]`
 

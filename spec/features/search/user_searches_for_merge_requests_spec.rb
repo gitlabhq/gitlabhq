@@ -55,7 +55,7 @@ RSpec.describe 'User searches for merge requests', :js do
       wait_for_requests
 
       page.within('[data-testid="project-filter"]') do
-        click_on(project.full_name)
+        click_on(project.name)
       end
 
       search_for_mr(merge_request1.title)

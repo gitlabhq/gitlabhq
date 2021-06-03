@@ -66,12 +66,10 @@ module Gitlab
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED
               system_output = data['failure']
               attachment = attachment_path(data['system_out'])
-              attachment = remove_project_prefix(attachment, job)
             elsif data.key?('error')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR
               system_output = data['error']
               attachment = attachment_path(data['system_out'])
-              attachment = remove_project_prefix(attachment, job)
             elsif data.key?('skipped')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_SKIPPED
               system_output = data['skipped']
@@ -102,10 +100,6 @@ module Gitlab
 
             matches = data.match(ATTACHMENT_TAG_REGEX)
             matches[:path] if matches
-          end
-
-          def remove_project_prefix(attachment, job)
-            attachment&.delete_prefix(job.variables['CI_PROJECT_DIR']&.value || '')
           end
         end
       end

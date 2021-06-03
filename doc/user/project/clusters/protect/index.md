@@ -18,9 +18,6 @@ containers themselves.
 
 The following capabilities are available to protect deployed applications in Kubernetes:
 
-- Web Application Firewall
-  - [Overview](web_application_firewall/index.md)
-  - [Installation guide](web_application_firewall/quick_start_guide.md)
 - Container Network Security
   - [Overview](container_network_security/index.md)
   - [Installation guide](container_network_security/quick_start_guide.md)

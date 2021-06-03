@@ -8,7 +8,10 @@ import {
   GlButton,
   GlSkeletonLoader,
   GlTooltipDirective,
+  GlAvatar,
 } from '@gitlab/ui';
+import highlight from '~/lib/utils/highlight';
+import { truncateNamespace } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 import { ANY_OPTION } from '../constants';
 
@@ -25,6 +28,7 @@ export default {
     GlIcon,
     GlButton,
     GlSkeletonLoader,
+    GlAvatar,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -35,12 +39,12 @@ export default {
       required: false,
       default: "__('Filter')",
     },
-    selectedDisplayValue: {
+    name: {
       type: String,
       required: false,
       default: 'name',
     },
-    itemsDisplayValue: {
+    fullName: {
       type: String,
       required: false,
       default: 'name',
@@ -75,6 +79,12 @@ export default {
     resetDropdown() {
       this.$emit('change', ANY_OPTION);
     },
+    truncateNamespace(namespace) {
+      return truncateNamespace(namespace);
+    },
+    highlightedItemName(name) {
+      return highlight(name, this.searchText);
+    },
   },
   ANY_OPTION,
 };
@@ -83,15 +93,16 @@ export default {
 <template>
   <gl-dropdown
     class="gl-w-full"
-    menu-class="gl-w-full!"
+    menu-class="global-search-dropdown-menu"
     toggle-class="gl-text-truncate"
     :header-text="headerText"
+    :right="true"
     @show="$emit('search', searchText)"
     @shown="$refs.searchBox.focusInput()"
   >
     <template #button-content>
       <span class="dropdown-toggle-text gl-flex-grow-1 gl-text-truncate">
-        {{ selectedItem[selectedDisplayValue] }}
+        {{ selectedItem[name] }}
       </span>
       <gl-loading-icon v-if="loading" inline class="gl-mr-3" />
       <gl-button
@@ -121,9 +132,10 @@ export default {
         class="gl-border-b-solid gl-border-b-gray-100 gl-border-b-1 gl-pb-2! gl-mb-2"
         :is-check-item="true"
         :is-checked="isSelected($options.ANY_OPTION)"
+        :is-check-centered="true"
         @click="resetDropdown"
       >
-        {{ $options.ANY_OPTION.name }}
+        <span data-testid="item-title">{{ $options.ANY_OPTION.name }}</span>
       </gl-dropdown-item>
     </div>
     <div v-if="!loading">
@@ -132,9 +144,27 @@ export default {
         :key="item.id"
         :is-check-item="true"
         :is-checked="isSelected(item)"
+        :is-check-centered="true"
         @click="$emit('change', item)"
       >
-        {{ item[itemsDisplayValue] }}
+        <div class="gl-display-flex gl-align-items-center">
+          <gl-avatar
+            :src="item.avatar_url"
+            :entity-id="item.id"
+            :entity-name="item[name]"
+            shape="rect"
+            :size="32"
+          />
+          <div class="gl-display-flex gl-flex-direction-column">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <span data-testid="item-title" v-html="highlightedItemName(item[name])">{{
+              item[name]
+            }}</span>
+            <span class="gl-font-sm gl-text-gray-700" data-testid="item-namespace">{{
+              truncateNamespace(item[fullName])
+            }}</span>
+          </div>
+        </div>
       </gl-dropdown-item>
     </div>
     <div v-if="loading" class="gl-mx-4 gl-mt-3">
