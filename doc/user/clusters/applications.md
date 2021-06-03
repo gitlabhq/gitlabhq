@@ -1175,7 +1175,7 @@ before deploying one.
 
 The [`runner/gitlab-runner`](https://gitlab.com/gitlab-org/charts/gitlab-runner)
 chart is used to install this application, using
-[a preconfigured `values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/master/values.yaml)
+[a preconfigured `values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml)
 file. Customizing the installation by modifying this file is not supported. This
 also means you cannot modify `config.toml` file for this Runner. If you want to
 have that possibility and still deploy Runner in Kubernetes, consider using the

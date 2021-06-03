@@ -12,6 +12,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!) {
           fileType
           path
           editBlobPath
+          ideEditPath
           storedExternally
           rawPath
           replacePath

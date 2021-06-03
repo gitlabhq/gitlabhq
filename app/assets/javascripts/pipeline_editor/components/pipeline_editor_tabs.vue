@@ -114,6 +114,7 @@ export default {
       :empty-message="$options.i18n.empty.visualization"
       :is-empty="isEmpty"
       :is-invalid="isInvalid"
+      :keep-component-mounted="false"
       :title="$options.i18n.tabGraph"
       lazy
       data-testid="visualization-tab"

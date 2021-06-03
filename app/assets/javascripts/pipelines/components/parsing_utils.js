@@ -80,7 +80,7 @@ export const makeLinksFromNodes = (nodes, nodeDict) => {
 export const getAllAncestors = (nodes, nodeDict) => {
   const needs = nodes
     .map((node) => {
-      return nodeDict[node].needs || '';
+      return nodeDict[node]?.needs || '';
     })
     .flat()
     .filter(Boolean);

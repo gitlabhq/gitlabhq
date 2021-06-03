@@ -162,15 +162,22 @@ describe('Blob content viewer component', () => {
   });
 
   describe('BlobHeader action slot', () => {
-    it('renders BlobHeaderEdit button in simple viewer', async () => {
+    const { ideEditPath, editBlobPath } = simpleMockData;
+
+    it('renders BlobHeaderEdit buttons in simple viewer', async () => {
       fullFactory({
         mockData: { blobInfo: simpleMockData },
         stubs: {
           BlobContent: true,
         },
       });
+
       await nextTick();
-      expect(findBlobHeaderEdit().props('editPath')).toEqual('some_file.js/edit');
+
+      expect(findBlobHeaderEdit().props()).toMatchObject({
+        editPath: editBlobPath,
+        webIdePath: ideEditPath,
+      });
     });
 
     it('renders BlobHeaderEdit button in rich viewer', async () => {
@@ -180,8 +187,13 @@ describe('Blob content viewer component', () => {
           BlobContent: true,
         },
       });
+
       await nextTick();
-      expect(findBlobHeaderEdit().props('editPath')).toEqual('some_file.js/edit');
+
+      expect(findBlobHeaderEdit().props()).toMatchObject({
+        editPath: editBlobPath,
+        webIdePath: ideEditPath,
+      });
     });
   });
 });

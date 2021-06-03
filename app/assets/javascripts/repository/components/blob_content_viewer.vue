@@ -126,7 +126,10 @@ export default {
         @viewer-changed="switchViewer"
       >
         <template #actions>
-          <blob-header-edit :edit-path="blobInfo.editBlobPath" />
+          <blob-header-edit
+            :edit-path="blobInfo.editBlobPath"
+            :web-ide-path="blobInfo.ideEditPath"
+          />
         </template>
       </blob-header>
       <blob-content

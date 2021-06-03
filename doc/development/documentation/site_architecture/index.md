@@ -51,7 +51,7 @@ product, and all together are pulled to generate the docs website:
 
 - [GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master/doc)
 - [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc)
-- [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/tree/master/docs)
+- [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs)
 - [GitLab Chart](https://gitlab.com/charts/gitlab/tree/master/doc)
 
 NOTE:
