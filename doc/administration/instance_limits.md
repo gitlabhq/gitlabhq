@@ -169,8 +169,8 @@ Read more about [Gitaly concurrency limits](gitaly/configure_gitaly.md#limit-rpc
 
 There's a limit to the number of comments that can be submitted on an issue,
 merge request, or commit. When the limit is reached, system notes can still be
-added so that the history of events is not lost, but user-submitted comments
-will fail.
+added so that the history of events is not lost, but the user-submitted 
+comment fails.
 
 - **Max limit**: 5,000 comments.
 
@@ -179,10 +179,10 @@ will fail.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61974) in GitLab 12.2.
 
 There is a limit to the size of comments and descriptions of issues, merge requests, and epics.
-Attempting to add a body of text larger than the limit will result in an error, and the
-item will not be created.
+Attempting to add a body of text larger than the limit, results in an error, and the
+item is also not created.
 
-It's possible that this limit will be changed to a lower number in the future.
+It's possible that this limit changes to a lower number in the future.
 
 - **Max size**: ~1 million characters / ~1 MB.
 
@@ -191,8 +191,8 @@ It's possible that this limit will be changed to a lower number in the future.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292039) in GitLab 13.9
 
 Commits with arbitrarily large messages may be pushed to GitLab, but when
-displaying commits, titles (the first line of the commit message) will be
-limited to 1KiB, and descriptions (the rest of the message) will be limited to
+displaying commits, titles (the first line of the commit message)
+limits to 1KiB, and descriptions (the rest of the message) limits to
 1MiB.
 
 ## Number of issues in the milestone overview
@@ -316,7 +316,7 @@ each time a new pipeline is created. An active pipeline is any pipeline in one o
 - `running`
 
 If a new pipeline would cause the total number of jobs to exceed the limit, the pipeline
-will fail with a `job_activity_limit_exceeded` error.
+fails with a `job_activity_limit_exceeded` error.
 
 - GitLab SaaS subscribers have different limits [defined per plan](../user/gitlab_com/index.md#gitlab-cicd),
   and they affect all projects under that plan.
@@ -367,7 +367,7 @@ The total number of subscriptions can be limited per project. This limit is
 checked each time a new subscription is created.
 
 If a new subscription would cause the total number of subscription to exceed the
-limit, the subscription will be considered invalid.
+limit, the subscription is considered invalid.
 
 - GitLab SaaS subscribers have different limits [defined per plan](../user/gitlab_com/index.md#gitlab-cicd),
   and they affect all projects under that plan.
@@ -391,7 +391,7 @@ Set the limit to `0` to disable it.
 The total number of pipeline schedules can be limited per project. This limit is
 checked each time a new pipeline schedule is created. If a new pipeline schedule
 would cause the total number of pipeline schedules to exceed the limit, the
-pipeline schedule will not be created.
+pipeline schedule is not created.
 
 GitLab SaaS subscribers have different limits [defined per plan](../user/gitlab_com/index.md#gitlab-cicd),
 and they affect all projects under that plan.
@@ -413,7 +413,7 @@ Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 
 The total number of instance level CI/CD variables is limited at the instance level.
 This limit is checked each time a new instance level variable is created. If a new variable
-would cause the total number of variables to exceed the limit, the new variable will not be created.
+would cause the total number of variables to exceed the limit, the new variable is created.
 
 On self-managed instances this limit is defined for the `default` plan. By default,
 this limit is set to `25`.
@@ -607,8 +607,8 @@ Reports that go over the 20 MB limit won't be loaded. Affected reports:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8638) in GitLab 13.3.
 
 You can set a limit on the content of repository files that are indexed in
-Elasticsearch. Any files larger than this limit will not be indexed, and thus
-will not be searchable.
+Elasticsearch. Any files larger than this limit is neither indexed 
+nor searchable.
 
 Setting a limit helps reduce the memory usage of the indexing processes and
 the overall index size. This value defaults to `1024 KiB` (1 MiB) as any
@@ -616,8 +616,8 @@ text files larger than this likely aren't meant to be read by humans.
 
 You must set a limit, as unlimited file sizes aren't supported. Setting this
 value to be greater than the amount of memory on GitLab Sidekiq nodes causes
-the GitLab Sidekiq nodes to run out of memory, as they will pre-allocate this
-amount of memory during indexing.
+the GitLab Sidekiq nodes to run out of memory, as this amount of memory
+is pre-allocated during indexing.
 
 ### Maximum field length
 
@@ -670,7 +670,7 @@ More information can be found in these docs:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31007) in GitLab 12.4.
 
 Total number of changes (branches or tags) in a single push to determine whether
-individual push events or bulk push event will be created.
+individual push events or a bulk push event are created.
 
 More information can be found in the [Push event activities limit and bulk push events documentation](../user/admin_area/settings/push_event_activities_limit.md).
 

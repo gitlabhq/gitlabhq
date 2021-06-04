@@ -56,6 +56,7 @@ export default {
   <div class="pipeline-tags" data-testid="pipeline-url-table-cell">
     <gl-link
       :href="pipeline.path"
+      class="gl-text-decoration-underline"
       data-testid="pipeline-url-link"
       data-qa-selector="pipeline_url_link"
     >
