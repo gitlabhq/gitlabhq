@@ -2,7 +2,7 @@
 
 exports[`IncidentsSettingTabs should render the component 1`] = `
 <section
-  class="settings no-animate qa-incident-management-settings"
+  class="settings no-animate"
   data-qa-selector="incidents_settings_content"
   id="incident-management-settings"
 >
@@ -43,15 +43,6 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
     >
       <!---->
        
-      <gl-tab-stub
-        title="Alert integration"
-        titlelinkclass=""
-      >
-        <alertssettingsform-stub
-          class="gl-pt-3"
-          data-testid="AlertsSettingsForm-tab"
-        />
-      </gl-tab-stub>
       <gl-tab-stub
         title="PagerDuty integration"
         titlelinkclass=""

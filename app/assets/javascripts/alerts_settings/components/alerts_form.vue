@@ -3,7 +3,6 @@ import {
   GlButton,
   GlSprintf,
   GlLink,
-  GlIcon,
   GlFormGroup,
   GlFormCheckbox,
   GlDropdown,
@@ -22,7 +21,6 @@ export default {
     GlSprintf,
     GlLink,
     GlFormGroup,
-    GlIcon,
     GlFormCheckbox,
     GlDropdown,
     GlDropdownItem,
@@ -98,7 +96,7 @@ export default {
         <label class="gl-display-inline-flex" for="alert-integration-settings-issue-template">
           {{ $options.i18n.incidentTemplate.label }}
           <gl-link :href="$options.ISSUE_TEMPLATES_DOCS_LINK" target="_blank">
-            <gl-icon name="question" :size="12" />
+            <span class="gl-font-weight-normal gl-pl-2">{{ $options.i18n.introLinkText }}</span>
           </gl-link>
         </label>
         <gl-dropdown

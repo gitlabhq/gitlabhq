@@ -100,7 +100,7 @@ Prometheus server to use the
 Alerts can be used to trigger actions, like opening an issue automatically
 (disabled by default since `13.1`). To configure the actions:
 
-1. Navigate to your project's **Settings > Operations > Incidents**.
+1. Navigate to your project's **Settings > Operations > Alerts**.
 1. Enable the option to create issues.
 1. Choose the [issue template](../../user/project/description_templates.md) to create the issue from.
 1. Optionally, select whether to send an email notification to the developers of the project.

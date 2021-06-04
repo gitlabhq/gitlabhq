@@ -167,7 +167,7 @@ alert to confirm your integration works properly.
 
 1. Sign in as a user with Developer or greater [permissions](../../user/permissions.md).
 1. Navigate to **Settings > Operations** in your project.
-1. Click **Alert integrations** to expand the section.
+1. Click **Alerts** to expand the section.
 1. Click the **{settings}** settings icon on the right side of the integration in [the list](#integrations-list).
 1. Select the **Send test alert** tab to open it.
 1. Enter a test payload in the payload field (valid JSON is required).

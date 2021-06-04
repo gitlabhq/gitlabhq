@@ -339,7 +339,7 @@ module QA
           autoload :Prometheus, 'qa/page/project/settings/services/prometheus'
         end
         autoload :Operations, 'qa/page/project/settings/operations'
-        autoload :Incidents, 'qa/page/project/settings/incidents'
+        autoload :Alerts, 'qa/page/project/settings/alerts'
         autoload :Integrations, 'qa/page/project/settings/integrations'
       end
 

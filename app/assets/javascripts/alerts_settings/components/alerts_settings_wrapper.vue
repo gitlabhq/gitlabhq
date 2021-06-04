@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlAlert } from '@gitlab/ui';
+import { GlButton, GlAlert, GlTabs, GlTab } from '@gitlab/ui';
 import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
@@ -30,6 +30,7 @@ import {
   INTEGRATION_INACTIVE_PAYLOAD_TEST_ERROR,
   DEFAULT_ERROR,
 } from '../utils/error_messages';
+import AlertsForm from './alerts_form.vue';
 import IntegrationsList from './alerts_integrations_list.vue';
 import AlertSettingsForm from './alerts_settings_form.vue';
 
@@ -38,9 +39,12 @@ export default {
   i18n,
   components: {
     IntegrationsList,
+    AlertsForm,
     AlertSettingsForm,
     GlAlert,
     GlButton,
+    GlTabs,
+    GlTab,
   },
   inject: {
     projectPath: {
@@ -347,46 +351,51 @@ export default {
 </script>
 
 <template>
-  <div>
-    <gl-alert
-      v-if="showSuccessfulCreateAlert"
-      class="gl-mt-n2"
-      :primary-button-text="$options.i18n.integrationCreated.btnCaption"
-      :title="$options.i18n.integrationCreated.title"
-      @primaryAction="viewCreatedIntegration"
-      @dismiss="showSuccessfulCreateAlert = false"
-    >
-      {{ $options.i18n.integrationCreated.successMsg }}
-    </gl-alert>
+  <gl-tabs data-testid="alert-integration-settings">
+    <gl-tab :title="$options.i18n.settingsTabs.currentIntegrations">
+      <gl-alert
+        v-if="showSuccessfulCreateAlert"
+        class="gl-mt-n2"
+        :primary-button-text="$options.i18n.integrationCreated.btnCaption"
+        :title="$options.i18n.integrationCreated.title"
+        @primaryAction="viewCreatedIntegration"
+        @dismiss="showSuccessfulCreateAlert = false"
+      >
+        {{ $options.i18n.integrationCreated.successMsg }}
+      </gl-alert>
 
-    <integrations-list
-      :integrations="integrations"
-      :loading="loading"
-      @edit-integration="editIntegration"
-      @delete-integration="deleteIntegration"
-    />
-    <gl-button
-      v-if="canAddIntegration && !formVisible"
-      category="secondary"
-      variant="confirm"
-      data-testid="add-integration-btn"
-      class="gl-mt-3"
-      @click="setFormVisibility(true)"
-    >
-      {{ $options.i18n.addNewIntegration }}
-    </gl-button>
-    <alert-settings-form
-      v-if="formVisible"
-      :loading="isUpdating"
-      :can-add-integration="canAddIntegration"
-      :alert-fields="alertFields"
-      :tab-index="tabIndex"
-      @create-new-integration="createNewIntegration"
-      @update-integration="updateIntegration"
-      @reset-token="resetToken"
-      @clear-current-integration="clearCurrentIntegration"
-      @test-alert-payload="testAlertPayload"
-      @save-and-test-alert-payload="saveAndTestAlertPayload"
-    />
-  </div>
+      <integrations-list
+        :integrations="integrations"
+        :loading="loading"
+        @edit-integration="editIntegration"
+        @delete-integration="deleteIntegration"
+      />
+      <gl-button
+        v-if="canAddIntegration && !formVisible"
+        category="secondary"
+        variant="confirm"
+        data-testid="add-integration-btn"
+        class="gl-mt-3"
+        @click="setFormVisibility(true)"
+      >
+        {{ $options.i18n.addNewIntegration }}
+      </gl-button>
+      <alert-settings-form
+        v-if="formVisible"
+        :loading="isUpdating"
+        :can-add-integration="canAddIntegration"
+        :alert-fields="alertFields"
+        :tab-index="tabIndex"
+        @create-new-integration="createNewIntegration"
+        @update-integration="updateIntegration"
+        @reset-token="resetToken"
+        @clear-current-integration="clearCurrentIntegration"
+        @test-alert-payload="testAlertPayload"
+        @save-and-test-alert-payload="saveAndTestAlertPayload"
+      />
+    </gl-tab>
+    <gl-tab :title="$options.i18n.settingsTabs.integrationSettings">
+      <alerts-form class="gl-pt-3" data-testid="alert-integration-settings-tab" />
+    </gl-tab>
+  </gl-tabs>
 </template>

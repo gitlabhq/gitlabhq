@@ -3018,10 +3018,16 @@ msgstr ""
 msgid "AlertSettings|Add new integration"
 msgstr ""
 
+msgid "AlertSettings|Alert settings"
+msgstr ""
+
 msgid "AlertSettings|Authorization key"
 msgstr ""
 
 msgid "AlertSettings|Configure details"
+msgstr ""
+
+msgid "AlertSettings|Current integrations"
 msgstr ""
 
 msgid "AlertSettings|Customize alert payload mapping (optional)"
@@ -3148,9 +3154,6 @@ msgid "AlertsIntegrations|Alerts will be created through this integration"
 msgstr ""
 
 msgid "AlertsIntegrations|Alerts will not be created through this integration"
-msgstr ""
-
-msgid "AlertsIntegrations|Current integrations"
 msgstr ""
 
 msgid "AlertsIntegrations|If you delete the %{integrationName} integration, alerts are no longer sent from this endpoint. This action cannot be undone."
@@ -17369,7 +17372,7 @@ msgstr ""
 msgid "Incident Management Limits"
 msgstr ""
 
-msgid "Incident template (optional)"
+msgid "Incident template (optional)."
 msgstr ""
 
 msgid "IncidentManagement|%{hours} hours, %{minutes} minutes remaining"
@@ -17457,9 +17460,6 @@ msgid "IncidentManagement|Unpublished"
 msgstr ""
 
 msgid "IncidentSettings|Activate \"time to SLA\" countdown timer"
-msgstr ""
-
-msgid "IncidentSettings|Alert integration"
 msgstr ""
 
 msgid "IncidentSettings|Fine-tune incident settings and set up integrations with external tools to help better manage incidents."

@@ -28,8 +28,8 @@ members with the **Owner** or **Maintainer** roles have the option to receive
 a single email notification for new alerts.
 
 1. Navigate to **Settings > Operations**.
-1. Expand the **Incidents** section.
-1. In the **Alert Integration** tab, select the checkbox
+1. Expand the **Alerts** section.
+1. In the **Integration settings** tab, select the checkbox
    **Send a single email notification to Owners and Maintainers for new alerts**.
 1. Select **Save changes**.
 

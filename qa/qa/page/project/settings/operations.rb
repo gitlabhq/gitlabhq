@@ -13,7 +13,7 @@ module QA
 
           def expand_incidents(&block)
             expand_content(:incidents_settings_content) do
-              Settings::Incidents.perform(&block)
+              Settings::Alerts.perform(&block)
             end
           end
         end

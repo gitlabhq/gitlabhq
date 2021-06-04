@@ -41,7 +41,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
         visit project_settings_operations_path(project)
 
         wait_for_requests
-        click_expand_incident_management_button
+        click_settings_tab
       end
 
       it 'renders form for incident management' do
@@ -60,22 +60,24 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
         click_on('bug')
 
         save_form
-        click_expand_incident_management_button
+        click_settings_tab
 
         expect(find_field(create_issue)).to be_checked
         expect(page).to have_selector(:id, 'alert-integration-settings-issue-template', text: 'bug')
+
+        click_settings_tab
         expect(find_field(send_email)).not_to be_checked
       end
 
-      def click_expand_incident_management_button
-        within '.qa-incident-management-settings' do
-          click_button('Expand')
+      def click_settings_tab
+        within '[data-testid="alert-integration-settings"]' do
+          click_link 'Alert settings'
         end
       end
 
       def save_form
-        page.within ".qa-incident-management-settings" do
-          click_on 'Save changes'
+        page.within '[data-testid="alert-integration-settings"]' do
+          click_button 'Save changes'
         end
       end
     end

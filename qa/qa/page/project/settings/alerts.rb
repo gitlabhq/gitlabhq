@@ -4,8 +4,8 @@ module QA
   module Page
     module Project
       module Settings
-        class Incidents < Page::Base
-          view 'app/assets/javascripts/incidents_settings/components/alerts_form.vue' do
+        class Alerts < Page::Base
+          view 'app/assets/javascripts/alerts_settings/components/alerts_form.vue' do
             element :create_issue_checkbox
             element :incident_templates_dropdown
             element :save_changes_button

@@ -10,6 +10,9 @@ module OperationsHelper
   end
 
   def alerts_settings_data(disabled: false)
+    setting = project_incident_management_setting
+    templates = setting.available_issue_templates.map { |t| { key: t.key, name: t.name } }
+
     {
       'prometheus_activated' => prometheus_service.manual_configuration?.to_s,
       'prometheus_form_path' => scoped_integration_path(prometheus_service),
@@ -21,21 +24,22 @@ module OperationsHelper
       'alerts_usage_url' => project_alert_management_index_path(@project),
       'disabled' => disabled.to_s,
       'project_path' => @project.full_path,
-      'multi_integrations' => 'false'
+      'multi_integrations' => 'false',
+      'templates' => templates.to_json,
+      'create_issue' => setting.create_issue.to_s,
+      'issue_template_key' => setting.issue_template_key.to_s,
+      'send_email' => setting.send_email.to_s,
+      'auto_close_incident' => setting.auto_close_incident.to_s,
+      'pagerduty_reset_key_path' => reset_pagerduty_token_project_settings_operations_path(@project),
+      'operations_settings_endpoint' => project_settings_operations_path(@project)
     }
   end
 
   def operations_settings_data
     setting = project_incident_management_setting
-    templates = setting.available_issue_templates.map { |t| { key: t.key, name: t.name } }
 
     {
       operations_settings_endpoint: project_settings_operations_path(@project),
-      templates: templates.to_json,
-      create_issue: setting.create_issue.to_s,
-      issue_template_key: setting.issue_template_key.to_s,
-      send_email: setting.send_email.to_s,
-      auto_close_incident: setting.auto_close_incident.to_s,
       pagerduty_active: setting.pagerduty_active.to_s,
       pagerduty_token: setting.pagerduty_token.to_s,
       pagerduty_webhook_url: project_incidents_integrations_pagerduty_url(@project, token: setting.pagerduty_token),
