@@ -68,11 +68,19 @@ module Gitlab
         end
 
         def expand_value(value, keep_undefined: false)
-          value.gsub(ExpandVariables::VARIABLES_REGEXP) do
+          value.gsub(Item::VARIABLES_REGEXP) do
             match = Regexp.last_match
-            result = @variables_by_key[match[1] || match[2]]&.value
-            result ||= match[0] if keep_undefined
-            result
+            if match[:key]
+              # we matched variable
+              if variable = @variables_by_key[match[:key]]
+                variable.value
+              elsif keep_undefined
+                match[0]
+              end
+            else
+              # we escape sequence
+              match[0]
+            end
           end
         end
 

@@ -6,7 +6,7 @@ module Gitlab
       module External
         module File
           class Template < Base
-            attr_reader :location, :project
+            attr_reader :location
 
             SUFFIX = '.gitlab-ci.yml'
 
@@ -41,7 +41,7 @@ module Gitlab
             end
 
             def fetch_template_content
-              Gitlab::Template::GitlabCiYmlTemplate.find(template_name, project)&.content
+              Gitlab::Template::GitlabCiYmlTemplate.find(template_name, context.project)&.content
             end
           end
         end

@@ -1,5 +1,5 @@
 import Api from '~/api';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import * as types from './mutation_types';
 
@@ -26,7 +26,9 @@ const receiveFreezePeriod = (store, request) => {
       dispatch('fetchFreezePeriods');
     })
     .catch((error) => {
-      createFlash(__('Error: Unable to create deploy freeze'));
+      createFlash({
+        message: __('Error: Unable to create deploy freeze'),
+      });
       dispatch('receiveFreezePeriodError', error);
     });
 };
@@ -58,7 +60,9 @@ export const fetchFreezePeriods = ({ commit, state }) => {
       commit(types.RECEIVE_FREEZE_PERIODS_SUCCESS, data);
     })
     .catch(() => {
-      createFlash(__('There was an error fetching the deploy freezes.'));
+      createFlash({
+        message: __('There was an error fetching the deploy freezes.'),
+      });
     });
 };
 

@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import { spriteIcon } from '~/lib/utils/common_utils';
 import FilesCommentButton from './files_comment_button';
-import { deprecatedCreateFlash as createFlash } from './flash';
+import createFlash from './flash';
 import initImageDiffHelper from './image_diff/helpers/init_image_diff';
 import axios from './lib/utils/axios_utils';
 import { __ } from './locale';
@@ -95,7 +95,9 @@ export default class SingleFileDiff {
         if (cb) cb();
       })
       .catch(() => {
-        createFlash(__('An error occurred while retrieving diff'));
+        createFlash({
+          message: __('An error occurred while retrieving diff'),
+        });
       });
   }
 }

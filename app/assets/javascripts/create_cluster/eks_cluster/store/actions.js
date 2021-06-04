@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { DEFAULT_REGION } from '../constants';
@@ -102,7 +102,9 @@ export const createClusterSuccess = (_, location) => {
 
 export const createClusterError = ({ commit }, error) => {
   commit(types.CREATE_CLUSTER_ERROR, error);
-  createFlash(getErrorMessage(error));
+  createFlash({
+    message: getErrorMessage(error),
+  });
 };
 
 export const setRegion = ({ commit }, payload) => {

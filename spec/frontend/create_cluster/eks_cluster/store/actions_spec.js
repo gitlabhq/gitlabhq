@@ -24,7 +24,7 @@ import {
   CREATE_CLUSTER_ERROR,
 } from '~/create_cluster/eks_cluster/store/mutation_types';
 import createState from '~/create_cluster/eks_cluster/store/state';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/flash');
@@ -358,7 +358,9 @@ describe('EKS Cluster Store Actions', () => {
       testAction(actions.createClusterError, payload, state, [
         { type: CREATE_CLUSTER_ERROR, payload },
       ]).then(() => {
-        expect(createFlash).toHaveBeenCalledWith(payload.name[0]);
+        expect(createFlash).toHaveBeenCalledWith({
+          message: payload.name[0],
+        });
       }));
   });
 });

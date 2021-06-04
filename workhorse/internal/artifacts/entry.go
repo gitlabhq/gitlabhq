@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"mime"
 	"net/http"
 	"os"
 	"os/exec"
@@ -53,14 +52,6 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	}
 }
 
-func detectFileContentType(fileName string) string {
-	contentType := mime.TypeByExtension(filepath.Ext(fileName))
-	if contentType == "" {
-		contentType = "application/octet-stream"
-	}
-	return contentType
-}
-
 func unpackFileFromZip(ctx context.Context, archivePath, encodedFilename string, headers http.Header, output io.Writer) error {
 	fileName, err := zipartifacts.DecodeFileEntry(encodedFilename)
 	if err != nil {
@@ -97,7 +88,15 @@ func unpackFileFromZip(ctx context.Context, archivePath, encodedFilename string,
 
 	// Write http headers about the file
 	headers.Set("Content-Length", contentLength)
-	headers.Set("Content-Type", detectFileContentType(fileName))
+
+	// Using application/octet-stream tells the client that we don't
+	// really know what Content-Type is. Since this file is being sent
+	// as attachment, browsers don't need to know to save the
+	// file. Chrome doesn't appear to pay attention to Content-Type when
+	// Content-Disposition is an attachment, and Firefox only uses it if there
+	// is no extension in the filename. Thus, there's no need for
+	// Workhorse to guess Content-Type based on the filename.
+	headers.Set("Content-Type", "application/octet-stream")
 	headers.Set("Content-Disposition", "attachment; filename=\""+escapeQuotes(basename)+"\"")
 	// Copy file body to client
 	if _, err := io.Copy(output, reader); err != nil {

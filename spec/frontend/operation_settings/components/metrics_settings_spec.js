@@ -1,7 +1,7 @@
 import { GlButton, GlLink, GlFormGroup, GlFormInput, GlFormSelect } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { timezones } from '~/monitoring/format_date';
@@ -203,10 +203,10 @@ describe('operation settings external dashboard component', () => {
           .$nextTick()
           .then(jest.runAllTicks)
           .then(() =>
-            expect(createFlash).toHaveBeenCalledWith(
-              `There was an error saving your changes. ${message}`,
-              'alert',
-            ),
+            expect(createFlash).toHaveBeenCalledWith({
+              message: `There was an error saving your changes. ${message}`,
+              type: 'alert',
+            }),
           );
       });
     });

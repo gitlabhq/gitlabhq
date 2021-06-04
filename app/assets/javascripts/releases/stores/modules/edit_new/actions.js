@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import createReleaseMutation from '~/releases/graphql/mutations/create_release.mutation.graphql';
@@ -39,7 +39,9 @@ export const fetchRelease = async ({ commit, state }) => {
     commit(types.RECEIVE_RELEASE_SUCCESS, release);
   } catch (error) {
     commit(types.RECEIVE_RELEASE_ERROR, error);
-    createFlash(s__('Release|Something went wrong while getting the release details.'));
+    createFlash({
+      message: s__('Release|Something went wrong while getting the release details.'),
+    });
   }
 };
 
@@ -124,7 +126,9 @@ export const createRelease = async ({ commit, dispatch, state, getters }) => {
     dispatch('receiveSaveReleaseSuccess', response.data.releaseCreate.release.links.selfUrl);
   } catch (error) {
     commit(types.RECEIVE_SAVE_RELEASE_ERROR, error);
-    createFlash(s__('Release|Something went wrong while creating a new release.'));
+    createFlash({
+      message: s__('Release|Something went wrong while creating a new release.'),
+    });
   }
 };
 
@@ -214,6 +218,8 @@ export const updateRelease = async ({ commit, dispatch, state, getters }) => {
     dispatch('receiveSaveReleaseSuccess', state.release._links.self);
   } catch (error) {
     commit(types.RECEIVE_SAVE_RELEASE_ERROR, error);
-    createFlash(s__('Release|Something went wrong while saving the release details.'));
+    createFlash({
+      message: s__('Release|Something went wrong while saving the release details.'),
+    });
   }
 };

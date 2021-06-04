@@ -23,7 +23,7 @@ Your caret can stop touching a `rawReference` can happen in a variety of ways:
    and hide the `AddIssuableForm` area.
 
 */
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import {
   relatedIssuesRemoveErrorMap,
@@ -122,11 +122,11 @@ export default {
           })
           .catch((res) => {
             if (res && res.status !== 404) {
-              Flash(relatedIssuesRemoveErrorMap[this.issuableType]);
+              createFlash({ message: relatedIssuesRemoveErrorMap[this.issuableType] });
             }
           });
       } else {
-        Flash(pathIndeterminateErrorMap[this.issuableType]);
+        createFlash({ message: pathIndeterminateErrorMap[this.issuableType] });
       }
     },
     onToggleAddRelatedIssuesForm() {
@@ -155,7 +155,7 @@ export default {
             if (response && response.data && response.data.message) {
               errorMessage = response.data.message;
             }
-            Flash(errorMessage);
+            createFlash({ message: errorMessage });
           })
           .finally(() => {
             this.isSubmitting = false;
@@ -176,7 +176,7 @@ export default {
         })
         .catch(() => {
           this.store.setRelatedIssues([]);
-          Flash(__('An error occurred while fetching issues.'));
+          createFlash({ message: __('An error occurred while fetching issues.') });
         })
         .finally(() => {
           this.isFetching = false;
@@ -197,7 +197,7 @@ export default {
             }
           })
           .catch(() => {
-            Flash(__('An error occurred while reordering issues.'));
+            createFlash({ message: __('An error occurred while reordering issues.') });
           });
       }
     },

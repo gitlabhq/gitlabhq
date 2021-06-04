@@ -15,7 +15,7 @@ import ImportStatus from '../../components/import_status.vue';
 import { STATUSES } from '../../constants';
 import addValidationErrorMutation from '../graphql/mutations/add_validation_error.mutation.graphql';
 import removeValidationErrorMutation from '../graphql/mutations/remove_validation_error.mutation.graphql';
-import groupQuery from '../graphql/queries/group.query.graphql';
+import groupAndProjectQuery from '../graphql/queries/groupAndProject.query.graphql';
 
 const DEBOUNCE_INTERVAL = 300;
 
@@ -47,21 +47,21 @@ export default {
   },
 
   apollo: {
-    existingGroup: {
-      query: groupQuery,
+    existingGroupAndProject: {
+      query: groupAndProjectQuery,
       debounce: DEBOUNCE_INTERVAL,
       variables() {
         return {
           fullPath: this.fullPath,
         };
       },
-      update({ existingGroup }) {
+      update({ existingGroup, existingProject }) {
         const variables = {
           field: 'new_name',
           sourceGroupId: this.group.id,
         };
 
-        if (!existingGroup) {
+        if (!existingGroup && !existingProject) {
           this.$apollo.mutate({
             mutation: removeValidationErrorMutation,
             variables,
@@ -71,7 +71,7 @@ export default {
             mutation: addValidationErrorMutation,
             variables: {
               ...variables,
-              message: s__('BulkImport|Name already exists.'),
+              message: this.$options.i18n.NAME_ALREADY_EXISTS,
             },
           });
         }
@@ -114,6 +114,10 @@ export default {
     absolutePath() {
       return joinPaths(gon.relative_url_root || '/', this.fullPath);
     },
+  },
+
+  i18n: {
+    NAME_ALREADY_EXISTS: s__('BulkImport|Name already exists.'),
   },
 };
 </script>

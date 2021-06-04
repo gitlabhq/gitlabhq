@@ -1,7 +1,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { getDraftReplyFormData, getDraftFormData } from '~/batch_comments/utils';
 import { TEXT_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { clearDraft } from '~/lib/utils/autosave';
 import { s__ } from '~/locale';
 import { formatLineRange } from '~/notes/components/multiline_comment_utils';
@@ -42,7 +42,9 @@ export default {
           this.handleClearForm(this.discussion.line_code);
         })
         .catch(() => {
-          createFlash(s__('MergeRequests|An error occurred while saving the draft comment.'));
+          createFlash({
+            message: s__('MergeRequests|An error occurred while saving the draft comment.'),
+          });
         });
     },
     addToReview(note) {
@@ -80,7 +82,9 @@ export default {
           }
         })
         .catch(() => {
-          createFlash(s__('MergeRequests|An error occurred while saving the draft comment.'));
+          createFlash({
+            message: s__('MergeRequests|An error occurred while saving the draft comment.'),
+          });
         });
     },
     handleClearForm(lineCode) {

@@ -1,0 +1,8 @@
+---
+name: redirect_to_latest_template_jobs_browser_performance_testing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63144
+rollout_issue_url: 
+milestone: '14.0'
+type: development
+group: group::pipeline authoring
+default_enabled: false

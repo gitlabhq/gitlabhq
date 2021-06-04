@@ -89,8 +89,9 @@ artifacts, as described in the [troubleshooting documentation](../../../administ
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50889) in GitLab Core 13.9.
 
-When enabled (default), the artifacts for the most recent pipeline for a ref are
-locked against deletion and kept regardless of the expiry time.
+When enabled (default), the artifacts of the most recent pipeline for each Git ref
+([branches and tags](https://git-scm.com/book/en/v2/Git-Internals-Git-References))
+are locked against deletion and kept regardless of the expiry time.
 
 When disabled, the latest artifacts for any **new** successful or fixed pipelines
 are allowed to expire.

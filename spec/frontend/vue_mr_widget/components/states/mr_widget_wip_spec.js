@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import WorkInProgress from '~/vue_merge_request_widget/components/states/work_in_progress.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
@@ -63,10 +63,10 @@ describe('Wip', () => {
         setImmediate(() => {
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
-          expect(createFlash).toHaveBeenCalledWith(
-            'The merge request can now be merged.',
-            'notice',
-          );
+          expect(createFlash).toHaveBeenCalledWith({
+            message: 'The merge request can now be merged.',
+            type: 'notice',
+          });
           done();
         });
       });

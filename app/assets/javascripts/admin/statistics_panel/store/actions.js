@@ -1,5 +1,5 @@
 import Api from '~/api';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import * as types from './mutation_types';
@@ -21,5 +21,7 @@ export const receiveStatisticsSuccess = ({ commit }, statistics) =>
 
 export const receiveStatisticsError = ({ commit }, error) => {
   commit(types.RECEIVE_STATISTICS_ERROR, error);
-  createFlash(s__('AdminDashboard|Error loading the statistics. Please try again'));
+  createFlash({
+    message: s__('AdminDashboard|Error loading the statistics. Please try again'),
+  });
 };

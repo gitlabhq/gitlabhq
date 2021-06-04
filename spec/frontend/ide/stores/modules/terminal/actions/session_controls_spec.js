@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import * as actions from '~/ide/stores/modules/terminal/actions/session_controls';
 import { STARTING, PENDING, STOPPING, STOPPED } from '~/ide/stores/modules/terminal/constants';
 import * as messages from '~/ide/stores/modules/terminal/messages';
@@ -89,7 +89,9 @@ describe('IDE store terminal session controls actions', () => {
     it('flashes message', () => {
       actions.receiveStartSessionError({ dispatch });
 
-      expect(createFlash).toHaveBeenCalledWith(messages.UNEXPECTED_ERROR_STARTING);
+      expect(createFlash).toHaveBeenCalledWith({
+        message: messages.UNEXPECTED_ERROR_STARTING,
+      });
     });
 
     it('sets session status', () => {
@@ -161,7 +163,9 @@ describe('IDE store terminal session controls actions', () => {
     it('flashes message', () => {
       actions.receiveStopSessionError({ dispatch });
 
-      expect(createFlash).toHaveBeenCalledWith(messages.UNEXPECTED_ERROR_STOPPING);
+      expect(createFlash).toHaveBeenCalledWith({
+        message: messages.UNEXPECTED_ERROR_STOPPING,
+      });
     });
 
     it('kills the session', () => {

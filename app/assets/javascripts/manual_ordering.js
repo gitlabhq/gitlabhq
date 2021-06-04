@@ -3,7 +3,7 @@ import {
   getBoardSortableDefaultOptions,
   sortableStart,
 } from '~/boards/mixins/sortable_default_options';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 
@@ -15,7 +15,9 @@ const updateIssue = (url, issueList, { move_before_id, move_after_id }) =>
       group_full_path: issueList.dataset.groupFullPath,
     })
     .catch(() => {
-      createFlash(s__("ManualOrdering|Couldn't save the order of the issues"));
+      createFlash({
+        message: s__("ManualOrdering|Couldn't save the order of the issues"),
+      });
     });
 
 const initManualOrdering = (draggableSelector = 'li.issue') => {

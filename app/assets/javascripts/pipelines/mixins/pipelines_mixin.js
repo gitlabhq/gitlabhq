@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';
@@ -169,7 +169,11 @@ export default {
       this.service
         .postAction(endpoint)
         .then(() => this.updateTable())
-        .catch(() => createFlash(__('An error occurred while making the request.')));
+        .catch(() =>
+          createFlash({
+            message: __('An error occurred while making the request.'),
+          }),
+        );
     },
 
     /**
@@ -189,9 +193,11 @@ export default {
         .runMRPipeline(options)
         .then(() => this.updateTable())
         .catch(() => {
-          createFlash(
-            __('An error occurred while trying to run a new pipeline for this merge request.'),
-          );
+          createFlash({
+            message: __(
+              'An error occurred while trying to run a new pipeline for this merge request.',
+            ),
+          });
         })
         .finally(() => this.store.toggleIsRunningPipeline(false));
     },

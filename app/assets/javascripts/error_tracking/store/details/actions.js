@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';
 import service from '../../services';
@@ -26,7 +26,9 @@ export function startPollingStacktrace({ commit }, endpoint) {
     },
     errorCallback: () => {
       commit(types.SET_LOADING_STACKTRACE, false);
-      createFlash(__('Failed to load stacktrace.'));
+      createFlash({
+        message: __('Failed to load stacktrace.'),
+      });
     },
   });
 

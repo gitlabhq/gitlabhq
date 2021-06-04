@@ -5,10 +5,14 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { STATUSES } from '~/import_entities/constants';
 import ImportTableRow from '~/import_entities/import_groups/components/import_table_row.vue';
-import groupQuery from '~/import_entities/import_groups/graphql/queries/group.query.graphql';
+import addValidationErrorMutation from '~/import_entities/import_groups/graphql/mutations/add_validation_error.mutation.graphql';
+import removeValidationErrorMutation from '~/import_entities/import_groups/graphql/mutations/remove_validation_error.mutation.graphql';
+import groupAndProjectQuery from '~/import_entities/import_groups/graphql/queries/groupAndProject.query.graphql';
 import { availableNamespacesFixture } from '../graphql/fixtures';
 
 Vue.use(VueApollo);
+
+const { i18n: I18N } = ImportTableRow;
 
 const getFakeGroup = (status) => ({
   web_url: 'https://fake.host/',
@@ -25,6 +29,7 @@ const getFakeGroup = (status) => ({
 
 const EXISTING_GROUP_TARGET_NAMESPACE = 'existing-group';
 const EXISTING_GROUP_PATH = 'existing-path';
+const EXISTING_PROJECT_PATH = 'existing-project-path';
 
 describe('import table row', () => {
   let wrapper;
@@ -41,13 +46,19 @@ describe('import table row', () => {
   const createComponent = (props) => {
     apolloProvider = createMockApollo([
       [
-        groupQuery,
+        groupAndProjectQuery,
         ({ fullPath }) => {
           const existingGroup =
             fullPath === `${EXISTING_GROUP_TARGET_NAMESPACE}/${EXISTING_GROUP_PATH}`
               ? { id: 1 }
               : null;
-          return Promise.resolve({ data: { existingGroup } });
+
+          const existingProject =
+            fullPath === `${EXISTING_GROUP_TARGET_NAMESPACE}/${EXISTING_PROJECT_PATH}`
+              ? { id: 1 }
+              : null;
+
+          return Promise.resolve({ data: { existingGroup, existingProject } });
         },
       ],
     ]);
@@ -173,7 +184,7 @@ describe('import table row', () => {
   });
 
   describe('validations', () => {
-    it('Reports invalid group name when name is not matching regex', () => {
+    it('reports invalid group name when name is not matching regex', () => {
       createComponent({
         group: {
           ...getFakeGroup(STATUSES.NONE),
@@ -188,7 +199,7 @@ describe('import table row', () => {
       expect(wrapper.text()).toContain('Please choose a group URL with no special characters.');
     });
 
-    it('Reports invalid group name if relevant validation error exists', async () => {
+    it('reports invalid group name if relevant validation error exists', async () => {
       const FAKE_ERROR_MESSAGE = 'fake error';
 
       createComponent({
@@ -207,6 +218,102 @@ describe('import table row', () => {
       await nextTick();
 
       expect(wrapper.text()).toContain(FAKE_ERROR_MESSAGE);
+    });
+
+    it('sets validation error when targetting existing group', async () => {
+      const testGroup = getFakeGroup(STATUSES.NONE);
+
+      createComponent({
+        group: {
+          ...testGroup,
+          import_target: {
+            target_namespace: EXISTING_GROUP_TARGET_NAMESPACE,
+            new_name: EXISTING_GROUP_PATH,
+          },
+        },
+      });
+
+      jest.spyOn(wrapper.vm.$apollo, 'mutate');
+
+      jest.runOnlyPendingTimers();
+      await nextTick();
+
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+        mutation: addValidationErrorMutation,
+        variables: {
+          field: 'new_name',
+          message: I18N.NAME_ALREADY_EXISTS,
+          sourceGroupId: testGroup.id,
+        },
+      });
+    });
+
+    it('sets validation error when targetting existing project', async () => {
+      const testGroup = getFakeGroup(STATUSES.NONE);
+
+      createComponent({
+        group: {
+          ...testGroup,
+          import_target: {
+            target_namespace: EXISTING_GROUP_TARGET_NAMESPACE,
+            new_name: EXISTING_PROJECT_PATH,
+          },
+        },
+      });
+
+      jest.spyOn(wrapper.vm.$apollo, 'mutate');
+
+      jest.runOnlyPendingTimers();
+      await nextTick();
+
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+        mutation: addValidationErrorMutation,
+        variables: {
+          field: 'new_name',
+          message: I18N.NAME_ALREADY_EXISTS,
+          sourceGroupId: testGroup.id,
+        },
+      });
+    });
+
+    it('clears validation error when target is updated', async () => {
+      const testGroup = getFakeGroup(STATUSES.NONE);
+
+      createComponent({
+        group: {
+          ...testGroup,
+          import_target: {
+            target_namespace: EXISTING_GROUP_TARGET_NAMESPACE,
+            new_name: EXISTING_PROJECT_PATH,
+          },
+        },
+      });
+
+      jest.runOnlyPendingTimers();
+      await nextTick();
+
+      jest.spyOn(wrapper.vm.$apollo, 'mutate');
+
+      await wrapper.setProps({
+        group: {
+          ...testGroup,
+          import_target: {
+            target_namespace: 'valid_namespace',
+            new_name: 'valid_path',
+          },
+        },
+      });
+
+      jest.runOnlyPendingTimers();
+      await nextTick();
+
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+        mutation: removeValidationErrorMutation,
+        variables: {
+          field: 'new_name',
+          sourceGroupId: testGroup.id,
+        },
+      });
     });
   });
 });

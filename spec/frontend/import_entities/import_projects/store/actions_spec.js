@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { STATUSES } from '~/import_entities/constants';
 import actionsFactory from '~/import_entities/import_projects/store/actions';
 import { getImportTarget } from '~/import_entities/import_projects/store/getters';
@@ -168,7 +168,9 @@ describe('import_projects store actions', () => {
           [],
         );
 
-        expect(createFlash).toHaveBeenCalledWith('Provider rate limit exceeded. Try again later');
+        expect(createFlash).toHaveBeenCalledWith({
+          message: 'Provider rate limit exceeded. Try again later',
+        });
       });
     });
 
@@ -245,7 +247,9 @@ describe('import_projects store actions', () => {
         [],
       );
 
-      expect(createFlash).toHaveBeenCalledWith('Importing the project failed');
+      expect(createFlash).toHaveBeenCalledWith({
+        message: 'Importing the project failed',
+      });
     });
 
     it('commits REQUEST_IMPORT and RECEIVE_IMPORT_ERROR and shows detailed error message on an unsuccessful request with errors fields in response', async () => {
@@ -266,7 +270,9 @@ describe('import_projects store actions', () => {
         [],
       );
 
-      expect(createFlash).toHaveBeenCalledWith(`Importing the project failed: ${ERROR_MESSAGE}`);
+      expect(createFlash).toHaveBeenCalledWith({
+        message: `Importing the project failed: ${ERROR_MESSAGE}`,
+      });
     });
   });
 
@@ -365,7 +371,9 @@ describe('import_projects store actions', () => {
         [],
       );
 
-      expect(createFlash).toHaveBeenCalledWith('Requesting namespaces failed');
+      expect(createFlash).toHaveBeenCalledWith({
+        message: 'Requesting namespaces failed',
+      });
     });
   });
 

@@ -4,7 +4,7 @@ import Api from '~/api';
 import * as actions from '~/deploy_freeze/store/actions';
 import * as types from '~/deploy_freeze/store/mutation_types';
 import getInitialState from '~/deploy_freeze/store/state';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
 
@@ -189,9 +189,9 @@ describe('deploy freeze store actions', () => {
         [{ type: types.REQUEST_FREEZE_PERIODS }],
         [],
         () =>
-          expect(createFlash).toHaveBeenCalledWith(
-            'There was an error fetching the deploy freezes.',
-          ),
+          expect(createFlash).toHaveBeenCalledWith({
+            message: 'There was an error fetching the deploy freezes.',
+          }),
       );
     });
   });

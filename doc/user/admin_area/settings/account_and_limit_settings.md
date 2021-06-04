@@ -33,6 +33,13 @@ You can change the maximum push size for your repository.
 Navigate to **Admin Area > Settings > General**, then expand **Account and Limit**.
 From here, you can increase or decrease by changing the value in `Maximum push size (MB)`.
 
+NOTE:
+When you [add files to a repository](../../project/repository/web_editor.md#create-a-file)
+through the web UI, the maximum **attachment** size is the limiting factor,
+because the [web server](../../../development/architecture.md#components)
+must receive the file before GitLab can generate the commit.
+Use [Git LFS](../../../topics/git/lfs/index.md) to add large files to a repository. 
+
 ## Max import size
 
 You can change the maximum file size for imports in GitLab.

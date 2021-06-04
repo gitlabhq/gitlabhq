@@ -2,7 +2,7 @@ import emojiRegex from 'emoji-regex';
 import $ from 'jquery';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import * as Emoji from '~/emoji';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import EmojiMenu from './emoji_menu';
 
@@ -81,4 +81,8 @@ Emoji.initEmojiMap()
       }
     });
   })
-  .catch(() => createFlash(__('Failed to load emoji list.')));
+  .catch(() =>
+    createFlash({
+      message: __('Failed to load emoji list.'),
+    }),
+  );

@@ -54,7 +54,7 @@ import {
 } from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -293,7 +293,9 @@ describe('DiffsStoreActions', () => {
 
       testAction(fetchCoverageFiles, {}, { endpointCoverage }, [], [], () => {
         expect(createFlash).toHaveBeenCalledTimes(1);
-        expect(createFlash).toHaveBeenCalledWith(expect.stringMatching('Something went wrong'));
+        expect(createFlash).toHaveBeenCalledWith({
+          message: expect.stringMatching('Something went wrong'),
+        });
         done();
       });
     });

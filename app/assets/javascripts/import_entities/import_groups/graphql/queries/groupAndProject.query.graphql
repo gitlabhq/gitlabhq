@@ -1,0 +1,9 @@
+query groupAndProject($fullPath: ID!) {
+  existingGroup: group(fullPath: $fullPath) {
+    id
+  }
+
+  existingProject: project(fullPath: $fullPath) {
+    id
+  }
+}

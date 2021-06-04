@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { mockBranches } from 'jest/vue_shared/components/filtered_search_bar/mock_data';
 import Api from '~/api';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import httpStatusCodes from '~/lib/utils/http_status';
 import * as actions from '~/vue_shared/components/filtered_search_bar/store/modules/filters/actions';
 import * as types from '~/vue_shared/components/filtered_search_bar/store/modules/filters/mutation_types';

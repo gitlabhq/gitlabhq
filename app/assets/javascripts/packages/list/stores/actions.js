@@ -1,5 +1,5 @@
 import Api from '~/api';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages/shared/constants';
 import {
@@ -43,7 +43,9 @@ export const requestPackagesList = ({ dispatch, state }, params = {}) => {
       dispatch('receivePackagesListSuccess', { data, headers });
     })
     .catch(() => {
-      createFlash(FETCH_PACKAGES_LIST_ERROR_MESSAGE);
+      createFlash({
+        message: FETCH_PACKAGES_LIST_ERROR_MESSAGE,
+      });
     })
     .finally(() => {
       dispatch('setLoading', false);
@@ -52,7 +54,9 @@ export const requestPackagesList = ({ dispatch, state }, params = {}) => {
 
 export const requestDeletePackage = ({ dispatch, state }, { _links }) => {
   if (!_links || !_links.delete_api_path) {
-    createFlash(DELETE_PACKAGE_ERROR_MESSAGE);
+    createFlash({
+      message: DELETE_PACKAGE_ERROR_MESSAGE,
+    });
     const error = new Error(MISSING_DELETE_PATH_ERROR);
     return Promise.reject(error);
   }
@@ -65,10 +69,15 @@ export const requestDeletePackage = ({ dispatch, state }, { _links }) => {
       const page = getNewPaginationPage(currentPage, perPage, total - 1);
 
       dispatch('requestPackagesList', { page });
-      createFlash(DELETE_PACKAGE_SUCCESS_MESSAGE, 'success');
+      createFlash({
+        message: DELETE_PACKAGE_SUCCESS_MESSAGE,
+        type: 'success',
+      });
     })
     .catch(() => {
       dispatch('setLoading', false);
-      createFlash(DELETE_PACKAGE_ERROR_MESSAGE);
+      createFlash({
+        message: DELETE_PACKAGE_ERROR_MESSAGE,
+      });
     });
 };
