@@ -2,6 +2,7 @@ const fs = require('fs');
 const cheerio = require('cheerio');
 const { mergeWith, isArray } = require('lodash');
 const { PurgeCSS } = require('purgecss');
+const purgeHtml = require('purgecss-from-html');
 const { cleanCSS } = require('./clean_css');
 const { HTML_TO_REMOVE } = require('./constants');
 const { die } = require('./utils');
@@ -51,6 +52,12 @@ const getStartupCSS = async ({ htmlPaths, cssPaths, purgeOptions }) => {
         },
         // By default, PurgeCSS ignores special characters, but our utilities use "!"
         defaultExtractor: (x) => x.match(/[\w-!]+/g),
+        extractors: [
+          {
+            extractor: purgeHtml,
+            extensions: ['html'],
+          },
+        ],
       },
       purgeOptions,
     ),

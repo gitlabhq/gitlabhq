@@ -27,11 +27,11 @@ Scanning a web application with both the browser-based crawler and GitLab DAST s
 
 The browser-based crawler is an extension to the GitLab DAST product. DAST should be included in the CI/CD configuration and the browser-based crawler enabled using CI/CD variables:
 
-1. Install the DAST [prerequisites](index.md#prerequisite).
+1. Ensure the DAST [prerequisites](index.md#prerequisites) are met.
 1. Include the [DAST CI template](index.md#include-the-dast-template).
 1. Set the target website using the `DAST_WEBSITE` CI/CD variable.
 1. Set the CI/CD variable `DAST_BROWSER_SCAN` to `true`.
- 
+
 An example configuration might look like the following:
 
 ```yaml
@@ -48,7 +48,7 @@ dast:
 
 The browser-based crawler can be configured using CI/CD variables.
 
-| CI/CD variable                       | Type            | Example                           | Description | 
+| CI/CD variable                       | Type            | Example                           | Description |
 |--------------------------------------| ----------------| --------------------------------- | ------------|
 | `DAST_WEBSITE`                       | URL             | `http://www.site.com`             | The URL of the website to scan. |
 | `DAST_BROWSER_SCAN`               | boolean         | `true`                            | Configures DAST to use the browser-based crawler engine. |
@@ -64,7 +64,7 @@ The browser-based crawler can be configured using CI/CD variables.
 | `DAST_USERNAME`                      | string          | `user123`                         | The username to enter into the username field on the sign-in HTML form. |
 | `DAST_PASSWORD`                      | string          | `p@55w0rd`                        | The password to enter into the password field on the sign-in HTML form. |
 | `DAST_USERNAME_FIELD`                | selector        | `id:user`                         | A selector describing the username field on the sign-in HTML form. |
-| `DAST_PASSWORD_FIELD`                | selector        | `css:.password-field`             | A selector describing the password field on the sign-in HTML form. | 
+| `DAST_PASSWORD_FIELD`                | selector        | `css:.password-field`             | A selector describing the password field on the sign-in HTML form. |
 | `DAST_SUBMIT_FIELD`                  | selector        | `xpath://input[@value='Login']`   | A selector describing the element that when clicked submits the login form, or the password form of a multi-page login process. |
 | `DAST_FIRST_SUBMIT_FIELD`            | selector        | `.submit`                         | A selector describing the element that when clicked submits the username form of a multi-page login process. |
 | `DAST_BROWSER_AUTH_REPORT`           | boolean         | `true`                            | Used in combination with exporting the `gl-dast-debug-auth-report.html` artifact to aid in debugging authentication issues. |
@@ -90,7 +90,7 @@ Selectors have the format `type`:`search string`. The crawler will search for th
 
 ##### Find selectors with Google Chrome
 
-Chrome DevTools element selector tool is an effective way to find a selector. 
+Chrome DevTools element selector tool is an effective way to find a selector.
 
 1. Open Chrome and navigate to the page where you would like to find a selector, for example, the login page for your site.
 1. Open the `Elements` tab in Chrome DevTools with the keyboard shortcut `Command + Shift + c` in macOS or `Ctrl + Shift + c` in Windows.
@@ -105,7 +105,7 @@ In this example, the `id="user_login"` appears to be a good candidate. You can u
 
 ##### Choose the right selector
 
-Judicious choice of selector leads to a scan that is resilient to the application changing. 
+Judicious choice of selector leads to a scan that is resilient to the application changing.
 
 In order of preference, it is recommended to choose as selectors:
 
@@ -170,8 +170,8 @@ Login process:
 1. The `DAST_AUTH_URL` is loaded into the browser, and any forms on the page are located.
    1. If a form contains a username and password field, `DAST_USERNAME` and `DAST_PASSWORD` is inputted into the respective fields, the form submit button is clicked and the user is logged in.
    1. If a form contains only a username field, it is assumed that the login form is multi-step.
-      1. The `DAST_USERNAME` is inputted into the username field and the form submit button is clicked. 
-      1. The subsequent pages loads where it is expected that a form exists and contains a password field. If found, `DAST_PASSWORD` is inputted, form submit button is clicked and the user is logged in. 
+      1. The `DAST_USERNAME` is inputted into the username field and the form submit button is clicked.
+      1. The subsequent pages loads where it is expected that a form exists and contains a password field. If found, `DAST_PASSWORD` is inputted, form submit button is clicked and the user is logged in.
 
 ### Log in using explicit selection of the login form
 
@@ -186,13 +186,13 @@ Login process:
    1. If the `DAST_FIRST_SUBMIT_FIELD` is defined, then it is assumed that the login form is multi-step.
       1. The `DAST_USERNAME` is inputted into the `DAST_USERNAME_FIELD` field and the `DAST_FIRST_SUBMIT_FIELD` is clicked.
       1. The subsequent pages loads where the `DAST_PASSWORD` is inputted into the `DAST_PASSWORD_FIELD` field, the `DAST_SUBMIT_FIELD` is clicked and the user is logged in.
-      
+
 ### Verifying successful login
 
 Once the login form has been submitted, the browser-based crawler determines if the login was successful. Unsuccessful attempts at authentication cause the scan to halt.
 
 Following the submission of the login form, authentication is determined to be unsuccessful when:
- 
+
 - A `400` or `500` series HTTP response status code is returned.
 - A new cookie/browser storage value determined to be sufficiently random has not been set.
 
@@ -229,7 +229,7 @@ For example:
 include:
   - template: DAST.gitlab-ci.yml
 
-dast: 
+dast:
   variables:
     DAST_WEBSITE: "https://example.com"
     DAST_BROWSER_SCAN: "true"

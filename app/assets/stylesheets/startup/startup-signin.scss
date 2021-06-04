@@ -40,11 +40,6 @@ p {
   margin-top: 0;
   margin-bottom: 1rem;
 }
-address {
-  margin-bottom: 1rem;
-  font-style: normal;
-  line-height: inherit;
-}
 a {
   color: #007bff;
   text-decoration: none;
@@ -53,11 +48,6 @@ a {
 a:not([href]):not([class]) {
   color: inherit;
   text-decoration: none;
-}
-code {
-  font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas",
-    "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace;
-  font-size: 1em;
 }
 img {
   vertical-align: middle;
@@ -93,28 +83,20 @@ fieldset {
   margin: 0;
   border: 0;
 }
-summary {
-  display: list-item;
-  cursor: pointer;
-}
 [hidden] {
   display: none !important;
 }
 h1,
-h3,
-.h1,
-.h3 {
+h3 {
   margin-bottom: 0.25rem;
   font-weight: 600;
   line-height: 1.2;
   color: #303030;
 }
-h1,
-.h1 {
+h1 {
   font-size: 2.1875rem;
 }
-h3,
-.h3 {
+h3 {
   font-size: 1.53125rem;
 }
 hr {
@@ -122,14 +104,6 @@ hr {
   margin-bottom: 0.5rem;
   border: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-code {
-  font-size: 90%;
-  color: #1f1f1f;
-  word-wrap: break-word;
-}
-a > code {
-  color: inherit;
 }
 .container {
   width: 100%;
@@ -245,8 +219,7 @@ a > code {
   margin-right: -5px;
   margin-left: -5px;
 }
-.form-row > .col,
-.form-row > [class*="col-"] {
+.form-row > .col {
   padding-right: 5px;
   padding-left: 5px;
 }
@@ -289,21 +262,6 @@ fieldset:disabled a.btn {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-}
-.card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  word-wrap: break-word;
-  background-color: #fff;
-  background-clip: border-box;
-  border: 1px solid #dbdbdb;
-  border-radius: 0.25rem;
-}
-.card > hr {
-  margin-right: 0;
-  margin-left: 0;
 }
 .d-block {
   display: block !important;
@@ -449,9 +407,7 @@ body,
   cursor: pointer;
 }
 h1,
-.h1,
-h3,
-.h3 {
+h3 {
   margin-top: 20px;
   margin-bottom: 10px;
 }
@@ -461,29 +417,12 @@ a {
 hr {
   overflow: hidden;
 }
-code {
-  padding: 2px 4px;
-  color: #1f1f1f;
-  background-color: #f0f0f0;
-  border-radius: 4px;
-}
-.code > code {
-  background-color: inherit;
-  padding: unset;
-}
 .hidden {
   display: none !important;
   visibility: hidden !important;
 }
 .hide {
   display: none;
-}
-.label {
-  padding: 4px 5px;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  display: inline-block;
 }
 svg {
   vertical-align: baseline;
@@ -507,11 +446,6 @@ body.navless {
 @media (max-width: 575.98px) {
   .container .content {
     margin-top: 20px;
-  }
-}
-@media (max-width: 575.98px) {
-  .container .container .title {
-    padding-left: 15px !important;
   }
 }
 .navless-container {
@@ -626,9 +560,6 @@ label.label-bold {
 .tanuki-logo .tanuki-left-cheek,
 .tanuki-logo .tanuki-right-cheek {
   fill: #fca326;
-}
-.card {
-  margin-bottom: 16px;
 }
 input::-moz-placeholder {
   color: #868686;

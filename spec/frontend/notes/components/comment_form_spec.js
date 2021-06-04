@@ -328,20 +328,45 @@ describe('issue_comment_form component', () => {
           mountComponent({ mountFunction: mount });
         });
 
-        it('should save note when cmd+enter is pressed', () => {
-          jest.spyOn(wrapper.vm, 'handleSave');
+        describe('when no draft exists', () => {
+          it('should save note when cmd+enter is pressed', () => {
+            jest.spyOn(wrapper.vm, 'handleSave');
 
-          findTextArea().trigger('keydown.enter', { metaKey: true });
+            findTextArea().trigger('keydown.enter', { metaKey: true });
 
-          expect(wrapper.vm.handleSave).toHaveBeenCalled();
+            expect(wrapper.vm.handleSave).toHaveBeenCalledWith();
+          });
+
+          it('should save note when ctrl+enter is pressed', () => {
+            jest.spyOn(wrapper.vm, 'handleSave');
+
+            findTextArea().trigger('keydown.enter', { ctrlKey: true });
+
+            expect(wrapper.vm.handleSave).toHaveBeenCalledWith();
+          });
         });
 
-        it('should save note when ctrl+enter is pressed', () => {
-          jest.spyOn(wrapper.vm, 'handleSave');
+        describe('when a draft exists', () => {
+          beforeEach(() => {
+            store.registerModule('batchComments', batchComments());
+            store.state.batchComments.drafts = [{ note: 'A' }];
+          });
 
-          findTextArea().trigger('keydown.enter', { ctrlKey: true });
+          it('should save note draft when cmd+enter is pressed', () => {
+            jest.spyOn(wrapper.vm, 'handleSaveDraft');
 
-          expect(wrapper.vm.handleSave).toHaveBeenCalled();
+            findTextArea().trigger('keydown.enter', { metaKey: true });
+
+            expect(wrapper.vm.handleSaveDraft).toHaveBeenCalledWith();
+          });
+
+          it('should save note draft when ctrl+enter is pressed', () => {
+            jest.spyOn(wrapper.vm, 'handleSaveDraft');
+
+            findTextArea().trigger('keydown.enter', { ctrlKey: true });
+
+            expect(wrapper.vm.handleSaveDraft).toHaveBeenCalledWith();
+          });
         });
       });
     });

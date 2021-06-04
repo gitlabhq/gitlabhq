@@ -4,13 +4,14 @@ import createFlash from '~/flash';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { __ } from '~/locale';
-import { PAGE_SIZE } from '~/releases/constants';
+import { PAGE_SIZE, RELEASED_AT_DESC } from '~/releases/constants';
 import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
 import { convertAllReleasesGraphQLResponse } from '~/releases/util';
 import ReleaseBlock from './release_block.vue';
 import ReleaseSkeletonLoader from './release_skeleton_loader.vue';
 import ReleasesEmptyState from './releases_empty_state.vue';
 import ReleasesPaginationApolloClient from './releases_pagination_apollo_client.vue';
+import ReleasesSortApolloClient from './releases_sort_apollo_client.vue';
 
 export default {
   name: 'ReleasesIndexApolloClientApp',
@@ -20,6 +21,7 @@ export default {
     ReleaseSkeletonLoader,
     ReleasesEmptyState,
     ReleasesPaginationApolloClient,
+    ReleasesSortApolloClient,
   },
   inject: {
     projectPath: {
@@ -56,6 +58,7 @@ export default {
         before: getParameterByName('before'),
         after: getParameterByName('after'),
       },
+      sort: RELEASED_AT_DESC,
     };
   },
   computed: {
@@ -76,6 +79,7 @@ export default {
       return {
         fullPath: this.projectPath,
         ...paginationParams,
+        sort: this.sort,
       };
     },
     isLoading() {
@@ -124,6 +128,9 @@ export default {
     window.removeEventListener('popstate', this.updateQueryParamsFromUrl);
   },
   methods: {
+    getReleaseKey(release, index) {
+      return [release.tagNamerstrs, release.name, index].join('|');
+    },
     updateQueryParamsFromUrl() {
       this.cursors.before = getParameterByName('before');
       this.cursors.after = getParameterByName('after');
@@ -148,6 +155,8 @@ export default {
 <template>
   <div class="flex flex-column mt-2">
     <div class="gl-align-self-end gl-mb-3">
+      <releases-sort-apollo-client v-model="sort" class="gl-mr-2" />
+
       <gl-button
         v-if="newReleasePath"
         :href="newReleasePath"
@@ -165,7 +174,7 @@ export default {
     <div v-else-if="shouldRenderSuccessState">
       <release-block
         v-for="(release, index) in releases"
-        :key="index"
+        :key="getReleaseKey(release, index)"
         :release="release"
         :class="{ 'linked-card': releases.length > 1 && index !== releases.length - 1 }"
       />

@@ -18595,6 +18595,9 @@ msgstr ""
 msgid "Iterations|Iteration scheduling will be handled automatically"
 msgstr ""
 
+msgid "Iterations|Move incomplete issues to the next iteration"
+msgstr ""
+
 msgid "Iterations|New iteration cadence"
 msgstr ""
 
@@ -18605,6 +18608,9 @@ msgid "Iterations|No iterations in cadence."
 msgstr ""
 
 msgid "Iterations|Number of future iterations you would like to have scheduled"
+msgstr ""
+
+msgid "Iterations|Roll over issues"
 msgstr ""
 
 msgid "Iterations|Save cadence"

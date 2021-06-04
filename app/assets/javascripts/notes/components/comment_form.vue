@@ -273,6 +273,13 @@ export default {
         this.toggleIssueState();
       }
     },
+    handleEnter() {
+      if (this.hasDrafts) {
+        this.handleSaveDraft();
+      } else {
+        this.handleSave();
+      }
+    },
     toggleIssueState() {
       if (this.isIssue) {
         // We want to invoke the close/reopen logic in the issue header
@@ -395,8 +402,8 @@ export default {
                     :aria-label="$options.i18n.comment"
                     :placeholder="$options.i18n.bodyPlaceholder"
                     @keydown.up="editCurrentUserLastNote()"
-                    @keydown.meta.enter="handleSave()"
-                    @keydown.ctrl.enter="handleSave()"
+                    @keydown.meta.enter="handleEnter()"
+                    @keydown.ctrl.enter="handleEnter()"
                   ></textarea>
                 </template>
               </markdown-field>

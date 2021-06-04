@@ -12,8 +12,7 @@ html {
   line-height: 1.15;
 }
 aside,
-header,
-nav {
+header {
   display: block;
 }
 body {
@@ -80,35 +79,24 @@ button {
   cursor: pointer;
 }
 button:not(:disabled),
-[type="button"]:not(:disabled),
-[type="submit"]:not(:disabled) {
+[type="button"]:not(:disabled) {
   cursor: pointer;
 }
 button::-moz-focus-inner,
-[type="button"]::-moz-focus-inner,
-[type="submit"]::-moz-focus-inner {
+[type="button"]::-moz-focus-inner {
   padding: 0;
   border-style: none;
 }
 [type="search"] {
   outline-offset: -2px;
 }
-summary {
-  display: list-item;
-  cursor: pointer;
-}
-[hidden] {
-  display: none !important;
-}
-h1,
-.h1 {
+h1 {
   margin-bottom: 0.25rem;
   font-weight: 600;
   line-height: 1.2;
   color: #303030;
 }
-h1,
-.h1 {
+h1 {
   font-size: 2.1875rem;
 }
 .list-unstyled {
@@ -230,9 +218,6 @@ h1,
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 0.25rem;
 }
-.dropdown-menu.show {
-  display: block;
-}
 .nav {
   display: flex;
   flex-wrap: wrap;
@@ -306,17 +291,6 @@ h1,
     display: none;
   }
 }
-.card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  word-wrap: break-word;
-  background-color: #fff;
-  background-clip: border-box;
-  border: 1px solid #dbdbdb;
-  border-radius: 0.25rem;
-}
 .badge {
   display: inline-block;
   padding: 0.25em 0.4em;
@@ -341,20 +315,6 @@ h1,
   padding-right: 0.6em;
   padding-left: 0.6em;
   border-radius: 10rem;
-}
-.close {
-  float: right;
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1;
-  color: #000;
-  text-shadow: 0 1px 0 #fff;
-  opacity: 0.5;
-}
-button.close {
-  padding: 0;
-  background-color: transparent;
-  border: 0;
 }
 .rounded-circle {
   border-radius: 50% !important;
@@ -444,12 +404,10 @@ body,
 }
 button,
 html [type="button"],
-[type="submit"],
 [role="button"] {
   cursor: pointer;
 }
-h1,
-.h1 {
+h1 {
   margin-top: 20px;
   margin-bottom: 10px;
 }
@@ -530,37 +488,8 @@ body {
   color: #525252;
   vertical-align: baseline;
 }
-img.emoji {
-  height: 20px;
-  vertical-align: top;
-  width: 20px;
-  margin-top: 1px;
-}
-.chart {
-  overflow: hidden;
-  height: 220px;
-}
 .dropdown {
   position: relative;
-}
-.show.dropdown .dropdown-menu {
-  transform: translateY(0);
-  display: block;
-  min-height: 40px;
-  max-height: 312px;
-  overflow-y: auto;
-}
-@media (max-width: 575.98px) {
-  .show.dropdown .dropdown-menu {
-    width: 100%;
-  }
-}
-.show.dropdown .dropdown-menu-toggle,
-.show.dropdown .dropdown-menu-toggle {
-  border-color: #c4c4c4;
-}
-.show.dropdown [data-toggle="dropdown"] {
-  outline: 0;
 }
 .search-input-container .dropdown-menu {
   margin-top: 11px;
@@ -929,15 +858,6 @@ input {
     float: none;
   }
 }
-.header-user.show .dropdown-menu {
-  margin-top: 4px;
-  color: var(--gl-text-color, #303030);
-  left: auto;
-  max-height: 445px;
-}
-.header-user.show .dropdown-menu svg {
-  vertical-align: text-top;
-}
 .header-user-avatar {
   float: left;
   margin-right: 5px;
@@ -967,9 +887,6 @@ input {
 .tanuki-logo .tanuki-left-cheek,
 .tanuki-logo .tanuki-right-cheek {
   fill: #fca326;
-}
-.card {
-  margin-bottom: 16px;
 }
 .context-header {
   position: relative;
@@ -1968,9 +1885,6 @@ body.sidebar-refactoring
   .avatar-container.rect-avatar
   .avatar.s32 {
   border-radius: 4px;
-}
-#content-body {
-  display: block;
 }
 
 .tab-width-8 {

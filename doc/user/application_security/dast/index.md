@@ -16,17 +16,6 @@ Dynamic Application Security Testing (DAST) examines applications for
 vulnerabilities like these in deployed environments. DAST uses the open source
 tool [OWASP Zed Attack Proxy](https://www.zaproxy.org/) for analysis.
 
-NOTE:
-To learn how four of the top six attacks were application-based and how
-to protect your organization, download our
-["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
-whitepaper.
-
-You can use DAST to examine your web applications:
-
-- When initiated by a merge request, running as CI/CD pipeline job.
-- On demand, outside the CI/CD pipeline.
-
 After DAST creates its report, GitLab evaluates it for discovered
 vulnerabilities between the source and target branches. Relevant
 findings are noted in the merge request.
@@ -35,21 +24,151 @@ The comparison logic uses only the latest pipeline executed for the target
 branch's base commit. Running the pipeline on other commits has no effect on
 the merge request.
 
-## Prerequisite
+NOTE:
+To learn how four of the top six attacks were application-based and how
+to protect your organization, download our
+["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
+whitepaper.
 
-To use DAST, ensure you're using GitLab Runner with the
+## DAST application analysis
+
+DAST can analyze applications in two ways:
+
+- Passive scan only (DAST default). DAST executes
+  [ZAP's Baseline Scan](https://www.zaproxy.org/docs/docker/baseline-scan/) and doesn't
+  actively attack your application.
+- Passive and active scan. DAST can be [configured](#full-scan) to also perform an active scan
+  to attack your application and produce a more extensive security report. It can be very
+  useful when combined with [Review Apps](../../../ci/review_apps/index.md).
+
+NOTE:
+A pipeline may consist of multiple jobs, including SAST and DAST scanning. If any job
+fails to finish for any reason, the security dashboard doesn't show DAST scanner output. For
+example, if the DAST job finishes but the SAST job fails, the security dashboard doesn't show DAST
+results. On failure, the analyzer outputs an
+[exit code](../../../development/integrations/secure.md#exit-code).
+
+## Prerequisites
+
+- [GitLab Runner](../../../ci/runners/README.md) available, with the
 [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
+- Target application deployed. For more details, read [Deployment options](#deployment-options).
 
-## Enable DAST
+### Deployment options
 
-To enable DAST, either:
+Depending on the complexity of the target application, there are a few options as to how to deploy and configure
+the DAST template. We provided a set of example applications with their configurations in our
+[DAST demonstrations](https://gitlab.com/gitlab-org/security-products/demos/dast/) project.
+
+#### Review Apps
+
+Review Apps are the most involved method of deploying your DAST target application. To assist in the process,
+we created a Review App deployment using Google Kubernetes Engine (GKE). This example can be found in our
+[Review Apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project, along with detailed
+instructions in the [README.md](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke/-/blob/master/README.md)
+on how to configure Review Apps for DAST.
+
+#### Docker Services
+
+If your application utilizes Docker containers you have another option for deploying and scanning with DAST.
+After your Docker build job completes and your image is added to your container registry, you can use the image as a
+[service](../../../ci/services/index.md).
+
+By using service definitions in your `gitlab-ci.yml`, you can scan services with the DAST analyzer.
+
+```yaml
+stages:
+  - build
+  - dast
+
+include:
+  - template: DAST.gitlab-ci.yml
+
+# Deploys the container to the GitLab container registry
+deploy:
+  services:
+  - name: docker:dind
+    alias: dind
+  image: docker:19.03.5
+  stage: build
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+services: # use services to link your app container to the dast job
+  - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    alias: yourapp
+
+variables:
+  DAST_FULL_SCAN_ENABLED: "true" # do a full scan
+  DAST_ZAP_USE_AJAX_SPIDER: "true" # use the ajax spider
+```
+
+Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate
+with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags).
+
+```yaml
+variables:
+  FF_NETWORK_PER_BUILD: "true" # enable network per build so all services can communicate on the same network
+
+services: # use services to link the container to the dast job
+  - name: mongo:latest
+    alias: mongo
+  - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    alias: yourapp
+```
+
+## DAST run options
+
+You can use DAST to examine your web application:
+
+- Automatically, initiated by a merge request.
+- Manually, initiated on demand.
+
+Some of the differences between these run options:
+
+| Automatic scan                                                   | On-demand scan                |
+|:-----------------------------------------------------------------|:------------------------------|
+| DAST scan is initiated by a merge request.                       | DAST scan is initiated manually, outside the DevOps life cycle. |
+| CI/CD variables are sourced from `.gitlab-ci.yml`.               | CI/CD variables are provided in the UI. |
+| All [DAST CI/CD variables](#available-cicd-variables) available. | Subset of [DAST CI/CD variables](#available-cicd-variables) available. |
+| `DAST.gitlab-ci.yml` template.                                   | `DAST-On-Demand-Scan.gitlab-ci.yml` template. |
+
+### Enable automatic DAST run
+
+To enable DAST to run automatically, either:
 
 - Enable [Auto DAST](../../../topics/autodevops/stages.md#auto-dast) (provided
   by [Auto DevOps](../../../topics/autodevops/index.md)).
-- Manually [include the DAST template](#include-the-dast-template) in your existing
+- [Include the DAST template](#include-the-dast-template) in your existing
   `.gitlab-ci.yml` file.
 
-### Include the DAST template
+### DAST job order
+
+When using the `DAST.gitlab-ci.yml` template, the `dast` stage is run last as shown in
+the example below. To ensure DAST scans the latest code, deploy your application
+in a stage before the `dast` stage.
+
+```yaml
+  stages:
+    - build
+    - test
+    - deploy
+    - dast
+```
+
+Be aware that if your pipeline is configured to deploy to the same webserver in
+each run, running a pipeline while another is still running could cause a race condition
+where one pipeline overwrites the code from another pipeline. The site to be scanned
+should be excluded from changes for the duration of a DAST scan.
+The only changes to the site should be from the DAST scanner. Be aware that any
+changes that users, scheduled tasks, database changes, code changes, other pipelines, or other scanners make to
+the site during a scan could lead to inaccurate results.
+
+#### Include the DAST template
 
 If you want to manually add DAST to your application, the DAST job is defined
 in a CI/CD template file. Updates to the template are provided with GitLab
@@ -151,176 +270,6 @@ GitLab has released a new browser-based crawler, an add-on to DAST that uses a b
 The browser-based crawler crawls websites by browsing web pages as a user would. This approach works well with web applications that make heavy use of JavaScript, such as Single Page Applications.
 
 For more details, including setup instructions, see [DAST browser-based crawler](browser_based.md).
-
-## Deployment options
-
-Depending on the complexity of the target application, there are a few options as to how to deploy and configure
-the DAST template. A set of example applications with their configurations have been made available in our
-[DAST demonstrations](https://gitlab.com/gitlab-org/security-products/demos/dast/) project.
-
-### Review Apps
-
-Review Apps are the most involved method of deploying your DAST target application. To assist in the process,
-we created a Review App deployment using Google Kubernetes Engine (GKE). This example can be found in our
-[Review Apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project along with detailed
-instructions in the [README.md](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke/-/blob/master/README.md)
-on how to configure Review Apps for DAST.
-
-### Docker Services
-
-If your application utilizes Docker containers you have another option for deploying and scanning with DAST.
-After your Docker build job completes and your image is added to your container registry, you can utilize the image as a
-[service](../../../ci/services/index.md).
-
-By using service definitions in your `gitlab-ci.yml`, you can scan services with the DAST analyzer.
-
-```yaml
-stages:
-  - build
-  - dast
-
-include:
-  - template: DAST.gitlab-ci.yml
-
-# Deploys the container to the GitLab container registry
-deploy:
-  services:
-  - name: docker:dind
-    alias: dind
-  image: docker:19.03.5
-  stage: build
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE:latest
-
-services: # use services to link your app container to the dast job
-  - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-    alias: yourapp
-
-variables:
-  DAST_FULL_SCAN_ENABLED: "true" # do a full scan
-  DAST_ZAP_USE_AJAX_SPIDER: "true" # use the ajax spider
-```
-
-Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate
-with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags).
-
-```yaml
-variables:
-  FF_NETWORK_PER_BUILD: "true" # enable network per build so all services can communicate on the same network
-
-services: # use services to link the container to the dast job
-  - name: mongo:latest
-    alias: mongo
-  - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-    alias: yourapp
-```
-
-### DAST application analysis
-
-DAST can analyze applications in two ways:
-
-- Passive scan only (DAST default). DAST executes
-  [ZAP's Baseline Scan](https://www.zaproxy.org/docs/docker/baseline-scan/) and doesn't
-  actively attack your application.
-- Passive and active scan. DAST can be [configured](#full-scan) to also perform an active scan
-  to attack your application and produce a more extensive security report. It can be very
-  useful when combined with [Review Apps](../../../ci/review_apps/index.md).
-
-Note that a pipeline may consist of multiple jobs, including SAST and DAST scanning. If any job
-fails to finish for any reason, the security dashboard doesn't show DAST scanner output. For
-example, if the DAST job finishes but the SAST job fails, the security dashboard doesn't show DAST
-results. On failure, the analyzer outputs an
-[exit code](../../../development/integrations/secure.md#exit-code).
-
-#### DAST job order
-
-When using the `DAST.gitlab-ci.yml` template, the `dast` job is run last as shown in
-the example below. To ensure DAST is scanning the latest code, your CI pipeline
-should deploy changes to the web server in one of the jobs preceding the `dast` job.
-
-```yaml
-stages:
-  - build
-  - test
-  - deploy
-  - dast
-```
-
-Be aware that if your pipeline is configured to deploy to the same webserver in
-each run, running a pipeline while another is still running could cause a race condition
-where one pipeline overwrites the code from another pipeline. The site to be scanned
-should be excluded from changes for the duration of a DAST scan.
-The only changes to the site should be from the DAST scanner. Be aware that any
-changes that users, scheduled tasks, database changes, code changes, other pipelines, or other scanners make to
-the site during a scan could lead to inaccurate results.
-
-### Hide sensitive information
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
-
-HTTP request and response headers may contain sensitive information, including cookies and
-authorization credentials. By default, the following headers are masked:
-
-- `Authorization`.
-- `Proxy-Authorization`.
-- `Set-Cookie` (values only).
-- `Cookie` (values only).
-
-Using the [`DAST_MASK_HTTP_HEADERS` CI/CD variable](#available-cicd-variables), you can list the
-headers whose values you want masked. For details on how to mask headers, see
-[Customizing the DAST settings](#customizing-the-dast-settings).
-
-### Authentication
-
-It's also possible to authenticate the user before performing the DAST checks.
-
-NOTE:
-We highly recommended that you configure the scanner to authenticate to the application,
-otherwise it cannot check most of the application for security risks, as most
-of your application is likely not accessible without authentication. It is also recommended
-that you periodically confirm the scanner's authentication is still working as this tends to break over
-time due to authentication changes to the application.
-
-Create masked CI/CD variables to pass the credentials that DAST uses.
-To create masked variables for the username and password, see [Create a custom variable in the UI](../../../ci/variables/README.md#custom-cicd-variables).
-Note that the key of the username variable must be `DAST_USERNAME`
-and the key of the password variable must be `DAST_PASSWORD`.
-
-After DAST has authenticated with the application, all cookies are collected from the web browser.
-For each cookie a matching session token is created for use by ZAP. This ensures ZAP is recognized
-by the application as correctly authenticated.
-
-Other variables that are related to authenticated scans are:
-
-```yaml
-include:
-  - template: DAST.gitlab-ci.yml
-
-variables:
-  DAST_WEBSITE: https://example.com
-  DAST_AUTH_URL: https://example.com/sign-in
-  DAST_USERNAME_FIELD: session[user]  # the name of username field at the sign-in HTML form
-  DAST_PASSWORD_FIELD: session[password]  # the name of password field at the sign-in HTML form
-  DAST_SUBMIT_FIELD: login # the `id` or `name` of the element that when clicked will submit the login form or the password form of a multi-page login process
-  DAST_FIRST_SUBMIT_FIELD: next # the `id` or `name` of the element that when clicked will submit the username form of a multi-page login process
-  DAST_EXCLUDE_URLS: http://example.com/sign-out,http://example.com/sign-out-2  # optional, URLs to skip during the authenticated scan; comma-separated, no spaces in between
-  DAST_AUTH_VERIFICATION_URL: http://example.com/loggedin_page  # optional, a URL only accessible to logged in users that DAST can use to confirm successful authentication
-```
-
-The results are saved as a
-[DAST report artifact](../../../ci/yaml/README.md#artifactsreportsdast)
-that you can later download and analyze.
-Due to implementation limitations, we always take the latest DAST artifact available.
-
-WARNING:
-**NEVER** run an authenticated scan against a production server. When an authenticated
-scan is run, it may perform *any* function that the authenticated user can. This
-includes actions like modifying and deleting data, submitting forms, and following links.
-Only run an authenticated scan against a test server.
 
 ### Full scan
 
@@ -694,47 +643,108 @@ By default, several rules are disabled because they either take a long time to
 run or frequently generate false positives. The complete list of disabled rules
 can be found in [exclude_rules.yml](https://gitlab.com/gitlab-org/security-products/dast/-/blob/master/src/config/exclude_rules.yml).
 
+### Hide sensitive information
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
+
+HTTP request and response headers may contain sensitive information, including cookies and
+authorization credentials. By default, the following headers are masked:
+
+- `Authorization`.
+- `Proxy-Authorization`.
+- `Set-Cookie` (values only).
+- `Cookie` (values only).
+
+Using the [`DAST_MASK_HTTP_HEADERS` CI/CD variable](#available-cicd-variables), you can list the
+headers whose values you want masked. For details on how to mask headers, see
+[Customizing the DAST settings](#customizing-the-dast-settings).
+
+### Authentication
+
+It's also possible to authenticate the user before performing the DAST checks.
+
+NOTE:
+We highly recommend you configure the scanner to authenticate to the application. If you don't, it cannot check most of the application for security risks, as most
+of your application is likely not accessible without authentication. We also recommend
+you periodically confirm the scanner's authentication is still working, as this tends to break over
+time due to authentication changes to the application.
+
+Create masked CI/CD variables to pass the credentials that DAST uses.
+To create masked variables for the username and password, see [Create a custom variable in the UI](../../../ci/variables/README.md#custom-cicd-variables).
+The key of the username variable must be `DAST_USERNAME`,
+and the key of the password variable must be `DAST_PASSWORD`.
+
+After DAST has authenticated with the application, all cookies are collected from the web browser.
+For each cookie a matching session token is created for use by ZAP. This ensures ZAP is recognized
+by the application as correctly authenticated.
+
+Other variables that are related to authenticated scans are:
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+variables:
+  DAST_WEBSITE: https://example.com
+  DAST_AUTH_URL: https://example.com/sign-in
+  DAST_USERNAME_FIELD: session[user]  # the name of username field at the sign-in HTML form
+  DAST_PASSWORD_FIELD: session[password]  # the name of password field at the sign-in HTML form
+  DAST_SUBMIT_FIELD: login # the `id` or `name` of the element that when clicked will submit the login form or the password form of a multi-page login process
+  DAST_FIRST_SUBMIT_FIELD: next # the `id` or `name` of the element that when clicked will submit the username form of a multi-page login process
+  DAST_EXCLUDE_URLS: http://example.com/sign-out,http://example.com/sign-out-2  # optional, URLs to skip during the authenticated scan; comma-separated, no spaces in between
+  DAST_AUTH_VERIFICATION_URL: http://example.com/loggedin_page  # optional, a URL only accessible to logged in users that DAST can use to confirm successful authentication
+```
+
+WARNING:
+**NEVER** run an authenticated scan against a production server. When an authenticated
+scan is run, it may perform *any* function that the authenticated user can. This
+includes actions like modifying and deleting data, submitting forms, and following links.
+Only run an authenticated scan against a test server.
+
 ### Available CI/CD variables
 
 DAST can be [configured](#customizing-the-dast-settings) using CI/CD variables.
 
-| CI/CD variable               | Type    | Description |
-|------------------------------| --------|-------------|
-| `SECURE_ANALYZERS_PREFIX`    | URL     | Set the Docker registry base address from which to download the analyzer. |
-| `DAST_WEBSITE`               | URL     | The URL of the website to scan. `DAST_API_OPENAPI` must be specified if this is omitted. |
-| `DAST_API_OPENAPI`           | URL or string | The API specification to import. The specification can be hosted at a URL, or the name of a file present in the `/zap/wrk` directory. `DAST_WEBSITE` must be specified if this is omitted. |
-| `DAST_API_SPECIFICATION`     | URL or string | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/290241) in GitLab 13.12 and replaced by `DAST_API_OPENAPI`. To be removed in GitLab 15.0. The API specification to import. The specification can be hosted at a URL, or the name of a file present in the `/zap/wrk` directory. `DAST_WEBSITE` must be specified if this is omitted. |
-| `DAST_SPIDER_START_AT_HOST`  | boolean | Set to `false` to prevent DAST from resetting the target to its host before scanning. When `true`, non-host targets `http://test.site/some_path` is reset to `http://test.site` before scan. Default: `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258805) in GitLab 13.6. |
-| `DAST_AUTH_URL`              | URL     | The URL of the page containing the sign-in HTML form on the target website. `DAST_USERNAME` and `DAST_PASSWORD` are submitted with the login form to create an authenticated scan. Not supported for API scans. |
-| `DAST_AUTH_VERIFICATION_URL`   | URL     | A URL only accessible to logged in users that DAST can use to confirm successful authentication. If provided, DAST will exit if it cannot access the URL. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207335) in GitLab 13.8.
-| `DAST_USERNAME`              | string  | The username to authenticate to in the website. |
-| `DAST_PASSWORD`              | string  | The password to authenticate to in the website. |
-| `DAST_USERNAME_FIELD`        | string  | The name of username field at the sign-in HTML form. |
-| `DAST_PASSWORD_FIELD`        | string  | The name of password field at the sign-in HTML form. |
-| `DAST_SKIP_TARGET_CHECK`     | boolean | Set to `true` to prevent DAST from checking that the target is available before scanning. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229067) in GitLab 13.8. |
-| `DAST_MASK_HTTP_HEADERS`     | string  | Comma-separated list of request and response headers to be masked (GitLab 13.1). Must contain **all** headers to be masked. Refer to [list of headers that are masked by default](#hide-sensitive-information). |
-| `DAST_EXCLUDE_URLS`          | URLs    | The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. Not supported for API scans. |
-| `DAST_FULL_SCAN_ENABLED`     | boolean | Set to `true` to run a [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of a [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Default: `false` |
-| `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | boolean | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/293595) in GitLab 13.8, to be removed in 14.0. Set to `true` to require [domain validation](#domain-validation) when running DAST full scans. Not supported for API scans. Default: `false` |
-| `DAST_AUTO_UPDATE_ADDONS`    | boolean | ZAP add-ons are pinned to specific versions in the DAST Docker image. Set to `true` to download the latest versions when the scan starts. Default: `false` |
-| `DAST_API_HOST_OVERRIDE`     | string  | Used to override domains defined in API specification files. Only supported when importing the API specification from a URL. Example: `example.com:8080` |
-| `DAST_EXCLUDE_RULES`         | string  | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from running during the scan. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://www.zaproxy.org/docs/alerts/). For example, `HTTP Parameter Override` has a rule ID of `10026`. Cannot be used when `DAST_ONLY_INCLUDE_RULES` is set. **Note:** In earlier versions of GitLab the excluded rules were executed but vulnerabilities they generated were suppressed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118641) in GitLab 12.10. |
-| `DAST_ONLY_INCLUDE_RULES`    | string  | Set to a comma-separated list of Vulnerability Rule IDs to configure the scan to run only them. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://www.zaproxy.org/docs/alerts/). Cannot be used when `DAST_EXCLUDE_RULES` is set. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250651) in GitLab 13.12. |
-| `DAST_REQUEST_HEADERS`       | string  | Set to a comma-separated list of request header names and values. Headers are added to every request made by DAST. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
-| `DAST_DEBUG`                 | boolean | Enable debug message output. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_SPIDER_MINS`           | number  | The maximum duration of the spider scan in minutes. Set to `0` for unlimited. Default: One minute, or unlimited when the scan is a full scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_HTML_REPORT`           | string  | The filename of the HTML report written at the end of a scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_MARKDOWN_REPORT`       | string  | The filename of the Markdown report written at the end of a scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1.|
-| `DAST_XML_REPORT`            | string  | The filename of the XML report written at the end of a scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_INCLUDE_ALPHA_VULNERABILITIES` | boolean | Set to `true` to include alpha passive and active scan rules. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_USE_AJAX_SPIDER`       | boolean | Set to `true` to use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_PATHS`                 | string  | Set to a comma-separated list of URLs for DAST to scan. For example, `/page1.html,/category1/page3.html,/page2.html`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4. |
-| `DAST_PATHS_FILE`            | string  | The file path containing the paths within `DAST_WEBSITE` to scan. The file must be plain text with one path per line. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258825) in GitLab 13.6. |
-| `DAST_SUBMIT_FIELD`          | string  | The `id` or `name` of the element that when clicked submits the login form or the password form of a multi-page login process. [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9894) in GitLab 12.4. |
-| `DAST_FIRST_SUBMIT_FIELD`    | string  | The `id` or `name` of the element that when clicked submits the username form of a multi-page login process. [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9894) in GitLab 12.4. |
-| `DAST_ZAP_CLI_OPTIONS`       | string  | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_ZAP_LOG_CONFIGURATION` | string  | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG` |
-| `DAST_AUTH_EXCLUDE_URLS`     | URLs    | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/289959) in GitLab 13.8, to be removed in 14.0, and replaced by `DAST_EXCLUDE_URLS`. The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. Not supported for API scans. |
+| CI/CD variable                              | Type          | Description                        |
+|:--------------------------------------------|:--------------|:-----------------------------------|
+| `SECURE_ANALYZERS_PREFIX`                   | URL           | Set the Docker registry base address from which to download the analyzer. |
+| `DAST_WEBSITE` (**1**)                      | URL           | The URL of the website to scan. `DAST_API_OPENAPI` must be specified if this is omitted. |
+| `DAST_API_OPENAPI`                          | URL or string | The API specification to import. The specification can be hosted at a URL, or the name of a file present in the `/zap/wrk` directory. `DAST_WEBSITE` must be specified if this is omitted. |
+| `DAST_API_SPECIFICATION` (**1**)            | URL or string | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/290241) in GitLab 13.12 and replaced by `DAST_API_OPENAPI`. To be removed in GitLab 15.0. The API specification to import. The specification can be hosted at a URL, or the name of a file present in the `/zap/wrk` directory. `DAST_WEBSITE` must be specified if this is omitted. |
+| `DAST_SPIDER_START_AT_HOST`                 | boolean       | Set to `false` to prevent DAST from resetting the target to its host before scanning. When `true`, non-host targets `http://test.site/some_path` is reset to `http://test.site` before scan. Default: `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258805) in GitLab 13.6. |
+| `DAST_AUTH_URL` (**1**)                     | URL           | The URL of the page containing the sign-in HTML form on the target website. `DAST_USERNAME` and `DAST_PASSWORD` are submitted with the login form to create an authenticated scan. Not supported for API scans. |
+| `DAST_AUTH_VERIFICATION_URL` (**1**)        | URL           | A URL only accessible to logged in users that DAST can use to confirm successful authentication. If provided, DAST exits if it cannot access the URL. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207335) in GitLab 13.8. |
+| `DAST_USERNAME` (**1**)                     | string        | The username to authenticate to in the website. |
+| `DAST_PASSWORD` (**1**)                     | string        | The password to authenticate to in the website. |
+| `DAST_USERNAME_FIELD` (**1**)               | string        | The name of username field at the sign-in HTML form. |
+| `DAST_PASSWORD_FIELD` (**1**)               | string        | The name of password field at the sign-in HTML form. |
+| `DAST_SKIP_TARGET_CHECK`                    | boolean       | Set to `true` to prevent DAST from checking that the target is available before scanning. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229067) in GitLab 13.8. |
+| `DAST_MASK_HTTP_HEADERS`                    | string        | Comma-separated list of request and response headers to be masked (GitLab 13.1). Must contain **all** headers to be masked. Refer to [list of headers that are masked by default](#hide-sensitive-information). |
+| `DAST_EXCLUDE_URLS` (**1**)                 | URLs          | The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. Not supported for API scans. |
+| `DAST_FULL_SCAN_ENABLED` (**1**)            | boolean       | Set to `true` to run a [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of a [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Default: `false` |
+| `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | boolean       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/293595) in GitLab 13.8, to be removed in 14.0. Set to `true` to require [domain validation](#domain-validation) when running DAST full scans. Not supported for API scans. Default: `false` |
+| `DAST_AUTO_UPDATE_ADDONS`                   | boolean       | ZAP add-ons are pinned to specific versions in the DAST Docker image. Set to `true` to download the latest versions when the scan starts. Default: `false` |
+| `DAST_API_HOST_OVERRIDE` (**1**)            | string        | Used to override domains defined in API specification files. Only supported when importing the API specification from a URL. Example: `example.com:8080` |
+| `DAST_EXCLUDE_RULES`                        | string        | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from running during the scan. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://www.zaproxy.org/docs/alerts/). For example, `HTTP Parameter Override` has a rule ID of `10026`. Cannot be used when `DAST_ONLY_INCLUDE_RULES` is set. **Note:** In earlier versions of GitLab the excluded rules were executed but vulnerabilities they generated were suppressed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118641) in GitLab 12.10. |
+| `DAST_ONLY_INCLUDE_RULES`                   | string        | Set to a comma-separated list of Vulnerability Rule IDs to configure the scan to run only them. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://www.zaproxy.org/docs/alerts/). Cannot be used when `DAST_EXCLUDE_RULES` is set. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250651) in GitLab 13.12. |
+| `DAST_REQUEST_HEADERS` (**1**)              | string        | Set to a comma-separated list of request header names and values. Headers are added to every request made by DAST. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
+| `DAST_DEBUG` (**1**)                        | boolean       | Enable debug message output. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
+| `DAST_TARGET_AVAILABILITY_TIMEOUT` (**1**)  | number        | Time limit in seconds to wait for target availability.
+| `DAST_SPIDER_MINS` (**1**)                  | number        | The maximum duration of the spider scan in minutes. Set to `0` for unlimited. Default: One minute, or unlimited when the scan is a full scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
+| `DAST_HTML_REPORT`                          | string        | The filename of the HTML report written at the end of a scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
+| `DAST_MARKDOWN_REPORT`                      | string        | The filename of the Markdown report written at the end of a scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
+| `DAST_XML_REPORT`                           | string        | The filename of the XML report written at the end of a scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
+| `DAST_INCLUDE_ALPHA_VULNERABILITIES`        | boolean       | Set to `true` to include alpha passive and active scan rules. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
+| `DAST_USE_AJAX_SPIDER` (**1**)              | boolean       | Set to `true` to use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
+| `DAST_PATHS`                                | string        | Set to a comma-separated list of URLs for DAST to scan. For example, `/page1.html,/category1/page3.html,/page2.html`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4. |
+| `DAST_PATHS_FILE`                           | string        | The file path containing the paths within `DAST_WEBSITE` to scan. The file must be plain text with one path per line. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258825) in GitLab 13.6. |
+| `DAST_SUBMIT_FIELD`                         | string        | The `id` or `name` of the element that when clicked submits the login form or the password form of a multi-page login process. [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9894) in GitLab 12.4. |
+| `DAST_FIRST_SUBMIT_FIELD`                   | string        | The `id` or `name` of the element that when clicked submits the username form of a multi-page login process. [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9894) in GitLab 12.4. |
+| `DAST_ZAP_CLI_OPTIONS`                      | string        | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
+| `DAST_ZAP_LOG_CONFIGURATION`                | string        | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG` |
+| `DAST_AUTH_EXCLUDE_URLS`                    | URLs          | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/289959) in GitLab 13.8, to be removed in 14.0, and replaced by `DAST_EXCLUDE_URLS`. The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. Not supported for API scans. |
+
+1. DAST CI/CD variable available to an on-demand scan.
 
 ### DAST command-line options
 
@@ -836,7 +846,7 @@ successfully run. For more information, see [Offline environments](../offline_de
 
 To use DAST in an offline environment, you need:
 
-- GitLab Runner with the [`docker` or `kubernetes` executor](#prerequisite).
+- GitLab Runner with the [`docker` or `kubernetes` executor](#prerequisites).
 - Docker Container Registry with a locally available copy of the DAST
   [container image](https://gitlab.com/gitlab-org/security-products/dast), found in the
   [DAST container registry](https://gitlab.com/gitlab-org/security-products/dast/container_registry).
@@ -1010,7 +1020,7 @@ A site profile contains the following:
 - **Target URL**: The URL that DAST runs against.
 - **Excluded URLs**: A comma-separated list of URLs to exclude from the scan.
 - **Request headers**: A comma-separated list of HTTP request headers, including names and values. These headers are added to every request made by DAST.
-- **Authentication**:  
+- **Authentication**:
   - **Authenticated URL**: The URL of the page containing the sign-in HTML form on the target website. The username and password are submitted with the login form to create an authenticated scan.
   - **Username**: The username used to authenticate to the website.
   - **Password**: The password used to authenticate to the website.
