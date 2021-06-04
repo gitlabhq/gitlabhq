@@ -62,7 +62,7 @@ investigate it for potential threats by
 
 The **Threat Monitoring** page's **Policy** tab displays deployed
 network policies for all available environments. You can check a
-network policy's `yaml` manifest, toggle the policy's enforcement
+network policy's `yaml` manifest, its enforcement
 status, and create and edit deployed policies. This section has the
 following prerequisites:
 
@@ -71,8 +71,7 @@ following prerequisites:
 
 Network policies are fetched directly from the selected environment's
 deployment platform. Changes performed outside of this tab are
-reflected upon refresh. Enforcement status changes are deployed
-directly to a deployment namespace of the selected environment.
+reflected upon refresh.
 
 By default, the network policy list contains predefined policies in a
 disabled state. Once enabled, a predefined policy deploys to the
@@ -89,8 +88,9 @@ users must make changes by following the
 To change a network policy's enforcement status:
 
 - Click the network policy you want to update.
-- Click the **Enforcement status** toggle to update the selected policy.
-- Click the **Apply changes** button to deploy network policy changes.
+- Click the **Edit policy** button.
+- Click the **Policy status** toggle to update the selected policy.
+- Click the **Save changes** button to deploy network policy changes.
 
 Disabled network policies have the `network-policy.gitlab.com/disabled_by: gitlab` selector inside
 the `podSelector` block. This narrows the scope of such a policy and as a result it doesn't affect

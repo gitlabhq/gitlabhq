@@ -69,7 +69,7 @@ export default {
         class="form-control dropdown-input-field"
         @input="searchBranches"
       />
-      <gl-icon :size="18" name="search" class="ml-3 input-icon" use-deprecated-sizes />
+      <gl-icon name="search" class="gl-ml-5 gl-mt-1 input-icon" />
     </label>
     <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
       <gl-loading-icon

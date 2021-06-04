@@ -47,6 +47,14 @@ $top-level-item-color: $purple-900;
 
   @include context-header-collapsed;
 
+  .context-header {
+    @include gl-h-auto;
+
+    a {
+      @include gl-p-2;
+    }
+  }
+
   .sidebar-top-level-items > li {
     .sidebar-sub-level-items {
       &:not(.flyout-list) {
@@ -60,17 +68,16 @@ $top-level-item-color: $purple-900;
   }
 
   .toggle-sidebar-button {
-    padding: 16px;
-    width: $contextual-sidebar-collapsed-width - 1px;
+    width: $contextual-sidebar-collapsed-width;
 
-    .collapse-text,
-    .icon-chevron-double-lg-left {
+    .collapse-text {
       display: none;
     }
 
-    .icon-chevron-double-lg-right {
-      display: block;
-      margin: 0;
+    .icon-chevron-double-lg-left {
+      @include gl-rotate-180;
+      @include gl-display-block; // TODO: shouldn't be needed after the flag roll out
+      @include gl-m-0;
     }
   }
 }
@@ -83,12 +90,13 @@ $top-level-item-color: $purple-900;
   }
 
   .badge.badge-pill:not(.fly-out-badge),
-  .nav-item-name {
+  .nav-item-name,
+  .collapse-text {
     @include gl-sr-only;
   }
 
   .sidebar-top-level-items > li > a {
-    min-height: 45px;
+    min-height: unset;
   }
 
   .fly-out-top-item {
@@ -97,6 +105,10 @@ $top-level-item-color: $purple-900;
 
   .avatar-container {
     margin: 0 auto;
+  }
+
+  li.active > a {
+    background-color: $indigo-900-alpha-008;
   }
 }
 
@@ -158,6 +170,7 @@ $top-level-item-color: $purple-900;
 
   @include gl-p-2;
   @include gl-mb-2;
+  @include gl-mt-0;
 
   .avatar-container {
     @include gl-font-weight-normal;
@@ -187,7 +200,6 @@ $top-level-item-color: $purple-900;
   @include gl-align-items-center;
   @include gl-rounded-base;
   @include gl-w-auto;
-  transition: padding $sidebar-transition-duration;
   margin: $sidebar-top-item-tb-margin $sidebar-top-item-lr-margin;
 
   &:hover {
@@ -226,21 +238,15 @@ $top-level-item-color: $purple-900;
 //
 
 .nav-sidebar {
+  @include gl-fixed;
+  @include gl-bottom-0;
+  @include gl-left-0;
   transition: width $sidebar-transition-duration, left $sidebar-transition-duration;
-  position: fixed;
   z-index: 600;
   width: $contextual-sidebar-width;
   top: $header-height;
-  bottom: 0;
-  left: 0;
   background-color: $gray-50;
   transform: translate3d(0, 0, 0);
-
-  &:not(.sidebar-collapsed-desktop) {
-    @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, sm)) {
-      box-shadow: inset -1px 0 0 $border-color, 2px 1px 3px $dropdown-shadow-color;
-    }
-  }
 
   &.sidebar-collapsed-desktop {
     @include collapse-contextual-sidebar;
@@ -380,28 +386,16 @@ $top-level-item-color: $purple-900;
 .close-nav-button {
   @include side-panel-toggle;
   background-color: $gray-50;
+  border-top: 1px solid $border-color;
   color: $top-level-item-color;
+  position: fixed;
+  bottom: 0;
+  width: $contextual-sidebar-width;
 
   .collapse-text,
   .icon-chevron-double-lg-left,
   .icon-chevron-double-lg-right {
     color: inherit;
-  }
-}
-
-.toggle-sidebar-button,
-.close-nav-button {
-  position: fixed;
-  bottom: 0;
-  width: $contextual-sidebar-width - 1px;
-  border-top: 1px solid $border-color;
-
-  svg {
-    margin-right: 8px;
-  }
-
-  .icon-chevron-double-lg-right {
-    display: none;
   }
 }
 

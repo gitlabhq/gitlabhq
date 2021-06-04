@@ -7,6 +7,66 @@ RSpec.describe API::Helpers do
 
   subject { Class.new.include(described_class).new }
 
+  describe '#current_user' do
+    include Rack::Test::Methods
+
+    let(:user) { build(:user, id: 42) }
+
+    let(:helper) do
+      Class.new(Grape::API::Instance) do
+        helpers API::APIGuard::HelperMethods
+        helpers API::Helpers
+        format :json
+
+        get 'user' do
+          current_user ? { id: current_user.id } : { found: false }
+        end
+
+        get 'protected' do
+          authenticate_by_gitlab_geo_node_token!
+        end
+      end
+    end
+
+    def app
+      helper
+    end
+
+    before do
+      allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
+    end
+
+    it 'handles sticking when a user could be found' do
+      allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(user)
+
+      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
+        .to receive(:stick_or_unstick).with(any_args, :user, 42)
+
+      get 'user'
+
+      expect(Gitlab::Json.parse(last_response.body)).to eq({ 'id' => user.id })
+    end
+
+    it 'does not handle sticking if no user could be found' do
+      allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(nil)
+
+      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
+        .not_to receive(:stick_or_unstick)
+
+      get 'user'
+
+      expect(Gitlab::Json.parse(last_response.body)).to eq({ 'found' => false })
+    end
+
+    it 'returns the user if one could be found' do
+      allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(user)
+
+      get 'user'
+
+      expect(Gitlab::Json.parse(last_response.body)).to eq({ 'id' => user.id })
+    end
+  end
+
   describe '#find_project' do
     let(:project) { create(:project) }
 

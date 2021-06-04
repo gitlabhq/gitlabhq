@@ -1,25 +1,18 @@
 <script>
-import {
-  GlFilteredSearchToken,
-  GlAvatar,
-  GlFilteredSearchSuggestion,
-  GlDropdownDivider,
-  GlLoadingIcon,
-} from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { GlAvatar, GlFilteredSearchSuggestion } from '@gitlab/ui';
 
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 
-import { DEFAULT_LABEL_ANY, DEBOUNCE_DELAY } from '../constants';
+import { DEFAULT_LABEL_ANY } from '../constants';
+
+import BaseToken from './base_token.vue';
 
 export default {
   components: {
-    GlFilteredSearchToken,
+    BaseToken,
     GlAvatar,
     GlFilteredSearchSuggestion,
-    GlDropdownDivider,
-    GlLoadingIcon,
   },
   props: {
     config: {
@@ -30,45 +23,35 @@ export default {
       type: Object,
       required: true,
     },
+    active: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       authors: this.config.initialAuthors || [],
       defaultAuthors: this.config.defaultAuthors || [DEFAULT_LABEL_ANY],
-      loading: true,
+      preloadedAuthors: [
+        {
+          id: gon.current_user_id,
+          name: gon.current_user_fullname,
+          username: gon.current_username,
+          avatar_url: gon.current_user_avatar_url,
+        },
+      ],
+      loading: false,
     };
   },
-  computed: {
-    currentUser() {
-      return {
-        id: gon.current_user_id,
-        name: gon.current_user_fullname,
-        username: gon.current_username,
-        avatar_url: gon.current_user_avatar_url,
-      };
-    },
-    currentValue() {
-      return this.value.data.toLowerCase();
-    },
-    activeAuthor() {
-      return this.authors.find((author) => author.username.toLowerCase() === this.currentValue);
-    },
-    activeAuthorAvatar() {
-      return this.avatarUrl(this.activeAuthor);
-    },
-  },
-  watch: {
-    active: {
-      immediate: true,
-      handler(newValue) {
-        if (!newValue && !this.authors.length) {
-          this.fetchAuthorBySearchTerm(this.value.data);
-        }
-      },
-    },
-  },
   methods: {
+    getActiveAuthor(authors, currentValue) {
+      return authors.find((author) => author.username.toLowerCase() === currentValue);
+    },
+    getAvatarUrl(author) {
+      return author.avatarUrl || author.avatar_url;
+    },
     fetchAuthorBySearchTerm(searchTerm) {
+      this.loading = true;
       const fetchPromise = this.config.fetchPath
         ? this.config.fetchAuthors(this.config.fetchPath, searchTerm)
         : this.config.fetchAuthors(searchTerm);
@@ -89,69 +72,47 @@ export default {
           this.loading = false;
         });
     },
-    avatarUrl(author) {
-      return author.avatarUrl || author.avatar_url;
-    },
-    searchAuthors: debounce(function debouncedSearch({ data }) {
-      this.fetchAuthorBySearchTerm(data);
-    }, DEBOUNCE_DELAY),
   },
 };
 </script>
 
 <template>
-  <gl-filtered-search-token
-    :config="config"
-    v-bind="{ ...$props, ...$attrs }"
-    v-on="$listeners"
-    @input="searchAuthors"
+  <base-token
+    :token-config="config"
+    :token-value="value"
+    :token-active="active"
+    :tokens-list-loading="loading"
+    :token-values="authors"
+    :fn-active-token-value="getActiveAuthor"
+    :default-token-values="defaultAuthors"
+    :preloaded-token-values="preloadedAuthors"
+    :recent-token-values-storage-key="config.recentTokenValuesStorageKey"
+    @fetch-token-values="fetchAuthorBySearchTerm"
   >
-    <template #view="{ inputValue }">
+    <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
       <gl-avatar
-        v-if="activeAuthor"
+        v-if="activeTokenValue"
         :size="16"
-        :src="activeAuthorAvatar"
+        :src="getAvatarUrl(activeTokenValue)"
         shape="circle"
         class="gl-mr-2"
       />
-      <span>{{ activeAuthor ? activeAuthor.name : inputValue }}</span>
+      <span>{{ activeTokenValue ? activeTokenValue.name : inputValue }}</span>
     </template>
-    <template #suggestions>
+    <template #token-values-list="{ tokenValues }">
       <gl-filtered-search-suggestion
-        v-for="author in defaultAuthors"
-        :key="author.value"
-        :value="author.value"
+        v-for="author in tokenValues"
+        :key="author.username"
+        :value="author.username"
       >
-        {{ author.text }}
+        <div class="gl-display-flex">
+          <gl-avatar :size="32" :src="getAvatarUrl(author)" />
+          <div>
+            <div>{{ author.name }}</div>
+            <div>@{{ author.username }}</div>
+          </div>
+        </div>
       </gl-filtered-search-suggestion>
-      <gl-dropdown-divider v-if="defaultAuthors.length" />
-      <template v-if="loading">
-        <gl-filtered-search-suggestion v-if="currentUser.id" :value="currentUser.username">
-          <div class="gl-display-flex">
-            <gl-avatar :size="32" :src="avatarUrl(currentUser)" />
-            <div>
-              <div>{{ currentUser.name }}</div>
-              <div>@{{ currentUser.username }}</div>
-            </div>
-          </div>
-        </gl-filtered-search-suggestion>
-        <gl-loading-icon class="gl-mt-3" />
-      </template>
-      <template v-else>
-        <gl-filtered-search-suggestion
-          v-for="author in authors"
-          :key="author.username"
-          :value="author.username"
-        >
-          <div class="d-flex">
-            <gl-avatar :size="32" :src="avatarUrl(author)" />
-            <div>
-              <div>{{ author.name }}</div>
-              <div>@{{ author.username }}</div>
-            </div>
-          </div>
-        </gl-filtered-search-suggestion>
-      </template>
     </template>
-  </gl-filtered-search-token>
+  </base-token>
 </template>

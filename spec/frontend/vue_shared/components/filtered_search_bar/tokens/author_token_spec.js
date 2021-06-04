@@ -1,9 +1,8 @@
 import {
-  GlFilteredSearchToken,
   GlFilteredSearchTokenSegment,
   GlFilteredSearchSuggestion,
   GlDropdownDivider,
-  GlLoadingIcon,
+  GlAvatar,
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
@@ -16,6 +15,7 @@ import {
   DEFAULT_NONE_ANY,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
 import { mockAuthorToken, mockAuthors } from '../mock_data';
 
@@ -62,6 +62,8 @@ describe('AuthorToken', () => {
   let mock;
   let wrapper;
 
+  const getBaseToken = () => wrapper.findComponent(BaseToken);
+
   beforeEach(() => {
     window.gon = {
       ...originalGon,
@@ -79,102 +81,125 @@ describe('AuthorToken', () => {
     wrapper.destroy();
   });
 
-  describe('computed', () => {
-    describe('currentValue', () => {
-      it('returns lowercase string for `value.data`', () => {
-        wrapper = createComponent({ value: { data: 'FOO' } });
-
-        expect(wrapper.vm.currentValue).toBe('foo');
+  describe('methods', () => {
+    describe('fetchAuthorBySearchTerm', () => {
+      beforeEach(() => {
+        wrapper = createComponent();
       });
-    });
 
-    describe('activeAuthor', () => {
-      it('returns object for currently present `value.data`', async () => {
-        wrapper = createComponent({ value: { data: mockAuthors[0].username } });
+      it('calls `config.fetchAuthors` with provided searchTerm param', () => {
+        jest.spyOn(wrapper.vm.config, 'fetchAuthors');
 
-        wrapper.setData({
-          authors: mockAuthors,
-        });
+        getBaseToken().vm.$emit('fetch-token-values', mockAuthors[0].username);
 
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.vm.activeAuthor).toEqual(mockAuthors[0]);
+        expect(wrapper.vm.config.fetchAuthors).toHaveBeenCalledWith(
+          mockAuthorToken.fetchPath,
+          mockAuthors[0].username,
+        );
       });
-    });
-  });
 
-  describe('fetchAuthorBySearchTerm', () => {
-    it('calls `config.fetchAuthors` with provided searchTerm param', () => {
-      wrapper = createComponent();
+      it('sets response to `authors` when request is succesful', () => {
+        jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockResolvedValue(mockAuthors);
 
-      jest.spyOn(wrapper.vm.config, 'fetchAuthors');
+        getBaseToken().vm.$emit('fetch-token-values', 'root');
 
-      wrapper.vm.fetchAuthorBySearchTerm(mockAuthors[0].username);
-
-      expect(wrapper.vm.config.fetchAuthors).toHaveBeenCalledWith(
-        mockAuthorToken.fetchPath,
-        mockAuthors[0].username,
-      );
-    });
-
-    it('sets response to `authors` when request is succesful', () => {
-      wrapper = createComponent();
-
-      jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockResolvedValue(mockAuthors);
-
-      wrapper.vm.fetchAuthorBySearchTerm('root');
-
-      return waitForPromises().then(() => {
-        expect(wrapper.vm.authors).toEqual(mockAuthors);
-      });
-    });
-
-    it('calls `createFlash` with flash error message when request fails', () => {
-      wrapper = createComponent();
-
-      jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockRejectedValue({});
-
-      wrapper.vm.fetchAuthorBySearchTerm('root');
-
-      return waitForPromises().then(() => {
-        expect(createFlash).toHaveBeenCalledWith({
-          message: 'There was a problem fetching users.',
+        return waitForPromises().then(() => {
+          expect(getBaseToken().props('tokenValues')).toEqual(mockAuthors);
         });
       });
-    });
 
-    it('sets `loading` to false when request completes', () => {
-      wrapper = createComponent();
+      it('calls `createFlash` with flash error message when request fails', () => {
+        jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockRejectedValue({});
 
-      jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockRejectedValue({});
+        getBaseToken().vm.$emit('fetch-token-values', 'root');
 
-      wrapper.vm.fetchAuthorBySearchTerm('root');
+        return waitForPromises().then(() => {
+          expect(createFlash).toHaveBeenCalledWith({
+            message: 'There was a problem fetching users.',
+          });
+        });
+      });
 
-      return waitForPromises().then(() => {
-        expect(wrapper.vm.loading).toBe(false);
+      it('sets `loading` to false when request completes', async () => {
+        jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockRejectedValue({});
+
+        getBaseToken().vm.$emit('fetch-token-values', 'root');
+
+        await waitForPromises();
+
+        expect(getBaseToken().props('tokensListLoading')).toBe(false);
       });
     });
   });
 
   describe('template', () => {
-    it('renders gl-filtered-search-token component', () => {
-      wrapper = createComponent({ data: { authors: mockAuthors } });
+    it('renders base-token component', () => {
+      wrapper = createComponent({
+        value: { data: mockAuthors[0].username },
+        data: { authors: mockAuthors },
+      });
 
-      expect(wrapper.find(GlFilteredSearchToken).exists()).toBe(true);
+      const baseTokenEl = getBaseToken();
+
+      expect(baseTokenEl.exists()).toBe(true);
+      expect(baseTokenEl.props()).toMatchObject({
+        tokenValues: mockAuthors,
+        fnActiveTokenValue: wrapper.vm.getActiveAuthor,
+      });
     });
 
     it('renders token item when value is selected', () => {
       wrapper = createComponent({
         value: { data: mockAuthors[0].username },
         data: { authors: mockAuthors },
+        stubs: { Portal: true },
       });
 
       return wrapper.vm.$nextTick(() => {
         const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
 
         expect(tokenSegments).toHaveLength(3); // Author, =, "Administrator"
-        expect(tokenSegments.at(2).text()).toBe(mockAuthors[0].name); // "Administrator"
+
+        const tokenValue = tokenSegments.at(2);
+
+        expect(tokenValue.findComponent(GlAvatar).props('src')).toBe(mockAuthors[0].avatar_url);
+        expect(tokenValue.text()).toBe(mockAuthors[0].name); // "Administrator"
       });
+    });
+
+    it('renders token value with correct avatarUrl from author object', async () => {
+      const getAvatarEl = () =>
+        wrapper.findAll(GlFilteredSearchTokenSegment).at(2).findComponent(GlAvatar);
+
+      wrapper = createComponent({
+        value: { data: mockAuthors[0].username },
+        data: {
+          authors: [
+            {
+              ...mockAuthors[0],
+            },
+          ],
+        },
+        stubs: { Portal: true },
+      });
+
+      await wrapper.vm.$nextTick();
+
+      expect(getAvatarEl().props('src')).toBe(mockAuthors[0].avatar_url);
+
+      wrapper.setData({
+        authors: [
+          {
+            ...mockAuthors[0],
+            avatarUrl: mockAuthors[0].avatar_url,
+            avatar_url: undefined,
+          },
+        ],
+      });
+
+      await wrapper.vm.$nextTick();
+
+      expect(getAvatarEl().props('src')).toBe(mockAuthors[0].avatar_url);
     });
 
     it('renders provided defaultAuthors as suggestions', async () => {
@@ -235,10 +260,6 @@ describe('AuthorToken', () => {
           config: { ...mockAuthorToken, defaultAuthors: [] },
           stubs: { Portal: true },
         });
-      });
-
-      it('shows loading icon', () => {
-        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
 
       it('shows current user', () => {

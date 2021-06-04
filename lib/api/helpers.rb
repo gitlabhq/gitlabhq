@@ -74,6 +74,11 @@ module API
 
       save_current_user_in_env(@current_user) if @current_user
 
+      if @current_user
+        ::Gitlab::Database::LoadBalancing::RackMiddleware
+          .stick_or_unstick(env, :user, @current_user.id)
+      end
+
       @current_user
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables

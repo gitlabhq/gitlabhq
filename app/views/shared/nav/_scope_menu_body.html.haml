@@ -1,5 +1,8 @@
+- avatar_size = sidebar_refactor_disabled? ? 40 : 32
+- avatar_size_class = sidebar_refactor_disabled? ? 's40' : 's32'
+
 = link_to scope_menu.link, **scope_menu.container_html_options do
-  %span.avatar-container.rect-avatar.s32.project-avatar
-    = source_icon(scope_menu.container, alt: scope_menu.title, class: 'avatar s32 avatar-tile', width: 32, height: 32)
+  %span{ class: ['avatar-container', 'rect-avatar', 'project-avatar', avatar_size_class] }
+    = source_icon(scope_menu.container, alt: scope_menu.title, class: ['avatar', 'avatar-tile', avatar_size_class], width: avatar_size, height: avatar_size)
   %span.sidebar-context-title
     = scope_menu.title

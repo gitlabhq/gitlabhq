@@ -4035,9 +4035,6 @@ msgstr ""
 msgid "Apply a template"
 msgstr ""
 
-msgid "Apply changes"
-msgstr ""
-
 msgid "Apply suggestion"
 msgstr ""
 
@@ -13111,6 +13108,9 @@ msgstr ""
 msgid "EscalationPolicies|Edit escalation policy"
 msgstr ""
 
+msgid "EscalationPolicies|Elapsed time must be greater than or equal to zero."
+msgstr ""
+
 msgid "EscalationPolicies|Email on-call user in schedule"
 msgstr ""
 
@@ -21851,7 +21851,7 @@ msgstr ""
 msgid "NetworkPolicies|Are you sure you want to delete this policy? This action cannot be undone."
 msgstr ""
 
-msgid "NetworkPolicies|Choose whether to enforce this policy."
+msgid "NetworkPolicies|Container runtime"
 msgstr ""
 
 msgid "NetworkPolicies|Create policy"
@@ -37821,12 +37821,6 @@ msgstr ""
 msgid "Your CSV import for project"
 msgstr ""
 
-msgid "Your Commit Email will be used for web based operations, such as edits and merges."
-msgstr ""
-
-msgid "Your Default Notification Email will be used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set."
-msgstr ""
-
 msgid "Your DevOps Report gives an overview of how you are using GitLab from a feature perspective. View how you compare with other organizations, discover features you are not using, and learn best practices through blog posts and white papers."
 msgstr ""
 
@@ -37854,16 +37848,10 @@ msgstr ""
 msgid "Your Personal Access Token was revoked"
 msgstr ""
 
-msgid "Your Primary Email will be used for avatar detection."
-msgstr ""
-
 msgid "Your Projects (default)"
 msgstr ""
 
 msgid "Your Projects' Activity"
-msgstr ""
-
-msgid "Your Public Email will be displayed on your public profile."
 msgstr ""
 
 msgid "Your SSH key has expired"
@@ -37953,10 +37941,16 @@ msgstr ""
 msgid "Your comment will be discarded."
 msgstr ""
 
+msgid "Your commit email is used for web based operations, such as edits and merges."
+msgstr ""
+
 msgid "Your dashboard has been copied. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."
 msgstr ""
 
 msgid "Your dashboard has been updated. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."
+msgstr ""
+
+msgid "Your default notification email is used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set."
 msgstr ""
 
 msgid "Your deployment services will be broken, you will need to manually fix the services after renaming."
@@ -38043,6 +38037,9 @@ msgstr ""
 msgid "Your personal access tokens will expire in %{days_to_expire} days or less"
 msgstr ""
 
+msgid "Your primary email is used for avatar detection. You can change it in your %{openingTag}profile settings%{closingTag}."
+msgstr ""
+
 msgid "Your profile"
 msgstr ""
 
@@ -38050,6 +38047,9 @@ msgid "Your project limit is %{limit} projects! Please contact your administrato
 msgstr ""
 
 msgid "Your projects"
+msgstr ""
+
+msgid "Your public email will be displayed on your public profile."
 msgstr ""
 
 msgid "Your request for access could not be processed: %{error_meesage}"
