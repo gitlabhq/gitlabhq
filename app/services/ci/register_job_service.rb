@@ -22,10 +22,26 @@ module Ci
     end
 
     def execute(params = {})
+      db_all_caught_up = ::Gitlab::Database::LoadBalancing::Sticking.all_caught_up?(:runner, runner.id)
+
       @metrics.increment_queue_operation(:queue_attempt)
 
-      @metrics.observe_queue_time(:process, @runner.runner_type) do
+      result = @metrics.observe_queue_time(:process, @runner.runner_type) do
         process_queue(params)
+      end
+
+      # Since we execute this query against replica it might lead to false-positive
+      # We might receive the positive response: "hi, we don't have any more builds for you".
+      # This might not be true. If our DB replica is not up-to date with when runner event was generated
+      # we might still have some CI builds to be picked. Instead we should say to runner:
+      # "Hi, we don't have any more builds now,  but not everything is right anyway, so try again".
+      # Runner will retry, but again, against replica, and again will check if replication lag did catch-up.
+      if !db_all_caught_up && !result.build
+        metrics.increment_queue_operation(:queue_replication_lag)
+
+        ::Ci::RegisterJobService::Result.new(nil, false) # rubocop:disable Cop/AvoidReturnFromBlocks
+      else
+        result
       end
     end
 

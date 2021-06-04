@@ -17,6 +17,7 @@ import (
 var (
 	keyWatcher            = make(map[string][]chan string)
 	keyWatcherMutex       sync.Mutex
+	shutdown              = make(chan struct{})
 	redisReconnectTimeout = backoff.Backoff{
 		//These are the defaults
 		Min:    100 * time.Millisecond,
@@ -112,6 +113,20 @@ func Process() {
 	}
 }
 
+func Shutdown() {
+	log.Info("keywatcher: shutting down")
+
+	keyWatcherMutex.Lock()
+	defer keyWatcherMutex.Unlock()
+
+	select {
+	case <-shutdown:
+		// already closed
+	default:
+		close(shutdown)
+	}
+}
+
 func notifyChanWatchers(key, value string) {
 	keyWatcherMutex.Lock()
 	defer keyWatcherMutex.Unlock()
@@ -182,6 +197,9 @@ func WatchKey(key, value string, timeout time.Duration) (WatchKeyStatus, error) 
 	}
 
 	select {
+	case <-shutdown:
+		log.WithFields(log.Fields{"key": key}).Info("stopping watch due to shutdown")
+		return WatchKeyStatusNoChange, nil
 	case currentValue := <-kw.Chan:
 		if currentValue == "" {
 			return WatchKeyStatusNoChange, fmt.Errorf("keywatcher: redis GET failed")

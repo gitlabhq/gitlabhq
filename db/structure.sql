@@ -18424,6 +18424,24 @@ CREATE SEQUENCE u2f_registrations_id_seq
 
 ALTER SEQUENCE u2f_registrations_id_seq OWNED BY u2f_registrations.id;
 
+CREATE TABLE upcoming_reconciliations (
+    id bigint NOT NULL,
+    namespace_id bigint,
+    next_reconciliation_date date NOT NULL,
+    display_alert_from date NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE upcoming_reconciliations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE upcoming_reconciliations_id_seq OWNED BY upcoming_reconciliations.id;
+
 CREATE TABLE uploads (
     id integer NOT NULL,
     size bigint NOT NULL,
@@ -20291,6 +20309,8 @@ ALTER TABLE ONLY trending_projects ALTER COLUMN id SET DEFAULT nextval('trending
 
 ALTER TABLE ONLY u2f_registrations ALTER COLUMN id SET DEFAULT nextval('u2f_registrations_id_seq'::regclass);
 
+ALTER TABLE ONLY upcoming_reconciliations ALTER COLUMN id SET DEFAULT nextval('upcoming_reconciliations_id_seq'::regclass);
+
 ALTER TABLE ONLY uploads ALTER COLUMN id SET DEFAULT nextval('uploads_id_seq'::regclass);
 
 ALTER TABLE ONLY user_agent_details ALTER COLUMN id SET DEFAULT nextval('user_agent_details_id_seq'::regclass);
@@ -21938,6 +21958,9 @@ ALTER TABLE ONLY trending_projects
 
 ALTER TABLE ONLY u2f_registrations
     ADD CONSTRAINT u2f_registrations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY upcoming_reconciliations
+    ADD CONSTRAINT upcoming_reconciliations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY uploads
     ADD CONSTRAINT uploads_pkey PRIMARY KEY (id);
@@ -24687,6 +24710,8 @@ CREATE INDEX index_unit_test_failures_failed_at ON ci_unit_test_failures USING b
 
 CREATE UNIQUE INDEX index_unit_test_failures_unique_columns ON ci_unit_test_failures USING btree (unit_test_id, failed_at DESC, build_id);
 
+CREATE UNIQUE INDEX index_upcoming_reconciliations_on_namespace_id ON upcoming_reconciliations USING btree (namespace_id);
+
 CREATE INDEX index_uploads_on_checksum ON uploads USING btree (checksum);
 
 CREATE INDEX index_uploads_on_model_id_and_model_type ON uploads USING btree (model_id, model_type);
@@ -26537,6 +26562,9 @@ ALTER TABLE ONLY user_custom_attributes
 
 ALTER TABLE ONLY ci_pending_builds
     ADD CONSTRAINT fk_rails_480669c3b3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY upcoming_reconciliations
+    ADD CONSTRAINT fk_rails_497b4938ac FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_pipeline_artifacts
     ADD CONSTRAINT fk_rails_4a70390ca6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

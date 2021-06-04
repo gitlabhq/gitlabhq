@@ -51,10 +51,6 @@ module Gitlab
             end
         end
 
-        def default_url
-          raise NotImplementedError
-        end
-
         def config_file_path(filename)
           path = File.join(rails_root, 'config', filename)
           return path if File.file?(path)
@@ -137,8 +133,6 @@ module Gitlab
 
         if config_data
           config_data.is_a?(String) ? { url: config_data } : config_data.deep_symbolize_keys
-        else
-          { url: self.class.default_url }
         end
       end
 

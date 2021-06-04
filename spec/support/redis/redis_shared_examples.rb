@@ -92,6 +92,7 @@ RSpec.shared_examples "redis_shared_examples" do
     subject { described_class.new(rails_env).params }
 
     let(:rails_env) { 'development' }
+    let(:config_file_name) { config_old_format_socket }
 
     it 'withstands mutation' do
       params1 = described_class.params
@@ -153,6 +154,8 @@ RSpec.shared_examples "redis_shared_examples" do
   end
 
   describe '.url' do
+    let(:config_file_name) { config_old_format_socket }
+
     it 'withstands mutation' do
       url1 = described_class.url
       url2 = described_class.url
@@ -201,6 +204,8 @@ RSpec.shared_examples "redis_shared_examples" do
   end
 
   describe '.with' do
+    let(:config_file_name) { config_old_format_socket }
+
     before do
       clear_pool
     end
@@ -288,12 +293,6 @@ RSpec.shared_examples "redis_shared_examples" do
   end
 
   describe '#raw_config_hash' do
-    it 'returns default redis url when no config file is present' do
-      expect(subject).to receive(:fetch_config) { false }
-
-      expect(subject.send(:raw_config_hash)).to eq(url: class_redis_url )
-    end
-
     it 'returns old-style single url config in a hash' do
       expect(subject).to receive(:fetch_config) { test_redis_url }
       expect(subject.send(:raw_config_hash)).to eq(url: test_redis_url)

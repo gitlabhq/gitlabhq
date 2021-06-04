@@ -9,10 +9,10 @@ module Gitlab
       SIDEKIQ_NAMESPACE = 'resque:gitlab'
       MAILROOM_NAMESPACE = 'mail_room:gitlab'
 
-      class << self
-        def default_url
-          'redis://localhost:6381'
-        end
+      private
+
+      def raw_config_hash
+        super || { url: 'redis://localhost:6381' }
       end
     end
   end

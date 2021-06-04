@@ -14,6 +14,34 @@ module Ci
     let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
 
     describe '#execute' do
+      context 'checks database loadbalancing stickiness' do
+        subject { described_class.new(shared_runner).execute }
+
+        before do
+          project.update!(shared_runners_enabled: false)
+        end
+
+        it 'result is valid if replica did caught-up' do
+          allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
+            .and_return(true)
+
+          expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:all_caught_up?)
+            .with(:runner, shared_runner.id) { true }
+
+          expect(subject).to be_valid
+        end
+
+        it 'result is invalid if replica did not caught-up' do
+          allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
+            .and_return(true)
+
+          expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:all_caught_up?)
+            .with(:runner, shared_runner.id) { false }
+
+          expect(subject).not_to be_valid
+        end
+      end
+
       shared_examples 'handles runner assignment' do
         context 'runner follow tag list' do
           it "picks build with the same tag" do

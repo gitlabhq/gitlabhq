@@ -16,12 +16,20 @@ import (
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upstream"
 )
 
+func TestDefaultConfig(t *testing.T) {
+	_, cfg, err := buildConfig("test", []string{"-config", "/dev/null"})
+	require.NoError(t, err, "build config")
+
+	require.Equal(t, 0*time.Second, cfg.ShutdownTimeout.Duration)
+}
+
 func TestConfigFile(t *testing.T) {
 	f, err := ioutil.TempFile("", "workhorse-config-test")
 	require.NoError(t, err)
 	defer os.Remove(f.Name())
 
 	data := `
+shutdown_timeout = "60s"
 [redis]
 password = "redis password"
 [object_storage]
@@ -43,6 +51,7 @@ max_scaler_procs = 123
 	require.Equal(t, "redis password", cfg.Redis.Password)
 	require.Equal(t, "test provider", cfg.ObjectStorageCredentials.Provider)
 	require.Equal(t, uint32(123), cfg.ImageResizerConfig.MaxScalerProcs, "image resizer max_scaler_procs")
+	require.Equal(t, 60*time.Second, cfg.ShutdownTimeout.Duration)
 }
 
 func TestConfigErrorHelp(t *testing.T) {

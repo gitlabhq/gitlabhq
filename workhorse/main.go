@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -8,6 +9,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"os/signal"
 	"syscall"
 	"time"
 
@@ -144,6 +146,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	cfg.ObjectStorageCredentials = cfgFromFile.ObjectStorageCredentials
 	cfg.ImageResizerConfig = cfgFromFile.ImageResizerConfig
 	cfg.AltDocumentRoot = cfgFromFile.AltDocumentRoot
+	cfg.ShutdownTimeout = cfgFromFile.ShutdownTimeout
 
 	return boot, cfg, nil
 }
@@ -225,7 +228,22 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger))
 
-	go func() { finalErrors <- http.Serve(listener, up) }()
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
 
-	return <-finalErrors
+	server := http.Server{Handler: up}
+	go func() { finalErrors <- server.Serve(listener) }()
+
+	select {
+	case err := <-finalErrors:
+		return err
+	case sig := <-done:
+		log.WithFields(log.Fields{"shutdown_timeout_s": cfg.ShutdownTimeout.Duration.Seconds(), "signal": sig.String()}).Infof("shutdown initiated")
+
+		ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout.Duration) // lint:allow context.Background
+		defer cancel()
+
+		redis.Shutdown()
+		return server.Shutdown(ctx)
+	}
 }

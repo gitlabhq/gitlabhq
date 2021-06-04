@@ -58,7 +58,7 @@ describe('Pipeline editor branch switcher', () => {
       },
       data() {
         return {
-          branches: ['main'],
+          availableBranches: ['main'],
           currentBranch: mockDefaultBranch,
         };
       },
@@ -98,6 +98,16 @@ describe('Pipeline editor branch switcher', () => {
   afterEach(() => {
     wrapper.destroy();
   });
+
+  const testErrorHandling = () => {
+    expect(wrapper.emitted('showError')).toBeDefined();
+    expect(wrapper.emitted('showError')[0]).toEqual([
+      {
+        reasons: [wrapper.vm.$options.i18n.fetchError],
+        type: DEFAULT_FAILURE,
+      },
+    ]);
+  };
 
   describe('when querying for the first time', () => {
     beforeEach(() => {
@@ -152,13 +162,7 @@ describe('Pipeline editor branch switcher', () => {
     });
 
     it('shows an error message', () => {
-      expect(wrapper.emitted('showError')).toBeDefined();
-      expect(wrapper.emitted('showError')[0]).toEqual([
-        {
-          reasons: [wrapper.vm.$options.i18n.fetchError],
-          type: DEFAULT_FAILURE,
-        },
-      ]);
+      testErrorHandling();
     });
   });
 
@@ -215,11 +219,26 @@ describe('Pipeline editor branch switcher', () => {
       mockAvailableBranchQuery.mockResolvedValue(mockProjectBranches);
       createComponentWithApollo(mount);
       await waitForPromises();
+    });
 
-      mockAvailableBranchQuery.mockResolvedValue(mockSearchBranches);
+    afterEach(() => {
+      mockAvailableBranchQuery.mockClear();
+    });
+
+    it('shows error message on fetch error', async () => {
+      mockAvailableBranchQuery.mockResolvedValue(new Error());
+
+      findSearchBox().vm.$emit('input', 'te');
+      await waitForPromises();
+
+      testErrorHandling();
     });
 
     describe('with a search term', () => {
+      beforeEach(async () => {
+        mockAvailableBranchQuery.mockResolvedValue(mockSearchBranches);
+      });
+
       it('calls query with correct variables', async () => {
         findSearchBox().vm.$emit('input', 'te');
         await waitForPromises();
@@ -253,6 +272,7 @@ describe('Pipeline editor branch switcher', () => {
 
     describe('without a search term', () => {
       beforeEach(async () => {
+        mockAvailableBranchQuery.mockResolvedValue(mockSearchBranches);
         findSearchBox().vm.$emit('input', 'te');
         await waitForPromises();
 
@@ -325,6 +345,15 @@ describe('Pipeline editor branch switcher', () => {
           projectFullPath: mockProjectFullPath,
           searchPattern: '*',
         });
+      });
+
+      it('shows error message on fetch error', async () => {
+        mockAvailableBranchQuery.mockResolvedValue(new Error());
+
+        findInfiniteScroll().vm.$emit('bottomReached');
+        await waitForPromises();
+
+        testErrorHandling();
       });
     });
 

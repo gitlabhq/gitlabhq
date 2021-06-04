@@ -20,7 +20,7 @@ export const initStaticSecurityConfiguration = (el) => {
   const { projectPath, upgradePath, features, latestPipelinePath } = el.dataset;
 
   if (gon.features.securityConfigurationRedesign) {
-    const { augmentedSecurityFeatures } = augmentFeatures(
+    const { augmentedSecurityFeatures, augmentedComplianceFeatures } = augmentFeatures(
       securityFeatures,
       complianceFeatures,
       features ? JSON.parse(features) : [],
@@ -36,6 +36,7 @@ export const initStaticSecurityConfiguration = (el) => {
       render(createElement) {
         return createElement(RedesignedSecurityConfigurationApp, {
           props: {
+            augmentedComplianceFeatures,
             augmentedSecurityFeatures,
             latestPipelinePath,
           },

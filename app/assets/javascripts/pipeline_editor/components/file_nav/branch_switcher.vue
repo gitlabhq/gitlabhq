@@ -7,6 +7,8 @@ import {
   GlLoadingIcon,
   GlSearchBoxByType,
 } from '@gitlab/ui';
+import { produce } from 'immer';
+import { fetchPolicies } from '~/lib/graphql';
 import { historyPushState } from '~/lib/utils/common_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
@@ -43,12 +45,12 @@ export default {
   },
   data() {
     return {
-      branches: [],
-      page: {
-        limit: this.paginationLimit,
-        offset: 0,
-        searchTerm: '',
-      },
+      availableBranches: [],
+      filteredBranches: [],
+      isSearchingBranches: false,
+      pageLimit: this.paginationLimit,
+      pageCounter: 0,
+      searchTerm: '',
     };
   },
   apollo: {
@@ -56,28 +58,20 @@ export default {
       query: getAvailableBranches,
       variables() {
         return {
-          limit: this.page.limit,
-          offset: this.page.offset,
+          limit: this.paginationLimit,
+          offset: 0,
           projectFullPath: this.projectFullPath,
-          searchPattern: this.searchPattern,
+          searchPattern: '*',
         };
       },
       update(data) {
         return data.project?.repository?.branchNames || [];
       },
-      result({ data }) {
-        const newBranches = data.project?.repository?.branchNames || [];
-
-        // check that we're not re-concatenating existing fetch results
-        if (!this.branches.includes(newBranches[0])) {
-          this.branches = this.branches.concat(newBranches);
-        }
+      result() {
+        this.pageCounter += 1;
       },
       error() {
-        this.$emit('showError', {
-          type: DEFAULT_FAILURE,
-          reasons: [this.$options.i18n.fetchError],
-        });
+        this.showFetchError();
       },
     },
     currentBranch: {
@@ -85,36 +79,57 @@ export default {
     },
   },
   computed: {
+    branches() {
+      return this.searchTerm.length > 0 ? this.filteredBranches : this.availableBranches;
+    },
     isBranchesLoading() {
-      return this.$apollo.queries.availableBranches.loading;
+      return this.$apollo.queries.availableBranches.loading || this.isSearchingBranches;
     },
     showBranchSwitcher() {
-      return this.branches.length > 0 || this.page.searchTerm.length > 0;
-    },
-    searchPattern() {
-      if (this.page.searchTerm === '') {
-        return '*';
-      }
-
-      return `*${this.page.searchTerm}*`;
+      return this.branches.length > 0 || this.searchTerm.length > 0;
     },
   },
   methods: {
+    availableBranchesQueryVars() {
+      if (this.searchTerm.length > 0) {
+        return {
+          limit: this.totalBranches,
+          offset: 0,
+          projectFullPath: this.projectFullPath,
+          searchPattern: `*${this.searchTerm}*`,
+        };
+      }
+
+      return {
+        limit: this.paginationLimit,
+        offset: this.pageCounter * this.paginationLimit,
+        projectFullPath: this.projectFullPath,
+        searchPattern: '*',
+      };
+    },
     // if there is no searchPattern, paginate by {paginationLimit} branches
     fetchNextBranches() {
       if (
         this.isBranchesLoading ||
-        this.page.searchTerm.length > 0 ||
+        this.searchTerm.length > 0 ||
         this.branches.length === this.totalBranches
       ) {
         return;
       }
 
-      this.page = {
-        ...this.page,
-        limit: this.paginationLimit,
-        offset: this.page.offset + this.paginationLimit,
-      };
+      this.$apollo.queries.availableBranches
+        .fetchMore({
+          variables: this.availableBranchesQueryVars(),
+          updateQuery(previousResult, { fetchMoreResult }) {
+            const previousBranches = previousResult.project.repository.branchNames;
+            const newBranches = fetchMoreResult.project.repository.branchNames;
+
+            return produce(fetchMoreResult, (draftData) => {
+              draftData.project.repository.branchNames = previousBranches.concat(newBranches);
+            });
+          },
+        })
+        .catch(this.showFetchError);
     },
     async selectBranch(newBranch) {
       if (newBranch === this.currentBranch) {
@@ -131,13 +146,32 @@ export default {
 
       this.$emit('refetchContent');
     },
-    setSearchTerm(newSearchTerm) {
-      this.branches = [];
-      this.page = {
-        limit: newSearchTerm.trim() === '' ? this.paginationLimit : this.totalBranches,
-        offset: 0,
-        searchTerm: newSearchTerm.trim(),
-      };
+    async setSearchTerm(newSearchTerm) {
+      this.pageCounter = 0;
+      this.searchTerm = newSearchTerm.trim();
+
+      if (this.searchTerm === '') {
+        this.pageLimit = this.paginationLimit;
+        return;
+      }
+
+      this.isSearchingBranches = true;
+      const fetchResults = await this.$apollo
+        .query({
+          query: getAvailableBranches,
+          fetchPolicy: fetchPolicies.NETWORK_ONLY,
+          variables: this.availableBranchesQueryVars(),
+        })
+        .catch(this.showFetchError);
+
+      this.isSearchingBranches = false;
+      this.filteredBranches = fetchResults?.data?.project?.repository?.branchNames || [];
+    },
+    showFetchError() {
+      this.$emit('showError', {
+        type: DEFAULT_FAILURE,
+        reasons: [this.$options.i18n.fetchError],
+      });
     },
   },
 };
