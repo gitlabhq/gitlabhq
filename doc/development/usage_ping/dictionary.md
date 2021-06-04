@@ -1382,13 +1382,13 @@ Tiers: `free`, `premium`, `ultimate`
 
 Count of groups with active integrations for GitHub
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175850_groups_github_active.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175850_groups_github_active.yml)
 
 Group: `group::ecosystem`
 
 Status: `data_available`
 
-Tiers: `free`, `premium`, `ultimate`
+Tiers: `premium`, `ultimate`
 
 ### `counts.groups_hangouts_chat_active`
 
@@ -1598,13 +1598,13 @@ Tiers: `free`, `premium`, `ultimate`
 
 Count of active groups inheriting integrations for GitHub
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175857_groups_inheriting_github_active.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175857_groups_inheriting_github_active.yml)
 
 Group: `group::ecosystem`
 
 Status: `data_available`
 
-Tiers: `free`, `premium`, `ultimate`
+Tiers: `premium`, `ultimate`
 
 ### `counts.groups_inheriting_hangouts_chat_active`
 
@@ -2738,13 +2738,13 @@ Tiers: `free`, `premium`, `ultimate`
 
 Count of active instance-level integrations for GitHub
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175853_instances_github_active.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175853_instances_github_active.yml)
 
 Group: `group::ecosystem`
 
 Status: `data_available`
 
-Tiers: `free`, `premium`, `ultimate`
+Tiers: `premium`, `ultimate`
 
 ### `counts.instances_hangouts_chat_active`
 
@@ -4394,13 +4394,13 @@ Tiers: `free`, `premium`, `ultimate`
 
 Count of projects with active integrations for GitHub
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175848_projects_github_active.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175848_projects_github_active.yml)
 
 Group: `group::ecosystem`
 
 Status: `data_available`
 
-Tiers: `free`, `premium`, `ultimate`
+Tiers: `premium`, `ultimate`
 
 ### `counts.projects_hangouts_chat_active`
 
@@ -4622,13 +4622,13 @@ Tiers: `free`, `premium`, `ultimate`
 
 Count of active projects inheriting integrations for GitHub
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175855_projects_inheriting_github_active.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175855_projects_inheriting_github_active.yml)
 
 Group: `group::ecosystem`
 
 Status: `data_available`
 
-Tiers: `free`, `premium`, `ultimate`
+Tiers: `premium`, `ultimate`
 
 ### `counts.projects_inheriting_hangouts_chat_active`
 
@@ -6074,13 +6074,13 @@ Tiers: `free`, `premium`, `ultimate`
 
 Count of active service templates for GitHub
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175851_templates_github_active.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175851_templates_github_active.yml)
 
 Group: `group::ecosystem`
 
 Status: `data_available`
 
-Tiers: `free`, `premium`, `ultimate`
+Tiers: `premium`, `ultimate`
 
 ### `counts.templates_hangouts_chat_active`
 

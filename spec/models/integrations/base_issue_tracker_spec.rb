@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::IssueTracker do
+RSpec.describe Integrations::BaseIssueTracker do
   describe 'Validations' do
     let(:project) { create :project }
 

@@ -143,8 +143,6 @@ module Ci
 
     def specified_cross_pipeline_dependencies
       strong_memoize(:specified_cross_pipeline_dependencies) do
-        next [] unless Feature.enabled?(:ci_cross_pipeline_artifacts_download, processable.project, default_enabled: true)
-
         specified_cross_dependencies.select { |dep| dep[:pipeline] && dep[:artifacts] }
       end
     end

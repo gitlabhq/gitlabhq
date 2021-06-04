@@ -188,13 +188,13 @@ FactoryBot.define do
     create_data { false }
 
     after(:build) do
-      Integrations::IssueTracker.skip_callback(:validation, :before, :handle_properties)
+      Integrations::BaseIssueTracker.skip_callback(:validation, :before, :handle_properties)
     end
 
     to_create { |instance| instance.save!(validate: false) }
 
     after(:create) do
-      Integrations::IssueTracker.set_callback(:validation, :before, :handle_properties)
+      Integrations::BaseIssueTracker.set_callback(:validation, :before, :handle_properties)
     end
   end
 

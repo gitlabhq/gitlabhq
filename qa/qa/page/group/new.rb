@@ -52,6 +52,9 @@ module QA
         # @param [String] gitlab_token
         # @return [void]
         def connect_gitlab_instance(gitlab_url, gitlab_token)
+          # Wait until element is present and refresh if not in case feature flag did not kick in
+          wait_until(max_duration: 10) { has_element?(:import_gitlab_url, wait: 1) }
+
           set_gitlab_url(gitlab_url)
           set_gitlab_token(gitlab_token)
 

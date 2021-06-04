@@ -9,7 +9,7 @@ type: howto
 
 A branch is an independent line of development in a [project](../user/project/index.md).
 
-When you create a new branch (in your [terminal](start-using-git.md#create-a-branch) or with
+When you create a new branch (in your [terminal](start-using-git.md#create-and-work-in-a-branch) or with
 [the web interface](../user/project/repository/web_editor.md#create-a-new-branch)),
 you are creating a snapshot of a certain branch, usually the main branch,
 at its current state. From there, you can start to make your own changes without

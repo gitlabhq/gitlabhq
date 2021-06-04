@@ -18,6 +18,7 @@ RSpec.describe Integration do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:type) }
+    it { is_expected.to validate_exclusion_of(:type).in_array(described_class::BASE_CLASSES) }
 
     where(:project_id, :group_id, :template, :instance, :valid) do
       1    | nil  | false  | false  | true

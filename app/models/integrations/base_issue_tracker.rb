@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Integrations
-  class IssueTracker < Integration
+  class BaseIssueTracker < Integration
     validate :one_issue_tracker, if: :activated?, on: :manual_change
 
     # TODO: we can probably just delegate as part of
@@ -128,6 +128,10 @@ module Integrations
       false
     end
 
+    def create_cross_reference_note(mentioned, noteable, author)
+      # implement inside child
+    end
+
     private
 
     def enabled_in_gitlab_config
@@ -150,5 +154,3 @@ module Integrations
     end
   end
 end
-
-Integrations::IssueTracker.prepend_mod_with('Integrations::IssueTracker')

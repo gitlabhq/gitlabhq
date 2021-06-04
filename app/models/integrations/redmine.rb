@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Redmine < IssueTracker
+  class Redmine < BaseIssueTracker
     include ActionView::Helpers::UrlHelper
     validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
 

@@ -29,6 +29,15 @@ class Integration < ApplicationRecord
     mock_ci mock_monitoring
   ].freeze
 
+  # Base classes which aren't actual integrations.
+  BASE_CLASSES = %w[
+    Integrations::BaseChatNotification
+    Integrations::BaseCi
+    Integrations::BaseIssueTracker
+    Integrations::BaseMonitoring
+    Integrations::BaseSlashCommands
+  ].freeze
+
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   attribute :type, Gitlab::Integrations::StiType.new
@@ -59,7 +68,7 @@ class Integration < ApplicationRecord
   validates :project_id, presence: true, unless: -> { template? || instance_level? || group_level? }
   validates :group_id, presence: true, unless: -> { template? || instance_level? || project_level? }
   validates :project_id, :group_id, absence: true, if: -> { template? || instance_level? }
-  validates :type, presence: true
+  validates :type, presence: true, exclusion: BASE_CLASSES
   validates :type, uniqueness: { scope: :template }, if: :template?
   validates :type, uniqueness: { scope: :instance }, if: :instance_level?
   validates :type, uniqueness: { scope: :project_id }, if: :project_level?

@@ -283,6 +283,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="queryprojectssearch"></a>`search` | [`String`](#string) | Search query for project name, path, or description. |
 | <a id="queryprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="queryprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. |
+| <a id="queryprojectstopics"></a>`topics` | [`[String!]`](#string) | Filters projects by topics. |
 
 ### `Query.runner`
 

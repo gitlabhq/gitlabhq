@@ -2,7 +2,7 @@
 
 # Accessible as Project#external_issue_tracker
 module Integrations
-  class Jira < IssueTracker
+  class Jira < BaseIssueTracker
     extend ::Gitlab::Utils::Override
     include Gitlab::Routing
     include ApplicationHelper
@@ -205,6 +205,7 @@ module Integrations
       log_usage(:close_issue, current_user)
     end
 
+    override :create_cross_reference_note
     def create_cross_reference_note(mentioned, noteable, author)
       unless can_cross_reference?(noteable)
         return s_("JiraService|Events for %{noteable_model_name} are disabled.") % { noteable_model_name: noteable.model_name.plural.humanize(capitalize: false) }

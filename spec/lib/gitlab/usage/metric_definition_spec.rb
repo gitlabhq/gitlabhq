@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
   end
 
   it 'has all definitons valid' do
-    expect { described_class.definitions }.not_to raise_error(Gitlab::Usage::Metric::InvalidMetricError)
+    expect { described_class.definitions }.not_to raise_error
   end
 
   describe '#key' do

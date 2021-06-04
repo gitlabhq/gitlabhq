@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Youtrack < IssueTracker
+  class Youtrack < BaseIssueTracker
     include ActionView::Helpers::UrlHelper
 
     validates :project_url, :issues_url, presence: true, public_url: true, if: :activated?

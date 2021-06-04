@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Integrations
-  class OpenProject < IssueTracker
+  class OpenProject < BaseIssueTracker
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true, if: :activated?
     validates :token, presence: true, if: :activated?

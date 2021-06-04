@@ -10,7 +10,7 @@ RSpec.describe Resolvers::ProjectsResolver do
 
     let_it_be(:group) { create(:group, name: 'public-group') }
     let_it_be(:private_group) { create(:group, name: 'private-group') }
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public, tag_list: %w(ruby javascript)) }
     let_it_be(:other_project) { create(:project, :public) }
     let_it_be(:group_project) { create(:project, :public, group: group) }
     let_it_be(:private_project) { create(:project, :private) }
@@ -68,6 +68,14 @@ RSpec.describe Resolvers::ProjectsResolver do
 
           it 'returns ignores namespace matches' do
             is_expected.to be_empty
+          end
+        end
+
+        context 'when topics filter is provided' do
+          let(:filters) { { topics: %w(ruby) } }
+
+          it 'returns matching project' do
+            is_expected.to contain_exactly(project)
           end
         end
       end
@@ -136,6 +144,14 @@ RSpec.describe Resolvers::ProjectsResolver do
 
           it 'returns projects in any order if flag is off' do
             is_expected.to match_array([named_project3, named_project1, named_project2])
+          end
+        end
+
+        context 'when topics filter is provided' do
+          let(:filters) { { topics: %w(ruby) } }
+
+          it 'returns matching project' do
+            is_expected.to contain_exactly(project)
           end
         end
       end
