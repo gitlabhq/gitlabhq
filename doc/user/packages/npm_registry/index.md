@@ -110,7 +110,8 @@ To authenticate, use one of the following:
 - It's not recommended, but you can use [OAuth tokens](../../../api/oauth2.md#resource-owner-password-credentials-flow).
   Standard OAuth tokens cannot authenticate to the GitLab npm Registry. You must use a personal access token with OAuth headers.
 - A [CI job token](#authenticate-with-a-ci-job-token).
-- Your npm package name must be in the format of [@scope/package-name](#package-naming-convention). It must match exactly, including the case.
+- Your npm package name must be in the format of [`@scope/package-name`](#package-naming-convention).
+  It must match exactly, including the case.
 
 ### Authenticate with a personal access token or deploy token
 
@@ -282,7 +283,7 @@ Prerequisites:
 
 - [Authenticate](#authenticate-to-the-package-registry) to the Package Registry.
 - Set a [project-level npm endpoint](#use-the-gitlab-endpoint-for-npm-packages).
-- Your npm package name must be in the format of [@scope/package-name](#package-naming-convention).
+- Your npm package name must be in the format of [`@scope/package-name`](#package-naming-convention).
   It must match exactly, including the case. This is different than the
   npm naming convention, but it is required to work with the GitLab Package Registry.
 
@@ -532,7 +533,7 @@ If you get this error, ensure that:
 ### `npm publish` returns `npm ERR! 400 Bad Request`
 
 If you get this error, your package name may not meet the
-[@scope/package-name package naming convention](#package-naming-convention).
+[`@scope/package-name` package naming convention](#package-naming-convention).
 
 Ensure the name meets the convention exactly, including the case.
 Then try to publish again.

@@ -301,9 +301,7 @@ gem 'gitlab-license', '~> 1.5'
 gem 'rack-attack', '~> 6.3.0'
 
 # Sentry integration
-gem 'sentry-ruby', '~> 4.4.0'
-gem 'sentry-sidekiq', '~> 4.4.0'
-gem 'sentry-rails', '~> 4.4.0'
+gem 'sentry-raven', '~> 3.1'
 
 # PostgreSQL query parsing
 #

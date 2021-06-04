@@ -21,3 +21,10 @@ exports[`Links Inner component with one need matches snapshot and has expected p
     <path d=\\"M202,118L42,118C72,118,72,138,102,138\\" stroke-width=\\"2\\" class=\\"gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease gl-stroke-gray-200\\"></path>
   </svg> </div>"
 `;
+
+exports[`Links Inner component with same stage needs matches snapshot and has expected path 1`] = `
+"<div class=\\"gl-display-flex gl-relative\\" totalgroups=\\"10\\"><svg id=\\"link-svg\\" viewBox=\\"0,0,1019,445\\" width=\\"1019px\\" height=\\"445px\\" class=\\"gl-absolute gl-pointer-events-none\\">
+    <path d=\\"M192,108L22,108C52,108,52,118,82,118\\" stroke-width=\\"2\\" class=\\"gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease gl-stroke-gray-200\\"></path>
+    <path d=\\"M202,118L32,118C62,118,62,128,92,128\\" stroke-width=\\"2\\" class=\\"gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease gl-stroke-gray-200\\"></path>
+  </svg> </div>"
+`;

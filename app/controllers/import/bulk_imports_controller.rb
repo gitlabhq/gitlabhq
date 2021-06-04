@@ -78,7 +78,7 @@ class Import::BulkImportsController < ApplicationController
   def query_params
     query_params = {
       top_level_only: true,
-      min_access_level: Gitlab::Access::MAINTAINER
+      min_access_level: Gitlab::Access::OWNER
     }
 
     query_params[:search] = sanitized_filter_param if sanitized_filter_param

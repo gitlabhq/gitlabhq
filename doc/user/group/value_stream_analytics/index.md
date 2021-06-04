@@ -65,7 +65,7 @@ To filter results:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 12.4.
 
-GitLab provides the ability to filter analytics based on a date range. To filter results:
+GitLab provides the ability to filter analytics based on a date range. Data is shown for workflow items created during the selected date range. To filter results:
 
 1. Select a group.
 1. Optionally select a project.

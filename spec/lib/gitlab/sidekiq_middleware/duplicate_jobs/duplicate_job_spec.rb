@@ -18,14 +18,43 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
   end
 
   describe '#schedule' do
-    it 'calls schedule on the strategy' do
-      expect do |block|
-        expect_next_instance_of(Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuting) do |strategy|
-          expect(strategy).to receive(:schedule).with(job, &block)
+    shared_examples 'scheduling with deduplication class' do |strategy_class|
+      it 'calls schedule on the strategy' do
+        expect do |block|
+          expect_next_instance_of("Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::#{strategy_class}".constantize) do |strategy|
+            expect(strategy).to receive(:schedule).with(job, &block)
+          end
+
+          duplicate_job.schedule(&block)
+        end.to yield_control
+      end
+    end
+
+    it_behaves_like 'scheduling with deduplication class', 'UntilExecuting'
+
+    context 'when the deduplication depends on a FF' do
+      before do
+        skip_feature_flags_yaml_validation
+        skip_default_enabled_yaml_check
+
+        allow(AuthorizedProjectsWorker).to receive(:get_deduplication_options).and_return(feature_flag: :my_feature_flag)
+      end
+
+      context 'when the feature flag is enabled' do
+        before do
+          stub_feature_flags(my_feature_flag: true)
         end
 
-        duplicate_job.schedule(&block)
-      end.to yield_control
+        it_behaves_like 'scheduling with deduplication class', 'UntilExecuting'
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(my_feature_flag: false)
+        end
+
+        it_behaves_like 'scheduling with deduplication class', 'None'
+      end
     end
   end
 

@@ -1293,6 +1293,88 @@ curl "localhost:5001/debug/health"
 curl "localhost:5001/debug/vars"
 ```
 
+### Access old schema v1 Docker images
+
+Support for the [Docker registry v1 API](https://www.docker.com/blog/registry-v1-api-deprecation/),
+including [schema V1 image manifests](https://docs.docker.com/registry/spec/manifest-v2-1/),
+was:
+
+- [Deprecated in GitLab 13.7](https://about.gitlab.com/releases/2020/12/22/gitlab-13-7-released/#deprecate-pulls-that-use-v1-of-the-docker-registry-api)
+- [Removed in GitLab 13.9](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#deprecate-pulls-that-use-v1-of-the-docker-registry-api)
+
+It's no longer possible to push or pull v1 images from the GitLab Container Registry.
+
+If you had v1 images in the GitLab Container Registry, but you did not upgrade them (following the
+[steps Docker recommends](https://docs.docker.com/registry/spec/deprecated-schema-v1/))
+ahead of the GitLab 13.9 upgrade, these images are no longer accessible. If you try to pull them,
+this error appears:
+
+- `Error response from daemon: manifest invalid: Schema 1 manifest not supported`
+
+For Self-Managed GitLab instances, you can regain access to these images by temporarily downgrading
+the GitLab Container Registry to a version lower than `v3.0.0-gitlab`. Follow these steps to regain
+access to these images:
+
+1. Downgrade the Container Registry to [`v2.13.1-gitlab`](https://gitlab.com/gitlab-org/container-registry/-/releases/v2.13.1-gitlab).
+1. Upgrade any v1 images.
+1. Revert the Container Registry downgrade.
+
+There's no need to put the registry in read-only mode during the image upgrade process. Ensure that
+you are not relying on any new feature introduced since `v3.0.0-gitlab`. Such features are
+unavailable during the upgrade process. See the [complete registry changelog](https://gitlab.com/gitlab-org/container-registry/-/blob/master/CHANGELOG.md)
+for more information.
+
+The following sections provide additional details about each installation method.
+
+#### Helm chart installations
+
+For Helm chart installations:
+
+1. Override the [`image.tag`](https://docs.gitlab.com/charts/charts/registry/#configuration)
+   configuration parameter with `v2.13.1-gitlab`.
+1. Restart.
+1. Performing the [images upgrade](#images-upgrade)) steps.
+1. Revert the `image.tag` parameter to the previous value.
+
+No other registry configuration changes are required.
+
+#### Omnibus installations
+
+For Omnibus installations:
+
+1. Temporarily replace the registry binary that ships with GitLab 13.9+ for one prior to
+   `v3.0.0-gitlab`. To do so, pull a previous version of the Docker image for the GitLab Container
+   Registry, such as `v2.13.1-gitlab`. You can then grab the `registry` binary from within this
+   image, located at `/bin/registry`:
+
+   ```shell
+   id=$(docker create registry.gitlab.com/gitlab-org/build/cng/gitlab-container-registry:v2.13.1-gitlab)
+   docker cp $id:/bin/registry registry-2.13.1-gitlab
+   docker rm $id
+   ```
+
+1. Replace the binary embedded in the Omnibus install, located at
+   `/opt/gitlab/embedded/bin/registry`, with `registry-2.13.1-gitlab`. Make sure to start by backing
+   up the original binary embedded in Omnibus, and restore it after performing the
+   [image upgrade](#images-upgrade)) steps. You should [stop](https://docs.gitlab.com/omnibus/maintenance/#starting-and-stopping)
+   the registry service before replacing its binary and start it right after. No registry
+   configuration changes are required.
+ 
+#### Source installations
+
+For source installations, locate your `registry` binary and temporarily replace it with the one
+obtained from `v3.0.0-gitlab`, as explained for [Omnibus installations](#omnibus-installations).
+Make sure to start by backing up the original registry binary, and restore it after performing the
+[images upgrade](#images-upgrade))
+steps.
+
+#### Images upgrade
+
+Follow the [steps that Docker recommends to upgrade v1 images](https://docs.docker.com/registry/spec/deprecated-schema-v1/).
+The most straightforward option is to pull those images and push them once again to the registry,
+using a Docker client version above v1.12. Docker converts images automatically before pushing them
+to the registry. Once done, all your v1 images should now be available as v2 images.
+
 ### Advanced Troubleshooting
 
 We use a concrete example to illustrate how to

@@ -7712,7 +7712,7 @@ Group: `group::product intelligence`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.analytics.analytics_total_unique_counts_monthly`
 

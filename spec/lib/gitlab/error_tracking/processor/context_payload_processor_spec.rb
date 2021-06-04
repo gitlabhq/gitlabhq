@@ -4,14 +4,18 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ErrorTracking::Processor::ContextPayloadProcessor do
   describe '.call' do
-    let(:exception) { StandardError.new('Test exception') }
-    let(:event) { Sentry.get_current_client.event_from_exception(exception) }
+    let(:required_options) do
+      {
+        configuration: Raven.configuration,
+        context: Raven.context,
+        breadcrumbs: Raven.breadcrumbs
+      }
+    end
+
+    let(:event) { Raven::Event.new(required_options.merge(payload)) }
     let(:result_hash) { described_class.call(event).to_hash }
 
     before do
-      Sentry.get_current_scope.update_from_options(**payload)
-      Sentry.get_current_scope.apply_to_event(event)
-
       allow_next_instance_of(Gitlab::ErrorTracking::ContextPayloadGenerator) do |generator|
         allow(generator).to receive(:generate).and_return(
           user: { username: 'root' },
@@ -19,10 +23,6 @@ RSpec.describe Gitlab::ErrorTracking::Processor::ContextPayloadProcessor do
           extra: { some_info: 'info' }
         )
       end
-    end
-
-    after do
-      Sentry.get_current_scope.clear
     end
 
     let(:payload) do

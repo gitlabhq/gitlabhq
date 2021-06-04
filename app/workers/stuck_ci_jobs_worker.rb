@@ -15,21 +15,45 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
   BUILD_PENDING_OUTDATED_TIMEOUT = 1.day
   BUILD_SCHEDULED_OUTDATED_TIMEOUT = 1.hour
   BUILD_PENDING_STUCK_TIMEOUT = 1.hour
+  BUILD_LOOKBACK = 5.days
 
   def perform
     return unless try_obtain_lease
 
     Gitlab::AppLogger.info "#{self.class}: Cleaning stuck builds"
 
-    drop :running, BUILD_RUNNING_OUTDATED_TIMEOUT, 'ci_builds.updated_at < ?', :stuck_or_timeout_failure
-    drop :pending, BUILD_PENDING_OUTDATED_TIMEOUT, 'ci_builds.updated_at < ?', :stuck_or_timeout_failure
-    drop :scheduled, BUILD_SCHEDULED_OUTDATED_TIMEOUT, 'scheduled_at IS NOT NULL AND scheduled_at < ?', :stale_schedule
-    drop_stuck :pending, BUILD_PENDING_STUCK_TIMEOUT, 'ci_builds.updated_at < ?', :stuck_or_timeout_failure
+    drop(running_timed_out_builds, failure_reason: :stuck_or_timeout_failure)
+
+    drop(
+      Ci::Build.pending.updated_before(lookback: BUILD_LOOKBACK.ago, timeout: BUILD_PENDING_OUTDATED_TIMEOUT.ago),
+      failure_reason: :stuck_or_timeout_failure
+    )
+
+    drop(scheduled_timed_out_builds, failure_reason: :stale_schedule)
+
+    drop_stuck(
+      Ci::Build.pending.updated_before(lookback: BUILD_LOOKBACK.ago, timeout: BUILD_PENDING_STUCK_TIMEOUT.ago),
+      failure_reason: :stuck_or_timeout_failure
+    )
 
     remove_lease
   end
 
   private
+
+  def scheduled_timed_out_builds
+    Ci::Build.where(status: :scheduled).where( # rubocop: disable CodeReuse/ActiveRecord
+      'ci_builds.scheduled_at IS NOT NULL AND ci_builds.scheduled_at < ?',
+      BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago
+    )
+  end
+
+  def running_timed_out_builds
+    Ci::Build.running.where( # rubocop: disable CodeReuse/ActiveRecord
+      'ci_builds.updated_at < ?',
+      BUILD_RUNNING_OUTDATED_TIMEOUT.ago
+    )
+  end
 
   def try_obtain_lease
     @uuid = Gitlab::ExclusiveLease.new(EXCLUSIVE_LEASE_KEY, timeout: 30.minutes).try_obtain
@@ -39,28 +63,27 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
     Gitlab::ExclusiveLease.cancel(EXCLUSIVE_LEASE_KEY, @uuid)
   end
 
-  def drop(status, timeout, condition, reason)
-    search(status, timeout, condition) do |build|
-      drop_build :outdated, build, status, timeout, reason
+  def drop(builds, failure_reason:)
+    fetch(builds) do |build|
+      drop_build :outdated, build, failure_reason
     end
   end
 
-  def drop_stuck(status, timeout, condition, reason)
-    search(status, timeout, condition) do |build|
+  def drop_stuck(builds, failure_reason:)
+    fetch(builds) do |build|
       break unless build.stuck?
 
-      drop_build :stuck, build, status, timeout, reason
+      drop_build :stuck, build, failure_reason
     end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def search(status, timeout, condition)
+  def fetch(builds)
     loop do
-      jobs = Ci::Build.where(status: status)
-        .where(condition, timeout.ago)
-        .includes(:tags, :runner, project: [:namespace, :route])
+      jobs = builds.includes(:tags, :runner, project: [:namespace, :route])
         .limit(100)
         .to_a
+
       break if jobs.empty?
 
       jobs.each do |job|
@@ -70,8 +93,8 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def drop_build(type, build, status, timeout, reason)
-    Gitlab::AppLogger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout}, reason: #{reason})"
+  def drop_build(type, build, reason)
+    Gitlab::AppLogger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{build.status}, failure_reason: #{reason})"
     Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
       b.drop(reason)
     end

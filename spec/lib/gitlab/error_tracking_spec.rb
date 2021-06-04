@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require 'sentry/transport/dummy_transport'
+require 'raven/transports/dummy'
 
 RSpec.describe Gitlab::ErrorTracking do
   let(:exception) { RuntimeError.new('boom') }
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::ErrorTracking do
     }
   end
 
-  let(:sentry_event) { Sentry.get_current_client.transport.events.last }
+  let(:sentry_event) { Gitlab::Json.parse(Raven.client.transport.events.last[1]) }
 
   before do
     stub_sentry_settings
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::ErrorTracking do
     allow(I18n).to receive(:locale).and_return('en')
 
     described_class.configure do |config|
-      config.transport.transport_class = Sentry::DummyTransport
+      config.encoding = 'json'
     end
   end
 
@@ -63,10 +63,6 @@ RSpec.describe Gitlab::ErrorTracking do
     end
   end
 
-  after do
-    ::Sentry.get_current_scope.clear
-  end
-
   describe '.track_and_raise_for_dev_exception' do
     context 'when exceptions for dev should be raised' do
       before do
@@ -74,7 +70,7 @@ RSpec.describe Gitlab::ErrorTracking do
       end
 
       it 'raises the exception' do
-        expect(Sentry).to receive(:capture_exception).with(exception, sentry_payload)
+        expect(Raven).to receive(:capture_exception).with(exception, sentry_payload)
 
         expect do
           described_class.track_and_raise_for_dev_exception(
@@ -92,7 +88,7 @@ RSpec.describe Gitlab::ErrorTracking do
       end
 
       it 'logs the exception with all attributes passed' do
-        expect(Sentry).to receive(:capture_exception).with(exception, sentry_payload)
+        expect(Raven).to receive(:capture_exception).with(exception, sentry_payload)
 
         described_class.track_and_raise_for_dev_exception(
           exception,
@@ -115,7 +111,7 @@ RSpec.describe Gitlab::ErrorTracking do
 
   describe '.track_and_raise_exception' do
     it 'always raises the exception' do
-      expect(Sentry).to receive(:capture_exception).with(exception, sentry_payload)
+      expect(Raven).to receive(:capture_exception).with(exception, sentry_payload)
 
       expect do
         described_class.track_and_raise_for_dev_exception(
@@ -143,14 +139,14 @@ RSpec.describe Gitlab::ErrorTracking do
     subject(:track_exception) { described_class.track_exception(exception, extra) }
 
     before do
-      allow(Sentry).to receive(:capture_exception).and_call_original
+      allow(Raven).to receive(:capture_exception).and_call_original
       allow(Gitlab::ErrorTracking::Logger).to receive(:error)
     end
 
-    it 'calls Sentry.capture_exception' do
+    it 'calls Raven.capture_exception' do
       track_exception
 
-      expect(Sentry).to have_received(:capture_exception).with(
+      expect(Raven).to have_received(:capture_exception).with(
         exception,
         sentry_payload
       )
@@ -176,31 +172,25 @@ RSpec.describe Gitlab::ErrorTracking do
 
     context 'the exception implements :sentry_extra_data' do
       let(:extra_info) { { event: 'explosion', size: :massive } }
-
-      before do
-        allow(exception).to receive(:sentry_extra_data).and_return(extra_info)
-      end
+      let(:exception) { double(message: 'bang!', sentry_extra_data: extra_info, backtrace: caller, cause: nil) }
 
       it 'includes the extra data from the exception in the tracking information' do
         track_exception
 
-        expect(Sentry).to have_received(:capture_exception).with(
+        expect(Raven).to have_received(:capture_exception).with(
           exception, a_hash_including(extra: a_hash_including(extra_info))
         )
       end
     end
 
     context 'the exception implements :sentry_extra_data, which returns nil' do
+      let(:exception) { double(message: 'bang!', sentry_extra_data: nil, backtrace: caller, cause: nil) }
       let(:extra) { { issue_url: issue_url } }
-
-      before do
-        allow(exception).to receive(:sentry_extra_data).and_return(nil)
-      end
 
       it 'just includes the other extra info' do
         track_exception
 
-        expect(Sentry).to have_received(:capture_exception).with(
+        expect(Raven).to have_received(:capture_exception).with(
           exception, a_hash_including(extra: a_hash_including(extra))
         )
       end
@@ -212,7 +202,7 @@ RSpec.describe Gitlab::ErrorTracking do
       it 'injects the normalized sql query into extra' do
         track_exception
 
-        expect(sentry_event.extra[:sql]).to eq('SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
+        expect(sentry_event.dig('extra', 'sql')).to eq('SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
       end
     end
 
@@ -222,7 +212,7 @@ RSpec.describe Gitlab::ErrorTracking do
 
         track_exception
 
-        expect(sentry_event.extra[:sql]).to eq('SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
+        expect(sentry_event.dig('extra', 'sql')).to eq('SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
       end
     end
   end
@@ -231,27 +221,27 @@ RSpec.describe Gitlab::ErrorTracking do
     subject(:track_exception) { described_class.track_exception(exception, extra) }
 
     before do
-      allow(Sentry).to receive(:capture_exception).and_call_original
+      allow(Raven).to receive(:capture_exception).and_call_original
       allow(Gitlab::ErrorTracking::Logger).to receive(:error)
     end
 
-    context 'custom GitLab context when using Sentry.capture_exception directly' do
-      subject(:track_exception) { Sentry.capture_exception(exception) }
+    context 'custom GitLab context when using Raven.capture_exception directly' do
+      subject(:raven_capture_exception) { Raven.capture_exception(exception) }
 
       it 'merges a default set of tags into the existing tags' do
-        Sentry.set_tags(foo: 'bar')
+        allow(Raven.context).to receive(:tags).and_return(foo: 'bar')
 
-        track_exception
+        raven_capture_exception
 
-        expect(sentry_event.tags).to include(:correlation_id, :feature_category, :foo, :locale, :program)
+        expect(sentry_event['tags']).to include('correlation_id', 'feature_category', 'foo', 'locale', 'program')
       end
 
       it 'merges the current user information into the existing user information' do
-        Sentry.set_user(id: -1)
+        Raven.user_context(id: -1)
 
-        track_exception
+        raven_capture_exception
 
-        expect(sentry_event.user).to eq(id: -1, username: user.username)
+        expect(sentry_event['user']).to eq('id' => -1, 'username' => user.username)
       end
     end
 
@@ -275,7 +265,7 @@ RSpec.describe Gitlab::ErrorTracking do
         it 'does not filter parameters when sending to Sentry' do
           track_exception
 
-          expect(sentry_event.extra[:sidekiq]['args']).to eq([1, { 'id' => 2, 'name' => 'hello' }, 'some-value', 'another-value'])
+          expect(sentry_event.dig('extra', 'sidekiq', 'args')).to eq([1, { 'id' => 2, 'name' => 'hello' }, 'some-value', 'another-value'])
         end
       end
 
@@ -285,7 +275,7 @@ RSpec.describe Gitlab::ErrorTracking do
         it 'filters sensitive arguments before sending and logging' do
           track_exception
 
-          expect(sentry_event.extra[:sidekiq]['args']).to eq(['[FILTERED]', 1, 2])
+          expect(sentry_event.dig('extra', 'sidekiq', 'args')).to eq(['[FILTERED]', 1, 2])
           expect(Gitlab::ErrorTracking::Logger).to have_received(:error).with(
             hash_including(
               'extra.sidekiq' => {
@@ -305,8 +295,8 @@ RSpec.describe Gitlab::ErrorTracking do
         it 'sets the GRPC debug error string in the Sentry event and adds a custom fingerprint' do
           track_exception
 
-          expect(sentry_event.extra[:grpc_debug_error_string]).to eq('{"hello":1}')
-          expect(sentry_event.fingerprint).to eq(['GRPC::DeadlineExceeded', '4:unknown cause.'])
+          expect(sentry_event.dig('extra', 'grpc_debug_error_string')).to eq('{"hello":1}')
+          expect(sentry_event['fingerprint']).to eq(['GRPC::DeadlineExceeded', '4:unknown cause.'])
         end
       end
 
@@ -316,8 +306,8 @@ RSpec.describe Gitlab::ErrorTracking do
         it 'does not do any processing on the event' do
           track_exception
 
-          expect(sentry_event.extra).not_to include(:grpc_debug_error_string)
-          expect(sentry_event.fingerprint).to eq(['GRPC::DeadlineExceeded', '4:unknown cause'])
+          expect(sentry_event['extra']).not_to include('grpc_debug_error_string')
+          expect(sentry_event['fingerprint']).to eq(['GRPC::DeadlineExceeded', '4:unknown cause'])
         end
       end
     end

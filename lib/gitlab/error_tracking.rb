@@ -19,21 +19,22 @@ module Gitlab
     PROCESSORS = [
       ::Gitlab::ErrorTracking::Processor::SidekiqProcessor,
       ::Gitlab::ErrorTracking::Processor::GrpcErrorProcessor,
-      ::Gitlab::ErrorTracking::Processor::ContextPayloadProcessor,
-      # IMPORTANT: this processor must stay at the bottom, right before
-      # sending the event to Sentry.
-      ::Gitlab::ErrorTracking::Processor::SanitizerProcessor
+      ::Gitlab::ErrorTracking::Processor::ContextPayloadProcessor
     ].freeze
 
     class << self
       def configure
-        Sentry.init do |config|
+        Raven.configure do |config|
           config.dsn = sentry_dsn
           config.release = Gitlab.revision
-          config.environment = Gitlab.config.sentry.environment
+          config.current_environment = Gitlab.config.sentry.environment
+
+          # Sanitize fields based on those sanitized from Rails.
+          config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
+
+          # Sanitize authentication headers
+          config.sanitize_http_headers = %w[Authorization Private-Token]
           config.before_send = method(:before_send)
-          config.background_worker_threads = 0
-          config.send_default_pii = true
 
           yield config if block_given?
         end
@@ -107,11 +108,8 @@ module Gitlab
       def process_exception(exception, sentry: false, logging: true, extra:)
         context_payload = Gitlab::ErrorTracking::ContextPayloadGenerator.generate(exception, extra)
 
-        # There is a possibility that this method is called before Sentry is
-        # configured. Since Sentry 4.0, some methods of Sentry are forwarded to
-        # to `nil`, hence we have to check the client as well.
-        if sentry && ::Sentry.get_current_client && ::Sentry.configuration.dsn
-          ::Sentry.capture_exception(exception, **context_payload)
+        if sentry && Raven.configuration.server
+          Raven.capture_exception(exception, **context_payload)
         end
 
         if logging

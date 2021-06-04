@@ -73,7 +73,7 @@ RSpec.describe Import::BulkImportsController do
           let(:client_params) do
             {
               top_level_only: true,
-              min_access_level: Gitlab::Access::MAINTAINER
+              min_access_level: Gitlab::Access::OWNER
             }
           end
 

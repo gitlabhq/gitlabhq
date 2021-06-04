@@ -46,7 +46,7 @@ export function initMermaid(mermaid) {
     theme,
     flowchart: {
       useMaxWidth: true,
-      htmlLabels: false,
+      htmlLabels: true,
     },
     securityLevel: 'strict',
   });

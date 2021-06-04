@@ -186,6 +186,12 @@ module WorkerAttributes
       class_attributes[:deduplication_options] || {}
     end
 
+    def deduplication_enabled?
+      return true unless get_deduplication_options[:feature_flag]
+
+      Feature.enabled?(get_deduplication_options[:feature_flag], default_enabled: :yaml)
+    end
+
     def big_payload!
       set_class_attribute(:big_payload, true)
     end

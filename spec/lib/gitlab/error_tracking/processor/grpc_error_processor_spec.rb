@@ -4,17 +4,16 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor do
   describe '.call' do
-    let(:event) { Sentry.get_current_client.event_from_exception(exception) }
+    let(:required_options) do
+      {
+        configuration: Raven.configuration,
+        context: Raven.context,
+        breadcrumbs: Raven.breadcrumbs
+      }
+    end
+
+    let(:event) { Raven::Event.from_exception(exception, required_options.merge(data)) }
     let(:result_hash) { described_class.call(event).to_hash }
-
-    before do
-      Sentry.get_current_scope.update_from_options(**data)
-      Sentry.get_current_scope.apply_to_event(event)
-    end
-
-    after do
-      Sentry.get_current_scope.clear
-    end
 
     context 'when there is no GRPC exception' do
       let(:exception) { RuntimeError.new }
@@ -57,7 +56,7 @@ RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor do
         end
 
         it 'removes the debug error string and stores it as an extra field' do
-          expect(result_hash[:fingerprint]).to be_empty
+          expect(result_hash).not_to include(:fingerprint)
 
           expect(result_hash[:exception][:values].first)
             .to include(type: 'GRPC::DeadlineExceeded', value: '4:Deadline Exceeded.')

@@ -10437,9 +10437,6 @@ msgstr ""
 msgid "Date range"
 msgstr ""
 
-msgid "Date range cannot exceed %{maxDateRange} days."
-msgstr ""
-
 msgid "Date range must be shorter than %{max_range} days."
 msgstr ""
 
@@ -26792,9 +26789,6 @@ msgstr ""
 msgid "Protocol"
 msgstr ""
 
-msgid "Provide feedback"
-msgstr ""
-
 msgid "Provider"
 msgstr ""
 
@@ -30192,6 +30186,9 @@ msgstr ""
 msgid "Showing all issues"
 msgstr ""
 
+msgid "Showing data for workflow items created in this date range. Date range cannot exceed %{maxDateRange} days."
+msgstr ""
+
 msgid "Showing graphs based on events of the last %{timerange} days."
 msgstr ""
 
@@ -32998,9 +32995,6 @@ msgid "There is too much data to calculate. Please change your selection."
 msgstr ""
 
 msgid "There was a problem communicating with your device."
-msgstr ""
-
-msgid "There was a problem dismissing this notification."
 msgstr ""
 
 msgid "There was a problem fetching branches."
@@ -36139,9 +36133,6 @@ msgstr ""
 msgid "View job"
 msgstr ""
 
-msgid "View job dependencies in the pipeline graph!"
-msgstr ""
-
 msgid "View job log"
 msgstr ""
 
@@ -37399,9 +37390,6 @@ msgid "You can now close this window."
 msgstr ""
 
 msgid "You can now export your security dashboard to a CSV report."
-msgstr ""
-
-msgid "You can now group jobs in the pipeline graph based on which jobs are configured to run first, if you use the %{codeStart}needs:%{codeEnd} keyword to establish job dependencies in your CI/CD pipelines. %{linkStart}Learn how to speed up your pipeline with needs.%{linkEnd}"
 msgstr ""
 
 msgid "You can now submit a merge request to get this change into the original branch."

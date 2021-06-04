@@ -653,6 +653,8 @@ NOTE:
 Administrators are not synced unless `group_base` is also
 specified alongside `admin_group`. Also, only specify the CN of the `admin_group`,
 as opposed to the full DN.
+Additionally, note that if an LDAP user has an `admin` role, but is not a member of the `admin_group`
+group, GitLab revokes their `admin` role when syncing.
 
 **Omnibus configuration**
 

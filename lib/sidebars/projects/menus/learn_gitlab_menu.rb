@@ -35,14 +35,13 @@ module Sidebars
           end
         end
 
-        override :extra_container_html_options
-        def nav_link_html_options
+        override :extra_nav_link_html_options
+        def extra_nav_link_html_options
           {
             class: 'home',
             data: {
-              track_action: 'click_menu',
-              track_property: context.learn_gitlab_experiment_tracking_category,
-              track_label: 'learn_gitlab'
+              track_label: 'learn_gitlab',
+              track_property: context.learn_gitlab_experiment_tracking_category
             }
           }
         end

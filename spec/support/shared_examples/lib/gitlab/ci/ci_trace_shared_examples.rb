@@ -29,6 +29,34 @@ RSpec.shared_examples 'common trace features' do
     end
   end
 
+  describe '#read' do
+    context 'gitlab_ci_archived_trace_consistent_reads feature flag enabled' do
+      before do
+        stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: trace.job.project)
+      end
+
+      it 'calls ::Gitlab::Database::LoadBalancing::Sticking.unstick_or_continue_sticking' do
+        expect(::Gitlab::Database::LoadBalancing::Sticking).to receive(:unstick_or_continue_sticking)
+          .with(described_class::LOAD_BALANCING_STICKING_NAMESPACE, trace.job.id)
+          .and_call_original
+
+        trace.read { |stream| stream }
+      end
+    end
+
+    context 'gitlab_ci_archived_trace_consistent_reads feature flag disabled' do
+      before do
+        stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: false)
+      end
+
+      it 'does not call ::Gitlab::Database::LoadBalancing::Sticking.unstick_or_continue_sticking' do
+        expect(::Gitlab::Database::LoadBalancing::Sticking).not_to receive(:unstick_or_continue_sticking)
+
+        trace.read { |stream| stream }
+      end
+    end
+  end
+
   describe '#extract_coverage' do
     let(:regex) { '\(\d+.\d+\%\) covered' }
 
@@ -252,6 +280,52 @@ RSpec.shared_examples 'common trace features' do
 
   describe '#archive!' do
     subject { trace.archive! }
+
+    context 'when live trace chunks exists' do
+      before do
+        # Build a trace_chunk manually
+        # It is possible to do so with trace.set but only if ci_enable_live_trace FF is enabled
+        #
+        # We need the job to have a trace_chunk because we only use #stick in
+        # the case where trace_chunks exist.
+        stream = Gitlab::Ci::Trace::Stream.new do
+          Gitlab::Ci::Trace::ChunkedIO.new(trace.job)
+        end
+
+        stream.set(+"12\n34")
+      end
+
+      # We check the before setup actually sets up job trace_chunks
+      it 'has job trace_chunks' do
+        expect(trace.job.trace_chunks).to be_present
+      end
+
+      context 'gitlab_ci_archived_trace_consistent_reads feature flag enabled' do
+        before do
+          stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: trace.job.project)
+        end
+
+        it 'calls ::Gitlab::Database::LoadBalancing::Sticking.stick' do
+          expect(::Gitlab::Database::LoadBalancing::Sticking).to receive(:stick)
+            .with(described_class::LOAD_BALANCING_STICKING_NAMESPACE, trace.job.id)
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context 'gitlab_ci_archived_trace_consistent_reads feature flag disabled' do
+        before do
+          stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: false)
+        end
+
+        it 'does not call ::Gitlab::Database::LoadBalancing::Sticking.stick' do
+          expect(::Gitlab::Database::LoadBalancing::Sticking).not_to receive(:stick)
+
+          subject
+        end
+      end
+    end
 
     context 'when build status is success' do
       let!(:build) { create(:ci_build, :success, :trace_live) }

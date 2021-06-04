@@ -512,6 +512,17 @@ On GitLab.com, the execution time for the cleanup policy is limited, and some of
 the Container Registry after the policy runs. The next time the policy runs, the remaining tags are included,
 so it may take multiple runs for all tags to be deleted.
 
+WARNING:
+GitLab self-managed installs support for third-party container registries that comply with the
+[Docker Registry HTTP API V2](https://docs.docker.com/registry/spec/api/)
+specification. However, this specification does not include a tag delete operation. Therefore, when
+interacting with third-party container registries, GitLab uses a workaround to delete tags. See the
+[related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
+for more information. Due to possible implementation variations, this workaround is not guaranteed
+to work with all third-party registries in the same predictable way. If you use the GitLab Container
+Registry, this workaround is not required because we implemented a special tag delete operation. In
+this case, you can expect cleanup policies to be consistent and predictable.
+
 ### Create a cleanup policy
 
 You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the UI.

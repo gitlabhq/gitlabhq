@@ -28,8 +28,8 @@ module Sidebars
           }
         end
 
-        override :nav_link_html_options
-        def nav_link_html_options
+        override :extra_nav_link_html_options
+        def extra_nav_link_html_options
           return {} if Feature.disabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
 
           { class: 'context-header' }

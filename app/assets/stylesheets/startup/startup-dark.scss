@@ -930,7 +930,7 @@ input {
 }
 @media (min-width: 768px) {
   .page-with-contextual-sidebar {
-    padding-left: 50px;
+    padding-left: 48px;
   }
 }
 @media (min-width: 1200px) {
@@ -940,7 +940,7 @@ input {
 }
 @media (min-width: 768px) {
   .page-with-icon-sidebar {
-    padding-left: 50px;
+    padding-left: 48px;
   }
 }
 .nav-sidebar {
@@ -960,7 +960,7 @@ input {
   }
 }
 .nav-sidebar.sidebar-collapsed-desktop {
-  width: 50px;
+  width: 48px;
 }
 .nav-sidebar.sidebar-collapsed-desktop .nav-sidebar-inner-scroll {
   overflow-x: hidden;
@@ -1026,7 +1026,7 @@ input {
 }
 @media (min-width: 768px) and (max-width: 1199px) {
   .nav-sidebar:not(.sidebar-expanded-mobile) {
-    width: 50px;
+    width: 48px;
   }
   .nav-sidebar:not(.sidebar-expanded-mobile) .nav-sidebar-inner-scroll {
     overflow-x: hidden;
@@ -1055,7 +1055,7 @@ input {
   }
   .nav-sidebar:not(.sidebar-expanded-mobile) .context-header {
     height: 60px;
-    width: 50px;
+    width: 48px;
   }
   .nav-sidebar:not(.sidebar-expanded-mobile) .context-header a {
     padding: 10px 4px;
@@ -1082,7 +1082,7 @@ input {
   }
   .nav-sidebar:not(.sidebar-expanded-mobile) .toggle-sidebar-button {
     padding: 16px;
-    width: 49px;
+    width: 47px;
   }
   .nav-sidebar:not(.sidebar-expanded-mobile)
     .toggle-sidebar-button
@@ -1172,7 +1172,7 @@ input {
 }
 .sidebar-collapsed-desktop .context-header {
   height: 60px;
-  width: 50px;
+  width: 48px;
 }
 .sidebar-collapsed-desktop .context-header a {
   padding: 10px 4px;
@@ -1199,7 +1199,7 @@ input {
 }
 .sidebar-collapsed-desktop .toggle-sidebar-button {
   padding: 16px;
-  width: 49px;
+  width: 47px;
 }
 .sidebar-collapsed-desktop .toggle-sidebar-button .collapse-text,
 .sidebar-collapsed-desktop .toggle-sidebar-button .icon-chevron-double-lg-left {
@@ -1273,7 +1273,7 @@ body.sidebar-refactoring .nav-sidebar li.active {
 }
 @media (min-width: 768px) {
   body.sidebar-refactoring .page-with-contextual-sidebar {
-    padding-left: 50px;
+    padding-left: 48px;
   }
 }
 @media (min-width: 1200px) {
@@ -1283,26 +1283,21 @@ body.sidebar-refactoring .nav-sidebar li.active {
 }
 @media (min-width: 768px) {
   body.sidebar-refactoring .page-with-icon-sidebar {
-    padding-left: 50px;
+    padding-left: 48px;
   }
 }
 body.sidebar-refactoring .nav-sidebar {
   position: fixed;
+  bottom: 0;
+  left: 0;
   z-index: 600;
   width: 220px;
   top: 40px;
-  bottom: 0;
-  left: 0;
   background-color: #303030;
   transform: translate3d(0, 0, 0);
 }
-@media (min-width: 576px) and (max-width: 576px) {
-  body.sidebar-refactoring .nav-sidebar:not(.sidebar-collapsed-desktop) {
-    box-shadow: inset -1px 0 0 #404040, 2px 1px 3px rgba(0, 0, 0, 0.1);
-  }
-}
 body.sidebar-refactoring .nav-sidebar.sidebar-collapsed-desktop {
-  width: 50px;
+  width: 48px;
 }
 body.sidebar-refactoring
   .nav-sidebar.sidebar-collapsed-desktop
@@ -1312,7 +1307,8 @@ body.sidebar-refactoring
 body.sidebar-refactoring
   .nav-sidebar.sidebar-collapsed-desktop
   .badge.badge-pill:not(.fly-out-badge),
-body.sidebar-refactoring .nav-sidebar.sidebar-collapsed-desktop .nav-item-name {
+body.sidebar-refactoring .nav-sidebar.sidebar-collapsed-desktop .nav-item-name,
+body.sidebar-refactoring .nav-sidebar.sidebar-collapsed-desktop .collapse-text {
   border: 0;
   clip: rect(0, 0, 0, 0);
   height: 1px;
@@ -1328,7 +1324,7 @@ body.sidebar-refactoring
   .sidebar-top-level-items
   > li
   > a {
-  min-height: 45px;
+  min-height: unset;
 }
 body.sidebar-refactoring
   .nav-sidebar.sidebar-collapsed-desktop
@@ -1339,6 +1335,9 @@ body.sidebar-refactoring
   .nav-sidebar.sidebar-collapsed-desktop
   .avatar-container {
   margin: 0 auto;
+}
+body.sidebar-refactoring .nav-sidebar.sidebar-collapsed-desktop li.active > a {
+  background-color: rgba(41, 41, 97, 0.08);
 }
 body.sidebar-refactoring .nav-sidebar a {
   text-decoration: none;
@@ -1386,7 +1385,7 @@ body.sidebar-refactoring .nav-sidebar .fly-out-top-item {
 }
 @media (min-width: 768px) and (max-width: 1199px) {
   body.sidebar-refactoring .nav-sidebar:not(.sidebar-expanded-mobile) {
-    width: 50px;
+    width: 48px;
   }
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
@@ -1398,7 +1397,10 @@ body.sidebar-refactoring .nav-sidebar .fly-out-top-item {
     .badge.badge-pill:not(.fly-out-badge),
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
-    .nav-item-name {
+    .nav-item-name,
+  body.sidebar-refactoring
+    .nav-sidebar:not(.sidebar-expanded-mobile)
+    .collapse-text {
     border: 0;
     clip: rect(0, 0, 0, 0);
     height: 1px;
@@ -1414,7 +1416,7 @@ body.sidebar-refactoring .nav-sidebar .fly-out-top-item {
     .sidebar-top-level-items
     > li
     > a {
-    min-height: 45px;
+    min-height: unset;
   }
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
@@ -1428,9 +1430,15 @@ body.sidebar-refactoring .nav-sidebar .fly-out-top-item {
   }
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
+    li.active
+    > a {
+    background-color: rgba(41, 41, 97, 0.08);
+  }
+  body.sidebar-refactoring
+    .nav-sidebar:not(.sidebar-expanded-mobile)
     .context-header {
     height: 60px;
-    width: 50px;
+    width: 48px;
   }
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
@@ -1453,6 +1461,17 @@ body.sidebar-refactoring .nav-sidebar .fly-out-top-item {
   }
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
+    .context-header {
+    height: auto;
+  }
+  body.sidebar-refactoring
+    .nav-sidebar:not(.sidebar-expanded-mobile)
+    .context-header
+    a {
+    padding: 0.25rem;
+  }
+  body.sidebar-refactoring
+    .nav-sidebar:not(.sidebar-expanded-mobile)
     .sidebar-top-level-items
     > li
     .sidebar-sub-level-items:not(.flyout-list) {
@@ -1466,23 +1485,19 @@ body.sidebar-refactoring .nav-sidebar .fly-out-top-item {
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
     .toggle-sidebar-button {
-    padding: 16px;
-    width: 49px;
+    width: 48px;
   }
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
     .toggle-sidebar-button
-    .collapse-text,
-  body.sidebar-refactoring
-    .nav-sidebar:not(.sidebar-expanded-mobile)
-    .toggle-sidebar-button
-    .icon-chevron-double-lg-left {
+    .collapse-text {
     display: none;
   }
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
     .toggle-sidebar-button
-    .icon-chevron-double-lg-right {
+    .icon-chevron-double-lg-left {
+    transform: rotate(180deg);
     display: block;
     margin: 0;
   }
@@ -1507,6 +1522,7 @@ body.sidebar-refactoring .nav-sidebar-inner-scroll > div.context-header a {
   margin: 1px 4px;
   padding: 0.25rem;
   margin-bottom: 0.25rem;
+  margin-top: 0;
 }
 body.sidebar-refactoring
   .nav-sidebar-inner-scroll
@@ -1547,6 +1563,7 @@ body.sidebar-refactoring .sidebar-top-level-items {
 body.sidebar-refactoring .sidebar-top-level-items .context-header a {
   padding: 0.25rem;
   margin-bottom: 0.25rem;
+  margin-top: 0;
 }
 body.sidebar-refactoring
   .sidebar-top-level-items
@@ -1619,7 +1636,11 @@ body.sidebar-refactoring .close-nav-button {
   display: flex;
   align-items: center;
   background-color: #303030;
+  border-top: 1px solid #404040;
   color: #2f2a6b;
+  position: fixed;
+  bottom: 0;
+  width: 220px;
 }
 body.sidebar-refactoring .toggle-sidebar-button .collapse-text,
 body.sidebar-refactoring .toggle-sidebar-button .icon-chevron-double-lg-left,
@@ -1629,28 +1650,13 @@ body.sidebar-refactoring .close-nav-button .icon-chevron-double-lg-left,
 body.sidebar-refactoring .close-nav-button .icon-chevron-double-lg-right {
   color: inherit;
 }
-body.sidebar-refactoring .toggle-sidebar-button,
-body.sidebar-refactoring .close-nav-button {
-  position: fixed;
-  bottom: 0;
-  width: 219px;
-  border-top: 1px solid #404040;
-}
-body.sidebar-refactoring .toggle-sidebar-button svg,
-body.sidebar-refactoring .close-nav-button svg {
-  margin-right: 8px;
-}
-body.sidebar-refactoring .toggle-sidebar-button .icon-chevron-double-lg-right,
-body.sidebar-refactoring .close-nav-button .icon-chevron-double-lg-right {
-  display: none;
-}
 body.sidebar-refactoring .collapse-text {
   white-space: nowrap;
   overflow: hidden;
 }
 body.sidebar-refactoring .sidebar-collapsed-desktop .context-header {
   height: 60px;
-  width: 50px;
+  width: 48px;
 }
 body.sidebar-refactoring .sidebar-collapsed-desktop .context-header a {
   padding: 10px 4px;
@@ -1666,6 +1672,12 @@ body.sidebar-refactoring .sidebar-collapsed-desktop .sidebar-context-title {
   white-space: nowrap;
   width: 1px;
 }
+body.sidebar-refactoring .sidebar-collapsed-desktop .context-header {
+  height: auto;
+}
+body.sidebar-refactoring .sidebar-collapsed-desktop .context-header a {
+  padding: 0.25rem;
+}
 body.sidebar-refactoring
   .sidebar-collapsed-desktop
   .sidebar-top-level-items
@@ -1677,23 +1689,19 @@ body.sidebar-refactoring .sidebar-collapsed-desktop .nav-icon-container {
   margin-right: 0;
 }
 body.sidebar-refactoring .sidebar-collapsed-desktop .toggle-sidebar-button {
-  padding: 16px;
-  width: 49px;
+  width: 48px;
 }
 body.sidebar-refactoring
   .sidebar-collapsed-desktop
   .toggle-sidebar-button
-  .collapse-text,
-body.sidebar-refactoring
-  .sidebar-collapsed-desktop
-  .toggle-sidebar-button
-  .icon-chevron-double-lg-left {
+  .collapse-text {
   display: none;
 }
 body.sidebar-refactoring
   .sidebar-collapsed-desktop
   .toggle-sidebar-button
-  .icon-chevron-double-lg-right {
+  .icon-chevron-double-lg-left {
+  transform: rotate(180deg);
   display: block;
   margin: 0;
 }
@@ -1834,6 +1842,12 @@ svg.s16 {
   height: 32px;
   margin-right: 8px;
 }
+.avatar.s40,
+.avatar-container.s40 {
+  width: 40px;
+  height: 40px;
+  margin-right: 8px;
+}
 .avatar {
   transition-property: none;
   width: 40px;
@@ -1860,6 +1874,10 @@ svg.s16 {
 .identicon.s32 {
   font-size: 14px;
   line-height: 32px;
+}
+.identicon.s40 {
+  font-size: 16px;
+  line-height: 38px;
 }
 .identicon.bg1 {
   background-color: #ffebee;
@@ -1900,6 +1918,10 @@ svg.s16 {
   margin: 0;
   align-self: center;
 }
+.avatar-container.s40 {
+  min-width: 40px;
+  min-height: 40px;
+}
 .rect-avatar {
   border-radius: 2px;
 }
@@ -1922,6 +1944,9 @@ body.sidebar-refactoring
   a
   .avatar-container.rect-avatar
   .avatar.s32 {
+  border-radius: 4px;
+}
+.rect-avatar.s40 {
   border-radius: 4px;
 }
 body.gl-dark .navbar-gitlab {

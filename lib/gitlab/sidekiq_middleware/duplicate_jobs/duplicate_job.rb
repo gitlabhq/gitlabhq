@@ -19,6 +19,7 @@ module Gitlab
       class DuplicateJob
         DUPLICATE_KEY_TTL = 6.hours
         DEFAULT_STRATEGY = :until_executing
+        STRATEGY_NONE = :none
 
         attr_reader :existing_jid
 
@@ -102,6 +103,7 @@ module Gitlab
         def strategy
           return DEFAULT_STRATEGY unless worker_klass
           return DEFAULT_STRATEGY unless worker_klass.respond_to?(:idempotent?)
+          return STRATEGY_NONE unless worker_klass.deduplication_enabled?
 
           worker_klass.get_deduplicate_strategy
         end

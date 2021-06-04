@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'sentry/transport/dummy_transport'
+require 'raven/transports/dummy'
 require_relative '../../../config/initializers/sentry'
 
 RSpec.describe API::Helpers do

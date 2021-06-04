@@ -10,6 +10,7 @@ import {
   pipelineData,
   pipelineDataWithNoNeeds,
   rootRect,
+  sameStageNeeds,
 } from '../pipeline_graph/mock_data';
 
 describe('Links Inner component', () => {
@@ -40,7 +41,7 @@ describe('Links Inner component', () => {
 
   // We create fixture so that each job has an empty div that represent
   // the JobPill in the DOM. Each `JobPill` would have different coordinates,
-  // so we increment their coordinates on each iteration to simulat different positions.
+  // so we increment their coordinates on each iteration to simulate different positions.
   const setFixtures = ({ stages }) => {
     const jobs = createJobsHash(stages);
     const arrayOfJobs = Object.keys(jobs);
@@ -81,7 +82,6 @@ describe('Links Inner component', () => {
   afterEach(() => {
     jest.restoreAllMocks();
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('basic SVG creation', () => {
@@ -149,6 +149,25 @@ describe('Links Inner component', () => {
 
     it('renders only one link for all the same parallel jobs', () => {
       expect(findAllLinksPath()).toHaveLength(1);
+    });
+
+    it('path does not contain NaN values', () => {
+      expect(wrapper.html()).not.toContain('NaN');
+    });
+
+    it('matches snapshot and has expected path', () => {
+      expect(wrapper.html()).toMatchSnapshot();
+    });
+  });
+
+  describe('with same stage needs', () => {
+    beforeEach(() => {
+      setFixtures(sameStageNeeds);
+      createComponent({ pipelineData: sameStageNeeds.stages });
+    });
+
+    it('renders the correct number of links', () => {
+      expect(findAllLinksPath()).toHaveLength(2);
     });
 
     it('path does not contain NaN values', () => {
