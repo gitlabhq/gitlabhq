@@ -128,6 +128,10 @@ For example, the following two definitions are equal:
     - name: redis:latest
   ```
 
+## Where scripts are executed
+
+When a CI job runs in a Docker container, the `before_script`, `script`, and `after_script` commands run in the `/builds/<project-path>/` directory. Your image may have a different default `WORKDIR` defined. To move to your `WORKDIR`, save the `WORKDIR` as an environment variable so you can reference it in the container during the job's runtime.
+
 ### Available settings for `image`
 
 > Introduced in GitLab and GitLab Runner 9.4.

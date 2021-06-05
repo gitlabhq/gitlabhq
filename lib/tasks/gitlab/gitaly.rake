@@ -3,7 +3,7 @@
 namespace :gitlab do
   namespace :gitaly do
     desc 'GitLab | Gitaly | Install or upgrade gitaly'
-    task :install, [:dir, :storage_path, :repo] => :gitlab_environment do |t, args|
+    task :install, [:dir, :storage_path, :repo] => :with_gitlab_helpers do |t, args|
       warn_user_is_not_gitlab
 
       unless args.dir.present? && args.storage_path.present?
