@@ -4,12 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Spam::AkismetService do
   let(:fake_akismet_client) { double(:akismet_client) }
+  let(:ip) { '1.2.3.4' }
+  let(:user_agent) { 'some user_agent' }
+  let(:referer) { 'some referer' }
 
   let_it_be(:text) { "Would you like to buy some tinned meat product?" }
   let_it_be(:spam_owner) { create(:user) }
 
   subject do
-    options = { ip_address: '1.2.3.4', user_agent: 'some user_agent', referrer: 'some referrer' }
+    options = { ip_address: ip, user_agent: user_agent, referer: referer }
     described_class.new(spam_owner.name, spam_owner.email, text, options)
   end
 
@@ -56,6 +59,21 @@ RSpec.describe Spam::AkismetService do
     it_behaves_like 'no activity if Akismet is not enabled', :spam?, :check
 
     context 'if Akismet is enabled' do
+      it 'correctly transforms options for the akismet client' do
+        expected_check_params = {
+          type: 'comment',
+          text: text,
+          created_at: anything,
+          author: spam_owner.name,
+          author_email: spam_owner.email,
+          # NOTE: The akismet_client needs the option to be named `:referrer`, not `:referer`
+          referrer: referer
+        }
+
+        expect(fake_akismet_client).to receive(:check).with(ip, user_agent, expected_check_params)
+        subject.spam?
+      end
+
       context 'the text is spam' do
         before do
           allow(fake_akismet_client).to receive(:check).and_return([true, false])
@@ -86,19 +104,31 @@ RSpec.describe Spam::AkismetService do
         end
       end
 
-      context 'if Akismet is not available' do
+      describe 'error handling' do
         before do
-          allow(fake_akismet_client).to receive(:check).and_raise(StandardError.new("oh noes!"))
+          allow(fake_akismet_client).to receive(:check).and_raise(error)
         end
 
-        specify do
-          expect(subject.spam?).to be_falsey
+        context 'StandardError other than ArgumentError is raised' do
+          let(:error) { Akismet::Error.new("Lovely spam! Wonderful spam!") }
+
+          specify do
+            expect(subject.spam?).to be_falsey
+          end
+
+          it 'logs an error' do
+            expect(Gitlab::AppLogger).to receive(:error).with(/Error during Akismet.*flagging as not spam.*Lovely spam/)
+
+            subject.spam?
+          end
         end
 
-        it 'logs an error' do
-          expect(Gitlab::AppLogger).to receive(:error).with(/skipping check/)
+        context 'ArgumentError is raised in dev' do
+          let(:error) { ArgumentError }
 
-          subject.spam?
+          it 'raises original error' do
+            expect { subject.spam? }.to raise_error(error)
+          end
         end
       end
     end
