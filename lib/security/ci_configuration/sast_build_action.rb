@@ -114,7 +114,6 @@ module Security
 
       def sast_variables
         %w(
-          SAST_ANALYZER_IMAGE_TAG
           SAST_EXCLUDED_PATHS
           SEARCH_MAX_DEPTH
           SAST_EXCLUDED_ANALYZERS

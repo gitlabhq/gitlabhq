@@ -11,7 +11,6 @@ variables:
   SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, sobelow, pmd-apex, kubesec, mobsf, semgrep"
   SAST_EXCLUDED_ANALYZERS: ""
   SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
-  SAST_ANALYZER_IMAGE_TAG: 2
   SCAN_KUBERNETES_MANIFESTS: "false"
 
 sast:
@@ -43,6 +42,7 @@ bandit-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/bandit:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -62,6 +62,7 @@ brakeman-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -82,6 +83,7 @@ eslint-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -105,6 +107,7 @@ flawfinder-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/flawfinder:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -125,6 +128,7 @@ kubesec-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -143,6 +147,7 @@ gosec-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gosec:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -162,6 +167,7 @@ gosec-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
 
 mobsf-android-sast:
@@ -200,6 +206,7 @@ nodejs-scan-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -219,6 +226,7 @@ phpcs-security-audit-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/phpcs-security-audit:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -238,6 +246,7 @@ pmd-apex-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/pmd-apex:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -257,6 +266,7 @@ security-code-scan-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -277,6 +287,7 @@ semgrep-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/semgrep:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -300,6 +311,7 @@ sobelow-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/sobelow:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -319,6 +331,7 @@ spotbugs-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /spotbugs/

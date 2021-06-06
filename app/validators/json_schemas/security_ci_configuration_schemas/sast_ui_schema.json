@@ -18,15 +18,6 @@
             "value": "",
             "size": "MEDIUM",
             "description": "Comma-separated list of paths to be excluded from analyzer output. Patterns can be globs, file paths, or folder paths."
-        },
-        {
-            "field" : "SAST_ANALYZER_IMAGE_TAG",
-            "label" : "Image tag",
-            "type": "string",
-            "default_value": "",
-            "value": "",
-            "size": "SMALL",
-            "description": "Analyzer image's tag"
         }
     ],
     "pipeline": [
