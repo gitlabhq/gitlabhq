@@ -1,10 +1,19 @@
 <script>
-import { GlButtonGroup, GlButton, GlDropdown, GlFormCheckbox } from '@gitlab/ui';
+import {
+  GlButtonGroup,
+  GlButton,
+  GlDropdown,
+  GlFormCheckbox,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { SETTINGS_DROPDOWN } from '../i18n';
 
 export default {
   i18n: SETTINGS_DROPDOWN,
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   components: {
     GlButtonGroup,
     GlButton,
@@ -35,9 +44,13 @@ export default {
 
 <template>
   <gl-dropdown
+    v-gl-tooltip
     icon="settings"
-    :text="__('Diff view settings')"
+    :title="$options.i18n.preferences"
+    :text="$options.i18n.preferences"
     :text-sr-only="true"
+    :aria-label="$options.i18n.preferences"
+    :header-text="$options.i18n.preferences"
     toggle-class="js-show-diff-settings"
     right
   >

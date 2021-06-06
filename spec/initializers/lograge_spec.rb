@@ -120,6 +120,7 @@ RSpec.describe 'lograge', type: :request do
 
   context 'with a log subscriber' do
     include_context 'parsed logs'
+    include_context 'clear DB Load Balancing configuration'
 
     let(:subscriber) { Lograge::LogSubscribers::ActionController.new }
 
@@ -195,9 +196,25 @@ RSpec.describe 'lograge', type: :request do
     end
 
     context 'with db payload' do
+      let(:db_load_balancing_logging_keys) do
+        %w[
+          db_primary_wal_count
+          db_replica_wal_count
+          db_replica_count
+          db_replica_cached_count
+          db_primary_count
+          db_primary_cached_count
+          db_primary_duration_s
+          db_replica_duration_s
+        ]
+      end
+
+      before do
+        ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
+      end
+
       context 'when RequestStore is enabled', :request_store do
         it 'includes db counters' do
-          ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
           subscriber.process_action(event)
 
           expect(log_data).to include("db_count" => a_value >= 1, "db_write_count" => 0, "db_cached_count" => 0)
@@ -206,10 +223,45 @@ RSpec.describe 'lograge', type: :request do
 
       context 'when RequestStore is disabled' do
         it 'does not include db counters' do
-          ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
           subscriber.process_action(event)
 
           expect(log_data).not_to include("db_count", "db_write_count", "db_cached_count")
+        end
+      end
+
+      context 'when load balancing is enabled' do
+        before do
+          allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
+        end
+
+        context 'with db payload' do
+          context 'when RequestStore is enabled', :request_store do
+            it 'includes db counters for load balancing' do
+              subscriber.process_action(event)
+
+              expect(log_data).to include(*db_load_balancing_logging_keys)
+            end
+          end
+
+          context 'when RequestStore is disabled' do
+            it 'does not include db counters for load balancing' do
+              subscriber.process_action(event)
+
+              expect(log_data).not_to include(*db_load_balancing_logging_keys)
+            end
+          end
+        end
+      end
+
+      context 'when load balancing is disabled' do
+        before do
+          allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(false)
+        end
+
+        it 'does not include db counters for load balancing' do
+          subscriber.process_action(event)
+
+          expect(log_data).not_to include(*db_load_balancing_logging_keys)
         end
       end
     end
