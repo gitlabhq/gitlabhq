@@ -1,3 +1,4 @@
+#import "~/runner/graphql/runner_node.fragment.graphql"
 #import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
 
 query getRunners(
@@ -19,17 +20,7 @@ query getRunners(
     sort: $sort
   ) {
     nodes {
-      id
-      description
-      runnerType
-      shortSha
-      version
-      revision
-      ipAddress
-      active
-      locked
-      tagList
-      contactedAt
+      ...RunnerNode
     }
     pageInfo {
       ...PageInfo

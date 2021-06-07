@@ -106,6 +106,32 @@ describe('Project Value Stream Analytics actions', () => {
         expectedActions: [],
       }));
 
+    describe('with a successful request, but an error in the payload', () => {
+      const tooMuchDataError = 'Too much data';
+
+      beforeEach(() => {
+        state = {
+          requestPath: mockRequestPath,
+          startDate: mockStartDate,
+          selectedStage,
+        };
+        mock = new MockAdapter(axios);
+        mock.onGet(mockStagePath).reply(httpStatusCodes.OK, { error: tooMuchDataError });
+      });
+
+      it(`commits the 'RECEIVE_STAGE_DATA_ERROR' mutation`, () =>
+        testAction({
+          action: actions.fetchStageData,
+          state,
+          payload: { error: tooMuchDataError },
+          expectedMutations: [
+            { type: 'REQUEST_STAGE_DATA' },
+            { type: 'RECEIVE_STAGE_DATA_ERROR', payload: tooMuchDataError },
+          ],
+          expectedActions: [],
+        }));
+    });
+
     describe('with a failing request', () => {
       beforeEach(() => {
         state = {

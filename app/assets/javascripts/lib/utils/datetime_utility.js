@@ -884,21 +884,6 @@ export const approximateDuration = (seconds = 0) => {
 };
 
 /**
- * A utility function which helps creating a date object
- * for a specific date. Accepts the year, month and day
- * returning a date object for the given params.
- *
- * @param {Int} year the full year as a number i.e. 2020
- * @param {Int} month the month index i.e. January => 0
- * @param {Int} day the day as a number i.e. 23
- *
- * @return {Date} the date object from the params
- */
-export const dateFromParams = (year, month, day) => {
-  return new Date(year, month, day);
-};
-
-/**
  * A utility function which computes the difference in seconds
  * between 2 dates.
  *

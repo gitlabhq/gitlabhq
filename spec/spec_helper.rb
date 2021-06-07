@@ -230,10 +230,6 @@ RSpec.configure do |config|
     Gitlab::Database.set_open_transactions_baseline
   end
 
-  config.append_before do
-    Thread.current[:current_example_group] = ::RSpec.current_example.metadata[:example_group]
-  end
-
   config.append_after do
     Gitlab::Database.reset_open_transactions_baseline
   end

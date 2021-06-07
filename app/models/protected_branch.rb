@@ -30,8 +30,6 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def self.allow_force_push?(project, ref_name)
-    return false unless ::Feature.enabled?(:allow_force_push_to_protected_branches, project, default_enabled: :yaml)
-
     project.protected_branches.allowing_force_push.matching(ref_name).any?
   end
 

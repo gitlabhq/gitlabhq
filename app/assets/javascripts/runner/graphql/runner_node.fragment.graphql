@@ -1,0 +1,13 @@
+fragment RunnerNode on CiRunner {
+  id
+  description
+  runnerType
+  shortSha
+  version
+  revision
+  ipAddress
+  active
+  locked
+  tagList
+  contactedAt
+}

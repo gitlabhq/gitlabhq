@@ -44,10 +44,11 @@ export default {
     state.selectedStageEvents = decorateEvents(events, selectedStage);
     state.hasError = false;
   },
-  [types.RECEIVE_STAGE_DATA_ERROR](state) {
+  [types.RECEIVE_STAGE_DATA_ERROR](state, error) {
     state.isLoadingStage = false;
     state.isEmptyStage = true;
     state.selectedStageEvents = [];
     state.hasError = true;
+    state.selectedStageError = error;
   },
 };

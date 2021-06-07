@@ -1,0 +1,10 @@
+#import "~/runner/graphql/runner_node.fragment.graphql"
+
+mutation runnerUpdate($input: RunnerUpdateInput!) {
+  runnerUpdate(input: $input) {
+    runner {
+      ...RunnerNode
+    }
+    errors
+  }
+}

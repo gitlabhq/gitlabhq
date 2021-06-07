@@ -1,8 +1,0 @@
----
-name: allow_force_push_to_protected_branches
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55261
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323431
-milestone: '13.10'
-type: development
-group: group::source code
-default_enabled: true

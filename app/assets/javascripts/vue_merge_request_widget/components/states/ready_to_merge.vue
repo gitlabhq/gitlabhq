@@ -22,7 +22,13 @@ import { __ } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MergeRequest from '../../../merge_request';
-import { AUTO_MERGE_STRATEGIES, DANGER, CONFIRM, WARNING } from '../../constants';
+import {
+  AUTO_MERGE_STRATEGIES,
+  DANGER,
+  CONFIRM,
+  WARNING,
+  MT_MERGE_STRATEGY,
+} from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import MergeRequestStore from '../../stores/mr_widget_store';
@@ -223,7 +229,7 @@ export default {
       return PIPELINE_SUCCESS_STATE;
     },
     mergeButtonVariant() {
-      if (this.status === PIPELINE_FAILED_STATE) {
+      if (this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed) {
         return DANGER;
       }
 
@@ -285,6 +291,9 @@ export default {
     },
     shaMismatchLink() {
       return this.mr.mergeRequestDiffsPath;
+    },
+    showDangerMessageForMergeTrain() {
+      return this.preferredAutoMergeStrategy === MT_MERGE_STRATEGY && this.isPipelineFailed;
     },
   },
   mounted() {
@@ -499,7 +508,7 @@ export default {
                 v-if="shouldShowMergeImmediatelyDropdown"
                 v-gl-tooltip.hover.focus="__('Select merge moment')"
                 :disabled="isMergeButtonDisabled"
-                variant="info"
+                :variant="mergeButtonVariant"
                 data-qa-selector="merge_moment_dropdown"
                 toggle-class="btn-icon js-merge-moment"
               >
@@ -578,6 +587,14 @@ export default {
                 </template>
               </gl-sprintf>
             </span>
+          </div>
+
+          <div
+            v-if="showDangerMessageForMergeTrain"
+            class="gl-mt-5 gl-text-gray-500"
+            data-testid="failed-pipeline-merge-train-text"
+          >
+            {{ __('The latest pipeline for this merge request did not complete successfully.') }}
           </div>
         </div>
       </div>

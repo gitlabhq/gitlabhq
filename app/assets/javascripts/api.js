@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
@@ -454,7 +454,9 @@ const Api = {
       })
       .then(({ data }) => (callback ? callback(data) : data))
       .catch(() => {
-        flash(__('Something went wrong while fetching projects'));
+        createFlash({
+          message: __('Something went wrong while fetching projects'),
+        });
         if (callback) {
           callback();
         }
@@ -642,7 +644,11 @@ const Api = {
         params: { ...defaults, ...options },
       })
       .then(({ data }) => callback(data))
-      .catch(() => flash(__('Something went wrong while fetching projects')));
+      .catch(() =>
+        createFlash({
+          message: __('Something went wrong while fetching projects'),
+        }),
+      );
   },
 
   branches(id, query = '', options = {}) {

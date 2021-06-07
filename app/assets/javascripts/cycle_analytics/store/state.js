@@ -9,6 +9,7 @@ export default () => ({
   stats: [],
   selectedStage: {},
   selectedStageEvents: [],
+  selectedStageError: '',
   medians: {},
   hasError: false,
   isLoading: false,

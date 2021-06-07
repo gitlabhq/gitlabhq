@@ -33,7 +33,14 @@ export const fetchStageData = ({ state: { requestPath, selectedStage, startDate 
     .get(`${requestPath}/events/${selectedStage.name}.json`, {
       params: { 'cycle_analytics[start_date]': startDate },
     })
-    .then(({ data }) => commit(types.RECEIVE_STAGE_DATA_SUCCESS, data))
+    .then(({ data }) => {
+      // when there's a query timeout, the request succeeds but the error is encoded in the response data
+      if (data?.error) {
+        commit(types.RECEIVE_STAGE_DATA_ERROR, data.error);
+      } else {
+        commit(types.RECEIVE_STAGE_DATA_SUCCESS, data);
+      }
+    })
     .catch(() => commit(types.RECEIVE_STAGE_DATA_ERROR));
 };
 

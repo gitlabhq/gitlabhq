@@ -6,7 +6,3 @@ StateMachines::Machine.ignore_method_conflicts = true if ENV['CRON']
 task gitlab_environment: :environment do
   extend SystemCheck::Helpers
 end
-
-task :with_gitlab_helpers do
-  extend SystemCheck::Helpers
-end

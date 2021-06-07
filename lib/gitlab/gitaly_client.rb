@@ -120,7 +120,7 @@ module Gitlab
         raise "storage #{storage.inspect} is missing a gitaly_address"
       end
 
-      unless %w(tcp unix tls).include?(URI(address).scheme)
+      unless URI(address).scheme.in?(%w(tcp unix tls))
         raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix' or 'tls'"
       end
 

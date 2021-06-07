@@ -32,10 +32,13 @@ module Gitlab
 
           return true unless location
 
+          job_data_consistency = worker_class.get_data_consistency
+          job[:data_consistency] = job_data_consistency.to_s
+
           if replica_caught_up?(location)
             job[:database_chosen] = 'replica'
             false
-          elsif worker_class.get_data_consistency == :delayed && not_yet_retried?(job)
+          elsif job_data_consistency == :delayed && not_yet_retried?(job)
             job[:database_chosen] = 'retry'
             raise JobReplicaNotUpToDate, "Sidekiq job #{worker_class} JID-#{job['jid']} couldn't use the replica."\
                "  Replica was not up to date."

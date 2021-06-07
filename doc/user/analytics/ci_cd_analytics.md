@@ -84,4 +84,4 @@ processes.
 For time periods in which no merge requests were deployed, the charts render a
 red, dashed line.
 
-These charts are only available for projects.
+These charts are available for both groups and projects.

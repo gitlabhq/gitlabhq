@@ -5720,6 +5720,9 @@ msgstr ""
 msgid "CICDAnalytics|Deployment frequency"
 msgstr ""
 
+msgid "CICDAnalytics|Lead time"
+msgstr ""
+
 msgid "CICDAnalytics|Projects with releases"
 msgstr ""
 
@@ -32623,6 +32626,9 @@ msgid "The issue was successfully promoted to an epic. Redirecting to epic..."
 msgstr ""
 
 msgid "The latest artifacts created by jobs in the most recent successful pipeline will be stored."
+msgstr ""
+
+msgid "The latest pipeline for this merge request did not complete successfully."
 msgstr ""
 
 msgid "The license key is invalid. Make sure it is exactly as you received it from GitLab Inc."

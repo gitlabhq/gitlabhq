@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require 'mime/types'
 
 module API
@@ -41,6 +40,7 @@ module API
         optional :with_stats, type: Boolean, desc: 'Stats about each commit will be added to the response'
         optional :first_parent, type: Boolean, desc: 'Only include the first parent of merges'
         optional :order, type: String, desc: 'List commits in order', default: 'default', values: %w[default topo]
+        optional :trailers, type: Boolean, desc: 'Parse and include Git trailers for every commit', default: false
         use :pagination
       end
       get ':id/repository/commits' do
@@ -62,7 +62,8 @@ module API
                                                   after: after,
                                                   all: all,
                                                   first_parent: first_parent,
-                                                  order: order)
+                                                  order: order,
+                                                  trailers: params[:trailers])
 
         serializer = with_stats ? Entities::CommitWithStats : Entities::Commit
 

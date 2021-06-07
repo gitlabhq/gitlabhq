@@ -39,6 +39,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:consolidated_edit_button, @project, default_enabled: :yaml)
   end
 
   def new

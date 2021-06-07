@@ -55,6 +55,7 @@ describe('Value stream analytics component', () => {
         isEmptyStage: false,
         selectedStageEvents,
         selectedStage,
+        selectedStageError: '',
       },
     });
   });
@@ -132,6 +133,22 @@ describe('Value stream analytics component', () => {
 
     it('renders the empty stage with `Not enough data` message', () => {
       expect(findEmptyStage().html()).toMatchSnapshot();
+    });
+
+    describe('with a selectedStageError', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          initialState: {
+            selectedStage,
+            isEmptyStage: true,
+            selectedStageError: 'There is too much data to calculate',
+          },
+        });
+      });
+
+      it('renders the empty stage with `There is too much data to calculate` message', () => {
+        expect(findEmptyStage().html()).toMatchSnapshot();
+      });
     });
   });
 

@@ -21,13 +21,12 @@
         = f.label :push_access_levels_attributes, s_("ProtectedBranch|Allowed to push:"), class: 'col-md-2 text-left text-md-right'
         .col-md-10
           = yield :push_access_levels
-      - if ::Feature.enabled?(:allow_force_push_to_protected_branches, @project, default_enabled: :yaml)
-        .form-group.row
-          = f.label :allow_force_push, s_("ProtectedBranch|Allow force push:"), class: 'col-md-2 gl-text-left text-md-right'
-          .col-md-10
-            = render "shared/buttons/project_feature_toggle", class_list: "js-force-push-toggle project-feature-toggle"
-            .form-text.gl-text-gray-600.gl-mt-0
-              = s_("ProtectedBranch|Allow force push for all users with push access.")
+      .form-group.row
+        = f.label :allow_force_push, s_("ProtectedBranch|Allow force push:"), class: 'col-md-2 gl-text-left text-md-right'
+        .col-md-10
+          = render "shared/buttons/project_feature_toggle", class_list: "js-force-push-toggle project-feature-toggle"
+          .form-text.gl-text-gray-600.gl-mt-0
+            = s_("ProtectedBranch|Allow force push for all users with push access.")
       = render_if_exists 'projects/protected_branches/ee/code_owner_approval_form', f: f
     .card-footer
       = f.submit s_('ProtectedBranch|Protect'), class: 'gl-button btn btn-confirm', disabled: true, data: { qa_selector: 'protect_button' }

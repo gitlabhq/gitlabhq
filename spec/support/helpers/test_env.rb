@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require 'parallel'
-
 module TestEnv
+  extend ActiveSupport::Concern
   extend self
 
   ComponentFailedToInstallError = Class.new(StandardError)
@@ -95,40 +94,50 @@ module TestEnv
   TMP_TEST_PATH = Rails.root.join('tmp', 'tests').freeze
   REPOS_STORAGE = 'default'
   SECOND_STORAGE_PATH = Rails.root.join('tmp', 'tests', 'second_storage')
-  SETUP_METHODS = %i[setup_gitaly setup_gitlab_shell setup_workhorse setup_factory_repo setup_forked_repo].freeze
-
-  # Can be overriden
-  def setup_methods
-    SETUP_METHODS
-  end
 
   # Test environment
   #
   # See gitlab.yml.example test section for paths
   #
-  def init
+  def init(opts = {})
     unless Rails.env.test?
       puts "\nTestEnv.init can only be run if `RAILS_ENV` is set to 'test' not '#{Rails.env}'!\n"
       exit 1
     end
 
-    start = Time.now
     # Disable mailer for spinach tests
+    disable_mailer if opts[:mailer] == false
+
     clean_test_path
 
-    # Install components in parallel as most of the setup is I/O.
-    Parallel.each(setup_methods) do |method|
-      public_send(method)
-    end
+    setup_gitlab_shell
 
-    post_init
+    setup_gitaly
 
-    puts "\nTest environment set up in #{Time.now - start} seconds"
+    # Feature specs are run through Workhorse
+    setup_workhorse
+
+    # Create repository for FactoryBot.create(:project)
+    setup_factory_repo
+
+    # Create repository for FactoryBot.create(:forked_project_with_submodules)
+    setup_forked_repo
   end
 
-  # Can be overriden
-  def post_init
-    start_gitaly(gitaly_dir)
+  included do |config|
+    config.append_before do
+      set_current_example_group
+    end
+  end
+
+  def disable_mailer
+    allow_any_instance_of(NotificationService).to receive(:mailer)
+      .and_return(double.as_null_object)
+  end
+
+  def enable_mailer
+    allow_any_instance_of(NotificationService).to receive(:mailer)
+      .and_call_original
   end
 
   # Clean /tmp/tests
@@ -155,11 +164,12 @@ module TestEnv
   end
 
   def setup_gitaly
+    install_gitaly_args = [gitaly_dir, repos_path, gitaly_url].compact.join(',')
+
     component_timed_setup('Gitaly',
       install_dir: gitaly_dir,
       version: Gitlab::GitalyClient.expected_server_version,
-      task: "gitlab:gitaly:install",
-      task_args: [gitaly_dir, repos_path, gitaly_url].compact) do
+      task: "gitlab:gitaly:install[#{install_gitaly_args}]") do
         Gitlab::SetupHelper::Gitaly.create_configuration(
           gitaly_dir,
           { 'default' => repos_path },
@@ -180,6 +190,8 @@ module TestEnv
         )
         Gitlab::SetupHelper::Praefect.create_configuration(gitaly_dir, { 'praefect' => repos_path }, force: true)
       end
+
+    start_gitaly(gitaly_dir)
   end
 
   def gitaly_socket_path
@@ -261,10 +273,11 @@ module TestEnv
     raise "could not connect to #{service} at #{socket.inspect} after #{sleep_time} seconds"
   end
 
-  # Feature specs are run through Workhorse
   def setup_workhorse
     start = Time.now
     return if skip_compile_workhorse?
+
+    puts "\n==> Setting up GitLab Workhorse..."
 
     FileUtils.rm_rf(workhorse_dir)
     Gitlab::SetupHelper::Workhorse.compile_into(workhorse_dir)
@@ -272,7 +285,7 @@ module TestEnv
 
     File.write(workhorse_tree_file, workhorse_tree) if workhorse_source_clean?
 
-    puts "==> GitLab Workhorse set up in #{Time.now - start} seconds...\n"
+    puts "    GitLab Workhorse set up in #{Time.now - start} seconds...\n"
   end
 
   def skip_compile_workhorse?
@@ -336,12 +349,10 @@ module TestEnv
     ENV.fetch('GITLAB_WORKHORSE_URL', nil)
   end
 
-  # Create repository for FactoryBot.create(:project)
   def setup_factory_repo
     setup_repo(factory_repo_path, factory_repo_path_bare, factory_repo_name, BRANCH_SHA)
   end
 
-  # Create repository for FactoryBot.create(:forked_project_with_submodules)
   # This repo has a submodule commit that is not present in the main test
   # repository.
   def setup_forked_repo
@@ -352,18 +363,20 @@ module TestEnv
     clone_url = "https://gitlab.com/gitlab-org/#{repo_name}.git"
 
     unless File.directory?(repo_path)
+      puts "\n==> Setting up #{repo_name} repository in #{repo_path}..."
       start = Time.now
       system(*%W(#{Gitlab.config.git.bin_path} clone --quiet -- #{clone_url} #{repo_path}))
-      puts "==> #{repo_path} set up in #{Time.now - start} seconds...\n"
+      puts "    #{repo_path} set up in #{Time.now - start} seconds...\n"
     end
 
     set_repo_refs(repo_path, refs)
 
     unless File.directory?(repo_path_bare)
+      puts "\n==> Setting up #{repo_name} bare repository in #{repo_path_bare}..."
       start = Time.now
       # We must copy bare repositories because we will push to them.
       system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --quiet --bare -- #{repo_path} #{repo_path_bare}))
-      puts "==> #{repo_path_bare} set up in #{Time.now - start} seconds...\n"
+      puts "    #{repo_path_bare} set up in #{Time.now - start} seconds...\n"
     end
   end
 
@@ -455,6 +468,10 @@ module TestEnv
 
   private
 
+  def set_current_example_group
+    Thread.current[:current_example_group] = ::RSpec.current_example.metadata[:example_group]
+  end
+
   # These are directories that should be preserved at cleanup time
   def test_dirs
     @test_dirs ||= %w[
@@ -509,7 +526,7 @@ module TestEnv
     end
   end
 
-  def component_timed_setup(component, install_dir:, version:, task:, task_args: [])
+  def component_timed_setup(component, install_dir:, version:, task:)
     start = Time.now
 
     ensure_component_dir_name_is_correct!(component, install_dir)
@@ -518,16 +535,17 @@ module TestEnv
     return if File.exist?(install_dir) && ci?
 
     if component_needs_update?(install_dir, version)
+      puts "\n==> Setting up #{component}..."
       # Cleanup the component entirely to ensure we start fresh
       FileUtils.rm_rf(install_dir)
 
-      unless Rake::Task[task].invoke(*task_args)
+      unless system('rake', task)
         raise ComponentFailedToInstallError
       end
 
       yield if block_given?
 
-      puts "==> #{component} set up in #{Time.now - start} seconds...\n"
+      puts "    #{component} set up in #{Time.now - start} seconds...\n"
     end
   rescue ComponentFailedToInstallError
     puts "\n#{component} failed to install, cleaning up #{install_dir}!\n"

@@ -31,14 +31,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
       end
     end
 
-    shared_examples_for 'job marked with chosen database' do
-      it 'yields and sets database chosen', :aggregate_failures do
-        expect { |b| middleware.call(worker, job, double(:queue), &b) }.to yield_control
-
-        expect(job[:database_chosen]).to eq('primary')
-      end
-    end
-
     shared_examples_for 'stick to the primary' do
       it 'sticks to the primary' do
         middleware.call(worker, job, double(:queue)) do
@@ -47,8 +39,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
       end
     end
 
-    shared_examples_for 'replica is up to date' do |location|
-      it 'do not stick to the primary', :aggregate_failures do
+    shared_examples_for 'replica is up to date' do |location, data_consistency|
+      it 'does not stick to the primary', :aggregate_failures do
         expect(middleware).to receive(:replica_caught_up?).with(location).and_return(true)
 
         middleware.call(worker, job, double(:queue)) do
@@ -56,6 +48,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
         end
 
         expect(job[:database_chosen]).to eq('replica')
+      end
+
+      it "updates job hash with data_consistency :#{data_consistency}" do
+        middleware.call(worker, job, double(:queue)) do
+          expect(job).to include(data_consistency: data_consistency.to_s)
+        end
       end
     end
 
@@ -77,7 +75,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
           allow(middleware).to receive(:replica_caught_up?).and_return(true)
         end
 
-        it_behaves_like 'replica is up to date', '0/D525E3A8'
+        it_behaves_like 'replica is up to date', '0/D525E3A8', data_consistency
       end
 
       context 'when database primary location is set' do
@@ -87,7 +85,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
           allow(middleware).to receive(:replica_caught_up?).and_return(true)
         end
 
-        it_behaves_like 'replica is up to date', '0/D525E3A8'
+        it_behaves_like 'replica is up to date', '0/D525E3A8', data_consistency
       end
 
       context 'when database location is not set' do
@@ -171,7 +169,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
         end
 
         include_examples 'stick to the primary'
-        include_examples 'job marked with chosen database'
+
+        it 'updates job hash with primary database chosen', :aggregate_failures do
+          expect { |b| middleware.call(worker, job, double(:queue), &b) }.to yield_control
+
+          expect(job[:database_chosen]).to eq('primary')
+        end
       end
     end
   end

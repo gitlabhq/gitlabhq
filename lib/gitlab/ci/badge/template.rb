@@ -8,6 +8,7 @@ module Gitlab::Ci
     class Template
       MAX_KEY_TEXT_SIZE = 64
       MAX_KEY_WIDTH = 512
+      DEFAULT_KEY_WIDTH = 62
 
       def initialize(badge)
         @entity = badge.entity
@@ -15,7 +16,11 @@ module Gitlab::Ci
       end
 
       def key_text
-        raise NotImplementedError
+        if @key_text && @key_text.size <= MAX_KEY_TEXT_SIZE
+          @key_text
+        else
+          @entity.to_s
+        end
       end
 
       def value_text
@@ -23,7 +28,11 @@ module Gitlab::Ci
       end
 
       def key_width
-        raise NotImplementedError
+        if @key_width && @key_width.between?(1, MAX_KEY_WIDTH)
+          @key_width
+        else
+          DEFAULT_KEY_WIDTH
+        end
       end
 
       def value_width

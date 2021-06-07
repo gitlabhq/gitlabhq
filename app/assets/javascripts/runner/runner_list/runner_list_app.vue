@@ -1,5 +1,6 @@
 <script>
 import * as Sentry from '@sentry/browser';
+import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
@@ -43,6 +44,10 @@ export default {
   apollo: {
     runners: {
       query: getRunnersQuery,
+      // Runners can be updated by users directly in this list.
+      // A "cache and network" policy prevents outdated filtered
+      // results.
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       variables() {
         return this.variables;
       },

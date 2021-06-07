@@ -54,6 +54,7 @@ export default {
       'isEmptyStage',
       'selectedStage',
       'selectedStageEvents',
+      'selectedStageError',
       'stages',
       'summary',
       'startDate',
@@ -71,6 +72,14 @@ export default {
     },
     selectedStageReady() {
       return !this.isLoadingStage && this.selectedStage;
+    },
+    emptyStageTitle() {
+      return this.selectedStageError
+        ? this.selectedStageError
+        : __("We don't have enough data to show this stage.");
+    },
+    emptyStageText() {
+      return !this.selectedStageError ? this.selectedStage.emptyStageText : '';
     },
   },
   methods: {
@@ -206,9 +215,9 @@ export default {
                   <gl-empty-state
                     v-if="displayNotEnoughData"
                     class="js-empty-state"
-                    :description="selectedStage.emptyStageText"
+                    :description="emptyStageText"
                     :svg-path="noDataSvgPath"
-                    :title="__('We don\'t have enough data to show this stage.')"
+                    :title="emptyStageTitle"
                   />
                   <component
                     :is="selectedStage.component"

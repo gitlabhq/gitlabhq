@@ -6,31 +6,7 @@ RSpec.describe Gitlab::Ci::Badge::Coverage::Template do
   let(:badge) { double(entity: 'coverage', status: 90.00, customization: {}) }
   let(:template) { described_class.new(badge) }
 
-  describe '#key_text' do
-    it 'says coverage by default' do
-      expect(template.key_text).to eq 'coverage'
-    end
-
-    context 'when custom key_text is defined' do
-      before do
-        allow(badge).to receive(:customization).and_return({ key_text: "custom text" })
-      end
-
-      it 'returns custom value' do
-        expect(template.key_text).to eq "custom text"
-      end
-
-      context 'when its size is larger than the max allowed value' do
-        before do
-          allow(badge).to receive(:customization).and_return({ key_text: 't' * 65 })
-        end
-
-        it 'returns default value' do
-          expect(template.key_text).to eq 'coverage'
-        end
-      end
-    end
-  end
+  it_behaves_like 'a badge template', 'coverage'
 
   describe '#value_text' do
     context 'when coverage is known' do
@@ -56,32 +32,6 @@ RSpec.describe Gitlab::Ci::Badge::Coverage::Template do
 
       it 'returns string that says coverage is unknown' do
         expect(template.value_text).to eq 'unknown'
-      end
-    end
-  end
-
-  describe '#key_width' do
-    it 'is fixed by default' do
-      expect(template.key_width).to eq 62
-    end
-
-    context 'when custom key_width is defined' do
-      before do
-        allow(badge).to receive(:customization).and_return({ key_width: 101 })
-      end
-
-      it 'returns custom value' do
-        expect(template.key_width).to eq 101
-      end
-
-      context 'when it is larger than the max allowed value' do
-        before do
-          allow(badge).to receive(:customization).and_return({ key_width: 513 })
-        end
-
-        it 'returns default value' do
-          expect(template.key_width).to eq 62
-        end
       end
     end
   end

@@ -207,7 +207,7 @@
     "commander": "^2.18.0",
     "custom-jquery-matchers": "^2.1.0",
     "docdash": "^1.0.2",
-    "eslint": "7.27.0",
+    "eslint": "7.28.0",
     "eslint-import-resolver-jest": "3.0.0",
     "eslint-import-resolver-webpack": "0.13.1",
     "eslint-plugin-jasmine": "4.1.2",
