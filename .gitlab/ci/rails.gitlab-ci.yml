@@ -361,7 +361,7 @@ db:migrate-from-previous-major-version:
     - sed -i -e "s/gem 'grpc', '~> 1.24.0'/gem 'grpc', '~> 1.30.2'/" Gemfile  # Update gRPC for Ruby 2.7
     - sed -i -e "s/gem 'google-protobuf', '~> 3.8.0'/gem 'google-protobuf', '~> 3.12'/" Gemfile
     - sed -i -e "s/gem 'nokogiri', '~> 1.10.5'/gem 'nokogiri', '~> 1.11.0'/" Gemfile
-    - sed -i -e "s/gem 'mimemagic', '~> 0.3.2'/gem 'ruby-magic', '~> 0.3.2'/" Gemfile
+    - sed -i -e "s/gem 'mimemagic', '~> 0.3.2'/gem 'ruby-magic', '~> 0.4.0'/" Gemfile
     - run_timed_command "gem install bundler:1.17.3"
     - run_timed_command "bundle update google-protobuf nokogiri grpc mimemagic bootsnap"
     - run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS}"
