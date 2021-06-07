@@ -11,7 +11,7 @@
     .devise-errors
       = render 'devise/shared/error_messages', resource: resource
     - if Gitlab::CurrentSettings.invisible_captcha_enabled
-      = invisible_captcha
+      = invisible_captcha nonce: true
     .name.form-row
       .col.form-group
         = f.label :first_name, _('First name'), for: 'new_user_first_name', class: 'label-bold'
@@ -34,7 +34,7 @@
       %p.gl-field-hint.text-secondary= s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
     %div
     - if show_recaptcha_sign_up?
-      = recaptcha_tags
+      = recaptcha_tags nonce: content_security_policy_nonce
     .submit-container
       = f.submit button_text, class: 'btn gl-button btn-confirm', data: { qa_selector: 'new_user_register_button' }
     = render 'devise/shared/terms_of_service_notice', button_text: button_text

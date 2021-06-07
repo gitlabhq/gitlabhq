@@ -149,7 +149,7 @@ test-jdk11:
   stage: test
   image: maven:3.6.3-jdk-11
   script:
-    - 'mvn $MAVEN_CLI_OPTS clean org.jacoco:jacoco-maven-plugin:prepare-agent test jacoco:report'
+    - mvn $MAVEN_CLI_OPTS clean org.jacoco:jacoco-maven-plugin:prepare-agent test jacoco:report
   artifacts:
     paths:
       - target/site/jacoco/jacoco.xml
@@ -161,10 +161,8 @@ coverage-jdk11:
   stage: visualize
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
-    # convert report from jacoco to cobertura, use relative project path
-    - 'python /opt/cover2cover.py target/site/jacoco/jacoco.xml src/main/java > target/site/cobertura.xml'
-    # read the <source></source> tag and prepend the path to every filename attribute
-    - 'python /opt/source2filename.py target/site/cobertura.xml'
+    # convert report from jacoco to cobertura, using relative project path
+    - python /opt/cover2cover.py target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/ > target/site/cobertura.xml
   needs: ["test-jdk11"]
   dependencies:
     - test-jdk11
@@ -201,10 +199,8 @@ coverage-jdk11:
   stage: visualize
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
-    # convert report from jacoco to cobertura, use relative project path
-    - 'python /opt/cover2cover.py build/jacoco/jacoco.xml src/main/java > build/cobertura.xml'
-    # read the <source></source> tag and prepend the path to every filename attribute
-    - 'python /opt/source2filename.py build/cobertura.xml'
+    # convert report from jacoco to cobertura, using relative project path
+    - python /opt/cover2cover.py build/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/ > build/cobertura.xml
   needs: ["test-jdk11"]
   dependencies:
     - test-jdk11

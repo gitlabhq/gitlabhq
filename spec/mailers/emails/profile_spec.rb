@@ -264,7 +264,7 @@ RSpec.describe Emails::Profile do
         include_examples 'valid use case'
 
         it_behaves_like 'has the correct subject', /Your SSH key has expired/
-        it_behaves_like 'has the correct body text', /Your SSH keys with the following fingerprints has expired/
+        it_behaves_like 'has the correct body text', /Your SSH keys with the following fingerprints have expired/
       end
 
       context 'when invalid' do

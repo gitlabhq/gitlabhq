@@ -9,27 +9,31 @@ module Gitlab
 
       def self.default_settings_hash
         settings_hash = {
-          'enabled' => true,
+          'enabled' => Rails.env.development? || Rails.env.test?,
           'report_only' => false,
           'directives' => {
             'default_src' => "'self'",
             'base_uri' => "'self'",
-            'child_src' => "'none'",
             'connect_src' => "'self'",
             'font_src' => "'self'",
             'form_action' => "'self' https: http:",
             'frame_ancestors' => "'self'",
-            'frame_src' => "'self' https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com",
+            'frame_src' => "'self' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com",
             'img_src' => "'self' data: blob: http: https:",
             'manifest_src' => "'self'",
             'media_src' => "'self'",
-            'script_src' => "'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.recaptcha.net https://apis.google.com",
+            'script_src' => "'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net https://apis.google.com",
             'style_src' => "'self' 'unsafe-inline'",
             'worker_src' => "'self'",
             'object_src' => "'none'",
             'report_uri' => nil
           }
         }
+
+        # frame-src was deprecated in CSP level 2 in favor of child-src
+        # CSP level 3 "undeprecated" frame-src and browsers fall back on child-src if it's missing
+        # However Safari seems to read child-src first so we'll just keep both equal
+        settings_hash['directives']['child_src'] = settings_hash['directives']['frame_src']
 
         allow_webpack_dev_server(settings_hash) if Rails.env.development?
         allow_cdn(settings_hash) if ENV['GITLAB_CDN_HOST'].present?

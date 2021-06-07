@@ -20,9 +20,9 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
   end
 
   describe '.default_settings_hash' do
-    it 'returns defaults for all keys' do
-      settings = described_class.default_settings_hash
+    let(:settings) { described_class.default_settings_hash }
 
+    it 'returns defaults for all keys' do
       expect(settings['enabled']).to be_truthy
       expect(settings['report_only']).to be_falsey
 
@@ -35,6 +35,17 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
 
       expect(directives.has_key?('report_uri')).to be_truthy
       expect(directives['report_uri']).to be_nil
+      expect(directives['child_src']).to eq(directives['frame_src'])
+    end
+
+    context 'when in production' do
+      before do
+        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+      end
+
+      it 'is disabled' do
+        expect(settings['enabled']).to be_falsey
+      end
     end
 
     context 'when GITLAB_CDN_HOST is set' do
@@ -43,10 +54,9 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       end
 
       it 'adds GITLAB_CDN_HOST to CSP' do
-        settings = described_class.default_settings_hash
         directives = settings['directives']
 
-        expect(directives['script_src']).to eq("'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.recaptcha.net https://apis.google.com https://example.com")
+        expect(directives['script_src']).to eq("'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net https://apis.google.com https://example.com")
         expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://example.com")
       end
     end

@@ -10,7 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Using this API you can manipulate GitLab [Release](../../user/project/releases/index.md) entries.
 > - For manipulating links as a release asset, see [Release Links API](links.md).
 > - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.5.
-> - `description_html` field was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299447) in GitLab 13.12.
+> - `description_html` became an opt-in field [with GitLab 13.12 for performance reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/299447).
+    Please pass the `include_html_description` query string parameter if you need it.
 
 ## List Releases
 
@@ -25,6 +26,7 @@ GET /projects/:id/releases
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 | `order_by`    | string         | no       | The field to use as order. Either `released_at` (default) or `created_at`. |
 | `sort`        | string         | no       | The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order. |
+| `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
 
 Example request:
 
@@ -228,6 +230,7 @@ GET /projects/:id/releases/:tag_name
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
+| `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
 
 Example request:
 

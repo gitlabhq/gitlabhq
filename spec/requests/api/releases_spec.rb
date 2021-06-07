@@ -50,6 +50,12 @@ RSpec.describe API::Releases do
         expect(json_response.second['tag_name']).to eq(release_1.tag)
       end
 
+      it 'does not include description_html' do
+        get api("/projects/#{project.id}/releases", maintainer)
+
+        expect(json_response.map { |h| h['description_html'] }).to contain_exactly(nil, nil)
+      end
+
       RSpec.shared_examples 'release sorting' do |order_by|
         subject { get api(url, access_level), params: { sort: sort, order_by: order_by } }
 
@@ -106,6 +112,15 @@ RSpec.describe API::Releases do
         expect(json_response.first['tag_path']).to eq("/#{release_2.project.full_path}/-/tags/#{release_2.tag}")
         expect(json_response.second['commit_path']).to eq("/#{release_1.project.full_path}/-/commit/#{release_1.commit.id}")
         expect(json_response.second['tag_path']).to eq("/#{release_1.project.full_path}/-/tags/#{release_1.tag}")
+      end
+
+      context 'when include_html_description option is true' do
+        it 'includes description_html field' do
+          get api("/projects/#{project.id}/releases", maintainer), params: { include_html_description: true }
+
+          expect(json_response.map { |h| h['description_html'] })
+            .to contain_exactly(instance_of(String), instance_of(String))
+        end
       end
     end
 
@@ -328,6 +343,12 @@ RSpec.describe API::Releases do
           .to match_array(release.sources.map(&:url))
       end
 
+      it 'does not include description_html' do
+        get api("/projects/#{project.id}/releases/v0.1", maintainer)
+
+        expect(json_response['description_html']).to eq(nil)
+      end
+
       context 'with evidence' do
         let!(:evidence) { create(:evidence, release: release) }
 
@@ -400,6 +421,14 @@ RSpec.describe API::Releases do
             expect(json_response['assets']['links'].first['external'])
               .to be_falsy
           end
+        end
+      end
+
+      context 'when include_html_description option is true' do
+        it 'includes description_html field' do
+          get api("/projects/#{project.id}/releases/v0.1", maintainer), params: { include_html_description: true }
+
+          expect(json_response['description_html']).to be_instance_of(String)
         end
       end
 

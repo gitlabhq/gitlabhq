@@ -8,7 +8,8 @@ RSpec.describe API::Entities::Release do
   let(:release) { create(:release, project: project) }
   let(:evidence) { release.evidences.first }
   let(:user) { create(:user) }
-  let(:entity) { described_class.new(release, current_user: user).as_json }
+  let(:entity) { described_class.new(release, current_user: user, include_html_description: include_html_description).as_json }
+  let(:include_html_description) { false }
 
   before do
     ::Releases::CreateEvidenceService.new(release).execute
@@ -58,10 +59,8 @@ RSpec.describe API::Entities::Release do
       expect(description_html).to be_nil
     end
 
-    context 'when remove_description_html_in_release_api feature flag is disabled' do
-      before do
-        stub_feature_flags(remove_description_html_in_release_api: false)
-      end
+    context 'when include_html_description option is true' do
+      let(:include_html_description) { true }
 
       it 'renders special references if current user has access' do
         project.add_reporter(user)
@@ -75,19 +74,6 @@ RSpec.describe API::Entities::Release do
 
         expect(description_html).not_to include(issue_path)
         expect(description_html).not_to include(issue_title)
-      end
-    end
-
-    context 'when remove_description_html_in_release_api_override feature flag is enabled' do
-      before do
-        stub_feature_flags(remove_description_html_in_release_api_override: project)
-      end
-
-      it 'renders special references if current user has access' do
-        project.add_reporter(user)
-
-        expect(description_html).to include(issue_path)
-        expect(description_html).to include(issue_title)
       end
     end
   end
