@@ -7174,6 +7174,18 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `license_billable_users`
+
+Number of all billable users (active users excluding bots and guests).
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/license/20210531204603_license_billable_users.yml)
+
+Group: `group::product intelligence`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `license_expires_at`
 
 The date the license ends

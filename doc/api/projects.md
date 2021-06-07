@@ -59,7 +59,7 @@ GET /projects
 | `sort`                                     | string   | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                                  | boolean  | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                               | boolean  | **{dotted-circle}** No | Include project statistics. |
-| `topic`                                    | string   | **{dotted-circle}** No | Comma-separated topic names. Limit results to projects that match all of given topics. See `tag_list` attribute. |
+| `topic`                                    | string   | **{dotted-circle}** No | Comma-separated topic names. Limit results to projects that match all of given topics. See `topics` attribute. |
 | `visibility`                               | string   | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
 | `wiki_checksum_failed` **(PREMIUM)**       | boolean  | **{dotted-circle}** No | Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2). |
 | `with_custom_attributes`                   | boolean  | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(admins only)_ |
@@ -82,7 +82,11 @@ When `simple=true` or the user is unauthenticated this returns something like:
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
     "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "disapora client"
+    ],
+    "topics": [
       "example",
       "disapora client"
     ],
@@ -116,7 +120,11 @@ When the user is authenticated and `simple` is not set this returns something li
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
     "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "disapora client"
+    ],
+    "topics": [
       "example",
       "disapora client"
     ],
@@ -200,7 +208,11 @@ When the user is authenticated and `simple` is not set this returns something li
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
     "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "puppet"
+    ],
+    "topics": [
       "example",
       "puppet"
     ],
@@ -301,6 +313,10 @@ When the user is authenticated and `simple` is not set this returns something li
 ```
 
 NOTE:
+The `tag_list` attribute has been deprecated 
+and is removed in API v5 in favor of the `topics` attribute.
+
+NOTE:
 For users of [GitLab Premium or higher](https://about.gitlab.com/pricing/),
 the `marked_for_deletion_at` attribute has been deprecated, and is removed
 in API v5 in favor of the `marked_for_deletion_on` attribute.
@@ -378,7 +394,11 @@ GET /users/:user_id/projects
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
     "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "disapora client"
+    ],
+    "topics": [
       "example",
       "disapora client"
     ],
@@ -462,7 +482,11 @@ GET /users/:user_id/projects
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
     "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "puppet"
+    ],
+    "topics": [
       "example",
       "puppet"
     ],
@@ -606,7 +630,11 @@ Example response:
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
     "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "disapora client"
+    ],
+    "topics": [
       "example",
       "disapora client"
     ],
@@ -683,7 +711,11 @@ Example response:
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
     "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "puppet"
+    ],
+    "topics": [
       "example",
       "puppet"
     ],
@@ -804,7 +836,11 @@ GET /projects/:id
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
   "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-  "tag_list": [
+  "tag_list": [ //deprecated, use `topics` instead
+    "example",
+    "disapora project"
+  ],
+  "topics": [
     "example",
     "disapora project"
   ],
@@ -940,6 +976,10 @@ GET /projects/:id
 }
 ```
 
+NOTE:
+The `tag_list` attribute has been deprecated 
+and is removed in API v5 in favor of the `topics` attribute.
+
 Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
 can also see the `approvals_before_merge` parameter:
 
@@ -974,7 +1014,8 @@ If the project is a fork, and you provide a valid token to authenticate, the
       "path_with_namespace":"gitlab-org/gitlab-foss",
       "created_at":"2013-09-26T06:02:36.000Z",
       "default_branch":"master",
-      "tag_list":[],
+      "tag_list":[], //deprecated, use `topics` instead
+      "topics":[],
       "ssh_url_to_repo":"git@gitlab.com:gitlab-org/gitlab-foss.git",
       "http_url_to_repo":"https://gitlab.com/gitlab-org/gitlab-foss.git",
       "web_url":"https://gitlab.com/gitlab-org/gitlab-foss",
@@ -1393,7 +1434,11 @@ Example responses:
     "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
     "web_url": "http://example.com/diaspora/diaspora-project-site",
     "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "disapora project"
+    ],
+    "topics": [
       "example",
       "disapora project"
     ],
@@ -1480,7 +1525,11 @@ Example response:
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
   "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-  "tag_list": [
+  "tag_list": [ //deprecated, use `topics` instead
+    "example",
+    "disapora project"
+  ],
+  "topics": [
     "example",
     "disapora project"
   ],
@@ -1573,7 +1622,11 @@ Example response:
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
   "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-  "tag_list": [
+  "tag_list": [ //deprecated, use `topics` instead
+    "example",
+    "disapora project"
+  ],
+  "topics": [
     "example",
     "disapora project"
   ],
@@ -1741,7 +1794,11 @@ Example response:
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
   "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-  "tag_list": [
+  "tag_list": [ //deprecated, use `topics` instead
+    "example",
+    "disapora project"
+  ],
+  "topics": [
     "example",
     "disapora project"
   ],
@@ -1855,7 +1912,11 @@ Example response:
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
   "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-  "tag_list": [
+  "tag_list": [ //deprecated, use `topics` instead
+    "example",
+    "disapora project"
+  ],
+  "topics": [
     "example",
     "disapora project"
   ],
@@ -2441,7 +2502,8 @@ Example response:
   "path_with_namespace": "cute-cats/hello-world",
   "created_at": "2020-10-15T16:25:22.415Z",
   "default_branch": "master",
-  "tag_list": [],
+  "tag_list": [], //deprecated, use `topics` instead
+  "topics": [],
   "ssh_url_to_repo": "git@gitlab.example.com:cute-cats/hello-world.git",
   "http_url_to_repo": "https://gitlab.example.com/cute-cats/hello-world.git",
   "web_url": "https://gitlab.example.com/cute-cats/hello-world",

@@ -5,10 +5,10 @@ import {
   EDITOR_HEIGHT,
   EDITOR_PREVIEW_STYLE,
   CUSTOM_EVENTS,
-} from '~/vue_shared/components/rich_content_editor/constants';
-import AddImageModal from '~/vue_shared/components/rich_content_editor/modals/add_image/add_image_modal.vue';
-import InsertVideoModal from '~/vue_shared/components/rich_content_editor/modals/insert_video_modal.vue';
-import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
+} from '~/static_site_editor/rich_content_editor/constants';
+import AddImageModal from '~/static_site_editor/rich_content_editor/modals/add_image/add_image_modal.vue';
+import InsertVideoModal from '~/static_site_editor/rich_content_editor/modals/insert_video_modal.vue';
+import RichContentEditor from '~/static_site_editor/rich_content_editor/rich_content_editor.vue';
 
 import {
   addCustomEventListener,
@@ -18,9 +18,9 @@ import {
   registerHTMLToMarkdownRenderer,
   getEditorOptions,
   getMarkdown,
-} from '~/vue_shared/components/rich_content_editor/services/editor_service';
+} from '~/static_site_editor/rich_content_editor/services/editor_service';
 
-jest.mock('~/vue_shared/components/rich_content_editor/services/editor_service', () => ({
+jest.mock('~/static_site_editor/rich_content_editor/services/editor_service', () => ({
   addCustomEventListener: jest.fn(),
   removeCustomEventListener: jest.fn(),
   addImage: jest.fn(),

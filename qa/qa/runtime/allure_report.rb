@@ -23,9 +23,17 @@ module QA
         #
         # @return [void]
         def configure_allure
+          # Match job names like ee:relative, ce:update etc. and set as execution environment
+          env_matcher = /^(?<env>\w{2}:\S+)/
+
           AllureRspec.configure do |config|
             config.results_directory = 'tmp/allure-results'
             config.clean_results_directory = true
+
+            # Set custom environment name to separate same specs executed on different environments
+            if Env.running_in_ci? && Env.ci_job_name.match?(env_matcher)
+              config.environment = Env.ci_job_name.match(env_matcher).named_captures['env']
+            end
           end
         end
 
@@ -67,7 +75,7 @@ module QA
               issue = example.metadata.dig(:quarantine, :issue)
               example.issue('Issue', issue) if issue
 
-              example.add_link(name: "Job(#{ENV['CI_JOB_NAME']})", url: ENV['CI_JOB_URL']) if ENV['CI']
+              example.add_link(name: "Job(#{Env.ci_job_name})", url: Env.ci_job_url) if Env.running_in_ci?
             end
           end
         end

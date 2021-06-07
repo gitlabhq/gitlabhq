@@ -1,8 +1,8 @@
 import Editor from '@toast-ui/editor';
-import buildMarkdownToHTMLRenderer from '~/vue_shared/components/rich_content_editor/services/build_custom_renderer';
-import { registerHTMLToMarkdownRenderer } from '~/vue_shared/components/rich_content_editor/services/editor_service';
+import buildMarkdownToHTMLRenderer from '~/static_site_editor/rich_content_editor/services/build_custom_renderer';
+import { registerHTMLToMarkdownRenderer } from '~/static_site_editor/rich_content_editor/services/editor_service';
 
-describe('vue_shared/components/rich_content_editor', () => {
+describe('static_site_editor/rich_content_editor', () => {
   let editor;
 
   const buildEditor = () => {

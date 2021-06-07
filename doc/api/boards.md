@@ -250,7 +250,8 @@ Example response:
       "path_with_namespace": "diaspora/diaspora-project-site",
       "created_at": "2018-07-03T05:48:49.982Z",
       "default_branch": null,
-      "tag_list": [],
+      "tag_list": [], //deprecated, use `topics` instead
+      "topics": [],
       "ssh_url_to_repo": "ssh://user@example.com/diaspora/diaspora-project-site.git",
       "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
       "web_url": "http://example.com/diaspora/diaspora-project-site",

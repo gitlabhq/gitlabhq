@@ -1,4 +1,4 @@
-import sanitizeHTML from '~/vue_shared/components/rich_content_editor/services/sanitize_html';
+import sanitizeHTML from '~/static_site_editor/rich_content_editor/services/sanitize_html';
 
 describe('rich_content_editor/services/sanitize_html', () => {
   it.each`

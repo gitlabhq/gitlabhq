@@ -1,4 +1,4 @@
-import renderer from '~/vue_shared/components/rich_content_editor/services/renderers/render_attribute_definition';
+import renderer from '~/static_site_editor/rich_content_editor/services/renderers/render_attribute_definition';
 import { attributeDefinition } from './mock_data';
 
 describe('rich_content_editor/renderers/render_attribute_definition', () => {

@@ -12,7 +12,7 @@
             = s_('Jobs|Use jobs to automate your tasks')
           %p
             = s_('Jobs|Jobs are the building blocks of a GitLab CI/CD pipeline. Each job has a specific task, like testing code. To set up jobs in a CI/CD pipeline, add a CI/CD configuration file to your project.')
-          = link_to s_('Jobs|Create CI/CD configuration file'), project_ci_pipeline_editor_path(project), class: 'btn gl-button btn-info js-empty-state-button'
+          = link_to s_('Jobs|Create CI/CD configuration file'), project_ci_pipeline_editor_path(project), class: 'btn gl-button btn-confirm js-empty-state-button'
   - else
     .nothing-here-block= s_('Jobs|No jobs to show')
 - else

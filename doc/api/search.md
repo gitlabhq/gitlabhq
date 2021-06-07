@@ -54,7 +54,8 @@ Example response:
     "path_with_namespace": "twitter/flight",
     "created_at": "2017-09-05T07:58:01.621Z",
     "default_branch": "master",
-    "tag_list":[],
+    "tag_list":[], //deprecated, use `topics` instead
+    "topics":[],
     "ssh_url_to_repo": "ssh://jarka@localhost:2222/twitter/flight.git",
     "http_url_to_repo": "http://localhost:3000/twitter/flight.git",
     "web_url": "http://localhost:3000/twitter/flight",
@@ -475,7 +476,8 @@ Example response:
     "path_with_namespace": "twitter/flight",
     "created_at": "2017-09-05T07:58:01.621Z",
     "default_branch": "master",
-    "tag_list":[],
+    "tag_list":[], //deprecated, use `topics` instead
+    "topics":[],
     "ssh_url_to_repo": "ssh://jarka@localhost:2222/twitter/flight.git",
     "http_url_to_repo": "http://localhost:3000/twitter/flight.git",
     "web_url": "http://localhost:3000/twitter/flight",

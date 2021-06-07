@@ -1,4 +1,4 @@
-import renderer from '~/vue_shared/components/rich_content_editor/services/renderers/render_softbreak';
+import renderer from '~/static_site_editor/rich_content_editor/services/renderers/render_softbreak';
 
 describe('Render softbreak renderer', () => {
   describe('canRender', () => {

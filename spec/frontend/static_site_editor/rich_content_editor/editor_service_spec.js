@@ -1,5 +1,5 @@
-import buildCustomRenderer from '~/vue_shared/components/rich_content_editor/services/build_custom_renderer';
-import buildHTMLToMarkdownRenderer from '~/vue_shared/components/rich_content_editor/services/build_html_to_markdown_renderer';
+import buildCustomRenderer from '~/static_site_editor/rich_content_editor/services/build_custom_renderer';
+import buildHTMLToMarkdownRenderer from '~/static_site_editor/rich_content_editor/services/build_html_to_markdown_renderer';
 import {
   generateToolbarItem,
   addCustomEventListener,
@@ -9,12 +9,12 @@ import {
   insertVideo,
   getMarkdown,
   getEditorOptions,
-} from '~/vue_shared/components/rich_content_editor/services/editor_service';
-import sanitizeHTML from '~/vue_shared/components/rich_content_editor/services/sanitize_html';
+} from '~/static_site_editor/rich_content_editor/services/editor_service';
+import sanitizeHTML from '~/static_site_editor/rich_content_editor/services/sanitize_html';
 
-jest.mock('~/vue_shared/components/rich_content_editor/services/build_html_to_markdown_renderer');
-jest.mock('~/vue_shared/components/rich_content_editor/services/build_custom_renderer');
-jest.mock('~/vue_shared/components/rich_content_editor/services/sanitize_html');
+jest.mock('~/static_site_editor/rich_content_editor/services/build_html_to_markdown_renderer');
+jest.mock('~/static_site_editor/rich_content_editor/services/build_custom_renderer');
+jest.mock('~/static_site_editor/rich_content_editor/services/sanitize_html');
 
 describe('Editor Service', () => {
   let mockInstance;

@@ -184,13 +184,14 @@ RSpec.describe API::Projects do
         end
       end
 
-      it 'includes the project labels as the tag_list' do
+      it 'includes project topics' do
         get api('/projects', user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.first.keys).to include('tag_list')
+        expect(json_response.first.keys).to include('tag_list') # deprecated in favor of 'topics'
+        expect(json_response.first.keys).to include('topics')
       end
 
       it 'includes open_issues_count' do
@@ -1892,7 +1893,8 @@ RSpec.describe API::Projects do
         expect(json_response['id']).to eq(project.id)
         expect(json_response['description']).to eq(project.description)
         expect(json_response['default_branch']).to eq(project.default_branch)
-        expect(json_response['tag_list']).to be_an Array
+        expect(json_response['tag_list']).to be_an Array # deprecated in favor of 'topics'
+        expect(json_response['topics']).to be_an Array
         expect(json_response['archived']).to be_falsey
         expect(json_response['visibility']).to be_present
         expect(json_response['ssh_url_to_repo']).to be_present
@@ -1969,7 +1971,8 @@ RSpec.describe API::Projects do
         expect(json_response['id']).to eq(project.id)
         expect(json_response['description']).to eq(project.description)
         expect(json_response['default_branch']).to eq(project.default_branch)
-        expect(json_response['tag_list']).to be_an Array
+        expect(json_response['tag_list']).to be_an Array # deprecated in favor of 'topics'
+        expect(json_response['topics']).to be_an Array
         expect(json_response['archived']).to be_falsey
         expect(json_response['visibility']).to be_present
         expect(json_response['ssh_url_to_repo']).to be_present

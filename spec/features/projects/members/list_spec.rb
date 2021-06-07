@@ -60,7 +60,8 @@ RSpec.describe 'Project members list', :js do
       category: 'Members::CreateService',
       action: 'create_member',
       label: 'unknown',
-      property: 'existing_user'
+      property: 'existing_user',
+      user: user1
     )
   end
 
@@ -117,7 +118,8 @@ RSpec.describe 'Project members list', :js do
       category: 'Members::InviteService',
       action: 'create_member',
       label: 'unknown',
-      property: 'net_new_user'
+      property: 'net_new_user',
+      user: user1
     )
   end
 

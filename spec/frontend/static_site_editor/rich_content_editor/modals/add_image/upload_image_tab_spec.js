@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import UploadImageTab from '~/vue_shared/components/rich_content_editor/modals/add_image/upload_image_tab.vue';
+import UploadImageTab from '~/static_site_editor/rich_content_editor/modals/add_image/upload_image_tab.vue';
 
 describe('Upload Image Tab', () => {
   let wrapper;

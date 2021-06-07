@@ -1,7 +1,7 @@
-import renderer from '~/vue_shared/components/rich_content_editor/services/renderers/render_heading';
-import * as renderUtils from '~/vue_shared/components/rich_content_editor/services/renderers/render_utils';
+import renderer from '~/static_site_editor/rich_content_editor/services/renderers/render_list_item';
+import * as renderUtils from '~/static_site_editor/rich_content_editor/services/renderers/render_utils';
 
-describe('rich_content_editor/renderers/render_heading', () => {
+describe('rich_content_editor/renderers/render_list_item', () => {
   it('canRender delegates to renderUtils.willAlwaysRender', () => {
     expect(renderer.canRender).toBe(renderUtils.willAlwaysRender);
   });

@@ -1,4 +1,4 @@
-import buildHTMLToMarkdownRenderer from '~/vue_shared/components/rich_content_editor/services/build_html_to_markdown_renderer';
+import buildHTMLToMarkdownRenderer from '~/static_site_editor/rich_content_editor/services/build_html_to_markdown_renderer';
 import { attributeDefinition } from './renderers/mock_data';
 
 describe('rich_content_editor/services/html_to_markdown_renderer', () => {

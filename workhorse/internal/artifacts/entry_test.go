@@ -54,7 +54,7 @@ func TestDownloadingFromValidArchive(t *testing.T) {
 
 	testhelper.RequireResponseHeader(t, response,
 		"Content-Type",
-		"application/octet-stream")
+		"text/plain; charset=utf-8")
 	testhelper.RequireResponseHeader(t, response,
 		"Content-Disposition",
 		"attachment; filename=\"test.txt\"")
@@ -88,7 +88,7 @@ func TestDownloadingFromValidHTTPArchive(t *testing.T) {
 
 	testhelper.RequireResponseHeader(t, response,
 		"Content-Type",
-		"application/octet-stream")
+		"text/plain; charset=utf-8")
 	testhelper.RequireResponseHeader(t, response,
 		"Content-Disposition",
 		"attachment; filename=\"test.txt\"")

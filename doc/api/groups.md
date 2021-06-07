@@ -302,7 +302,8 @@ Example response:
     "id": 9,
     "description": "foo",
     "default_branch": "master",
-    "tag_list": [],
+    "tag_list": [], //deprecated, use `topics` instead
+    "topics": [],
     "archived": false,
     "visibility": "internal",
     "ssh_url_to_repo": "git@gitlab.example.com/html5-boilerplate.git",
@@ -381,9 +382,8 @@ Example response:
       "path_with_namespace":"h5bp/html5-boilerplate",
       "created_at":"2020-04-27T06:13:22.642Z",
       "default_branch":"master",
-      "tag_list":[
-
-      ],
+      "tag_list":[], //deprecated, use `topics` instead
+      "topics":[],
       "ssh_url_to_repo":"ssh://git@gitlab.com/h5bp/html5-boilerplate.git",
       "http_url_to_repo":"http://gitlab.com/h5bp/html5-boilerplate.git",
       "web_url":"http://gitlab.com/h5bp/html5-boilerplate",
@@ -540,7 +540,8 @@ Example response:
       "id": 7,
       "description": "Voluptas veniam qui et beatae voluptas doloremque explicabo facilis.",
       "default_branch": "master",
-      "tag_list": [],
+      "tag_list": [], //deprecated, use `topics` instead
+      "topics": [],
       "archived": false,
       "visibility": "public",
       "ssh_url_to_repo": "git@gitlab.example.com:twitter/typeahead-js.git",
@@ -578,7 +579,8 @@ Example response:
       "id": 6,
       "description": "Aspernatur omnis repudiandae qui voluptatibus eaque.",
       "default_branch": "master",
-      "tag_list": [],
+      "tag_list": [], //deprecated, use `topics` instead
+      "topics": [],
       "archived": false,
       "visibility": "internal",
       "ssh_url_to_repo": "git@gitlab.example.com:twitter/flight.git",
@@ -618,7 +620,8 @@ Example response:
       "id": 8,
       "description": "Velit eveniet provident fugiat saepe eligendi autem.",
       "default_branch": "master",
-      "tag_list": [],
+      "tag_list": [], //deprecated, use `topics` instead
+      "topics": [],
       "archived": false,
       "visibility": "private",
       "ssh_url_to_repo": "git@gitlab.example.com:h5bp/html5-boilerplate.git",
@@ -886,7 +889,8 @@ Example response:
       "id": 9,
       "description": "foo",
       "default_branch": "master",
-      "tag_list": [],
+      "tag_list": [], //deprecated, use `topics` instead
+      "topics": [],
       "public": false,
       "archived": false,
       "visibility": "internal",

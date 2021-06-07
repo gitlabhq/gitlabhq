@@ -151,7 +151,8 @@ Example response:
     "path_with_namespace":"root/project-with-clusters-api",
     "created_at":"2019-01-02T20:13:32.600Z",
     "default_branch":null,
-    "tag_list":[],
+    "tag_list":[], //deprecated, use `topics` instead
+    "topics":[],
     "ssh_url_to_repo":"ssh://gitlab.example.com/root/project-with-clusters-api.git",
     "http_url_to_repo":"https://gitlab.example.com/root/project-with-clusters-api.git",
     "web_url":"https://gitlab.example.com/root/project-with-clusters-api",
@@ -247,7 +248,8 @@ Example response:
     "path_with_namespace":"root/project-with-clusters-api",
     "created_at":"2019-01-02T20:13:32.600Z",
     "default_branch":null,
-    "tag_list":[],
+    "tag_list":[], //deprecated, use `topics` instead
+    "topics":[],
     "ssh_url_to_repo":"ssh:://gitlab.example.com/root/project-with-clusters-api.git",
     "http_url_to_repo":"https://gitlab.example.com/root/project-with-clusters-api.git",
     "web_url":"https://gitlab.example.com/root/project-with-clusters-api",
@@ -357,7 +359,8 @@ Example response:
     "path_with_namespace":"root/project-with-clusters-api",
     "created_at":"2019-01-02T20:13:32.600Z",
     "default_branch":null,
-    "tag_list":[],
+    "tag_list":[], //deprecated, use `topics` instead
+    "topics":[],
     "ssh_url_to_repo":"ssh:://gitlab.example.com/root/project-with-clusters-api.git",
     "http_url_to_repo":"https://gitlab.example.com/root/project-with-clusters-api.git",
     "web_url":"https://gitlab.example.com/root/project-with-clusters-api",

@@ -246,7 +246,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `gitlab_retrieval_timeout`              | The maximum time to wait for a response from the GitLab API per request (default: 30s). |
 | `gitlab_retrieval_interval`             | The interval to wait before retrying to resolve a domain's configuration via the GitLab API (default: 1s). |
 | `gitlab_retrieval_retries`              | The maximum number of times to retry to resolve a domain's configuration via the API (default: 3). |
-| `domain_config_source`                  | Domain configuration source (default: `auto`) |
+| `domain_config_source`                  | This parameter was removed in 14.0, on earlier versions it can be used to enable and test API domain configuration source |
 | `gitlab_id`                             | The OAuth application public ID. Leave blank to automatically fill when Pages authenticates with GitLab. |
 | `gitlab_secret`                         | The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab. |
 | `auth_scope`                            | The OAuth application scope to use for authentication. Must match GitLab Pages OAuth application settings. Leave blank to use `api` scope by default. |
@@ -281,6 +281,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | **`pages_nginx[]`**                     |  |
 | `enable`                                | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](index.md#custom-domains). |
 | `FF_ENABLE_REDIRECTS`                   | Feature flag to disable redirects (enabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#disable-redirects) for more information. |
+| `use_legacy_storage`                    | Temporarily-introduced parameter allowing to use legacy domain configuration source and storage. [Will be removed in GitLab 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166). |
 
 ---
 
@@ -756,51 +757,37 @@ Pages server.
 
 ## Domain source configuration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217912) in GitLab 13.3.
+When GitLab Pages daemon serves pages requests it firstly needs to identify which project should be used to
+serve the requested URL and how its content is stored.
 
-GitLab Pages can use different sources to get domain configuration.
-The default value for Omnibus installations is `nil`.
+Before GitLab 13.3, all pages content was extracted to the special shared directory,
+and each project had a special configuration file.
+The Pages daemon was reading these configuration files and storing their content in memory.
 
-   ```ruby
-   gitlab_pages['domain_config_source'] = nil
-   ```
+This approach had several disadvantages and was replaced with GitLab Pages using the internal GitLab API
+every time a new domain is requested.
+The domain information is also cached by the Pages daemon to speed up subsequent requests.
 
-If left unchanged, GitLab Pages tries to use any available source (either `gitlab` or `disk`). The
-preferred source is `gitlab`, which uses [API-based configuration](#gitlab-api-based-configuration).
+From [GitLab 13.3 to GitLab 13.12](#domain-source-configuration-before-140) GitLab Pages supported both ways of obtaining domain information.
 
-On large GitLab instances, using the API-based configuration significantly improves the pages daemon startup time, as there is no need to load all custom domains configuration into memory.
+Starting from [GitLab 14.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5993) GitLab Pages uses API
+by default and fails to start if it can't connect to it.
+For common issues, see the [troubleshooting section](#failed-to-connect-to-the-internal-gitlab-api).
 
 For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/how-gitlab-pages-uses-the-gitlab-api-to-serve-content/).
 
-### Deprecated `domain_config_source`
+### Domain source configuration before 14.0
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217912) in GitLab 13.3.
 
 WARNING:
-The flag `gitlab_pages['domain_config_source']` is deprecated for use in [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/217913),
-and is planned for removal in GitLab 14.0.
+`domain_config_source` parameter is removed and has no effect starting from [GitLab 14.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5993)
 
-GitLab 13.0 introduced the special flag `domain_config_source` to support manual opt-in to
-[API-based configuration](#gitlab-api-based-configuration).
-GitLab 13.7 introduced the [`auto` value](https://gitlab.com/gitlab-org/gitlab/-/issues/218358)
-to support a smoother transition to API-based configuration.
+From [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/217912) to [GitLab 13.12](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5993) GitLab Pages can either use `disk` or `gitlab` domain configuration source.
 
-Starting with GitLab 14.0, GitLab Pages only supports API-based configuration, and
-[disk source configuration is removed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/382).
-Therefore, GitLab 14.0 also removes `domain_config_source`.
+We highly advise you to use `gitlab` configuration source as it will make transition to newer versions easier.
 
-GitLab Pages fails to start if it can't connect to the GitLab API. For other common issues, see the
-[troubleshooting section](#failed-to-connect-to-the-internal-gitlab-api)
-or report an issue.
-
-### GitLab API-based configuration
-
-WARNING:
-The flag `gitlab_pages['domain_config_source']` is deprecated for use in [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/217913),
-and is planned for removal in GitLab 14.0. In GitLab 14.0 and later, GitLab Pages attempts to
-connect to the API automatically, without requiring the manual configuration steps shown here. Pages
-fails to start if this automatic connection fails.
-
-GitLab Pages can use an API-based configuration. This replaces disk source configuration, which
-was used prior to GitLab 13.0. Follow these steps to enable it:
+To explicitly enable API source:
 
 1. Add the following to your `/etc/gitlab/gitlab.rb` file:
 
@@ -810,14 +797,15 @@ was used prior to GitLab 13.0. Follow these steps to enable it:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-If you encounter an issue, you can disable it by choosing `disk`:
+Or if you want to use legacy confiration source you can:
 
-```ruby
-gitlab_pages['domain_config_source'] = "disk"
-```
+1. Add the following to your `/etc/gitlab/gitlab.rb` file:
 
-For other common issues, see the [troubleshooting section](#failed-to-connect-to-the-internal-gitlab-api)
-or report an issue.
+   ```ruby
+   gitlab_pages['domain_config_source'] = "disk"
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 ### GitLab API cache configuration
 
@@ -1052,7 +1040,7 @@ To migrate GitLab Pages to GitLab 14.0:
 1. If your current GitLab version is lower than 13.12, then you first need to upgrade to 13.12.
 Upgrading directly to 14.0 may cause downtime for some web-sites hosted on GitLab Pages
 until you finish the following steps.
-1. Enable the [API-based configuration](#gitlab-api-based-configuration), which
+1. Set [`domain_config_source` to `gitlab`](#domain-source-configuration-before-140), which
 is the default starting from GitLab 14.0. Skip this step if you're already running GitLab 14.0 or above.
 1. If you want to store your pages content in the [object storage](#using-object-storage), make sure to configure it.
 If you want to store the pages content locally or continue using an NFS server, skip this step.
@@ -1081,6 +1069,16 @@ If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
 ## Troubleshooting
+
+### How to see GitLab Pages logs
+
+You can see Pages daemon logs by running:
+
+```shell
+sudo gitlab-ctl tail gitlab-pages
+```
+
+You can also find the log file in `/var/log/gitlab/gitlab-pages/current`.
 
 ### `open /etc/ssl/ca-bundle.pem: permission denied`
 
@@ -1216,7 +1214,7 @@ Alternatively, run the CI pipelines of those projects that contain a `pages` job
 
 ### Failed to connect to the internal GitLab API
 
-If you have enabled [API-based configuration](#gitlab-api-based-configuration) and see the following error:
+If you see the following error:
 
 ```plaintext
 ERRO[0010] Failed to connect to the internal GitLab API after 0.50s  error="failed to connect to internal Pages API: HTTP status: 401"
@@ -1236,11 +1234,6 @@ error="failed to connect to internal Pages API: Get \"https://gitlab.example.com
 ```
 
 ### Pages cannot communicate with an instance of the GitLab API
-
-WARNING:
-The flag `gitlab_pages['domain_config_source']` is [deprecated](#deprecated-domain_config_source)
-for use in [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/217913),
-and is planned for removal in GitLab 14.0.
 
 If you use the default value for `domain_config_source=auto` and run multiple instances of GitLab
 Pages, you may see intermittent 502 error responses while serving Pages content. You may also see
@@ -1319,6 +1312,28 @@ To enable disk access:
 
    ```ruby
    gitlab_pages['enable_disk'] = true
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+### GitLab Pages doesn't work after upgrading to GitLab 14.0 or above
+
+GitLab 14.0 introduces a number of changes to GitLab Pages which may require manual intervention.
+
+1. Firstly [follow the migration guide](#migrate-gitlab-pages-to-140).
+1. If it doesn't work, see [GitLab Pages logs](#how-to-see-gitlab-pages-logs), and if you see any errors there then search them on this page.
+
+WARNING:
+As the last resort you can temporarily enable legacy storage and configuration mechanisms. Support for them [will be removed in GitLab 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166), so GitLab Pages will stop working if don't resolve the underlying issue.
+
+To do that:
+
+1. Please describe the issue you're seeing in [here](https://gitlab.com/gitlab-org/gitlab/-/issues/331699).
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['use_legacy_storage'] = true
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).

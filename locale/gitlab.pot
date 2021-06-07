@@ -19162,9 +19162,6 @@ msgstr ""
 msgid "LFS"
 msgstr ""
 
-msgid "LFS object"
-msgstr ""
-
 msgid "LFS objects"
 msgstr ""
 

@@ -6,7 +6,7 @@ import {
   buildUneditableBlockTokens,
   buildUneditableInlineTokens,
   buildUneditableHtmlAsTextTokens,
-} from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
+} from '~/static_site_editor/rich_content_editor/services/renderers/build_uneditable_token';
 
 import {
   originInlineToken,

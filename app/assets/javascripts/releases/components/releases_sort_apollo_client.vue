@@ -76,6 +76,7 @@ export default {
   <gl-sorting
     :text="sortText"
     :is-ascending="isDirectionAscending"
+    data-testid="releases-sort"
     @sortDirectionChange="onDirectionChange"
   >
     <gl-sorting-item

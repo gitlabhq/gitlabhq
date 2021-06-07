@@ -69,6 +69,7 @@ itself: # project
     - shared_with_groups
     - ssh_url_to_repo
     - tag_list
+    - topics
     - web_url
 
 build_auto_devops: # auto_devops

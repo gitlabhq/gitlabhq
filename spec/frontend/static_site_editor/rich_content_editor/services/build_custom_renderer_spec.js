@@ -1,4 +1,4 @@
-import buildCustomHTMLRenderer from '~/vue_shared/components/rich_content_editor/services/build_custom_renderer';
+import buildCustomHTMLRenderer from '~/static_site_editor/rich_content_editor/services/build_custom_renderer';
 
 describe('Build Custom Renderer Service', () => {
   describe('buildCustomHTMLRenderer', () => {

@@ -1,6 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import InsertVideoModal from '~/vue_shared/components/rich_content_editor/modals/insert_video_modal.vue';
+import InsertVideoModal from '~/static_site_editor/rich_content_editor/modals/insert_video_modal.vue';
 
 describe('Insert Video Modal', () => {
   let wrapper;

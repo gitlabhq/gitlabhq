@@ -7,8 +7,8 @@ import EditDrawer from '~/static_site_editor/components/edit_drawer.vue';
 import EditHeader from '~/static_site_editor/components/edit_header.vue';
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
 import UnsavedChangesConfirmDialog from '~/static_site_editor/components/unsaved_changes_confirm_dialog.vue';
-import { EDITOR_TYPES } from '~/vue_shared/components/rich_content_editor/constants';
-import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
+import { EDITOR_TYPES } from '~/static_site_editor/rich_content_editor/constants';
+import RichContentEditor from '~/static_site_editor/rich_content_editor/rich_content_editor.vue';
 
 import {
   sourceContentTitle as title,

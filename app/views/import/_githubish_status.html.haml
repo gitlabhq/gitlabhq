@@ -5,6 +5,9 @@
 - paginatable = local_assigns.fetch(:paginatable, false)
 - provider_title = Gitlab::ImportSources.title(provider)
 
+- header_title _("New project"), new_project_path
+- add_to_breadcrumbs s_('ProjectsNew|Import project'), new_projects_path(anchor: 'import_project')
+
 #import-projects-mount-element{ data: { provider: provider, provider_title: provider_title,
                                can_select_namespace: current_user.can_select_namespace?.to_s,
                                ci_cd_only: has_ci_cd_only_params?.to_s,

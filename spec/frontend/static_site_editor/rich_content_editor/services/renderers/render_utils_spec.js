@@ -1,13 +1,13 @@
 import {
   buildUneditableBlockTokens,
   buildUneditableOpenTokens,
-} from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
+} from '~/static_site_editor/rich_content_editor/services/renderers/build_uneditable_token';
 import {
   renderUneditableLeaf,
   renderUneditableBranch,
   renderWithAttributeDefinitions,
   willAlwaysRender,
-} from '~/vue_shared/components/rich_content_editor/services/renderers/render_utils';
+} from '~/static_site_editor/rich_content_editor/services/renderers/render_utils';
 
 import { originToken, uneditableCloseToken, attributeDefinition } from './mock_data';
 
