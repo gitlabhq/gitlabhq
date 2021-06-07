@@ -70,11 +70,11 @@ To start multiple processes:
    ]
    ```
 
-   `*` cannot be combined with concrete queue names - `*, mailers` will
-   just handle the `mailers` queue.
+   `*` cannot be combined with concrete queue names - `*, mailers`
+   just handles the `mailers` queue.
 
    When `sidekiq-cluster` is only running on a single node, make sure that at least
-   one process is running on all queues using `*`. This means a process will
+   one process is running on all queues using `*`. This means a process is
    This includes queues that have dedicated processes.
 
    If `sidekiq-cluster` is running on more than one node, you can also use
@@ -142,7 +142,7 @@ WARNING:
 Sidekiq cluster is [scheduled](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/240)
 to be the only way to start Sidekiq in GitLab 14.0.
 
-By default, the Sidekiq service will run `sidekiq-cluster`. To disable this behavior,
+By default, the Sidekiq service runs `sidekiq-cluster`. To disable this behavior,
 add the following to the Sidekiq configuration:
 
 ```ruby
@@ -151,7 +151,7 @@ sidekiq['cluster'] = false
 ```
 
 All of the aforementioned configuration options for `sidekiq`
-are available. By default, they will be configured as follows:
+are available. By default, they are configured as follows:
 
 ```ruby
 sidekiq['queue_selector'] = false
@@ -168,14 +168,14 @@ cluster as above.
 
 When disabling `sidekiq_cluster`, you must copy your configuration for
 `sidekiq_cluster`over to `sidekiq`. Anything configured for
-`sidekiq_cluster` will be overridden by the options for `sidekiq` when
+`sidekiq_cluster` is overridden by the options for `sidekiq` when
 setting `sidekiq['cluster'] = true`.
 
-When using this feature, the service called `sidekiq` will now be
+When using this feature, the service called `sidekiq` is now 
 running `sidekiq-cluster`.
 
 The [concurrency](#manage-concurrency) and other options configured
-for Sidekiq will be respected.
+for Sidekiq are respected.
 
 By default, logs for `sidekiq-cluster` go to `/var/log/gitlab/sidekiq`
 like regular Sidekiq logs.
@@ -220,7 +220,7 @@ use all of its resources to perform those operations. To set up a separate
 Each process defined under `sidekiq` starts with a
 number of threads that equals the number of queues, plus one spare thread.
 For example, a process that handles the `process_commit` and `post_receive`
-queues will use three threads in total.
+queues uses three threads in total.
 
 ## Manage concurrency
 
@@ -251,16 +251,16 @@ Running Sidekiq cluster is the default in GitLab 13.0 and later.
    ```
 
 `min_concurrency` and `max_concurrency` are independent; one can be set without
-the other. Setting `min_concurrency` to `0` will disable the limit.
+the other. Setting `min_concurrency` to `0` disables the limit.
 
 For each queue group, let `N` be one more than the number of queues. The
-concurrency factor will be set to:
+concurrency factor are set to:
 
 1. `N`, if it's between `min_concurrency` and `max_concurrency`.
 1. `max_concurrency`, if `N` exceeds this value.
 1. `min_concurrency`, if `N` is less than this value.
 
-If `min_concurrency` is equal to `max_concurrency`, then this value will be used
+If `min_concurrency` is equal to `max_concurrency`, then this value is used
 regardless of the number of queues.
 
 When `min_concurrency` is greater than `max_concurrency`, it is treated as
@@ -287,7 +287,7 @@ Running Sidekiq directly is scheduled to be removed in GitLab
    sudo gitlab-ctl reconfigure
    ```
 
-This will set the concurrency (number of threads) for the Sidekiq process.
+This sets the concurrency (number of threads) for the Sidekiq process.
 
 ## Modify the check interval
 
@@ -353,21 +353,21 @@ you'd use the following:
 
 ### Monitor the `sidekiq-cluster` command
 
-The `sidekiq-cluster` command will not terminate once it has started the desired
-amount of Sidekiq processes. Instead, the process will continue running and
+The `sidekiq-cluster` command does not terminate once it has started the desired
+amount of Sidekiq processes. Instead, the process continues running and
 forward any signals to the child processes. This makes it easy to stop all
 Sidekiq processes as you simply send a signal to the `sidekiq-cluster` process,
 instead of having to send it to the individual processes.
 
 If the `sidekiq-cluster` process crashes or receives a `SIGKILL`, the child
-processes will terminate themselves after a few seconds. This ensures you don't
+processes terminate themselves after a few seconds. This ensures you don't
 end up with zombie Sidekiq processes.
 
 All of this makes monitoring the processes fairly easy. Simply hook up
 `sidekiq-cluster` to your supervisor of choice (for example, runit) and you're good to
 go.
 
-If a child process died the `sidekiq-cluster` command will signal all remaining
+If a child process died the `sidekiq-cluster` command signals all remaining
 process to terminate, then terminate itself. This removes the need for
 `sidekiq-cluster` to re-implement complex process monitoring/restarting code.
 Instead you should make sure your supervisor restarts the `sidekiq-cluster`
@@ -383,7 +383,7 @@ file is written, but this can be changed by passing the `--pidfile` option to
 /opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster --pidfile /var/run/gitlab/sidekiq_cluster.pid process_commit
 ```
 
-Keep in mind that the PID file will contain the PID of the `sidekiq-cluster`
+Keep in mind that the PID file contains the PID of the `sidekiq-cluster`
 command and not the PID(s) of the started Sidekiq processes.
 
 ### Environment

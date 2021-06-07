@@ -42,6 +42,9 @@ sed -i 's|url:.*$|url: redis://redis:6379/11|g' config/redis.queues.yml
 cp config/redis.shared_state.yml.example config/redis.shared_state.yml
 sed -i 's|url:.*$|url: redis://redis:6379/12|g' config/redis.shared_state.yml
 
+cp config/redis.trace_chunks.yml.example config/redis.trace_chunks.yml
+sed -i 's|url:.*$|url: redis://redis:6379/13|g' config/redis.trace_chunks.yml
+
 if [ "$SETUP_DB" != "false" ]; then
   setup_db
 elif getent hosts postgres; then

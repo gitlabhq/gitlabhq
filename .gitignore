@@ -42,6 +42,7 @@ eslint-report.html
 /config/redis.cache.yml
 /config/redis.queues.yml
 /config/redis.shared_state.yml
+/config/redis.trace_chunks.yml
 /config/unicorn.rb
 /config/puma.rb
 /config/puma_actioncable.rb
