@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe API::ProjectStatistics do
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
   let_it_be(:public_project) { create(:project, :public) }
 
   before do
-    public_project.add_developer(developer)
+    public_project.add_reporter(reporter)
   end
 
   describe 'GET /projects/:id/statistics' do
@@ -19,7 +19,7 @@ RSpec.describe API::ProjectStatistics do
     let_it_be(:fetch_statistics_other_project) { create(:project_daily_statistic, project: create(:project), fetch_count: 29, date: 29.days.ago) }
 
     it 'returns the fetch statistics of the last 30 days' do
-      get api("/projects/#{public_project.id}/statistics", developer)
+      get api("/projects/#{public_project.id}/statistics", reporter)
 
       expect(response).to have_gitlab_http_status(:ok)
       fetches = json_response['fetches']
@@ -32,7 +32,7 @@ RSpec.describe API::ProjectStatistics do
     it 'excludes the fetch statistics older than 30 days' do
       create(:project_daily_statistic, fetch_count: 31, project: public_project, date: 30.days.ago)
 
-      get api("/projects/#{public_project.id}/statistics", developer)
+      get api("/projects/#{public_project.id}/statistics", reporter)
 
       expect(response).to have_gitlab_http_status(:ok)
       fetches = json_response['fetches']
@@ -41,7 +41,7 @@ RSpec.describe API::ProjectStatistics do
       expect(fetches['days'].last).to eq({ 'count' => fetch_statistics1.fetch_count, 'date' => fetch_statistics1.date.to_s })
     end
 
-    it 'responds with 403 when the user is not a developer of the repository' do
+    it 'responds with 403 when the user is not a reporter of the repository' do
       guest = create(:user)
       public_project.add_guest(guest)
 

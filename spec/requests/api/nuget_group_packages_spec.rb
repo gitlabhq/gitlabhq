@@ -46,6 +46,7 @@ RSpec.describe API::NugetGroupPackages do
     let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token, group: subgroup) }
 
     let(:target) { subgroup }
+    let(:snowplow_gitlab_standard_context) { { namespace: subgroup } }
 
     it_behaves_like 'handling all endpoints'
 
@@ -57,6 +58,7 @@ RSpec.describe API::NugetGroupPackages do
 
   context 'a group' do
     let(:target) { group }
+    let(:snowplow_gitlab_standard_context) { { namespace: group } }
 
     it_behaves_like 'handling all endpoints'
 

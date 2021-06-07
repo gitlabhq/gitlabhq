@@ -66,7 +66,7 @@ review-deploy:
     - *base-before_script
   script:
     - check_kube_domain
-    - ensure_namespace
+    - "ensure_namespace ${KUBE_NAMESPACE}"
     - install_external_dns
     - download_chart
     - date

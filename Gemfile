@@ -489,9 +489,9 @@ gem 'google-protobuf', '~> 3.17.1'
 gem 'toml-rb', '~> 1.0.0'
 
 # Feature toggles
-gem 'flipper', '~> 0.17.1'
-gem 'flipper-active_record', '~> 0.17.1'
-gem 'flipper-active_support_cache_store', '~> 0.17.1'
+gem 'flipper', '~> 0.21.0'
+gem 'flipper-active_record', '~> 0.21.0'
+gem 'flipper-active_support_cache_store', '~> 0.21.0'
 gem 'unleash', '~> 0.1.5'
 gem 'gitlab-experiment', '~> 0.5.4'
 

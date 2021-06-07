@@ -223,6 +223,23 @@ you should fully roll out the feature by enabling the flag **globally** by runni
 This changes the feature flag state to be **enabled** always, which overrides the
 existing gates (e.g. `--group=gitlab-org`) in the above processes.
 
+Note, that if an actor based feature gate is present, switching the
+`default_enabled` attribute of the YAML definition from `false` to `true`
+will not have any effect. The feature gate must be deleted first.
+
+For example, a feature flag is set via chatops:
+
+```shell
+/chatops run feature set --project=gitlab-org/gitlab some_feature true
+```
+
+When the `default_enabled` attribute in the YAML definition is switched to
+`true`, the feature gate must be deleted to have the desired effect:
+
+```shell
+/chatops run feature delete some_feature
+```
+
 ##### Percentage of actors vs percentage of time rollouts
 
 If you want to make sure a feature is always on or off for users, use a **Percentage of actors**

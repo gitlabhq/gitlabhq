@@ -224,6 +224,7 @@ RSpec.shared_examples 'pypi simple API endpoint' do
 
     let(:url) { "/projects/#{project.id}/packages/pypi/simple/my-package" }
     let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+    let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
 
     it_behaves_like 'PyPI package versions', :developer, :success
   end

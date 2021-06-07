@@ -81,6 +81,8 @@ subgraph "CNG-mirror pipeline"
    - Since we're using [the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/), this means
      you get a dedicated environment for your branch that's very close to what
      it would look in production.
+   - Each review app is deployed to its own Kubernetes namespace. The namespace is based on the Review App slug that is
+     unique to each branch.
 1. Once the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job succeeds, you should be able to
    use your Review App thanks to the direct link to it from the MR widget. To log
    into the Review App, see "Log into my Review App?" below.
@@ -203,7 +205,7 @@ the GitLab handbook information for the [shared 1Password account](https://about
 1. Click on the `KUBECTL` dropdown, then `Exec` -> `task-runner`.
 1. Replace `-c task-runner -- ls` with `-it -- gitlab-rails console` from the
    default command or
-   - Run `kubectl exec --namespace review-apps review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
+   - Run `kubectl exec --namespace review-qa-raise-e-12chm0 review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
      - Replace `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`
        with your Pod's name.
 
@@ -221,7 +223,7 @@ the GitLab handbook information for the [shared 1Password account](https://about
 ## Diagnosing unhealthy Review App releases
 
 If [Review App Stability](https://app.periscopedata.com/app/gitlab/496118/Engineering-Productivity-Sandbox?widget=6690556&udv=785399)
-dips this may be a signal that the `review-apps-ce/ee` cluster is unhealthy.
+dips this may be a signal that the `review-apps` cluster is unhealthy.
 Leading indicators may be health check failures leading to restarts or majority failure for Review App deployments.
 
 The [Review Apps Overview dashboard](https://console.cloud.google.com/monitoring/classic/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)

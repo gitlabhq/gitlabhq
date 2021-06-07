@@ -36,6 +36,10 @@ module API
       def project_or_group
         authorized_user_project
       end
+
+      def snowplow_gitlab_standard_context
+        { project: authorized_user_project, namespace: authorized_user_project.namespace }
+      end
     end
 
     params do
@@ -69,7 +73,7 @@ module API
           package_file = ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job))
                                                              .execute
 
-          track_package_event('push_package', :nuget, category: 'API::NugetPackages')
+          track_package_event('push_package', :nuget, category: 'API::NugetPackages', user: current_user, project: package.project, namespace: package.project.namespace)
 
           ::Packages::Nuget::ExtractionWorker.perform_async(package_file.id) # rubocop:disable CodeReuse/Worker
 
@@ -118,7 +122,7 @@ module API
 
             not_found!('Package') unless package_file
 
-            track_package_event('pull_package', :nuget, category: 'API::NugetPackages')
+            track_package_event('pull_package', :nuget, category: 'API::NugetPackages', project: package_file.project, namespace: package_file.project.namespace)
 
             # nuget and dotnet don't support 302 Moved status codes, supports_direct_download has to be set to false
             present_carrierwave_file!(package_file.file, supports_direct_download: false)

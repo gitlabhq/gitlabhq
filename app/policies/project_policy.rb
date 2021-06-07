@@ -238,6 +238,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_issue_board
     enable :download_code
     enable :read_statistics
+    enable :daily_statistics
     enable :download_wiki_code
     enable :create_snippet
     enable :update_issue
@@ -346,7 +347,6 @@ class ProjectPolicy < BasePolicy
     enable :update_deployment
     enable :create_release
     enable :update_release
-    enable :daily_statistics
     enable :create_metrics_dashboard_annotation
     enable :delete_metrics_dashboard_annotation
     enable :update_metrics_dashboard_annotation

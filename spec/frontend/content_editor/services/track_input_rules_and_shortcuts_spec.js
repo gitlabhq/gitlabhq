@@ -5,11 +5,8 @@ import { Heading } from '@tiptap/extension-heading';
 import { ListItem } from '@tiptap/extension-list-item';
 import { Paragraph } from '@tiptap/extension-paragraph';
 import { Text } from '@tiptap/extension-text';
-import { Editor, EditorContent } from '@tiptap/vue-2';
-import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { Editor } from '@tiptap/vue-2';
 import { mockTracking } from 'helpers/tracking_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import {
   KEYBOARD_SHORTCUT_TRACKING_ACTION,
   INPUT_RULE_TRACKING_ACTION,
@@ -19,47 +16,33 @@ import trackInputRulesAndShortcuts from '~/content_editor/services/track_input_r
 import { ENTER_KEY, BACKSPACE_KEY } from '~/lib/utils/keys';
 
 describe('content_editor/services/track_input_rules_and_shortcuts', () => {
-  let wrapper;
   let trackingSpy;
   let editor;
+  let trackedExtensions;
   const HEADING_TEXT = 'Heading text';
-
-  const buildWrapper = () => {
-    wrapper = extendedWrapper(
-      mount(EditorContent, {
-        propsData: {
-          editor,
-        },
-      }),
-    );
-  };
+  const extensions = [Document, Paragraph, Text, Heading, CodeBlockLowlight, BulletList, ListItem];
 
   beforeEach(() => {
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
   });
 
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('given the heading extension is instrumented', () => {
     beforeEach(() => {
+      trackedExtensions = extensions.map(trackInputRulesAndShortcuts);
       editor = new Editor({
-        extensions: [
-          Document,
-          Paragraph,
-          Text,
-          Heading,
-          CodeBlockLowlight,
-          BulletList,
-          ListItem,
-        ].map(trackInputRulesAndShortcuts),
+        extensions: extensions.map(trackInputRulesAndShortcuts),
       });
     });
 
-    beforeEach(async () => {
-      buildWrapper();
-      await nextTick();
+    it('does not remove existing keyboard shortcuts', () => {
+      extensions.forEach((extension, index) => {
+        const originalShortcuts = Object.keys(extension.addKeyboardShortcuts?.() || {});
+        const trackedShortcuts = Object.keys(
+          trackedExtensions[index].addKeyboardShortcuts?.() || {},
+        );
+
+        expect(originalShortcuts).toEqual(trackedShortcuts);
+      });
     });
 
     describe('when creating a heading using an keyboard shortcut', () => {

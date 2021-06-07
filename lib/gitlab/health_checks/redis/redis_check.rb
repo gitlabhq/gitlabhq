@@ -20,8 +20,7 @@ module Gitlab
           def check
             ::Gitlab::HealthChecks::Redis::CacheCheck.check_up &&
               ::Gitlab::HealthChecks::Redis::QueuesCheck.check_up &&
-              ::Gitlab::HealthChecks::Redis::SharedStateCheck.check_up &&
-              ::Gitlab::HealthChecks::Redis::TraceChunksCheck.check_up
+              ::Gitlab::HealthChecks::Redis::SharedStateCheck.check_up
           end
         end
       end

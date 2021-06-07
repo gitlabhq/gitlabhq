@@ -20,14 +20,14 @@ automatically.
 
 The `Changelog` trailer accepts the following values:
 
-- added
-- fixed
-- changed
-- deprecated
-- removed
-- security
-- performance
-- other
+- `added`: New feature
+- `fixed`: Bug fix
+- `changed`: Feature change
+- `deprecated`: New deprecation
+- `removed`: Feature removal
+- `security`: Security fix
+- `performance`: Performance improvement
+- `other`: Other
 
 An example of a Git commit to include in the changelog is the following:
 

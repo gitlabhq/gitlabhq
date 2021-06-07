@@ -32,7 +32,7 @@ module API
         package_file = ::Packages::PackageFileFinder
           .new(package, params[:file_name]).execute!
 
-        track_package_event('pull_package', package, category: 'API::NpmPackages')
+        track_package_event('pull_package', package, category: 'API::NpmPackages', project: project, namespace: project.namespace)
 
         present_carrierwave_file!(package_file.file)
       end
@@ -48,7 +48,7 @@ module API
       put ':package_name', requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
         authorize_create_package!(project)
 
-        track_package_event('push_package', :npm, category: 'API::NpmPackages')
+        track_package_event('push_package', :npm, category: 'API::NpmPackages', project: project, user: current_user, namespace: project.namespace)
 
         created_package = ::Packages::Npm::CreatePackageService
           .new(project, current_user, params.merge(build: current_authenticated_job)).execute

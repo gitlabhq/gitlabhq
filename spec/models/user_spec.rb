@@ -92,7 +92,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:group_members) }
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
-    it { is_expected.to have_many(:expired_today_and_unnotified_keys) }
+    it { is_expected.to have_many(:expired_and_unnotified_keys) }
     it { is_expected.to have_many(:deploy_keys).dependent(:nullify) }
     it { is_expected.to have_many(:group_deploy_keys) }
     it { is_expected.to have_many(:events).dependent(:delete_all) }
@@ -1026,12 +1026,6 @@ RSpec.describe User do
       let_it_be(:expired_today_already_notified) { create(:key, expires_at: Time.current, user: user2, expiry_notification_delivered_at: Time.current) }
       let_it_be(:expiring_soon_not_notified) { create(:key, expires_at: 2.days.from_now, user: user2) }
       let_it_be(:expiring_soon_notified) { create(:key, expires_at: 2.days.from_now, user: user1, before_expiry_notification_delivered_at: Time.current) }
-
-      describe '.with_ssh_key_expired_today' do
-        it 'returns users whose key has expired today' do
-          expect(described_class.with_ssh_key_expired_today).to contain_exactly(user1)
-        end
-      end
 
       describe '.with_ssh_key_expiring_soon' do
         it 'returns users whose keys will expire soon' do

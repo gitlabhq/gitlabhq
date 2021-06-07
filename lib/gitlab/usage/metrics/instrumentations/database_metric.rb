@@ -47,6 +47,14 @@ module Gitlab
             Gitlab::Usage::Metrics::Query.for(self.class.metric_operation, relation, self.class.column)
           end
 
+          def suggested_name
+            Gitlab::Usage::Metrics::NameSuggestion.for(
+              self.class.metric_operation,
+              relation: relation,
+              column: self.class.column
+            )
+          end
+
           private
 
           def relation

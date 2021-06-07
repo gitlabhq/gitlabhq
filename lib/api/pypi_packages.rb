@@ -121,7 +121,7 @@ module API
           package = Packages::Pypi::PackageFinder.new(current_user, project, { filename: filename, sha256: params[:sha256] }).execute
           package_file = ::Packages::PackageFileFinder.new(package, filename, with_file_name_like: false).execute
 
-          track_package_event('pull_package', :pypi)
+          track_package_event('pull_package', :pypi, project: project, namespace: project.namespace)
 
           present_carrierwave_file!(package_file.file, supports_direct_download: true)
         end
@@ -140,7 +140,7 @@ module API
         get 'simple/*package_name', format: :txt do
           authorize_read_package!(authorized_user_project)
 
-          track_package_event('list_package', :pypi)
+          track_package_event('list_package', :pypi, project: authorized_user_project, namespace: authorized_user_project.namespace)
 
           packages = Packages::Pypi::PackagesFinder.new(current_user, authorized_user_project, { package_name: params[:package_name] }).execute!
           presenter = ::Packages::Pypi::PackagePresenter.new(packages, authorized_user_project)
@@ -171,7 +171,7 @@ module API
           authorize_upload!(authorized_user_project)
           bad_request!('File is too large') if authorized_user_project.actual_limits.exceeded?(:pypi_max_file_size, params[:content].size)
 
-          track_package_event('push_package', :pypi)
+          track_package_event('push_package', :pypi, project: authorized_user_project, user: current_user, namespace: authorized_user_project.namespace)
 
           ::Packages::Pypi::CreatePackageService
             .new(authorized_user_project, current_user, declared_params.merge(build: current_authenticated_job))

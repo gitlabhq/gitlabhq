@@ -75,6 +75,8 @@ RSpec.describe Groups::Registry::RepositoriesController do
 
       context 'json format' do
         let(:format) { :json }
+        let(:namespace) { group }
+        let(:snowplow_gitlab_standard_context) { { user: user, namespace: group } }
 
         it 'has the correct response schema' do
           subject

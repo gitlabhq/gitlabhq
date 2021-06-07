@@ -35,7 +35,7 @@ module API
             authorize_upload!(authorized_user_project)
             bad_request!('File is too large') if authorized_user_project.actual_limits.exceeded?(:debian_max_file_size, params[:file].size)
 
-            track_package_event('push_package', :debian)
+            track_package_event('push_package', :debian, user: current_user, project: authorized_user_project, namespace: authorized_user_project.namespace)
 
             file_params = {
               file:        params['file'],

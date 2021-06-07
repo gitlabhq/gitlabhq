@@ -58,7 +58,8 @@ module API
           end
           get 'index', format: :json do
             authorize_read_package!(project_or_group)
-            track_package_event('cli_metadata', :nuget, category: 'API::NugetPackages')
+
+            track_package_event('cli_metadata', :nuget, **snowplow_gitlab_standard_context.merge(category: 'API::NugetPackages'))
 
             present ::Packages::Nuget::ServiceIndexPresenter.new(project_or_group),
                     with: ::API::Entities::Nuget::ServiceIndex
@@ -117,7 +118,7 @@ module API
 
               results = search_packages(params[:q], search_options)
 
-              track_package_event('search_package', :nuget, category: 'API::NugetPackages')
+              track_package_event('search_package', :nuget, **snowplow_gitlab_standard_context.merge(category: 'API::NugetPackages'))
 
               present ::Packages::Nuget::SearchResultsPresenter.new(results),
                       with: ::API::Entities::Nuget::SearchResults

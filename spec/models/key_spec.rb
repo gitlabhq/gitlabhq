@@ -85,9 +85,9 @@ RSpec.describe Key, :mailer do
       let_it_be(:expiring_soon_notified) { create(:key, expires_at: 4.days.from_now, user: user, before_expiry_notification_delivered_at: Time.current) }
       let_it_be(:future_expiry) { create(:key, expires_at: 1.month.from_now, user: user) }
 
-      describe '.expired_today_and_not_notified' do
-        it 'returns keys that expire today' do
-          expect(described_class.expired_today_and_not_notified).to contain_exactly(expired_today_not_notified)
+      describe '.expired_and_not_notified' do
+        it 'returns keys that expire today and in the past' do
+          expect(described_class.expired_and_not_notified).to contain_exactly(expired_today_not_notified, expired_yesterday)
         end
       end
 

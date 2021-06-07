@@ -70,7 +70,7 @@ module API
             user_project, params[:file_name]
           ).last!
 
-          track_package_event('pull_package', :rubygems)
+          track_package_event('pull_package', :rubygems, project: user_project, namespace: user_project.namespace)
 
           present_carrierwave_file!(package_file.file)
         end
@@ -97,7 +97,7 @@ module API
             authorize_upload!(user_project)
             bad_request!('File is too large') if user_project.actual_limits.exceeded?(:rubygems_max_file_size, params[:file].size)
 
-            track_package_event('push_package', :rubygems)
+            track_package_event('push_package', :rubygems, user: current_user, project: user_project, namespace: user_project.namespace)
 
             package_file = nil
 

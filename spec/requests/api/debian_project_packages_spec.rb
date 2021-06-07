@@ -39,6 +39,7 @@ RSpec.describe API::DebianProjectPackages do
     describe 'PUT projects/:id/packages/debian/:file_name' do
       let(:method) { :put }
       let(:url) { "/projects/#{container.id}/packages/debian/#{file_name}" }
+      let(:snowplow_gitlab_standard_context) { { project: container, user: user, namespace: container.namespace } }
 
       context 'with a deb' do
         let(:file_name) { 'libsample0_1.2.3~alpha2_amd64.deb' }

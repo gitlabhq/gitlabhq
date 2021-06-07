@@ -71,6 +71,8 @@ RSpec.describe API::NpmProjectPackages do
     end
 
     context 'a public project' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
+
       it_behaves_like 'successfully downloads the file'
       it_behaves_like 'a package tracking event', 'API::NpmPackages', 'pull_package'
 
@@ -161,6 +163,7 @@ RSpec.describe API::NpmProjectPackages do
 
       context 'valid package record' do
         let(:params) { upload_params(package_name: package_name) }
+        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
 
         shared_examples 'handling upload with different authentications' do
           context 'with access token' do

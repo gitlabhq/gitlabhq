@@ -7,6 +7,7 @@ class Key < ApplicationRecord
   include Sortable
   include Sha256Attribute
   include Expirable
+  include EachBatch
 
   sha256_attribute :fingerprint_sha256
 
@@ -43,7 +44,9 @@ class Key < ApplicationRecord
   scope :preload_users, -> { preload(:user) }
   scope :for_user, -> (user) { where(user: user) }
   scope :order_last_used_at_desc, -> { reorder(::Gitlab::Database.nulls_last_order('last_used_at', 'DESC')) }
-  scope :expired_today_and_not_notified, -> { where(["date(expires_at AT TIME ZONE 'UTC') = CURRENT_DATE AND expiry_notification_delivered_at IS NULL"]) }
+
+  # Date is set specifically in this scope to improve query time.
+  scope :expired_and_not_notified, -> { where(["date(expires_at AT TIME ZONE 'UTC') BETWEEN '2000-01-01' AND CURRENT_DATE AND expiry_notification_delivered_at IS NULL"]) }
   scope :expiring_soon_and_not_notified, -> { where(["date(expires_at AT TIME ZONE 'UTC') > CURRENT_DATE AND date(expires_at AT TIME ZONE 'UTC') < ? AND before_expiry_notification_delivered_at IS NULL", DAYS_TO_EXPIRE.days.from_now.to_date]) }
 
   def self.regular_keys

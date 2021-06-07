@@ -12,6 +12,11 @@ module Gitlab
           #   events:
           #     - g_analytics_valuestream
           # end
+          class << self
+            attr_reader :metric_operation
+            @metric_operation = :redis
+          end
+
           def initialize(time_frame:, options: {})
             super
 
@@ -28,6 +33,12 @@ module Gitlab
 
               Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**event_params)
             end
+          end
+
+          def suggested_name
+            Gitlab::Usage::Metrics::NameSuggestion.for(
+              self.class.metric_operation
+            )
           end
 
           private

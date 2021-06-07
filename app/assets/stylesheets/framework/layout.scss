@@ -38,8 +38,11 @@ body {
   }
 }
 
-.content-wrapper {
+.content-wrapper-margin {
   margin-top: $header-height;
+}
+
+.content-wrapper {
   padding-bottom: 100px;
 }
 
@@ -166,15 +169,8 @@ body {
   }
 
   .content-wrapper {
-    margin-top: 0;
     padding-bottom: 0;
     flex: 1;
     min-height: 0;
-  }
-
-  &.flash-shown {
-    .content-wrapper {
-      margin-top: 0;
-    }
   }
 }

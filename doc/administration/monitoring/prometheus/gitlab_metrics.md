@@ -130,6 +130,8 @@ The following metrics are available:
 | `gitlab_ci_pipeline_security_orchestration_policy_processing_duration_seconds` | Histogram   | 13.12    | Time in seconds it takes to process Security Policies in CI/CD pipeline                                                                    |                                                           |
 | `gitlab_ci_difference_live_vs_actual_minutes`                    | Histogram   | 13.12    | Difference between CI minute consumption counted while jobs were running (live) vs when jobs are complete (actual). Used to enforce CI minute consumption limits on long running jobs. | `plan` |
 | `gitlab_spamcheck_request_duration_seconds`                      | Histogram   | 13.12   | The duration for requests between Rails and the anti-spam engine                                                        |                                                           |
+| `service_desk_thank_you_email`                                   | Counter     | 14.0    | Total number of email responses to new service desk emails                                                            |                                                           |
+| `service_desk_new_note_email`                                    | Counter     | 14.0    | Total number of email notifications on new service desk comment                                                       |                                                           |
 
 ## Metrics controlled by a feature flag
 

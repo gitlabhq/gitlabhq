@@ -40,7 +40,7 @@ function previous_deploy_failed() {
 }
 
 function delete_release() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
 
   if [ -z "${release}" ]; then
@@ -48,39 +48,11 @@ function delete_release() {
     return
   fi
 
-  # Check if helm release exists before attempting to delete
-  # There may be situation where k8s resources exist, but helm release does not,
-  # for example, following a failed helm install.
-  # In such cases, we still want to continue to clean up k8s resources.
-  if deploy_exists "${namespace}" "${release}"; then
-    helm_delete_release "${namespace}" "${release}"
-  fi
-  kubectl_cleanup_release "${namespace}" "${release}"
-}
-
-function helm_delete_release() {
-  local namespace="${1}"
-  local release="${2}"
-
-  echoinfo "Deleting Helm release '${release}'..." true
-
-  helm uninstall --namespace "${namespace}" "${release}"
-}
-
-function kubectl_cleanup_release() {
-  local namespace="${1}"
-  local release="${2}"
-
-  echoinfo "Deleting all K8s resources matching '${release}'..." true
-  kubectl --namespace "${namespace}" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,clusterrole,clusterrolebinding,role,rolebinding,sa,crd 2>&1 \
-    | grep "${release}" \
-    | awk '{print $1}' \
-    | xargs kubectl --namespace "${namespace}" delete --ignore-not-found \
-    || true
+  delete_k8s_release_namespace
 }
 
 function delete_failed_release() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
 
   if [ -z "${release}" ]; then
@@ -93,7 +65,7 @@ function delete_failed_release() {
   else
     # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
     if previous_deploy_failed "${namespace}" "${release}" ; then
-      echoinfo "Review App deployment in bad state, cleaning up ${release}"
+      echoinfo "Review App deployment in bad state, cleaning up namespace ${release}"
       delete_release
     else
       echoinfo "Review App deployment in good state"
@@ -101,8 +73,14 @@ function delete_failed_release() {
   fi
 }
 
+function delete_k8s_release_namespace() {
+  local namespace="${CI_ENVIRONMENT_SLUG}"
+
+  kubectl delete namespace "${namespace}" --wait
+}
+
 function get_pod() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
   local app_name="${1}"
   local status="${2-Running}"
@@ -133,7 +111,7 @@ function get_pod() {
 }
 
 function run_task() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local ruby_cmd="${1}"
   local task_runner_pod=$(get_pod "task-runner")
 
@@ -177,7 +155,7 @@ function check_kube_domain() {
 }
 
 function ensure_namespace() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${1}"
 
   echoinfo "Ensuring the ${namespace} namespace exists..." true
 
@@ -245,7 +223,7 @@ function install_certmanager() {
 }
 
 function create_application_secret() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
   local initial_root_password_shared_secret
   local gitlab_license_shared_secret
@@ -306,7 +284,7 @@ function parse_gitaly_image_tag() {
 }
 
 function deploy() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
   local base_config_file_ref="${CI_DEFAULT_BRANCH}"
   if [[ "$(base_config_changed)" == "true" ]]; then base_config_file_ref="${CI_COMMIT_SHA}"; fi
@@ -324,11 +302,14 @@ function deploy() {
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-ee"
 
+  ensure_namespace "${namespace}"
+
   create_application_secret
 
 HELM_CMD=$(cat << EOF
   helm upgrade \
     --namespace="${namespace}" \
+    --create-namespace \
     --install \
     --wait \
     --timeout "${HELM_INSTALL_TIMEOUT:-20m}" \
@@ -339,6 +320,9 @@ HELM_CMD=$(cat << EOF
     --set releaseOverride="${release}" \
     --set global.hosts.hostSuffix="${HOST_SUFFIX}" \
     --set global.hosts.domain="${REVIEW_APPS_DOMAIN}" \
+    --set gitlab.webservice.ingress.tls.secretName="${release}-gitlab-tls" \
+    --set registry.ingress.tls.secretName="${release}-registry-tls" \
+    --set minio.ingress.tls.secretName="${release}-minio-tls" \
     --set gitlab.migrations.image.repository="${gitlab_migrations_image_repository}" \
     --set gitlab.migrations.image.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.gitaly.image.repository="${gitlab_gitaly_image_repository}" \
@@ -382,7 +366,7 @@ EOF
 }
 
 function display_deployment_debug() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
 
   # Get all pods for this release

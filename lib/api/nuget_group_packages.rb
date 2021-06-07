@@ -38,6 +38,10 @@ module API
       def require_authenticated!
         unauthorized! unless current_user
       end
+
+      def snowplow_gitlab_standard_context
+        { namespace: find_authorized_group! }
+      end
     end
 
     params do

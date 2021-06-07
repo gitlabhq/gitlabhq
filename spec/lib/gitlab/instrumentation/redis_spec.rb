@@ -68,8 +68,7 @@ RSpec.describe Gitlab::Instrumentation::Redis do
         .to contain_exactly(details_row.merge(storage: 'ActionCable'),
                             details_row.merge(storage: 'Cache'),
                             details_row.merge(storage: 'Queues'),
-                            details_row.merge(storage: 'SharedState'),
-                            details_row.merge(storage: 'TraceChunks'))
+                            details_row.merge(storage: 'SharedState'))
     end
   end
 end

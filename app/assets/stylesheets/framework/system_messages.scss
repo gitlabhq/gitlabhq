@@ -52,7 +52,7 @@
     top: $system-header-height + $header-height;
   }
 
-  .content-wrapper {
+  .content-wrapper-margin {
     margin-top: $system-header-height + $header-height;
   }
 
@@ -90,7 +90,7 @@
     bottom: $system-footer-height;
   }
 
-  .content-wrapper {
+  .content-wrapper-margin {
     margin-bottom: 16px;
   }
 

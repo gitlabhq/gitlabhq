@@ -44,6 +44,7 @@ RSpec.describe API::HelmPackages do
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
 
         subject { get api(url), headers: headers }
 

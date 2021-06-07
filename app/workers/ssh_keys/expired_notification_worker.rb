@@ -15,16 +15,16 @@ module SshKeys
       return unless ::Feature.enabled?(:ssh_key_expiration_email_notification, default_enabled: :yaml)
 
       # rubocop:disable CodeReuse/ActiveRecord
-      User.with_ssh_key_expired_today.find_each(batch_size: 10_000) do |user|
-        with_context(user: user) do
-          Gitlab::AppLogger.info "#{self.class}: Notifying User #{user.id} about expired ssh key(s)"
+      Key.expired_and_not_notified.each_batch(of: 1000) do |relation| # rubocop:disable Cop/InBatches
+        users = User.where(id: relation.select(:user_id))
 
-          keys = user.expired_today_and_unnotified_keys
-
-          Keys::ExpiryNotificationService.new(user, { keys: keys, expiring_soon: false }).execute
+        users.each do |user|
+          with_context(user: user) do
+            Keys::ExpiryNotificationService.new(user, { keys: user.expired_and_unnotified_keys, expiring_soon: false }).execute
+          end
         end
-        # rubocop:enable CodeReuse/ActiveRecord
       end
+      # rubocop:enable CodeReuse/ActiveRecord
     end
   end
 end

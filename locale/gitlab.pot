@@ -10012,9 +10012,6 @@ msgstr ""
 msgid "DAST Scans"
 msgstr ""
 
-msgid "DAST Settings"
-msgstr ""
-
 msgid "DNS"
 msgstr ""
 
@@ -10079,6 +10076,15 @@ msgid "Dashboard|%{firstProject}, %{rest}, and %{secondProject}"
 msgstr ""
 
 msgid "Dashboard|Unable to add %{invalidProjects}. This dashboard is available for public projects, and private projects in groups with a Premium plan."
+msgstr ""
+
+msgid "DastConfig|Customize DAST settings to suit your requirements. Configuration changes made here override those provided by GitLab and are excluded from updates. For details of more advanced configuration options, see the %{docsLinkStart}GitLab DAST documentation%{docsLinkEnd}."
+msgstr ""
+
+msgid "DastConfig|DAST Settings"
+msgstr ""
+
+msgid "DastConfig|Scan Configuration"
 msgstr ""
 
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."

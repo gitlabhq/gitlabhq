@@ -46,7 +46,7 @@ module API
 
           package_file = Packages::Helm::PackageFilesFinder.new(authorized_user_project, params[:channel], file_name: "#{params[:file_name]}.tgz").execute.last!
 
-          track_package_event('pull_package', :helm)
+          track_package_event('pull_package', :helm, project: authorized_user_project, namespace: authorized_user_project.namespace)
 
           present_carrierwave_file!(package_file.file)
         end

@@ -21,6 +21,7 @@ RSpec.describe API::MavenPackages do
   let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true) }
   let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token_for_group, group: group) }
 
+  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
   let(:package_name) { 'com/example/my-app' }
   let(:headers) { workhorse_headers }
   let(:headers_with_token) { headers.merge('Private-Token' => personal_access_token.token) }
@@ -95,6 +96,8 @@ RSpec.describe API::MavenPackages do
   shared_examples 'tracking the file download event' do
     context 'with jar file' do
       let_it_be(:package_file) { jar_file }
+
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
 
       it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
     end

@@ -18,6 +18,10 @@ class Feature
     superclass.table_name = 'feature_gates'
   end
 
+  # To enable EE overrides
+  class ActiveSupportCacheStoreAdapter < Flipper::Adapters::ActiveSupportCacheStore
+  end
+
   InvalidFeatureFlagError = Class.new(Exception) # rubocop:disable Lint/InheritException
 
   class << self
@@ -167,7 +171,8 @@ class Feature
         ActiveSupportCacheStoreAdapter.new(
           active_record_adapter,
           l2_cache_backend,
-          expires_in: 1.hour)
+          expires_in: 1.hour,
+          write_through: true)
 
       # Thread-local L1 cache: use a short timeout since we don't have a
       # way to expire this cache all at once

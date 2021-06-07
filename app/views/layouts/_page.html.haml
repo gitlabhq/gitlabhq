@@ -1,7 +1,7 @@
 .layout-page{ class: page_with_sidebar_class }
   - if defined?(nav) && nav
     = render "layouts/nav/sidebar/#{nav}"
-  .content-wrapper{ class: "#{@content_wrapper_class}" }
+  .content-wrapper.content-wrapper-margin{ class: "#{@content_wrapper_class}" }
     .mobile-overlay
     = yield :group_invite_members_banner
     .alert-wrapper.gl-force-block-formatting-context

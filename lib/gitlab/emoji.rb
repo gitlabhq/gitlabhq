@@ -41,7 +41,17 @@ module Gitlab
     end
 
     def emoji_image_tag(name, src)
-      "<img class='emoji' title=':#{name}:' alt=':#{name}:' src='#{src}' height='20' width='20' align='absmiddle' />"
+      image_options = {
+        class:  'emoji',
+        src:    src,
+        title:  ":#{name}:",
+        alt:    ":#{name}:",
+        height: 20,
+        width:  20,
+        align:  'absmiddle'
+      }
+
+      ActionController::Base.helpers.tag(:img, image_options)
     end
 
     def emoji_exists?(name)
