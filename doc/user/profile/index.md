@@ -107,6 +107,20 @@ To show private contributions:
 1. In the **Main settings** section, select the **Include private contributions on my profile** checkbox.
 1. Select **Update profile settings**.
 
+## Add your gender pronouns
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332405) in GitLab 14.0.
+
+You can add your gender pronouns to your GitLab account to be displayed next to
+your name in your profile.
+
+To specify your pronouns:
+
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the **Pronouns** field, enter your pronouns.
+1. Select **Update profile settings**.
+
 ## Set your current status
 
 > - Introduced in GitLab 11.2.

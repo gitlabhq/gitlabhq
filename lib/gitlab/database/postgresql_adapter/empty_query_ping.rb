@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# This patch will be included in the next Rails release: https://github.com/rails/rails/pull/42368
+raise 'This patch can be removed' if Rails::VERSION::MAJOR > 6
+
 # rubocop:disable Gitlab/ModuleWithInstanceVariables
 module Gitlab
   module Database

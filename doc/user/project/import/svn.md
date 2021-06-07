@@ -112,6 +112,10 @@ contact the SubGit team directly at [support@subgit.com](mailto:support@subgit.c
 
 ## Cut over migration with svn2git
 
+NOTE:
+Any issues with svn2git should be directed to the [relevant project and maintainer](https://github.com/nirvdrum/svn2git).
+Check for existing issues and history for update frequency.
+
 If you are currently using an SVN repository, you can migrate the repository
 to Git and GitLab. We recommend a hard cut over - run the migration command once
 and then have all developers start using the new GitLab repository immediately.

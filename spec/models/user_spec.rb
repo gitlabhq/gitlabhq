@@ -74,6 +74,9 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
 
+    it { is_expected.to delegate_method(:pronouns).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:pronouns=).to(:user_detail).with_arguments(:args).allow_nil }
+
     it { is_expected.to delegate_method(:bio).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:bio=).to(:user_detail).with_arguments(:args).allow_nil }
     it { is_expected.to delegate_method(:bio_html).to(:user_detail).allow_nil }
@@ -134,6 +137,12 @@ RSpec.describe User do
         user = create(:user, bio: 'my bio')
 
         expect(user.bio).to eq(user.user_detail.bio)
+      end
+
+      it 'delegates `pronouns` to `user_detail`' do
+        user = create(:user, pronouns: 'they/them')
+
+        expect(user.pronouns).to eq(user.user_detail.pronouns)
       end
 
       it 'creates `user_detail` when `bio` is first updated' do

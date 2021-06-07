@@ -293,9 +293,9 @@ This output shows the repository history, including:
 
 To undo changes in the remote repository, you can create a new commit with the changes you
 want to undo. You should follow this process, which preserves the history and
-provides a clear timeline and development structure. However, you only
-need to follow this procedure if your work was merged into a branch that
-other developers are using as the base for their work (for example, `main`).
+provides a clear timeline and development structure. However, you
+only need this procedure if your work was merged into a branch that
+other developers use as the base for their work.
 
 ![Use revert to keep branch flowing](img/revert.png)
 
@@ -310,7 +310,7 @@ git revert B
 You can undo remote changes and change history.
 
 Even with an updated history, old commits can still be
-accessed by commit SHA, at least until all the automated cleanup
+accessed by commit SHA. This is the case at least until all the automated cleanup
 of detached commits is performed, or a cleanup is run manually. Even the cleanup might not remove old commits if there are still refs pointing to them.
 
 ![Modifying history causes problems on remote branch](img/rebase_reset.png)
@@ -323,21 +323,21 @@ or a branch that might be used by other developers.
 When you contribute to large open source repositories, like [GitLab](https://gitlab.com/gitlab-org/gitlab),
 you can squash your commits into a single one.
 
-A feature branch of a merge request is a public branch and might be used by
-other developers, but project process and rules might allow or require
-you to use `git rebase` (command that changes history) to reduce number of
-displayed commits on target branch after reviews are done (for example
-GitLab). There is a `git merge --squash` command which does exactly that
-(squashes commits on feature-branch to a single commit on target branch
-at merge).
+To squash commits on a feature branch to a single commit on a target branch
+at merge, use `git merge --squash`.
 
 NOTE:
 Never modify the commit history of your [default branch](../../../user/project/repository/branches/default.md) or shared branch.
 
 ### How to change history
 
-You can modify history by using `git rebase -i`. This command allows modification, squashing, deletion
-of commits.
+A feature branch of a merge request is a public branch and might be used by
+other developers. However, the project rules might require
+you to use `git rebase` to reduce the number of
+displayed commits on target branch after reviews are done.
+
+You can modify history by using `git rebase -i`. Use this command to modify, squash,
+and delete commits.
 
 ```shell
 #
@@ -360,41 +360,40 @@ of commits.
 ```
 
 NOTE:
-If you decide to abort, do not close your editor, because the history
-will change. Instead, remove all uncommented lines and save.
+If you decide to stop a rebase, do not close your editor.
+Instead, remove all uncommented lines and save.
 
-Use `git rebase` carefully on
-shared and remote branches, but rest assured: nothing is broken until
-you push back to the remote repository (so you can freely explore the
-different outcomes locally).
+Use `git rebase` carefully on shared and remote branches.
+Experiment locally before you push to the remote repository.
 
 ```shell
 # Modify history from commit-id to HEAD (current commit)
 git rebase -i commit-id
 ```
 
-### Deleting sensitive information from commits
+### Delete sensitive information from commits
 
-Git also enables you to delete sensitive information from your past commits and
-it does modify history in the progress. That is why we have included it in this
-section and not as a standalone topic. To do so, you should run the
-`git filter-branch`, which enables you to rewrite history with
-[certain filters](https://git-scm.com/docs/git-filter-branch#_options).
-This command uses rebase to modify history and if you want to remove certain
-file from history altogether use:
+You can use Git to delete sensitive information from your past commits. However,
+history is modified in the process.
+
+To rewrite history with
+[certain filters](https://git-scm.com/docs/git-filter-branch#_options),
+run `git filter-branch`.
+
+To remove a file from the history altogether use:
 
 ```shell
 git filter-branch --tree-filter 'rm filename' HEAD
 ```
 
-Because `git filter-branch` command might be slow on big repositories, there are
-tools that can use some of Git specifics to enable faster execution of common
-tasks (which is exactly what removing sensitive information file is about).
+The `git filter-branch` command might be slow on large repositories.
+Tools are available to execute Git commands more quickly.
 An alternative is the open source community-maintained tool [BFG](https://rtyley.github.io/bfg-repo-cleaner/).
-Keep in mind that these tools are faster because they do not provide the same
+These tools are faster because they do not provide the same
 feature set as `git filter-branch` does, but focus on specific use cases.
 
-Refer [Reduce repository size](../../../user/project/repository/reducing_the_repo_size_using_git.md) page to know more about purging files from repository history & GitLab storage.
+Refer to [Reduce repository size](../../../user/project/repository/reducing_the_repo_size_using_git.md) to
+learn more about purging files from repository history and GitLab storage.
 
 <!-- ## Troubleshooting
 

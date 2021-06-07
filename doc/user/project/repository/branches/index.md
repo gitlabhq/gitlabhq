@@ -33,7 +33,7 @@ For more information on managing branches using the GitLab UI, see:
 - [Branch filter search box](#branch-filter-search-box)
 
 You can also manage branches using the
-[command line](../../../../gitlab-basics/start-using-git.md#create-and-work-in-a-branch).
+[command line](../../../../gitlab-basics/start-using-git.md#create-a-branch).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>Watch the video [GitLab Flow](https://www.youtube.com/watch?v=InKNIvky2KE).
 

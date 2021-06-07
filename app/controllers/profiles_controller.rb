@@ -127,6 +127,7 @@ class ProfilesController < Profiles::ApplicationController
       :include_private_contributions,
       :timezone,
       :job_title,
+      :pronouns,
       status: [:emoji, :message, :availability]
     )
   end

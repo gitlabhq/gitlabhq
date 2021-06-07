@@ -311,35 +311,35 @@ git remote -v
 
 The `-v` flag stands for verbose.
 
-## Branching
+## Branches
 
-If you want to add code to a project but you're not sure if it works properly, or you're
-collaborating on the project with others, and don't want your work to get mixed up, it's a good idea
-to work on a different **branch**.
+A **branch** is a copy of the files in the repository at the time you create the branch.
+You can work in your branch without affecting other branches. When
+you're ready to add your changes to the main codebase, you can merge your branch into
+the default branch, for example, `main`.
 
-When you create a branch in a Git repository, you make a copy of its files at the time of branching. You're free
-to do whatever you want with the code in your branch without impacting the main branch or other branches. And when
-you're ready to add your changes to the main codebase, you can merge your branch into the default branch
-used in your project (such as `main`).
+Use branches when you:
+
+- Want to add code to a project but you're not sure if it works properly.
+- Are collaborating on the project with others, and don't want your work to get mixed up.
 
 A new branch is often called **feature branch** to differentiate from the
 [default branch](../user/project/repository/branches/default.md).
 
-### Create and work in a branch
+### Create a branch
 
-To create a new feature branch to work with:
+To create a feature branch:
 
 ```shell
 git checkout -b <name-of-branch>
 ```
 
-Note that Git does **not** accept empty spaces and special characters in branch
-names, so use only lowercase letters, numbers, hyphens (`-`), and underscores
-(`_`). Do not use capital letters, as it may cause duplications.
+Branch names cannot contain empty spaces and special characters. Use only lowercase letters, numbers,
+hyphens (`-`), and underscores (`_`).
 
 ### Switch to a branch
 
-You are always in a branch when working with Git.
+All work in Git is done in a branch.
 You can switch between branches to see the state of the files and work in that branch.
 
 To switch to an existing branch:
@@ -356,8 +356,8 @@ git checkout main
 
 ### View differences
 
-To view the differences between your local, unstaged changes and the latest version
-that you cloned or pulled, type:
+To view the differences between your local unstaged changes and the latest version
+that you cloned or pulled:
 
 ```shell
 git diff
@@ -365,9 +365,8 @@ git diff
 
 ### View the files that have changes
 
-It's important to be aware of what's happening and the status of your changes. When
-you add, change, or delete files or folders, Git knows about the changes.
-To check which files have been changed use:
+When you add, change, or delete files or folders, Git knows about the changes.
+To check which files have been changed:
 
 ```shell
 git status
@@ -375,31 +374,35 @@ git status
 
 ### Add and commit local changes
 
-Locally changed files are shown in red when you type `git status`. These changes may
-be new, modified, or deleted files/folders. Use `git add` to **stage** (prepare)
-a local file/folder for committing. Then use `git commit` to commit (save) the staged files.
+When you type `git status`, locally changed files are shown in red. These changes may
+be new, modified, or deleted files or folders.
 
-```shell
-git add <file-name OR folder-name>
-git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
-```
+1. To stage a file for commit:
 
-To add more than one file or folder, repeat `git add` for each file or folder you want included
-in the commit command before using `git commit`. Files that have been added show green when using `git status`.
+   ```shell
+   git add <file-name OR folder-name>
+   ```
 
-#### Add all changes to commit
+1. Repeat step 1 for each file or folder you want to add.
+   Or, to stage all files in the current directory and subdirectory, type `git add .`.
 
-To add and commit (save) all local changes quickly:
+1. Confirm that the files have been added to staging:
 
-```shell
-git add .
-git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
-```
+   ```shell
+   git status
+   ```
 
-NOTE:
-The `.` character means _all file changes in the current directory and all subdirectories_.
+   The files should be displayed in green text.
 
-To run `git add .` as part of the commit command, use the `-a` option:
+1. To commit the staged files:
+
+   ```shell
+   git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
+   ```
+
+#### Stage and commit all changes
+
+As a shortcut, you can add all local changes to staging and commit them with one command:
 
 ```shell
 git commit -a -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
@@ -407,7 +410,7 @@ git commit -a -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
 
 ### Send changes to GitLab.com
 
-To push all local commits (saved changes) to the remote repository:
+To push all local changes to the remote repository:
 
 ```shell
 git push <remote> <name-of-branch>
@@ -419,27 +422,23 @@ For example, to push your local commits to the `main` branch of the `origin` rem
 git push origin main
 ```
 
-On certain occasions, Git disallows pushes to your repository, and then
+Sometimes Git does not allow you to push to a repository. Instead,
 you must [force an update](../topics/git/git_rebase.md#force-push).
-
-NOTE:
-To create a merge request from a fork to an upstream repository, see the
-[forking workflow](../user/project/repository/forking_workflow.md).
 
 ### Delete all changes in the branch
 
-To discard all changes of tracked files, type:
+To discard all changes to tracked files:
 
 ```shell
 git checkout .
 ```
 
-Note that this removes *changes* to files, not the files themselves.
-Any untracked (new) files are untouched.
+This action removes *changes* to files, not the files themselves.
+Untracked (new) files do not change.
 
 ### Unstage all changes that have been added to the staging area
 
-To unstage (remove) all files that have not been committed from being committed, use:
+To unstage (remove) all files that have not been committed:
 
 ```shell
 git reset
@@ -447,13 +446,13 @@ git reset
 
 ### Undo most recent commit
 
-To undo the most recent commit, type:
+To undo the most recent commit:
 
 ```shell
 git reset HEAD~1
 ```
 
-This leaves the changed files and folders unstaged in your local repository.
+This action leaves the changed files and folders unstaged in your local repository.
 
 WARNING:
 A Git commit should not be reversed if you already pushed it
@@ -465,16 +464,18 @@ You can learn more about the different ways Git can undo changes in the
 
 ### Merge a branch with default branch
 
-When you are ready to make all the changes in a branch a permanent addition to
-the default branch, you `merge` the two together, changing `<feature-branch>` and
-`<default-branch>` to your values:
+When you are ready to add your changes to
+the default branch, you `merge` the two together:
 
 ```shell
 git checkout <feature-branch>
 git merge <default-branch>
 ```
 
-In GitLab, you typically merge using a [merge request](../user/project/merge_requests/) instead of performing the command locally.
+In GitLab, you typically use a [merge request](../user/project/merge_requests/) to merge your changes, instead of using the command line.
+
+To create a merge request from a fork to an upstream repository, see the
+[forking workflow](../user/project/repository/forking_workflow.md).
 
 ## Advanced use of Git through the command line
 
@@ -482,14 +483,12 @@ For an introduction of more advanced Git techniques, see [Git rebase, force-push
 
 ## Synchronize changes in a forked repository with the upstream
 
-[Forking a repository](../user/project/repository/forking_workflow.md) lets you create
-a copy of a repository in your namespace. Changes made to your copy of the repository
-are not synchronized automatically with the original.
-Your local fork (copy) only contains changes you have made, so to keep the project
-in sync with the original project, you need to `pull` from the original repository.
+To create a copy of a repository in your namespace, you [fork it](../user/project/repository/forking_workflow.md).
+Changes made to your copy of the repository are not automatically synchronized with the original.
+To keep the project in sync with the original project, you need to `pull` from the original repository.
 
-You must [create a link to the remote repository](#add-a-remote-repository) to pull
-changes from the original repository. It is common to call this remote the `upstream`.
+In this case, you [create a link to the remote repository](#add-a-remote-repository).
+This remote is commonly called the `upstream`.
 
 You can now use the `upstream` as a [`<remote>` to `pull` new updates](#download-the-latest-changes-in-the-project)
 from the original repository, and use the `origin`

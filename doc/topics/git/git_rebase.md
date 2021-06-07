@@ -32,7 +32,7 @@ consider pulling it instead (`git pull origin master`). It has a similar
 effect without compromising the work of your contributors.
 
 It's safer to back up your branch before rebasing to make sure you don't lose
-any changes. For example, consider a [feature branch](../../gitlab-basics/start-using-git.md#branching)
+any changes. For example, consider a [feature branch](../../gitlab-basics/start-using-git.md#branches)
 called `my-feature-branch`:
 
 1. Open your feature branch in the terminal:

@@ -25244,6 +25244,9 @@ msgstr ""
 msgid "Profiles|Enter your name, so people you know can recognize you"
 msgstr ""
 
+msgid "Profiles|Enter your pronouns to let people know how to refer to you"
+msgstr ""
+
 msgid "Profiles|Expired key is not valid."
 msgstr ""
 

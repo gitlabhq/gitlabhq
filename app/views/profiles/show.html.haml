@@ -100,6 +100,7 @@
         = render 'profiles/name', form: f, user: @user
         = f.text_field :id, class: 'gl-form-input', readonly: true, label: s_('Profiles|User ID'), wrapper: { class: 'col-md-3' }
 
+      = f.text_field :pronouns, class: 'input-md gl-form-input', help: s_("Profiles|Enter your pronouns to let people know how to refer to you")
       = render_if_exists 'profiles/email_settings', form: f
       = f.text_field :skype, class: 'input-md gl-form-input', placeholder: s_("Profiles|username")
       = f.text_field :linkedin, class: 'input-md gl-form-input', help: s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
