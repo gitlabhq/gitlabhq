@@ -75,7 +75,7 @@ module Members
     def after_execute(member:)
       super
 
-      Gitlab::Tracking.event(self.class.name, 'create_member', label: invite_source, property: tracking_property(member))
+      Gitlab::Tracking.event(self.class.name, 'create_member', label: invite_source, property: tracking_property(member), user: current_user)
     end
 
     def invite_source

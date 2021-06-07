@@ -23,7 +23,7 @@ regenerating the Startup CSS files.
 
 **What should I do now?**
 
-IMPORTANT: Please make sure to update your MR title with `[RUN AS-IF-FOSS]` and start a new MR pipeline
+IMPORTANT: Please make sure to update your MR title with "[RUN AS-IF-FOSS]" and start a new MR pipeline
 
 To fix this job, consider one of the following options:
 

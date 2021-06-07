@@ -68,6 +68,7 @@ export default {
       newUsersToInvite: [],
       selectedDate: undefined,
       groupToBeSharedWith: {},
+      source: 'unknown',
     };
   },
   computed: {
@@ -195,6 +196,7 @@ export default {
         ...this.basePostData,
         email: usersToInviteByEmail,
         access_level: this.selectedAccessLevel,
+        invite_source: this.source,
       };
     },
     addByUserIdPostData(usersToAddById) {
@@ -202,6 +204,7 @@ export default {
         ...this.basePostData,
         user_id: usersToAddById,
         access_level: this.selectedAccessLevel,
+        invite_source: this.source,
       };
     },
     shareWithGroupPostData(groupToBeSharedWith) {

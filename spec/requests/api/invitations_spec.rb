@@ -162,7 +162,8 @@ RSpec.describe API::Invitations do
             category: 'Members::InviteService',
             action: 'create_member',
             label: 'api',
-            property: 'net_new_user'
+            property: 'net_new_user',
+            user: maintainer
           )
         end
 
@@ -173,7 +174,8 @@ RSpec.describe API::Invitations do
             category: 'Members::InviteService',
             action: 'create_member',
             label: '_invite_source_',
-            property: 'net_new_user'
+            property: 'net_new_user',
+            user: maintainer
           )
         end
       end

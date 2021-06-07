@@ -117,7 +117,7 @@ module API
               not_allowed! # This currently can only be reached in EE
             elsif member.valid? && member.persisted?
               present_members(member)
-              Gitlab::Tracking.event(::Members::CreateService.name, 'create_member', label: params[:invite_source], property: 'existing_user')
+              Gitlab::Tracking.event(::Members::CreateService.name, 'create_member', label: params[:invite_source], property: 'existing_user', user: current_user)
             else
               render_validation_error!(member)
             end

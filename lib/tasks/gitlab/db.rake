@@ -240,9 +240,7 @@ namespace :gitlab do
     desc 'Run migrations with instrumentation'
     task migration_testing: :environment do
       result_dir = Gitlab::Database::Migrations::Instrumentation::RESULT_DIR
-      raise "Directory exists already, won't overwrite: #{result_dir}" if File.exist?(result_dir)
-
-      Dir.mkdir(result_dir)
+      FileUtils.mkdir_p(result_dir)
 
       verbose_was = ActiveRecord::Migration.verbose
       ActiveRecord::Migration.verbose = true

@@ -6,17 +6,17 @@ RSpec.describe 'Project members list', :js do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
-  let(:user1) { create(:user, name: 'John Doe') }
-  let(:user2) { create(:user, name: 'Mary Jane') }
-  let(:group) { create(:group) }
-  let(:project) { create(:project, :internal, namespace: group) }
+  let_it_be(:user1) { create(:user, name: 'John Doe') }
+  let_it_be(:user2) { create(:user, name: 'Mary Jane') }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :internal, namespace: group) }
 
   before do
     sign_in(user1)
     group.add_owner(user1)
   end
 
-  it 'show members from project and group' do
+  it 'show members from project and group', :aggregate_failures do
     project.add_developer(user2)
 
     visit_members_page
@@ -25,7 +25,7 @@ RSpec.describe 'Project members list', :js do
     expect(second_row).to have_content(user2.name)
   end
 
-  it 'show user once if member of both group and project' do
+  it 'show user once if member of both group and project', :aggregate_failures do
     project.add_developer(user1)
 
     visit_members_page
@@ -47,7 +47,7 @@ RSpec.describe 'Project members list', :js do
     end
   end
 
-  it 'add user to project' do
+  it 'add user to project', :snowplow, :aggregate_failures do
     visit_members_page
 
     invite_member(user2.name, role: 'Reporter')
@@ -55,9 +55,16 @@ RSpec.describe 'Project members list', :js do
     page.within find_member_row(user2) do
       expect(page).to have_button('Reporter')
     end
+
+    expect_snowplow_event(
+      category: 'Members::CreateService',
+      action: 'create_member',
+      label: 'unknown',
+      property: 'existing_user'
+    )
   end
 
-  it 'uses ProjectMember access_level_roles for the invite members modal access option' do
+  it 'uses ProjectMember access_level_roles for the invite members modal access option', :aggregate_failures do
     visit_members_page
 
     click_on 'Invite members'
@@ -95,7 +102,7 @@ RSpec.describe 'Project members list', :js do
     expect(members_table).not_to have_content(other_user.name)
   end
 
-  it 'invite user to project' do
+  it 'invite user to project', :snowplow, :aggregate_failures do
     visit_members_page
 
     invite_member('test@example.com', role: 'Reporter')
@@ -105,6 +112,13 @@ RSpec.describe 'Project members list', :js do
     page.within find_invited_member_row('test@example.com') do
       expect(page).to have_button('Reporter')
     end
+
+    expect_snowplow_event(
+      category: 'Members::InviteService',
+      action: 'create_member',
+      label: 'unknown',
+      property: 'net_new_user'
+    )
   end
 
   context 'as a signed out visitor viewing a public project' do
@@ -128,7 +142,7 @@ RSpec.describe 'Project members list', :js do
       project.add_maintainer(project_bot)
     end
 
-    it 'does not show form used to change roles and "Expiration date" or the remove user button' do
+    it 'does not show form used to change roles and "Expiration date" or the remove user button', :aggregate_failures do
       visit_members_page
 
       page.within find_member_row(project_bot) do

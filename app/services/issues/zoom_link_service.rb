@@ -47,11 +47,11 @@ module Issues
     attr_reader :issue
 
     def track_meeting_added_event
-      ::Gitlab::Tracking.event('IncidentManagement::ZoomIntegration', 'add_zoom_meeting', label: 'Issue ID', value: issue.id)
+      ::Gitlab::Tracking.event('IncidentManagement::ZoomIntegration', 'add_zoom_meeting', label: 'Issue ID', value: issue.id, user: current_user, project: @project, namespace: @project.namespace)
     end
 
     def track_meeting_removed_event
-      ::Gitlab::Tracking.event('IncidentManagement::ZoomIntegration', 'remove_zoom_meeting', label: 'Issue ID', value: issue.id)
+      ::Gitlab::Tracking.event('IncidentManagement::ZoomIntegration', 'remove_zoom_meeting', label: 'Issue ID', value: issue.id, user: current_user, project: @project, namespace: @project.namespace)
     end
 
     def add_zoom_meeting(link)

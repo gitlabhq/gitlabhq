@@ -6,7 +6,7 @@ stages:
   - deploy
   - performance
 
-performance:
+browser_performance:
   stage: performance
   image: docker:git
   variables:

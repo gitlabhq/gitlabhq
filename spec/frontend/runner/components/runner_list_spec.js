@@ -68,7 +68,7 @@ describe('RunnerList', () => {
   });
 
   it('Displays a list of runners', () => {
-    expect(findRows()).toHaveLength(2);
+    expect(findRows()).toHaveLength(3);
 
     expect(findSkeletonLoader().exists()).toBe(false);
   });
@@ -77,7 +77,7 @@ describe('RunnerList', () => {
     const { id, description, version, ipAddress, shortSha } = mockRunners[0];
 
     // Badges
-    expect(findCell({ fieldKey: 'type' }).text()).toMatchInterpolatedText('shared locked');
+    expect(findCell({ fieldKey: 'type' }).text()).toMatchInterpolatedText('specific paused');
 
     // Runner identifier
     expect(findCell({ fieldKey: 'name' }).text()).toContain(

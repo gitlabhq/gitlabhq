@@ -22,7 +22,7 @@ module Types
     field :expires_at, Types::TimeType, null: true,
           description: 'Date and time the membership expires.'
 
-    field :user, Types::UserType, null: false,
+    field :user, Types::UserType, null: true,
           description: 'User that is associated with the member object.'
 
     definition_methods do

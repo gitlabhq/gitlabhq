@@ -53,7 +53,10 @@ RSpec.describe Issues::ZoomLinkService do
           category: 'IncidentManagement::ZoomIntegration',
           action: 'add_zoom_meeting',
           label: 'Issue ID',
-          value: issue.id
+          value: issue.id,
+          user: user,
+          project: project,
+          namespace: project.namespace
         )
       end
 
@@ -192,7 +195,10 @@ RSpec.describe Issues::ZoomLinkService do
           category: 'IncidentManagement::ZoomIntegration',
           action: 'remove_zoom_meeting',
           label: 'Issue ID',
-          value: issue.id
+          value: issue.id,
+          user: user,
+          project: project,
+          namespace: project.namespace
         )
       end
     end

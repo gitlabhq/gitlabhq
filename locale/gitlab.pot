@@ -8319,40 +8319,7 @@ msgstr ""
 msgid "ComplianceFramework|Edit Compliance Framework"
 msgstr ""
 
-msgid "ComplianceFramework|GDPR"
-msgstr ""
-
-msgid "ComplianceFramework|GDPR - General Data Protection Regulation"
-msgstr ""
-
-msgid "ComplianceFramework|HIPAA"
-msgstr ""
-
-msgid "ComplianceFramework|HIPAA - Health Insurance Portability and Accountability Act"
-msgstr ""
-
 msgid "ComplianceFramework|New Compliance Framework"
-msgstr ""
-
-msgid "ComplianceFramework|PCI-DSS"
-msgstr ""
-
-msgid "ComplianceFramework|PCI-DSS - Payment Card Industry-Data Security Standard"
-msgstr ""
-
-msgid "ComplianceFramework|SOC 2"
-msgstr ""
-
-msgid "ComplianceFramework|SOC 2 - Service Organization Control 2"
-msgstr ""
-
-msgid "ComplianceFramework|SOX"
-msgstr ""
-
-msgid "ComplianceFramework|SOX - Sarbanes-Oxley"
-msgstr ""
-
-msgid "ComplianceFramework|This project is regulated by %{framework}."
 msgstr ""
 
 msgid "Component"
@@ -39280,9 +39247,6 @@ msgid "must be after start"
 msgstr ""
 
 msgid "must be greater than start date"
-msgstr ""
-
-msgid "must contain only valid frameworks"
 msgstr ""
 
 msgid "my-awesome-group"

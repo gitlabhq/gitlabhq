@@ -24,12 +24,10 @@ import {
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
 import RunnerListApp from '~/runner/runner_list/runner_list_app.vue';
 
-import { runnersData } from '../mock_data';
+import { runnersData, runnersDataPaginated } from '../mock_data';
 
 const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
 const mockActiveRunnersCount = 2;
-const mocKRunners = runnersData.data.runners.nodes;
-const mockPageInfo = runnersData.data.runners.pageInfo;
 
 jest.mock('@sentry/browser');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -98,7 +96,7 @@ describe('RunnerListApp', () => {
   });
 
   it('shows the runners list', () => {
-    expect(mocKRunners).toMatchObject(findRunnerList().props('runners'));
+    expect(runnersData.data.runners.nodes).toMatchObject(findRunnerList().props('runners'));
   });
 
   it('requests the runners with no filters', () => {
@@ -205,6 +203,8 @@ describe('RunnerListApp', () => {
 
   describe('Pagination', () => {
     beforeEach(() => {
+      mockRunnersQuery = jest.fn().mockResolvedValue(runnersDataPaginated);
+
       createComponentWithApollo({ mountFn: mount });
     });
 
@@ -225,13 +225,7 @@ describe('RunnerListApp', () => {
       expect(mockRunnersQuery).toHaveBeenLastCalledWith({
         sort: CREATED_DESC,
         first: RUNNER_PAGE_SIZE,
-        after: expect.any(String),
-      });
-
-      expect(mockRunnersQuery).toHaveBeenLastCalledWith({
-        sort: CREATED_DESC,
-        first: RUNNER_PAGE_SIZE,
-        after: mockPageInfo.endCursor,
+        after: runnersDataPaginated.data.runners.pageInfo.endCursor,
       });
     });
   });

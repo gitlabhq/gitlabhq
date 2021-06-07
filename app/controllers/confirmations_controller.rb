@@ -34,6 +34,10 @@ class ConfirmationsController < Devise::ConfirmationsController
   def after_sign_in(resource)
     after_sign_in_path_for(resource)
   end
+
+  def context_user
+    resource
+  end
 end
 
 ConfirmationsController.prepend_mod_with('ConfirmationsController')

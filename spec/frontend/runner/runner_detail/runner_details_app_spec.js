@@ -3,12 +3,15 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerTypeBadge from '~/runner/components/runner_type_badge.vue';
-import { INSTANCE_TYPE } from '~/runner/constants';
 import getRunnerQuery from '~/runner/graphql/get_runner.query.graphql';
 import RunnerDetailsApp from '~/runner/runner_details/runner_details_app.vue';
 
-const mockRunnerId = '55';
+import { runnerData } from '../mock_data';
+
+const mockRunnerGraphqlId = runnerData.data.runner.id;
+const mockRunnerId = `${getIdFromGraphQLId(mockRunnerGraphqlId)}`;
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
@@ -35,15 +38,7 @@ describe('RunnerDetailsApp', () => {
   };
 
   beforeEach(async () => {
-    mockRunnerQuery = jest.fn().mockResolvedValue({
-      data: {
-        runner: {
-          id: `gid://gitlab/Ci::Runner/${mockRunnerId}`,
-          runnerType: INSTANCE_TYPE,
-          __typename: 'CiRunner',
-        },
-      },
-    });
+    mockRunnerQuery = jest.fn().mockResolvedValue(runnerData);
   });
 
   afterEach(() => {
@@ -54,13 +49,13 @@ describe('RunnerDetailsApp', () => {
   it('expect GraphQL ID to be requested', async () => {
     await createComponentWithApollo();
 
-    expect(mockRunnerQuery).toHaveBeenCalledWith({ id: `gid://gitlab/Ci::Runner/${mockRunnerId}` });
+    expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunnerGraphqlId });
   });
 
   it('displays the runner id', async () => {
     await createComponentWithApollo();
 
-    expect(wrapper.text()).toContain('Runner #55');
+    expect(wrapper.text()).toContain(`Runner #${mockRunnerId}`);
   });
 
   it('displays the runner type', async () => {

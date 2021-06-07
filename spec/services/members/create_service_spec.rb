@@ -93,7 +93,8 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
           category: described_class.name,
           action: 'create_member',
           label: 'unknown',
-          property: 'existing_user'
+          property: 'existing_user',
+          user: user
         )
       end
     end
@@ -108,7 +109,8 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
           category: described_class.name,
           action: 'create_member',
           label: '_invite_source_',
-          property: 'existing_user'
+          property: 'existing_user',
+          user: user
         )
       end
     end
@@ -123,7 +125,8 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
           category: described_class.name,
           action: 'create_member',
           label: 'unknown',
-          property: 'net_new_user'
+          property: 'net_new_user',
+          user: user
         )
       end
     end

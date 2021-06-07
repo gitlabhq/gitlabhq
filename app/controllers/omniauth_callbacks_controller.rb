@@ -287,6 +287,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def fail_admin_mode_invalid_credentials
     redirect_to new_admin_session_path, alert: _('Invalid login or password')
   end
+
+  def context_user
+    current_user
+  end
 end
 
 OmniauthCallbacksController.prepend_mod_with('OmniauthCallbacksController')

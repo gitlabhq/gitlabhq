@@ -9,7 +9,7 @@ module Gitlab
         @data = {}
       end
 
-      delegate :[], :[]=, to: :@data
+      delegate :[], :[]=, :key?, to: :@data
 
       def markdown_fields
         @data.keys

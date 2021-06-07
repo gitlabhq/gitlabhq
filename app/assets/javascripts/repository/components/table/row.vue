@@ -7,13 +7,17 @@ import {
   GlTooltipDirective,
   GlLoadingIcon,
   GlIcon,
+  GlHoverLoadDirective,
 } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
+import filesQuery from 'shared_queries/repository/files.query.graphql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
+import { TREE_PAGE_SIZE } from '~/repository/constants';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getRefMixin from '../../mixins/get_ref';
+import blobInfoQuery from '../../queries/blob_info.query.graphql';
 import commitQuery from '../../queries/commit.query.graphql';
 
 export default {
@@ -28,6 +32,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlHoverLoad: GlHoverLoadDirective,
   },
   apollo: {
     commit: {
@@ -139,6 +144,33 @@ export default {
       return this.commit && this.commit.lockLabel;
     },
   },
+  methods: {
+    handlePreload() {
+      return this.isFolder ? this.loadFolder() : this.loadBlob();
+    },
+    loadFolder() {
+      this.apolloQuery(filesQuery, {
+        projectPath: this.projectPath,
+        ref: this.ref,
+        path: this.path,
+        nextPageCursor: '',
+        pageSize: TREE_PAGE_SIZE,
+      });
+    },
+    loadBlob() {
+      if (!this.refactorBlobViewerEnabled) {
+        return;
+      }
+
+      this.apolloQuery(blobInfoQuery, {
+        projectPath: this.projectPath,
+        filePath: this.path,
+      });
+    },
+    apolloQuery(query, variables) {
+      this.$apollo.query({ query, variables });
+    },
+  },
 };
 </script>
 
@@ -148,6 +180,7 @@ export default {
       <component
         :is="linkComponent"
         ref="link"
+        v-gl-hover-load="handlePreload"
         :to="routerLinkTo"
         :href="url"
         :class="{

@@ -3,20 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe 'Groups > Members > Manage members' do
-  include Select2Helper
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
-  let(:user1) { create(:user, name: 'John Doe') }
-  let(:user2) { create(:user, name: 'Mary Jane') }
-  let(:group) { create(:group) }
+  let_it_be(:user1) { create(:user, name: 'John Doe') }
+  let_it_be(:user2) { create(:user, name: 'Mary Jane') }
+  let_it_be(:group) { create(:group) }
 
   before do
     sign_in(user1)
   end
 
   shared_examples 'includes the correct Invite link' do |should_include, should_not_include|
-    it 'includes either the form or the modal trigger' do
+    it 'includes either the form or the modal trigger', :aggregate_failures do
       group.add_owner(user1)
 
       visit group_group_members_path(group)
@@ -27,12 +26,12 @@ RSpec.describe 'Groups > Members > Manage members' do
   end
 
   shared_examples 'does not include either invite modal or either invite form' do
-    it 'does not include either of the invite members or invite group modal buttons' do
+    it 'does not include either of the invite members or invite group modal buttons', :aggregate_failures do
       expect(page).not_to have_selector '.js-invite-members-modal'
       expect(page).not_to have_selector '.js-invite-group-modal'
     end
 
-    it 'does not include either of the invite users or invite group forms' do
+    it 'does not include either of the invite users or invite group forms', :aggregate_failures do
       expect(page).not_to have_selector '.invite-users-form'
       expect(page).not_to have_selector '.invite-group-form'
     end
@@ -66,7 +65,7 @@ RSpec.describe 'Groups > Members > Manage members' do
     end
   end
 
-  it 'add user to group', :js do
+  it 'add user to group', :js, :snowplow, :aggregate_failures do
     group.add_owner(user1)
 
     visit group_group_members_path(group)
@@ -77,6 +76,13 @@ RSpec.describe 'Groups > Members > Manage members' do
       expect(page).to have_content(user2.name)
       expect(page).to have_button('Reporter')
     end
+
+    expect_snowplow_event(
+      category: 'Members::CreateService',
+      action: 'create_member',
+      label: 'unknown',
+      property: 'existing_user'
+    )
   end
 
   it 'do not disclose email addresses', :js do
@@ -143,11 +149,13 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     wait_for_requests
 
-    expect(page).not_to have_content(user2.name)
-    expect(group.users).not_to include(user2)
+    aggregate_failures do
+      expect(page).not_to have_content(user2.name)
+      expect(group.users).not_to include(user2)
+    end
   end
 
-  it 'add yourself to group when already an owner', :js do
+  it 'add yourself to group when already an owner', :js, :aggregate_failures do
     group.add_owner(user1)
 
     visit group_group_members_path(group)
@@ -160,7 +168,7 @@ RSpec.describe 'Groups > Members > Manage members' do
     end
   end
 
-  it 'invite user to group', :js do
+  it 'invite user to group', :js, :snowplow do
     group.add_owner(user1)
 
     visit group_group_members_path(group)
@@ -170,14 +178,23 @@ RSpec.describe 'Groups > Members > Manage members' do
     expect(page).to have_link 'Invited'
     click_link 'Invited'
 
-    page.within(members_table) do
-      expect(page).to have_content('test@example.com')
-      expect(page).to have_content('Invited')
-      expect(page).to have_button('Reporter')
+    aggregate_failures do
+      page.within(members_table) do
+        expect(page).to have_content('test@example.com')
+        expect(page).to have_content('Invited')
+        expect(page).to have_button('Reporter')
+      end
+
+      expect_snowplow_event(
+        category: 'Members::InviteService',
+        action: 'create_member',
+        label: 'unknown',
+        property: 'net_new_user'
+      )
     end
   end
 
-  context 'as a guest', :js do
+  context 'when user is a guest' do
     before do
       group.add_guest(user1)
       group.add_developer(user2)
@@ -187,7 +204,7 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     it_behaves_like 'does not include either invite modal or either invite form'
 
-    it 'does not include a button on the members page list to manage or remove the existing member', :js do
+    it 'does not include a button on the members page list to manage or remove the existing member', :js, :aggregate_failures do
       page.within(second_row) do
         # Can not modify user2 role
         expect(page).not_to have_button 'Developer'
@@ -198,7 +215,7 @@ RSpec.describe 'Groups > Members > Manage members' do
     end
   end
 
-  context 'As a guest when the :invite_members_group_modal feature flag is disabled', :js do
+  context 'when user is a guest and the :invite_members_group_modal feature flag is disabled' do
     before do
       stub_feature_flags(invite_members_group_modal: false)
       group.add_guest(user1)
@@ -209,7 +226,7 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     it_behaves_like 'does not include either invite modal or either invite form'
 
-    it 'does not include a button on the members page list to manage or remove the existing member', :js do
+    it 'does not include a button on the members page list to manage or remove the existing member', :js, :aggregate_failures do
       page.within(second_row) do
         # Can not modify user2 role
         expect(page).not_to have_button 'Developer'

@@ -457,9 +457,7 @@ class ApplicationController < ActionController::Base
 
   def set_current_context(&block)
     Gitlab::ApplicationContext.with_context(
-      # Avoid loading the auth_user again after the request. Otherwise calling
-      # `auth_user` again would also trigger the Warden callbacks again
-      user: -> { auth_user if strong_memoized?(:auth_user) },
+      user: -> { context_user },
       project: -> { @project if @project&.persisted? },
       namespace: -> { @group if @group&.persisted? },
       caller_id: caller_id,
@@ -540,6 +538,12 @@ class ApplicationController < ActionController::Base
     ::Gitlab::GitalyClient.allow_ref_name_caching do
       yield
     end
+  end
+
+  # Avoid loading the auth_user again after the request. Otherwise calling
+  # `auth_user` again would also trigger the Warden callbacks again
+  def context_user
+    auth_user if strong_memoized?(:auth_user)
   end
 
   def caller_id

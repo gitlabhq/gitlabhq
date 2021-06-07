@@ -5,10 +5,10 @@ module Types
     class RunnerTypeEnum < BaseEnum
       graphql_name 'CiRunnerType'
 
-      ::Ci::Runner.runner_types.keys.each do |type|
-        value type.upcase,
-              description: "A runner that is #{type.tr('_', ' ')}.",
-              value: type
+      ::Ci::Runner::AVAILABLE_TYPES.each do |runner_type|
+        value runner_type.upcase,
+              description: "A runner that is #{runner_type.tr('_', ' ')}.",
+              value: runner_type
       end
     end
   end

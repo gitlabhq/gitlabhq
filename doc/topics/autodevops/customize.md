@@ -431,7 +431,8 @@ The following table lists variables used to disable jobs.
 | `license_scanning`                     | `LICENSE_MANAGEMENT_DISABLED`   | [From GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22773) | If the variable is present, the job isn't created. |
 | `load_performance`                     | `LOAD_PERFORMANCE_DISABLED`     | From GitLab 13.2      | If the variable is present, the job isn't created. |
 | `nodejs-scan-sast`                     | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `performance`                          | `PERFORMANCE_DISABLED`          | From GitLab 11.0      | Browser performance. If the variable is present, the job isn't created. |
+| `performance`                          | `PERFORMANCE_DISABLED`          | GitLab 11.0 to GitLab 13.12 | Browser performance. If the variable is present, the job isn't created. Replaced by `browser_peformance`. |
+| `browser_performance`                  | `BROWSER_PERFORMANCE_DISABLED`  | From GitLab 14.0      | Browser performance. If the variable is present, the job isn't created. Replaces `performance`. |
 | `phpcs-security-audit-sast`            | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
 | `pmd-apex-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
 | `retire-js-dependency_scanning`        | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |

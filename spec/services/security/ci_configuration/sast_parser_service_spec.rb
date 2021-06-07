@@ -67,6 +67,23 @@ RSpec.describe Security::CiConfiguration::SastParserService do
           expect(sast_brakeman_level['value']).to eql('1')
         end
       end
+
+      context 'when .gitlab-ci.yml does not include the sast job' do
+        before do
+          allow(project.repository).to receive(:blob_data_at).and_return(
+            File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+          )
+        end
+
+        it 'populates the current values with the default values' do
+          expect(secure_analyzers_prefix['value']).to eql('registry.gitlab.com/gitlab-org/security-products/analyzers')
+          expect(sast_excluded_paths['value']).to eql('spec, test, tests, tmp')
+          expect(sast_pipeline_stage['value']).to eql('test')
+          expect(sast_search_max_depth['value']).to eql('4')
+          expect(brakeman['enabled']).to be(true)
+          expect(sast_brakeman_level['value']).to eql('1')
+        end
+      end
     end
   end
 end

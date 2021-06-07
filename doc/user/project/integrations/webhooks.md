@@ -1161,6 +1161,7 @@ X-Gitlab-Event: Pipeline Hook
             "id": 380987,
             "description": "shared-runners-manager-6.gitlab.com",
             "active": true,
+            "runner_type": "instance_type",
             "is_shared": true,
             "tags": [
               "linux",
@@ -1196,7 +1197,8 @@ X-Gitlab-Event: Pipeline Hook
             "id":380987,
             "description":"shared-runners-manager-6.gitlab.com",
             "active":true,
-            "is_shared":true,
+            "runner_type": "instance_type",
+            "is_shared": true,
             "tags": [
               "linux",
               "docker"
@@ -1230,6 +1232,7 @@ X-Gitlab-Event: Pipeline Hook
             "id": 380987,
             "description": "shared-runners-manager-6.gitlab.com",
             "active": true,
+            "runner_type": "instance_type",
             "is_shared": true,
             "tags": [
               "linux",
@@ -1333,6 +1336,7 @@ X-Gitlab-Event: Job Hook
   },
   "runner": {
     "active": true,
+    "runner_type": "project_type", 
     "is_shared": false,
     "id": 380987,
     "description": "shared-runners-manager-6.gitlab.com",

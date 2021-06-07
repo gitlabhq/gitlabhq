@@ -202,6 +202,10 @@ class RegistrationsController < Devise::RegistrationsController
     experiment(:invite_signup_page_interaction, actor: member).track(:form_submission)
     experiment('members/invite_email', actor: member).track(:accepted)
   end
+
+  def context_user
+    current_user
+  end
 end
 
 RegistrationsController.prepend_mod_with('RegistrationsController')

@@ -752,7 +752,7 @@ Parameters:
 | `name`                               | string  | yes      | The name of the group. |
 | `path`                               | string  | yes      | The path of the group. |
 | `description`                        | string  | no       | The group's description. |
-| `membership_lock`                    | boolean | no       | **(STARTER)** Prevent adding new members to project membership within this group. |
+| `membership_lock`                    | boolean | no       | **(PREMIUM)** Prevent adding new members to project membership within this group. |
 | `visibility`                         | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
 | `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |
 | `require_two_factor_authentication`  | boolean | no       | Require all users in this group to setup Two-factor authentication. |
@@ -828,7 +828,7 @@ PUT /groups/:id
 | `name`                               | string  | no       | The name of the group. |
 | `path`                               | string  | no       | The path of the group. |
 | `description`                        | string  | no       | The description of the group. |
-| `membership_lock`                    | boolean | no       | **(STARTER)** Prevent adding new members to project membership within this group. |
+| `membership_lock`                    | boolean | no       | **(PREMIUM)** Prevent adding new members to project membership within this group. |
 | `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |
 | `visibility`                         | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
 | `require_two_factor_authentication`  | boolean | no       | Require all users in this group to setup Two-factor authentication. |
@@ -1146,7 +1146,7 @@ DELETE /groups/:id/hooks/:hook_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `hook_id` | integer        | yes      | The ID of the group hook. |
 
-## Group Audit Events **(STARTER)**
+## Group Audit Events **(PREMIUM)**
 
 Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events)
 
@@ -1302,11 +1302,11 @@ DELETE /groups/:id/share/:group_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
 
-## Push Rules **(STARTER)**
+## Push Rules **(PREMIUM)**
 
-> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 13.4.
+> Introduced in [GitLab](https://about.gitlab.com/pricing/) 13.4.
 
-### Get group push rules **(STARTER)**
+### Get group push rules **(PREMIUM)**
 
 Get the [push rules](../user/group/index.md#group-push-rules) of a group.
 
@@ -1349,7 +1349,7 @@ the `commit_committer_check` and `reject_unsigned_commits` parameters:
 }
 ```
 
-### Add group push rule **(STARTER)**
+### Add group push rule **(PREMIUM)**
 
 Adds [push rules](../user/group/index.md#group-push-rules) to the specified group.
 
@@ -1362,17 +1362,17 @@ POST /groups/:id/push_rule
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
 | `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
-| `deny_delete_tag` **(STARTER)**               | boolean        | no       | Deny deleting a tag |
-| `member_check` **(STARTER)**                  | boolean        | no       | Allows only GitLab users to author commits |
-| `prevent_secrets` **(STARTER)**               | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
-| `commit_message_regex` **(STARTER)**          | string         | no       | All commit messages must match the regular expression provided in this attribute, e.g. `Fixed \d+\..*` |
-| `commit_message_negative_regex` **(STARTER)** | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, e.g. `ssh\:\/\/` |
-| `branch_name_regex` **(STARTER)**             | string         | no       | All branch names must match the regular expression provided in this attribute, e.g. `(feature|hotfix)\/*` |
-| `author_email_regex` **(STARTER)**            | string         | no       | All commit author emails must match the regular expression provided in this attribute, e.g. `@my-company.com$` |
-| `file_name_regex` **(STARTER)**               | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, e.g. `(jar|exe)$` |
-| `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) allowed |
-| `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Only commits pushed using verified emails are allowed |
-| `reject_unsigned_commits` **(PREMIUM)**       | boolean        | no       | Only commits signed through GPG are allowed |
+| `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
+| `member_check`                                | boolean        | no       | Allows only GitLab users to author commits |
+| `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
+| `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, e.g. `Fixed \d+\..*` |
+| `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, e.g. `ssh\:\/\/` |
+| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, e.g. `(feature|hotfix)\/*` |
+| `author_email_regex`                          | string         | no       | All commit author emails must match the regular expression provided in this attribute, e.g. `@my-company.com$` |
+| `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, e.g. `(jar|exe)$` |
+| `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
+| `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
+| `reject_unsigned_commits`                     | boolean        | no       | Only commits signed through GPG are allowed |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/19/push_rule"
@@ -1396,7 +1396,7 @@ Response:
 }
 ```
 
-### Edit group push rule **(STARTER)**
+### Edit group push rule **(PREMIUM)**
 
 Edit push rules for a specified group.
 
@@ -1409,17 +1409,17 @@ PUT /groups/:id/push_rule
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
 | `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
-| `deny_delete_tag` **(STARTER)**               | boolean        | no       | Deny deleting a tag |
-| `member_check` **(STARTER)**                  | boolean        | no       | Restricts commits to be authored by existing GitLab users only |
-| `prevent_secrets` **(STARTER)**               | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
-| `commit_message_regex` **(STARTER)**          | string         | no       | All commit messages must match the regular expression provided in this attribute, e.g. `Fixed \d+\..*` |
-| `commit_message_negative_regex` **(STARTER)** | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, e.g. `ssh\:\/\/` |
-| `branch_name_regex` **(STARTER)**             | string         | no       | All branch names must match the regular expression provided in this attribute, e.g. `(feature|hotfix)\/*` |
-| `author_email_regex` **(STARTER)**            | string         | no       | All commit author emails must match the regular expression provided in this attribute, e.g. `@my-company.com$` |
-| `file_name_regex` **(STARTER)**               | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, e.g. `(jar|exe)$` |
-| `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) allowed |
-| `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Only commits pushed using verified emails are allowed |
-| `reject_unsigned_commits` **(PREMIUM)**       | boolean        | no       | Only commits signed through GPG are allowed |
+| `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
+| `member_check`                                | boolean        | no       | Restricts commits to be authored by existing GitLab users only |
+| `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
+| `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, e.g. `Fixed \d+\..*` |
+| `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, e.g. `ssh\:\/\/` |
+| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, e.g. `(feature|hotfix)\/*` |
+| `author_email_regex`                          | string         | no       | All commit author emails must match the regular expression provided in this attribute, e.g. `@my-company.com$` |
+| `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, e.g. `(jar|exe)$` |
+| `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
+| `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
+| `reject_unsigned_commits`                     | boolean        | no       | Only commits signed through GPG are allowed |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/19/push_rule"
@@ -1443,7 +1443,7 @@ Response:
 }
 ```
 
-### Delete group push rule **(STARTER)**
+### Delete group push rule **(PREMIUM)**
 
 Deletes the [push rules](../user/group/index.md#group-push-rules) of a group.
 

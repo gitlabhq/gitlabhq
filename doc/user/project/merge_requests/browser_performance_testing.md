@@ -40,11 +40,11 @@ Consider the following workflow:
 ## How browser performance testing works
 
 First, define a job in your `.gitlab-ci.yml` file that generates the
-[Browser Performance report artifact](../../../ci/yaml/README.md#artifactsreportsperformance).
+[Browser Performance report artifact](../../../ci/yaml/README.md#artifactsreportsbrowser_performance).
 GitLab then checks this report, compares key performance metrics for each page
 between the source and target branches, and shows the information in the merge request.
 
-For an example Performance job, see
+For an example Browser Performance job, see
 [Configuring Browser Performance Testing](#configuring-browser-performance-testing).
 
 NOTE:
@@ -70,18 +70,17 @@ using Docker-in-Docker.
    include:
      template: Verify/Browser-Performance.gitlab-ci.yml
 
-   performance:
+   browser_performance:
      variables:
        URL: https://example.com
    ```
 
 WARNING:
-In GitLab 14.0 and later, the job [is scheduled to be renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914)
-from `performance` to `browser_performance`.
+In GitLab 13.12 and earlier, the job [was named](https://gitlab.com/gitlab-org/gitlab/-/issues/225914) `performance`.
 
 The above example:
 
-- Creates a `performance` job in your CI/CD pipeline and runs sitespeed.io against the webpage you
+- Creates a `browser_performance` job in your CI/CD pipeline and runs sitespeed.io against the webpage you
   defined in `URL` to gather key metrics.
 - Uses a template that doesn't work with Kubernetes clusters. If you are using a Kubernetes cluster,
   use [`template: Jobs/Browser-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Browser-Performance-Testing.gitlab-ci.yml)
@@ -90,7 +89,7 @@ The above example:
   GitLab 12.3 or earlier, you must [add the configuration manually](#gitlab-versions-132-and-earlier).
 
 The template uses the [GitLab plugin for sitespeed.io](https://gitlab.com/gitlab-org/gl-performance),
-and it saves the full HTML sitespeed.io report as a [Browser Performance report artifact](../../../ci/yaml/README.md#artifactsreportsperformance)
+and it saves the full HTML sitespeed.io report as a [Browser Performance report artifact](../../../ci/yaml/README.md#artifactsreportsbrowser_performance)
 that you can later download and analyze. This implementation always takes the latest
 Browser Performance artifact available. If [GitLab Pages](../pages/index.md) is enabled,
 you can view the report directly in your browser.
@@ -108,7 +107,7 @@ makes on the given URL, and change the version:
 include:
   template: Verify/Browser-Performance.gitlab-ci.yml
 
-performance:
+browser_performance:
   variables:
     URL: https://www.sitespeed.io/
     SITESPEED_VERSION: 13.2.0
@@ -127,7 +126,7 @@ if the `Total Score` metric degrades by 5 points or more:
 include:
   template: Verify/Browser-Performance.gitlab-ci.yml
 
-performance:
+browser_performance:
   variables:
     URL: https://example.com
     DEGRADATION_THRESHOLD: 5
@@ -140,13 +139,13 @@ The `Total Score` metric is based on sitespeed.io's [coach performance score](ht
 The above CI YAML configuration is great for testing against static environments, and it can
 be extended for dynamic environments, but a few extra steps are required:
 
-1. The `performance` job should run after the dynamic environment has started.
+1. The `browser_performance` job should run after the dynamic environment has started.
 1. In the `review` job:
     1. Generate a URL list file with the dynamic URL.
     1. Save the file as an artifact, for example with `echo $CI_ENVIRONMENT_URL > environment_url.txt`
     in your job's `script`.
     1. Pass the list as the URL environment variable (which can be a URL or a file containing URLs)
-    to the `performance` job.
+    to the `browser_performance` job.
 1. You can now run the sitespeed.io container against the desired hostname and
    paths.
 
@@ -176,7 +175,7 @@ review:
   except:
     - master
 
-performance:
+browser_performance:
   dependencies:
     - review
   variables:

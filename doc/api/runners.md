@@ -62,8 +62,9 @@ Example response:
         "active": true,
         "description": "test-1-20150125",
         "id": 6,
-        "is_shared": false,
         "ip_address": "127.0.0.1",
+        "is_shared": false,
+        "runner_type": "project_type",
         "name": null,
         "online": true,
         "status": "online"
@@ -74,6 +75,7 @@ Example response:
         "id": 8,
         "ip_address": "127.0.0.1",
         "is_shared": false,
+        "runner_type": "group_type",
         "name": null,
         "online": false,
         "status": "offline"
@@ -115,6 +117,7 @@ Example response:
         "id": 1,
         "ip_address": "127.0.0.1",
         "is_shared": true,
+        "runner_type": "instance_type",
         "name": null,
         "online": true,
         "status": "online"
@@ -125,6 +128,7 @@ Example response:
         "id": 3,
         "ip_address": "127.0.0.1",
         "is_shared": true,
+        "runner_type": "instance_type",
         "name": null,
         "online": false,
         "status": "offline"
@@ -135,6 +139,7 @@ Example response:
         "id": 6,
         "ip_address": "127.0.0.1",
         "is_shared": false,
+        "runner_type": "project_type",
         "name": null,
         "online": true,
         "status": "paused"
@@ -145,6 +150,7 @@ Example response:
         "id": 8,
         "ip_address": "127.0.0.1",
         "is_shared": false,
+        "runner_type": "group_type",
         "name": null,
         "online": false,
         "status": "offline"
@@ -187,6 +193,7 @@ Example response:
     "id": 6,
     "ip_address": "127.0.0.1",
     "is_shared": false,
+    "runner_type": "project_type",
     "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
     "online": true,
@@ -250,6 +257,7 @@ Example response:
     "id": 6,
     "ip_address": "127.0.0.1",
     "is_shared": false,
+    "runner_type": "group_type",
     "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
     "online": true,
@@ -420,6 +428,7 @@ Example response:
         "id": 8,
         "ip_address": "127.0.0.1",
         "is_shared": false,
+        "runner_type": "project_type",
         "name": null,
         "online": false,
         "status": "offline"
@@ -430,6 +439,7 @@ Example response:
         "id": 5,
         "ip_address": "127.0.0.1",
         "is_shared": true,
+        "runner_type": "instance_type",
         "name": null,
         "online": true,
         "status": "paused"
@@ -464,6 +474,7 @@ Example response:
     "id": 9,
     "ip_address": "127.0.0.1",
     "is_shared": false,
+    "runner_type": "project_type",
     "name": null,
     "online": true,
     "status": "online"
@@ -522,6 +533,7 @@ Example response:
     "ip_address": "127.0.0.1",
     "active": true,
     "is_shared": true,
+    "runner_type": "instance_type",
     "name": "gitlab-runner",
     "online": null,
     "status": "not_connected"
@@ -532,6 +544,7 @@ Example response:
     "ip_address": "127.0.0.1",
     "active": true,
     "is_shared": true,
+    "runner_type": "instance_type",
     "name": "gitlab-runner",
     "online": false,
     "status": "offline"
@@ -542,6 +555,7 @@ Example response:
     "ip_address": "127.0.0.1",
     "active": true,
     "is_shared": false,
+    "runner_type": "group_type",
     "name": "gitlab-runner",
     "online": null,
     "status": "not_connected"

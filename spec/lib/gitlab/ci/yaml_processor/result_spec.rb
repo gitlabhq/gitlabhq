@@ -54,13 +54,21 @@ module Gitlab
             YAML
           end
 
-          subject(:yaml_variables_for) { result.yaml_variables_for(:job) }
+          let(:job_name) { :job }
 
-          it do
+          subject(:yaml_variables_for) { result.yaml_variables_for(job_name) }
+
+          it 'returns calculated variables with root and job variables' do
             is_expected.to match_array([
               { key: 'VAR1', value: 'value 11', public: true },
               { key: 'VAR2', value: 'value 2', public: true }
             ])
+          end
+
+          context 'when an absent job is sent' do
+            let(:job_name) { :invalid_job }
+
+            it { is_expected.to eq([]) }
           end
         end
 
@@ -72,10 +80,16 @@ module Gitlab
             YAML
           end
 
-          subject(:stage_for) { result.stage_for(:job) }
+          let(:job_name) { :job }
 
-          it do
-            is_expected.to eq('test')
+          subject(:stage_for) { result.stage_for(job_name) }
+
+          it { is_expected.to eq('test') }
+
+          context 'when an absent job is sent' do
+            let(:job_name) { :invalid_job }
+
+            it { is_expected.to be_nil }
           end
         end
       end

@@ -108,10 +108,14 @@ class Member < ApplicationRecord
   scope :active_without_invites_and_requests, -> do
     left_join_users
       .where(users: { state: 'active' })
-      .non_request
+      .without_invites_and_requests
+      .reorder(nil)
+  end
+
+  scope :without_invites_and_requests, -> do
+    non_request
       .non_invite
       .non_minimal_access
-      .reorder(nil)
   end
 
   scope :invite, -> { where.not(invite_token: nil) }

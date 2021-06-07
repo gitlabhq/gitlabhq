@@ -306,7 +306,7 @@ RSpec.describe 'gitlab:db namespace rake task' do
     let(:all_migrations) { [double('migration1', version: 1), pending_migration] }
     let(:pending_migration) { double('migration2', version: 2) }
     let(:filename) { Gitlab::Database::Migrations::Instrumentation::STATS_FILENAME }
-    let!(:directory) { Dir.mktmpdir }
+    let(:result_dir) { Dir.mktmpdir }
     let(:observations) { %w[some data] }
 
     before do
@@ -316,19 +316,17 @@ RSpec.describe 'gitlab:db namespace rake task' do
 
       allow(instrumentation).to receive(:observe).and_yield
 
-      allow(Dir).to receive(:mkdir)
-      allow(File).to receive(:exist?).with(directory).and_return(false)
-      stub_const('Gitlab::Database::Migrations::Instrumentation::RESULT_DIR', directory)
+      stub_const('Gitlab::Database::Migrations::Instrumentation::RESULT_DIR', result_dir)
     end
 
     after do
-      FileUtils.rm_rf([directory])
+      FileUtils.rm_rf(result_dir)
     end
 
-    it 'fails when the directory already exists' do
-      expect(File).to receive(:exist?).with(directory).and_return(true)
+    it 'creates result directory when one does not exist' do
+      FileUtils.rm_rf(result_dir)
 
-      expect { subject }.to raise_error(/Directory exists/)
+      expect { subject }.to change { Dir.exist?(result_dir) }.from(false).to(true)
     end
 
     it 'instruments the pending migration' do
@@ -346,7 +344,7 @@ RSpec.describe 'gitlab:db namespace rake task' do
     it 'writes observations out to JSON file' do
       subject
 
-      expect(File.read(File.join(directory, filename))).to eq(observations.to_json)
+      expect(File.read(File.join(result_dir, filename))).to eq(observations.to_json)
     end
   end
 
