@@ -82,6 +82,34 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
   end
 
+  describe 'topics' do
+    subject(:project) { create_project(user, opts) }
+
+    context "with 'topics' parameter" do
+      let(:opts) { { topics: 'topics' } }
+
+      it 'keeps them as specified' do
+        expect(project.topic_list).to eq(%w[topics])
+      end
+    end
+
+    context "with 'topic_list' parameter" do
+      let(:opts) { { topic_list: 'topic_list' } }
+
+      it 'keeps them as specified' do
+        expect(project.topic_list).to eq(%w[topic_list])
+      end
+    end
+
+    context "with 'tag_list' parameter (deprecated)" do
+      let(:opts) { { tag_list: 'tag_list' } }
+
+      it 'keeps them as specified' do
+        expect(project.topic_list).to eq(%w[tag_list])
+      end
+    end
+  end
+
   context 'user namespace' do
     it do
       project = create_project(user, opts)

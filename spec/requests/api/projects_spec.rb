@@ -1033,12 +1033,20 @@ RSpec.describe API::Projects do
       expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/somewhere/-/blob/master/README.md")
     end
 
-    it 'sets tag list to a project' do
+    it 'sets tag list to a project (deprecated)' do
       project = attributes_for(:project, tag_list: %w[tagFirst tagSecond])
 
       post api('/projects', user), params: project
 
       expect(json_response['tag_list']).to eq(%w[tagFirst tagSecond])
+    end
+
+    it 'sets topics to a project' do
+      project = attributes_for(:project, topics: %w[topic1 topics2])
+
+      post api('/projects', user), params: project
+
+      expect(json_response['tag_list']).to eq(%w[topic1 topics2])
     end
 
     it 'uploads avatar for project a project' do
@@ -3011,6 +3019,26 @@ RSpec.describe API::Projects do
         expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response['auto_devops_enabled']).to eq(false)
+      end
+
+      it 'updates topics using tag_list (deprecated)' do
+        project_param = { tag_list: 'topic1' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['tag_list']).to eq(%w[topic1])
+      end
+
+      it 'updates topics' do
+        project_param = { topics: 'topic2' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['tag_list']).to eq(%w[topic2])
       end
     end
 

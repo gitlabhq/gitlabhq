@@ -436,6 +436,7 @@ class ProjectsController < Projects::ApplicationController
       :request_access_enabled,
       :runners_token,
       :tag_list,
+      :topics,
       :visibility_level,
       :template_name,
       :template_project_id,

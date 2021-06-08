@@ -21815,9 +21815,6 @@ msgstr ""
 msgid "NetworkPolicies|Are you sure you want to delete this policy? This action cannot be undone."
 msgstr ""
 
-msgid "NetworkPolicies|Container runtime"
-msgstr ""
-
 msgid "NetworkPolicies|Create policy"
 msgstr ""
 
@@ -21867,6 +21864,9 @@ msgid "NetworkPolicies|Namespace"
 msgstr ""
 
 msgid "NetworkPolicies|Network Policy"
+msgstr ""
+
+msgid "NetworkPolicies|Network policy"
 msgstr ""
 
 msgid "NetworkPolicies|Network traffic"

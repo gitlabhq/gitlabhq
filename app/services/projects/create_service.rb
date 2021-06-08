@@ -11,6 +11,8 @@ module Projects
       @initialize_with_readme = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_readme))
       @import_data = @params.delete(:import_data)
       @relations_block = @params.delete(:relations_block)
+
+      build_topics
     end
 
     def execute
@@ -260,6 +262,14 @@ module Projects
       @project_visibility ||= Gitlab::VisibilityLevelChecker
         .new(current_user, @project, project_params: { import_data: @import_data })
         .level_restricted?
+    end
+
+    def build_topics
+      topics = params.delete(:topics)
+      tag_list = params.delete(:tag_list)
+      topic_list = topics || tag_list
+
+      params[:topic_list] ||= topic_list if topic_list
     end
   end
 end

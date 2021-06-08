@@ -85,6 +85,9 @@ job1:
       - ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
 ```
 
+When multiple entries are specified in `only:variables`, the job runs when at least one of them evaluates to `true`.
+You can use `&&` in a single entry when multiple conditions must be satisfied at the same time.
+
 ### `only:changes` / `except:changes` examples
 
 You can skip a job if a change is detected in any file with a
