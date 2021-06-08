@@ -23,12 +23,13 @@ module Boards
       end
 
       reposition_ids = move_between_ids(params)
-      if reposition_ids
-        attrs[:move_between_ids] = reposition_ids
-        attrs.merge!(reposition_parent)
-      end
+      attrs.merge!(reposition_params(reposition_ids)) if reposition_ids
 
       attrs
+    end
+
+    def reposition_params(reposition_ids)
+      reposition_parent.merge(move_between_ids: reposition_ids)
     end
 
     def move_single_issuable(issuable, issuable_modification_params)

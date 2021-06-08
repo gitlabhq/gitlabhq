@@ -62,6 +62,9 @@ The [default ruleset provided by Gitleaks](https://gitlab.com/gitlab-org/securit
 - Password in URL
 - U.S. Social Security Number
 
+WARNING:
+Gitleaks does not support scanning binary files.
+
 ## Requirements
 
 To run Secret Detection jobs, by default, you need GitLab Runner with the

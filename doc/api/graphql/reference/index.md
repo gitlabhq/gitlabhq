@@ -2105,14 +2105,17 @@ Input type: `EpicMoveListInput`
 | <a id="mutationepicmovelistboardid"></a>`boardId` | [`BoardsEpicBoardID!`](#boardsepicboardid) | Global ID of the board that the epic is in. |
 | <a id="mutationepicmovelistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationepicmovelistepicid"></a>`epicId` | [`EpicID!`](#epicid) | ID of the epic to mutate. |
-| <a id="mutationepicmovelistfromlistid"></a>`fromListId` | [`BoardsEpicListID!`](#boardsepiclistid) | ID of the board list that the epic will be moved from. |
-| <a id="mutationepicmovelisttolistid"></a>`toListId` | [`BoardsEpicListID!`](#boardsepiclistid) | ID of the board list that the epic will be moved to. |
+| <a id="mutationepicmovelistfromlistid"></a>`fromListId` | [`BoardsEpicListID`](#boardsepiclistid) | ID of the board list that the epic will be moved from. Required if moving between lists. |
+| <a id="mutationepicmovelistmoveafterid"></a>`moveAfterId` | [`EpicID`](#epicid) | ID of epic that should be placed after the current epic. |
+| <a id="mutationepicmovelistmovebeforeid"></a>`moveBeforeId` | [`EpicID`](#epicid) | ID of epic that should be placed before the current epic. |
+| <a id="mutationepicmovelisttolistid"></a>`toListId` | [`BoardsEpicListID!`](#boardsepiclistid) | ID of the list the epic will be in after mutation. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicmovelistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationepicmovelistepic"></a>`epic` | [`Epic`](#epic) | The epic after mutation. |
 | <a id="mutationepicmovelisterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.epicSetSubscription`
