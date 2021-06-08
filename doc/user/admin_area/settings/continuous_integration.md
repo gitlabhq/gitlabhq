@@ -192,29 +192,31 @@ This feature is being re-evaluated in favor of a different
 We recommend that users who haven't yet implemented this feature wait for
 the new solution.
 
-GitLab administrators can force a pipeline configuration to run on every
-pipeline.
+You can set a [CI/CD template](../../../ci/examples/README.md#cicd-templates)
+as a required pipeline configuration for all projects on a GitLab instance. You can
+use a template from:
 
-The configuration applies to all pipelines for a GitLab instance and is
-sourced from:
+- The default CI/CD templates.
+- A custom template stored in an [instance template repository](instance_template_repository.md).
 
-- The [instance template repository](instance_template_repository.md).
-- GitLab-supplied configuration.
+  NOTE:
+  When you use a configuration defined in an instance template repository,
+  nested [`include:`](../../../ci/yaml/README.md#include) keywords
+  (including `include:file`, `include:local`, `include:remote`, and `include:template`)
+  [do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
 
-NOTE:
-When you use a configuration defined in an instance template repository,
-nested [`include:`](../../../ci/yaml/README.md#include) keywords
-(including `include:file`, `include:local`, `include:remote`, and `include:template`)
-[do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
+The project CI/CD configuration merges into the required pipeline configuration when
+a pipeline runs. The merged configuration is the same as if the required pipeline configuration
+added the project configuration with the [`include` keyword](../../../ci/yaml/README.md#include).
+To view a project's full merged configuration, [View the merged YAML](../../../ci/pipeline_editor/index.md#view-expanded-configuration)
+in the pipeline editor.
 
-To set required pipeline configuration:
+To select a CI/CD template for the required pipeline configuration:
 
 1. Go to **Admin Area > Settings > CI/CD**.
 1. Expand the **Required pipeline configuration** section.
-1. Select the required configuration from the provided dropdown.
+1. Select a CI/CD template from the dropdown.
 1. Click **Save changes**.
-
-![Required pipeline](img/admin_required_pipeline.png)
 
 ## Package Registry configuration
 

@@ -13,6 +13,13 @@ module Gitlab
           end
         end
       end
+
+      # Hook for EE
+      def delete(key)
+        Rails.cache.delete(key)
+      end
     end
   end
 end
+
+Gitlab::Cache.prepend_mod

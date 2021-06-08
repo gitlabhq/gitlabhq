@@ -26,4 +26,16 @@ RSpec.describe Gitlab::Cache, :request_store do
       expect(subject.call).to eq("return value")
     end
   end
+
+  describe '.delete' do
+    let(:key) { %w{a cache key} }
+
+    subject(:delete) { described_class.delete(key) }
+
+    it 'calls Rails.cache.delete' do
+      expect(Rails.cache).to receive(:delete).with(key)
+
+      delete
+    end
+  end
 end

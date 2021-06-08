@@ -2359,10 +2359,7 @@ msgstr ""
 msgid "AdminSettings|See affected service templates"
 msgstr ""
 
-msgid "AdminSettings|Select a pipeline configuration file"
-msgstr ""
-
-msgid "AdminSettings|Select a template"
+msgid "AdminSettings|Select a CI/CD template"
 msgstr ""
 
 msgid "AdminSettings|Service template allows you to set default values for integrations"
@@ -2374,7 +2371,7 @@ msgstr ""
 msgid "AdminSettings|Session duration for Git operations when 2FA is enabled (minutes)"
 msgstr ""
 
-msgid "AdminSettings|Set an instance-wide auto included %{link_start}pipeline configuration%{link_end}. This pipeline configuration will be run after the project's own configuration."
+msgid "AdminSettings|Set a CI/CD template as the required pipeline configuration for all projects in the instance. Project CI/CD configuration merges into the required pipeline configuration when the pipeline runs. %{link_start}What is a required pipeline configuration?%{link_end}"
 msgstr ""
 
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
@@ -2383,7 +2380,7 @@ msgstr ""
 msgid "AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire."
 msgstr ""
 
-msgid "AdminSettings|The required pipeline configuration can be selected from the %{code_start}gitlab-ci%{code_end} directory inside of the configured %{link_start}instance template repository%{link_end} or from GitLab provided configurations."
+msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
 msgstr ""
 
 msgid "AdminSettings|When creating a new environment variable it will be protected by default."
@@ -28340,6 +28337,9 @@ msgid "Runners|An error has occurred fetching instructions"
 msgstr ""
 
 msgid "Runners|Architecture"
+msgstr ""
+
+msgid "Runners|Are you sure you want to delete this runner?"
 msgstr ""
 
 msgid "Runners|Can run untagged jobs"

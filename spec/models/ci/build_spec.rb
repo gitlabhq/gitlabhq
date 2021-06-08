@@ -2640,6 +2640,17 @@ RSpec.describe Ci::Build do
       it { is_expected.to be_instance_of(Gitlab::Ci::Variables::Collection) }
       it { expect(subject.to_runner_variables).to eq(predefined_variables) }
 
+      it 'excludes variables that require an environment or user' do
+        environment_based_variables_collection = subject.filter do |variable|
+          %w[
+            YAML_VARIABLE CI_ENVIRONMENT_NAME CI_ENVIRONMENT_SLUG
+            CI_ENVIRONMENT_ACTION CI_ENVIRONMENT_URL
+          ].include?(variable[:key])
+        end
+
+        expect(environment_based_variables_collection).to be_empty
+      end
+
       context 'when ci_job_jwt feature flag is disabled' do
         before do
           stub_feature_flags(ci_job_jwt: false)
@@ -2709,7 +2720,7 @@ RSpec.describe Ci::Build do
           let(:expected_variables) do
             predefined_variables.map { |variable| variable.fetch(:key) } +
               %w[YAML_VARIABLE CI_ENVIRONMENT_NAME CI_ENVIRONMENT_SLUG
-                 CI_ENVIRONMENT_URL]
+                 CI_ENVIRONMENT_ACTION CI_ENVIRONMENT_URL]
           end
 
           before do
@@ -2726,6 +2737,50 @@ RSpec.describe Ci::Build do
             received_variables = subject.map { |variable| variable[:key] }
 
             expect(received_variables).to eq expected_variables
+          end
+
+          describe 'CI_ENVIRONMENT_ACTION' do
+            let(:enviroment_action_variable) { subject.find { |variable| variable[:key] == 'CI_ENVIRONMENT_ACTION' } }
+
+            shared_examples 'defaults value' do
+              it 'value matches start' do
+                expect(enviroment_action_variable[:value]).to eq('start')
+              end
+            end
+
+            it_behaves_like 'defaults value'
+
+            context 'when options is set' do
+              before do
+                build.update!(options: options)
+              end
+
+              context 'when options is empty' do
+                let(:options) { {} }
+
+                it_behaves_like 'defaults value'
+              end
+
+              context 'when options is nil' do
+                let(:options) { nil }
+
+                it_behaves_like 'defaults value'
+              end
+
+              context 'when options environment is specified' do
+                let(:options) { { environment: {} } }
+
+                it_behaves_like 'defaults value'
+              end
+
+              context 'when options environment action specified' do
+                let(:options) { { environment: { action: 'stop' } } }
+
+                it 'matches the specified action' do
+                  expect(enviroment_action_variable[:value]).to eq('stop')
+                end
+              end
+            end
           end
         end
       end

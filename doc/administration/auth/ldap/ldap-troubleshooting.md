@@ -192,6 +192,22 @@ This shows you which user has this email address. One of two steps must be taken
 The user can do either of these steps [in their
 profile](../../../user/profile/index.md#access-your-user-profile) or an administrator can do it.
 
+#### Projects limit errors
+
+The following errors indicate that a limit or restriction is activated, but an associated data
+field contains no data:
+
+- `Projects limit can't be blank`.
+- `Projects limit is not a number`.
+
+To resolve this:
+
+1. Go to both of the following in the Admin Area (**{admin}**):
+    - **Settings > General > Account and limit**
+    - **Settings > General > Sign-up restrictions**.
+1. Check, for example, the **Default projects limit** or **Allowed domains for sign-ups**
+   fields and ensure that a relevant value is configured.
+
 #### Debug LDAP user filter
 
 [`ldapsearch`](#ldapsearch) allows you to test your configured

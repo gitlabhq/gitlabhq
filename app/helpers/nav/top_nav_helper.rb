@@ -24,7 +24,7 @@ module Nav
       if explore_nav_link?(:projects)
         builder.add_primary_menu_item_with_shortcut(
           href: explore_root_path,
-          active: active_nav_link?(path: %w[dashboard#show root#show projects#trending projects#starred projects#index]),
+          active: nav == 'project' || active_nav_link?(path: %w[dashboard#show root#show projects#trending projects#starred projects#index]),
           **projects_menu_item_attrs
         )
       end
@@ -32,7 +32,7 @@ module Nav
       if explore_nav_link?(:groups)
         builder.add_primary_menu_item_with_shortcut(
           href: explore_groups_path,
-          active: active_nav_link?(controller: [:groups, 'groups/milestones', 'groups/group_members']),
+          active: nav == 'group' || active_nav_link?(controller: [:groups, 'groups/milestones', 'groups/group_members']),
           **groups_menu_item_attrs
         )
       end
@@ -59,7 +59,7 @@ module Nav
         current_item = project ? current_project(project: project) : {}
 
         builder.add_primary_menu_item_with_shortcut(
-          active: active_nav_link?(path: %w[root#index projects#trending projects#starred dashboard/projects#index]),
+          active: nav == 'project' || active_nav_link?(path: %w[root#index projects#trending projects#starred dashboard/projects#index]),
           css_class: 'qa-projects-dropdown',
           data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" },
           view: PROJECTS_VIEW,
@@ -73,7 +73,7 @@ module Nav
         current_item = group ? current_group(group: group) : {}
 
         builder.add_primary_menu_item_with_shortcut(
-          active: active_nav_link?(path: %w[dashboard/groups explore/groups]),
+          active: nav == 'group' || active_nav_link?(path: %w[dashboard/groups explore/groups]),
           css_class: 'qa-groups-dropdown',
           data: { track_label: "groups_dropdown", track_event: "click_dropdown" },
           view: GROUPS_VIEW,

@@ -4,13 +4,15 @@
 %div
   - if @user.errors.any?
     .gl-alert.gl-alert-danger.gl-my-5
-      %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-        = sprite_icon('close', css_class: 'gl-icon')
-      = sprite_icon('error', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-      .gl-alert-body
-        %ul
-          - @user.errors.full_messages.each do |msg|
-            %li= msg
+      .gl-alert-container
+        %button.js-close.btn.gl-dismiss-btn.btn-default.btn-sm.gl-button.btn-default-tertiary.btn-icon{ type: 'button', 'aria-label' => _('Dismiss') }
+          = sprite_icon('close', css_class: 'gl-icon')
+        = sprite_icon('error', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+        .gl-alert-content
+          .gl-alert-body
+            %ul
+              - @user.errors.full_messages.each do |msg|
+                %li= msg
 
   = hidden_field_tag :notification_type, 'global'
   .row.gl-mt-3

@@ -39,7 +39,15 @@ To remove the alert, click back on the alert icon for the desired metric, and cl
 
 ### Link runbooks to alerts
 
-> Runbook URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39315) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39315) in GitLab 13.3.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/5877) in GitLab 13.11.
+> - [Removed](https://gitlab.com/groups/gitlab-org/-/epics/4280) in GitLab 14.0.
+
+WARNING:
+Linking runbooks to alerts through the alerts UI is [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/5877)
+and scheduled for [removal in GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
+However, you can still add runbooks to your alert payload. They show up in the alert UI when the
+alert is triggered.
 
 When creating alerts from the metrics dashboard for [managed Prometheus instances](#managed-prometheus-instances),
 you can also link a runbook. When the alert triggers, the

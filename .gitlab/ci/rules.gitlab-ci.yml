@@ -151,6 +151,9 @@
   - "vendor/assets/**/*"
   - "{,ee/,jh/}{app/assets,app/helpers,app/presenters,app/views,locale,public,symbol}/**/*"
 
+.startup-css-patterns: &startup-css-patterns
+  - "{,ee/,jh/}app/assets/stylesheets/startup/**/*"
+
 .backend-patterns: &backend-patterns
   - "Gemfile{,.lock}"
   - "Rakefile"
@@ -440,6 +443,8 @@
       changes: *code-backstage-patterns
     - <<: *if-merge-request-title-as-if-foss
     - <<: *if-merge-request-title-run-all-rspec
+    - <<: *if-merge-request
+      changes: *startup-css-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
 
@@ -1126,6 +1131,7 @@
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
 

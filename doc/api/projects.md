@@ -2083,7 +2083,8 @@ the format in `markdown` is used.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57250) in GitLab 13.11.
 
-GitLab 13.11 added enforcement of the [maximum attachment size limit](../user/admin_area/settings/account_and_limit_settings.md#max-attachment-size) behind the `enforce_max_attachment_size_upload_api` feature flag. GitLab 14.0 will enable this by default.
+GitLab 13.11 added enforcement of the [maximum attachment size limit](../user/admin_area/settings/account_and_limit_settings.md#max-attachment-size) behind the `enforce_max_attachment_size_upload_api` feature flag. GitLab 14.0 enables this by default.
+To disable this enforcement:
 
 **In Omnibus installations:**
 
@@ -2093,10 +2094,10 @@ GitLab 13.11 added enforcement of the [maximum attachment size limit](../user/ad
    sudo gitlab-rails console
    ```
 
-1. Enable the feature flag:
+1. Disable the feature flag:
 
    ```ruby
-   Feature.enable(:enforce_max_attachment_size_upload_api)
+   Feature.disable(:enforce_max_attachment_size_upload_api)
    ```
 
 **In installations from source:**
@@ -2108,10 +2109,10 @@ GitLab 13.11 added enforcement of the [maximum attachment size limit](../user/ad
    sudo -u git -H bundle exec rails console -e production
    ```
 
-1. Enable the feature flag to disable the validation:
+1. Disable the feature flag:
 
    ```ruby
-   Feature.enable(:enforce_max_attachment_size_upload_api)
+   Feature.disable(:enforce_max_attachment_size_upload_api)
    ```
 
 ## Upload a project avatar

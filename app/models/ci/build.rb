@@ -595,6 +595,8 @@ module Ci
 
         variables.concat(persisted_environment.predefined_variables)
 
+        variables.append(key: 'CI_ENVIRONMENT_ACTION', value: environment_action)
+
         # Here we're passing unexpanded environment_url for runner to expand,
         # and we need to make sure that CI_ENVIRONMENT_NAME and
         # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
