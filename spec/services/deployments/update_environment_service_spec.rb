@@ -95,6 +95,42 @@ RSpec.describe Deployments::UpdateEnvironmentService do
       end
     end
 
+    context 'when external URL is specified and the tier is unset' do
+      let(:options) { { name: 'production', url: external_url } }
+
+      before do
+        environment.update_columns(external_url: external_url, tier: nil)
+        job.update!(environment: 'production')
+      end
+
+      context 'when external URL is valid' do
+        let(:external_url) { 'https://google.com' }
+
+        it 'succeeds to update the tier automatically' do
+          expect { subject.execute }.to change { environment.tier }.from(nil).to('production')
+        end
+      end
+
+      context 'when external URL is invalid' do
+        let(:external_url) { 'google.com' }
+
+        it 'fails to update the tier due to validation error' do
+          expect { subject.execute }.not_to change { environment.tier }
+        end
+
+        it 'tracks an exception' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            .with(an_instance_of(described_class::EnvironmentUpdateFailure),
+                  project_id: project.id,
+                  environment_id: environment.id,
+                  reason: %q{External url is blocked: Only allowed schemes are http, https})
+            .once
+
+          subject.execute
+        end
+      end
+    end
+
     context 'when variables are used' do
       let(:options) do
         { name: 'review-apps/$CI_COMMIT_REF_NAME',

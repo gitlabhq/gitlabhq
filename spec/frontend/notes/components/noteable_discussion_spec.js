@@ -56,6 +56,18 @@ describe('noteable_discussion component', () => {
     expect(wrapper.find('.discussion-header').exists()).toBe(true);
   });
 
+  it('should hide actions when diff refs do not exists', async () => {
+    const discussion = { ...discussionMock };
+    discussion.diff_file = { ...mockDiffFile, diff_refs: null };
+    discussion.diff_discussion = true;
+    discussion.expanded = false;
+
+    wrapper.setProps({ discussion });
+    await nextTick();
+
+    expect(wrapper.vm.canShowReplyActions).toBe(false);
+  });
+
   describe('actions', () => {
     it('should toggle reply form', async () => {
       await nextTick();

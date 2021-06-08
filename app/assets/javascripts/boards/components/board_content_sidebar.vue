@@ -1,9 +1,9 @@
 <script>
 import { GlDrawer } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
+import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdown_widget.vue';
 import BoardSidebarDueDate from '~/boards/components/sidebar/board_sidebar_due_date.vue';
 import BoardSidebarLabelsSelect from '~/boards/components/sidebar/board_sidebar_labels_select.vue';
-import BoardSidebarMilestoneSelect from '~/boards/components/sidebar/board_sidebar_milestone_select.vue';
 import BoardSidebarTimeTracker from '~/boards/components/sidebar/board_sidebar_time_tracker.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { ISSUABLE } from '~/boards/constants';
@@ -23,11 +23,9 @@ export default {
     BoardSidebarLabelsSelect,
     BoardSidebarDueDate,
     SidebarSubscriptionsWidget,
-    BoardSidebarMilestoneSelect,
+    SidebarDropdownWidget,
     BoardSidebarWeightInput: () =>
       import('ee_component/boards/components/sidebar/board_sidebar_weight_input.vue'),
-    SidebarDropdownWidget: () =>
-      import('ee_component/sidebar/components/sidebar_dropdown_widget.vue'),
   },
   inject: {
     multipleAssigneesFeatureAvailable: {
@@ -97,7 +95,14 @@ export default {
         data-testid="sidebar-epic"
       />
       <div>
-        <board-sidebar-milestone-select />
+        <sidebar-dropdown-widget
+          :iid="activeBoardItem.iid"
+          issuable-attribute="milestone"
+          :workspace-path="projectPathForActiveIssue"
+          :attr-workspace-path="projectPathForActiveIssue"
+          :issuable-type="issuableType"
+          data-testid="sidebar-milestones"
+        />
         <sidebar-dropdown-widget
           v-if="iterationFeatureAvailable"
           :iid="activeBoardItem.iid"

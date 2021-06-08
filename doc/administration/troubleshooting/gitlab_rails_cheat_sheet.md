@@ -1176,6 +1176,28 @@ Prints the metrics saved in `conversational_development_index_metrics`.
 rake gitlab:usage_data:generate_and_send
 ```
 
+## Kubernetes integration
+
+Find cluster:
+
+```ruby
+cluster = Clusters::Cluster.find(1)
+cluster = Clusters::Cluster.find_by(name: 'cluster_name')
+```
+
+Delete cluster without associated resources:
+
+```ruby
+# Find an admin user
+user = User.find_by(username: 'admin_user')
+
+# Find the cluster with the ID
+cluster = Clusters::Cluster.find(1)
+
+# Delete the cluster
+Clusters::DestroyService.new(user).execute(cluster)
+```
+
 ## Elasticsearch
 
 ### Configuration attributes

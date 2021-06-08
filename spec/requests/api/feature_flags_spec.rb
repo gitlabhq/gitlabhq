@@ -148,6 +148,18 @@ RSpec.describe API::FeatureFlags do
         expect(json_response['version']).to eq('legacy_flag')
       end
 
+      context 'without legacy flags' do
+        before do
+          stub_feature_flags(remove_legacy_flags: true, remove_legacy_flags_override: false)
+        end
+
+        it 'returns not found' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
       it_behaves_like 'check user permission'
     end
 
@@ -492,6 +504,18 @@ RSpec.describe API::FeatureFlags do
       end
 
       it_behaves_like 'check user permission'
+
+      context 'without legacy flags' do
+        before do
+          stub_feature_flags(remove_legacy_flags: true, remove_legacy_flags_override: false)
+        end
+
+        it 'returns not found' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     context 'when feature flag exists already' do
@@ -535,6 +559,18 @@ RSpec.describe API::FeatureFlags do
             expect(response).to have_gitlab_http_status(:ok)
             expect(strategy_count).to eq(1)
           end
+        end
+      end
+
+      context 'without legacy flags' do
+        before do
+          stub_feature_flags(remove_legacy_flags: true, remove_legacy_flags_override: false)
+        end
+
+        it 'returns not found' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -610,6 +646,18 @@ RSpec.describe API::FeatureFlags do
             'version' => 'legacy_flag',
             'strategies' => []
           })
+        end
+
+        context 'without legacy flags' do
+          before do
+            stub_feature_flags(remove_legacy_flags: true, remove_legacy_flags_override: false)
+          end
+
+          it 'returns not found' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
 
         it_behaves_like 'check user permission'
@@ -974,6 +1022,20 @@ RSpec.describe API::FeatureFlags do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/feature_flag')
         expect(feature_flag.reload.strategies.first.scopes.count).to eq(0)
+      end
+    end
+
+    context 'without legacy flags' do
+      before do
+        stub_feature_flags(remove_legacy_flags: true, remove_legacy_flags_override: false)
+      end
+
+      it 'returns not found' do
+        params = { description: 'new description' }
+
+        put api("/projects/#{project.id}/feature_flags/other_flag_name", user), params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

@@ -66,7 +66,7 @@ RSpec.describe Ci::RetryBuildService do
     let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
     let_it_be(:build) do
-      create(:ci_build, :failed, :expired, :erased, :queued, :coverage, :tags,
+      create(:ci_build, :failed, :picked, :expired, :erased, :queued, :coverage, :tags,
              :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
              description: 'my-job', stage: 'test', stage_id: stage.id,
              pipeline: pipeline, auto_canceled_by: another_pipeline,

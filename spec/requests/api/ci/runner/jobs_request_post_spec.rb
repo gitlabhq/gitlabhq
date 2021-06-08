@@ -23,7 +23,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:user) { create(:user) }
     let(:job) do
-      create(:ci_build, :artifacts, :extended_options,
+      create(:ci_build, :pending, :queued, :artifacts, :extended_options,
              pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
     end
 
@@ -129,7 +129,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         context 'when other projects have pending jobs' do
           before do
             job.success
-            create(:ci_build, :pending)
+            create(:ci_build, :pending, :queued)
           end
 
           it_behaves_like 'no jobs available'
@@ -239,7 +239,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when job is made for tag' do
-            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
 
             it 'sets branch as ref_type' do
               request_job
@@ -297,7 +297,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when job filtered by job_age' do
-            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, queued_at: 60.seconds.ago) }
+            let!(:job) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, queued_at: 60.seconds.ago) }
 
             context 'job is queued less than job_age parameter' do
               let(:job_age) { 120 }
@@ -359,7 +359,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when job is for a release' do
-            let!(:job) { create(:ci_build, :release_options, pipeline: pipeline) }
+            let!(:job) { create(:ci_build, :pending, :queued, :release_options, pipeline: pipeline) }
 
             context 'when `multi_build_steps` is passed by the runner' do
               it 'exposes release info' do
@@ -398,7 +398,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
           context 'when job is made for merge request' do
             let(:pipeline) { create(:ci_pipeline, source: :merge_request_event, project: project, ref: 'feature', merge_request: merge_request) }
-            let!(:job) { create(:ci_build, pipeline: pipeline, name: 'spinach', ref: 'feature', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, name: 'spinach', ref: 'feature', stage: 'test', stage_idx: 0) }
             let(:merge_request) { create(:merge_request) }
 
             it 'sets branch as ref_type' do
@@ -479,9 +479,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when project and pipeline have multiple jobs' do
-            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
-            let!(:job2) { create(:ci_build, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
-            let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
+            let!(:job) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:test_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
 
             before do
               job.success
@@ -531,8 +531,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when pipeline have jobs with artifacts' do
-            let!(:job) { create(:ci_build, :tag, :artifacts, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
-            let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
+            let!(:job) { create(:ci_build, :pending, :queued, :tag, :artifacts, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:test_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
 
             before do
               job.success
@@ -551,10 +551,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when explicit dependencies are defined' do
-            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
-            let!(:job2) { create(:ci_build, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
             let!(:test_job) do
-              create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'deploy',
+              create(:ci_build, :pending, :queued, pipeline: pipeline, token: 'test-job-token', name: 'deploy',
                                 stage: 'deploy', stage_idx: 1,
                                 options: { script: ['bash'], dependencies: [job2.name] })
             end
@@ -575,10 +575,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when dependencies is an empty array' do
-            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
-            let!(:job2) { create(:ci_build, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
             let!(:empty_dependencies_job) do
-              create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'empty_dependencies_job',
+              create(:ci_build, :pending, :queued, pipeline: pipeline, token: 'test-job-token', name: 'empty_dependencies_job',
                                 stage: 'deploy', stage_idx: 1,
                                 options: { script: ['bash'], dependencies: [] })
             end
@@ -739,7 +739,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         end
 
         describe 'port support' do
-          let(:job) { create(:ci_build, pipeline: pipeline, options: options) }
+          let(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
 
           context 'when job image has ports' do
             let(:options) do
@@ -791,7 +791,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         describe 'a job with excluded artifacts' do
           context 'when excluded paths are defined' do
             let(:job) do
-              create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'test',
+              create(:ci_build, :pending, :queued, pipeline: pipeline, token: 'test-job-token', name: 'test',
                                 stage: 'deploy', stage_idx: 1,
                                 options: { artifacts: { paths: ['abc'], exclude: ['cde'] } })
             end
@@ -839,7 +839,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           subject { request_job }
 
           context 'when triggered by a user' do
-            let(:job) { create(:ci_build, user: user, project: project) }
+            let(:job) { create(:ci_build, :pending, :queued, user: user, project: project) }
 
             subject { request_job(id: job.id) }
 

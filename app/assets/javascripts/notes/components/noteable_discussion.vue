@@ -135,6 +135,13 @@ export default {
     resolveWithIssuePath() {
       return !this.discussionResolved ? this.discussion.resolve_with_issue_path : '';
     },
+    canShowReplyActions() {
+      if (this.shouldRenderDiffs && !this.discussion.diff_file.diff_refs) {
+        return false;
+      }
+
+      return true;
+    },
   },
   created() {
     eventHub.$on('startReplying', this.onStartReplying);
@@ -263,7 +270,7 @@ export default {
                   :draft="draftForDiscussion(discussion.reply_id)"
                 />
                 <div
-                  v-else-if="showReplies"
+                  v-else-if="canShowReplyActions && showReplies"
                   :class="{ 'is-replying': isReplying }"
                   class="discussion-reply-holder gl-border-t-0! clearfix"
                 >

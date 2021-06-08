@@ -2,7 +2,7 @@
 
 # Repository routes without /-/ scope.
 # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/28848.
-# Do not add new routes here. Add new routes to repository_scoped.rb instead
+# Do not add new routes here. Add new routes to repository.rb instead
 # (see https://docs.gitlab.com/ee/development/routing.html#project-routes).
 
 resource :repository, only: [:create]

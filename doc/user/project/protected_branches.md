@@ -184,17 +184,17 @@ command line or a Git client application.
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-You can allow force pushes to protected branches by either setting **Allow force push**
+You can allow [force pushes](../../topics/git/git_rebase.md#force-push) to
+protected branches by either setting **Allowed to force push**
 when you protect a new branch, or by configuring an already-protected branch.
 
 To protect a new branch and enable Force push:
 
 1. Navigate to your project's **Settings > Repository**.
 1. Expand **Protected branches**, and scroll to **Protect a branch**.
-   ![Code Owners approval - new protected branch](img/code_owners_approval_new_protected_branch_v13_10.png)
 1. Select a **Branch** or wildcard you'd like to protect.
 1. Select the user levels **Allowed to merge** and **Allowed to push**.
-1. To allow all users with push access to force push, toggle the **Allow force push** slider.
+1. To allow all users with push access to force push, toggle the **Allowed to force push** slider.
 1. To reject code pushes that change files listed in the `CODEOWNERS` file, toggle
    **Require approval from code owners**.
 1. Click **Protect**.
@@ -203,8 +203,7 @@ To enable force pushes on branches already protected:
 
 1. Navigate to your project's **Settings > Repository**.
 1. Expand **Protected branches** and scroll to **Protected branch**.
-   ![Code Owners approval - branch already protected](img/code_owners_approval_protected_branch_v13_10.png)
-1. Toggle the **Allow force push** slider for the chosen branch.
+1. Toggle the **Allowed to force push** slider for the chosen branch.
 
 When enabled, members who are allowed to push to this branch can also force push.
 
@@ -224,14 +223,10 @@ To protect a new branch and enable Code Owner's approval:
 1. Scroll down to **Protect a branch**, select a **Branch** or wildcard you'd like to protect, select who's **Allowed to merge** and **Allowed to push**, and toggle the **Require approval from code owners** slider.
 1. Click **Protect**.
 
-![Code Owners approval - new protected branch](img/code_owners_approval_new_protected_branch_v13_10.png)
-
 To enable Code Owner's approval to branches already protected:
 
 1. Navigate to your project's **Settings > Repository** and expand **Protected branches**.
 1. Scroll down to **Protected branch** and toggle the **Code owner approval** slider for the chosen branch.
-
-![Code Owners approval - branch already protected](img/code_owners_approval_protected_branch_v13_10.png)
 
 When enabled, all merge requests targeting these branches require approval
 by a Code Owner per matched rule before they can be merged.

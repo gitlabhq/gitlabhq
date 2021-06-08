@@ -17,7 +17,7 @@ as the hardware requirements that are needed to install and use GitLab.
 - Ubuntu (16.04/18.04/20.04)
 - Debian (9/10)
 - CentOS (7/8)
-- openSUSE Leap (15.1/15.2)
+- openSUSE Leap (15.2)
 - SUSE Linux Enterprise Server (12 SP2/12 SP5)
 - Red Hat Enterprise Linux (please use the CentOS packages and instructions)
 - Scientific Linux (please use the CentOS packages and instructions)

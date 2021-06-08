@@ -11,7 +11,7 @@ module Ci
     let!(:shared_runner) { create(:ci_runner, :instance) }
     let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
     let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-    let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
+    let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
     describe '#execute' do
       context 'checks database loadbalancing stickiness' do
@@ -104,11 +104,11 @@ module Ci
             let!(:project3) { create :project, shared_runners_enabled: true }
             let!(:pipeline3) { create :ci_pipeline, project: project3 }
             let!(:build1_project1) { pending_job }
-            let!(:build2_project1) { FactoryBot.create :ci_build, pipeline: pipeline }
-            let!(:build3_project1) { FactoryBot.create :ci_build, pipeline: pipeline }
-            let!(:build1_project2) { FactoryBot.create :ci_build, pipeline: pipeline2 }
-            let!(:build2_project2) { FactoryBot.create :ci_build, pipeline: pipeline2 }
-            let!(:build1_project3) { FactoryBot.create :ci_build, pipeline: pipeline3 }
+            let!(:build2_project1) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
+            let!(:build3_project1) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
+            let!(:build1_project2) { create(:ci_build, :pending, :queued, pipeline: pipeline2) }
+            let!(:build2_project2) { create(:ci_build, :pending, :queued, pipeline: pipeline2) }
+            let!(:build1_project3) { create(:ci_build, :pending, :queued, pipeline: pipeline3) }
 
             context 'when using fair scheduling' do
               context 'when all builds are pending' do
@@ -255,17 +255,17 @@ module Ci
             let!(:pipeline3) { create(:ci_pipeline, project: project3) }
 
             let!(:build1_project1) { pending_job }
-            let!(:build2_project1) { create(:ci_build, pipeline: pipeline) }
-            let!(:build3_project1) { create(:ci_build, pipeline: pipeline) }
-            let!(:build1_project2) { create(:ci_build, pipeline: pipeline2) }
-            let!(:build2_project2) { create(:ci_build, pipeline: pipeline2) }
-            let!(:build1_project3) { create(:ci_build, pipeline: pipeline3) }
+            let!(:build2_project1) { create(:ci_build, :queued, pipeline: pipeline) }
+            let!(:build3_project1) { create(:ci_build, :queued, pipeline: pipeline) }
+            let!(:build1_project2) { create(:ci_build, :queued, pipeline: pipeline2) }
+            let!(:build2_project2) { create(:ci_build, :queued, pipeline: pipeline2) }
+            let!(:build1_project3) { create(:ci_build, :queued, pipeline: pipeline3) }
 
             # these shouldn't influence the scheduling
             let!(:unrelated_group) { create(:group) }
             let!(:unrelated_project) { create(:project, group_runners_enabled: true, group: unrelated_group) }
             let!(:unrelated_pipeline) { create(:ci_pipeline, project: unrelated_project) }
-            let!(:build1_unrelated_project) { create(:ci_build, pipeline: unrelated_pipeline) }
+            let!(:build1_unrelated_project) { create(:ci_build, :pending, :queued, pipeline: unrelated_pipeline) }
             let!(:unrelated_group_runner) { create(:ci_runner, :group, groups: [unrelated_group]) }
 
             it 'does not consider builds from other group runners' do
@@ -346,7 +346,7 @@ module Ci
           subject { described_class.new(specific_runner).execute }
 
           context 'with multiple builds are in queue' do
-            let!(:other_build) { create :ci_build, pipeline: pipeline }
+            let!(:other_build) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
             before do
               allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
@@ -387,7 +387,7 @@ module Ci
           let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
 
           context 'when a job is protected' do
-            let!(:pending_job) { create(:ci_build, :protected, pipeline: pipeline) }
+            let!(:pending_job) { create(:ci_build, :pending, :queued, :protected, pipeline: pipeline) }
 
             it 'picks the job' do
               expect(execute(specific_runner)).to eq(pending_job)
@@ -395,7 +395,7 @@ module Ci
           end
 
           context 'when a job is unprotected' do
-            let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
+            let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
             it 'picks the job' do
               expect(execute(specific_runner)).to eq(pending_job)
@@ -403,7 +403,7 @@ module Ci
           end
 
           context 'when protected attribute of a job is nil' do
-            let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
+            let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
             before do
               pending_job.update_attribute(:protected, nil)
@@ -419,7 +419,7 @@ module Ci
           let!(:specific_runner) { create(:ci_runner, :project, :ref_protected, projects: [project]) }
 
           context 'when a job is protected' do
-            let!(:pending_job) { create(:ci_build, :protected, pipeline: pipeline) }
+            let!(:pending_job) { create(:ci_build, :pending, :queued, :protected, pipeline: pipeline) }
 
             it 'picks the job' do
               expect(execute(specific_runner)).to eq(pending_job)
@@ -427,7 +427,7 @@ module Ci
           end
 
           context 'when a job is unprotected' do
-            let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
+            let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
             it 'does not pick the job' do
               expect(execute(specific_runner)).to be_nil
@@ -435,7 +435,7 @@ module Ci
           end
 
           context 'when protected attribute of a job is nil' do
-            let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
+            let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
             before do
               pending_job.update_attribute(:protected, nil)
@@ -449,7 +449,7 @@ module Ci
 
         context 'runner feature set is verified' do
           let(:options) { { artifacts: { reports: { junit: "junit.xml" } } } }
-          let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline, options: options) }
+          let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
 
           subject { execute(specific_runner, params) }
 
@@ -485,7 +485,7 @@ module Ci
 
           shared_examples 'validation is active' do
             context 'when depended job has not been completed yet' do
-              let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
+              let!(:pre_stage_job) { create(:ci_build, :pending, :queued, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
               it { expect(subject).to eq(pending_job) }
             end
@@ -522,7 +522,7 @@ module Ci
 
           shared_examples 'validation is not active' do
             context 'when depended job has not been completed yet' do
-              let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
+              let!(:pre_stage_job) { create(:ci_build, :pending, :queued, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
               it { expect(subject).to eq(pending_job) }
             end
@@ -547,7 +547,7 @@ module Ci
           let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
           let!(:pending_job) do
-            create(:ci_build, :pending,
+            create(:ci_build, :pending, :queued,
               pipeline: pipeline, stage_idx: 1,
               options: { script: ["bash"], dependencies: ['test'] })
           end
@@ -558,7 +558,7 @@ module Ci
         end
 
         context 'when build is degenerated' do
-          let!(:pending_job) { create(:ci_build, :pending, :degenerated, pipeline: pipeline) }
+          let!(:pending_job) { create(:ci_build, :pending, :queued, :degenerated, pipeline: pipeline) }
 
           subject { execute(specific_runner, {}) }
 
@@ -573,7 +573,7 @@ module Ci
 
         context 'when build has data integrity problem' do
           let!(:pending_job) do
-            create(:ci_build, :pending, pipeline: pipeline)
+            create(:ci_build, :pending, :queued, pipeline: pipeline)
           end
 
           before do
@@ -598,7 +598,7 @@ module Ci
 
         context 'when build fails to be run!' do
           let!(:pending_job) do
-            create(:ci_build, :pending, pipeline: pipeline)
+            create(:ci_build, :pending, :queued, pipeline: pipeline)
           end
 
           before do
@@ -640,12 +640,12 @@ module Ci
 
         context 'when only some builds can be matched by runner' do
           let!(:specific_runner) { create(:ci_runner, :project, projects: [project], tag_list: %w[matching]) }
-          let!(:pending_job) { create(:ci_build, pipeline: pipeline, tag_list: %w[matching]) }
+          let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, tag_list: %w[matching]) }
 
           before do
             # create additional matching and non-matching jobs
-            create_list(:ci_build, 2, pipeline: pipeline, tag_list: %w[matching])
-            create(:ci_build, pipeline: pipeline, tag_list: %w[non-matching])
+            create_list(:ci_build, 2, :pending, :queued, pipeline: pipeline, tag_list: %w[matching])
+            create(:ci_build, :pending, :queued, pipeline: pipeline, tag_list: %w[non-matching])
           end
 
           it 'observes queue size of only matching jobs' do
@@ -693,7 +693,7 @@ module Ci
             end
 
             context 'when there is another build in queue' do
-              let!(:next_pending_job) { create(:ci_build, pipeline: pipeline) }
+              let!(:next_pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
               it 'skips this build and picks another build' do
                 expect(Gitlab::Ci::Queue::Metrics.queue_operations_total).to receive(:increment)
@@ -728,6 +728,22 @@ module Ci
       context 'when ci_register_job_service_one_by_one is disabled' do
         before do
           stub_feature_flags(ci_register_job_service_one_by_one: false)
+        end
+
+        include_examples 'handles runner assignment'
+      end
+
+      context 'when joining with pending builds table' do
+        before do
+          stub_feature_flags(ci_pending_builds_queue_join: true)
+        end
+
+        include_examples 'handles runner assignment'
+      end
+
+      context 'when not joining with pending builds table' do
+        before do
+          stub_feature_flags(ci_pending_builds_queue_join: false)
         end
 
         include_examples 'handles runner assignment'
@@ -775,8 +791,8 @@ module Ci
         end
 
         context 'when project already has running jobs' do
-          let!(:build2) { create( :ci_build, :running, pipeline: pipeline, runner: shared_runner) }
-          let!(:build3) { create( :ci_build, :running, pipeline: pipeline, runner: shared_runner) }
+          let!(:build2) { create(:ci_build, :running, pipeline: pipeline, runner: shared_runner) }
+          let!(:build3) { create(:ci_build, :running, pipeline: pipeline, runner: shared_runner) }
 
           it 'counts job queuing time histogram with expected labels' do
             allow(attempt_counter).to receive(:increment)
@@ -859,9 +875,9 @@ module Ci
     end
 
     context 'when max queue depth is reached' do
-      let!(:pending_job) { create(:ci_build, :pending, :degenerated, pipeline: pipeline) }
-      let!(:pending_job_2) { create(:ci_build, :pending, :degenerated, pipeline: pipeline) }
-      let!(:pending_job_3) { create(:ci_build, :pending, pipeline: pipeline) }
+      let!(:pending_job) { create(:ci_build, :pending, :queued, :degenerated, pipeline: pipeline) }
+      let!(:pending_job_2) { create(:ci_build, :pending, :queued, :degenerated, pipeline: pipeline) }
+      let!(:pending_job_3) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
       before do
         stub_const("#{described_class}::MAX_QUEUE_DEPTH", 2)

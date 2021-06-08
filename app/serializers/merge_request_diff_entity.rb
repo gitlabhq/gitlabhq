@@ -9,7 +9,7 @@ class MergeRequestDiffEntity < Grape::Entity
     @merge_request_diffs = options[:merge_request_diffs]
     diff = options[:merge_request_diff]
 
-    next unless diff.present?
+    next unless @merge_request_diffs.include?(diff)
     next unless @merge_request_diffs.size > 1
 
     version_index(merge_request_diff)

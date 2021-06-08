@@ -287,15 +287,11 @@ module Ci
           .order(Arel.sql('COALESCE(project_builds.running_builds, 0) ASC'), 'ci_builds.id ASC')
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def builds_for_project_runner
       new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('id ASC')
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def builds_for_group_runner
       # Workaround for weird Rails bug, that makes `runner.groups.to_sql` to return `runner_id = NULL`
       groups = ::Group.joins(:runner_namespaces).merge(runner.runner_namespaces)
@@ -307,17 +303,23 @@ module Ci
         .without_deleted
       new_builds.where(project: projects).order('id ASC')
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def running_builds_for_shared_runners
       Ci::Build.running.where(runner: Ci::Runner.instance_type)
         .group(:project_id).select(:project_id, 'count(*) AS running_builds')
     end
+
+    def all_builds
+      if Feature.enabled?(:ci_pending_builds_queue_join, runner, default_enabled: :yaml)
+        Ci::Build.joins(:queuing_entry)
+      else
+        Ci::Build.all
+      end
+    end
     # rubocop: enable CodeReuse/ActiveRecord
 
     def new_builds
-      builds = Ci::Build.pending.unstarted
+      builds = all_builds.pending.unstarted
       builds = builds.ref_protected if runner.ref_protected?
       builds
     end

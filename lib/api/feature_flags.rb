@@ -90,6 +90,7 @@ module API
         end
         get do
           authorize_read_feature_flag!
+          exclude_legacy_flags_check!
 
           present_entity(feature_flag)
         end
@@ -104,6 +105,7 @@ module API
         end
         post :enable do
           not_found! unless Feature.enabled?(:feature_flag_api, user_project)
+          exclude_legacy_flags_check!
           render_api_error!('Version 2 flags not supported', :unprocessable_entity) if new_version_flag_present?
 
           result = ::FeatureFlags::EnableService
@@ -127,6 +129,7 @@ module API
         end
         post :disable do
           not_found! unless Feature.enabled?(:feature_flag_api, user_project)
+          exclude_legacy_flags_check!
           render_api_error!('Version 2 flags not supported', :unprocessable_entity) if feature_flag.new_version_flag?
 
           result = ::FeatureFlags::DisableService
@@ -162,6 +165,7 @@ module API
         end
         put do
           authorize_update_feature_flag!
+          exclude_legacy_flags_check!
           render_api_error!('PUT operations are not supported for legacy feature flags', :unprocessable_entity) if feature_flag.legacy_flag?
 
           attrs = declared_params(include_missing: false)
@@ -232,6 +236,10 @@ module API
         @feature_flag ||= user_project.operations_feature_flags.find_by_name!(params[:feature_flag_name])
       end
 
+      def project
+        @project ||= feature_flag.project
+      end
+
       def new_version_flag_present?
         user_project.operations_feature_flags.new_version_flag.find_by_name(params[:name]).present?
       end
@@ -244,6 +252,14 @@ module API
       def update_value(hash, key)
         hash[key] = yield(hash[key]) if hash.key?(key)
         hash
+      end
+
+      def exclude_legacy_flags_check!
+        if Feature.enabled?(:remove_legacy_flags, project, default_enabled: :yaml) &&
+          Feature.disabled?(:remove_legacy_flags_override, project, default_enabled: :yaml) &&
+          feature_flag.legacy_flag?
+          not_found!
+        end
       end
     end
   end

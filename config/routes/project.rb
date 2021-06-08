@@ -385,7 +385,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         # The wiki and repository routing contains wildcard characters so
         # its preferable to keep it below all other project routes
-        draw :repository_scoped
+        draw :repository
         draw :wiki
 
         namespace :import do

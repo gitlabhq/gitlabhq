@@ -38,7 +38,7 @@ RSpec.describe 'Project issue boards sidebar milestones', :js do
 
         wait_for_requests
 
-        page.within('.value') do
+        page.within('[data-testid="select-milestone"]') do
           expect(page).to have_content(milestone.title)
         end
       end
@@ -56,7 +56,7 @@ RSpec.describe 'Project issue boards sidebar milestones', :js do
 
         wait_for_requests
 
-        page.within('.value') do
+        page.within('[data-testid="select-milestone"]') do
           expect(page).not_to have_content(milestone.title)
         end
       end

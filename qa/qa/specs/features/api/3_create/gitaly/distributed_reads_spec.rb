@@ -6,7 +6,7 @@ module QA
   RSpec.describe 'Create' do
     context 'Gitaly' do
       # Issue to track removal of feature flag: https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/602
-      describe 'Distributed reads', :orchestrated, :gitaly_cluster, :skip_live_env, :requires_admin do
+      describe 'Distributed reads', :orchestrated, :gitaly_cluster, :skip_live_env, :requires_admin, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/322814', type: :investigating } do
         let(:number_of_reads_per_loop) { 9 }
         let(:praefect_manager) { Service::PraefectManager.new }
         let(:project) do

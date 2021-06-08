@@ -513,4 +513,83 @@ export const participantsQueryResponse = {
   },
 };
 
+export const mockGroupPath = 'gitlab-org';
+export const mockProjectPath = `${mockGroupPath}/some-project`;
+
+export const mockIssue = {
+  projectPath: mockProjectPath,
+  iid: '1',
+  groupPath: mockGroupPath,
+};
+
+export const mockIssueId = 'gid://gitlab/Issue/1';
+
+export const mockMilestone1 = {
+  __typename: 'Milestone',
+  id: 'gid://gitlab/Milestone/1',
+  title: 'Foobar Milestone',
+  webUrl: 'http://gdk.test:3000/groups/gitlab-org/-/milestones/1',
+  state: 'active',
+};
+
+export const mockMilestone2 = {
+  __typename: 'Milestone',
+  id: 'gid://gitlab/Milestone/2',
+  title: 'Awesome Milestone',
+  webUrl: 'http://gdk.test:3000/groups/gitlab-org/-/milestones/2',
+  state: 'active',
+};
+
+export const mockProjectMilestonesResponse = {
+  data: {
+    workspace: {
+      attributes: {
+        nodes: [mockMilestone1, mockMilestone2],
+      },
+      __typename: 'MilestoneConnection',
+    },
+    __typename: 'Project',
+  },
+};
+
+export const noCurrentMilestoneResponse = {
+  data: {
+    workspace: {
+      issuable: { id: mockIssueId, attribute: null, __typename: 'Issue' },
+      __typename: 'Project',
+    },
+  },
+};
+
+export const mockMilestoneMutationResponse = {
+  data: {
+    issuableSetAttribute: {
+      errors: [],
+      issuable: {
+        id: 'gid://gitlab/Issue/1',
+        attribute: {
+          id: 'gid://gitlab/Milestone/2',
+          title: 'Awesome Milestone',
+          state: 'active',
+          __typename: 'Milestone',
+        },
+        __typename: 'Issue',
+      },
+      __typename: 'UpdateIssuePayload',
+    },
+  },
+};
+
+export const emptyProjectMilestonesResponse = {
+  data: {
+    workspace: {
+      attributes: {
+        nodes: [],
+      },
+      __typename: 'MilestoneConnection',
+    },
+    __typename: 'Project',
+  },
+};
+
 export default mockData;

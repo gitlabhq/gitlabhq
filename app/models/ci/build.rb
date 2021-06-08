@@ -1076,6 +1076,10 @@ module Ci
       ::Ci::PendingBuild.where(build_id: self.id)
     end
 
+    def create_queuing_entry!
+      ::Ci::PendingBuild.upsert_from_build!(self)
+    end
+
     protected
 
     def run_status_commit_hooks!

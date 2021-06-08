@@ -1,11 +1,11 @@
 import { GlDrawer } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
+import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdown_widget.vue';
 import { stubComponent } from 'helpers/stub_component';
 import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
 import BoardSidebarDueDate from '~/boards/components/sidebar/board_sidebar_due_date.vue';
 import BoardSidebarLabelsSelect from '~/boards/components/sidebar/board_sidebar_labels_select.vue';
-import BoardSidebarMilestoneSelect from '~/boards/components/sidebar/board_sidebar_milestone_select.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { ISSUABLE } from '~/boards/constants';
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
@@ -68,6 +68,9 @@ describe('BoardContentSidebar', () => {
             iterations: {
               loading: false,
             },
+            attributesList: {
+              loading: false,
+            },
           },
         },
       },
@@ -84,38 +87,41 @@ describe('BoardContentSidebar', () => {
   });
 
   it('confirms we render GlDrawer', () => {
-    expect(wrapper.find(GlDrawer).exists()).toBe(true);
+    expect(wrapper.findComponent(GlDrawer).exists()).toBe(true);
   });
 
   it('does not render GlDrawer when isSidebarOpen is false', () => {
     createStore({ mockGetters: { isSidebarOpen: () => false } });
     createComponent();
 
-    expect(wrapper.find(GlDrawer).exists()).toBe(false);
+    expect(wrapper.findComponent(GlDrawer).exists()).toBe(false);
   });
 
   it('applies an open attribute', () => {
-    expect(wrapper.find(GlDrawer).props('open')).toBe(true);
+    expect(wrapper.findComponent(GlDrawer).props('open')).toBe(true);
   });
 
   it('renders BoardSidebarLabelsSelect', () => {
-    expect(wrapper.find(BoardSidebarLabelsSelect).exists()).toBe(true);
+    expect(wrapper.findComponent(BoardSidebarLabelsSelect).exists()).toBe(true);
   });
 
   it('renders BoardSidebarTitle', () => {
-    expect(wrapper.find(BoardSidebarTitle).exists()).toBe(true);
+    expect(wrapper.findComponent(BoardSidebarTitle).exists()).toBe(true);
   });
 
   it('renders BoardSidebarDueDate', () => {
-    expect(wrapper.find(BoardSidebarDueDate).exists()).toBe(true);
+    expect(wrapper.findComponent(BoardSidebarDueDate).exists()).toBe(true);
   });
 
   it('renders BoardSidebarSubscription', () => {
-    expect(wrapper.find(SidebarSubscriptionsWidget).exists()).toBe(true);
+    expect(wrapper.findComponent(SidebarSubscriptionsWidget).exists()).toBe(true);
   });
 
-  it('renders BoardSidebarMilestoneSelect', () => {
-    expect(wrapper.find(BoardSidebarMilestoneSelect).exists()).toBe(true);
+  it('renders SidebarDropdownWidget for milestones', () => {
+    expect(wrapper.findComponent(SidebarDropdownWidget).exists()).toBe(true);
+    expect(wrapper.findComponent(SidebarDropdownWidget).props('issuableAttribute')).toEqual(
+      'milestone',
+    );
   });
 
   describe('when we emit close', () => {
@@ -128,7 +134,7 @@ describe('BoardContentSidebar', () => {
     });
 
     it('calls toggleBoardItem with correct parameters', async () => {
-      wrapper.find(GlDrawer).vm.$emit('close');
+      wrapper.findComponent(GlDrawer).vm.$emit('close');
 
       expect(toggleBoardItem).toHaveBeenCalledTimes(1);
       expect(toggleBoardItem).toHaveBeenCalledWith(expect.any(Object), {

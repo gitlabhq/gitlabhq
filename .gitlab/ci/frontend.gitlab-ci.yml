@@ -344,3 +344,18 @@ startup-css-check as-if-foss:
   needs:
     - job: "compile-test-assets as-if-foss"
     - job: "rspec frontend_fixture as-if-foss"
+
+compile-storybook:
+  extends:
+    - .compile-assets-base
+  script:
+    - source scripts/utils.sh
+    - cd storybook/
+    - run_timed_command "retry yarn install --frozen-lockfile"
+    - yarn build
+  artifacts:
+    name: storybook
+    expire_in: 31d
+    when: always
+    paths:
+      - storybook/public

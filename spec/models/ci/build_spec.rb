@@ -354,7 +354,7 @@ RSpec.describe Ci::Build do
       it 'does not push build to the queue' do
         build.enqueue
 
-        expect(::Ci::PendingBuild.all.count).to be_zero
+        expect(build.queuing_entry).not_to be_present
       end
     end
 

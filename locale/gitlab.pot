@@ -26651,13 +26651,16 @@ msgstr ""
 msgid "ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported."
 msgstr ""
 
-msgid "ProtectedBranch|Allow force push"
+msgid "ProtectedBranch|Allow all users with push access to %{tag_start}force push%{tag_end}."
 msgstr ""
 
-msgid "ProtectedBranch|Allow force push for all users with push access."
+msgid "ProtectedBranch|Allow all users with push access to force push."
 msgstr ""
 
-msgid "ProtectedBranch|Allow force push:"
+msgid "ProtectedBranch|Allowed to force push"
+msgstr ""
+
+msgid "ProtectedBranch|Allowed to force push:"
 msgstr ""
 
 msgid "ProtectedBranch|Allowed to merge"
@@ -26702,7 +26705,7 @@ msgstr ""
 msgid "ProtectedBranch|There are currently no protected branches, protect a branch with the form above."
 msgstr ""
 
-msgid "ProtectedBranch|Toggle allow force push"
+msgid "ProtectedBranch|Toggle allowed to force push"
 msgstr ""
 
 msgid "ProtectedBranch|Toggle code owner approval"
@@ -27985,6 +27988,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Requires values to meet regular expression requirements."
+msgstr ""
+
+msgid "Requires your primary GitLab email address."
 msgstr ""
 
 msgid "Resend"
