@@ -29,7 +29,7 @@ export default {
       <gl-loading-icon v-show="labelsSelectInProgress" inline />
       <gl-button
         variant="link"
-        class="float-right js-sidebar-dropdown-toggle"
+        class="gl-text-gray-800! float-right js-sidebar-dropdown-toggle"
         data-qa-selector="labels_edit_button"
         @click="toggleDropdownContents"
         >{{ __('Edit') }}</gl-button

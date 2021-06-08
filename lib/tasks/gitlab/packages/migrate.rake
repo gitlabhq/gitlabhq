@@ -6,7 +6,7 @@ desc "GitLab | Packages | Migrate packages files to remote storage"
 namespace :gitlab do
   namespace :packages do
     task migrate: :environment do
-      logger = Logger.new(STDOUT)
+      logger = Logger.new($stdout)
       logger.info('Starting transfer of package files to object storage')
 
       unless ::Packages::PackageFileUploader.object_store_enabled?

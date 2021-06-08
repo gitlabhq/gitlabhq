@@ -35,27 +35,36 @@ describe('Awards app actions', () => {
     });
 
     describe('success', () => {
-      beforeEach(() => {
-        mock
-          .onGet('/awards', { params: { per_page: 100, page: '1' } })
-          .reply(200, ['thumbsup'], { 'x-next-page': '2' });
-        mock.onGet('/awards', { params: { per_page: 100, page: '2' } }).reply(200, ['thumbsdown']);
-      });
+      describe.each`
+        relativeRootUrl
+        ${null}
+        ${'/gitlab'}
+      `('with relative_root_url as $relativeRootUrl', ({ relativeRootUrl }) => {
+        beforeEach(() => {
+          window.gon = { relative_url_root: relativeRootUrl };
+          mock
+            .onGet(`${relativeRootUrl || ''}/awards`, { params: { per_page: 100, page: '1' } })
+            .reply(200, ['thumbsup'], { 'x-next-page': '2' });
+          mock
+            .onGet(`${relativeRootUrl || ''}/awards`, { params: { per_page: 100, page: '2' } })
+            .reply(200, ['thumbsdown']);
+        });
 
-      it('commits FETCH_AWARDS_SUCCESS', async () => {
-        window.gon = { current_user_id: 1 };
+        it('commits FETCH_AWARDS_SUCCESS', async () => {
+          window.gon.current_user_id = 1;
 
-        await testAction(
-          actions.fetchAwards,
-          '1',
-          { path: '/awards' },
-          [{ type: 'FETCH_AWARDS_SUCCESS', payload: ['thumbsup'] }],
-          [{ type: 'fetchAwards', payload: '2' }],
-        );
-      });
+          await testAction(
+            actions.fetchAwards,
+            '1',
+            { path: '/awards' },
+            [{ type: 'FETCH_AWARDS_SUCCESS', payload: ['thumbsup'] }],
+            [{ type: 'fetchAwards', payload: '2' }],
+          );
+        });
 
-      it('does not commit FETCH_AWARDS_SUCCESS when user signed out', async () => {
-        await testAction(actions.fetchAwards, '1', { path: '/awards' }, [], []);
+        it('does not commit FETCH_AWARDS_SUCCESS when user signed out', async () => {
+          await testAction(actions.fetchAwards, '1', { path: '/awards' }, [], []);
+        });
       });
     });
 
@@ -85,81 +94,91 @@ describe('Awards app actions', () => {
       mock.restore();
     });
 
-    describe('adding new award', () => {
-      describe('success', () => {
-        beforeEach(() => {
-          mock.onPost('/awards').reply(200, { id: 1 });
+    describe.each`
+      relativeRootUrl
+      ${null}
+      ${'/gitlab'}
+    `('with relative_root_url as $relativeRootUrl', ({ relativeRootUrl }) => {
+      beforeEach(() => {
+        window.gon = { relative_url_root: relativeRootUrl };
+      });
+
+      describe('adding new award', () => {
+        describe('success', () => {
+          beforeEach(() => {
+            mock.onPost(`${relativeRootUrl || ''}/awards`).reply(200, { id: 1 });
+          });
+
+          it('commits ADD_NEW_AWARD', async () => {
+            testAction(actions.toggleAward, null, { path: '/awards', awards: [] }, [
+              { type: 'ADD_NEW_AWARD', payload: { id: 1 } },
+            ]);
+          });
         });
 
-        it('commits ADD_NEW_AWARD', async () => {
-          testAction(actions.toggleAward, null, { path: '/awards', awards: [] }, [
-            { type: 'ADD_NEW_AWARD', payload: { id: 1 } },
-          ]);
+        describe('error', () => {
+          beforeEach(() => {
+            mock.onPost(`${relativeRootUrl || ''}/awards`).reply(500);
+          });
+
+          it('calls Sentry.captureException', async () => {
+            await testAction(
+              actions.toggleAward,
+              null,
+              { path: '/awards', awards: [] },
+              [],
+              [],
+              () => {
+                expect(Sentry.captureException).toHaveBeenCalled();
+              },
+            );
+          });
         });
       });
 
-      describe('error', () => {
-        beforeEach(() => {
-          mock.onPost('/awards').reply(500);
+      describe('removing a award', () => {
+        const mockData = { id: 1, name: 'thumbsup', user: { id: 1 } };
+
+        describe('success', () => {
+          beforeEach(() => {
+            mock.onDelete(`${relativeRootUrl || ''}/awards/1`).reply(200);
+          });
+
+          it('commits REMOVE_AWARD', async () => {
+            testAction(
+              actions.toggleAward,
+              'thumbsup',
+              {
+                path: '/awards',
+                currentUserId: 1,
+                awards: [mockData],
+              },
+              [{ type: 'REMOVE_AWARD', payload: 1 }],
+            );
+          });
         });
 
-        it('calls Sentry.captureException', async () => {
-          await testAction(
-            actions.toggleAward,
-            null,
-            { path: '/awards', awards: [] },
-            [],
-            [],
-            () => {
-              expect(Sentry.captureException).toHaveBeenCalled();
-            },
-          );
-        });
-      });
-    });
+        describe('error', () => {
+          beforeEach(() => {
+            mock.onDelete(`${relativeRootUrl || ''}/awards/1`).reply(500);
+          });
 
-    describe('removing a award', () => {
-      const mockData = { id: 1, name: 'thumbsup', user: { id: 1 } };
-
-      describe('success', () => {
-        beforeEach(() => {
-          mock.onDelete('/awards/1').reply(200);
-        });
-
-        it('commits REMOVE_AWARD', async () => {
-          testAction(
-            actions.toggleAward,
-            'thumbsup',
-            {
-              path: '/awards',
-              currentUserId: 1,
-              awards: [mockData],
-            },
-            [{ type: 'REMOVE_AWARD', payload: 1 }],
-          );
-        });
-      });
-
-      describe('error', () => {
-        beforeEach(() => {
-          mock.onDelete('/awards/1').reply(500);
-        });
-
-        it('calls Sentry.captureException', async () => {
-          await testAction(
-            actions.toggleAward,
-            'thumbsup',
-            {
-              path: '/awards',
-              currentUserId: 1,
-              awards: [mockData],
-            },
-            [],
-            [],
-            () => {
-              expect(Sentry.captureException).toHaveBeenCalled();
-            },
-          );
+          it('calls Sentry.captureException', async () => {
+            await testAction(
+              actions.toggleAward,
+              'thumbsup',
+              {
+                path: '/awards',
+                currentUserId: 1,
+                awards: [mockData],
+              },
+              [],
+              [],
+              () => {
+                expect(Sentry.captureException).toHaveBeenCalled();
+              },
+            );
+          });
         });
       });
     });

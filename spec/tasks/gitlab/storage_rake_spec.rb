@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'rake gitlab:storage:*' do
+RSpec.describe 'rake gitlab:storage:*', :silence_stdout do
   before do
     Rake.application.rake_require 'tasks/gitlab/storage'
 

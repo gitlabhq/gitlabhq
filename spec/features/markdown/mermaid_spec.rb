@@ -247,6 +247,36 @@ RSpec.describe 'Mermaid rendering', :js do
       expect(page).to have_selector('.js-lazy-render-mermaid-container')
     end
   end
+
+  it 'renders without any limits on wiki page', :js do
+    graph_edges = "A-->B;B-->A;"
+
+    description = <<~MERMAID
+    ```mermaid
+    graph LR
+    #{graph_edges}
+    ```
+    MERMAID
+
+    description *= 51
+
+    project = create(:project, :public)
+
+    wiki_page = build(:wiki_page, { container: project, content: description })
+    wiki_page.create message: 'mermaid test commit' # rubocop:disable Rails/SaveBang
+    wiki_page = project.wiki.find_page(wiki_page.slug)
+
+    visit project_wiki_path(project, wiki_page)
+
+    wait_for_requests
+    wait_for_mermaid
+
+    page.within('.js-wiki-page-content') do
+      expect(page).not_to have_selector('.lazy-alert-shown')
+
+      expect(page).not_to have_selector('.js-lazy-render-mermaid-container')
+    end
+  end
 end
 
 def wait_for_mermaid

@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::ImportTask, :request_store do
+RSpec.describe Gitlab::ImportExport::Project::ImportTask, :request_store, :silence_stdout do
   let(:username) { 'root' }
   let(:namespace_path) { username }
   let!(:user) { create(:user, username: username) }

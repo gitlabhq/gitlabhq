@@ -14,14 +14,14 @@ namespace :gitlab do
         old_path = args.old_path
       else
         puts '=> Enter the path of the OLD file:'
-        old_path = STDIN.gets.chomp
+        old_path = $stdin.gets.chomp
       end
 
       if args.new_path
         new_path = args.new_path
       else
         puts '=> Enter the path of the NEW file:'
-        new_path = STDIN.gets.chomp
+        new_path = $stdin.gets.chomp
       end
 
       #

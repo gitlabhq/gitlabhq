@@ -26,7 +26,7 @@ You can enable output of Active Record debug logging in the Rails console
 session by running:
 
 ```ruby
-ActiveRecord::Base.logger = Logger.new(STDOUT)
+ActiveRecord::Base.logger = Logger.new($stdout)
 ```
 
 This will show information about database queries triggered by any Ruby code

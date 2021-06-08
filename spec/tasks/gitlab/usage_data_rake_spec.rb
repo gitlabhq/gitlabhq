@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:usage data take tasks' do
+RSpec.describe 'gitlab:usage data take tasks', :silence_stdout do
   include UsageDataHelpers
 
   before do

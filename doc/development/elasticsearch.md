@@ -308,12 +308,15 @@ We choose to use GitLab major version upgrades as a safe time to remove
 backwards compatibility for indices that have not been fully migrated. We
 [document this in our upgrade
 documentation](../update/index.md#upgrading-to-a-new-major-version). We also
-choose to remove the migration code and tests so that:
+choose to replace the migration code with the halted migration
+and remove tests so that:
 
 - We don't need to maintain any code that is called from our Advanced Search
   migrations.
 - We don't waste CI time running tests for migrations that we don't support
   anymore.
+- Operators who have not run this migration and who upgrade directly to the
+  target version will see a message prompting them to reindex from scratch.
 
 To be extra safe, we will not delete migrations that were created in the last
 minor version before the major upgrade. So, if we are upgrading to `%14.0`,
@@ -334,18 +337,10 @@ For every migration that was created 2 minor versions before the major version
 being upgraded to, we do the following:
 
 1. Confirm the migration has actually completed successfully for GitLab.com.
-1. Replace the content of `migrate` and `completed?` methods as follows:
+1. Replace the content of the migration with:
 
    ```ruby
-   def migrate
-     log_raise "Migration has been deleted in the last major version upgrade." \
-       "Migrations are supposed to be finished before upgrading major version https://docs.gitlab.com/ee/update/#upgrading-to-a-new-major-version ." \
-       "To correct this issue, recreate your index from scratch: https://docs.gitlab.com/ee/integration/elasticsearch.html#last-resort-to-recreate-an-index."
-   end
-
-   def completed?
-     false
-   end
+   include Elastic::MigrationObsolete
    ```
 
 1. Delete any spec files to support this migration.

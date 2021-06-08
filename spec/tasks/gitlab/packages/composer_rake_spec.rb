@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:packages:build_composer_cache namespace rake task' do
+RSpec.describe 'gitlab:packages:build_composer_cache namespace rake task', :silence_stdout do
   let_it_be(:package_name) { 'sample-project' }
   let_it_be(:package_name2) { 'sample-project2' }
   let_it_be(:json) { { 'name' => package_name } }

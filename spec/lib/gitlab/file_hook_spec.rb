@@ -9,7 +9,7 @@ RSpec.describe Gitlab::FileHook do
   let(:file_hook_source) do
     <<~EOS
       #!/usr/bin/env ruby
-      x = STDIN.read
+      x = $stdin.read
       File.write('#{tmp_file.path}', x)
     EOS
   end

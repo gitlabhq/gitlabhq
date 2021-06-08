@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rake_helper'
 
-RSpec.describe SystemCheck::Orphans::NamespaceCheck do
+RSpec.describe SystemCheck::Orphans::NamespaceCheck, :silence_stdout do
   let(:storages) { Gitlab.config.repositories.storages.reject { |key, _| key.eql? 'broken' } }
 
   before do
     allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     allow(subject).to receive(:fetch_disk_namespaces).and_return(disk_namespaces)
-    silence_output
   end
 
   describe '#multi_check' do

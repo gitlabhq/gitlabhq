@@ -79,7 +79,7 @@ require 'json'
 require 'mail'
 
 # The incoming variables are in JSON format so we need to parse it first.
-ARGS = JSON.parse(STDIN.read)
+ARGS = JSON.parse($stdin.read)
 
 # We only want to trigger this file hook on the event project_create
 return unless ARGS['event_name'] == 'project_create'

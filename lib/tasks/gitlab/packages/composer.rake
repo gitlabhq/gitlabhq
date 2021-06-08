@@ -6,7 +6,7 @@ desc "GitLab | Packages | Build composer cache"
 namespace :gitlab do
   namespace :packages do
     task build_composer_cache: :environment do
-      logger = Logger.new(STDOUT)
+      logger = Logger.new($stdout)
       logger.info('Starting to build composer cache files')
 
       ::Packages::Package.composer.find_in_batches do |packages|

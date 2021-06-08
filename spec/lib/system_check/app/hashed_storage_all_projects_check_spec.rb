@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rake_helper'
 
-RSpec.describe SystemCheck::App::HashedStorageAllProjectsCheck do
-  before do
-    silence_output
-  end
-
+RSpec.describe SystemCheck::App::HashedStorageAllProjectsCheck, :silence_stdout do
   describe '#check?' do
     it 'fails when at least one project is in legacy storage' do
       create(:project, :legacy_storage)

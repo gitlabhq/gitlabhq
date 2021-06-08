@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:shell rake tasks' do
+RSpec.describe 'gitlab:shell rake tasks', :silence_stdout do
   before do
     Rake.application.rake_require 'tasks/gitlab/shell'
 

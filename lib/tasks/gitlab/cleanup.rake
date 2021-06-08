@@ -178,7 +178,7 @@ namespace :gitlab do
       return @logger if defined?(@logger)
 
       @logger = if Rails.env.development? || Rails.env.production?
-                  Logger.new(STDOUT).tap do |stdout_logger|
+                  Logger.new($stdout).tap do |stdout_logger|
                     stdout_logger.extend(ActiveSupport::Logger.broadcast(Rails.logger))
                     stdout_logger.level = debug? ? Logger::DEBUG : Logger::INFO
                   end

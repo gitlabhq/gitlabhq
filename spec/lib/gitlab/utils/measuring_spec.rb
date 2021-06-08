@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Utils::Measuring do
     let(:result) { "result" }
 
     before do
-      allow(ActiveSupport::Logger).to receive(:logger_outputs_to?).with(Gitlab::Utils::Measuring.logger, STDOUT).and_return(false)
+      allow(ActiveSupport::Logger).to receive(:logger_outputs_to?).with(Gitlab::Utils::Measuring.logger, $stdout).and_return(false)
     end
 
     let(:measurement) { described_class.new(base_log_data) }

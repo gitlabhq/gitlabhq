@@ -61,6 +61,8 @@ module API
         optional :release_description, type: String, desc: 'Specifying release notes stored in the GitLab database (deprecated in GitLab 11.7)'
       end
       post ':id/repository/tags', :release_orchestration do
+        deprecate_release_notes unless params[:release_description].blank?
+
         authorize_admin_tag
 
         result = ::Tags::CreateService.new(user_project, current_user)
@@ -119,6 +121,7 @@ module API
         requires :description, type: String, desc: 'Release notes with markdown support'
       end
       post ':id/repository/tags/:tag_name/release', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :release_orchestration do
+        deprecate_release_notes
         authorize_create_release!
 
         ##
@@ -151,6 +154,7 @@ module API
         requires :description, type: String, desc: 'Release notes with markdown support'
       end
       put ':id/repository/tags/:tag_name/release', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :release_orchestration do
+        deprecate_release_notes
         authorize_update_release!
 
         result = ::Releases::UpdateService
@@ -176,6 +180,12 @@ module API
 
       def release
         @release ||= user_project.releases.find_by_tag(params[:tag])
+      end
+
+      def deprecate_release_notes
+        return unless Feature.enabled?(:remove_release_notes_from_tags_api, user_project, default_enabled: :yaml)
+
+        render_api_error!("Release notes modification via tags API is deprecated, see https://gitlab.com/gitlab-org/gitlab/-/issues/290311", 400)
       end
     end
   end

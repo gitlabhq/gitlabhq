@@ -8570,6 +8570,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="epicboardlistsepicfilters"></a>`epicFilters` | [`EpicFilters`](#epicfilters) | Filters applied when getting epic metadata in the epic board list. |
 | <a id="epicboardlistsid"></a>`id` | [`BoardsEpicListID`](#boardsepiclistid) | Find an epic board list by ID. |
 
 ### `EpicDescendantCount`

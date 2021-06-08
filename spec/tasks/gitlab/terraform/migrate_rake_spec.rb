@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:terraform_states' do
+RSpec.describe 'gitlab:terraform_states', :silence_stdout do
   let_it_be(:version) { create(:terraform_state_version) }
 
   let(:logger) { instance_double(Logger) }
@@ -13,7 +13,7 @@ RSpec.describe 'gitlab:terraform_states' do
   end
 
   before do
-    allow(Logger).to receive(:new).with(STDOUT).and_return(logger)
+    allow(Logger).to receive(:new).with($stdout).and_return(logger)
   end
 
   describe 'gitlab:terraform_states:migrate' do

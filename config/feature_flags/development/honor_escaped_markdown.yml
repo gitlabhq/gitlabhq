@@ -1,8 +1,0 @@
----
-name: honor_escaped_markdown
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45922
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/300531
-milestone: '13.9'
-type: development
-group: 'group::project management'
-default_enabled: false

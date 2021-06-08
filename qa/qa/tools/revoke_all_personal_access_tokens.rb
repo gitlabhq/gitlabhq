@@ -12,7 +12,7 @@ module QA
       def run
         do_run
       rescue Net::ReadTimeout
-        STDOUT.puts 'Net::ReadTimeout during run. Trying again'
+        $stdout.puts 'Net::ReadTimeout during run. Trying again'
         run
       end
 
@@ -23,7 +23,7 @@ module QA
         raise ArgumentError, "Please provide GITLAB_PASSWORD" unless ENV['GITLAB_PASSWORD']
         raise ArgumentError, "Please provide GITLAB_ADDRESS" unless ENV['GITLAB_ADDRESS']
 
-        STDOUT.puts 'Running...'
+        $stdout.puts 'Running...'
 
         Runtime::Browser.visit(ENV['GITLAB_ADDRESS'], Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)

@@ -1,16 +1,18 @@
 ---
 key_path: reply_by_email_enabled
 description: Whether incoming email is setup
-product_section: growth
-product_stage: growth
-product_group: group::product intelligence
+product_section: dev
+product_stage: plan
+product_group: group::certify
 product_category: collection
 value_type: boolean
 status: data_available
 time_frame: none
 data_source: system
 distribution:
-- ce
+  - ce
+  - ee
 tier:
-- free
-skip_validation: true
+  - free
+  - premium
+  - ultimate

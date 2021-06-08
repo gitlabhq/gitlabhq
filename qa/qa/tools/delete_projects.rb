@@ -20,7 +20,7 @@ module QA
       end
 
       def run
-        STDOUT.puts 'Running...'
+        $stdout.puts 'Running...'
 
         # Fetch group's id
         group_id = fetch_group_id
@@ -30,16 +30,16 @@ module QA
 
         # Do not delete projects that are less than 4 days old (for debugging purposes)
         project_ids = fetch_project_ids(group_id, total_project_pages)
-        STDOUT.puts "Number of projects to be deleted: #{project_ids.length}"
+        $stdout.puts "Number of projects to be deleted: #{project_ids.length}"
 
         delete_projects(project_ids) unless project_ids.empty?
-        STDOUT.puts "\nDone"
+        $stdout.puts "\nDone"
       end
 
       private
 
       def delete_projects(project_ids)
-        STDOUT.puts "Deleting #{project_ids.length} projects..."
+        $stdout.puts "Deleting #{project_ids.length} projects..."
         project_ids.each do |project_id|
           delete_response = delete Runtime::API::Request.new(@api_client, "/projects/#{project_id}").url
           dot_or_f = delete_response.code.between?(200, 300) ? "\e[32m.\e[0m" : "\e[31mF\e[0m"

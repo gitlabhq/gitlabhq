@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:artifacts namespace rake task' do
+RSpec.describe 'gitlab:artifacts namespace rake task', :silence_stdout do
   before(:context) do
     Rake.application.rake_require 'tasks/gitlab/artifacts/migrate'
   end

@@ -15580,11 +15580,11 @@ Whether incoming email is setup
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/settings/20210204124916_reply_by_email_enabled.yml)
 
-Group: `group::product intelligence`
+Group: `group::certify`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `search_unique_visits.i_search_advanced`
 

@@ -2,10 +2,9 @@
 
 module AuthorizedProjectUpdate
   class UserRefreshOverUserRangeWorker # rubocop:disable Scalability/IdempotentWorker
-    # When the feature flag named `periodic_project_authorization_update_via_replica` is enabled,
-    # this worker checks if a specific user requires an update to their project_authorizations records.
+    # This worker checks if users requires an update to their project_authorizations records.
     # This check is done via the data read from the database replica (and not from the primary).
-    # If this check returns true, a completely new Sidekiq job is enqueued for this specific user
+    # If this check returns true, a completely new Sidekiq job is enqueued for a specific user
     # so as to update its project_authorizations records.
 
     # There is a possibility that the data in the replica is lagging behind the primary
@@ -24,26 +23,15 @@ module AuthorizedProjectUpdate
     # `data_consistency :delayed` and not `idempotent!`
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/325291
     deduplicate :until_executing, including_scheduled: true
-    data_consistency :delayed, feature_flag: :delayed_consistency_for_user_refresh_over_range_worker
+    data_consistency :delayed
 
     def perform(start_user_id, end_user_id)
-      if Feature.enabled?(:periodic_project_authorization_update_via_replica)
-        User.where(id: start_user_id..end_user_id).find_each do |user| # rubocop: disable CodeReuse/ActiveRecord
-          enqueue_project_authorizations_refresh(user) if project_authorizations_needs_refresh?(user)
-        end
-      else
-        use_primary_database
-        AuthorizedProjectUpdate::RecalculateForUserRangeService.new(start_user_id, end_user_id).execute
+      User.where(id: start_user_id..end_user_id).find_each do |user| # rubocop: disable CodeReuse/ActiveRecord
+        enqueue_project_authorizations_refresh(user) if project_authorizations_needs_refresh?(user)
       end
     end
 
     private
-
-    def use_primary_database
-      if ::Gitlab::Database::LoadBalancing.enable?
-        ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
-      end
-    end
 
     def project_authorizations_needs_refresh?(user)
       AuthorizedProjectUpdate::FindRecordsDueForRefreshService.new(user).needs_refresh?

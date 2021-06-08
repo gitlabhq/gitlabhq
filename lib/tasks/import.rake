@@ -38,7 +38,7 @@ class GithubImport
     puts "This will import GitHub #{@repo.full_name.bright} into GitLab #{@project_path.bright} as #{@current_user.name}"
     puts "Permission checks are ignored. Press any key to continue.".color(:red)
 
-    STDIN.getch
+    $stdin.getch
 
     puts 'Starting the import (this could take a while)'.color(:green)
   end
@@ -131,7 +131,7 @@ class GithubRepos
   end
 
   def repo_id
-    @repo_id ||= STDIN.gets.chomp.to_i
+    @repo_id ||= $stdin.gets.chomp.to_i
   end
 
   def repos

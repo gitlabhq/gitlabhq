@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'generator_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::SnowplowEventDefinitionGenerator do
+RSpec.describe Gitlab::SnowplowEventDefinitionGenerator, :silence_stdout do
   let(:ce_temp_dir) { Dir.mktmpdir }
   let(:ee_temp_dir) { Dir.mktmpdir }
   let(:generator_options) { { 'category' => 'Groups::EmailCampaignsController', 'action' => 'click' } }

@@ -42,7 +42,7 @@ namespace :gitlab do
     namespace :secret do
       desc 'GitLab | LDAP | Secret | Write LDAP secrets'
       task write: [:environment] do
-        content = STDIN.tty? ? STDIN.gets : STDIN.read
+        content = $stdin.tty? ? $stdin.gets : $stdin.read
         Gitlab::EncryptedLdapCommand.write(content)
       end
 

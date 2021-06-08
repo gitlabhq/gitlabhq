@@ -100,7 +100,7 @@ Rails.cache.instance_variable_get(:@data).keys
 
 ```ruby
 # Before 11.6.0
-logger = Logger.new(STDOUT)
+logger = Logger.new($stdout)
 admin_token = User.find_by_username('ADMIN_USERNAME').personal_access_tokens.first.token
 app.get("URL/?private_token=#{admin_token}")
 
@@ -113,7 +113,7 @@ Gitlab::Profiler.with_user(admin) { app.get(url) }
 ## Using the GitLab profiler inside console (used as of 10.5)
 
 ```ruby
-logger = Logger.new(STDOUT)
+logger = Logger.new($stdout)
 admin = User.find_by_username('ADMIN_USERNAME')
 Gitlab::Profiler.profile('URL', logger: logger, user: admin)
 ```

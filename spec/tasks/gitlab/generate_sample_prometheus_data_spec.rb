@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:generate_sample_prometheus_data rake task' do
+RSpec.describe 'gitlab:generate_sample_prometheus_data rake task', :silence_stdout do
   let(:cluster) { create(:cluster, :provided_by_user, :project) }
   let(:environment) { create(:environment, project: cluster.project) }
   let(:sample_query_file) { File.join(Rails.root, Metrics::SampleMetricsService::DIRECTORY, 'test_query_result.yml') }

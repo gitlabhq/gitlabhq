@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rake_helper'
 
-RSpec.describe SystemCheck::SimpleExecutor do
+RSpec.describe SystemCheck::SimpleExecutor, :silence_stdout do
   before do
     stub_const('SimpleCheck', Class.new(SystemCheck::BaseCheck))
     stub_const('OtherCheck', Class.new(SystemCheck::BaseCheck))
@@ -154,8 +153,6 @@ RSpec.describe SystemCheck::SimpleExecutor do
 
   describe '#execute' do
     before do
-      silence_output
-
       subject << SimpleCheck
       subject << OtherCheck
     end

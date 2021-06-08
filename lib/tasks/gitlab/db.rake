@@ -209,7 +209,7 @@ namespace :gitlab do
         raise "Index not found or not supported: #{args[:index_name]}" if indexes.empty?
       end
 
-      ActiveRecord::Base.logger = Logger.new(STDOUT) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
+      ActiveRecord::Base.logger = Logger.new($stdout) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
 
       Gitlab::Database::Reindexing.perform(indexes)
     rescue StandardError => e

@@ -33,6 +33,23 @@ export const mockLabels = [
   },
 ];
 
+export const mockCollapsedLabels = [
+  {
+    id: 26,
+    title: 'Foo Label',
+    description: 'Foobar',
+    color: '#BADA55',
+    text_color: '#FFFFFF',
+  },
+  {
+    id: 27,
+    title: 'Foo::Bar',
+    description: 'Foobar',
+    color: '#0033CC',
+    text_color: '#FFFFFF',
+  },
+];
+
 export const mockConfig = {
   allowLabelEdit: true,
   allowLabelCreate: true,

@@ -369,6 +369,16 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 14.0.0
+
+In GitLab 13.3 some [pipeline processing methods were deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/218536)
+and this code was completely removed in GitLab 14.0. If you plan to upgrade from
+**GitLab 13.2 or older** directly to 14.0, you should not have any pipelines running
+when you upgrade. The pipelines might report the wrong status when the upgrade completes.
+You should shut down GitLab and wait for all pipelines on runners to complete, then upgrade
+GitLab to 14.0. Alternatively, you can first upgrade GitLab to a version between 13.3 and
+13.12, then upgrade to 14.0.
+
 ### 13.11.0
 
 Git 2.31.x and later is required. We recommend you use the

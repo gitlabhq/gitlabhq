@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'clearing redis cache', :clean_gitlab_redis_cache do
+RSpec.describe 'clearing redis cache', :clean_gitlab_redis_cache, :silence_stdout do
   before do
     Rake.application.rake_require 'tasks/cache'
   end

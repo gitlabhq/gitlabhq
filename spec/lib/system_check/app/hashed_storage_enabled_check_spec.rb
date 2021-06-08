@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rake_helper'
 
-RSpec.describe SystemCheck::App::HashedStorageEnabledCheck do
-  before do
-    silence_output
-  end
-
+RSpec.describe SystemCheck::App::HashedStorageEnabledCheck, :silence_stdout do
   describe '#check?' do
     it 'fails when hashed storage is disabled' do
       stub_application_setting(hashed_storage_enabled: false)

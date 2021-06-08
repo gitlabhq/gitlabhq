@@ -30,6 +30,24 @@ let renderedMermaidBlocks = 0;
 
 let mermaidModule = {};
 
+// Whitelist pages where we won't impose any restrictions
+// on mermaid rendering
+const WHITELISTED_PAGES = [
+  // Group wiki
+  'groups:wikis:show',
+  'groups:wikis:edit',
+  'groups:wikis:create',
+
+  // Project wiki
+  'projects:wikis:show',
+  'projects:wikis:edit',
+  'projects:wikis:create',
+
+  // Project files
+  'projects:show',
+  'projects:blob:show',
+];
+
 export function initMermaid(mermaid) {
   let theme = 'neutral';
 
@@ -120,8 +138,10 @@ function renderMermaidEl(el) {
 function renderMermaids($els) {
   if (!$els.length) return;
 
+  const pageName = document.querySelector('body').dataset.page;
+
   // A diagram may have been truncated in search results which will cause errors, so abort the render.
-  if (document.querySelector('body').dataset.page === 'search:show') return;
+  if (pageName === 'search:show') return;
 
   importMermaidModule()
     .then(() => {
@@ -140,10 +160,11 @@ function renderMermaids($els) {
          * up the entire thread and causing a DoS.
          */
         if (
-          (source && source.length > MAX_CHAR_LIMIT) ||
-          renderedChars > MAX_CHAR_LIMIT ||
-          renderedMermaidBlocks >= MAX_MERMAID_BLOCK_LIMIT ||
-          shouldLazyLoadMermaidBlock(source)
+          !WHITELISTED_PAGES.includes(pageName) &&
+          ((source && source.length > MAX_CHAR_LIMIT) ||
+            renderedChars > MAX_CHAR_LIMIT ||
+            renderedMermaidBlocks >= MAX_MERMAID_BLOCK_LIMIT ||
+            shouldLazyLoadMermaidBlock(source))
         ) {
           const html = `
           <div class="alert gl-alert gl-alert-warning alert-dismissible lazy-render-mermaid-container js-lazy-render-mermaid-container fade show" role="alert">

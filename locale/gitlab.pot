@@ -11339,9 +11339,6 @@ msgstr ""
 msgid "DevopsAdoption|MRs"
 msgstr ""
 
-msgid "DevopsAdoption|Maximum %{maxSegments} groups allowed"
-msgstr ""
-
 msgid "DevopsAdoption|My group"
 msgstr ""
 

@@ -1,9 +1,9 @@
 import Vue from 'vue';
 
 import mountComponent from 'helpers/vue_mount_component_helper';
-import dropdownValueCollapsedComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_value_collapsed.vue';
+import dropdownValueCollapsedComponent from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_value_collapsed.vue';
 
-import { mockLabels } from './mock_data';
+import { mockCollapsedLabels as mockLabels } from './mock_data';
 
 const createComponent = (labels = mockLabels) => {
   const Component = Vue.extend(dropdownValueCollapsedComponent);

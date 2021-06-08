@@ -5,7 +5,7 @@ import Vuex, { mapState, mapActions, mapGetters } from 'vuex';
 import { isInViewport } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 
-import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select/dropdown_value_collapsed.vue';
+import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_value_collapsed.vue';
 
 import { DropdownVariant } from './constants';
 import DropdownButton from './dropdown_button.vue';

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rake'
 
-RSpec.describe 'gitlab:db namespace rake task' do
+RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   before :all do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'

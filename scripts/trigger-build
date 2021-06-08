@@ -419,7 +419,7 @@ module Trigger
           raise "#{self.class.unscoped_class_name} did not succeed!"
         end
 
-        STDOUT.flush
+        $stdout.flush
       end
 
       raise "#{self.class.unscoped_class_name} timed out after waiting for #{duration} minutes!"

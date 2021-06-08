@@ -255,12 +255,8 @@ batches instead of doing this one by one:
 class ScheduleExtractServicesUrl < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
-  class Service < ActiveRecord::Base
-    self.table_name = 'services'
-  end
-
   def up
-    Service.select(:id).in_batches do |relation|
+    define_batchable_model('services').select(:id).in_batches do |relation|
       jobs = relation.pluck(:id).map do |id|
         ['ExtractServicesUrl', [id]]
       end
@@ -286,18 +282,12 @@ this:
 class ConsumeRemainingExtractServicesUrlJobs < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
-  class Service < ActiveRecord::Base
-    include ::EachBatch
-
-    self.table_name = 'services'
-  end
-
   def up
     # This must be included
     Gitlab::BackgroundMigration.steal('ExtractServicesUrl')
 
     # This should be included, but can be skipped - see below
-    Service.where(url: nil).each_batch(of: 50) do |batch|
+    define_batchable_model('services').where(url: nil).each_batch(of: 50) do |batch|
       range = batch.pluck('MIN(id)', 'MAX(id)').first
 
       Gitlab::BackgroundMigration::ExtractServicesUrl.new.perform(*range)

@@ -742,11 +742,6 @@ Style/ExplicitBlockArgument:
 Style/FormatString:
   Enabled: false
 
-# Offense count: 67
-# Cop supports --auto-correct.
-Style/GlobalStdStream:
-  Enabled: false
-
 # Offense count: 897
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:

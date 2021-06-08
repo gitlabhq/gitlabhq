@@ -20,7 +20,7 @@ module QA
       end
 
       def run
-        STDOUT.puts 'Running...'
+        $stdout.puts 'Running...'
 
         # Fetch group's id
         group_id = fetch_group_id
@@ -29,16 +29,16 @@ module QA
         total_sub_group_pages = sub_groups_head_response.headers[:x_total_pages]
 
         sub_group_ids = fetch_subgroup_ids(group_id, total_sub_group_pages)
-        STDOUT.puts "Number of Sub Groups not already marked for deletion: #{sub_group_ids.length}"
+        $stdout.puts "Number of Sub Groups not already marked for deletion: #{sub_group_ids.length}"
 
         delete_subgroups(sub_group_ids) unless sub_group_ids.empty?
-        STDOUT.puts "\nDone"
+        $stdout.puts "\nDone"
       end
 
       private
 
       def delete_subgroups(sub_group_ids)
-        STDOUT.puts "Deleting #{sub_group_ids.length} subgroups..."
+        $stdout.puts "Deleting #{sub_group_ids.length} subgroups..."
         sub_group_ids.each do |subgroup_id|
           delete_response = delete Runtime::API::Request.new(@api_client, "/groups/#{subgroup_id}").url
           dot_or_f = delete_response.code == 202 ? "\e[32m.\e[0m" : "\e[31mF\e[0m"

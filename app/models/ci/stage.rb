@@ -7,6 +7,9 @@ module Ci
     include Ci::HasStatus
     include Gitlab::OptimisticLocking
     include Presentable
+    include IgnorableColumns
+
+    ignore_column :id_convert_to_bigint, remove_with: '14.2', remove_after: '2021-08-22'
 
     enum status: Ci::HasStatus::STATUSES_ENUM
 

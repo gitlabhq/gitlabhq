@@ -358,8 +358,17 @@ RSpec.describe API::Tags do
         expect(json_response['message']).to eq('Target foo is invalid')
       end
 
-      context 'lightweight tags with release notes' do
-        it 'creates a new tag' do
+      context 'when release_description is passed' do
+        it 'returns error' do
+          post api(route, current_user), params: { tag_name: tag_name, ref: 'master', release_description: 'Wow' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response["message"]).to eq("Release notes modification via tags API is deprecated, see https://gitlab.com/gitlab-org/gitlab/-/issues/290311")
+        end
+
+        it 'creates a new tag with release if feature is enabled' do
+          stub_feature_flags(remove_release_notes_from_tags_api: false)
+
           post api(route, current_user), params: { tag_name: tag_name, ref: 'master', release_description: 'Wow' }
 
           expect(response).to have_gitlab_http_status(:created)
@@ -445,6 +454,10 @@ RSpec.describe API::Tags do
     let(:route) { "/projects/#{project_id}/repository/tags/#{tag_name}/release" }
     let(:description) { 'Awesome release!' }
 
+    before do
+      stub_feature_flags(remove_release_notes_from_tags_api: false)
+    end
+
     shared_examples_for 'repository new release' do
       it 'creates description for existing git tag' do
         post api(route, user), params: { description: description }
@@ -453,6 +466,15 @@ RSpec.describe API::Tags do
         expect(response).to match_response_schema('public_api/v4/release/tag_release')
         expect(json_response['tag_name']).to eq(tag_name)
         expect(json_response['description']).to eq(description)
+      end
+
+      it 'returns error if feature is removed' do
+        stub_feature_flags(remove_release_notes_from_tags_api: true)
+
+        post api(route, user), params: { description: description }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response["message"]).to eq("Release notes modification via tags API is deprecated, see https://gitlab.com/gitlab-org/gitlab/-/issues/290311")
       end
 
       context 'when tag does not exist' do
@@ -502,6 +524,10 @@ RSpec.describe API::Tags do
     let(:description) { 'Awesome release!' }
     let(:new_description) { 'The best release!' }
 
+    before do
+      stub_feature_flags(remove_release_notes_from_tags_api: false)
+    end
+
     shared_examples_for 'repository update release' do
       context 'on tag with existing release' do
         let!(:release) do
@@ -518,6 +544,15 @@ RSpec.describe API::Tags do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['tag_name']).to eq(tag_name)
           expect(json_response['description']).to eq(new_description)
+        end
+
+        it 'returns error if feature is removed' do
+          stub_feature_flags(remove_release_notes_from_tags_api: true)
+
+          put api(route, current_user), params: { description: new_description }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response["message"]).to eq("Release notes modification via tags API is deprecated, see https://gitlab.com/gitlab-org/gitlab/-/issues/290311")
         end
       end
 

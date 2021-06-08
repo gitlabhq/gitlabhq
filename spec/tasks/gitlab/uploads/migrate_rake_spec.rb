@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
+RSpec.describe 'gitlab:uploads:migrate and migrate_to_local rake tasks', :silence_stdout do
   let(:model_class) { nil }
   let(:uploader_class) { nil }
   let(:mounted_as) { nil }

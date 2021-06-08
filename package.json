@@ -142,7 +142,7 @@
     "lodash": "^4.17.20",
     "marked": "^0.3.12",
     "mathjax": "3",
-    "mermaid": "^8.9.2",
+    "mermaid": "^8.10.2",
     "minimatch": "^3.0.4",
     "monaco-editor": "^0.20.0",
     "monaco-editor-webpack-plugin": "^1.9.1",

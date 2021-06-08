@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-module BoardIssueFilterable
+module BoardItemFilterable
   extend ActiveSupport::Concern
 
   private
 
-  def issue_filters(args)
+  def item_filters(args)
     filters = args.to_h
 
     set_filter_values(filters)
@@ -32,4 +32,4 @@ module BoardIssueFilterable
   end
 end
 
-::BoardIssueFilterable.prepend_mod_with('Resolvers::BoardIssueFilterable')
+::BoardItemFilterable.prepend_mod_with('Resolvers::BoardItemFilterable')

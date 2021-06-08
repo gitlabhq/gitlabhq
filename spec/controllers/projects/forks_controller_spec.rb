@@ -211,11 +211,7 @@ RSpec.describe Projects::ForksController do
 
             create(:group, :public).add_owner(user)
 
-            # TODO: There is another N+1 caused by user.can?(:create_projects, namespace)
-            # Defined in ForkNamespaceEntity
-            extra_count = 1
-
-            expect { do_request.call }.not_to exceed_query_limit(control.count + extra_count)
+            expect { do_request.call }.not_to exceed_query_limit(control)
           end
         end
       end

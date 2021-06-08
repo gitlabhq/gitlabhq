@@ -46,7 +46,7 @@ Let's enable debug logging for Active Record so we can see the underlying
 database queries made:
 
 ```ruby
-ActiveRecord::Base.logger = Logger.new(STDOUT)
+ActiveRecord::Base.logger = Logger.new($stdout)
 ```
 
 Now, let's try retrieving a user from the database:

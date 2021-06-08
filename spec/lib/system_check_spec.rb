@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rake_helper'
 
-RSpec.describe SystemCheck do
+RSpec.describe SystemCheck, :silence_stdout do
   before do
     stub_const('SimpleCheck', Class.new(SystemCheck::BaseCheck))
     stub_const('OtherCheck', Class.new(SystemCheck::BaseCheck))
@@ -19,8 +18,6 @@ RSpec.describe SystemCheck do
         false
       end
     end
-
-    silence_output
   end
 
   describe '.run' do

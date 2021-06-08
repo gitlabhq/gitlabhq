@@ -35,7 +35,7 @@ namespace :gitlab do
     end
 
     def logger
-      @logger ||= Logger.new(STDOUT)
+      @logger ||= Logger.new($stdout)
     end
 
     def migration_threads
@@ -60,7 +60,7 @@ namespace :gitlab do
 
     namespace :deployments do
       task migrate_to_object_storage: :gitlab_environment do
-        logger = Logger.new(STDOUT)
+        logger = Logger.new($stdout)
 
         helper = Gitlab::LocalAndRemoteStorageMigration::PagesDeploymentMigrater.new(logger)
 
@@ -72,7 +72,7 @@ namespace :gitlab do
       end
 
       task migrate_to_local: :gitlab_environment do
-        logger = Logger.new(STDOUT)
+        logger = Logger.new($stdout)
 
         helper = Gitlab::LocalAndRemoteStorageMigration::PagesDeploymentMigrater.new(logger)
 
