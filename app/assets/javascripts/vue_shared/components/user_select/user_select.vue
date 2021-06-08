@@ -113,7 +113,7 @@ export default {
       update(data) {
         // TODO Remove null filter (BE fix required)
         // https://gitlab.com/gitlab-org/gitlab/-/issues/329750
-        return data.workspace?.users?.nodes.filter((x) => x).map(({ user }) => user) || [];
+        return data.workspace?.users?.nodes.filter((x) => x?.user).map(({ user }) => user) || [];
       },
       debounce: ASSIGNEES_DEBOUNCE_DELAY,
       error({ graphQLErrors }) {

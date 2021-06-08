@@ -106,7 +106,7 @@ export function formatDateAsMonth(datetime, options = {}) {
 
 /**
  * @example
- * dateFormat('2017-12-05','mmm d, yyyy h:MMtt Z' ) -> "Dec 5, 2017 12:00am GMT+0000"
+ * dateFormat('2017-12-05','mmm d, yyyy h:MMtt Z' ) -> "Dec 5, 2017 12:00am UTC"
  * @param {date} datetime
  * @param {String} format
  * @param {Boolean} UTC convert local time to UTC

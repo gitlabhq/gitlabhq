@@ -336,7 +336,7 @@ describe('IssuableItem', () => {
       const createdAtEl = wrapper.find('[data-testid="issuable-created-at"]');
 
       expect(createdAtEl.exists()).toBe(true);
-      expect(createdAtEl.attributes('title')).toBe('Jun 29, 2020 1:52pm GMT+0000');
+      expect(createdAtEl.attributes('title')).toBe('Jun 29, 2020 1:52pm UTC');
       expect(createdAtEl.text()).toBe(wrapper.vm.createdAt);
     });
 
@@ -450,7 +450,7 @@ describe('IssuableItem', () => {
       const updatedAtEl = wrapper.find('[data-testid="issuable-updated-at"]');
 
       expect(updatedAtEl.exists()).toBe(true);
-      expect(updatedAtEl.find('span').attributes('title')).toBe('Sep 10, 2020 11:41am GMT+0000');
+      expect(updatedAtEl.find('span').attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
       expect(updatedAtEl.text()).toBe(wrapper.vm.updatedAt);
     });
 

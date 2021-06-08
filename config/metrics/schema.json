@@ -55,7 +55,7 @@
     },
     "data_source": {
       "type": "string",
-      "enum": ["database", "redis", "redis_hll", "prometheus", "system"]
+      "enum": ["database", "redis", "redis_hll", "prometheus", "system", "license"]
     },
     "instrumentation_class": {
       "type": "string",

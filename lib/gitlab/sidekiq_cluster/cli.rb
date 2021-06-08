@@ -47,12 +47,6 @@ module Gitlab
 
         option_parser.parse!(argv)
 
-        # Remove with https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/646
-        if @queue_selector && @experimental_queue_selector
-          raise CommandError,
-            'You cannot specify --queue-selector and --experimental-queue-selector together'
-        end
-
         worker_metadatas = SidekiqConfig::CliMethods.worker_metadatas(@rails_path)
         worker_queues = SidekiqConfig::CliMethods.worker_queues(@rails_path)
 
@@ -63,8 +57,7 @@ module Gitlab
           # as a worker attribute query, and resolve the queues for the
           # queue group using this query.
 
-          # Simplify with https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/646
-          if @queue_selector || @experimental_queue_selector
+          if @queue_selector
             SidekiqConfig::CliMethods.query_queues(queues_or_query_string, worker_metadatas)
           else
             SidekiqConfig::CliMethods.expand_queues(queues_or_query_string.split(','), worker_queues)
@@ -192,11 +185,6 @@ module Gitlab
 
           opt.on('--queue-selector', 'Run workers based on the provided selector') do |queue_selector|
             @queue_selector = queue_selector
-          end
-
-          # Remove with https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/646
-          opt.on('--experimental-queue-selector', 'DEPRECATED: use --queue-selector-instead') do |experimental_queue_selector|
-            @experimental_queue_selector = experimental_queue_selector
           end
 
           opt.on('-n', '--negate', 'Run workers for all queues in sidekiq_queues.yml except the given ones') do

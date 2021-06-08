@@ -64,7 +64,7 @@ describe('JiraImportProgress', () => {
     });
 
     it('shows the time of import', () => {
-      expect(getParagraphText()).toContain('Time of import: Apr 8, 2020 12:17pm GMT+0000');
+      expect(getParagraphText()).toContain('Time of import: Apr 8, 2020 12:17pm UTC');
     });
 
     it('shows the project key of the import', () => {

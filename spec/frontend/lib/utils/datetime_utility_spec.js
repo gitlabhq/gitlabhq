@@ -101,13 +101,13 @@ describe('Date time utils', () => {
     it('should format date properly', () => {
       const formattedDate = datetimeUtility.formatDate(new Date('07/23/2016'));
 
-      expect(formattedDate).toBe('Jul 23, 2016 12:00am GMT+0000');
+      expect(formattedDate).toBe('Jul 23, 2016 12:00am UTC');
     });
 
     it('should format ISO date properly', () => {
       const formattedDate = datetimeUtility.formatDate('2016-07-23T00:00:00.559Z');
 
-      expect(formattedDate).toBe('Jul 23, 2016 12:00am GMT+0000');
+      expect(formattedDate).toBe('Jul 23, 2016 12:00am UTC');
     });
 
     it('should throw an error if date is invalid', () => {
@@ -878,7 +878,7 @@ describe('localTimeAgo', () => {
   it.each`
     timeagoArg | title
     ${false}   | ${'some time'}
-    ${true}    | ${'Feb 18, 2020 10:22pm GMT+0000'}
+    ${true}    | ${'Feb 18, 2020 10:22pm UTC'}
   `('converts $seconds seconds to $approximation', ({ timeagoArg, title }) => {
     const element = document.querySelector('time');
     datetimeUtility.localTimeAgo($(element), timeagoArg);

@@ -164,6 +164,11 @@
   category: code_review
   aggregation: weekly
 # Diff settings events
+- name: i_code_review_click_diff_view_setting
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+  feature_flag: diff_settings_usage_data
 - name: i_code_review_click_single_file_mode_setting
   redis_slot: code_review
   category: code_review

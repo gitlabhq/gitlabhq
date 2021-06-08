@@ -35,7 +35,7 @@ describe('User Lists Table', () => {
 
   it('should set the title for a tooltip on the created stamp', () => {
     expect(wrapper.find('[data-testid="ffUserListTimestamp"]').attributes('title')).toBe(
-      'Feb 4, 2020 8:13am GMT+0000',
+      'Feb 4, 2020 8:13am UTC',
     );
   });
 
