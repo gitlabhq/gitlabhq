@@ -875,7 +875,7 @@ License.current.trial?
 
 ### Check if a project feature is available on the instance
 
-Features listed in <https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/license.rb>.
+Features listed in <https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/license.rb>.
 
 ```ruby
 License.current.feature_available?(:jira_dev_panel_integration)
@@ -883,7 +883,7 @@ License.current.feature_available?(:jira_dev_panel_integration)
 
 ### Check if a project feature is available in a project
 
-Features listed in [`license.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/license.rb).
+Features listed in [`license.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/license.rb).
 
 ```ruby
 p = Project.find_by_full_path('<group>/<project>')
@@ -1215,11 +1215,11 @@ Among other attributes, in the output you will notice that all the settings avai
 You can then set anyone of Elasticsearch integration settings by issuing a command similar to:
 
 ```ruby
-ApplicationSetting.last.update_attributes(elasticsearch_url: '<your ES URL and port>')
+ApplicationSetting.last.update(elasticsearch_url: '<your ES URL and port>')
 
 #or
 
-ApplicationSetting.last.update_attributes(elasticsearch_indexing: false)
+ApplicationSetting.last.update(elasticsearch_indexing: false)
 ```
 
 #### Getting attributes

@@ -264,7 +264,7 @@ When using Auto DevOps, you can deploy different environments to
 different Kubernetes clusters, due to the 1:1 connection
 [existing between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters).
 
-The [Deploy Job template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
+The [Deploy Job template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
 used by Auto DevOps currently defines 3 environment names:
 
 - `review/` (every environment starting with `review/`)

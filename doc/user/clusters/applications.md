@@ -1139,7 +1139,7 @@ The chart used to install this application depends on the version of GitLab used
 
 - GitLab 12.3 and newer, the [`jetstack/cert-manager`](https://github.com/jetstack/cert-manager)
   chart is used with a
-  [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/cert_manager/values.yaml)
+  [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/cert_manager/values.yaml)
   file.
 - GitLab 12.2 and older, the
   [`stable/cert-manager`](https://github.com/helm/charts/tree/master/stable/cert-manager)
@@ -1229,7 +1229,7 @@ If the endpoint doesn't appear and your cluster runs on Google Kubernetes Engine
 
 The [`stable/nginx-ingress`](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
 chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/ingress/values.yaml)
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/ingress/values.yaml)
 file.
 
 After installing, you may see a `?` for **Ingress IP Address** depending on the
@@ -1272,7 +1272,7 @@ visualization, and machine learning.
 
 The [`jupyter/jupyterhub`](https://jupyterhub.github.io/helm-chart/)
 chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/jupyter/values.yaml)
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/jupyter/values.yaml)
 file.
 
 Authentication is enabled only for [project members](../project/members/index.md)
@@ -1355,7 +1355,7 @@ from NGINX Ingress.
 
 The [`stable/prometheus`](https://github.com/helm/charts/tree/master/stable/prometheus)
 chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/prometheus/values.yaml)
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/prometheus/values.yaml)
 file.
 
 To enable monitoring, install Prometheus into the cluster with the **Install**
@@ -1421,7 +1421,7 @@ To enable log shipping:
 
 The [`gitlab/elastic-stack`](https://gitlab.com/gitlab-org/charts/elastic-stack)
 chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/elastic_stack/values.yaml)
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/elastic_stack/values.yaml)
 file. The chart deploys three identical Elasticsearch pods which can't be
 colocated, and each requires one CPU and 2 GB of RAM, making them
 incompatible with clusters containing fewer than three nodes, or consisting of
@@ -1483,7 +1483,7 @@ To upgrade an application:
 1. If an upgrade is available, the **Upgrade** button is displayed. Click the button to upgrade.
 
 Upgrades reset values back to the values built into the `runner` chart, plus the values set by
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/runner/values.yaml)
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/runner/values.yaml)
 
 ## Uninstalling applications
 

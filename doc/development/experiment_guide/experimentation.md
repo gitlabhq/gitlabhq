@@ -12,7 +12,7 @@ We recommend using [GLEX](gitlab_experiment.md) for new experiments.
 ## Implement the experiment
 
 1. Add the experiment to the `Gitlab::Experimentation::EXPERIMENTS` hash in
-   [`experimentation.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib%2Fgitlab%2Fexperimentation.rb):
+   [`experimentation.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib%2Fgitlab%2Fexperimentation.rb):
 
    ```ruby
    EXPERIMENTS = {

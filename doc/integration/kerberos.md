@@ -53,7 +53,7 @@ NOTE:
 For source installations, make sure the `kerberos` gem group
 [has been installed](../install/installation.md#install-gems).
 
-1. Edit the `kerberos` section of [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example) to enable Kerberos ticket-based
+1. Edit the `kerberos` section of [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example) to enable Kerberos ticket-based
    authentication. In most cases, you only need to enable Kerberos and specify
    the location of the keytab:
 
@@ -253,7 +253,7 @@ only `basic` authentication.
      listen [::]:8443 ipv6only=on ssl;
    ```
 
-1. Update the `kerberos` section of [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example):
+1. Update the `kerberos` section of [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example):
 
    ```yaml
    kerberos:
@@ -303,7 +303,7 @@ remove the OmniAuth provider named `kerberos` from your `gitlab.yml` /
 
 **For installations from source**
 
-1. Edit [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example) and remove the `- { name: 'kerberos' }` line under OmniAuth
+1. Edit [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example) and remove the `- { name: 'kerberos' }` line under OmniAuth
    providers:
 
    ```yaml

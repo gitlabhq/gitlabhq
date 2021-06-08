@@ -54,7 +54,7 @@ which have to be stubbed.
 - Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/26982).
 - Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default. See also its [limitations](#limitations-of-jsdom) below.
 - Jest does not have access to Webpack loaders or aliases.
-  The aliases used by Jest are defined in its [own configuration](https://gitlab.com/gitlab-org/gitlab/blob/master/jest.config.js).
+  The aliases used by Jest are defined in its [own configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/jest.config.js).
 - All calls to `setTimeout` and `setInterval` are mocked away. See also [Jest Timer Mocks](https://jestjs.io/docs/timer-mocks).
 - `rewire` is not required because Jest supports mocking modules. See also [Manual Mocks](https://jestjs.io/docs/manual-mocks).
 - No [context object](https://jasmine.github.io/tutorials/your_first_suite#section-The_%3Ccode%3Ethis%3C/code%3E_keyword) is passed to tests in Jest.
@@ -83,13 +83,13 @@ Running `yarn jest-debug` runs Jest in debug mode, allowing you to debug/inspect
 ### Timeout error
 
 The default timeout for Jest is set in
-[`/spec/frontend/test_setup.js`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/test_setup.js).
+[`/spec/frontend/test_setup.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/test_setup.js).
 
 If your test exceeds that time, it fails.
 
 If you cannot improve the performance of the tests, you can increase the timeout
 for a specific test using
-[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/__helpers__/timeout.js).
+[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/__helpers__/timeout.js).
 
 ```javascript
 import { setTestTimeout } from 'helpers/timeout';
@@ -386,7 +386,7 @@ Sometimes we have to test time-sensitive code. For example, recurring events tha
 #### `setTimeout()` / `setInterval()` in application
 
 If the application itself is waiting for some time, mock await the waiting. In Jest this is already
-[done by default](https://gitlab.com/gitlab-org/gitlab/blob/a2128edfee799e49a8732bfa235e2c5e14949c68/jest.config.js#L47)
+[done by default](https://gitlab.com/gitlab-org/gitlab/-/blob/a2128edfee799e49a8732bfa235e2c5e14949c68/jest.config.js#L47)
 (see also [Jest Timer Mocks](https://jestjs.io/docs/timer-mocks)). In Karma you can use the
 [Jasmine mock clock](https://jasmine.github.io/api/2.9/Clock.html).
 
@@ -748,7 +748,7 @@ Jest supports [manual module mocks](https://jestjs.io/docs/manual-mocks) by plac
 (e.g. `app/assets/javascripts/ide/__mocks__`). **Don't do this.** We want to keep all of our test-related code in one place (the `spec/` folder).
 
 If a manual mock is needed for a `node_modules` package, use the `spec/frontend/__mocks__` folder. Here's an example of
-a [Jest mock for the package `monaco-editor`](https://gitlab.com/gitlab-org/gitlab/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js#L1).
+a [Jest mock for the package `monaco-editor`](https://gitlab.com/gitlab-org/gitlab/-/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js#L1).
 
 If a manual mock is needed for a CE module, place it in `spec/frontend/mocks/ce`.
 
@@ -759,12 +759,12 @@ If a manual mock is needed for a CE module, place it in `spec/frontend/mocks/ce`
 
 #### Manual mock examples
 
-- [`mocks/axios_utils`](https://gitlab.com/gitlab-org/gitlab/blob/bd20aeb64c4eed117831556c54b40ff4aee9bfd1/spec/frontend/mocks/ce/lib/utils/axios_utils.js#L1) -
+- [`mocks/axios_utils`](https://gitlab.com/gitlab-org/gitlab/-/blob/bd20aeb64c4eed117831556c54b40ff4aee9bfd1/spec/frontend/mocks/ce/lib/utils/axios_utils.js#L1) -
   This mock is helpful because we don't want any unmocked requests to pass any tests. Also, we are able to inject some test helpers such as `axios.waitForAll`.
-- [`__mocks__/mousetrap/index.js`](https://gitlab.com/gitlab-org/gitlab/blob/cd4c086d894226445be9d18294a060ba46572435/spec/frontend/__mocks__/mousetrap/index.js#L1) -
+- [`__mocks__/mousetrap/index.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/cd4c086d894226445be9d18294a060ba46572435/spec/frontend/__mocks__/mousetrap/index.js#L1) -
   This mock is helpful because the module itself uses AMD format which webpack understands, but is incompatible with the jest environment. This mock doesn't remove
   any behavior, only provides a nice es6 compatible wrapper.
-- [`__mocks__/monaco-editor/index.js`](https://gitlab.com/gitlab-org/gitlab/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js) -
+- [`__mocks__/monaco-editor/index.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js) -
   This mock is helpful because the Monaco package is completely incompatible in a Jest environment. In fact, webpack requires a special loader to make it work. This mock
   makes this package consumable by Jest.
 
@@ -1109,7 +1109,7 @@ See also [Notes on testing Vue components](../fe_guide/vue.md#testing-vue-compon
 
 ## Test helpers
 
-Test helpers can be found in [`spec/frontend/__helpers__`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/__helpers__).
+Test helpers can be found in [`spec/frontend/__helpers__`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/__helpers__).
 If you introduce new helpers, place them in that directory.
 
 ### Vuex Helper: `testAction`

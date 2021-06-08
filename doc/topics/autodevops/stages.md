@@ -349,7 +349,7 @@ project ID, such as `project-4321`.
 
 Auto Deploy does not include deployments to staging or canary environments by
 default, but the
-[Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
+[Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 contains job definitions for these tasks if you want to enable them.
 
 You can use [CI/CD variables](customize.md#cicd-variables) to automatically

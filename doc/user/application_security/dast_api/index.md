@@ -86,7 +86,7 @@ the body generation is limited to these body types:
 Follow these steps to configure DAST API in GitLab with an OpenAPI specification:
 
 1. To use DAST API, you must [include](../../../ci/yaml/README.md#includetemplate)
-   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
+   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
    that's provided as part of your GitLab installation. Add the following to your
    `.gitlab-ci.yml` file:
 
@@ -137,7 +137,7 @@ Follow these steps to configure DAST API in GitLab with an OpenAPI specification
    dynamic environments. To run DAST API against an app dynamically created during a GitLab CI/CD
    pipeline, have the app persist its URL in an `environment_url.txt` file. DAST API
    automatically parses that file to find its scan target. You can see an
-   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
+   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
    Here's an example of using `DAST_API_TARGET_URL`:
 
@@ -185,7 +185,7 @@ Follow these steps to configure DAST API to use a HAR file that provides informa
 target API to test:
 
 1. To use DAST API, you must [include](../../../ci/yaml/README.md#includetemplate)
-   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
+   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
    that's provided as part of your GitLab installation. To do so, add the following to your
    `.gitlab-ci.yml` file:
 
@@ -236,7 +236,7 @@ target API to test:
    dynamic environments. To run DAST API against an app dynamically created during a GitLab CI/CD
    pipeline, have the app persist its URL in an `environment_url.txt` file. DAST API
    automatically parses that file to find its scan target. You can see an
-   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
+   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
    Here's an example of using `DAST_API_TARGET_URL`:
 
@@ -285,7 +285,7 @@ Follow these steps to configure DAST API to use a Postman Collection file that p
 information about the target API to test:
 
 1. To use DAST API, you must [include](../../../ci/yaml/README.md#includetemplate)
-   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
+   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
    that's provided as part of your GitLab installation. To do so, add the following to your
    `.gitlab-ci.yml` file:
 
@@ -335,7 +335,7 @@ information about the target API to test:
    dynamic environments. To run DAST API against an app dynamically created during a GitLab CI/CD
    pipeline, have the app persist its URL in an `environment_url.txt` file. DAST API
    automatically parses that file to find its scan target. You can see an
-   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
+   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
    Here's an example of using `DAST_API_TARGET_URL`:
 
@@ -1119,7 +1119,7 @@ The DAST API engine outputs an error message when it cannot establish a connecti
 **Solution**
 
 - Remove the `DAST_API_API` variable from the `.gitlab-ci.yml` file. The value will be inherited from the DAST API CI/CD template. We recommend this method instead of manually setting a value.
-- If removing the variable is not possible, check to see if this value has changed in the latest version of the [DAST API CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
+- If removing the variable is not possible, check to see if this value has changed in the latest version of the [DAST API CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
 
 ### Application cannot determine the base URL for the target API
 

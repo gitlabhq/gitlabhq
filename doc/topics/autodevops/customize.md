@@ -176,7 +176,7 @@ to the desired environment. See [Limit environment scope of CI/CD variables](../
 ## Customizing `.gitlab-ci.yml`
 
 Auto DevOps is completely customizable because the
-[Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
+[Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 is just an implementation of a [`.gitlab-ci.yml`](../../ci/yaml/README.md) file,
 and uses only features available to any implementation of `.gitlab-ci.yml`.
 
@@ -191,11 +191,11 @@ include:
 ```
 
 Add your changes, and your additions are merged with the
-[Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
+[Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 using the behavior described for [`include`](../../ci/yaml/README.md#include).
 
 If you need to specifically remove a part of the file, you can also copy and paste the contents of the
-[Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
+[Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 into your project and edit it as needed.
 
 ## Customizing the Kubernetes namespace
@@ -241,7 +241,7 @@ include:
   - template: Jobs/Build.gitlab-ci.yml
 ```
 
-See the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) for information on available jobs.
+See the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) for information on available jobs.
 
 WARNING:
 Auto DevOps templates using the [`only`](../../ci/yaml/README.md#only--except) or

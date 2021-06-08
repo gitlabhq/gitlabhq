@@ -15,7 +15,7 @@ to access them as we do in Rails views), local variables are fine.
 
 ## Entities
 
-Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/entities) to present the endpoint's payload.
+Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/entities) to present the endpoint's payload.
 
 ## Documentation
 
@@ -28,7 +28,7 @@ See the [Documentation Style Guide RESTful API page](documentation/restful_api_s
 ## Methods and parameters description
 
 Every method must be described using the [Grape DSL](https://github.com/ruby-grape/grape#describing-methods)
-(see [`environments.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/environments.rb)
+(see [`environments.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/environments.rb)
 for a good example):
 
 - `desc` for the method summary. You should pass it a block for additional
@@ -252,7 +252,7 @@ A standard way to do this within the API is for models to implement a
 scope called `with_api_entity_associations` that preloads the
 associations and data returned in the API. An example of this scope can
 be seen in
-[the `Issue` model](https://gitlab.com/gitlab-org/gitlab/blob/2fedc47b97837ea08c3016cf2fb773a0300a4a25/app%2Fmodels%2Fissue.rb#L62).
+[the `Issue` model](https://gitlab.com/gitlab-org/gitlab/-/blob/2fedc47b97837ea08c3016cf2fb773a0300a4a25/app%2Fmodels%2Fissue.rb#L62).
 
 In situations where the same model has multiple entities in the API
 (for instance, `UserBasic`, `User` and `UserPublic`) you should use your
@@ -260,7 +260,7 @@ discretion with applying this scope. It may be that you optimize for the
 most basic entity, with successive entities building upon that scope.
 
 The `with_api_entity_associations` scope also [automatically preloads
-data](https://gitlab.com/gitlab-org/gitlab/blob/19f74903240e209736c7668132e6a5a735954e7c/app%2Fmodels%2Ftodo.rb#L34)
+data](https://gitlab.com/gitlab-org/gitlab/-/blob/19f74903240e209736c7668132e6a5a735954e7c/app%2Fmodels%2Ftodo.rb#L34)
 for `Todo` _targets_ when returned in the [to-dos API](../api/todos.md).
 
 For more context and discussion about preloading see

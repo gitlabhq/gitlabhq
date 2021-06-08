@@ -12,7 +12,7 @@ file, as well as information and history about our changelog process.
 ## Overview
 
 Each bullet point, or **entry**, in our
-[`CHANGELOG.md`](https://gitlab.com/gitlab-org/gitlab/blob/master/CHANGELOG.md)
+[`CHANGELOG.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md)
 file is generated from the subject line of a Git commit. Commits are included
 when they contain the `Changelog` [Git trailer](https://git-scm.com/docs/git-interpret-trailers).
 When generating the changelog, author and merge request details are added

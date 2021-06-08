@@ -14,7 +14,7 @@ Prevent submitting forms with no changes.
 
 Currently handles `input`, `textarea` and `select` elements.
 
-Also, see [the code](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/dirty_submit/)
+Also, see [the code](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/dirty_submit/)
 within the GitLab project.
 
 ## Usage

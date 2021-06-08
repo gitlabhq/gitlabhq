@@ -28,5 +28,5 @@ The default value is `300`.
 Requests over the rate limit are logged into the `auth.log` file.
 
 For example, if you set a limit of 300, requests using the
-[Projects::NotesController#create](https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/projects/notes_controller.rb)
+[Projects::NotesController#create](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/projects/notes_controller.rb)
 action exceeding a rate of 300 per minute are blocked. Access to the endpoint is allowed after one minute.

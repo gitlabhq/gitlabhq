@@ -95,6 +95,56 @@ gitops:
     - glob: '/**/*.{yaml,yml,json}'
 ```
 
+### Using multiple manifest projects
+
+Storing Kubernetes manifests in more than one repository can be handy, for example:
+
+- You may store manifests for different applications in separate repositories.
+- Different teams can work on manifests of independent projects in separate repositories.
+
+To use multiple repositories as the source of Kubernetes manifests, specify them in the list of
+`manifest_projects` in your `config.yaml`:
+
+```yaml
+gitops:
+  manifest_projects:
+  - id: group1/project1
+  - id: group2/project2
+```
+
+Note that repositories are synchronized **concurrently** and **independently** from each other,
+which means that, ideally, there should **not** be any dependencies shared by these repositories.
+Storing a logical group of manifests in a single repository may work better than distributing it across several
+repositories.
+
+You cannot use a single repository as a source for multiple concurrent synchronization
+operations. If such functionality is needed, you may use multiple agents reading
+manifests from the same repository.
+
+Ensure not to specify "overlapping" globs to avoid synchronizing the same files more than once.
+This is detected by the GitLab Kubernetes Agent and leads to an error.
+
+INCORRECT - both globs match `*.yaml` files in the root directory:
+
+```yaml
+gitops:
+  manifest_projects:
+  - id: project1    
+    paths:
+    - glob: '/**/*.yaml'
+    - glob: '/*.yaml'
+```
+
+CORRECT - single globs matches all `*.yaml` files recursively:
+
+```yaml
+gitops:
+  manifest_projects:
+  - id: project1    
+    paths:
+    - glob: '/**/*.yaml'
+```
+
 ## Surface network security alerts from cluster to GitLab
 
 The GitLab Agent provides an [integration with Cilium](index.md#kubernetes-network-security-alerts).

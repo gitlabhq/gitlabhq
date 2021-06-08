@@ -141,6 +141,9 @@ export default function setupVueRepositoryList() {
             href: `${historyLink}/${
               this.$route.params.path ? escapeFileUrl(this.$route.params.path) : ''
             }`,
+            // Ideally passing this class to `props` should work
+            // But it doesn't work here. :(
+            class: 'btn btn-default btn-md gl-button ml-sm-0',
           },
         },
         [__('History')],

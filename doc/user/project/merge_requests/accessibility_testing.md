@@ -17,7 +17,7 @@ impact of pending code changes.
 
 GitLab uses [pa11y](https://pa11y.org/), a free and open source tool for
 measuring the accessibility of web sites, and has built a simple
-[CI job template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml).
+[CI job template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml).
 This job outputs accessibility violations, warnings, and notices for each page
 analyzed to a file called `accessibility`.
 
@@ -38,7 +38,7 @@ on your code with GitLab CI/CD using the [GitLab Accessibility Docker image](htt
 
 For GitLab 12.9 and later, to define the `a11y` job, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`Accessibility.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
+[`Accessibility.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
 included with your GitLab installation, as shown below.
 
 Add the following to your `.gitlab-ci.yml` file:

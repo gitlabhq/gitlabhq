@@ -161,7 +161,7 @@ To configure SAST for a project you can:
 ### Configure SAST manually
 
 For GitLab 11.9 and later, to enable SAST you must [include](../../../ci/yaml/README.md#includetemplate)
-the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
+the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
 provided as a part of your GitLab installation. For GitLab versions earlier than 11.9, you
 can copy and use the job as defined that template.
 

@@ -128,6 +128,6 @@ plugins. This allows the community to keep the plugins up to date so that they
 always work in newer GitLab versions.
 
 For an overview of what integrations are available, please see the
-[project_services source directory](https://gitlab.com/gitlab-org/gitlab/tree/master/app/models/project_services).
+[project_services source directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/models/project_services).
 
 Contributions are welcome!

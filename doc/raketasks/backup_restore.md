@@ -373,7 +373,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURREN
 You can let the backup script upload (using the [Fog library](http://fog.io/))
 the `.tar` file it creates. In the following example, we use Amazon S3 for
 storage, but Fog also lets you use [other storage providers](http://fog.io/storage/).
-GitLab also [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L113)
+GitLab also [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab/-/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L113)
 for AWS, Google, OpenStack Swift, Rackspace, and Aliyun. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
 

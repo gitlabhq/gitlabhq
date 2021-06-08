@@ -91,7 +91,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 To enable dependency scanning for GitLab 11.9 and later, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
+[`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
 that is provided as a part of your GitLab installation.
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.

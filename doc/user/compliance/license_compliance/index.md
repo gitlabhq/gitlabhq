@@ -91,7 +91,7 @@ To run a License Compliance scanning job, you need GitLab Runner with the
 
 For GitLab 12.8 and later, to enable License Compliance, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml)
+[`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml)
 that's provided as a part of your GitLab installation.
 For older versions of GitLab from 11.9 to 12.7, you must
 [include](../../../ci/yaml/README.md#includetemplate) the

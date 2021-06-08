@@ -14,8 +14,17 @@ import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
+import Tracking from '~/tracking';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import {
+  WIKI_CONTENT_EDITOR_TRACKING_LABEL,
+  CONTENT_EDITOR_LOADED_ACTION,
+  SAVED_USING_CONTENT_EDITOR_ACTION,
+} from '../constants';
+
+const trackingMixin = Tracking.mixin({
+  label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
+});
 
 const MARKDOWN_LINK_TEXT = {
   markdown: '[Link Title](page-slug)',
@@ -104,7 +113,7 @@ export default {
   directives: {
     GlModalDirective,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [trackingMixin],
   inject: ['formatOptions', 'pageInfo'],
   data() {
     return {
@@ -120,6 +129,10 @@ export default {
     };
   },
   computed: {
+    noContent() {
+      if (this.isContentEditorActive) return this.contentEditor?.empty;
+      return !this.content;
+    },
     csrfToken() {
       return csrf.token;
     },
@@ -161,10 +174,10 @@ export default {
       return this.format === 'markdown';
     },
     showContentEditorButton() {
-      return this.isMarkdownFormat && !this.useContentEditor && this.glFeatures.wikiContentEditor;
+      return this.isMarkdownFormat && !this.useContentEditor;
     },
     disableSubmitButton() {
-      return !this.content || !this.title || this.contentEditorRenderFailed;
+      return this.noContent || !this.title || this.contentEditorRenderFailed;
     },
     isContentEditorActive() {
       return this.isMarkdownFormat && this.useContentEditor;
@@ -188,6 +201,8 @@ export default {
     handleFormSubmit() {
       if (this.useContentEditor) {
         this.content = this.contentEditor.getSerializedContent();
+
+        this.trackFormSubmit();
       }
 
       this.isDirty = false;
@@ -236,6 +251,8 @@ export default {
       try {
         await this.contentEditor.setSerializedContent(this.content);
         this.isContentEditorLoading = false;
+
+        this.trackContentEditorLoaded();
       } catch (e) {
         this.contentEditorRenderFailed = true;
       }
@@ -256,6 +273,16 @@ export default {
         this.switchToOldEditor();
       } else {
         this.$refs.confirmSwitchToOldEditorModal.show();
+      }
+    },
+
+    async trackContentEditorLoaded() {
+      await this.track(CONTENT_EDITOR_LOADED_ACTION);
+    },
+
+    async trackFormSubmit() {
+      if (this.isContentEditorActive) {
+        await this.track(SAVED_USING_CONTENT_EDITOR_ACTION);
       }
     },
   },

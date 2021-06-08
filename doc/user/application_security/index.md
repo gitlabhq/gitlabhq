@@ -355,7 +355,7 @@ You can do it quickly by following the hyperlink given to run a new pipeline.
 ### Getting error message `sast job: stage parameter should be [some stage name here]`
 
 When [including](../../ci/yaml/README.md#includetemplate) a `.gitlab-ci.yml` template
-like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml),
+like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml),
 the following error may occur, depending on your GitLab CI/CD configuration:
 
 ```plaintext
@@ -408,7 +408,7 @@ This provides useful information to investigate further.
 ### Getting error message `sast job: config key may not be used with 'rules': only/except`
 
 When [including](../../ci/yaml/README.md#includetemplate) a `.gitlab-ci.yml` template
-like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml),
+like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml),
 the following error may occur, depending on your GitLab CI/CD configuration:
 
 ```plaintext

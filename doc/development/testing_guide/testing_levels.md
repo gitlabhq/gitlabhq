@@ -486,7 +486,7 @@ Note that:
 - data needed for the tests can only be created using the GUI or the API
 - expectations can only be made against the browser page and API responses
 
-Every new feature should come with a [test plan](https://gitlab.com/gitlab-org/gitlab/tree/master/.gitlab/issue_templates/Test%20plan.md).
+Every new feature should come with a [test plan](https://gitlab.com/gitlab-org/gitlab/-/tree/master/.gitlab/issue_templates/Test%20plan.md).
 
 | Tests path | Testing engine | Notes |
 | ---------- | -------------- | ----- |

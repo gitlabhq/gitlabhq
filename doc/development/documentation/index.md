@@ -27,7 +27,7 @@ The source of the documentation exists within the codebase of each GitLab applic
 
 | Project | Path |
 | --- | --- |
-| [GitLab](https://gitlab.com/gitlab-org/gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab/tree/master/doc) |
+| [GitLab](https://gitlab.com/gitlab-org/gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) |
 | [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/) | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs) |
 | [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc) |
 | [Charts](https://gitlab.com/gitlab-org/charts/gitlab) | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/tree/master/doc) |
@@ -296,7 +296,7 @@ Before getting started, make sure you read the introductory section
 "[contributing to docs](#contributing-to-docs)" above and the
 [documentation workflow](workflow.md).
 
-- Use the current [merge request description template](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/merge_request_templates/Documentation.md)
+- Use the current [merge request description template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Documentation.md)
 - Label the MR `Documentation` (can only be done by people with `developer` access, for example, GitLab team members)
 - Assign the correct milestone per note below (can only be done by people with `developer` access, for example, GitLab team members)
 
@@ -393,7 +393,7 @@ This is preferred over static paths, as the helper also works on instances insta
 
 ### GitLab `/help` tests
 
-Several [RSpec tests](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/features/help_pages_spec.rb)
+Several [RSpec tests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/features/help_pages_spec.rb)
 are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../README.md) works correctly from `/help`.
 For example, [GitLab.com's `/help`](https://gitlab.com/help).
 
@@ -459,7 +459,7 @@ In case the review app URL returns 404, follow these steps to debug:
 If you want to know the in-depth details, here's what's really happening:
 
 1. You manually run the `review-docs-deploy` job in a merge request.
-1. The job runs the [`scripts/trigger-build`](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/trigger-build)
+1. The job runs the [`scripts/trigger-build`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/trigger-build)
    script with the `docs deploy` flag, which triggers the "Triggered from `gitlab-org/gitlab` 'review-docs-deploy' job"
    pipeline trigger in the `gitlab-org/gitlab-docs` project for the `$DOCS_BRANCH` (defaults to `master`).
 1. The preview URL is shown both at the job output and in the merge request
@@ -492,7 +492,7 @@ GitLab uses [Danger](https://github.com/danger/danger) for some elements in
 code review. For docs changes in merge requests, whenever a change to files under `/doc`
 is made, Danger Bot leaves a comment with further instructions about the documentation
 process. This is configured in the `Dangerfile` in the GitLab repository under
-[/danger/documentation/](https://gitlab.com/gitlab-org/gitlab/tree/master/danger/documentation).
+[/danger/documentation/](https://gitlab.com/gitlab-org/gitlab/-/tree/master/danger/documentation).
 
 ## Automatic screenshot generator
 

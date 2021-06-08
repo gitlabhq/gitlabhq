@@ -37,18 +37,18 @@ the tools that identify short-code and URI references from markup documents and
 transform them into structured links to the resources they represent.
 
 For example, the class
-[`Banzai::Filter::IssueReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/issue_reference_filter.rb)
+[`Banzai::Filter::IssueReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/issue_reference_filter.rb)
 is responsible for handling references to issues, such as
 `gitlab-org/gitlab#123` and `https://gitlab.com/gitlab-org/gitlab/-/issues/200048`.
 
 All reference filters are instances of [`HTML::Pipeline::Filter`](https://www.rubydoc.info/github/jch/html-pipeline/HTML/Pipeline/Filter),
-and inherit (often indirectly) from [`Banzai::Filter::ReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/reference_filter.rb).
+and inherit (often indirectly) from [`Banzai::Filter::ReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/reference_filter.rb).
 
 `HTML::Pipeline::Filter` has a simple interface consisting of `#call`, a void
 method that mutates the current document. `ReferenceFilter` provides methods
 that make defining suitable `#call` methods easier. Most reference filters
 however do not inherit from either of these classes directly, but from
-[`AbstractReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/abstract_reference_filter.rb),
+[`AbstractReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/abstract_reference_filter.rb),
 which provides a higher-level interface.
 
 Subclasses of `AbstractReferenceFilter` generally do not override `#call`; instead,
@@ -65,7 +65,7 @@ a minimum implementation of `AbstractReferenceFilter` should define:
   This is used to:
 
   - Find the regular expressions used to find references. The class should
-    include [`Referable`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/referable.rb)
+    include [`Referable`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/referable.rb)
     and thus define two regular expressions: `.link_reference_pattern` and
     `.reference_pattern`, both of which should contain a named capture group
     named the value of `ReferenceFilter.object_sym`.
@@ -75,7 +75,7 @@ a minimum implementation of `AbstractReferenceFilter` should define:
 - `.parse_symbol(string)`: parse the text value to an object identifier (`#to_i` by default).
 - `#record_identifier(record)`: the inverse of `.parse_symbol`, that is, transform a domain object to an identifier (`#id` by default).
 - `#url_for_object(object, parent_object)`: generate the URL for a domain object.
-- `#find_object(parent_object, id)`: given the parent (usually a [`Project`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/project.rb))
+- `#find_object(parent_object, id)`: given the parent (usually a [`Project`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/project.rb))
  and an identifier, find the object. For example, this in a reference filter for
  merge requests, this might be `project.merge_requests.where(iid: iid)`.
 
@@ -113,7 +113,7 @@ method: `#parent_records(parent, set_of_identifiers)`, which must return an
 enumerable of domain objects.
 
 This allows such classes to define `#find_object` (as
-[`IssuableReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/issuable_reference_filter.rb)
+[`IssuableReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/issuable_reference_filter.rb)
 does) as:
 
 ```ruby
@@ -160,7 +160,7 @@ these sensitive pieces of data. This is what `ReferenceParser` classes do.
 A reference parser is linked to the object that it handles by the link
 advertising this relationship in the `data-reference-type` attribute (set by the
 reference filter). This is used by the
-[`ReferenceRedactor`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/reference_redactor.rb)
+[`ReferenceRedactor`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/reference_redactor.rb)
 to compute which nodes should be visible to users:
 
 ```ruby
@@ -189,7 +189,7 @@ each reference parser must:
 - Be placed in the `Banzai::ReferenceParser` namespace.
 - Implement the `.nodes_visible_to_user(user, nodes)` method.
 
-In practice, all reference parsers inherit from [`BaseParser`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/reference_parser/base_parser.rb), and are implemented by defining:
+In practice, all reference parsers inherit from [`BaseParser`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/reference_parser/base_parser.rb), and are implemented by defining:
 
 - `.reference_type`, which should equal `ReferenceFilter.reference_type`.
 - And by implementing one or more of:

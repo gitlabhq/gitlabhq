@@ -199,8 +199,8 @@ needs to be applied to the tracking database on each **secondary** node.
 
 ### Configuration
 
-The database configuration is set in [`config/database_geo.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/database_geo.yml.postgresql).
-The directory [`ee/db/geo`](https://gitlab.com/gitlab-org/gitlab/tree/master/ee/db/geo)
+The database configuration is set in [`config/database_geo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/database_geo.yml.postgresql).
+The directory [`ee/db/geo`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/db/geo)
 contains the schema and migrations for this database.
 
 To write a migration for the database, use the `GeoMigrationGenerator`:
@@ -217,7 +217,7 @@ bundle exec rake geo:db:migrate
 
 ## Finders
 
-Geo uses [Finders](https://gitlab.com/gitlab-org/gitlab/tree/master/app/finders),
+Geo uses [Finders](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/finders),
 which are classes take care of the heavy lifting of looking up
 projects/attachments/etc. in the tracking database and main database.
 
@@ -320,7 +320,7 @@ The process running on the **secondary** node that looks for new
 ### `Gitlab::Geo` utilities
 
 Small utility methods related to Geo go into the
-[`ee/lib/gitlab/geo.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/geo.rb)
+[`ee/lib/gitlab/geo.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/geo.rb)
 file.
 
 Many of these methods are cached using the `RequestStore` class, to

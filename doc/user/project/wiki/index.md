@@ -252,7 +252,7 @@ You can now see the **External wiki** option from your project's
 left sidebar.
 
 When you enable this integration, the link to the external
-wiki won't replace the link to the internal wiki.
+wiki doesn't replace the link to the internal wiki.
 To hide the internal wiki from the sidebar, [disable the project's wiki](#disable-the-projects-wiki).
 
 To hide the link to an external wiki:
@@ -280,6 +280,39 @@ The internal wiki is now disabled, and users and project members:
 Previously added wiki pages are preserved in case you
 want to re-enable the wiki. To re-enable it, repeat the process
 to disable the wiki but toggle it on (in blue).
+
+## Content Editor **(FREE)**
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5643) in GitLab 14.0.
+
+GitLab version 14.0 introduces a WYSIWYG editing experience for GitLab Flavored Markdown
+in Wikis through the [Content Editor](../../../development/fe_guide/content_editor.md).
+The Content Editor is under active development, and is not yet the default editing
+experience in the Wiki. To opt in for the new editor:
+
+1. Create a new wiki page, or edit an existing one.
+1. Ensure the wiki page uses the Markdown format. Other formats are not yet supported.
+1. Below the **Format** select box, select **Use new editor**:
+
+   ![Use new editor button image](img/use_new_editor_button_v14.0.png)
+
+### Use the Content Editor
+
+1. [Create](#create-a-new-wiki-page) a new wiki page, or [edit](#edit-a-wiki-page) an existing one.
+1. Select **Markdown** as your format.
+1. Below the **Format** select box, select **Use new editor**.
+1. Customize your page's content using the various formatting options available in the content editor.
+1. Select **Create page** for a new page, or **Save changes** for an existing page:
+
+   ![Content Editor in Wikis image](img/content_editor_v14.0.png)
+
+### Switch back to the old editor
+
+1. *If you're editing the page in the content editor,* scroll to **Format**.
+1. Select **Switch to old editor**.
+1. Select **Switch to old editor** in the confirmation popup to confirm.
+
+When you switch back to the old editor, any unsaved changes are lost.
 
 ## Resources
 

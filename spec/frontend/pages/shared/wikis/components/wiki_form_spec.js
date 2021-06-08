@@ -2,15 +2,23 @@ import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
 import WikiForm from '~/pages/shared/wikis/components/wiki_form.vue';
+import {
+  WIKI_CONTENT_EDITOR_TRACKING_LABEL,
+  CONTENT_EDITOR_LOADED_ACTION,
+  SAVED_USING_CONTENT_EDITOR_ACTION,
+} from '~/pages/shared/wikis/constants';
+
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
 describe('WikiForm', () => {
   let wrapper;
   let mock;
+  let trackingSpy;
 
   const findForm = () => wrapper.find('form');
   const findTitle = () => wrapper.find('#wiki_title');
@@ -60,10 +68,7 @@ describe('WikiForm', () => {
     path: '/project/path/-/wikis/home',
   };
 
-  function createWrapper(
-    persisted = false,
-    { pageInfo, glFeatures } = { glFeatures: { wikiContentEditor: false } },
-  ) {
+  function createWrapper(persisted = false, { pageInfo } = {}) {
     wrapper = extendedWrapper(
       mount(
         WikiForm,
@@ -79,7 +84,6 @@ describe('WikiForm', () => {
               ...(persisted ? pageInfoPersisted : pageInfoNew),
               ...pageInfo,
             },
-            glFeatures,
           },
         },
         { attachToDocument: true },
@@ -88,6 +92,7 @@ describe('WikiForm', () => {
   }
 
   beforeEach(() => {
+    trackingSpy = mockTracking(undefined, null, jest.spyOn);
     mock = new MockAdapter(axios);
   });
 
@@ -193,13 +198,21 @@ describe('WikiForm', () => {
       expect(e.preventDefault).toHaveBeenCalledTimes(1);
     });
 
-    it('when form submitted, unsets before unload warning', async () => {
-      triggerFormSubmit();
+    describe('form submit', () => {
+      beforeEach(async () => {
+        triggerFormSubmit();
 
-      await wrapper.vm.$nextTick();
+        await wrapper.vm.$nextTick();
+      });
 
-      const e = dispatchBeforeUnload();
-      expect(e.preventDefault).not.toHaveBeenCalled();
+      it('when form submitted, unsets before unload warning', async () => {
+        const e = dispatchBeforeUnload();
+        expect(e.preventDefault).not.toHaveBeenCalled();
+      });
+
+      it('does not trigger tracking event', async () => {
+        expect(trackingSpy).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -251,9 +264,9 @@ describe('WikiForm', () => {
     );
   });
 
-  describe('when feature flag wikiContentEditor is enabled', () => {
+  describe('wiki content editor', () => {
     beforeEach(() => {
-      createWrapper(true, { glFeatures: { wikiContentEditor: true } });
+      createWrapper(true);
     });
 
     it.each`
@@ -368,6 +381,15 @@ describe('WikiForm', () => {
         expect(wrapper.findComponent(ContentEditor).exists()).toBe(true);
       });
 
+      it('sends tracking event when editor loads', async () => {
+        // wait for content editor to load
+        await waitForPromises();
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, CONTENT_EDITOR_LOADED_ACTION, {
+          label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
+        });
+      });
+
       it('disables the format dropdown', () => {
         expect(findFormat().element.getAttribute('disabled')).toBeDefined();
       });
@@ -397,6 +419,16 @@ describe('WikiForm', () => {
 
           const e = dispatchBeforeUnload();
           expect(e.preventDefault).not.toHaveBeenCalled();
+        });
+      });
+
+      it('triggers tracking event on form submit', async () => {
+        triggerFormSubmit();
+
+        await wrapper.vm.$nextTick();
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, SAVED_USING_CONTENT_EDITOR_ACTION, {
+          label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
         });
       });
 

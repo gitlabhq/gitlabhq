@@ -27,7 +27,7 @@ be textually exported. This ensures that:
 To configure the Pseudonymizer, you need to:
 
 - Provide a manifest file that describes which fields should be included or
-  pseudonymized ([example `manifest.yml` file](https://gitlab.com/gitlab-org/gitlab/tree/master/config/pseudonymizer.yml)).
+  pseudonymized ([example `manifest.yml` file](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/pseudonymizer.yml)).
   A default manifest is provided with the GitLab installation, using a relative file path that resolves from the Rails root.
   Alternatively, you can use an absolute file path.
 - Use an object storage and specify the connection parameters in the `pseudonymizer.upload.connection` configuration option.

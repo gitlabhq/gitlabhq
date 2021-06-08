@@ -28,7 +28,7 @@ When this list is rendered, it looks like this:
 These styles are **valid for GitLab only**. The [GitLab documentation website](https://docs.gitlab.com)
 and the [main GitLab website](https://about.gitlab.com) use [Kramdown](https://kramdown.gettalong.org) instead.
 
-You should not view this page in the documentation, but instead [view these styles as they appear on GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).
+You should not view this page in the documentation, but instead [view these styles as they appear on GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md).
 
 GitLab Flavored Markdown extends the [CommonMark specification](https://spec.commonmark.org/current/).
 It was inspired by [GitHub Flavored Markdown](https://docs.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax).
@@ -84,7 +84,7 @@ The following features are not found in standard Markdown.
 
 ### Colors
 
-[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#colors).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colors).
 
 You can write a color in the formats: `HEX`, `RGB`, or `HSL`.
 
@@ -202,7 +202,7 @@ For more information, see the [Kroki integration](../administration/integration/
 
 ### Emojis
 
-[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#emojis).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#emojis).
 
 ```markdown
 Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
@@ -253,7 +253,7 @@ the content. This data can be used by static site generators like [Jekyll](https
 When you view a Markdown file rendered by GitLab, front matter is displayed as-is,
 in a box at the top of the document. The HTML content displays after the front matter. To view an example,
 you can toggle between the source and rendered version of a
-[GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/README.md).
+[GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/README.md).
 
 In GitLab, front matter is used only in Markdown files and wiki pages, not the other
 places where Markdown formatting is supported. It must be at the very top of the document
@@ -308,7 +308,7 @@ $example = array(
 
 ### Inline diff
 
-[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#inline-diff).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#inline-diff).
 
 With inline diff tags, you can display `{+ additions +}` or `[- deletions -]`.
 
@@ -347,7 +347,7 @@ backslash `\`. Otherwise the diff highlight does not render correctly:
 
 ### Math
 
-[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#math).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#math).
 
 Math written in LaTeX syntax is rendered with [KaTeX](https://github.com/KaTeX/KaTeX).
 
@@ -380,7 +380,7 @@ the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 
 ### Task lists
 
-[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#task-lists).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#task-lists).
 
 You can add task lists anywhere Markdown is supported.
 
@@ -586,7 +586,7 @@ Quote break.
 
 #### Multiline blockquote
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#multiline-blockquote).
+If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#multiline-blockquote).
 
 GitLab Flavored Markdown extends the standard Markdown by also supporting multi-line blockquotes
 fenced by `>>>`:
@@ -670,7 +670,7 @@ Tildes are OK too.
 #### Colored code and syntax highlighting
 
 If this section isn't rendered correctly,
-[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#colored-code-and-syntax-highlighting).
+[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colored-code-and-syntax-highlighting).
 
 GitLab uses the [Rouge Ruby library](http://rouge.jneen.net/) for more colorful syntax
 highlighting in code blocks. For a list of supported languages visit the
@@ -761,7 +761,7 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 #### Multiple underscores in words and mid-word emphasis
 
 If this section isn't rendered correctly,
-[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#multiple-underscores-in-words).
+[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#multiple-underscores-in-words).
 
 Avoid italicizing a portion of a word, especially when you're
 dealing with code and names that often appear with multiple underscores.
@@ -952,7 +952,7 @@ Do not change to a reference style link.
 
 #### Videos
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#videos).
+If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#videos).
 
 Image tags that link to files with a video extension are automatically converted to
 a video player. The valid video extensions are `.mp4`, `.m4v`, `.mov`, `.webm`, and `.ogv`:
@@ -969,7 +969,7 @@ Here's a sample video:
 
 #### Audio
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#audio).
+If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#audio).
 
 Similar to videos, link tags for files with an audio extension are automatically converted to
 an audio player. The valid audio extensions are `.mp3`, `.oga`, `.ogg`, `.spx`, and `.wav`:
@@ -987,7 +987,7 @@ Here's a sample audio clip:
 ### Inline HTML
 
 To see the second example of Markdown rendered in HTML,
-[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#inline-html).
+[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#inline-html).
 
 You can also use raw HTML in your Markdown, and it usually works pretty well.
 
@@ -1052,7 +1052,7 @@ Markdown is fine in GitLab.
 #### Collapsible section
 
 To see the second Markdown example rendered in HTML,
-[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#details-and-summary).
+[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#details-and-summary).
 
 Content can be collapsed using HTML's [`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details)
 and [`<summary>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary)
@@ -1441,7 +1441,7 @@ to the sides of the "dash" lines in the second row. This affects every cell in t
 | Cell 1       | Cell 2   | Cell 3        |
 | Cell 4       | Cell 5   | Cell 6        |
 
-[In GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#tables),
+[In GitLab itself](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#tables),
 the headers are always left-aligned in Chrome and Firefox, and centered in Safari.
 
 You can use HTML formatting to adjust the rendering of tables. For example, you can

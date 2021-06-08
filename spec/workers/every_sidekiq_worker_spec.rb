@@ -371,7 +371,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'PipelineMetricsWorker' => 3,
         'PipelineNotificationWorker' => 3,
         'PipelineProcessWorker' => 3,
-        'PipelineUpdateWorker' => 3,
         'PostReceive' => 3,
         'ProcessCommitWorker' => 3,
         'ProjectCacheWorker' => 3,

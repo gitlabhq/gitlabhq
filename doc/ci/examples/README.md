@@ -56,7 +56,7 @@ separate example projects:
 ## CI/CD templates
 
 Get started with GitLab CI/CD and your favorite programming language or framework by using a
-`.gitlab-ci.yml` [template](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates).
+`.gitlab-ci.yml` [template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
 When you create a `gitlab-ci.yml` file in the UI, you can
 choose one of these templates:
@@ -99,7 +99,7 @@ choose one of these templates:
 
 If a programming language or framework template is not in this list, you can contribute
 one. To create a template, submit a merge request
-to [the templates list](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates).
+to [the templates list](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
 ### Adding templates to your GitLab installation **(PREMIUM SELF)**
 

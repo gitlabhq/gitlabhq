@@ -40,7 +40,7 @@ Some notable gems that are used for wikis are:
 We only use Gollum as a storage abstraction layer, to handle the mapping between wiki page slugs and files in the repository.
 
 When rendering wiki pages, we don't use Gollum at all and instead go through a
-[custom Banzai pipeline](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/pipeline/wiki_pipeline.rb).
+[custom Banzai pipeline](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/pipeline/wiki_pipeline.rb).
 This adds some [wiki-specific markup](../user/markdown.md#wiki-specific-markdown), such as Gollum's `[[link]]` syntax.
 
 Because we do not make use of most of Gollum's features, we plan to move away from it entirely at some point.

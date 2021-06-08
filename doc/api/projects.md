@@ -1020,7 +1020,7 @@ If the project is a fork, and you provide a valid token to authenticate, the
       "http_url_to_repo":"https://gitlab.com/gitlab-org/gitlab-foss.git",
       "web_url":"https://gitlab.com/gitlab-org/gitlab-foss",
       "avatar_url":"https://assets.gitlab-static.net/uploads/-/system/project/avatar/13083/logo-extra-whitespace.png",
-      "license_url": "https://gitlab.com/gitlab-org/gitlab/blob/master/LICENSE",
+      "license_url": "https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE",
       "license": {
         "key": "mit",
         "name": "MIT License",

@@ -278,9 +278,9 @@ The API, Rails and Sidekiq logs contain fields starting with `meta.` with this c
 
 Entry points can be seen at:
 
-- [`ApplicationController`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/application_controller.rb)
-- [External API](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/api.rb)
-- [Internal API](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/internal/base.rb)
+- [`ApplicationController`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/application_controller.rb)
+- [External API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/api.rb)
+- [Internal API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/internal/base.rb)
 
 #### Adding attributes
 

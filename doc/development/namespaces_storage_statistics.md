@@ -20,11 +20,11 @@ storage consumed by a group, and allow easy management.
 ## Problem
 
 In GitLab, we update the project storage statistics through a
-[callback](https://gitlab.com/gitlab-org/gitlab/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/app/models/project.rb#L97)
+[callback](https://gitlab.com/gitlab-org/gitlab/-/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/app/models/project.rb#L97)
 every time the project is saved.
 
 The summary of those statistics per namespace is then retrieved
-by [`Namespaces#with_statistics`](https://gitlab.com/gitlab-org/gitlab/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/app/models/namespace.rb#L70) scope. Analyzing this query we noticed that:
+by [`Namespaces#with_statistics`](https://gitlab.com/gitlab-org/gitlab/-/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/app/models/namespace.rb#L70) scope. Analyzing this query we noticed that:
 
 - It takes up to `1.2` seconds for namespaces with over `15k` projects.
 - It can't be analyzed with [ChatOps](chatops_on_gitlabcom.md), as it times out.

@@ -30,7 +30,7 @@ should be added for EE. Licensed features can be stubbed using the
 spec helper `stub_licensed_features` in `EE::LicenseHelpers`.
 
 You can force GitLab to act as CE by either deleting the `ee/` directory or by
-setting the [`FOSS_ONLY` environment variable](https://gitlab.com/gitlab-org/gitlab/blob/master/config/helpers/is_ee_env.js)
+setting the [`FOSS_ONLY` environment variable](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/helpers/is_ee_env.js)
 to something that evaluates as `true`. The same works for running tests
 (for example `FOSS_ONLY=1 yarn jest`).
 
@@ -71,7 +71,7 @@ is applied not only to models. Here's a list of other examples:
 - `ee/app/views/foo/_bar.html.haml`
 
 This works because for every path that is present in CE's eager-load/auto-load
-paths, we add the same `ee/`-prepended path in [`config/application.rb`](https://gitlab.com/gitlab-org/gitlab/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52).
+paths, we add the same `ee/`-prepended path in [`config/application.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52).
 This also applies to views.
 
 #### Testing EE-only features

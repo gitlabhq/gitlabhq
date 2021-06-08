@@ -94,7 +94,7 @@ their execution by clicking **Execute query** button on the top left:
 ## Apollo Client
 
 To save duplicated clients getting created in different apps, we have a
-[default client](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/lib/graphql.js) that should be used. This sets up the
+[default client](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/graphql.js) that should be used. This sets up the
 Apollo client with the correct URL and also sets the CSRF headers.
 
 Default client accepts two parameters: `resolvers` and `config`.

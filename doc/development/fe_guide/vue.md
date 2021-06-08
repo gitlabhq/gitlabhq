@@ -13,7 +13,7 @@ To get started with Vue, read through [their documentation](https://vuejs.org/v2
 What is described in the following sections can be found in these examples:
 
 - [Web IDE](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/ide/stores)
-- [Security products](https://gitlab.com/gitlab-org/gitlab/tree/master/ee/app/assets/javascripts/vue_shared/security_reports)
+- [Security products](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/app/assets/javascripts/vue_shared/security_reports)
 - [Registry](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/registry/stores)
 
 ## Vue architecture

@@ -159,7 +159,7 @@ following is true:
 ### `Gitlab::Redis::{Cache,SharedState,Queues}`
 
 These classes wrap the Redis instances (using
-[`Gitlab::Redis::Wrapper`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/redis/wrapper.rb))
+[`Gitlab::Redis::Wrapper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/wrapper.rb))
 to make it convenient to work with them directly. The typical use is to
 call `.with` on the class, which takes a block that yields the Redis
 connection. For example:
@@ -175,7 +175,7 @@ Gitlab::Redis::Cache.with { |redis| redis.sismember(key, value) }
 ### `Gitlab::Redis::Boolean`
 
 In Redis, every value is a string.
-[`Gitlab::Redis::Boolean`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/redis/boolean.rb)
+[`Gitlab::Redis::Boolean`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/boolean.rb)
 makes sure that booleans are encoded and decoded consistently.
 
 ### `Gitlab::Redis::HLL`
@@ -188,19 +188,19 @@ elements with low memory usage. (In addition to the `PFCOUNT` documentation,
 Thoughtbot's article on [HyperLogLogs in Redis](https://thoughtbot.com/blog/hyperloglogs-in-redis)
 provides a good background here.)
 
-[`Gitlab::Redis::HLL`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/redis/hll.rb)
+[`Gitlab::Redis::HLL`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/hll.rb)
 provides a convenient interface for adding and counting values in HyperLogLogs.
 
 ### `Gitlab::SetCache`
 
 For cases where we need to efficiently check the whether an item is in a group
 of items, we can use a Redis set.
-[`Gitlab::SetCache`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/set_cache.rb)
+[`Gitlab::SetCache`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/set_cache.rb)
 provides an `#include?` method that uses the
 [`SISMEMBER`](https://redis.io/commands/sismember) command, as well as `#read`
 to fetch all entries in the set.
 
 This is used by the
-[`RepositorySetCache`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/repository_set_cache.rb)
+[`RepositorySetCache`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/repository_set_cache.rb)
 to provide a convenient way to use sets to cache repository data like branch
 names.

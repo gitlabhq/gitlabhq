@@ -9,7 +9,7 @@ comments: false
 
 ## Select Version to Install
 
-Make sure you view [this update guide](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/patch_versions.md) from the tag (version) of GitLab you would like to install.
+Make sure you view [this update guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/update/patch_versions.md) from the tag (version) of GitLab you would like to install.
 In most cases this should be the highest numbered production tag (without `rc` in it).
 You can select the tag in the version dropdown in the top left corner of GitLab (below the menu bar).
 

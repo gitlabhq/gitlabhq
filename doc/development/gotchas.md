@@ -196,7 +196,7 @@ RuboCop](https://gitlab.com/gitlab-org/gitlab-foss/blob/8-4-stable/.rubocop.yml#
 Using the inline `:javascript` Haml filters comes with a
 performance overhead. Using inline JavaScript is not a good way to structure your code and should be avoided.
 
-We've [removed these two filters](https://gitlab.com/gitlab-org/gitlab/blob/master/config/initializers/hamlit.rb)
+We've [removed these two filters](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/hamlit.rb)
 in an initializer.
 
 ### Further reading

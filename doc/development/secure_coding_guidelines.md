@@ -384,7 +384,7 @@ References:
 ### Select examples of past XSS issues affecting GitLab
 
 - [Stored XSS in user status](https://gitlab.com/gitlab-org/gitlab-foss/issues/55320)
-- [XSS vulnerability on custom project templates form](https://gitlab.com/gitlab-org/gitlab/issues/197302)
+- [XSS vulnerability on custom project templates form](https://gitlab.com/gitlab-org/gitlab/-/issues/197302)
 - [Stored XSS in branch names](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55320)
 - [Stored XSS in merge request pages](https://gitlab.com/gitlab-org/gitlab/-/issues/35096)
 

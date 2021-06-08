@@ -87,7 +87,7 @@ Refer to the [k6 documentation](https://k6.io/docs/) for detailed information on
 
 When your k6 test is ready, the next step is to configure the load performance
 testing job in GitLab CI/CD. The easiest way to do this is to use the
-[`Verify/Load-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Load-Performance-Testing.gitlab-ci.yml)
+[`Verify/Load-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Load-Performance-Testing.gitlab-ci.yml)
 template that is included with GitLab.
 
 NOTE:
@@ -120,7 +120,7 @@ The above example creates a `load_performance` job in your CI/CD pipeline that r
 the k6 test.
 
 NOTE:
-For Kubernetes setups a different template should be used: [`Jobs/Load-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Load-Performance-Testing.gitlab-ci.yml).
+For Kubernetes setups a different template should be used: [`Jobs/Load-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Load-Performance-Testing.gitlab-ci.yml).
 
 k6 has [various options](https://k6.io/docs/using-k6/options) to configure how it will run tests, such as what throughput (RPS) to run with,
 how long the test should run, and so on. Almost all options can be configured in the test itself, but as

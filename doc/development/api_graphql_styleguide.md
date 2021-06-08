@@ -16,7 +16,7 @@ We use the [GraphQL Ruby gem](https://graphql-ruby.org/) written by [Robert Moso
 In addition, we have a subscription to [GraphQL Pro](https://graphql.pro/). For details see [GraphQL Pro subscription](graphql_guide/graphql_pro.md).
 
 All GraphQL queries are directed to a single endpoint
-([`app/controllers/graphql_controller.rb#execute`](https://gitlab.com/gitlab-org/gitlab/blob/master/app%2Fcontrollers%2Fgraphql_controller.rb)),
+([`app/controllers/graphql_controller.rb#execute`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app%2Fcontrollers%2Fgraphql_controller.rb)),
 which is exposed as an API endpoint at `/api/graphql`.
 
 ## Deep Dive
@@ -862,7 +862,7 @@ overhead. If you are writing:
 Resolvers may raise errors, which will be converted to top-level errors as
 appropriate. All anticipated errors should be caught and transformed to an
 appropriate GraphQL error (see
-[`Gitlab::Graphql::Errors`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/graphql/errors.rb)).
+[`Gitlab::Graphql::Errors`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/graphql/errors.rb)).
 Any uncaught errors will be suppressed and the client will receive the message
 `Internal service error`.
 
@@ -1649,7 +1649,7 @@ is merged.
 
 ### `Types::TimeType`
 
-[`Types::TimeType`](https://gitlab.com/gitlab-org/gitlab/blob/master/app%2Fgraphql%2Ftypes%2Ftime_type.rb)
+[`Types::TimeType`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app%2Fgraphql%2Ftypes%2Ftime_type.rb)
 must be used as the type for all fields and arguments that deal with Ruby
 `Time` and `DateTime` objects.
 

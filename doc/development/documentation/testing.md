@@ -44,7 +44,7 @@ To run tests locally, it's important to:
 
 ### Lint checks
 
-Lint checks are performed by the [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/lint-doc.sh)
+Lint checks are performed by the [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh)
 script and can be executed as follows:
 
 1. Navigate to the `gitlab` directory.
@@ -168,7 +168,7 @@ You can use markdownlint:
 
 [Vale](https://docs.errata.ai/vale/about/) is a grammar, style, and word usage linter for the
 English language. Vale's configuration is stored in the
-[`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini) file located in the root
+[`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini) file located in the root
 directory of projects.
 
 Vale supports creating [custom tests](https://errata-ai.github.io/vale/styles/) that extend any of
@@ -273,7 +273,7 @@ To configure Vale in your editor, install one of the following as appropriate:
 
   - Select the **Use CLI** checkbox.
   - In the <!-- vale gitlab.Spelling = NO --> **Config** setting, enter an absolute
-    path to [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini)
+    path to [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini)
     in one of the cloned GitLab repositories on your computer.
     <!-- vale gitlab.Spelling = YES -->
 

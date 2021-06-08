@@ -276,7 +276,7 @@ The [global nav URL](#urls) has a different prefix depending on the documentatio
 
 | Repository                                                     | Link prefix | Final URL                          |
 |----------------------------------------------------------------|-------------|------------------------------------|
-| <https://gitlab.com/gitlab-org/gitlab/tree/master/doc>         | `ee/`       | `https://docs.gitlab.com/ee/`      |
+| <https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc>         | `ee/`       | `https://docs.gitlab.com/ee/`      |
 | <https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc> | `omnibus/`  | `https://docs.gitlab.com/omnibus/` |
 | <https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs> | `runner/`   | `https://docs.gitlab.com/runner/`  |
 | <https://gitlab.com/charts/gitlab/tree/master/doc>             | `charts/`   | `https://docs.gitlab.com/charts/`  |

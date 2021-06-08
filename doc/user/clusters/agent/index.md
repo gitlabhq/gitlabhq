@@ -462,7 +462,7 @@ The setup process follows the same steps as [GitOps](#get-started-with-gitops-an
 with the following differences:
 
 - When you define a configuration repository, you must do so with [Cilium settings](#define-a-configuration-repository-with-cilium-settings).
-- You do not need to create a `manifest.yaml`.
+- You do not need to specify the `gitops` configuration section.
 
 ### Define a configuration repository with Cilium settings
 

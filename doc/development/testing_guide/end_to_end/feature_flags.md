@@ -72,7 +72,7 @@ Runtime::Feature.enable(:feature_flag_name)
 It's also possible to run an entire scenario with a feature flag enabled, without having to edit
 existing tests or write new ones.
 
-Please see the [QA README](https://gitlab.com/gitlab-org/gitlab/tree/master/qa#running-tests-with-a-feature-flag-enabled)
+Please see the [QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa#running-tests-with-a-feature-flag-enabled)
 for details.
 
 ## Confirming that end-to-end tests pass with a feature flag enabled

@@ -15,7 +15,7 @@ Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/git
 
 Serverless architectures offer Operators and Developers the ability write highly scalable applications without provisioning a single server.
 
-GitLab supports several ways deploy Serverless applications in both Kubernetes Environments and also major cloud FAAS environments.
+GitLab supports several ways deploy Serverless applications in both Kubernetes Environments and also major cloud Function as a Service (FaaS) environments.
 
 Currently we support:
 
@@ -35,7 +35,7 @@ of the box through its main components:
 
 For more information on Knative, visit the [Knative docs repository](https://github.com/knative/docs).
 
-With GitLab Serverless, you can deploy both functions-as-a-service (FaaS) and serverless applications.
+With GitLab Serverless, you can deploy both FaaS and serverless applications.
 
 ## Prerequisites
 

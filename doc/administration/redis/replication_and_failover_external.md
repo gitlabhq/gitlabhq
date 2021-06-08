@@ -59,7 +59,7 @@ care of upgrading Redis to the latest supported version.
 Note also that you may elect to override all references to
 `/home/git/gitlab/config/resque.yml` in accordance with the advanced Redis
 settings outlined in
-[Configuration Files Documentation](https://gitlab.com/gitlab-org/gitlab/blob/master/config/README.md).
+[Configuration Files Documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/README.md).
 
 We cannot stress enough the importance of reading the
 [replication and failover](replication_and_failover.md) documentation of the
@@ -218,7 +218,7 @@ The following steps should be performed in the GitLab application server
 which ideally should not have Redis or Sentinels in the same machine:
 
 1. Edit `/home/git/gitlab/config/resque.yml` following the example in
-   [resque.yml.example](https://gitlab.com/gitlab-org/gitlab/blob/master/config/resque.yml.example), and uncomment the Sentinel lines, pointing to
+   [resque.yml.example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/resque.yml.example), and uncomment the Sentinel lines, pointing to
    the correct server credentials:
 
    ```yaml

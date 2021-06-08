@@ -32,7 +32,7 @@ question:
 document.body.dataset.page
 ```
 
-Find here the [source code setting the attribute](https://gitlab.com/gitlab-org/gitlab/blob/cc5095edfce2b4d4083a4fb1cdc7c0a1898b9921/app/views/layouts/application.html.haml#L4).
+Find here the [source code setting the attribute](https://gitlab.com/gitlab-org/gitlab/-/blob/cc5095edfce2b4d4083a4fb1cdc7c0a1898b9921/app/views/layouts/application.html.haml#L4).
 
 #### Rails routes
 
@@ -82,7 +82,7 @@ follow up issue and attach it to the component implementation epic found in the
 
 ### 4. My submit form button becomes disabled after submitting
 
-A Submit button inside of a form attaches an `onSubmit` event listener on the form element. [This code](https://gitlab.com/gitlab-org/gitlab/blob/794c247a910e2759ce9b401356432a38a4535d49/app/assets/javascripts/main.js#L225) adds a `disabled` class selector to the submit button when the form is submitted. To avoid this behavior, add the class `js-no-auto-disable` to the button.
+A Submit button inside of a form attaches an `onSubmit` event listener on the form element. [This code](https://gitlab.com/gitlab-org/gitlab/-/blob/794c247a910e2759ce9b401356432a38a4535d49/app/assets/javascripts/main.js#L225) adds a `disabled` class selector to the submit button when the form is submitted. To avoid this behavior, add the class `js-no-auto-disable` to the button.
 
 ### 5. Should one use a full URL (for example `gon.gitlab_url`) or a full path (for example `gon.relative_url_root`) when referencing backend endpoints?
 
@@ -172,7 +172,7 @@ To return to the normal development mode:
 
 ### 8. Babel polyfills
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/28837) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28837) in GitLab 12.8.
 
 GitLab has enabled the Babel `preset-env` option
 [`useBuiltIns: 'usage'`](https://babeljs.io/docs/en/babel-preset-env#usebuiltins-usage).

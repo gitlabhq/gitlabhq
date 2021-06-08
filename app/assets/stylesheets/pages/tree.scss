@@ -10,6 +10,10 @@
       color: $gl-text-color-secondary;
     }
 
+    .tree-ref-holder {
+      margin-right: 15px;
+    }
+
     @include media-breakpoint-up(sm) {
       display: flex;
 
@@ -28,7 +32,6 @@
 
       .tree-ref-holder {
         float: left;
-        margin-right: 15px;
       }
 
       .tree-ref-target-holder {
@@ -44,8 +47,11 @@
   }
 
   @include media-breakpoint-down(xs) {
+    .tree-ref-container {
+      justify-content: space-between;
+    }
+
     .repo-breadcrumb {
-      margin-top: 10px;
       position: relative;
 
       .dropdown-menu {

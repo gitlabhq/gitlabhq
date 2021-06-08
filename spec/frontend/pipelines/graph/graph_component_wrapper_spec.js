@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
+import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
 import {
   IID_FAILURE,
   LAYER_VIEW,
@@ -17,7 +18,6 @@ import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
-import getUserCallouts from '~/pipelines/graphql/queries/get_user_callouts.query.graphql';
 import { mapCallouts, mockCalloutsResponse, mockPipelineResponse } from './mock_data';
 
 const defaultProvide = {

@@ -119,7 +119,7 @@ release, depending on the severity of the bug.
 
 The decision on whether backporting a change will be performed is done at the discretion of the
 [current release managers](https://about.gitlab.com/community/release-managers/), similar to what is
-described in the [managing bugs](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md#managing-bugs) process,
+described in the [managing bugs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/PROCESS.md#managing-bugs) process,
 based on *all* of the following:
 
 1. Estimated [severity](../development/contributing/issue_workflow.md#severity-labels) of the bug:

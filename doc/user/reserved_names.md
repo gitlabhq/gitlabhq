@@ -10,7 +10,7 @@ Not all project & group names are allowed because they would conflict with
 existing routes used by GitLab.
 
 For a list of words that are not allowed to be used as group or project names, see the
-[`path_regex.rb` file](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/path_regex.rb)
+[`path_regex.rb` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/path_regex.rb)
 under the `TOP_LEVEL_ROUTES`, `PROJECT_WILDCARD_ROUTES` and `GROUP_ROUTES` lists:
 
 - `TOP_LEVEL_ROUTES`: are names that are reserved as usernames or top level groups

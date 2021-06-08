@@ -136,7 +136,7 @@ translations to the GitLab project.
 1. Request proofreader permissions by opening a merge request to add yourself to the list of
    proofreaders.
 
-   Open the [`proofreader.md` source file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/i18n/proofreader.md) and click **Edit**.
+   Open the [`proofreader.md` source file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/i18n/proofreader.md) and click **Edit**.
 
    Add your language in alphabetical order and add yourself to the list, including:
 

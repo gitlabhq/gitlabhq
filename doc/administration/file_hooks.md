@@ -33,7 +33,7 @@ see the [system hooks](../system_hooks/system_hooks.md) documentation.
 
 The file hooks must be placed directly into the `file_hooks` directory, subdirectories
 are ignored. There is an
-[`example` directory inside `file_hooks`](https://gitlab.com/gitlab-org/gitlab/tree/master/file_hooks/examples)
+[`example` directory inside `file_hooks`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/file_hooks/examples)
 where you can find some basic examples.
 
 Follow the steps below to set up a custom hook:

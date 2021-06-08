@@ -287,7 +287,7 @@ For consistency, we manually set the pagination cursors based on values returned
 You can see an example implementation in the following files:
 
 - [`types/error__tracking/sentry_error_collection_type.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/types/error_tracking/sentry_error_collection_type.rb) which adds an extension to  `field :errors`.
-- [`resolvers/error_tracking/sentry_errors_resolver.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/graphql/resolvers/error_tracking/sentry_errors_resolver.rb) which returns the data from the resolver.
+- [`resolvers/error_tracking/sentry_errors_resolver.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/error_tracking/sentry_errors_resolver.rb) which returns the data from the resolver.
 
 ## Testing
 

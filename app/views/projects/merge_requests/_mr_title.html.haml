@@ -7,9 +7,11 @@
 = cache_if(Feature.enabled?(:cached_mr_title, @project, default_enabled: :yaml), cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?
     .gl-alert.gl-alert-danger.gl-mb-5
-      = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-      .gl-alert-body
-        The source project of this merge request has been removed.
+      .gl-alert-container
+        = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+        .gl-alert-content
+          .gl-alert-body
+            The source project of this merge request has been removed.
 
   .detail-page-header.border-bottom-0.pt-0.pb-0
     .detail-page-header-body

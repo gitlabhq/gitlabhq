@@ -76,10 +76,10 @@ To enable container scanning in your pipeline, you need the following:
 How you enable container scanning depends on your GitLab version:
 
 - GitLab 11.9 and later: [Include](../../../ci/yaml/README.md#includetemplate) the
-  [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
+  [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
   that comes with your GitLab installation.
 - GitLab versions earlier than 11.9: Copy and use the job from the
-  [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
+  [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
 - GitLab 13.6 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263482) better support for
   [FIPS](https://csrc.nist.gov/publications/detail/fips/140/2/final) by upgrading the
   `CS_MAJOR_VERSION` from `2` to `3`. Version `3` of the `container_scanning` Docker image uses
@@ -225,7 +225,7 @@ your CI file:
 1. If present, remove the `.cs_common` and `container_scanning_new` configuration sections.
 
 1. If the `container_scanning` section is present, it's safer to create one from scratch based on
-   the new version of the [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
+   the new version of the [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
    Once finished, it should not have any variables that are only applicable to Klar or Clair. For a
    complete list of supported variables, see [available variables](#available-cicd-variables).
 

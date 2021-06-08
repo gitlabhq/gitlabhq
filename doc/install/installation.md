@@ -24,7 +24,7 @@ they changed the location of directories or run services as the wrong user.
 
 If you find a bug/error in this guide, **submit a merge request**
 following the
-[contributing guide](https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md).
+[contributing guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/CONTRIBUTING.md).
 
 ## Consider the Omnibus package installation
 
@@ -40,7 +40,7 @@ can't be terminated and its memory usage grows over time.
 
 ## Select a version to install
 
-Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-7-stable`).
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-7-stable`).
 You can select the branch in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear, check the [GitLab blog](https://about.gitlab.com/blog/) for installation guide links by version.
@@ -648,7 +648,7 @@ You then need to update `gitlab.yml`'s `production -> elasticsearch -> indexer_p
 
 ### Install GitLab Pages
 
-GitLab Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands install GitLab Pages in `/home/git/gitlab-pages`. For additional setup steps, consult the [administration guide](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be run several different ways.
+GitLab Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands install GitLab Pages in `/home/git/gitlab-pages`. For additional setup steps, consult the [administration guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be run several different ways.
 
 ```shell
 cd /home/git

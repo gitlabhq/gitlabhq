@@ -9,6 +9,13 @@ export class ContentEditor {
     return this._tiptapEditor;
   }
 
+  get empty() {
+    const doc = this.tiptapEditor?.state.doc;
+
+    // Makes sure the document has more than one empty paragraph
+    return doc.childCount === 0 || (doc.childCount === 1 && doc.child(0).childCount === 0);
+  }
+
   async setSerializedContent(serializedContent) {
     const { _tiptapEditor: editor, _serializer: serializer } = this;
 

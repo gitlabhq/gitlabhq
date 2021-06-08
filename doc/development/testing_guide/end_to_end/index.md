@@ -180,7 +180,7 @@ of the test scenarios you can run via the orchestrator](https://gitlab.com/gitla
 
 On the other hand, if you would like to run against a local development GitLab
 environment, you can use the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/).
-Please refer to the instructions in the [QA README](https://gitlab.com/gitlab-org/gitlab/tree/master/qa/README.md#how-can-i-use-it)
+Please refer to the instructions in the [QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/README.md#how-can-i-use-it)
 and the section below.
 
 ### Running tests that require special setup
@@ -193,7 +193,7 @@ In order to write new tests, you first need to learn more about GitLab QA
 architecture. See the [documentation about it](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/architecture.md).
 
 Once you decided where to put [test environment orchestration scenarios](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/lib/gitlab/qa/scenario) and
-[instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features), take a look at the [GitLab QA README](https://gitlab.com/gitlab-org/gitlab/tree/master/qa/README.md),
+[instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features), take a look at the [GitLab QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/README.md),
 the [GitLab QA orchestrator README](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md), and [the already existing
 instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features).
 

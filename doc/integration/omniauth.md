@@ -224,7 +224,7 @@ from the OmniAuth provider's documentation.
   sudo service gitlab stop
   ```
 
-- Add the gem to your [`Gemfile`](https://gitlab.com/gitlab-org/gitlab/blob/master/Gemfile):
+- Add the gem to your [`Gemfile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/Gemfile):
 
   ```shell
   gem "omniauth-your-auth-provider"

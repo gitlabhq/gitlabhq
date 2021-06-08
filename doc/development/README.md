@@ -61,7 +61,7 @@ GitLab instance, see the [administration documentation](../administration/index.
 
 Complementary reads:
 
-- [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md)
+- [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab/-/blob/master/PROCESS.md)
 - [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer)
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Danger bot](dangerbot.md)

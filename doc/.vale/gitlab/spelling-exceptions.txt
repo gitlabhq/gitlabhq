@@ -441,6 +441,7 @@ Pritaly
 Priyanka
 profiler
 Prometheus
+ProseMirror
 protobuf
 protobufs
 proxied
@@ -642,6 +643,7 @@ timeboxed
 timeboxes
 timeboxing
 timecop
+tiptap
 todos
 tokenizer
 Tokenizers

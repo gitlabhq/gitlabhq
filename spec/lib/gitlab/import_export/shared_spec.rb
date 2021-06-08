@@ -37,6 +37,28 @@ RSpec.describe Gitlab::ImportExport::Shared do
     end
   end
 
+  context 'with a group on disk' do
+    describe '#base_path' do
+      it 'uses hashed storage path' do
+        group = create(:group)
+        subject = described_class.new(group)
+        base_path = %(/tmp/gitlab_exports/@groups/)
+
+        expect(subject.base_path).to match(/#{base_path}\h{2}\/\h{2}\/\h{64}/)
+      end
+    end
+  end
+
+  context 'when exportable type is unsupported' do
+    describe '#base_path' do
+      it 'raises' do
+        subject = described_class.new('test')
+
+        expect { subject.base_path }.to raise_error(Gitlab::ImportExport::Error, 'Unsupported Exportable Type String')
+      end
+    end
+  end
+
   describe '#error' do
     let(:error) { StandardError.new('Error importing into /my/folder Permission denied @ unlink_internal - /var/opt/gitlab/gitlab-rails/shared/a/b/c/uploads/file') }
 

@@ -119,8 +119,8 @@ Here are some ills that Singletons often produce:
    such as no clear ownership and no access control. These leads to high coupling situations that can
    be buggy and difficult to untangle.
 1. **Infectious.** Singletons are infectious, especially when they manage state. Consider the component
-   [RepoEditor](https://gitlab.com/gitlab-org/gitlab/blob/27ad6cb7b76430fbcbaf850df68c338d6719ed2b/app%2Fassets%2Fjavascripts%2Fide%2Fcomponents%2Frepo_editor.vue#L0-1)
-   used in the Web IDE. This component interfaces with a Singleton [Editor](https://gitlab.com/gitlab-org/gitlab/blob/862ad57c44ec758ef3942ac2e7a2bd40a37a9c59/app%2Fassets%2Fjavascripts%2Fide%2Flib%2Feditor.js#L21)
+   [RepoEditor](https://gitlab.com/gitlab-org/gitlab/-/blob/27ad6cb7b76430fbcbaf850df68c338d6719ed2b/app%2Fassets%2Fjavascripts%2Fide%2Fcomponents%2Frepo_editor.vue#L0-1)
+   used in the Web IDE. This component interfaces with a Singleton [Editor](https://gitlab.com/gitlab-org/gitlab/-/blob/862ad57c44ec758ef3942ac2e7a2bd40a37a9c59/app%2Fassets%2Fjavascripts%2Fide%2Flib%2Feditor.js#L21)
    which manages some state for working with Monaco. Because of the Singleton nature of the Editor class,
    the component `RepoEditor` is now forced to be a Singleton as well. Multiple instances of this component
    would cause production issues because no one truly owns the instance of `Editor`.

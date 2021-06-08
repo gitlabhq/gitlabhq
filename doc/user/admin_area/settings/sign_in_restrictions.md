@@ -76,7 +76,7 @@ If necessary, you can disable **Admin Mode** as an administrator by using one of
 - [**Rails console**](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
   ```ruby
-  ::Gitlab::CurrentSettings.update_attributes!(admin_mode: false)
+  ::Gitlab::CurrentSettings.update!(admin_mode: false)
   ```
   
 ## Two-factor authentication

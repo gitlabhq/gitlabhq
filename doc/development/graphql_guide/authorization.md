@@ -40,7 +40,7 @@ to filter the records. This minimizes database queries and unnecessary
 authorization checks of the loaded records. It also avoids situations,
 such as short pages, which can expose the presence of confidential resources.
 
-See [`authorization_spec.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/graphql/features/authorization_spec.rb)
+See [`authorization_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/features/authorization_spec.rb)
 for examples of all the authorization schemes discussed here.
 
 ## Type authorization

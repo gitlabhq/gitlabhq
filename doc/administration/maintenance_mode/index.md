@@ -35,8 +35,8 @@ There are three ways to enable Maintenance Mode as an administrator:
 - [**Rails console**](../operations/rails_console.md#starting-a-rails-console-session):
 
   ```ruby
-  ::Gitlab::CurrentSettings.update_attributes!(maintenance_mode: true)
-  ::Gitlab::CurrentSettings.update_attributes!(maintenance_mode_message: "New message")
+  ::Gitlab::CurrentSettings.update!(maintenance_mode: true)
+  ::Gitlab::CurrentSettings.update!(maintenance_mode_message: "New message")
   ```
 
 ## Disable Maintenance Mode

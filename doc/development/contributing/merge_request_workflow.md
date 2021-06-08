@@ -140,7 +140,7 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 
 **Important notes:**
 
-- If the guidelines are not met, the MR may not pass the [Danger checks](https://gitlab.com/gitlab-org/gitlab/blob/master/danger/commit_messages/Dangerfile).
+- If the guidelines are not met, the MR may not pass the [Danger checks](https://gitlab.com/gitlab-org/gitlab/-/blob/master/danger/commit_messages/Dangerfile).
 - Consider enabling [Squash and merge](../../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
   if your merge request includes "Applied suggestion to X files" commits, so that Danger can ignore those.
 - The prefixes in the form of `[prefix]` and `prefix:` are allowed (they can be all lowercase, as long
@@ -263,7 +263,7 @@ request:
 1. [The upgrade guide](../../update/upgrading_from_source.md).
 1. The [GitLab Installation Guide](../../install/installation.md#1-packages-and-dependencies).
 1. The [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
-1. The [CI environment preparation](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/prepare_build.sh).
+1. The [CI environment preparation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/prepare_build.sh).
 1. The [Omnibus package creator](https://gitlab.com/gitlab-org/omnibus-gitlab).
 1. The [Cloud Native GitLab Dockerfiles](https://gitlab.com/gitlab-org/build/CNG)
 

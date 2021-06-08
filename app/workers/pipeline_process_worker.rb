@@ -13,9 +13,7 @@ class PipelineProcessWorker # rubocop:disable Scalability/IdempotentWorker
   data_consistency :delayed, feature_flag: :load_balancing_for_pipeline_process_worker
 
   # rubocop: disable CodeReuse/ActiveRecord
-  # `_build_ids` is deprecated and will be removed in 14.0
-  # See: https://gitlab.com/gitlab-org/gitlab/-/issues/232806
-  def perform(pipeline_id, _build_ids = nil)
+  def perform(pipeline_id)
     Ci::Pipeline.find_by(id: pipeline_id).try do |pipeline|
       Ci::ProcessPipelineService
         .new(pipeline)

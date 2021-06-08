@@ -176,7 +176,7 @@ provide `issues_template` and `merge_requests_template` attributes in the
 ## Description template example
 
 We use description templates for issues and merge requests in the
-[`.gitlab` folder](https://gitlab.com/gitlab-org/gitlab/tree/master/.gitlab) of the
+[`.gitlab` folder](https://gitlab.com/gitlab-org/gitlab/-/tree/master/.gitlab) of the
 GitLab project, which you can refer to for some examples.
 
 NOTE:

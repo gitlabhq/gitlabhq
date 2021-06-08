@@ -78,7 +78,7 @@ is stored in the `project_authorizations` table.
 WARNING:
 Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
 projects in personal namespace do not show owner (`50`) permission in
-`project_authorizations` table. Note however that [`user.owned_projects`](https://gitlab.com/gitlab-org/gitlab/blob/0d63823b122b11abd2492bca47cc26858eee713d/app/models/user.rb#L906-916)
+`project_authorizations` table. Note however that [`user.owned_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/0d63823b122b11abd2492bca47cc26858eee713d/app/models/user.rb#L906-916)
 is calculated properly.
 
 ### Confidential issues

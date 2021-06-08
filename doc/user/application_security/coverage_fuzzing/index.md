@@ -39,7 +39,7 @@ Docker image with the fuzz engine to run your app.
 
 To enable fuzzing, you must
 [include](../../../ci/yaml/README.md#includetemplate)
-the [`Coverage-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.gitlab-ci.yml)
+the [`Coverage-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.gitlab-ci.yml)
 provided as part of your GitLab installation.
 
 To do so, add the following to your `.gitlab-ci.yml` file:

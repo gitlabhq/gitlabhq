@@ -58,7 +58,7 @@ The following items are **not** exported:
 
 NOTE:
 For more details on the specific data persisted in a group export, see the
-[`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/import_export/group/import_export.yml) file.
+[`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml) file.
 
 ## Exporting a Group
 

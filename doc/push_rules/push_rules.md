@@ -143,7 +143,7 @@ pushed to a repository. The list stops those commits from reaching the remote re
 
 By selecting the checkbox *Prevent committing secrets to Git*, GitLab prevents
 pushes to the repository when a file matches a regular expression as read from
-[`files_denylist.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/checks/files_denylist.yml) (make sure you are at the right branch
+[`files_denylist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) (make sure you are at the right branch
 as your GitLab version when viewing this file).
 
 NOTE:

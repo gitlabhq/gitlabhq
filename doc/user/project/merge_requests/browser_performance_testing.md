@@ -83,7 +83,7 @@ The above example:
 - Creates a `browser_performance` job in your CI/CD pipeline and runs sitespeed.io against the webpage you
   defined in `URL` to gather key metrics.
 - Uses a template that doesn't work with Kubernetes clusters. If you are using a Kubernetes cluster,
-  use [`template: Jobs/Browser-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Browser-Performance-Testing.gitlab-ci.yml)
+  use [`template: Jobs/Browser-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Browser-Performance-Testing.gitlab-ci.yml)
    instead.
 - Uses a CI/CD template that is included in all GitLab installations since 12.4. If you are using
   GitLab 12.3 or earlier, you must [add the configuration manually](#gitlab-versions-132-and-earlier).
@@ -190,7 +190,7 @@ GitLab version:
 
 - In 13.2 the feature was renamed from `Performance` to `Browser Performance` with additional
   template CI/CD variables.
-- In GitLab 12.4 [a job template was made available](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Browser-Performance.gitlab-ci.yml).
+- In GitLab 12.4 [a job template was made available](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Browser-Performance.gitlab-ci.yml).
 - For 11.5 to 12.3 no template is available and the job has to be defined manually as follows:
 
   ```yaml

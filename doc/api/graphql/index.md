@@ -134,7 +134,7 @@ New associations and root level objects are constantly being added.
 See the [GraphQL API Reference](reference/index.md) for up-to-date information.
 
 Root-level queries are defined in
-[`app/graphql/types/query_type.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/graphql/types/query_type.rb).
+[`app/graphql/types/query_type.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/types/query_type.rb).
 
 ### Multiplex queries
 

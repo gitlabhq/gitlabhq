@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/security/gitlab/-/merge_request
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/301106
 milestone: '13.9'
 type: development
-group: group::continuous integration
+group: group::pipeline execution
 default_enabled: true

@@ -81,6 +81,15 @@ export default {
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
+      data-testid="code-block"
+      content-type="codeBlock"
+      icon-name="doc-code"
+      editor-command="toggleCodeBlock"
+      :label="__('Insert a code block')"
+      :tiptap-editor="contentEditor.tiptapEditor"
+      @execute="trackToolbarControlExecution"
+    />
+    <toolbar-button
       data-testid="bullet-list"
       content-type="bulletList"
       icon-name="list-bulleted"

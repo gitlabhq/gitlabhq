@@ -79,7 +79,7 @@ adapter.ldap_search(options)
 ```
 
 For examples of how this is run,
-[review the `Adapter` module](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ee/gitlab/auth/ldap/adapter.rb).
+[review the `Adapter` module](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/auth/ldap/adapter.rb).
 
 ### User sign-ins
 

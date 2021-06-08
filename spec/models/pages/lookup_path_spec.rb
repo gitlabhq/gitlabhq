@@ -47,14 +47,7 @@ RSpec.describe Pages::LookupPath do
   describe '#source' do
     let(:source) { lookup_path.source }
 
-    it 'uses disk storage', :aggregate_failures do
-      expect(source[:type]).to eq('file')
-      expect(source[:path]).to eq(project.full_path + "/public/")
-    end
-
-    it 'return nil when local storage is disabled and there is no deployment' do
-      allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
-
+    it 'returns nil' do
       expect(source).to eq(nil)
     end
 

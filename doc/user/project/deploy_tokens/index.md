@@ -190,4 +190,4 @@ docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
 NOTE:
 The special handling for the `gitlab-deploy-token` deploy token is not
 implemented for group deploy tokens. To make the group-level deploy token available for
-CI/CD jobs, use the workaround in [issue 214014](https://gitlab.com/gitlab-org/gitlab/-/issues/214014).
+CI/CD jobs, the `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` variables should be set under **Settings** to the name and token of the group deploy token respectively.
