@@ -26,21 +26,20 @@ To make full use of Auto DevOps with Kubernetes, you need:
      [new cluster using the GitLab UI](../../user/project/clusters/add_remove_clusters.md#create-new-cluster).
      For Kubernetes 1.16+ clusters, you must perform additional configuration for
      [Auto Deploy for Kubernetes 1.16+](stages.md#kubernetes-116).
-  1. NGINX Ingress. You can deploy it to your Kubernetes cluster by installing
-     the [GitLab-managed app for Ingress](../../user/clusters/applications.md#ingress),
-     after configuring the GitLab integration with Kubernetes in the previous step.
-
-     Alternatively, you can use the
-     [`nginx-ingress`](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
-     Helm chart to install Ingress manually.
+  1. For external HTTP traffic, an Ingress controller is required. For regular
+     deployments, any Ingress controller should work, but as of GitLab 14.0,
+     [canary deployments](../../user/project/canary_deployments.md) require
+     NGINX Ingress. You can deploy the NGINX Ingress controller to your
+     Kubernetes cluster by installing the
+     [`ingress-nginx`](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx)
+     Helm chart.
 
      NOTE:
-     If you use your own Ingress instead of the one provided by GitLab Managed
-     Apps, ensure you're running at least version 0.9.0 of NGINX Ingress and
-     [enable Prometheus metrics](https://github.com/helm/charts/tree/master/stable/nginx-ingress#prometheus-metrics)
-     for the response metrics to appear. You must also
+     For metrics to appear when using the [Prometheus cluster integration](../../user/clusters/integrations.md#prometheus-cluster-integration), you must [enable Prometheus metrics](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx#prometheus-metrics).
+
+     When deploying [using custom charts](customize.md#custom-helm-chart), you must also
      [annotate](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)
-     the NGINX Ingress deployment to be scraped by Prometheus using
+     the Ingress manifest to be scraped by Prometheus using
      `prometheus.io/scrape: "true"` and `prometheus.io/port: "10254"`.
 
      NOTE:
@@ -65,10 +64,6 @@ To make full use of Auto DevOps with Kubernetes, you need:
   You can configure Docker-based runners to autoscale as well, using
   [Docker Machine](https://docs.gitlab.com/runner/install/autoscaling.html).
 
-  If you've configured the GitLab integration with Kubernetes in the first step, you
-  can deploy it to your cluster by installing the
-  [GitLab-managed app for GitLab Runner](../../user/clusters/applications.md#gitlab-runner).
-
   Runners should be registered as [shared runners](../../ci/runners/README.md#shared-runners)
   for the entire GitLab instance, or [specific runners](../../ci/runners/README.md#specific-runners)
   that are assigned to specific projects (the default if you've installed the
@@ -78,9 +73,9 @@ To make full use of Auto DevOps with Kubernetes, you need:
 
   To enable Auto Monitoring, you need Prometheus installed either inside or
   outside your cluster, and configured to scrape your Kubernetes cluster.
-  If you've configured the GitLab integration with Kubernetes, you can deploy it to
-  your cluster by installing the
-  [GitLab-managed app for Prometheus](../../user/clusters/applications.md#prometheus).
+  If you've configured the GitLab integration with Kubernetes, you can
+  instruct GitLab to query an in-cluster Prometheus by enabling
+  the [Prometheus cluster integration](../../user/clusters/integrations.md#prometheus-cluster-integration).
 
   The [Prometheus service](../../user/project/integrations/prometheus.md)
   integration must be enabled for the project, or enabled as a
@@ -92,15 +87,13 @@ To make full use of Auto DevOps with Kubernetes, you need:
 
 - **cert-manager** (optional, for TLS/HTTPS)
 
-  To enable HTTPS endpoints for your application, you must install cert-manager,
+  To enable HTTPS endpoints for your application, you can [install cert-manager](https://cert-manager.io/docs/installation/kubernetes/),
   a native Kubernetes certificate management controller that helps with issuing
   certificates. Installing cert-manager on your cluster issues a
   [Let's Encrypt](https://letsencrypt.org/) certificate and ensures the
-  certificates are valid and up-to-date. If you've configured the GitLab integration
-  with Kubernetes, you can deploy it to your cluster by installing the
-  [GitLab-managed app for cert-manager](../../user/clusters/applications.md#cert-manager).
+  certificates are valid and up-to-date.
 
-If you don't have Kubernetes or Prometheus installed, then
+If you don't have Kubernetes or Prometheus configured, then
 [Auto Review Apps](stages.md#auto-review-apps),
 [Auto Deploy](stages.md#auto-deploy), and [Auto Monitoring](stages.md#auto-monitoring)
 are skipped.
@@ -127,9 +120,6 @@ To do so, follow these steps:
 When you trigger a pipeline, if you have Auto DevOps enabled and if you have correctly
 [entered AWS credentials as variables](../../ci/cloud_deployment/index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs),
 your application is deployed to AWS ECS.
-
-[GitLab Managed Apps](../../user/clusters/applications.md) are not available when deploying to AWS ECS.
-You must manually configure your application (such as Ingress or Help) on AWS ECS.
 
 If you have both a valid `AUTO_DEVOPS_PLATFORM_TARGET` variable and a Kubernetes cluster tied to your project,
 only the deployment to Kubernetes runs.
@@ -166,5 +156,5 @@ same kind of access to external consumers.
 
 The docs linked above explain the issue and present possible solutions, for example:
 
-- Through [MetalLB](https://github.com/metallb/metallb). 
+- Through [MetalLB](https://github.com/metallb/metallb).
 - Through [PorterLB](https://github.com/kubesphere/porterlb).

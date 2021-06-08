@@ -10,8 +10,6 @@ module API
         api_endpoint = env['api.endpoint']
         feature_category = api_endpoint.options[:for].try(:feature_category_for_app, api_endpoint).to_s
 
-        header[Gitlab::Metrics::RequestsRackMiddleware::FEATURE_CATEGORY_HEADER] = feature_category
-
         Gitlab::ApplicationContext.push(
           user: -> { actor&.user },
           project: -> { project },

@@ -59,7 +59,7 @@ RSpec.describe 'projects/settings/operations/show' do
 
         expect(rendered).to have_content _('Prometheus')
         expect(rendered).to have_content _('Link Prometheus monitoring to GitLab.')
-        expect(rendered).to have_content _('To enable the installation of Prometheus on your clusters, deactivate the manual configuration.')
+        expect(rendered).to have_content _('To use a Prometheus installed on a cluster, deactivate the manual configuration.')
       end
     end
 

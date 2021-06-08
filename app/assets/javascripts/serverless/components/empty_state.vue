@@ -9,7 +9,7 @@ export default {
     GlSprintf,
   },
   computed: {
-    ...mapState(['clustersPath', 'emptyImagePath', 'helpPath']),
+    ...mapState(['emptyImagePath', 'helpPath']),
   },
 };
 </script>
@@ -18,8 +18,6 @@ export default {
   <gl-empty-state
     :svg-path="emptyImagePath"
     :title="s__('Serverless|Getting started with serverless')"
-    :primary-button-link="clustersPath"
-    :primary-button-text="s__('Serverless|Install Knative')"
   >
     <template #description>
       <gl-sprintf

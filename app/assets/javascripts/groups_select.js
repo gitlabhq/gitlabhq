@@ -5,6 +5,17 @@ import Api from './api';
 import { loadCSSFile } from './lib/utils/css_utils';
 import { select2AxiosTransport } from './lib/utils/select2_utils';
 
+const groupsPath = (groupsFilter, parentGroupID) => {
+  switch (groupsFilter) {
+    case 'descendant_groups':
+      return Api.descendantGroupsPath.replace(':id', parentGroupID);
+    case 'subgroups':
+      return Api.subgroupsPath.replace(':id', parentGroupID);
+    default:
+      return Api.groupsPath;
+  }
+};
+
 const groupsSelect = () => {
   loadCSSFile(gon.select2_css_path)
     .then(() => {
@@ -16,9 +27,7 @@ const groupsSelect = () => {
         const allAvailable = $select.data('allAvailable');
         const skipGroups = $select.data('skipGroups') || [];
         const parentGroupID = $select.data('parentId');
-        const groupsPath = parentGroupID
-          ? Api.subgroupsPath.replace(':id', parentGroupID)
-          : Api.groupsPath;
+        const groupsFilter = $select.data('groupsFilter');
 
         $select.select2({
           placeholder: __('Search for a group'),
@@ -26,7 +35,7 @@ const groupsSelect = () => {
           multiple: $select.hasClass('multiselect'),
           minimumInputLength: 0,
           ajax: {
-            url: Api.buildUrl(groupsPath),
+            url: Api.buildUrl(groupsPath(groupsFilter, parentGroupID)),
             dataType: 'json',
             quietMillis: 250,
             transport: select2AxiosTransport,

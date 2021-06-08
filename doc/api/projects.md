@@ -313,7 +313,7 @@ When the user is authenticated and `simple` is not set this returns something li
 ```
 
 NOTE:
-The `tag_list` attribute has been deprecated 
+The `tag_list` attribute has been deprecated
 and is removed in API v5 in favor of the `topics` attribute.
 
 NOTE:
@@ -977,7 +977,7 @@ GET /projects/:id
 ```
 
 NOTE:
-The `tag_list` attribute has been deprecated 
+The `tag_list` attribute has been deprecated
 and is removed in API v5 in favor of the `topics` attribute.
 
 Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
@@ -2046,7 +2046,8 @@ POST /projects/:id/restore
 ## Upload a file
 
 Uploads a file to the specified project to be used in an issue or merge request
-description, or a comment.
+description, or a comment. GitLab versions 14.0 and later
+[enforce](#max-attachment-size-enforcement) this limit.
 
 ```plaintext
 POST /projects/:id/uploads

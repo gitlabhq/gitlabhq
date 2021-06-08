@@ -184,8 +184,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
      See the [Managed clusters section](index.md#gitlab-managed-clusters) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
-After about 10 minutes, your cluster is ready to go. You can now proceed
-to install some [pre-defined applications](index.md#installing-applications).
+After about 10 minutes, your cluster is ready to go.
 
 NOTE:
 If you have [installed and configured](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl)  `kubectl`  and you would like to manage your cluster with it, you must add your AWS external ID in the AWS configuration. For more information on how to configure AWS CLI, see [using an IAM role in the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html#cli-configure-role-xaccount).
@@ -290,7 +289,7 @@ you've assigned the role the correct permissions.
 
 ### Key Pairs are not loaded
 
-GitLab loads the key pairs from the **Cluster Region** specified. Ensure that key pair exists in that region. 
+GitLab loads the key pairs from the **Cluster Region** specified. Ensure that key pair exists in that region.
 
 #### `ROLLBACK_FAILED` during cluster creation
 

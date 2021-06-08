@@ -81,7 +81,7 @@ Support for historical data is coming
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197879) in GitLab 12.8.
 
-When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack)
+When you enable [Elastic Stack](../../clusters/integrations.md#elastic-stack-cluster-integration)
 on your cluster, you can filter logs displayed in the **Log Explorer** by date.
 
 Click **Show last** in the **Log Explorer** to see the available options.
@@ -90,7 +90,7 @@ Click **Show last** in the **Log Explorer** to see the available options.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656) in GitLab 12.7.
 
-When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster,
+When you enable [Elastic Stack](../../clusters/integrations.md#elastic-stack-cluster-integration) on your cluster,
 you can search the content of your logs through a search bar. The search is passed
 to Elasticsearch using the
 [simple_query_string](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html)

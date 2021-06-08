@@ -27,7 +27,7 @@ end
 
 Gitlab::Application.configure do |config|
   # 0 should be Sentry to catch errors in this middleware
-  config.middleware.insert(1, Gitlab::Metrics::RequestsRackMiddleware)
+  config.middleware.insert_after(Labkit::Middleware::Rack, Gitlab::Metrics::RequestsRackMiddleware)
 end
 
 Sidekiq.configure_server do |config|

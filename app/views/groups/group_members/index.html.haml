@@ -1,5 +1,6 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _('Group members')
+- groups_select_tag_data = @group.root_ancestor.namespace_settings.prevent_sharing_groups_outside_hierarchy ? { groups_filter: 'descendant_groups', parent_id: @group.root_ancestor.id, skip_groups: @skip_groups } : { skip_groups: @skip_groups }
 
 .js-remove-member-modal
 .row.gl-mt-3
@@ -28,7 +29,7 @@
           .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
             = render_invite_member_for_group(@group, @group_member.access_level)
           .tab-pane{ id: 'invite-group-pane', role: 'tabpanel' }
-            = render 'shared/members/invite_group', submit_url: group_group_links_path(@group), access_levels: GroupMember.access_level_roles, default_access_level: @group_member.access_level, group_link_field: 'shared_with_group_id', group_access_field: 'shared_group_access'
+            = render 'shared/members/invite_group', submit_url: group_group_links_path(@group), access_levels: GroupMember.access_level_roles, default_access_level: @group_member.access_level, group_link_field: 'shared_with_group_id', group_access_field: 'shared_group_access', groups_select_tag_data: groups_select_tag_data
 
     = render_if_exists 'groups/group_members/ldap_sync'
 

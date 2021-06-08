@@ -21,6 +21,24 @@ export const createTestEditor = ({ extensions = [] }) => {
   });
 };
 
+export const mockChainedCommands = (editor, commandNames = []) => {
+  const commandMocks = commandNames.reduce(
+    (accum, commandName) => ({
+      ...accum,
+      [commandName]: jest.fn(),
+    }),
+    {},
+  );
+
+  Object.keys(commandMocks).forEach((commandName) => {
+    commandMocks[commandName].mockReturnValue(commandMocks);
+  });
+
+  jest.spyOn(editor, 'chain').mockImplementation(() => commandMocks);
+
+  return commandMocks;
+};
+
 /**
  * Creates a Content Editor extension for testing
  * purposes.

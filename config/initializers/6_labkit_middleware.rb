@@ -17,4 +17,4 @@ unless Rails::Configuration::MiddlewareStackProxy.method_defined?(:move)
 end
 
 Rails.application.config.middleware.move(1, ActionDispatch::RequestId)
-Rails.application.config.middleware.insert_after(ActionDispatch::RequestId, Labkit::Middleware::Rack)
+Rails.application.config.middleware.insert(1, Labkit::Middleware::Rack)

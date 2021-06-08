@@ -264,7 +264,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                            'original_branch' => default_branch_or_main,
                            'can_push_code' => 'true',
                            'path' => project_create_blob_path(project, default_branch_or_main),
-                           'project_path' => project.path
+                           'project_path' => project.full_path
                          }
                         )
         end

@@ -25,7 +25,6 @@ RSpec.describe 'Functions', :js do
     end
 
     it 'sees an empty state require Knative installation' do
-      expect(page).to have_link('Install Knative')
       expect(page).to have_selector('.empty-state')
     end
   end

@@ -1,9 +1,9 @@
 %h4
-  = s_('PrometheusService|Auto configuration')
+  = s_('PrometheusService|Prometheus cluster integration')
 
 - if integration.manual_configuration?
   .info-well
-    = s_('PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration.')
+    = s_('PrometheusService|To use a Prometheus installed on a cluster, deactivate the manual configuration.')
 - else
   .container-fluid
     .row
@@ -13,14 +13,14 @@
             = image_tag 'illustrations/monitoring/getting_started.svg'
         .col-sm-10
           %p.text-success.gl-mt-3
-            = s_('PrometheusService|GitLab is managing Prometheus on your clusters.')
+            = s_('PrometheusService|You have a cluster with the Prometheus integration enabled.')
           = link_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), class: 'btn gl-button'
       - else
         .col-sm-2
           = image_tag 'illustrations/monitoring/loading.svg'
         .col-sm-10
           %p.gl-mt-3
-            = s_('PrometheusService|Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments.')
-          = link_to s_('PrometheusService|Install Prometheus on clusters'), project_clusters_path(project), class: 'btn gl-button btn-confirm'
+            = s_('PrometheusService|Configure GitLab to query a Prometheus installed in one of your clusters.')
+          = link_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), class: 'btn gl-button btn-confirm'
 
 %hr

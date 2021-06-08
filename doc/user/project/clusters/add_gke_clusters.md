@@ -70,8 +70,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
      See the [Managed clusters section](index.md#gitlab-managed-clusters) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
-After a couple of minutes, your cluster is ready. You can now proceed
-to install some [pre-defined applications](index.md#installing-applications).
+After a couple of minutes, your cluster is ready.
 
 ### Cloud Run for Anthos
 
@@ -79,8 +78,8 @@ to install some [pre-defined applications](index.md#installing-applications).
 
 You can choose to use Cloud Run for Anthos in place of installing Knative and Istio
 separately after the cluster has been created. This means that Cloud Run
-(Knative), Istio, and HTTP Load Balancing are enabled on the cluster at
-create time and cannot be [installed or uninstalled](../../clusters/applications.md) separately.
+(Knative), Istio, and HTTP Load Balancing are enabled on the cluster
+from the start, and cannot be installed or uninstalled.
 
 ## Existing GKE cluster
 

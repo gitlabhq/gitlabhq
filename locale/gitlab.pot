@@ -19817,6 +19817,9 @@ msgstr ""
 msgid "Link Sentry to GitLab to discover and view the errors your application generates."
 msgstr ""
 
+msgid "Link URL"
+msgstr ""
+
 msgid "Link an external wiki from the project's sidebar. %{docs_link}"
 msgstr ""
 
@@ -26396,19 +26399,16 @@ msgstr ""
 msgid "PrometheusService|Active"
 msgstr ""
 
-msgid "PrometheusService|Auto configuration"
-msgstr ""
-
 msgid "PrometheusService|Auto configuration settings are used unless you override their values here."
-msgstr ""
-
-msgid "PrometheusService|Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments."
 msgstr ""
 
 msgid "PrometheusService|Common metrics"
 msgstr ""
 
 msgid "PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters."
+msgstr ""
+
+msgid "PrometheusService|Configure GitLab to query a Prometheus installed in one of your clusters."
 msgstr ""
 
 msgid "PrometheusService|Custom metrics"
@@ -26426,16 +26426,7 @@ msgstr ""
 msgid "PrometheusService|Finding custom metrics..."
 msgstr ""
 
-msgid "PrometheusService|GitLab is managing Prometheus on your clusters."
-msgstr ""
-
-msgid "PrometheusService|GitLab manages Prometheus on your clusters."
-msgstr ""
-
 msgid "PrometheusService|IAP_CLIENT_ID.apps.googleusercontent.com"
-msgstr ""
-
-msgid "PrometheusService|Install Prometheus on clusters"
 msgstr ""
 
 msgid "PrometheusService|Manage clusters"
@@ -26453,9 +26444,6 @@ msgstr ""
 msgid "PrometheusService|Monitor application health with Prometheus metrics and dashboards"
 msgstr ""
 
-msgid "PrometheusService|Monitor your project’s environments by deploying and configuring Prometheus on your clusters."
-msgstr ""
-
 msgid "PrometheusService|More information"
 msgstr ""
 
@@ -26466,6 +26454,9 @@ msgid "PrometheusService|No %{docsUrlStart}common metrics%{docsUrlEnd} were foun
 msgstr ""
 
 msgid "PrometheusService|No custom metrics have been created. Create one using the button above"
+msgstr ""
+
+msgid "PrometheusService|Prometheus cluster integration"
 msgstr ""
 
 msgid "PrometheusService|PrometheusService|The ID of the IAP-secured resource."
@@ -26483,13 +26474,16 @@ msgstr ""
 msgid "PrometheusService|These metrics will only be monitored after your first deployment to an environment"
 msgstr ""
 
-msgid "PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration."
+msgid "PrometheusService|To use a Prometheus installed on a cluster, deactivate the manual configuration."
 msgstr ""
 
 msgid "PrometheusService|Waiting for your first deployment to an environment to find common metrics"
 msgstr ""
 
 msgid "PrometheusService|You can now manage your Prometheus settings on the %{operations_link_start}Operations%{operations_link_end} page. Fields on this page has been deprecated."
+msgstr ""
+
+msgid "PrometheusService|You have a cluster with the Prometheus integration enabled."
 msgstr ""
 
 msgid "PrometheusService|https://prometheus.example.com/"
@@ -27370,6 +27364,9 @@ msgid "Remove license"
 msgstr ""
 
 msgid "Remove limit"
+msgstr ""
+
+msgid "Remove link"
 msgstr ""
 
 msgid "Remove list"
@@ -29633,10 +29630,10 @@ msgstr ""
 msgid "Serverless platform"
 msgstr ""
 
-msgid "ServerlessDetails|Function invocation metrics require Prometheus to be installed first."
+msgid "ServerlessDetails|Configure cluster."
 msgstr ""
 
-msgid "ServerlessDetails|Install Prometheus"
+msgid "ServerlessDetails|Function invocation metrics require the Prometheus cluster integration."
 msgstr ""
 
 msgid "ServerlessDetails|Invocation metrics loading or not available at this time."
@@ -29676,9 +29673,6 @@ msgid "Serverless|If you believe none of these apply, please check back later as
 msgstr ""
 
 msgid "Serverless|In order to start using functions as a service, you must first install Knative on your Kubernetes cluster. %{linkStart}More information%{linkEnd}"
-msgstr ""
-
-msgid "Serverless|Install Knative"
 msgstr ""
 
 msgid "Serverless|Learn more about Serverless"

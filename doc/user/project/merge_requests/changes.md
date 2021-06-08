@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Changes tab in merge requests
+# Changes tab in merge requests **(FREE)**
 
 The **Changes** tab on a [merge request](index.md), below the main merge request details and next to the discussion tab,
 shows the changes to files between branches or commits. This view of changes to a

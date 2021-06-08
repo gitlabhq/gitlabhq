@@ -10,16 +10,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 For working with internationalization (i18n),
 [GNU gettext](https://www.gnu.org/software/gettext/) is used given it's the most
-used tool for this task and there are a lot of applications that help us
-work with it.
+used tool for this task and there are many applications that help us work with it.
 
 NOTE:
-All `rake` commands described on this page must be run on a GitLab instance, usually GDK.
+All `rake` commands described on this page must be run on a GitLab instance. This instance is
+usually the GitLab Development Kit (GDK).
 
-## Setting up GitLab Development Kit (GDK)
+## Setting up the GitLab Development Kit (GDK)
 
-In order to be able to work on the [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss)
-project you must download and configure it through [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/set-up-gdk.md).
+To work on the [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss)
+project, you must download and configure it through the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/set-up-gdk.md).
 
 After you have the GitLab project ready, you can start working on the translation.
 
@@ -27,34 +27,33 @@ After you have the GitLab project ready, you can start working on the translatio
 
 The following tools are used:
 
-1. [`gettext_i18n_rails`](https://github.com/grosser/gettext_i18n_rails): this
-   gem allow us to translate content from models, views and controllers. Also
-   it gives us access to the following Rake tasks:
-   - `rake gettext:find`: Parses almost all the files from the
-     Rails application looking for content that has been marked for
-     translation. Finally, it updates the PO files with the new content that
-     it has found.
-   - `rake gettext:pack`: Processes the PO files and generates the
-     MO files that are binary and are finally used by the application.
+- [`gettext_i18n_rails`](https://github.com/grosser/gettext_i18n_rails):
+  this gem allows us to translate content from models, views, and controllers. It also gives us
+  access to the following Rake tasks:
 
-1. [`gettext_i18n_rails_js`](https://github.com/webhippie/gettext_i18n_rails_js):
-   this gem is useful to make the translations available in JavaScript. It
-   provides the following Rake task:
-   - `rake gettext:po_to_json`: Reads the contents from the PO files and
-     generates JSON files containing all the available translations.
+  - `rake gettext:find`: parses almost all the files from the Rails application looking for content
+    marked for translation. It then updates the PO files with this content.
+  - `rake gettext:pack`: processes the PO files and generates the binary MO files that the
+    application uses.
 
-1. PO editor: there are multiple applications that can help us to work with PO
-   files, a good option is [Poedit](https://poedit.net/download) which is
-   available for macOS, GNU/Linux and Windows.
+- [`gettext_i18n_rails_js`](https://github.com/webhippie/gettext_i18n_rails_js):
+  this gem makes the translations available in JavaScript. It provides the following Rake task:
+
+  - `rake gettext:po_to_json`: reads the contents of the PO files and generates JSON files that
+    contain all the available translations.
+
+- PO editor: there are multiple applications that can help us work with PO files. A good option is
+  [Poedit](https://poedit.net/download),
+  which is available for macOS, GNU/Linux, and Windows.
 
 ## Preparing a page for translation
 
-We basically have 4 types of files:
+There are four file types:
 
-1. Ruby files: basically Models and Controllers.
-1. HAML files: these are the view files.
-1. ERB files: used for email templates.
-1. JavaScript files: we mostly need to work with Vue templates.
+- Ruby files: models and controllers.
+- HAML files: view files.
+- ERB files: used for email templates.
+- JavaScript files: we mostly work with Vue templates.
 
 ### Ruby files
 
@@ -72,7 +71,7 @@ Or:
 hello = "Hello world!"
 ```
 
-You can easily mark that content for translation with:
+You can mark that content for translation with:
 
 ```ruby
 def hello
@@ -86,26 +85,21 @@ Or:
 hello = _("Hello world!")
 ```
 
-Be careful when translating strings at the class or module level since these would only be
-evaluated once at class load time.
-
-For example:
+Be careful when translating strings at the class or module level since these are only evaluated once
+at class load time. For example:
 
 ```ruby
 validates :group_id, uniqueness: { scope: [:project_id], message: _("already shared with this group") }
 ```
 
-This would be translated when the class is loaded and result in the error message
-always being in the default locale.
-
-Active Record's `:message` option accepts a `Proc`, so we can do this instead:
+This is translated when the class loads and results in the error message always being in the default
+locale. Active Record's `:message` option accepts a `Proc`, so do this instead:
 
 ```ruby
 validates :group_id, uniqueness: { scope: [:project_id], message: -> (object, data) { _("already shared with this group") } }
 ```
 
-Messages in the API (`lib/api/` or `app/graphql`) do
-not need to be externalized.
+Messages in the API (`lib/api/` or `app/graphql`) do not need to be externalized.
 
 ### HAML files
 
@@ -145,13 +139,20 @@ import { __ } from '~/locale';
 const label = __('Subscribe');
 ```
 
-In order to test JavaScript translations you have to change the GitLab
-localization to another language than English and you have to generate JSON files
-using `bin/rake gettext:po_to_json` or `bin/rake gettext:compile`.
+To test JavaScript translations you must:
+
+- Change the GitLab localization to a language other than English.
+- Generate JSON files by using `bin/rake gettext:po_to_json` or `bin/rake gettext:compile`.
 
 ### Vue files
 
-In Vue files we make both the `__()` (double underscore parenthesis) function and the `s__()` (namespaced double underscore parenthesis) function available that you can import from the `~/locale` file. For instance:
+In Vue files, we make the following functions available:
+
+- `__()` (double underscore parenthesis)
+- `s__()` (namespaced double underscore parenthesis)
+
+You can therefore import from the `~/locale` file.
+For example:
 
 ```javascript
 import { __, s__ } from '~/locale';
@@ -228,24 +229,24 @@ For the static text strings we suggest two patterns for using these translations
   </template>
   ```
 
-In order to visually test the Vue translations you have to change the GitLab
-localization to another language than English and you have to generate JSON files
-using `bin/rake gettext:po_to_json` or `bin/rake gettext:compile`.
+To visually test the Vue translations:
+
+1. Change the GitLab localization to another language than English.
+1. Generate JSON files using `bin/rake gettext:po_to_json` or `bin/rake gettext:compile`.
 
 ### Dynamic translations
 
-Sometimes there are some dynamic translations that can't be found by the
-parser when running `bin/rake gettext:find`. For these scenarios you can
-use the [`N_` method](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#unfound-translations-with-rake-gettextfind).
-
-There is also and alternative method to [translate messages from validation errors](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#option-a).
+Sometimes there are dynamic translations that the parser can't find when running
+`bin/rake gettext:find`. For these scenarios you can use the [`N_` method](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#unfound-translations-with-rake-gettextfind).
+There's also an alternative method to [translate messages from validation errors](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#option-a).
 
 ## Working with special content
 
 ### Interpolation
 
-Placeholders in translated text should match the code style of the respective source file.
-For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to [avoid splitting sentences when adding links](#avoid-splitting-sentences-when-adding-links).
+Placeholders in translated text should match the respective source file's code style. For example
+use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
+[avoid splitting sentences when adding links](#avoid-splitting-sentences-when-adding-links).
 
 - In Ruby/HAML:
 
@@ -257,9 +258,9 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
 
   Use the [`GlSprintf`](https://gitlab-org.gitlab.io/gitlab-ui/?path=/docs/utilities-sprintf--sentence-with-link) component if:
 
-  - you need to include child components in the translation string.
-  - you need to include HTML in your translation string.
-  - you are using `sprintf` and need to pass `false` as the third argument to
+  - You need to include child components in the translation string.
+  - You need to include HTML in your translation string.
+  - You're using `sprintf` and need to pass `false` as the third argument to
     prevent it from escaping placeholder values.
 
   For example:
@@ -272,7 +273,7 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
   </gl-sprintf>
   ```
 
-  In other cases it may be simpler to use `sprintf`, perhaps in a computed
+  In other cases, it might be simpler to use `sprintf`, perhaps in a computed
   property. For example:
 
   ```html
@@ -344,7 +345,8 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
   # => When size == 2: 'There are 2 mice.'
   ```
 
-  Avoid using `%d` or count variables in singular strings. This allows more natural translation in some languages.
+  Avoid using `%d` or count variables in singular strings. This allows more natural translation in
+  some languages.
 
 - In JavaScript:
 
@@ -363,13 +365,12 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
 
 The `n_` method should only be used to fetch pluralized translations of the same
 string, not to control the logic of showing different strings for different
-quantities. Some languages have different quantities of target plural forms -
-Chinese (simplified), for example, has only one target plural form in our
-translation tool. This means the translator would have to choose to translate
-only one of the strings and the translation would not behave as intended in the
-other case.
+quantities. Some languages have different quantities of target plural forms.
+For example, Chinese (simplified) has only one target plural form in our
+translation tool. This means the translator has to choose to translate only one
+of the strings, and the translation doesn't behave as intended in the other case.
 
-For example, prefer to use:
+For example, use this:
 
 ```ruby
 if selected_projects.one?
@@ -379,7 +380,7 @@ else
 end
 ```
 
-rather than:
+Instead of this:
 
 ```ruby
 # incorrect usage example
@@ -388,21 +389,22 @@ n_("%{project_name}", "%d projects selected", count) % { project_name: 'GitLab' 
 
 ### Namespaces
 
-A namespace is a way to group translations that belong together. They provide context to our translators by adding a prefix followed by the bar symbol (`|`). For example:
+A namespace is a way to group translations that belong together. They provide context to our
+translators by adding a prefix followed by the bar symbol (`|`). For example:
 
 ```ruby
 'Namespace|Translated string'
 ```
 
-A namespace provide the following benefits:
+A namespace:
 
-- It addresses ambiguity in words, for example: `Promotions|Promote` vs `Epic|Promote`
-- It allows translators to focus on translating externalized strings that belong to the same product area rather than arbitrary ones.
-- It gives a linguistic context to help the translator.
+- Addresses ambiguity in words. For example: `Promotions|Promote` vs `Epic|Promote`.
+- Allows translators to focus on translating externalized strings that belong to the same product
+  area, rather than arbitrary ones.
+- Gives a linguistic context to help the translator.
 
-In some cases, namespaces don't make sense, for example,
-for ubiquitous UI words and phrases such as "Cancel" or phrases like "Save changes" a namespace could
-be counterproductive.
+In some cases, namespaces don't make sense. For example, for ubiquitous UI words and phrases such as
+"Cancel" or phrases like "Save changes," a namespace could be counterproductive.
 
 Namespaces should be PascalCase.
 
@@ -412,7 +414,7 @@ Namespaces should be PascalCase.
   s_('OpenedNDaysAgo|Opened')
   ```
 
-  In case the translation is not found it returns `Opened`.
+  If the translation isn't found, `Opened` is returned.
 
 - In JavaScript:
 
@@ -420,18 +422,19 @@ Namespaces should be PascalCase.
   s__('OpenedNDaysAgo|Opened')
   ```
 
-The namespace should be removed from the translation. See the
-[translation guidelines for more details](translation.md#namespaced-strings).
+The namespace should be removed from the translation. For more details, see the
+[translation guidelines](translation.md#namespaced-strings).
 
 ### HTML
 
-We no longer include HTML directly in the strings that are submitted for translation. This is for a couple of reasons:
+We no longer include HTML directly in the strings that are submitted for translation. This is
+because:
 
-1. It introduces a chance for the translated string to accidentally include invalid HTML.
-1. It introduces a security risk where translated strings become an attack vector for XSS, as noted by the
+1. The translated string can accidentally include invalid HTML.
+1. Translated strings can become an attack vector for XSS, as noted by the
    [Open Web Application Security Project (OWASP)](https://owasp.org/www-community/attacks/xss/).
 
-To include formatting in the translated string, we can do the following:
+To include formatting in the translated string, you can do the following:
 
 - In Ruby/HAML:
 
@@ -449,18 +452,18 @@ To include formatting in the translated string, we can do the following:
     // => 'Some <strong>bold</strong> text.'
   ```
 
-- In Vue
+- In Vue:
 
   See the section on [interpolation](#interpolation).
 
-When [this translation helper issue](https://gitlab.com/gitlab-org/gitlab/-/issues/217935) is complete, we plan to update the
-process of including formatting in translated strings.
+When [this translation helper issue](https://gitlab.com/gitlab-org/gitlab/-/issues/217935)
+is complete, we plan to update the process of including formatting in translated strings.
 
 #### Including Angle Brackets
 
-If a string contains angles brackets (`<`/`>`) that are not used for HTML, it is still flagged by the
-`rake gettext:lint` linter.
-To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`) instead:
+If a string contains angle brackets (`<`/`>`) that are not used for HTML, the `rake gettext:lint`
+linter still flags it. To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`)
+instead:
 
 - In Ruby/HAML:
 
@@ -493,12 +496,12 @@ To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`) inst
 
 ### Numbers
 
-Different locales may use different number formats. To support localization of numbers, we use `formatNumber`,
-which leverages [`toLocaleString()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString).
+Different locales may use different number formats. To support localization of numbers, we use
+`formatNumber`, which leverages [`toLocaleString()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString).
 
-`formatNumber` formats numbers as strings using the current user locale by default.
+By default, `formatNumber` formats numbers as strings using the current user locale.
 
-- In JavaScript
+- In JavaScript:
 
 ```javascript
 import { formatNumber } from '~/locale';
@@ -509,7 +512,7 @@ const tenThousand = formatNumber(10000); // "10,000" (uses comma as decimal symb
 const fiftyPercent = formatNumber(0.5, { style: 'percent' }) // "50%" (other options are passed to toLocaleString)
 ```
 
-- In Vue templates
+- In Vue templates:
 
 ```html
 <script>
@@ -546,27 +549,29 @@ console.log(dateFormat.format(new Date('2063-04-05'))) // April 5, 2063
 
 This makes use of [`Intl.DateTimeFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat).
 
-- In Ruby/HAML, we have two ways of adding format to dates and times:
+- In Ruby/HAML, there are two ways of adding format to dates and times:
 
-  1. **Through the `l` helper**, i.e. `l(active_session.created_at, format: :short)`. We have some predefined formats for
-     [dates](https://gitlab.com/gitlab-org/gitlab/-/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/config/locales/en.yml#L54) and [times](https://gitlab.com/gitlab-org/gitlab/-/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/config/locales/en.yml#L262).
-     If you need to add a new format, because other parts of the code could benefit from it,
-     you can add it to [en.yml](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/locales/en.yml) file.
-  1. **Through `strftime`**, i.e. `milestone.start_date.strftime('%b %-d')`. We use `strftime` in case none of the formats
-     defined on [en.yml](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/locales/en.yml) matches the date/time
-     specifications we need, and if there is no need to add it as a new format because is very particular (i.e. it's only used in a single view).
+  - **Using the `l` helper**: for example, `l(active_session.created_at, format: :short)`. We have
+    some predefined formats for [dates](https://gitlab.com/gitlab-org/gitlab/-/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/config/locales/en.yml#L54)
+    and [times](https://gitlab.com/gitlab-org/gitlab/-/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/config/locales/en.yml#L262).
+    If you need to add a new format, because other parts of the code could benefit from it, add it
+    to the file [`en.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/locales/en.yml).
+  - **Using `strftime`**: for example, `milestone.start_date.strftime('%b %-d')`. We use `strftime`
+    in case none of the formats defined in [`en.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/locales/en.yml)
+    match the date/time specifications we need, and if there's no need to add it as a new format
+    because it's very particular (for example, it's only used in a single view).
 
 ## Best practices
 
 ### Minimize translation updates
 
-Updates can result in the loss of the translations for this string. To minimize risks,
-avoid changes to strings, unless they:
+Updates can result in the loss of the translations for this string. To minimize risks, avoid changes
+to strings unless they:
 
-- Add value to the user.
+- Add value for the user.
 - Include extra context for translators.
 
-For example, we should avoid changes like this:
+For example, avoid changes like this:
 
 ```diff
 - _('Number of things: %{count}') % { count: 10 }
@@ -582,9 +587,10 @@ Examples:
 - Mappings for a dropdown list
 - Error messages
 
-To store these kinds of data, using a constant seems like the best choice, however this doesn't work for translations.
+To store these kinds of data, using a constant seems like the best choice. However, this doesn't
+work for translations.
 
-Bad, avoid it:
+For example, avoid this:
 
 ```ruby
 class MyPresenter
@@ -596,11 +602,13 @@ class MyPresenter
 end
 ```
 
-The translation method (`_`) is called when the class is loaded for the first time and translates the text to the default locale. Regardless of the user's locale, these values are not translated a second time.
+The translation method (`_`) is called when the class loads for the first time and translates the
+text to the default locale. Regardless of the user's locale, these values are not translated a
+second time.
 
-Similar thing happens when using class methods with memoization.
+A similar thing happens when using class methods with memoization.
 
-Bad, avoid it:
+For example, avoid this:
 
 ```ruby
 class MyModel
@@ -614,7 +622,7 @@ class MyModel
 end
 ```
 
-This method memorizes the translations using the locale of the user, who first "called" this method.
+This method memoizes the translations using the locale of the user who first called this method.
 
 To avoid these problems, keep the translations dynamic.
 
@@ -634,10 +642,10 @@ end
 
 ### Splitting sentences
 
-Please never split a sentence as that would assume the sentence grammar and
-structure is the same in all languages.
+Never split a sentence, as it assumes the sentence's grammar and structure is the same in all
+languages.
 
-For instance, the following:
+For example, this:
 
 ```javascript
 {{ s__("mrWidget|Set by") }}
@@ -645,7 +653,7 @@ For instance, the following:
 {{ s__("mrWidget|to be merged automatically when the pipeline succeeds") }}
 ```
 
-should be externalized as follows:
+Should be externalized as follows:
 
 ```javascript
 {{ sprintf(s__("mrWidget|Set by %{author} to be merged automatically when the pipeline succeeds"), { author: author.name }) }}
@@ -653,7 +661,8 @@ should be externalized as follows:
 
 #### Avoid splitting sentences when adding links
 
-This also applies when using links in between translated sentences, otherwise these texts are not translatable in certain languages.
+This also applies when using links in between translated sentences. Otherwise, these texts are not
+translatable in certain languages.
 
 - In Ruby/HAML, instead of:
 
@@ -662,7 +671,7 @@ This also applies when using links in between translated sentences, otherwise th
   = s_('ClusterIntegration|Learn more about %{zones_link}').html_safe % { zones_link: zones_link }
   ```
 
-  Set the link starting and ending HTML fragments as variables like so:
+  Set the link starting and ending HTML fragments as variables:
 
   ```haml
   - zones_link_url = 'https://cloud.google.com/compute/docs/regions-zones/regions-zones'
@@ -687,7 +696,7 @@ This also applies when using links in between translated sentences, otherwise th
   </template>
   ```
 
-  Set the link starting and ending HTML fragments as placeholders like so:
+  Set the link starting and ending HTML fragments as placeholders:
 
   ```html
   <template>
@@ -714,7 +723,7 @@ This also applies when using links in between translated sentences, otherwise th
   }}
   ```
 
-  Set the link starting and ending HTML fragments as placeholders like so:
+  Set the link starting and ending HTML fragments as placeholders:
 
   ```javascript
   {{
@@ -725,50 +734,47 @@ This also applies when using links in between translated sentences, otherwise th
   }}
   ```
 
-The reasoning behind this is that in some languages words change depending on context. For example in Japanese は is added to the subject of a sentence and を to the object. This is impossible to translate correctly if we extract individual words from the sentence.
+The reasoning behind this is that in some languages words change depending on context. For example,
+in Japanese は is added to the subject of a sentence and を to the object. This is impossible to
+translate correctly if you extract individual words from the sentence.
 
-When in doubt, try to follow the best practices described in this [Mozilla
-Developer documentation](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_content_best_practices#Splitting).
+When in doubt, try to follow the best practices described in this [Mozilla Developer documentation](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_content_best_practices#Splitting).
 
 ## Updating the PO files with the new content
 
-Now that the new content is marked for translation, we need to update
-`locale/gitlab.pot` files with the following command:
+Now that the new content is marked for translation, run this command to update the
+`locale/gitlab.pot` files:
 
 ```shell
 bin/rake gettext:regenerate
 ```
 
-This command updates `locale/gitlab.pot` file with the newly externalized
-strings and remove any strings that aren't used anymore. You should check this
-file in. Once the changes are on the default branch, they are picked up by
-[CrowdIn](https://translate.gitlab.com) and be presented for
-translation.
+This command updates the `locale/gitlab.pot` file with the newly externalized strings and removes
+any unused strings. Once the changes are on the default branch, [CrowdIn](https://translate.gitlab.com)
+picks them up and presents them for translation.
 
-We don't need to check in any changes to the `locale/[language]/gitlab.po` files.
-They are updated automatically when [translations from CrowdIn are merged](merging_translations.md).
+You don't need to check in any changes to the `locale/[language]/gitlab.po` files. They are updated
+automatically when [translations from CrowdIn are merged](merging_translations.md).
 
-If there are merge conflicts in the `gitlab.pot` file, you can delete the file
-and regenerate it using the same command.
+If there are merge conflicts in the `gitlab.pot` file, you can delete the file and regenerate it
+using the same command.
 
 ### Validating PO files
 
-To make sure we keep our translation files up to date, there's a linter that is
-running on CI as part of the `static-analysis` job.
-
-To lint the adjustments in PO files locally you can run `rake gettext:lint`.
+To make sure we keep our translation files up to date, there's a linter that runs on CI as part of
+the `static-analysis` job. To lint the adjustments in PO files locally, you can run
+`rake gettext:lint`.
 
 The linter takes the following into account:
 
-- Valid PO-file syntax
-- Variable usage
-  - Only one unnamed (`%d`) variable, since the order of variables might change
-    in different languages
-  - All variables used in the message ID are used in the translation
-  - There should be no variables used in a translation that aren't in the
-    message ID
+- Valid PO-file syntax.
+- Variable usage.
+  - Only one unnamed (`%d`) variable, since the order of variables might change in different
+    languages.
+  - All variables used in the message ID are used in the translation.
+  - There should be no variables used in a translation that aren't in the message ID.
 - Errors during translation.
-- Presence of angle brackets (`<` or `>`)
+- Presence of angle brackets (`<` or `>`).
 
 The errors are grouped per file, and per message ID:
 
@@ -789,9 +795,8 @@ Errors in `locale/zh_TW/gitlab.po`:
     Failure translating to zh_TW with []: too few arguments
 ```
 
-In this output the `locale/zh_HK/gitlab.po` has syntax errors.
-The `locale/zh_TW/gitlab.po` has variables that are used in the translation that
-aren't in the message with ID `1 pipeline`.
+In this output, `locale/zh_HK/gitlab.po` has syntax errors. The file `locale/zh_TW/gitlab.po` has
+variables in the translation that aren't in the message with ID `1 pipeline`.
 
 ## Adding a new language
 
@@ -803,9 +808,9 @@ NOTE:
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221012) in GitLab 13.3:
 Languages with less than 2% of translations are not available in the UI.
 
-Let's suppose you want to add translations for a new language, let's say French.
+Suppose you want to add translations for a new language, for example, French:
 
-1. The first step is to register the new language in `lib/gitlab/i18n.rb`:
+1. Register the new language in `lib/gitlab/i18n.rb`:
 
    ```ruby
    ...
@@ -816,38 +821,33 @@ Let's suppose you want to add translations for a new language, let's say French.
    ...
    ```
 
-1. Next, you need to add the language:
+1. Add the language:
 
    ```shell
    bin/rake gettext:add_language[fr]
    ```
 
-   If you want to add a new language for a specific region, the command is similar,
-   you just need to separate the region with an underscore (`_`). For example:
+   If you want to add a new language for a specific region, the command is similar. You must
+   separate the region with an underscore (`_`), specify the region in capital letters. For example:
 
    ```shell
    bin/rake gettext:add_language[en_GB]
    ```
 
-   Please note that you need to specify the region part in capitals.
+1. Adding the language also creates a new directory at the path `locale/fr/`. You can now start
+   using your PO editor to edit the PO file located at `locale/fr/gitlab.edit.po`.
 
-1. Now that the language is added, a new directory has been created under the
-   path: `locale/fr/`. You can now start using your PO editor to edit the PO file
-   located in: `locale/fr/gitlab.edit.po`.
-
-1. After you're done updating the translations, you need to process the PO files
-   in order to generate the binary MO files and finally update the JSON files
-   containing the translations:
+1. After updating the translations, you must process the PO files to generate the binary MO files,
+   and update the JSON files containing the translations:
 
    ```shell
    bin/rake gettext:compile
    ```
 
-1. In order to see the translated content we need to change our preferred language
-   which can be found under the user's **Settings** (`/profile`).
+1. To see the translated content, you must change your preferred language. You can find this under
+   the user's **Settings** (`/profile`).
 
-1. After checking that the changes are ok, you can proceed to commit the new files.
-   For example:
+1. After checking that the changes are ok, commit the new files. For example:
 
    ```shell
    git add locale/fr/ app/assets/javascripts/locale/fr/

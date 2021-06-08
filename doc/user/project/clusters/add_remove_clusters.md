@@ -61,15 +61,9 @@ When creating a cluster in GitLab, you are asked if you would like to create eit
   cluster, which is the GitLab default and recommended option.
 - An [Attribute-based access control (ABAC)](https://kubernetes.io/docs/reference/access-authn-authz/abac/) cluster.
 
-GitLab creates the necessary service accounts and privileges to install and run
-[GitLab managed applications](index.md#installing-applications). When GitLab creates the cluster,
+When GitLab creates the cluster,
 a `gitlab` service account with `cluster-admin` privileges is created in the `default` namespace
 to manage the newly created cluster.
-
-The first time you install an application into your cluster, the `tiller` service
-account is created with `cluster-admin` privileges in the
-`gitlab-managed-apps` namespace. This service account is used by Helm to
-install and run [GitLab managed applications](index.md#installing-applications).
 
 Helm also creates additional service accounts and other resources for each
 installed application. Consult the documentation of the Helm charts for each application
@@ -141,11 +135,8 @@ If you don't want to use a runner in privileged mode, either:
 
 - Use shared runners on GitLab.com. They don't have this security issue.
 - Set up your own runners using the configuration described at
-  [shared runners](../../gitlab_com/index.md#shared-runners). This involves:
-  1. Making sure that you don't have it installed via
-     [the applications](index.md#installing-applications).
-  1. Installing a runner
-     [using `docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
+  [shared runners](../../gitlab_com/index.md#shared-runners) using
+  [`docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
 ## Create new cluster
 
@@ -162,20 +153,20 @@ Amazon Elastic Kubernetes Service (EKS) at the project, group, or instance level
    - [Amazon EKS](add_eks_clusters.md#new-eks-cluster).
    - [Google GKE](add_gke_clusters.md#creating-the-cluster-on-gke).
 
-After creating a cluster, you can install runners for it as described in
-[GitLab Managed Apps](../../clusters/applications.md).
+After creating a cluster, you can [install runners](https://docs.gitlab.com/runner/install/kubernetes.html),
+add a [cluster management project](../../clusters/management_project.md),
+configure [Auto DevOps](../../../topics/autodevops/index.md),
+or start [deploying right away](index.md#deploying-to-a-kubernetes-cluster).
 
 ## Add existing cluster
 
 If you have an existing Kubernetes cluster, you can add it to a project, group,
-or instance.
+or instance, and [install runners](https://docs.gitlab.com/runner/install/kubernetes.html)
+on it (the cluster does not need to be added to GitLab first).
 
-Kubernetes integration isn't supported for arm64 clusters. See the issue
-[Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab/-/issues/29838)
-for details.
-
-After adding an existing cluster, you can install runners for it as described in
-[GitLab Managed Apps](../../clusters/applications.md).
+After adding a cluster, you can add a [cluster management project](../../clusters/management_project.md),
+configure [Auto DevOps](../../../topics/autodevops/index.md),
+or start [deploying right away](index.md#deploying-to-a-kubernetes-cluster).
 
 ### Existing Kubernetes cluster
 
@@ -325,8 +316,7 @@ To add a Kubernetes cluster to your project, group, or instance:
 
 1. Finally, click the **Create Kubernetes cluster** button.
 
-After a couple of minutes, your cluster is ready. You can now proceed
-to install some [pre-defined applications](index.md#installing-applications).
+After a couple of minutes, your cluster is ready.
 
 #### Disable Role-Based Access Control (RBAC) (optional)
 

@@ -3,12 +3,14 @@
 - submit_url = local_assigns[:submit_url]
 - group_link_field = local_assigns[:group_link_field]
 - group_access_field = local_assigns[:group_access_field]
+- groups_select_tag_data = local_assigns[:groups_select_tag_data]
+
 .row
   .col-sm-12
     = form_tag submit_url, class: 'invite-group-form js-requires-input', method: :post do
       .form-group
         = label_tag group_link_field, _("Select a group to invite"), class: "label-bold"
-        = groups_select_tag(group_link_field, data: { skip_groups: @skip_groups }, class: 'input-clamp qa-group-select-field', required: true)
+        = groups_select_tag(group_link_field, data: groups_select_tag_data, class: 'input-clamp qa-group-select-field', required: true)
         .form-text.text-muted.gl-mb-3
           = _('Group sharing provides access to all group members (including members who inherited group membership from a parent group).')
       .form-group

@@ -33,13 +33,18 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
 
       expect(headers['ETag']).to be_nil
       expect(headers['X-Gitlab-From-Cache']).to be_nil
-      expect(headers[::Gitlab::Metrics::RequestsRackMiddleware::FEATURE_CATEGORY_HEADER]).to be_nil
     end
 
     it 'passes status code from app' do
       status, _, _ = middleware.call(build_request(path, if_none_match))
 
       expect(status).to eq app_status_code
+    end
+
+    it 'does not set feature category attribute' do
+      expect(Gitlab::ApplicationContext).not_to receive(:push)
+
+      _, _, _ = middleware.call(build_request(path, if_none_match))
     end
   end
 
@@ -164,8 +169,15 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
     it 'sets correct headers' do
       _, headers, _ = middleware.call(build_request(path, if_none_match))
 
-      expect(headers).to include('X-Gitlab-From-Cache' => 'true',
-                                 ::Gitlab::Metrics::RequestsRackMiddleware::FEATURE_CATEGORY_HEADER => 'issue_tracking')
+      expect(headers).to include('X-Gitlab-From-Cache' => 'true')
+    end
+
+    it "pushes route's feature category to the context" do
+      expect(Gitlab::ApplicationContext).to receive(:push).with(
+        feature_category: 'issue_tracking'
+      )
+
+      _, _, _ = middleware.call(build_request(path, if_none_match))
     end
 
     it_behaves_like 'sends a process_action.action_controller notification', 304

@@ -73,10 +73,6 @@ CPU and Memory consumption is monitored, but requires
 to determine the environment. If you are using
 [Auto DevOps](../../../topics/autodevops/index.md), this is handled automatically.
 
-The [NGINX Ingress](../clusters/index.md#installing-applications) that is deployed
-by GitLab to clusters, is automatically annotated for monitoring providing key
-response metrics: latency, throughput, and error rates.
-
 ##### Example of Kubernetes service annotations and labels
 
 As an example, to activate Prometheus monitoring of a service:

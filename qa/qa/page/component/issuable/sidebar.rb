@@ -65,13 +65,13 @@ module QA
 
           def has_assignee?(username)
             within_element(:assignee_block) do
-              has_text?(username, wait: 120)
+              has_text?(username, wait: 1)
             end
           end
 
           def has_no_assignee?(username)
             within_element(:assignee_block) do
-              has_no_text?(username, wait: 120)
+              has_no_text?(username, wait: 1)
             end
           end
 

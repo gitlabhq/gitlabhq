@@ -234,7 +234,6 @@ Component statuses are linked to configuration documentation for each component.
 | [GitLab Exporter](#gitlab-exporter)                   | Generates a variety of GitLab metrics                                |       ✅       |       ✅        |      ✅       |        ✅         |     ✅      |   ❌    |  ❌  | CE & EE |
 | [GitLab Geo Node](#gitlab-geo)                        | Geographically distributed GitLab nodes                              |       ⚙        |       ⚙      |        ❌      |        ❌         |     ✅      |   ❌    |  ⚙  | EE Only |
 | [GitLab Kubernetes Agent](#gitlab-kubernetes-agent)   | Integrate Kubernetes clusters in a cloud-native way                  |       ⚙       |       ⚙        |      ⚙       |        ❌         |     ❌      |   ⤓    |  ⚙   | EE Only |
-| [GitLab Managed Apps](#gitlab-managed-apps)           | Deploy Helm, Ingress, Cert-Manager, Prometheus, GitLab Runner, JupyterHub, or Knative to a cluster |  ⤓  |  ⤓  |  ⤓  |      ⤓       |     ⤓      |   ⤓    |  ⤓  | CE & EE |
 | [GitLab Pages](#gitlab-pages)                         | Hosts static websites                                                |       ⚙       |       ⚙        |      ❌       |        ❌         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [GitLab Kubernetes Agent](#gitlab-kubernetes-agent)   | Integrate Kubernetes clusters in a cloud-native way                  |       ⚙       |       ⚙        |      ⚙       |        ❌         |     ❌      |   ⤓    |  ⚙   | EE Only |
 | [GitLab self-monitoring: Alertmanager](#alertmanager) | Deduplicates, groups, and routes alerts from Prometheus              |       ⚙       |       ⚙        |      ✅       |        ⚙         |     ✅      |   ❌    |  ❌  | CE & EE |
@@ -738,28 +737,6 @@ Starting with GitLab 13.0, Puma is the default web server.
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - GitLab.com: [Mail configuration](../user/gitlab_com/index.md#mail-configuration)
-
-#### GitLab Managed Apps
-
-- Configuration:
-  - [Omnibus](../user/project/clusters/index.md#installing-applications)
-  - [Charts](../user/project/clusters/index.md#installing-applications)
-  - [Source](../user/project/clusters/index.md#installing-applications)
-  - [GDK](../user/project/clusters/index.md#installing-applications)
-- Layer: Core Service (Processor)
-
-GitLab provides [GitLab Managed Apps](../user/project/clusters/index.md#installing-applications),
-a one-click install for various applications which can be added directly to your configured cluster.
-These applications are needed for Review Apps and deployments when using Auto DevOps.
-You can install them after you create a cluster. This includes:
-
-- [Helm](https://helm.sh/docs/)
-- [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
-- [Cert-Manager](https://cert-manager.io/docs/)
-- [Prometheus](https://prometheus.io/docs/introduction/overview/)
-- [GitLab Runner](https://docs.gitlab.com/runner/)
-- [JupyterHub](https://jupyter.org)
-- [Knative](https://cloud.google.com/knative/)
 
 ## GitLab by request type
 

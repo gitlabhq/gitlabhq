@@ -143,6 +143,58 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
     end
   end
 
+  describe 'group search results' do
+    let_it_be(:group, refind: true) { create(:group) }
+    let_it_be(:group_within_hierarchy) { create(:group, parent: group) }
+    let_it_be(:group_outside_hierarchy) { create(:group) }
+
+    before_all do
+      group.add_owner(user)
+      group_within_hierarchy.add_owner(user)
+      group_outside_hierarchy.add_owner(user)
+    end
+
+    context 'when sharing with groups outside the hierarchy is enabled' do
+      context 'when the invite members group modal is disabled' do
+        before do
+          stub_feature_flags(invite_members_group_modal: false)
+        end
+
+        it 'shows groups within and outside the hierarchy in search results' do
+          visit group_group_members_path(group)
+
+          click_on 'Invite group'
+          click_on 'Search for a group'
+
+          expect(page).to have_text group_within_hierarchy.name
+          expect(page).to have_text group_outside_hierarchy.name
+        end
+      end
+    end
+
+    context 'when sharing with groups outside the hierarchy is disabled' do
+      before do
+        group.namespace_settings.update!(prevent_sharing_groups_outside_hierarchy: true)
+      end
+
+      context 'when the invite members group modal is disabled' do
+        before do
+          stub_feature_flags(invite_members_group_modal: false)
+        end
+
+        it 'shows only groups within the hierarchy in search results' do
+          visit group_group_members_path(group)
+
+          click_on 'Invite group'
+          click_on 'Search for a group'
+
+          expect(page).to have_text group_within_hierarchy.name
+          expect(page).not_to have_text group_outside_hierarchy.name
+        end
+      end
+    end
+  end
+
   def add_group(id, role)
     page.click_link 'Invite group'
     page.within ".invite-group-form" do

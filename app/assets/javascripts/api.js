@@ -18,6 +18,7 @@ const Api = {
   groupMembersPath: '/api/:version/groups/:id/members',
   groupMilestonesPath: '/api/:version/groups/:id/milestones',
   subgroupsPath: '/api/:version/groups/:id/subgroups',
+  descendantGroupsPath: '/api/:version/groups/:id/descendant_groups',
   namespacesPath: '/api/:version/namespaces.json',
   groupInvitationsPath: '/api/:version/groups/:id/invitations',
   groupPackagesPath: '/api/:version/groups/:id/packages',

@@ -172,14 +172,9 @@ for your deployment jobs to use. Otherwise, a namespace is created for you.
 
 #### Important notes
 
-Note the following with GitLab and clusters:
-
-- If you [install applications](#installing-applications) on your cluster, GitLab will
-  create the resources required to run these even if you have chosen to manage your own
-  cluster.
-- Be aware that manually managing resources that have been created by GitLab, like
-  namespaces and service accounts, can cause unexpected errors. If this occurs, try
-  [clearing the cluster cache](#clearing-the-cluster-cache).
+Be aware that manually managing resources that have been created by GitLab, like
+namespaces and service accounts, can cause unexpected errors. If this occurs, try
+[clearing the cluster cache](#clearing-the-cluster-cache).
 
 #### Clearing the cluster cache
 
@@ -200,19 +195,15 @@ To clear the cache:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
 
-You do not need to specify a base domain on cluster settings when using GitLab Serverless. The domain in that case
-is specified as part of the Knative installation. See [Installing Applications](#installing-applications).
-
 Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an deployment variable.
 If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain is used for the different
 stages. For example, Auto Review Apps and Auto Deploy.
 
 The domain should have a wildcard DNS configured to the Ingress IP address.
-After Ingress has been installed (see [Installing Applications](#installing-applications)),
-you can either:
+You can either:
 
 - Create an `A` record that points to the Ingress IP address with your domain provider.
-- Enter a wildcard DNS address using a service such as nip.io or xip.io. For example, `192.168.1.1.xip.io`.
+- Enter a wildcard DNS address using a service such as `nip.io` or `xip.io`. For example, `192.168.1.1.xip.io`.
 
 To determine the external Ingress IP address, or external Ingress hostname:
 
@@ -262,13 +253,11 @@ This list provides a generic solution, and some GitLab-specific approaches:
 
 If you see a trailing `%` on some Kubernetes versions, do not include it.
 
-## Installing applications
+## Cluster management project
 
-GitLab can install and manage some applications like Helm, GitLab Runner, Ingress,
-Prometheus, and so on, in your project-level cluster. For more information on
-installing, upgrading, uninstalling, and troubleshooting applications for
-your project cluster, see
-[GitLab Managed Apps](../../clusters/applications.md).
+Attach a [Cluster management project](../../clusters/management_project.md)
+to your cluster to manage shared resources requiring `cluster-admin` privileges for
+installation, such as an Ingress controller.
 
 ## Auto DevOps
 
@@ -457,6 +446,6 @@ Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4701) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/208224) to GitLab Free in 13.2.
 
-When [Prometheus is deployed](#installing-applications), GitLab monitors the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
+When [the Prometheus cluster integration is enabled](../../clusters/integrations.md#prometheus-cluster-integration), GitLab monitors the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
 
 ![Cluster Monitoring](img/k8s_cluster_monitoring.png)

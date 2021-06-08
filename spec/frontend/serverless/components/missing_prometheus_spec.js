@@ -21,7 +21,7 @@ describe('missingPrometheusComponent', () => {
     const { vm } = wrapper;
 
     expect(vm.$el.querySelector('.state-description').innerHTML.trim()).toContain(
-      'Function invocation metrics require Prometheus to be installed first.',
+      'Function invocation metrics require the Prometheus cluster integration.',
     );
 
     expect(wrapper.find(GlButton).attributes('variant')).toBe('success');
