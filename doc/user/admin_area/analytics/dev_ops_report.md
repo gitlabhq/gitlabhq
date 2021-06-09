@@ -40,14 +40,17 @@ collected before this feature is available.
 
 The DevOps Adoption tab shows you which groups within your organization are using the most essential features of GitLab:
 
-- Approvals
-- Code owners
-- Deployments
-- Issues
-- Merge Requests
-- Pipelines
-- Runners
-- Scans
+- Dev
+  - Issues
+  - Merge Requests
+  - Approvals
+  - Code owners
+- Sec
+  - Scans
+- Ops
+  - Runners
+  - Pipelines
+  - Deployments
 
 Buttons to manage your groups appear in the DevOps Adoption section of the page.
 
@@ -56,6 +59,8 @@ DevOps Adoption allows you to:
 - Verify whether you are getting the return on investment that you expected from GitLab.
 - Identify specific groups that are lagging in their adoption of GitLab so you can help them along in their DevOps journey.
 - Find the groups that have adopted certain features and can provide guidance to other groups on how to use those features.
+
+![DevOps Report](img/admin_devops_adoption_v14_0.png)
 
 ### Disable or enable DevOps Adoption
 

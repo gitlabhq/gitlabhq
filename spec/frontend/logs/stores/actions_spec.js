@@ -11,7 +11,6 @@ import {
   fetchEnvironments,
   fetchLogs,
   fetchMoreLogsPrepend,
-  fetchManagedApps,
 } from '~/logs/stores/actions';
 import * as types from '~/logs/stores/mutation_types';
 import logsPageState from '~/logs/stores/state';
@@ -31,8 +30,6 @@ import {
   mockResponse,
   mockCursor,
   mockNextCursor,
-  mockManagedApps,
-  mockManagedAppsEndpoint,
 } from '../mock_data';
 
 jest.mock('~/flash');
@@ -214,30 +211,6 @@ describe('Logs Store actions', () => {
           { type: types.REQUEST_ENVIRONMENTS_DATA },
           { type: types.RECEIVE_ENVIRONMENTS_DATA_ERROR },
         ],
-        [],
-      );
-    });
-  });
-
-  describe('fetchManagedApps', () => {
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-    });
-
-    it('should commit RECEIVE_MANAGED_APPS_DATA_SUCCESS mutation on succesful fetch', () => {
-      mock.onGet(mockManagedAppsEndpoint).replyOnce(200, { clusters: mockManagedApps });
-      return testAction(fetchManagedApps, mockManagedAppsEndpoint, state, [
-        { type: types.RECEIVE_MANAGED_APPS_DATA_SUCCESS, payload: mockManagedApps },
-      ]);
-    });
-
-    it('should commit RECEIVE_MANAGED_APPS_DATA_ERROR on wrong data', () => {
-      mock.onGet(mockManagedAppsEndpoint).replyOnce(500);
-      return testAction(
-        fetchManagedApps,
-        mockManagedAppsEndpoint,
-        state,
-        [{ type: types.RECEIVE_MANAGED_APPS_DATA_ERROR }],
         [],
       );
     });

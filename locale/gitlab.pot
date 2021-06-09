@@ -854,9 +854,6 @@ msgstr ""
 msgid "%{state} epics"
 msgstr ""
 
-msgid "%{strongStart}Deletes%{strongEnd} source branch"
-msgstr ""
-
 msgid "%{strongStart}Tip:%{strongEnd} You can also checkout merge requests locally by %{linkStart}following these guidelines%{linkEnd}"
 msgstr ""
 
@@ -12560,9 +12557,6 @@ msgid "Environments|Learn more about stopping environments"
 msgstr ""
 
 msgid "Environments|Logs from %{start} to %{end}."
-msgstr ""
-
-msgid "Environments|Managed apps"
 msgstr ""
 
 msgid "Environments|More information"
@@ -32784,6 +32778,9 @@ msgstr ""
 msgid "The snippet is visible to any logged in user except external users."
 msgstr ""
 
+msgid "The source branch will be deleted"
+msgstr ""
+
 msgid "The specified tab is invalid, please select another"
 msgstr ""
 
@@ -34367,6 +34364,9 @@ msgid "Too many namespaces enabled. You will need to manage them via the console
 msgstr ""
 
 msgid "Too many projects enabled. You will need to manage them via the console or the API."
+msgstr ""
+
+msgid "TopNav|Go back"
 msgstr ""
 
 msgid "Topics (optional)"

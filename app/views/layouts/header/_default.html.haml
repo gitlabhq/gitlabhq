@@ -6,7 +6,7 @@
   %a.gl-sr-only.gl-accessibility{ href: "#content-body" } Skip to content
   .container-fluid
     .header-content
-      .title-container{ class: ('hide-when-menu-expanded' if !use_top_nav_redesign) }
+      .title-container.hide-when-menu-expanded
         %h1.title
           %span.gl-sr-only GitLab
           = link_to root_path, title: _('Dashboard'), id: 'logo', **tracking_attrs('main_navigation', 'click_gitlab_logo_link', 'navigation') do
@@ -33,12 +33,13 @@
         %ul.nav.navbar-nav
           - if current_user
             = render 'layouts/header/new_dropdown', class: ('gl-display-none gl-sm-display-block' if use_top_nav_redesign)
-          - if header_link?(:search)
+          - if top_nav_show_search
+            - search_menu_item = top_nav_search_menu_item_attrs
             %li.nav-item.d-none.d-lg-block.m-auto
               = render 'layouts/search' unless current_controller?(:search)
             %li.nav-item{ class: use_top_nav_redesign ? "gl-display-none gl-sm-display-inline-block gl-lg-display-none" : "gl-display-inline-block gl-lg-display-none" }
-              = link_to search_context.search_url, title: _('Search'), aria: { label: _('Search') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = sprite_icon('search')
+              = link_to search_menu_item.fetch(:href), title: search_menu_item.fetch(:title), aria: { label: search_menu_item.fetch(:title) }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                = sprite_icon(search_menu_item.fetch(:icon))
           - if header_link?(:issues)
             = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
               = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues', aria: { label: _('Issues') },
@@ -120,9 +121,9 @@
       %button.navbar-toggler.d-block.d-sm-none{ type: 'button', class: ('gl-border-none!' if use_top_nav_redesign) }
         %span.sr-only= _('Toggle navigation')
         - if use_top_nav_redesign
-          %span.more-icon.gl-px-3
+          %span.more-icon.gl-px-3.gl-font-sm.gl-font-weight-bold
             %span.gl-pr-2= _('Menu')
-            = sprite_icon('dot-grid', size: 16)
+            = sprite_icon('hamburger', size: 16)
         - else
           = sprite_icon('ellipsis_h', size: 12, css_class: 'more-icon')
         = sprite_icon('close', size: 12, css_class: 'close-icon')

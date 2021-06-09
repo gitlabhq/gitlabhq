@@ -482,6 +482,9 @@ body {
   color: #525252;
   vertical-align: baseline;
 }
+.gl-font-sm {
+  font-size: 12px;
+}
 .dropdown {
   position: relative;
 }
@@ -1961,6 +1964,12 @@ body.sidebar-refactoring
 .gl-mx-0\! {
   margin-left: 0 !important;
   margin-right: 0 !important;
+}
+.gl-font-sm {
+  font-size: 0.75rem;
+}
+.gl-font-weight-bold {
+  font-weight: 600;
 }
 
 @import "startup/cloaking";

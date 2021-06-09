@@ -30,7 +30,10 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
   const findButtonIcons = () =>
     findButton()
       .findAllComponents(GlIcon)
-      .wrappers.map((x) => x.props('name'));
+      .wrappers.map((x) => ({
+        name: x.props('name'),
+        classes: x.classes(),
+      }));
 
   beforeEach(() => {
     listener = jest.fn();
@@ -65,11 +68,42 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
 
       expect(listener).toHaveBeenCalledWith('TEST');
     });
+
+    it('renders expected icons', () => {
+      expect(findButtonIcons()).toEqual([
+        {
+          name: TEST_MENU_ITEM.icon,
+          classes: ['gl-mr-2!'],
+        },
+        {
+          name: 'chevron-right',
+          classes: ['gl-ml-auto'],
+        },
+      ]);
+    });
+  });
+
+  describe('with icon-only', () => {
+    beforeEach(() => {
+      createComponent({ iconOnly: true });
+    });
+
+    it('does not render title or view icon', () => {
+      expect(wrapper.text()).toBe('');
+    });
+
+    it('only renders menuItem icon', () => {
+      expect(findButtonIcons()).toEqual([
+        {
+          name: TEST_MENU_ITEM.icon,
+          classes: [],
+        },
+      ]);
+    });
   });
 
   describe.each`
     desc                      | menuItem                                         | expectedIcons
-    ${'default'}              | ${TEST_MENU_ITEM}                                | ${[TEST_MENU_ITEM.icon, 'chevron-right']}
     ${'with no icon'}         | ${{ ...TEST_MENU_ITEM, icon: null }}             | ${['chevron-right']}
     ${'with no view'}         | ${{ ...TEST_MENU_ITEM, view: null }}             | ${[TEST_MENU_ITEM.icon]}
     ${'with no icon or view'} | ${{ ...TEST_MENU_ITEM, view: null, icon: null }} | ${[]}
@@ -79,7 +113,7 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
     });
 
     it(`renders expected icons ${JSON.stringify(expectedIcons)}`, () => {
-      expect(findButtonIcons()).toEqual(expectedIcons);
+      expect(findButtonIcons().map((x) => x.name)).toEqual(expectedIcons);
     });
   });
 

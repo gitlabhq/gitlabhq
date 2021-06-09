@@ -13,6 +13,7 @@ const DEFAULT_PROPS = {
   frequentItemsVuexModule: FREQUENT_ITEMS_PROJECTS.vuexModule,
   linksPrimary: TEST_NAV_DATA.primary,
   linksSecondary: TEST_NAV_DATA.secondary,
+  containerClass: 'test-frequent-items-container-class',
 };
 const TEST_OTHER_PROPS = {
   namespace: 'projects',
@@ -44,6 +45,7 @@ describe('~/nav/components/top_nav_container_view.vue', () => {
       attributes: parent.findComponent(FrequentItemsApp).attributes(),
     };
   };
+  const findFrequentItemsContainer = () => wrapper.find('[data-testid="frequent-items-container"]');
 
   afterEach(() => {
     wrapper.destroy();
@@ -83,6 +85,10 @@ describe('~/nav/components/top_nav_container_view.vue', () => {
         props: expect.objectContaining(TEST_OTHER_PROPS),
         attributes: expect.objectContaining(EXTRA_ATTRS),
       });
+    });
+
+    it('renders given container class', () => {
+      expect(findFrequentItemsContainer().classes(DEFAULT_PROPS.containerClass)).toBe(true);
     });
 
     it('renders menu sections', () => {

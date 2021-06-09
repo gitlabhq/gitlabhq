@@ -725,6 +725,28 @@ Example response:
 }
 ```
 
+### Download a Group avatar
+
+Get a group avatar. This endpoint can be accessed without authentication if the
+group is publicly accessible.
+
+```plaintext
+GET /groups/:id/avatar
+```
+
+| Attribute | Type           | Required | Description           |
+| --------- | -------------- | -------- | --------------------- |
+| `id`      | integer/string | yes      | ID of the group       |
+
+Example:
+
+```shell
+curl --header "PRIVATE-TOKEN: $GITLAB_LOCAL_TOKEN" \
+  --remote-header-name \
+  --remote-name \
+  "https://gitlab.example.com/api/v4/groups/4/avatar"
+```
+
 ### Disable the results limit **(FREE SELF)**
 
 The 100 results limit can break integrations developed using GitLab 12.4 and earlier.

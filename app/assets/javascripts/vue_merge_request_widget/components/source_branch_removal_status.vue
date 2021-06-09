@@ -1,15 +1,14 @@
 <script>
-import { GlIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '../../locale';
 
 export default {
   i18n: {
-    removesBranchText: __('%{strongStart}Deletes%{strongEnd} source branch'),
+    removesBranchText: __('The source branch will be deleted'),
     tooltipTitle: __('A user with write access to the source branch selected this option'),
   },
   components: {
     GlIcon,
-    GlSprintf,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -20,11 +19,7 @@ export default {
 <template>
   <p v-once class="mr-info-list gl-ml-7 gl-pb-5 gl-mb-0">
     <span class="status-text">
-      <gl-sprintf :message="$options.i18n.removesBranchText">
-        <template #strong="{ content }">
-          <strong>{{ content }}</strong>
-        </template>
-      </gl-sprintf>
+      {{ $options.i18n.removesBranchText }}
     </span>
     <gl-icon
       v-gl-tooltip.hover

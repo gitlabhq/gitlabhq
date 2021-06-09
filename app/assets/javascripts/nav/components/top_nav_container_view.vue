@@ -20,6 +20,11 @@ export default {
       type: String,
       required: true,
     },
+    containerClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
     linksPrimary: {
       type: Array,
       required: false,
@@ -50,7 +55,11 @@ export default {
 
 <template>
   <div class="top-nav-container-view gl-display-flex gl-flex-direction-column">
-    <div class="frequent-items-dropdown-container gl-w-auto">
+    <div
+      class="frequent-items-dropdown-container gl-w-auto"
+      :class="containerClass"
+      data-testid="frequent-items-container"
+    >
       <div class="frequent-items-dropdown-content gl-w-full! gl-pt-0!">
         <vuex-module-provider :vuex-module="frequentItemsVuexModule">
           <frequent-items-app v-bind="$attrs" />

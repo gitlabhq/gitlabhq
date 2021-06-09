@@ -31,16 +31,6 @@ export default () => ({
   },
 
   /**
-   * Managed apps list information
-   */
-  managedApps: {
-    options: [],
-    isLoading: false,
-    current: null,
-    fetchError: false,
-  },
-
-  /**
    * Logs including trace
    */
   logs: {

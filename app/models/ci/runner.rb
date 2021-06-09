@@ -168,18 +168,13 @@ module Ci
 
     # Searches for runners matching the given query.
     #
-    # This method uses ILIKE on PostgreSQL.
-    #
-    # This method performs a *partial* match on tokens, thus a query for "a"
-    # will match any runner where the token contains the letter "a". As a result
-    # you should *not* use this method for non-admin purposes as otherwise users
-    # might be able to query a list of all runners.
+    # This method uses ILIKE on PostgreSQL for the description field and performs a full match on tokens.
     #
     # query - The search query as a String.
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query)
-      fuzzy_search(query, [:token, :description])
+      where(token: query).or(fuzzy_search(query, [:description]))
     end
 
     def self.online_contact_time_deadline

@@ -54,6 +54,7 @@ export default {
         :key="menuItem.id"
         :menu-item="menuItem"
         data-testid="menu-item"
+        class="gl-w-full"
         :class="{ 'gl-mt-1': menuItemIndex > 0 }"
         @click="onClick(menuItem)"
       />

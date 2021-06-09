@@ -28,7 +28,7 @@ Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) triggered by <%
 Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) triggered by API
 <% end -%>
 <% failed = @pipeline.latest_statuses.failed -%>
-had <%= failed.size %> failed <%= 'build'.pluralize(failed.size) %>.
+had <%= failed.size %> failed <%= 'job'.pluralize(failed.size) %>.
 
 <% failed.each do |build| -%>
 <%= render "notify/links/#{build.to_partial_path}", pipeline: @pipeline, build: build %>

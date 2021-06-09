@@ -312,11 +312,33 @@ module Gitlab
       end
 
       # Cross-origin requests must be enabled for the Authorization code with PKCE OAuth flow when used from a browser.
+      %w(/oauth/token /oauth/revoke).each do |oauth_path|
+        allow do
+          origins '*'
+          resource oauth_path,
+            headers: %w(Authorization),
+            credentials: false,
+            methods: %i(post)
+        end
+      end
+
+      # These are routes from doorkeeper-openid_connect:
+      # https://github.com/doorkeeper-gem/doorkeeper-openid_connect#routes
       allow do
         origins '*'
-        resource '/oauth/token',
+        resource '/oauth/userinfo',
+          headers: %w(Authorization),
           credentials: false,
-          methods: [:post]
+          methods: %i(get head post)
+      end
+
+      %w(/oauth/discovery/keys /.well-known/openid-configuration /.well-known/webfinger).each do |openid_path|
+        allow do
+          origins '*'
+          resource openid_path,
+          credentials: false,
+          methods: %i(get head)
+        end
       end
     end
 

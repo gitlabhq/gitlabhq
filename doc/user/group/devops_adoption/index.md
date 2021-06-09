@@ -24,14 +24,17 @@ To access Group DevOps Adoption, go to your group and select **Analytics > DevOp
 
 Group DevOps Adoption shows you how individual groups and sub-groups within your organization use the following features:
 
-- Approvals
-- Code owners
-- Deployments
-- Issues
-- Merge Requests
-- Pipelines
-- Runners
-- Scans
+- Dev
+  - Issues
+  - Merge Requests
+  - Approvals
+  - Code owners
+- Sec
+  - Scans
+- Ops
+  - Runners
+  - Pipelines
+  - Deployments
 
 When managing groups in the UI, you can manage your sub-groups with the **Add/Remove sub-groups**
 button, in the top right hand section of your Groups pages.
@@ -42,7 +45,7 @@ With DevOps Adoption you can:
 - Identify specific sub-groups that are lagging in their adoption of GitLab so you can help them along in their DevOps journey.
 - Find the sub-groups that have adopted certain features and can provide guidance to other sub-groups on how to use those features.
 
-![DevOps Report](img/group_devops_adoption_v13_11.png)
+![DevOps Report](img/group_devops_adoption_v14_0.png)
 
 ## Enable data processing
 

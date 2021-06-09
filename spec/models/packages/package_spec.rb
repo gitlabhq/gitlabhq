@@ -757,19 +757,8 @@ RSpec.describe Packages::Package, type: :model do
       end
     end
 
-    context 'with arel scope feature flag enabled' do
-      it_behaves_like 'order_project_path scope'
-      it_behaves_like 'order_project_path_desc scope'
-    end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(arel_package_scopes: false)
-      end
-
-      it_behaves_like 'order_project_path scope'
-      it_behaves_like 'order_project_path_desc scope'
-    end
+    it_behaves_like 'order_project_path scope'
+    it_behaves_like 'order_project_path_desc scope'
   end
 
   describe '.order_by_package_file' do

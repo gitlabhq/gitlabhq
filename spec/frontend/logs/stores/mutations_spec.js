@@ -11,8 +11,6 @@ import {
   mockSearch,
   mockCursor,
   mockNextCursor,
-  mockManagedApps,
-  mockManagedAppName,
 } from '../mock_data';
 
 describe('Logs Store Mutations', () => {
@@ -32,15 +30,6 @@ describe('Logs Store Mutations', () => {
     it('sets the environment', () => {
       mutations[types.SET_PROJECT_ENVIRONMENT](state, mockEnvName);
       expect(state.environments.current).toEqual(mockEnvName);
-      expect(state.managedApps.current).toBe(null);
-    });
-  });
-
-  describe('SET_MANAGED_APP', () => {
-    it('sets the managed app', () => {
-      mutations[types.SET_MANAGED_APP](state, mockManagedAppName);
-      expect(state.managedApps.current).toBe(mockManagedAppName);
-      expect(state.environments.current).toBe(null);
     });
   });
 
@@ -263,31 +252,6 @@ describe('Logs Store Mutations', () => {
           options: [],
         }),
       );
-    });
-  });
-
-  describe('RECEIVE_MANAGED_APPS_DATA_SUCCESS', () => {
-    it('receives managed apps data success', () => {
-      expect(state.managedApps.options).toEqual([]);
-
-      mutations[types.RECEIVE_MANAGED_APPS_DATA_SUCCESS](state, mockManagedApps);
-
-      expect(state.managedApps.options.length).toEqual(1);
-      expect(state.managedApps.options).toEqual([mockManagedApps[0]]);
-      expect(state.managedApps.isLoading).toBe(false);
-    });
-  });
-
-  describe('RECEIVE_MANAGED_APPS_DATA_ERROR', () => {
-    it('received managed apps data error', () => {
-      mutations[types.RECEIVE_MANAGED_APPS_DATA_ERROR](state);
-
-      expect(state.managedApps).toEqual({
-        options: [],
-        isLoading: false,
-        current: null,
-        fetchError: true,
-      });
     });
   });
 });

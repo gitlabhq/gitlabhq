@@ -16,6 +16,11 @@ export default {
       type: Object,
       required: true,
     },
+    iconOnly: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     dataAttrs() {
@@ -32,13 +37,16 @@ export default {
     :href="menuItem.href"
     class="top-nav-menu-item gl-display-block"
     :class="[menuItem.css_class, { [$options.ACTIVE_CLASS]: menuItem.active }]"
+    :aria-label="menuItem.title"
     v-bind="dataAttrs"
     v-on="$listeners"
   >
     <span class="gl-display-flex">
-      <gl-icon v-if="menuItem.icon" :name="menuItem.icon" class="gl-mr-2!" />
-      {{ menuItem.title }}
-      <gl-icon v-if="menuItem.view" name="chevron-right" class="gl-ml-auto" />
+      <gl-icon v-if="menuItem.icon" :name="menuItem.icon" :class="{ 'gl-mr-2!': !iconOnly }" />
+      <template v-if="!iconOnly">
+        {{ menuItem.title }}
+        <gl-icon v-if="menuItem.view" name="chevron-right" class="gl-ml-auto" />
+      </template>
     </span>
   </gl-button>
 </template>

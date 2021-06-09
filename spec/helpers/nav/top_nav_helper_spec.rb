@@ -5,11 +5,16 @@ require 'spec_helper'
 RSpec.describe Nav::TopNavHelper do
   include ActionView::Helpers::UrlHelper
 
-  describe '#top_nav_view_model' do
-    let_it_be(:user) { build_stubbed(:user) }
-    let_it_be(:admin) { build_stubbed(:user, :admin) }
+  let_it_be(:user) { build_stubbed(:user) }
+  let_it_be(:admin) { build_stubbed(:user, :admin) }
 
-    let(:current_user) { nil }
+  let(:current_user) { nil }
+
+  before do
+    allow(helper).to receive(:current_user) { current_user }
+  end
+
+  describe '#top_nav_view_model' do
     let(:current_project) { nil }
     let(:current_group) { nil }
     let(:with_current_settings_admin_mode) { false }
@@ -26,7 +31,6 @@ RSpec.describe Nav::TopNavHelper do
     let(:active_title) { 'Menu' }
 
     before do
-      allow(helper).to receive(:current_user) { current_user }
       allow(Gitlab::CurrentSettings).to receive(:admin_mode) { with_current_settings_admin_mode }
       allow(helper).to receive(:header_link?).with(:admin_mode) { with_header_link_admin_mode }
       allow(Gitlab::Sherlock).to receive(:enabled?) { with_sherlock_enabled }
@@ -484,6 +488,52 @@ RSpec.describe Nav::TopNavHelper do
           )
           expect(subject[:secondary].last).to eq(expected_enter_admin_mode_item)
         end
+      end
+    end
+  end
+
+  describe '#top_nav_responsive_view_model' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+
+    let(:with_search) { false }
+    let(:with_new_view_model) { nil }
+
+    let(:subject) { helper.top_nav_responsive_view_model(project: project, group: group) }
+
+    before do
+      allow(helper).to receive(:header_link?).with(:search) { with_search }
+      allow(helper).to receive(:new_dropdown_view_model).with(project: project, group: group) { with_new_view_model }
+    end
+
+    it 'has nil new subview' do
+      expect(subject[:views][:new]).to be_nil
+    end
+
+    it 'has nil search subview' do
+      expect(subject[:views][:search]).to be_nil
+    end
+
+    context 'with search' do
+      let(:with_search) { true }
+
+      it 'has search subview' do
+        expect(subject[:views][:search]).to eq(
+          ::Gitlab::Nav::TopNavMenuItem.build(
+            id: 'search',
+            title: 'Search',
+            icon: 'search',
+            href: search_path
+          )
+        )
+      end
+    end
+
+    context 'with new' do
+      let(:with_new_view_model) { { id: 'test-new-view-model' } }
+
+      it 'has new subview' do
+        expect(subject[:views][:new]).to eq({ id: 'test-new-view-model' })
       end
     end
   end

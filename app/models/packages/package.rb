@@ -147,23 +147,15 @@ class Packages::Package < ApplicationRecord
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
 
   scope :order_project_path, -> do
-    if Feature.enabled?(:arel_package_scopes)
-      keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :asc)
+    keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :asc)
 
-      joins(:project).reorder(keyset_order)
-    else
-      joins(:project).reorder('projects.path ASC, id ASC')
-    end
+    joins(:project).reorder(keyset_order)
   end
 
   scope :order_project_path_desc, -> do
-    if Feature.enabled?(:arel_package_scopes)
-      keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :desc)
+    keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :desc)
 
-      joins(:project).reorder(keyset_order)
-    else
-      joins(:project).reorder('projects.path DESC, id DESC')
-    end
+    joins(:project).reorder(keyset_order)
   end
 
   after_commit :update_composer_cache, on: :destroy, if: -> { composer? }

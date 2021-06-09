@@ -873,12 +873,12 @@ RSpec.describe Ci::Runner do
       expect(described_class.search(runner.token)).to eq([runner])
     end
 
-    it 'returns runners with a partially matching token' do
-      expect(described_class.search(runner.token[0..2])).to eq([runner])
+    it 'does not return runners with a partially matching token' do
+      expect(described_class.search(runner.token[0..2])).to be_empty
     end
 
-    it 'returns runners with a matching token regardless of the casing' do
-      expect(described_class.search(runner.token.upcase)).to eq([runner])
+    it 'does not return runners with a matching token with different casing' do
+      expect(described_class.search(runner.token.upcase)).to be_empty
     end
 
     it 'returns runners with a matching description' do

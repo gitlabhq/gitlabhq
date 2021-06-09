@@ -25,11 +25,15 @@ export const TEST_NAV_DATA = {
       namespace: 'projects',
       currentUserName: '',
       currentItem: {},
+      linksPrimary: [{ id: 'project-link', href: '/path/to/projects', title: 'Project Link' }],
+      linksSecondary: [],
     },
     groups: {
       namespace: 'groups',
       currentUserName: '',
       currentItem: {},
+      linksPrimary: [],
+      linksSecondary: [{ id: 'group-link', href: '/path/to/groups', title: 'Group Link' }],
     },
   },
 };

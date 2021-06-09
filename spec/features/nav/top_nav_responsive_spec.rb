@@ -6,7 +6,6 @@ RSpec.describe 'top nav responsive', :js do
   include MobileHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:responsive_menu_text) { 'Placeholder for responsive top nav' }
 
   before do
     stub_feature_flags(combined_menu: true)
@@ -20,7 +19,9 @@ RSpec.describe 'top nav responsive', :js do
   context 'before opened' do
     it 'has page content and hides responsive menu', :aggregate_failures do
       expect(page).to have_css('.page-title', text: 'Projects')
-      expect(page).to have_no_text(responsive_menu_text)
+      expect(page).to have_link('Dashboard', id: 'logo')
+
+      expect(page).to have_no_css('.top-nav-responsive')
     end
   end
 
@@ -31,8 +32,22 @@ RSpec.describe 'top nav responsive', :js do
 
     it 'hides everything and shows responsive menu', :aggregate_failures do
       expect(page).to have_no_css('.page-title', text: 'Projects')
-      expect(page).to have_link('Dashboard', id: 'logo')
-      expect(page).to have_text(responsive_menu_text)
+      expect(page).to have_no_link('Dashboard', id: 'logo')
+
+      within '.top-nav-responsive' do
+        expect(page).to have_link(nil, href: search_path)
+        expect(page).to have_button('Projects')
+        expect(page).to have_button('Groups')
+        expect(page).to have_link('Snippets', href: dashboard_snippets_path)
+      end
+    end
+
+    it 'has new dropdown', :aggregate_failures do
+      click_button('New...')
+
+      expect(page).to have_link('New project', href: new_project_path)
+      expect(page).to have_link('New group', href: new_group_path)
+      expect(page).to have_link('New snippet', href: new_snippet_path)
     end
   end
 end

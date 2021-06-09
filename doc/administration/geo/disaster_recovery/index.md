@@ -7,17 +7,14 @@ type: howto
 
 # Disaster Recovery (Geo) **(PREMIUM SELF)**
 
-Geo replicates your database, your Git repositories, and few other assets.
-We will support and replicate more data in the future, that will enable you to
-failover with minimal effort, in a disaster situation.
-
-See [Geo limitations](../index.md#limitations) for more information.
+Geo replicates your database, your Git repositories, and few other assets,
+but there are some [limitations](../index.md#limitations).
 
 WARNING:
 Disaster recovery for multi-secondary configurations is in **Alpha**.
 For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/3574).
 Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
-will cause downtime.
+causes downtime.
 
 ## Promoting a **secondary** Geo node in single-secondary configurations
 
@@ -91,7 +88,7 @@ Note the following when promoting a secondary:
   before proceeding. If the secondary node
   [has been paused](../../geo/index.md#pausing-and-resuming-replication), the promotion
   performs a point-in-time recovery to the last known state.
-  Data that was created on the primary while the secondary was paused will be lost.
+  Data that was created on the primary while the secondary was paused is lost.
 - A new **secondary** should not be added at this time. If you want to add a new
   **secondary**, do this after you have completed the entire process of promoting
   the **secondary** to the **primary**.
@@ -497,7 +494,7 @@ must disable the **primary** site:
 WARNING:
 If the secondary site [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
 a point-in-time recovery to the last known state.
-Data that was created on the primary while the secondary was paused will be lost.
+Data that was created on the primary while the secondary was paused is lost.
 
 1. SSH in to the database node in the **secondary** and trigger PostgreSQL to
    promote to read-write:
@@ -513,7 +510,7 @@ Data that was created on the primary while the secondary was paused will be lost
    `geo_secondary_role`:
 
    NOTE:
-   Depending on your architecture these steps will need to be run on any GitLab node that is external to the **secondary** Kubernetes cluster.
+   Depending on your architecture, these steps need to run on any GitLab node that is external to the **secondary** Kubernetes cluster.
 
    ```ruby
    ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
@@ -547,7 +544,7 @@ Data that was created on the primary while the secondary was paused will be lost
    helm --namespace gitlab get values gitlab-geo > gitlab.yaml
    ```
 
-   The existing configuration will contain a section for Geo that should resemble:
+   The existing configuration contains a section for Geo that should resemble:
 
    ```yaml
    geo:
@@ -564,7 +561,7 @@ Data that was created on the primary while the secondary was paused will be lost
 
    To promote the **secondary** cluster to a **primary** cluster, update `role: secondary` to `role: primary`.
 
-   You can remove the entire `psql` section if the cluster will remain as a primary site, this refers to the tracking database and will be ignored whilst the cluster is acting as a primary site.
+   If the cluster remains as a primary site, you can remove the entire `psql` section; it refers to the tracking database and is ignored whilst the cluster is acting as a primary site.
 
    Update the cluster with the new configuration:
 

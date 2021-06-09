@@ -51,11 +51,11 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
           menuItems: [
             {
               menuItem: TEST_SECTIONS[0].menuItems[0],
-              classes: [],
+              classes: ['gl-w-full'],
             },
             ...TEST_SECTIONS[0].menuItems.slice(1).map((menuItem) => ({
               menuItem,
-              classes: ['gl-mt-1'],
+              classes: ['gl-w-full', 'gl-mt-1'],
             })),
           ],
         },
@@ -64,11 +64,11 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
           menuItems: [
             {
               menuItem: TEST_SECTIONS[1].menuItems[0],
-              classes: [],
+              classes: ['gl-w-full'],
             },
             ...TEST_SECTIONS[1].menuItems.slice(1).map((menuItem) => ({
               menuItem,
-              classes: ['gl-mt-1'],
+              classes: ['gl-w-full', 'gl-mt-1'],
             })),
           ],
         },

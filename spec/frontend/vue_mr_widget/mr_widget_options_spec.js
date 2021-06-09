@@ -532,7 +532,7 @@ describe('MrWidgetOptions', () => {
         nextTick(() => {
           const tooltip = wrapper.find('[data-testid="question-o-icon"]');
 
-          expect(wrapper.text()).toContain('Deletes source branch');
+          expect(wrapper.text()).toContain('The source branch will be deleted');
           expect(tooltip.attributes('title')).toBe(
             'A user with write access to the source branch selected this option',
           );
@@ -548,7 +548,7 @@ describe('MrWidgetOptions', () => {
 
         nextTick(() => {
           expect(wrapper.text()).toContain('The source branch has been deleted');
-          expect(wrapper.text()).not.toContain('Deletes source branch');
+          expect(wrapper.text()).not.toContain('The source branch will be deleted');
 
           done();
         });
