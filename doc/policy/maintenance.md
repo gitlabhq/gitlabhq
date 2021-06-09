@@ -24,10 +24,10 @@ releases](#backporting-to-older-releases) for more information.
 GitLab uses [Semantic Versioning](https://semver.org/) for its releases:
 `(Major).(Minor).(Patch)`.
 
-For example, for GitLab version 12.10.6:
+For example, for GitLab version 13.10.6:
 
-- `12` represents the major version. The major release was 12.0.0 but often referred to as 12.0.
-- `10` represents the minor version. The minor release was 12.10.0 but often referred to as 12.10.
+- `13` represents the major version. The major release was 13.0.0 but often referred to as 13.0.
+- `10` represents the minor version. The minor release was 13.10.0 but often referred to as 13.10.
 - `6` represents the patch number.
 
 Any part of the version number can increment into multiple digits, for example, 13.10.11.
@@ -55,13 +55,13 @@ one major version. For example, it is safe to:
 
 - Upgrade the *minor* version. For example:
 
-  - `12.7.5` -> `12.10.5`
-  - `11.3.4` -> `11.11.1`
+  - `13.7.5` -> `13.10.5`
+  - `12.3.4` -> `12.10.11`
 
 - Upgrade the *patch* version. For example:
 
-  - `12.0.4` -> `12.0.12`
-  - `11.11.1` -> `11.11.8`
+  - `13.0.4` -> `13.0.12`
+  - `12.10.1` -> `12.10.8`
 
 NOTE:
 Version specific changes in Omnibus GitLab Linux packages can be found in [the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/update/README.html#version-specific-changes).
@@ -131,8 +131,8 @@ based on *all* of the following:
 
 If *all* of the above are satisfied, the backport releases can be created for
 the current stable release, and two previous monthly releases. In rare cases a release manager may grant an exception to backport to more than two previous monthly releases.
-For instance, if we release `11.2.1` with a fix for a severe bug introduced in
-`11.0.0`, we could backport the fix to a new `11.0.x`, and `11.1.x` patch release.
+For instance, if we release `13.2.1` with a fix for a severe bug introduced in
+`13.0.0`, we could backport the fix to a new `13.0.x`, and `13.1.x` patch release.
 
 To request backporting to more than one stable release for consideration, raise an issue in the
 [release/tasks](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.

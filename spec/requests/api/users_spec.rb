@@ -2077,6 +2077,29 @@ RSpec.describe API::Users do
     it_behaves_like 'get user info', 'v4'
   end
 
+  describe "GET /user/preferences" do
+    context "when unauthenticated" do
+      it "returns authentication error" do
+        get api("/user/preferences")
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context "when authenticated" do
+      it "returns user preferences" do
+        user.user_preference.view_diffs_file_by_file = false
+        user.user_preference.show_whitespace_in_diffs = true
+        user.save!
+
+        get api("/user/preferences", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response["view_diffs_file_by_file"]).to eq(user.user_preference.view_diffs_file_by_file)
+        expect(json_response["show_whitespace_in_diffs"]).to eq(user.user_preference.show_whitespace_in_diffs)
+      end
+    end
+  end
+
   describe "GET /user/keys" do
     context "when unauthenticated" do
       it "returns authentication error" do

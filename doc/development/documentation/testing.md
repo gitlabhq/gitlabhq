@@ -330,7 +330,18 @@ document:
 - To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text, and a
   `<!-- vale on -->` tag after the text.
 
-Whenever possible, exclude only the problematic rule and line(s).
+Whenever possible, exclude only the problematic rule and lines.
 
 For more information, see
 [Vale's documentation](https://docs.errata.ai/vale/scoping#markup-based-configuration).
+
+### Disable markdownlint tests
+
+To disable all markdownlint rules, add a `<!-- markdownlint-disable -->` tag before the text, and a
+`<!-- markdownlint-enable -->` tag after the text.
+
+To disable only a [specific rule](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#rules),
+add the rule number to the tag, for example `<!-- markdownlint-disable MD044 -->`
+and `<!-- markdownlint-enable MD044 -->`.
+
+Whenever possible, exclude only the problematic lines.

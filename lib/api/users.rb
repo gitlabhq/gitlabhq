@@ -1045,6 +1045,14 @@ module API
         end
       end
 
+      desc "Get the current user's preferences" do
+        success Entities::UserPreferences
+        detail 'This feature was introduced in GitLab 14.0.'
+      end
+      get "preferences", feature_category: :users do
+        present current_user.user_preference, with: Entities::UserPreferences
+      end
+
       desc 'Get a single email address owned by the currently authenticated user' do
         success Entities::Email
       end

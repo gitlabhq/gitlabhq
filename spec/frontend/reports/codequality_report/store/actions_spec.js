@@ -20,6 +20,9 @@ describe('Codequality Reports actions', () => {
     it('should commit SET_PATHS mutation', (done) => {
       const paths = {
         basePath: 'basePath',
+        headPath: 'headPath',
+        baseBlobPath: 'baseBlobPath',
+        headBlobPath: 'headBlobPath',
         reportsPath: 'reportsPath',
         helpPath: 'codequalityHelpPath',
       };

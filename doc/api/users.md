@@ -453,7 +453,6 @@ Parameters:
 | `twitter`                            | No       | Twitter account                                                                                                                                         |
 | `username`                           | Yes      | Username                                                                                                                                                |
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
-| `show_whitespace_in_diffs`           | No       | Flag indicating the user sees whitespace changes in diffs
 | `website_url`                        | No       | Website URL                                                                                                                                             |
 
 ## User modification
@@ -694,6 +693,29 @@ Example response:
 }
 ```
 
+## Get user preferences
+
+Get a list of currently authenticated user's preferences.
+
+```plaintext
+GET /user/preferences
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+    "user_id": 1
+      "view_diffs_file_by_file": true,
+      "show_whitespace_in_diffs": false
+}
+```
+
+Parameters:
+
+- **none**
+
 ## User preference modification
 
 Update the current user's preferences.
@@ -706,7 +728,8 @@ PUT /user/preferences
 {
   "id": 1,
     "user_id": 1
-      "view_diffs_file_by_file": true
+      "view_diffs_file_by_file": true,
+      "show_whitespace_in_diffs": false
 }
 ```
 
@@ -715,6 +738,7 @@ Parameters:
 | Attribute                    | Required | Description                                                 |
 | :--------------------------- | :------- | :---------------------------------------------------------- |
 | `view_diffs_file_by_file`    | Yes      | Flag indicating the user sees only one file diff per page.  |
+| `show_whitespace_in_diffs`   | Yes      | Flag indicating the user sees whitespace changes in diffs.  |
 
 ## Set user status
 

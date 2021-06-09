@@ -7,6 +7,8 @@
 *.rake @gitlab-org/maintainers/rails-backend
 
 [Documentation Directories]
+.markdownlint.yml @marcel.amirault @eread @aqualls @cnorris
+/doc/.markdownlint @marcel.amirault @eread @aqualls @cnorris
 /doc/ @gl-docsteam
 /doc/.vale/ @marcel.amirault @eread @aqualls @cnorris
 /doc/administration/geo/ @axil

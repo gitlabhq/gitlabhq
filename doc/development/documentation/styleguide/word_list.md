@@ -48,6 +48,10 @@ Do not use Latin abbreviations. Use **for example**, **such as**, **for instance
 
 When possible, use present tense instead. For example, use `after you execute this command, GitLab displays the result` instead of `after you execute this command, GitLab will display the result`. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))
 
+## GitLab
+
+Do not make possessive (GitLab's). This guidance follows [GitLab Brand Guidelines](https://about.gitlab.com/handbook/marketing/corporate-marketing/brand-activation/brand-guidelines/#trademark).
+
 ## handy
 
 Do not use. If the user doesn't find the process to be these things, we lose their trust.

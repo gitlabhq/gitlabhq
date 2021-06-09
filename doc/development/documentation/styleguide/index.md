@@ -306,13 +306,6 @@ GitLab documentation should be clear and easy to understand.
 - Write in US English with US grammar. (Tested in [`British.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/British.yml).)
 - Use [inclusive language](#inclusive-language).
 
-### Trademark
-
-Only use the GitLab name and trademarks in accordance with
-[GitLab Brand Guidelines](https://about.gitlab.com/handbook/marketing/corporate-marketing/brand-activation/brand-guidelines/#trademark).
-
-Don't use the possessive form of the word GitLab (`GitLab's`).
-
 ### Capitalization
 
 #### Headings
@@ -508,7 +501,7 @@ especially in tutorials, instructional documentation, and
 
 Some contractions, however, should be avoided:
 
-- Do not use [the word GitLab in a contraction](#trademark).
+- Do not use the word "GitLab" in a contraction.
 
 - Do not use contractions with a proper noun and a verb. For example:
 
