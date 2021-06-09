@@ -39,4 +39,12 @@ module TimeFrameArguments
       raise Gitlab::Graphql::Errors::ArgumentError, error_message
     end
   end
+
+  def transform_timeframe_parameters(args)
+    if args[:timeframe]
+      args[:timeframe].transform_keys { |k| :"#{k}_date" }
+    else
+      args.slice(:start_date, :end_date)
+    end
+  end
 end

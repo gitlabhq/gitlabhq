@@ -8,6 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.11, the Kubernetes Agent became available on GitLab.com.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0, the `resource_inclusions` and `resource_exclusions` attributes were removed.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -38,16 +39,7 @@ with Kubernetes resource definitions in YAML or JSON format. The Agent monitors
 each project you declare, and when the project changes, GitLab deploys the changes
 using the Agent.
 
-To use multiple YAML files, specify a `paths` attribute in the `gitops` section.
-
-By default, the Agent monitors all
-[Kubernetes object types](https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/#required-fields).
-You can exclude some types of resources from monitoring. This enables you to reduce
-the permissions needed by the GitOps feature, through `resource_exclusions`.
-
-To enable a specific named resource, first use `resource_inclusions` to enable desired resources.
-The following file excerpt includes specific `api_groups` and `kinds`. The `resource_exclusions`
-which follow excludes all other `api_groups` and `kinds`:
+To use multiple YAML files, specify a `paths` attribute in the `gitops.manifest_projects` section.
 
 ```yaml
 gitops:
@@ -58,28 +50,6 @@ gitops:
     # The `id` is a path to a Git repository with Kubernetes resource definitions
     # in YAML or JSON format.
   - id: gitlab-org/cluster-integration/gitlab-agent
-    # Holds the only API groups and kinds of resources that gitops will monitor.
-    # Inclusion rules are evaluated first, then exclusion rules.
-    # If there is still no match, resource is monitored.
-    # Resources: https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/#required-fields
-    # Groups: https://kubernetes.io/docs/concepts/overview/kubernetes-api/#api-groups-and-versioning
-    resource_inclusions:
-    - api_groups:
-      - apps
-      kinds:
-      - '*'
-    - api_groups:
-      - ''
-      kinds:
-      - 'ConfigMap'
-    # Holds the API groups and kinds of resources to exclude from gitops watch.
-    # Inclusion rules are evaluated first, then exclusion rules.
-    # If there is still no match, resource is monitored.
-    resource_exclusions:
-    - api_groups:
-      - '*'
-      kinds:
-      - '*'
     # Namespace to use if not set explicitly in object manifest.
     default_namespace: my-ns
     # Paths inside of the repository to scan for manifest files.
@@ -93,6 +63,37 @@ gitops:
     - glob: '/team2/apps/**/*.yaml'
       # If 'paths' is not specified or is an empty list, the configuration below is used
     - glob: '/**/*.{yaml,yml,json}'
+    # Reconcile timeout defines whether the applier should wait
+    # until all applied resources have been reconciled, and if so,
+    # how long to wait.
+    reconcile_timeout: 3600s # 1 hour by default
+    # Dry run strategy defines whether changes should actually be performed,
+    # or if it is just talk and no action.
+    # https://github.com/kubernetes-sigs/cli-utils/blob/d6968048dcd80b1c7b55d9e4f31fc25f71c9b490/pkg/common/common.go#L68-L89
+    # Can be: none, client, server
+    dry_run_strategy: none # 'none' by default
+    # Prune defines whether pruning of previously applied
+    # objects should happen after apply.
+    prune: true # enabled by default
+    # Prune timeout defines whether we should wait for all resources
+    # to be fully deleted after pruning, and if so, how long we should
+    # wait.
+    prune_timeout: 3600s # 1 hour by default
+    # Prune propagation policy defines the deletion propagation policy
+    # that should be used for pruning.
+    # https://github.com/kubernetes/apimachinery/blob/44113beed5d39f1b261a12ec398a356e02358307/pkg/apis/meta/v1/types.go#L456-L470
+    # Can be: orphan, background, foreground
+    prune_propagation_policy: foreground # 'foreground' by default
+    # InventoryPolicy defines if an inventory object can take over
+    # objects that belong to another inventory object or don't
+    # belong to any inventory object.
+    # This is done by determining if the apply/prune operation
+    # can go through for a resource based on the comparison
+    # the inventory-id value in the package and the owning-inventory
+    # annotation in the live object.
+    # https://github.com/kubernetes-sigs/cli-utils/blob/d6968048dcd80b1c7b55d9e4f31fc25f71c9b490/pkg/inventory/policy.go#L12-L66
+    # Can be: must_match, adopt_if_no_inventory, adopt_all
+    inventory_policy: must_match # 'must_match' by default
 ```
 
 ### Using multiple manifest projects

@@ -188,7 +188,6 @@ module Gitlab
             services_usage,
             usage_counters,
             user_preferences_usage,
-            ingress_modsecurity_usage,
             container_expiration_policies_usage,
             service_desk_counts,
             email_campaign_counts
@@ -295,7 +294,6 @@ module Gitlab
           reply_by_email_enabled: alt_usage_data(fallback: nil) { Gitlab::IncomingEmail.enabled? },
           signup_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.allow_signup? },
           web_ide_clientside_preview_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.web_ide_clientside_preview_enabled? },
-          ingress_modsecurity_enabled: Feature.enabled?(:ingress_modsecurity),
           grafana_link_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.grafana_enabled? },
           gitpod_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.gitpod_enabled? }
         }
@@ -376,29 +374,6 @@ module Gitlab
       def topology_usage_data
         Gitlab::UsageData::Topology.new.topology_usage_data
       end
-
-      # rubocop: disable UsageData/DistinctCountByLargeForeignKey
-      def ingress_modsecurity_usage
-        ##
-        # This method measures usage of the Modsecurity Web Application Firewall across the entire
-        # instance's deployed environments.
-        #
-        # NOTE: this service is an approximation as it does not yet take into account if environment
-        # is enabled and only measures applications installed using GitLab Managed Apps (disregards
-        # CI-based managed apps).
-        #
-        # More details: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28331#note_318621786
-        ##
-
-        column = ::Deployment.arel_table[:environment_id]
-        {
-          ingress_modsecurity_logging: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_enabled.logging), column),
-          ingress_modsecurity_blocking: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_enabled.blocking), column),
-          ingress_modsecurity_disabled: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_disabled), column),
-          ingress_modsecurity_not_installed: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_not_installed), column)
-        }
-      end
-      # rubocop: enable UsageData/DistinctCountByLargeForeignKey
 
       # rubocop: disable CodeReuse/ActiveRecord
       def container_expiration_policies_usage

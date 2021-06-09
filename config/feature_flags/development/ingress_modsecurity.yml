@@ -1,8 +1,0 @@
----
-name: ingress_modsecurity
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20194
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/258554
-milestone: '12.5'
-type: development
-group: group::container security
-default_enabled: false

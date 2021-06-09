@@ -17,13 +17,13 @@ On each **secondary** site, there is a read-only replicated copy of the GitLab d
 A **secondary** site also has a tracking database where it stores which projects have been synced.
 Geo compares the two databases to find projects that are not yet tracked.
 
-At the start, this tracking database is empty, so Geo will start trying to update from every project that it can see in the GitLab database.
+At the start, this tracking database is empty, so Geo tries to update from every project that it can see in the GitLab database.
 
 For each project to sync:
 
-1. Geo will issue a `git fetch geo --mirror` to get the latest information from the **primary** site.
-   If there are no changes, the sync will be fast and end quickly. Otherwise, it will pull the latest commits.
-1. The **secondary** site will update the tracking database to store the fact that it has synced projects A, B, C, etc.
+1. Geo issues a `git fetch geo --mirror` to get the latest information from the **primary** site.
+   If there are no changes, the sync is fast. Otherwise, it has to pull the latest commits.
+1. The **secondary** site updates the tracking database to store the fact that it has synced projects A, B, C, etc.
 1. Repeat until all projects are synced.
 
 When someone pushes a commit to the **primary** site, it generates an event in the GitLab database that the repository has changed.
@@ -70,4 +70,4 @@ Yes. See [Docker Registry for a **secondary** site](docker_registry.md).
 
 ## Can I login to a secondary site?
 
-Yes, but secondary sites receive all authentication data (like user accounts and logins) from the primary instance. This means you will be re-directed to the primary for authentication and routed back afterwards.
+Yes, but secondary sites receive all authentication data (like user accounts and logins) from the primary instance. This means you are re-directed to the primary for authentication and then routed back.

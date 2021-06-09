@@ -36,6 +36,7 @@ export const ListTypeTitles = {
   milestone: __('Milestone'),
   iteration: __('Iteration'),
   label: __('Label'),
+  backlog: __('Open'),
 };
 
 export const formType = {

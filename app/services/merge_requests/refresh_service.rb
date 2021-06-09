@@ -27,7 +27,6 @@ module MergeRequests
 
       merge_requests_for_source_branch.each do |mr|
         outdate_suggestions(mr)
-        refresh_pipelines_on_merge_requests(mr)
         abort_auto_merges(mr)
         mark_pending_todos_done(mr)
       end
@@ -44,6 +43,8 @@ module MergeRequests
         notify_about_push(mr)
         mark_mr_as_draft_from_commits(mr)
         execute_mr_web_hooks(mr)
+        # Run at the end of the loop to avoid any potential contention on the MR object
+        refresh_pipelines_on_merge_requests(mr)
         merge_request_activity_counter.track_mr_including_ci_config(user: mr.author, merge_request: mr)
       end
 

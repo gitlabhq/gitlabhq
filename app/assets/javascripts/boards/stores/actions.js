@@ -12,6 +12,7 @@ import {
   updateListQueries,
   issuableTypes,
   FilterFields,
+  ListTypeTitles,
 } from 'ee_else_ce/boards/constants';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
@@ -169,8 +170,11 @@ export default {
       });
   },
 
-  addList: ({ commit }, list) => {
+  addList: ({ commit, dispatch, getters }, list) => {
     commit(types.RECEIVE_ADD_LIST_SUCCESS, updateListPosition(list));
+    dispatch('fetchItemsForList', {
+      listId: getters.getListByTitle(ListTypeTitles.backlog).id,
+    });
   },
 
   fetchLabels: ({ state, commit, getters }, searchTerm) => {
@@ -261,7 +265,7 @@ export default {
     commit(types.TOGGLE_LIST_COLLAPSED, { listId, collapsed });
   },
 
-  removeList: ({ state: { issuableType, boardLists }, commit }, listId) => {
+  removeList: ({ state: { issuableType, boardLists }, commit, dispatch, getters }, listId) => {
     const listsBackup = { ...boardLists };
 
     commit(types.REMOVE_LIST, listId);
@@ -281,6 +285,10 @@ export default {
         }) => {
           if (errors.length > 0) {
             commit(types.REMOVE_LIST_FAILURE, listsBackup);
+          } else {
+            dispatch('fetchItemsForList', {
+              listId: getters.getListByTitle(ListTypeTitles.backlog).id,
+            });
           }
         },
       )
@@ -290,6 +298,9 @@ export default {
   },
 
   fetchItemsForList: ({ state, commit }, { listId, fetchNext = false }) => {
+    if (!fetchNext) {
+      commit(types.RESET_ITEMS_FOR_LIST, listId);
+    }
     commit(types.REQUEST_ITEMS_FOR_LIST, { listId, fetchNext });
 
     const { fullPath, fullBoardId, boardType, filterParams } = state;

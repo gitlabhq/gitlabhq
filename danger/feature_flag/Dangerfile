@@ -53,12 +53,20 @@ def message_for_feature_flag_with_group!(feature_flag:, mr_group_label:)
   end
 end
 
+def feature_flag_file_added?
+  feature_flag.feature_flag_files(change_type: :added).any?
+end
+
 def feature_flag_file_added_or_removed?
-  feature_flag.feature_flag_files(change_type: :added).any? || feature_flag.feature_flag_files(change_type: :deleted).any?
+  feature_flag_file_added? || feature_flag.feature_flag_files(change_type: :deleted).any?
 end
 
 feature_flag.feature_flag_files(change_type: :added).each do |feature_flag|
   check_feature_flag_yaml(feature_flag)
+end
+
+if helper.security_mr? && feature_flag_file_added?
+  fail "Feature flags are discouraged from security merge requests. Read the [security documentation](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/utilities/feature_flags.md) for details."
 end
 
 if feature_flag_file_added_or_removed?

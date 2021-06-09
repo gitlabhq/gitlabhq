@@ -15,6 +15,7 @@ import {
   formatIssueInput,
   formatIssue,
   getMoveData,
+  updateListPosition,
 } from '~/boards/boards_util';
 import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
@@ -36,6 +37,7 @@ import {
   mockMoveIssueParams,
   mockMoveState,
   mockMoveData,
+  mockList,
 } from '../mock_data';
 
 jest.mock('~/flash');
@@ -374,6 +376,24 @@ describe('createIssueList', () => {
   });
 });
 
+describe('addList', () => {
+  const getters = {
+    getListByTitle: jest.fn().mockReturnValue(mockList),
+  };
+
+  it('should commit RECEIVE_ADD_LIST_SUCCESS mutation and  dispatch fetchItemsForList action', () => {
+    testAction({
+      action: actions.addList,
+      payload: mockLists[1],
+      state: { ...getters },
+      expectedMutations: [
+        { type: types.RECEIVE_ADD_LIST_SUCCESS, payload: updateListPosition(mockLists[1]) },
+      ],
+      expectedActions: [{ type: 'fetchItemsForList', payload: { listId: mockList.id } }],
+    });
+  });
+});
+
 describe('fetchLabels', () => {
   it('should commit mutation RECEIVE_LABELS_SUCCESS on success', async () => {
     const queryResponse = {
@@ -521,7 +541,8 @@ describe('toggleListCollapsed', () => {
 
 describe('removeList', () => {
   let state;
-  const list = mockLists[0];
+  let getters;
+  const list = mockLists[1];
   const listId = list.id;
   const mutationVariables = {
     mutation: destroyBoardListMutation,
@@ -535,6 +556,9 @@ describe('removeList', () => {
       boardLists: mockListsById,
       issuableType: issuableTypes.issue,
     };
+    getters = {
+      getListByTitle: jest.fn().mockReturnValue(mockList),
+    };
   });
 
   afterEach(() => {
@@ -544,13 +568,15 @@ describe('removeList', () => {
   it('optimistically deletes the list', () => {
     const commit = jest.fn();
 
-    actions.removeList({ commit, state }, listId);
+    actions.removeList({ commit, state, getters, dispatch: () => {} }, listId);
 
     expect(commit.mock.calls).toEqual([[types.REMOVE_LIST, listId]]);
   });
 
   it('keeps the updated list if remove succeeds', async () => {
     const commit = jest.fn();
+    const dispatch = jest.fn();
+
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
         destroyBoardList: {
@@ -559,17 +585,18 @@ describe('removeList', () => {
       },
     });
 
-    await actions.removeList({ commit, state }, listId);
+    await actions.removeList({ commit, state, getters, dispatch }, listId);
 
     expect(gqlClient.mutate).toHaveBeenCalledWith(mutationVariables);
     expect(commit.mock.calls).toEqual([[types.REMOVE_LIST, listId]]);
+    expect(dispatch.mock.calls).toEqual([['fetchItemsForList', { listId: mockList.id }]]);
   });
 
   it('restores the list if update fails', async () => {
     const commit = jest.fn();
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue(Promise.reject());
 
-    await actions.removeList({ commit, state }, listId);
+    await actions.removeList({ commit, state, getters, dispatch: () => {} }, listId);
 
     expect(gqlClient.mutate).toHaveBeenCalledWith(mutationVariables);
     expect(commit.mock.calls).toEqual([
@@ -588,7 +615,7 @@ describe('removeList', () => {
       },
     });
 
-    await actions.removeList({ commit, state }, listId);
+    await actions.removeList({ commit, state, getters, dispatch: () => {} }, listId);
 
     expect(gqlClient.mutate).toHaveBeenCalledWith(mutationVariables);
     expect(commit.mock.calls).toEqual([
@@ -650,6 +677,10 @@ describe('fetchItemsForList', () => {
       state,
       [
         {
+          type: types.RESET_ITEMS_FOR_LIST,
+          payload: listId,
+        },
+        {
           type: types.REQUEST_ITEMS_FOR_LIST,
           payload: { listId, fetchNext: false },
         },
@@ -671,6 +702,10 @@ describe('fetchItemsForList', () => {
       { listId },
       state,
       [
+        {
+          type: types.RESET_ITEMS_FOR_LIST,
+          payload: listId,
+        },
         {
           type: types.REQUEST_ITEMS_FOR_LIST,
           payload: { listId, fetchNext: false },

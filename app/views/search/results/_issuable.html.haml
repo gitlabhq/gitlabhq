@@ -5,6 +5,10 @@
     = link_to issuable_path(issuable), data: { track_event: 'click_text', track_label: "#{issuable.class.name.downcase}_title", track_property: 'search_result' }, class: 'gl-w-full' do
       %span.term.str-truncated.gl-font-weight-bold.gl-ml-2= issuable.title
   .gl-text-gray-500.gl-my-3
-    = sprintf(s_(' %{project_name}#%{issuable_iid} &middot; created %{issuable_created} by %{author} &middot; updated %{issuable_updated}'), { project_name: issuable.project.full_name, issuable_iid: issuable.iid, issuable_created: time_ago_with_tooltip(issuable.created_at, placement: 'bottom'), issuable_updated: time_ago_with_tooltip(issuable.updated_at, placement: 'bottom'), author: link_to_member(@project, issuable.author, avatar: false) }).html_safe
+    = issuable_project_reference(issuable)
+    &middot;
+    = sprintf(s_('created %{issuable_created} by %{author}'), { issuable_created: time_ago_with_tooltip(issuable.created_at, placement: 'bottom'), author: link_to_member(@project, issuable.author, avatar: false) }).html_safe
+    &middot;
+    = sprintf(s_('updated %{time_ago}'), { time_ago: time_ago_with_tooltip(issuable.updated_at, placement: 'bottom') }).html_safe
   .description.term.col-sm-10.gl-px-0
     = highlight_and_truncate_issuable(issuable, @search_term, @search_highlight)

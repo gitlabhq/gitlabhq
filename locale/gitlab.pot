@@ -19,9 +19,6 @@ msgstr ""
 msgid " %{name},  confirm your email address now! "
 msgstr ""
 
-msgid " %{project_name}#%{issuable_iid} &middot; created %{issuable_created} by %{author} &middot; updated %{issuable_updated}"
-msgstr ""
-
 msgid " %{start} to %{end}"
 msgstr ""
 
@@ -21642,9 +21639,6 @@ msgstr ""
 msgid "Multiple uploaders found: %{uploader_types}"
 msgstr ""
 
-msgid "Must have a unique policy, status, and elapsed time"
-msgstr ""
-
 msgid "Must match with the %{codeStart}external_url%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
 msgstr ""
 
@@ -29153,6 +29147,9 @@ msgstr ""
 msgid "SecurityReports|Error fetching the vulnerability list. Please check your network connection and try again."
 msgstr ""
 
+msgid "SecurityReports|Error parsing security reports"
+msgstr ""
+
 msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
 msgstr ""
 
@@ -29256,6 +29253,9 @@ msgid "SecurityReports|Status"
 msgstr ""
 
 msgid "SecurityReports|Take survey"
+msgstr ""
+
+msgid "SecurityReports|The security reports below contain one or more vulnerability findings that could not be parsed and were not recorded. Download the artifacts in the job output to investigate. Ensure any security report created conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
 msgstr ""
 
 msgid "SecurityReports|There was an error adding the comment."
@@ -38521,6 +38521,9 @@ msgstr ""
 msgid "created"
 msgstr ""
 
+msgid "created %{issuable_created} by %{author}"
+msgstr ""
+
 msgid "created %{timeAgoString} by %{email} via %{user}"
 msgstr ""
 
@@ -39247,6 +39250,9 @@ msgid "must be after start"
 msgstr ""
 
 msgid "must be greater than start date"
+msgstr ""
+
+msgid "must have a unique schedule, status, and elapsed time"
 msgstr ""
 
 msgid "my-awesome-group"

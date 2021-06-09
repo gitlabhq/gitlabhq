@@ -7134,7 +7134,7 @@ Whether or not ModSecurity is enabled within Ingress
 
 Group: `group::container security`
 
-Status: `deprecated`
+Status: `removed`
 
 Tiers: `free`, `premium`, `ultimate`
 

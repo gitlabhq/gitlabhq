@@ -117,6 +117,11 @@ export default {
     state.boardLists = listsBackup;
   },
 
+  [mutationTypes.RESET_ITEMS_FOR_LIST]: (state, listId) => {
+    Vue.set(state, 'backupItemsList', state.boardItemsByListId[listId]);
+    Vue.set(state.boardItemsByListId, listId, []);
+  },
+
   [mutationTypes.REQUEST_ITEMS_FOR_LIST]: (state, { listId, fetchNext }) => {
     Vue.set(state.listsFlags, listId, { [fetchNext ? 'isLoadingMore' : 'isLoading']: true });
   },
@@ -138,6 +143,7 @@ export default {
       'Boards|An error occurred while fetching the board issues. Please reload the page.',
     );
     Vue.set(state.listsFlags, listId, { isLoading: false, isLoadingMore: false });
+    Vue.set(state.boardItemsByListId, listId, state.backupItemsList);
   },
 
   [mutationTypes.RESET_ISSUES]: (state) => {

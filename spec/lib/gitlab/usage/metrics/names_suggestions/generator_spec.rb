@@ -33,24 +33,6 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
     end
 
     context 'joined relations' do
-      context 'counted attribute comes from  joined relation' do
-        it_behaves_like 'name suggestion' do
-          # corresponding metric is collected with:
-          # distinct_count(
-          #   ::Clusters::Applications::Ingress.modsecurity_enabled.logging
-          #     .joins(cluster: :deployments)
-          #     .merge(::Clusters::Cluster.enabled)
-          #     .merge(Deployment.success),
-          #   ::Deployment.arel_table[:environment_id]
-          # )
-          let(:key_path) { 'counts.ingress_modsecurity_logging' }
-          let(:name_suggestion) do
-            constrains = /'\(clusters_applications_ingress\.modsecurity_enabled = TRUE AND clusters_applications_ingress\.modsecurity_mode = \d+ AND clusters.enabled = TRUE AND deployments.status = \d+\)'/
-            /count_distinct_environment_id_from_<adjective describing\: #{constrains}>_deployments_<with>_<adjective describing\: #{constrains}>_clusters_<having>_<adjective describing\: #{constrains}>_clusters_applications_ingress/
-          end
-        end
-      end
-
       context 'counted attribute comes from source relation' do
         it_behaves_like 'name suggestion' do
           # corresponding metric is collected with count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot), start: issue_minimum_id, finish: issue_maximum_id)

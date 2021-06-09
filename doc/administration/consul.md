@@ -80,6 +80,15 @@ within each node. The command will return an empty array if the cluster is healt
 curl "http://127.0.0.1:8500/v1/health/state/critical"
 ```
 
+If the Consul version has changed, you'll see a notice at the end of `gitlab-ctl reconfigure`
+informing you that Consul needs to be restarted for the new version to be used.
+
+Restart Consul one node at a time:
+
+```shell
+sudo gitlab-ctl restart consul
+```
+
 Consul nodes communicate using the raft protocol. If the current leader goes
 offline, there needs to be a leader election. A leader node must exist to facilitate
 synchronization across the cluster. If too many nodes go offline at the same time,

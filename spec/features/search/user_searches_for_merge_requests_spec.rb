@@ -29,6 +29,11 @@ RSpec.describe 'User searches for merge requests', :js do
     page.within('.results') do
       expect(page).to have_link(merge_request1.title)
       expect(page).not_to have_link(merge_request2.title)
+
+      # Each result should have MR refs like `gitlab-org/gitlab!1`
+      page.all('.search-result-row').each do |e|
+        expect(e.text).to match(/!\d+/)
+      end
     end
   end
 
