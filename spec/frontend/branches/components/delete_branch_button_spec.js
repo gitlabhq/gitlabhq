@@ -29,7 +29,7 @@ describe('Delete branch button', () => {
     wrapper.destroy();
   });
 
-  it('renders the button with correct tooltip, style, and icon', () => {
+  it('renders the button with default tooltip, style, and icon', () => {
     createComponent();
 
     expect(findDeleteButton().attributes()).toMatchObject({
@@ -42,7 +42,20 @@ describe('Delete branch button', () => {
   it('renders a different tooltip for a protected branch', () => {
     createComponent({ isProtectedBranch: true });
 
-    expect(findDeleteButton().attributes('title')).toBe('Delete protected branch');
+    expect(findDeleteButton().attributes()).toMatchObject({
+      title: 'Delete protected branch',
+      variant: 'danger',
+      icon: 'remove',
+    });
+  });
+
+  it('renders a different protected tooltip when it is both protected and disabled', () => {
+    createComponent({ isProtectedBranch: true, disabled: true });
+
+    expect(findDeleteButton().attributes()).toMatchObject({
+      title: 'Only a project maintainer or owner can delete a protected branch',
+      variant: 'default',
+    });
   });
 
   it('emits the data to eventHub when button is clicked', () => {
@@ -63,14 +76,21 @@ describe('Delete branch button', () => {
     it('does not disable the button by default when mounted', () => {
       createComponent();
 
-      expect(findDeleteButton().attributes('disabled')).not.toBe('true');
+      expect(findDeleteButton().attributes()).toMatchObject({
+        title: 'Delete branch',
+        variant: 'danger',
+      });
     });
 
     // Used for unallowed users and for the default branch.
     it('disables the button when mounted for a disabled modal', () => {
-      createComponent({ disabled: true });
+      createComponent({ disabled: true, tooltip: 'The default branch cannot be deleted' });
 
-      expect(findDeleteButton().attributes('disabled')).toBe('true');
+      expect(findDeleteButton().attributes()).toMatchObject({
+        title: 'The default branch cannot be deleted',
+        disabled: 'true',
+        variant: 'default',
+      });
     });
   });
 });

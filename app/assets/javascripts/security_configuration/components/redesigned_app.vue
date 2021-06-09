@@ -35,11 +35,25 @@ export default {
       type: Array,
       required: true,
     },
-
+    gitlabCiPresent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    gitlabCiHistoryPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     latestPipelinePath: {
       type: String,
       required: false,
       default: '',
+    },
+  },
+  computed: {
+    canViewCiHistory() {
+      return Boolean(this.gitlabCiPresent && this.gitlabCiHistoryPath);
     },
   },
 };
@@ -66,6 +80,11 @@ export default {
                 </template>
               </gl-sprintf>
             </p>
+            <p v-if="canViewCiHistory">
+              <gl-link data-testid="security-view-history-link" :href="gitlabCiHistoryPath">{{
+                $options.i18n.configurationHistory
+              }}</gl-link>
+            </p>
           </template>
 
           <template #features>
@@ -91,6 +110,11 @@ export default {
                   <gl-link :href="latestPipelinePath">{{ content }}</gl-link>
                 </template>
               </gl-sprintf>
+            </p>
+            <p v-if="canViewCiHistory">
+              <gl-link data-testid="compliance-view-history-link" :href="gitlabCiHistoryPath">{{
+                $options.i18n.configurationHistory
+              }}</gl-link>
             </p>
           </template>
           <template #features>
