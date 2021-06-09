@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/327436
 milestone: '13.12'
 type: development
 group: group::ecosystem
-default_enabled: false
+default_enabled: true

@@ -29,15 +29,17 @@ class WebHookService
   GITLAB_EVENT_HEADER = 'X-Gitlab-Event'
 
   attr_accessor :hook, :data, :hook_name, :request_options
+  attr_reader :uniqueness_token
 
   def self.hook_to_event(hook_name)
     hook_name.to_s.singularize.titleize
   end
 
-  def initialize(hook, data, hook_name)
+  def initialize(hook, data, hook_name, uniqueness_token = nil)
     @hook = hook
     @data = data
     @hook_name = hook_name.to_s
+    @uniqueness_token = uniqueness_token
     @request_options = {
       timeout: Gitlab.config.gitlab.webhook_timeout,
       allow_local_requests: hook.allow_local_requests?
@@ -123,10 +125,8 @@ class WebHookService
   end
 
   def log_execution(trigger:, url:, request_data:, response:, execution_duration:, error_message: nil)
-    handle_failure(response, hook)
-
-    WebHookLog.create(
-      web_hook: hook,
+    category = response_category(response)
+    log_data = {
       trigger: trigger,
       url: url,
       execution_duration: execution_duration,
@@ -136,16 +136,19 @@ class WebHookService
       response_body: safe_response_body(response),
       response_status: response.code,
       internal_error_message: error_message
-    )
+    }
+
+    ::WebHooks::LogExecutionWorker
+      .perform_async(hook.id, log_data, category, uniqueness_token)
   end
 
-  def handle_failure(response, hook)
+  def response_category(response)
     if response.success? || response.redirection?
-      hook.enable!
+      :ok
     elsif response.internal_server_error?
-      hook.backoff!
+      :error
     else
-      hook.failed!
+      :failed
     end
   end
 

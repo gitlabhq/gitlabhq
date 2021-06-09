@@ -13,6 +13,18 @@ function retry() {
   return 1
 }
 
+function wait_for_url() {
+  local url="${1}"
+  local curl_output="${2}"
+
+  echo "Waiting for ${url}"
+
+  timeout -s 1 60 bash -c \
+    'while [[ "$(curl -s -o ${1} -L -w ''%{http_code}'' ${0})" != "200" ]]; \
+    do echo "." && sleep 5; \
+    done' ${url} ${curl_output}
+}
+
 function bundle_install_script() {
   local extra_install_args="${1}"
 

@@ -400,6 +400,8 @@
   - 1
 - - web_hooks_destroy
   - 1
+- - web_hooks_log_execution
+  - 1
 - - wikis_git_garbage_collect
   - 1
 - - x509_certificate_revoke

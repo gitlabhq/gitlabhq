@@ -35,7 +35,7 @@ The Admin Area is made up of the following sections:
 | **{location-dot}** Geo                         | Configure and maintain [Geo nodes](geo_nodes.md). |
 | **{key}** Deploy keys                          | Create instance-wide [SSH deploy keys](../project/deploy_keys/index.md). |
 | **{lock}** Credentials                         | View [credentials](credentials_inventory.md) that can be used to access your instance. |
-| **{template}** Service Templates               | Create [service templates](../project/integrations/services_templates.md) for projects. |
+| **{template}** Integrations                    | Manage [instance-level default settings](settings/project_integration_management.md) for a project integration. |
 | **{labels}** Labels                            | Create and maintain [labels](labels.md) for your GitLab instance. |
 | **{appearance}** Appearance                    | Customize [GitLab appearance](appearance.md). |
 | **{settings}** Settings                        | Modify the [settings](settings/index.md) for your GitLab instance. |

@@ -960,9 +960,6 @@ msgstr ""
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr ""
 
-msgid "%{type} License"
-msgstr ""
-
 msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
 msgstr ""
 
@@ -19599,6 +19596,9 @@ msgstr ""
 msgid "License ID:"
 msgstr ""
 
+msgid "License file"
+msgstr ""
+
 msgid "License overview"
 msgstr ""
 
@@ -31671,6 +31671,9 @@ msgstr ""
 msgid "SuperSonics|Buy subscription"
 msgstr ""
 
+msgid "SuperSonics|Cloud license"
+msgstr ""
+
 msgid "SuperSonics|Enter activation code"
 msgstr ""
 
@@ -31758,7 +31761,7 @@ msgstr ""
 msgid "SuperSonics|Type"
 msgstr ""
 
-msgid "SuperSonics|Upload a legacy license"
+msgid "SuperSonics|Upload a license file"
 msgstr ""
 
 msgid "SuperSonics|Users in subscription"

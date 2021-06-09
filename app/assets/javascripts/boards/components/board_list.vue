@@ -111,10 +111,17 @@ export default {
         this.showCount = this.scrollHeight() > Math.ceil(this.listHeight());
       });
     },
-  },
-  created() {
-    eventHub.$on(`toggle-issue-form-${this.list.id}`, this.toggleForm);
-    eventHub.$on(`scroll-board-list-${this.list.id}`, this.scrollToTop);
+    'list.id': {
+      handler(id, oldVal) {
+        if (id) {
+          eventHub.$on(`toggle-issue-form-${this.list.id}`, this.toggleForm);
+          eventHub.$on(`scroll-board-list-${this.list.id}`, this.scrollToTop);
+          eventHub.$off(`toggle-issue-form-${oldVal}`, this.toggleForm);
+          eventHub.$off(`scroll-board-list-${oldVal}`, this.scrollToTop);
+        }
+      },
+      immediate: true,
+    },
   },
   beforeDestroy() {
     eventHub.$off(`toggle-issue-form-${this.list.id}`, this.toggleForm);

@@ -16,7 +16,7 @@ class WebHookWorker
     hook = WebHook.find(hook_id)
     data = data.with_indifferent_access
 
-    WebHookService.new(hook, data, hook_name).execute
+    WebHookService.new(hook, data, hook_name, jid).execute
   end
 end
 # rubocop:enable Scalability/IdempotentWorker

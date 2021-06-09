@@ -713,6 +713,28 @@ Input type: `AwardEmojiToggleInput`
 | <a id="mutationawardemojitoggleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationawardemojitoggletoggledon"></a>`toggledOn` | [`Boolean!`](#boolean) | Indicates the status of the emoji. True if the toggle awarded the emoji, and false if the toggle removed the emoji. |
 
+### `Mutation.boardEpicCreate`
+
+Input type: `BoardEpicCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationboardepiccreateboardid"></a>`boardId` | [`BoardsEpicBoardID!`](#boardsepicboardid) | Global ID of the board that the epic is in. |
+| <a id="mutationboardepiccreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationboardepiccreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group the epic to create is in. |
+| <a id="mutationboardepiccreatelistid"></a>`listId` | [`BoardsEpicListID!`](#boardsepiclistid) | Global ID of the epic board list in which epic will be created. |
+| <a id="mutationboardepiccreatetitle"></a>`title` | [`String!`](#string) | Title of the epic. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationboardepiccreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationboardepiccreateepic"></a>`epic` | [`Epic`](#epic) | Epic after creation. |
+| <a id="mutationboardepiccreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.boardListCreate`
 
 Input type: `BoardListCreateInput`

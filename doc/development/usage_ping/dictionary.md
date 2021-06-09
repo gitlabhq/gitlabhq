@@ -7262,9 +7262,9 @@ Tiers: `premium`, `ultimate`
 
 Whether this is a trial license or not
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/settings/20210204124851_license_trial.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/license/20210204124851_license_trial.yml)
 
-Group: `group::product intelligence`
+Group: `group::license`
 
 Status: `data_available`
 

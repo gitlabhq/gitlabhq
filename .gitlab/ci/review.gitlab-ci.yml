@@ -71,13 +71,16 @@ review-deploy:
     - download_chart
     - date
     - deploy || (display_deployment_debug && exit 1)
+    - verify_deploy || exit 1
     - disable_sign_ups || (delete_release && exit 1)
   after_script:
     # Run seed-dast-test-data.sh only when DAST_RUN is set to true. This is to pupulate review app with data for DAST scan.
     # Set DAST_RUN to true when jobs are manually scheduled.
     - if [ "$DAST_RUN" == "true" ]; then source scripts/review_apps/seed-dast-test-data.sh; TRACE=1 trigger_proj_user_creation; fi
   artifacts:
-    paths: [environment_url.txt]
+    paths:
+      - environment_url.txt
+      - curl_output.txt
     expire_in: 7 days
     when: always
 

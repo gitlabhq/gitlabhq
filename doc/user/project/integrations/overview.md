@@ -80,19 +80,6 @@ instance configuration or provide custom settings.
 
 Read more about [Project integration management](../../admin_area/settings/project_integration_management.md).
 
-### Service templates
-
-[Service templates](services_templates.md) were a way to set predefined values for
-a project integration across all new projects on the instance. They are deprecated and
-[scheduled to be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268032)
-in GitLab 14.0.
-
-GitLab recommends you use [project integration management](../../admin_area/settings/project_integration_management.md)
-instead of service templates. GitLab versions 13.3 and later provide
-[instance-level integrations](../../admin_area/settings/project_integration_management.md#project-integration-management)
-you can use.
-instead.
-
 ## Troubleshooting integrations
 
 Some integrations use service hooks for integration with external applications. To confirm which ones use service hooks, see the [integrations listing](#integrations-listing) above. GitLab stores details of service hook requests made within the last 2 days. To view details of the requests, go to that integration's configuration page.

@@ -174,13 +174,19 @@ RSpec.describe WebHookService do
     context 'execution logging' do
       let(:hook_log) { project_hook.web_hook_logs.last }
 
+      def run_service
+        service_instance.execute
+        ::WebHooks::LogExecutionWorker.drain
+        project_hook.reload
+      end
+
       context 'with success' do
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
         end
 
         it 'log successful execution' do
-          service_instance.execute
+          run_service
 
           expect(hook_log.trigger).to eq('push_hooks')
           expect(hook_log.url).to eq(project_hook.url)
@@ -191,12 +197,16 @@ RSpec.describe WebHookService do
           expect(hook_log.internal_error_message).to be_nil
         end
 
+        it 'does not log in the service itself' do
+          expect { service_instance.execute }.not_to change(::WebHookLog, :count)
+        end
+
         it 'does not increment the failure count' do
-          expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+          expect { run_service }.not_to change(project_hook, :recent_failures)
         end
 
         it 'does not change the disabled_until attribute' do
-          expect { service_instance.execute }.not_to change(project_hook, :disabled_until)
+          expect { run_service }.not_to change(project_hook, :disabled_until)
         end
 
         context 'when the hook had previously failed' do
@@ -205,7 +215,7 @@ RSpec.describe WebHookService do
           end
 
           it 'resets the failure count' do
-            expect { service_instance.execute }.to change(project_hook, :recent_failures).to(0)
+            expect { run_service }.to change(project_hook, :recent_failures).to(0)
           end
         end
       end
@@ -216,7 +226,7 @@ RSpec.describe WebHookService do
         end
 
         it 'logs failed execution' do
-          service_instance.execute
+          run_service
 
           expect(hook_log).to have_attributes(
             trigger: eq('push_hooks'),
@@ -230,17 +240,17 @@ RSpec.describe WebHookService do
         end
 
         it 'increments the failure count' do
-          expect { service_instance.execute }.to change(project_hook, :recent_failures).by(1)
+          expect { run_service }.to change(project_hook, :recent_failures).by(1)
         end
 
         it 'does not change the disabled_until attribute' do
-          expect { service_instance.execute }.not_to change(project_hook, :disabled_until)
+          expect { run_service }.not_to change(project_hook, :disabled_until)
         end
 
         it 'does not allow the failure count to overflow' do
           project_hook.update!(recent_failures: 32767)
 
-          expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+          expect { run_service }.not_to change(project_hook, :recent_failures)
         end
 
         context 'when the web_hooks_disable_failed FF is disabled' do
@@ -252,7 +262,7 @@ RSpec.describe WebHookService do
           it 'does not allow the failure count to overflow' do
             project_hook.update!(recent_failures: 32767)
 
-            expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+            expect { run_service }.not_to change(project_hook, :recent_failures)
           end
         end
       end
@@ -263,7 +273,7 @@ RSpec.describe WebHookService do
         end
 
         it 'log failed execution' do
-          service_instance.execute
+          run_service
 
           expect(hook_log.trigger).to eq('push_hooks')
           expect(hook_log.url).to eq(project_hook.url)
@@ -275,17 +285,15 @@ RSpec.describe WebHookService do
         end
 
         it 'does not increment the failure count' do
-          expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+          expect { run_service }.not_to change(project_hook, :recent_failures)
         end
 
         it 'backs off' do
-          expect(project_hook).to receive(:backoff!).and_call_original
-
-          expect { service_instance.execute }.to change(project_hook, :disabled_until)
+          expect { run_service }.to change(project_hook, :disabled_until)
         end
 
         it 'increases the backoff count' do
-          expect { service_instance.execute }.to change(project_hook, :backoff_count).by(1)
+          expect { run_service }.to change(project_hook, :backoff_count).by(1)
         end
 
         context 'when the previous cool-off was near the maximum' do
@@ -294,7 +302,7 @@ RSpec.describe WebHookService do
           end
 
           it 'sets the disabled_until attribute' do
-            expect { service_instance.execute }.to change(project_hook, :disabled_until).to(1.day.from_now)
+            expect { run_service }.to change(project_hook, :disabled_until).to(1.day.from_now)
           end
         end
 
@@ -304,7 +312,7 @@ RSpec.describe WebHookService do
           end
 
           it 'sets the disabled_until attribute' do
-            expect { service_instance.execute }.to change(project_hook, :disabled_until).to(1.day.from_now)
+            expect { run_service }.to change(project_hook, :disabled_until).to(1.day.from_now)
           end
         end
       end
@@ -312,7 +320,7 @@ RSpec.describe WebHookService do
       context 'with unsafe response body' do
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: "\xBB")
-          service_instance.execute
+          run_service
         end
 
         it 'log successful execution' do

@@ -120,6 +120,32 @@ RSpec.describe 'Issue Boards new issue', :js do
         expect(page).to have_content 'Label 1'
       end
     end
+
+    it 'allows creating an issue in newly created list' do
+      click_button 'Create list'
+      wait_for_all_requests
+
+      click_button 'Select a label'
+      find('label', text: label.title).click
+      click_button 'Add to board'
+
+      wait_for_all_requests
+
+      page.within('.board:nth-child(2)') do
+        click_button('New issue')
+
+        page.within(first('.board-new-issue-form')) do
+          find('.form-control').set('new issue')
+          click_button 'Create issue'
+        end
+
+        wait_for_all_requests
+
+        page.within('.board-card') do
+          expect(page).to have_content 'new issue'
+        end
+      end
+    end
   end
 
   context 'unauthorized user' do

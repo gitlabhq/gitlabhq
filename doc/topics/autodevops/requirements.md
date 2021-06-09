@@ -77,10 +77,9 @@ To make full use of Auto DevOps with Kubernetes, you need:
   instruct GitLab to query an in-cluster Prometheus by enabling
   the [Prometheus cluster integration](../../user/clusters/integrations.md#prometheus-cluster-integration).
 
-  The [Prometheus service](../../user/project/integrations/prometheus.md)
-  integration must be enabled for the project, or enabled as a
-  [default service template](../../user/project/integrations/services_templates.md)
-  for the entire GitLab installation.
+  The [Prometheus integration](../../user/project/integrations/prometheus.md)
+  integration must be activated for the project, or activated at the group or instance level.
+  Learn more about [Project integration management](../../user/admin_area/settings/project_integration_management.md).
 
   To get response metrics (in addition to system metrics), you must
   [configure Prometheus to monitor NGINX](../../user/project/integrations/prometheus_library/nginx_ingress.md#configuring-nginx-ingress-monitoring).
