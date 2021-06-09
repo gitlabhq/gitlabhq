@@ -735,7 +735,7 @@ RSpec.describe ::SystemNotes::IssuablesService do
       end
 
       it 'is true with issue tracker not supporting referencing' do
-        create(:bugzilla_service, project: project)
+        create(:bugzilla_integration, project: project)
         project.reload
 
         expect(service.cross_reference_disallowed?(noteable)).to be_truthy

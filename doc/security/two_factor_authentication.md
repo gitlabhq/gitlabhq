@@ -24,7 +24,7 @@ want to enforce everyone to set up 2FA, you can choose from two different ways:
 - Suggest on next login, but allow a grace period before enforcing.
 
 After the configured grace period has elapsed, users can sign in but
-cannot leave the 2FA configuration area at `/profile/two_factor_auth`.
+cannot leave the 2FA configuration area at `/-/profile/two_factor_auth`.
 
 To enable 2FA for all users:
 

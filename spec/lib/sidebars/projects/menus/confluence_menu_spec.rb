@@ -18,7 +18,7 @@ RSpec.describe Sidebars::Projects::Menus::ConfluenceMenu do
     end
 
     context 'when Confluence integration is present' do
-      let!(:confluence) { create(:confluence_service, project: project, active: active) }
+      let!(:confluence) { create(:confluence_integration, project: project, active: active) }
 
       context 'when integration is disabled' do
         let(:active) { false }

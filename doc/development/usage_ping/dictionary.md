@@ -1192,7 +1192,7 @@ Total count of groups as of usage ping snapshot
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180750_groups.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
@@ -3156,15 +3156,15 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.keys`
 
-Missing description
+Number of keys.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180752_keys.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.kubernetes_agent_gitops_sync`
 
@@ -3266,13 +3266,13 @@ Tiers: `premium`, `ultimate`
 
 Number of users that are linked to LDAP
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174826_ldap_users.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174826_ldap_users.yml)
 
 Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`, `premium`, `ultimate`
+Tiers: `premium`, `ultimate`
 
 ### `counts.lfs_objects`
 
@@ -16370,15 +16370,15 @@ Tiers: `premium`
 
 ### `usage_activity_by_stage.manage.groups`
 
-Missing description
+Number of users who are group members.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180756_groups.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.groups_imported`
 
@@ -16490,75 +16490,75 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.manage.ldap_admin_sync_enabled`
 
-Has the instance configured LDAP Admin Sync `https://docs.gitlab.com/ee/administration/auth/ldap/#administrator-sync`?
+Has the instance configured [LDAP Admin Sync](https://docs.gitlab.com/ee/administration/auth/ldap/#administrator-sync)
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/settings/20210216180811_ldap_admin_sync_enabled.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.ldap_group_sync_enabled`
 
-Has the instance configured LDAP Group Sync `https://docs.gitlab.com/ee/administration/auth/ldap/#group-sync`?
+Has the instance configured [LDAP Group Sync](https://docs.gitlab.com/ee/administration/auth/ldap/#group-sync)
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/settings/20210216180809_ldap_group_sync_enabled.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.ldap_keys`
 
-Missing description
+Number of users creating keys synced as part of LDAP
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180800_ldap_keys.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216180800_ldap_keys.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.ldap_servers`
 
-Number of LDAP servers configured for the instance `https://docs.gitlab.com/ee/administration/auth/ldap/#multiple-ldap-servers`
+Number of [LDAP servers configured for the instance](https://docs.gitlab.com/ee/administration/auth/ldap/#multiple-ldap-servers)
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216180807_ldap_servers.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.ldap_users`
 
-Missing description
+Number of users that are linked to LDAP
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180801_ldap_users.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216180801_ldap_users.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.omniauth_providers`
 
-Missing description
+Number of unique user logins using an OmniAuth provider
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216183400_omniauth_providers.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.project_imports.bitbucket`
 
@@ -16814,75 +16814,75 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.manage.user_auth_by_provider.google_oauth2`
 
-Missing description
+Number of unique user logins using Google OAuth authentication
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216183410_google_oauth2.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.user_auth_by_provider.standard`
 
-Missing description
+Number of unique user logins using password authentication
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216183408_standard.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.user_auth_by_provider.two-factor`
 
-Missing description
+Number of unique user logins using two factor authentication
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216183402_two-factor.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.user_auth_by_provider.two-factor-via-u2f-device`
 
-Missing description
+Number of unique user logins using two factor via a U2F device
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216183404_two-factor-via-u2f-device.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.user_auth_by_provider.two-factor-via-webauthn-device`
 
-Missing description
+Number of unique user logins using two factor via a WebAuthn device
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216183406_two-factor-via-webauthn-device.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.users_created`
 
-Missing description
+Number of users
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180758_users_created.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.value_stream_management_customized_group_stages`
 
@@ -18328,27 +18328,27 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.group_saml_enabled`
 
-Missing description
+Whether group SAML is enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/settings/20210216180833_group_saml_enabled.yml)
 
-Group: `group::manage`
+Group: `group:access`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.groups`
 
-Missing description
+Number of users who are group members for last 28 days
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180816_groups.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.groups_imported`
 
@@ -18460,43 +18460,43 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.manage.ldap_admin_sync_enabled`
 
-Missing description
+Whether LDAP admin sync is enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/settings/20210216180831_ldap_admin_sync_enabled.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.ldap_group_sync_enabled`
 
-Missing description
+Has the instance configured [LDAP Group Sync](https://docs.gitlab.com/ee/administration/auth/ldap/#group-sync)
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/settings/20210216180829_ldap_group_sync_enabled.yml)
 
-Group: `group::manage`
+Group: `group::acess`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.ldap_keys`
 
-Missing description
+Number of users creating keys synced as part of LDAP for last 28 days.
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180820_ldap_keys.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216180820_ldap_keys.yml)
 
-Group: `group::manage`
+Group: `group::acess`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.ldap_servers`
 
-Missing description
+Number of LDAP servers configured
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216180827_ldap_servers.yml)
 
@@ -18504,31 +18504,31 @@ Group: `group::manage`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.ldap_users`
 
-Missing description
+Number of users that are linked to LDAP
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180822_ldap_users.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216180822_ldap_users.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.omniauth_providers`
 
-Missing description
+Number of unique user logins using an OmniAuth provider
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183627_omniauth_providers.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.project_imports.bitbucket`
 
@@ -18784,63 +18784,63 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.user_auth_by_provider.google_oauth2`
 
-Missing description
+Number of unique user logins using Google OAuth authentication
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183636_google_oauth2.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.user_auth_by_provider.standard`
 
-Missing description
+Number of unique user logins using password authentication
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183634_standard.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor`
 
-Missing description
+Number of unique user logins using two factor authentication
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183629_two-factor.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor-via-u2f-device`
 
-Missing description
+Number of unique user logins using two factor via a U2F device
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183631_two-factor-via-u2f-device.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor-via-webauthn-device`
 
-Missing description
+Number of unique user logins using two factor via a WebAuthn device
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183633_two-factor-via-webauthn-device.yml)
 
-Group: ``
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.users_created`
 
@@ -18848,11 +18848,11 @@ Number of users created in the month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180818_users_created.yml)
 
-Group: `group::manage`
+Group: `group::access`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.value_stream_management_customized_group_stages`
 

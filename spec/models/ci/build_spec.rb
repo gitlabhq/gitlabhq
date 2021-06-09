@@ -4822,7 +4822,7 @@ RSpec.describe Ci::Build do
 
     context 'with project services' do
       before do
-        create(:service, active: true, job_events: true, project: project)
+        create(:integration, active: true, job_events: true, project: project)
       end
 
       it 'executes services' do
@@ -4836,7 +4836,7 @@ RSpec.describe Ci::Build do
 
     context 'without relevant project services' do
       before do
-        create(:service, active: true, job_events: false, project: project)
+        create(:integration, active: true, job_events: false, project: project)
       end
 
       it 'does not execute services' do

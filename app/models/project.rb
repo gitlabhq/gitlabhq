@@ -155,14 +155,14 @@ class Project < ApplicationRecord
   has_many :boards
 
   # Project integrations
-  has_one :asana_service, class_name: 'Integrations::Asana'
-  has_one :assembla_service, class_name: 'Integrations::Assembla'
-  has_one :bamboo_service, class_name: 'Integrations::Bamboo'
-  has_one :bugzilla_service, class_name: 'Integrations::Bugzilla'
-  has_one :buildkite_service, class_name: 'Integrations::Buildkite'
-  has_one :campfire_service, class_name: 'Integrations::Campfire'
-  has_one :confluence_service, class_name: 'Integrations::Confluence'
-  has_one :custom_issue_tracker_service, class_name: 'Integrations::CustomIssueTracker'
+  has_one :asana_integration, class_name: 'Integrations::Asana'
+  has_one :assembla_integration, class_name: 'Integrations::Assembla'
+  has_one :bamboo_integration, class_name: 'Integrations::Bamboo'
+  has_one :bugzilla_integration, class_name: 'Integrations::Bugzilla'
+  has_one :buildkite_integration, class_name: 'Integrations::Buildkite'
+  has_one :campfire_integration, class_name: 'Integrations::Campfire'
+  has_one :confluence_integration, class_name: 'Integrations::Confluence'
+  has_one :custom_issue_tracker_integration, class_name: 'Integrations::CustomIssueTracker'
   has_one :datadog_service, class_name: 'Integrations::Datadog'
   has_one :discord_service, class_name: 'Integrations::Discord'
   has_one :drone_ci_service, class_name: 'Integrations::DroneCi'
@@ -2645,7 +2645,7 @@ class Project < ApplicationRecord
   end
 
   def build_service(name)
-    Integration.service_name_to_model(name).new(project_id: id)
+    Integration.integration_name_to_model(name).new(project_id: id)
   end
 
   def services_templates

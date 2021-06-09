@@ -310,7 +310,7 @@ RSpec.describe Projects::IssuesController do
 
     context 'external issue tracker' do
       let!(:service) do
-        create(:custom_issue_tracker_service, project: project, new_issue_url: 'http://test.com')
+        create(:custom_issue_tracker_integration, project: project, new_issue_url: 'http://test.com')
       end
 
       before do

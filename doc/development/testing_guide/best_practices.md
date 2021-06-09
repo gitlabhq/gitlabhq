@@ -1075,6 +1075,16 @@ expect(json_string).to be_valid_json
 expect(json_string).to be_valid_json.and match_schema(schema)
 ```
 
+#### `be_one_of(collection)`
+
+The inverse of `include`, tests that the `collection` includes the expected
+value:
+
+```ruby
+expect(:a).to be_one_of(%i[a b c])
+expect(:z).not_to be_one_of(%i[a b c])
+```
+
 ### Testing query performance
 
 Testing query performance allows us to:

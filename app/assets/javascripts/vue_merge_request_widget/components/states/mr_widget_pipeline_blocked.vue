@@ -14,8 +14,9 @@ export default {
     <div class="media-body space-children">
       <span class="bold">
         {{
-          s__(`mrWidget|Pipeline blocked.
-The pipeline for this merge request requires a manual action to proceed`)
+          s__(
+            `mrWidget|Merge blocked: pipeline must succeed. It's waiting for a manual action to continue.`,
+          )
         }}
       </span>
     </div>

@@ -413,7 +413,7 @@ For details on saving and transporting Docker images as a file, see Docker's doc
    ```
 
 1. If your local Docker container registry is running securely over `HTTPS`, but you're using a
-   self-signed certificate, then you must set `DOCKER_INSECURE: "true"` in the above
+   self-signed certificate, then you must set `CS_DOCKER_INSECURE: "true"` in the above
    `container_scanning` section of your `.gitlab-ci.yml`.
 
 #### Automating container scanning vulnerability database updates with a pipeline

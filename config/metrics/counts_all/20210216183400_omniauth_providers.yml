@@ -1,16 +1,17 @@
 ---
 key_path: usage_activity_by_stage.manage.omniauth_providers
-description: ''
-product_section: ''
-product_stage: ''
-product_group: ''
-product_category: ''
+description: Number of unique user logins using an OmniAuth provider
+product_section: dev
+product_stage: manage
+product_group: group::access
+product_category: authentication_and_authorization
 value_type: number
 status: data_available
 time_frame: all
-data_source:
+data_source: database
 distribution:
 - ce
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

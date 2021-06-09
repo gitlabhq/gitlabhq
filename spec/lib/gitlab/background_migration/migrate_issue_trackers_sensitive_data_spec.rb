@@ -291,7 +291,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
       services.create!(id: 20, type: 'JiraService', properties: jira_properties.to_json, category: 'issue_tracker')
     end
 
-    let!(:bugzilla_service_valid) do
+    let!(:bugzilla_integration_valid) do
       services.create!(id: 11, type: 'BugzillaService', title: nil, properties: tracker_properties.to_json, category: 'issue_tracker')
     end
 
@@ -314,14 +314,14 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
       expect(jira_service_valid.title).to eq(title)
       expect(jira_service_valid.description).to eq(description)
 
-      bugzilla_service_valid.reload
-      data = IssueTrackerData.find_by(service_id: bugzilla_service_valid.id)
+      bugzilla_integration_valid.reload
+      data = IssueTrackerData.find_by(service_id: bugzilla_integration_valid.id)
 
       expect(data.project_url).to eq(url)
       expect(data.issues_url).to eq(issues_url)
       expect(data.new_issue_url).to eq(new_issue_url)
-      expect(bugzilla_service_valid.title).to eq(title)
-      expect(bugzilla_service_valid.description).to eq(description)
+      expect(bugzilla_integration_valid.title).to eq(title)
+      expect(bugzilla_integration_valid.description).to eq(description)
     end
   end
 end

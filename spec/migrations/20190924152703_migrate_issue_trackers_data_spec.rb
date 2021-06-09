@@ -22,7 +22,7 @@ RSpec.describe MigrateIssueTrackersData do
     services.create!(type: 'JiraService', properties: nil, category: 'issue_tracker')
   end
 
-  let!(:bugzilla_service) do
+  let!(:bugzilla_integration) do
     services.create!(type: 'BugzillaService', properties: properties, category: 'issue_tracker')
   end
 
@@ -55,7 +55,7 @@ RSpec.describe MigrateIssueTrackersData do
       freeze_time do
         migrate!
 
-        expect(migration_name).to be_scheduled_delayed_migration(3.minutes, jira_service.id, bugzilla_service.id)
+        expect(migration_name).to be_scheduled_delayed_migration(3.minutes, jira_service.id, bugzilla_integration.id)
         expect(migration_name).to be_scheduled_delayed_migration(6.minutes, youtrack_service.id, gitlab_service.id)
         expect(BackgroundMigrationWorker.jobs.size).to eq(2)
       end

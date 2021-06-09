@@ -6,7 +6,7 @@ FactoryBot.define do
     type { 'Integration' }
   end
 
-  factory :custom_issue_tracker_service, class: 'Integrations::CustomIssueTracker' do
+  factory :custom_issue_tracker_integration, class: 'Integrations::CustomIssueTracker' do
     project
     active { true }
     issue_tracker
@@ -79,13 +79,13 @@ FactoryBot.define do
     end
   end
 
-  factory :confluence_service, class: 'Integrations::Confluence' do
+  factory :confluence_integration, class: 'Integrations::Confluence' do
     project
     active { true }
     confluence_url { 'https://example.atlassian.net/wiki' }
   end
 
-  factory :bugzilla_service, class: 'Integrations::Bugzilla' do
+  factory :bugzilla_integration, class: 'Integrations::Bugzilla' do
     project
     active { true }
     issue_tracker

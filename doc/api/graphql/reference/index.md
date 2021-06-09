@@ -11928,8 +11928,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectservicesactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the service is active. |
-| <a id="projectservicestype"></a>`type` | [`ServiceType`](#servicetype) | Class name of the service. |
+| <a id="projectservicesactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the integration is active. |
+| <a id="projectservicestype"></a>`type` | [`ServiceType`](#servicetype) | Type of integration. |
 
 ##### `Project.snippets`
 

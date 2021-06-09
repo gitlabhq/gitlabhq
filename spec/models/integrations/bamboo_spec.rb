@@ -82,45 +82,45 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
     describe 'before_update :reset_password' do
       context 'when a password was previously set' do
         it 'resets password if url changed' do
-          bamboo_service = service
+          bamboo_integration = service
 
-          bamboo_service.bamboo_url = 'http://gitlab1.com'
-          bamboo_service.save!
+          bamboo_integration.bamboo_url = 'http://gitlab1.com'
+          bamboo_integration.save!
 
-          expect(bamboo_service.password).to be_nil
+          expect(bamboo_integration.password).to be_nil
         end
 
         it 'does not reset password if username changed' do
-          bamboo_service = service
+          bamboo_integration = service
 
-          bamboo_service.username = 'some_name'
-          bamboo_service.save!
+          bamboo_integration.username = 'some_name'
+          bamboo_integration.save!
 
-          expect(bamboo_service.password).to eq('password')
+          expect(bamboo_integration.password).to eq('password')
         end
 
         it "does not reset password if new url is set together with password, even if it's the same password" do
-          bamboo_service = service
+          bamboo_integration = service
 
-          bamboo_service.bamboo_url = 'http://gitlab_edited.com'
-          bamboo_service.password = 'password'
-          bamboo_service.save!
+          bamboo_integration.bamboo_url = 'http://gitlab_edited.com'
+          bamboo_integration.password = 'password'
+          bamboo_integration.save!
 
-          expect(bamboo_service.password).to eq('password')
-          expect(bamboo_service.bamboo_url).to eq('http://gitlab_edited.com')
+          expect(bamboo_integration.password).to eq('password')
+          expect(bamboo_integration.bamboo_url).to eq('http://gitlab_edited.com')
         end
       end
 
       it 'saves password if new url is set together with password when no password was previously set' do
-        bamboo_service = service
-        bamboo_service.password = nil
+        bamboo_integration = service
+        bamboo_integration.password = nil
 
-        bamboo_service.bamboo_url = 'http://gitlab_edited.com'
-        bamboo_service.password = 'password'
-        bamboo_service.save!
+        bamboo_integration.bamboo_url = 'http://gitlab_edited.com'
+        bamboo_integration.password = 'password'
+        bamboo_integration.save!
 
-        expect(bamboo_service.password).to eq('password')
-        expect(bamboo_service.bamboo_url).to eq('http://gitlab_edited.com')
+        expect(bamboo_integration.password).to eq('password')
+        expect(bamboo_integration.bamboo_url).to eq('http://gitlab_edited.com')
       end
     end
   end

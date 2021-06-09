@@ -251,22 +251,22 @@ RSpec.describe MergeRequests::BuildService do
       end
 
       context 'when the source branch matches an issue' do
-        where(:issue_tracker, :source_branch, :closing_message) do
-          :jira                 | 'FOO-123-fix-issue' | 'Closes FOO-123'
-          :jira                 | 'fix-issue'         | nil
-          :custom_issue_tracker | '123-fix-issue'     | 'Closes #123'
-          :custom_issue_tracker | 'fix-issue'         | nil
-          :internal             | '123-fix-issue'     | 'Closes #123'
-          :internal             | 'fix-issue'         | nil
+        where(:factory, :source_branch, :closing_message) do
+          :jira_service | 'FOO-123-fix-issue' | 'Closes FOO-123'
+          :jira_service | 'fix-issue'         | nil
+          :custom_issue_tracker_integration | '123-fix-issue'     | 'Closes #123'
+          :custom_issue_tracker_integration | 'fix-issue'         | nil
+          nil | '123-fix-issue'     | 'Closes #123'
+          nil | 'fix-issue'         | nil
         end
 
         with_them do
           before do
-            if issue_tracker == :internal
-              issue.update!(iid: 123)
-            else
-              create(:"#{issue_tracker}_service", project: project)
+            if factory
+              create(factory, project: project)
               project.reload
+            else
+              issue.update!(iid: 123)
             end
           end
 
@@ -350,23 +350,23 @@ RSpec.describe MergeRequests::BuildService do
       end
 
       context 'when the source branch matches an issue' do
-        where(:issue_tracker, :source_branch, :title, :closing_message) do
-          :jira                 | 'FOO-123-fix-issue' | 'Resolve FOO-123 "Fix issue"' | 'Closes FOO-123'
-          :jira                 | 'fix-issue'         | 'Fix issue'                   | nil
-          :custom_issue_tracker | '123-fix-issue'     | 'Resolve #123 "Fix issue"'    | 'Closes #123'
-          :custom_issue_tracker | 'fix-issue'         | 'Fix issue'                   | nil
-          :internal             | '123-fix-issue'     | 'Resolve "A bug"'             | 'Closes #123'
-          :internal             | 'fix-issue'         | 'Fix issue'                   | nil
-          :internal             | '124-fix-issue'     | '124 fix issue'               | nil
+        where(:factory, :source_branch, :title, :closing_message) do
+          :jira_service | 'FOO-123-fix-issue' | 'Resolve FOO-123 "Fix issue"' | 'Closes FOO-123'
+          :jira_service | 'fix-issue'         | 'Fix issue'                   | nil
+          :custom_issue_tracker_integration | '123-fix-issue'     | 'Resolve #123 "Fix issue"'    | 'Closes #123'
+          :custom_issue_tracker_integration | 'fix-issue'         | 'Fix issue'                   | nil
+          nil | '123-fix-issue'     | 'Resolve "A bug"'             | 'Closes #123'
+          nil | 'fix-issue'         | 'Fix issue'                   | nil
+          nil | '124-fix-issue'     | '124 fix issue'               | nil
         end
 
         with_them do
           before do
-            if issue_tracker == :internal
-              issue.update!(iid: 123)
-            else
-              create(:"#{issue_tracker}_service", project: project)
+            if factory
+              create(factory, project: project)
               project.reload
+            else
+              issue.update!(iid: 123)
             end
           end
 
@@ -399,23 +399,23 @@ RSpec.describe MergeRequests::BuildService do
       end
 
       context 'when the source branch matches an issue' do
-        where(:issue_tracker, :source_branch, :title, :closing_message) do
-          :jira                 | 'FOO-123-fix-issue' | 'Resolve FOO-123 "Fix issue"' | 'Closes FOO-123'
-          :jira                 | 'fix-issue'         | 'Fix issue'                   | nil
-          :custom_issue_tracker | '123-fix-issue'     | 'Resolve #123 "Fix issue"'    | 'Closes #123'
-          :custom_issue_tracker | 'fix-issue'         | 'Fix issue'                   | nil
-          :internal             | '123-fix-issue'     | 'Resolve "A bug"'             | 'Closes #123'
-          :internal             | 'fix-issue'         | 'Fix issue'                   | nil
-          :internal             | '124-fix-issue'     | '124 fix issue'               | nil
+        where(:factory, :source_branch, :title, :closing_message) do
+          :jira_service | 'FOO-123-fix-issue' | 'Resolve FOO-123 "Fix issue"' | 'Closes FOO-123'
+          :jira_service | 'fix-issue'         | 'Fix issue'                   | nil
+          :custom_issue_tracker_integration | '123-fix-issue'     | 'Resolve #123 "Fix issue"'    | 'Closes #123'
+          :custom_issue_tracker_integration | 'fix-issue'         | 'Fix issue'                   | nil
+          nil | '123-fix-issue'     | 'Resolve "A bug"'             | 'Closes #123'
+          nil | 'fix-issue'         | 'Fix issue'                   | nil
+          nil | '124-fix-issue'     | '124 fix issue'               | nil
         end
 
         with_them do
           before do
-            if issue_tracker == :internal
-              issue.update!(iid: 123)
-            else
-              create(:"#{issue_tracker}_service", project: project)
+            if factory
+              create(factory, project: project)
               project.reload
+            else
+              issue.update!(iid: 123)
             end
           end
 

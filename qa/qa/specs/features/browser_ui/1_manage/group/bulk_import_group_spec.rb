@@ -56,7 +56,7 @@ module QA
       end
 
       before(:all) do
-        Runtime::Feature.enable(:bulk_import)
+        Runtime::Feature.enable(:bulk_import) unless staging?
         Runtime::Feature.enable(:top_level_group_creation_enabled) if staging?
       end
 
@@ -110,7 +110,7 @@ module QA
       end
 
       after(:all) do
-        Runtime::Feature.disable(:bulk_import)
+        Runtime::Feature.disable(:bulk_import) unless staging?
         Runtime::Feature.disable(:top_level_group_creation_enabled) if staging?
       end
     end

@@ -8,7 +8,7 @@ RSpec.describe 'query Jira service' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:jira_service) { create(:jira_service, project: project) }
-  let_it_be(:bugzilla_service) { create(:bugzilla_service, project: project) }
+  let_it_be(:bugzilla_integration) { create(:bugzilla_integration, project: project) }
   let_it_be(:redmine_service) { create(:redmine_service, project: project) }
 
   let(:query) do

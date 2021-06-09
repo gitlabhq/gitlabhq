@@ -154,9 +154,9 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     end
 
     it 'shows information about blocked pipeline' do
-      expect(page).to have_content("Pipeline blocked")
+      expect(page).to have_content("Merge blocked")
       expect(page).to have_content(
-        "The pipeline for this merge request requires a manual action")
+        "pipeline must succeed. It's waiting for a manual action to continue.")
       expect(page).to have_css('.ci-status-icon-manual')
     end
   end

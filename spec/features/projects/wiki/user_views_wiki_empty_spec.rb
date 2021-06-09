@@ -75,7 +75,7 @@ RSpec.describe 'Project > User views empty wiki' do
 
           context 'and Confluence is already enabled' do
             before do
-              create(:confluence_service, project: project)
+              create(:confluence_integration, project: project)
             end
 
             it_behaves_like 'empty wiki message', writable: true, issuable: true, confluence: false

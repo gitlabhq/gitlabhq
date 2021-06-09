@@ -5,8 +5,8 @@ Integration.available_services_names.each do |service|
     include JiraServiceHelper if service == 'jira'
 
     let(:dashed_service) { service.dasherize }
-    let(:service_method) { "#{service}_service".to_sym }
-    let(:service_klass) { Integration.service_name_to_model(service) }
+    let(:service_method) { integration_association(service) }
+    let(:service_klass) { Integration.integration_name_to_model(service) }
     let(:service_instance) { service_klass.new }
     let(:service_fields) { service_instance.fields }
     let(:service_attrs_list) { service_fields.inject([]) {|arr, hash| arr << hash[:name].to_sym } }
@@ -55,6 +55,16 @@ Integration.available_services_names.each do |service|
       service_item.properties = service_attrs
       service_item.save!
       service_item
+    end
+
+    # Returns the association name for the given integration.
+    # Example: 'asana' => 'asana_integration'
+    def integration_association(name)
+      if Integration::RENAMED_TO_INTEGRATION.include?(name)
+        "#{name}_integration".to_sym
+      else
+        "#{name}_service".to_sym
+      end
     end
 
     private

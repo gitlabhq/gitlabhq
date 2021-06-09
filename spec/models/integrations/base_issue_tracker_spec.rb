@@ -10,7 +10,7 @@ RSpec.describe Integrations::BaseIssueTracker do
       let(:service) { Integrations::Redmine.new(project: project, active: true, issue_tracker_data: build(:issue_tracker_data)) }
 
       before do
-        create(:custom_issue_tracker_service, project: project)
+        create(:custom_issue_tracker_integration, project: project)
       end
 
       context 'when service is changed manually by user' do

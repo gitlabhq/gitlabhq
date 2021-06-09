@@ -128,6 +128,17 @@ required number of seconds.
         "plan": { "type": "string" },
         "trial": { "type": "boolean" }
       }
+    },
+    "provisioning_group": {
+      "type": "object",
+      "required": [
+        "plan",
+        "trial"
+      ],
+      "properties": {
+        "plan": { "type": "string" },
+        "trial": { "type": "boolean" }
+      }
     }
   }
 }

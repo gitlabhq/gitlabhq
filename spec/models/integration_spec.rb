@@ -160,7 +160,7 @@ RSpec.describe Integration do
       context 'when instance-level service' do
         Integration.available_services_types.each do |service_type|
           let(:service) do
-            described_class.send(:service_type_to_model, service_type).new(instance: true)
+            described_class.send(:integration_type_to_model, service_type).new(instance: true)
           end
 
           it { is_expected.to be_falsey }
@@ -170,7 +170,7 @@ RSpec.describe Integration do
       context 'when group-level service' do
         Integration.available_services_types.each do |service_type|
           let(:service) do
-            described_class.send(:service_type_to_model, service_type).new(group_id: group.id)
+            described_class.send(:integration_type_to_model, service_type).new(group_id: group.id)
           end
 
           it { is_expected.to be_falsey }
@@ -668,16 +668,16 @@ RSpec.describe Integration do
     end
   end
 
-  describe '.service_name_to_model' do
+  describe '.integration_name_to_model' do
     it 'returns the model for the given service name', :aggregate_failures do
-      expect(described_class.service_name_to_model('asana')).to eq(Integrations::Asana)
+      expect(described_class.integration_name_to_model('asana')).to eq(Integrations::Asana)
       # TODO We can remove this test when all models have been namespaced:
       # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60968#note_570994955
-      expect(described_class.service_name_to_model('prometheus')).to eq(PrometheusService)
+      expect(described_class.integration_name_to_model('prometheus')).to eq(PrometheusService)
     end
 
     it 'raises an error if service name is invalid' do
-      expect { described_class.service_name_to_model('foo') }.to raise_exception(NameError, /uninitialized constant FooService/)
+      expect { described_class.integration_name_to_model('foo') }.to raise_exception(NameError, /uninitialized constant FooService/)
     end
   end
 

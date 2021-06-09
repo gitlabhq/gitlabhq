@@ -103,7 +103,7 @@ RSpec.describe Issues::CloseService do
       end
 
       context 'with an active external issue tracker not supporting close_issue' do
-        let!(:external_issue_tracker) { create(:bugzilla_service, project: project) }
+        let!(:external_issue_tracker) { create(:bugzilla_integration, project: project) }
 
         it 'does not close the issue on the external issue tracker' do
           project.reload

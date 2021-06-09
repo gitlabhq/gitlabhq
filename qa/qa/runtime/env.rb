@@ -57,7 +57,7 @@ module QA
       end
 
       def default_branch
-        ENV['QA_DEFAULT_BRANCH'] || 'master'
+        ENV['QA_DEFAULT_BRANCH'] || 'main'
       end
 
       def log_destination
