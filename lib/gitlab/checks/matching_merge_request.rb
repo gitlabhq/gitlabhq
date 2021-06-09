@@ -28,11 +28,7 @@ module Gitlab
           # report no matching merge requests. To avoid this, we check
           # the write location to ensure the replica can make this query.
           track_session_metrics do
-            if ::Feature.enabled?(:load_balancing_atomic_replica, @project, default_enabled: :yaml)
-              ::Gitlab::Database::LoadBalancing::Sticking.select_valid_host(:project, @project.id)
-            else
-              ::Gitlab::Database::LoadBalancing::Sticking.unstick_or_continue_sticking(:project, @project.id)
-            end
+            ::Gitlab::Database::LoadBalancing::Sticking.select_valid_host(:project, @project.id)
           end
         end
 

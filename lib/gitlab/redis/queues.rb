@@ -2,6 +2,7 @@
 
 # We need this require for MailRoom
 require_relative 'wrapper' unless defined?(::Gitlab::Redis::Wrapper)
+require 'active_support/core_ext/object/blank'
 
 module Gitlab
   module Redis
@@ -12,7 +13,9 @@ module Gitlab
       private
 
       def raw_config_hash
-        super || { url: 'redis://localhost:6381' }
+        config = super
+        config[:url] = 'redis://localhost:6381' if config[:url].blank?
+        config
       end
     end
   end

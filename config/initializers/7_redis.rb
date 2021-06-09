@@ -8,3 +8,4 @@
 Gitlab::Redis::Cache.with { nil }
 Gitlab::Redis::Queues.with { nil }
 Gitlab::Redis::SharedState.with { nil }
+Gitlab::Redis::TraceChunks.with { nil }

@@ -56,6 +56,9 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest do
       before do
         expect(::Gitlab::Database::LoadBalancing).to receive(:enable?).at_least(:once).and_return(true)
         allow(::Gitlab::Database::LoadBalancing::Sticking).to receive(:all_caught_up?).and_return(all_caught_up)
+
+        expect(::Gitlab::Database::LoadBalancing::Sticking).to receive(:select_valid_host).with(:project, project.id).and_call_original
+        allow(::Gitlab::Database::LoadBalancing::Sticking).to receive(:select_caught_up_replicas).with(:project, project.id).and_return(all_caught_up)
       end
 
       shared_examples 'secondary that has caught up to a primary' do
@@ -84,39 +87,12 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest do
         end
       end
 
-      context 'with load_balancing_atomic_replica feature flag enabled' do
-        before do
-          stub_feature_flags(load_balancing_atomic_replica: true)
+      it_behaves_like 'secondary that has caught up to a primary'
 
-          expect(::Gitlab::Database::LoadBalancing::Sticking).to receive(:select_valid_host).with(:project, project.id).and_call_original
-          allow(::Gitlab::Database::LoadBalancing::Sticking).to receive(:select_caught_up_replicas).with(:project, project.id).and_return(all_caught_up)
-        end
+      context 'on secondary behind primary' do
+        let(:all_caught_up) { false }
 
-        it_behaves_like 'secondary that has caught up to a primary'
-
-        context 'on secondary behind primary' do
-          let(:all_caught_up) { false }
-
-          it_behaves_like 'secondary that is lagging primary'
-        end
-      end
-
-      context 'with load_balancing_atomic_replica feature flag disabled' do
-        before do
-          stub_feature_flags(load_balancing_atomic_replica: false)
-
-          expect(::Gitlab::Database::LoadBalancing::Sticking).not_to receive(:select_valid_host)
-          expect(::Gitlab::Database::LoadBalancing::Sticking).to receive(:unstick_or_continue_sticking).and_call_original
-          allow(::Gitlab::Database::LoadBalancing::Sticking).to receive(:all_caught_up?).and_return(all_caught_up)
-        end
-
-        it_behaves_like 'secondary that has caught up to a primary'
-
-        context 'on secondary behind primary' do
-          let(:all_caught_up) { false }
-
-          it_behaves_like 'secondary that is lagging primary'
-        end
+        it_behaves_like 'secondary that is lagging primary'
       end
     end
   end

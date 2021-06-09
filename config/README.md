@@ -147,3 +147,34 @@ searched):
 3. the configuration file pointed to by the
 `GITLAB_REDIS_CONFIG_FILE` environment variable
 4. the configuration file `resque.yml`
+
+## redis.trace_chunks.yml
+
+If configured, `redis.trace_chunks.yml` overrides the
+`resque.yml` settings to configure the Redis database instance
+used for clients of `::Gitlab::Redis::TraceChunks` which stores CI trace chunks.
+
+Settings here can be overridden by the environment variable
+`GITLAB_REDIS_TRACE_CHUNKS_CONFIG_FILE` which provides
+an alternate location for configuration settings.
+
+The order of precedence for the URL used to connect to the Redis instance
+used for `trace_chunks` is:
+1. URL from a configuration file pointed to by the
+`GITLAB_REDIS_TRACE_CHUNKS_CONFIG_FILE` environment variable
+2. URL from `redis.trace_chunks.yml`
+3. URL from a configuration file pointed to by the
+`GITLAB_REDIS_CONFIG_FILE` environment variable
+4. URL from `resque.yml`
+5. `redis://localhost:6383`
+
+The order of precedence for all other configuration settings for `trace_chunks`
+are selected from only the first of the following files found (if a setting
+is not provided in an earlier file, the remainder of the files are not
+searched):
+1. the configuration file pointed to by the
+`GITLAB_REDIS_TRACE_CHUNKS_CONFIG_FILE` environment variable
+2. the configuration file `redis.trace_chunks.yml`
+3. the configuration file pointed to by the
+`GITLAB_REDIS_CONFIG_FILE` environment variable
+4. the configuration file `resque.yml`
