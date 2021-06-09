@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Accessibility Testing
+# Accessibility testing **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25144) in GitLab 12.8.
 
@@ -21,7 +21,7 @@ measuring the accessibility of web sites, and has built a simple
 This job outputs accessibility violations, warnings, and notices for each page
 analyzed to a file called `accessibility`.
 
-## Accessibility Merge Request widget
+## Accessibility merge request widget
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39425) in GitLab 13.0 behind the disabled [feature flag](../../../administration/feature_flags.md) `:accessibility_report_view`.
 > - [Feature Flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/217372) in GitLab 13.1.
@@ -29,7 +29,7 @@ analyzed to a file called `accessibility`.
 In addition to the report artifact that is created, GitLab will also show the
 Accessibility Report in the merge request widget area:
 
-![Accessibility Merge Request Widget](img/accessibility_mr_widget_v13_0.png)
+![Accessibility merge request widget](img/accessibility_mr_widget_v13_0.png)
 
 ## Configure Accessibility Testing
 

@@ -25,7 +25,7 @@ module Integrations
     end
 
     def default_channel_placeholder
-      _('general, development')
+      _('#general, #development')
     end
 
     def webhook_placeholder

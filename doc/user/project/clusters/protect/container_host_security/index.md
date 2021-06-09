@@ -4,7 +4,7 @@ group: Container Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Container Host Security
+# Container Host Security **(FREE)**
 
 Container Host Security in GitLab provides Intrusion Detection and Prevention capabilities that can
 monitor and (optionally) block activity inside the containers themselves. This is done by leveraging

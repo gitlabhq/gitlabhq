@@ -337,9 +337,6 @@ h1 {
 .d-none {
   display: none !important;
 }
-.d-inline-block {
-  display: inline-block !important;
-}
 .d-block {
   display: block !important;
 }
@@ -354,9 +351,6 @@ h1 {
   }
 }
 @media (min-width: 992px) {
-  .d-lg-none {
-    display: none !important;
-  }
   .d-lg-block {
     display: block !important;
   }
@@ -1957,9 +1951,7 @@ body.gl-dark .navbar-gitlab .navbar-collapse {
 }
 body.gl-dark .navbar-gitlab .container-fluid .navbar-toggler {
   border-left: 1px solid #b3b3b3;
-}
-body.gl-dark .navbar-gitlab .container-fluid .navbar-toggler svg {
-  fill: #fafafa;
+  color: #fafafa;
 }
 body.gl-dark .navbar-gitlab .navbar-sub-nav > li.active > a,
 body.gl-dark .navbar-gitlab .navbar-sub-nav > li.active > button,
@@ -2146,8 +2138,39 @@ body.gl-dark {
   white-space: nowrap;
   width: 1px;
 }
+.gl-border-none\! {
+  border-style: none !important;
+}
+.gl-display-none {
+  display: none;
+}
+@media (min-width: 62rem) {
+  .gl-lg-display-none {
+    display: none;
+  }
+}
+@media (min-width: 36rem) {
+  .gl-sm-display-block {
+    display: block;
+  }
+}
+.gl-display-inline-block {
+  display: inline-block;
+}
+@media (min-width: 36rem) {
+  .gl-sm-display-inline-block {
+    display: inline-block;
+  }
+}
 .gl-absolute {
   position: absolute;
+}
+.gl-px-3 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.gl-pr-2 {
+  padding-right: 0.25rem;
 }
 .gl-ml-3 {
   margin-left: 0.5rem;

@@ -97,6 +97,8 @@ RSpec.describe 'Admin mode' do
         end
 
         it 'can leave admin mode using dropdown menu on smaller screens', :js do
+          skip('pending responsive development under :combined_menu feature flag') if Feature.enabled?(:combined_menu)
+
           resize_screen_xs
           visit root_dashboard_path
 
@@ -131,7 +133,7 @@ RSpec.describe 'Admin mode' do
           end
 
           it 'relocates admin dashboard links to dropdown list on smaller screen', :js do
-            skip('not applicable with :combined_menu feature flag enabled') if Feature.enabled?(:combined_menu)
+            skip('pending responsive development under :combined_menu feature flag') if Feature.enabled?(:combined_menu)
 
             resize_screen_xs
             visit root_dashboard_path

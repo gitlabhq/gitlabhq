@@ -10,6 +10,8 @@ const HTML_TO_REMOVE = [
   '#js-peek',
   '.modal',
   '.feature-highlight',
+  // The user has to open up the responsive nav, so we don't need it on load
+  '.top-nav-responsive',
   // We don't want to capture all the children of a dropdown-menu
   '.dropdown-menu',
 ];

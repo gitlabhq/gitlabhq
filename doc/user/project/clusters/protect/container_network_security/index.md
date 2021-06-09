@@ -4,7 +4,7 @@ group: Container Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Container Network Security
+# Container Network Security **(FREE)**
 
 Container Network Security in GitLab provides basic firewall functionality by leveraging Cilium
 NetworkPolicies to filter traffic going in and out of the cluster as well as traffic between pods

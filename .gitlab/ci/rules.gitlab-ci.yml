@@ -1134,6 +1134,7 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
+      allow_failure: true
 
 .review:rules:review-qa-smoke-report:
   rules:

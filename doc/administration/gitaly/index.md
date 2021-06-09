@@ -403,18 +403,27 @@ GitLab recommends:
 
 We welcome your feedback on this process: raise a support ticket, or [comment on the epic](https://gitlab.com/groups/gitlab-org/-/epics/4916).
 
-## Troubleshooting Gitaly
+## Troubleshooting
 
-Check [Gitaly timeouts](../../user/admin_area/settings/gitaly_timeouts.md) when troubleshooting
-Gitaly.
+Refer to the information below when troubleshooting Gitaly and Gitaly Cluster.
 
-### Check versions when using standalone Gitaly servers
+### Troubleshoot Gitaly
+
+The following sections provide possible solutions to Gitaly errors.
+
+See also:
+
+- [Gitaly timeout](../../user/admin_area/settings/gitaly_timeouts.md) settings.
+- [Gitaly troubleshooting information](../reference_architectures/troubleshooting.md#troubleshooting-gitaly)
+  in reference architecture documentation.
+
+#### Check versions when using standalone Gitaly servers
 
 When using standalone Gitaly servers, you must make sure they are the same version
 as GitLab to ensure full compatibility. Check **Admin Area > Overview > Gitaly Servers** on
 your GitLab instance and confirm all Gitaly servers indicate that they are up to date.
 
-### `gitaly-debug`
+#### `gitaly-debug`
 
 The `gitaly-debug` command provides "production debugging" tools for Gitaly and Git
 performance. It is intended to help production engineers and support
@@ -437,7 +446,7 @@ To see the help page of `gitaly-debug` for a list of supported sub-commands, run
 gitaly-debug -h
 ```
 
-### Commits, pushes, and clones return a 401
+#### Commits, pushes, and clones return a 401
 
 ```plaintext
 remote: GitLab: 401 Unauthorized
@@ -446,7 +455,7 @@ remote: GitLab: 401 Unauthorized
 You need to sync your `gitlab-secrets.json` file with your Gitaly clients (GitLab
 app nodes).
 
-### Client side gRPC logs
+#### Client side gRPC logs
 
 Gitaly uses the [gRPC](https://grpc.io/) RPC framework. The Ruby gRPC
 client has its own log file which may contain debugging information when
@@ -460,7 +469,7 @@ You can run a gRPC trace with:
 sudo GRPC_TRACE=all GRPC_VERBOSITY=DEBUG gitlab-rake gitlab:gitaly:check
 ```
 
-### Server side gRPC logs
+#### Server side gRPC logs
 
 gRPC tracing can also be enabled in Gitaly itself with the `GODEBUG=http2debug`
 environment variable. To set this in an Omnibus GitLab install:
@@ -475,7 +484,7 @@ environment variable. To set this in an Omnibus GitLab install:
 
 1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab.
 
-### Correlating Git processes with RPCs
+#### Correlating Git processes with RPCs
 
 Sometimes you need to find out which Gitaly RPC created a particular Git process.
 
@@ -493,7 +502,7 @@ sudo cat /proc/$PID/environ | tr '\0' '\n' | grep ^CORRELATION_ID=
 This method isn't reliable for `git cat-file` processes, because Gitaly
 internally pools and re-uses those across RPCs.
 
-### Observing `gitaly-ruby` traffic
+#### Observing `gitaly-ruby` traffic
 
 [`gitaly-ruby`](configure_gitaly.md#gitaly-ruby) is an internal implementation detail of Gitaly,
 so, there's not that much visibility into what goes on inside
@@ -514,7 +523,7 @@ implemented as calls to `gitaly-ruby`:
 sum(rate(grpc_client_handled_total[5m])) by (grpc_method) > 0
 ```
 
-### Repository changes fail with a `401 Unauthorized` error
+#### Repository changes fail with a `401 Unauthorized` error
 
 If you run Gitaly on its own server and notice these conditions:
 
@@ -609,7 +618,7 @@ on the Gitaly server matches the one on Gitaly client. If it doesn't match,
 update the secrets file on the Gitaly server to match the Gitaly client, then
 [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-### Command line tools cannot connect to Gitaly
+#### Command line tools cannot connect to Gitaly
 
 gRPC cannot reach your Gitaly server if:
 
@@ -646,7 +655,7 @@ unset http_proxy
 unset https_proxy
 ```
 
-### Permission denied errors appearing in Gitaly or Praefect logs when accessing repositories
+#### Permission denied errors appearing in Gitaly or Praefect logs when accessing repositories
 
 You might see the following in Gitaly and Praefect logs:
 
@@ -667,9 +676,71 @@ This is a GRPC call
 [error response code](https://grpc.github.io/grpc/core/md_doc_statuscodes.html).
 
 If this error occurs, even though
-[the Gitaly auth tokens are correctly setup](../gitaly/praefect.md#debugging-praefect),
+[the Gitaly auth tokens are set up correctly](#praefect-errors-in-logs),
 it's likely that the Gitaly servers are experiencing
 [clock drift](https://en.wikipedia.org/wiki/Clock_drift).
 
 Ensure the Gitaly clients and servers are synchronized, and use an NTP time
 server to keep them synchronized.
+
+### Troubleshoot Praefect (Gitaly Cluster)
+
+The following sections provide possible solutions to Gitaly Cluster errors.
+
+#### Praefect errors in logs
+
+If you receive an error, check `/var/log/gitlab/gitlab-rails/production.log`.
+
+Here are common errors and potential causes:
+
+- 500 response code
+  - **ActionView::Template::Error (7:permission denied)**
+    - `praefect['auth_token']` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
+  - **Unable to save project. Error: 7:permission denied**
+    - Secret token in `praefect['storage_nodes']` on GitLab server does not match the
+      value in `gitaly['auth_token']` on one or more Gitaly servers.
+- 503 response code
+  - **GRPC::Unavailable (14:failed to connect to all addresses)**
+    - GitLab was unable to reach Praefect.
+  - **GRPC::Unavailable (14:all SubCons are in TransientFailure...)**
+    - Praefect cannot reach one or more of its child Gitaly nodes. Try running
+      the Praefect connection checker to diagnose.
+
+#### Determine primary Gitaly node
+
+To determine the current primary Gitaly node for a specific Praefect node:
+
+- Use the `Shard Primary Election` [Grafana chart](praefect.md#grafana) on the
+  [`Gitlab Omnibus - Praefect` dashboard](https://gitlab.com/gitlab-org/grafana-dashboards/-/blob/master/omnibus/praefect.json).
+  This is recommended.
+- If you do not have Grafana set up, use the following command on each host of each
+  Praefect node:
+
+  ```shell
+  curl localhost:9652/metrics | grep gitaly_praefect_primaries`
+  ```
+
+#### Relation does not exist errors
+
+By default Praefect database tables are created automatically by `gitlab-ctl reconfigure` task.
+However, if the `gitlab-ctl reconfigure` command isn't executed or there are errors during the
+execution, the Praefect database tables are not created on initial reconfigure and can throw
+errors that relations do not exist.
+
+For example:
+
+- `ERROR:  relation "node_status" does not exist at character 13`
+- `ERROR:  relation "replication_queue_lock" does not exist at character 40`
+- This error:
+
+  ```json
+  {"level":"error","msg":"Error updating node: pq: relation \"node_status\" does not exist","pid":210882,"praefectName":"gitlab1x4m:0.0.0.0:2305","time":"2021-04-01T19:26:19.473Z","virtual_storage":"praefect-cluster-1"}
+  ```
+
+To solve this, the database schema migration can be done using `sql-migrate` subcommand of
+the `praefect` command:
+
+```shell
+$ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate
+praefect sql-migrate: OK (applied 21 migrations)
+```

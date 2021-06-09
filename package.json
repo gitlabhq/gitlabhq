@@ -129,7 +129,7 @@
     "immer": "^7.0.7",
     "ipaddr.js": "^1.9.1",
     "jed": "^1.1.1",
-    "jquery": "^3.5.0",
+    "jquery": "^3.6.0",
     "jquery.caret": "^0.3.1",
     "jquery.waitforimages": "^2.2.0",
     "js-cookie": "^2.2.1",

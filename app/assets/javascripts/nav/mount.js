@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import ResponsiveApp from './components/responsive_app.vue';
 import App from './components/top_nav_app.vue';
 import { createStore } from './stores';
 
 Vue.use(Vuex);
 
-export const mountTopNav = (el) => {
+const mount = (el, Component) => {
   const viewModel = JSON.parse(el.dataset.viewModel);
   const store = createStore();
 
@@ -13,7 +14,7 @@ export const mountTopNav = (el) => {
     el,
     store,
     render(h) {
-      return h(App, {
+      return h(Component, {
         props: {
           navData: viewModel,
         },
@@ -21,3 +22,7 @@ export const mountTopNav = (el) => {
     },
   });
 };
+
+export const mountTopNav = (el) => mount(el, App);
+
+export const mountTopNavResponsive = (el) => mount(el, ResponsiveApp);

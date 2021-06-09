@@ -162,32 +162,7 @@ node, using `psql` which is installed by Omnibus GitLab.
 The database used by Praefect is now configured.
 
 If you see Praefect database errors after configuring PostgreSQL, see
-[troubleshooting steps below](#relation-does-not-exist-errors).
-
-#### Relation does not exist errors
-
-By default Praefect database tables are created automatically by `gitlab-ctl reconfigure` task.
-However, if the `gitlab-ctl reconfigure` command isn't executed or there are errors during the
-execution, the Praefect database tables are not created on initial reconfigure and can throw
-errors that relations do not exist.
-
-For example:
-
-- `ERROR:  relation "node_status" does not exist at character 13`
-- `ERROR:  relation "replication_queue_lock" does not exist at character 40`
-- This error:
-
-  ```json
-  {"level":"error","msg":"Error updating node: pq: relation \"node_status\" does not exist","pid":210882,"praefectName":"gitlab1x4m:0.0.0.0:2305","time":"2021-04-01T19:26:19.473Z","virtual_storage":"praefect-cluster-1"}
-  ```
-
-To solve this, the database schema migration can be done using `sql-migrate` subcommand of
-the `praefect` command:
-
-```shell
-$ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate
-praefect sql-migrate: OK (applied 21 migrations)
-```
+[troubleshooting steps](index.md#relation-does-not-exist-errors).
 
 #### PgBouncer
 
@@ -906,7 +881,7 @@ Particular attention should be shown to:
 
 When adding Gitaly Cluster to an existing Gitaly instance, the existing Gitaly storage
 must use a TCP address. If `gitaly_address` is not specified, then a Unix socket is used,
-which will prevent the communication with the cluster.
+which prevents the communication with the cluster.
 
 For example:
 
@@ -1578,35 +1553,3 @@ After creating and configuring Gitaly Cluster:
    ```
 
 1. Repeat for each storage as required.
-
-## Debugging Praefect
-
-If you receive an error, check `/var/log/gitlab/gitlab-rails/production.log`.
-
-Here are common errors and potential causes:
-
-- 500 response code
-  - **ActionView::Template::Error (7:permission denied)**
-    - `praefect['auth_token']` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
-  - **Unable to save project. Error: 7:permission denied**
-    - Secret token in `praefect['storage_nodes']` on GitLab server does not match the
-      value in `gitaly['auth_token']` on one or more Gitaly servers.
-- 503 response code
-  - **GRPC::Unavailable (14:failed to connect to all addresses)**
-    - GitLab was unable to reach Praefect.
-  - **GRPC::Unavailable (14:all SubCons are in TransientFailure...)**
-    - Praefect cannot reach one or more of its child Gitaly nodes. Try running
-      the Praefect connection checker to diagnose.
-
-### Determine primary Gitaly node
-
-To determine the current primary Gitaly node for a specific Praefect node:
-
-- Use the `Shard Primary Election` [Grafana chart](#grafana) on the [`Gitlab Omnibus - Praefect` dashboard](https://gitlab.com/gitlab-org/grafana-dashboards/-/blob/master/omnibus/praefect.json).
-  This is recommended.
-- If you do not have Grafana set up, use the following command on each host of each
-  Praefect node:
-
-  ```shell
-  curl localhost:9652/metrics | grep gitaly_praefect_primaries`
-  ```

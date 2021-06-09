@@ -106,7 +106,7 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
 
     &.menu-expanded {
       @include media-breakpoint-down(xs) {
-        .title-container {
+        .hide-when-menu-expanded {
           display: none;
         }
 
@@ -663,5 +663,28 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
 
   .gl-icon {
     color: inherit !important;
+  }
+}
+
+.top-nav-responsive {
+  @include gl-display-none;
+  color: var(--indigo-900, $theme-indigo-900);
+}
+
+.top-nav-responsive-open {
+  .hide-when-top-nav-responsive-open {
+    @include media-breakpoint-down(xs) {
+      display: none !important;
+    }
+  }
+
+  .top-nav-responsive {
+    @include media-breakpoint-down(xs) {
+      @include gl-display-block;
+    }
+  }
+
+  .navbar-gitlab .header-content .title-container {
+    flex: 0;
   }
 }

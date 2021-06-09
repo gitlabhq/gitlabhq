@@ -22,10 +22,7 @@
     .container-fluid {
       .navbar-toggler {
         border-left: 1px solid lighten($border-and-box-shadow, 10%);
-
-        svg {
-          fill: $search-and-nav-links;
-        }
+        color: $search-and-nav-links;
       }
     }
 

@@ -4,7 +4,7 @@ group: Container Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Protecting your deployed applications
+# Protecting your deployed applications **(FREE)**
 
 GitLab makes it straightforward to protect applications deployed in [connected Kubernetes clusters](index.md).
 These protections are available in the Kubernetes network layer and in the container itself. At
