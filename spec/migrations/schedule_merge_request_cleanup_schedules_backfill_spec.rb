@@ -24,7 +24,7 @@ RSpec.describe ScheduleMergeRequestCleanupSchedulesBackfill, :sidekiq, schema: 2
       stub_const("#{described_class}::BATCH_SIZE", 2)
     end
 
-    it 'schdules BackfillMergeRequestCleanupSchedules background jobs' do
+    it 'schedules BackfillMergeRequestCleanupSchedules background jobs' do
       Sidekiq::Testing.fake! do
         migrate!
 

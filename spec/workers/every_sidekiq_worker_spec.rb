@@ -195,7 +195,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'DeleteUserWorker' => 3,
         'Deployments::AutoRollbackWorker' => 3,
         'Deployments::DropOlderDeploymentsWorker' => 3,
-        'Deployments::ExecuteHooksWorker' => 3,
         'Deployments::FinishedWorker' => 3,
         'Deployments::ForwardDeploymentWorker' => 3,
         'Deployments::LinkMergeRequestWorker' => 3,

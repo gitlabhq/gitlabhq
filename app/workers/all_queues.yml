@@ -637,15 +637,6 @@
   :idempotent:
   :tags:
   - :exclude_from_kubernetes
-- :name: deployment:deployments_execute_hooks
-  :worker_name: Deployments::ExecuteHooksWorker
-  :feature_category: :continuous_delivery
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 3
-  :idempotent:
-  :tags: []
 - :name: deployment:deployments_finished
   :worker_name: Deployments::FinishedWorker
   :feature_category: :continuous_delivery

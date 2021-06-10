@@ -29,6 +29,12 @@ export const TEXT_STYLE_DROPDOWN_ITEMS = [
     label: __('Heading 3'),
   },
   {
+    contentType: 'heading',
+    editorCommand: 'setHeading',
+    commandParams: { level: 4 },
+    label: __('Heading 4'),
+  },
+  {
     contentType: 'paragraph',
     editorCommand: 'setParagraph',
     label: __('Normal text'),

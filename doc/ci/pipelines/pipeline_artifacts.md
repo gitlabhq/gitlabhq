@@ -17,5 +17,10 @@ Pipeline artifacts are saved to disk or object storage. They count towards a pro
 
 ## When pipeline artifacts are deleted
 
-See the [`expire_in`](../yaml/README.md#artifactsexpire_in) documentation for information on when
-pipeline artifacts are deleted.
+Pipeline artifacts are deleted either:
+
+- Seven days after creation.
+- After another pipeline runs successfully, if they are from the most recent successful
+  pipeline.
+
+This deletion may take up to two days.

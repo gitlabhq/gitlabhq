@@ -13,10 +13,6 @@ module GoogleApi
       LEAST_TOKEN_LIFE_TIME = 10.minutes
       CLUSTER_MASTER_AUTH_USERNAME = 'admin'
       CLUSTER_IPV4_CIDR_BLOCK = '/16'
-      # Don't upgrade to > 1.18 before we move away from Basic Auth
-      # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/331582
-      # Possible solution: https://gitlab.com/groups/gitlab-org/-/epics/6049
-      GKE_VERSION = '1.18'
       CLUSTER_OAUTH_SCOPES = [
         "https://www.googleapis.com/auth/devstorage.read_only",
         "https://www.googleapis.com/auth/logging.write",
@@ -94,13 +90,11 @@ module GoogleApi
           cluster: {
             name: cluster_name,
             initial_node_count: cluster_size,
-            initial_cluster_version: GKE_VERSION,
             node_config: {
               machine_type: machine_type,
               oauth_scopes: CLUSTER_OAUTH_SCOPES
             },
             master_auth: {
-              username: CLUSTER_MASTER_AUTH_USERNAME,
               client_certificate_config: {
                 issue_client_certificate: true
               }

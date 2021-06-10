@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { range } from 'lodash';
 import ResponsiveApp from '~/nav/components/responsive_app.vue';
 import ResponsiveHeader from '~/nav/components/responsive_header.vue';
 import ResponsiveHome from '~/nav/components/responsive_home.vue';
@@ -32,6 +31,7 @@ describe('~/nav/components/responsive_app.vue', () => {
   const hasMobileOverlayVisible = () => findMobileOverlay().classes('mobile-nav-open');
 
   beforeEach(() => {
+    document.body.innerHTML = '';
     // Add test class to reset state + assert that we're adding classes correctly
     document.body.className = 'test-class';
   });
@@ -53,14 +53,17 @@ describe('~/nav/components/responsive_app.vue', () => {
     });
 
     it.each`
-      times | expectation
-      ${0}  | ${false}
-      ${1}  | ${true}
-      ${2}  | ${false}
+      bodyHtml                                                          | expectation
+      ${''}                                                             | ${false}
+      ${'<div class="header-content"></div>'}                           | ${false}
+      ${'<div class="menu-expanded"></div>'}                            | ${false}
+      ${'<div></div><div class="header-content menu-expanded"></div>}'} | ${true}
     `(
-      'with responsive toggle event triggered $times, body responsive open = $expectation',
-      ({ times, expectation }) => {
-        range(times).forEach(triggerResponsiveToggle);
+      'with responsive toggle event and html set to $bodyHtml, responsive open = $expectation',
+      ({ bodyHtml, expectation }) => {
+        document.body.innerHTML = bodyHtml;
+
+        triggerResponsiveToggle();
 
         expect(hasBodyResponsiveOpen()).toBe(expectation);
       },
@@ -86,6 +89,17 @@ describe('~/nav/components/responsive_app.vue', () => {
         expect(hasMobileOverlayVisible()).toBe(expectation);
       },
     );
+  });
+
+  describe('with menu expanded in body', () => {
+    beforeEach(() => {
+      document.body.innerHTML = '<div></div><div class="header-content menu-expanded"></div>';
+      createComponent();
+    });
+
+    it('sets the body responsive open', () => {
+      expect(hasBodyResponsiveOpen()).toBe(true);
+    });
   });
 
   const projectsContainerProps = {
