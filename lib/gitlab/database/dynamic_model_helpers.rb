@@ -11,6 +11,25 @@ module Gitlab
           self.inheritance_column = :_type_disabled
         end
       end
+
+      def each_batch(table_name, scope: ->(table) { table.all }, of: 1000)
+        if transaction_open?
+          raise <<~MSG.squish
+            each_batch should not run inside a transaction, you can disable
+            transactions by calling disable_ddl_transaction! in the body of
+            your migration class
+          MSG
+        end
+
+        scope.call(define_batchable_model(table_name))
+          .each_batch(of: of) { |batch| yield batch }
+      end
+
+      def each_batch_range(table_name, scope: ->(table) { table.all }, of: 1000)
+        each_batch(table_name, scope: scope, of: of) do |batch|
+          yield batch.pluck('MIN(id), MAX(id)').first
+        end
+      end
     end
   end
 end

@@ -471,16 +471,25 @@ eos
   end
 
   it_behaves_like 'a mentionable' do
-    subject { create(:project, :repository).commit }
+    subject(:commit) { create(:project, :repository).commit }
 
     let(:author) { create(:user, email: subject.author_email) }
     let(:backref_text) { "commit #{subject.id}" }
     let(:set_mentionable_text) do
-      ->(txt) { allow(subject).to receive(:safe_message).and_return(txt) }
+      ->(txt) { allow(commit).to receive(:safe_message).and_return(txt) }
     end
 
     # Include the subject in the repository stub.
-    let(:extra_commits) { [subject] }
+    let(:extra_commits) { [commit] }
+
+    it 'uses the CachedMarkdownField cache instead of the Mentionable cache', :use_clean_rails_redis_caching do
+      expect(commit.title_html).not_to be_present
+
+      commit.all_references(project.owner).all
+
+      expect(commit.title_html).to be_present
+      expect(Rails.cache.read("banzai/commit:#{commit.id}/safe_message/single_line")).to be_nil
+    end
   end
 
   describe '#hook_attrs' do

@@ -91,8 +91,8 @@ instance, ensure you're purchasing enough seats to
 
 If you are an administrator, you can view the status of your subscription:
 
-1. Go to **Admin Area**.
-1. From the left-hand menu, select **License**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **License**.
 
 The **License** page includes the following details:
 
@@ -264,8 +264,9 @@ Sg0KU1hNMGExaE9SVGR2V2pKQlBUMWNiaUo5DQo=',
 
 You can view the exact JSON payload in the administration panel. To view the payload:
 
-1. Navigate to **Admin Area > Settings > Metrics and profiling** and expand **Seat Link**.
-1. Click **Preview payload**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Metrics and profiling** and expand **Seat Link**.
+1. Select **Preview payload**.
 
 #### Disable Seat Link
 
@@ -273,7 +274,12 @@ You can view the exact JSON payload in the administration panel. To view the pay
 
 Seat Link is enabled by default.
 
-To disable this feature, go to **Admin Area > Settings > Metrics and profiling**, uncheck the **Enable Seat Link** checkbox > **Save changes**.
+To disable this feature:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Metrics and profiling** and expand **Seat Link**.
+1. Clear the **Enable Seat Link** checkbox.
+1. Select **Save changes**.
 
 To disable Seat Link in an Omnibus GitLab installation, and prevent it from
 being configured in the future through the administration panel, set the following in

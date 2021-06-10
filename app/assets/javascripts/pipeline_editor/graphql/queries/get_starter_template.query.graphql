@@ -1,0 +1,7 @@
+query getTemplate($projectPath: ID!, $templateName: String!) {
+  project(fullPath: $projectPath) {
+    ciTemplate(name: $templateName) {
+      content
+    }
+  }
+}

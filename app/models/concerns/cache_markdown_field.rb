@@ -157,6 +157,9 @@ module CacheMarkdownField
   end
 
   def store_mentions!
+    # We can only store mentions if the mentionable is a database object
+    return unless self.is_a?(ApplicationRecord)
+
     refs = all_references(self.author)
 
     references = {}

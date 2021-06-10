@@ -194,7 +194,7 @@ author, type, and action. Also, you can sort them by
 
 ## Projects
 
-You can search through your projects from the left menu, by clicking the menu bar, then **Projects**.
+You can search through your projects from the top bar, by selecting **Menu > Projects**.
 On the field **Filter by name**, type the project or group name you want to find, and GitLab
 filters them for you as you type.
 

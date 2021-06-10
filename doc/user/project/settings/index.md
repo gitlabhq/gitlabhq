@@ -79,7 +79,7 @@ Example `.compliance-gitlab-ci.yml`
 ```yaml
 # Allows compliance team to control the ordering and interweaving of stages/jobs.
 # Stages without jobs defined will remain hidden.
-stages: 
+stages:
 - pre-compliance
 - build
 - test
@@ -112,7 +112,7 @@ sanity check:
         - when: always
   allow_failure: false
   before_script:
-  - "# No before scripts."  
+  - "# No before scripts."
   script:
   - echo "running $FOO"
   after_script:
@@ -298,10 +298,11 @@ To find an archived project:
 1. If you:
    - Have the project's URL, open the project's page in your browser.
    - Don't have the project's URL:
-   1. Click **Projects > Explore projects**.
-   1. In the **Sort projects** dropdown box, select **Show archived projects**.
-   1. In the **Filter by name** field, provide the project's name.
-   1. Click the link to the project to open its **Details** page.
+     1. On the top bar, select **Menu > Project**.
+     1. Select **Explore projects**.
+     1. In the **Sort projects** dropdown box, select **Show archived projects**.
+     1. In the **Filter by name** field, provide the project's name.
+     1. Click the link to the project to open its **Details** page.
 
 Next, to unarchive the project:
 

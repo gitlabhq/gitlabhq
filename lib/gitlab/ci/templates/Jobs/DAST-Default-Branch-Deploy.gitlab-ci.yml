@@ -1,5 +1,5 @@
 .dast-auto-deploy:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v1.0.7"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v2.6.0"
 
 dast_environment_deploy:
   extends: .dast-auto-deploy

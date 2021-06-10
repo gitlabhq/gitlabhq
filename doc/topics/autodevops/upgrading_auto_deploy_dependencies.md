@@ -174,6 +174,8 @@ include:
   - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/v13.3.0-ee/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
 ```
 
+Alternatively, you can use the [v13.12 Auto DevOps templates archive](https://gitlab.com/hfyngvason/auto-devops-v13-12).
+
 ### Ignore warnings and continue deploying
 
 If you are certain that the new chart version is safe to be deployed, you can add

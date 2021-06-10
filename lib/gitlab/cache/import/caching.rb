@@ -113,6 +113,17 @@ module Gitlab
           end
         end
 
+        # Returns the values of the given set.
+        #
+        # raw_key - The key of the set to check.
+        def self.values_from_set(raw_key)
+          key = cache_key_for(raw_key)
+
+          Redis::Cache.with do |redis|
+            redis.smembers(key)
+          end
+        end
+
         # Sets multiple keys to given values.
         #
         # mapping - A Hash mapping the cache keys to their values.

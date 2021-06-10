@@ -26,6 +26,10 @@ module Gitlab
       def current
         Gitlab::Cache::Import::Caching.read_integer(cache_key) || 1
       end
+
+      def expire!
+        Gitlab::Cache::Import::Caching.expire(cache_key, 0)
+      end
     end
   end
 end

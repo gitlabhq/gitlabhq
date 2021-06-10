@@ -6,7 +6,6 @@ module Gitlab
       BASE_EXCLUDED_PATTERNS = [%r{\.latest\.}].freeze
 
       TEMPLATES_WITH_LATEST_VERSION = {
-        'Jobs/Deploy' => true,
         'Jobs/Browser-Performance-Testing' => true,
         'Security/API-Fuzzing' => true,
         'Security/DAST' => true,

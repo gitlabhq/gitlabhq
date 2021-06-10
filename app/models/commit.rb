@@ -15,8 +15,6 @@ class Commit
   include ActsAsPaginatedDiff
   include CacheMarkdownField
 
-  attr_mentionable :safe_message, pipeline: :single_line
-
   participant :author
   participant :committer
   participant :notes_with_associations
@@ -38,6 +36,10 @@ class Commit
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :full_title, pipeline: :single_line, limit: 1.kilobyte
   cache_markdown_field :description, pipeline: :commit_description, limit: 1.megabyte
+
+  # Share the cache used by the markdown fields
+  attr_mentionable :full_title, pipeline: :single_line, limit: 1.kilobyte
+  attr_mentionable :description, pipeline: :commit_description, limit: 1.megabyte
 
   class << self
     def decorate(commits, container)

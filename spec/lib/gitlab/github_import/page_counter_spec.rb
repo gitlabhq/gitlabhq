@@ -31,4 +31,15 @@ RSpec.describe Gitlab::GithubImport::PageCounter, :clean_gitlab_redis_cache do
       expect(counter.current).to eq(2)
     end
   end
+
+  describe '#expire!' do
+    it 'expires the current page counter' do
+      counter.set(2)
+
+      counter.expire!
+
+      expect(Gitlab::Cache::Import::Caching.read_integer(counter.cache_key)).to be_nil
+      expect(counter.current).to eq(1)
+    end
+  end
 end

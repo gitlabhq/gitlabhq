@@ -1,13 +1,11 @@
 import { getByRole } from '@testing-library/dom';
 import { mount } from '@vue/test-utils';
 import FirstPipelineCard from '~/pipeline_editor/components/drawer/cards/first_pipeline_card.vue';
-import PipelineVisualReference from '~/pipeline_editor/components/drawer/ui/pipeline_visual_reference.vue';
 
 describe('First pipeline card', () => {
   let wrapper;
 
   const defaultProvide = {
-    ciExamplesHelpPagePath: '/pipelines/examples',
     runnerHelpPagePath: '/help/runners',
   };
 
@@ -20,9 +18,9 @@ describe('First pipeline card', () => {
   };
 
   const getLinkByName = (name) => getByRole(wrapper.element, 'link', { name }).href;
-  const findPipelinesLink = () => getLinkByName(/examples and templates/i);
   const findRunnersLink = () => getLinkByName(/make sure your instance has runners available/i);
-  const findVisualReference = () => wrapper.findComponent(PipelineVisualReference);
+  const findInstructionsList = () => wrapper.find('ol');
+  const findAllInstructions = () => findInstructionsList().findAll('li');
 
   beforeEach(() => {
     createComponent();
@@ -37,11 +35,11 @@ describe('First pipeline card', () => {
   });
 
   it('renders the content', () => {
-    expect(findVisualReference().exists()).toBe(true);
+    expect(findInstructionsList().exists()).toBe(true);
+    expect(findAllInstructions()).toHaveLength(3);
   });
 
-  it('renders the links', () => {
+  it('renders the link', () => {
     expect(findRunnersLink()).toContain(defaultProvide.runnerHelpPagePath);
-    expect(findPipelinesLink()).toContain(defaultProvide.ciExamplesHelpPagePath);
   });
 });

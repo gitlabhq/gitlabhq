@@ -23,7 +23,8 @@ For larger organizations, you can also create [subgroups](subgroups/index.md).
 
 To view groups:
 
-1. In the top menu, select **Groups > Your Groups**. All groups you are a member of are displayed.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**. All groups you are a member of are displayed.
 1. To view a list of public groups, select **Explore public groups**.
 
 You can also view groups by namespace.
@@ -48,8 +49,8 @@ For example, consider a user named Alex:
 
 To create a group:
 
-1. From the top menu, either:
-   - Select **Groups > Your Groups**, and on the right, select the **New group** button.
+1. On the top bar, either:
+   - Select **Menu > Groups**, and on the right, select **Create group**.
    - To the left of the search box, select the plus sign and then **New group**.
 1. Select **Create group**.
 1. For the **Group name**, use only:
@@ -75,7 +76,8 @@ For details about groups, watch [GitLab Namespaces (users, groups and subgroups)
 
 You can give a user access to all projects in a group.
 
-1. From the top menu, select **Groups > Your Groups**.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
 1. Find your group and select it.
 1. From the left sidebar, select **Members**.
 1. Fill in the fields.
@@ -86,7 +88,8 @@ You can give a user access to all projects in a group.
 
 As a user, you can request to be a member of a group, if an administrator allows it.
 
-1. From the top menu, select **Groups > Your Groups**.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
 1. Find the group and select it.
 1. Under the group name, select **Request Access**.
 
@@ -101,7 +104,8 @@ If you change your mind before your request is approved, select
 As a group owner, you can prevent non-members from requesting access to
 your group.
 
-1. From the top menu, select **Groups > Your Groups**.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
 1. Expand the **Permissions, LFS, 2FA** section.
@@ -246,9 +250,10 @@ These Group Activity Analytics can be enabled with the `group_activity_analytics
 
 You can view the most recent actions taken in a group.
 
-1. From the top menu, select **Groups > Your Groups**.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
 1. Find the group and select it.
-1. From the left menu, select **Group overview > Activity**.
+1. On the left sidebar, select **Group information > Activity**.
 
 To view the activity feed in Atom format, select the
 **RSS** (**{rss}**) icon.

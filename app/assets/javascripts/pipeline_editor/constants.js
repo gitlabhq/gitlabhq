@@ -31,3 +31,5 @@ export const DRAWER_EXPANDED_KEY = 'pipeline_editor_drawer_expanded';
 
 export const BRANCH_PAGINATION_LIMIT = 20;
 export const BRANCH_SEARCH_DEBOUNCE = '500';
+
+export const STARTER_TEMPLATE_NAME = 'Getting-Started';

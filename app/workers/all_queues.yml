@@ -1373,8 +1373,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pipeline_background:ci_pipeline_artifacts_create_quality_report
   :worker_name: Ci::PipelineArtifacts::CreateQualityReportWorker
   :feature_category: :code_testing

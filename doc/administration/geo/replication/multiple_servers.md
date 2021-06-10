@@ -17,9 +17,9 @@ described, it is possible to adapt these instructions to your needs.
 
 _[diagram source - GitLab employees only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)_
 
-The topology above assumes that the **primary** and **secondary** Geo clusters
+The topology above assumes the **primary** and **secondary** Geo clusters
 are located in two separate locations, on their own virtual network
-with private IP addresses. The network is configured such that all machines within
+with private IP addresses. The network is configured such that all machines in
 one geographic location can communicate with each other using their private IP addresses.
 The IP addresses given are examples and may be different depending on the
 network topology of your deployment.
@@ -44,9 +44,10 @@ Support for PostgreSQL on **secondary** nodes in multi-node configuration
 Because of the additional complexity involved in setting up this configuration
 for PostgreSQL and Redis, it is not covered by this Geo multi-node documentation.
 
-For more information about setting up a multi-node PostgreSQL cluster and Redis cluster using the omnibus package see the multi-node documentation for
-[PostgreSQL](../../postgresql/replication_and_failover.md) and
-[Redis](../../redis/replication_and_failover.md), respectively.
+For more information on setting up a multi-node PostgreSQL cluster and Redis cluster using the Omnibus GitLab package, see:
+
+- [PostgreSQL multi-node documentation](../../postgresql/replication_and_failover.md)
+- [Redis multi-node documentation](../../redis/replication_and_failover.md)
 
 NOTE:
 It is possible to use cloud hosted services for PostgreSQL and Redis, but this is beyond the scope of this document.
@@ -60,8 +61,8 @@ you already have a working GitLab instance that is in-use, it can be used as a
 
 The second cluster serves as the **secondary** node. Again, use the
 [GitLab multi-node documentation](../../reference_architectures/index.md) to set this up.
-It's a good idea to log in and test it, however, note that its data is
-wiped out as part of the process of replicating from the **primary**.
+It's a good idea to log in and test it. However, be aware that its data is
+wiped out as part of the process of replicating from the **primary** node.
 
 ## Configure the GitLab cluster to be the **primary** node
 
@@ -92,9 +93,9 @@ After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus
 
 NOTE:
 PostgreSQL and Redis should have already been disabled on the
-application servers, and connections from the application servers to those
-services on the backend servers configured, during normal GitLab multi-node set up. See
-multi-node configuration documentation for
+application servers during normal GitLab multi-node setup. Connections
+from the application servers to services on the backend servers should
+have also been configured. See multi-node configuration documentation for
 [PostgreSQL](../../postgresql/replication_and_failover.md#configuring-the-application-nodes)
 and [Redis](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application).
 
@@ -120,12 +121,12 @@ major differences:
   called the "tracking database", which tracks the synchronization state of
   various resources.
 
-Therefore, we set up the multi-node components one-by-one, and include deviations
-from the normal multi-node setup. However, we highly recommend first configuring a
-brand-new cluster as if it were not part of a Geo setup so that it can be
-tested and verified as a working cluster. And only then should it be modified
-for use as a Geo **secondary**. This helps to separate problems that are related
-and are not related to Geo setup.
+Therefore, we set up the multi-node components one by one and include deviations
+from the normal multi-node setup. However, we highly recommend configuring a
+brand-new cluster first, as if it were not part of a Geo setup. This allows
+verifying that it is a working cluster. And only then should it be modified
+for use as a Geo **secondary**. This helps to separate Geo setup problems from
+unrelated problems.
 
 ### Step 1: Configure the Redis and Gitaly services on the **secondary** node
 
@@ -364,10 +365,10 @@ then make the following modifications:
    ```
 
 NOTE:
-If you had set up PostgreSQL cluster using the omnibus package and you had set
-up `postgresql['sql_user_password'] = 'md5 digest of secret'` setting, keep in
+If you had set up PostgreSQL cluster using the omnibus package and had set
+`postgresql['sql_user_password'] = 'md5 digest of secret'`, keep in
 mind that `gitlab_rails['db_password']` and `geo_secondary['db_password']`
-mentioned above contains the plaintext passwords. This is used to let the Rails
+contains the plaintext passwords. This is used to let the Rails
 servers connect to the databases.
 
 NOTE:

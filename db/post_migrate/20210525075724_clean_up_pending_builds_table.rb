@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CleanUpPendingBuildsTable < ActiveRecord::Migration[6.0]
+  include ::Gitlab::Database::DynamicModelHelpers
+
   BATCH_SIZE = 1000
 
   disable_ddl_transaction!
@@ -8,7 +10,7 @@ class CleanUpPendingBuildsTable < ActiveRecord::Migration[6.0]
   def up
     return unless Gitlab.dev_or_test_env? || Gitlab.com?
 
-    each_batch('ci_pending_builds', of: BATCH_SIZE) do |min, max|
+    each_batch_range('ci_pending_builds', of: BATCH_SIZE) do |min, max|
       execute <<~SQL
         DELETE FROM ci_pending_builds
           USING ci_builds
@@ -22,20 +24,5 @@ class CleanUpPendingBuildsTable < ActiveRecord::Migration[6.0]
 
   def down
     # noop
-  end
-
-  private
-
-  def each_batch(table_name, scope: ->(table) { table.all }, of: 1000)
-    table = Class.new(ActiveRecord::Base) do
-      include EachBatch
-
-      self.table_name = table_name
-      self.inheritance_column = :_type_disabled
-    end
-
-    scope.call(table).each_batch(of: of) do |batch|
-      yield batch.pluck('MIN(id), MAX(id)').first
-    end
   end
 end

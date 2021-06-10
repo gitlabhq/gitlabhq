@@ -88,6 +88,18 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
     end
   end
 
+  describe '.values_from_set' do
+    it 'returns empty list when the set is empty' do
+      expect(described_class.values_from_set('foo')).to eq([])
+    end
+
+    it 'returns the set list of values' do
+      described_class.set_add('foo', 10)
+
+      expect(described_class.values_from_set('foo')).to eq(['10'])
+    end
+  end
+
   describe '.write_multiple' do
     it 'sets multiple keys when key_prefix not set' do
       mapping = { 'foo' => 10, 'bar' => 20 }
