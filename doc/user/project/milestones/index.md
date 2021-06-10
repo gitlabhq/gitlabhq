@@ -38,8 +38,8 @@ You can assign **group milestones** to any issue or merge request of any project
 To view the group milestone list, in a group, go to **{issues}** **Issues > Milestones**.
 
 You can also view all milestones you have access to in the dashboard milestones list.
-To view both project milestones and group milestones you have access to, select **More > Milestones**
-on the top navigation bar.
+To view both project milestones and group milestones you have access to, select **Menu > Milestones**
+on the top bar.
 
 For information about project and group milestones API, see:
 

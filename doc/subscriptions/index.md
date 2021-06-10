@@ -165,12 +165,12 @@ To change the password for this customers portal account:
 1. Make the required changes to the **Your password** section.
 1. Click **Save changes**.
 
-## Community program subscriptions 
+## Community program subscriptions
 
 ### GitLab for Education
 
-For qualifying non-profit educational institutions, the [GitLab for Education](https://about.gitlab.com/solutions/education/) program provides 
-the top GitLab tier, plus 50,000 CI minutes per month. 
+For qualifying non-profit educational institutions, the [GitLab for Education](https://about.gitlab.com/solutions/education/) program provides
+the top GitLab tier, plus 50,000 CI minutes per month.
 
 The GitLab for Education license can only be used for instructional-use or
 non-commercial academic research.
@@ -180,8 +180,8 @@ Find more information on how to apply and renew at
 
 ### GitLab for Open Source
 
-For qualifying open source projects, the [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/) program provides 
-the top GitLab tier, plus 50,000 CI minutes per month. 
+For qualifying open source projects, the [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/) program provides
+the top GitLab tier, plus 50,000 CI minutes per month.
 
 You can find more information about the [program requirements](https://about.gitlab.com/solutions/open-source/join/#requirements),
 [renewals](https://about.gitlab.com/solutions/open-source/join/$renewals),
@@ -211,13 +211,13 @@ After you ensure that you are using OSI-approved licenses for your projects, you
 
 ###### License overview
 
-Go to **Project Overview > Details**. Take a screenshot that includes a view of the license you've chosen for your project.
+On the left sidebar, select **Project Information > Details**. Take a screenshot that includes a view of the license you've chosen for your project.
 
 ![License overview](img/license-overview.png)
 
 ###### License file
 
-Navigate to one of the license files that you uploaded. You can usually find the license file by selecting **Project Overview > Details** and scanning the page for the license.
+Navigate to one of the license files that you uploaded. You can usually find the license file by selecting **Project Information > Details** and scanning the page for the license.
 Make sure the screenshot includes the title of the license.
 
 ![License file](img/license-file.png)
@@ -230,7 +230,7 @@ As a result, we ask that all projects under this license are publicly visible.
 
 Follow these instructions to take a screenshot of the publicly visible settings:
 
- 1. Go to your project and select **Settings**. 
+ 1. Go to your project and select **Settings**.
  1. Expand **Visibility, project features, permissions**.
  1. Set **Project Visibility** to **Public**.
  1. Ensure others can request access by selecting the **Users can request access** checkbox.
@@ -241,14 +241,14 @@ Follow these instructions to take a screenshot of the publicly visible settings:
 
 NOTE:
 From time to time, GitLab allows exceptions. One or two projects within a group can be private if there is a legitimate need for it, for example,
-if a project holds sensitive data. Email `opensource@gitlab.com` with details of your use case to request written permission for exceptions. 
+if a project holds sensitive data. Email `opensource@gitlab.com` with details of your use case to request written permission for exceptions.
 
 ### GitLab for Startups
 
-For qualifying startups, the [GitLab for Startups](https://about.gitlab.com/solutions/startups/) program provides 
-the top GitLab tier, plus 50,000 CI minutes per month for 12 months. 
+For qualifying startups, the [GitLab for Startups](https://about.gitlab.com/solutions/startups/) program provides
+the top GitLab tier, plus 50,000 CI minutes per month for 12 months.
 
-For more information, including program requirements, see the [Startup program's landing page](https://about.gitlab.com/solutions/startups/). 
+For more information, including program requirements, see the [Startup program's landing page](https://about.gitlab.com/solutions/startups/).
 
 Send all questions and requests related to the GitLab for Startups program to `startups@gitlab.com`.
 
@@ -257,7 +257,7 @@ Send all questions and requests related to the GitLab for Startups program to `s
 Because these Community Programs are free of cost, regular Priority Support is not included. However, it can be purchased at a 95% discount in some cases.
 If interested, email the relevant community program team: `education@gitlab.com`, `opensource@gitlab.com`, or `startups@gitlab.com`.
 
-As a community member, you can follow this diagram to find support: 
+As a community member, you can follow this diagram to find support:
 
 ![Support diagram](img/support-diagram.png)
 

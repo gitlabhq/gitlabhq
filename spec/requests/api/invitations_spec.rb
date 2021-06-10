@@ -161,7 +161,7 @@ RSpec.describe API::Invitations do
           expect_snowplow_event(
             category: 'Members::InviteService',
             action: 'create_member',
-            label: 'api',
+            label: 'invitations-api',
             property: 'net_new_user',
             user: maintainer
           )

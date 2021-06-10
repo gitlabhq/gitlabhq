@@ -37,7 +37,6 @@ import groupProjectsQuery from '../graphql/group_projects.query.graphql';
 import issueCreateMutation from '../graphql/issue_create.mutation.graphql';
 import issueSetDueDateMutation from '../graphql/issue_set_due_date.mutation.graphql';
 import issueSetLabelsMutation from '../graphql/issue_set_labels.mutation.graphql';
-import issueSetMilestoneMutation from '../graphql/issue_set_milestone.mutation.graphql';
 import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
 import * as types from './mutation_types';
 
@@ -476,30 +475,6 @@ export default {
       itemId: getters.activeBoardItem.id,
       prop: 'assignees',
       value: assigneeUsernames,
-    });
-  },
-
-  setActiveIssueMilestone: async ({ commit, getters }, input) => {
-    const { activeBoardItem } = getters;
-    const { data } = await gqlClient.mutate({
-      mutation: issueSetMilestoneMutation,
-      variables: {
-        input: {
-          iid: String(activeBoardItem.iid),
-          milestoneId: getIdFromGraphQLId(input.milestoneId),
-          projectPath: input.projectPath,
-        },
-      },
-    });
-
-    if (data.updateIssue.errors?.length > 0) {
-      throw new Error(data.updateIssue.errors);
-    }
-
-    commit(types.UPDATE_BOARD_ITEM_BY_ID, {
-      itemId: activeBoardItem.id,
-      prop: 'milestone',
-      value: data.updateIssue.issue.milestone,
     });
   },
 

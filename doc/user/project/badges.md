@@ -15,7 +15,7 @@ points to. Examples for badges can be the [pipeline status](../../ci/pipelines/s
 [test coverage](../../ci/pipelines/settings.md#test-coverage-report-badge), or ways to contact the
 project maintainers.
 
-![Badges on Project overview page](img/project_overview_badges_v13_10.png)
+![Badges on Project information page](img/project_overview_badges_v13_10.png)
 
 ## Project badges
 

@@ -40,7 +40,7 @@ export function formatListIssues(listIssues) {
   let listItemsCount;
 
   const listData = listIssues.nodes.reduce((map, list) => {
-    listItemsCount = list.issues.count;
+    listItemsCount = list.issuesCount;
     let sortedIssues = list.issues.edges.map((issueNode) => ({
       ...issueNode.node,
     }));

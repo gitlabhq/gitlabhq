@@ -228,10 +228,16 @@ Read through the documentation on [project settings](settings/index.md).
 
 ## Project activity
 
-To view the activity of a project, navigate to **Project overview > Activity**.
-From there, you can click on the tabs to see **All** the activity, or see it
-filtered by **Push events**, **Merge events**, **Issue events**, **Comments**,
-**Team**, and **Wiki**.
+To view the activity of a project:
+
+1. On the left sidebar, select **Project information > Activity**.
+1. Select a tab to view **All** the activity, or to filter it by any of these criteria:
+   - **Push events**
+   - **Merge events**
+   - **Issue events**
+   - **Comments**
+   - **Team**
+   - **Wiki**
 
 ### Leave a project
 

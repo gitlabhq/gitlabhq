@@ -42,7 +42,7 @@ for more control of the level of oversight and security your project needs, incl
 - [Require security team approval.](settings.md#security-approvals-in-merge-requests)
 
 You can configure your merge request approval rules and settings through the GitLab
-user interface or [with the API](../../../../api/merge_request_approvals.md).
+user interface or with the [Merge request approvals API](../../../../api/merge_request_approvals.md).
 
 ## Approve a merge request
 

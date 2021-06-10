@@ -26,7 +26,10 @@
             - if @project.allowed_to_share_with_group?
               .js-invite-group-trigger{ data: { classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite a group') } }
             - if can_manage_project_members?(@project) && !membership_locked?
-              .js-invite-members-trigger{ data: { variant: 'success', classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite members') } }
+              .js-invite-members-trigger{ data: { variant: 'success',
+                classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3',
+                trigger_source: 'project-members-page',
+                display_text: _('Invite members') } }
         = render 'projects/invite_members_modal', project: @project
 
     - else

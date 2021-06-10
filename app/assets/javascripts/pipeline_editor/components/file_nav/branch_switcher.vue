@@ -6,6 +6,7 @@ import {
   GlInfiniteScroll,
   GlLoadingIcon,
   GlSearchBoxByType,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { produce } from 'immer';
 import { fetchPolicies } from '~/lib/graphql';
@@ -22,7 +23,7 @@ import getCurrentBranch from '~/pipeline_editor/graphql/queries/client/current_b
 
 export default {
   i18n: {
-    dropdownHeader: s__('Switch Branch'),
+    dropdownHeader: s__('Switch branch'),
     title: s__('Branches'),
     fetchError: s__('Unable to fetch branch list for this project.'),
   },
@@ -34,6 +35,9 @@ export default {
     GlInfiniteScroll,
     GlLoadingIcon,
     GlSearchBoxByType,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: ['projectFullPath', 'totalBranches'],
   props: {
@@ -180,6 +184,8 @@ export default {
 <template>
   <gl-dropdown
     v-if="showBranchSwitcher"
+    v-gl-tooltip.hover
+    :title="$options.i18n.dropdownHeader"
     :header-text="$options.i18n.dropdownHeader"
     :text="currentBranch"
     icon="branch"

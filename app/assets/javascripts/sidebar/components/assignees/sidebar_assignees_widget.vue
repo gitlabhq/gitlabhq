@@ -248,7 +248,7 @@ export default {
         >
           <template #footer>
             <gl-dropdown-item v-if="directlyInviteMembers">
-              <sidebar-invite-members />
+              <sidebar-invite-members :issuable-type="issuableType" />
             </gl-dropdown-item> </template
         ></user-select>
       </template>

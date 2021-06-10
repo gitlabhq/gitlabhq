@@ -163,14 +163,7 @@ stageGroupDashboards.dashboard('product_planning')
 .stageGroupDashboardTrailer()
 ```
 
-We provide basic customization to filter out the components essential to your group's activities. By default, all components `web`, `api`, `git`, and `sidekiq` are available in the dashboard. We can change this to only show `web` and `api`, or only show `sidekiq`:
-
-```jsonnet
-stageGroupDashboards.dashboard('product_planning', components=['web', 'api']).stageGroupDashboardTrailer()
-# Or
-stageGroupDashboards.dashboard('product_planning', components=['sidekiq']).stageGroupDashboardTrailer()
-
-```
+We provide basic customization to filter out the components essential to your group's activities. By default, only the `web`, `api`, and `sidekiq` components are available in the dashboard, while `git` is hidden. See [how to enable available components and optional graphs](#optional-graphs).
 
 You can also append further information or custom metrics to a dashboard. This is an example that adds some links and a total request rate on the top of the page:
 
@@ -219,3 +212,31 @@ If you want to see the workflow in action, we've recorded a pairing session on c
 available on [GitLab Unfiltered](https://youtu.be/shEd_eiUjdI).
 
 For deeper customization and more complicated metrics, visit the [Grafonnet lib](https://github.com/grafana/grafonnet-lib) project and the [GitLab Prometheus Metrics](../administration/monitoring/prometheus/gitlab_metrics.md#gitlab-prometheus-metrics) documentation.
+
+### Optional Graphs
+
+Some Graphs aren't relevant for all groups, so they aren't added to
+the dashboard by default. They can be added by customizing the
+dashboard.
+
+By default, only the `web`, `api`, and `sidekiq` metrics are
+shown. If you wish to see the metrics from the `git` fleet (or any
+other component that might be added in the future), this could be
+configured as follows:
+
+```jsonnet
+stageGroupDashboards
+.dashboard('source_code', components=stageGroupDashboards.supportedComponents)
+.stageGroupDashboardTrailer()
+```
+
+If your group is interested in Sidekiq job durations and their
+thresholds, these graphs can be added by calling the
+`.addSidekiqJobDurationByUrgency` function:
+
+```jsonnet
+stageGroupDashboards
+.dashboard('access')
+.addSidekiqJobDurationByUrgency()
+.stageGroupDashboardTrailer()
+```

@@ -16,7 +16,10 @@
           .gl-w-half.gl-xs-w-full
             .gl-display-flex.gl-flex-wrap.gl-justify-content-end.gl-mb-3
               .js-invite-group-trigger{ data: { classes: 'gl-mt-3 gl-sm-w-auto gl-w-full', display_text: _('Invite a group') } }
-              .js-invite-members-trigger{ data: { variant: 'success', classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite members') } }
+              .js-invite-members-trigger{ data: { variant: 'success',
+                classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3',
+                trigger_source: 'group-members-page',
+                display_text: _('Invite members') } }
           = render 'groups/invite_members_modal', group: @group
     - if can_manage_members? && Feature.disabled?(:invite_members_group_modal, @group)
       %hr.gl-mt-4

@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
+RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_gitlab_redis_trace_chunks do
   include ExclusiveLeaseHelpers
 
   let_it_be(:build) { create(:ci_build, :running) }
 
   let(:chunk_index) { 0 }
-  let(:data_store) { :redis }
+  let(:data_store) { :redis_trace_chunks }
   let(:raw_data) { nil }
 
   let(:build_trace_chunk) do
@@ -20,6 +20,13 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   before do
     stub_feature_flags(ci_enable_live_trace: true)
     stub_artifacts_object_storage
+  end
+
+  def redis_instance
+    {
+      redis: Gitlab::Redis::SharedState,
+      redis_trace_chunks: Gitlab::Redis::TraceChunks
+    }[data_store]
   end
 
   describe 'chunk creation' do
@@ -85,7 +92,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
 
     def external_data_counter
-      Gitlab::Redis::SharedState.with do |redis|
+      redis_instance.with do |redis|
         redis.scan_each(match: "gitlab:ci:trace:*:chunks:*").to_a.size
       end
     end
@@ -101,24 +108,16 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     subject { described_class.all_stores }
 
     it 'returns a correctly ordered array' do
-      is_expected.to eq(%i[redis database fog])
-    end
-
-    it 'returns redis store as the lowest precedence' do
-      expect(subject.first).to eq(:redis)
-    end
-
-    it 'returns fog store as the highest precedence' do
-      expect(subject.last).to eq(:fog)
+      is_expected.to eq(%i[redis database fog redis_trace_chunks])
     end
   end
 
   describe '#data' do
     subject { build_trace_chunk.data }
 
-    context 'when data_store is redis' do
-      let(:data_store) { :redis }
+    where(:data_store) { %i[redis redis_trace_chunks] }
 
+    with_them do
       before do
         build_trace_chunk.send(:unsafe_set_data!, +'Sample data in redis')
       end
@@ -148,6 +147,22 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
   end
 
+  describe '#data_store' do
+    subject { described_class.new.data_store }
+
+    context 'default value' do
+      it { expect(subject).to eq('redis_trace_chunks') }
+
+      context 'when dedicated_redis_trace_chunks is disabled' do
+        before do
+          stub_feature_flags(dedicated_redis_trace_chunks: false)
+        end
+
+        it { expect(subject).to eq('redis') }
+      end
+    end
+  end
+
   describe '#get_store_class' do
     using RSpec::Parameterized::TableSyntax
 
@@ -155,6 +170,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       :redis | Ci::BuildTraceChunks::Redis
       :database | Ci::BuildTraceChunks::Database
       :fog | Ci::BuildTraceChunks::Fog
+      :redis_trace_chunks | Ci::BuildTraceChunks::RedisTraceChunks
     end
 
     with_them do
@@ -302,9 +318,9 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when data_store is redis' do
-      let(:data_store) { :redis }
+    where(:data_store) { %i[redis redis_trace_chunks] }
 
+    with_them do
       context 'when there are no data' do
         let(:data) { +'' }
 
@@ -441,8 +457,9 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when data_store is redis' do
-      let(:data_store) { :redis }
+    where(:data_store) { %i[redis redis_trace_chunks] }
+
+    with_them do
       let(:data) { +'Sample data in redis' }
 
       before do
@@ -475,9 +492,9 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   describe '#size' do
     subject { build_trace_chunk.size }
 
-    context 'when data_store is redis' do
-      let(:data_store) { :redis }
+    where(:data_store) { %i[redis redis_trace_chunks] }
 
+    with_them do
       context 'when data exists' do
         let(:data) { +'Sample data in redis' }
 
@@ -537,9 +554,14 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
     subject { build_trace_chunk.persist_data! }
 
-    context 'when data_store is redis' do
-      let(:data_store) { :redis }
+    where(:data_store, :redis_class) do
+      [
+        [:redis, Ci::BuildTraceChunks::Redis],
+        [:redis_trace_chunks, Ci::BuildTraceChunks::RedisTraceChunks]
+      ]
+    end
 
+    with_them do
       context 'when data exists' do
         before do
           build_trace_chunk.send(:unsafe_set_data!, data)
@@ -549,15 +571,15 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           let(:data) { +'a' * described_class::CHUNK_SIZE }
 
           it 'persists the data' do
-            expect(build_trace_chunk.redis?).to be_truthy
-            expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to eq(data)
+            expect(build_trace_chunk.data_store).to eq(data_store.to_s)
+            expect(redis_class.new.data(build_trace_chunk)).to eq(data)
             expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
             expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to be_nil
 
             subject
 
             expect(build_trace_chunk.fog?).to be_truthy
-            expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
+            expect(redis_class.new.data(build_trace_chunk)).to be_nil
             expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
             expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
           end
@@ -575,8 +597,8 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           it 'does not persist the data and the orignal data is intact' do
             expect { subject }.to raise_error(described_class::FailedToPersistDataError)
 
-            expect(build_trace_chunk.redis?).to be_truthy
-            expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to eq(data)
+            expect(build_trace_chunk.data_store).to eq(data_store.to_s)
+            expect(redis_class.new.data(build_trace_chunk)).to eq(data)
             expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
             expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to be_nil
           end
@@ -810,7 +832,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
     shared_examples_for 'deletes all build_trace_chunk and data in redis' do
       it 'deletes all build_trace_chunk and data in redis', :sidekiq_might_not_need_inline do
-        Gitlab::Redis::SharedState.with do |redis|
+        redis_instance.with do |redis|
           expect(redis.scan_each(match: "gitlab:ci:trace:*:chunks:*").to_a.size).to eq(3)
         end
 
@@ -820,7 +842,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
         expect(described_class.count).to eq(0)
 
-        Gitlab::Redis::SharedState.with do |redis|
+        redis_instance.with do |redis|
           expect(redis.scan_each(match: "gitlab:ci:trace:*:chunks:*").to_a.size).to eq(0)
         end
       end
@@ -900,6 +922,40 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           expect(first).not_to eq second
         end
       end
+    end
+  end
+
+  describe '#live?' do
+    subject { build_trace_chunk.live? }
+
+    where(:data_store, :value) do
+      [
+        [:redis, true],
+        [:redis_trace_chunks, true],
+        [:database, false],
+        [:fog, false]
+      ]
+    end
+
+    with_them do
+      it { is_expected.to eq(value) }
+    end
+  end
+
+  describe '#flushed?' do
+    subject { build_trace_chunk.flushed? }
+
+    where(:data_store, :value) do
+      [
+        [:redis, false],
+        [:redis_trace_chunks, false],
+        [:database, true],
+        [:fog, true]
+      ]
+    end
+
+    with_them do
+      it { is_expected.to eq(value) }
     end
   end
 end

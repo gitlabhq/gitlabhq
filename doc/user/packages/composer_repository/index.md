@@ -131,7 +131,7 @@ To view the published package, go to **Packages & Registries > Package Registry*
 
 A more detailed Composer CI/CD file is also available as a `.gitlab-ci.yml` template:
 
-1. On the left sidebar, click **Project overview**.
+1. On the left sidebar, select **Project information**.
 1. Above the file list, click **Set up CI/CD**. If this button is not available, select **CI/CD Configuration** and then **Edit**.
 1. From the **Apply a template** list, select **Composer**.
 

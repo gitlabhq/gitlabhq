@@ -113,7 +113,7 @@ You can download the source code that's stored in a repository.
 ## Repository languages
 
 For the default branch of each repository, GitLab determines which programming languages
-are used. This information is displayed on the project overview page.
+are used. This information is displayed on the **Project information** page.
 
 ![Repository Languages bar](img/repository_languages_v12_2.gif)
 
@@ -121,7 +121,7 @@ When new files are added, this information can take up to five minutes to update
 
 ### Add repository languages
 
-Not all files are detected and listed on the project overview page. Documentation,
+Not all files are detected and listed on the **Project information** page. Documentation,
 vendor code, and most markup languages are excluded.
 
 You can change this behavior by overriding the default settings.
@@ -200,7 +200,7 @@ To render an OpenAPI file:
 
 ## Repository size
 
-The project overview page shows the size of all files in the repository. The size is
+The **Project information** page shows the size of all files in the repository. The size is
 updated, at most, every 15 minutes. The file size includes repository files, artifacts, and LFS.
 
 The size can differ slightly from one instance to another due to compression, housekeeping, and other factors.

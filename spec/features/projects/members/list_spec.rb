@@ -59,7 +59,7 @@ RSpec.describe 'Project members list', :js do
     expect_snowplow_event(
       category: 'Members::CreateService',
       action: 'create_member',
-      label: 'unknown',
+      label: 'project-members-page',
       property: 'existing_user',
       user: user1
     )
@@ -117,7 +117,7 @@ RSpec.describe 'Project members list', :js do
     expect_snowplow_event(
       category: 'Members::InviteService',
       action: 'create_member',
-      label: 'unknown',
+      label: 'project-members-page',
       property: 'net_new_user',
       user: user1
     )

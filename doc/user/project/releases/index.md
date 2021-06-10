@@ -33,7 +33,7 @@ and attach [release assets](#release-assets), like runbooks or packages.
 
 To view a list of releases:
 
-- Go to **Project overview > Releases**, or
+- On the left sidebar, select **Project information > Releases**, or
 
 - On the project's overview page, if at least one release exists, click the number of releases.
 
@@ -64,8 +64,7 @@ Read more about [Release permissions](../../../user/permissions.md#project-membe
 
 To create a new release through the GitLab UI:
 
-1. Navigate to **Project overview > Releases** and click the **New release**
-   button.
+1. On the left sidebar, select **Project information > Releases** and select **New release**.
 1. Open the [**Tag name**](#tag-name) dropdown. Select an existing tag or type
    in a new tag name. Selecting an existing tag that is already associated with
    a release will result in a validation error.
@@ -105,7 +104,7 @@ Read more about [Release permissions](../../../user/permissions.md#project-membe
 
 To edit the details of a release:
 
-1. Navigate to **Project overview > Releases**.
+1. On the left sidebar, select **Project information > Releases**.
 1. In the top-right corner of the release you want to modify, click **Edit this release** (the pencil icon).
 1. On the **Edit Release** page, change the release's details.
 1. Click **Save changes**.
@@ -151,12 +150,12 @@ the [Releases API](../../../api/releases/index.md#create-a-release).
 
 In the user interface, to associate milestones to a release:
 
-1. Navigate to **Project overview > Releases**.
+1. On the left sidebar, select **Project information > Releases**.
 1. In the top-right corner of the release you want to modify, click **Edit this release** (the pencil icon).
 1. From the **Milestones** list, select each milestone you want to associate. You can select multiple milestones.
 1. Click **Save changes**.
 
-On the **Project overview > Releases** page, the **Milestone** is listed in the top
+On the **Project information > Releases** page, the **Milestone** is listed in the top
 section, along with statistics about the issues in the milestones.
 
 ![A Release with one associated milestone](img/release_with_milestone_v12_9.png)
@@ -176,7 +175,7 @@ You can be notified by email when a new release is created for your project.
 
 To subscribe to notifications for releases:
 
-1. Navigate to **Project overview**.
+1. On the left sidebar, select **Project information**.
 1. Click **Notification setting** (the bell icon).
 1. In the list, click **Custom**.
 1. Select the **New release** check box.
@@ -210,7 +209,7 @@ deploy_to_production:
 To set a deploy freeze window in the UI, complete these steps:
 
 1. Sign in to GitLab as a user with the [Maintainer role](../../permissions.md).
-1. Navigate to **Project overview**.
+1. On the left sidebar, select **Project information**.
 1. In the left navigation menu, navigate to **Settings > CI/CD**.
 1. Scroll to **Deploy freezes**.
 1. Click **Expand** to see the deploy freeze table.

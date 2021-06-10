@@ -3,8 +3,16 @@
 module Ci
   module BuildTraceChunks
     class Fog
-      def available?
+      def self.available?
         object_store.enabled
+      end
+
+      def self.object_store
+        Gitlab.config.artifacts.object_store
+      end
+
+      def available?
+        self.class.available?
       end
 
       def data(model)
@@ -85,7 +93,7 @@ module Ci
       end
 
       def object_store
-        Gitlab.config.artifacts.object_store
+        self.class.object_store
       end
 
       def object_store_raw_config

@@ -14,7 +14,13 @@ module Ci
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
 
-    default_value_for :data_store, :redis
+    default_value_for :data_store do
+      if Feature.enabled?(:dedicated_redis_trace_chunks, type: :ops)
+        :redis_trace_chunks
+      else
+        :redis
+      end
+    end
 
     after_create { metrics.increment_trace_operation(operation: :chunked) }
 
@@ -25,22 +31,22 @@ module Ci
 
     FailedToPersistDataError = Class.new(StandardError)
 
-    # Note: The ordering of this hash is related to the precedence of persist store.
-    # The bottom item takes the highest precedence, and the top item takes the lowest precedence.
     DATA_STORES = {
       redis: 1,
       database: 2,
-      fog: 3
+      fog: 3,
+      redis_trace_chunks: 4
     }.freeze
 
     STORE_TYPES = DATA_STORES.keys.to_h do |store|
-      [store, "Ci::BuildTraceChunks::#{store.capitalize}".constantize]
+      [store, "Ci::BuildTraceChunks::#{store.to_s.camelize}".constantize]
     end.freeze
+    LIVE_STORES = %i[redis redis_trace_chunks].freeze
 
     enum data_store: DATA_STORES
 
-    scope :live, -> { redis }
-    scope :persisted, -> { not_redis.order(:chunk_index) }
+    scope :live, -> { where(data_store: LIVE_STORES) }
+    scope :persisted, -> { where.not(data_store: LIVE_STORES).order(:chunk_index) }
 
     class << self
       def all_stores
@@ -48,8 +54,7 @@ module Ci
       end
 
       def persistable_store
-        # get first available store from the back of the list
-        all_stores.reverse.find { |store| get_store_class(store).available? }
+        STORE_TYPES[:fog].available? ? :fog : :database
       end
 
       def get_store_class(store)
@@ -195,7 +200,7 @@ module Ci
     end
 
     def flushed?
-      !redis?
+      !live?
     end
 
     def migrated?
@@ -203,7 +208,7 @@ module Ci
     end
 
     def live?
-      redis?
+      LIVE_STORES.include?(data_store.to_sym)
     end
 
     def <=>(other)

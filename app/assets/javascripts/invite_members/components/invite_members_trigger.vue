@@ -29,8 +29,7 @@ export default {
     },
     triggerSource: {
       type: String,
-      required: false,
-      default: 'unknown',
+      required: true,
     },
     trackExperiment: {
       type: String,

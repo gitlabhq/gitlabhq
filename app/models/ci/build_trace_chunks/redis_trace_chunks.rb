@@ -2,11 +2,11 @@
 
 module Ci
   module BuildTraceChunks
-    class Redis < RedisBase
+    class RedisTraceChunks < RedisBase
       private
 
       def with_redis
-        Gitlab::Redis::SharedState.with { |redis| yield(redis) }
+        Gitlab::Redis::TraceChunks.with { |redis| yield(redis) }
       end
     end
   end

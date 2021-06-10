@@ -1069,35 +1069,41 @@ document to ensure it links to the most recent version of the file.
 
 ## Navigation
 
-When documenting navigation through the user interface:
-
-- Use the exact wording as shown in the UI, including any capital letters as-is.
-- Use bold text for navigation items.
+When documenting navigation through the user interface, use these terms and styles.
 
 ### What to call the menus
 
 Use these terms when referring to the main GitLab user interface
 elements:
 
-- **Top menu**: This is the top menu that spans the width of the user interface.
-  It includes the GitLab logo, search field, counters, and the user's avatar.
+- **Top bar**: This is the top bar that spans the width of the user interface.
+  It includes the menu, the GitLab logo, search field, counters, and the user's avatar.
 - **Left sidebar**: This is the navigation sidebar on the left of the user
   interface, specific to the project or group.
 - **Right sidebar**: This is the navigation sidebar on the right of the user
   interface, specific to the open issue, merge request, or epic.
 
-### How to document the left sidebar
+### How to document the menus
 
-To be consistent, use this format when you refer to the left sidebar.
+To be consistent, use this format when you write about UI navigation.
 
-- Go to your project and select **Settings > CI/CD**.
-- Go to your group and select **Settings > CI/CD**.
-- Go to the Admin Area (**{admin}**) and select **Overview > Projects**.
-
-For expandable menus, use this format:
-
-1. Go to your group and select **Settings > CI/CD**.
+1. On the top bar, select **Menu > Project** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
+
+Another example:
+
+1. On the top bar, select **Menu > Group** and find your group.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+
+An Admin Area example:
+
+`1. On the top bar, select **Menu >** **{admin}** **Admin**.`
+
+This text generates this HTML:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
 
 ## Images
 
@@ -1377,10 +1383,10 @@ readability of the text.
 For example, this Markdown adds little to the accompanying text:
 
 ```markdown
-1. Go to **{home}** **Project overview > Details**.
+1. Go to **{home}** **Project information > Details**.
 ```
 
-1. Go to **{home}** **Project overview > Details**.
+1. Go to **{home}** **Project information > Details**.
 
 However, these tables might help the reader connect the text to the user
 interface:

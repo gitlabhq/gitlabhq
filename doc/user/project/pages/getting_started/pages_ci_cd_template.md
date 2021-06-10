@@ -17,7 +17,7 @@ Your GitLab repository should contain files specific to an SSG, or plain HTML.
 After you complete these steps, you may need to do additional
 configuration for the Pages site to generate properly.
 
-1. In the left sidebar, click **Project overview**.
+1. On the left sidebar, select **Project information**.
 1. Click **Set up CI/CD**.
 
    ![setup GitLab CI/CD](../img/setup_ci_v13_1.png)

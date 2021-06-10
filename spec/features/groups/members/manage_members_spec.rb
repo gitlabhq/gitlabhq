@@ -80,7 +80,7 @@ RSpec.describe 'Groups > Members > Manage members' do
     expect_snowplow_event(
       category: 'Members::CreateService',
       action: 'create_member',
-      label: 'unknown',
+      label: 'group-members-page',
       property: 'existing_user',
       user: user1
     )
@@ -189,7 +189,7 @@ RSpec.describe 'Groups > Members > Manage members' do
       expect_snowplow_event(
         category: 'Members::InviteService',
         action: 'create_member',
-        label: 'unknown',
+        label: 'group-members-page',
         property: 'net_new_user',
         user: user1
       )

@@ -9,6 +9,17 @@ export default {
   components: {
     InviteMembersTrigger,
   },
+  props: {
+    issuableType: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    triggerSource() {
+      return `${this.issuableType}-assignee-dropdown`;
+    },
+  },
 };
 </script>
 
@@ -18,6 +29,7 @@ export default {
     :display-text="$options.displayText"
     :event="$options.dataTrackEvent"
     :label="$options.dataTrackLabel"
+    :trigger-source="triggerSource"
     classes="gl-display-block gl-pl-6 gl-hover-text-decoration-none gl-hover-text-blue-800!"
   />
 </template>

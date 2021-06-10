@@ -15,6 +15,7 @@
         .js-invite-members-trigger{ data: { trigger_element: 'anchor',
           display_text: _('Invite Members'),
           event: 'click_invite_members',
+          trigger_source: local_assigns.fetch(:trigger_source),
           label: data['track-label'] } }
 - else
   = dropdown_tag(data['dropdown-title'], options: options)

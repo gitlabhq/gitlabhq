@@ -3,10 +3,6 @@
 module Ci
   module BuildTraceChunks
     class Database
-      def available?
-        true
-      end
-
       def keys(relation)
         []
       end

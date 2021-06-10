@@ -17,7 +17,7 @@ RSpec.describe 'Mailer retries' do
     descendants.each { |a| a.queue_adapter = :test }
   end
 
-  it 'sets retries for mailers to 3' do
+  it 'sets retries for mailers to 3', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332645' do
     DeviseMailer.user_admin_approval(create(:user)).deliver_later
 
     expect(Sidekiq::Queues['mailers'].first).to include('retry' => 3)

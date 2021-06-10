@@ -3750,9 +3750,6 @@ msgstr ""
 msgid "An error occurred while updating the configuration."
 msgstr ""
 
-msgid "An error occurred while updating the milestone."
-msgstr ""
-
 msgid "An error occurred while updating the notification settings. Please try again."
 msgstr ""
 
@@ -13063,7 +13060,13 @@ msgstr ""
 msgid "EscalationPolicies|Add escalation policy"
 msgstr ""
 
+msgid "EscalationPolicies|Add policy"
+msgstr ""
+
 msgid "EscalationPolicies|Create an escalation policy in GitLab"
+msgstr ""
+
+msgid "EscalationPolicies|Delete escalation policy"
 msgstr ""
 
 msgid "EscalationPolicies|Edit escalation policy"
@@ -13075,10 +13078,16 @@ msgstr ""
 msgid "EscalationPolicies|Email on-call user in schedule"
 msgstr ""
 
+msgid "EscalationPolicies|Escalation policies"
+msgstr ""
+
 msgid "EscalationPolicies|Escalation rules"
 msgstr ""
 
 msgid "EscalationPolicies|Failed to load oncall-schedules"
+msgstr ""
+
+msgid "EscalationPolicies|IF alert is not %{alertStatus} in %{minutes} %{then} THEN %{doAction} %{schedule}"
 msgstr ""
 
 msgid "EscalationPolicies|IF alert is not %{alertStatus} in %{minutes} minutes"
@@ -13094,6 +13103,9 @@ msgid "EscalationPolicies|Set up escalation policies to define who is paged, and
 msgstr ""
 
 msgid "EscalationPolicies|THEN %{doAction} %{schedule}"
+msgstr ""
+
+msgid "EscalationPolicies|mins"
 msgstr ""
 
 msgid "Estimate"
@@ -21247,9 +21259,6 @@ msgid "Milestones|Group Milestone"
 msgstr ""
 
 msgid "Milestones|Milestone %{milestoneTitle} was not found"
-msgstr ""
-
-msgid "Milestones|No milestones found"
 msgstr ""
 
 msgid "Milestones|Ongoing Issues (open and assigned)"
@@ -31641,7 +31650,7 @@ msgstr ""
 msgid "Survey Response"
 msgstr ""
 
-msgid "Switch Branch"
+msgid "Switch branch"
 msgstr ""
 
 msgid "Switch branch/tag"
