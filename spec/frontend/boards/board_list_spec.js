@@ -80,6 +80,7 @@ const createComponent = ({
       rootPath: '/',
       weightFeatureAvailable: false,
       boardWeight: null,
+      canAdminList: true,
     },
     stubs: {
       BoardCard,

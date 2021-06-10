@@ -36,11 +36,11 @@ Find here the [source code setting the attribute](https://gitlab.com/gitlab-org/
 
 #### Rails routes
 
-The `rake routes` command can be used to list all the routes available in the application. Piping the output into `grep`, we can perform a search through the list of available routes.
+The `rails routes` command can be used to list all the routes available in the application. Piping the output into `grep`, we can perform a search through the list of available routes.
 The output includes the request types available, route parameters and the relevant controller.
 
 ```shell
-bundle exec rake routes | grep "issues"
+bundle exec rails routes | grep "issues"
 ```
 
 ### 2. `modal_copy_button` vs `clipboard_button`

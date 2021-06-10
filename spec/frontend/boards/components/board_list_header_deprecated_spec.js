@@ -31,6 +31,7 @@ describe('Board List Header Component', () => {
     listType = ListType.backlog,
     collapsed = false,
     withLocalStorage = true,
+    currentUserId = 1,
   } = {}) => {
     const boardId = '1';
 
@@ -62,6 +63,7 @@ describe('Board List Header Component', () => {
       },
       provide: {
         boardId,
+        currentUserId,
       },
     });
   };
@@ -100,10 +102,12 @@ describe('Board List Header Component', () => {
       });
     });
 
-    it('does render when logged out', () => {
-      createComponent();
+    it('does not render when logged out', () => {
+      createComponent({
+        currentUserId: null,
+      });
 
-      expect(findAddIssueButton().exists()).toBe(true);
+      expect(findAddIssueButton().exists()).toBe(false);
     });
   });
 
@@ -143,7 +147,6 @@ describe('Board List Header Component', () => {
 
     it("when logged in it calls list update and doesn't set localStorage", () => {
       jest.spyOn(List.prototype, 'update');
-      window.gon.current_user_id = 1;
 
       createComponent({ withLocalStorage: false });
 
@@ -158,7 +161,7 @@ describe('Board List Header Component', () => {
     it("when logged out it doesn't call list update and sets localStorage", () => {
       jest.spyOn(List.prototype, 'update');
 
-      createComponent();
+      createComponent({ currentUserId: null });
 
       findCaret().vm.$emit('click');
 

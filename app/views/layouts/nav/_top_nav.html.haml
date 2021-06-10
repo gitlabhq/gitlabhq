@@ -4,7 +4,6 @@
     %a.top-nav-toggle{ href: '#', type: 'button', data: { toggle: "dropdown" } }
       = sprite_icon('hamburger', css_class: "dropdown-icon")
       = view_model[:activeTitle]
-      = sprite_icon('chevron-down')
 
 .hidden
   - view_model[:shortcuts].each do |shortcut|

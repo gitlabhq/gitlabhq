@@ -24,11 +24,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    canAdminList: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     ...mapState(['filterParams', 'highlightedLists']),
@@ -92,14 +87,8 @@ export default {
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base"
       :class="{ 'board-column-highlighted': highlighted }"
     >
-      <board-list-header :can-admin-list="canAdminList" :list="list" :disabled="disabled" />
-      <board-list
-        ref="board-list"
-        :disabled="disabled"
-        :board-items="listItems"
-        :list="list"
-        :can-admin-list="canAdminList"
-      />
+      <board-list-header :list="list" :disabled="disabled" />
+      <board-list ref="board-list" :disabled="disabled" :board-items="listItems" :list="list" />
     </div>
   </div>
 </template>

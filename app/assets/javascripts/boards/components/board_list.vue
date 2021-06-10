@@ -23,6 +23,11 @@ export default {
     GlLoadingIcon,
     GlIntersectionObserver,
   },
+  inject: {
+    canAdminList: {
+      default: false,
+    },
+  },
   props: {
     disabled: {
       type: Boolean,
@@ -35,11 +40,6 @@ export default {
     boardItems: {
       type: Array,
       required: true,
-    },
-    canAdminList: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {

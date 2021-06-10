@@ -367,7 +367,7 @@ EOF
 function verify_deploy() {
   echoinfo "Verifying deployment at ${CI_ENVIRONMENT_URL}"
 
-  if wait_for_url "${CI_ENVIRONMENT_URL}" curl_output.txt; then
+  if retry "test_url \"${CI_ENVIRONMENT_URL}\" curl_output.txt"; then
     echoinfo "Review app is deployed to ${CI_ENVIRONMENT_URL}"
     return 0
   else

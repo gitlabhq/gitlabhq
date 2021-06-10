@@ -13,16 +13,18 @@ function retry() {
   return 1
 }
 
-function wait_for_url() {
+function test_url() {
   local url="${1}"
   local curl_output="${2}"
+  local status
 
-  echo "Waiting for ${url}"
+  status=$(curl -s -o "${curl_output}" -L -w ''%{http_code}'' "${url}")
 
-  timeout -s 1 60 bash -c \
-    'while [[ "$(curl -s -o ${1} -L -w ''%{http_code}'' ${0})" != "200" ]]; \
-    do echo "." && sleep 5; \
-    done' ${url} ${curl_output}
+  if [[ $status == "200" ]]; then
+    return 0
+  fi
+
+  return 1
 }
 
 function bundle_install_script() {

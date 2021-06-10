@@ -28,7 +28,7 @@ describe('Board List Header Component', () => {
     listType = ListType.backlog,
     collapsed = false,
     withLocalStorage = true,
-    currentUserId = null,
+    currentUserId = 1,
   } = {}) => {
     const boardId = '1';
 
@@ -109,10 +109,12 @@ describe('Board List Header Component', () => {
       });
     });
 
-    it('does render when logged out', () => {
-      createComponent();
+    it('does not render when logged out', () => {
+      createComponent({
+        currentUserId: null,
+      });
 
-      expect(findAddIssueButton().exists()).toBe(true);
+      expect(findAddIssueButton().exists()).toBe(false);
     });
   });
 
@@ -153,7 +155,9 @@ describe('Board List Header Component', () => {
     });
 
     it("when logged out it doesn't call list update and sets localStorage", async () => {
-      createComponent();
+      createComponent({
+        currentUserId: null,
+      });
 
       findCaret().vm.$emit('click');
       await wrapper.vm.$nextTick();

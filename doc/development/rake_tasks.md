@@ -263,7 +263,7 @@ RESTful API verbs.
 For the Rails controllers, run:
 
 ```shell
-bundle exec rake routes
+bundle exec rails routes
 ```
 
 Since these take some time to create, it's often helpful to save the output to

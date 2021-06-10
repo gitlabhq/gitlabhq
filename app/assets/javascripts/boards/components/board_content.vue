@@ -106,7 +106,6 @@ export default {
         v-for="(list, index) in boardListsToUse"
         :key="index"
         ref="board"
-        :can-admin-list="canAdminList"
         :list="list"
         :disabled="disabled"
       />

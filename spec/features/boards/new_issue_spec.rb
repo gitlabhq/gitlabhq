@@ -154,8 +154,8 @@ RSpec.describe 'Issue Boards new issue', :js do
       wait_for_requests
     end
 
-    it 'displays new issue button in open list' do
-      expect(first('.board')).to have_button('New issue', count: 1)
+    it 'does not display new issue button in open list' do
+      expect(first('.board')).not_to have_button('New issue')
     end
 
     it 'does not display new issue button in label list' do
@@ -192,8 +192,8 @@ RSpec.describe 'Issue Boards new issue', :js do
       context 'when backlog list already exists' do
         let_it_be(:backlog_list) { create(:backlog_list, board: group_board) }
 
-        it 'displays new issue button in open list' do
-          expect(first('.board')).to have_button('New issue', count: 1)
+        it 'does not display new issue button in open list' do
+          expect(first('.board')).not_to have_button('New issue')
         end
 
         it 'does not display new issue button in label list' do
