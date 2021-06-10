@@ -3,9 +3,9 @@
 require('spec_helper')
 
 RSpec.describe Projects::ProjectMembersController do
-  let(:user) { create(:user) }
-  let(:group) { create(:group, :public) }
-  let(:project) { create(:project, :public) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:project, reload: true) { create(:project, :public) }
 
   before do
     travel_to DateTime.new(2019, 4, 1)
@@ -24,8 +24,8 @@ RSpec.describe Projects::ProjectMembersController do
 
     context 'project members' do
       context 'when project belongs to group' do
-        let(:user_in_group) { create(:user) }
-        let(:project_in_group) { create(:project, :public, group: group) }
+        let_it_be(:user_in_group) { create(:user) }
+        let_it_be(:project_in_group) { create(:project, :public, group: group) }
 
         before do
           group.add_owner(user_in_group)
@@ -69,7 +69,7 @@ RSpec.describe Projects::ProjectMembersController do
     end
 
     context 'group links' do
-      let!(:project_group_link) { create(:project_group_link, project: project, group: group) }
+      let_it_be(:project_group_link) { create(:project_group_link, project: project, group: group) }
 
       it 'lists group links' do
         get :index, params: { namespace_id: project.namespace, project_id: project }
@@ -90,7 +90,7 @@ RSpec.describe Projects::ProjectMembersController do
     end
 
     context 'invited members' do
-      let!(:invited_member) { create(:project_member, :invited, project: project) }
+      let_it_be(:invited_member) { create(:project_member, :invited, project: project) }
 
       before do
         project.add_maintainer(user)
@@ -123,7 +123,7 @@ RSpec.describe Projects::ProjectMembersController do
     end
 
     context 'access requests' do
-      let(:access_requester_user) { create(:user) }
+      let_it_be(:access_requester_user) { create(:user) }
 
       before do
         project.request_access(access_requester_user)
@@ -158,7 +158,7 @@ RSpec.describe Projects::ProjectMembersController do
   end
 
   describe 'POST create' do
-    let(:project_user) { create(:user) }
+    let_it_be(:project_user) { create(:user) }
 
     before do
       sign_in(user)
@@ -169,7 +169,7 @@ RSpec.describe Projects::ProjectMembersController do
         project.add_developer(user)
       end
 
-      it 'returns 404' do
+      it 'returns 404', :aggregate_failures do
         post :create, params: {
                         namespace_id: project.namespace,
                         project_id: project,
@@ -187,11 +187,7 @@ RSpec.describe Projects::ProjectMembersController do
         project.add_maintainer(user)
       end
 
-      it 'adds user to members' do
-        expect_next_instance_of(Members::CreateService) do |instance|
-          expect(instance).to receive(:execute).and_return(status: :success)
-        end
-
+      it 'adds user to members', :aggregate_failures, :snowplow do
         post :create, params: {
                         namespace_id: project.namespace,
                         project_id: project,
@@ -201,9 +197,17 @@ RSpec.describe Projects::ProjectMembersController do
 
         expect(controller).to set_flash.to 'Users were successfully added.'
         expect(response).to redirect_to(project_project_members_path(project))
+        expect(project.users).to include project_user
+        expect_snowplow_event(
+          category: 'Members::CreateService',
+          action: 'create_member',
+          label: 'project-members-page',
+          property: 'existing_user',
+          user: user
+        )
       end
 
-      it 'adds no user to members' do
+      it 'adds no user to members', :aggregate_failures do
         expect_next_instance_of(Members::CreateService) do |instance|
           expect(instance).to receive(:execute).and_return(status: :failure, message: 'Message')
         end
@@ -230,7 +234,7 @@ RSpec.describe Projects::ProjectMembersController do
         unrelated_project.add_maintainer(project_bot)
       end
 
-      it 'returns error' do
+      it 'returns error', :aggregate_failures do
         post :create, params: {
           namespace_id: project.namespace,
           project_id: project,
@@ -261,7 +265,7 @@ RSpec.describe Projects::ProjectMembersController do
       context 'when set to a date in the past' do
         let(:expires_at) { 2.days.ago }
 
-        it 'does not add user to members' do
+        it 'does not add user to members', :aggregate_failures do
           subject
 
           expect(flash[:alert]).to include('Expires at cannot be a date in the past')
@@ -273,7 +277,7 @@ RSpec.describe Projects::ProjectMembersController do
       context 'when set to a date in the future' do
         let(:expires_at) { 5.days.from_now }
 
-        it 'adds user to members' do
+        it 'adds user to members', :aggregate_failures do
           subject
 
           expect(controller).to set_flash.to 'Users were successfully added.'
@@ -285,7 +289,7 @@ RSpec.describe Projects::ProjectMembersController do
   end
 
   describe 'PUT update' do
-    let(:requester) { create(:project_member, :access_request, project: project) }
+    let_it_be(:requester) { create(:project_member, :access_request, project: project) }
 
     before do
       project.add_maintainer(user)
@@ -393,7 +397,7 @@ RSpec.describe Projects::ProjectMembersController do
   end
 
   describe 'DELETE destroy' do
-    let(:member) { create(:project_member, :developer, project: project) }
+    let_it_be(:member) { create(:project_member, :developer, project: project) }
 
     before do
       sign_in(user)
@@ -417,7 +421,7 @@ RSpec.describe Projects::ProjectMembersController do
           project.add_developer(user)
         end
 
-        it 'returns 404' do
+        it 'returns 404', :aggregate_failures do
           delete :destroy, params: {
                              namespace_id: project.namespace,
                              project_id: project,
@@ -434,7 +438,7 @@ RSpec.describe Projects::ProjectMembersController do
           project.add_maintainer(user)
         end
 
-        it '[HTML] removes user from members' do
+        it '[HTML] removes user from members', :aggregate_failures do
           delete :destroy, params: {
                              namespace_id: project.namespace,
                              project_id: project,
@@ -447,7 +451,7 @@ RSpec.describe Projects::ProjectMembersController do
           expect(project.members).not_to include member
         end
 
-        it '[JS] removes user from members' do
+        it '[JS] removes user from members', :aggregate_failures do
           delete :destroy, params: {
             namespace_id: project.namespace,
             project_id: project,
@@ -483,7 +487,7 @@ RSpec.describe Projects::ProjectMembersController do
           project.add_developer(user)
         end
 
-        it 'removes user from members' do
+        it 'removes user from members', :aggregate_failures do
           delete :leave, params: {
                            namespace_id: project.namespace,
                            project_id: project
@@ -517,7 +521,7 @@ RSpec.describe Projects::ProjectMembersController do
           project.request_access(user)
         end
 
-        it 'removes user from members' do
+        it 'removes user from members', :aggregate_failures do
           delete :leave, params: {
                            namespace_id: project.namespace,
                            project_id: project
@@ -537,7 +541,7 @@ RSpec.describe Projects::ProjectMembersController do
       sign_in(user)
     end
 
-    it 'creates a new ProjectMember that is not a team member' do
+    it 'creates a new ProjectMember that is not a team member', :aggregate_failures do
       post :request_access, params: {
                               namespace_id: project.namespace,
                               project_id: project
@@ -553,7 +557,7 @@ RSpec.describe Projects::ProjectMembersController do
   end
 
   describe 'POST approve' do
-    let(:member) { create(:project_member, :access_request, project: project) }
+    let_it_be(:member) { create(:project_member, :access_request, project: project) }
 
     before do
       sign_in(user)
@@ -577,7 +581,7 @@ RSpec.describe Projects::ProjectMembersController do
           project.add_developer(user)
         end
 
-        it 'returns 404' do
+        it 'returns 404', :aggregate_failures do
           post :approve_access_request, params: {
                                           namespace_id: project.namespace,
                                           project_id: project,
@@ -594,7 +598,7 @@ RSpec.describe Projects::ProjectMembersController do
           project.add_maintainer(user)
         end
 
-        it 'adds user to members' do
+        it 'adds user to members', :aggregate_failures do
           post :approve_access_request, params: {
                                           namespace_id: project.namespace,
                                           project_id: project,
@@ -611,8 +615,8 @@ RSpec.describe Projects::ProjectMembersController do
   end
 
   describe 'POST apply_import' do
-    let(:another_project) { create(:project, :private) }
-    let(:member) { create(:user) }
+    let_it_be(:another_project) { create(:project, :private) }
+    let_it_be(:member) { create(:user) }
 
     before do
       project.add_maintainer(user)
@@ -637,7 +641,7 @@ RSpec.describe Projects::ProjectMembersController do
 
       include_context 'import applied'
 
-      it 'imports source project members' do
+      it 'imports source project members', :aggregate_failures do
         expect(project.team_members).to include member
         expect(controller).to set_flash.to 'Successfully imported'
         expect(response).to redirect_to(
@@ -660,7 +664,7 @@ RSpec.describe Projects::ProjectMembersController do
   end
 
   describe 'POST create' do
-    let(:stranger) { create(:user) }
+    let_it_be(:stranger) { create(:user) }
 
     context 'when creating owner' do
       before do
@@ -700,7 +704,7 @@ RSpec.describe Projects::ProjectMembersController do
   end
 
   describe 'POST resend_invite' do
-    let(:member) { create(:project_member, project: project) }
+    let_it_be(:member) { create(:project_member, project: project) }
 
     before do
       project.add_maintainer(user)

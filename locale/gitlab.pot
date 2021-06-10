@@ -2095,6 +2095,9 @@ msgstr ""
 msgid "AddMember|Invite limit of %{daily_invites} per day exceeded"
 msgstr ""
 
+msgid "AddMember|No invite source provided."
+msgstr ""
+
 msgid "AddMember|No users specified."
 msgstr ""
 

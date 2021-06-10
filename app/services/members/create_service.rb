@@ -16,6 +16,7 @@ module Members
     end
 
     def execute
+      validate_invite_source!
       validate_invites!
 
       add_members
@@ -31,6 +32,10 @@ module Members
 
     def invites_from_params
       params[:user_ids]
+    end
+
+    def validate_invite_source!
+      raise ArgumentError, s_('AddMember|No invite source provided.') unless invite_source.present?
     end
 
     def validate_invites!
@@ -79,7 +84,7 @@ module Members
     end
 
     def invite_source
-      params[:invite_source] || 'unknown'
+      params[:invite_source]
     end
 
     def tracking_property(member)

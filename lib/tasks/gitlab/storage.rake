@@ -96,8 +96,12 @@ namespace :gitlab do
 
     desc 'Gitlab | Storage | Summary of existing projects using Legacy Storage'
     task legacy_projects: :environment do
-      helper = Gitlab::HashedStorage::RakeHelper
-      helper.relation_summary('projects using Legacy Storage', Project.without_storage_feature(:repository))
+      # Required to prevent Docker upgrade to 14.0 if there data on legacy storage
+      # See: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5311#note_590454698
+      wait_until_database_is_ready do
+        helper = Gitlab::HashedStorage::RakeHelper
+        helper.relation_summary('projects using Legacy Storage', Project.without_storage_feature(:repository))
+      end
     end
 
     desc 'Gitlab | Storage | List existing projects using Legacy Storage'
@@ -135,8 +139,12 @@ namespace :gitlab do
 
     desc 'Gitlab | Storage | Summary of project attachments using Legacy Storage'
     task legacy_attachments: :environment do
-      helper = Gitlab::HashedStorage::RakeHelper
-      helper.relation_summary('attachments using Legacy Storage', helper.legacy_attachments_relation)
+      # Required to prevent Docker upgrade to 14.0 if there data on legacy storage
+      # See: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5311#note_590454698
+      wait_until_database_is_ready do
+        helper = Gitlab::HashedStorage::RakeHelper
+        helper.relation_summary('attachments using Legacy Storage', helper.legacy_attachments_relation)
+      end
     end
 
     desc 'Gitlab | Storage | List existing project attachments using Legacy Storage'
@@ -155,6 +163,24 @@ namespace :gitlab do
     task list_hashed_attachments: :environment do
       helper = Gitlab::HashedStorage::RakeHelper
       helper.attachments_list('attachments using Hashed Storage', helper.hashed_attachments_relation)
+    end
+
+    def wait_until_database_is_ready
+      attempts = (ENV['MAX_DATABASE_CONNECTION_CHECKS'] || 1).to_i
+      inverval = (ENV['MAX_DATABASE_CONNECTION_CHECK_INTERVAL'] || 10).to_f
+
+      attempts.to_i.times do
+        unless Gitlab::Database.exists?
+          puts "Waiting until database is ready before continuing...".color(:yellow)
+          sleep inverval
+        end
+      end
+
+      yield
+    rescue ActiveRecord::ConnectionNotEstablished => ex
+      puts "Failed to connect to the database...".color(:red)
+      puts "Error: #{ex}"
+      exit 1
     end
   end
 end

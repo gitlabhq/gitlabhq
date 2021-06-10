@@ -16,6 +16,7 @@ type: reference, api
 > - `with_merge_status_recheck` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0.
 > - `reviewer_username` and `reviewer_id` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49341) in GitLab 13.8.
 > - `reviewer_ids` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51186) in GitLab 13.8.
+> - `draft` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63473) as an eventual replacement for `work_in_progress` in GitLab 14.0
 
 Every API call to merge requests must be authenticated.
 
@@ -174,6 +175,7 @@ Parameters:
       "Community contribution",
       "Manage"
     ],
+    "draft": false,
     "work_in_progress": false,
     "milestone": {
       "id": 5,
@@ -357,6 +359,7 @@ Parameters:
       "Community contribution",
       "Manage"
     ],
+    "draft": false,
     "work_in_progress": false,
     "milestone": {
       "id": 5,
@@ -542,6 +545,7 @@ Parameters:
       "Community contribution",
       "Manage"
     ],
+    "draft": false,
     "work_in_progress": false,
     "milestone": {
       "id": 5,
@@ -680,6 +684,7 @@ Parameters:
     "Community contribution",
     "Manage"
   ],
+  "draft": false,
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -912,6 +917,7 @@ Parameters:
   "target_project_id": 4,
   "labels": [ ],
   "description": "Qui voluptatibus placeat ipsa alias quasi. Deleniti rem ut sint. Optio velit qui distinctio.",
+  "draft": false,
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -1122,6 +1128,7 @@ POST /projects/:id/merge_requests
     "Community contribution",
     "Manage"
   ],
+  "draft": false,
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -1292,6 +1299,7 @@ Must include at least one non-required attribute from above.
     "Community contribution",
     "Manage"
   ],
+  "draft": false,
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -1477,6 +1485,7 @@ Parameters:
     "Community contribution",
     "Manage"
   ],
+  "draft": false,
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -1665,6 +1674,7 @@ Parameters:
     "Community contribution",
     "Manage"
   ],
+  "draft": false,
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -1966,6 +1976,7 @@ Example response:
     "Community contribution",
     "Manage"
   ],
+  "draft": false,
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -2125,6 +2136,7 @@ Example response:
     "Community contribution",
     "Manage"
   ],
+  "draft": false,
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -2301,6 +2313,7 @@ Example response:
     "source_project_id": 3,
     "target_project_id": 3,
     "labels": [],
+    "draft": false,
     "work_in_progress": false,
     "milestone": {
       "id": 27,

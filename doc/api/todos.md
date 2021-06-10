@@ -88,6 +88,7 @@ Example Response:
       "source_project_id": 2,
       "target_project_id": 2,
       "labels": [],
+      "draft": false,
       "work_in_progress": false,
       "milestone": {
         "id": 32,
@@ -161,6 +162,7 @@ Example Response:
       "source_project_id": 2,
       "target_project_id": 2,
       "labels": [],
+      "draft": false,
       "work_in_progress": false,
       "milestone": {
         "id": 32,
@@ -259,6 +261,7 @@ Example Response:
       "source_project_id": 2,
       "target_project_id": 2,
       "labels": [],
+      "draft": false,
       "work_in_progress": false,
       "milestone": {
         "id": 32,

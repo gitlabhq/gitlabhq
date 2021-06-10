@@ -17,7 +17,7 @@ RSpec.describe Groups::GroupMembersController do
   end
 
   describe 'GET index' do
-    it 'renders index with 200 status code' do
+    it 'renders index with 200 status code', :aggregate_failures do
       get :index, params: { group_id: group }
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -118,7 +118,7 @@ RSpec.describe Groups::GroupMembersController do
         group.add_developer(user)
       end
 
-      it 'returns 403' do
+      it 'returns 403', :aggregate_failures do
         post :create, params: {
                         group_id: group,
                         user_ids: group_user.id,
@@ -135,7 +135,7 @@ RSpec.describe Groups::GroupMembersController do
         group.add_owner(user)
       end
 
-      it 'adds user to members' do
+      it 'adds user to members', :aggregate_failures, :snowplow do
         post :create, params: {
                         group_id: group,
                         user_ids: group_user.id,
@@ -145,9 +145,16 @@ RSpec.describe Groups::GroupMembersController do
         expect(controller).to set_flash.to 'Users were successfully added.'
         expect(response).to redirect_to(group_group_members_path(group))
         expect(group.users).to include group_user
+        expect_snowplow_event(
+          category: 'Members::CreateService',
+          action: 'create_member',
+          label: 'group-members-page',
+          property: 'existing_user',
+          user: user
+        )
       end
 
-      it 'adds no user to members' do
+      it 'adds no user to members', :aggregate_failures do
         post :create, params: {
                         group_id: group,
                         user_ids: '',
@@ -177,7 +184,7 @@ RSpec.describe Groups::GroupMembersController do
       context 'when set to a date in the past' do
         let(:expires_at) { 2.days.ago }
 
-        it 'does not add user to members' do
+        it 'does not add user to members', :aggregate_failures do
           subject
 
           expect(flash[:alert]).to include('Expires at cannot be a date in the past')
@@ -189,7 +196,7 @@ RSpec.describe Groups::GroupMembersController do
       context 'when set to a date in the future' do
         let(:expires_at) { 5.days.from_now }
 
-        it 'adds user to members' do
+        it 'adds user to members', :aggregate_failures do
           subject
 
           expect(controller).to set_flash.to 'Users were successfully added.'
@@ -326,7 +333,7 @@ RSpec.describe Groups::GroupMembersController do
           group.add_developer(user)
         end
 
-        it 'returns 403' do
+        it 'returns 403', :aggregate_failures do
           delete :destroy, params: { group_id: group, id: member }
 
           expect(response).to have_gitlab_http_status(:forbidden)
@@ -339,7 +346,7 @@ RSpec.describe Groups::GroupMembersController do
           group.add_owner(user)
         end
 
-        it '[HTML] removes user from members' do
+        it '[HTML] removes user from members', :aggregate_failures do
           delete :destroy, params: { group_id: group, id: member }
 
           expect(controller).to set_flash.to 'User was successfully removed from group.'
@@ -348,7 +355,7 @@ RSpec.describe Groups::GroupMembersController do
           expect(sub_group.members).to include sub_member
         end
 
-        it '[HTML] removes user from members including subgroups and projects' do
+        it '[HTML] removes user from members including subgroups and projects', :aggregate_failures do
           delete :destroy, params: { group_id: group, id: member, remove_sub_memberships: true }
 
           expect(controller).to set_flash.to 'User was successfully removed from group and any subgroups and projects.'
@@ -357,7 +364,7 @@ RSpec.describe Groups::GroupMembersController do
           expect(sub_group.members).not_to include sub_member
         end
 
-        it '[JS] removes user from members' do
+        it '[JS] removes user from members', :aggregate_failures do
           delete :destroy, params: { group_id: group, id: member }, xhr: true
 
           expect(response).to be_successful
@@ -386,7 +393,7 @@ RSpec.describe Groups::GroupMembersController do
           group.add_developer(user)
         end
 
-        it 'removes user from members' do
+        it 'removes user from members', :aggregate_failures do
           delete :leave, params: { group_id: group }
 
           expect(controller).to set_flash.to "You left the \"#{group.name}\" group."
@@ -394,7 +401,7 @@ RSpec.describe Groups::GroupMembersController do
           expect(group.users).not_to include user
         end
 
-        it 'supports json request' do
+        it 'supports json request', :aggregate_failures do
           delete :leave, params: { group_id: group }, format: :json
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -421,7 +428,7 @@ RSpec.describe Groups::GroupMembersController do
           group.request_access(user)
         end
 
-        it 'removes user from members' do
+        it 'removes user from members', :aggregate_failures do
           delete :leave, params: { group_id: group }
 
           expect(controller).to set_flash.to 'Your access request to the group has been withdrawn.'
@@ -438,7 +445,7 @@ RSpec.describe Groups::GroupMembersController do
       sign_in(user)
     end
 
-    it 'creates a new GroupMember that is not a team member' do
+    it 'creates a new GroupMember that is not a team member', :aggregate_failures do
       post :request_access, params: { group_id: group }
 
       expect(controller).to set_flash.to 'Your request for access has been queued for review.'
@@ -469,7 +476,7 @@ RSpec.describe Groups::GroupMembersController do
           group.add_developer(user)
         end
 
-        it 'returns 403' do
+        it 'returns 403', :aggregate_failures do
           post :approve_access_request, params: { group_id: group, id: member }
 
           expect(response).to have_gitlab_http_status(:forbidden)
@@ -482,7 +489,7 @@ RSpec.describe Groups::GroupMembersController do
           group.add_owner(user)
         end
 
-        it 'adds user to members' do
+        it 'adds user to members', :aggregate_failures do
           post :approve_access_request, params: { group_id: group, id: member }
 
           expect(response).to redirect_to(group_group_members_path(group))

@@ -178,6 +178,7 @@ Example response:
       "ruby",
       "tests"
     ],
+    "draft": false,
     "work_in_progress": false,
     "milestone": {
       "id": 13,
@@ -600,6 +601,7 @@ Example response:
       "ruby",
       "tests"
     ],
+    "draft": false,
     "work_in_progress": false,
     "milestone": {
       "id": 13,
@@ -958,6 +960,7 @@ Example response:
       "ruby",
       "tests"
     ],
+    "draft": false,
     "work_in_progress": false,
     "milestone": {
       "id": 13,

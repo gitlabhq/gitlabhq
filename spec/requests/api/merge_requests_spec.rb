@@ -1186,7 +1186,8 @@ RSpec.describe API::MergeRequests do
       expect(json_response['downvotes']).to eq(1)
       expect(json_response['source_project_id']).to eq(merge_request.source_project.id)
       expect(json_response['target_project_id']).to eq(merge_request.target_project.id)
-      expect(json_response['work_in_progress']).to be_falsy
+      expect(json_response['draft']).to be false
+      expect(json_response['work_in_progress']).to be false
       expect(json_response['merge_when_pipeline_succeeds']).to be_falsy
       expect(json_response['merge_status']).to eq('can_be_merged')
       expect(json_response['should_close_merge_request']).to be_falsy
@@ -1329,22 +1330,23 @@ RSpec.describe API::MergeRequests do
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    context 'Work in Progress' do
-      let!(:merge_request_wip) do
+    context 'Draft' do
+      let!(:merge_request_draft) do
         create(:merge_request,
           author: user,
           assignees: [user],
           source_project: project,
           target_project: project,
-          title: "WIP: Test",
+          title: "Draft: Test",
           created_at: base_time + 1.second
         )
       end
 
       it "returns merge request" do
-        get api("/projects/#{project.id}/merge_requests/#{merge_request_wip.iid}", user)
+        get api("/projects/#{project.id}/merge_requests/#{merge_request_draft.iid}", user)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['draft']).to eq(true)
         expect(json_response['work_in_progress']).to eq(true)
       end
     end
@@ -2522,8 +2524,8 @@ RSpec.describe API::MergeRequests do
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
-    it "returns 405 if merge_request is a work in progress" do
-      merge_request.update_attribute(:title, "WIP: #{merge_request.title}")
+    it "returns 405 if merge_request is a draft" do
+      merge_request.update_attribute(:title, "Draft: #{merge_request.title}")
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
       expect(response).to have_gitlab_http_status(:method_not_allowed)
       expect(json_response['message']).to eq('405 Method Not Allowed')

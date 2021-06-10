@@ -2080,6 +2080,7 @@ Example response:
     "source_project_id": 1,
     "target_project_id": 1,
     "labels": [],
+    "draft": false,
     "work_in_progress": false,
     "milestone": {
       "id": 27,
@@ -2231,6 +2232,7 @@ Example response:
     "closed_at": null,
     "closed_by": null,
     "labels": [],
+    "draft": false,
     "work_in_progress": false,
     "milestone": null,
     "merge_when_pipeline_succeeds": false,

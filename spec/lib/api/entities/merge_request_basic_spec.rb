@@ -9,9 +9,20 @@ RSpec.describe ::API::Entities::MergeRequestBasic do
   let_it_be(:labels) { create_list(:label, 3) }
   let_it_be(:merge_requests) { create_list(:labeled_merge_request, 10, :unique_branches, labels: labels) }
 
+  let_it_be(:entity) { described_class.new(merge_request) }
+
   # This mimics the behavior of the `Grape::Entity` serializer
   def present(obj)
     described_class.new(obj).presented
+  end
+
+  subject { entity.as_json }
+
+  it 'includes basic fields' do
+    is_expected.to include(
+      draft: merge_request.draft?,
+      work_in_progress: merge_request.draft?
+    )
   end
 
   context "with :with_api_entity_associations scope" do

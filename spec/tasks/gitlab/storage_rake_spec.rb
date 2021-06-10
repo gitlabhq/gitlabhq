@@ -88,6 +88,27 @@ RSpec.describe 'rake gitlab:storage:*', :silence_stdout do
     end
   end
 
+  shared_examples 'wait until database is ready' do
+    it 'checks if the database is ready once' do
+      expect(Gitlab::Database).to receive(:exists?).once
+
+      run_rake_task(task)
+    end
+
+    context 'handles custom env vars' do
+      before do
+        stub_env('MAX_DATABASE_CONNECTION_CHECKS' => 3)
+        stub_env('MAX_DATABASE_CONNECTION_INTERVAL' => 0.1)
+      end
+
+      it 'tries for 3 times, polling every 0.1 seconds' do
+        expect(Gitlab::Database).to receive(:exists?).exactly(3).times.and_return(false)
+
+        run_rake_task(task)
+      end
+    end
+  end
+
   describe 'gitlab:storage:migrate_to_hashed' do
     let(:task) { 'gitlab:storage:migrate_to_hashed' }
 
@@ -198,6 +219,10 @@ RSpec.describe 'rake gitlab:storage:*', :silence_stdout do
       let(:task) { 'gitlab:storage:legacy_projects' }
       let(:create_collection) { create_list(:project, 3, :legacy_storage) }
     end
+
+    it_behaves_like 'wait until database is ready' do
+      let(:task) { 'gitlab:storage:legacy_projects' }
+    end
   end
 
   describe 'gitlab:storage:list_legacy_projects' do
@@ -226,6 +251,10 @@ RSpec.describe 'rake gitlab:storage:*', :silence_stdout do
       let(:task) { 'gitlab:storage:legacy_attachments' }
       let(:project) { create(:project, storage_version: 1) }
       let(:create_collection) { create_list(:upload, 3, model: project) }
+    end
+
+    it_behaves_like 'wait until database is ready' do
+      let(:task) { 'gitlab:storage:legacy_attachments' }
     end
   end
 

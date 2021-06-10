@@ -798,6 +798,7 @@ Example response:
       "source_project_id":35,
       "target_project_id":35,
       "labels":[ ],
+      "draft":false,
       "work_in_progress":false,
       "milestone":null,
       "merge_when_pipeline_succeeds":false,
