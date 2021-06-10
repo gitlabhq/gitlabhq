@@ -66,6 +66,7 @@ RSpec.describe 'factories' do
   # associations must be unique and cannot be reused, or the factory default
   # is being mutated.
   skip_factory_defaults = %i[
+    ci_job_token_project_scope_link
     evidence
     exported_protected_branch
     fork_network_member

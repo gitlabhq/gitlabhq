@@ -14,6 +14,17 @@ To enable cluster integrations, first add a Kubernetes cluster to a GitLab
 [group](../group/clusters/index.md#group-level-kubernetes-clusters) or
 [instance](../instance/clusters/index.md).
 
+You can install your applications manually as shown in the following sections, or use the
+[Cluster management project template](management_project_template.md) that automates the
+installation.
+
+Although, the [Cluster management project template](management_project_template.md) still
+requires that you manually do the last steps of these sections,
+[Enable Prometheus integration for your cluster](#enable-prometheus-integration-for-your-cluster)
+or [Enable Elastic Stack integration for your cluster](#enable-elastic-stack-integration-for-your-cluster)
+depending on which application you are installing. We plan to also automate this step in the future,
+see the [opened issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326565).
+
 ## Prometheus cluster integration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55244) in GitLab 13.11.
@@ -43,10 +54,8 @@ it up using [Helm](https://helm.sh/) as follows:
 kubectl create ns gitlab-managed-apps
 
 # Download Helm chart values that is compatible with the requirements above.
-# You should substitute the tag that corresponds to the GitLab version in the URL
-# - https://gitlab.com/gitlab-org/gitlab/-/raw/<tag>/vendor/prometheus/values.yaml
-#
-wget https://gitlab.com/gitlab-org/gitlab/-/raw/v13.9.0-ee/vendor/prometheus/values.yaml
+# These are included in the Cluster Management project template.
+wget https://gitlab.com/gitlab-org/project-templates/cluster-management/-/raw/master/applications/prometheus/values.yaml
 
 # Add the Prometheus community Helm chart repository
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -103,10 +112,8 @@ running:
 kubectl create namespace gitlab-managed-apps
 
 # Download Helm chart values that is compatible with the requirements above.
-# You should substitute the tag that corresponds to the GitLab version in the URL
-# - https://gitlab.com/gitlab-org/gitlab/-/raw/<tag>/vendor/elastic_stack/values.yaml
-#
-wget https://gitlab.com/gitlab-org/gitlab/-/raw/v13.9.0-ee/vendor/elastic_stack/values.yaml
+# These are included in the Cluster Management project template.
+wget https://gitlab.com/gitlab-org/project-templates/cluster-management/-/raw/master/applications/elastic-stack/values.yaml
 
 # Add the GitLab Helm chart repository
 helm repo add gitlab https://charts.gitlab.io

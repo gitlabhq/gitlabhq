@@ -215,7 +215,7 @@ click NodeExporter "./architecture.html#node-exporter"
 ### Component legend
 
 - ✅ - Installed by default
-- ⚙ - Requires additional configuration, or GitLab Managed Apps
+- ⚙ - Requires additional configuration
 - ⤓ - Manual installation required
 - ❌ - Not supported or no instructions available
 - N/A - Not applicable

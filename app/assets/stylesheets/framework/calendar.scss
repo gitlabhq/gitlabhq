@@ -30,6 +30,16 @@
     cursor: pointer;
     stroke: $black;
   }
+
+  // `app/assets/javascripts/pages/users/activity_calendar.js` sets this attribute
+  @for $i from 1 through length($calendar-activity-colors) {
+    $color: nth($calendar-activity-colors, $i);
+    $level: $i - 1;
+
+    &[data-level='#{$level}'] {
+      fill: $color;
+    }
+  }
 }
 
 .user-contrib-text {

@@ -84,6 +84,10 @@ module PolicyActor
   def password_expired?
     false
   end
+
+  def from_ci_job_token?
+    false
+  end
 end
 
 PolicyActor.prepend_mod_with('PolicyActor')

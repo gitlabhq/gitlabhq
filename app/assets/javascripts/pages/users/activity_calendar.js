@@ -1,4 +1,3 @@
-import { scaleLinear, scaleThreshold } from 'd3-scale';
 import { select } from 'd3-selection';
 import dateFormat from 'dateformat';
 import $ from 'jquery';
@@ -8,13 +7,21 @@ import axios from '~/lib/utils/axios_utils';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
 import { n__, s__, __ } from '~/locale';
 
-const d3 = { select, scaleLinear, scaleThreshold };
+const d3 = { select };
 
 const firstDayOfWeekChoices = Object.freeze({
   sunday: 0,
   monday: 1,
   saturday: 6,
 });
+
+const CONTRIB_LEGENDS = [
+  { title: __('No contributions'), min: 0 },
+  { title: __('1-9 contributions'), min: 1 },
+  { title: __('10-19 contributions'), min: 10 },
+  { title: __('20-29 contributions'), min: 20 },
+  { title: __('30+ contributions'), min: 30 },
+];
 
 const LOADING_HTML = `
   <div class="text-center">
@@ -42,7 +49,17 @@ function formatTooltipText({ date, count }) {
   return `${contribText}<br /><span class="gl-text-gray-300">${dateDayName} ${dateText}</span>`;
 }
 
-const initColorKey = () => d3.scaleLinear().range(['#acd5f2', '#254e77']).domain([0, 3]);
+// Return the contribution level from the number of contributions
+export const getLevelFromContributions = (count) => {
+  if (count <= 0) {
+    return 0;
+  }
+
+  const nextLevel = CONTRIB_LEGENDS.findIndex(({ min }) => count < min);
+
+  // If there is no higher level, we are at the end
+  return nextLevel >= 0 ? nextLevel - 1 : CONTRIB_LEGENDS.length - 1;
+};
 
 export default class ActivityCalendar {
   constructor(
@@ -111,10 +128,6 @@ export default class ActivityCalendar {
       innerArray.push({ count, date, day });
     }
 
-    // Init color functions
-    this.colorKey = initColorKey();
-    this.color = this.initColor();
-
     // Init the svg element
     this.svg = this.renderSvg(container, group);
     this.renderDays();
@@ -180,9 +193,7 @@ export default class ActivityCalendar {
       .attr('y', (stamp) => this.dayYPos(stamp.day))
       .attr('width', this.daySize)
       .attr('height', this.daySize)
-      .attr('fill', (stamp) =>
-        stamp.count !== 0 ? this.color(Math.min(stamp.count, 40)) : '#ededed',
-      )
+      .attr('data-level', (stamp) => getLevelFromContributions(stamp.count))
       .attr('title', (stamp) => formatTooltipText(stamp))
       .attr('class', 'user-contrib-cell has-tooltip')
       .attr('data-html', true)
@@ -246,48 +257,22 @@ export default class ActivityCalendar {
   }
 
   renderKey() {
-    const keyValues = [
-      __('No contributions'),
-      __('1-9 contributions'),
-      __('10-19 contributions'),
-      __('20-29 contributions'),
-      __('30+ contributions'),
-    ];
-    const keyColors = [
-      '#ededed',
-      this.colorKey(0),
-      this.colorKey(1),
-      this.colorKey(2),
-      this.colorKey(3),
-    ];
-
     this.svg
       .append('g')
       .attr('transform', `translate(18, ${this.daySizeWithSpace * 8 + 16})`)
       .selectAll('rect')
-      .data(keyColors)
+      .data(CONTRIB_LEGENDS)
       .enter()
       .append('rect')
       .attr('width', this.daySize)
       .attr('height', this.daySize)
-      .attr('x', (color, i) => this.daySizeWithSpace * i)
+      .attr('x', (_, i) => this.daySizeWithSpace * i)
       .attr('y', 0)
-      .attr('fill', (color) => color)
-      .attr('class', 'has-tooltip')
-      .attr('title', (color, i) => keyValues[i])
+      .attr('data-level', (_, i) => i)
+      .attr('class', 'user-contrib-cell has-tooltip contrib-legend')
+      .attr('title', (x) => x.title)
       .attr('data-container', 'body')
       .attr('data-html', true);
-  }
-
-  initColor() {
-    const colorRange = [
-      '#ededed',
-      this.colorKey(0),
-      this.colorKey(1),
-      this.colorKey(2),
-      this.colorKey(3),
-    ];
-    return d3.scaleThreshold().domain([0, 10, 20, 30]).range(colorRange);
   }
 
   clickDay(stamp) {

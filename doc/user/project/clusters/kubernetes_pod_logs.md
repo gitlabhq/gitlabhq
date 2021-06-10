@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4752) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26383) to [GitLab Free](https://about.gitlab.com/pricing/) 12.9.
 
-GitLab makes it easy to view the logs of running pods or managed applications in
+GitLab makes it easy to view the logs of running pods in
 [connected Kubernetes clusters](index.md). By displaying the logs directly in GitLab
 in the **Log Explorer**, developers can avoid managing console tools or jumping
 to a different interface. The **Log Explorer** interface provides a set of filters
@@ -18,10 +18,11 @@ above the log file data, depending on your configuration:
 ![Pod logs](img/kubernetes_pod_logs_v12_10.png)
 
 - **Namespace** - Select the environment to display. Users with Maintainer or
-  greater [permissions](../../permissions.md) can also select Managed Apps.
-- **Search** - Only available if the Elastic Stack managed application is installed.
-- **Select time range** - Select the range of time to display. Only available if the
-  Elastic Stack managed application is installed.
+  greater [permissions](../../permissions.md) can also see pods in the
+  `gitlab-managed-apps` namespace.
+- **Search** - Only available if the [Elastic Stack integration](../../clusters/integrations.md#elastic-stack-cluster-integration) is enabled.
+- **Select time range** - Select the range of time to display.
+  Only available if the [Elastic Stack integration](../../clusters/integrations.md#elastic-stack-cluster-integration) is enabled.
 - **Scroll to bottom** **{scroll_down}** - Scroll to the end of the displayed logs.
 - **Refresh** **{retry}** - Reload the displayed logs.
 

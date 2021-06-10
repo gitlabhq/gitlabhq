@@ -717,6 +717,18 @@ $job-line-number-margin: 43px;
 $job-arrow-margin: 55px;
 
 /*
+ * Calendar
+ */
+// See https://gitlab.com/gitlab-org/gitlab/-/issues/332150 to align with Pajamas Design System
+$calendar-activity-colors: (
+  #ededed,
+  #acd5f2,
+  #7fa8c9,
+  #527ba0,
+  #254e77,
+);
+
+/*
 * Commit Page
 */
 $commit-max-width-marker-color: rgba(0, 0, 0, 0);

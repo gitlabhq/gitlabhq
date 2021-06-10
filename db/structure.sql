@@ -41,62 +41,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION table_sync_function_29bc99d6db() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF (TG_OP = 'DELETE') THEN
-  DELETE FROM web_hook_logs_archived where id = OLD.id;
-ELSIF (TG_OP = 'UPDATE') THEN
-  UPDATE web_hook_logs_archived
-  SET web_hook_id = NEW.web_hook_id,
-    trigger = NEW.trigger,
-    url = NEW.url,
-    request_headers = NEW.request_headers,
-    request_data = NEW.request_data,
-    response_headers = NEW.response_headers,
-    response_body = NEW.response_body,
-    response_status = NEW.response_status,
-    execution_duration = NEW.execution_duration,
-    internal_error_message = NEW.internal_error_message,
-    created_at = NEW.created_at,
-    updated_at = NEW.updated_at
-  WHERE web_hook_logs_archived.id = NEW.id;
-ELSIF (TG_OP = 'INSERT') THEN
-  INSERT INTO web_hook_logs_archived (id,
-    web_hook_id,
-    trigger,
-    url,
-    request_headers,
-    request_data,
-    response_headers,
-    response_body,
-    response_status,
-    execution_duration,
-    internal_error_message,
-    created_at,
-    updated_at)
-  VALUES (NEW.id,
-    NEW.web_hook_id,
-    NEW.trigger,
-    NEW.url,
-    NEW.request_headers,
-    NEW.request_data,
-    NEW.response_headers,
-    NEW.response_body,
-    NEW.response_status,
-    NEW.execution_duration,
-    NEW.internal_error_message,
-    NEW.created_at,
-    NEW.updated_at);
-END IF;
-RETURN NULL;
-
-END
-$$;
-
-COMMENT ON FUNCTION table_sync_function_29bc99d6db() IS 'Partitioning migration: table sync for web_hook_logs table';
-
 CREATE FUNCTION trigger_07c94931164e() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -10777,6 +10721,23 @@ CREATE SEQUENCE ci_job_artifacts_id_seq
 
 ALTER SEQUENCE ci_job_artifacts_id_seq OWNED BY ci_job_artifacts.id;
 
+CREATE TABLE ci_job_token_project_scope_links (
+    id bigint NOT NULL,
+    source_project_id bigint NOT NULL,
+    target_project_id bigint NOT NULL,
+    added_by_id bigint,
+    created_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE ci_job_token_project_scope_links_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_job_token_project_scope_links_id_seq OWNED BY ci_job_token_project_scope_links.id;
+
 CREATE TABLE ci_job_variables (
     id bigint NOT NULL,
     key character varying NOT NULL,
@@ -19351,22 +19312,6 @@ CREATE SEQUENCE vulnerability_user_mentions_id_seq
 
 ALTER SEQUENCE vulnerability_user_mentions_id_seq OWNED BY vulnerability_user_mentions.id;
 
-CREATE TABLE web_hook_logs_archived (
-    id integer NOT NULL,
-    web_hook_id integer NOT NULL,
-    trigger character varying,
-    url character varying,
-    request_headers text,
-    request_data text,
-    response_headers text,
-    response_body text,
-    response_status character varying,
-    execution_duration double precision,
-    internal_error_message character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
 CREATE SEQUENCE web_hook_logs_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -19698,6 +19643,8 @@ ALTER TABLE ONLY ci_group_variables ALTER COLUMN id SET DEFAULT nextval('ci_grou
 ALTER TABLE ONLY ci_instance_variables ALTER COLUMN id SET DEFAULT nextval('ci_instance_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_job_artifacts ALTER COLUMN id SET DEFAULT nextval('ci_job_artifacts_id_seq'::regclass);
+
+ALTER TABLE ONLY ci_job_token_project_scope_links ALTER COLUMN id SET DEFAULT nextval('ci_job_token_project_scope_links_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_job_variables ALTER COLUMN id SET DEFAULT nextval('ci_job_variables_id_seq'::regclass);
 
@@ -20880,6 +20827,9 @@ ALTER TABLE ONLY ci_instance_variables
 
 ALTER TABLE ONLY ci_job_artifacts
     ADD CONSTRAINT ci_job_artifacts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_job_token_project_scope_links
+    ADD CONSTRAINT ci_job_token_project_scope_links_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_job_variables
     ADD CONSTRAINT ci_job_variables_pkey PRIMARY KEY (id);
@@ -22129,9 +22079,6 @@ ALTER TABLE ONLY vulnerability_statistics
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT vulnerability_user_mentions_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY web_hook_logs_archived
-    ADD CONSTRAINT web_hook_logs_archived_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY web_hook_logs
     ADD CONSTRAINT web_hook_logs_pkey PRIMARY KEY (id, created_at);
 
@@ -22334,6 +22281,8 @@ CREATE INDEX finding_evidence_responses_on_finding_evidences_id ON vulnerability
 CREATE INDEX finding_evidences_on_vulnerability_occurrence_id ON vulnerability_finding_evidences USING btree (vulnerability_occurrence_id);
 
 CREATE INDEX finding_links_on_vulnerability_occurrence_id ON vulnerability_finding_links USING btree (vulnerability_occurrence_id);
+
+CREATE UNIQUE INDEX i_ci_job_token_project_scope_links_on_source_and_target_project ON ci_job_token_project_scope_links USING btree (source_project_id, target_project_id);
 
 CREATE INDEX idx_analytics_devops_adoption_segments_on_namespace_id ON analytics_devops_adoption_segments USING btree (namespace_id);
 
@@ -22814,6 +22763,10 @@ CREATE UNIQUE INDEX index_ci_job_artifacts_on_job_id_and_file_type ON ci_job_art
 CREATE INDEX index_ci_job_artifacts_on_project_id ON ci_job_artifacts USING btree (project_id);
 
 CREATE INDEX index_ci_job_artifacts_on_project_id_for_security_reports ON ci_job_artifacts USING btree (project_id) WHERE (file_type = ANY (ARRAY[5, 6, 7, 8]));
+
+CREATE INDEX index_ci_job_token_project_scope_links_on_added_by_id ON ci_job_token_project_scope_links USING btree (added_by_id);
+
+CREATE INDEX index_ci_job_token_project_scope_links_on_target_project_id ON ci_job_token_project_scope_links USING btree (target_project_id);
 
 CREATE INDEX index_ci_job_variables_on_job_id ON ci_job_variables USING btree (job_id);
 
@@ -24973,10 +24926,6 @@ CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id ON vulnerabili
 
 CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id_and_note_id ON vulnerability_user_mentions USING btree (vulnerability_id, note_id);
 
-CREATE INDEX index_web_hook_logs_on_created_at_and_web_hook_id ON web_hook_logs_archived USING btree (created_at, web_hook_id);
-
-CREATE INDEX index_web_hook_logs_on_web_hook_id ON web_hook_logs_archived USING btree (web_hook_id);
-
 CREATE INDEX index_web_hook_logs_part_on_created_at_and_web_hook_id ON ONLY web_hook_logs USING btree (created_at, web_hook_id);
 
 CREATE INDEX index_web_hook_logs_part_on_web_hook_id ON ONLY web_hook_logs USING btree (web_hook_id);
@@ -25358,8 +25307,6 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62_pkey;
 
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63_pkey;
-
-CREATE TRIGGER table_sync_trigger_b99eb6998c AFTER INSERT OR DELETE OR UPDATE ON web_hook_logs FOR EACH ROW EXECUTE FUNCTION table_sync_function_29bc99d6db();
 
 CREATE TRIGGER trigger_07c94931164e BEFORE INSERT OR UPDATE ON push_event_payloads FOR EACH ROW EXECUTE FUNCTION trigger_07c94931164e();
 
@@ -26493,6 +26440,9 @@ ALTER TABLE ONLY metrics_dashboard_annotations
 ALTER TABLE ONLY wiki_page_slugs
     ADD CONSTRAINT fk_rails_358b46be14 FOREIGN KEY (wiki_page_meta_id) REFERENCES wiki_page_meta(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ci_job_token_project_scope_links
+    ADD CONSTRAINT fk_rails_35f7f506ce FOREIGN KEY (added_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY board_labels
     ADD CONSTRAINT fk_rails_362b0600a3 FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE CASCADE;
 
@@ -26627,6 +26577,9 @@ ALTER TABLE ONLY upcoming_reconciliations
 
 ALTER TABLE ONLY ci_pipeline_artifacts
     ADD CONSTRAINT fk_rails_4a70390ca6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_job_token_project_scope_links
+    ADD CONSTRAINT fk_rails_4b2ee3290b FOREIGN KEY (source_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_rails_4b8c694a6c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -26823,9 +26776,6 @@ ALTER TABLE ONLY operations_feature_flags_clients
 ALTER TABLE ONLY namespace_admin_notes
     ADD CONSTRAINT fk_rails_666166ea7b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY web_hook_logs_archived
-    ADD CONSTRAINT fk_rails_666826e111 FOREIGN KEY (web_hook_id) REFERENCES web_hooks(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY analytics_cycle_analytics_project_value_streams
     ADD CONSTRAINT fk_rails_669f4ba293 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -26843,6 +26793,9 @@ ALTER TABLE ONLY vulnerability_finding_evidence_headers
 
 ALTER TABLE ONLY geo_hashed_storage_migrated_events
     ADD CONSTRAINT fk_rails_687ed7d7c5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_job_token_project_scope_links
+    ADD CONSTRAINT fk_rails_6904b38465 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY plan_limits
     ADD CONSTRAINT fk_rails_69f8b6184f FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE CASCADE;

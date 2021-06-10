@@ -75,6 +75,11 @@ class ProjectPolicy < BasePolicy
     user.is_a?(DeployToken) && user.has_access_to?(project) && user.write_package_registry
   end
 
+  desc "If user is authenticated via CI job token then the target project should be in scope"
+  condition(:project_allowed_for_job_token) do
+    !@user&.from_ci_job_token? || @user.ci_job_token_scope.includes?(project)
+  end
+
   with_scope :subject
   condition(:forking_allowed) do
     @subject.feature_available?(:forking, @user)
@@ -507,6 +512,8 @@ class ProjectPolicy < BasePolicy
     enable :public_access
     enable :read_project_for_iids
   end
+
+  rule { ~project_allowed_for_job_token }.prevent_all
 
   rule { can?(:public_access) }.policy do
     enable :read_package

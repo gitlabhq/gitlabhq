@@ -6901,13 +6901,13 @@ msgstr ""
 msgid "ClusterAgent|You have insufficient permissions to delete this cluster agent"
 msgstr ""
 
+msgid "ClusterApplicationsRemoved|One-click application management was removed in GitLab 14.0. Your applications are still installed in your cluster, and integrations continue working."
+msgstr ""
+
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|%{boldStart}Note:%{boldEnd} Requires Ingress to be installed."
-msgstr ""
-
-msgid "ClusterIntegration|%{externalIp}.nip.io"
 msgstr ""
 
 msgid "ClusterIntegration|%{linkStart}More information%{linkEnd}"
@@ -6971,9 +6971,6 @@ msgid "ClusterIntegration|Allows GitLab to query a specifically configured in-cl
 msgstr ""
 
 msgid "ClusterIntegration|Allows GitLab to query a specifically configured in-cluster Prometheus for metrics."
-msgstr ""
-
-msgid "ClusterIntegration|Alternatively, "
 msgstr ""
 
 msgid "ClusterIntegration|Amazon EKS"
@@ -7859,9 +7856,6 @@ msgid "ClusterIntegration|Zone"
 msgstr ""
 
 msgid "ClusterIntegration|access to Google Kubernetes Engine"
-msgstr ""
-
-msgid "ClusterIntegration|can be used instead of a custom domain. "
 msgstr ""
 
 msgid "ClusterIntegration|installed via %{linkStart}Cloud Run%{linkEnd}"
@@ -25487,9 +25481,6 @@ msgstr ""
 msgid "Project path"
 msgstr ""
 
-msgid "Project scanning help page"
-msgstr ""
-
 msgid "Project security status"
 msgstr ""
 
@@ -34818,21 +34809,6 @@ msgstr ""
 msgid "UnscannedProjects|60 or more days"
 msgstr ""
 
-msgid "UnscannedProjects|Default branch scanning by project"
-msgstr ""
-
-msgid "UnscannedProjects|Out of date"
-msgstr ""
-
-msgid "UnscannedProjects|Project scanning"
-msgstr ""
-
-msgid "UnscannedProjects|Untested"
-msgstr ""
-
-msgid "UnscannedProjects|Your projects are up do date! Nice job!"
-msgstr ""
-
 msgid "Unschedule job"
 msgstr ""
 
@@ -37998,6 +37974,9 @@ msgid "can only be changed by a group admin."
 msgstr ""
 
 msgid "can't be enabled because signed commits are required for this project"
+msgstr ""
+
+msgid "can't be the same as the source project"
 msgstr ""
 
 msgid "can't include: %{invalid_storages}"

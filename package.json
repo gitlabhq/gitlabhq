@@ -110,7 +110,6 @@
     "css-loader": "^2.1.1",
     "d3": "^5.16.0",
     "d3-sankey": "^0.12.3",
-    "d3-scale": "^2.2.2",
     "d3-selection": "^1.2.0",
     "dateformat": "^4.5.1",
     "deckar01-task_list": "^2.3.1",

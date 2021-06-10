@@ -27,8 +27,8 @@ RSpec.describe 'Cluster Health board', :js, :kubeclient, :use_clean_rails_memory
     expect(page).to have_css('.cluster-health-graphs')
   end
 
-  context 'no prometheus enabled' do
-    it 'shows install prometheus message' do
+  context 'no prometheus available' do
+    it 'shows enable Prometheus message' do
       visit cluster_path
 
       click_link 'Health'
@@ -82,12 +82,12 @@ RSpec.describe 'Cluster Health board', :js, :kubeclient, :use_clean_rails_memory
 
     def stub_empty_response
       stub_prometheus_request(/prometheus-prometheus-server/, status: 204, body: {})
-      stub_prometheus_request(/prometheus\/api\/v1/, status: 204, body: {})
+      stub_prometheus_request(%r{prometheus/api/v1}, status: 204, body: {})
     end
 
     def stub_connected
       stub_prometheus_request(/prometheus-prometheus-server/, body: prometheus_values_body)
-      stub_prometheus_request(/prometheus\/api\/v1/, body: prometheus_values_body)
+      stub_prometheus_request(%r{prometheus/api/v1}, body: prometheus_values_body)
     end
   end
 end

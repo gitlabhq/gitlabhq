@@ -73,7 +73,7 @@ production services. GitLab provides centralized, aggregated log storage for you
 distributed application, enabling you to collect logs across multiple services and
 infrastructure.
 
-- [View logs of pods or managed applications](../user/project/clusters/kubernetes_pod_logs.md)
+- [View logs of pods](../user/project/clusters/kubernetes_pod_logs.md)
   in connected Kubernetes clusters.
 
 ## Manage your infrastructure in code

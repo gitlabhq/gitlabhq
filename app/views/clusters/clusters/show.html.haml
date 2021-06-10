@@ -27,9 +27,6 @@
   provider_type: @cluster.provider_type,
   pre_installed_knative: @cluster.knative_pre_installed? ? 'true': 'false',
   help_path: help_page_path('user/project/clusters/index.md'),
-  helm_help_path: help_page_path('user/clusters/applications.md', anchor: 'helm'),
-  ingress_help_path: help_page_path('user/clusters/applications.md', anchor: 'determining-the-external-endpoint-automatically'),
-  ingress_dns_help_path: help_page_path('user/clusters/applications.md', anchor: 'pointing-your-dns-at-the-external-endpoint'),
   environments_help_path: help_page_path('ci/environments/index.md', anchor: 'create-a-static-environment'),
   clusters_help_path: help_page_path('user/project/clusters/index.md', anchor: 'deploying-to-a-kubernetes-cluster'),
   deploy_boards_help_path: help_page_path('user/project/deploy_boards.md', anchor: 'enabling-deploy-boards'),
@@ -51,13 +48,20 @@
 
   = render 'banner'
 
+  .gl-alert.gl-alert-warning{ role: 'alert' }
+    = sprite_icon('warning', css_class: "gl-alert-icon gl-alert-icon-no-title gl-icon")
+    %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss'), data: { testid: 'dismiss-one-click-application-removal' } }
+      = sprite_icon('close', css_class: 'gl-icon')
+    .gl-alert-body
+      = s_('ClusterApplicationsRemoved|One-click application management was removed in GitLab 14.0. Your applications are still installed in your cluster, and integrations continue working.')
+      = link_to _('More information.'), help_page_path("user/clusters/applications"), target: '_blank'
+
   - if cluster_created?(@cluster)
     .js-toggle-container
       %ul.nav-links.mobile-separator.nav.nav-tabs{ role: 'tablist' }
         = render 'details_tab'
         = render_if_exists 'clusters/clusters/environments_tab'
         = render 'clusters/clusters/health_tab'
-        = render 'applications_tab'
         = render 'integrations_tab'
         = render 'advanced_settings_tab'
 

@@ -16,10 +16,10 @@ critical. For GitLab to display your information in charts, you must:
    For an overview, see [How to instrument Prometheus metrics in GitLab](https://www.youtube.com/watch?v=tuI2oJ3TTB4).
 1. **Expose metrics for capture** - Make logs, metrics, and traces available for capture.
 1. [**Configure Prometheus to gather metrics**](#configure-prometheus-to-gather-metrics) -
-   Deploy managed applications like Elasticsearch, Prometheus, and Jaeger to gather
+   Use applications like Elasticsearch, Prometheus, and Jaeger to gather
    the data you've exposed.
 1. **GitLab collects metrics** - GitLab uses Prometheus to scrape the data you've
-   captured in your managed apps, and prepares the data for display. To learn more, read
+   captured in your applications, and prepares the data for display. To learn more, read
    [Collect and process metrics](#collect-and-process-metrics).
 1. **Display charts in the GitLab user interface** - GitLab converts your metrics
    into easy-to-read charts on a default dashboard. You can create as many custom charts
@@ -34,30 +34,10 @@ your Prometheus integration depends on where your apps are running:
 - **For manually-configured Prometheus** -
   [Specify your Prometheus server](../../user/project/integrations/prometheus.md#manual-configuration-of-prometheus),
   and define at least one environment.
-- **For GitLab-managed Prometheus** - GitLab can
-  [deploy and manage Prometheus](../../user/project/integrations/prometheus.md#managed-prometheus-on-kubernetes) for you.
-  You must also complete a code deployment, as described in
-  [Deploy code with GitLab-managed Prometheus](#deploy-code-with-gitlab-managed-prometheus),
-  for the **Operations > Metrics** page to contain data.
-
-### Deploy code with GitLab-managed Prometheus
-
-For GitLab-managed Prometheus, you can set up [Auto DevOps](../../topics/autodevops/index.md)
-to quickly create a deployment:
-
-1. Navigate to your project's **Operations > Kubernetes** page.
-1. Ensure that, in addition to Prometheus, you also have GitLab Runner and Ingress
-   installed.
-1. After installing Ingress, copy its endpoint.
-1. Navigate to your project's **Settings > CI/CD** page. In the
-   **Auto DevOps** section, select a deployment strategy and save your changes.
-1. On the same page, in the **Variables** section, add a variable named
-   `KUBE_INGRESS_BASE_DOMAIN` with the value of the Ingress endpoint you
-   copied previously. Leave the type as **Variable**.
-1. Navigate to your project's **{rocket}** **CI/CD > Pipelines** page, and run a
-   pipeline on any branch.
-1. When the pipeline has run successfully, graphs are available on the
-   **Operations > Metrics** page.
+- **For a cluster integrated Prometheus** - GitLab can query
+  [an in-cluster Prometheus](../../user/clusters/integrations.md#prometheus-cluster-integration).
+  You must also complete a code deployment to your cluster for the **Operations > Metrics**
+  page to contain data. You can do this using [Auto DevOps](../../topics/autodevops/quick_start_guide.md).
 
 ![Monitoring Dashboard](img/prometheus_monitoring_dashboard_v13_3.png)
 

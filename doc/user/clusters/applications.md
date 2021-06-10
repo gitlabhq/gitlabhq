@@ -6,27 +6,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Managed Apps (DEPRECATED) **(FREE)**
 
+NOTE:
+The new recommended way to manage cluster applications is to use the [cluster management project template](management_project_template.md).
+If you want to migrate your GitLab managed apps management to this template, reference to [migrating from GitLab managed apps to project template](migrating_from_gma_to_project_template.md).
+
 **GitLab Managed Apps** was created to help you configure applications in your
 cluster directly from GitLab. You could use this feature through two different
 methods: "one-click install" and "CI/CD template". Both methods are **deprecated**:
 
-- The **one-click install** method was deprecated in GitLab 13.9 and **will be
-  removed** in GitLab 14.0.
+- The **one-click install** method was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63348) in GitLab 14.0.
 - The **CI/CD template method** was deprecated in GitLab 13.12 and is scheduled
   to be removed in GitLab 15.0.
 
 Both methods were limiting as you couldn't fully customize your third-party apps installed
 through GitLab Managed Apps. Therefore, we decided to deprecate this feature and provide
 better [GitOps-driven alternatives](https://about.gitlab.com/direction/configure/kubernetes_management/#gitlab-managed-applications) to our users, such as [cluster integrations](integrations.md#cluster-integrations) and [cluster management project](management_project.md).
-
-Read the sections below according to the installation method you chose to
-learn how to proceed to keep your apps up and running:
-
-- [One-click install method](#install-with-one-click-deprecated)
-- [CI/CD template method](#install-using-gitlab-cicd-deprecated)
-
-NOTE:
-Despite being deprecated, the recommended way for installing GitLab integrated applications is by the GitLab CI/CD method presented below. We are working on a [cluster management project template](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) with a simple upgrade path from the CI/CD based method.
 
 ## Install using GitLab CI/CD (DEPRECATED)
 
@@ -37,8 +31,8 @@ WARNING:
 The GitLab Managed Apps CI/CD installation method was [deprecated in 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/327908).
 Your applications continue to work. However, we no longer support and maintain the GitLab CI/CD template for
 Managed Apps (`Managed-Cluster-Applications.gitlab-ci.yml`).
-As a replacement, we are working on a [cluster management project template](https://gitlab.com/gitlab-org/gitlab/-/issues/327908),
-still to be released.
+The new recommended way to manage cluster applications is to use the [cluster management project template](management_project_template.md).
+If you want to migrate your GitLab managed apps management to this template, reference to [migrating from GitLab managed apps to project template](migrating_from_gma_to_project_template.md).
 
 The CI/CD template was the primary method for installing applications to clusters via GitLab Managed Apps
 and customize them through Helm.
@@ -821,11 +815,6 @@ management project. Refer to the
 [chart](https://gitlab.com/gitlab-org/charts/elastic-stack) for all
 available configuration options.
 
-NOTE:
-In this alpha implementation of installing Elastic Stack through CI, reading the
-environment logs through Elasticsearch is unsupported. This is supported if
-[installed with the UI](#elastic-stack).
-
 Support for installing the Elastic Stack managed application is provided by the
 GitLab APM group. If you run into unknown issues,
 [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
@@ -1033,6 +1022,17 @@ GitLab Container Security group. If you run into unknown issues,
 at least 2 people from the
 [Container Security group](https://about.gitlab.com/handbook/product/categories/#container-security-group).
 
+## Install with one click (REMOVED)
+
+> [Removed](https://gitlab.com/groups/gitlab-org/-/epics/4280) in GitLab 14.0.
+
+The one-click installation method was deprecated in GitLab 13.9 and removed in [GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
+The removal does not break nor uninstall any apps you have installed, it only
+removes the "Applications" tab from the cluster page.
+Follow the process to [take ownership of your GitLab Managed Apps](#take-ownership-of-your-gitlab-managed-apps).
+
+If you are not yet on GitLab 14.0 or later, you can refer to [an older version of this document](https://docs.gitlab.com/13.12/ee/user/clusters/applications.html#install-with-one-click-deprecated).
+
 ## Browse applications logs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36769) in GitLab 13.2.
@@ -1040,558 +1040,11 @@ at least 2 people from the
 Logs produced by pods running **GitLab Managed Apps** can be browsed using
 [**Log Explorer**](../project/clusters/kubernetes_pod_logs.md).
 
-## Install with one click (DEPRECATED)
-
-WARNING:
-The one-click installation method was deprecated in GitLab 13.9 and will be removed in [GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
-The removal does not break nor uninstall any apps you have installed but removes the GitLab UI page
-for installing and updating your GitLab Managed Apps.
-Follow the process to [take ownership of your GitLab Managed Apps](#take-ownership-of-your-gitlab-managed-apps).
-
-Applications managed by GitLab are installed onto the `gitlab-managed-apps`
-namespace. This namespace:
-
-- Is different from the namespace used for project deployments.
-- Is created once.
-- Has a non-configurable name.
-
-To view a list of available applications to install for a:
-
-- [Project-level cluster](../project/clusters/index.md), navigate to your project's
-  **Operations > Kubernetes**.
-- [Group-level cluster](../group/clusters/index.md), navigate to your group's
-  **Kubernetes** page.
-
-You can install the following applications with one click:
-
-- [Helm](#helm)
-- [Ingress](#ingress)
-- [cert-manager](#cert-manager)
-- [Prometheus](#prometheus)
-- [GitLab Runner](#gitlab-runner)
-- [JupyterHub](#jupyterhub)
-- [Knative](#knative)
-- [Crossplane](#crossplane)
-- [Elastic Stack](#elastic-stack)
-
-With the exception of Knative, the applications are installed in a dedicated
-namespace called `gitlab-managed-apps`.
-
-Some applications are installable only for a project-level cluster.
-Support for installing these applications in a group-level cluster is
-planned for future releases.
-For updates, see the [issue tracking progress](https://gitlab.com/gitlab-org/gitlab/-/issues/24411).
-
-WARNING:
-If you have an existing Kubernetes cluster with Helm already installed,
-you should be careful as GitLab cannot detect it. In this case, installing
-Helm with the applications results in the cluster having it twice, which
-can lead to confusion during deployments.
-
-In GitLab versions 11.6 and greater, Helm is upgraded to the latest version
-supported by GitLab before installing any of the applications.
-
-### Helm
-
-> - Introduced in GitLab 10.2 for project-level clusters.
-> - Introduced in GitLab 11.6 for group-level clusters.
-> - [Uses a local Tiller](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.2 and later.
-> - [Uses Helm 3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46267) for clusters created with GitLab 13.6 and later.
-> - [Offers legacy Tiller removal](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47457) in GitLab 13.7 and later.
-
-[Helm](https://helm.sh/docs/) is a package manager for Kubernetes and is
-used to install the GitLab-managed apps. GitLab runs each `helm` command
-in a pod in the `gitlab-managed-apps` namespace inside the cluster.
-
-- For clusters created in GitLab 13.6 and newer, GitLab uses Helm 3 to manage
-  applications.
-- For clusters created on versions of GitLab prior to 13.6, GitLab uses Helm 2
-  with a local [Tiller](https://v2.helm.sh/docs/glossary/#tiller) server. Prior
-  to [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/209736), GitLab
-  used an in-cluster Tiller server in the `gitlab-managed-apps` namespace. You
-  can safely uninstall the server from the GitLab application page if you have
-  previously installed it. This doesn't affect your other applications.
-
-The GitLab Helm integration does not support installing applications behind a proxy,
-but a [workaround](../../topics/autodevops/index.md#install-applications-behind-a-proxy)
-is available.
-
-#### Upgrade a cluster to Helm 3
-
-GitLab does not offer a way to migrate existing application management
-on existing clusters from Helm 2 to Helm 3. To migrate a cluster to Helm 3:
-
-1. Uninstall all applications on your cluster.
-1. [Remove the cluster integration](../project/clusters/add_remove_clusters.md#removing-integration).
-1. [Re-add the cluster](../project/clusters/add_remove_clusters.md#existing-kubernetes-cluster) as
-   an existing cluster.
-
-### cert-manager
-
-> Introduced in GitLab 11.6 for project- and group-level clusters.
-
-[cert-manager](https://cert-manager.io/docs/) is a native Kubernetes certificate
-management controller that helps with issuing certificates. Installing
-cert-manager on your cluster issues a certificate by [Let's Encrypt](https://letsencrypt.org/)
-and ensures that certificates are valid and up-to-date.
-
-The chart used to install this application depends on the version of GitLab used. In:
-
-- GitLab 12.3 and newer, the [`jetstack/cert-manager`](https://github.com/jetstack/cert-manager)
-  chart is used with a
-  [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/cert_manager/values.yaml)
-  file.
-- GitLab 12.2 and older, the
-  [`stable/cert-manager`](https://github.com/helm/charts/tree/master/stable/cert-manager)
-  chart was used.
-
-If you installed cert-manager prior to GitLab 12.3, Let's Encrypt
-[blocks requests](https://community.letsencrypt.org/t/blocking-old-cert-manager-versions/98753)
-from older versions of `cert-manager`. To resolve this:
-
-1. [Back up any additional configuration](https://cert-manager.io/docs/tutorials/backup/).
-1. Uninstall cert-manager.
-1. Install cert-manager again.
-
-### GitLab Runner
-
-> - Introduced in GitLab 10.6 for project-level clusters.
-> - Introduced in GitLab 11.10 for group-level clusters.
-
-[GitLab Runner](https://docs.gitlab.com/runner/) is the open source project that
-is used to run your jobs and send the results back to GitLab. It's used in
-conjunction with [GitLab CI/CD](../../ci/README.md), the open-source continuous
-integration service included with GitLab that coordinates the jobs.
-
-If the project is on GitLab.com, [shared runners](../gitlab_com/index.md#shared-runners)
-are available. You don't have to deploy one if they are enough for your
-needs. If a project-specific runner is desired, or there are no shared runners,
-you can deploy one.
-
-The deployed runner is set as **privileged**. Root access to the underlying
-server is required to build Docker images, so it's the default. Be sure to read
-the [security implications](../project/clusters/index.md#security-implications)
-before deploying one.
-
-The [`runner/gitlab-runner`](https://gitlab.com/gitlab-org/charts/gitlab-runner)
-chart is used to install this application, using
-[a preconfigured `values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml)
-file. Customizing the installation by modifying this file is not supported. This
-also means you cannot modify `config.toml` file for this Runner. If you want to
-have that possibility and still deploy Runner in Kubernetes, consider using the
-[Cluster management project](management_project.md) or installing Runner manually
-via [GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kubernetes.html).
-
-### Ingress
-
-> - Introduced in GitLab 10.2 for project-level clusters.
-> - Introduced in GitLab 11.6 for group-level clusters.
-
-[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
-provides load balancing, SSL termination, and name-based virtual hosting
-out of the box. It acts as a web proxy for your applications and is useful
-if you want to use [Auto DevOps](../../topics/autodevops/index.md) or deploy your own web apps.
-
-The Ingress Controller installed is
-[Ingress-NGINX](https://kubernetes.io/docs/concepts/services-networking/ingress/),
-which is supported by the Kubernetes community.
-
-With the following procedure, a load balancer must be installed in your cluster
-to obtain the endpoint. You can use either
-Ingress, or Knative's own load balancer ([Istio](https://istio.io)) if using Knative.
-
-To publish your web application, you first need to find the endpoint, which is either an IP
-address or a hostname associated with your load balancer.
-
-To install it, click on the **Install** button for Ingress. GitLab attempts
-to determine the external endpoint and it should be available in a few minutes.
-
-#### Determining the external endpoint automatically
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17052) in GitLab 10.6.
-
-After you install Ingress, the external endpoint should be available in a few minutes.
-
-NOTE:
-This endpoint can be used for the
-[Auto DevOps base domain](../../topics/autodevops/index.md#auto-devops-base-domain)
-using the `KUBE_INGRESS_BASE_DOMAIN` environment variable.
-
-If the endpoint doesn't appear and your cluster runs on Google Kubernetes Engine:
-
-1. [Examine your Kubernetes cluster](https://console.cloud.google.com/kubernetes)
-   on Google Kubernetes Engine to ensure there are no errors on its nodes.
-1. Ensure you have enough [Quotas](https://console.cloud.google.com/iam-admin/quotas)
-   on Google Kubernetes Engine. For more information, see
-   [Resource Quotas](https://cloud.google.com/compute/quotas).
-1. Review [Google Cloud's Status](https://status.cloud.google.com/) for service
-   disruptions.
-
-The [`stable/nginx-ingress`](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
-chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/ingress/values.yaml)
-file.
-
-After installing, you may see a `?` for **Ingress IP Address** depending on the
-cloud provider. For EKS specifically, this is because the ELB is created
-with a DNS name, not an IP address. If GitLab is still unable to
-determine the endpoint of your Ingress or Knative application, you can
-[determine it manually](#determining-the-external-endpoint-manually).
-
-#### Determining the external endpoint manually
-
-See the [Base domain section](../project/clusters/index.md#base-domain) for a
-guide on how to determine the external endpoint manually.
-
-#### Using a static IP
-
-By default, an ephemeral external IP address is associated to the cluster's load
-balancer. If you associate the ephemeral IP with your DNS and the IP changes,
-your apps aren't reachable, and you'd have to change the DNS record again.
-To avoid that, change it into a static reserved IP.
-
-Read how to [promote an ephemeral external IP address in GKE](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip).
-
-#### Pointing your DNS at the external endpoint
-
-After you have set up the external endpoint, associate it with a
-[wildcard DNS record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) (such
-as `*.example.com.`) to reach your apps. If your external endpoint is an IP
-address, use an A record. If your external endpoint is a hostname, use a CNAME
-record.
-
-### JupyterHub
-
-> - Introduced in GitLab 11.0 for project-level clusters.
-> - Introduced in GitLab 12.3 for group and instance-level clusters.
-
-[JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service
-for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/)
-provide a web-based interactive programming environment used for data analysis,
-visualization, and machine learning.
-
-The [`jupyter/jupyterhub`](https://jupyterhub.github.io/helm-chart/)
-chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/jupyter/values.yaml)
-file.
-
-Authentication is enabled only for [project members](../project/members/index.md)
-for project-level clusters and group members for group-level clusters with
-[Developer or higher](../permissions.md) access to the associated project or group.
-
-GitLab uses a [custom Jupyter image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile)
-that installs additional relevant packages on top of the base Jupyter. Ready-to-use
-DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/Nurtch/rubix)
-are also available.
-
-More information on creating executable runbooks can be found in
-[our Runbooks documentation](../project/clusters/runbooks/index.md#configure-an-executable-runbook-with-gitlab).
-Ingress must be installed and have an IP address assigned before
-JupyterHub can be installed.
-
-#### Jupyter Git Integration
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28783) in GitLab 12.0 for project-level clusters.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/32512) in GitLab 12.3 for group and instance-level clusters.
-
-When installing JupyterHub onto your Kubernetes cluster,
-[JupyterLab's Git extension](https://github.com/jupyterlab/jupyterlab-git)
-is provisioned and configured using the authenticated user's:
-
-- Name.
-- Email.
-- Newly created access token.
-
-JupyterLab's Git extension enables full version control of your notebooks, and
-issuance of Git commands in Jupyter. You can issue Git commands through the
-**Git** tab on the left panel, or through Jupyter's command-line prompt.
-
-JupyterLab's Git extension stores the user token in the JupyterHub DB in encrypted
-format, and in the single user Jupyter instance as plain text, because
-[Git requires storing credentials as plain text](https://git-scm.com/docs/git-credential-store)
-Potentially, if a nefarious user finds a way to read from the file system in the
-single-user Jupyter instance, they could retrieve the token.
-
-![Jupyter's Git Extension](img/jupyter-git-extension.gif)
-
-You can clone repositories from the files tab in Jupyter:
-
-![Jupyter clone repository](img/jupyter-gitclone.png)
-
-### Knative
-
-> - Introduced in GitLab 11.5 for project-level clusters.
-> - Introduced in GitLab 12.3 for group- and instance-level clusters.
-
-[Knative](https://cloud.google.com/knative/) provides a platform to
-create, deploy, and manage serverless workloads from a Kubernetes
-cluster. It's used in conjunction with, and includes
-[Istio](https://istio.io) to provide an external IP address for all
-programs hosted by Knative.
-
-The [`knative/knative`](https://storage.googleapis.com/triggermesh-charts)
-chart is used to install this application.
-
-During installation, you must enter a wildcard domain where your applications
-are exposed. Configure your DNS server to use the external IP address for that
-domain. Applications created and installed are accessible as
-`<program_name>.<kubernetes_namespace>.<domain_name>`, which requires
-your Kubernetes cluster to have
-[RBAC enabled](../project/clusters/add_remove_clusters.md#rbac-cluster-resources).
-
-### Prometheus
-
-> - Introduced in GitLab 10.4 for project-level clusters.
-> - Introduced in GitLab 11.11 for group-level clusters.
-
-[Prometheus](https://prometheus.io/docs/introduction/overview/) is an
-open-source monitoring and alerting system you can use to supervise your
-deployed applications.
-
-GitLab is able to monitor applications by using the
-[Prometheus integration](../project/integrations/prometheus.md). Kubernetes container CPU and
-memory metrics are collected, and response metrics are also retrieved
-from NGINX Ingress.
-
-The [`stable/prometheus`](https://github.com/helm/charts/tree/master/stable/prometheus)
-chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/prometheus/values.yaml)
-file.
-
-To enable monitoring, install Prometheus into the cluster with the **Install**
-button.
-
-### Crossplane
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34702) in GitLab 12.5 for project-level clusters.
-
-[Crossplane](https://crossplane.github.io/docs/v0.9/) is a multi-cloud control plane
-to help you manage applications and infrastructure across multiple clouds. It extends the
-Kubernetes API using:
-
-- Custom resources.
-- Controllers that watch those custom resources.
-
-Crossplane allows provisioning and lifecycle management of infrastructure components
-across cloud providers in a uniform manner by abstracting cloud provider-specific
-configurations.
-
-The Crossplane GitLab-managed application:
-
-- Installs Crossplane with a provider of choice on a Kubernetes cluster attached to the
-  project repository.
-- Can then be used to provision infrastructure or managed applications such as
-  PostgreSQL (for example, CloudSQL from GCP or RDS from AWS) and other services
-  required by the application with the Auto DevOps pipeline.
-
-[`alpha/crossplane`](https://github.com/crossplane/crossplane/tree/v0.4.1/cluster/charts/crossplane) chart v0.4.1 is used to
-install Crossplane using the
-[`values.yaml`](https://github.com/crossplane/crossplane/blob/master/cluster/charts/crossplane/values.yaml.tmpl)
-file.
-
-For information about configuring Crossplane installed on the cluster, see
-[Crossplane configuration](crossplane.md).
-
-### Elastic Stack
-
-> Introduced in GitLab 12.7 for project- and group-level clusters.
-
-[Elastic Stack](https://www.elastic.co/elastic-stack) is a complete end-to-end
-log analysis solution which helps in deep searching, analyzing and visualizing the logs
-generated from different machines.
-
-GitLab can gather logs from pods in your cluster. Filebeat runs as a DaemonSet
-on each node in your cluster, and ships container logs to Elasticsearch for
-querying. GitLab then connects to Elasticsearch for logs, instead of the
-Kubernetes API, giving you access to more advanced querying capabilities. Log
-data is deleted after 30 days, using [Curator](https://www.elastic.co/guide/en/elasticsearch/client/curator/5.5/about.html).
-
-The Elastic Stack cluster application is intended as a log aggregation solution
-and is not related to our [Advanced Search](../search/advanced_search.md)
-functionality, which uses a separate Elasticsearch cluster.
-
-To enable log shipping:
-
-1. Ensure your cluster contains at least three nodes of instance types larger
-   than `f1-micro`, `g1-small`, or `n1-standard-1`.
-1. Navigate to **Operations > Kubernetes**.
-1. In **Kubernetes Cluster**, select a cluster.
-1. In the **Applications** section, find **Elastic Stack**, and then select
-   **Install**.
-
-The [`gitlab/elastic-stack`](https://gitlab.com/gitlab-org/charts/elastic-stack)
-chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/elastic_stack/values.yaml)
-file. The chart deploys three identical Elasticsearch pods which can't be
-colocated, and each requires one CPU and 2 GB of RAM, making them
-incompatible with clusters containing fewer than three nodes, or consisting of
-`f1-micro`, `g1-small`, `n1-standard-1`, or `*-highcpu-2` instance types.
-
-#### Optional: deploy Kibana to perform advanced queries
-
-If you are an advanced user and have direct access to your Kubernetes cluster
-using `kubectl` and `helm`, you can deploy Kibana manually. The following assumes
-that `helm` has been [initialized](https://v2.helm.sh/docs/helm/) with `helm init`.
-
-Save the following to `kibana.yml`:
-
-```yaml
-elasticsearch:
-  enabled: false
-
-filebeat:
-  enabled: false
-
-kibana:
-  enabled: true
-  elasticsearchHosts: http://elastic-stack-elasticsearch-master.gitlab-managed-apps.svc.cluster.local:9200
-```
-
-Then install it on your cluster:
-
-```shell
-helm repo add gitlab https://charts.gitlab.io
-helm install --name kibana gitlab/elastic-stack --values kibana.yml
-```
-
-To access Kibana, forward the port to your local machine:
-
-```shell
-kubectl port-forward svc/kibana-kibana 5601:5601
-```
-
-Then, you can visit Kibana at `http://localhost:5601`.
-
-## Upgrading applications
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24789) in GitLab 11.8.
-
-The applications below can be upgraded.
-
-| Application | GitLab version |
-| ----------- | -------------- |
-| GitLab Runner  | 11.8+          |
-
-To upgrade an application:
-
-1. For a:
-   - [Project-level cluster](../project/clusters/index.md),
-     navigate to your project's **Operations > Kubernetes**.
-   - [Group-level cluster](../group/clusters/index.md),
-     navigate to your group's **Kubernetes** page.
-1. Select your cluster.
-1. If an upgrade is available, the **Upgrade** button is displayed. Click the button to upgrade.
-
-Upgrades reset values back to the values built into the `runner` chart, plus the values set by
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/runner/values.yaml)
-
-## Uninstalling applications
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/60665) in GitLab 11.11.
-
-The applications below can be uninstalled.
-
-| Application | GitLab version | Notes |
-| ----------- | -------------- | ----- |
-| cert-manager | 12.2+         | The associated private key is deleted and cannot be restored. Deployed applications continue to use HTTPS, but certificates aren't renewed. Before uninstalling, you may want to [back up your configuration](https://cert-manager.io/docs/tutorials/backup/) or [revoke your certificates](https://letsencrypt.org/docs/revoking/). |
-| GitLab Runner  | 12.2+         | Any running pipelines are canceled. |
-| Helm  | 12.2+         | The associated Tiller pod, the `gitlab-managed-apps` namespace, and all of its resources are deleted and cannot be restored. |
-| Ingress  | 12.1+         | The associated load balancer and IP are deleted and cannot be restored. Furthermore, it can only be uninstalled if JupyterHub is not installed. |
-| JupyterHub  | 12.1+         | All data not committed to GitLab are deleted and cannot be restored. |
-| Knative  | 12.1+         | The associated IP are deleted and cannot be restored. |
-| Prometheus  | 11.11+         | All data are deleted and cannot be restored. |
-| Crossplane  | 12.5+         | All data are deleted and cannot be restored. |
-| Elastic Stack  | 12.7+         | All data are deleted and cannot be restored. |
-| Sentry  | 12.6+         | The PostgreSQL persistent volume remains and should be manually removed for complete uninstall.  |
-
-To uninstall an application:
-
-1. For a:
-   - [Project-level cluster](../project/clusters/index.md),
-     navigate to your project's **Operations > Kubernetes**.
-   - [Group-level cluster](../group/clusters/index.md),
-     navigate to your group's **Kubernetes** page.
-1. Select your cluster.
-1. Click the **Uninstall** button for the application.
-
-Support for uninstalling all applications is planned for progressive rollout.
-To follow progress, see the [relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/1201).
-
-## Troubleshooting applications
-
-Applications can fail with the following error:
-
-```plaintext
-Error: remote error: tls: bad certificate
-```
-
-To avoid installation errors:
-
-- Before starting the installation of applications, make sure that time is synchronized
-  between your GitLab server and your Kubernetes cluster.
-- Ensure certificates are not out of sync. When installing applications, GitLab
-  expects a new cluster with no previous installation of Helm.
-
-  You can confirm that the certificates match by using `kubectl`:
-
-  ```shell
-  kubectl get configmaps/values-content-configuration-ingress -n gitlab-managed-apps -o \
-  "jsonpath={.data['cert\.pem']}" | base64 -d > a.pem
-  kubectl get secrets/tiller-secret -n gitlab-managed-apps -o "jsonpath={.data['ca\.crt']}" | base64 -d > b.pem
-  diff a.pem b.pem
-  ```
-
-### Error installing managed apps on EKS cluster
-
-If you're using a managed cluster on AWS EKS, and you are not able to install some of the managed
-apps, consider checking the logs.
-
-You can check the logs by running the following commands:
-
-```shell
-kubectl get pods --all-namespaces
-kubectl get services --all-namespaces
-```
-
-If you are getting the `Failed to assign an IP address to container` error, it's probably due to the
-instance type you've specified in the AWS configuration.
-The number and size of nodes might not have enough IP addresses to run or install those pods.
-
-For reference, all the AWS instance IP limits are found
-[in this AWS repository on GitHub](https://github.com/aws/amazon-vpc-cni-k8s/blob/master/pkg/awsutils/vpc_ip_resource_limit.go) (search for `InstanceENIsAvailable`).
-
-### Unable to install Prometheus
-
-Installing Prometheus is failing with the following error:
-
-```shell
-# kubectl -n gitlab-managed-apps logs install-prometheus
-...
-Error: Could not get apiVersions from Kubernetes: unable to retrieve the complete list of server APIs: admission.certmanager.k8s.io/v1beta1: the server is currently unable to handle the request
-```
-
-This is a bug that was introduced in Helm `2.15` and fixed in `3.0.2`. As a workaround,
-ensure [`cert-manager`](#cert-manager) is installed successfully prior to installing Prometheus.
-
-### Unable to create a Persistent Volume Claim with DigitalOcean
-
-Trying to create additional block storage volumes might lead to the following error when using DigitalOcean:
-
-```plaintext
-Server requested
-[Warning] pod has unbound immediate PersistentVolumeClaims (repeated 2 times)
-[Normal] pod didn't trigger scale-up (it wouldn't fit if a new node is added):
-Spawn failed: Timeout
-```
-
-This is due to DigitalOcean imposing a few limits with regards to creating additional block storage volumes.
-[Learn more about DigitalOcean Block Storage Volumes limits.](https://www.digitalocean.com/docs/volumes/#limits)
-
 ## Take ownership of your GitLab Managed Apps
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327803) in GitLab 13.12.
 
-With the removal of the [One-click install method](#install-with-one-click-deprecated) in GitLab 14.0,
+With the removal of the One-click install method in GitLab 14.0,
 the **Applications** tab (under your project's  **Operations > Kubernetes**)
 will no longer be displayed:
 
@@ -1664,10 +1117,10 @@ If you choose to keep using Helm v2 (B), follow the steps below to manage your a
 
 ### Cluster integrations
 
-Some applications were not only installed in your cluster by GitLab through Managed Apps but were also
-directly integrated with GitLab so that you could benefit from seeing, controlling, or getting notified
-about them through GitLab.
-To keep them integrated, read the documentation for:
+Some applications were not only installed in your cluster by GitLab through
+Managed Apps but were also directly integrated with GitLab. If you had one of
+these applications installed before GitLab 14.0, then a corresponding [cluster
+integration](integrations.md) has been automatically enabled:
 
 - [Prometheus cluster integration](integrations.md#prometheus-cluster-integration)
 - [Elastic Stack cluster integration](integrations.md#elastic-stack-cluster-integration)
