@@ -687,6 +687,9 @@ Gitlab.ee do
   Settings.cron_jobs['iterations_update_status_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['iterations_update_status_worker']['cron'] ||= '5 0 * * *'
   Settings.cron_jobs['iterations_update_status_worker']['job_class'] = 'IterationsUpdateStatusWorker'
+  Settings.cron_jobs['iterations_generator_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['iterations_generator_worker']['cron'] ||= '5 0 * * *'
+  Settings.cron_jobs['iterations_generator_worker']['job_class'] = 'Iterations::Cadences::ScheduleCreateIterationsWorker'
   Settings.cron_jobs['vulnerability_statistics_schedule_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['vulnerability_statistics_schedule_worker']['cron'] ||= '15 1 * * *'
   Settings.cron_jobs['vulnerability_statistics_schedule_worker']['job_class'] = 'Vulnerabilities::Statistics::ScheduleWorker'

@@ -182,31 +182,6 @@ RSpec.describe Gitlab::Database::LoadBalancing do
         expect(described_class.enable?).to eq(true)
       end
     end
-
-    context 'FOSS' do
-      before do
-        allow(Gitlab).to receive(:ee?).and_return(false)
-
-        stub_env('ENABLE_LOAD_BALANCING_FOR_FOSS', 'false')
-      end
-
-      it 'is disabled' do
-        expect(described_class.enable?).to eq(false)
-      end
-    end
-
-    context 'EE' do
-      before do
-        allow(Gitlab).to receive(:ee?).and_return(true)
-      end
-
-      it 'is enabled' do
-        allow(described_class).to receive(:hosts).and_return(%w(foo))
-        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(false)
-
-        expect(described_class.enable?).to eq(true)
-      end
-    end
   end
 
   describe '.configured?' do

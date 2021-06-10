@@ -41,7 +41,7 @@ The job results [are displayed in a pipeline](#view-the-status-of-your-pipeline-
 In GitLab, runners are agents that run your CI/CD jobs.
 
 You might already have runners available for your project, including
-[shared runners](../runners/README.md#shared-runners), which are
+[shared runners](../runners/runners_scope.md), which are
 available to all projects in your GitLab instance.
 
 To view available runners:

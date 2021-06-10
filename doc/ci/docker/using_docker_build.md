@@ -25,9 +25,8 @@ To enable Docker commands for your CI/CD jobs, you can use:
 If you don't want to execute a runner in privileged mode,
 but want to use `docker build`, you can also [use kaniko](using_kaniko.md).
 
-If you are using shared runners on GitLab.com, see
-[GitLab.com shared runners](../../user/gitlab_com/index.md#shared-runners)
-to learn more about how these runners are configured.
+If you are using shared runners on GitLab.com, 
+[learn more about how these runners are configured](../runners/README.md).
 
 ### Use the shell executor
 
@@ -91,7 +90,7 @@ The Docker image has all of the `docker` tools installed and can run
 the job script in context of the image in privileged mode.
 
 We recommend you use [Docker-in-Docker with TLS enabled](#docker-in-docker-with-tls-enabled),
-which is supported by [GitLab.com shared runners](../../user/gitlab_com/index.md#shared-runners).
+which is supported by [GitLab.com shared runners](../runners/README.md).
 
 You should always specify a specific version of the image, like `docker:19.03.12`.
 If you use a tag like `docker:stable`, you have no control over which version is used.

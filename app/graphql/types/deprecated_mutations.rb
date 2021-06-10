@@ -5,15 +5,7 @@ module Types
     extend ActiveSupport::Concern
 
     prepended do
-      mount_aliased_mutation 'AddAwardEmoji',
-                             Mutations::AwardEmojis::Add,
-                             deprecated: { reason: 'Use awardEmojiAdd', milestone: '13.2' }
-      mount_aliased_mutation 'RemoveAwardEmoji',
-                             Mutations::AwardEmojis::Remove,
-                             deprecated: { reason: 'Use awardEmojiRemove', milestone: '13.2' }
-      mount_aliased_mutation 'ToggleAwardEmoji',
-                             Mutations::AwardEmojis::Toggle,
-                             deprecated: { reason: 'Use awardEmojiToggle', milestone: '13.2' }
+      # placeholder for any FOSS mutations to be deprecated
     end
   end
 end

@@ -242,6 +242,98 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
     end
   end
 
+  describe '#requeue_background_migration_jobs_by_range_at_intervals' do
+    let!(:job_class_name) { 'TestJob' }
+    let!(:pending_job_1) { create(:background_migration_job, class_name: job_class_name, status: :pending, arguments: [1, 2]) }
+    let!(:pending_job_2) { create(:background_migration_job, class_name: job_class_name, status: :pending, arguments: [3, 4]) }
+    let!(:successful_job_1) { create(:background_migration_job, class_name: job_class_name, status: :succeeded, arguments: [5, 6]) }
+    let!(:successful_job_2) { create(:background_migration_job, class_name: job_class_name, status: :succeeded, arguments: [7, 8]) }
+
+    around do |example|
+      freeze_time do
+        Sidekiq::Testing.fake! do
+          example.run
+        end
+      end
+    end
+
+    subject { model.requeue_background_migration_jobs_by_range_at_intervals(job_class_name, 10.minutes) }
+
+    it 'returns the expected duration' do
+      expect(subject).to eq(20.minutes)
+    end
+
+    context 'when nothing is queued' do
+      subject { model.requeue_background_migration_jobs_by_range_at_intervals('FakeJob', 10.minutes) }
+
+      it 'returns expected duration of zero when nothing gets queued' do
+        expect(subject).to eq(0)
+      end
+    end
+
+    it 'queues pending jobs' do
+      subject
+
+      expect(BackgroundMigrationWorker.jobs[0]['args']).to eq([job_class_name, [1, 2]])
+      expect(BackgroundMigrationWorker.jobs[0]['at']).to be_nil
+      expect(BackgroundMigrationWorker.jobs[1]['args']).to eq([job_class_name, [3, 4]])
+      expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(10.minutes.from_now.to_f)
+    end
+
+    context 'with batch_size option' do
+      subject { model.requeue_background_migration_jobs_by_range_at_intervals(job_class_name, 10.minutes, batch_size: 1) }
+
+      it 'returns the expected duration' do
+        expect(subject).to eq(20.minutes)
+      end
+
+      it 'queues pending jobs' do
+        subject
+
+        expect(BackgroundMigrationWorker.jobs[0]['args']).to eq([job_class_name, [1, 2]])
+        expect(BackgroundMigrationWorker.jobs[0]['at']).to be_nil
+        expect(BackgroundMigrationWorker.jobs[1]['args']).to eq([job_class_name, [3, 4]])
+        expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(10.minutes.from_now.to_f)
+      end
+
+      it 'retrieve jobs in batches' do
+        jobs = double('jobs')
+        expect(Gitlab::Database::BackgroundMigrationJob).to receive(:pending) { jobs }
+        allow(jobs).to receive(:where).with(class_name: job_class_name) { jobs }
+        expect(jobs).to receive(:each_batch).with(of: 1)
+
+        subject
+      end
+    end
+
+    context 'with initial_delay option' do
+      let_it_be(:initial_delay) { 3.minutes }
+
+      subject { model.requeue_background_migration_jobs_by_range_at_intervals(job_class_name, 10.minutes, initial_delay: initial_delay) }
+
+      it 'returns the expected duration' do
+        expect(subject).to eq(23.minutes)
+      end
+
+      it 'queues pending jobs' do
+        subject
+
+        expect(BackgroundMigrationWorker.jobs[0]['args']).to eq([job_class_name, [1, 2]])
+        expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(3.minutes.from_now.to_f)
+        expect(BackgroundMigrationWorker.jobs[1]['args']).to eq([job_class_name, [3, 4]])
+        expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(13.minutes.from_now.to_f)
+      end
+
+      context 'when nothing is queued' do
+        subject { model.requeue_background_migration_jobs_by_range_at_intervals('FakeJob', 10.minutes) }
+
+        it 'returns expected duration of zero when nothing gets queued' do
+          expect(subject).to eq(0)
+        end
+      end
+    end
+  end
+
   describe '#perform_background_migration_inline?' do
     it 'returns true in a test environment' do
       stub_rails_env('test')

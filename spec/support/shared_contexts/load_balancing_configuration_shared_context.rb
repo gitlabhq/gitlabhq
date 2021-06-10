@@ -6,8 +6,6 @@ RSpec.shared_context 'clear DB Load Balancing configuration' do
     proxy.load_balancer.release_host if proxy
     ::Gitlab::Database::LoadBalancing.instance_variable_set(:@proxy, nil)
 
-    ::Gitlab::Database::LoadBalancing.remove_instance_variable(:@feature_available) if ::Gitlab::Database::LoadBalancing.instance_variable_defined?(:@feature_available)
-
     ::Gitlab::Database::LoadBalancing::Session.clear_session
   end
 

@@ -583,7 +583,7 @@ several reasons:
 - It significantly reduces load on the file server, as smaller deltas mean less time spent in `git pack-objects`.
 
 The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
-[defined by GitLab.com shared runners](../user/gitlab_com/index.md#pre-clone-script).
+[defined by GitLab.com shared runners](../ci/runners/README.md#pre-clone-script).
 
 The `CI_PRE_CLONE_SCRIPT` is currently defined as a project CI/CD variable:
 

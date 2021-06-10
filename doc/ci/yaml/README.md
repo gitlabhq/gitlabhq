@@ -3740,7 +3740,7 @@ Possible values for `when` are:
 - `scheduler_failure`: Retry if the scheduler failed to assign the job to a runner.
 - `data_integrity_failure`: Retry if there is a structural integrity problem detected.
 
-You can specify the number of [retry attempts for certain stages of job execution](../runners/README.md#job-stages-attempts) using variables.
+You can specify the number of [retry attempts for certain stages of job execution](../runners/configure_runners.md#job-stages-attempts) using variables.
 
 ### `timeout`
 
@@ -4801,19 +4801,19 @@ You cannot set job-level variables to be pre-filled when you run a pipeline manu
 
 You can use [CI/CD variables](../variables/README.md) to configure how the runner processes Git requests:
 
-- [`GIT_STRATEGY`](../runners/README.md#git-strategy)
-- [`GIT_SUBMODULE_STRATEGY`](../runners/README.md#git-submodule-strategy)
-- [`GIT_CHECKOUT`](../runners/README.md#git-checkout)
-- [`GIT_CLEAN_FLAGS`](../runners/README.md#git-clean-flags)
-- [`GIT_FETCH_EXTRA_FLAGS`](../runners/README.md#git-fetch-extra-flags)
-- [`GIT_DEPTH`](../runners/README.md#shallow-cloning) (shallow cloning)
-- [`GIT_CLONE_PATH`](../runners/README.md#custom-build-directories) (custom build directories)
-- [`TRANSFER_METER_FREQUENCY`](../runners/README.md#artifact-and-cache-settings) (artifact/cache meter update frequency)
-- [`ARTIFACT_COMPRESSION_LEVEL`](../runners/README.md#artifact-and-cache-settings) (artifact archiver compression level)
-- [`CACHE_COMPRESSION_LEVEL`](../runners/README.md#artifact-and-cache-settings) (cache archiver compression level)
+- [`GIT_STRATEGY`](../runners/configure_runners.md#git-strategy)
+- [`GIT_SUBMODULE_STRATEGY`](../runners/configure_runners.md#git-submodule-strategy)
+- [`GIT_CHECKOUT`](../runners/configure_runners.md#git-checkout)
+- [`GIT_CLEAN_FLAGS`](../runners/configure_runners.md#git-clean-flags)
+- [`GIT_FETCH_EXTRA_FLAGS`](../runners/configure_runners.md#git-fetch-extra-flags)
+- [`GIT_DEPTH`](../runners/configure_runners.md#shallow-cloning) (shallow cloning)
+- [`GIT_CLONE_PATH`](../runners/configure_runners.md#custom-build-directories) (custom build directories)
+- [`TRANSFER_METER_FREQUENCY`](../runners/configure_runners.md#artifact-and-cache-settings) (artifact/cache meter update frequency)
+- [`ARTIFACT_COMPRESSION_LEVEL`](../runners/configure_runners.md#artifact-and-cache-settings) (artifact archiver compression level)
+- [`CACHE_COMPRESSION_LEVEL`](../runners/configure_runners.md#artifact-and-cache-settings) (cache archiver compression level)
 
 You can also use variables to configure how many times a runner
-[attempts certain stages of job execution](../runners/README.md#job-stages-attempts).
+[attempts certain stages of job execution](../runners/configure_runners.md#job-stages-attempts).
 
 ## YAML-specific features
 

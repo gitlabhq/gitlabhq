@@ -97,14 +97,7 @@ module Gitlab
       # posting the write location of the database if load balancing is
       # configured.
       def self.configured?
-        return false unless feature_available?
-
         hosts.any? || service_discovery_enabled?
-      end
-
-      # Temporarily disabled for FOSS until move from EE to FOSS is complete
-      def self.feature_available?
-        Gitlab.ee? || Gitlab::Utils.to_boolean(ENV['ENABLE_LOAD_BALANCING_FOR_FOSS'], default: false)
       end
 
       def self.start_service_discovery

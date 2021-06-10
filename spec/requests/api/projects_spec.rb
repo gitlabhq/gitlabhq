@@ -53,7 +53,7 @@ RSpec.describe API::Projects do
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:project, reload: true) { create(:project, :repository, namespace: user.namespace) }
+  let_it_be(:project, reload: true) { create(:project, :repository, create_branch: 'something_else', namespace: user.namespace) }
   let_it_be(:project2, reload: true) { create(:project, namespace: user.namespace) }
   let_it_be(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let_it_be(:user4) { create(:user, username: 'user.with.dot') }
@@ -2887,6 +2887,18 @@ RSpec.describe API::Projects do
         project_param = { path: project4.path, name: project4.name }
 
         put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
+      end
+
+      it 'updates default_branch' do
+        project_param = { default_branch: 'something_else' }
+
+        put api("/projects/#{project.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(:ok)
 

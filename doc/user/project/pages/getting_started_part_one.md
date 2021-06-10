@@ -4,7 +4,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages domain names, URLs, and base URLs
+# GitLab Pages domain names, URLs, and base URLs **(FREE)**
 
 On this document, learn how to name your project for GitLab Pages
 according to your intended website's URL.

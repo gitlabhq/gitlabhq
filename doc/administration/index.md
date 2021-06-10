@@ -172,7 +172,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [External Pipeline Validation](external_pipeline_validation.md): Enable, disable, and configure external pipeline validation.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).
 - [Job logs](job_logs.md): Information about the job logs.
-- [Register runners](../ci/runners/README.md#types-of-runners): Learn how to register and configure runners.
+- [Register runners](../ci/runners/runners_scope.md): Learn how to register and configure runners.
 - [Shared runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota): Limit the usage of pipeline minutes for shared runners.
 - [Enable/disable Auto DevOps](../topics/autodevops/index.md#enable-or-disable-auto-devops): Enable or disable Auto DevOps for your instance.
 

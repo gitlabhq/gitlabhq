@@ -19,6 +19,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe 'validations' do
+    subject { build(:batched_background_migration) }
+
+    it { is_expected.to validate_uniqueness_of(:job_arguments).scoped_to(:job_class_name, :table_name, :column_name) }
+  end
+
   describe '.queue_order' do
     let!(:migration1) { create(:batched_background_migration) }
     let!(:migration2) { create(:batched_background_migration) }

@@ -1,10 +1,11 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import createFlash from '~/flash';
-import { getParameterByName } from '~/lib/utils/common_utils';
+import { historyPushState, getParameterByName } from '~/lib/utils/common_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
+import { setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import { PAGE_SIZE, RELEASED_AT_DESC } from '~/releases/constants';
+import { PAGE_SIZE, DEFAULT_SORT } from '~/releases/constants';
 import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
 import { convertAllReleasesGraphQLResponse } from '~/releases/util';
 import ReleaseBlock from './release_block.vue';
@@ -58,7 +59,7 @@ export default {
         before: getParameterByName('before'),
         after: getParameterByName('after'),
       },
-      sort: RELEASED_AT_DESC,
+      sort: DEFAULT_SORT,
     };
   },
   computed: {
@@ -145,6 +146,29 @@ export default {
       // scroll to the top of the page every time a pagination button is pressed.
       scrollUp();
     },
+    onSortChanged(newSort) {
+      if (this.sort === newSort) {
+        return;
+      }
+
+      // Remove the "before" and "after" query parameters from the URL,
+      // effectively placing the user back on page 1 of the results.
+      // This prevents the frontend from requesting the results sorted
+      // by one field (e.g. `released_at`) while using a pagination cursor
+      // intended for a different field (e.g.) `created_at`).
+      // For more details, see the MR that introduced this change:
+      // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63434
+      historyPushState(
+        setUrlParams({
+          before: null,
+          after: null,
+        }),
+      );
+
+      this.updateQueryParamsFromUrl();
+
+      this.sort = newSort;
+    },
   },
   i18n: {
     newRelease: __('New release'),
@@ -155,7 +179,7 @@ export default {
 <template>
   <div class="flex flex-column mt-2">
     <div class="gl-align-self-end gl-mb-3">
-      <releases-sort-apollo-client v-model="sort" class="gl-mr-2" />
+      <releases-sort-apollo-client :value="sort" class="gl-mr-2" @input="onSortChanged" />
 
       <gl-button
         v-if="newReleasePath"

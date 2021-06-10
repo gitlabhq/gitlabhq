@@ -43,9 +43,9 @@ can't link to files outside it.
 To ensure maximum availability of the cache, when you declare `cache` in your jobs,
 use one or more of the following:
 
-- [Tag your runners](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) and use the tag on jobs
+- [Tag your runners](../runners/configure_runners.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) and use the tag on jobs
   that share their cache.
-- [Use runners that are only available to a particular project](../runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects).
+- [Use runners that are only available to a particular project](../runners/runners_scope.md#prevent-a-specific-runner-from-being-enabled-for-other-projects).
 - [Use a `key`](../yaml/README.md#cachekey) that fits your workflow (for example,
   different caches on each branch). For that, you can take advantage of the
   [predefined CI/CD variables](../variables/README.md#predefined-cicd-variables).

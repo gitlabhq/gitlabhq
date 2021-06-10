@@ -22,7 +22,6 @@ RSpec.describe 'Restoring many Todos' do
                      <<-QL.strip_heredoc
                        clientMutationId
                        errors
-                       updatedIds
                        todos {
                          id
                          state
@@ -44,7 +43,6 @@ RSpec.describe 'Restoring many Todos' do
 
     expect(mutation_response).to include(
       'errors' => be_empty,
-      'updatedIds' => match_array(input_ids),
       'todos' => contain_exactly(
         { 'id' => global_id_of(todo1), 'state' => 'pending' },
         { 'id' => global_id_of(todo2), 'state' => 'pending' }

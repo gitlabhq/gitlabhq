@@ -53,7 +53,7 @@ To make submodules work correctly in CI/CD jobs:
 1. Make sure you use [relative URLs](#configure-the-gitmodules-file)
    for submodules located in the same GitLab server.
 1. You can set the `GIT_SUBMODULE_STRATEGY` variable to either `normal` or `recursive`
-   to tell the runner to [fetch your submodules before the job](runners/README.md#git-submodule-strategy):
+   to tell the runner to [fetch your submodules before the job](runners/configure_runners.md#git-submodule-strategy):
 
    ```yaml
    variables:

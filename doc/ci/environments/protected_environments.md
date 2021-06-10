@@ -215,7 +215,7 @@ configured:
   (or above) to the top-level group. They can maintain CI/CD configurations for
   the higher environments (such as production) in the group-level settings page,
   wnich includes group-level protected environments,
-  [group-level runners](../runners/README.md#group-runners),
+  [group-level runners](../runners/runners_scope.md#group-runners),
   [group-level clusters](../../user/group/clusters/index.md), etc. Those
   configurations are inherited to the child projects as read-only entries.
   This ensures that only operators can configure the organization-wide

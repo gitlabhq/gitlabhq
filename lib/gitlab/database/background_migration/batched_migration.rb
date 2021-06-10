@@ -14,6 +14,10 @@ module Gitlab
           class_name: 'Gitlab::Database::BackgroundMigration::BatchedJob',
           foreign_key: :batched_background_migration_id
 
+        validates :job_arguments, uniqueness: {
+          scope: [:job_class_name, :table_name, :column_name]
+        }
+
         scope :queue_order, -> { order(id: :asc) }
         scope :queued, -> { where(status: [:active, :paused]) }
         scope :for_configuration, ->(job_class_name, table_name, column_name, job_arguments) do

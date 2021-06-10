@@ -177,7 +177,7 @@ is no longer supported. When overriding the template, you must use [`rules`](../
 
 #### GIT_DEPTH
 
-The [`GIT_DEPTH` CI/CD variable](../../../ci/runners/README.md#shallow-cloning) affects Secret Detection.
+The [`GIT_DEPTH` CI/CD variable](../../../ci/runners/configure_runners.md#shallow-cloning) affects Secret Detection.
 The Secret Detection analyzer relies on generating patches between commits to scan content for
 secrets. If you override the default, ensure the value is greater than 1. If the number of commits
 in an MR is greater than the GIT_DEPTH value, Secret Detection will [fail to detect secrets](#error-couldnt-run-the-gitleaks-command-exit-status-2).
@@ -399,7 +399,7 @@ ERRO[2020-11-18T18:05:52Z] object not found
 [ERRO] [secrets] [2020-11-18T18:05:52Z] ▶ Gitleaks analysis failed: exit status 2
 ```
 
-To resolve the issue, set the [`GIT_DEPTH` CI/CD variable](../../../ci/runners/README.md#shallow-cloning)
+To resolve the issue, set the [`GIT_DEPTH` CI/CD variable](../../../ci/runners/configure_runners.md#shallow-cloning)
 to a higher value. To apply this only to the Secret Detection job, the following can be added to
 your `.gitlab-ci.yml` file:
 

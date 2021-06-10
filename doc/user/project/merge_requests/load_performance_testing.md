@@ -93,7 +93,7 @@ template that is included with GitLab.
 NOTE:
 For large scale k6 tests you need to ensure the GitLab Runner instance performing the actual
 test is able to handle running the test. Refer to [k6's guidance](https://k6.io/docs/testing-guides/running-large-tests#hardware-considerations)
-for spec details. The [default shared GitLab.com runners](../../gitlab_com/#linux-shared-runners)
+for spec details. The [default shared GitLab.com runners](../../../ci/runners/README.md#linux-shared-runners)
 likely have insufficient specs to handle most large k6 tests.
 
 This template runs the

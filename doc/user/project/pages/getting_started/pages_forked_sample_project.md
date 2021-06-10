@@ -5,7 +5,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Create a Pages website from a forked sample
+# Create a Pages website from a forked sample **(FREE)**
 
 GitLab provides [sample projects for the most popular Static Site Generators (SSG)](https://gitlab.com/pages).
 You can fork one of the sample projects and run the CI/CD pipeline to generate a Pages website.

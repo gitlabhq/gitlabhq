@@ -131,6 +131,42 @@ module Gitlab
           final_delay
         end
 
+        # Requeue pending jobs previously queued with #queue_background_migration_jobs_by_range_at_intervals
+        #
+        # This method is useful to schedule jobs that had previously failed.
+        #
+        # job_class_name - The background migration job class as a string
+        # delay_interval - The duration between each job's scheduled time
+        # batch_size - The maximum number of jobs to fetch to memory from the database.
+        def requeue_background_migration_jobs_by_range_at_intervals(job_class_name, delay_interval, batch_size: BATCH_SIZE, initial_delay: 0)
+          # To not overload the worker too much we enforce a minimum interval both
+          # when scheduling and performing jobs.
+          delay_interval = [delay_interval, BackgroundMigrationWorker.minimum_interval].max
+
+          final_delay = 0
+          job_counter = 0
+
+          jobs = Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: job_class_name)
+          jobs.each_batch(of: batch_size) do |job_batch|
+            job_batch.each do |job|
+              final_delay = initial_delay + delay_interval * job_counter
+
+              migrate_in(final_delay, job_class_name, job.arguments)
+
+              job_counter += 1
+            end
+          end
+
+          duration = initial_delay + delay_interval * job_counter
+          say <<~SAY
+            Scheduled #{job_counter} #{job_class_name} jobs with an interval of #{delay_interval} seconds.
+
+            The migration is expected to take at least #{duration} seconds. Expect all jobs to have completed after #{Time.zone.now + duration}."
+          SAY
+
+          duration
+        end
+
         # Creates a batched background migration for the given table. A batched migration runs one job
         # at a time, computing the bounds of the next batch based on the current migration settings and the previous
         # batch bounds. Each job's execution status is tracked in the database as the migration runs. The given job

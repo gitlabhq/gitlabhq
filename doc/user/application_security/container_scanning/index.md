@@ -571,7 +571,7 @@ automatically generates.
 To enable remediation support, the scanning tool _must_ have access to the `Dockerfile` specified by
 the [`DOCKERFILE_PATH`](#available-cicd-variables) CI/CD variable. To ensure that the scanning tool
 has access to this
-file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/runners/README.md#git-strategy) in
+file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/runners/configure_runners.md#git-strategy) in
 your `.gitlab-ci.yml` file by following the instructions described in this document's
 [overriding the container scanning template](#overriding-the-container-scanning-template) section.
 

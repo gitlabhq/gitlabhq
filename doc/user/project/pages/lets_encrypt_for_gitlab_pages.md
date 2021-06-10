@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "How to secure GitLab Pages websites with Let's Encrypt (manual process, deprecated)."
 ---
 
-# Let's Encrypt for GitLab Pages (manual process, deprecated)
+# Let's Encrypt for GitLab Pages (manual process, deprecated) **(FREE)**
 
 WARNING:
 This method is still valid but was **deprecated** in favor of the

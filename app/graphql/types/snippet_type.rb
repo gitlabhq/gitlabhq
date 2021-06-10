@@ -61,12 +61,6 @@ module Types
           description: 'Raw URL of the snippet.',
           null: false
 
-    field :blob, type: Types::Snippets::BlobType,
-          description: 'Snippet blob.',
-          calls_gitaly: true,
-          null: false,
-          deprecated: { reason: 'Use `blobs`', milestone: '13.3' }
-
     field :blobs, type: Types::Snippets::BlobType.connection_type,
           description: 'Snippet blobs.',
           calls_gitaly: true,

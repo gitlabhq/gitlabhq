@@ -47,3 +47,5 @@ export const SORT_MAP = {
     [DESCENDING_ORDER]: CREATED_DESC,
   },
 };
+
+export const DEFAULT_SORT = RELEASED_AT_DESC;

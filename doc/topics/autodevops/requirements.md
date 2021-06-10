@@ -64,8 +64,8 @@ To make full use of Auto DevOps with Kubernetes, you need:
   You can configure Docker-based runners to autoscale as well, using
   [Docker Machine](https://docs.gitlab.com/runner/install/autoscaling.html).
 
-  Runners should be registered as [shared runners](../../ci/runners/README.md#shared-runners)
-  for the entire GitLab instance, or [specific runners](../../ci/runners/README.md#specific-runners)
+  Runners should be registered as [shared runners](../../ci/runners/runners_scope.md#shared-runners)
+  for the entire GitLab instance, or [specific runners](../../ci/runners/runners_scope.md#specific-runners)
   that are assigned to specific projects (the default if you've installed the
   GitLab Runner managed application).
 

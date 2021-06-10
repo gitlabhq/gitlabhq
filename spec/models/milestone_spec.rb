@@ -8,7 +8,46 @@ RSpec.describe Milestone do
   let(:milestone) { create(:milestone, project: project) }
   let(:project) { create(:project, :public) }
 
-  it_behaves_like 'a timebox', :milestone
+  it_behaves_like 'a timebox', :milestone do
+    describe "#uniqueness_of_title" do
+      context "per project" do
+        it "does not accept the same title in a project twice" do
+          new_timebox = timebox.dup
+          expect(new_timebox).not_to be_valid
+        end
+
+        it "accepts the same title in another project" do
+          project = create(:project)
+          new_timebox = timebox.dup
+          new_timebox.project = project
+
+          expect(new_timebox).to be_valid
+        end
+      end
+
+      context "per group" do
+        let(:timebox) { create(:milestone, *timebox_args, group: group) }
+
+        before do
+          project.update!(group: group)
+        end
+
+        it "does not accept the same title in a group twice" do
+          new_timebox = described_class.new(group: group, title: timebox.title)
+
+          expect(new_timebox).not_to be_valid
+        end
+
+        it "does not accept the same title of a child project timebox" do
+          create(:milestone, *timebox_args, project: group.projects.first)
+
+          new_timebox = described_class.new(group: group, title: timebox.title)
+
+          expect(new_timebox).not_to be_valid
+        end
+      end
+    end
+  end
 
   describe 'MilestoneStruct#serializable_hash' do
     let(:predefined_milestone) { described_class::TimeboxStruct.new('Test Milestone', '#test', 1) }

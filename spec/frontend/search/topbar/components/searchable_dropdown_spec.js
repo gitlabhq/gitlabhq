@@ -1,17 +1,10 @@
-import {
-  GlDropdown,
-  GlDropdownItem,
-  GlSearchBoxByType,
-  GlSkeletonLoader,
-  GlAvatar,
-} from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { MOCK_GROUPS, MOCK_GROUP, MOCK_QUERY } from 'jest/search/mock_data';
-import { truncateNamespace } from '~/lib/utils/text_utility';
 import SearchableDropdown from '~/search/topbar/components/searchable_dropdown.vue';
+import SearchableDropdownItem from '~/search/topbar/components/searchable_dropdown_item.vue';
 import { ANY_OPTION, GROUP_DATA } from '~/search/topbar/constants';
 
 Vue.use(Vuex);
@@ -36,37 +29,27 @@ describe('Global Search Searchable Dropdown', () => {
       },
     });
 
-    wrapper = extendedWrapper(
-      mountFn(SearchableDropdown, {
-        store,
-        propsData: {
-          ...defaultProps,
-          ...props,
-        },
-      }),
-    );
+    wrapper = mountFn(SearchableDropdown, {
+      store,
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
+    });
   };
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
-  const findGlDropdown = () => wrapper.find(GlDropdown);
-  const findGlDropdownSearch = () => findGlDropdown().find(GlSearchBoxByType);
+  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
+  const findGlDropdownSearch = () => findGlDropdown().findComponent(GlSearchBoxByType);
   const findDropdownText = () => findGlDropdown().find('.dropdown-toggle-text');
-  const findDropdownItems = () => findGlDropdown().findAll(GlDropdownItem);
-  const findDropdownItemTitles = () => wrapper.findAllByTestId('item-title');
-  const findDropdownItemNamespaces = () => wrapper.findAllByTestId('item-namespace');
-  const findDropdownAvatars = () => wrapper.findAllComponents(GlAvatar);
-  const findAnyDropdownItem = () => findDropdownItems().at(0);
-  const findFirstGroupDropdownItem = () => findDropdownItems().at(1);
-  const findLoader = () => wrapper.find(GlSkeletonLoader);
-
-  const findDropdownItemTitlesText = () => findDropdownItemTitles().wrappers.map((w) => w.text());
-  const findDropdownItemNamespacesText = () =>
-    findDropdownItemNamespaces().wrappers.map((w) => w.text());
-  const findDropdownAvatarUrls = () => findDropdownAvatars().wrappers.map((w) => w.props('src'));
+  const findSearchableDropdownItems = () =>
+    findGlDropdown().findAllComponents(SearchableDropdownItem);
+  const findAnyDropdownItem = () => findGlDropdown().findComponent(GlDropdownItem);
+  const findFirstGroupDropdownItem = () => findSearchableDropdownItems().at(0);
+  const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   describe('template', () => {
     beforeEach(() => {
@@ -109,19 +92,12 @@ describe('Global Search Searchable Dropdown', () => {
           expect(findLoader().exists()).toBe(false);
         });
 
-        it('renders titles correctly including Any', () => {
-          const resultsIncludeAny = ['Any'].concat(MOCK_GROUPS.map((n) => n[GROUP_DATA.name]));
-          expect(findDropdownItemTitlesText()).toStrictEqual(resultsIncludeAny);
+        it('renders the Any Dropdown', () => {
+          expect(findAnyDropdownItem().exists()).toBe(true);
         });
 
-        it('renders namespaces truncated correctly', () => {
-          const namespaces = MOCK_GROUPS.map((n) => truncateNamespace(n[GROUP_DATA.fullName]));
-          expect(findDropdownItemNamespacesText()).toStrictEqual(namespaces);
-        });
-
-        it('renders GlAvatar for each item', () => {
-          const avatars = MOCK_GROUPS.map((n) => n.avatar_url);
-          expect(findDropdownAvatarUrls()).toStrictEqual(avatars);
+        it('renders SearchableDropdownItem for each item', () => {
+          expect(findSearchableDropdownItems()).toHaveLength(MOCK_GROUPS.length);
         });
       });
 
@@ -134,18 +110,12 @@ describe('Global Search Searchable Dropdown', () => {
           expect(findLoader().exists()).toBe(true);
         });
 
-        it('renders only Any in dropdown', () => {
-          expect(findDropdownItemTitlesText()).toStrictEqual(['Any']);
-        });
-      });
-
-      describe('when item is selected', () => {
-        beforeEach(() => {
-          createComponent({}, { items: MOCK_GROUPS, selectedItem: MOCK_GROUPS[0] });
+        it('renders the Any Dropdown', () => {
+          expect(findAnyDropdownItem().exists()).toBe(true);
         });
 
-        it('marks the dropdown as checked', () => {
-          expect(findFirstGroupDropdownItem().attributes('ischecked')).toBe('true');
+        it('does not render SearchableDropdownItem', () => {
+          expect(findSearchableDropdownItems()).toHaveLength(0);
         });
       });
     });
@@ -184,8 +154,8 @@ describe('Global Search Searchable Dropdown', () => {
       expect(wrapper.emitted('change')[0]).toEqual([ANY_OPTION]);
     });
 
-    it('clicking result dropdown item $emits @change with result', () => {
-      findFirstGroupDropdownItem().vm.$emit('click');
+    it('on SearchableDropdownItem @change, the wrapper $emits change with the item', () => {
+      findFirstGroupDropdownItem().vm.$emit('change', MOCK_GROUPS[0]);
 
       expect(wrapper.emitted('change')[0]).toEqual([MOCK_GROUPS[0]]);
     });

@@ -21,26 +21,25 @@ RSpec.describe Mutations::Todos::MarkAllDone do
 
   describe '#resolve' do
     it 'marks all pending todos as done' do
-      updated_todo_ids, todos = mutation_for(current_user).resolve.values_at(:updated_ids, :todos)
+      todos = mutation_for(current_user).resolve[:todos]
 
       expect(todo1.reload.state).to eq('done')
       expect(todo2.reload.state).to eq('done')
       expect(todo3.reload.state).to eq('done')
       expect(other_user_todo.reload.state).to eq('pending')
 
-      expect(updated_todo_ids).to contain_exactly(todo1.id, todo3.id)
       expect(todos).to contain_exactly(todo1, todo3)
     end
 
     it 'behaves as expected if there are no todos for the requesting user' do
-      updated_todo_ids = mutation_for(user3).resolve.dig(:updated_ids)
+      todos = mutation_for(user3).resolve[:todos]
 
       expect(todo1.reload.state).to eq('pending')
       expect(todo2.reload.state).to eq('done')
       expect(todo3.reload.state).to eq('pending')
       expect(other_user_todo.reload.state).to eq('pending')
 
-      expect(updated_todo_ids).to be_empty
+      expect(todos).to be_empty
     end
 
     context 'when user is not logged in' do

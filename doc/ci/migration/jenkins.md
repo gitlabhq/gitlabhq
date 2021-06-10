@@ -128,16 +128,16 @@ agents you were using.
 
 There are some important differences in the way runners work in comparison to agents:
 
-- Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/README.md#types-of-runners).
+- Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/runners_scope.md).
   They self-select jobs from the scopes you've defined automatically.
-- You can also [use tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) for finer control, and
+- You can also [use tags](../runners/configure_runners.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) for finer control, and
   associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
 - GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale.html).
   Use autoscaling to provision runners only when needed, and scale down when not needed.
   This is similar to ephemeral agents in Jenkins.
 
-If you are using `gitlab.com`, you can take advantage of our [shared runner fleet](../../user/gitlab_com/index.md#shared-runners)
+If you are using `gitlab.com`, you can take advantage of our [shared runner fleet](../runners/README.md)
 to run jobs without provisioning your own runners. We are investigating making them
 [available for self-managed instances](https://gitlab.com/groups/gitlab-org/-/epics/835)
 as well.
@@ -230,7 +230,7 @@ and is meant to be a mapping of concepts there to concepts in GitLab.
 The agent section is used to define how a pipeline executes. For GitLab, we use [runners](../runners/README.md)
 to provide this capability. You can configure your own runners in Kubernetes or on any host, or take advantage
 of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users).
-We also support using [tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) to direct different jobs
+We also support using [tags](../runners/configure_runners.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) to direct different jobs
 to different runners (execution agents).
 
 The `agent` section also allows you to define which Docker images should be used for execution, for which we use

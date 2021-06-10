@@ -35,7 +35,7 @@ There are two options. Using:
   back to clone if it doesn't exist).
   This is recommended, especially for [large repositories](../large_repositories/index.md#git-strategy).
 
-The configured Git strategy can be overridden by the [`GIT_STRATEGY` variable](../runners/README.md#git-strategy)
+The configured Git strategy can be overridden by the [`GIT_STRATEGY` variable](../runners/configure_runners.md#git-strategy)
 in `.gitlab-ci.yml`.
 
 ## Git shallow clone
@@ -66,7 +66,7 @@ if the job surpasses the threshold, it is marked as failed.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17221) in GitLab 10.7.
 
 Project defined timeout (either specific timeout set by user or the default
-60 minutes timeout) may be [overridden for runners](../runners/README.md#set-maximum-job-timeout-for-a-runner).
+60 minutes timeout) may be [overridden for runners](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
 
 ## Maximum artifacts size **(FREE SELF)**
 

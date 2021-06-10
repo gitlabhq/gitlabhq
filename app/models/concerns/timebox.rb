@@ -44,7 +44,6 @@ module Timebox
     validates :project, presence: true, unless: :group
     validates :title, presence: true
 
-    validate :uniqueness_of_title, if: :title_changed?
     validate :timebox_type_check
     validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
     validate :dates_within_4_digits
@@ -241,18 +240,6 @@ module Timebox
     else
       iid
     end
-  end
-
-  # Timebox titles must be unique across project and group timeboxes
-  def uniqueness_of_title
-    if project
-      relation = self.class.for_projects_and_groups([project_id], [project.group&.id])
-    elsif group
-      relation = self.class.for_projects_and_groups(group.projects.select(:id), [group.id])
-    end
-
-    title_exists = relation.find_by_title(title)
-    errors.add(:title, _("already being used for another group or project %{timebox_name}.") % { timebox_name: timebox_name }) if title_exists
   end
 
   # Timebox should be either a project timebox or a group timebox

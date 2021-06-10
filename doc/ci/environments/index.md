@@ -409,7 +409,7 @@ The job with [`action: stop` might not run](#the-job-with-action-stop-doesnt-run
 if it's in a later stage than the job that started the environment.
 
 If you can't use [pipelines for merge requests](../merge_request_pipelines/index.md),
-set the [`GIT_STRATEGY`](../runners/README.md#git-strategy) to `none` in the
+set the [`GIT_STRATEGY`](../runners/configure_runners.md#git-strategy) to `none` in the
 `stop_review` job. Then the [runner](https://docs.gitlab.com/runner/) doesn't
 try to check out the code after the branch is deleted.
 

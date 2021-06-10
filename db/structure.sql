@@ -22305,6 +22305,8 @@ CREATE INDEX approval_mr_rule_index_merge_request_id ON approval_merge_request_r
 
 CREATE UNIQUE INDEX bulk_import_trackers_uniq_relation_by_entity ON bulk_import_trackers USING btree (bulk_import_entity_id, relation);
 
+CREATE INDEX cadence_create_iterations_automation ON iterations_cadences USING btree (automatic, duration_in_weeks, date((COALESCE(last_run_date, '1970-01-01'::date) + ((duration_in_weeks)::double precision * '7 days'::interval)))) WHERE (duration_in_weeks IS NOT NULL);
+
 CREATE INDEX ci_builds_gitlab_monitor_metrics ON ci_builds USING btree (status, created_at, project_id) WHERE ((type)::text = 'Ci::Build'::text);
 
 CREATE INDEX code_owner_approval_required ON protected_branches USING btree (project_id, code_owner_approval_required) WHERE (code_owner_approval_required = true);
@@ -22611,11 +22613,11 @@ CREATE INDEX index_badges_on_group_id ON badges USING btree (group_id);
 
 CREATE INDEX index_badges_on_project_id ON badges USING btree (project_id);
 
+CREATE UNIQUE INDEX index_batched_background_migrations_on_unique_configuration ON batched_background_migrations USING btree (job_class_name, table_name, column_name, job_arguments);
+
 CREATE INDEX index_batched_jobs_by_batched_migration_id_and_id ON batched_background_migration_jobs USING btree (batched_background_migration_id, id);
 
 CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_background_migration_jobs USING btree (batched_background_migration_id, status);
-
-CREATE INDEX index_batched_migrations_on_job_table_and_column_name ON batched_background_migrations USING btree (job_class_name, table_name, column_name);
 
 CREATE INDEX index_board_assignees_on_assignee_id ON board_assignees USING btree (assignee_id);
 
@@ -24647,7 +24649,7 @@ CREATE INDEX index_sprints_on_due_date ON sprints USING btree (due_date);
 
 CREATE INDEX index_sprints_on_group_id ON sprints USING btree (group_id);
 
-CREATE UNIQUE INDEX index_sprints_on_group_id_and_title ON sprints USING btree (group_id, title) WHERE (group_id IS NOT NULL);
+CREATE UNIQUE INDEX index_sprints_on_iterations_cadence_id_and_title ON sprints USING btree (iterations_cadence_id, title);
 
 CREATE UNIQUE INDEX index_sprints_on_project_id_and_iid ON sprints USING btree (project_id, iid);
 

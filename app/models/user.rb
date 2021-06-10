@@ -782,6 +782,16 @@ class User < ApplicationRecord
       end
     end
 
+    def automation_bot
+      email_pattern = "automation%s@#{Settings.gitlab.host}"
+
+      unique_internal(where(user_type: :automation_bot), 'automation-bot', email_pattern) do |u|
+        u.bio = 'The GitLab automation bot used for automated workflows and tasks'
+        u.name = 'GitLab Automation Bot'
+        u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for automation-bot
+      end
+    end
+
     # Return true if there is only single non-internal user in the deployment,
     # ghost user is ignored.
     def single_user?
