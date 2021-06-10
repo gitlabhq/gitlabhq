@@ -36,6 +36,13 @@ Try to avoid extra words when referring to an example or table in a documentatio
 
 Do not use when talking about the product or its features. The documentation describes the product as it is today. ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
+## Developer
+
+When writing about the Developer role, use a capital "D." Do not use the phrase, "if you are a developer"
+to mean someone who is assigned the Developer role. Instead, write it out. "If you are assigned the Developer role..."
+
+Do not use "Developer permissions." A user who is assigned the Developer role has a set of associated permissions.
+
 ## easily
 
 Do not use. If the user doesn't find the process to be these things, we lose their trust.
@@ -51,6 +58,13 @@ When possible, use present tense instead. For example, use `after you execute th
 ## GitLab
 
 Do not make possessive (GitLab's). This guidance follows [GitLab Brand Guidelines](https://about.gitlab.com/handbook/marketing/corporate-marketing/brand-activation/brand-guidelines/#trademark).
+
+## Guest
+
+When writing about the Guest role, use a capital "G." Do not use the phrase, "if you are a guest"
+to mean someone who is assigned the Guest role. Instead, write it out. "If you are assigned the Guest role..."
+
+Do not use "Guest permissions." A user who is assigned the Guest role has a set of associated permissions.
 
 ## handy
 
@@ -68,6 +82,13 @@ Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale
 
 Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
 
+## Maintainer
+
+When writing about the Maintainer role, use a capital "M." Do not use the phrase, "if you are a maintainer"
+to mean someone who is assigned the Maintainer role. Instead, write it out. "If you are assigned the Maintainer role..."
+
+Do not use "Maintainer permissions." A user who is assigned the Maintainer role has a set of associated permissions.
+
 ## may, might
 
 **Might** means something has the probability of occurring. **May** gives permission to do something. Consider **can** instead of **may**.
@@ -75,6 +96,13 @@ Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#v
 ## me, myself, mine
 
 Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale](../testing.md#vale) rule: [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml))
+
+## Owner
+
+When writing about the Owner role, use a capital "M." Do not use the phrase, "if you are an owner"
+to mean someone who is assigned the Owner role. Instead, write it out. "If you are assigned the Owner role..."
+
+Do not use "Owner permissions." A user who is assigned the Owner role has a set of associated permissions.
 
 ## permissions
 
@@ -87,6 +115,13 @@ Do not use. For details, see the [Microsoft style guide](https://docs.microsoft.
 ## profanity
 
 Do not use. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).
+
+## Reporter
+
+When writing about the Reporter role, use a capital "R." Do not use the phrase, "if you are a reporter"
+to mean someone who is assigned the Reporter role. Instead, write it out. "If you are assigned the Reporter role..."
+
+Do not use "Reporter permissions." A user who is assigned the Reporter role has a set of associated permissions.
 
 ## roles
 

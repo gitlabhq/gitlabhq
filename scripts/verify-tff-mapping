@@ -84,8 +84,8 @@ tests = [
 
   {
     explanation: 'FOSS views should map to respective spec',
-    source: 'app/views/admin/users/_user.html.haml',
-    expected: ['spec/views/admin/users/_user.html.haml_spec.rb']
+    source: 'app/views/admin/dashboard/index.html.haml',
+    expected: ['spec/views/admin/dashboard/index.html.haml_spec.rb']
   },
 
   {

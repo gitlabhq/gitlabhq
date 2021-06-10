@@ -107,6 +107,7 @@ export default {
       :items="users"
       :fields="$options.fields"
       :empty-text="s__('AdminUsers|No users found')"
+      data-qa-selector="user_row_content"
       show-empty
       stacked="md"
       :tbody-tr-attr="{ 'data-qa-selector': 'user_row_content' }"

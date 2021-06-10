@@ -8,21 +8,57 @@ module Banzai
         self.reference_type = :label
         self.object_class   = Label
 
+        def parent_records(parent, ids)
+          return Label.none unless parent.is_a?(Project) || parent.is_a?(Group)
+
+          labels         = find_labels(parent)
+          label_ids      = ids.map {|y| y[:label_id]}.compact
+          label_names    = ids.map {|y| y[:label_name]}.compact
+          id_relation    = labels.where(id: label_ids)
+          label_relation = labels.where(title: label_names)
+
+          Label.from_union([id_relation, label_relation])
+        end
+
         def find_object(parent_object, id)
-          find_labels(parent_object).find(id)
+          key = reference_cache.records_per_parent[parent_object].keys.find do |k|
+            k[:label_id] == id[:label_id] || k[:label_name] == id[:label_name]
+          end
+
+          reference_cache.records_per_parent[parent_object][key] if key
+        end
+
+        # Transform a symbol extracted from the text to a meaningful value
+        #
+        # This method has the contract that if a string `ref` refers to a
+        # record `record`, then `parse_symbol(ref) == record_identifier(record)`.
+        #
+        # This contract is slightly broken here, as we only have either the label_id
+        # or the label_name, but not both.  But below, we have both pieces of information.
+        # But it's accounted for in `find_object`
+        def parse_symbol(symbol, match_data)
+          { label_id: match_data[:label_id]&.to_i, label_name: match_data[:label_name]&.tr('"', '') }
+        end
+
+        # We assume that most classes are identifying records by ID.
+        #
+        # This method has the contract that if a string `ref` refers to a
+        # record `record`, then `class.parse_symbol(ref) == record_identifier(record)`.
+        # See note in `parse_symbol` above
+        def record_identifier(record)
+          { label_id: record.id, label_name: record.title }
         end
 
         def references_in(text, pattern = Label.reference_pattern)
           labels = {}
-          unescaped_html = unescape_html_entities(text).gsub(pattern) do |match|
-            namespace = $~[:namespace]
-            project = $~[:project]
-            project_path = reference_cache.full_project_path(namespace, project)
-            label = find_label_cached(project_path, $~[:label_id], $~[:label_name])
 
-            if label
-              labels[label.id] = yield match, label.id, project, namespace, $~
-              "#{REFERENCE_PLACEHOLDER}#{label.id}"
+          unescaped_html = unescape_html_entities(text).gsub(pattern).with_index do |match, index|
+            ident = identifier($~)
+            label = yield match, ident, $~[:project], $~[:namespace], $~
+
+            if label != match
+              labels[index] = label
+              "#{REFERENCE_PLACEHOLDER}#{index}"
             else
               match
             end
@@ -31,20 +67,6 @@ module Banzai
           return text if labels.empty?
 
           escape_with_placeholders(unescaped_html, labels)
-        end
-
-        def find_label_cached(parent_ref, label_id, label_name)
-          cached_call(:banzai_find_label_cached, label_name&.tr('"', '') || label_id, path: [object_class, parent_ref]) do
-            find_label(parent_ref, label_id, label_name)
-          end
-        end
-
-        def find_label(parent_ref, label_id, label_name)
-          parent = parent_from_ref(parent_ref)
-          return unless parent
-
-          label_params = label_params(label_id, label_name)
-          find_labels(parent).find_by(label_params)
         end
 
         def find_labels(parent)
@@ -58,21 +80,6 @@ module Banzai
                    end
 
           LabelsFinder.new(nil, params).execute(skip_authorization: true)
-        end
-
-        # Parameters to pass to `Label.find_by` based on the given arguments
-        #
-        # id   - Integer ID to pass. If present, returns {id: id}
-        # name - String name to pass. If `id` is absent, finds by name without
-        #        surrounding quotes.
-        #
-        # Returns a Hash.
-        def label_params(id, name)
-          if name
-            { name: name.tr('"', '') }
-          else
-            { id: id.to_i }
-          end
         end
 
         def url_for_object(label, parent)
@@ -120,6 +127,14 @@ module Banzai
         def object_link_title(object, matches)
           presenter = object.present(issuable_subject: project || group)
           LabelsHelper.label_tooltip_title(presenter)
+        end
+
+        def parent
+          project || group
+        end
+
+        def requires_unescaping?
+          true
         end
       end
     end

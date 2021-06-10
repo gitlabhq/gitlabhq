@@ -600,9 +600,8 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           setup_import_export_config('light')
           setup_reader(reader)
 
-          expect(project)
-            .to receive(:merge_requests)
-            .and_raise(exception)
+          expect(project).to receive(:merge_requests).and_call_original
+          expect(project).to receive(:merge_requests).and_raise(exception)
         end
 
         it 'report post import error' do
@@ -618,12 +617,9 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           setup_import_export_config('light')
           setup_reader(reader)
 
-          expect(project)
-            .to receive(:merge_requests)
-            .and_raise(exception)
-          expect(project)
-            .to receive(:merge_requests)
-            .and_call_original
+          expect(project).to receive(:merge_requests).and_call_original
+          expect(project).to receive(:merge_requests).and_raise(exception)
+          expect(project).to receive(:merge_requests).and_call_original
           expect(restored_project_json).to eq(true)
         end
 

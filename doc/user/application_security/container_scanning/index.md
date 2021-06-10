@@ -46,30 +46,12 @@ To enable container scanning in your pipeline, you need the following:
   or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 - Docker `18.09.03` or higher installed on the same computer as the runner. If you're using the
   shared runners on GitLab.com, then this is already the case.
-- An image matching the [supported distributions](https://aquasecurity.github.io/trivy/latest/vuln-detection/os/)).
+- An image matching the [supported distributions](#supported-distributions).
 - [Build and push](../../packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd)
-  your Docker image to your project's container registry. The name of the Docker image should use
-  the following [predefined CI/CD variables](../../../ci/variables/predefined_variables.md):
-
-  ```plaintext
-  $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
-  ```
-
-  You can use these directly in your `.gitlab-ci.yml` file:
-
-  ```yaml
-  build:
-    image: docker:19.03.12
-    stage: build
-    services:
-      - docker:19.03.12-dind
-    variables:
-      IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
-    script:
-      - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-      - docker build -t $IMAGE_TAG .
-      - docker push $IMAGE_TAG
-  ```
+  the Docker image to your project's container registry. If using a third-party container
+  registry, you might need to provide authentication credentials using the `DOCKER_USER` and
+  `DOCKER_PASSWORD` [configuration variables](#available-cicd-variables).
+- The name of the Docker image to scan, in the `DOCKER_IMAGE` [configuration variable](#available-cicd-variables).
 
 ## Configuration
 
@@ -80,6 +62,9 @@ How you enable container scanning depends on your GitLab version:
   that comes with your GitLab installation.
 - GitLab versions earlier than 11.9: Copy and use the job from the
   [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
+
+Other changes:
+
 - GitLab 13.6 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263482) better support for
   [FIPS](https://csrc.nist.gov/publications/detail/fips/140/2/final) by upgrading the
   `CS_MAJOR_VERSION` from `2` to `3`. Version `3` of the `container_scanning` Docker image uses
@@ -117,21 +102,14 @@ that you can download and analyze later. When downloading, you always receive th
 artifact.
 
 The following is a sample `.gitlab-ci.yml` that builds your Docker image, pushes it to the container
-registry, and scans the containers:
+registry, and scans the image:
 
 ```yaml
-variables:
-  DOCKER_DRIVER: overlay2
-
-stages:
-  - build
-  - test
-
 build:
-  image: docker:stable
+  image: docker:latest
   stage: build
   services:
-    - docker:19.03.12-dind
+    - docker:dind
   variables:
     IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
   script:
@@ -182,6 +160,12 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 | `DOCKER_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. | All |
 | `DOCKERFILE_PATH`              | `Dockerfile`  | The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. | All |
 | `SECURE_LOG_LEVEL`             | `info`        | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. | All |
+
+### Supported distributions
+
+Support depends on the scanner:
+
+- [Trivy](https://aquasecurity.github.io/trivy/latest/vuln-detection/os/) (Default).
 
 ### Overriding the container scanning template
 

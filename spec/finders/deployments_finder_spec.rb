@@ -81,16 +81,6 @@ RSpec.describe DeploymentsFinder do
           it 'returns deployments with matched updated_at' do
             is_expected.to match_array([deployment_2, deployment_1])
           end
-
-          context 'when deployments_finder_implicitly_enforce_ordering_for_updated_at_filter feature flag is disabled' do
-            before do
-              stub_feature_flags(deployments_finder_implicitly_enforce_ordering_for_updated_at_filter: false)
-            end
-
-            it 'returns deployments with matched updated_at' do
-              is_expected.to match_array([deployment_1, deployment_2])
-            end
-          end
         end
 
         context 'when the environment name is specified' do
@@ -243,20 +233,6 @@ RSpec.describe DeploymentsFinder do
         it 'sorts by `updated_at`' do
           expect(subject.order_values.first.to_sql).to eq(Deployment.arel_table[:updated_at].asc.to_sql)
           expect(subject.order_values.second.to_sql).to eq(Deployment.arel_table[:id].asc.to_sql)
-        end
-
-        context 'when deployments_finder_implicitly_enforce_ordering_for_updated_at_filter feature flag is disabled' do
-          before do
-            stub_feature_flags(deployments_finder_implicitly_enforce_ordering_for_updated_at_filter: false)
-          end
-
-          it 'sorts by only one column' do
-            expect(subject.order_values.size).to eq(1)
-          end
-
-          it 'sorts by `id`' do
-            expect(subject.order_values.first.to_sql).to eq(Deployment.arel_table[:id].asc.to_sql)
-          end
         end
       end
 

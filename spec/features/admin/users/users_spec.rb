@@ -11,291 +11,300 @@ RSpec.describe 'Admin::Users' do
     gitlab_enable_admin_mode_sign_in(current_user)
   end
 
-  [true, false].each do |vue_admin_users|
-    context "with vue_admin_users feature flag set to #{vue_admin_users}", js: vue_admin_users do
-      before do
-        stub_feature_flags(vue_admin_users: vue_admin_users)
+  describe 'GET /admin/users', :js do
+    before do
+      visit admin_users_path
+    end
+
+    it "is ok" do
+      expect(current_path).to eq(admin_users_path)
+    end
+
+    it "has users list" do
+      current_user.reload
+
+      expect(page).to have_content(current_user.email)
+      expect(page).to have_content(current_user.name)
+      expect(page).to have_content(current_user.created_at.strftime('%e %b, %Y'))
+      expect(page).to have_content(user.email)
+      expect(page).to have_content(user.name)
+      expect(page).to have_content('Projects')
+
+      click_user_dropdown_toggle(user.id)
+
+      expect(page).to have_button('Block')
+      expect(page).to have_button('Deactivate')
+      expect(page).to have_button('Delete user')
+      expect(page).to have_button('Delete user and contributions')
+    end
+
+    it 'clicking edit user takes us to edit page', :aggregate_failures do
+      page.within("[data-testid='user-actions-#{user.id}']") do
+        click_link 'Edit'
       end
 
-      describe 'GET /admin/users' do
+      expect(page).to have_content('Name')
+      expect(page).to have_content('Password')
+    end
+
+    describe 'view extra user information' do
+      it 'shows the user popover on hover', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/11290' do
+        expect(page).not_to have_selector('#__BV_popover_1__')
+
+        first_user_link = page.first('.js-user-link')
+        first_user_link.hover
+
+        expect(page).to have_selector('#__BV_popover_1__')
+      end
+    end
+
+    context 'user project count' do
+      before do
+        project = create(:project)
+        project.add_maintainer(current_user)
+      end
+
+      it 'displays count of users projects' do
+        visit admin_users_path
+
+        expect(page.find("[data-testid='user-project-count-#{current_user.id}']").text).to eq("1")
+      end
+    end
+
+    describe 'tabs' do
+      it 'has multiple tabs to filter users' do
+        expect(page).to have_link('Active', href: admin_users_path)
+        expect(page).to have_link('Admins', href: admin_users_path(filter: 'admins'))
+        expect(page).to have_link('2FA Enabled', href: admin_users_path(filter: 'two_factor_enabled'))
+        expect(page).to have_link('2FA Disabled', href: admin_users_path(filter: 'two_factor_disabled'))
+        expect(page).to have_link('External', href: admin_users_path(filter: 'external'))
+        expect(page).to have_link('Blocked', href: admin_users_path(filter: 'blocked'))
+        expect(page).to have_link('Deactivated', href: admin_users_path(filter: 'deactivated'))
+        expect(page).to have_link('Without projects', href: admin_users_path(filter: 'wop'))
+      end
+
+      context '`Pending approval` tab' do
         before do
           visit admin_users_path
         end
 
-        it "is ok" do
-          expect(current_path).to eq(admin_users_path)
+        it 'shows the `Pending approval` tab' do
+          expect(page).to have_link('Pending approval', href: admin_users_path(filter: 'blocked_pending_approval'))
         end
+      end
+    end
 
-        it "has users list" do
-          current_user.reload
+    describe 'search and sort' do
+      before_all do
+        create(:user, name: 'Foo Bar', last_activity_on: 3.days.ago)
+        create(:user, name: 'Foo Baz', last_activity_on: 2.days.ago)
+        create(:user, name: 'Dmitriy')
+      end
 
-          expect(page).to have_content(current_user.email)
-          expect(page).to have_content(current_user.name)
-          expect(page).to have_content(current_user.created_at.strftime('%e %b, %Y'))
-          expect(page).to have_content(user.email)
-          expect(page).to have_content(user.name)
-          expect(page).to have_content('Projects')
+      it 'searches users by name' do
+        visit admin_users_path(search_query: 'Foo')
 
-          click_user_dropdown_toggle(user.id)
+        expect(page).to have_content('Foo Bar')
+        expect(page).to have_content('Foo Baz')
+        expect(page).not_to have_content('Dmitriy')
+      end
 
-          expect(page).to have_button('Block')
-          expect(page).to have_button('Deactivate')
-          expect(page).to have_button('Delete user')
-          expect(page).to have_button('Delete user and contributions')
+      it 'sorts users by name' do
+        visit admin_users_path
+
+        sort_by('Name')
+
+        expect(first_row.text).to include('Dmitriy')
+        expect(second_row.text).to include('Foo Bar')
+      end
+
+      it 'sorts search results only' do
+        visit admin_users_path(search_query: 'Foo')
+
+        sort_by('Name')
+        expect(page).not_to have_content('Dmitriy')
+        expect(first_row.text).to include('Foo Bar')
+        expect(second_row.text).to include('Foo Baz')
+      end
+
+      it 'searches with respect of sorting' do
+        visit admin_users_path(sort: 'Name')
+
+        fill_in :search_query, with: 'Foo'
+        click_button('Search users')
+
+        expect(first_row.text).to include('Foo Bar')
+        expect(second_row.text).to include('Foo Baz')
+      end
+
+      it 'sorts users by recent last activity' do
+        visit admin_users_path(search_query: 'Foo')
+
+        sort_by('Recent last activity')
+
+        expect(first_row.text).to include('Foo Baz')
+        expect(second_row.text).to include('Foo Bar')
+      end
+
+      it 'sorts users by oldest last activity' do
+        visit admin_users_path(search_query: 'Foo')
+
+        sort_by('Oldest last activity')
+
+        expect(first_row.text).to include('Foo Bar')
+        expect(second_row.text).to include('Foo Baz')
+      end
+    end
+
+    describe 'Two-factor Authentication filters' do
+      it 'counts users who have enabled 2FA' do
+        create(:user, :two_factor)
+
+        visit admin_users_path
+
+        page.within('.filter-two-factor-enabled small') do
+          expect(page).to have_content('1')
         end
+      end
 
-        it 'clicking edit user takes us to edit page', :aggregate_failures do
-          page.within("[data-testid='user-actions-#{user.id}']") do
-            click_link 'Edit'
-          end
+      it 'filters by users who have enabled 2FA' do
+        user = create(:user, :two_factor)
 
-          expect(page).to have_content('Name')
-          expect(page).to have_content('Password')
+        visit admin_users_path
+        click_link '2FA Enabled'
+
+        expect(page).to have_content(user.email)
+      end
+
+      it 'counts users who have not enabled 2FA' do
+        visit admin_users_path
+
+        page.within('.filter-two-factor-disabled small') do
+          expect(page).to have_content('2') # Including admin
         end
+      end
 
-        describe 'view extra user information' do
-          it 'shows the user popover on hover', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/11290' do
-            expect(page).not_to have_selector('#__BV_popover_1__')
+      it 'filters by users who have not enabled 2FA' do
+        visit admin_users_path
+        click_link '2FA Disabled'
 
-            first_user_link = page.first('.js-user-link')
-            first_user_link.hover
+        expect(page).to have_content(user.email)
+      end
+    end
 
-            expect(page).to have_selector('#__BV_popover_1__')
-          end
+    describe 'Pending approval filter' do
+      it 'counts users who are pending approval' do
+        create_list(:user, 2, :blocked_pending_approval)
+
+        visit admin_users_path
+
+        page.within('.filter-blocked-pending-approval small') do
+          expect(page).to have_content('2')
         end
+      end
 
-        context 'user project count' do
-          before do
-            project = create(:project)
-            project.add_maintainer(current_user)
-          end
+      it 'filters by users who are pending approval' do
+        user = create(:user, :blocked_pending_approval)
 
-          it 'displays count of users projects' do
-            visit admin_users_path
+        visit admin_users_path
+        click_link 'Pending approval'
 
-            expect(page.find("[data-testid='user-project-count-#{current_user.id}']").text).to eq("1")
-          end
+        expect(page).to have_content(user.email)
+      end
+    end
+
+    context 'when blocking/unblocking a user' do
+      it 'shows confirmation and allows blocking and unblocking', :js do
+        expect(page).to have_content(user.email)
+
+        click_action_in_user_dropdown(user.id, 'Block')
+
+        wait_for_requests
+
+        expect(page).to have_content('Block user')
+        expect(page).to have_content('Blocking user has the following effects')
+        expect(page).to have_content('User will not be able to login')
+        expect(page).to have_content('Owned groups will be left')
+
+        find('.modal-footer button', text: 'Block').click
+
+        wait_for_requests
+
+        expect(page).to have_content('Successfully blocked')
+        expect(page).not_to have_content(user.email)
+
+        click_link 'Blocked'
+
+        wait_for_requests
+
+        expect(page).to have_content(user.email)
+
+        click_action_in_user_dropdown(user.id, 'Unblock')
+
+        expect(page).to have_content('Unblock user')
+        expect(page).to have_content('You can always block their account again if needed.')
+
+        find('.modal-footer button', text: 'Unblock').click
+
+        wait_for_requests
+
+        expect(page).to have_content('Successfully unblocked')
+        expect(page).not_to have_content(user.email)
+      end
+    end
+
+    context 'when deactivating/re-activating a user' do
+      it 'shows confirmation and allows deactivating and re-activating', :js do
+        expect(page).to have_content(user.email)
+
+        click_action_in_user_dropdown(user.id, 'Deactivate')
+
+        expect(page).to have_content('Deactivate user')
+        expect(page).to have_content('Deactivating a user has the following effects')
+        expect(page).to have_content('The user will be logged out')
+        expect(page).to have_content('Personal projects, group and user history will be left intact')
+
+        find('.modal-footer button', text: 'Deactivate').click
+
+        wait_for_requests
+
+        expect(page).to have_content('Successfully deactivated')
+        expect(page).not_to have_content(user.email)
+
+        click_link 'Deactivated'
+
+        wait_for_requests
+
+        expect(page).to have_content(user.email)
+
+        click_action_in_user_dropdown(user.id, 'Activate')
+
+        expect(page).to have_content('Activate user')
+        expect(page).to have_content('You can always deactivate their account again if needed.')
+
+        find('.modal-footer button', text: 'Activate').click
+
+        wait_for_requests
+
+        expect(page).to have_content('Successfully activated')
+        expect(page).not_to have_content(user.email)
+      end
+    end
+
+    describe 'internal users' do
+      context 'when showing a `Ghost User`' do
+        let_it_be(:ghost_user) { create(:user, :ghost) }
+
+        it 'does not render actions dropdown' do
+          expect(page).not_to have_css("[data-testid='user-actions-#{ghost_user.id}'] [data-testid='dropdown-toggle']")
         end
+      end
 
-        describe 'tabs' do
-          it 'has multiple tabs to filter users' do
-            expect(page).to have_link('Active', href: admin_users_path)
-            expect(page).to have_link('Admins', href: admin_users_path(filter: 'admins'))
-            expect(page).to have_link('2FA Enabled', href: admin_users_path(filter: 'two_factor_enabled'))
-            expect(page).to have_link('2FA Disabled', href: admin_users_path(filter: 'two_factor_disabled'))
-            expect(page).to have_link('External', href: admin_users_path(filter: 'external'))
-            expect(page).to have_link('Blocked', href: admin_users_path(filter: 'blocked'))
-            expect(page).to have_link('Banned', href: admin_users_path(filter: 'banned'))
-            expect(page).to have_link('Deactivated', href: admin_users_path(filter: 'deactivated'))
-            expect(page).to have_link('Without projects', href: admin_users_path(filter: 'wop'))
-          end
+      context 'when showing a `Bot User`' do
+        let_it_be(:bot_user) { create(:user, user_type: :alert_bot) }
 
-          context '`Pending approval` tab' do
-            before do
-              visit admin_users_path
-            end
-
-            it 'shows the `Pending approval` tab' do
-              expect(page).to have_link('Pending approval', href: admin_users_path(filter: 'blocked_pending_approval'))
-            end
-          end
-        end
-
-        describe 'search and sort' do
-          before_all do
-            create(:user, name: 'Foo Bar', last_activity_on: 3.days.ago)
-            create(:user, name: 'Foo Baz', last_activity_on: 2.days.ago)
-            create(:user, name: 'Dmitriy')
-          end
-
-          it 'searches users by name' do
-            visit admin_users_path(search_query: 'Foo')
-
-            expect(page).to have_content('Foo Bar')
-            expect(page).to have_content('Foo Baz')
-            expect(page).not_to have_content('Dmitriy')
-          end
-
-          it 'sorts users by name' do
-            visit admin_users_path
-
-            sort_by('Name')
-
-            expect(first_row.text).to include('Dmitriy')
-            expect(second_row.text).to include('Foo Bar')
-          end
-
-          it 'sorts search results only' do
-            visit admin_users_path(search_query: 'Foo')
-
-            sort_by('Name')
-            expect(page).not_to have_content('Dmitriy')
-            expect(first_row.text).to include('Foo Bar')
-            expect(second_row.text).to include('Foo Baz')
-          end
-
-          it 'searches with respect of sorting' do
-            visit admin_users_path(sort: 'Name')
-
-            fill_in :search_query, with: 'Foo'
-            click_button('Search users')
-
-            expect(first_row.text).to include('Foo Bar')
-            expect(second_row.text).to include('Foo Baz')
-          end
-
-          it 'sorts users by recent last activity' do
-            visit admin_users_path(search_query: 'Foo')
-
-            sort_by('Recent last activity')
-
-            expect(first_row.text).to include('Foo Baz')
-            expect(second_row.text).to include('Foo Bar')
-          end
-
-          it 'sorts users by oldest last activity' do
-            visit admin_users_path(search_query: 'Foo')
-
-            sort_by('Oldest last activity')
-
-            expect(first_row.text).to include('Foo Bar')
-            expect(second_row.text).to include('Foo Baz')
-          end
-        end
-
-        describe 'Two-factor Authentication filters' do
-          it 'counts users who have enabled 2FA' do
-            create(:user, :two_factor)
-
-            visit admin_users_path
-
-            page.within('.filter-two-factor-enabled small') do
-              expect(page).to have_content('1')
-            end
-          end
-
-          it 'filters by users who have enabled 2FA' do
-            user = create(:user, :two_factor)
-
-            visit admin_users_path
-            click_link '2FA Enabled'
-
-            expect(page).to have_content(user.email)
-          end
-
-          it 'counts users who have not enabled 2FA' do
-            visit admin_users_path
-
-            page.within('.filter-two-factor-disabled small') do
-              expect(page).to have_content('2') # Including admin
-            end
-          end
-
-          it 'filters by users who have not enabled 2FA' do
-            visit admin_users_path
-            click_link '2FA Disabled'
-
-            expect(page).to have_content(user.email)
-          end
-        end
-
-        describe 'Pending approval filter' do
-          it 'counts users who are pending approval' do
-            create_list(:user, 2, :blocked_pending_approval)
-
-            visit admin_users_path
-
-            page.within('.filter-blocked-pending-approval small') do
-              expect(page).to have_content('2')
-            end
-          end
-
-          it 'filters by users who are pending approval' do
-            user = create(:user, :blocked_pending_approval)
-
-            visit admin_users_path
-            click_link 'Pending approval'
-
-            expect(page).to have_content(user.email)
-          end
-        end
-
-        context 'when blocking/unblocking a user' do
-          it 'shows confirmation and allows blocking and unblocking', :js do
-            expect(page).to have_content(user.email)
-
-            click_action_in_user_dropdown(user.id, 'Block')
-
-            wait_for_requests
-
-            expect(page).to have_content('Block user')
-            expect(page).to have_content('Blocking user has the following effects')
-            expect(page).to have_content('User will not be able to login')
-            expect(page).to have_content('Owned groups will be left')
-
-            find('.modal-footer button', text: 'Block').click
-
-            wait_for_requests
-
-            expect(page).to have_content('Successfully blocked')
-            expect(page).not_to have_content(user.email)
-
-            click_link 'Blocked'
-
-            wait_for_requests
-
-            expect(page).to have_content(user.email)
-
-            click_action_in_user_dropdown(user.id, 'Unblock')
-
-            expect(page).to have_content('Unblock user')
-            expect(page).to have_content('You can always block their account again if needed.')
-
-            find('.modal-footer button', text: 'Unblock').click
-
-            wait_for_requests
-
-            expect(page).to have_content('Successfully unblocked')
-            expect(page).not_to have_content(user.email)
-          end
-        end
-
-        context 'when deactivating/re-activating a user' do
-          it 'shows confirmation and allows deactivating and re-activating', :js do
-            expect(page).to have_content(user.email)
-
-            click_action_in_user_dropdown(user.id, 'Deactivate')
-
-            expect(page).to have_content('Deactivate user')
-            expect(page).to have_content('Deactivating a user has the following effects')
-            expect(page).to have_content('The user will be logged out')
-            expect(page).to have_content('Personal projects, group and user history will be left intact')
-
-            find('.modal-footer button', text: 'Deactivate').click
-
-            wait_for_requests
-
-            expect(page).to have_content('Successfully deactivated')
-            expect(page).not_to have_content(user.email)
-
-            click_link 'Deactivated'
-
-            wait_for_requests
-
-            expect(page).to have_content(user.email)
-
-            click_action_in_user_dropdown(user.id, 'Activate')
-
-            expect(page).to have_content('Activate user')
-            expect(page).to have_content('You can always deactivate their account again if needed.')
-
-            find('.modal-footer button', text: 'Activate').click
-
-            wait_for_requests
-
-            expect(page).to have_content('Successfully activated')
-            expect(page).not_to have_content(user.email)
-          end
+        it 'does not render actions dropdown' do
+          expect(page).not_to have_css("[data-testid='user-actions-#{bot_user.id}'] [data-testid='dropdown-toggle']")
         end
       end
     end
