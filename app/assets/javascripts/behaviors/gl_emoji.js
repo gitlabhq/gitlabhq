@@ -1,4 +1,3 @@
-import 'document-register-element';
 import {
   initEmojiMap,
   getEmojiInfo,

@@ -433,6 +433,7 @@ class IssuableBaseService < ::BaseProjectService
         milestone: issuable.try(:milestone)
       }
     associations[:total_time_spent] = issuable.total_time_spent if issuable.respond_to?(:total_time_spent)
+    associations[:time_change] = issuable.time_change if issuable.respond_to?(:time_change)
     associations[:description] = issuable.description
     associations[:reviewers] = issuable.reviewers.to_a if issuable.allows_reviewers?
 

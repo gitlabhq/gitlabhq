@@ -24,6 +24,12 @@ module Gitlab
     end
 
     def output(seconds)
+      seconds.to_i < 0 ? negative_output(seconds) : positive_output(seconds)
+    end
+
+    private
+
+    def positive_output(seconds)
       ChronicDuration.output(
         seconds,
         CUSTOM_DAY_AND_MONTH_LENGTH.merge(
@@ -34,7 +40,9 @@ module Gitlab
       nil
     end
 
-    private
+    def negative_output(seconds)
+      "-" + positive_output(seconds.abs)
+    end
 
     def limit_to_hours_setting
       Gitlab::CurrentSettings.time_tracking_limit_to_hours

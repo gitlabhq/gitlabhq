@@ -62,7 +62,7 @@ module API
             authorize_upload!(project)
             bad_request!('File is too large') if max_file_size_exceeded?
 
-            ::Gitlab::Tracking.event(self.options[:for].name, 'push_package')
+            ::Gitlab::Tracking.event(self.options[:for].name, 'push_package', user: current_user, project: project, namespace: project.namespace)
 
             create_package_file_params = declared_params.merge(build: current_authenticated_job)
             ::Packages::Generic::CreatePackageFileService
@@ -96,7 +96,7 @@ module API
             package = ::Packages::Generic::PackageFinder.new(project).execute!(params[:package_name], params[:package_version])
             package_file = ::Packages::PackageFileFinder.new(package, params[:file_name]).execute!
 
-            ::Gitlab::Tracking.event(self.options[:for].name, 'pull_package')
+            ::Gitlab::Tracking.event(self.options[:for].name, 'pull_package', user: current_user, project: project, namespace: project.namespace)
 
             present_carrierwave_file!(package_file.file)
           end

@@ -56,7 +56,7 @@ module Gitlab
         return if dnt_enabled?
 
         track_experiment_event_for(experiment_key, action, value, subject: subject) do |tracking_data|
-          ::Gitlab::Tracking.event(tracking_data.delete(:category), tracking_data.delete(:action), **tracking_data)
+          ::Gitlab::Tracking.event(tracking_data.delete(:category), tracking_data.delete(:action), **tracking_data.merge!(user: current_user))
         end
       end
 

@@ -122,7 +122,7 @@ shared runners per month. Setting this to `0` (default value) grants
 unlimited pipeline minutes. While build limits are stored as minutes, the
 counting is done in seconds. Usage resets on the first day of each month.
 On GitLab.com, the quota is calculated based on your
-[subscription plan](https://about.gitlab.com/pricing/#gitlab-com).
+[subscription plan](../../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes).
 
 To change the pipelines minutes quota:
 

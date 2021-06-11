@@ -6,9 +6,9 @@ RSpec.shared_examples 'a mutation which can mutate a spammable' do
   describe "#additional_spam_params" do
     it 'passes additional spam params to the service' do
       args = [
-        anything,
-        anything,
-        hash_including(
+        project: anything,
+        current_user: anything,
+        params: hash_including(
           api: true,
           request: instance_of(ActionDispatch::Request),
           captcha_response: captcha_response,

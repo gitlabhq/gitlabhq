@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::ConanInstancePackages do
+  let(:snowplow_standard_context_params) { { user: user, project: project, namespace: project.namespace } }
+
   include_context 'conan api setup'
 
   describe 'GET /api/v4/packages/conan/v1/ping' do

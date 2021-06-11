@@ -183,8 +183,8 @@ export default {
               :title="__('Confidential')"
               :aria-label="__('Confidential')"
             />
-            <gl-link :href="webUrl" v-bind="issuableTitleProps"
-              >{{ issuable.title
+            <gl-link :href="webUrl" v-bind="issuableTitleProps">
+              {{ issuable.title
               }}<gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2"
             /></gl-link>
           </span>

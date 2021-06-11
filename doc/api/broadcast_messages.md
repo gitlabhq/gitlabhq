@@ -4,9 +4,7 @@ group: Activation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Broadcast Messages API
-
-> Introduced in GitLab 8.12.
+# Broadcast Messages API **(FREE SELF)**
 
 Broadcast messages API operates on [broadcast messages](../user/admin_area/broadcast_messages.md).
 

@@ -1090,6 +1090,9 @@ GEM
       rspec-support (~> 3.10)
     rspec-retry (0.6.1)
       rspec-core (> 3.3)
+    rspec-sidekiq (3.1.0)
+      rspec-core (~> 3.0, >= 3.0.0)
+      sidekiq (>= 2.4.0)
     rspec-support (3.10.2)
     rspec_junit_formatter (0.4.1)
       rspec-core (>= 2, < 4, != 2.12.0)
@@ -1605,6 +1608,7 @@ DEPENDENCIES
   rspec-parameterized
   rspec-rails (~> 5.0.1)
   rspec-retry (~> 0.6.1)
+  rspec-sidekiq
   rspec_junit_formatter
   rspec_profiling (~> 0.0.6)
   ruby-fogbugz (~> 0.2.1)

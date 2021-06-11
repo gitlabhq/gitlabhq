@@ -60,7 +60,7 @@ To share a project after enabling this feature:
 
 1. Go to your project's page.
 1. In the left sidebar, go to **Members**, and then select **Invite a group**.
-1. Select a group, and select a **Max access level**.
+1. Select a group, and select a **Max role**.
 1. (Optional) Select an **Access expiration date**.
 1. Select **Invite**.
 

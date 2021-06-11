@@ -15,6 +15,24 @@ RSpec.describe Ci::UpdateBuildStateService do
     stub_feature_flags(ci_enable_live_trace: true)
   end
 
+  context 'when build has unknown failure reason' do
+    let(:params) do
+      {
+        output: { checksum: 'crc32:12345678', bytesize: 123 },
+        state: 'failed',
+        failure_reason: 'no idea here',
+        exit_code: 42
+      }
+    end
+
+    it 'updates a build status' do
+      result = subject.execute
+
+      expect(build).to be_failed
+      expect(result.status).to eq 200
+    end
+  end
+
   context 'when build does not have checksum' do
     context 'when state has changed' do
       let(:params) { { state: 'success' } }

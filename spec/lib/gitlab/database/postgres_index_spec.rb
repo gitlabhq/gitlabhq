@@ -69,15 +69,15 @@ RSpec.describe Gitlab::Database::PostgresIndex do
 
   describe '#unique?' do
     it 'returns true for a unique index' do
-      expect(find('public.bar_key')).to be_unique
+      expect(find('public.bar_key').unique?).to be_truthy
     end
 
     it 'returns false for a regular, non-unique index' do
-      expect(find('public.foo_idx')).not_to be_unique
+      expect(find('public.foo_idx').unique?).to be_falsey
     end
 
     it 'returns true for a primary key index' do
-      expect(find('public.example_table_pkey')).to be_unique
+      expect(find('public.example_table_pkey').unique?).to be_truthy
     end
   end
 

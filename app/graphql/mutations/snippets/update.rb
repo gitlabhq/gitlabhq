@@ -34,7 +34,7 @@ module Mutations
 
         process_args_for_params!(args)
 
-        service_response = ::Snippets::UpdateService.new(snippet.project, current_user, args).execute(snippet)
+        service_response = ::Snippets::UpdateService.new(project: snippet.project, current_user: current_user, params: args).execute(snippet)
 
         # TODO: DRY this up - From here down, this is all duplicated with Mutations::Snippets::Create#resolve, except for
         #    `snippet.reset`, which is required in order to return the object in its non-dirty, unmodified, database state

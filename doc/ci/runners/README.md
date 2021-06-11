@@ -20,6 +20,9 @@ If you are using self-managed GitLab or you want to use your own runners on GitL
 
 On GitLab.com, your jobs can run on [Linux](#linux-shared-runners) or [Windows](#windows-shared-runners-beta).
 
+The shared runners provided by GitLab are limited by [shared runner pipeline minutes quotas](../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)
+for each GitLab [subscription plan](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes).
+
 ### Linux shared runners
 
 Linux shared runners on GitLab.com run in autoscale mode and are powered by Google Cloud Platform.

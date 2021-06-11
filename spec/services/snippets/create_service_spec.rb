@@ -20,7 +20,7 @@ RSpec.describe Snippets::CreateService do
     let(:extra_opts) { {} }
     let(:creator) { admin }
 
-    subject { described_class.new(project, creator, opts).execute }
+    subject { described_class.new(project: project, current_user: creator, params: opts).execute }
 
     let(:snippet) { subject.payload[:snippet] }
 

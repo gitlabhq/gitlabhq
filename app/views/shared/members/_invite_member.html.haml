@@ -10,14 +10,14 @@
         = label_tag :user_ids, _("GitLab member or Email address"), class: "label-bold"
         = users_select_tag(:user_ids, multiple: true, class: 'input-clamp qa-member-select-field', scope: :all, email_user: true, placeholder: 'Search for members to update or invite')
       .form-group
-        = label_tag :access_level, _("Choose a role permission"), class: "label-bold"
+        = label_tag :access_level, _("Select a role"), class: "label-bold"
         .select-wrapper
           = select_tag :access_level, options_for_select(access_levels, default_access_level), class: "form-control project-access-select select-control"
           = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3 gl-text-gray-200")
         .form-text.text-muted.gl-mb-3
           - permissions_docs_path = help_page_path('user/permissions')
           - link_start = %q{<a href="%{url}">}.html_safe % { url: permissions_docs_path }
-          = _("%{link_start}Read more%{link_end} about role permissions").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+          = _("%{link_start}Learn more%{link_end} about roles.").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
       .form-group
         = label_tag :expires_at, _('Access expiration date'), class: 'label-bold'
         .clearable-input

@@ -90,7 +90,7 @@ RSpec.describe 'Updating a Snippet' do
         it 'passes disable_spam_action_service param to service' do
           expect(::Snippets::UpdateService)
             .to receive(:new)
-                  .with(anything, anything, hash_including(disable_spam_action_service: true))
+                  .with(project: anything, current_user: anything, params: hash_including(disable_spam_action_service: true))
                   .and_call_original
 
           subject

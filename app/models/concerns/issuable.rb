@@ -468,9 +468,11 @@ module Issuable
 
       if self.respond_to?(:total_time_spent)
         old_total_time_spent = old_associations.fetch(:total_time_spent, total_time_spent)
+        old_time_change = old_associations.fetch(:time_change, time_change)
 
         if old_total_time_spent != total_time_spent
           changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
+          changes[:time_change] = [old_time_change, time_change]
         end
       end
     end

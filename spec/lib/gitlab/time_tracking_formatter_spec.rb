@@ -47,5 +47,11 @@ RSpec.describe Gitlab::TimeTrackingFormatter do
 
       it { expect(subject).to eq('1w 1d 1h 40m') }
     end
+
+    context 'handles negative time input' do
+      let(:num_seconds) { -178_800 }
+
+      it { expect(subject).to eq('-1w 1d 1h 40m') }
+    end
   end
 end

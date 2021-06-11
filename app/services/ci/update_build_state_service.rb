@@ -169,7 +169,7 @@ module Ci
         state: params.fetch(:state),
         trace_checksum: trace_checksum,
         trace_bytesize: trace_bytesize,
-        failure_reason: params.dig(:failure_reason)
+        failure_reason: failure_reason
       )
 
       unless build_state.present?
@@ -177,6 +177,14 @@ module Ci
       end
 
       build_state || build.pending_state
+    end
+
+    def failure_reason
+      reason = params.dig(:failure_reason)
+
+      return unless reason
+
+      Ci::BuildPendingState.failure_reasons.fetch(reason.to_s, 'unknown_failure')
     end
 
     ##

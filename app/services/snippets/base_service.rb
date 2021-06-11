@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Snippets
-  class BaseService < ::BaseService
+  class BaseService < ::BaseProjectService
     UPDATE_COMMIT_MSG = 'Update snippet'
     INITIAL_COMMIT_MSG = 'Initial commit'
 
@@ -9,7 +9,7 @@ module Snippets
 
     attr_reader :uploaded_assets, :snippet_actions
 
-    def initialize(project, user = nil, params = {})
+    def initialize(project: nil, current_user: nil, params: {})
       super
 
       @uploaded_assets = Array(@params.delete(:files).presence)
@@ -20,7 +20,7 @@ module Snippets
 
     private
 
-    def visibility_allowed?(snippet, visibility_level)
+    def visibility_allowed?(visibility_level)
       Gitlab::VisibilityLevel.allowed_for?(current_user, visibility_level)
     end
 

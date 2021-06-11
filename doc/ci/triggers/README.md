@@ -262,7 +262,7 @@ of all types of variables.
 
 Whether you craft a script or just run cURL directly, you can trigger jobs
 in conjunction with cron. The example below triggers a job on the `main` branch
-branch of project with ID `9` every night at `00:30`:
+of project with ID `9` every night at `00:30`:
 
 ```shell
 30 0 * * * curl --request POST --form token=TOKEN --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"

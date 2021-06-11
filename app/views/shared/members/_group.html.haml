@@ -29,7 +29,7 @@
             = group_link.human_access
           = sprite_icon("chevron-down", css_class: "dropdown-menu-toggle-icon gl-top-3")
         .dropdown-menu.dropdown-select.dropdown-menu-right.dropdown-menu-selectable
-          = dropdown_title(_("Change permissions"))
+          = dropdown_title(_("Change role"))
           .dropdown-content
             %ul
               - Gitlab::Access.options_with_owner.each do |role, role_id|

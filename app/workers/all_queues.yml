@@ -1535,7 +1535,7 @@
   :worker_name: PipelineHooksWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
-  :urgency: :high
+  :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
   :idempotent:

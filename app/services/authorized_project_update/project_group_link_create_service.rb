@@ -49,7 +49,7 @@ module AuthorizedProjectUpdate
     def access_level(membership_access_level)
       return membership_access_level unless group_access
 
-      # access level must not be higher than the max access level set when
+      # access level (role) must not be higher than the max access level (role) set when
       # creating the project share
       [membership_access_level, group_access].min
     end

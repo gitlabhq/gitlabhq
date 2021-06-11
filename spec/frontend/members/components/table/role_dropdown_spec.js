@@ -88,7 +88,7 @@ describe('RoleDropdown', () => {
     });
 
     it('renders dropdown header', () => {
-      expect(getByTextInDropdownMenu('Change permissions').exists()).toBe(true);
+      expect(getByTextInDropdownMenu('Change role').exists()).toBe(true);
     });
 
     it('sets dropdown toggle and checks selected role', () => {

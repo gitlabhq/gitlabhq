@@ -658,7 +658,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
       let(:config) { { script: 'deploy', when: 'delayed' } }
 
       it 'is a delayed' do
-        expect(entry).to be_delayed
+        expect(entry.delayed?).to be_truthy
       end
     end
 
@@ -666,7 +666,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
       let(:config) { { script: 'deploy' } }
 
       it 'is not a delayed' do
-        expect(entry).not_to be_delayed
+        expect(entry.delayed?).to be_falsey
       end
     end
   end

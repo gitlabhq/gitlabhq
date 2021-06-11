@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Preloaders
-  # This class preloads the max access level for the user within the given projects and
+  # This class preloads the max access level (role) for the user within the given projects and
   # stores the values in requests store via the ProjectTeam class.
   class UserMaxAccessLevelInProjectsPreloader
     def initialize(projects, user)

@@ -17,29 +17,34 @@ full list of reference architectures, see
 
 | Service                                    | Nodes       | Configuration           | GCP              | AWS          | Azure     |
 |--------------------------------------------|-------------|-------------------------|------------------|--------------|-----------|
-| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
-| Consul*                                    | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
-| PostgreSQL*                                | 3           | 8 vCPU, 30 GB memory    | `n1-standard-8`  | `m5.2xlarge` | `D8s v3`  |
-| PgBouncer*                                 | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
-| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
-| Redis - Cache**                            | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
-| Redis - Queues / Shared State**            | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
-| Redis Sentinel - Cache**                   | 3           | 1 vCPU, 3.75 GB memory  | `n1-standard-1`  | `c5.large`   | `A1 v2`   |
-| Redis Sentinel - Queues / Shared State**   | 3           | 1 vCPU, 3.75 GB memory  | `n1-standard-1`  | `c5.large`   | `A1 v2`   |
+| External load balancing node(3)            | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Consul(1)                                  | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| PostgreSQL(1)                              | 3           | 8 vCPU, 30 GB memory    | `n1-standard-8`  | `m5.2xlarge` | `D8s v3`  |
+| PgBouncer(1)                               | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Internal load balancing node(3)            | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Redis - Cache(2)                           | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
+| Redis - Queues / Shared State(2)           | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
+| Redis Sentinel - Cache(2)                  | 3           | 1 vCPU, 3.75 GB memory  | `n1-standard-1`  | `c5.large`   | `A1 v2`   |
+| Redis Sentinel - Queues / Shared State(2)  | 3           | 1 vCPU, 3.75 GB memory  | `n1-standard-1`  | `c5.large`   | `A1 v2`   |
 | Gitaly                                     | 3           | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge` | `D16s v3` |
 | Praefect                                   | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
-| Praefect PostgreSQL*                       | 1+          | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Praefect PostgreSQL(1)                     | 1+          | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
 | Sidekiq                                    | 4           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
 | GitLab Rails                               | 3           | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge` | `F32s v2` |
 | Monitoring node                            | 1           | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
-| Object storage                             | n/a         | n/a                     | n/a              | n/a          | n/a       |
-| NFS server                                 | 1           | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
+| Object storage(4)                          | n/a         | n/a                     | n/a              | n/a          | n/a       |
+| NFS server (optional, not recommended)     | 1           | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
+
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- markdownlint-disable MD029 -->
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work, however Azure Database for PostgreSQL is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to performance issues. Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
+3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
+4. Should be run on reputable third party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+<!-- markdownlint-enable MD029 -->
 
 NOTE:
-Components marked with * can be optionally run on reputable
-third party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work.
-Components marked with ** can be optionally run on reputable
-third party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
+For all PaaS solutions that involve configuring instances, it is strongly recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
 
 ```plantuml
 @startuml 10k
@@ -2398,35 +2403,46 @@ time use Google Cloud’s Kubernetes Engine (GKE) and associated machine types, 
 and CPU requirements should translate to most other providers. We hope to update this in the
 future with further specific cloud provider details.
 
-| Service                                               | Nodes | Configuration           | GCP              | Allocatable CPUs and Memory |
-|-------------------------------------------------------|-------|-------------------------|------------------|-----------------------------|
-| Webservice                                            | 4     | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | 127.5 vCPU, 118 GB memory   |
-| Sidekiq                                               | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 15.5 vCPU, 50 GB memory     |
-| Supporting services such as NGINX, Prometheus, etc... | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 7.75 vCPU, 25 GB memory     |
+| Service                                               | Nodes(1) | Configuration           | GCP              | Allocatable CPUs and Memory |
+|-------------------------------------------------------|----------|-------------------------|------------------|-----------------------------|
+| Webservice                                            | 4        | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | 127.5 vCPU, 118 GB memory   |
+| Sidekiq                                               | 4        | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 15.5 vCPU, 50 GB memory     |
+| Supporting services such as NGINX, Prometheus, etc.   | 2        | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 7.75 vCPU, 25 GB memory     |
+
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- markdownlint-disable MD029 -->
+1. Nodes configuration is shown as it is forced to ensure pod vcpu / memory ratios and avoid scaling during **performance testing**.
+   In production deployments there is no need to assign pods to nodes. A minimum of three nodes in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
+<!-- markdownlint-enable MD029 -->
 
 Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
 services where applicable):
 
 | Service                                    | Nodes | Configuration           | GCP              |
 |--------------------------------------------|-------|-------------------------|------------------|
-| Consul*                                    | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| PostgreSQL*                                | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8`  |
-| PgBouncer*                                 | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Internal load balancing node               | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Redis - Cache**                            | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Redis - Queues / Shared State**            | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Redis Sentinel - Cache**                   | 3     | 1 vCPU, 3.75 GB memory   | `n1-standard-1`  |
-| Redis Sentinel - Queues / Shared State**   | 3     | 1 vCPU, 3.75 GB memory   | `n1-standard-1`  |
+| Consul(1)                                  | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| PostgreSQL(1)                              | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8`  |
+| PgBouncer(1)                               | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Internal load balancing node(3)            | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Redis - Cache(2)                           | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
+| Redis - Queues / Shared State(2)           | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
+| Redis Sentinel - Cache(2)                  | 3     | 1 vCPU, 3.75 GB memory   | `n1-standard-1`  |
+| Redis Sentinel - Queues / Shared State(2)  | 3     | 1 vCPU, 3.75 GB memory   | `n1-standard-1`  |
 | Gitaly                                     | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` |
 | Praefect                                   | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Praefect PostgreSQL*                       | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Object storage                             | n/a   | n/a                     | n/a              |
+| Praefect PostgreSQL(1)                     | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Object storage(4)                          | n/a   | n/a                     | n/a              |
+
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- markdownlint-disable MD029 -->
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work, however Azure Database for PostgreSQL is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to performance issues. Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
+3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
+4. Should be run on reputable third party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+<!-- markdownlint-enable MD029 -->
 
 NOTE:
-Components marked with * can be optionally run on reputable
-third party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work.
-Components marked with ** can be optionally run on reputable
-third party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
+For all PaaS solutions that involve configuring instances, it is strongly recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
 
 ```plantuml
 @startuml 10k

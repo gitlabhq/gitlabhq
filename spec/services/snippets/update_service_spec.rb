@@ -20,7 +20,7 @@ RSpec.describe Snippets::UpdateService do
     let(:extra_opts) { {} }
     let(:options) { base_opts.merge(extra_opts) }
     let(:updater) { user }
-    let(:service) { Snippets::UpdateService.new(project, updater, options) }
+    let(:service) { Snippets::UpdateService.new(project: project, current_user: updater, params: options) }
 
     subject { service.execute(snippet) }
 

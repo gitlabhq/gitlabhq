@@ -259,9 +259,9 @@ it 'sets the frobulance' do
 end
 
 it 'schedules a background job' do
-  expect(BackgroundJob).to receive(:perform_async)
-
   subject.execute
+
+  expect(BackgroundJob).to have_enqueued_sidekiq_job
 end
 ```
 
@@ -271,11 +271,11 @@ combining the examples:
 
 ```ruby
 it 'performs the expected side-effects' do
-  expect(BackgroundJob).to receive(:perform_async)
-
   expect { subject.execute }
     .to change(Event, :count).by(1)
     .and change { arg_0.frobulance }.to('wibble')
+
+  expect(BackgroundJob).to have_enqueued_sidekiq_job
 end
 ```
 
@@ -737,6 +737,28 @@ the processing of background jobs is needed/expected.
 The usage of `perform_enqueued_jobs` is useful only for testing delayed mail
 deliveries, because our Sidekiq workers aren't inheriting from `ApplicationJob`
 / `ActiveJob::Base`.
+
+GitLab uses the [RSpec-Sidekiq](https://github.com/philostler/rspec-sidekiq) gem for expectations.
+We prefer you check that a job has been enqueued, rather than checking the worker has
+`received` the `perform_async` method:
+
+```ruby
+# bad
+expect(Worker).to receive(:perform_async).with(1, 'string')
+# Good
+expect(Worker).to have_enqueued_sidekiq_job(1, 'string')
+```
+
+The only exception to this rule: if the spec actually needs to make sure the job is
+enqueued only once, or a specific number of times:
+
+```ruby
+# good
+expect(Worker).to receive(:perform_async).with(1, 'string').once
+```
+
+If you need test that the job is only enqueued a specific number of times, you will have to disable the cop
+that enforces usage of `have_enqueued_sidekiq_job` (`RSpec/HaveEnqueuedSidekiqJob`) in that test.
 
 #### DNS
 

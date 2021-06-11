@@ -19,6 +19,7 @@ RSpec.describe API::GenericPackages do
 
   let(:user) { personal_access_token.user }
   let(:ci_build) { create(:ci_build, :running, user: user, project: project) }
+  let(:snowplow_standard_context_params) { { user: user, project: project, namespace: project.namespace } }
 
   def auth_header
     return {} if user_role == :anonymous
