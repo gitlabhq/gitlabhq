@@ -19,7 +19,7 @@
         - paths = group_overview_nav_link_paths
         = nav_link(path: paths, unless: -> { current_path?('groups/contribution_analytics#show') }, html_options: { class: 'home' }) do
           - information_link = sidebar_refactor_enabled? ? activity_group_path(@group) : group_path(@group)
-          = link_to information_link do
+          = link_to information_link, class: 'has-sub-items' do
             .nav-icon-container
               - sprite = sidebar_refactor_enabled? ? 'group' : 'home'
               = sprite_icon(sprite)
@@ -62,7 +62,7 @@
 
       - if group_sidebar_link?(:issues)
         = nav_link(path: group_issues_sub_menu_items, unless: -> { current_path?('issues_analytics#show') }) do
-          = link_to issues_group_path(@group), data: { qa_selector: 'group_issues_item' } do
+          = link_to issues_group_path(@group), data: { qa_selector: 'group_issues_item' }, class: 'has-sub-items' do
             .nav-icon-container
               = sprite_icon('issues')
             %span.nav-item-name
@@ -157,7 +157,7 @@
 
       - if group_sidebar_link?(:settings)
         = nav_link(path: group_settings_nav_link_paths) do
-          = link_to edit_group_path(@group) do
+          = link_to edit_group_path(@group), class: 'has-sub-items' do
             .nav-icon-container
               = sprite_icon('settings')
             %span.nav-item-name{ data: { qa_selector: 'group_settings' } }

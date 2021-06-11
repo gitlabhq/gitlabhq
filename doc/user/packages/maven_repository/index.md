@@ -611,8 +611,11 @@ Now navigate to your project's **Packages & Registries** page and view the publi
 
 ### Publishing a package with the same name or version
 
-When you publish a package with the same name or version as an existing package,
-the existing package is overwritten.
+When you publish a package with the same name and version as an existing package, the new package
+files are added to the existing package. You can still use the UI or API to access and view the
+existing package's older files.
+
+To delete these older package versions, consider using the Packages API or the UI.
 
 #### Do not allow duplicate Maven packages
 

@@ -795,6 +795,10 @@ Parameters:
 | `shared_runners_minutes_limit`       | integer | no       | **(PREMIUM SELF)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
 | `extra_shared_runners_minutes_limit` | integer | no       | **(PREMIUM SELF)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
 
+NOTE:
+On GitLab SaaS, you must use the GitLab UI to create groups without a parent group. You cannot
+use the API to do this.
+
 ### Options for `default_branch_protection`
 
 The `default_branch_protection` attribute determines whether developers and maintainers can push to the applicable [default branch](../user/project/repository/branches/default.md), as described in the following table:

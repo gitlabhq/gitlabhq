@@ -1251,7 +1251,10 @@ body.sidebar-refactoring.gl-dark
   .sidebar-context-title {
   color: #c4c4c4;
 }
-body.sidebar-refactoring.ui-indigo .nav-sidebar li.active > a {
+body.sidebar-refactoring.ui-indigo
+  .nav-sidebar
+  li.active:not(.fly-out-top-item)
+  > a {
   color: #2f2a6b;
 }
 body.sidebar-refactoring.ui-indigo
@@ -1325,20 +1328,22 @@ body.sidebar-refactoring
 }
 body.sidebar-refactoring
   .nav-sidebar.sidebar-collapsed-desktop
-  .fly-out-top-item {
-  display: block;
+  .fly-out-top-item:not(.divider) {
+  display: block !important;
 }
 body.sidebar-refactoring
   .nav-sidebar.sidebar-collapsed-desktop
   .avatar-container {
   margin: 0 auto;
 }
-body.sidebar-refactoring .nav-sidebar.sidebar-collapsed-desktop li.active > a {
+body.sidebar-refactoring
+  .nav-sidebar.sidebar-collapsed-desktop
+  li.active:not(.fly-out-top-item)
+  > a {
   background-color: rgba(41, 41, 97, 0.08);
 }
 body.sidebar-refactoring .nav-sidebar a {
   text-decoration: none;
-  line-height: 1rem;
   color: #2f2a6b;
 }
 body.sidebar-refactoring .nav-sidebar li {
@@ -1347,7 +1352,8 @@ body.sidebar-refactoring .nav-sidebar li {
 body.sidebar-refactoring .nav-sidebar li .nav-item-name {
   flex: 1;
 }
-body.sidebar-refactoring .nav-sidebar li > a {
+body.sidebar-refactoring .nav-sidebar li > a,
+body.sidebar-refactoring .nav-sidebar li > .fly-out-top-item-container {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
   padding-top: 0.5rem;
@@ -1356,12 +1362,16 @@ body.sidebar-refactoring .nav-sidebar li > a {
   align-items: center;
   border-radius: 0.25rem;
   width: auto;
+  line-height: 1rem;
   margin: 1px 4px;
 }
 body.sidebar-refactoring .nav-sidebar li.active > a {
   font-weight: 600;
 }
-body.sidebar-refactoring .nav-sidebar li.active > a:not(.has-sub-items) {
+body.sidebar-refactoring
+  .nav-sidebar
+  li.active:not(.fly-out-top-item)
+  > a:not(.has-sub-items) {
   background-color: rgba(41, 41, 97, 0.08);
 }
 body.sidebar-refactoring .nav-sidebar ul {
@@ -1377,8 +1387,136 @@ body.sidebar-refactoring .nav-sidebar .nav-icon-container {
   display: flex;
   margin-right: 8px;
 }
-body.sidebar-refactoring .nav-sidebar .fly-out-top-item {
+body.sidebar-refactoring
+  .nav-sidebar
+  a:not(.has-sub-items)
+  + .sidebar-sub-level-items
+  .fly-out-top-item {
   display: none;
+}
+body.sidebar-refactoring
+  .nav-sidebar
+  a:not(.has-sub-items)
+  + .sidebar-sub-level-items
+  .fly-out-top-item
+  a,
+body.sidebar-refactoring
+  .nav-sidebar
+  a:not(.has-sub-items)
+  + .sidebar-sub-level-items
+  .fly-out-top-item.active
+  a,
+body.sidebar-refactoring
+  .nav-sidebar
+  a:not(.has-sub-items)
+  + .sidebar-sub-level-items
+  .fly-out-top-item
+  .fly-out-top-item-container {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  cursor: default;
+  pointer-events: none;
+  font-size: 0.75rem;
+  background-color: #2f2a6b;
+  color: #333;
+  margin-top: -0.25rem;
+  margin-bottom: -0.25rem;
+  margin-top: 0;
+  position: relative;
+  background-color: #fff;
+}
+body.sidebar-refactoring
+  .nav-sidebar
+  a:not(.has-sub-items)
+  + .sidebar-sub-level-items
+  .fly-out-top-item
+  a
+  strong,
+body.sidebar-refactoring
+  .nav-sidebar
+  a:not(.has-sub-items)
+  + .sidebar-sub-level-items
+  .fly-out-top-item.active
+  a
+  strong,
+body.sidebar-refactoring
+  .nav-sidebar
+  a:not(.has-sub-items)
+  + .sidebar-sub-level-items
+  .fly-out-top-item
+  .fly-out-top-item-container
+  strong {
+  font-weight: 400;
+}
+body.sidebar-refactoring
+  .nav-sidebar
+  a:not(.has-sub-items)
+  + .sidebar-sub-level-items
+  .fly-out-top-item
+  a::before,
+body.sidebar-refactoring
+  .nav-sidebar
+  a:not(.has-sub-items)
+  + .sidebar-sub-level-items
+  .fly-out-top-item.active
+  a::before,
+body.sidebar-refactoring
+  .nav-sidebar
+  a:not(.has-sub-items)
+  + .sidebar-sub-level-items
+  .fly-out-top-item
+  .fly-out-top-item-container::before {
+  position: absolute;
+  content: "";
+  display: block;
+  top: 50%;
+  left: -0.25rem;
+  margin-top: -0.5rem;
+  width: 0;
+  height: 0;
+  border-top: 0.5rem solid transparent;
+  border-bottom: 0.5rem solid transparent;
+  border-right: 0.5rem solid #fff;
+}
+body.sidebar-refactoring
+  .nav-sidebar
+  a.has-sub-items
+  + .sidebar-sub-level-items
+  .fly-out-top-item {
+  display: none;
+}
+body.sidebar-refactoring
+  .nav-sidebar
+  a.has-sub-items
+  + .sidebar-sub-level-items
+  .fly-out-top-item
+  a,
+body.sidebar-refactoring
+  .nav-sidebar
+  a.has-sub-items
+  + .sidebar-sub-level-items
+  .fly-out-top-item.active
+  a,
+body.sidebar-refactoring
+  .nav-sidebar
+  a.has-sub-items
+  + .sidebar-sub-level-items
+  .fly-out-top-item
+  .fly-out-top-item-container {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  cursor: default;
+  pointer-events: none;
+  font-size: 0.75rem;
+  background-color: #2f2a6b;
+  color: #333;
+  margin-top: -0.25rem;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 @media (min-width: 768px) and (max-width: 1199px) {
   body.sidebar-refactoring .nav-sidebar:not(.sidebar-expanded-mobile) {
@@ -1417,8 +1555,8 @@ body.sidebar-refactoring .nav-sidebar .fly-out-top-item {
   }
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
-    .fly-out-top-item {
-    display: block;
+    .fly-out-top-item:not(.divider) {
+    display: block !important;
   }
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
@@ -1427,7 +1565,7 @@ body.sidebar-refactoring .nav-sidebar .fly-out-top-item {
   }
   body.sidebar-refactoring
     .nav-sidebar:not(.sidebar-expanded-mobile)
-    li.active
+    li.active:not(.fly-out-top-item)
     > a {
     background-color: rgba(41, 41, 97, 0.08);
   }
@@ -1516,6 +1654,7 @@ body.sidebar-refactoring .nav-sidebar-inner-scroll > div.context-header a {
   align-items: center;
   border-radius: 0.25rem;
   width: auto;
+  line-height: 1rem;
   margin: 1px 4px;
   padding: 0.25rem;
   margin-bottom: 0.25rem;
@@ -1617,6 +1756,7 @@ body.sidebar-refactoring
   color: #9dc7f1;
 }
 body.sidebar-refactoring .sidebar-sub-level-items {
+  padding-top: 0;
   padding-bottom: 0;
   display: none;
 }

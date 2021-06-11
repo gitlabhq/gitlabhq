@@ -16,11 +16,12 @@
   %ul.sidebar-sub-level-items{ class: ('is-fly-out-only' unless sidebar_menu.has_renderable_items?) }
     = nav_link(**sidebar_menu.all_active_routes, html_options: { class: 'fly-out-top-item' } ) do
       - if sidebar_refactor_disabled?
-        = link_to sidebar_menu.link, **sidebar_menu.collapsed_container_html_options do
+        = link_to sidebar_menu.link, class: "'has-sub-items' if sidebar_menu.has_renderable_items?", **sidebar_menu.collapsed_container_html_options do
           = render 'shared/nav/sidebar_menu_collapsed', sidebar_menu: sidebar_menu
       - else
-        = render 'shared/nav/sidebar_menu_collapsed', sidebar_menu: sidebar_menu
+        %span.fly-out-top-item-container
+          = render 'shared/nav/sidebar_menu_collapsed', sidebar_menu: sidebar_menu
 
-    - if sidebar_menu.has_items?
+    - if sidebar_menu.has_renderable_items?
       %li.divider.fly-out-top-item
       = render partial: 'shared/nav/sidebar_menu_item', collection: sidebar_menu.renderable_items

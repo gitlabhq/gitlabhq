@@ -109,7 +109,7 @@ Create an issue when you want to track bugs or future work.
 
 Prerequisites:
 
-- A minimum of Contributor access to a project in GitLab.
+- You must have at least the Developer role for a project.
 
 To create an issue:
 

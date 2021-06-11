@@ -18,7 +18,7 @@
             = f.label :auto_cancel_pending_pipelines, class: 'form-check-label' do
               %strong= _("Auto-cancel redundant pipelines")
             .form-text.text-muted
-              = _("New pipelines cause older pending pipelines on the same branch to be cancelled.")
+              = _("New pipelines cause older pending or running pipelines on the same branch to be cancelled.")
               = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'auto-cancel-redundant-pipelines'), target: '_blank'
 
         .form-group

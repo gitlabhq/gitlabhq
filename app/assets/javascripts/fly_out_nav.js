@@ -1,7 +1,9 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { SIDEBAR_COLLAPSED_CLASS } from './contextual_sidebar';
 
+const isRefactoring = document.body.classList.contains('sidebar-refactoring');
 const HIDE_INTERVAL_TIMEOUT = 300;
+const COLLAPSED_PANEL_WIDTH = isRefactoring ? 48 : 50;
 const IS_OVER_CLASS = 'is-over';
 const IS_ABOVE_CLASS = 'is-above';
 const IS_SHOWING_FLY_OUT_CLASS = 'is-showing-fly-out';
@@ -22,12 +24,7 @@ export const setOpenMenu = (menu = null) => {
 
 export const slope = (a, b) => (b.y - a.y) / (b.x - a.x);
 
-let headerHeight = 50;
-
-export const getHeaderHeight = () => headerHeight;
-const setHeaderHeight = () => {
-  headerHeight = sidebar.offsetTop;
-};
+export const getHeaderHeight = () => sidebar?.offsetTop || 0;
 
 export const isSidebarCollapsed = () =>
   sidebar && sidebar.classList.contains(SIDEBAR_COLLAPSED_CLASS);
@@ -87,14 +84,20 @@ export const hideMenu = (el) => {
 };
 
 export const moveSubItemsToPosition = (el, subItems) => {
+  const hasSubItems = subItems.parentNode.querySelector('.has-sub-items');
+  const header = subItems.querySelector('.fly-out-top-item');
   const boundingRect = el.getBoundingClientRect();
-  const top = calculateTop(boundingRect, subItems.offsetHeight);
-  const left = sidebar ? sidebar.offsetWidth : 50;
+  const left = sidebar ? sidebar.offsetWidth : COLLAPSED_PANEL_WIDTH;
+  let top = calculateTop(boundingRect, subItems.offsetHeight);
+  if (isRefactoring && hasSubItems) {
+    top -= header.offsetHeight;
+  } else if (isRefactoring) {
+    top = boundingRect.top;
+  }
   const isAbove = top < boundingRect.top;
 
   subItems.classList.add('fly-out-list');
-  subItems.style.transform = `translate3d(${left}px, ${Math.floor(top) - headerHeight}px, 0)`; // eslint-disable-line no-param-reassign
-
+  subItems.style.transform = `translate3d(${left}px, ${Math.floor(top) - getHeaderHeight()}px, 0)`; // eslint-disable-line no-param-reassign
   const subItemsRect = subItems.getBoundingClientRect();
 
   menuCornerLocs = [
@@ -187,8 +190,6 @@ export default () => {
       }, getHideSubItemsInterval());
     });
   }
-
-  requestIdleCallback(setHeaderHeight);
 
   items.forEach((el) => {
     const subItems = el.querySelector('.sidebar-sub-level-items');

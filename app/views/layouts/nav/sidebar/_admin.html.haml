@@ -11,7 +11,7 @@
           = _('Admin Area')
     %ul.sidebar-top-level-items{ data: { qa_selector: 'admin_sidebar_overview_submenu_content' } }
       = nav_link(controller: %w(dashboard admin admin/projects users groups jobs runners gitaly_servers), html_options: {class: 'home'}) do
-        = link_to admin_root_path do
+        = link_to admin_root_path, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('overview')
           %span.nav-item-name
@@ -52,7 +52,7 @@
                 = _('Gitaly Servers')
 
       = nav_link(controller: admin_analytics_nav_links) do
-        = link_to admin_dev_ops_report_path, data: { qa_selector: 'admin_analytics_link' } do
+        = link_to admin_dev_ops_report_path, data: { qa_selector: 'admin_analytics_link' }, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('chart')
           %span.nav-item-name
@@ -74,7 +74,7 @@
                 = _('Usage Trends')
 
       = nav_link(controller: admin_monitoring_nav_links) do
-        = link_to admin_system_info_path, data: { qa_selector: 'admin_monitoring_link' } do
+        = link_to admin_system_info_path, data: { qa_selector: 'admin_monitoring_link' }, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('monitor')
           %span.nav-item-name
@@ -247,7 +247,7 @@
                 = _('Appearance')
 
       = nav_link(controller: [:application_settings, :integrations]) do
-        = link_to general_admin_application_settings_path do
+        = link_to general_admin_application_settings_path, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('settings')
           %span.nav-item-name.qa-admin-settings-item

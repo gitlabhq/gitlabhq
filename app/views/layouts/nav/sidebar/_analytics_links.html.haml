@@ -4,7 +4,7 @@
 
 - if navbar_links.any?
   = nav_link(path: all_paths) do
-    = link_to analytics_link.link, {class: 'shortcuts-analytics', data: { qa_selector: 'analytics_anchor' } } do
+    = link_to analytics_link.link, {class: 'shortcuts-analytics has-sub-items', data: { qa_selector: 'analytics_anchor' } } do
       .nav-icon-container
         = sprite_icon('chart')
       %span.nav-item-name{ data: { qa_selector: 'analytics_link' } }

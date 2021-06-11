@@ -161,7 +161,7 @@ class Packages::Package < ApplicationRecord
   after_commit :update_composer_cache, on: :destroy, if: -> { composer? }
 
   def self.only_maven_packages_with_path(path, use_cte: false)
-    if use_cte && Feature.enabled?(:maven_metadata_by_path_with_optimization_fence, default_enabled: :yaml)
+    if use_cte
       # This is an optimization fence which assumes that looking up the Metadatum record by path (globally)
       # and then filter down the packages (by project or by group and subgroups) will be cheaper than
       # looking up all packages within a project or group and filter them by path.

@@ -2,7 +2,7 @@
 
 - if group_packages_nav?
   = nav_link(controller: ['groups/packages', 'groups/registry/repositories', 'groups/dependency_proxies']) do
-    = link_to packages_link, title: _('Packages') do
+    = link_to packages_link, title: _('Packages'), class: 'has-sub-items' do
       .nav-icon-container
         = sprite_icon('package')
       %span.nav-item-name

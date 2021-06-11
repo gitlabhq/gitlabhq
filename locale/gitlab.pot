@@ -22006,7 +22006,7 @@ msgstr ""
 msgid "New password"
 msgstr ""
 
-msgid "New pipelines cause older pending pipelines on the same branch to be cancelled."
+msgid "New pipelines cause older pending or running pipelines on the same branch to be cancelled."
 msgstr ""
 
 msgid "New project"
@@ -28896,6 +28896,21 @@ msgid "SecurityOrchestration|Create a policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Security policy project"
+msgstr ""
+
+msgid "SecurityPolicies|Description"
+msgstr ""
+
+msgid "SecurityPolicies|Enforcement status"
+msgstr ""
+
+msgid "SecurityPolicies|Latest scan"
+msgstr ""
+
+msgid "SecurityPolicies|Scan execution"
+msgstr ""
+
+msgid "SecurityPolicies|view results"
 msgstr ""
 
 msgid "SecurityReports|%{firstProject} and %{secondProject}"

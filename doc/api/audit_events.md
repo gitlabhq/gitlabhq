@@ -11,6 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## Instance Audit Events **(PREMIUM SELF)**
 
 The Audit Events API allows you to retrieve [instance audit events](../administration/audit_events.md#instance-events).
+This API cannot retrieve group or project audit events.
 
 To retrieve audit events using the API, you must [authenticate yourself](README.md#authentication) as an Administrator.
 
@@ -133,6 +134,7 @@ Example response:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34078) in GitLab 12.5.
 
 The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events).
+This API cannot retrieve project audit events.
 
 A user with a Owner role (or above) can retrieve group audit events of all users.
 A user with a Developer or Maintainer role is limited to group audit events based on their individual actions.
