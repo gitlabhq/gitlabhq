@@ -20,7 +20,7 @@ RSpec.describe 'Issues > User resets their incoming email token' do
 
     page.within '#issuable-email-modal' do
       previous_token = page.find('input[type="text"]').value
-      click_button 'reset it'
+      find('[data-testid="reset_email_token_link"]').click
 
       wait_for_requests
 

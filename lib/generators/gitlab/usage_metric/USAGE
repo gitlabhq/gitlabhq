@@ -1,0 +1,9 @@
+Description:
+    Creates a stub instrumentation for a Service Ping metric
+
+Example:
+    rails generate gitlab:usage_metric CountIssues --type database
+
+    This will create:
+        lib/gitlab/usage/metrics/instrumentations/count_issues_metric.rb
+        spec/lib/gitlab/usage/metrics/instrumentations/count_issues_metric_spec.rb

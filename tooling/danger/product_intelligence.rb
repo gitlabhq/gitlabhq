@@ -17,8 +17,10 @@ module Tooling
         'app/assets/javascripts/tracking.js',
         'spec/frontend/tracking_spec.js',
         'generator_templates/usage_metric_definition/metric_definition.yml',
+        'lib/generators/gitlab/usage_metric/usage_metric_generator.rb',
         'lib/generators/gitlab/usage_metric_definition_generator.rb',
         'lib/generators/gitlab/usage_metric_definition/redis_hll_generator.rb',
+        'spec/lib/generators/gitlab/usage_metric_generator_spec.rb',
         'spec/lib/generators/gitlab/usage_metric_definition_generator_spec.rb',
         'spec/lib/generators/gitlab/usage_metric_definition/redis_hll_generator_spec.rb',
         'config/metrics/schema.json'

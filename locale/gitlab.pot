@@ -1744,13 +1744,13 @@ msgstr ""
 msgid "AccessTokens|It cannot be used to access any other data."
 msgstr ""
 
-msgid "AccessTokens|Keep this token secret. Anyone who gets ahold of it can access repository static objects as if they were you. You should %{reset_link_start}reset it%{reset_link_end} if that ever happens."
+msgid "AccessTokens|Keep this token secret. Anyone who has it can access repository static objects as if they were you. If that ever happens, %{reset_link_start}reset this token%{reset_link_end}."
 msgstr ""
 
-msgid "AccessTokens|Keep this token secret. Anyone who gets ahold of it can create issues as if they were you. You should %{link_reset_it} if that ever happens."
+msgid "AccessTokens|Keep this token secret. Anyone who has it can create issues as if they were you. If that happens, %{link_reset_it}."
 msgstr ""
 
-msgid "AccessTokens|Keep this token secret. Anyone who gets ahold of it can read activity and issue RSS feeds or your calendar feed as if they were you. You should %{link_reset_it} if that ever happens."
+msgid "AccessTokens|Keep this token secret. Anyone who has it can read activity and issue RSS feeds or your calendar feed as if they were you. If that happens, %{link_reset_it}."
 msgstr ""
 
 msgid "AccessTokens|Personal Access Tokens"
@@ -1768,16 +1768,16 @@ msgstr ""
 msgid "AccessTokens|You can generate a personal access token for each application you use that needs access to the GitLab API."
 msgstr ""
 
-msgid "AccessTokens|Your feed token is used to authenticate you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar, and is included in those feed URLs."
+msgid "AccessTokens|Your feed token authenticates you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar. It is visible in those feed URLs."
 msgstr ""
 
-msgid "AccessTokens|Your incoming email token is used to authenticate you when you create a new issue by email, and is included in your personal project-specific email addresses."
+msgid "AccessTokens|Your incoming email token authenticates you when you create a new issue by email, and is included in your personal project-specific email addresses."
 msgstr ""
 
-msgid "AccessTokens|Your static object token is used to authenticate you when repository static objects (e.g. archives, blobs, ...) are being served from an external storage."
+msgid "AccessTokens|Your static object token authenticates you when repository static objects (such as archives or blobs) are served from an external storage."
 msgstr ""
 
-msgid "AccessTokens|reset it"
+msgid "AccessTokens|reset this token"
 msgstr ""
 
 msgid "AccessibilityReport|Learn more"
@@ -28925,7 +28925,7 @@ msgstr ""
 msgid "SecurityReports|Add projects"
 msgstr ""
 
-msgid "SecurityReports|All"
+msgid "SecurityReports|All activity"
 msgstr ""
 
 msgid "SecurityReports|Although it's rare to have no vulnerabilities, it can happen. Check your settings to make sure you've set up your dashboard correctly."
@@ -33255,7 +33255,7 @@ msgstr ""
 msgid "This is a merge train pipeline"
 msgstr ""
 
-msgid "This is a private email address %{helpIcon} generated just for you. Anyone who gets ahold of it can create issues or merge requests as if they were you. You should %{resetLinkStart}reset it%{resetLinkEnd} if that ever happens."
+msgid "This is a private email address %{helpIcon} generated just for you. Anyone who has it can create issues or merge requests as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
 msgstr ""
 
 msgid "This is a security log of important events involving your account."
@@ -36172,7 +36172,7 @@ msgstr ""
 msgid "VulnerabilityManagement|invalid issue link or ID"
 msgstr ""
 
-msgid "VulnerabilityStatusTypes|All"
+msgid "VulnerabilityStatusTypes|All statuses"
 msgstr ""
 
 msgid "VulnerabilityStatusTypes|Confirmed"

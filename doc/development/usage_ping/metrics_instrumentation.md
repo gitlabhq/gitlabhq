@@ -85,3 +85,18 @@ module Gitlab
   end
 end
 ```
+
+## Creating a new metric instrumentation class
+
+To create a stub instrumentation for a Usage Ping metric, you can use a dedicated [generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_generator.rb):
+
+The generator takes the class name as an argument and the following options:
+
+- `--type=TYPE` Required. Indicates the metric type. It must be one of: `database`, `generic`, `redis_hll`.
+- `--ee` Indicates if the metric is for EE.
+
+```shell
+rails generate gitlab:usage_metric CountIssues --type database
+        create lib/gitlab/usage/metrics/instrumentations/count_issues_metric.rb
+        create spec/lib/gitlab/usage/metrics/instrumentations/count_issues_metric_spec.rb
+```

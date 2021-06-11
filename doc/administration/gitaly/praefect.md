@@ -1163,15 +1163,36 @@ To migrate existing clusters:
    a Praefect node to reattempt it. The migration only runs with `sql` election strategy configured.
 
 1. Running two different election strategies side by side can cause a split brain, where different
-   Praefect nodes consider repositories to have different primaries. To avoid this, shut down
-   all Praefect nodes before changing the election strategy.
+   Praefect nodes consider repositories to have different primaries. This can be avoided either:
 
-   Do this by running `gitlab-ctl stop praefect` on the Praefect nodes.
+   - If a short downtime is acceptable:
 
-1. On the Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with
-   `praefect['failover_election_strategy'] = 'per_repository'`.
+      1. Shut down all Praefect nodes before changing the election strategy. Do this by running `gitlab-ctl stop praefect` on the Praefect nodes.
 
-1. Finally, run `gitlab-ctl reconfigure` to reconfigure and restart the Praefect nodes.
+      1. On the Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with `praefect['failover_election_strategy'] = 'per_repository'`.
+
+      1. Run `gitlab-ctl reconfigure && gitlab-ctl start` to reconfigure and start the Praefects.
+
+   - If downtime is unacceptable:
+
+      1. Determine which Gitaly node is [the current primary](index.md#determine-primary-gitaly-node).
+
+      1. Comment out the secondary Gitaly nodes from the virtual storage's configuration in `/etc/gitlab/gitlab.rb`
+      on all Praefect nodes. This ensures there's only one Gitaly node configured, causing both of the election
+      strategies to elect the same Gitaly node as the primary.
+
+      1. Run `gitlab-ctl reconfigure` on all Praefect nodes. Wait until all Praefect processes have restarted and
+      the old processes have exited. This can take up to one minute.
+
+      1. On all Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with
+      `praefect['failover_election_strategy'] = 'per_repository'`.
+
+      1. Run `gitlab-ctl reconfigure` on all Praefect nodes. Wait until all of the Praefect processes have restarted and
+      the old processes have exited. This can take up to one minute.
+
+      1. Uncomment the secondary Gitaly node configuration commented out in the earlier step on all Praefect nodes.
+
+      1. Run `gitlab-ctl reconfigure` on all Praefect nodes to reconfigure and restart the Praefect processes.
 
 ### Deprecated election strategies
 

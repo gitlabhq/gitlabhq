@@ -100,7 +100,8 @@ as shown in the following table:
 
 ## Configuration
 
-> GitLab 13.1 splits Secret Detection from the [SAST configuration](../sast#configuration) into its own CI/CD template. If you're using GitLab 13.0 or earlier and SAST is enabled, then Secret Detection is already enabled.
+> - In GitLab 13.1, Secret Detection was split from the [SAST configuration](../sast#configuration) into its own CI/CD template. If you're using GitLab 13.0 or earlier and SAST is enabled, then Secret Detection is already enabled.
+> - [In GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/297269), Secret Detection jobs `secret_detection_default_branch` and `secret_detection` were consolidated into one job, `secret_detection`.
 
 Secret Detection is performed by a [specific analyzer](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Secret-Detection.gitlab-ci.yml)
 during the `secret-detection` job. It runs regardless of your app's programming language.

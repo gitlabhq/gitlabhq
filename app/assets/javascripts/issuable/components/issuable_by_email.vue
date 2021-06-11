@@ -145,17 +145,23 @@ export default {
         <gl-sprintf
           :message="
             __(
-              'This is a private email address %{helpIcon} generated just for you. Anyone who gets ahold of it can create issues or merge requests as if they were you. You should %{resetLinkStart}reset it%{resetLinkEnd} if that ever happens.',
+              'This is a private email address %{helpIcon} generated just for you. Anyone who has it can create issues or merge requests as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}.',
             )
           "
         >
           <template #helpIcon>
-            <gl-link :href="emailsHelpPagePath" target="_blank"
-              ><gl-icon class="gl-text-blue-600" name="question-o"
-            /></gl-link>
+            <gl-link :href="emailsHelpPagePath" target="_blank">
+              <gl-icon class="gl-text-blue-600" name="question-o" />
+            </gl-link>
           </template>
           <template #resetLink="{ content }">
-            <gl-button variant="link" @click="resetIncomingEmailToken">{{ content }}</gl-button>
+            <gl-button
+              variant="link"
+              data-testid="reset_email_token_link"
+              @click="resetIncomingEmailToken"
+            >
+              {{ content }}
+            </gl-button>
           </template>
         </gl-sprintf>
       </p>

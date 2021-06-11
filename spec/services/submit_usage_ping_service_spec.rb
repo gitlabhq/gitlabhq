@@ -90,6 +90,14 @@ RSpec.describe SubmitUsagePingService do
     it_behaves_like 'does not run'
   end
 
+  context 'when usage ping is disabled from GitLab config file' do
+    before do
+      stub_config_setting(usage_ping_enabled: false)
+    end
+
+    it_behaves_like 'does not run'
+  end
+
   context 'when usage ping is enabled' do
     before do
       stub_usage_data_connections

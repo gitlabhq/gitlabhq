@@ -363,6 +363,85 @@ RSpec.describe ApplicationSetting do
         .is_less_than(65536)
     end
 
+    describe 'usage_ping_enabled setting' do
+      shared_examples 'usage ping enabled' do
+        it do
+          expect(setting.usage_ping_enabled).to eq(true)
+          expect(setting.usage_ping_enabled?).to eq(true)
+        end
+      end
+
+      shared_examples 'usage ping disabled' do
+        it do
+          expect(setting.usage_ping_enabled).to eq(false)
+          expect(setting.usage_ping_enabled?).to eq(false)
+        end
+      end
+
+      context 'when setting is in database' do
+        context 'with usage_ping_enabled disabled' do
+          before do
+            setting.update!(usage_ping_enabled: false)
+          end
+
+          it_behaves_like 'usage ping disabled'
+        end
+
+        context 'with usage_ping_enabled enabled' do
+          before do
+            setting.update!(usage_ping_enabled: true)
+          end
+
+          it_behaves_like 'usage ping enabled'
+        end
+      end
+
+      context 'when setting is in GitLab config' do
+        context 'with usage_ping_enabled disabled' do
+          before do
+            allow(Settings.gitlab).to receive(:usage_ping_enabled).and_return(false)
+          end
+
+          it_behaves_like 'usage ping disabled'
+        end
+
+        context 'with usage_ping_enabled enabled' do
+          before do
+            allow(Settings.gitlab).to receive(:usage_ping_enabled).and_return(true)
+          end
+
+          it_behaves_like 'usage ping enabled'
+        end
+      end
+
+      context 'when setting in database false and setting in GitLab config true' do
+        before do
+          setting.update!(usage_ping_enabled: false)
+          allow(Settings.gitlab).to receive(:usage_ping_enabled).and_return(true)
+        end
+
+        it_behaves_like 'usage ping disabled'
+      end
+
+      context 'when setting database true and setting in GitLab config false' do
+        before do
+          setting.update!(usage_ping_enabled: true)
+          allow(Settings.gitlab).to receive(:usage_ping_enabled).and_return(false)
+        end
+
+        it_behaves_like 'usage ping disabled'
+      end
+
+      context 'when setting database true and setting in GitLab config true' do
+        before do
+          setting.update!(usage_ping_enabled: true)
+          allow(Settings.gitlab).to receive(:usage_ping_enabled).and_return(true)
+        end
+
+        it_behaves_like 'usage ping enabled'
+      end
+    end
+
     context 'key restrictions' do
       it 'supports all key types' do
         expect(described_class::SUPPORTED_KEY_TYPES).to contain_exactly(:rsa, :dsa, :ecdsa, :ed25519)

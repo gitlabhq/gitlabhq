@@ -90,6 +90,7 @@ RSpec/FilePath:
     - 'spec/frontend/fixtures/*'
     - 'ee/spec/frontend/fixtures/*'
     - 'spec/requests/api/v3/*'
+    - 'spec/fixtures/**/*'
 
 # Configuration parameters: AllowSubject.
 RSpec/MultipleMemoizedHelpers:
@@ -664,3 +665,8 @@ Style/RegexpLiteralMixedPreserve:
     - mixed
     - mixed_preserve
   EnforcedStyle: mixed_preserve
+
+RSpec/TopLevelDescribePath:
+  Exclude:
+    - 'spec/fixtures/**/*.rb'
+    - 'ee/spec/fixtures/**/*.rb'
