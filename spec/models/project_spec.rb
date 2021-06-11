@@ -6945,7 +6945,7 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe 'topics' do
-    let_it_be(:project) { create(:project, tag_list: 'topic1, topic2, topic3') }
+    let_it_be(:project) { create(:project, topic_list: 'topic1, topic2, topic3') }
 
     it 'topic_list returns correct string array' do
       expect(project.topic_list).to match_array(%w[topic1 topic2 topic3])
@@ -6954,12 +6954,6 @@ RSpec.describe Project, factory_default: :keep do
     it 'topics returns correct tag records' do
       expect(project.topics.first.class.name).to eq('ActsAsTaggableOn::Tag')
       expect(project.topics.map(&:name)).to match_array(%w[topic1 topic2 topic3])
-    end
-
-    context 'aliases' do
-      it 'tag_list returns correct string array' do
-        expect(project.tag_list).to match_array(%w[topic1 topic2 topic3])
-      end
     end
   end
 

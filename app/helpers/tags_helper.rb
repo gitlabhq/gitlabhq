@@ -15,16 +15,6 @@ module TagsHelper
     project_tags_path(@project, @id, options)
   end
 
-  def tag_list(project)
-    html = []
-
-    project.tag_list.each do |tag|
-      html << link_to(tag, tag_path(tag))
-    end
-
-    html.join.html_safe
-  end
-
   def protected_tag?(project, tag)
     ProtectedTag.protected?(project, tag.name)
   end

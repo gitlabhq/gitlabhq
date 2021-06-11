@@ -149,7 +149,7 @@ averaged.
 - JaCoCo (Java/Kotlin). Example: `Total.*?([0-9]{1,3})%`.
 - `go test -cover` (Go). Example: `coverage: \d+.\d+% of statements`.
 - .Net (OpenCover). Example: `(Visited Points).*\((.*)\)`.
-- .Net (`dotnet test` line coverage). Example: `Total\s*\|\s*(\d+\.?\d+)`.
+- .Net (`dotnet test` line coverage). Example: `Total\s*\|\s*(\d+(?:\.\d+)?)`.
 
 <!-- vale gitlab.Spelling = YES -->
 

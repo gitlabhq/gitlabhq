@@ -287,9 +287,9 @@ RSpec.describe API::Projects do
         expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
       end
 
-      context 'filter by topic (column tag_list)' do
+      context 'filter by topic (column topic_list)' do
         before do
-          project.update!(tag_list: %w(ruby javascript))
+          project.update!(topic_list: %w(ruby javascript))
         end
 
         it 'returns no projects' do
@@ -1105,7 +1105,7 @@ RSpec.describe API::Projects do
 
       post api('/projects', user), params: project
 
-      expect(json_response['tag_list']).to eq(%w[tagFirst tagSecond])
+      expect(json_response['topics']).to eq(%w[tagFirst tagSecond])
     end
 
     it 'sets topics to a project' do
@@ -1113,7 +1113,7 @@ RSpec.describe API::Projects do
 
       post api('/projects', user), params: project
 
-      expect(json_response['tag_list']).to eq(%w[topic1 topics2])
+      expect(json_response['topics']).to eq(%w[topic1 topics2])
     end
 
     it 'uploads avatar for project a project' do
@@ -3111,7 +3111,7 @@ RSpec.describe API::Projects do
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        expect(json_response['tag_list']).to eq(%w[topic1])
+        expect(json_response['topics']).to eq(%w[topic1])
       end
 
       it 'updates topics' do
@@ -3121,7 +3121,7 @@ RSpec.describe API::Projects do
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        expect(json_response['tag_list']).to eq(%w[topic2])
+        expect(json_response['topics']).to eq(%w[topic2])
       end
     end
 

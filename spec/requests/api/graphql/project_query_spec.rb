@@ -65,7 +65,7 @@ RSpec.describe 'getting project information' do
       end
 
       it 'includes topics array' do
-        project.update!(tag_list: 'topic1, topic2, topic3')
+        project.update!(topic_list: 'topic1, topic2, topic3')
 
         post_graphql(query, current_user: current_user)
 

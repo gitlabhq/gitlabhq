@@ -127,10 +127,6 @@ class Project < ApplicationRecord
   after_create :check_repository_absence!
 
   acts_as_ordered_taggable_on :topics
-  # The 'tag_list' alias is required during the 'tags -> topics' migration
-  # TODO: eliminate 'tag_list' in the further process of the migration
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/328226
-  alias_attribute :tag_list, :topic_list
 
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name

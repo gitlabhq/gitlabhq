@@ -10,7 +10,7 @@ RSpec.describe Resolvers::ProjectsResolver do
 
     let_it_be(:group) { create(:group, name: 'public-group') }
     let_it_be(:private_group) { create(:group, name: 'private-group') }
-    let_it_be(:project) { create(:project, :public, tag_list: %w(ruby javascript)) }
+    let_it_be(:project) { create(:project, :public, topic_list: %w(ruby javascript)) }
     let_it_be(:other_project) { create(:project, :public) }
     let_it_be(:group_project) { create(:project, :public, group: group) }
     let_it_be(:private_project) { create(:project, :private) }
