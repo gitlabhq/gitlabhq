@@ -10,7 +10,7 @@ class Import::BulkImportsController < ApplicationController
 
   POLLING_INTERVAL = 3_000
 
-  rescue_from BulkImports::Clients::Http::ConnectionError, with: :bulk_import_connection_error
+  rescue_from BulkImports::Clients::HTTP::ConnectionError, with: :bulk_import_connection_error
 
   def configure
     session[access_token_key] = configure_params[access_token_key]&.strip
@@ -86,7 +86,7 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def client
-    @client ||= BulkImports::Clients::Http.new(
+    @client ||= BulkImports::Clients::HTTP.new(
       uri: session[url_key],
       token: session[access_token_key],
       per_page: params[:per_page],

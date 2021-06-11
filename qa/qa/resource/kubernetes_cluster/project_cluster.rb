@@ -12,22 +12,22 @@ module QA
         end
 
         attribute :ingress_ip do
-          Page::Project::Operations::Kubernetes::Show.perform(&:ingress_ip)
+          Page::Project::Infrastructure::Kubernetes::Show.perform(&:ingress_ip)
         end
 
         def fabricate!
           project.visit!
 
           Page::Project::Menu.perform(
-            &:go_to_operations_kubernetes)
+            &:go_to_infrastructure_kubernetes)
 
-          Page::Project::Operations::Kubernetes::Index.perform(
+          Page::Project::Infrastructure::Kubernetes::Index.perform(
             &:add_kubernetes_cluster)
 
-          Page::Project::Operations::Kubernetes::Add.perform(
+          Page::Project::Infrastructure::Kubernetes::Add.perform(
             &:add_existing_cluster)
 
-          Page::Project::Operations::Kubernetes::AddExisting.perform do |cluster_page|
+          Page::Project::Infrastructure::Kubernetes::AddExisting.perform do |cluster_page|
             cluster_page.set_cluster_name(@cluster.cluster_name)
             cluster_page.set_api_url(@cluster.api_url)
             cluster_page.set_ca_certificate(@cluster.ca_certificate)
@@ -36,7 +36,7 @@ module QA
             cluster_page.add_cluster!
           end
 
-          Page::Project::Operations::Kubernetes::Show.perform do |show|
+          Page::Project::Infrastructure::Kubernetes::Show.perform do |show|
             # We must wait a few seconds for permissions to be set up correctly for new cluster
             sleep 25
 

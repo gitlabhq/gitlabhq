@@ -20,7 +20,7 @@ RSpec.describe Ci::PendingBuild do
 
     context 'when another queuing entry exists for given build' do
       before do
-        described_class.create!(build: build, project: project)
+        described_class.create!(build: build, project: project, protected: false)
       end
 
       it 'returns a build id as a result' do

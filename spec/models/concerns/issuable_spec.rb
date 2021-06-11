@@ -841,7 +841,7 @@ RSpec.describe Issuable do
       it_behaves_like 'matches_cross_reference_regex? fails fast'
     end
 
-    context "note with long path string", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/35269' do
+    context "note with long path string" do
       let(:project) { create(:project, :public, :repository) }
       let(:mentionable) { project.commit }
 

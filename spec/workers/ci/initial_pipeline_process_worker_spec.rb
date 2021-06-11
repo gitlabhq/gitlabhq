@@ -11,26 +11,12 @@ RSpec.describe Ci::InitialPipelineProcessWorker do
     include_examples 'an idempotent worker' do
       let(:job_args) { pipeline.id }
 
-      context 'when there are runners available' do
-        before do
-          create(:ci_runner, :online)
-        end
-
-        it 'marks the pipeline as pending' do
-          expect(pipeline).to be_created
-
-          subject
-
-          expect(pipeline.reload).to be_pending
-        end
-      end
-
-      it 'marks the pipeline as failed' do
+      it 'marks the pipeline as pending' do
         expect(pipeline).to be_created
 
         subject
 
-        expect(pipeline.reload).to be_failed
+        expect(pipeline.reload).to be_pending
       end
     end
   end

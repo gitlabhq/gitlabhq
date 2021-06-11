@@ -1,10 +1,10 @@
 build:
   stage: build
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v0.6.0"
+  image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v1.0.0'
   variables:
-    DOCKER_TLS_CERTDIR: ""
+    DOCKER_TLS_CERTDIR: ''
   services:
-    - name: "docker:20.10.6-dind"
+    - name: 'docker:20.10.6-dind'
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
   script:
     - |

@@ -19,6 +19,9 @@ function createStore({ initialState = {} }) {
   return new Vuex.Store({
     state: {
       ...initState(),
+      permissions: {
+        [selectedStage.id]: true,
+      },
       ...initialState,
     },
     getters: {
@@ -155,7 +158,11 @@ describe('Value stream analytics component', () => {
   describe('without enough permissions', () => {
     beforeEach(() => {
       wrapper = createComponent({
-        initialState: { selectedStage: { ...selectedStage, isUserAllowed: false } },
+        initialState: {
+          permissions: {
+            [selectedStage.id]: false,
+          },
+        },
       });
     });
 

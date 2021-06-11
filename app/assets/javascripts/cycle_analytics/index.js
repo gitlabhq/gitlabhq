@@ -8,10 +8,11 @@ Vue.use(Translate);
 export default () => {
   const store = createStore();
   const el = document.querySelector('#js-cycle-analytics');
-  const { noAccessSvgPath, noDataSvgPath, requestPath } = el.dataset;
+  const { noAccessSvgPath, noDataSvgPath, requestPath, fullPath } = el.dataset;
 
   store.dispatch('initializeVsa', {
     requestPath,
+    fullPath,
   });
 
   // eslint-disable-next-line no-new
@@ -24,6 +25,7 @@ export default () => {
         props: {
           noDataSvgPath,
           noAccessSvgPath,
+          fullPath,
         },
       }),
   });

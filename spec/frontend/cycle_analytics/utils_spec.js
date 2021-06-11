@@ -53,17 +53,6 @@ describe('Value stream analytics utils', () => {
       expect(result.summary).toEqual(convertedData.summary);
     });
 
-    it('returns the stages data', () => {
-      expect(result.stages).toEqual(convertedData.stages);
-    });
-
-    it('returns each of the default value stream stages', () => {
-      const stages = result.stages.map(({ name }) => name);
-      ['issue', 'plan', 'code', 'test', 'review', 'staging'].forEach((stageName) => {
-        expect(stages).toContain(stageName);
-      });
-    });
-
     it('returns `-` for summary data that has no value', () => {
       const singleSummaryResult = decorateData({
         stats: [],
@@ -71,24 +60,6 @@ describe('Value stream analytics utils', () => {
         summary: [{ value: null, title: 'Commits' }],
       });
       expect(singleSummaryResult.summary).toEqual([{ value: '-', title: 'Commits' }]);
-    });
-
-    it('returns additional fields for each stage', () => {
-      const singleStageResult = decorateData({
-        stats: [{ name: 'issue', value: null }],
-        permissions: { issue: false },
-      });
-      const stage = singleStageResult.stages[0];
-      const txt =
-        'The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage.';
-
-      expect(stage).toMatchObject({
-        active: false,
-        isUserAllowed: false,
-        emptyStageText: txt,
-        slug: 'issue',
-        component: 'stage-issue-component',
-      });
     });
   });
 

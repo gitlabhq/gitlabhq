@@ -234,6 +234,7 @@ module API
       params do
         optional :name, type: String, desc: 'The name of the project'
         optional :path, type: String, desc: 'The path of the repository'
+        optional :default_branch, type: String, desc: 'The default branch of the project'
         at_least_one_of :name, :path
         use :optional_create_project_params
         use :create_params

@@ -8,10 +8,7 @@ import createStore from './store';
 import { initTopbar } from './topbar';
 
 export const initSearchApp = () => {
-  // Similar to url_utility.decodeUrlParameter
-  // Our query treats + as %20.  This replaces the query + symbols with %20.
-  const sanitizedSearch = window.location.search.replace(/\+/g, '%20');
-  const query = queryToObject(sanitizedSearch);
+  const query = queryToObject(window.location.search);
 
   const store = createStore({ query });
 

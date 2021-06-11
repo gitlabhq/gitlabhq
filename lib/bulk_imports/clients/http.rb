@@ -2,7 +2,7 @@
 
 module BulkImports
   module Clients
-    class Http
+    class HTTP
       API_VERSION = 'v4'
       DEFAULT_PAGE = 1
       DEFAULT_PER_PAGE = 30

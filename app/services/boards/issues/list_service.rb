@@ -11,7 +11,9 @@ module Boards
 
       private
 
-      def ordered_items
+      def order(items)
+        return items.order_closed_date_desc if list&.closed?
+
         items.order_by_position_and_priority(with_cte: params[:search].present?)
       end
 

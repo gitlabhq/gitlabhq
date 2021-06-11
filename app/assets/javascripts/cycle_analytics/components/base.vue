@@ -58,6 +58,7 @@ export default {
       'stages',
       'summary',
       'startDate',
+      'permissions',
     ]),
     ...mapGetters(['pathNavigationData']),
     displayStageEvents() {
@@ -68,7 +69,7 @@ export default {
       return this.selectedStageReady && this.isEmptyStage;
     },
     displayNoAccess() {
-      return this.selectedStageReady && !this.selectedStage.isUserAllowed;
+      return this.selectedStageReady && !this.isUserAllowed(this.selectedStage.id);
     },
     selectedStageReady() {
       return !this.isLoadingStage && this.selectedStage;
@@ -91,24 +92,17 @@ export default {
     ]),
     handleDateSelect(startDate) {
       this.setDateRange({ startDate });
-      this.fetchCycleAnalyticsData();
-    },
-    isActiveStage(stage) {
-      return stage.slug === this.selectedStage.slug;
     },
     onSelectStage(stage) {
-      if (this.isLoadingStage || this.selectedStage?.slug === stage?.slug) return;
-
       this.setSelectedStage(stage);
-      if (!stage.isUserAllowed) {
-        return;
-      }
-
-      this.fetchStageData();
     },
     dismissOverviewDialog() {
       this.isOverviewDialogDismissed = true;
       Cookies.set(OVERVIEW_DIALOG_COOKIE, '1', { expires: 365 });
+    },
+    isUserAllowed(id) {
+      const { permissions } = this;
+      return Boolean(permissions?.[id]);
     },
   },
   dayRangeOptions: [7, 30, 90],

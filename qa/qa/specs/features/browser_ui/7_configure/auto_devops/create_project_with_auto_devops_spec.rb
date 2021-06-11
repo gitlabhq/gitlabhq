@@ -81,11 +81,11 @@ module QA
             job.click_element(:pipeline_path)
           end
 
-          Page::Project::Menu.perform(&:go_to_operations_environments)
-          Page::Project::Operations::Environments::Index.perform do |index|
+          Page::Project::Menu.perform(&:go_to_deployments_environments)
+          Page::Project::Deployments::Environments::Index.perform do |index|
             index.click_environment_link('production')
           end
-          Page::Project::Operations::Environments::Show.perform do |show|
+          Page::Project::Deployments::Environments::Show.perform do |show|
             show.view_deployment do
               expect(page).to have_content('Hello World!')
               expect(page).to have_content('you_can_see_this_variable')

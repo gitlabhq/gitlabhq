@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  # TODO: Remove `:requires_admin` meta when the feature flag is removed
-  RSpec.describe 'Verify', :runner, :requires_admin do
+  RSpec.describe 'Verify', :runner do
     describe 'Pipeline creation and processing' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:max_wait) { 30 }
-      let(:feature_flag) { :ci_drop_new_builds_when_ci_quota_exceeded }
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -28,8 +26,6 @@ module QA
 
       it 'users creates a pipeline which gets processed', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1849' do
         # TODO: Convert back to :smoke once proved to be stable. Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300909
-        tags_mismatch_status = Runtime::Feature.enabled?(feature_flag, project: project) ? :failed : :pending
-
         Flow::Login.sign_in
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|
@@ -75,7 +71,7 @@ module QA
         {
           'test-success': :passed,
           'test-failure': :failed,
-          'test-tags-mismatch': tags_mismatch_status,
+          'test-tags-mismatch': :pending,
           'test-artifacts': :passed
         }.each do |job, status|
           Page::Project::Pipeline::Show.perform do |pipeline|

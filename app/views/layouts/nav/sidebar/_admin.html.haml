@@ -234,19 +234,7 @@
               %strong.fly-out-top-item-name
                 = _('Labels')
 
-      = nav_link(controller: :appearances) do
-        = link_to admin_appearances_path do
-          .nav-icon-container
-            = sprite_icon('appearance')
-          %span.nav-item-name
-            = _('Appearance')
-        %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: :appearances, html_options: { class: "fly-out-top-item" } ) do
-            = link_to admin_appearances_path do
-              %strong.fly-out-top-item-name
-                = _('Appearance')
-
-      = nav_link(controller: [:application_settings, :integrations]) do
+      = nav_link(controller: [:application_settings, :integrations, :appearances]) do
         = link_to general_admin_application_settings_path, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('settings')
@@ -255,7 +243,7 @@
 
         %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_settings_submenu_content' } }
           -# This active_nav_link check is also used in `app/views/layouts/admin.html.haml`
-          = nav_link(controller: [:application_settings, :integrations], html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: [:application_settings, :integrations, :appearances], html_options: { class: "fly-out-top-item" } ) do
             = link_to general_admin_application_settings_path do
               %strong.fly-out-top-item-name
                 = _('Settings')
@@ -302,6 +290,10 @@
               = link_to network_admin_application_settings_path, title: _('Network'), data: { qa_selector: 'admin_settings_network_item' } do
                 %span
                   = _('Network')
+            = nav_link(controller: :appearances ) do
+              = link_to admin_application_settings_appearances_path do
+                %span
+                  = _('Appearance')
             = nav_link(path: 'application_settings#preferences') do
               = link_to preferences_admin_application_settings_path, title: _('Preferences'), data: { qa_selector: 'admin_settings_preferences_link' } do
                 %span

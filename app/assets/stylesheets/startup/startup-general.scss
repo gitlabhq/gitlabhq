@@ -322,12 +322,18 @@ h1 {
 .d-none {
   display: none !important;
 }
+.d-inline-block {
+  display: inline-block !important;
+}
 .d-block {
   display: block !important;
 }
 @media (min-width: 576px) {
   .d-sm-none {
     display: none !important;
+  }
+  .d-sm-inline-block {
+    display: inline-block !important;
   }
 }
 @media (min-width: 768px) {
@@ -336,6 +342,9 @@ h1 {
   }
 }
 @media (min-width: 992px) {
+  .d-lg-none {
+    display: none !important;
+  }
   .d-lg-block {
     display: block !important;
   }
@@ -2070,22 +2079,9 @@ body.sidebar-refactoring
 .gl-display-none {
   display: none;
 }
-@media (min-width: 62rem) {
-  .gl-lg-display-none {
-    display: none;
-  }
-}
 @media (min-width: 36rem) {
   .gl-sm-display-block {
     display: block;
-  }
-}
-.gl-display-inline-block {
-  display: inline-block;
-}
-@media (min-width: 36rem) {
-  .gl-sm-display-inline-block {
-    display: inline-block;
   }
 }
 .gl-absolute {

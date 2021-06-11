@@ -142,11 +142,11 @@ function extractNameAndOperator(filterName) {
  * '?myFilterName=foo'
  * gets translated into:
  * { myFilterName: { value: 'foo', operator: '=' } }
- * @param  {String} query URL quert string, e.g. from `window.location.search`
+ * @param  {String} query URL query string, e.g. from `window.location.search`
  * @return {Object} filter object with filter names and their values
  */
 export function urlQueryToFilter(query = '') {
-  const filters = queryToObject(query, { gatherArrays: true });
+  const filters = queryToObject(query, { gatherArrays: true, legacySpacesDecode: true });
   return Object.keys(filters).reduce((memo, key) => {
     const value = filters[key];
     if (!value) {

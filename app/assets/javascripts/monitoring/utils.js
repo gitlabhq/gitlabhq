@@ -175,7 +175,7 @@ export const graphDataValidatorForAnomalyValues = (graphData) => {
  * Returns `null` if no parameters form a time range.
  */
 export const timeRangeFromUrl = (search = window.location.search) => {
-  const params = queryToObject(search);
+  const params = queryToObject(search, { legacySpacesDecode: true });
   return timeRangeFromParams(params);
 };
 
@@ -228,7 +228,7 @@ export const convertVariablesForURL = (variables) =>
  * @returns {Object} The custom variables defined by the user in the URL
  */
 export const templatingVariablesFromUrl = (search = window.location.search) => {
-  const params = queryToObject(search);
+  const params = queryToObject(search, { legacySpacesDecode: true });
   // pick the params with variable prefix
   const paramsWithVars = pickBy(params, (val, key) => key.startsWith(VARIABLE_PREFIX));
   // remove the prefix before storing in the Vuex store
@@ -289,7 +289,7 @@ export const timeRangeToUrl = (timeRange, url = window.location.href) => {
  * @throws Will throw an error if Panel cannot be located.
  */
 export const expandedPanelPayloadFromUrl = (dashboard, search = window.location.search) => {
-  const params = queryToObject(search);
+  const params = queryToObject(search, { legacySpacesDecode: true });
 
   // Search for the panel if any of the search params is identified
   if (params.group || params.title || params.y_label) {

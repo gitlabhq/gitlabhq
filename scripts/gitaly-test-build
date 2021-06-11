@@ -15,7 +15,12 @@ class GitalyTestBuild
   def run
     set_bundler_config
 
-    abort 'gitaly build failed' unless build_gitaly
+    # If we have the binaries from the cache, we can skip building them again
+    if File.exist?(tmp_tests_gitaly_bin_dir)
+      GitalySetup::LOGGER.debug "Gitaly binary already built. Skip building...\n"
+    else
+      abort 'gitaly build failed' unless build_gitaly
+    end
 
     ensure_gitlab_shell_secret!
     check_gitaly_config!

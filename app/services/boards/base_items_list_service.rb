@@ -6,9 +6,9 @@ module Boards
     include ActiveRecord::ConnectionAdapters::Quoting
 
     def execute
-      return items.order_closed_date_desc if list&.closed?
+      items = init_collection
 
-      ordered_items
+      order(items)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -17,7 +17,7 @@ module Boards
       keys = metadata_fields.keys
       # TODO: eliminate need for SQL literal fragment
       columns = Arel.sql(metadata_fields.values_at(*keys).join(', '))
-      results = item_model.where(id: items.select(issuables[:id])).pluck(columns)
+      results = item_model.where(id: init_collection.select(issuables[:id])).pluck(columns)
 
       Hash[keys.zip(results.flatten)]
     end
@@ -29,7 +29,7 @@ module Boards
       { size: 'COUNT(*)' }
     end
 
-    def ordered_items
+    def order(items)
       raise NotImplementedError
     end
 
@@ -47,8 +47,8 @@ module Boards
 
     # We memoize the query here since the finder methods we use are quite complex. This does not memoize the result of the query.
     # rubocop: disable CodeReuse/ActiveRecord
-    def items
-      strong_memoize(:items) do
+    def init_collection
+      strong_memoize(:init_collection) do
         filter(finder.execute).reorder(nil)
       end
     end

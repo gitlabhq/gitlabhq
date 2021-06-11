@@ -3,10 +3,27 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/cycle_analytics/store/actions';
 import httpStatusCodes from '~/lib/utils/http_status';
-import { selectedStage } from '../mock_data';
+import { selectedStage, selectedValueStream } from '../mock_data';
 
 const mockRequestPath = 'some/cool/path';
+const mockFullPath = '/namespace/-/analytics/value_stream_analytics/value_streams';
 const mockStartDate = 30;
+const mockRequestedDataActions = ['fetchValueStreams', 'fetchCycleAnalyticsData'];
+const mockInitializeActionCommit = {
+  payload: { requestPath: mockRequestPath },
+  type: 'INITIALIZE_VSA',
+};
+const mockSetDateActionCommit = { payload: { startDate: mockStartDate }, type: 'SET_DATE_RANGE' };
+const mockRequestedDataMutations = [
+  {
+    payload: true,
+    type: 'SET_LOADING',
+  },
+  {
+    payload: false,
+    type: 'SET_LOADING',
+  },
+];
 
 describe('Project Value Stream Analytics actions', () => {
   let state;
@@ -22,27 +39,26 @@ describe('Project Value Stream Analytics actions', () => {
     state = {};
   });
 
-  it.each`
-    action                | type                    | payload                             | expectedActions
-    ${'initializeVsa'}    | ${'INITIALIZE_VSA'}     | ${{ requestPath: mockRequestPath }} | ${['fetchCycleAnalyticsData']}
-    ${'setDateRange'}     | ${'SET_DATE_RANGE'}     | ${{ startDate: 30 }}                | ${[]}
-    ${'setSelectedStage'} | ${'SET_SELECTED_STAGE'} | ${{ selectedStage }}                | ${[]}
-  `(
-    '$action should dispatch $expectedActions and commit $type',
-    ({ action, type, payload, expectedActions }) =>
+  const mutationTypes = (arr) => arr.map(({ type }) => type);
+
+  describe.each`
+    action                      | payload                             | expectedActions               | expectedMutations
+    ${'initializeVsa'}          | ${{ requestPath: mockRequestPath }} | ${mockRequestedDataActions}   | ${[mockInitializeActionCommit, ...mockRequestedDataMutations]}
+    ${'setDateRange'}           | ${{ startDate: mockStartDate }}     | ${mockRequestedDataActions}   | ${[mockSetDateActionCommit, ...mockRequestedDataMutations]}
+    ${'setSelectedStage'}       | ${{ selectedStage }}                | ${['fetchStageData']}         | ${[{ type: 'SET_SELECTED_STAGE', payload: { selectedStage } }]}
+    ${'setSelectedValueStream'} | ${{ selectedValueStream }}          | ${['fetchValueStreamStages']} | ${[{ type: 'SET_SELECTED_VALUE_STREAM', payload: { selectedValueStream } }]}
+  `('$action', ({ action, payload, expectedActions, expectedMutations }) => {
+    const types = mutationTypes(expectedMutations);
+
+    it(`will dispatch ${expectedActions} and commit ${types}`, () =>
       testAction({
         action: actions[action],
         state,
         payload,
-        expectedMutations: [
-          {
-            type,
-            payload,
-          },
-        ],
+        expectedMutations,
         expectedActions: expectedActions.map((a) => ({ type: a })),
-      }),
-  );
+      }));
+  });
 
   describe('fetchCycleAnalyticsData', () => {
     beforeEach(() => {
@@ -60,7 +76,7 @@ describe('Project Value Stream Analytics actions', () => {
           { type: 'REQUEST_CYCLE_ANALYTICS_DATA' },
           { type: 'RECEIVE_CYCLE_ANALYTICS_DATA_SUCCESS' },
         ],
-        expectedActions: [{ type: 'setSelectedStage' }, { type: 'fetchStageData' }],
+        expectedActions: [],
       }));
 
     describe('with a failing request', () => {
@@ -85,7 +101,7 @@ describe('Project Value Stream Analytics actions', () => {
   });
 
   describe('fetchStageData', () => {
-    const mockStagePath = `${mockRequestPath}/events/${selectedStage.name}.json`;
+    const mockStagePath = `${mockRequestPath}/events/${selectedStage.name}`;
 
     beforeEach(() => {
       state = {
@@ -149,6 +165,117 @@ describe('Project Value Stream Analytics actions', () => {
           state,
           payload: {},
           expectedMutations: [{ type: 'REQUEST_STAGE_DATA' }, { type: 'RECEIVE_STAGE_DATA_ERROR' }],
+          expectedActions: [],
+        }));
+    });
+  });
+
+  describe('fetchValueStreams', () => {
+    const mockValueStreamPath = /\/analytics\/value_stream_analytics\/value_streams/;
+
+    beforeEach(() => {
+      state = {
+        fullPath: mockFullPath,
+      };
+      mock = new MockAdapter(axios);
+      mock.onGet(mockValueStreamPath).reply(httpStatusCodes.OK);
+    });
+
+    it(`commits the 'REQUEST_VALUE_STREAMS' mutation`, () =>
+      testAction({
+        action: actions.fetchValueStreams,
+        state,
+        payload: {},
+        expectedMutations: [{ type: 'REQUEST_VALUE_STREAMS' }],
+        expectedActions: [{ type: 'receiveValueStreamsSuccess' }, { type: 'setSelectedStage' }],
+      }));
+
+    describe('with a failing request', () => {
+      beforeEach(() => {
+        mock = new MockAdapter(axios);
+        mock.onGet(mockValueStreamPath).reply(httpStatusCodes.BAD_REQUEST);
+      });
+
+      it(`commits the 'RECEIVE_VALUE_STREAMS_ERROR' mutation`, () =>
+        testAction({
+          action: actions.fetchValueStreams,
+          state,
+          payload: {},
+          expectedMutations: [
+            { type: 'REQUEST_VALUE_STREAMS' },
+            { type: 'RECEIVE_VALUE_STREAMS_ERROR', payload: httpStatusCodes.BAD_REQUEST },
+          ],
+          expectedActions: [],
+        }));
+    });
+  });
+
+  describe('receiveValueStreamsSuccess', () => {
+    const mockValueStream = {
+      id: 'mockDefault',
+      name: 'mock default',
+    };
+    const mockValueStreams = [mockValueStream, selectedValueStream];
+    it('with data, will set the first value stream', () => {
+      testAction({
+        action: actions.receiveValueStreamsSuccess,
+        state,
+        payload: mockValueStreams,
+        expectedMutations: [{ type: 'RECEIVE_VALUE_STREAMS_SUCCESS', payload: mockValueStreams }],
+        expectedActions: [{ type: 'setSelectedValueStream', payload: mockValueStream }],
+      });
+    });
+
+    it('without data, will set the default value stream', () => {
+      testAction({
+        action: actions.receiveValueStreamsSuccess,
+        state,
+        payload: [],
+        expectedMutations: [{ type: 'RECEIVE_VALUE_STREAMS_SUCCESS', payload: [] }],
+        expectedActions: [{ type: 'setSelectedValueStream', payload: selectedValueStream }],
+      });
+    });
+  });
+
+  describe('fetchValueStreamStages', () => {
+    const mockValueStreamPath = /\/analytics\/value_stream_analytics\/value_streams/;
+
+    beforeEach(() => {
+      state = {
+        fullPath: mockFullPath,
+        selectedValueStream,
+      };
+      mock = new MockAdapter(axios);
+      mock.onGet(mockValueStreamPath).reply(httpStatusCodes.OK);
+    });
+
+    it(`commits the 'REQUEST_VALUE_STREAM_STAGES' and 'RECEIVE_VALUE_STREAM_STAGES_SUCCESS' mutations`, () =>
+      testAction({
+        action: actions.fetchValueStreamStages,
+        state,
+        payload: {},
+        expectedMutations: [
+          { type: 'REQUEST_VALUE_STREAM_STAGES' },
+          { type: 'RECEIVE_VALUE_STREAM_STAGES_SUCCESS' },
+        ],
+        expectedActions: [],
+      }));
+
+    describe('with a failing request', () => {
+      beforeEach(() => {
+        mock = new MockAdapter(axios);
+        mock.onGet(mockValueStreamPath).reply(httpStatusCodes.BAD_REQUEST);
+      });
+
+      it(`commits the 'RECEIVE_VALUE_STREAM_STAGES_ERROR' mutation`, () =>
+        testAction({
+          action: actions.fetchValueStreamStages,
+          state,
+          payload: {},
+          expectedMutations: [
+            { type: 'REQUEST_VALUE_STREAM_STAGES' },
+            { type: 'RECEIVE_VALUE_STREAM_STAGES_ERROR', payload: httpStatusCodes.BAD_REQUEST },
+          ],
           expectedActions: [],
         }));
     });

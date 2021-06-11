@@ -33,15 +33,24 @@ your own `Dockerfile`, you must either:
 - Override the default values by
   [customizing the Auto Deploy Helm chart](customize.md#custom-helm-chart).
 
-### Auto Build using Heroku buildpacks
+### Auto Build using Cloud Native Buildpacks
+
+> - Introduced in [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28165).
+> - Auto Build using Cloud Native Buildpacks by default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63351) in GitLab 14.0.
 
 Auto Build builds an application using a project's `Dockerfile` if present. If no
-`Dockerfile` is present, it uses [Herokuish](https://github.com/gliderlabs/herokuish)
-and [Heroku buildpacks](https://devcenter.heroku.com/articles/buildpacks)
-to detect and build the application into a Docker image.
+`Dockerfile` is present, Auto Build builds your application using
+[Cloud Native Buildpacks](https://buildpacks.io) to detect and build the
+application into a Docker image. The feature uses the
+[`pack` command](https://github.com/buildpacks/pack).
+The default [builder](https://buildpacks.io/docs/concepts/components/builder/)
+is `heroku/buildpacks:18` but a different builder can be selected using
+the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
 
 Each buildpack requires your project's repository to contain certain files for
-Auto Build to build your application successfully. For example, your application's
+Auto Build to build your application successfully. The structure is
+specific to the builder and buildpacks you have selected.
+For example, when using the Heroku's builder (the default), your application's
 root directory must contain the appropriate file for your application's
 language:
 
@@ -52,39 +61,38 @@ For the requirements of other languages and frameworks, read the
 [Heroku buildpacks documentation](https://devcenter.heroku.com/articles/buildpacks#officially-supported-buildpacks).
 
 NOTE:
+Auto Test still uses Herokuish, as test suite detection is not
+yet part of the Cloud Native Buildpack specification. For more information, see
+[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
+
+### Auto Build using Herokuish
+
+> [Replaced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63351) with Cloud Native Buildpacks in GitLab 14.0.
+
+Prior to GitLab 14.0, [Herokuish](https://github.com/gliderlabs/herokuish) was
+the default build method for projects without a `Dockerfile`. Herokuish can
+still be used by setting the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED`
+to `false`.
+
+NOTE:
 If Auto Build fails despite the project meeting the buildpack requirements, set
 a project CI/CD variable `TRACE=true` to enable verbose logging, which may help you
 troubleshoot.
 
-### Auto Build using Cloud Native Buildpacks (beta)
-
-> Introduced in [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28165).
-
-Auto Build supports building your application using [Cloud Native Buildpacks](https://buildpacks.io)
-through the [`pack` command](https://github.com/buildpacks/pack). To use Cloud Native Buildpacks,
-set the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED` to a non-empty
-value. The default builder is `heroku/buildpacks:18` but a different builder
-can be selected using the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
-
-Cloud Native Buildpacks (CNBs) are an evolution of Heroku buildpacks, and
-GitLab expects them to eventually supersede Herokuish-based builds within Auto DevOps. For more
-information, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212692).
+### Moving from Herokuish to Cloud Native Buildpacks
 
 Builds using Cloud Native Buildpacks support the same options as builds using
-Heroku buildpacks, with the following caveats:
+Herokuish, with the following caveats:
 
 - The buildpack must be a Cloud Native Buildpack. A Heroku buildpack can be
   converted to a Cloud Native Buildpack using Heroku's
   [`cnb-shim`](https://github.com/heroku/cnb-shim).
-- `BUILDPACK_URL` must be in a form
+- `BUILDPACK_URL` must be in a format
   [supported by `pack`](https://buildpacks.io/docs/app-developer-guide/specific-buildpacks/).
-- The `/bin/herokuish` command is not present in the resulting image, and prefixing
+- The `/bin/herokuish` command is not present in the built image, and prefixing
   commands with `/bin/herokuish procfile exec` is no longer required (nor possible).
-
-NOTE:
-Auto Test still uses Herokuish, as test suite detection is not
-yet part of the Cloud Native Buildpack specification. For more information, see
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
+  Instead, custom commands should be prefixed with `/cnb/lifecycle/launcher`
+  to receive the correct execution environment.
 
 ## Auto Test
 
@@ -461,15 +469,16 @@ If present, `DB_MIGRATE` is run as a shell command within an application pod as
 a Helm pre-upgrade hook.
 
 For example, in a Rails application in an image built with
-[Herokuish](https://github.com/gliderlabs/herokuish):
+[Cloud Native Buildpacks](#auto-build-using-cloud-native-buildpacks):
 
-- `DB_INITIALIZE` can be set to `RAILS_ENV=production /bin/herokuish procfile exec bin/rails db:setup`
-- `DB_MIGRATE` can be set to `RAILS_ENV=production /bin/herokuish procfile exec bin/rails db:migrate`
+- `DB_INITIALIZE` can be set to `RAILS_ENV=production /cnb/lifecycle/launcher bin/rails db:setup`
+- `DB_MIGRATE` can be set to `RAILS_ENV=production /cnb/lifecycle/launcher bin/rails db:migrate`
 
 Unless your repository contains a `Dockerfile`, your image is built with
-Herokuish, and you must prefix commands run in these images with
-`/bin/herokuish procfile exec` (for Herokuish) or `/cnb/lifecycle/launcher`
-(for Cloud Native Buildpacks) to replicate the environment where your
+Cloud Native Buildpacks, and you must prefix commands run in these images with
+`/cnb/lifecycle/launcher`, (or `/bin/herokuish procfile exec` when
+using [Herokuish](#auto-build-using-herokuish))
+to replicate the environment where your
 application runs.
 
 ### Upgrade auto-deploy-app Chart
@@ -508,14 +517,10 @@ workers:
   sidekiq:
     replicaCount: 1
     command:
-      - /bin/herokuish
-      - procfile
-      - exec
+      - /cnb/lifecycle/launcher
       - sidekiq
     preStopCommand:
-      - /bin/herokuish
-      - procfile
-      - exec
+      - /cnb/lifecycle/launcher
       - sidekiqctl
       - quiet
     terminationGracePeriodSeconds: 60

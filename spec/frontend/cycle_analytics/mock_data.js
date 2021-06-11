@@ -1,3 +1,4 @@
+import { DEFAULT_VALUE_STREAM } from '~/cycle_analytics/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 export const getStageByTitle = (stages, title) =>
@@ -95,54 +96,6 @@ export const rawData = {
 };
 
 export const convertedData = {
-  stages: [
-    selectedStage,
-    {
-      ...planStage,
-      active: false,
-      isUserAllowed: true,
-      emptyStageText:
-        'The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit.',
-      component: 'stage-plan-component',
-      slug: 'plan',
-    },
-    {
-      ...codeStage,
-      active: false,
-      isUserAllowed: true,
-      emptyStageText:
-        'The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request.',
-      component: 'stage-code-component',
-      slug: 'code',
-    },
-    {
-      ...testStage,
-      active: false,
-      isUserAllowed: true,
-      emptyStageText:
-        'The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running.',
-      component: 'stage-test-component',
-      slug: 'test',
-    },
-    {
-      ...reviewStage,
-      active: false,
-      isUserAllowed: true,
-      emptyStageText:
-        'The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request.',
-      component: 'stage-review-component',
-      slug: 'review',
-    },
-    {
-      ...stagingStage,
-      active: false,
-      isUserAllowed: true,
-      emptyStageText:
-        'The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time.',
-      component: 'stage-staging-component',
-      slug: 'staging',
-    },
-  ],
   summary: [
     { value: '20', title: 'New Issues' },
     { value: '-', title: 'Commits' },
@@ -256,3 +209,49 @@ export const transformedProjectStagePathData = [
     value: 172800,
   },
 ];
+
+export const selectedValueStream = DEFAULT_VALUE_STREAM;
+
+export const rawValueStreamStages = [
+  {
+    title: 'Issue',
+    hidden: false,
+    legend: '',
+    description: 'Time before an issue gets scheduled',
+    id: 'issue',
+    custom: false,
+    start_event_html_description:
+      '\u003cp data-sourcepos="1:1-1:13" dir="auto"\u003eIssue created\u003c/p\u003e',
+    end_event_html_description:
+      '\u003cp data-sourcepos="1:1-1:71" dir="auto"\u003eIssue first associated with a milestone or issue first added to a board\u003c/p\u003e',
+  },
+  {
+    title: 'Plan',
+    hidden: false,
+    legend: '',
+    description: 'Time before an issue starts implementation',
+    id: 'plan',
+    custom: false,
+    start_event_html_description:
+      '\u003cp data-sourcepos="1:1-1:71" dir="auto"\u003eIssue first associated with a milestone or issue first added to a board\u003c/p\u003e',
+    end_event_html_description:
+      '\u003cp data-sourcepos="1:1-1:33" dir="auto"\u003eIssue first mentioned in a commit\u003c/p\u003e',
+  },
+  {
+    title: 'Code',
+    hidden: false,
+    legend: '',
+    description: 'Time until first merge request',
+    id: 'code',
+    custom: false,
+    start_event_html_description:
+      '\u003cp data-sourcepos="1:1-1:33" dir="auto"\u003eIssue first mentioned in a commit\u003c/p\u003e',
+    end_event_html_description:
+      '\u003cp data-sourcepos="1:1-1:21" dir="auto"\u003eMerge request created\u003c/p\u003e',
+  },
+];
+
+export const valueStreamStages = rawValueStreamStages.map((s) => ({
+  ...convertObjectPropsToCamelCase(s, { deep: true }),
+  component: `stage-${s.id}-component`,
+}));

@@ -10,9 +10,10 @@ module Ci
       end
 
       def execute
-        DropNotRunnableBuildsService.new(pipeline).execute
         Ci::ProcessPipelineService.new(pipeline).execute
       end
     end
   end
 end
+
+::Ci::PipelineCreation::StartPipelineService.prepend_mod_with('Ci::PipelineCreation::StartPipelineService')

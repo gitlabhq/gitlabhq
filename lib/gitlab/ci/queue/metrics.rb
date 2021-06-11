@@ -33,7 +33,9 @@ module Gitlab
           :queue_replication_lag,
           :runner_pre_assign_checks_failed,
           :runner_pre_assign_checks_success,
-          :runner_queue_tick
+          :runner_queue_tick,
+          :shared_runner_build_new,
+          :shared_runner_build_done
         ].to_set.freeze
 
         QUEUE_DEPTH_HISTOGRAMS = [

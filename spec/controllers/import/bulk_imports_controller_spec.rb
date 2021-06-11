@@ -51,7 +51,7 @@ RSpec.describe Import::BulkImportsController do
       end
 
       describe 'GET status' do
-        let(:client) { BulkImports::Clients::Http.new(uri: 'http://gitlab.example', token: 'token') }
+        let(:client) { BulkImports::Clients::HTTP.new(uri: 'http://gitlab.example', token: 'token') }
 
         describe 'serialized group data' do
           let(:client_response) do
@@ -149,7 +149,7 @@ RSpec.describe Import::BulkImportsController do
         context 'when connection error occurs' do
           before do
             allow(controller).to receive(:client).and_return(client)
-            allow(client).to receive(:get).and_raise(BulkImports::Clients::Http::ConnectionError)
+            allow(client).to receive(:get).and_raise(BulkImports::Clients::HTTP::ConnectionError)
           end
 
           it 'returns 422' do

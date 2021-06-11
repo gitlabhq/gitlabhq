@@ -1,34 +1,61 @@
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { decorateData, decorateEvents, formatMedianValues } from '../utils';
 import * as types from './mutation_types';
 
 export default {
-  [types.INITIALIZE_VSA](state, { requestPath }) {
+  [types.INITIALIZE_VSA](state, { requestPath, fullPath }) {
     state.requestPath = requestPath;
+    state.fullPath = fullPath;
+  },
+  [types.SET_LOADING](state, loadingState) {
+    state.isLoading = loadingState;
+  },
+  [types.SET_SELECTED_VALUE_STREAM](state, selectedValueStream = {}) {
+    state.selectedValueStream = convertObjectPropsToCamelCase(selectedValueStream, { deep: true });
   },
   [types.SET_SELECTED_STAGE](state, stage) {
-    state.isLoadingStage = true;
     state.selectedStage = stage;
-    state.isLoadingStage = false;
   },
   [types.SET_DATE_RANGE](state, { startDate }) {
     state.startDate = startDate;
   },
+  [types.REQUEST_VALUE_STREAMS](state) {
+    state.valueStreams = [];
+  },
+  [types.RECEIVE_VALUE_STREAMS_SUCCESS](state, valueStreams = []) {
+    state.valueStreams = valueStreams;
+  },
+  [types.RECEIVE_VALUE_STREAMS_ERROR](state) {
+    state.valueStreams = [];
+  },
+  [types.REQUEST_VALUE_STREAM_STAGES](state) {
+    state.stages = [];
+  },
+  [types.RECEIVE_VALUE_STREAM_STAGES_SUCCESS](state, { stages = [] }) {
+    state.stages = stages.map((s) => ({
+      ...convertObjectPropsToCamelCase(s, { deep: true }),
+      // NOTE: we set the component type here to match the current behaviour
+      // this can be removed when we migrate to the update stage table
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/326704
+      component: `stage-${s.id}-component`,
+    }));
+  },
+  [types.RECEIVE_VALUE_STREAM_STAGES_ERROR](state) {
+    state.stages = [];
+  },
   [types.REQUEST_CYCLE_ANALYTICS_DATA](state) {
     state.isLoading = true;
-    state.stages = [];
     state.hasError = false;
   },
   [types.RECEIVE_CYCLE_ANALYTICS_DATA_SUCCESS](state, data) {
-    state.isLoading = false;
-    const { stages, summary, medians } = decorateData(data);
-    state.stages = stages;
+    const { summary, medians } = decorateData(data);
+    state.permissions = data.permissions;
     state.summary = summary;
     state.medians = formatMedianValues(medians);
     state.hasError = false;
   },
   [types.RECEIVE_CYCLE_ANALYTICS_DATA_ERROR](state) {
     state.isLoading = false;
-    state.stages = [];
     state.hasError = true;
   },
   [types.REQUEST_STAGE_DATA](state) {

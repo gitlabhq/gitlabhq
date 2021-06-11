@@ -38,7 +38,7 @@ class Commit
   cache_markdown_field :description, pipeline: :commit_description, limit: 1.megabyte
 
   # Share the cache used by the markdown fields
-  attr_mentionable :full_title, pipeline: :single_line, limit: 1.kilobyte
+  attr_mentionable :title, pipeline: :single_line
   attr_mentionable :description, pipeline: :commit_description, limit: 1.megabyte
 
   class << self

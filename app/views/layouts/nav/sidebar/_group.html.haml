@@ -19,14 +19,14 @@
         - paths = group_overview_nav_link_paths
         = nav_link(path: paths, unless: -> { current_path?('groups/contribution_analytics#show') }, html_options: { class: 'home' }) do
           - information_link = sidebar_refactor_enabled? ? activity_group_path(@group) : group_path(@group)
-          = link_to information_link, class: 'has-sub-items' do
+          = link_to information_link, class: 'has-sub-items', data: { qa_selector: 'group_information_link' } do
             .nav-icon-container
               - sprite = sidebar_refactor_enabled? ? 'group' : 'home'
               = sprite_icon(sprite)
             %span.nav-item-name
               = group_information_title(@group)
 
-          %ul.sidebar-sub-level-items
+          %ul.sidebar-sub-level-items{ data: { qa_selector: 'group_information_submenu'} }
             = nav_link(path: paths, html_options: { class: "fly-out-top-item" } ) do
               = link_to information_link do
                 %strong.fly-out-top-item-name

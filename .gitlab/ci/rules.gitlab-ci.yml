@@ -111,6 +111,9 @@
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/qa.gitlab-ci.yml"
 
+.gitaly-patterns: &gitaly-patterns
+  - "GITALY_SERVER_VERSION"
+
 .workhorse-patterns: &workhorse-patterns
   - "GITLAB_WORKHORSE_VERSION"
   - "workhorse/**/*"
@@ -309,6 +312,11 @@
     - <<: *if-default-branch-schedule-2-hourly
     - <<: *if-security-schedule
     - <<: *if-merge-request-title-update-caches
+
+.shared:rules:update-gitaly-binaries-cache:
+  rules:
+    - <<: *if-merge-request-title-update-caches
+    - changes: *gitaly-patterns
 
 ######################
 # Build images rules #

@@ -202,37 +202,21 @@ RSpec.describe Ci::CreatePipelineService do
         YAML
       end
 
-      context 'when there are runners matching the builds' do
-        before do
-          create(:ci_runner, :online)
-        end
+      it 'creates a pipeline with build_a and test_b pending; deploy_b manual', :sidekiq_inline do
+        processables = pipeline.processables
 
-        it 'creates a pipeline with build_a and test_b pending; deploy_b manual', :sidekiq_inline do
-          processables = pipeline.processables
+        build_a = processables.find { |processable| processable.name == 'build_a' }
+        test_a = processables.find { |processable| processable.name == 'test_a' }
+        test_b = processables.find { |processable| processable.name == 'test_b' }
+        deploy_a = processables.find { |processable| processable.name == 'deploy_a' }
+        deploy_b = processables.find { |processable| processable.name == 'deploy_b' }
 
-          build_a = processables.find { |processable| processable.name == 'build_a' }
-          test_a = processables.find { |processable| processable.name == 'test_a' }
-          test_b = processables.find { |processable| processable.name == 'test_b' }
-          deploy_a = processables.find { |processable| processable.name == 'deploy_a' }
-          deploy_b = processables.find { |processable| processable.name == 'deploy_b' }
-
-          expect(pipeline).to be_created_successfully
-          expect(build_a.status).to eq('pending')
-          expect(test_a.status).to eq('created')
-          expect(test_b.status).to eq('pending')
-          expect(deploy_a.status).to eq('created')
-          expect(deploy_b.status).to eq('manual')
-        end
-      end
-
-      context 'when there are no runners matching the builds' do
-        it 'creates a pipeline but all jobs failed', :sidekiq_inline do
-          processables = pipeline.processables
-
-          expect(pipeline).to be_created_successfully
-          expect(processables).to all be_failed
-          expect(processables.map(&:failure_reason)).to all eq('no_matching_runner')
-        end
+        expect(pipeline).to be_created_successfully
+        expect(build_a.status).to eq('pending')
+        expect(test_a.status).to eq('created')
+        expect(test_b.status).to eq('pending')
+        expect(deploy_a.status).to eq('created')
+        expect(deploy_b.status).to eq('manual')
       end
     end
 

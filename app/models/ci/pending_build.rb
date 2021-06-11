@@ -8,7 +8,7 @@ module Ci
     belongs_to :build, class_name: 'Ci::Build'
 
     def self.upsert_from_build!(build)
-      entry = self.new(build: build, project: build.project)
+      entry = self.new(build: build, project: build.project, protected: build.protected?)
 
       entry.validate!
 

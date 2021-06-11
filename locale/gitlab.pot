@@ -32967,6 +32967,9 @@ msgstr ""
 msgid "There was an error while fetching value stream analytics duration data."
 msgstr ""
 
+msgid "There was an error while fetching value stream summary data."
+msgstr ""
+
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
 msgstr ""
 
@@ -39383,6 +39386,9 @@ msgid "tag name"
 msgstr ""
 
 msgid "the correct format."
+msgstr ""
+
+msgid "the file"
 msgstr ""
 
 msgid "the following issue(s)"

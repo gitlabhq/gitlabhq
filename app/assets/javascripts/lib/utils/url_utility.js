@@ -414,29 +414,35 @@ export function getWebSocketUrl(path) {
  *
  * @param {String} query from "document.location.search"
  * @param {Object} options
- * @param {Boolean} options.gatherArrays - gather array values into an Array
+ * @param {Boolean?} options.gatherArrays - gather array values into an Array
+ * @param {Boolean?} options.legacySpacesDecode - (deprecated) plus symbols (+) are not replaced with spaces, false by default
  * @returns {Object}
  *
  * ex: "?one=1&two=2" into {one: 1, two: 2}
  */
-export function queryToObject(query, options = {}) {
-  const { gatherArrays = false } = options;
+export function queryToObject(query, { gatherArrays = false, legacySpacesDecode = false } = {}) {
   const removeQuestionMarkFromQuery = String(query).startsWith('?') ? query.slice(1) : query;
   return removeQuestionMarkFromQuery.split('&').reduce((accumulator, curr) => {
     const [key, value] = curr.split('=');
     if (value === undefined) {
       return accumulator;
     }
-    const decodedValue = decodeURIComponent(value);
+
+    const decodedValue = legacySpacesDecode ? decodeURIComponent(value) : decodeUrlParameter(value);
 
     if (gatherArrays && key.endsWith('[]')) {
-      const decodedKey = decodeURIComponent(key.slice(0, -2));
+      const decodedKey = legacySpacesDecode
+        ? decodeURIComponent(key.slice(0, -2))
+        : decodeUrlParameter(key.slice(0, -2));
+
       if (!Array.isArray(accumulator[decodedKey])) {
         accumulator[decodedKey] = [];
       }
       accumulator[decodedKey].push(decodedValue);
     } else {
-      accumulator[decodeURIComponent(key)] = decodedValue;
+      const decodedKey = legacySpacesDecode ? decodeURIComponent(key) : decodeUrlParameter(key);
+
+      accumulator[decodedKey] = decodedValue;
     }
 
     return accumulator;

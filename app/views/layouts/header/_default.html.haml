@@ -37,7 +37,7 @@
             - search_menu_item = top_nav_search_menu_item_attrs
             %li.nav-item.d-none.d-lg-block.m-auto
               = render 'layouts/search' unless current_controller?(:search)
-            %li.nav-item{ class: use_top_nav_redesign ? "gl-display-none gl-sm-display-inline-block gl-lg-display-none" : "gl-display-inline-block gl-lg-display-none" }
+            %li.nav-item{ class: use_top_nav_redesign ? 'd-none d-sm-inline-block d-lg-none' : 'd-inline-block d-lg-none' }
               = link_to search_menu_item.fetch(:href), title: search_menu_item.fetch(:title), aria: { label: search_menu_item.fetch(:title) }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon(search_menu_item.fetch(:icon))
           - if header_link?(:issues)

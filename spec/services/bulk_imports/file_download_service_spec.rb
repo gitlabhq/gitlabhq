@@ -26,7 +26,7 @@ RSpec.describe BulkImports::FileDownloadService do
     subject { described_class.new(configuration: config, relative_url: '/test', dir: tmpdir, filename: filename) }
 
     before do
-      allow_next_instance_of(BulkImports::Clients::Http) do |client|
+      allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
         allow(client).to receive(:head).and_return(response_double)
         allow(client).to receive(:stream).and_yield(chunk_double)
       end

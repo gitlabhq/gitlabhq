@@ -9,8 +9,6 @@ class GroupDeployToken < ApplicationRecord
   validates :deploy_token_id, uniqueness: { scope: [:group_id] }
 
   def has_access_to?(requested_project)
-    return false unless Feature.enabled?(:allow_group_deploy_token, default_enabled: true)
-
     requested_project_group = requested_project&.group
     return false unless requested_project_group
     return true if requested_project_group.id == group_id

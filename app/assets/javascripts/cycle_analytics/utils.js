@@ -2,30 +2,8 @@ import { unescape } from 'lodash';
 import { sanitize } from '~/lib/dompurify';
 import { roundToNearestHalf, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { parseSeconds } from '~/lib/utils/datetime_utility';
-import { dasherize } from '~/lib/utils/text_utility';
-import { __, s__, sprintf } from '../locale';
+import { s__, sprintf } from '../locale';
 import DEFAULT_EVENT_OBJECTS from './default_event_objects';
-
-const EMPTY_STAGE_TEXTS = {
-  issue: __(
-    'The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage.',
-  ),
-  plan: __(
-    'The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit.',
-  ),
-  code: __(
-    'The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request.',
-  ),
-  test: __(
-    'The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running.',
-  ),
-  review: __(
-    'The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request.',
-  ),
-  staging: __(
-    'The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time.',
-  ),
-};
 
 /**
  * These `decorate` methods will be removed when me migrate to the
@@ -43,33 +21,12 @@ const mapToEvent = (event, stage) => {
 
 export const decorateEvents = (events, stage) => events.map((event) => mapToEvent(event, stage));
 
-/*
- * NOTE: We currently use the `name` field since the project level stages are in memory
- * once we migrate to a default value stream https://gitlab.com/gitlab-org/gitlab/-/issues/326705
- * we can use the `id` to identify which median we are using
- */
-const mapToStage = (permissions, { name, ...rest }) => {
-  const slug = dasherize(name.toLowerCase());
-  return {
-    ...rest,
-    name,
-    id: name,
-    slug,
-    active: false,
-    isUserAllowed: permissions[slug],
-    emptyStageText: EMPTY_STAGE_TEXTS[slug],
-    component: `stage-${slug}-component`,
-  };
-};
-
 const mapToSummary = ({ value, ...rest }) => ({ ...rest, value: value || '-' });
-const mapToMedians = ({ id, value }) => ({ id, value });
+const mapToMedians = ({ name: id, value }) => ({ id, value });
 
 export const decorateData = (data = {}) => {
-  const { permissions, stats, summary } = data;
-  const stages = stats?.map((item) => mapToStage(permissions, item)) || [];
+  const { stats: stages, summary } = data;
   return {
-    stages,
     summary: summary?.map((item) => mapToSummary(item)) || [],
     medians: stages?.map((item) => mapToMedians(item)) || [],
   };

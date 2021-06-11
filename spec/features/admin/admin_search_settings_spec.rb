@@ -13,7 +13,7 @@ RSpec.describe 'Admin searches application settings', :js do
 
   context 'in appearances page' do
     before do
-      visit(admin_appearances_path)
+      visit(admin_application_settings_appearances_path)
     end
 
     it_behaves_like 'cannot search settings'

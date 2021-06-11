@@ -16,7 +16,7 @@ RSpec.describe BulkImports::ExportStatus do
   subject { described_class.new(tracker, relation) }
 
   before do
-    allow_next_instance_of(BulkImports::Clients::Http) do |client|
+    allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
       allow(client).to receive(:get).and_return(response_double)
     end
   end
@@ -66,7 +66,7 @@ RSpec.describe BulkImports::ExportStatus do
 
     context 'when something goes wrong during export status fetch' do
       it 'returns exception class as error' do
-        allow_next_instance_of(BulkImports::Clients::Http) do |client|
+        allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
           allow(client).to receive(:get).and_raise(StandardError, 'Error!')
         end
 

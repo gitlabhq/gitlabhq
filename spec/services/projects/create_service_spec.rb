@@ -298,7 +298,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
   context 'error handling' do
     it 'handles invalid options' do
-      opts[:default_branch] = 'master'
+      opts[:invalid] = 'option'
       expect(create_project(user, opts)).to eq(nil)
     end
   end
@@ -806,7 +806,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
   end
 
-  context 'with specialized_project_authorization_workers' do
+  context 'with specialized project_authorization workers' do
     let_it_be(:other_user) { create(:user) }
     let_it_be(:group) { create(:group) }
 
@@ -846,34 +846,6 @@ RSpec.describe Projects::CreateService, '#execute' do
       )
 
       create_project(user, opts)
-    end
-
-    context 'when feature is disabled' do
-      before do
-        stub_feature_flags(specialized_project_authorization_workers: false)
-      end
-
-      it 'updates authorization for current_user' do
-        project = create_project(user, opts)
-
-        expect(
-          Ability.allowed?(user, :read_project, project)
-        ).to be_truthy
-      end
-
-      it 'uses AuthorizedProjectsWorker' do
-        expect(AuthorizedProjectsWorker).to(
-          receive(:bulk_perform_async).with(array_including([user.id], [other_user.id])).and_call_original
-        )
-        expect(AuthorizedProjectUpdate::ProjectCreateWorker).not_to(
-          receive(:perform_async)
-        )
-        expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).not_to(
-          receive(:bulk_perform_in)
-        )
-
-        create_project(user, opts)
-      end
     end
   end
 

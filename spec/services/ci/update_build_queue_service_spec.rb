@@ -4,101 +4,208 @@ require 'spec_helper'
 
 RSpec.describe Ci::UpdateBuildQueueService do
   let(:project) { create(:project, :repository) }
-  let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:build) { create(:ci_build, pipeline: pipeline) }
 
-  describe '#push' do
-    let(:transition) { double('transition') }
+  describe 'pending builds queue push / pop' do
+    describe '#push' do
+      let(:transition) { double('transition') }
 
-    before do
-      allow(transition).to receive(:to).and_return('pending')
-      allow(transition).to receive(:within_transaction).and_yield
-    end
-
-    context 'when pending build can be created' do
-      it 'creates a new pending build in transaction' do
-        queued = subject.push(build, transition)
-
-        expect(queued).to eq build.id
-      end
-
-      it 'increments queue push metric' do
-        metrics = spy('metrics')
-
-        described_class.new(metrics).push(build, transition)
-
-        expect(metrics)
-          .to have_received(:increment_queue_operation)
-          .with(:build_queue_push)
-      end
-    end
-
-    context 'when invalid transition is detected' do
-      it 'raises an error' do
-        allow(transition).to receive(:to).and_return('created')
-
-        expect { subject.push(build, transition) }
-          .to raise_error(described_class::InvalidQueueTransition)
-      end
-    end
-
-    context 'when duplicate entry exists' do
       before do
-        ::Ci::PendingBuild.create!(build: build, project: project)
+        allow(transition).to receive(:to).and_return('pending')
+        allow(transition).to receive(:within_transaction).and_yield
       end
 
-      it 'does nothing and returns build id' do
-        queued = subject.push(build, transition)
+      context 'when pending build can be created' do
+        it 'creates a new pending build in transaction' do
+          queued = subject.push(build, transition)
 
-        expect(queued).to eq build.id
+          expect(queued).to eq build.id
+        end
+
+        it 'increments queue push metric' do
+          metrics = spy('metrics')
+
+          described_class.new(metrics).push(build, transition)
+
+          expect(metrics)
+            .to have_received(:increment_queue_operation)
+            .with(:build_queue_push)
+        end
+      end
+
+      context 'when invalid transition is detected' do
+        it 'raises an error' do
+          allow(transition).to receive(:to).and_return('created')
+
+          expect { subject.push(build, transition) }
+            .to raise_error(described_class::InvalidQueueTransition)
+        end
+      end
+
+      context 'when duplicate entry exists' do
+        before do
+          ::Ci::PendingBuild.create!(build: build, project: project)
+        end
+
+        it 'does nothing and returns build id' do
+          queued = subject.push(build, transition)
+
+          expect(queued).to eq build.id
+        end
+      end
+    end
+
+    describe '#pop' do
+      let(:transition) { double('transition') }
+
+      before do
+        allow(transition).to receive(:from).and_return('pending')
+        allow(transition).to receive(:within_transaction).and_yield
+      end
+
+      context 'when pending build exists' do
+        before do
+          Ci::PendingBuild.create!(build: build, project: project)
+        end
+
+        it 'removes pending build in a transaction' do
+          dequeued = subject.pop(build, transition)
+
+          expect(dequeued).to eq build.id
+        end
+
+        it 'increments queue pop metric' do
+          metrics = spy('metrics')
+
+          described_class.new(metrics).pop(build, transition)
+
+          expect(metrics)
+            .to have_received(:increment_queue_operation)
+            .with(:build_queue_pop)
+        end
+      end
+
+      context 'when pending build does not exist' do
+        it 'does nothing if there is no pending build to remove' do
+          dequeued = subject.pop(build, transition)
+
+          expect(dequeued).to be_nil
+        end
+      end
+
+      context 'when invalid transition is detected' do
+        it 'raises an error' do
+          allow(transition).to receive(:from).and_return('created')
+
+          expect { subject.pop(build, transition) }
+            .to raise_error(described_class::InvalidQueueTransition)
+        end
       end
     end
   end
 
-  describe '#pop' do
-    let(:transition) { double('transition') }
+  describe 'shared runner builds tracking' do
+    let(:runner) { create(:ci_runner, :instance_type) }
+    let(:build) { create(:ci_build, runner: runner, pipeline: pipeline) }
 
-    before do
-      allow(transition).to receive(:from).and_return('pending')
-      allow(transition).to receive(:within_transaction).and_yield
-    end
+    describe '#track' do
+      let(:transition) { double('transition') }
 
-    context 'when pending build exists' do
       before do
-        Ci::PendingBuild.create!(build: build, project: project)
+        allow(transition).to receive(:to).and_return('running')
+        allow(transition).to receive(:within_transaction).and_yield
       end
 
-      it 'removes pending build in a transaction' do
-        dequeued = subject.pop(build, transition)
+      context 'when a shared runner build can be tracked' do
+        it 'creates a new shared runner build tracking entry' do
+          build_id = subject.track(build, transition)
 
-        expect(dequeued).to eq build.id
+          expect(build_id).to eq build.id
+        end
+
+        it 'increments new shared runner build metric' do
+          metrics = spy('metrics')
+
+          described_class.new(metrics).track(build, transition)
+
+          expect(metrics)
+            .to have_received(:increment_queue_operation)
+            .with(:shared_runner_build_new)
+        end
       end
 
-      it 'increments queue pop metric' do
-        metrics = spy('metrics')
+      context 'when invalid transition is detected' do
+        it 'raises an error' do
+          allow(transition).to receive(:to).and_return('pending')
 
-        described_class.new(metrics).pop(build, transition)
+          expect { subject.track(build, transition) }
+            .to raise_error(described_class::InvalidQueueTransition)
+        end
+      end
 
-        expect(metrics)
-          .to have_received(:increment_queue_operation)
-          .with(:build_queue_pop)
+      context 'when duplicate entry exists' do
+        before do
+          ::Ci::RunningBuild.create!(
+            build: build, project: project, runner: runner, runner_type: runner.runner_type
+          )
+        end
+
+        it 'does nothing and returns build id' do
+          build_id = subject.track(build, transition)
+
+          expect(build_id).to eq build.id
+        end
       end
     end
 
-    context 'when pending build does not exist' do
-      it 'does nothing if there is no pending build to remove' do
-        dequeued = subject.pop(build, transition)
+    describe '#untrack' do
+      let(:transition) { double('transition') }
 
-        expect(dequeued).to be_nil
+      before do
+        allow(transition).to receive(:from).and_return('running')
+        allow(transition).to receive(:within_transaction).and_yield
       end
-    end
 
-    context 'when invalid transition is detected' do
-      it 'raises an error' do
-        allow(transition).to receive(:from).and_return('created')
+      context 'when shared runner build tracking entry exists' do
+        before do
+          Ci::RunningBuild.create!(
+            build: build, project: project, runner: runner, runner_type: runner.runner_type
+          )
+        end
 
-        expect { subject.pop(build, transition) }
-          .to raise_error(described_class::InvalidQueueTransition)
+        it 'removes shared runner build' do
+          build_id = subject.untrack(build, transition)
+
+          expect(build_id).to eq build.id
+        end
+
+        it 'increments shared runner build done metric' do
+          metrics = spy('metrics')
+
+          described_class.new(metrics).untrack(build, transition)
+
+          expect(metrics)
+            .to have_received(:increment_queue_operation)
+            .with(:shared_runner_build_done)
+        end
+      end
+
+      context 'when tracking entry does not exist' do
+        it 'does nothing if there is no tracking entry to remove' do
+          build_id = subject.untrack(build, transition)
+
+          expect(build_id).to be_nil
+        end
+      end
+
+      context 'when invalid transition is detected' do
+        it 'raises an error' do
+          allow(transition).to receive(:from).and_return('pending')
+
+          expect { subject.untrack(build, transition) }
+            .to raise_error(described_class::InvalidQueueTransition)
+        end
       end
     end
   end
