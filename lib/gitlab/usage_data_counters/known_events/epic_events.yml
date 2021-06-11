@@ -182,3 +182,9 @@
   redis_slot: project_management
   aggregation: daily
   feature_flag: track_epics_activity
+
+- name: g_project_management_users_epic_issue_added_from_epic
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity

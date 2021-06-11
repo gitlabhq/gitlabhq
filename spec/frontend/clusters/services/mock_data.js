@@ -161,7 +161,6 @@ const APPLICATIONS_MOCK_STATE = {
   jupyter: { title: 'JupyterHub', status: 'installable', hostname: '' },
   knative: { title: 'Knative ', status: 'installable', hostname: '' },
   elastic_stack: { title: 'Elastic Stack', status: 'installable' },
-  fluentd: { title: 'Fluentd', status: 'installable' },
   cilium: {
     title: 'GitLab Container Network Policies',
     status: 'not_installable',

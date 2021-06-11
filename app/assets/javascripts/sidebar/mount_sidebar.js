@@ -206,6 +206,7 @@ function mountConfidentialComponent() {
     },
     provide: {
       canUpdate: initialData.is_editable,
+      isClassicSidebar: true,
     },
 
     render: (createElement) =>

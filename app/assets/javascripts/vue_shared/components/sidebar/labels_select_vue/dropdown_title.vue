@@ -23,17 +23,18 @@ export default {
 </script>
 
 <template>
-  <div class="title hide-collapsed gl-mb-3">
+  <div class="hide-collapsed gl-line-height-20 gl-mb-2 gl-text-gray-900">
     {{ __('Labels') }}
     <template v-if="allowLabelEdit">
       <gl-loading-icon v-show="labelsSelectInProgress" inline />
       <gl-button
         variant="link"
-        class="gl-text-gray-800! float-right js-sidebar-dropdown-toggle"
+        class="float-right gl-text-gray-900! gl-hover-text-blue-800! js-sidebar-dropdown-toggle"
         data-qa-selector="labels_edit_button"
         @click="toggleDropdownContents"
-        >{{ __('Edit') }}</gl-button
       >
+        {{ __('Edit') }}
+      </gl-button>
     </template>
   </div>
 </template>

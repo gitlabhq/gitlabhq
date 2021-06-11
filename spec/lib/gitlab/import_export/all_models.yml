@@ -345,7 +345,6 @@ project:
 - external_approval_rules
 - taggings
 - base_tags
-- tags
 - topic_taggings
 - topics
 - chat_services

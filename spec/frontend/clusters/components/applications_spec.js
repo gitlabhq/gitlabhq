@@ -2,7 +2,6 @@ import { shallowMount, mount } from '@vue/test-utils';
 import ApplicationRow from '~/clusters/components/application_row.vue';
 import Applications from '~/clusters/components/applications.vue';
 import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
-import FluentdOutputSettings from '~/clusters/components/fluentd_output_settings.vue';
 import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
 import { CLUSTER_TYPE, PROVIDER_TYPE } from '~/clusters/constants';
 import eventHub from '~/clusters/event_hub';
@@ -71,9 +70,6 @@ describe('Applications', () => {
       expect(wrapper.find('.js-cluster-application-row-elastic_stack').exists()).toBe(true);
     });
 
-    it('renders a row for Fluentd', () => {
-      expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
-    });
     it('renders a row for Cilium', () => {
       expect(wrapper.find('.js-cluster-application-row-cilium').exists()).toBe(true);
     });
@@ -116,10 +112,6 @@ describe('Applications', () => {
       expect(wrapper.find('.js-cluster-application-row-elastic_stack').exists()).toBe(true);
     });
 
-    it('renders a row for Fluentd', () => {
-      expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
-    });
-
     it('renders a row for Cilium', () => {
       expect(wrapper.find('.js-cluster-application-row-cilium').exists()).toBe(true);
     });
@@ -160,10 +152,6 @@ describe('Applications', () => {
 
     it('renders a row for Elastic Stack', () => {
       expect(wrapper.find('.js-cluster-application-row-elastic_stack').exists()).toBe(true);
-    });
-
-    it('renders a row for Fluentd', () => {
-      expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
     });
 
     it('renders a row for Cilium', () => {
@@ -220,7 +208,6 @@ describe('Applications', () => {
               jupyter: { title: 'JupyterHub', hostname: '' },
               knative: { title: 'Knative', hostname: '' },
               elastic_stack: { title: 'Elastic Stack' },
-              fluentd: { title: 'Fluentd' },
               cilium: { title: 'GitLab Container Network Policies' },
             },
           });
@@ -511,14 +498,6 @@ describe('Applications', () => {
             .attributes('disabled'),
         ).toEqual('disabled');
       });
-    });
-  });
-
-  describe('Fluentd application', () => {
-    beforeEach(() => createShallowComponent());
-
-    it('renders the correct Component', () => {
-      expect(wrapper.find(FluentdOutputSettings).exists()).toBe(true);
     });
   });
 

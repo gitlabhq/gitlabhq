@@ -127,14 +127,10 @@ class Project < ApplicationRecord
   after_create :check_repository_absence!
 
   acts_as_ordered_taggable_on :topics
-  # The 'tag_list' alias and the 'tags' association are required during the 'tags -> topics' migration
-  # TODO: eliminate 'tag_list' and 'tags' in the further process of the migration
+  # The 'tag_list' alias is required during the 'tags -> topics' migration
+  # TODO: eliminate 'tag_list' in the further process of the migration
   # https://gitlab.com/gitlab-org/gitlab/-/issues/328226
   alias_attribute :tag_list, :topic_list
-  has_many :tags, -> { order("#{ActsAsTaggableOn::Tagging.table_name}.id") },
-                     class_name: 'ActsAsTaggableOn::Tag',
-                     through: :topic_taggings,
-                     source: :tag
 
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
@@ -637,7 +633,7 @@ class Project < ApplicationRecord
   mount_uploader :bfg_object_map, AttachmentUploader
 
   def self.with_api_entity_associations
-    preload(:project_feature, :route, :tags, :group, :timelogs, namespace: [:route, :owner])
+    preload(:project_feature, :route, :topics, :group, :timelogs, namespace: [:route, :owner])
   end
 
   def self.with_web_entity_associations

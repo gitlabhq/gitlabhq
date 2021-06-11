@@ -13,7 +13,6 @@ import {
   UPDATE_EVENT,
   UNINSTALL_EVENT,
   ELASTIC_STACK,
-  FLUENTD,
 } from '../constants';
 import transitionApplicationState from '../services/application_state_machine';
 
@@ -101,15 +100,6 @@ export default class ClusterStore {
         elastic_stack: {
           ...applicationInitialState,
           title: s__('ClusterIntegration|Elastic Stack'),
-        },
-        fluentd: {
-          ...applicationInitialState,
-          title: s__('ClusterIntegration|Fluentd'),
-          host: null,
-          port: null,
-          protocol: null,
-          ciliumLogEnabled: null,
-          isEditingSettings: false,
         },
         cilium: {
           ...applicationInitialState,
@@ -246,13 +236,6 @@ export default class ClusterStore {
       } else if (appId === ELASTIC_STACK) {
         this.state.applications.elastic_stack.version = version;
         this.state.applications.elastic_stack.updateAvailable = updateAvailable;
-      } else if (appId === FLUENTD) {
-        if (!this.state.applications.fluentd.isEditingSettings) {
-          this.state.applications.fluentd.port = serverAppEntry.port;
-          this.state.applications.fluentd.host = serverAppEntry.host;
-          this.state.applications.fluentd.protocol = serverAppEntry.protocol;
-          this.state.applications.fluentd.ciliumLogEnabled = serverAppEntry.cilium_log_enabled;
-        }
       }
     });
   }

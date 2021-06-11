@@ -11,7 +11,7 @@ import PersistentUserCallout from '../persistent_user_callout';
 import initSettingsPanels from '../settings_panels';
 import Applications from './components/applications.vue';
 import RemoveClusterConfirmation from './components/remove_cluster_confirmation.vue';
-import { APPLICATION_STATUS, CROSSPLANE, KNATIVE, FLUENTD } from './constants';
+import { APPLICATION_STATUS, CROSSPLANE, KNATIVE } from './constants';
 import eventHub from './event_hub';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
@@ -42,7 +42,6 @@ export default class Clusters {
       installElasticStackPath,
       installCrossplanePath,
       installPrometheusPath,
-      installFluentdPath,
       managePrometheusPath,
       clusterEnvironmentsPath,
       hasRbac,
@@ -98,7 +97,6 @@ export default class Clusters {
       updateKnativeEndpoint: updateKnativePath,
       installElasticStackEndpoint: installElasticStackPath,
       clusterEnvironmentsEndpoint: clusterEnvironmentsPath,
-      installFluentdEndpoint: installFluentdPath,
     });
 
     this.installApplication = this.installApplication.bind(this);
@@ -250,7 +248,6 @@ export default class Clusters {
     eventHub.$on('setKnativeDomain', (data) => this.setKnativeDomain(data));
     eventHub.$on('uninstallApplication', (data) => this.uninstallApplication(data));
     eventHub.$on('setCrossplaneProviderStack', (data) => this.setCrossplaneProviderStack(data));
-    eventHub.$on('setFluentdSettings', (data) => this.setFluentdSettings(data));
     // Add event listener to all the banner close buttons
     this.addBannerCloseHandler(this.unreachableContainer, 'unreachable');
     this.addBannerCloseHandler(this.authenticationFailureContainer, 'authentication_failure');
@@ -267,8 +264,6 @@ export default class Clusters {
     eventHub.$off('setCrossplaneProviderStack');
     // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('uninstallApplication');
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    eventHub.$off('setFluentdSettings');
   }
 
   initPolling(method, successCallback, errorCallback) {
@@ -477,12 +472,6 @@ export default class Clusters {
     this.store.updateApplication(appId);
     this.service.installApplication(appId, params).catch(() => {
       this.store.notifyUpdateFailure(appId);
-    });
-  }
-
-  setFluentdSettings(settings = {}) {
-    Object.entries(settings).forEach(([key, value]) => {
-      this.store.updateAppProperty(FLUENTD, key, value);
     });
   }
 

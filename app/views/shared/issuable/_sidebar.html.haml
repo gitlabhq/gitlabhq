@@ -43,7 +43,7 @@
                 = milestone[:title]
               - else
                 = _('None')
-          .title.hide-collapsed
+          .hide-collapsed.gl-line-height-20.gl-mb-2.gl-text-gray-900{ data: { testid: "milestone_title" } }
             = _('Milestone')
             = loading_icon(css_class: 'gl-vertical-align-text-bottom hidden block-loading')
             - if can_edit_issuable

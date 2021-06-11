@@ -103,7 +103,6 @@ export default {
       :users="store.reviewers"
       :editable="store.editable"
       :issuable-type="issuableType"
-      class="value"
       @request-review="requestReview"
     />
   </div>

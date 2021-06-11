@@ -9,7 +9,7 @@
     .devise-errors
       = render 'devise/shared/error_messages', resource: resource
     - if Gitlab::CurrentSettings.invisible_captcha_enabled
-      = invisible_captcha nonce: true
+      = invisible_captcha nonce: true, autocomplete: SecureRandom.alphanumeric(12)
     .name.form-row
       .col.form-group
         = f.label :first_name, _('First name'), for: 'new_user_first_name', class: 'label-bold'

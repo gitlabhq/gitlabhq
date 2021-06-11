@@ -47,7 +47,6 @@ module Gitlab
     config.eager_load_paths.push(*%W[#{config.root}/lib
                                      #{config.root}/app/models/badges
                                      #{config.root}/app/models/hooks
-                                     #{config.root}/app/models/integrations
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/graphql/resolvers/concerns

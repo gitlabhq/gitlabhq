@@ -6930,11 +6930,6 @@ RSpec.describe Project, factory_default: :keep do
       it 'tag_list returns correct string array' do
         expect(project.tag_list).to match_array(%w[topic1 topic2 topic3])
       end
-
-      it 'tags returns correct tag records' do
-        expect(project.tags.first.class.name).to eq('ActsAsTaggableOn::Tag')
-        expect(project.tags.map(&:name)).to match_array(%w[topic1 topic2 topic3])
-      end
     end
   end
 

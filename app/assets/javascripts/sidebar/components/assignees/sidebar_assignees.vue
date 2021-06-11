@@ -149,7 +149,6 @@ export default {
       :users="exposeAvailabilityStatus(store.assignees)"
       :editable="store.editable"
       :issuable-type="issuableType"
-      class="value"
       @assign-self="assignSelf"
     />
   </div>

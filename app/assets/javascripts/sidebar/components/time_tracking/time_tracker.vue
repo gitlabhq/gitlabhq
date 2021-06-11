@@ -141,7 +141,7 @@ export default {
       :time-spent-human-readable="humanTimeSpent"
       :time-estimate-human-readable="humanTimeEstimate"
     />
-    <div class="title hide-collapsed gl-mb-3">
+    <div class="hide-collapsed gl-line-height-20 gl-text-gray-900">
       {{ __('Time tracking') }}
       <div
         v-if="!showHelpState"
@@ -160,7 +160,7 @@ export default {
         <gl-icon name="close" />
       </div>
     </div>
-    <div class="time-tracking-content hide-collapsed">
+    <div class="hide-collapsed">
       <div v-if="showEstimateOnlyState" data-testid="estimateOnlyPane">
         <span class="gl-font-weight-bold">{{ $options.i18n.estimatedOnlyText }} </span
         >{{ humanTimeEstimate }}
@@ -186,9 +186,9 @@ export default {
           v-gl-modal="'time-tracking-report'"
           data-testid="reportLink"
           href="#"
-          class="btn-link"
-          >{{ __('Time tracking report') }}</gl-link
         >
+          {{ __('Time tracking report') }}
+        </gl-link>
         <gl-modal
           modal-id="time-tracking-report"
           :title="__('Time tracking report')"

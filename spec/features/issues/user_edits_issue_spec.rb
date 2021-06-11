@@ -187,7 +187,8 @@ RSpec.describe "Issues > User edits issue", :js do
 
                 click_link 'Edit'
                 click_link 'Unassigned'
-                first('.title').click
+
+                close_dropdown_menu_if_visible
 
                 expect(page).to have_content 'None - assign yourself'
               end
@@ -227,7 +228,7 @@ RSpec.describe "Issues > User edits issue", :js do
 
                 close_dropdown_menu_if_visible
 
-                page.within '.value .assign-yourself' do
+                page.within '[data-testid="no-value"]' do
                   expect(page).to have_content "None"
                 end
               end

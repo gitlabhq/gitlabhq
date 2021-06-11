@@ -123,9 +123,9 @@ module API
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})
-        # Preloading tags, should be done with using only `:tags`,
-        # as `:tags` are defined as: `has_many :tags, through: :taggings`
-        # N+1 is solved then by using `subject.tags.map(&:name)`
+        # Preloading topics, should be done with using only `:topics`,
+        # as `:topics` are defined as: `has_many :topics, through: :taggings`
+        # N+1 is solved then by using `subject.topics.map(&:name)`
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20555
         super(projects_relation).preload(group: :namespace_settings)
                                 .preload(:ci_cd_settings)
@@ -136,7 +136,7 @@ module API
                                 .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,
                                          fork_network_member: :forked_from_project,
-                                         forked_from_project: [:route, :tags, :group, :project_feature, namespace: [:route, :owner]])
+                                         forked_from_project: [:route, :topics, :group, :project_feature, namespace: [:route, :owner]])
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

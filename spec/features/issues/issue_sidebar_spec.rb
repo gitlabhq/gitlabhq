@@ -266,7 +266,7 @@ RSpec.describe 'Issue Sidebar' do
         let_it_be(:milestone3) { create(:milestone, project: project, title: 'Milestone-3', due_date: 10.days.from_now) }
 
         before do
-          page.within('.block.milestone > .title') do
+          page.within('[data-testid="milestone_title"]') do
             click_on 'Edit'
           end
         end

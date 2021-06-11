@@ -3,7 +3,6 @@ import { GlLoadingIcon, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import certManagerLogo from 'images/cluster_app_logos/cert_manager.png';
 import crossplaneLogo from 'images/cluster_app_logos/crossplane.png';
 import elasticStackLogo from 'images/cluster_app_logos/elastic_stack.png';
-import fluentdLogo from 'images/cluster_app_logos/fluentd.png';
 import gitlabLogo from 'images/cluster_app_logos/gitlab.png';
 import helmLogo from 'images/cluster_app_logos/helm.png';
 import jupyterhubLogo from 'images/cluster_app_logos/jupyterhub.png';
@@ -15,7 +14,6 @@ import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import { CLUSTER_TYPE, PROVIDER_TYPE, APPLICATION_STATUS, INGRESS } from '../constants';
 import applicationRow from './application_row.vue';
 import CrossplaneProviderStack from './crossplane_provider_stack.vue';
-import FluentdOutputSettings from './fluentd_output_settings.vue';
 import KnativeDomainEditor from './knative_domain_editor.vue';
 
 export default {
@@ -27,7 +25,6 @@ export default {
     GlLink,
     KnativeDomainEditor,
     CrossplaneProviderStack,
-    FluentdOutputSettings,
     GlAlert,
   },
   props: {
@@ -159,7 +156,6 @@ export default {
     knativeLogo,
     prometheusLogo,
     elasticStackLogo,
-    fluentdLogo,
   },
 };
 </script>
@@ -626,48 +622,6 @@ export default {
               )
             }}
           </p>
-        </template>
-      </application-row>
-
-      <application-row
-        id="fluentd"
-        :logo-url="$options.logos.fluentdLogo"
-        :title="applications.fluentd.title"
-        :status="applications.fluentd.status"
-        :status-reason="applications.fluentd.statusReason"
-        :request-status="applications.fluentd.requestStatus"
-        :request-reason="applications.fluentd.requestReason"
-        :installed="applications.fluentd.installed"
-        :install-failed="applications.fluentd.installFailed"
-        :install-application-request-params="{
-          host: applications.fluentd.host,
-          port: applications.fluentd.port,
-          protocol: applications.fluentd.protocol,
-          cilium_log_enabled: applications.fluentd.ciliumLogEnabled,
-        }"
-        :uninstallable="applications.fluentd.uninstallable"
-        :uninstall-successful="applications.fluentd.uninstallSuccessful"
-        :uninstall-failed="applications.fluentd.uninstallFailed"
-        :updateable="false"
-        title-link="https://github.com/helm/charts/tree/master/stable/fluentd"
-      >
-        <template #description>
-          <p>
-            {{
-              s__(
-                `ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. It requires at least one of the following logs to be successfully installed.`,
-              )
-            }}
-          </p>
-
-          <fluentd-output-settings
-            :port="applications.fluentd.port"
-            :protocol="applications.fluentd.protocol"
-            :host="applications.fluentd.host"
-            :cilium-log-enabled="applications.fluentd.ciliumLogEnabled"
-            :status="applications.fluentd.status"
-            :update-failed="applications.fluentd.updateFailed"
-          />
         </template>
       </application-row>
 

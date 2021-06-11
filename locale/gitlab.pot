@@ -7231,12 +7231,6 @@ msgstr ""
 msgid "ClusterIntegration|Fetching zones"
 msgstr ""
 
-msgid "ClusterIntegration|Fluentd"
-msgstr ""
-
-msgid "ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. It requires at least one of the following logs to be successfully installed."
-msgstr ""
-
 msgid "ClusterIntegration|GitLab Agent managed clusters"
 msgstr ""
 
@@ -7555,15 +7549,6 @@ msgstr ""
 msgid "ClusterIntegration|Request to begin uninstalling failed"
 msgstr ""
 
-msgid "ClusterIntegration|SIEM Hostname"
-msgstr ""
-
-msgid "ClusterIntegration|SIEM Port"
-msgstr ""
-
-msgid "ClusterIntegration|SIEM Protocol"
-msgstr ""
-
 msgid "ClusterIntegration|Save changes"
 msgstr ""
 
@@ -7660,9 +7645,6 @@ msgstr ""
 msgid "ClusterIntegration|Select zone to choose machine type"
 msgstr ""
 
-msgid "ClusterIntegration|Send Container Network Policies Logs"
-msgstr ""
-
 msgid "ClusterIntegration|Service Token"
 msgstr ""
 
@@ -7682,9 +7664,6 @@ msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cl
 msgstr ""
 
 msgid "ClusterIntegration|Something went wrong while installing %{title}"
-msgstr ""
-
-msgid "ClusterIntegration|Something went wrong while trying to save your settings. Please try again."
 msgstr ""
 
 msgid "ClusterIntegration|Something went wrong while uninstalling %{title}"
@@ -26598,9 +26577,6 @@ msgid "ProtectedEnvironment|Your environment has been unprotected"
 msgstr ""
 
 msgid "Protip: %{linkStart}Auto DevOps%{linkEnd} uses Kubernetes clusters to deploy your code!"
-msgstr ""
-
-msgid "Protocol"
 msgstr ""
 
 msgid "Provider"

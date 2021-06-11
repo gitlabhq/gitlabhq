@@ -38,12 +38,12 @@ module API
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})
-        # Preloading topics, should be done with using only `:tags`,
-        # as `:tags` are defined as: `has_many :tags, through: :taggings`
-        # N+1 is solved then by using `subject.tags.map(&:name)`
+        # Preloading topics, should be done with using only `:topics`,
+        # as `:topics` are defined as: `has_many :topics, through: :taggings`
+        # N+1 is solved then by using `subject.topics.map(&:name)`
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20555
         projects_relation.preload(:project_feature, :route)
-                         .preload(:import_state, :tags)
+                         .preload(:import_state, :topics)
                          .preload(:auto_devops)
                          .preload(namespace: [:route, :owner])
       end
@@ -58,7 +58,7 @@ module API
         # through the database, it will trigger a new query, ending up
         # in an N+1 if we have several projects
         strong_memoize(:topic_names) do
-          project.tags.pluck(:name).sort # rubocop:disable CodeReuse/ActiveRecord
+          project.topics.pluck(:name).sort # rubocop:disable CodeReuse/ActiveRecord
         end
       end
     end

@@ -70,7 +70,7 @@ export default {
 </script>
 
 <template>
-  <div data-testid="timeTrackingComparisonPane">
+  <div class="gl-mt-2" data-testid="timeTrackingComparisonPane">
     <div
       v-gl-tooltip
       data-testid="compareMeter"

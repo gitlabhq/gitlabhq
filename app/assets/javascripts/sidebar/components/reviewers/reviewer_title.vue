@@ -33,7 +33,7 @@ export default {
 };
 </script>
 <template>
-  <div class="title hide-collapsed">
+  <div class="hide-collapsed gl-line-height-20 gl-mb-2 gl-text-gray-900">
     {{ reviewerTitle }}
     <gl-loading-icon v-if="loading" inline class="align-bottom" />
     <a
