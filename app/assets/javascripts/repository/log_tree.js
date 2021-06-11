@@ -7,6 +7,7 @@ import refQuery from './queries/ref.query.graphql';
 
 const fetchpromises = {};
 const resolvers = {};
+let maxOffset;
 
 export function resolveCommit(commits, path, { resolve, entry }) {
   const commit = commits.find(
@@ -18,7 +19,15 @@ export function resolveCommit(commits, path, { resolve, entry }) {
   }
 }
 
-export function fetchLogsTree(client, path, offset, resolver = null) {
+export function fetchLogsTree(client, path, offset, resolver = null, _maxOffset = null) {
+  if (_maxOffset) {
+    maxOffset = _maxOffset;
+  }
+
+  if (Number(offset) > maxOffset) {
+    return Promise.resolve();
+  }
+
   if (resolver) {
     if (!resolvers[path]) {
       resolvers[path] = [resolver];
@@ -60,6 +69,7 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
         fetchLogsTree(client, path, headerLogsOffset);
       } else {
         delete resolvers[path];
+        maxOffset = null;
       }
     });
 

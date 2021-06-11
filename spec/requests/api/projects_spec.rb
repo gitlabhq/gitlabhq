@@ -184,6 +184,32 @@ RSpec.describe API::Projects do
         end
       end
 
+      it 'includes correct value of container_registry_enabled', :aggregate_failures do
+        project.update_column(:container_registry_enabled, true)
+        project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
+
+        get api('/projects', user)
+        project_response = json_response.find { |p| p['id'] == project.id }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(project_response['container_registry_enabled']).to eq(false)
+      end
+
+      it 'reads projects.container_registry_enabled when read_container_registry_access_level is disabled' do
+        stub_feature_flags(read_container_registry_access_level: false)
+
+        project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
+        project.update_column(:container_registry_enabled, true)
+
+        get api('/projects', user)
+        project_response = json_response.find { |p| p['id'] == project.id }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(project_response['container_registry_enabled']).to eq(true)
+      end
+
       it 'includes project topics' do
         get api('/projects', user)
 

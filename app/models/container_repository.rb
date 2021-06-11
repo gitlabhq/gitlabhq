@@ -24,8 +24,15 @@ class ContainerRepository < ApplicationRecord
   scope :for_group_and_its_subgroups, ->(group) do
     project_scope = Project
       .for_group_and_its_subgroups(group)
-      .with_container_registry
-      .select(:id)
+
+    project_scope =
+      if Feature.enabled?(:read_container_registry_access_level, group, default_enabled: :yaml)
+        project_scope.with_feature_enabled(:container_registry)
+      else
+        project_scope.with_container_registry
+      end
+
+    project_scope = project_scope.select(:id)
 
     joins("INNER JOIN (#{project_scope.to_sql}) projects on projects.id=container_repositories.project_id")
   end

@@ -22,6 +22,10 @@ describe('Sidebar date Widget', () => {
   let fakeApollo;
   const date = '2021-04-15';
 
+  window.gon = {
+    first_day_of_week: 1,
+  };
+
   const findEditableItem = () => wrapper.findComponent(SidebarEditableItem);
   const findPopoverIcon = () => wrapper.find('[data-testid="inherit-date-popover"]');
   const findDatePicker = () => wrapper.find(GlDatepicker);
@@ -119,11 +123,12 @@ describe('Sidebar date Widget', () => {
       expect(wrapper.emitted('dueDateUpdated')).toEqual([[date]]);
     });
 
-    it('uses a correct prop to set the initial date for GlDatePicker', () => {
+    it('uses a correct prop to set the initial date and first day of the week for GlDatePicker', () => {
       expect(findDatePicker().props()).toMatchObject({
         value: null,
         autocomplete: 'off',
         defaultDate: expect.any(Object),
+        firstDay: window.gon.first_day_of_week,
       });
     });
 

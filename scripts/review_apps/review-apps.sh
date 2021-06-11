@@ -161,6 +161,15 @@ function ensure_namespace() {
   kubectl describe namespace "${namespace}" || kubectl create namespace "${namespace}"
 }
 
+function label_namespace() {
+  local namespace="${1}"
+  local label="${2}"
+
+  echoinfo "Labeling the ${namespace} namespace with ${label}" true
+
+  kubectl label namespace "${namespace}" "${label}"
+}
+
 function install_external_dns() {
   local namespace="${KUBE_NAMESPACE}"
   local release="dns-gitlab-review-app-helm3"
@@ -302,6 +311,7 @@ function deploy() {
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-ee"
 
   ensure_namespace "${namespace}"
+  label_namespace "${namespace}" "tls=review-apps-tls" # label namespace for kubed to sync tls
 
   create_application_secret
 
@@ -319,9 +329,6 @@ HELM_CMD=$(cat << EOF
     --set releaseOverride="${release}" \
     --set global.hosts.hostSuffix="${HOST_SUFFIX}" \
     --set global.hosts.domain="${REVIEW_APPS_DOMAIN}" \
-    --set gitlab.webservice.ingress.tls.secretName="${release}-gitlab-tls" \
-    --set registry.ingress.tls.secretName="${release}-registry-tls" \
-    --set minio.ingress.tls.secretName="${release}-minio-tls" \
     --set gitlab.migrations.image.repository="${gitlab_migrations_image_repository}" \
     --set gitlab.migrations.image.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.gitaly.image.repository="${gitlab_gitaly_image_repository}" \

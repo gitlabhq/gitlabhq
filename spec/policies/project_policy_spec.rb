@@ -1434,4 +1434,165 @@ RSpec.describe ProjectPolicy do
       end
     end
   end
+
+  describe 'container_image policies' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:guest_operations_permissions) { [:read_container_image] }
+
+    let(:developer_operations_permissions) do
+      guest_operations_permissions + [
+        :create_container_image, :update_container_image, :destroy_container_image
+      ]
+    end
+
+    let(:maintainer_operations_permissions) do
+      developer_operations_permissions + [
+        :admin_container_image
+      ]
+    end
+
+    where(:project_visibility, :access_level, :role, :allowed) do
+      :public   | ProjectFeature::ENABLED   | :maintainer | true
+      :public   | ProjectFeature::ENABLED   | :developer  | true
+      :public   | ProjectFeature::ENABLED   | :reporter   | true
+      :public   | ProjectFeature::ENABLED   | :guest      | true
+      :public   | ProjectFeature::ENABLED   | :anonymous  | true
+      :public   | ProjectFeature::PRIVATE   | :maintainer | true
+      :public   | ProjectFeature::PRIVATE   | :developer  | true
+      :public   | ProjectFeature::PRIVATE   | :reporter   | true
+      :public   | ProjectFeature::PRIVATE   | :guest      | false
+      :public   | ProjectFeature::PRIVATE   | :anonymous  | false
+      :public   | ProjectFeature::DISABLED  | :maintainer | false
+      :public   | ProjectFeature::DISABLED  | :developer  | false
+      :public   | ProjectFeature::DISABLED  | :reporter   | false
+      :public   | ProjectFeature::DISABLED  | :guest      | false
+      :public   | ProjectFeature::DISABLED  | :anonymous  | false
+      :internal | ProjectFeature::ENABLED   | :maintainer | true
+      :internal | ProjectFeature::ENABLED   | :developer  | true
+      :internal | ProjectFeature::ENABLED   | :reporter   | true
+      :internal | ProjectFeature::ENABLED   | :guest      | true
+      :internal | ProjectFeature::ENABLED   | :anonymous  | false
+      :internal | ProjectFeature::PRIVATE   | :maintainer | true
+      :internal | ProjectFeature::PRIVATE   | :developer  | true
+      :internal | ProjectFeature::PRIVATE   | :reporter   | true
+      :internal | ProjectFeature::PRIVATE   | :guest      | false
+      :internal | ProjectFeature::PRIVATE   | :anonymous  | false
+      :internal | ProjectFeature::DISABLED  | :maintainer | false
+      :internal | ProjectFeature::DISABLED  | :developer  | false
+      :internal | ProjectFeature::DISABLED  | :reporter   | false
+      :internal | ProjectFeature::DISABLED  | :guest      | false
+      :internal | ProjectFeature::DISABLED  | :anonymous  | false
+      :private  | ProjectFeature::ENABLED   | :maintainer | true
+      :private  | ProjectFeature::ENABLED   | :developer  | true
+      :private  | ProjectFeature::ENABLED   | :reporter   | true
+      :private  | ProjectFeature::ENABLED   | :guest      | false
+      :private  | ProjectFeature::ENABLED   | :anonymous  | false
+      :private  | ProjectFeature::PRIVATE   | :maintainer | true
+      :private  | ProjectFeature::PRIVATE   | :developer  | true
+      :private  | ProjectFeature::PRIVATE   | :reporter   | true
+      :private  | ProjectFeature::PRIVATE   | :guest      | false
+      :private  | ProjectFeature::PRIVATE   | :anonymous  | false
+      :private  | ProjectFeature::DISABLED  | :maintainer | false
+      :private  | ProjectFeature::DISABLED  | :developer  | false
+      :private  | ProjectFeature::DISABLED  | :reporter   | false
+      :private  | ProjectFeature::DISABLED  | :guest      | false
+      :private  | ProjectFeature::DISABLED  | :anonymous  | false
+    end
+
+    with_them do
+      let(:current_user) { send(role) }
+      let(:project) { send("#{project_visibility}_project") }
+
+      it 'allows/disallows the abilities based on the container_registry feature access level' do
+        project.project_feature.update!(container_registry_access_level: access_level)
+
+        if allowed
+          expect_allowed(*permissions_abilities(role))
+        else
+          expect_disallowed(*permissions_abilities(role))
+        end
+      end
+
+      def permissions_abilities(role)
+        case role
+        when :maintainer
+          maintainer_operations_permissions
+        when :developer
+          developer_operations_permissions
+        when :reporter, :guest, :anonymous
+          guest_operations_permissions
+        else
+          raise "Unknown role #{role}"
+        end
+      end
+    end
+
+    context 'with read_container_registry_access_level disabled' do
+      before do
+        stub_feature_flags(read_container_registry_access_level: false)
+      end
+
+      where(:project_visibility, :container_registry_enabled, :role, :allowed) do
+        :public   | true   | :maintainer | true
+        :public   | true   | :developer  | true
+        :public   | true   | :reporter   | true
+        :public   | true   | :guest      | true
+        :public   | true   | :anonymous  | true
+        :public   | false  | :maintainer | false
+        :public   | false  | :developer  | false
+        :public   | false  | :reporter   | false
+        :public   | false  | :guest      | false
+        :public   | false  | :anonymous  | false
+        :internal | true   | :maintainer | true
+        :internal | true   | :developer  | true
+        :internal | true   | :reporter   | true
+        :internal | true   | :guest      | true
+        :internal | true   | :anonymous  | false
+        :internal | false  | :maintainer | false
+        :internal | false  | :developer  | false
+        :internal | false  | :reporter   | false
+        :internal | false  | :guest      | false
+        :internal | false  | :anonymous  | false
+        :private  | true   | :maintainer | true
+        :private  | true   | :developer  | true
+        :private  | true   | :reporter   | true
+        :private  | true   | :guest      | false
+        :private  | true   | :anonymous  | false
+        :private  | false  | :maintainer | false
+        :private  | false  | :developer  | false
+        :private  | false  | :reporter   | false
+        :private  | false  | :guest      | false
+        :private  | false  | :anonymous  | false
+      end
+
+      with_them do
+        let(:current_user) { send(role) }
+        let(:project) { send("#{project_visibility}_project") }
+
+        it 'allows/disallows the abilities based on container_registry_enabled' do
+          project.update_column(:container_registry_enabled, container_registry_enabled)
+
+          if allowed
+            expect_allowed(*permissions_abilities(role))
+          else
+            expect_disallowed(*permissions_abilities(role))
+          end
+        end
+
+        def permissions_abilities(role)
+          case role
+          when :maintainer
+            maintainer_operations_permissions
+          when :developer
+            developer_operations_permissions
+          when :reporter, :guest, :anonymous
+            guest_operations_permissions
+          else
+            raise "Unknown role #{role}"
+          end
+        end
+      end
+    end
+  end
 end

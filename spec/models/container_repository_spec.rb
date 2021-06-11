@@ -331,6 +331,40 @@ RSpec.describe ContainerRepository do
 
       it { is_expected.to eq([]) }
     end
+
+    context 'with read_container_registry_access_level disabled' do
+      before do
+        stub_feature_flags(read_container_registry_access_level: false)
+      end
+
+      context 'in a group' do
+        let(:test_group) { group }
+
+        it { is_expected.to contain_exactly(repository) }
+      end
+
+      context 'with a subgroup' do
+        let(:test_group) { create(:group) }
+        let(:another_project) { create(:project, path: 'test', group: test_group) }
+
+        let(:another_repository) do
+          create(:container_repository, name: 'my_image', project: another_project)
+        end
+
+        before do
+          group.parent = test_group
+          group.save!
+        end
+
+        it { is_expected.to contain_exactly(repository, another_repository) }
+      end
+
+      context 'group without container_repositories' do
+        let(:test_group) { create(:group) }
+
+        it { is_expected.to eq([]) }
+      end
+    end
   end
 
   describe '.search_by_name' do

@@ -17,15 +17,21 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
 const defaultClient = createDefaultClient(
   {
     Query: {
-      commit(_, { path, fileName, type }) {
+      commit(_, { path, fileName, type, maxOffset }) {
         return new Promise((resolve) => {
-          fetchLogsTree(defaultClient, path, '0', {
-            resolve,
-            entry: {
-              name: fileName,
-              type,
+          fetchLogsTree(
+            defaultClient,
+            path,
+            '0',
+            {
+              resolve,
+              entry: {
+                name: fileName,
+                type,
+              },
             },
-          });
+            maxOffset,
+          );
         });
       },
       readme(_, { url }) {

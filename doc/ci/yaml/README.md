@@ -1518,7 +1518,8 @@ job:
 Glob patterns are interpreted with Ruby [`File.fnmatch`](https://docs.ruby-lang.org/en/2.7.0/File.html#method-c-fnmatch)
 with the flags `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
 
-For performance reasons, GitLab matches a maximum of 10,000 `exists` patterns. After the 10,000th check, rules with patterned globs always match.
+For performance reasons, GitLab matches a maximum of 10,000 `exists` patterns or file paths. After the 10,000th check, rules with patterned globs always match.
+In other words, the `exists` rule always assumes a match in projects with more than 10,000 files.
 
 #### `rules:allow_failure`
 

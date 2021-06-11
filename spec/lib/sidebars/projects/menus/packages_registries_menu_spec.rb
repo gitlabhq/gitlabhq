@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
-  let(:project) { build(:project) }
+  let_it_be(:project) { create(:project) }
+
   let(:user) { project.owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
 

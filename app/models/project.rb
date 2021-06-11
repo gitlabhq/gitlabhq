@@ -2612,6 +2612,15 @@ class Project < ApplicationRecord
     !!read_attribute(:merge_requests_author_approval)
   end
 
+  def container_registry_enabled
+    if Feature.enabled?(:read_container_registry_access_level, self.namespace, default_enabled: :yaml)
+      project_feature.container_registry_enabled?
+    else
+      read_attribute(:container_registry_enabled)
+    end
+  end
+  alias_method :container_registry_enabled?, :container_registry_enabled
+
   private
 
   def set_container_registry_access_level

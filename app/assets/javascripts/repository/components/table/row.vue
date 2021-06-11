@@ -43,12 +43,17 @@ export default {
           type: this.type,
           path: this.currentPath,
           projectPath: this.projectPath,
+          maxOffset: this.totalEntries,
         };
       },
     },
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
   props: {
+    totalEntries: {
+      type: Number,
+      required: true,
+    },
     id: {
       type: String,
       required: true,

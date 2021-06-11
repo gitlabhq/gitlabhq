@@ -24144,6 +24144,10 @@ CREATE UNIQUE INDEX index_project_features_on_project_id ON project_features USI
 
 CREATE INDEX index_project_features_on_project_id_bal_20 ON project_features USING btree (project_id) WHERE (builds_access_level = 20);
 
+CREATE UNIQUE INDEX index_project_features_on_project_id_include_container_registry ON project_features USING btree (project_id) INCLUDE (container_registry_access_level);
+
+COMMENT ON INDEX index_project_features_on_project_id_include_container_registry IS 'Included column (container_registry_access_level) improves performance of the ContainerRepository.for_group_and_its_subgroups scope query';
+
 CREATE INDEX index_project_features_on_project_id_ral_20 ON project_features USING btree (project_id) WHERE (repository_access_level = 20);
 
 CREATE INDEX index_project_group_links_on_group_id ON project_group_links USING btree (group_id);

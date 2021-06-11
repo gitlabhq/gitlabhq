@@ -19,6 +19,7 @@ function factory(propsData = {}) {
       name: propsData.path,
       projectPath: 'gitlab-org/gitlab-ce',
       url: `https://test.com`,
+      totalEntries: 10,
     },
     directives: {
       GlHoverLoad: createMockDirective(),

@@ -24,7 +24,11 @@ class ProjectFeature < ApplicationRecord
 
   set_available_features(FEATURES)
 
-  PRIVATE_FEATURES_MIN_ACCESS_LEVEL = { merge_requests: Gitlab::Access::REPORTER, metrics_dashboard: Gitlab::Access::REPORTER }.freeze
+  PRIVATE_FEATURES_MIN_ACCESS_LEVEL = {
+    merge_requests: Gitlab::Access::REPORTER,
+    metrics_dashboard: Gitlab::Access::REPORTER,
+    container_registry: Gitlab::Access::REPORTER
+  }.freeze
   PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT = { repository: Gitlab::Access::REPORTER }.freeze
 
   class << self
@@ -92,7 +96,7 @@ class ProjectFeature < ApplicationRecord
 
   def set_container_registry_access_level
     self.container_registry_access_level =
-      if project&.container_registry_enabled
+      if project&.read_attribute(:container_registry_enabled)
         ENABLED
       else
         DISABLED

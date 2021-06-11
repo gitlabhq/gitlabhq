@@ -8,6 +8,11 @@ import { resetMenuItemsActive } from '~/nav/utils/reset_menu_items_active';
 import KeepAliveSlots from '~/vue_shared/components/keep_alive_slots.vue';
 import { TEST_NAV_DATA } from '../mock_data';
 
+const HTML_HEADER_CONTENT = '<div class="header-content"></div>';
+const HTML_MENU_EXPANDED = '<div class="menu-expanded"></div>';
+const HTML_HEADER_WITH_MENU_EXPANDED =
+  '<div></div><div class="header-content menu-expanded"></div>';
+
 describe('~/nav/components/responsive_app.vue', () => {
   let wrapper;
 
@@ -53,11 +58,11 @@ describe('~/nav/components/responsive_app.vue', () => {
     });
 
     it.each`
-      bodyHtml                                                          | expectation
-      ${''}                                                             | ${false}
-      ${'<div class="header-content"></div>'}                           | ${false}
-      ${'<div class="menu-expanded"></div>'}                            | ${false}
-      ${'<div></div><div class="header-content menu-expanded"></div>}'} | ${true}
+      bodyHtml                          | expectation
+      ${''}                             | ${false}
+      ${HTML_HEADER_CONTENT}            | ${false}
+      ${HTML_MENU_EXPANDED}             | ${false}
+      ${HTML_HEADER_WITH_MENU_EXPANDED} | ${true}
     `(
       'with responsive toggle event and html set to $bodyHtml, responsive open = $expectation',
       ({ bodyHtml, expectation }) => {
@@ -93,7 +98,7 @@ describe('~/nav/components/responsive_app.vue', () => {
 
   describe('with menu expanded in body', () => {
     beforeEach(() => {
-      document.body.innerHTML = '<div></div><div class="header-content menu-expanded"></div>';
+      document.body.innerHTML = HTML_HEADER_WITH_MENU_EXPANDED;
       createComponent();
     });
 

@@ -5033,6 +5033,29 @@ The edge type for [`DevopsAdoptionEnabledNamespace`](#devopsadoptionenablednames
 | <a id="devopsadoptionenablednamespaceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="devopsadoptionenablednamespaceedgenode"></a>`node` | [`DevopsAdoptionEnabledNamespace`](#devopsadoptionenablednamespace) | The item at the end of the edge. |
 
+#### `DevopsAdoptionSnapshotConnection`
+
+The connection type for [`DevopsAdoptionSnapshot`](#devopsadoptionsnapshot).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="devopsadoptionsnapshotconnectionedges"></a>`edges` | [`[DevopsAdoptionSnapshotEdge]`](#devopsadoptionsnapshotedge) | A list of edges. |
+| <a id="devopsadoptionsnapshotconnectionnodes"></a>`nodes` | [`[DevopsAdoptionSnapshot]`](#devopsadoptionsnapshot) | A list of nodes. |
+| <a id="devopsadoptionsnapshotconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DevopsAdoptionSnapshotEdge`
+
+The edge type for [`DevopsAdoptionSnapshot`](#devopsadoptionsnapshot).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="devopsadoptionsnapshotedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="devopsadoptionsnapshotedgenode"></a>`node` | [`DevopsAdoptionSnapshot`](#devopsadoptionsnapshot) | The item at the end of the edge. |
+
 #### `DiscussionConnection`
 
 The connection type for [`Discussion`](#discussion).
@@ -8191,8 +8214,27 @@ Enabled namespace for DevopsAdoption.
 | ---- | ---- | ----------- |
 | <a id="devopsadoptionenablednamespacedisplaynamespace"></a>`displayNamespace` | [`Namespace`](#namespace) | Namespace where data should be displayed. |
 | <a id="devopsadoptionenablednamespaceid"></a>`id` | [`ID!`](#id) | ID of the enabled namespace. |
-| <a id="devopsadoptionenablednamespacelatestsnapshot"></a>`latestSnapshot` | [`DevopsAdoptionSnapshot`](#devopsadoptionsnapshot) | The latest adoption metrics for the enabled namespace. |
+| <a id="devopsadoptionenablednamespacelatestsnapshot"></a>`latestSnapshot` | [`DevopsAdoptionSnapshot`](#devopsadoptionsnapshot) | Metrics snapshot for previous month for the enabled namespace. |
 | <a id="devopsadoptionenablednamespacenamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace which should be calculated. |
+
+#### Fields with arguments
+
+##### `DevopsAdoptionEnabledNamespace.snapshots`
+
+Data snapshots of the namespace.
+
+Returns [`DevopsAdoptionSnapshotConnection`](#devopsadoptionsnapshotconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="devopsadoptionenablednamespacesnapshotsendtimeafter"></a>`endTimeAfter` | [`Time`](#time) | Filter to snapshots with month end after the provided date. |
+| <a id="devopsadoptionenablednamespacesnapshotsendtimebefore"></a>`endTimeBefore` | [`Time`](#time) | Filter to snapshots with month end before the provided date. |
 
 ### `DevopsAdoptionSnapshot`
 

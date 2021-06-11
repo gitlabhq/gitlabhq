@@ -505,7 +505,7 @@ production: &base
   ee_cron_jobs:
     # Schedule snapshots for all devops adoption segments
     analytics_devops_adoption_create_all_snapshots_worker:
-      cron: 0 4 * * 0
+      cron: 0 0 1 * *
 
     # Snapshot active users statistics
     historical_data_worker:

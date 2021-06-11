@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapState } from 'vuex';
+import Tracking from '~/tracking';
 import BoardCardInner from './board_card_inner.vue';
 
 export default {
@@ -7,6 +8,7 @@ export default {
   components: {
     BoardCardInner,
   },
+  mixins: [Tracking.mixin()],
   props: {
     list: {
       type: Object,
@@ -58,6 +60,7 @@ export default {
         this.toggleBoardItemMultiSelection(this.item);
       } else {
         this.toggleBoardItem({ boardItem: this.item });
+        this.track('click_card', { label: 'right_sidebar' });
       }
     },
   },

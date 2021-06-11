@@ -3,6 +3,7 @@ import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { formType } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import { s__, __ } from '~/locale';
+import Tracking from '~/tracking';
 
 export default {
   components: {
@@ -12,6 +13,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModalDirective,
   },
+  mixins: [Tracking.mixin()],
   props: {
     boardsStore: {
       type: Object,
@@ -37,6 +39,7 @@ export default {
   },
   methods: {
     showPage() {
+      this.track('click_button', { label: 'edit_board' });
       eventHub.$emit('showBoardModal', formType.edit);
       if (this.boardsStore) {
         this.boardsStore.showPage(formType.edit);

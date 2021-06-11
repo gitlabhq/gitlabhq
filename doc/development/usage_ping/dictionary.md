@@ -7348,11 +7348,11 @@ Whether Mattermost is enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/settings/20210204124908_mattermost_enabled.yml)
 
-Group: `group::product intelligence`
+Group: `group::ecosystem`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `object_store.artifacts.enabled`
 

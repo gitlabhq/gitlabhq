@@ -1,5 +1,2 @@
-export const hasMenuExpanded = () => {
-  const header = document.querySelector('.header-content');
-
-  return Boolean(header?.classList.contains('menu-expanded'));
-};
+export const hasMenuExpanded = () =>
+  Boolean(document.querySelector('.header-content.menu-expanded'));

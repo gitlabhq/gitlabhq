@@ -35,7 +35,6 @@ import {
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
 import groupProjectsQuery from '../graphql/group_projects.query.graphql';
 import issueCreateMutation from '../graphql/issue_create.mutation.graphql';
-import issueSetDueDateMutation from '../graphql/issue_set_due_date.mutation.graphql';
 import issueSetLabelsMutation from '../graphql/issue_set_labels.mutation.graphql';
 import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
 import * as types from './mutation_types';
@@ -556,30 +555,6 @@ export default {
       itemId: activeBoardItem.id,
       prop: 'labels',
       value: data.updateIssue.issue.labels.nodes,
-    });
-  },
-
-  setActiveIssueDueDate: async ({ commit, getters }, input) => {
-    const { activeBoardItem } = getters;
-    const { data } = await gqlClient.mutate({
-      mutation: issueSetDueDateMutation,
-      variables: {
-        input: {
-          iid: String(activeBoardItem.iid),
-          projectPath: input.projectPath,
-          dueDate: input.dueDate,
-        },
-      },
-    });
-
-    if (data.updateIssue?.errors?.length > 0) {
-      throw new Error(data.updateIssue.errors);
-    }
-
-    commit(types.UPDATE_BOARD_ITEM_BY_ID, {
-      itemId: activeBoardItem.id,
-      prop: 'dueDate',
-      value: data.updateIssue.issue.dueDate,
     });
   },
 
