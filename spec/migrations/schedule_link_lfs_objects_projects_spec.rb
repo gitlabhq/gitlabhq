@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200310075115_schedule_link_lfs_objects_projects.rb')
+require_migration!
 
 RSpec.describe ScheduleLinkLfsObjectsProjects, :migration, :sidekiq do
   let(:namespaces) { table(:namespaces) }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200213220211_migrate_sync_security_reports_to_report_approval_rules_sidekiq_queue.rb')
+require_migration!
 
 RSpec.describe MigrateSyncSecurityReportsToReportApprovalRulesSidekiqQueue, :redis do
   include Gitlab::Database::MigrationHelpers

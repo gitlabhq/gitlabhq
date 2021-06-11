@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'migrate', '20210324131727_migrate_elastic_index_settings.rb')
+require_migration!
 
 RSpec.describe MigrateElasticIndexSettings do
   let(:elastic_index_settings) { table(:elastic_index_settings) }

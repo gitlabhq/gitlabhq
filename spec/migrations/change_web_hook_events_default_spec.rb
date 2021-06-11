@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20210420012444_change_web_hook_events_default.rb')
+require_migration!
 
 RSpec.describe ChangeWebHookEventsDefault do
   let(:web_hooks) { table(:web_hooks) }

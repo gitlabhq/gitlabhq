@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200706035141_adjust_unique_index_alert_management_alerts.rb')
+require_migration!('adjust_unique_index_alert_management_alerts')
 
 RSpec.describe AdjustUniqueIndexAlertManagementAlerts, :migration do
   let(:migration) { described_class.new }

@@ -4,7 +4,6 @@ include:
 variables:
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers2"
   SAST_EXCLUDED_PATHS: "spec, executables"
-  SAST_DEFAULT_ANALYZERS: "bandit, brakeman"
   SAST_EXCLUDED_ANALYZERS: "brakeman"
 
 stages:

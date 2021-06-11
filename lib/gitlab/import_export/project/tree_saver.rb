@@ -14,7 +14,7 @@ module Gitlab
         end
 
         def save
-          ImportExport::JSON::StreamingSerializer.new(
+          ImportExport::Json::StreamingSerializer.new(
             exportable,
             reader.project_tree,
             json_writer,
@@ -56,10 +56,10 @@ module Gitlab
           @json_writer ||= begin
             if ::Feature.enabled?(:project_export_as_ndjson, @project.namespace, default_enabled: true)
               full_path = File.join(@shared.export_path, 'tree')
-              Gitlab::ImportExport::JSON::NdjsonWriter.new(full_path)
+              Gitlab::ImportExport::Json::NdjsonWriter.new(full_path)
             else
               full_path = File.join(@shared.export_path, ImportExport.project_filename)
-              Gitlab::ImportExport::JSON::LegacyWriter.new(full_path, allowed_path: 'project')
+              Gitlab::ImportExport::Json::LegacyWriter.new(full_path, allowed_path: 'project')
             end
           end
         end

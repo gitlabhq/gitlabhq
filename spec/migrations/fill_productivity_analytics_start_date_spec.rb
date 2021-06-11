@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20191004081520_fill_productivity_analytics_start_date.rb')
+require_migration!
 
 RSpec.describe FillProductivityAnalyticsStartDate do
   let(:settings_table) { table('application_settings') }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200311130802_schedule_populate_user_highest_roles_table.rb')
+require_migration!
 
 RSpec.describe SchedulePopulateUserHighestRolesTable do
   let(:users) { table(:users) }

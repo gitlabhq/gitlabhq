@@ -3,7 +3,7 @@ import { GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../constants';
 
-const badge = {
+const BADGE_DATA = {
   [INSTANCE_TYPE]: {
     variant: 'success',
     text: s__('Runners|shared'),
@@ -25,21 +25,22 @@ export default {
   props: {
     type: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
+      validator(type) {
+        return Boolean(BADGE_DATA[type]);
+      },
     },
   },
   computed: {
-    variant() {
-      return badge[this.type]?.variant;
-    },
-    text() {
-      return badge[this.type]?.text;
+    badge() {
+      return BADGE_DATA[this.type];
     },
   },
 };
 </script>
 <template>
-  <gl-badge v-if="text" :variant="variant" v-bind="$attrs">
-    {{ text }}
+  <gl-badge v-if="badge" :variant="badge.variant" v-bind="$attrs">
+    {{ badge.text }}
   </gl-badge>
 </template>

@@ -2,7 +2,7 @@
 
 module Gitlab
   module ImportExport
-    module JSON
+    module Json
       class NdjsonReader
         MAX_JSON_DOCUMENT_SIZE = 50.megabytes
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200526231421_update_index_approval_rule_name_for_code_owners_rule_type.rb')
+require_migration!('update_index_approval_rule_name_for_code_owners_rule_type')
 
 RSpec.describe UpdateIndexApprovalRuleNameForCodeOwnersRuleType do
   let(:migration) { described_class.new }

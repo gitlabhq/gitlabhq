@@ -432,7 +432,6 @@ group :test do
   gem 'concurrent-ruby', '~> 1.1'
   gem 'test-prof', '~> 0.12.0'
   gem 'rspec_junit_formatter'
-  gem 'rspec-sidekiq'
   gem 'guard-rspec'
 
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527

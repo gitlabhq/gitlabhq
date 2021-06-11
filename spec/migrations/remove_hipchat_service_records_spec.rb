@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210420103955_remove_hipchat_service_records.rb')
+require_migration!
 
 RSpec.describe RemoveHipchatServiceRecords do
   let(:services) { table(:services) }

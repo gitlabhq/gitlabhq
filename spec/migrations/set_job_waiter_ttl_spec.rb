@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200930144340_set_job_waiter_ttl.rb')
+require_migration!
 
 RSpec.describe SetJobWaiterTtl, :redis do
   it 'sets TTLs where necessary' do

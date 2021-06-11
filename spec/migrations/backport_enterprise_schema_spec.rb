@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'migrate', '20190402150158_backport_enterprise_schema.rb')
+require_migration!
 
 RSpec.describe BackportEnterpriseSchema, schema: 20190329085614 do
   include MigrationsHelpers

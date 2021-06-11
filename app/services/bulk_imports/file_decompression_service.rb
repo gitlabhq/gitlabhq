@@ -16,7 +16,7 @@ module BulkImports
 
     def execute
       validate_dir
-      validate_decompressed_file_size if Feature.enabled?(:validate_import_decompressed_archive_size)
+      validate_decompressed_file_size if Feature.enabled?(:validate_import_decompressed_archive_size, default_enabled: :yaml)
       validate_symlink(filepath)
 
       decompress_file

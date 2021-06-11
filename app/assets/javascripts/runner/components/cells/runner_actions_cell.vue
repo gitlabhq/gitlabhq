@@ -3,7 +3,7 @@ import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import deleteRunnerMutation from '~/runner/graphql/delete_runner.mutation.graphql';
-import updateRunnerMutation from '~/runner/graphql/update_runner.mutation.graphql';
+import runnerUpdateMutation from '~/runner/graphql/runner_update.mutation.graphql';
 
 const i18n = {
   I18N_EDIT: __('Edit'),
@@ -76,7 +76,7 @@ export default {
             runnerUpdate: { errors },
           },
         } = await this.$apollo.mutate({
-          mutation: updateRunnerMutation,
+          mutation: runnerUpdateMutation,
           variables: {
             input: {
               id: this.runner.id,

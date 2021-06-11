@@ -18,8 +18,8 @@ RSpec.describe Issues::CreateService do
       let_it_be(:labels) { create_pair(:label, project: project) }
 
       before_all do
-        project.add_maintainer(user)
-        project.add_maintainer(assignee)
+        project.add_guest(user)
+        project.add_guest(assignee)
       end
 
       let(:opts) do
@@ -88,15 +88,11 @@ RSpec.describe Issues::CreateService do
         expect { issue }.to change { project.open_issues_count }.from(0).to(1)
       end
 
-      context 'when current user cannot admin issues in the project' do
-        let_it_be(:guest) { create(:user) }
+      context 'when current user cannot set issue metadata in the project' do
+        let_it_be(:non_member) { create(:user) }
 
-        before_all do
-          project.add_guest(guest)
-        end
-
-        it 'filters out params that cannot be set without the :admin_issue permission' do
-          issue = described_class.new(project: project, current_user: guest, params: opts).execute
+        it 'filters out params that cannot be set without the :set_issue_metadata permission' do
+          issue = described_class.new(project: project, current_user: non_member, params: opts).execute
 
           expect(issue).to be_persisted
           expect(issue.title).to eq('Awesome issue')
@@ -107,8 +103,8 @@ RSpec.describe Issues::CreateService do
           expect(issue.due_date).to be_nil
         end
 
-        it 'creates confidential issues' do
-          issue = described_class.new(project: project, current_user: guest, params: { confidential: true }).execute
+        it 'can create confidential issues' do
+          issue = described_class.new(project: project, current_user: non_member, params: { confidential: true }).execute
 
           expect(issue.confidential).to be_truthy
         end

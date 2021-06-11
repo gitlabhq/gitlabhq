@@ -60,7 +60,7 @@ module QA
         it "shows correct details of #{snippet_type} including file number" do
           send(snippet_type)
           Page::Main::Menu.perform do |menu|
-            menu.go_to_more_dropdown_option(:snippets_link)
+            menu.go_to_menu_dropdown_option(:snippets_link)
           end
 
           Page::Dashboard::Snippet::Index.perform do |snippet|

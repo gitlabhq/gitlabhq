@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200602013901_cap_designs_filename_length_to_new_limit')
+require_migration!
 
 RSpec.describe CapDesignsFilenameLengthToNewLimit, :migration, schema: 20200528125905 do
   let(:namespaces) { table(:namespaces) }

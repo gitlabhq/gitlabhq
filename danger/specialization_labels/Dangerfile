@@ -9,7 +9,8 @@ SPECIALIZATIONS = {
   docs: 'documentation',
   qa: 'QA',
   engineering_productivity: 'Engineering Productivity',
-  ci_template: 'ci::templates'
+  ci_template: 'ci::templates',
+  feature_flag: 'feature flag'
 }.freeze
 
 labels_to_add = project_helper.changes_by_category.each_with_object([]) do |(category, _changes), memo|

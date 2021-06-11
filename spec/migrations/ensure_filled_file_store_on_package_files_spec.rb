@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200915185707_ensure_filled_file_store_on_package_files.rb')
+require_migration!
 
 RSpec.describe EnsureFilledFileStoreOnPackageFiles, schema: 20200910175553 do
   let!(:packages_package_files) { table(:packages_package_files) }

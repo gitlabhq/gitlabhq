@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200609212701_add_incident_settings_to_all_existing_projects.rb')
+require_migration!
 
 RSpec.describe AddIncidentSettingsToAllExistingProjects, :migration do
   let(:project_incident_management_settings) { table(:project_incident_management_settings) }

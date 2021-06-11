@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20201128210234_schedule_populate_issue_email_participants.rb')
+require_migration!
 
 RSpec.describe SchedulePopulateIssueEmailParticipants do
   let!(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }

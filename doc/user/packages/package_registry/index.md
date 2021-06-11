@@ -118,6 +118,9 @@ The **Packages & Registries > Package Registry** entry is removed from the sideb
 
 ## Package workflows
 
-Learn how to use the GitLab Package Registry to build your own custom package workflow.
+Learn how to use the GitLab Package Registry to build your own custom package workflow:
 
-- [Use a project as a package registry](../workflows/project_registry.md) to publish all of your packages to one project.
+- [Use a project as a package registry](../workflows/project_registry.md)
+  to publish all of your packages to one project.
+
+- Publish multiple different packages from one [monorepo project](../workflows/working_with_monorepos.md).

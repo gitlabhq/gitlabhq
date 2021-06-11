@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::JSON::StreamingSerializer do
+RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
   let_it_be(:user) { create(:user) }
   let_it_be(:release) { create(:release) }
   let_it_be(:group) { create(:group) }
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::ImportExport::JSON::StreamingSerializer do
   end
 
   let(:exportable_path) { 'project' }
-  let(:json_writer) { instance_double('Gitlab::ImportExport::JSON::LegacyWriter') }
+  let(:json_writer) { instance_double('Gitlab::ImportExport::Json::LegacyWriter') }
   let(:hash) { { name: exportable.name, description: exportable.description }.stringify_keys }
   let(:include) { [] }
   let(:custom_orderer) { nil }

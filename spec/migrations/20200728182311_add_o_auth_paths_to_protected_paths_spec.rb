@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200728182311_add_o_auth_paths_to_protected_paths.rb')
+require_migration!('add_o_auth_paths_to_protected_paths')
 
 RSpec.describe AddOAuthPathsToProtectedPaths do
   subject(:migration) { described_class.new }

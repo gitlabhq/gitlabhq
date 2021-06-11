@@ -744,6 +744,42 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '#update_builds_coverage' do
+    let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+
+    context 'builds with coverage_regex defined' do
+      let!(:build_1) { create(:ci_build, :success, :trace_with_coverage, trace_coverage: 60.0, pipeline: pipeline) }
+      let!(:build_2) { create(:ci_build, :success, :trace_with_coverage, trace_coverage: 80.0, pipeline: pipeline) }
+
+      it 'updates the coverage value of each build from the trace' do
+        pipeline.update_builds_coverage
+
+        expect(build_1.reload.coverage).to eq(60.0)
+        expect(build_2.reload.coverage).to eq(80.0)
+      end
+    end
+
+    context 'builds without coverage_regex defined' do
+      let!(:build) { create(:ci_build, :success, :trace_with_coverage, coverage_regex: nil, trace_coverage: 60.0, pipeline: pipeline) }
+
+      it 'does not update the coverage value of each build from the trace' do
+        pipeline.update_builds_coverage
+
+        expect(build.reload.coverage).to eq(nil)
+      end
+    end
+
+    context 'builds with coverage values already present' do
+      let!(:build) { create(:ci_build, :success, :trace_with_coverage, trace_coverage: 60.0, coverage: 10.0, pipeline: pipeline) }
+
+      it 'does not update the coverage value of each build from the trace' do
+        pipeline.update_builds_coverage
+
+        expect(build.reload.coverage).to eq(10.0)
+      end
+    end
+  end
+
   describe '#retryable?' do
     subject { pipeline.retryable? }
 

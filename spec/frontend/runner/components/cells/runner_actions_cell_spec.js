@@ -4,7 +4,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import RunnerActionCell from '~/runner/components/cells/runner_actions_cell.vue';
 import deleteRunnerMutation from '~/runner/graphql/delete_runner.mutation.graphql';
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
-import updateRunnerMutation from '~/runner/graphql/update_runner.mutation.graphql';
+import runnerUpdateMutation from '~/runner/graphql/runner_update.mutation.graphql';
 
 const mockId = '1';
 
@@ -101,7 +101,7 @@ describe('RunnerTypeCell', () => {
       it(`The apollo mutation to set active to ${newActiveValue} is called`, () => {
         expect(mutate).toHaveBeenCalledTimes(1);
         expect(mutate).toHaveBeenCalledWith({
-          mutation: updateRunnerMutation,
+          mutation: runnerUpdateMutation,
           variables: {
             input: {
               id: `gid://gitlab/Ci::Runner/${mockId}`,

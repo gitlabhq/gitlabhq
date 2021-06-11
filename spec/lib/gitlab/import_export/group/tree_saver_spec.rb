@@ -31,7 +31,7 @@ RSpec.describe Gitlab::ImportExport::Group::TreeSaver do
     end
 
     it 'fails to export a group' do
-      allow_next_instance_of(Gitlab::ImportExport::JSON::NdjsonWriter) do |ndjson_writer|
+      allow_next_instance_of(Gitlab::ImportExport::Json::NdjsonWriter) do |ndjson_writer|
         allow(ndjson_writer).to receive(:write_relation_array).and_raise(RuntimeError, 'exception')
       end
 

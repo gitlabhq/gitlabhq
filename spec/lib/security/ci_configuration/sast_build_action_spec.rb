@@ -144,8 +144,6 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
           subject(:result) { described_class.new(auto_devops_enabled, params_with_analyzer_info, gitlab_ci_content).generate }
 
           it 'writes SAST_EXCLUDED_ANALYZERS' do
-            stub_const('Security::CiConfiguration::SastBuildAction::SAST_DEFAULT_ANALYZERS', 'bandit, brakeman, flawfinder')
-
             expect(result[:content]).to eq(sast_yaml_with_no_variables_set_but_analyzers)
           end
         end
@@ -155,9 +153,7 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
 
           subject(:result) { described_class.new(auto_devops_enabled, params_with_all_analyzers_enabled, gitlab_ci_content).generate }
 
-          it 'does not write SAST_DEFAULT_ANALYZERS or SAST_EXCLUDED_ANALYZERS' do
-            stub_const('Security::CiConfiguration::SastBuildAction::SAST_DEFAULT_ANALYZERS', 'brakeman, flawfinder')
-
+          it 'does not write SAST_EXCLUDED_ANALYZERS' do
             expect(result[:content]).to eq(sast_yaml_with_no_variables_set)
           end
         end
@@ -313,20 +309,6 @@ RSpec.describe Security::CiConfiguration::SastBuildAction do
       it 'generates the correct YML' do
         expect(result[:content]).to eq(auto_devops_with_custom_stage)
       end
-    end
-  end
-
-  describe 'Security::CiConfiguration::SastBuildAction::SAST_DEFAULT_ANALYZERS' do
-    subject(:variable) {Security::CiConfiguration::SastBuildAction::SAST_DEFAULT_ANALYZERS}
-
-    it 'is sorted alphabetically' do
-      sorted_variable = Security::CiConfiguration::SastBuildAction::SAST_DEFAULT_ANALYZERS
-        .split(',')
-        .map(&:strip)
-        .sort
-        .join(', ')
-
-      expect(variable).to eq(sorted_variable)
     end
   end
 

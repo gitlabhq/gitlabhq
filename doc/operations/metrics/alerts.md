@@ -80,14 +80,16 @@ section of your Prometheus Alertmanager configuration:
 
 ```yaml
 receivers:
-  name: gitlab
-  webhook_configs:
-    - http_config:
-        bearer_token: 9e1cbfcd546896a9ea8be557caf13a76
-      send_resolved: true
-      url: http://192.168.178.31:3001/root/manual_prometheus/prometheus/alerts/notify.json
-      # Rest of configuration omitted
-      # ...
+  - name: gitlab
+    webhook_configs:
+      - http_config:
+          authorization:
+            type: Bearer
+            credentials: 9e1cbfcd546896a9ea8be557caf13a76
+        send_resolved: true
+        url: http://192.168.178.31:3001/root/manual_prometheus/prometheus/alerts/notify.json
+        # Rest of configuration omitted
+        # ...
 ```
 
 For GitLab to associate your alerts with an [environment](../../ci/environments/index.md),

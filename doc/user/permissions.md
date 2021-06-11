@@ -454,33 +454,32 @@ NOTE:
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
 GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
-permission levels in total:
+roles:
 
-- admin
-- maintainer
-- developer
-- guest/reporter
+- Administrator
+- Maintainer
+- Developer
+- Guest/Reporter
 
-The admin user can perform any action on GitLab CI/CD in scope of the GitLab
-instance and project. In addition, all admins can use the admin interface under
-`/admin/runners`.
+The Administrator role can perform any action on GitLab CI/CD in scope of the GitLab
+instance and project.
 
-| Action                                | Guest, Reporter | Developer   |Maintainer| Admin  |
-|---------------------------------------|-----------------|-------------|----------|--------|
-| See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
-| Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
-| Erase job artifacts and job logs      |                 | ✓ (*1*)     | ✓        | ✓      |
-| Delete project                        |                 |             | ✓        | ✓      |
-| Create project                        |                 |             | ✓        | ✓      |
-| Change project configuration          |                 |             | ✓        | ✓      |
-| Add specific runners                  |                 |             | ✓        | ✓      |
-| Add shared runners                    |                 |             |          | ✓      |
-| See events in the system              |                 |             |          | ✓      |
-| Admin interface                       |                 |             |          | ✓      |
+| Action                                | Guest, Reporter | Developer   |Maintainer| Administrator |
+|---------------------------------------|-----------------|-------------|----------|---------------|
+| See commits and jobs                  | ✓               | ✓           | ✓        | ✓             |
+| Retry or cancel job                   |                 | ✓           | ✓        | ✓             |
+| Erase job artifacts and job logs      |                 | ✓ (*1*)     | ✓        | ✓             |
+| Delete project                        |                 |             | ✓        | ✓             |
+| Create project                        |                 |             | ✓        | ✓             |
+| Change project configuration           |                 |             | ✓        | ✓             |
+| Add specific runners                   |                 |             | ✓        | ✓             |
+| Add shared runners                    |                 |             |          | ✓             |
+| See events in the system              |                 |             |          | ✓             |
+| Admin Area                            |                 |             |          | ✓             |
 
 1. Only if the job was:
    - Triggered by the user
-   - [In GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/35069) and later, not run for a protected branch
+   - [In GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/35069) and later, run for a non-protected branch.
 
 ### Job permissions
 

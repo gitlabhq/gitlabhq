@@ -58,7 +58,11 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
   describe GraphQL::Query, type: :request do
     get_runner_query_name = 'get_runner.query.graphql'
 
-    let_it_be(:query) { get_graphql_query_as_string("#{query_path}#{get_runner_query_name}") }
+    let_it_be(:query) do
+      get_graphql_query_as_string("#{query_path}#{get_runner_query_name}", [
+      'runner/graphql/runner_details.fragment.graphql'
+      ])
+    end
 
     it "#{fixtures_path}#{get_runner_query_name}.json" do
       post_graphql(query, current_user: admin, variables: {

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20190131122559_fix_null_type_labels')
+require_migration!
 
 RSpec.describe FixNullTypeLabels do
   let(:migration) { described_class.new }

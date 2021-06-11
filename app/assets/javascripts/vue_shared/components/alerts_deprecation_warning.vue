@@ -22,7 +22,12 @@ export default {
 </script>
 
 <template>
-  <gl-alert v-if="hasManagedPrometheus" variant="warning" class="my-2">
+  <gl-alert
+    v-if="hasManagedPrometheus"
+    variant="warning"
+    class="my-2"
+    data-testid="alerts-deprecation-warning"
+  >
     <gl-sprintf :message="$options.i18n.alertsDeprecationText">
       <template #link="{ content }">
         <gl-link

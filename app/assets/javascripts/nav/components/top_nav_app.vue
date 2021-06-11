@@ -22,6 +22,8 @@ export default {
   <gl-nav class="navbar-sub-nav">
     <gl-nav-item-dropdown
       :text="navData.activeTitle"
+      data-qa-selector="navbar_dropdown"
+      :data-qa-title="navData.activeTitle"
       icon="hamburger"
       menu-class="gl-mt-3! gl-max-w-none! gl-max-h-none! gl-sm-w-auto! js-top-nav-dropdown-menu"
       toggle-class="top-nav-toggle js-top-nav-dropdown-toggle gl-px-3!"

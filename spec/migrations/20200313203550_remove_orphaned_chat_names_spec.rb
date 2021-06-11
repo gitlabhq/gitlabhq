@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200313203550_remove_orphaned_chat_names.rb')
+require_migration!('remove_orphaned_chat_names')
 
 RSpec.describe RemoveOrphanedChatNames, schema: 20200313202430 do
   let(:projects) { table(:projects) }

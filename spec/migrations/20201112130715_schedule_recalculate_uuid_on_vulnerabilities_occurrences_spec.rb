@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20201112130715_schedule_recalculate_uuid_on_vulnerabilities_occurrences.rb')
+require_migration!('schedule_recalculate_uuid_on_vulnerabilities_occurrences')
 
 RSpec.describe ScheduleRecalculateUuidOnVulnerabilitiesOccurrences, :migration do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'post_migrate', '20210518074332_schedule_disable_expiration_policies_linked_to_no_container_images.rb')
+require_migration!
 
 RSpec.describe ScheduleDisableExpirationPoliciesLinkedToNoContainerImages do
   let_it_be(:projects) { table(:projects) }

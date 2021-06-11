@@ -64,8 +64,11 @@ module QA
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
 
         Flow::Login.sign_in(as: user)
-        Page::Main::Menu.new.go_to_import_group
-        Page::Group::New.new.connect_gitlab_instance(Runtime::Scenario.gitlab_address, personal_access_token)
+        Page::Main::Menu.perform(&:go_to_create_group)
+        Page::Group::New.perform do |group|
+          group.switch_to_import_tab
+          group.connect_gitlab_instance(Runtime::Scenario.gitlab_address, personal_access_token)
+        end
       end
 
       # Non blocking issues:

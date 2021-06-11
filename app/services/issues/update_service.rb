@@ -20,17 +20,6 @@ module Issues
       super
     end
 
-    override :filter_params
-    def filter_params(issue)
-      super
-
-      # filter confidential in `Issues::UpdateService` and not in `IssuableBaseService#filter_params`
-      # because we do allow users that cannot admin issues to set confidential flag when creating an issue
-      unless can_admin_issuable?(issue)
-        params.delete(:confidential)
-      end
-    end
-
     def before_update(issue, skip_spam_check: false)
       return if skip_spam_check
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20201005094331_migrate_compliance_framework_enum_to_database_framework_record.rb')
+require_migration!
 
 RSpec.describe MigrateComplianceFrameworkEnumToDatabaseFrameworkRecord, schema: 20201005092753 do
   let(:namespaces) { table(:namespaces) }

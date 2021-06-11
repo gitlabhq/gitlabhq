@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Serializers::JSON do
+RSpec.describe Serializers::Json do
   describe '.dump' do
     let(:obj) { { key: "value" } }
 

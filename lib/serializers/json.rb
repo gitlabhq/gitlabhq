@@ -2,7 +2,7 @@
 
 module Serializers
   # Make the resulting hash have deep indifferent access
-  class JSON
+  class Json
     class << self
       def dump(obj)
         obj

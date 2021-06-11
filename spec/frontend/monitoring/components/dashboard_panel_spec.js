@@ -778,5 +778,31 @@ describe('Dashboard Panel', () => {
         expect(findRunbookLinks().at(0).attributes('href')).toBe(invalidUrl);
       });
     });
+
+    describe('managed alert deprecation feature flag', () => {
+      beforeEach(() => {
+        setMetricsSavedToDb([metricId]);
+      });
+
+      it('shows alerts when alerts are not deprecated', () => {
+        createWrapper(
+          { alertsEndpoint: '/endpoint', prometheusAlertsAvailable: true },
+          { provide: { glFeatures: { managedAlertsDeprecation: false } } },
+        );
+
+        expect(findAlertsWidget().exists()).toBe(true);
+        expect(findMenuItemByText('Alerts').exists()).toBe(true);
+      });
+
+      it('hides alerts when alerts are deprecated', () => {
+        createWrapper(
+          { alertsEndpoint: '/endpoint', prometheusAlertsAvailable: true },
+          { provide: { glFeatures: { managedAlertsDeprecation: true } } },
+        );
+
+        expect(findAlertsWidget().exists()).toBe(false);
+        expect(findMenuItemByText('Alerts').exists()).toBe(false);
+      });
+    });
   });
 });

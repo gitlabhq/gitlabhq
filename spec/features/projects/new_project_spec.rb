@@ -53,7 +53,7 @@ RSpec.describe 'New project', :js do
           open_top_nav_projects
 
           within_top_nav do
-            if Feature.enabled?(:combined_menu)
+            if Feature.enabled?(:combined_menu, default_enabled: :yaml)
               expect(page).to have_selector('a', text: 'Create new project')
               expect(page).to have_no_selector('a', text: 'Create blank project/repository')
             else
@@ -73,7 +73,7 @@ RSpec.describe 'New project', :js do
           open_top_nav_projects
 
           within_top_nav do
-            if Feature.enabled?(:combined_menu)
+            if Feature.enabled?(:combined_menu, default_enabled: :yaml)
               expect(page).to have_selector('a', text: 'Create new project')
             else
               expect(page).to have_selector('a', text: 'Create blank project/repository')

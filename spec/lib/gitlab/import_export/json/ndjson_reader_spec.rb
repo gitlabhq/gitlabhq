@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::JSON::NdjsonReader do
+RSpec.describe Gitlab::ImportExport::Json::NdjsonReader do
   include ImportExport::CommonUtil
 
   let(:fixture) { 'spec/fixtures/lib/gitlab/import_export/light/tree' }

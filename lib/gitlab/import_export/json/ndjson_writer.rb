@@ -2,7 +2,7 @@
 
 module Gitlab
   module ImportExport
-    module JSON
+    module Json
       class NdjsonWriter
         include Gitlab::ImportExport::CommandLineUtil
 

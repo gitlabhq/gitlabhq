@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210406144743_backfill_total_tuple_count_for_batched_migrations.rb')
+require_migration!('backfill_total_tuple_count_for_batched_migrations')
 
 RSpec.describe BackfillTotalTupleCountForBatchedMigrations, :migration, schema: 20210406140057 do
   let_it_be(:table_name) { 'projects' }

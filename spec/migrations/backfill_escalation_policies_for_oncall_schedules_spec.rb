@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210519220019_backfill_escalation_policies_for_oncall_schedules.rb')
+require_migration!
 
 RSpec.describe BackfillEscalationPoliciesForOncallSchedules do
   let_it_be(:projects) { table(:projects) }

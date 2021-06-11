@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200511145545_change_variable_interpolation_format_in_common_metrics')
+require_migration!('change_variable_interpolation_format_in_common_metrics')
 
 RSpec.describe ChangeVariableInterpolationFormatInCommonMetrics, :migration do
   let(:prometheus_metrics) { table(:prometheus_metrics) }

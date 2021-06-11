@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200929114107_schedule_migrate_u2f_webauthn.rb')
+require_migration!
 
 RSpec.describe ScheduleMigrateU2fWebauthn do
   let(:migration_name) { described_class::MIGRATION }

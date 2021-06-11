@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210427212034_schedule_update_timelogs_project_id.rb')
+require_migration!
 
 RSpec.describe ScheduleUpdateTimelogsProjectId do
   let!(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }

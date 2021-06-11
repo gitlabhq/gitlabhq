@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration! 'backfill_clusters_integration_prometheus_enabled'
+require_migration!
 
 RSpec.describe BackfillClustersIntegrationPrometheusEnabled, :migration do
   def create_cluster!(label = rand(2**64).to_s)

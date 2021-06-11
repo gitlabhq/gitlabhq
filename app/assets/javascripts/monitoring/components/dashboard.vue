@@ -11,6 +11,7 @@ import { s__ } from '~/locale';
 import AlertsDeprecationWarning from '~/vue_shared/components/alerts_deprecation_warning.vue';
 import { defaultTimeRange } from '~/vue_shared/constants';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { metricStates, keyboardShortcutKeys } from '../constants';
 import {
   timeRangeFromUrl,
@@ -46,6 +47,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     TrackEvent: TrackEventDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     hasMetrics: {
       type: Boolean,
@@ -397,7 +399,7 @@ export default {
 
 <template>
   <div class="prometheus-graphs" data-qa-selector="prometheus_graphs">
-    <alerts-deprecation-warning />
+    <alerts-deprecation-warning v-if="!glFeatures.managedAlertsDeprecation" />
 
     <dashboard-header
       v-if="showHeader"

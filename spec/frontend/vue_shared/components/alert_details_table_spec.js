@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 
@@ -7,6 +7,9 @@ const mockAlert = {
   title: 'SyntaxError: Invalid or unexpected token',
   severity: 'CRITICAL',
   eventCount: 7,
+  service: 'https://gitlab.com',
+  // eslint-disable-next-line no-script-url
+  description: 'javascript:alert("XSS")',
   createdAt: '2020-04-17T23:18:14.996Z',
   startedAt: '2020-04-17T23:18:14.996Z',
   endedAt: '2020-04-17T23:18:14.996Z',
@@ -43,7 +46,7 @@ describe('AlertDetails', () => {
     wrapper = null;
   });
 
-  const findTableComponent = () => wrapper.find(GlTable);
+  const findTableComponent = () => wrapper.findComponent(GlTable);
   const findTableKeys = () => findTableComponent().findAll('tbody td:first-child');
   const findTableFieldValueByKey = (fieldKey) =>
     findTableComponent()
@@ -52,6 +55,7 @@ describe('AlertDetails', () => {
       .at(0)
       .find('td:nth-child(2)');
   const findTableField = (fields, fieldName) => fields.filter((row) => row.text() === fieldName);
+  const findTableLinks = () => wrapper.findAllComponents(GlLink);
 
   describe('Alert details', () => {
     describe('empty state', () => {
@@ -88,7 +92,16 @@ describe('AlertDetails', () => {
 
         it('should show allowed alert fields', () => {
           const fields = findTableKeys();
-          ['Iid', 'Title', 'Severity', 'Status', 'Hosts', 'Environment'].forEach((field) => {
+          [
+            'Iid',
+            'Title',
+            'Severity',
+            'Status',
+            'Hosts',
+            'Environment',
+            'Service',
+            'Description',
+          ].forEach((field) => {
             expect(findTableField(fields, field).exists()).toBe(true);
           });
         });
@@ -98,6 +111,12 @@ describe('AlertDetails', () => {
           ['Typename', 'Todos', 'Notes', 'Assignees'].forEach((field) => {
             expect(findTableField(fields, field).exists()).toBe(false);
           });
+        });
+
+        it('should render a clickable URL if safe', () => {
+          expect(findTableLinks().wrappers).toHaveLength(1);
+          expect(findTableLinks().at(0).props('isUnsafeLink')).toBe(false);
+          expect(findTableLinks().at(0).attributes('href')).toBe(mockAlert.service);
         });
       });
 

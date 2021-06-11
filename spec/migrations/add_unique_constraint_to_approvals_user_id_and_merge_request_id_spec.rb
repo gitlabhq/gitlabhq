@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20190404143330_add_unique_constraint_to_approvals_user_id_and_merge_request_id.rb')
+require_migration!
 
 RSpec.describe AddUniqueConstraintToApprovalsUserIdAndMergeRequestId do
   let(:migration) { described_class.new }

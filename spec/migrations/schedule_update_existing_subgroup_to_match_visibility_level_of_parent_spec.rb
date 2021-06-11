@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200110121314_schedule_update_existing_subgroup_to_match_visibility_level_of_parent.rb')
+require_migration!
 
 RSpec.describe ScheduleUpdateExistingSubgroupToMatchVisibilityLevelOfParent do
   include MigrationHelpers::NamespacesHelpers

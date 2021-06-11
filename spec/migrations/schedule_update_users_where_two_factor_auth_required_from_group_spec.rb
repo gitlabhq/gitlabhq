@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20210519154058_schedule_update_users_where_two_factor_auth_required_from_group.rb')
+require_migration!
 
 RSpec.describe ScheduleUpdateUsersWhereTwoFactorAuthRequiredFromGroup do
   let(:users) { table(:users) }

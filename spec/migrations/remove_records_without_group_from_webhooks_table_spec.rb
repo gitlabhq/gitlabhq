@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 require_migration!
-require Rails.root.join('db', 'migrate', '20210325092215_add_not_valid_foreign_key_to_group_hooks.rb')
+require_migration!('add_not_valid_foreign_key_to_group_hooks')
 
 RSpec.describe RemoveRecordsWithoutGroupFromWebhooksTable, schema: 20210330091751 do
   let(:web_hooks) { table(:web_hooks) }

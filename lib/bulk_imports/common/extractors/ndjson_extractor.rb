@@ -51,7 +51,7 @@ module BulkImports
         end
 
         def ndjson_reader(tmp_dir)
-          @ndjson_reader ||= Gitlab::ImportExport::JSON::NdjsonReader.new(tmp_dir)
+          @ndjson_reader ||= Gitlab::ImportExport::Json::NdjsonReader.new(tmp_dir)
         end
 
         def relative_resource_url(context)

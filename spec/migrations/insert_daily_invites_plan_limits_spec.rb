@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20201007033723_insert_daily_invites_plan_limits.rb')
+require_migration!
 
 RSpec.describe InsertDailyInvitesPlanLimits do
   let(:plans) { table(:plans) }

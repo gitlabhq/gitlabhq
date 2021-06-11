@@ -74,17 +74,9 @@ module Security
 
       def sast_excluded_analyzers
         strong_memoize(:sast_excluded_analyzers) do
-          all_analyzers = Security::CiConfiguration::SastBuildAction::SAST_DEFAULT_ANALYZERS.split(', ') rescue []
-          enabled_analyzers = sast_default_analyzers.split(',').map(&:strip) rescue []
-
           excluded_analyzers = gitlab_ci_yml_attributes["SAST_EXCLUDED_ANALYZERS"] || sast_template_attributes["SAST_EXCLUDED_ANALYZERS"]
-          excluded_analyzers = excluded_analyzers.split(',').map(&:strip) rescue []
-          ((all_analyzers - enabled_analyzers) + excluded_analyzers).uniq
+          excluded_analyzers.split(',').map(&:strip) rescue []
         end
-      end
-
-      def sast_default_analyzers
-        @sast_default_analyzers ||= gitlab_ci_yml_attributes["SAST_DEFAULT_ANALYZERS"] || sast_template_attributes["SAST_DEFAULT_ANALYZERS"]
       end
 
       def sast_template_attributes

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210525075724_clean_up_pending_builds_table.rb')
+require_migration!
 
 RSpec.describe CleanUpPendingBuildsTable do
   let(:namespaces) { table(:namespaces) }

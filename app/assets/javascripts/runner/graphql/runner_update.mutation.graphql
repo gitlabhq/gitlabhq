@@ -1,9 +1,9 @@
-#import "~/runner/graphql/runner_node.fragment.graphql"
+#import "~/runner/graphql/runner_details.fragment.graphql"
 
 mutation runnerUpdate($input: RunnerUpdateInput!) {
   runnerUpdate(input: $input) {
     runner {
-      ...RunnerNode
+      ...RunnerDetails
     }
     errors
   }

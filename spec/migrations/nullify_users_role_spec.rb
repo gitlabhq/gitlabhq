@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20191104142124_nullify_users_role.rb')
+require_migration!
 
 RSpec.describe NullifyUsersRole do
   let(:users) { table(:users) }

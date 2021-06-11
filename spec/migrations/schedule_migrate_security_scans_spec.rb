@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200217225719_schedule_migrate_security_scans.rb')
+require_migration!
 
 RSpec.describe ScheduleMigrateSecurityScans, :sidekiq do
   let(:migration) { described_class.new }

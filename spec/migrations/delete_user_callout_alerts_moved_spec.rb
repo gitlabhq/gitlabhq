@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200710102418_delete_user_callout_alerts_moved.rb')
+require_migration!
 
 RSpec.describe DeleteUserCalloutAlertsMoved do
   let(:users) { table(:users) }

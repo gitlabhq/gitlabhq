@@ -96,7 +96,7 @@ RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
     context 'using legacy reader' do
       let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/project.json' }
       let(:relation_reader) do
-        Gitlab::ImportExport::JSON::LegacyReader::File.new(
+        Gitlab::ImportExport::Json::LegacyReader::File.new(
           path,
           relation_names: reader.project_relation_names,
           allowed_path: 'project'
@@ -117,14 +117,14 @@ RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
 
     context 'using ndjson reader' do
       let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/tree' }
-      let(:relation_reader) { Gitlab::ImportExport::JSON::NdjsonReader.new(path) }
+      let(:relation_reader) { Gitlab::ImportExport::Json::NdjsonReader.new(path) }
 
       it_behaves_like 'import project successfully'
     end
 
     context 'with invalid relations' do
       let(:path) { 'spec/fixtures/lib/gitlab/import_export/project_with_invalid_relations/tree' }
-      let(:relation_reader) { Gitlab::ImportExport::JSON::NdjsonReader.new(path) }
+      let(:relation_reader) { Gitlab::ImportExport::Json::NdjsonReader.new(path) }
 
       it 'logs the invalid relation and its errors' do
         expect(relation_tree_restorer.shared.logger)
@@ -151,7 +151,7 @@ RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
     let(:object_builder) { Gitlab::ImportExport::Group::ObjectBuilder }
     let(:relation_factory) { Gitlab::ImportExport::Group::RelationFactory }
     let(:relation_reader) do
-      Gitlab::ImportExport::JSON::LegacyReader::File.new(
+      Gitlab::ImportExport::Json::LegacyReader::File.new(
         path,
         relation_names: reader.group_relation_names)
     end

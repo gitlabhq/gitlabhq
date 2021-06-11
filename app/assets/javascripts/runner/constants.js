@@ -31,6 +31,11 @@ export const STATUS_ONLINE = 'ONLINE';
 export const STATUS_OFFLINE = 'OFFLINE';
 export const STATUS_NOT_CONNECTED = 'NOT_CONNECTED';
 
+// CiRunnerAccessLevel
+
+export const ACCESS_LEVEL_NOT_PROTECTED = 'NOT_PROTECTED';
+export const ACCESS_LEVEL_REF_PROTECTED = 'REF_PROTECTED';
+
 // CiRunnerSort
 
 export const CREATED_DESC = 'CREATED_DESC';

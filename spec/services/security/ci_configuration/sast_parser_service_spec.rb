@@ -37,15 +37,6 @@ RSpec.describe Security::CiConfiguration::SastParserService do
           expect(sast_brakeman_level['value']).to eql('2')
         end
 
-        context 'SAST_DEFAULT_ANALYZERS is set' do
-          it 'enables analyzers correctly' do
-            allow(project.repository).to receive(:blob_data_at).and_return(gitlab_ci_yml_default_analyzers_content)
-
-            expect(brakeman['enabled']).to be(false)
-            expect(bandit['enabled']).to be(true)
-          end
-        end
-
         context 'SAST_EXCLUDED_ANALYZERS is set' do
           it 'enables analyzers correctly' do
             allow(project.repository).to receive(:blob_data_at).and_return(gitlab_ci_yml_excluded_analyzers_content)

@@ -11,7 +11,6 @@ module StubExperiments
     allow(Gitlab::Experimentation).to receive(:active?).and_call_original
 
     experiments.each do |experiment_key, enabled|
-      Feature.persist_used!("#{experiment_key}#{feature_flag_suffix}")
       allow(Gitlab::Experimentation).to receive(:active?).with(experiment_key) { enabled }
     end
   end
@@ -26,7 +25,6 @@ module StubExperiments
     allow(Gitlab::Experimentation).to receive(:in_experiment_group?).and_call_original
 
     experiments.each do |experiment_key, enabled|
-      Feature.persist_used!("#{experiment_key}#{feature_flag_suffix}")
       allow(Gitlab::Experimentation).to receive(:in_experiment_group?).with(experiment_key, anything) { enabled }
     end
   end

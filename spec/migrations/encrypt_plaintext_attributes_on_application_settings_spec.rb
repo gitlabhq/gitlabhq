@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20191120115530_encrypt_plaintext_attributes_on_application_settings.rb')
+require_migration!
 
 RSpec.describe EncryptPlaintextAttributesOnApplicationSettings do
   let(:migration) { described_class.new }

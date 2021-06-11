@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200723040950_migrate_incident_issues_to_incident_type.rb')
+require_migration!
 
 RSpec.describe MigrateIncidentIssuesToIncidentType do
   let(:migration) { described_class.new }

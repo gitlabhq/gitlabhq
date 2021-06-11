@@ -54,6 +54,10 @@ RSpec.describe Admin::RunnersController do
   describe '#show' do
     render_views
 
+    before do
+      stub_feature_flags(runner_detailed_view_vue_ui: false)
+    end
+
     let_it_be(:project) { create(:project) }
     let_it_be(:project_two) { create(:project) }
 

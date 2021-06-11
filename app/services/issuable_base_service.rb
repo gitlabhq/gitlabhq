@@ -27,8 +27,14 @@ class IssuableBaseService < ::BaseProjectService
     can?(current_user, ability_name, issuable)
   end
 
+  def can_set_issuable_metadata?(issuable)
+    ability_name = :"set_#{issuable.to_ability_name}_metadata"
+
+    can?(current_user, ability_name, issuable)
+  end
+
   def filter_params(issuable)
-    unless can_admin_issuable?(issuable)
+    unless can_set_issuable_metadata?(issuable)
       params.delete(:milestone)
       params.delete(:milestone_id)
       params.delete(:labels)
@@ -45,6 +51,7 @@ class IssuableBaseService < ::BaseProjectService
       params.delete(:canonical_issue_id)
       params.delete(:project)
       params.delete(:discussion_locked)
+      params.delete(:confidential)
     end
 
     filter_assignees(issuable)

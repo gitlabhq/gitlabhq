@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20190703185326_fix_wrong_pages_access_level.rb')
+require_migration!
 
 RSpec.describe FixWrongPagesAccessLevel, :sidekiq_might_not_need_inline, schema: 20190628185004 do
   using RSpec::Parameterized::TableSyntax

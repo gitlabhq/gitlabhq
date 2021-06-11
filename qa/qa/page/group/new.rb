@@ -60,6 +60,10 @@ module QA
 
           click_element(:connect_instance_button)
         end
+
+        def switch_to_import_tab
+          click_element("import-group-pane_link")
+        end
       end
     end
   end

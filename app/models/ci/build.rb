@@ -205,6 +205,8 @@ module Ci
     end
 
     scope :with_coverage, -> { where.not(coverage: nil) }
+    scope :without_coverage, -> { where(coverage: nil) }
+    scope :with_coverage_regex, -> { where.not(coverage_regex: nil) }
 
     scope :for_project, -> (project_id) { where(project_id: project_id) }
 

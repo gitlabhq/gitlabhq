@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200713071042_confirm_project_bot_users.rb')
+require_migration!
 
 RSpec.describe ConfirmProjectBotUsers, :migration do
   let(:users) { table(:users) }

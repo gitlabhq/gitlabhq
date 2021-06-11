@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200128133510_cleanup_empty_commit_user_mentions')
+require_migration!
 
 RSpec.describe CleanupEmptyCommitUserMentions, :migration, :sidekiq do
   let(:users) { table(:users) }

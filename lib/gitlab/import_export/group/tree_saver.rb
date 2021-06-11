@@ -42,7 +42,7 @@ module Gitlab
         end
 
         def serialize(group)
-          ImportExport::JSON::StreamingSerializer.new(
+          ImportExport::Json::StreamingSerializer.new(
             group,
             group_tree,
             json_writer,
@@ -64,7 +64,7 @@ module Gitlab
         end
 
         def json_writer
-          @json_writer ||= ImportExport::JSON::NdjsonWriter.new(@full_path)
+          @json_writer ||= ImportExport::Json::NdjsonWriter.new(@full_path)
         end
       end
     end

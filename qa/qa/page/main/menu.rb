@@ -19,25 +19,23 @@ module QA
           element :todos_shortcut_button, required: true
         end
 
-        view 'app/views/layouts/nav/_dashboard.html.haml' do
+        view 'app/assets/javascripts/nav/components/top_nav_app.vue' do
+          element :navbar_dropdown
+        end
+
+        view 'app/assets/javascripts/nav/components/top_nav_dropdown_menu.vue' do
+          element :menu_subview_container
+        end
+
+        view 'lib/gitlab/nav/top_nav_menu_item.rb' do
+          element :menu_item_link
+        end
+
+        view 'app/helpers/nav/top_nav_helper.rb' do
           element :admin_area_link
-          element :projects_dropdown, required: true
-          element :groups_dropdown, required: true
-          element :more_dropdown
+          element :projects_dropdown
+          element :groups_dropdown
           element :snippets_link
-          element :groups_link
-          element :activity_link
-          element :milestones_link
-        end
-
-        view 'app/views/layouts/nav/projects_dropdown/_show.html.haml' do
-          element :projects_dropdown_sidebar
-          element :your_projects_link
-        end
-
-        view 'app/views/layouts/nav/groups_dropdown/_show.html.haml' do
-          element :create_group_link
-          element :import_group_link
         end
 
         view 'app/views/layouts/_search.html.haml' do
@@ -46,30 +44,28 @@ module QA
 
         def go_to_groups
           within_groups_menu do
-            click_element :your_groups_link
+            click_element(:menu_item_link, title: 'Your groups')
           end
         end
 
-        def go_to_import_group
+        def go_to_create_group
           within_groups_menu do
-            click_element :import_group_link
+            click_element(:menu_item_link, title: 'Create group')
           end
         end
 
         def go_to_projects
-          within_top_menu do
-            click_element :projects_dropdown
-          end
+          go_to_menu_dropdown_option(:projects_dropdown)
 
-          page.within('.qa-projects-dropdown-sidebar') do
-            click_element :your_projects_link
+          within_element(:menu_subview_container) do
+            click_element(:menu_item_link, title: 'Your projects')
           end
         end
 
-        def go_to_more_dropdown_option(option_name)
+        def go_to_menu_dropdown_option(option_name)
           within_top_menu do
-            click_element :more_dropdown
-            click_element option_name
+            click_element(:navbar_dropdown, title: 'Menu')
+            click_element(option_name)
           end
         end
 
@@ -151,11 +147,17 @@ module QA
         end
 
         def has_admin_area_link?(wait: Capybara.default_max_wait_time)
-          has_element?(:admin_area_link, wait: wait)
+          within_top_menu do
+            click_element(:navbar_dropdown, title: 'Menu')
+            has_element?(:admin_area_link, wait: wait)
+          end
         end
 
         def has_no_admin_area_link?(wait: Capybara.default_max_wait_time)
-          has_no_element?(:admin_area_link, wait: wait)
+          within_top_menu do
+            click_element(:navbar_dropdown, title: 'Menu')
+            has_no_element?(:admin_area_link, wait: wait)
+          end
         end
 
         def click_stop_impersonation_link
@@ -181,15 +183,13 @@ module QA
         end
 
         def within_groups_menu(&block)
-          within_top_menu do
-            click_element :groups_dropdown
-          end
+          go_to_menu_dropdown_option(:groups_dropdown)
 
-          page.within('.qa-groups-dropdown-sidebar', &block)
+          within_element(:menu_subview_container, &block)
         end
 
         def click_admin_area
-          within_top_menu { click_element :admin_area_link }
+          go_to_menu_dropdown_option(:admin_area_link)
         end
       end
     end

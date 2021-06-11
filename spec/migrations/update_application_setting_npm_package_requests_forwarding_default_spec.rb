@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200221105436_update_application_setting_npm_package_requests_forwarding_default.rb')
+require_migration!
 
 RSpec.describe UpdateApplicationSettingNpmPackageRequestsForwardingDefault do
   # Create test data - pipeline and CI/CD jobs.

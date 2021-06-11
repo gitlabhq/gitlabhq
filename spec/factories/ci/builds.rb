@@ -238,6 +238,20 @@ FactoryBot.define do
       coverage_regex { '/(d+)/' }
     end
 
+    trait :trace_with_coverage do
+      coverage { nil }
+      coverage_regex { '(\d+\.\d+)%' }
+
+      transient do
+        trace_coverage { 60.0 }
+      end
+
+      after(:create) do |build, evaluator|
+        build.trace.set("Coverage #{evaluator.trace_coverage}%")
+        build.trace.archive! if build.complete?
+      end
+    end
+
     trait :trace_live do
       after(:create) do |build, evaluator|
         build.trace.set('BUILD TRACE')

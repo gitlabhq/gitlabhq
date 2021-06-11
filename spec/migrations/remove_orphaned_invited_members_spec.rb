@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200424050250_remove_orphaned_invited_members.rb')
+require_migration!
 
 RSpec.describe RemoveOrphanedInvitedMembers do
   let(:members_table) { table(:members) }

@@ -15,6 +15,9 @@ class IssuePolicy < IssuablePolicy
   desc "Issue is confidential"
   condition(:confidential, scope: :subject) { @subject.confidential? }
 
+  desc "Issue is persisted"
+  condition(:persisted, scope: :subject) { @subject.persisted? }
+
   rule { confidential & ~can_read_confidential }.policy do
     prevent(*create_read_update_admin_destroy(:issue))
     prevent :read_issue_iid
@@ -39,6 +42,14 @@ class IssuePolicy < IssuablePolicy
   rule { ~anonymous & can?(:read_issue) }.policy do
     enable :create_todo
     enable :update_subscription
+  end
+
+  rule { ~persisted & can?(:guest_access) }.policy do
+    enable :set_issue_metadata
+  end
+
+  rule { persisted & can?(:admin_issue) }.policy do
+    enable :set_issue_metadata
   end
 end
 

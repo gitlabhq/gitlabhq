@@ -199,19 +199,20 @@ inherited.
 
 ![CI/CD settings - inherited variables](img/inherited_group_variables_v12_5.png)
 
-### Add a CI/CD variable to an instance
+### Add a CI/CD variable to an instance **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14108) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299879) in GitLab 13.11.
 
 To make a CI/CD variable available to all projects and groups in a GitLab instance,
-define an instance CI/CD variable.
+add an instance CI/CD variable. You must have the [Administrator role](../../user/permissions.md).
 
 You can define instance variables via the UI or [API](../../api/instance_level_ci_variables.md).
 
 To add an instance variable:
 
-1. Navigate to your Admin Area's **Settings > CI/CD** and expand the **Variables** section.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > CI/CD** and expand the **Variables** section.
 1. Select the **Add variable** button, and fill in the details:
 
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
@@ -286,7 +287,7 @@ does not display in job logs.
 
 To mask a variable:
 
-1. Go to **Settings > CI/CD** in the project, group or instance admin area.
+1. In the project, group, or Admin Area, go to **Settings > CI/CD**.
 1. Expand the **Variables** section.
 1. Next to the variable you want to protect, select **Edit**.
 1. Select the **Mask variable** check box.

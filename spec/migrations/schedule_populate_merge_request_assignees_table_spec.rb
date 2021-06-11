@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20190322132835_schedule_populate_merge_request_assignees_table.rb')
+require_migration!
 
 RSpec.describe SchedulePopulateMergeRequestAssigneesTable do
   let(:namespaces) { table(:namespaces) }

@@ -276,7 +276,7 @@ module Nav
       builder = ::Gitlab::Nav::TopNavMenuBuilder.new
       builder.add_primary_menu_item(id: 'your', title: _('Your groups'), href: dashboard_groups_path)
       builder.add_primary_menu_item(id: 'explore', title: _('Explore groups'), href: explore_groups_path)
-      builder.add_secondary_menu_item(id: 'create', title: _('Create group'), href: new_group_path(anchor: 'create-group-pane'))
+      builder.add_secondary_menu_item(id: 'create', title: _('Create group'), href: new_group_path)
       builder.build
     end
   end

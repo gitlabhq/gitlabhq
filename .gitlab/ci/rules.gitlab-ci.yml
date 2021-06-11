@@ -932,14 +932,6 @@
     - <<: *if-merge-request-title-run-all-rspec
       when: always
 
-.rails:rules:rspec-feature-flags:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-default-branch-schedule-2-hourly
-      allow_failure: true
-    - <<: *if-merge-request-title-run-all-rspec
-
 .rails:rules:default-branch-schedule-nightly--code-backstage:
   rules:
     - <<: *if-default-branch-schedule-nightly

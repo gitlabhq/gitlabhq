@@ -24,14 +24,6 @@
 
 = render 'shared/form_elements/description', model: issuable, form: form, project: project
 
-- if issuable.respond_to?(:confidential)
-  .form-group.row
-    .offset-sm-2.col-sm-10
-      .form-check
-        = form.check_box :confidential, class: 'form-check-input'
-        = form.label :confidential, class: 'form-check-label' do
-          This issue is confidential and should only be visible to team members with at least Reporter access.
-
 = render 'shared/issuable/form/metadata', issuable: issuable, form: form, project: project, presenter: presenter
 
 = render_if_exists 'shared/issuable/approvals', issuable: issuable, presenter: presenter, form: form

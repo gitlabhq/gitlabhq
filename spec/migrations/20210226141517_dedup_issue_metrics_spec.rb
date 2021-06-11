@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210226141517_dedup_issue_metrics.rb')
+require_migration!('dedup_issue_metrics')
 
 RSpec.describe DedupIssueMetrics, :migration, schema: 20210205104425 do
   let(:namespaces) { table(:namespaces) }

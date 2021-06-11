@@ -28,6 +28,16 @@ flags_paths = [
 # For EE additionally process `ee/` feature flags
 if File.exist?('ee/app/models/license.rb') && !%w[true 1].include?(ENV['FOSS_ONLY'].to_s)
   flags_paths << 'ee/config/feature_flags/**/*.yml'
+
+  # Geo feature flags are constructed dynamically and there's no explicit checks in the codebase so we mark all
+  # the replicators' derived feature flags as used.
+  # See https://gitlab.com/gitlab-org/gitlab/-/blob/54e802e8fe76b6f93656d75ef9b566bf57b60f41/ee/lib/gitlab/geo/replicator.rb#L183-185
+  Dir.glob('ee/app/replicators/geo/*_replicator.rb').each_with_object(Set.new) do |path, memo|
+    replicator_name = File.basename(path, '.rb')
+    feature_flag_name = "geo_#{replicator_name.delete_suffix('_replicator')}_replication"
+
+    FileUtils.touch(File.join('tmp', 'feature_flags', "#{feature_flag_name}.used"))
+  end
 end
 
 all_flags = {}
@@ -41,7 +51,17 @@ flags_paths.each do |flags_path|
     feature_flag_name = File.basename(path, '.yml')
 
     # TODO: we need a better way of tracking use of Gitaly FF across Gitaly and GitLab
-    next if feature_flag_name.start_with?('gitaly_')
+    if feature_flag_name.start_with?('gitaly_')
+      puts "Skipping the #{feature_flag_name} feature flag since it starts with 'gitaly_'."
+      next
+    end
+
+    # Dynamic feature flag names for redirect to latest CI templates
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63144/diffs#fa2193ace3f6a02f7ef9995ef9bc519eca92c4ee_57_84
+    if feature_flag_name.start_with?('redirect_to_latest_template_')
+      puts "Skipping the #{feature_flag_name} feature flag since it starts with 'redirect_to_latest_template_'."
+      next
+    end
 
     all_flags[feature_flag_name] = File.exist?(File.join('tmp', 'feature_flags', feature_flag_name + '.used'))
   end

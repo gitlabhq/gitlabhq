@@ -97,17 +97,17 @@ RSpec.describe 'Admin mode' do
         end
 
         it 'can leave admin mode using dropdown menu on smaller screens', :js do
-          skip('pending responsive development under :combined_menu feature flag') if Feature.enabled?(:combined_menu)
+          skip('pending responsive development under :combined_menu feature flag') if Feature.enabled?(:combined_menu, default_enabled: :yaml)
 
           resize_screen_xs
           visit root_dashboard_path
 
-          find('.header-more').click unless Feature.enabled?(:combined_menu)
+          find('.header-more').click unless Feature.enabled?(:combined_menu, default_enabled: :yaml)
 
           gitlab_disable_admin_mode
 
           open_top_nav
-          find('.header-more').click unless Feature.enabled?(:combined_menu)
+          find('.header-more').click unless Feature.enabled?(:combined_menu, default_enabled: :yaml)
 
           expect(page).to have_link(href: new_admin_session_path)
         end
@@ -127,13 +127,13 @@ RSpec.describe 'Admin mode' do
             visit root_dashboard_path
             open_top_nav
 
-            link_text = Feature.enabled?(:combined_menu) ? 'Admin' : 'Admin Area'
+            link_text = Feature.enabled?(:combined_menu, default_enabled: :yaml) ? 'Admin' : 'Admin Area'
             expect(page).to have_link(text: link_text, href: admin_root_path, visible: true)
             expect(page).to have_link(text: 'Leave Admin Mode', href: destroy_admin_session_path, visible: true)
           end
 
           it 'relocates admin dashboard links to dropdown list on smaller screen', :js do
-            skip('pending responsive development under :combined_menu feature flag') if Feature.enabled?(:combined_menu)
+            skip('pending responsive development under :combined_menu feature flag') if Feature.enabled?(:combined_menu, default_enabled: :yaml)
 
             resize_screen_xs
             visit root_dashboard_path

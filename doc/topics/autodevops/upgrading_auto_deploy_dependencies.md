@@ -116,14 +116,16 @@ If your Auto DevOps project has an active environment that was deployed with the
 1. If the deployment succeeds, you can safely run `environment:helm-2to3:cleanup`.
    This deletes all Helm 2 release data from the namespace.
 
-   If you set `BACKUP_HELM2_RELEASES` to a non-empty value, then the 
-   the `<environment-name>:helm2to3:migrate` job
+   If you set `BACKUP_HELM2_RELEASES` to a non-empty value, the `<environment-name>:helm2to3:migrate`
    job saves a backup for 1 week in a job artifact called `helm-2-release-backups`.
    If you accidentally delete the Helm 2 releases before you are ready, then
    this backup is in a Kubernetes manifest file that can be restored using
-   `kubectl apply -f $backup`. 
-   **WARNING:** This artifact can contain secrets and will be visible to any
-   user who can see your job. 
+   `kubectl apply -f $backup`.
+
+   **WARNING:**
+   This artifact can contain secrets and is visible to any
+   user who can see your job.
+
 1. Remove the `MIGRATE_HELM_2TO3` CI/CD variable.
 
 #### In-Cluster PostgreSQL Channel 2

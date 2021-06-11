@@ -118,7 +118,7 @@ module Gitlab
 
         def relation_reader
           strong_memoize(:relation_reader) do
-            ImportExport::JSON::NdjsonReader.new(
+            ImportExport::Json::NdjsonReader.new(
               File.join(shared.export_path, 'tree')
             )
           end

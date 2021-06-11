@@ -1,0 +1,8 @@
+---
+name: ci_daily_limit_for_pipeline_schedules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62826
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/332333
+milestone: '14.0'
+type: development
+group: group::pipeline authoring
+default_enabled: false

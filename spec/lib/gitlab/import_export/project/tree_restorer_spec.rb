@@ -820,9 +820,9 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
       end
 
       before do
-        allow_any_instance_of(Gitlab::ImportExport::JSON::LegacyReader::File).to receive(:exist?).and_return(true)
-        allow_any_instance_of(Gitlab::ImportExport::JSON::NdjsonReader).to receive(:exist?).and_return(false)
-        allow_any_instance_of(Gitlab::ImportExport::JSON::LegacyReader::File).to receive(:tree_hash) { tree_hash }
+        allow_any_instance_of(Gitlab::ImportExport::Json::LegacyReader::File).to receive(:exist?).and_return(true)
+        allow_any_instance_of(Gitlab::ImportExport::Json::NdjsonReader).to receive(:exist?).and_return(false)
+        allow_any_instance_of(Gitlab::ImportExport::Json::LegacyReader::File).to receive(:tree_hash) { tree_hash }
       end
 
       context 'no group visibility' do

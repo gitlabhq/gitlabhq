@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200130145430_reschedule_migrate_issue_trackers_data.rb')
+require_migration!('reschedule_migrate_issue_trackers_data')
 
 RSpec.describe RescheduleMigrateIssueTrackersData do
   let(:services) { table(:services) }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20191125114345_add_admin_mode_protected_path.rb')
+require_migration!('add_admin_mode_protected_path')
 
 RSpec.describe AddAdminModeProtectedPath do
   subject(:migration) { described_class.new }

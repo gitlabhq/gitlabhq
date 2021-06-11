@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20190604184643_fix_pool_repository_source_project_id.rb')
+require_migration!
 
 RSpec.describe FixPoolRepositorySourceProjectId do
   let(:projects) { table(:projects) }

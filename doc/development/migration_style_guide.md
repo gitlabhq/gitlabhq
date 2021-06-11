@@ -844,7 +844,7 @@ You have to use a serializer to provide a translation layer:
 
 ```ruby
 class BuildMetadata
-  serialize :config_options, Serializers::JSON # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :config_options, Serializers::Json # rubocop:disable Cop/ActiveRecordSerialize
 end
 ```
 

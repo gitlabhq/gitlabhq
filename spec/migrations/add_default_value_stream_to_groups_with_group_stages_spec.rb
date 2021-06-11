@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200701070435_add_default_value_stream_to_groups_with_group_stages.rb')
+require_migration!
 
 RSpec.describe AddDefaultValueStreamToGroupsWithGroupStages, schema: 20200624142207 do
   let(:groups) { table(:namespaces) }

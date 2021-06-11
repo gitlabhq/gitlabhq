@@ -3501,6 +3501,9 @@ msgstr ""
 msgid "An error occurred while enabling Service Desk."
 msgstr ""
 
+msgid "An error occurred while fetching ancestors"
+msgstr ""
+
 msgid "An error occurred while fetching branches.  Retry the search."
 msgstr ""
 
@@ -8941,6 +8944,9 @@ msgid "Copy External ID to clipboard"
 msgstr ""
 
 msgid "Copy ID"
+msgstr ""
+
+msgid "Copy IP Address"
 msgstr ""
 
 msgid "Copy KRB5 clone URL"
@@ -28148,6 +28154,9 @@ msgid "Runners|Download and install binary"
 msgstr ""
 
 msgid "Runners|Download latest binary"
+msgstr ""
+
+msgid "Runners|Enter the number of seconds. This timeout takes precedence over lower timeouts set for the project."
 msgstr ""
 
 msgid "Runners|IP Address"

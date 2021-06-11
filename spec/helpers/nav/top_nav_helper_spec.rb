@@ -297,7 +297,7 @@ RSpec.describe Nav::TopNavHelper do
           it 'has expected :linksSecondary' do
             expected_links_secondary = [
               ::Gitlab::Nav::TopNavMenuItem.build(
-                href: '/groups/new#create-group-pane',
+                href: '/groups/new',
                 id: 'create',
                 title: 'Create group'
               )

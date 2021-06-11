@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'migrate', '20200311074438_migrate_bot_type_to_user_type.rb')
+require_migration!
 
 RSpec.describe MigrateBotTypeToUserType, :migration do
   let(:users) { table(:users) }

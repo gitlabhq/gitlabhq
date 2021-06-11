@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200513235532_fill_file_store_ci_job_artifacts.rb')
+require_migration!
 
 RSpec.describe FillFileStoreCiJobArtifacts do
   let(:namespaces) { table(:namespaces) }

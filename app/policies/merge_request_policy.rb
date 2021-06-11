@@ -28,6 +28,10 @@ class MergeRequestPolicy < IssuablePolicy
   rule { can_merge }.policy do
     enable :accept_merge_request
   end
+
+  rule { can?(:admin_merge_request) }.policy do
+    enable :set_merge_request_metadata
+  end
 end
 
 MergeRequestPolicy.prepend_mod_with('MergeRequestPolicy')

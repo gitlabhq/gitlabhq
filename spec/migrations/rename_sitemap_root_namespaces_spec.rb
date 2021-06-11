@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20201019094741_rename_sitemap_root_namespaces.rb')
+require_migration!
 
 RSpec.describe RenameSitemapRootNamespaces do
   let(:namespaces) { table(:namespaces) }
