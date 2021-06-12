@@ -101,7 +101,7 @@ class RegistrationsController < Devise::RegistrationsController
     Gitlab::AppLogger.info(user_created_message)
     return new_user_session_path(anchor: 'login-pane') if resource.blocked_pending_approval?
 
-    Feature.enabled?(:soft_email_confirmation) ? dashboard_projects_path : users_almost_there_path
+    Feature.enabled?(:soft_email_confirmation) ? dashboard_projects_path : users_almost_there_path(email: resource.email)
   end
 
   private

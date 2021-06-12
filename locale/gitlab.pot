@@ -24452,10 +24452,10 @@ msgstr ""
 msgid "Please check the configuration file to ensure that it is available and the YAML is valid"
 msgstr ""
 
-msgid "Please check your email (%{email}) to verify that you own this address and unlock the power of CI/CD. Didn't receive it? %{resend_link}. Wrong email address? %{update_link}."
+msgid "Please check your email %{email} to confirm your account"
 msgstr ""
 
-msgid "Please check your email to confirm your account"
+msgid "Please check your email (%{email}) to verify that you own this address and unlock the power of CI/CD. Didn't receive it? %{resend_link}. Wrong email address? %{update_link}."
 msgstr ""
 
 msgid "Please choose a file"
