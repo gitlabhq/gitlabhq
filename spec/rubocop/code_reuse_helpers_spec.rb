@@ -150,31 +150,6 @@ RSpec.describe RuboCop::CodeReuseHelpers do
     end
   end
 
-  describe '#in_graphql_types?' do
-    %w[
-      app/graphql/types
-      ee/app/graphql/ee/types
-      ee/app/graphql/types
-    ].each do |path|
-      it "returns true for a node in #{path}" do
-        node = build_and_parse_source('10', rails_root_join(path, 'foo.rb'))
-
-        expect(cop.in_graphql_types?(node)).to eq(true)
-      end
-    end
-
-    %w[
-      app/graphql/resolvers
-      app/foo
-    ].each do |path|
-      it "returns true for a node in #{path}" do
-        node = build_and_parse_source('10', rails_root_join(path, 'foo.rb'))
-
-        expect(cop.in_graphql_types?(node)).to eq(false)
-      end
-    end
-  end
-
   describe '#in_api?' do
     it 'returns true for a node in the API directory' do
       node = build_and_parse_source('10', rails_root_join('lib', 'api', 'foo.rb'))
@@ -189,67 +164,25 @@ RSpec.describe RuboCop::CodeReuseHelpers do
     end
   end
 
-  describe '#in_spec?' do
-    it 'returns true for a node in the spec directory' do
-      node = build_and_parse_source('10', rails_root_join('spec', 'foo.rb'))
-
-      expect(cop.in_spec?(node)).to eq(true)
-    end
-
-    it 'returns true for a node in the ee/spec directory' do
-      node = build_and_parse_source('10', rails_root_join('ee', 'spec', 'foo.rb'))
-
-      expect(cop.in_spec?(node)).to eq(true)
-    end
-
-    it 'returns false for a node outside the spec directory' do
-      node = build_and_parse_source('10', rails_root_join('lib', 'foo.rb'))
-
-      expect(cop.in_spec?(node)).to eq(false)
-    end
-  end
-
-  describe '#in_app_directory?' do
+  describe '#in_directory?' do
     it 'returns true for a directory in the CE app/ directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'models', 'foo.rb'))
 
-      expect(cop.in_app_directory?(node, 'models')).to eq(true)
+      expect(cop.in_directory?(node, 'models')).to eq(true)
     end
 
     it 'returns true for a directory in the EE app/ directory' do
       node =
         build_and_parse_source('10', rails_root_join('ee', 'app', 'models', 'foo.rb'))
 
-      expect(cop.in_app_directory?(node, 'models')).to eq(true)
+      expect(cop.in_directory?(node, 'models')).to eq(true)
     end
 
     it 'returns false for a directory in the lib/ directory' do
       node =
         build_and_parse_source('10', rails_root_join('lib', 'models', 'foo.rb'))
 
-      expect(cop.in_app_directory?(node, 'models')).to eq(false)
-    end
-  end
-
-  describe '#in_lib_directory?' do
-    it 'returns true for a directory in the CE lib/ directory' do
-      node = build_and_parse_source('10', rails_root_join('lib', 'models', 'foo.rb'))
-
-      expect(cop.in_lib_directory?(node, 'models')).to eq(true)
-    end
-
-    it 'returns true for a directory in the EE lib/ directory' do
-      node =
-        build_and_parse_source('10', rails_root_join('ee', 'lib', 'models', 'foo.rb'))
-
-      expect(cop.in_lib_directory?(node, 'models')).to eq(true)
-    end
-
-    it 'returns false for a directory in the app/ directory' do
-      node =
-        build_and_parse_source('10', rails_root_join('app', 'models', 'foo.rb'))
-
-      expect(cop.in_lib_directory?(node, 'models')).to eq(false)
+      expect(cop.in_directory?(node, 'models')).to eq(false)
     end
   end
 

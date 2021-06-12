@@ -19,6 +19,12 @@ RSpec.describe ApplicationExperiment, :experiment do
     allow(subject).to receive(:enabled?).and_return(true)
   end
 
+  it "naively assumes a 1x1 relationship to feature flags for tests" do
+    expect(Feature).to receive(:persist_used!).with('namespaced_stub')
+
+    described_class.new('namespaced/stub')
+  end
+
   it "doesn't raise an exception without a defined control" do
     # because we have a default behavior defined
 

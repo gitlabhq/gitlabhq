@@ -147,7 +147,7 @@ gosec-sast:
     # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
-    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE_TAG: 3
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gosec:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED

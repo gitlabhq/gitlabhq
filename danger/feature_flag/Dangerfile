@@ -68,3 +68,27 @@ end
 if helper.security_mr? && feature_flag_file_added?
   fail "Feature flags are discouraged from security merge requests. Read the [security documentation](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/utilities/feature_flags.md) for details."
 end
+
+if feature_flag_file_added_or_removed?
+  new_mr_title = helper.mr_title.dup
+  new_mr_title << ' [RUN ALL RSPEC]' unless helper.run_all_rspec_mr?
+  new_mr_title << ' [RUN AS-IF-FOSS]' unless helper.run_as_if_foss_mr?
+
+  changes = {}
+  changes[:add_labels] = FEATURE_FLAG_LABEL unless helper.mr_has_labels?(FEATURE_FLAG_LABEL)
+
+  if new_mr_title != helper.mr_title
+    changes[:title] = new_mr_title
+  else
+    message "You're adding or removing a feature flag, your MR title needs to include `[RUN ALL RSPEC] [RUN AS-IF-FOSS]` (we may have updated it automatically for you and started a new MR pipeline) to ensure everything is covered."
+  end
+
+  if changes.any?
+    gitlab.api.update_merge_request(
+      gitlab.mr_json['project_id'],
+      gitlab.mr_json['iid'],
+      **changes
+    )
+    gitlab.api.post("/projects/#{gitlab.mr_json['project_id']}/merge_requests/#{gitlab.mr_json['iid']}/pipelines")
+  end
+end

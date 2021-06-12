@@ -47,6 +47,7 @@
       - rspec_profiling/
       - tmp/capybara/
       - tmp/memory_test/
+      - tmp/feature_flags/
       - log/*.log
     reports:
       junit: junit_rspec.xml
@@ -221,11 +222,6 @@ static-analysis:
   script:
     - run_timed_command "retry yarn install --frozen-lockfile"
     - scripts/static-analysis
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - tmp/feature_flags/
 
 static-analysis as-if-foss:
   extends:
@@ -464,9 +460,25 @@ rspec:coverage:
 rspec:feature-flags:
   extends:
     - .coverage-base
-    - .static-analysis:rules:ee-and-foss
+    - .rails:rules:rspec-feature-flags
   stage: post-test
-  needs: ["static-analysis"]
+  # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
+  # so we use `dependencies` here.
+  dependencies:
+    - setup-test-env
+    - rspec migration pg12
+    - rspec unit pg12
+    - rspec integration pg12
+    - rspec system pg12
+    - rspec-ee migration pg12
+    - rspec-ee unit pg12
+    - rspec-ee integration pg12
+    - rspec-ee system pg12
+    - rspec-ee unit pg12 geo
+    - rspec-ee integration pg12 geo
+    - rspec-ee system pg12 geo
+    - memory-static
+    - memory-on-boot
   script:
     - !reference [.minimal-bundle-install, script]
     - if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then

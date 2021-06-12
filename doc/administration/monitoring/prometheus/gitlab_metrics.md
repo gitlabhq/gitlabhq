@@ -229,11 +229,15 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `global_search_bulk_cron_queue_size`           | Gauge   | 12.10 | Number of database records waiting to be synchronized to Elasticsearch | |
 | `global_search_awaiting_indexing_queue_size`   | Gauge   | 13.2  | Number of database updates waiting to be synchronized to Elasticsearch while indexing is paused | |
 | `geo_merge_request_diffs`                      | Gauge   | 13.4  | Number of merge request diffs on primary | `url` |
-| `geo_merge_request_diffs_checksummed`          | Gauge   | 13.4  | Number of merge request diffs checksummed on primary | `url` |
+| `geo_merge_request_diffs_checksum_total`       | Gauge   | 13.12 | Number of merge request diffs tried to checksum on primary | `url` |
+| `geo_merge_request_diffs_checksummed`          | Gauge   | 13.4  | Number of merge request diffs successfully checksummed on primary | `url` |
 | `geo_merge_request_diffs_checksum_failed`      | Gauge   | 13.4  | Number of merge request diffs failed to calculate the checksum on primary | `url` |
 | `geo_merge_request_diffs_synced`               | Gauge   | 13.4  | Number of syncable merge request diffs synced on secondary | `url` |
 | `geo_merge_request_diffs_failed`               | Gauge   | 13.4  | Number of syncable merge request diffs failed to sync on secondary | `url` |
 | `geo_merge_request_diffs_registry`             | Gauge   | 13.4  | Number of merge request diffs in the registry | `url` |
+| `geo_merge_request_diffs_verification_total`   | Gauge   | 13.12 | Number of merge request diffs verifications tried on secondary | `url` |
+| `geo_merge_request_diffs_verified`             | Gauge   | 13.12 | Number of merge request diffs verified on secondary | `url` |
+| `geo_merge_request_diffs_verification_failed`  | Gauge   | 13.12 | Number of merge request diffs verifications failed on secondary | `url` |
 | `geo_snippet_repositories`                     | Gauge   | 13.4  | Number of snippets on primary | `url` |
 | `geo_snippet_repositories_checksummed`         | Gauge   | 13.4  | Number of snippets checksummed on primary | `url` |
 | `geo_snippet_repositories_checksum_failed`     | Gauge   | 13.4  | Number of snippets failed to calculate the checksum on primary | `url` |

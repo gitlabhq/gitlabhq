@@ -77,6 +77,8 @@ brakeman:
 
 gosec:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&

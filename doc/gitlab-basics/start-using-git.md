@@ -8,139 +8,34 @@ description: "Introduction to using Git through the command line."
 
 # Start using Git on the command line **(FREE)**
 
-[Git](https://git-scm.com/) is an open-source distributed version control system designed to
-handle everything from small to very large projects with speed and efficiency. GitLab is built
+[Git](https://git-scm.com/) is an open-source distributed version control system. GitLab is built
 on top of Git.
 
-While GitLab has a powerful user interface from which you can do a great amount of Git operations
-directly in the browser, the command line is required for advanced tasks.
+You can do many Git operations directly in GitLab. However, the command line is required for advanced tasks,
+like fixing complex merge conflicts or rolling back commits.
 
-For example, if you need to fix complex merge conflicts, rebase branches,
-or undo and roll back commits, you must use Git from
-the command line and then push your changes to the remote server.
-
-This guide helps you get started with Git through the command line and can be a reference
-for Git commands in the future. If you're only looking for a quick reference of Git commands, you
-can download the GitLab [Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
+For a quick reference of Git commands, download a [Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
 
 For more information about the advantages of working with Git and GitLab:
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch the [GitLab Source Code Management Walkthrough](https://www.youtube.com/watch?v=wTQ3aXJswtM) video.
-- Learn how [GitLab became the backbone of Worldline](https://about.gitlab.com/customers/worldline/)'s development environment.
+- Learn how [GitLab became the backbone of the Worldline](https://about.gitlab.com/customers/worldline/) development environment.
 
-NOTE:
-To help you visualize what you're doing locally, there are
-[Git GUI apps](https://git-scm.com/download/gui/) you can install.
-
-## Prerequisites
-
-You don't need a GitLab account to use Git locally, but for the purpose of this guide we
-recommend registering and signing into your account before starting. Some commands need a
-connection between the files on your computer and their version on a remote server.
-
-You must also open a [terminal](#open-a-terminal) and have
-[Git installed](#install-git) on your computer.
-
-### Open a terminal
-
-To execute Git commands on your computer, you must open a terminal (also known as command
-prompt, command shell, and command line) of your preference. Here are some suggestions:
-
-- For macOS users:
-  - Built-in: [Terminal](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line). Press <kbd>⌘ command</kbd> + <kbd>space</kbd> and type "terminal" to find it.
-  - [iTerm2](https://iterm2.com/), which you can integrate with [zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [oh my zsh](https://ohmyz.sh/) for color highlighting, among other handy features for Git users.
-- For Windows users:
-  - Built-in: `cmd`. Click the search icon on the bottom navigation bar on Windows and type `cmd` to find it.
-  - [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7): a Windows "powered up" shell, from which you can execute a greater number of commands.
-  - Git Bash: it comes built into [Git for Windows](https://gitforwindows.org/).
-- For Linux users:
-  - Built-in: [Linux Terminal](https://www.howtogeek.com/140679/beginner-geek-how-to-start-using-the-linux-terminal/).
-
-### Install Git
-
-Open a terminal and run the following command to check if Git is already installed in your
-computer:
-
-```shell
-git --version
-```
-
-If you have Git installed, the output is:
-
-```shell
-git version X.Y.Z
-```
-
-If your computer doesn't recognize `git` as a command, you must [install Git](../topics/git/how_to_install_git/index.md).
-After that, run `git --version` again to verify whether it was correctly installed.
-
-## Configure Git
-
-To start using Git from your computer, you must enter your credentials (user name and email)
-to identify you as the author of your work. The user name and email should match the ones you're
-using on GitLab.
-
-In your shell, add your user name:
-
-```shell
-git config --global user.name "your_username"
-```
-
-And your email address:
-
-```shell
-git config --global user.email "your_email_address@example.com"
-```
-
-To check the configuration, run:
-
-```shell
-git config --global --list
-```
-
-The `--global` option tells Git to always use this information for anything you do on your system.
-If you omit `--global` or use `--local`, the configuration is applied only to the current
-repository.
-
-You can read more on how Git manages configurations in the
-[Git configuration documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration).
-
-## Git authentication methods
-
-To connect your computer with GitLab, you need to add your credentials to identify yourself.
-You have two options:
-
-- Authenticate on a project-by-project basis through HTTPS, and enter your credentials every time
-  you perform an operation between your computer and GitLab.
-- Authenticate through SSH once and GitLab no longer requests your credentials every time you
-  perform an operation between your computer and GitLab.
-
-To start the authentication process, we'll [clone](#clone-a-repository) an existing repository
-to our computer:
-
-- If you want to use **SSH** to authenticate, follow the instructions on the [SSH documentation](../ssh/README.md)
-  to set it up before cloning.
-- If you want to use **HTTPS**, GitLab requests your username and password:
-  - If you have 2FA enabled for your account, you must use a [Personal Access Token](../user/profile/personal_access_tokens.md)
-    with **read_repository** or **write_repository** permissions instead of your account's password.
-  - If you don't have 2FA enabled, use your account's password.
-
-NOTE:
-Authenticating through SSH is the GitLab recommended method. You can read more about credential storage
-in the [Git Credentials documentation](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
+To help you visualize what you're doing locally, you can install a
+[Git GUI app](https://git-scm.com/download/gui/).
 
 ## Git terminology
 
-If you're familiar with Git terminology, you may want to jump directly
-into [setting up a repository](#set-up-a-repository).
+If you're familiar with Git terminology, you might want to skip this section and
+go directly to [prerequisites](#prerequisites).
 
 ### Repository
 
-Your files in GitLab live in a **repository**, similar to how you have them in a folder or
-directory on your computer.
+In GitLab, files are stored in a **repository**. A repository is similar to how you
+store files in a folder or directory on your computer.
 
-- **Remote** repository refers to the files in GitLab.
-- A **local** copy refers to the files on your computer.
+- A **remote repository** refers to the files in GitLab.
+- A **local copy** refers to the files on your computer.
 
 <!-- vale gitlab.Spelling = NO -->
 <!-- vale gitlab.SubstitutionWarning = NO -->
@@ -148,129 +43,219 @@ Often, the word "repository" is shortened to "repo".
 <!-- vale gitlab.Spelling = YES -->
 <!-- vale gitlab.SubstitutionWarning = YES -->
 
-A **project** in GitLab is what holds a repository.
+In GitLab, a repository is contained in a **project**.
 
 ### Fork
 
-When you want to copy someone else's repository, you [**fork**](../user/project/repository/forking_workflow.md#creating-a-fork)
-the project. By forking it, you create a copy of the project into your own
-[namespace](../user/group/#namespaces) to have read and write permissions to modify the project files
+When you want to contribute to someone else's repository, you make a copy of it.
+This copy is called a [**fork**](../user/project/repository/forking_workflow.md#creating-a-fork).
+The process is called "creating a fork."
+
+When you fork a repo, you create a copy of the project in your own
+[namespace](../user/group/#namespaces). You then have write permissions to modify the project files
 and settings.
 
-For example, if you fork this project, <https://gitlab.com/gitlab-tests/sample-project/> into your namespace,
-you create your own copy of the repository in your namespace (`https://gitlab.com/your-namespace/sample-project/`).
-From there, you can clone the repository, work on the files, and (optionally) submit proposed changes back to the
+For example, you can fork this project, <https://gitlab.com/gitlab-tests/sample-project/>, into your namespace.
+You now have your own copy of the repository. You can view the namespace in the URL, for example
+`https://gitlab.com/your-namespace/sample-project/`.
+Then you can clone the repository to your local machine, work on the files, and submit changes back to the
 original repository.
 
 ### Difference between download and clone
 
 To create a copy of a remote repository's files on your computer, you can either
 **download** or **clone** the repository. If you download it, you cannot sync the repository with the
-remote version on GitLab.
+remote repository on GitLab.
 
 [Cloning](#clone-a-repository) a repository is the same as downloading, except it preserves the Git connection
-with the remote repository. This allows you to modify the files locally and
+with the remote repository. You can then modify the files locally and
 upload the changes to the remote repository on GitLab.
 
 ### Pull and push
 
 After you save a local copy of a repository and modify the files on your computer, you can upload the
-changes to GitLab. This is referred to as **pushing** to the remote, as this is achieved by the command
+changes to GitLab. This is referred to as **pushing** to the remote, because you use the command
 [`git push`](#send-changes-to-gitlabcom).
 
 When the remote repository changes, your local copy is behind. You can update your local copy with the new
 changes in the remote repository.
-This is referred to as **pulling** from the remote, as this is achieved by the command
+This is referred to as **pulling** from the remote, because you use the command
 [`git pull`](#download-the-latest-changes-in-the-project).
 
-## Set up a repository
+## Prerequisites
 
-Git commands will work with any Git repository.
+To start using GitLab with Git, complete the following tasks:
 
-For the purposes of this guide, we refer to this example project on GitLab.com:
-[https://gitlab.com/gitlab-tests/sample-project/](https://gitlab.com/gitlab-tests/sample-project/).
-Remember to replace the example URLs with the relevant path of your project.
+- Create and sign in to a GitLab account.
+- [Open a terminal](#open-a-terminal).
+- [Install Git](#install-git) on your computer.
+- [Configure Git](#configure-git).
+- [Choose a repository](#choose-a-repository).
 
-To get started, choose one of the following:
+### Open a terminal
 
-- Use the example project by signing into GitLab.com and [forking](../user/project/repository/forking_workflow.md#creating-a-fork)
-it into your namespace to make it available under `https://gitlab.com/<your-namespace>/sample-project/`.
-- Copy an existing GitLab repository onto your computer by [cloning a repository](#clone-a-repository).
-- Upload an existing folder from your computer to GitLab by [converting a local folder into a Git repository](#convert-a-local-directory-into-a-repository).
+To execute Git commands on your computer, you must open a terminal (also known as command
+prompt, command shell, and command line). Here are some options:
 
-### Clone a repository
+- For macOS users:
+  - Built-in [Terminal](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line). Press <kbd>⌘ command</kbd> + <kbd>space</kbd> and type `terminal`.
+  - [iTerm2](https://iterm2.com/). You can integrate it with [zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [oh my zsh](https://ohmyz.sh/) for color highlighting and other advanced features.
+- For Windows users:
+  - Built-in command line. On the Windows taskbar, select the search icon and type `cmd`.
+  - [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7).
+  - Git Bash. It is built into [Git for Windows](https://gitforwindows.org/).
+- For Linux users:
+  - Built-in [Linux Terminal](https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal).
 
-To start working locally on an existing remote repository, clone it with the
-command `git clone <repository path>`. You can either clone it using [HTTPS](#clone-using-https)
-or [SSH](#clone-using-ssh), according to your preferred [authentication method](#git-authentication-methods).
+### Install Git
 
-You can find both paths (HTTPS and SSH) by navigating to your project's landing page
-and clicking **Clone**. GitLab prompts you with both paths, from which you can copy
-and paste in your command line. You can also
-[clone and open directly in Visual Studio Code](../user/project/repository/index.md#clone-and-open-in-apple-xcode).
-
-For example, with our [sample project](https://gitlab.com/gitlab-tests/sample-project/):
-
-- To clone through HTTPS, use `https://gitlab.com/gitlab-tests/sample-project.git`.
-- To clone through SSH, use `git@gitlab.com:gitlab-tests/sample-project.git`.
-
-To get started, open a terminal window in the directory you wish to add the
-repository files into, and run one of the `git clone` commands as described below.
-
-Both commands download a copy of the files in a folder named after the project's
-name and preserve the connection with the remote repository.
-You can then navigate to the new directory with `cd sample-project` and start working on it
-locally.
-
-#### Clone using HTTPS
-
-To clone `https://gitlab.com/gitlab-tests/sample-project/` using HTTPS:
+Determine if Git is already installed on your computer by opening a terminal
+and running this command:
 
 ```shell
-git clone https://gitlab.com/gitlab-tests/sample-project.git
+git --version
 ```
+
+If Git is installed, the output is:
+
+```shell
+git version X.Y.Z
+```
+
+If your computer doesn't recognize `git` as a command, you must [install Git](../topics/git/how_to_install_git/index.md).
+After you install Git, run `git --version` to confirm that it installed correctly.
+
+### Configure Git
+
+To start using Git from your computer, you must enter your credentials
+to identify yourself as the author of your work. The username and email address
+should match the ones you use in GitLab.
+
+1. In your shell, add your user name:
+
+   ```shell
+   git config --global user.name "your_username"
+   ```
+
+1. Add your email address:
+
+   ```shell
+   git config --global user.email "your_email_address@example.com"
+   ```
+
+1. To check the configuration, run:
+
+   ```shell
+   git config --global --list
+   ```
+
+   The `--global` option tells Git to always use this information for anything you do on your system.
+   If you omit `--global` or use `--local`, the configuration applies only to the current
+   repository.
+
+You can read more on how Git manages configurations in the
+[Git configuration documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration).
+
+### Choose a repository
+
+Before you begin, choose the repository you want to work in. You can use any project you have permission to
+access on GitLab.com or any other GitLab instance.
+
+To use the repository in the examples on this page:
+
+1. Go to [https://gitlab.com/gitlab-tests/sample-project/](https://gitlab.com/gitlab-tests/sample-project/).
+1. In the top right, select **Fork**.
+1. Choose a namespace for your fork.
+
+The project becomes available at `https://gitlab.com/<your-namespace>/sample-project/`.
+
+You can [fork](../user/project/repository/forking_workflow.md#creating-a-fork) any project you have access to.
+
+## Clone a repository
+
+When you clone a repository, the files from the remote repository are downloaded to your computer,
+and a connection is created.
+
+This connection requires you to add credentials. You can either use SSH or HTTPS. SSH is recommended.
+
+### Clone with SSH
+
+Clone with SSH when you want to authenticate only one time.
+
+1. Authenticate with GitLab by following the instructions in the [SSH documentation](../ssh/README.md).
+1. Go to your project's landing page and select **Clone**. Copy the URL for **Clone with SSH**.
+1. Open a terminal and go to the directory where you want to clone the files. Git automatically creates a folder with the repository name and downloads the files there.
+1. Run this command:
+
+   ```shell
+   git clone git@gitlab.com:gitlab-tests/sample-project.git
+   ```
+
+1. To view the files, go to the new directory:
+
+   ```shell
+   cd sample-project
+   ```
+
+You can also
+[clone a repository and open it directly in Visual Studio Code](../user/project/repository/index.md#clone-and-open-in-visual-studio-code).
+
+### Clone with HTTPS
+
+Clone with HTTPS when you want to authenticate each time you perform an operation
+between your computer and GitLab.
+
+1. Go to your project's landing page and select **Clone**. Copy the URL for **Clone with HTTPS**.
+1. Open a terminal and go to the directory where you want to clone the files.
+1. Run the following command. Git automatically creates a folder with the repository name and downloads the files there.
+
+   ```shell
+   git clone https://gitlab.com/gitlab-tests/sample-project.git
+   ```
+
+1. GitLab requests your username and password:
+   - If you have 2FA enabled for your account, you must use a [Personal Access Token](../user/profile/personal_access_tokens.md)
+     with **read_repository** or **write_repository** permissions instead of your account's password.
+   - If you don't have 2FA enabled, use your account's password.
+
+1. To view the files, go to the new directory:
+
+   ```shell
+   cd sample-project
+   ```
 
 NOTE:
-On Windows, if you enter your password incorrectly multiple times and GitLab is responding `Access denied`,
-add your namespace (username or group):
+On Windows, if you enter your password incorrectly multiple times and an `Access denied` message appears,
+add your namespace (username or group) to the path:
 `git clone https://namespace@gitlab.com/gitlab-org/gitlab.git`.
-
-#### Clone using SSH
-
-To clone `git@gitlab.com:gitlab-org/gitlab.git` using SSH:
-
-```shell
-git clone git@gitlab.com:gitlab-org/gitlab.git
-```
 
 ### Convert a local directory into a repository
 
-When you have your files in a local folder and want to convert it into
-a repository, you must _initialize_ the folder through the `git init`
-command. This command instructs Git to track that directory as a
-repository. Open the terminal in the directory you'd like to convert
-and run:
+You can initialize a local folder so Git tracks it as a repository.
 
-```shell
-git init
-```
+1. Open the terminal in the directory you'd like to convert.
+1. Run this command:
 
-This command creates a `.git` folder in your directory that contains Git
-records and configuration files. We advise against editing these files
-directly.
+   ```shell
+   git init
+   ```
 
-Following the steps in the next section, add the [path to your remote repository](#add-a-remote-repository)
-so that Git can upload your files into the correct project.
+   A `.git` folder is created in your directory. This folder contains Git
+   records and configuration files. You should not edit these files
+   directly.
 
-#### Add a remote repository
+1. Add the [path to your remote repository](#add-a-remote)
+   so Git can upload your files into the correct project.
 
-You add a remote repository to tell Git which remote project in GitLab is tied
+#### Add a remote
+
+You add a "remote" to tell Git which remote repository in GitLab is tied
 to the specific local folder on your computer.
 The remote tells Git where to push or pull from.
 
-To add a remote repository to your local copy:
+To add a remote to your local copy:
 
-1. In GitLab, [create a new project](../user/project/working_with_projects.md#create-a-project) to hold your files.
+1. In GitLab, [create a project](../user/project/working_with_projects.md#create-a-project) to hold your files.
 1. Visit this project's homepage, scroll down to **Push an existing folder**, and copy the command that starts with `git remote add`.
 1. On your computer, open the terminal in the directory you've initialized, paste the command you copied, and press <kbd>enter</kbd>:
 
@@ -279,6 +264,16 @@ To add a remote repository to your local copy:
    ```
 
 After you've done that, you can [stage your files](#add-and-commit-local-changes) and [upload them to GitLab](#send-changes-to-gitlabcom).
+
+#### View your remote repositories
+
+To view your remote repositories, type:
+
+```shell
+git remote -v
+```
+
+The `-v` flag stands for verbose.
 
 ### Download the latest changes in the project
 
@@ -300,16 +295,6 @@ existing branch. You can create additional named remotes and branches as necessa
 
 You can learn more on how Git manages remote repositories in the
 [Git Remote documentation](https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes).
-
-### View your remote repositories
-
-To view your remote repositories, type:
-
-```shell
-git remote -v
-```
-
-The `-v` flag stands for verbose.
 
 ## Branches
 
@@ -487,8 +472,8 @@ To create a copy of a repository in your namespace, you [fork it](../user/projec
 Changes made to your copy of the repository are not automatically synchronized with the original.
 To keep the project in sync with the original project, you need to `pull` from the original repository.
 
-In this case, you [create a link to the remote repository](#add-a-remote-repository).
-This remote is commonly called the `upstream`.
+You must [create a link to the remote repository](#add-a-remote) to pull
+changes from the original repository. It is common to call this remote repository the `upstream`.
 
 You can now use the `upstream` as a [`<remote>` to `pull` new updates](#download-the-latest-changes-in-the-project)
 from the original repository, and use the `origin`
