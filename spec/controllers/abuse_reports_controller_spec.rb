@@ -59,7 +59,7 @@ RSpec.describe AbuseReportsController do
       it 'redirects back to the reported user' do
         post :create, params: { abuse_report: attrs }
 
-        expect(response).to redirect_to user
+        expect(response).to redirect_to root_path
       end
     end
 
