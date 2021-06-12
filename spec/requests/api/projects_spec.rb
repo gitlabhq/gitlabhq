@@ -2107,6 +2107,7 @@ RSpec.describe API::Projects do
         expect(json_response['ci_default_git_depth']).to eq(project.ci_default_git_depth)
         expect(json_response['ci_forward_deployment_enabled']).to eq(project.ci_forward_deployment_enabled)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
+        expect(json_response['squash_option']).to eq(project.squash_option.to_s)
         expect(json_response['readme_url']).to eq(project.readme_url)
         expect(json_response).to have_key 'packages_enabled'
       end

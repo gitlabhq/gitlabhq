@@ -114,6 +114,7 @@ module API
       expose :remove_source_branch_after_merge
       expose :printing_merge_request_link_enabled
       expose :merge_method
+      expose :squash_option
       expose :suggestion_commit_message
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
         options[:statistics] && Ability.allowed?(options[:current_user], :read_statistics, project)

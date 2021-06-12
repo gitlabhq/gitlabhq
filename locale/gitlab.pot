@@ -2791,7 +2791,16 @@ msgstr ""
 msgid "Admin|Admin notes"
 msgstr ""
 
+msgid "Admin|Learn more about quarterly reconcilliation"
+msgstr ""
+
 msgid "Admin|Note"
+msgstr ""
+
+msgid "Admin|Quarterly reconcilliation will occur on %{qrtlyDate}"
+msgstr ""
+
+msgid "Admin|The number of maximum users for your instance is currently exceeding the number of users in license. On %{qrtlyDate}, GitLab will process a quarterly reconciliation and automatically bill you a prorated amount for the overage. There is no action needed from you. If you have a credit card on file, it will be charged. Otherwise, you will receive an invoice."
 msgstr ""
 
 msgid "Admin|View pending user approvals"
