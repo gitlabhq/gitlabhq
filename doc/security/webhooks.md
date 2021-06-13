@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, reference, howto
 ---
 
-# Webhooks and insecure internal web services
+# Webhooks and insecure internal web services **(FREE SELF)**
 
 NOTE:
 On GitLab.com, the [maximum number of webhooks and their size](../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.

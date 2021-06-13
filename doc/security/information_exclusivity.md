@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts
 ---
 
-# Information exclusivity
+# Information exclusivity **(FREE)**
 
 Git is a distributed version control system (DVCS). This means that everyone
 who works with the source code has a local copy of the complete repository.

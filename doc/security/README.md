@@ -6,7 +6,7 @@ comments: false
 type: index
 ---
 
-# Security
+# Security **(FREE)**
 
 - [Password storage](password_storage.md)
 - [Password length limits](password_length_limits.md)

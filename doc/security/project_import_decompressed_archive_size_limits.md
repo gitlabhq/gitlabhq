@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Project Import Decompressed Archive Size Limits
+# Project import decompressed archive size limits **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31564) in GitLab 13.2.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63025) in GitLab 14.0.

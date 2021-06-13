@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Rack Attack initializer
+# Rack Attack initializer **(FREE SELF)**
 
 [Rack Attack](https://github.com/kickstarter/rack-attack), also known as Rack::Attack, is a Ruby gem
 that is meant to protect GitLab with the ability to customize throttling and

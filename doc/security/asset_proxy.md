@@ -4,10 +4,10 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Proxying assets
+# Proxying assets **(FREE SELF)**
 
-A possible security concern when managing a public facing GitLab instance is
-the ability to steal a users IP address by referencing images in issues, comments, etc.
+A possible security concern when managing a public-facing GitLab instance is
+the ability to steal a users IP address by referencing images in issues and comments.
 
 For example, adding `![Example image](http://example.com/example.png)` to
 an issue description causes the image to be loaded from the external
@@ -18,7 +18,7 @@ One way to mitigate this is by proxying any external images to a server you
 control.
 
 GitLab can be configured to use an asset proxy server when requesting external images/videos/audio in
-issues, comments, etc. This helps ensure that malicious images do not expose the user's IP address
+issues and comments. This helps ensure that malicious images do not expose the user's IP address
 when they are fetched.
 
 We currently recommend using [cactus/go-camo](https://github.com/cactus/go-camo#how-it-works)
