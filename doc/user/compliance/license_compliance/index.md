@@ -560,6 +560,9 @@ You can supply a custom root certificate to complete TLS verification by using t
 
 ### Migration from `license_management` to `license_scanning`
 
+WARNING:
+The `license_management` job was deprecated in GitLab 12.8. The `License-Management.gitlab-ci.yml` template was removed from GitLab 14.0.
+
 In GitLab 12.8 a new name for `license_management` job was introduced. This change was made to improve clarity around the purpose of the scan, which is to scan and collect the types of licenses present in a projects dependencies.
 GitLab 13.0 drops support for `license_management`.
 If you're using a custom setup for License Compliance, you're required
