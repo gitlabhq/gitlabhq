@@ -795,46 +795,6 @@ Examples:
 - `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
 - `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`
 
-### Storing regular expressions in variables
-
-It is possible to store a regular expression in a variable, to be used for pattern matching.
-The following example tests whether `$RELEASE` contains either the
-string `staging0` or the string `staging1`:
-
-```yaml
-variables:
-  STAGINGRELS: '/staging0|staging1/'
-
-deploy_staging:
-  script: do.sh deploy staging
-  environment: staging
-  rules:
-    - if: '$RELEASE =~ $STAGINGRELS'
-```
-
-NOTE:
-The available regular expression syntax is limited. See [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/35438)
-for more details.
-
-If needed, you can use a test pipeline to determine whether a regular expression works in a variable. The example below tests the `^mast.*` regular expression directly,
-as well as from in a variable:
-
-```yaml
-variables:
-  MYSTRING: 'main'
-  MYREGEX: '/^mast.*/'
-
-testdirect:
-  script: /bin/true
-  rules:
-    - if: '$MYSTRING =~ /^mast.*/'
-
-testvariable:
-  script: /bin/true
-  rules:
-    - if: '$MYSTRING =~ $MYREGEX'
-```
-
 ## Debug logging
 
 > Introduced in GitLab Runner 1.7.
