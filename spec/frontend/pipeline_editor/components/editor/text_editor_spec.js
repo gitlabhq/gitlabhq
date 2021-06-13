@@ -32,12 +32,13 @@ describe('Pipeline Editor | Text editor component', () => {
     },
   };
 
-  const createComponent = (opts = {}, mountFn = shallowMount) => {
+  const createComponent = (glFeatures = {}, mountFn = shallowMount) => {
     wrapper = mountFn(TextEditor, {
       provide: {
         projectPath: mockProjectPath,
         projectNamespace: mockProjectNamespace,
         ciConfigPath: mockCiConfigPath,
+        glFeatures,
       },
       attrs: {
         value: mockCiYml,
@@ -54,7 +55,6 @@ describe('Pipeline Editor | Text editor component', () => {
       stubs: {
         EditorLite: MockEditorLite,
       },
-      ...opts,
     });
   };
 
@@ -66,7 +66,6 @@ describe('Pipeline Editor | Text editor component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
 
     mockUse.mockClear();
     mockRegisterCiSchema.mockClear();
@@ -100,25 +99,37 @@ describe('Pipeline Editor | Text editor component', () => {
     });
   });
 
-  describe('register CI schema', () => {
-    beforeEach(async () => {
-      createComponent();
+  describe('CI schema', () => {
+    describe('when `schema_linting` feature flag is on', () => {
+      beforeEach(() => {
+        createComponent({ schemaLinting: true });
+        // Since the editor will have already mounted, the event will have fired.
+        // To ensure we properly test this, we clear the mock and re-remit the event.
+        mockRegisterCiSchema.mockClear();
+        mockUse.mockClear();
+        findEditor().vm.$emit(EDITOR_READY_EVENT);
+      });
 
-      // Since the editor will have already mounted, the event will have fired.
-      // To ensure we properly test this, we clear the mock and re-remit the event.
-      mockRegisterCiSchema.mockClear();
-      mockUse.mockClear();
-
-      findEditor().vm.$emit(EDITOR_READY_EVENT);
+      it('configures editor with syntax highlight', () => {
+        expect(mockUse).toHaveBeenCalledTimes(1);
+        expect(mockRegisterCiSchema).toHaveBeenCalledTimes(1);
+        expect(mockRegisterCiSchema).toHaveBeenCalledWith({
+          projectNamespace: mockProjectNamespace,
+          projectPath: mockProjectPath,
+          ref: mockCommitSha,
+        });
+      });
     });
 
-    it('configures editor with syntax highlight', async () => {
-      expect(mockUse).toHaveBeenCalledTimes(1);
-      expect(mockRegisterCiSchema).toHaveBeenCalledTimes(1);
-      expect(mockRegisterCiSchema).toHaveBeenCalledWith({
-        projectNamespace: mockProjectNamespace,
-        projectPath: mockProjectPath,
-        ref: mockCommitSha,
+    describe('when `schema_linting` feature flag is off', () => {
+      beforeEach(() => {
+        createComponent();
+        findEditor().vm.$emit(EDITOR_READY_EVENT);
+      });
+
+      it('does not call the register CI schema function', () => {
+        expect(mockUse).not.toHaveBeenCalled();
+        expect(mockRegisterCiSchema).not.toHaveBeenCalled();
       });
     });
   });

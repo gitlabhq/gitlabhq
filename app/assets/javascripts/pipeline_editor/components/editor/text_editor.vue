@@ -2,12 +2,14 @@
 import { EDITOR_READY_EVENT } from '~/editor/constants';
 import { CiSchemaExtension } from '~/editor/extensions/editor_ci_schema_ext';
 import EditorLite from '~/vue_shared/components/editor_lite.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getCommitSha from '../../graphql/queries/client/commit_sha.graphql';
 
 export default {
   components: {
     EditorLite,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['ciConfigPath', 'projectPath', 'projectNamespace'],
   inheritAttrs: false,
   data() {
@@ -25,14 +27,16 @@ export default {
       this.$emit('updateCiConfig', content);
     },
     registerCiSchema() {
-      const editorInstance = this.$refs.editor.getEditor();
+      if (this.glFeatures.schemaLinting) {
+        const editorInstance = this.$refs.editor.getEditor();
 
-      editorInstance.use(new CiSchemaExtension({ instance: editorInstance }));
-      editorInstance.registerCiSchema({
-        projectPath: this.projectPath,
-        projectNamespace: this.projectNamespace,
-        ref: this.commitSha,
-      });
+        editorInstance.use(new CiSchemaExtension({ instance: editorInstance }));
+        editorInstance.registerCiSchema({
+          projectPath: this.projectPath,
+          projectNamespace: this.projectNamespace,
+          ref: this.commitSha,
+        });
+      }
     },
   },
   readyEvent: EDITOR_READY_EVENT,
