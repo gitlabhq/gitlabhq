@@ -239,6 +239,24 @@ spotbugs-sast:
     FAIL_NEVER: 1
 ```
 
+#### Pinning to minor image version
+
+While our templates use `MAJOR` version pinning to always ensure the latest analyzer
+versions are pulled, there are certain cases where it can be beneficial to pin
+an analyzer to a specific release. To do so, override the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
+in the job template directly.
+
+In the example below, we are pinning to a specific patch version of the `spotbugs` analyzer:
+
+```yaml
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+spotbugs-sast:
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: "2.28.1"
+```
+
 ### Customize rulesets **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235382) in GitLab 13.5.
