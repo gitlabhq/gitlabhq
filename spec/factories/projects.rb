@@ -47,6 +47,7 @@ FactoryBot.define do
       import_last_error { nil }
       forward_deployment_enabled { nil }
       restrict_user_defined_variables { nil }
+      ci_job_token_scope_enabled { nil }
     end
 
     before(:create) do |project, evaluator|
@@ -88,6 +89,7 @@ FactoryBot.define do
       project.merge_trains_enabled = evaluator.merge_trains_enabled unless evaluator.merge_trains_enabled.nil?
       project.keep_latest_artifact = evaluator.keep_latest_artifact unless evaluator.keep_latest_artifact.nil?
       project.restrict_user_defined_variables = evaluator.restrict_user_defined_variables unless evaluator.restrict_user_defined_variables.nil?
+      project.ci_job_token_scope_enabled = evaluator.ci_job_token_scope_enabled unless evaluator.ci_job_token_scope_enabled.nil?
 
       if evaluator.import_status
         import_state = project.import_state || project.build_import_state

@@ -176,6 +176,7 @@ Users are notified of the following events:
 | Event                        | Sent to             | Settings level               |
 |------------------------------|---------------------|------------------------------|
 | New SSH key added            | User                | Security email, always sent. |
+| SSH key has expired          | User                | Security email, always sent. |
 | New email added              | User                | Security email, always sent. |
 | Email changed                | User                | Security email, always sent. |
 | Password changed             | User                | Security email, always sent when user changes their own password |

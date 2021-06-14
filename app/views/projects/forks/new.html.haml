@@ -10,7 +10,8 @@
     project_name: @project.name,
     project_path: @project.path,
     project_description: @project.description,
-    project_visibility: @project.visibility } }
+    project_visibility: @project.visibility,
+    restricted_visibility_levels: Gitlab::CurrentSettings.restricted_visibility_levels.to_json } }
 - else
   .row.gl-mt-3
     .col-lg-3

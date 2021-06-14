@@ -42,7 +42,7 @@ RSpec.describe MemberSerializer do
     it_behaves_like 'members.json'
 
     it 'does not invoke group owner assignment' do
-      expect(Members::LastGroupOwnerAssigner).not_to receive(:new)
+      expect(LastGroupOwnerAssigner).not_to receive(:new)
 
       representation
     end

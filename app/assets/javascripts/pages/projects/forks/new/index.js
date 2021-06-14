@@ -16,6 +16,7 @@ if (gon.features.forkProjectForm) {
     projectPath,
     projectDescription,
     projectVisibility,
+    restrictedVisibilityLevels,
   } = mountElement.dataset;
 
   // eslint-disable-next-line no-new
@@ -38,6 +39,7 @@ if (gon.features.forkProjectForm) {
           projectPath,
           projectDescription,
           projectVisibility,
+          restrictedVisibilityLevels: JSON.parse(restrictedVisibilityLevels),
         },
       });
     },

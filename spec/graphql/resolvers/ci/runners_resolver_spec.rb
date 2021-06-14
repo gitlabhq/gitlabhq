@@ -50,12 +50,28 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
         it { is_expected.to eq([offline_project_runner, instance_runner, inactive_project_runner, group_runner]) }
       end
 
-      context "set to :created_date" do
+      context "set to :contacted_desc" do
         let(:args) do
-          { sort: :created_date }
+          { sort: :contacted_desc }
+        end
+
+        it { is_expected.to eq([offline_project_runner, instance_runner, inactive_project_runner, group_runner].reverse) }
+      end
+
+      context "set to :created_at_desc" do
+        let(:args) do
+          { sort: :created_at_desc }
         end
 
         it { is_expected.to eq([instance_runner, group_runner, offline_project_runner, inactive_project_runner]) }
+      end
+
+      context "set to :created_at_asc" do
+        let(:args) do
+          { sort: :created_at_asc }
+        end
+
+        it { is_expected.to eq([instance_runner, group_runner, offline_project_runner, inactive_project_runner].reverse) }
       end
     end
 

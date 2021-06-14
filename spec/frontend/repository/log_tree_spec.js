@@ -69,6 +69,16 @@ describe('fetchLogsTree', () => {
     mock.restore();
   });
 
+  it('persists the offset for a given page if offset is larger than maximum offset', async () => {
+    await fetchLogsTree(client, 'path', '1000', resolver, 900).then(() => {});
+
+    await fetchLogsTree(client, 'path', '1100', resolver, 1200).then(() => {
+      expect(axios.get).toHaveBeenCalledWith('/gitlab-org/gitlab-foss/-/refs/main/logs_tree/path', {
+        params: { format: 'json', offset: 975 },
+      });
+    });
+  });
+
   it('does not call axios get if offset is larger than the maximum offset', () =>
     fetchLogsTree(client, '', '1000', resolver, 900).then(() => {
       expect(axios.get).not.toHaveBeenCalled();

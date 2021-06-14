@@ -15,8 +15,6 @@ module SshKeys
 
     # rubocop: disable CodeReuse/ActiveRecord
     def perform
-      return unless ::Feature.enabled?(:ssh_key_expiration_email_notification, default_enabled: :yaml)
-
       order = Gitlab::Pagination::Keyset::Order.build([
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: 'expires_at_utc',

@@ -23,7 +23,7 @@ module API
       expose :issue_type,
              as: :type,
              format_with: :upcase,
-             documentation: { type: "String", desc: "One of #{Issue.issue_types.keys.map(&:upcase)}" }
+             documentation: { type: "String", desc: "One of #{::Issue.issue_types.keys.map(&:upcase)}" }
 
       expose :assignee, using: ::API::Entities::UserBasic do |issue|
         issue.assignees.first

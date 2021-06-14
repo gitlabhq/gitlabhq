@@ -63,8 +63,11 @@ need to restart GitLab to apply a new file hook.
 If a file hook executes with non-zero exit code or GitLab fails to execute it, a
 message is logged to:
 
-- `gitlab-rails/plugin.log` in an Omnibus installation.
-- `log/plugin.log` in a source installation.
+- `gitlab-rails/file_hook.log` in an Omnibus installation.
+- `log/file_hook.log` in a source installation.
+
+NOTE:
+Before 14.0 release, the file name was `plugin.log`
 
 ## Creating file hooks
 

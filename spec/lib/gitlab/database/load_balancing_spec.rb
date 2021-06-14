@@ -394,7 +394,7 @@ RSpec.describe Gitlab::Database::LoadBalancing do
     end
 
     shared_context 'LoadBalancing setup' do
-      let(:development_db_config) { ActiveRecord::Base.configurations.default_hash("development").with_indifferent_access }
+      let(:development_db_config) { ActiveRecord::Base.configurations.configs_for(env_name: 'development').first.configuration_hash }
       let(:hosts) { [development_db_config[:host]] }
       let(:model) do
         Class.new(ApplicationRecord) do

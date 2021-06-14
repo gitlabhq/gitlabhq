@@ -471,6 +471,7 @@ describe('URL utility', () => {
       ${'notaurl'}                              | ${false}
       ${'../relative_url'}                      | ${false}
       ${'<a></a>'}                              | ${false}
+      ${'//other-host.test'}                    | ${false}
     `('returns $valid for $url', ({ url, valid }) => {
       expect(urlUtils.isRootRelative(url)).toBe(valid);
     });

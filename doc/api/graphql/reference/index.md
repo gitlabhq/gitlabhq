@@ -766,6 +766,7 @@ Input type: `CiCdSettingsUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcicdsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full Path of the project the settings belong to. |
+| <a id="mutationcicdsettingsupdatejobtokenscopeenabled"></a>`jobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI job tokens generated in this project have restricted access to resources. |
 | <a id="mutationcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates if the latest artifact should be kept for this project. |
 | <a id="mutationcicdsettingsupdatemergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Indicates if merge pipelines are enabled for the project. |
 | <a id="mutationcicdsettingsupdatemergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Indicates if merge trains are enabled for the project. |
@@ -11853,6 +11854,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectcicdsettingjobtokenscopeenabled"></a>`jobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI job tokens generated in this project have restricted access to resources. |
 | <a id="projectcicdsettingkeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Whether to keep the latest builds artifacts. |
 | <a id="projectcicdsettingmergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Whether merge pipelines are enabled. |
 | <a id="projectcicdsettingmergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Whether merge trains are enabled. |
@@ -13841,7 +13843,9 @@ Values for sorting runners.
 | Value | Description |
 | ----- | ----------- |
 | <a id="cirunnersortcontacted_asc"></a>`CONTACTED_ASC` | Ordered by contacted_at in ascending order. |
-| <a id="cirunnersortcreated_desc"></a>`CREATED_DESC` | Ordered by created_date in descending order. |
+| <a id="cirunnersortcontacted_desc"></a>`CONTACTED_DESC` | Ordered by contacted_at in descending order. |
+| <a id="cirunnersortcreated_asc"></a>`CREATED_ASC` | Ordered by created_at in ascending order. |
+| <a id="cirunnersortcreated_desc"></a>`CREATED_DESC` | Ordered by created_at in descending order. |
 
 ### `CiRunnerStatus`
 

@@ -176,6 +176,20 @@ module Gitlab
           true
         end
 
+        # Returns true if there was at least one host that has caught up with the given transaction.
+        # Similar to `#select_caught_up_hosts`, picks a random host, to rotate replicas we use.
+        # Unlike `#select_caught_up_hosts`, does not iterate over all hosts if finds any.
+        def select_up_to_date_host(location)
+          all_hosts = @host_list.hosts.shuffle
+          host = all_hosts.find { |host| host.caught_up?(location) }
+
+          return false unless host
+
+          RequestStore[CACHE_KEY] = host
+
+          true
+        end
+
         def set_consistent_hosts_for_request(hosts)
           RequestStore[VALID_HOSTS_CACHE_KEY] = hosts
         end

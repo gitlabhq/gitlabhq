@@ -323,7 +323,7 @@ export function isAbsolute(url) {
  * @param {String} url
  */
 export function isRootRelative(url) {
-  return /^\//.test(url);
+  return /^\/(?!\/)/.test(url);
 }
 
 /**

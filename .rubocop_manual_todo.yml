@@ -1588,6 +1588,7 @@ Gitlab/NamespacedClass:
     - 'app/models/list_user_preference.rb'
     - 'app/models/member.rb'
     - 'app/models/members/group_member.rb'
+    - 'app/models/members/last_group_owner_assigner.rb'
     - 'app/models/members/project_member.rb'
     - 'app/models/members_preloader.rb'
     - 'app/models/merge_request.rb'

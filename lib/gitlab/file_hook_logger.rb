@@ -3,7 +3,7 @@
 module Gitlab
   class FileHookLogger < Gitlab::Logger
     def self.file_name_noext
-      'plugin'
+      'file_hook'
     end
   end
 end

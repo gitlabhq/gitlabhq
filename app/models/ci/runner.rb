@@ -134,6 +134,8 @@ module Ci
     end
 
     scope :order_contacted_at_asc, -> { order(contacted_at: :asc) }
+    scope :order_contacted_at_desc, -> { order(contacted_at: :desc) }
+    scope :order_created_at_asc, -> { order(created_at: :asc) }
     scope :order_created_at_desc, -> { order(created_at: :desc) }
     scope :with_tags, -> { preload(:tags) }
 
@@ -190,8 +192,13 @@ module Ci
     end
 
     def self.order_by(order)
-      if order == 'contacted_asc'
+      case order
+      when 'contacted_asc'
         order_contacted_at_asc
+      when 'contacted_desc'
+        order_contacted_at_desc
+      when 'created_at_asc'
+        order_created_at_asc
       else
         order_created_at_desc
       end

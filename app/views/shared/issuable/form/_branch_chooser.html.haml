@@ -37,10 +37,12 @@
           data: { placeholder: _('Select branch'), endpoint: refs_project_path(@project, sort: 'updated_desc', find: 'branches') }})
 
 - if source_level < target_level
-  .gl-alert.gl-alert-warning.gl-mt-4
-    = sprite_icon('warning', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    .gl-alert-body
-      = visibilityMismatchString
-      %br
-      = _('Review the target project before submitting to avoid exposing %{source} changes.') % { source: source_visibility }
+  .gl-alert.gl-alert-warning.gl-alert-not-dismissible.gl-max-content.gl-mt-4
+    .gl-alert-container
+      .gl-alert-content{ role: 'alert' }
+        = sprite_icon('warning', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+        .gl-alert-body
+          = visibilityMismatchString
+          %br
+          = _('Review the target project before submitting to avoid exposing %{source} changes.') % { source: source_visibility }
 %hr

@@ -22904,7 +22904,13 @@ CREATE INDEX index_ci_runner_projects_on_project_id ON ci_runner_projects USING 
 
 CREATE INDEX index_ci_runner_projects_on_runner_id ON ci_runner_projects USING btree (runner_id);
 
-CREATE INDEX index_ci_runners_on_contacted_at ON ci_runners USING btree (contacted_at);
+CREATE INDEX index_ci_runners_on_contacted_at_and_id_desc ON ci_runners USING btree (contacted_at, id DESC);
+
+CREATE INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ON ci_runners USING btree (contacted_at DESC, id DESC);
+
+CREATE INDEX index_ci_runners_on_created_at_and_id_desc ON ci_runners USING btree (created_at, id DESC);
+
+CREATE INDEX index_ci_runners_on_created_at_desc_and_id_desc ON ci_runners USING btree (created_at DESC, id DESC);
 
 CREATE INDEX index_ci_runners_on_description_trigram ON ci_runners USING gin (description gin_trgm_ops);
 

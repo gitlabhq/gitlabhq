@@ -46,8 +46,7 @@ RSpec.describe Clusters::Applications::CreateService do
       context 'ingress application' do
         let(:params) do
           {
-            application: 'ingress',
-            modsecurity_enabled: true
+            application: 'ingress'
           }
         end
 
@@ -63,10 +62,6 @@ RSpec.describe Clusters::Applications::CreateService do
 
             cluster.reload
           end.to change(cluster, :application_ingress)
-        end
-
-        it 'sets modsecurity_enabled' do
-          expect(subject.modsecurity_enabled).to eq(true)
         end
       end
 

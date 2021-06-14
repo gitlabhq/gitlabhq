@@ -3288,15 +3288,15 @@ Tiers: `free`
 
 ### `counts.license_management_jobs`
 
-Name on the GitLab license
+Count of License Scanning jobs run
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/license/20210204124854_license_management_jobs.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210204124854_license_management_jobs.yml)
 
-Group: `group::product intelligence`
+Group: `group::composition analysis`
 
 Status: `data_available`
 
-Tiers: `premium`, `ultimate`
+Tiers: `ultimate`
 
 ### `counts.licenses_list_views`
 
@@ -17320,7 +17320,7 @@ Tiers:
 
 ### `usage_activity_by_stage.secure.dependency_scanning_scans`
 
-Counts dependency scanning jobs
+Total number of users running Dependency Scanning Scans
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175220_dependency_scanning_scans.yml)
 
@@ -17416,7 +17416,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.secure.user_dependency_scanning_jobs`
 
-no idea, Count of Dependency Scanning jobs run, it implies user but AFAIK we don't track per user
+Total number of users running Dependency Scanning jobs
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175216_user_dependency_scanning_jobs.yml)
 
@@ -17428,9 +17428,9 @@ Tiers: `ultimate`
 
 ### `usage_activity_by_stage.secure.user_license_management_jobs`
 
-no idea, Count of License Scanning jobs run, it implies user but AFAIK we don't track per user
+Total number of users running License Scanning jobs
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/license/20210216175218_user_license_management_jobs.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175218_user_license_management_jobs.yml)
 
 Group: `group::composition analysis`
 
@@ -19324,7 +19324,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.secure.dependency_scanning_pipeline`
 
-no idea, what is this when did it get added? guess pipelines containing a DS job
+Count of pipelines with successful Dependency Scanning jobs
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175226_dependency_scanning_pipeline.yml)
 
@@ -19336,15 +19336,15 @@ Tiers: `ultimate`
 
 ### `usage_activity_by_stage_monthly.secure.dependency_scanning_scans`
 
-Missing description
+Monthly number of users running Dependency Scanning Scans
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183828_dependency_scanning_scans.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216183828_dependency_scanning_scans.yml)
 
-Group: ``
+Group: `group::composition analysis`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `usage_activity_by_stage_monthly.secure.sast_pipeline`
 
@@ -19456,7 +19456,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.secure.user_dependency_scanning_jobs`
 
-no idea, Count of Dependency Scanning jobs run, it implies user and monthly, but AFAIK we don't track per user
+Monthly number of users creating Dependency Scanning jobs
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175222_user_dependency_scanning_jobs.yml)
 
@@ -19468,9 +19468,9 @@ Tiers: `ultimate`
 
 ### `usage_activity_by_stage_monthly.secure.user_license_management_jobs`
 
-no idea, Count of License Scanning jobs run, it implies user and monthly, but AFAIK we don't track per user
+Monthly number of users running License Scanning jobs
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/license/20210216175224_user_license_management_jobs.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175224_user_license_management_jobs.yml)
 
 Group: `group::composition analysis`
 

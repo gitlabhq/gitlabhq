@@ -59,7 +59,11 @@ module Gitlab
         end
 
         def replica_caught_up?(location)
-          load_balancer.host.caught_up?(location)
+          if Feature.enabled?(:sidekiq_load_balancing_rotate_up_to_date_replica)
+            load_balancer.select_up_to_date_host(location)
+          else
+            load_balancer.host.caught_up?(location)
+          end
         end
       end
     end

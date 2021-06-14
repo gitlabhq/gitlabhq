@@ -85,7 +85,6 @@ RSpec.describe ClusterApplicationEntity do
         expect(subject[:port]).to eq(514)
         expect(subject[:host]).to eq("example.com")
         expect(subject[:protocol]).to eq("tcp")
-        expect(subject[:waf_log_enabled]).to be true
         expect(subject[:cilium_log_enabled]).to be true
       end
     end

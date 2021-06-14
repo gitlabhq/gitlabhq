@@ -28,11 +28,6 @@ module Gitlab
               end
             end
 
-            def matching?
-              super &&
-                Feature.enabled?(:ci_dynamic_child_pipeline, project, default_enabled: true)
-            end
-
             private
 
             def project

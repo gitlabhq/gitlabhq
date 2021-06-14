@@ -95,6 +95,10 @@ export default {
       type: String,
       required: true,
     },
+    restrictedVisibilityLevels: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     const form = {
@@ -111,7 +115,7 @@ export default {
           required: false,
           skipValidation: true,
         }),
-        visibility: initFormField({ value: this.projectVisibility }),
+        visibility: initFormField({ value: this.getInitialVisibilityValue() }),
       },
     };
     return {
@@ -134,13 +138,28 @@ export default {
     visibilityLevelCap() {
       return Math.min(this.projectVisibilityLevel, this.namespaceVisibilityLevel);
     },
+    restrictedVisibilityLevelsSet() {
+      return new Set(this.restrictedVisibilityLevels);
+    },
     allowedVisibilityLevels() {
-      return Object.entries(VISIBILITY_LEVEL).reduce((levels, [levelName, levelValue]) => {
-        if (levelValue <= this.visibilityLevelCap) {
-          levels.push(levelName);
-        }
-        return levels;
-      }, []);
+      const allowedLevels = Object.entries(VISIBILITY_LEVEL).reduce(
+        (levels, [levelName, levelValue]) => {
+          if (
+            !this.restrictedVisibilityLevelsSet.has(levelValue) &&
+            levelValue <= this.visibilityLevelCap
+          ) {
+            levels.push(levelName);
+          }
+          return levels;
+        },
+        [],
+      );
+
+      if (!allowedLevels.length) {
+        return [PRIVATE_VISIBILITY];
+      }
+
+      return allowedLevels;
     },
     visibilityLevels() {
       return [
@@ -173,7 +192,8 @@ export default {
   watch: {
     // eslint-disable-next-line func-names
     'form.fields.namespace.value': function () {
-      this.form.fields.visibility.value = PRIVATE_VISIBILITY;
+      this.form.fields.visibility.value =
+        this.restrictedVisibilityLevels.length !== 0 ? null : PRIVATE_VISIBILITY;
     },
     // eslint-disable-next-line func-names
     'form.fields.name.value': function (newVal) {
@@ -190,6 +210,9 @@ export default {
     },
     isVisibilityLevelDisabled(visibility) {
       return !this.allowedVisibilityLevels.includes(visibility);
+    },
+    getInitialVisibilityValue() {
+      return this.restrictedVisibilityLevels.length !== 0 ? null : this.projectVisibility;
     },
     async onSubmit() {
       this.form.showValidation = true;
@@ -340,6 +363,7 @@ export default {
         v-model="form.fields.visibility.value"
         data-testid="fork-visibility-radio-group"
         name="visibility"
+        :aria-label="__('visibility')"
         required
       >
         <gl-form-radio

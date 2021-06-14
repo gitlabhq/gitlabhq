@@ -126,7 +126,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
       context 'when replica is not up to date' do
         before do
           allow(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer, :release_host)
-          allow(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer, :host, :caught_up?).and_return(false)
+          allow(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer, :select_up_to_date_host).and_return(false)
         end
 
         around do |example|
@@ -155,6 +155,20 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
 
             process_job(job)
             expect(job[:database_chosen]).to eq('primary')
+          end
+        end
+
+        context 'replica selection mechanism feature flag rollout' do
+          before do
+            stub_feature_flags(sidekiq_load_balancing_rotate_up_to_date_replica: false)
+          end
+
+          it 'uses different implmentation' do
+            expect(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer, :host, :caught_up?).and_return(false)
+
+            expect do
+              process_job(job)
+            end.to raise_error(Sidekiq::JobRetry::Skip)
           end
         end
       end

@@ -1,8 +1,0 @@
----
-name: ssh_key_expiration_email_notification
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56888
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326386
-milestone: '13.11'
-type: development
-group: group::compliance
-default_enabled: true

@@ -20,7 +20,7 @@ the feature categories in the [Secure](https://about.gitlab.com/stages-devops-li
   - `AppSec::ContainerScanning`: Container Scanning code.
   - `AppSec::Dast`: DAST code.
   - `AppSec::DependencyScanning`: Dependency Scanning code.
-  - `AppSec::Fuzzing::Api`: API Fuzzing code.
+  - `AppSec::Fuzzing::API`: API Fuzzing code.
   - `AppSec::Fuzzing::Coverage`: Coverage Fuzzing code.
   - `AppSec::Fuzzing`: Shared fuzzing code.
   - `AppSec::LicenseCompliance`: License Compliance code.

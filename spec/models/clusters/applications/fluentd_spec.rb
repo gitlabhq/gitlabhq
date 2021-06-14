@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Clusters::Applications::Fluentd do
-  let(:waf_log_enabled) { true }
   let(:cilium_log_enabled) { true }
-  let(:fluentd) { create(:clusters_applications_fluentd, waf_log_enabled: waf_log_enabled, cilium_log_enabled: cilium_log_enabled) }
+  let(:fluentd) { create(:clusters_applications_fluentd, cilium_log_enabled: cilium_log_enabled) }
 
   include_examples 'cluster application core specs', :clusters_applications_fluentd
   include_examples 'cluster application status specs', :clusters_applications_fluentd
@@ -51,13 +50,11 @@ RSpec.describe Clusters::Applications::Fluentd do
   end
 
   describe '#values' do
-    let(:modsecurity_log_path) { "/var/log/containers/*#{Clusters::Applications::Ingress::MODSECURITY_LOG_CONTAINER_NAME}*.log" }
     let(:cilium_log_path) { "/var/log/containers/*#{described_class::CILIUM_CONTAINER_NAME}*.log" }
 
     subject { fluentd.values }
 
-    context 'with both logs variables set to false' do
-      let(:waf_log_enabled) { false }
+    context 'with cilium_log_enabled set to false' do
       let(:cilium_log_enabled) { false }
 
       it "raises ActiveRecord::RecordInvalid" do
@@ -65,18 +62,8 @@ RSpec.describe Clusters::Applications::Fluentd do
       end
     end
 
-    context 'with both logs variables set to true' do
-      it { is_expected.to include("#{modsecurity_log_path},#{cilium_log_path}") }
-    end
-
-    context 'with waf_log_enabled set to true' do
-      let(:cilium_log_enabled) { false }
-
-      it { is_expected.to include(modsecurity_log_path) }
-    end
-
     context 'with cilium_log_enabled set to true' do
-      let(:waf_log_enabled) { false }
+      let(:cilium_log_enabled) { true }
 
       it { is_expected.to include(cilium_log_path) }
     end

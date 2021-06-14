@@ -273,6 +273,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             resources :value_streams, only: [:index] do
               resources :stages, only: [:index]
             end
+            resource :summary, controller: :summary, only: :show
           end
         end
 

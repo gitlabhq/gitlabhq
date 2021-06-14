@@ -196,28 +196,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '.with_enabled_modsecurity' do
-    subject { described_class.with_enabled_modsecurity }
-
-    let_it_be(:cluster) { create(:cluster) }
-
-    context 'cluster has ingress application with enabled modsecurity' do
-      let!(:application) { create(:clusters_applications_ingress, :installed, :modsecurity_logging, cluster: cluster) }
-
-      it { is_expected.to include(cluster) }
-    end
-
-    context 'cluster has ingress application with disabled modsecurity' do
-      let!(:application) { create(:clusters_applications_ingress, :installed, :modsecurity_disabled, cluster: cluster) }
-
-      it { is_expected.not_to include(cluster) }
-    end
-
-    context 'cluster does not have ingress application' do
-      it { is_expected.not_to include(cluster) }
-    end
-  end
-
   describe '.with_available_elasticstack' do
     subject { described_class.with_available_elasticstack }
 

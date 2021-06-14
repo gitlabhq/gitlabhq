@@ -4,7 +4,7 @@ class MemberSerializer < BaseSerializer
   entity MemberEntity
 
   def represent(members, opts = {})
-    Members::LastGroupOwnerAssigner.new(opts[:group], members).execute unless opts[:source].is_a?(Project)
+    LastGroupOwnerAssigner.new(opts[:group], members).execute unless opts[:source].is_a?(Project)
 
     super(members, opts)
   end

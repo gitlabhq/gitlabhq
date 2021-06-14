@@ -8,7 +8,8 @@ export default {
   props: {
     icon: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     padding: {
       type: String,
@@ -34,7 +35,7 @@ export default {
     class="gl-display-flex gl-align-items-center gl-font-monospace gl-font-sm gl-word-break-all"
     :class="[padding, borderClass]"
   >
-    <gl-icon :name="icon" class="gl-mr-4" />
+    <gl-icon v-if="icon" :name="icon" class="gl-mr-4" />
     <span>
       <slot></slot>
     </span>

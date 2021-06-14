@@ -79,6 +79,9 @@ export const npmFiles = [
     pipelines: [
       { id: 1, project: { commit_url: 'http://foo.bar' }, git_commit_message: 'foo bar baz?' },
     ],
+    file_sha256: 'file_sha256',
+    file_md5: 'file_md5',
+    file_sha1: 'file_sha1',
   },
 ];
 

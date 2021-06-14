@@ -4,10 +4,9 @@ module Gitlab
   module CycleAnalytics
     module Summary
       class Base
-        def initialize(project:, from:, to: nil)
+        def initialize(project:, options:)
           @project = project
-          @from = from
-          @to = to
+          @options = options
         end
 
         def title

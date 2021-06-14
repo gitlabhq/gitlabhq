@@ -1,4 +1,5 @@
-import { GlFormInputGroup, GlFormInput, GlForm, GlFormRadio, GlFormSelect } from '@gitlab/ui';
+import { GlFormInputGroup, GlFormInput, GlForm, GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
+import { getByRole, getAllByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -44,6 +45,7 @@ describe('ForkForm component', () => {
     projectPath: 'project-name',
     projectDescription: 'some project description',
     projectVisibility: 'private',
+    restrictedVisibilityLevels: [],
   };
 
   const mockGetRequest = (data = {}, statusCode = httpStatus.OK) => {
@@ -68,6 +70,7 @@ describe('ForkForm component', () => {
       stubs: {
         GlFormInputGroup,
         GlFormInput,
+        GlFormRadioGroup,
         GlFormRadio,
       },
     });
@@ -89,7 +92,7 @@ describe('ForkForm component', () => {
     axiosMock.restore();
   });
 
-  const findFormSelect = () => wrapper.find(GlFormSelect);
+  const findFormSelectOptions = () => wrapper.find('select[name="namespace"]').findAll('option');
   const findPrivateRadio = () => wrapper.find('[data-testid="radio-private"]');
   const findInternalRadio = () => wrapper.find('[data-testid="radio-internal"]');
   const findPublicRadio = () => wrapper.find('[data-testid="radio-public"]');
@@ -230,7 +233,7 @@ describe('ForkForm component', () => {
       expect(wrapper.findAll(GlFormRadio)).toHaveLength(3);
     });
 
-    it('resets the visibility to default "private" when the namespace is changed', async () => {
+    describe('when the namespace is changed', () => {
       const namespaces = [
         {
           visibility: 'private',
@@ -243,42 +246,114 @@ describe('ForkForm component', () => {
         },
       ];
 
-      mockGetRequest();
-      createComponent(
-        {
-          projectVisibility: 'public',
-        },
-        {
-          namespaces,
-        },
-      );
+      beforeEach(() => {
+        mockGetRequest();
+      });
 
-      expect(wrapper.vm.form.fields.visibility.value).toBe('public');
-      findFormSelect().vm.$emit('input', namespaces[1]);
+      it('resets the visibility to default "private"', async () => {
+        createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
-      await wrapper.vm.$nextTick();
+        expect(wrapper.vm.form.fields.visibility.value).toBe('public');
+        await findFormSelectOptions().at(1).setSelected();
 
-      expect(wrapper.vm.form.fields.visibility.value).toBe('private');
+        await wrapper.vm.$nextTick();
+
+        expect(getByRole(wrapper.element, 'radio', { name: /private/i }).checked).toBe(true);
+      });
+
+      it('sets the visibility to be null when restrictedVisibilityLevels is set', async () => {
+        createFullComponent({ restrictedVisibilityLevels: [10] }, { namespaces });
+
+        await findFormSelectOptions().at(1).setSelected();
+
+        await wrapper.vm.$nextTick();
+
+        const container = getByRole(wrapper.element, 'radiogroup', { name: /visibility/i });
+        const visibilityRadios = getAllByRole(container, 'radio');
+        expect(visibilityRadios.filter((e) => e.checked)).toHaveLength(0);
+      });
     });
 
     it.each`
-      project       | namespace     | privateIsDisabled | internalIsDisabled | publicIsDisabled
-      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}
-      ${'private'}  | ${'internal'} | ${undefined}      | ${'true'}          | ${'true'}
-      ${'private'}  | ${'public'}   | ${undefined}      | ${'true'}          | ${'true'}
-      ${'internal'} | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}
-      ${'internal'} | ${'internal'} | ${undefined}      | ${undefined}       | ${'true'}
-      ${'internal'} | ${'public'}   | ${undefined}      | ${undefined}       | ${'true'}
-      ${'public'}   | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}
-      ${'public'}   | ${'internal'} | ${undefined}      | ${undefined}       | ${'true'}
-      ${'public'}   | ${'public'}   | ${undefined}      | ${undefined}       | ${undefined}
+      project       | restrictedVisibilityLevels
+      ${'private'}  | ${[]}
+      ${'internal'} | ${[]}
+      ${'public'}   | ${[]}
+      ${'private'}  | ${[0]}
+      ${'private'}  | ${[10]}
+      ${'private'}  | ${[20]}
+      ${'private'}  | ${[0, 10]}
+      ${'private'}  | ${[0, 20]}
+      ${'private'}  | ${[10, 20]}
+      ${'private'}  | ${[0, 10, 20]}
+      ${'internal'} | ${[0]}
+      ${'internal'} | ${[10]}
+      ${'internal'} | ${[20]}
+      ${'internal'} | ${[0, 10]}
+      ${'internal'} | ${[0, 20]}
+      ${'internal'} | ${[10, 20]}
+      ${'internal'} | ${[0, 10, 20]}
+      ${'public'}   | ${[0]}
+      ${'public'}   | ${[10]}
+      ${'public'}   | ${[0, 10]}
+      ${'public'}   | ${[0, 20]}
+      ${'public'}   | ${[10, 20]}
+      ${'public'}   | ${[0, 10, 20]}
+    `('checks the correct radio button', async ({ project, restrictedVisibilityLevels }) => {
+      mockGetRequest();
+      createFullComponent({
+        projectVisibility: project,
+        restrictedVisibilityLevels,
+      });
+
+      if (restrictedVisibilityLevels.length === 0) {
+        expect(wrapper.find('[name="visibility"]:checked').attributes('value')).toBe(project);
+      } else {
+        expect(wrapper.find('[name="visibility"]:checked').exists()).toBe(false);
+      }
+    });
+
+    it.each`
+      project       | namespace     | privateIsDisabled | internalIsDisabled | publicIsDisabled | restrictedVisibilityLevels
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[]}
+      ${'private'}  | ${'internal'} | ${undefined}      | ${'true'}          | ${'true'}        | ${[]}
+      ${'private'}  | ${'public'}   | ${undefined}      | ${'true'}          | ${'true'}        | ${[]}
+      ${'internal'} | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[]}
+      ${'internal'} | ${'internal'} | ${undefined}      | ${undefined}       | ${'true'}        | ${[]}
+      ${'internal'} | ${'public'}   | ${undefined}      | ${undefined}       | ${'true'}        | ${[]}
+      ${'public'}   | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[]}
+      ${'public'}   | ${'internal'} | ${undefined}      | ${undefined}       | ${'true'}        | ${[]}
+      ${'public'}   | ${'public'}   | ${undefined}      | ${undefined}       | ${undefined}     | ${[]}
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[0]}
+      ${'internal'} | ${'internal'} | ${'true'}         | ${undefined}       | ${'true'}        | ${[0]}
+      ${'public'}   | ${'public'}   | ${'true'}         | ${undefined}       | ${undefined}     | ${[0]}
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[10]}
+      ${'internal'} | ${'internal'} | ${undefined}      | ${'true'}          | ${'true'}        | ${[10]}
+      ${'public'}   | ${'public'}   | ${undefined}      | ${'true'}          | ${undefined}     | ${[10]}
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[20]}
+      ${'internal'} | ${'internal'} | ${undefined}      | ${undefined}       | ${'true'}        | ${[20]}
+      ${'public'}   | ${'public'}   | ${undefined}      | ${undefined}       | ${'true'}        | ${[20]}
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[10, 20]}
+      ${'internal'} | ${'internal'} | ${undefined}      | ${'true'}          | ${'true'}        | ${[10, 20]}
+      ${'public'}   | ${'public'}   | ${undefined}      | ${'true'}          | ${'true'}        | ${[10, 20]}
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[0, 10, 20]}
+      ${'internal'} | ${'internal'} | ${undefined}      | ${'true'}          | ${'true'}        | ${[0, 10, 20]}
+      ${'public'}   | ${'public'}   | ${undefined}      | ${'true'}          | ${'true'}        | ${[0, 10, 20]}
     `(
       'sets appropriate radio button disabled state',
-      async ({ project, namespace, privateIsDisabled, internalIsDisabled, publicIsDisabled }) => {
+      async ({
+        project,
+        namespace,
+        privateIsDisabled,
+        internalIsDisabled,
+        publicIsDisabled,
+        restrictedVisibilityLevels,
+      }) => {
         mockGetRequest();
         createComponent(
           {
             projectVisibility: project,
+            restrictedVisibilityLevels,
           },
           {
             form: { fields: { namespace: { value: { visibility: namespace } } } },

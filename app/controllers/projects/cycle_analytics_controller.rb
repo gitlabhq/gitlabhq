@@ -14,7 +14,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   feature_category :planning_analytics
 
   def show
-    @cycle_analytics = ::CycleAnalytics::ProjectLevel.new(@project, options: options(cycle_analytics_project_params))
+    @cycle_analytics = Analytics::CycleAnalytics::ProjectLevel.new(project: @project, options: options(cycle_analytics_project_params))
 
     respond_to do |format|
       format.html do

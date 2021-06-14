@@ -459,7 +459,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
         expect(hosts).to all(receive(:caught_up?).with(location).and_return(false))
       end
 
-      it 'returns true and has does not set the valid hosts' do
+      it 'returns false and does not set the valid hosts' do
         expect(subject).to be false
         expect(valid_host_list).to be_nil
       end
@@ -484,6 +484,38 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
           expect(lb.host).to eq(hosts[1])
           RequestStore.delete(described_class::CACHE_KEY)
         end
+      end
+    end
+  end
+
+  describe '#select_caught_up_hosts' do
+    let(:location) { 'AB/12345'}
+    let(:hosts) { lb.host_list.hosts }
+    let(:set_host) { RequestStore[described_class::CACHE_KEY] }
+
+    subject { lb.select_up_to_date_host(location) }
+
+    context 'when none of the replicas are caught up' do
+      before do
+        expect(hosts).to all(receive(:caught_up?).with(location).and_return(false))
+      end
+
+      it 'returns false and does not update the host thread-local variable' do
+        expect(subject).to be false
+        expect(set_host).to be_nil
+      end
+    end
+
+    context 'when any of the replicas is caught up' do
+      before do
+        # `allow` for non-caught up host, because we may not even check it, if will find the caught up one earlier
+        allow(hosts[0]).to receive(:caught_up?).with(location).and_return(false)
+        expect(hosts[1]).to receive(:caught_up?).with(location).and_return(true)
+      end
+
+      it 'returns true and sets host thread-local variable' do
+        expect(subject).to be true
+        expect(set_host).to eq(hosts[1])
       end
     end
   end
