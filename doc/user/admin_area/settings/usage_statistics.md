@@ -10,8 +10,12 @@ type: reference
 GitLab Inc. periodically collects information about your instance in order
 to perform various actions.
 
-All statistics are opt-out. You can enable/disable them in the
-**Admin Area > Settings > Metrics and profiling** section **Usage statistics**.
+All statistics are opt-out. To enable or disable them:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Metrics and profiling**, and expand **Usage statistics**.
+1. Enable or disable **Version check** and **Usage ping**.
+1. Select **Save changes**.
 
 ## Network configuration
 
@@ -40,8 +44,12 @@ This information is used, among other things, to identify to which versions
 patches must be backported, making sure active GitLab instances remain
 secure.
 
-If you disable version check, this information isn't collected. Enable or
-disable the version check in **Admin Area > Settings > Metrics and profiling > Usage statistics**.
+If you disable version check, this information isn't collected. To enable or disable it:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Metrics and profiling**, and expand **Usage statistics**.
+1. Enable or disable **Version check**.
+1. Select **Save changes**.
 
 ### Request flow example
 

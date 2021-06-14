@@ -9488,7 +9488,7 @@ CREATE TABLE application_settings (
     rate_limiting_response_text text,
     invisible_captcha_enabled boolean DEFAULT false NOT NULL,
     container_registry_cleanup_tags_service_max_list_size integer DEFAULT 200 NOT NULL,
-    enforce_ssh_key_expiration boolean DEFAULT false NOT NULL,
+    enforce_ssh_key_expiration boolean DEFAULT true NOT NULL,
     git_two_factor_session_expiry integer DEFAULT 15 NOT NULL,
     keep_latest_artifact boolean DEFAULT true NOT NULL,
     notes_create_limit integer DEFAULT 300 NOT NULL,

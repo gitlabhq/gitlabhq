@@ -105,7 +105,7 @@ RSpec.describe Mutations::DesignManagement::Upload do
 
       context "with a valid design" do
         it "returns the updated designs" do
-          expect(resolve[:errors]).to eq []
+          expect(resolve[:errors]).to be_empty
           expect(resolve[:designs].map(&:filename)).to contain_exactly("dk.png")
         end
       end

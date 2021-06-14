@@ -38,7 +38,7 @@ When you [add files to a repository](../../project/repository/web_editor.md#crea
 through the web UI, the maximum **attachment** size is the limiting factor,
 because the [web server](../../../development/architecture.md#components)
 must receive the file before GitLab can generate the commit.
-Use [Git LFS](../../../topics/git/lfs/index.md) to add large files to a repository. 
+Use [Git LFS](../../../topics/git/lfs/index.md) to add large files to a repository.
 
 ## Max import size
 
@@ -189,22 +189,18 @@ Once a lifetime for personal access tokens is set, GitLab:
 
 ## Enforce SSH key expiration **(ULTIMATE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250480) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250480) in GitLab 13.9.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/320970) in GitLab 14.0.
 
-By default, expired SSH keys **can still be used**.
+By default, expired SSH keys **are not usable**.
 
-WARNING:
-Allowing use of expired SSH keys by default is deprecated and scheduled to change in GitLab 14.0.
-
-To prevent the use of expired SSH keys:
+To allow the use of expired SSH keys:
 
 1. Navigate to **Admin Area > Settings > General**.
 1. Expand the **Account and limit** section.
-1. Select the **Enforce SSH key expiration** checkbox.
+1. Uncheck the **Enforce SSH key expiration** checkbox.
 
-Enforcing SSH key expiration immediately disables all expired SSH keys.
-
-For more information, see the following issue on [SSH key expiration](https://gitlab.com/gitlab-org/gitlab/-/issues/320970).
+Disabling SSH key expiration immediately enables all expired SSH keys.
 
 ## Do not enforce Personal Access Token expiration **(ULTIMATE SELF)**
 

@@ -39,17 +39,14 @@ module Gitlab
     end
   end
 
-  COM_URL = 'https://gitlab.com'
-  STAGING_COM_URL = 'https://staging.gitlab.com'
   APP_DIRS_PATTERN = %r{^/?(app|config|ee|lib|spec|\(\w*\))}.freeze
-  SUBDOMAIN_REGEX = %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}.freeze
   VERSION = File.read(root.join("VERSION")).strip.freeze
   INSTALLATION_TYPE = File.read(root.join("INSTALLATION_TYPE")).strip.freeze
   HTTP_PROXY_ENV_VARS = %w(http_proxy https_proxy HTTP_PROXY HTTPS_PROXY).freeze
 
   def self.com?
     # Check `gl_subdomain?` as well to keep parity with gitlab.com
-    Gitlab.config.gitlab.url == COM_URL || gl_subdomain?
+    Gitlab.config.gitlab.url == Gitlab::Saas.com_url || gl_subdomain?
   end
 
   def self.com
@@ -57,7 +54,7 @@ module Gitlab
   end
 
   def self.staging?
-    Gitlab.config.gitlab.url == STAGING_COM_URL
+    Gitlab.config.gitlab.url == Gitlab::Saas.staging_com_url
   end
 
   def self.canary?
@@ -73,11 +70,11 @@ module Gitlab
   end
 
   def self.org?
-    Gitlab.config.gitlab.url == 'https://dev.gitlab.org'
+    Gitlab.config.gitlab.url == Gitlab::Saas.dev_url
   end
 
   def self.gl_subdomain?
-    SUBDOMAIN_REGEX === Gitlab.config.gitlab.url
+    Gitlab::Saas.subdomain_regex === Gitlab.config.gitlab.url
   end
 
   def self.dev_env_org_or_com?

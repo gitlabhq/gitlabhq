@@ -750,7 +750,7 @@ RSpec.describe Snippet do
       end
 
       it 'returns an empty array' do
-        expect(subject).to eq []
+        expect(subject).to be_empty
       end
     end
   end

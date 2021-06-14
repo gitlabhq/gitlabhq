@@ -13,7 +13,8 @@ You can use **Sign-in restrictions** to customize authentication restrictions fo
 
 To access sign-in restriction settings:
 
-1. Navigate to the **Admin Area > Settings > General**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand the **Sign-in restrictions** section.
 
 ## Password authentication enabled
@@ -78,7 +79,7 @@ If necessary, you can disable **Admin Mode** as an administrator by using one of
   ```ruby
   ::Gitlab::CurrentSettings.update!(admin_mode: false)
   ```
-  
+
 ## Two-factor authentication
 
 When this feature is enabled, all users must use the [two-factor authentication](../../profile/account/two_factor_authentication.md).
@@ -114,13 +115,14 @@ For example, if you include the following information in the noted text box:
 ```markdown
 # Custom sign-in text
 
-To access this text box, navigate to Admin Area > Settings > General, and expand the "Sign-in restrictions" section.
+To access this text box:
+
+1. On the top bar, select **Menu > Admin**.
+1. In the left sidebar, select **Settings > General**, and expand the **Sign-in restrictions** section.
 ```
 
 Your users see the **Custom sign-in text** when they navigate to the sign-in screen for your
-GitLab instance:
-
-![Sign-in page](img/custom_sign_in_page_v13_6.png)
+GitLab instance.
 
 <!-- ## Troubleshooting
 

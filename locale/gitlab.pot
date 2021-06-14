@@ -28342,6 +28342,12 @@ msgstr ""
 msgid "SSH keys allow you to establish a secure connection between your computer and GitLab."
 msgstr ""
 
+msgid "SSH keys with the following fingerprints are scheduled to expire soon. Expired SSH keys can not be used:"
+msgstr ""
+
+msgid "SSH keys with the following fingerprints have expired and can no longer be used:"
+msgstr ""
+
 msgid "SSH public key"
 msgstr ""
 
@@ -37636,12 +37642,6 @@ msgid "Your SSH key was deleted"
 msgstr ""
 
 msgid "Your SSH keys (%{count})"
-msgstr ""
-
-msgid "Your SSH keys with the following fingerprints are scheduled to expire soon. Expired SSH keys will not be usable in future versions of GitLab:"
-msgstr ""
-
-msgid "Your SSH keys with the following fingerprints have expired. Expired SSH keys will not be usable in future versions of GitLab:"
 msgstr ""
 
 msgid "Your To-Do List"

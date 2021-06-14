@@ -43,7 +43,7 @@ module Gitlab
               survey_id: EASE_SCORE_SURVEY_ID
             }
 
-            "#{Gitlab::COM_URL}/-/survey_responses?#{params.to_query}"
+            "#{Gitlab::Saas.com_url}/-/survey_responses?#{params.to_query}"
           end
 
           def feedback_ratings(rating)
