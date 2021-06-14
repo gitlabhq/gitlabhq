@@ -12,6 +12,7 @@ import {
   START_SEARCH,
   FOCUS_FILTER_BAR,
   TOGGLE_PERFORMANCE_BAR,
+  HIDE_APPEARING_CONTENT,
   TOGGLE_CANARY,
   TOGGLE_MARKDOWN_PREVIEW,
   GO_TO_YOUR_TODO_LIST,
@@ -78,6 +79,7 @@ export default class Shortcuts {
     Mousetrap.bind(keysFor(START_SEARCH), Shortcuts.focusSearch);
     Mousetrap.bind(keysFor(FOCUS_FILTER_BAR), this.focusFilter.bind(this));
     Mousetrap.bind(keysFor(TOGGLE_PERFORMANCE_BAR), Shortcuts.onTogglePerfBar);
+    Mousetrap.bind(keysFor(HIDE_APPEARING_CONTENT), Shortcuts.hideAppearingContent);
     Mousetrap.bind(keysFor(TOGGLE_CANARY), Shortcuts.onToggleCanary);
 
     const findFileURL = document.body.dataset.findFile;
@@ -196,6 +198,18 @@ export default class Shortcuts {
 
   static focusSearch(e) {
     $('#search').focus();
+
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+  }
+
+  static hideAppearingContent(e) {
+    const elements = document.querySelectorAll('.tooltip, .popover');
+
+    elements.forEach((element) => {
+      element.style.display = 'none';
+    });
 
     if (e.preventDefault) {
       e.preventDefault();

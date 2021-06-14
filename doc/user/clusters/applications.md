@@ -1029,7 +1029,13 @@ at least 2 people from the
 The one-click installation method was deprecated in GitLab 13.9 and removed in [GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
 The removal does not break nor uninstall any apps you have installed, it only
 removes the "Applications" tab from the cluster page.
-Follow the process to [take ownership of your GitLab Managed Apps](#take-ownership-of-your-gitlab-managed-apps).
+The new recommended way to manage cluster applications is to use the [cluster management project template](management_project_template.md).
+
+- If you want to migrate your GitLab managed apps management to this template, read
+  [migrating from GitLab managed apps to project template](migrating_from_gma_to_project_template.md).
+- If you don't want to use the template, you can also manually manage your applications.
+  For that, follow the process to
+  [take ownership of your GitLab Managed Apps](#take-ownership-of-your-gitlab-managed-apps).
 
 If you are not yet on GitLab 14.0 or later, you can refer to [an older version of this document](https://docs.gitlab.com/13.12/ee/user/clusters/applications.html#install-with-one-click-deprecated).
 

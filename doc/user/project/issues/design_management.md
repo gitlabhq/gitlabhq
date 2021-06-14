@@ -219,6 +219,9 @@ There are two ways to resolve/unresolve a Design thread:
 
   ![Resolve checkbox](img/resolve_design-discussion_checkbox_v13_1.png)
 
+Resolving a discussion thread will also mark any pending to-do related to notes
+inside the thread as done. This is applicable only for to-dos owned by the user triggering the action.
+
 Note that your resolved comment pins disappear from the Design to free up space for new discussions.
 However, if you need to revisit or find a resolved discussion, all of your resolved threads are
 available in the **Resolved Comment** area at the bottom of the right sidebar.

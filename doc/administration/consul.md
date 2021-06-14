@@ -15,11 +15,17 @@ turn communicate with the servers.
 GitLab Premium includes a bundled version of [Consul](https://www.consul.io/)
 a service networking solution that you can manage by using `/etc/gitlab/gitlab.rb`.
 
+## Prerequisites
+
+Before configuring Consul:
+
+1. Review the [reference architecture](reference_architectures/index.md#available-reference-architectures)
+   documentation to determine the number of Consul server nodes you should have.
+1. If necessary, ensure the [appropriate ports are open](https://docs.gitlab.com/omnibus/package-information/defaults.html#ports) in your firewall.
+
 ## Configure the Consul nodes
 
-After you review the [reference architecture](reference_architectures/index.md#available-reference-architectures)
-documentation to determine the number of Consul server nodes you should have,
-on _each_ Consul server node:
+On _each_ Consul server node:
 
 1. Follow the instructions to [install](https://about.gitlab.com/install/)
    GitLab by choosing your preferred platform, but do not supply the

@@ -30,8 +30,8 @@ To make full use of Auto DevOps with Kubernetes, you need:
      deployments, any Ingress controller should work, but as of GitLab 14.0,
      [canary deployments](../../user/project/canary_deployments.md) require
      NGINX Ingress. You can deploy the NGINX Ingress controller to your
-     Kubernetes cluster by installing the
-     [`ingress-nginx`](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx)
+     Kubernetes cluster either through the GitLab [Cluster management project template](../../user/clusters/management_project_template.md)
+     or manually by using the [`ingress-nginx`](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx)
      Helm chart.
 
      NOTE:

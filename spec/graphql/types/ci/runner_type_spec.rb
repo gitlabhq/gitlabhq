@@ -2,8 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::RunnerType do
+RSpec.describe GitlabSchema.types['CiRunner'] do
   specify { expect(described_class.graphql_name).to eq('CiRunner') }
+
+  specify { expect(described_class).to require_graphql_authorizations(:read_runner) }
 
   it 'contains attributes related to a runner' do
     expected_fields = %w[
@@ -11,6 +13,6 @@ RSpec.describe Types::Ci::RunnerType do
       version short_sha revision locked run_untagged ip_address runner_type tag_list
     ]
 
-    expect(described_class).to have_graphql_fields(*expected_fields)
+    expect(described_class).to include_graphql_fields(*expected_fields)
   end
 end

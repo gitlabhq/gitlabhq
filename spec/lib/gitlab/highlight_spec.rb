@@ -143,9 +143,21 @@ RSpec.describe Gitlab::Highlight do
     end
 
     describe 'highlight timeouts' do
-      context 'when there is a timeout error while highlighting' do
-        let(:result) { described_class.highlight(file_name, content) }
+      let(:result) { described_class.highlight(file_name, content, language: "ruby") }
 
+      context 'when there is an attempt' do
+        it "increments the attempt counter with a defined language" do
+          expect { result }.to change { highlight_attempt_total("ruby") }
+        end
+
+        it "increments the attempt counter with an undefined language" do
+          expect do
+            described_class.highlight(file_name, content)
+          end.to change { highlight_attempt_total("undefined") }
+        end
+      end
+
+      context 'when there is a timeout error while highlighting' do
         before do
           allow(Timeout).to receive(:timeout).twice.and_raise(Timeout::Error)
           # This is done twice because it's rescued first and then
@@ -174,6 +186,12 @@ RSpec.describe Gitlab::Highlight do
   def highlight_timeout_total(source)
     Gitlab::Metrics
       .counter(:highlight_timeout, 'Counts the times highlights have timed out')
+      .get(source: source)
+  end
+
+  def highlight_attempt_total(source)
+    Gitlab::Metrics
+      .counter(:file_highlighting_attempt, 'Counts the times highlighting has been attempted on a file')
       .get(source: source)
   end
 

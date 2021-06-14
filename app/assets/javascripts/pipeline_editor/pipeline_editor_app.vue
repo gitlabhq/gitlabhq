@@ -152,6 +152,9 @@ export default {
       update(data) {
         return data.project?.ciTemplate?.content || '';
       },
+      result({ data }) {
+        this.updateCiConfig(data.project?.ciTemplate?.content || '');
+      },
       error() {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);
       },
@@ -169,9 +172,6 @@ export default {
     },
     isEmpty() {
       return this.currentCiFileContent === '';
-    },
-    templateOrCurrentContent() {
-      return this.isNewCiConfigFile ? this.starterTemplate : this.currentCiFileContent;
     },
   },
   i18n: {
@@ -280,7 +280,7 @@ export default {
       />
       <pipeline-editor-home
         :ci-config-data="ciConfigData"
-        :ci-file-content="templateOrCurrentContent"
+        :ci-file-content="currentCiFileContent"
         :is-new-ci-config-file="isNewCiConfigFile"
         @commit="updateOnCommit"
         @resetContent="resetContent"
