@@ -7966,6 +7966,9 @@ msgstr ""
 msgid "Collapse approvers"
 msgstr ""
 
+msgid "Collapse diffs larger than this size, and show a 'too large' message instead."
+msgstr ""
+
 msgid "Collapse issues"
 msgstr ""
 
@@ -8561,6 +8564,9 @@ msgid "ContainerRegistry|Cleanup is disabled for this project"
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup pending"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup policies are now available for this project. %{linkStart}Click here to get started.%{linkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup policy for tags is disabled"
@@ -13987,9 +13993,6 @@ msgstr ""
 msgid "File deleted"
 msgstr ""
 
-msgid "File format is no longer supported"
-msgstr ""
-
 msgid "File hooks are similar to system hooks but are executed as files instead of sending data to a URL."
 msgstr ""
 
@@ -16358,9 +16361,6 @@ msgstr ""
 msgid "How do I set up this service?"
 msgstr ""
 
-msgid "How does cleanup work?"
-msgstr ""
-
 msgid "How it works"
 msgstr ""
 
@@ -17490,6 +17490,9 @@ msgid "Insert image"
 msgstr ""
 
 msgid "Insert inline code"
+msgstr ""
+
+msgid "Insert link"
 msgstr ""
 
 msgid "Insert suggestion"
@@ -20211,6 +20214,9 @@ msgid "Maximum concurrency of Elasticsearch bulk requests per indexing operation
 msgstr ""
 
 msgid "Maximum delay (Minutes)"
+msgstr ""
+
+msgid "Maximum diff patch size in bytes"
 msgstr ""
 
 msgid "Maximum duration of a session."
@@ -28399,7 +28405,7 @@ msgstr ""
 msgid "Save pipeline schedule"
 msgstr ""
 
-msgid "Save space and find images in the Container Registry. Remove unneeded tags and keep only the ones you want."
+msgid "Save space and find images in the container Registry. remove unneeded tags and keep only the ones you want. %{linkStart}How does cleanup work?%{linkEnd}"
 msgstr ""
 
 msgid "Saved scan settings and target site settings which are reusable."
@@ -28433,6 +28439,9 @@ msgid "Scheduled Deletion At - %{permanent_deletion_time}"
 msgstr ""
 
 msgid "Scheduled a rebase of branch %{branch}."
+msgstr ""
+
+msgid "Scheduled pipelines cannot run more frequently than once per %{limit} minutes. A pipeline configured to run more frequently only starts after %{limit} minutes have elapsed since the last time it ran."
 msgstr ""
 
 msgid "Scheduled to merge this merge request (%{strategy})."
@@ -28838,6 +28847,12 @@ msgstr ""
 msgid "SecurityConfiguration|Feature documentation for %{featureName}"
 msgstr ""
 
+msgid "SecurityConfiguration|GitLab Ultimate checks your application for security vulnerabilities that may lead to unauthorized access, data leaks, and denial of service attacks. Its features include:"
+msgstr ""
+
+msgid "SecurityConfiguration|High-level vulnerability statistics across projects and groups."
+msgstr ""
+
 msgid "SecurityConfiguration|Manage"
 msgstr ""
 
@@ -28850,10 +28865,16 @@ msgstr ""
 msgid "SecurityConfiguration|Not enabled"
 msgstr ""
 
+msgid "SecurityConfiguration|Runtime security metrics for application environments."
+msgstr ""
+
 msgid "SecurityConfiguration|SAST Analyzers"
 msgstr ""
 
 msgid "SecurityConfiguration|SAST Configuration"
+msgstr ""
+
+msgid "SecurityConfiguration|Secure your project with Ultimate"
 msgstr ""
 
 msgid "SecurityConfiguration|Security Control"
@@ -28871,10 +28892,19 @@ msgstr ""
 msgid "SecurityConfiguration|The status of the tools only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}. Once you've enabled a scan for the default branch, any subsequent feature branch you create will include the scan."
 msgstr ""
 
+msgid "SecurityConfiguration|Upgrade or start a free trial"
+msgstr ""
+
 msgid "SecurityConfiguration|Using custom settings. You won't receive automatic updates on this variable. %{anchorStart}Restore to default%{anchorEnd}"
 msgstr ""
 
 msgid "SecurityConfiguration|View history"
+msgstr ""
+
+msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request."
+msgstr ""
+
+msgid "SecurityConfiguration|With the information provided, you can immediately begin risk analysis and remediation within GitLab."
 msgstr ""
 
 msgid "SecurityConfiguration|You can quickly enable all security scanning tools by enabling %{linkStart}Auto DevOps%{linkEnd}."

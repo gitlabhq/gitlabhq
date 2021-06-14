@@ -32,14 +32,7 @@ export default {
     return {
       authors: this.config.initialAuthors || [],
       defaultAuthors: this.config.defaultAuthors || [DEFAULT_LABEL_ANY],
-      preloadedAuthors: [
-        {
-          id: gon.current_user_id,
-          name: gon.current_user_fullname,
-          username: gon.current_username,
-          avatar_url: gon.current_user_avatar_url,
-        },
-      ],
+      preloadedAuthors: this.config.preloadedAuthors || [],
       loading: false,
     };
   },

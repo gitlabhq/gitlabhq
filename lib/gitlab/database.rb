@@ -293,7 +293,7 @@ module Gitlab
     # @param [ActiveRecord::Connection] ar_connection
     # @return [String]
     def self.get_write_location(ar_connection)
-      use_new_load_balancer_query = Gitlab::Utils.to_boolean(ENV['USE_NEW_LOAD_BALANCER_QUERY'], default: false)
+      use_new_load_balancer_query = Gitlab::Utils.to_boolean(ENV['USE_NEW_LOAD_BALANCER_QUERY'], default: true)
 
       sql = if use_new_load_balancer_query
               <<~NEWSQL

@@ -4,7 +4,7 @@ name: "count_instance_active_online_ci_runners"
 description: Total active and online instance Runners
 product_section: ops
 product_stage: verify
-product_group: group::continuous integration
+product_group: group::pipeline execution
 product_category: continuous_integration
 value_type: number
 status: implemented

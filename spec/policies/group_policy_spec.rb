@@ -923,4 +923,54 @@ RSpec.describe GroupPolicy do
       it { expect(described_class.new(current_user, subgroup)).to be_allowed(:read_label) }
     end
   end
+
+  describe 'update_runners_registration_token' do
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:update_runners_registration_token) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:update_runners_registration_token) }
+      end
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:update_runners_registration_token) }
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_allowed(:update_runners_registration_token) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_disallowed(:update_runners_registration_token) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:update_runners_registration_token) }
+    end
+
+    context 'with non member' do
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_disallowed(:update_runners_registration_token) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:update_runners_registration_token) }
+    end
+  end
 end

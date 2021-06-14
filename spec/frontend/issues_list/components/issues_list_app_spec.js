@@ -440,6 +440,13 @@ describe('IssuesListApp component', () => {
   });
 
   describe('tokens', () => {
+    const mockCurrentUser = {
+      id: 1,
+      name: 'Administrator',
+      username: 'root',
+      avatar_url: 'avatar/url',
+    };
+
     describe('when user is signed out', () => {
       beforeEach(() => {
         wrapper = mountComponent({
@@ -451,6 +458,8 @@ describe('IssuesListApp component', () => {
 
       it('does not render My-Reaction or Confidential tokens', () => {
         expect(findIssuableList().props('searchTokens')).not.toMatchObject([
+          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors: [mockCurrentUser] },
+          { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors: [mockCurrentUser] },
           { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_CONFIDENTIAL },
         ]);
@@ -506,7 +515,17 @@ describe('IssuesListApp component', () => {
     });
 
     describe('when all tokens are available', () => {
+      const originalGon = window.gon;
+
       beforeEach(() => {
+        window.gon = {
+          ...originalGon,
+          current_user_id: mockCurrentUser.id,
+          current_user_fullname: mockCurrentUser.name,
+          current_username: mockCurrentUser.username,
+          current_user_avatar_url: mockCurrentUser.avatar_url,
+        };
+
         wrapper = mountComponent({
           provide: {
             isSignedIn: true,
@@ -519,8 +538,8 @@ describe('IssuesListApp component', () => {
 
       it('renders all tokens', () => {
         expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_AUTHOR },
-          { type: TOKEN_TYPE_ASSIGNEE },
+          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors: [mockCurrentUser] },
+          { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors: [mockCurrentUser] },
           { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_MY_REACTION },

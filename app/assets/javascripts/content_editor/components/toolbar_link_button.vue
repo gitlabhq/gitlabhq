@@ -6,6 +6,7 @@ import {
   GlFormInputGroup,
   GlDropdownDivider,
   GlDropdownItem,
+  GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import { Editor as TiptapEditor } from '@tiptap/vue-2';
 import { hasSelection } from '../services/utils';
@@ -20,6 +21,9 @@ export default {
     GlDropdownDivider,
     GlDropdownItem,
     GlButton,
+  },
+  directives: {
+    GlTooltip,
   },
   props: {
     tiptapEditor: {
@@ -68,6 +72,9 @@ export default {
 </script>
 <template>
   <gl-dropdown
+    v-gl-tooltip
+    :aria-label="__('Insert link')"
+    :title="__('Insert link')"
     :toggle-class="{ active: isActive }"
     size="small"
     category="tertiary"

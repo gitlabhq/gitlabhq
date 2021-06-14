@@ -16,7 +16,7 @@ import GroupSelect from '~/invite_members/components/group_select.vue';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__, sprintf } from '~/locale';
-import { INVITE_MEMBERS_IN_COMMENT } from '../constants';
+import { INVITE_MEMBERS_IN_COMMENT, GROUP_FILTERS } from '../constants';
 import eventHub from '../event_hub';
 
 export default {
@@ -53,6 +53,16 @@ export default {
     defaultAccessLevel: {
       type: Number,
       required: true,
+    },
+    groupSelectFilter: {
+      type: String,
+      required: false,
+      default: GROUP_FILTERS.ALL,
+    },
+    groupSelectParentId: {
+      type: Number,
+      required: false,
+      default: null,
     },
     helpLink: {
       type: String,
@@ -293,7 +303,12 @@ export default {
           :aria-labelledby="$options.membersTokenSelectLabelId"
           :placeholder="$options.labels[inviteeType].placeHolder"
         />
-        <group-select v-if="isInviteGroup" v-model="groupToBeSharedWith" />
+        <group-select
+          v-if="isInviteGroup"
+          v-model="groupToBeSharedWith"
+          :groups-filter="groupSelectFilter"
+          :parent-group-id="groupSelectParentId"
+        />
       </div>
 
       <label class="gl-font-weight-bold gl-mt-3">{{ $options.labels.accessLevel }}</label>

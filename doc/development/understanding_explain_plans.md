@@ -704,7 +704,7 @@ Execution time: 0.113 ms
 
 ### ChatOps
 
-[GitLab employees can also use our ChatOps solution, available in Slack using the
+[GitLab team members can also use our ChatOps solution, available in Slack using the
 `/chatops` slash command](chatops_on_gitlabcom.md).
 You can use ChatOps to get a query plan by running the following:
 
@@ -728,7 +728,7 @@ For more information about the available options, run:
 
 ### `#database-lab`
 
-Another tool GitLab employees can use is a chatbot powered by [Joe](https://gitlab.com/postgres-ai/joe)
+Another tool GitLab team members can use is a chatbot powered by [Joe](https://gitlab.com/postgres-ai/joe)
 which uses [Database Lab](https://gitlab.com/postgres-ai/database-lab) to instantly provide developers
 with their own clone of the production database.
 

@@ -1,5 +1,6 @@
 import { GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import {
   SAST_NAME,
@@ -15,18 +16,33 @@ import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import RedesignedSecurityConfigurationApp, {
   i18n,
 } from '~/security_configuration/components/redesigned_app.vue';
+import UpgradeBanner from '~/security_configuration/components/upgrade_banner.vue';
 import {
   REPORT_TYPE_LICENSE_COMPLIANCE,
   REPORT_TYPE_SAST,
 } from '~/vue_shared/security_reports/constants';
 
+const upgradePath = '/upgrade';
+
 describe('redesigned App component', () => {
   let wrapper;
+  let userCalloutDismissSpy;
 
-  const createComponent = (propsData) => {
+  const createComponent = ({ shouldShowCallout = true, ...propsData }) => {
+    userCalloutDismissSpy = jest.fn();
+
     wrapper = extendedWrapper(
       mount(RedesignedSecurityConfigurationApp, {
         propsData,
+        provide: {
+          upgradePath,
+        },
+        stubs: {
+          UserCalloutDismisser: makeMockUserCalloutDismisser({
+            dismiss: userCalloutDismissSpy,
+            shouldShowCallout,
+          }),
+        },
       }),
     );
   };
@@ -38,6 +54,7 @@ describe('redesigned App component', () => {
   const findFeatureCards = () => wrapper.findAllComponents(FeatureCard);
   const findComplianceViewHistoryLink = () => findByTestId('compliance-view-history-link');
   const findSecurityViewHistoryLink = () => findByTestId('security-view-history-link');
+  const findUpgradeBanner = () => wrapper.findComponent(UpgradeBanner);
 
   const securityFeaturesMock = [
     {
@@ -109,6 +126,58 @@ describe('redesigned App component', () => {
     it('should not show configuration History Link when gitlabCiPresent & gitlabCiHistoryPath are not defined', () => {
       expect(findComplianceViewHistoryLink().exists()).toBe(false);
       expect(findSecurityViewHistoryLink().exists()).toBe(false);
+    });
+  });
+
+  describe('upgrade banner', () => {
+    const makeAvailable = (available) => (feature) => ({ ...feature, available });
+
+    describe('given at least one unavailable feature', () => {
+      beforeEach(() => {
+        createComponent({
+          augmentedSecurityFeatures: securityFeaturesMock,
+          augmentedComplianceFeatures: complianceFeaturesMock.map(makeAvailable(false)),
+        });
+      });
+
+      it('renders the banner', () => {
+        expect(findUpgradeBanner().exists()).toBe(true);
+      });
+
+      it('calls the dismiss callback when closing the banner', () => {
+        expect(userCalloutDismissSpy).not.toHaveBeenCalled();
+
+        findUpgradeBanner().vm.$emit('close');
+
+        expect(userCalloutDismissSpy).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('given at least one unavailable feature, but banner is already dismissed', () => {
+      beforeEach(() => {
+        createComponent({
+          augmentedSecurityFeatures: securityFeaturesMock,
+          augmentedComplianceFeatures: complianceFeaturesMock.map(makeAvailable(false)),
+          shouldShowCallout: false,
+        });
+      });
+
+      it('does not render the banner', () => {
+        expect(findUpgradeBanner().exists()).toBe(false);
+      });
+    });
+
+    describe('given all features are available', () => {
+      beforeEach(() => {
+        createComponent({
+          augmentedSecurityFeatures: securityFeaturesMock.map(makeAvailable(true)),
+          augmentedComplianceFeatures: complianceFeaturesMock.map(makeAvailable(true)),
+        });
+      });
+
+      it('does not render the banner', () => {
+        expect(findUpgradeBanner().exists()).toBe(false);
+      });
     });
   });
 

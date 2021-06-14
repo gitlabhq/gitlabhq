@@ -2001,6 +2001,41 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#ensure_batched_background_migration_is_finished' do
+    let(:configuration) do
+      {
+        job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
+        table_name: :events,
+        column_name: :id,
+        job_arguments: [[:id], [:id_convert_to_bigint]]
+      }
+    end
+
+    subject(:ensure_batched_background_migration_is_finished) { model.ensure_batched_background_migration_is_finished(**configuration) }
+
+    it 'raises an error when migration exists and is not marked as finished' do
+      create(:batched_background_migration, configuration.merge(status: :active))
+
+      expect { ensure_batched_background_migration_is_finished }
+        .to raise_error "Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active': #{configuration}"
+    end
+
+    it 'does not raise error when migration exists and is marked as finished' do
+      create(:batched_background_migration, configuration.merge(status: :finished))
+
+      expect { ensure_batched_background_migration_is_finished }
+        .not_to raise_error
+    end
+
+    it 'logs a warning when migration does not exist' do
+      expect(Gitlab::AppLogger).to receive(:warn)
+        .with("Could not find batched background migration for the given configuration: #{configuration}")
+
+      expect { ensure_batched_background_migration_is_finished }
+        .not_to raise_error
+    end
+  end
+
   describe '#index_exists_by_name?' do
     it 'returns true if an index exists' do
       ActiveRecord::Base.connection.execute(

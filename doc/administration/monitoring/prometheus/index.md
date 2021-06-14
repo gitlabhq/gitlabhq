@@ -122,44 +122,28 @@ The steps below are the minimum necessary to configure a Monitoring node running
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
+   roles ['monitoring_role']
+
    external_url 'http://gitlab.example.com'
 
-   # Enable Prometheus
-   prometheus['enable'] = true
+   # Prometheus
    prometheus['listen_address'] = '0.0.0.0:9090'
    prometheus['monitor_kubernetes'] = false
 
-   # Enable Login form
-   grafana['disable_login_form'] = false
-
-   # Enable Grafana
+   # Grafana
    grafana['enable'] = true
    grafana['admin_password'] = 'toomanysecrets'
+   grafana['disable_login_form'] = false
 
    # Enable service discovery for Prometheus
    consul['enable'] = true
    consul['monitoring_service_discovery'] =  true
-
-   # The addresses can be IPs or FQDNs
-   consul['configuration'] = {
-      retry_join: %w(10.0.0.1 10.0.0.2 10.0.0.3),
+   consul['configuration'] = { 
+      retry_join: %w(10.0.0.1 10.0.0.2 10.0.0.3), # The addresses can be IPs or FQDNs
    }
 
-   # Disable all other services
-   gitlab_rails['auto_migrate'] = false
-   alertmanager['enable'] = false
-   gitaly['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitlab_workhorse['enable'] = false
+   # Nginx - For Grafana access
    nginx['enable'] = true
-   postgres_exporter['enable'] = false
-   postgresql['enable'] = false
-   redis['enable'] = false
-   redis_exporter['enable'] = false
-   sidekiq['enable'] = false
-   puma['enable'] = false
-   node_exporter['enable'] = false
-   gitlab_exporter['enable'] = false
    ```
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.

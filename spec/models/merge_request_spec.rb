@@ -4906,7 +4906,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
       subject { merge_request.enabled_reports[report_type] }
 
       before do
-        stub_feature_flags(drop_license_management_artifact: false)
         stub_licensed_features({ feature => true })
       end
 

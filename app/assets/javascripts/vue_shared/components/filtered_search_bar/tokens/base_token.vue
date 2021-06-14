@@ -83,7 +83,10 @@ export default {
       return Boolean(this.recentTokenValuesStorageKey);
     },
     recentTokenIds() {
-      return this.recentTokenValues.map((tokenValue) => tokenValue.id || tokenValue.name);
+      return this.recentTokenValues.map((tokenValue) => tokenValue[this.valueIdentifier]);
+    },
+    preloadedTokenIds() {
+      return this.preloadedTokenValues.map((tokenValue) => tokenValue[this.valueIdentifier]);
     },
     currentTokenValue() {
       if (this.fnCurrentTokenValue) {
@@ -103,7 +106,9 @@ export default {
       return this.searchKey
         ? this.tokenValues
         : this.tokenValues.filter(
-            (tokenValue) => !this.recentTokenIds.includes(tokenValue[this.valueIdentifier]),
+            (tokenValue) =>
+              !this.recentTokenIds.includes(tokenValue[this.valueIdentifier]) &&
+              !this.preloadedTokenIds.includes(tokenValue[this.valueIdentifier]),
           );
     },
   },
@@ -125,7 +130,15 @@ export default {
       }, DEBOUNCE_DELAY);
     },
     handleTokenValueSelected(activeTokenValue) {
-      if (this.isRecentTokenValuesEnabled && activeTokenValue) {
+      // Make sure that;
+      // 1. Recently used values feature is enabled
+      // 2. User has actually selected a value
+      // 3. Selected value is not part of preloaded list.
+      if (
+        this.isRecentTokenValuesEnabled &&
+        activeTokenValue &&
+        !this.preloadedTokenIds.includes(activeTokenValue[this.valueIdentifier])
+      ) {
         setTokenValueToRecentlyUsed(this.recentTokenValuesStorageKey, activeTokenValue);
       }
     },

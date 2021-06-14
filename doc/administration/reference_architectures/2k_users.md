@@ -790,32 +790,21 @@ running [Prometheus](../monitoring/prometheus/index.md) and
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
+   roles ['monitoring_role']
+
    external_url 'http://gitlab.example.com'
 
-   # Enable Prometheus
-   prometheus['enable'] = true
+   # Prometheus
    prometheus['listen_address'] = '0.0.0.0:9090'
    prometheus['monitor_kubernetes'] = false
 
-   # Enable Login form
+   # Grafana
+   grafana['enable'] = true
+   grafana['admin_password'] = '<grafana_password>'
    grafana['disable_login_form'] = false
 
-   # Enable Grafana
-   grafana['enable'] = true
-   grafana['admin_password'] = 'toomanysecrets'
-
-   # Avoid running unnecessary services on the Prometheus server
-   gitaly['enable'] = false
-   postgresql['enable'] = false
-   redis['enable'] = false
-   puma['enable'] = false
-   sidekiq['enable'] = false
-   gitlab_workhorse['enable'] = false
-   alertmanager['enable'] = false
-   gitlab_exporter['enable'] = false
-
-   # Prevent database migrations from running on upgrade automatically
-   gitlab_rails['auto_migrate'] = false
+   # Nginx - For Grafana access
+   nginx['enable'] = true
    ```
 
 1. Prometheus also needs some scrape configurations to pull all the data from the various

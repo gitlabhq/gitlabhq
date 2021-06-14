@@ -3,10 +3,10 @@
 
   %fieldset
     .form-group
-      = f.label :diff_max_patch_bytes, 'Maximum diff patch size in bytes', class: 'label-light'
+      = f.label :diff_max_patch_bytes, _('Maximum diff patch size in bytes'), class: 'label-light'
       = f.number_field :diff_max_patch_bytes, class: 'form-control gl-form-input'
       %span.form-text.text-muted
-        Collapse diffs larger than this size, and show a 'too large' message instead.
+        = _("Collapse diffs larger than this size, and show a 'too large' message instead.")
 
         = link_to sprite_icon('question-o'),
           help_page_path('user/admin_area/diff_limits')

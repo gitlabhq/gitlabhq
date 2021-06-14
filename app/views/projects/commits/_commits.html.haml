@@ -35,8 +35,10 @@
 
 - if hidden > 0
   %li.gl-alert.gl-alert-warning
-    = sprite_icon('warning', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
+    .gl-alert-container
+      = sprite_icon('warning', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-content
+        = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
 
 - if project.context_commits_enabled? && can_update_merge_request && context_commits&.empty?
   %button.gl-button.btn.btn-default.mt-3.add-review-item-modal-trigger{ type: "button", data: { context_commits_empty: 'true' } }

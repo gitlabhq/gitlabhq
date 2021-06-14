@@ -1,8 +1,10 @@
 <script>
 import { GlTab, GlTabs, GlSprintf, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import FeatureCard from './feature_card.vue';
 import SectionLayout from './section_layout.vue';
+import UpgradeBanner from './upgrade_banner.vue';
 
 export const i18n = {
   compliance: s__('SecurityConfiguration|Compliance'),
@@ -25,6 +27,8 @@ export default {
     GlSprintf,
     FeatureCard,
     SectionLayout,
+    UpgradeBanner,
+    UserCalloutDismisser,
   },
   props: {
     augmentedSecurityFeatures: {
@@ -52,6 +56,11 @@ export default {
     },
   },
   computed: {
+    canUpgrade() {
+      return [...this.augmentedSecurityFeatures, ...this.augmentedComplianceFeatures].some(
+        ({ available }) => !available,
+      );
+    },
     canViewCiHistory() {
       return Boolean(this.gitlabCiPresent && this.gitlabCiHistoryPath);
     },
@@ -64,6 +73,12 @@ export default {
     <header>
       <h1 class="gl-font-size-h1">{{ $options.i18n.securityConfiguration }}</h1>
     </header>
+
+    <user-callout-dismisser v-if="canUpgrade" feature-name="security_configuration_upgrade_banner">
+      <template #default="{ dismiss, shouldShowCallout }">
+        <upgrade-banner v-if="shouldShowCallout" @close="dismiss" />
+      </template>
+    </user-callout-dismisser>
 
     <gl-tabs content-class="gl-pt-6">
       <gl-tab data-testid="security-testing-tab" :title="$options.i18n.securityTesting">

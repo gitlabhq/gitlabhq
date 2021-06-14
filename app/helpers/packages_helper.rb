@@ -53,4 +53,14 @@ module PackagesHelper
     category = args.delete(:category) || self.class.name
     ::Gitlab::Tracking.event(category, event_name.to_s, **args)
   end
+
+  def show_cleanup_policy_on_alert(project)
+    Gitlab.com? &&
+    Gitlab.config.registry.enabled &&
+    project.container_registry_enabled &&
+    !Gitlab::CurrentSettings.container_expiration_policies_enable_historic_entries &&
+    Feature.enabled?(:container_expiration_policies_historic_entry, project) &&
+    project.container_expiration_policy.nil? &&
+    project.container_repositories.exists?
+  end
 end

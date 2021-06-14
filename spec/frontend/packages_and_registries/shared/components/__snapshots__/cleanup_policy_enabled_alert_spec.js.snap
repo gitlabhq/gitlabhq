@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CleanupPolicyEnabledAlert renders 1`] = `
+<gl-alert-stub
+  class="gl-mt-2"
+  dismissible="true"
+  dismisslabel="Dismiss"
+  primarybuttonlink=""
+  primarybuttontext=""
+  secondarybuttonlink=""
+  secondarybuttontext=""
+  title=""
+  variant="info"
+>
+  <gl-sprintf-stub
+    message="Cleanup policies are now available for this project. %{linkStart}Click here to get started.%{linkEnd}"
+  />
+</gl-alert-stub>
+`;

@@ -48,6 +48,7 @@ describe('content_editor/components/top_toolbar', () => {
     ${'ordered-list'} | ${{ contentType: 'orderedList', iconName: 'list-numbered', label: 'Add a numbered list', editorCommand: 'toggleOrderedList' }}
     ${'code-block'}   | ${{ contentType: 'codeBlock', iconName: 'doc-code', label: 'Insert a code block', editorCommand: 'toggleCodeBlock' }}
     ${'text-styles'}  | ${{}}
+    ${'link'}         | ${{}}
   `('given a $testId toolbar control', ({ testId, controlProps }) => {
     beforeEach(() => {
       buildWrapper();

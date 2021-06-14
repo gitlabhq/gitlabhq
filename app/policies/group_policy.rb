@@ -144,6 +144,7 @@ class GroupPolicy < BasePolicy
     enable :admin_cluster
     enable :read_deploy_token
     enable :create_jira_connect_subscription
+    enable :update_runners_registration_token
   end
 
   rule { owner }.policy do

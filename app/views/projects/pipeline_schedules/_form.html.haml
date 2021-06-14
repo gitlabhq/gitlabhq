@@ -7,7 +7,7 @@
   .form-group.row
     .col-md-9
       = f.label :cron, _('Interval Pattern'), class: 'label-bold'
-      #interval-pattern-input{ data: { initial_interval: @schedule.cron } }
+      #interval-pattern-input{ data: { initial_interval: @schedule.cron, daily_limit: @schedule.daily_limit } }
   .form-group.row
     .col-md-9
       = f.label :cron_timezone, _('Cron Timezone'), class: 'label-bold'

@@ -46,6 +46,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:usage_data_design_action, project, default_enabled: true)
     push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
     push_frontend_feature_flag(:vue_issues_list, project)
+    push_frontend_feature_flag(:iteration_cadences, project&.group, default_enabled: :yaml)
   end
 
   before_action only: :show do

@@ -1,7 +1,7 @@
 import { GlAvatarLabeled, GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import Api from '~/api';
+import * as groupsApi from '~/api/groups_api';
 import GroupSelect from '~/invite_members/components/group_select.vue';
 
 const createComponent = () => {
@@ -16,7 +16,7 @@ describe('GroupSelect', () => {
   let wrapper;
 
   beforeEach(() => {
-    jest.spyOn(Api, 'groups').mockResolvedValue(allGroups);
+    jest.spyOn(groupsApi, 'getGroups').mockResolvedValue(allGroups);
 
     wrapper = createComponent();
   });
@@ -45,7 +45,7 @@ describe('GroupSelect', () => {
     let resolveApiRequest;
 
     beforeEach(() => {
-      jest.spyOn(Api, 'groups').mockImplementation(
+      jest.spyOn(groupsApi, 'getGroups').mockImplementation(
         () =>
           new Promise((resolve) => {
             resolveApiRequest = resolve;
@@ -58,7 +58,7 @@ describe('GroupSelect', () => {
     it('calls the API', () => {
       resolveApiRequest({ data: allGroups });
 
-      expect(Api.groups).toHaveBeenCalledWith(group1.name, {
+      expect(groupsApi.getGroups).toHaveBeenCalledWith(group1.name, {
         active: true,
         exclude_internal: true,
       });

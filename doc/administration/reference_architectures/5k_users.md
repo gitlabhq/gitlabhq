@@ -1936,34 +1936,17 @@ running [Prometheus](../monitoring/prometheus/index.md) and
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
+   roles ['monitoring_role']
+
    external_url 'http://gitlab.example.com'
 
-   # Avoid running unnecessary services on the Prometheus server
-   alertmanager['enable'] = false
-   gitaly['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitlab_workhorse['enable'] = false
-   nginx['enable'] = true
-   postgres_exporter['enable'] = false
-   postgresql['enable'] = false
-   redis['enable'] = false
-   redis_exporter['enable'] = false
-   sidekiq['enable'] = false
-   puma['enable'] = false
-   node_exporter['enable'] = false
-   gitlab_exporter['enable'] = false
-
-   # Enable Prometheus
-   prometheus['enable'] = true
+   # Prometheus
    prometheus['listen_address'] = '0.0.0.0:9090'
    prometheus['monitor_kubernetes'] = false
 
-   # Enable Login form
-   grafana['disable_login_form'] = false
-
-   # Enable Grafana
-   grafana['enable'] = true
+   # Grafana
    grafana['admin_password'] = '<grafana_password>'
+   grafana['disable_login_form'] = false
 
    # Enable service discovery for Prometheus
    consul['enable'] = true
@@ -1972,8 +1955,8 @@ running [Prometheus](../monitoring/prometheus/index.md) and
       retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
    }
 
-   # Prevent database migrations from running on upgrade automatically
-   gitlab_rails['auto_migrate'] = false
+   # Nginx - For Grafana access
+   nginx['enable'] = true
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).

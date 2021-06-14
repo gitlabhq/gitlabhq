@@ -1595,4 +1595,40 @@ RSpec.describe ProjectPolicy do
       end
     end
   end
+
+  describe 'update_runners_registration_token' do
+    context 'when anonymous' do
+      let(:current_user) { anonymous }
+
+      it { is_expected.not_to be_allowed(:update_runners_registration_token) }
+    end
+
+    context 'admin' do
+      let(:current_user) { create(:admin) }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:update_runners_registration_token) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:update_runners_registration_token) }
+      end
+    end
+
+    %w(guest reporter developer).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it { is_expected.to be_disallowed(:update_runners_registration_token) }
+      end
+    end
+
+    %w(maintainer owner).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it { is_expected.to be_allowed(:update_runners_registration_token) }
+      end
+    end
+  end
 end

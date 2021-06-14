@@ -1428,7 +1428,7 @@
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 3
-  :idempotent: true
+  :idempotent:
   :tags: []
 - :name: pipeline_creation:create_pipeline
   :worker_name: CreatePipelineWorker
@@ -1610,7 +1610,7 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 5
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: pipeline_processing:stage_update
   :worker_name: StageUpdateWorker

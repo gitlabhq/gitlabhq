@@ -18,7 +18,6 @@ module Ci
     ACCESSIBILITY_REPORT_FILE_TYPES = %w[accessibility].freeze
     NON_ERASABLE_FILE_TYPES = %w[trace].freeze
     TERRAFORM_REPORT_FILE_TYPES = %w[terraform].freeze
-    UNSUPPORTED_FILE_TYPES = %i[license_management].freeze
     SAST_REPORT_TYPES = %w[sast].freeze
     SECRET_DETECTION_REPORT_TYPES = %w[secret_detection].freeze
     DEFAULT_FILE_NAMES = {
@@ -35,7 +34,6 @@ module Ci
       dependency_scanning: 'gl-dependency-scanning-report.json',
       container_scanning: 'gl-container-scanning-report.json',
       dast: 'gl-dast-report.json',
-      license_management: 'gl-license-management-report.json',
       license_scanning: 'gl-license-scanning-report.json',
       performance: 'performance.json',
       browser_performance: 'browser-performance.json',
@@ -74,7 +72,6 @@ module Ci
       dependency_scanning: :raw,
       container_scanning: :raw,
       dast: :raw,
-      license_management: :raw,
       license_scanning: :raw,
 
       # All these file formats use `raw` as we need to store them uncompressed
@@ -102,7 +99,6 @@ module Ci
       dependency_scanning
       dotenv
       junit
-      license_management
       license_scanning
       lsif
       metrics
@@ -124,7 +120,6 @@ module Ci
     mount_file_store_uploader JobArtifactUploader
 
     validates :file_format, presence: true, unless: :trace?, on: :create
-    validate :validate_supported_file_format!, on: :create
     validate :validate_file_format!, unless: :trace?, on: :create
     before_save :set_size, if: :file_changed?
 
@@ -199,8 +194,7 @@ module Ci
       container_scanning: 7, ## EE-specific
       dast: 8, ## EE-specific
       codequality: 9, ## EE-specific
-      license_management: 10, ## EE-specific
-      license_scanning: 101, ## EE-specific till 13.0
+      license_scanning: 101, ## EE-specific
       performance: 11, ## EE-specific till 13.2
       metrics: 12, ## EE-specific
       metrics_referee: 13, ## runner referees
@@ -232,14 +226,6 @@ module Ci
       legacy_path: 1,
       hashed_path: 2
     }
-
-    def validate_supported_file_format!
-      return if Feature.disabled?(:drop_license_management_artifact, project, default_enabled: true)
-
-      if UNSUPPORTED_FILE_TYPES.include?(self.file_type&.to_sym)
-        errors.add(:base, _("File format is no longer supported"))
-      end
-    end
 
     def validate_file_format!
       unless TYPE_AND_FORMAT_PAIRS[self.file_type&.to_sym] == self.file_format&.to_sym

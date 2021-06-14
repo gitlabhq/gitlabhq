@@ -205,6 +205,19 @@ export default {
       return convertToSearchQuery(this.filterTokens) || undefined;
     },
     searchTokens() {
+      let preloadedAuthors = [];
+
+      if (gon.current_user_id) {
+        preloadedAuthors = [
+          {
+            id: gon.current_user_id,
+            name: gon.current_user_fullname,
+            username: gon.current_username,
+            avatar_url: gon.current_user_avatar_url,
+          },
+        ];
+      }
+
       const tokens = [
         {
           type: TOKEN_TYPE_AUTHOR,
@@ -215,6 +228,7 @@ export default {
           unique: true,
           defaultAuthors: [],
           fetchAuthors: this.fetchUsers,
+          preloadedAuthors,
         },
         {
           type: TOKEN_TYPE_ASSIGNEE,
@@ -225,6 +239,7 @@ export default {
           unique: !this.hasMultipleIssueAssigneesFeature,
           defaultAuthors: DEFAULT_NONE_ANY,
           fetchAuthors: this.fetchUsers,
+          preloadedAuthors,
         },
         {
           type: TOKEN_TYPE_MILESTONE,

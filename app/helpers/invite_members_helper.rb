@@ -31,4 +31,12 @@ module InviteMembersHelper
         { member_human_access: member.human_access, name: member.source.name }
     end
   end
+
+  def group_select_data(group)
+    if group.root_ancestor.namespace_settings.prevent_sharing_groups_outside_hierarchy
+      { groups_filter: 'descendant_groups', parent_id: group.root_ancestor.id }
+    else
+      {}
+    end
+  end
 end

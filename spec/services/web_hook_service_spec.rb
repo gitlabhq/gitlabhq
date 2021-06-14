@@ -375,15 +375,18 @@ RSpec.describe WebHookService do
         it 'does not queue a worker and logs an error' do
           expect(WebHookWorker).not_to receive(:perform_async)
 
-          payload = {
-            message: 'Webhook rate limit exceeded',
-            hook_id: project_hook.id,
-            hook_type: 'ProjectHook',
-            hook_name: 'push_hooks'
-          }
-
-          expect(Gitlab::AuthLogger).to receive(:error).with(payload)
-          expect(Gitlab::AppLogger).to receive(:error).with(payload)
+          expect(Gitlab::AuthLogger).to receive(:error).with(
+            include(
+              message: 'Webhook rate limit exceeded',
+              hook_id: project_hook.id,
+              hook_type: 'ProjectHook',
+              hook_name: 'push_hooks',
+              "correlation_id" => kind_of(String),
+              "meta.project" => project.full_path,
+              "meta.related_class" => 'ProjectHook',
+              "meta.root_namespace" => project.root_namespace.full_path
+            )
+          )
 
           service_instance.async_execute
         end
@@ -403,7 +406,6 @@ RSpec.describe WebHookService do
 
         it 'stops queueing workers and logs errors' do
           expect(Gitlab::AuthLogger).to receive(:error).twice
-          expect(Gitlab::AppLogger).to receive(:error).twice
 
           2.times { service_instance.async_execute }
         end

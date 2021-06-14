@@ -24,14 +24,14 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
       it 'shows available section' do
         subject
 
-        settings_block = find('#js-registry-policies')
+        settings_block = find('[data-testid="registry-settings-app"]')
         expect(settings_block).to have_text 'Clean up image tags'
       end
 
       it 'saves cleanup policy submit the form' do
         subject
 
-        within '#js-registry-policies' do
+        within '[data-testid="registry-settings-app"]' do
           select('Every day', from: 'Run cleanup')
           select('50 tags per image name', from: 'Keep the most recent:')
           fill_in('Keep tags matching:', with: 'stable')
@@ -49,7 +49,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
       it 'does not save cleanup policy submit form with invalid regex' do
         subject
 
-        within '#js-registry-policies' do
+        within '[data-testid="registry-settings-app"]' do
           fill_in('Remove tags matching:', with: '*-production')
 
           submit_button = find('[data-testid="save-button"')
@@ -80,7 +80,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
         it 'displays the expected result' do
           subject
 
-          within '#js-registry-policies' do
+          within '[data-testid="registry-settings-app"]' do
             case result
             when :available_section
               expect(find('[data-testid="enable-toggle"]')).to have_content('Disabled - Tags will not be automatically deleted.')
@@ -98,7 +98,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
       it 'does not exists' do
         subject
 
-        expect(page).not_to have_selector('#js-registry-policies')
+        expect(page).not_to have_selector('[data-testid="registry-settings-app"]')
       end
     end
 
@@ -108,7 +108,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
       it 'does not exists' do
         subject
 
-        expect(page).not_to have_selector('#js-registry-policies')
+        expect(page).not_to have_selector('[data-testid="registry-settings-app"]')
       end
     end
   end

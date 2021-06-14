@@ -3528,6 +3528,28 @@ Input type: `RunnerUpdateInput`
 | <a id="mutationrunnerupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationrunnerupdaterunner"></a>`runner` | [`CiRunner`](#cirunner) | The runner after mutation. |
 
+### `Mutation.runnersRegistrationTokenReset`
+
+Available only when feature flag `runner_graphql_query` is enabled.
+
+Input type: `RunnersRegistrationTokenResetInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnersregistrationtokenresetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnersregistrationtokenresetid"></a>`id` | [`ID`](#id) | ID of the project or group to reset the token for. Omit if resetting instance runner token. |
+| <a id="mutationrunnersregistrationtokenresettype"></a>`type` | [`CiRunnerType!`](#cirunnertype) | Scope of the object to reset the token for. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnersregistrationtokenresetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnersregistrationtokenreseterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationrunnersregistrationtokenresettoken"></a>`token` | [`String`](#string) | The runner token after mutation. |
+
 ### `Mutation.terraformStateDelete`
 
 Input type: `TerraformStateDeleteInput`
@@ -14288,7 +14310,6 @@ Iteration ID wildcard values.
 | <a id="jobartifactfiletypedependency_scanning"></a>`DEPENDENCY_SCANNING` | DEPENDENCY SCANNING job artifact file type. |
 | <a id="jobartifactfiletypedotenv"></a>`DOTENV` | DOTENV job artifact file type. |
 | <a id="jobartifactfiletypejunit"></a>`JUNIT` | JUNIT job artifact file type. |
-| <a id="jobartifactfiletypelicense_management"></a>`LICENSE_MANAGEMENT` | LICENSE MANAGEMENT job artifact file type. |
 | <a id="jobartifactfiletypelicense_scanning"></a>`LICENSE_SCANNING` | LICENSE SCANNING job artifact file type. |
 | <a id="jobartifactfiletypeload_performance"></a>`LOAD_PERFORMANCE` | LOAD PERFORMANCE job artifact file type. |
 | <a id="jobartifactfiletypelsif"></a>`LSIF` | LSIF job artifact file type. |
@@ -14803,6 +14824,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumpipeline_needs_banner"></a>`PIPELINE_NEEDS_BANNER` | Callout feature name for pipeline_needs_banner. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_hover_tip"></a>`PIPELINE_NEEDS_HOVER_TIP` | Callout feature name for pipeline_needs_hover_tip. |
 | <a id="usercalloutfeaturenameenumregistration_enabled_callout"></a>`REGISTRATION_ENABLED_CALLOUT` | Callout feature name for registration_enabled_callout. |
+| <a id="usercalloutfeaturenameenumsecurity_configuration_upgrade_banner"></a>`SECURITY_CONFIGURATION_UPGRADE_BANNER` | Callout feature name for security_configuration_upgrade_banner. |
 | <a id="usercalloutfeaturenameenumservice_templates_deprecated_callout"></a>`SERVICE_TEMPLATES_DEPRECATED_CALLOUT` | Callout feature name for service_templates_deprecated_callout. |
 | <a id="usercalloutfeaturenameenumsuggest_pipeline"></a>`SUGGEST_PIPELINE` | Callout feature name for suggest_pipeline. |
 | <a id="usercalloutfeaturenameenumsuggest_popover_dismissed"></a>`SUGGEST_POPOVER_DISMISSED` | Callout feature name for suggest_popover_dismissed. |

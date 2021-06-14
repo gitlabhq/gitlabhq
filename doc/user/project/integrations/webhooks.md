@@ -34,8 +34,10 @@ Webhooks are available:
 - Per project, at a project's **Settings > Webhooks** menu. **(FREE)**
 - Additionally per group, at a group's **Settings > Webhooks** menu. **(PREMIUM)**
 
-NOTE:
-On GitLab.com, the [maximum number of webhooks and their size](../../../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
+GitLab.com enforces various [webhook limits](../../../user/gitlab_com/index.md#webhooks), including:
+
+- The maximum number of webhooks and their size, both per project, and per group.
+- The number of webhook calls per minute.
 
 ## Possible uses for webhooks
 

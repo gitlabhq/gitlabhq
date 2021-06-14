@@ -42,8 +42,15 @@ RSpec.describe ExpirePipelineCacheWorker do
       subject.perform(617748)
     end
 
-    it_behaves_like 'an idempotent worker' do
-      let(:job_args) { [pipeline.id] }
+    skip "with https://gitlab.com/gitlab-org/gitlab/-/issues/325291 resolved" do
+      it_behaves_like 'an idempotent worker' do
+        let(:job_args) { [pipeline.id] }
+      end
     end
+
+    it_behaves_like 'worker with data consistency',
+                  described_class,
+                  feature_flag: :load_balancing_for_expire_pipeline_cache_worker,
+                  data_consistency: :delayed
   end
 end

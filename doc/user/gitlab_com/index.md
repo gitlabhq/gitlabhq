@@ -153,11 +153,13 @@ content directly from common public CDN hostnames.
 
 ## Webhooks
 
-A limit of:
+The following limits apply for [Webhooks](../project/integrations/webhooks.md):
 
-- 100 webhooks applies to projects.
-- 50 webhooks applies to groups. **(BRONZE ONLY)**
-- Payload is limited to 25MB.
+| Setting | GitLab.com | Default |
+| ------- | ---------- | ------- |
+| [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit) | `120` calls per minute for Free tier, unlimited for all paid tiers | Unlimited
+| [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks) | `100` per-project, `50` per-group | `100` per-project, `50` per-group
+| Maximum payload size | `25 MB` | `25 MB`
 
 ## Shared runners
 

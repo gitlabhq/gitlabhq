@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`content_editor/components/toolbar_link_button renders dropdown component 1`] = `
-"<div class=\\"dropdown b-dropdown gl-new-dropdown btn-group\\">
+"<div class=\\"dropdown b-dropdown gl-new-dropdown btn-group\\" aria-label=\\"Insert link\\" title=\\"Insert link\\">
   <!----><button aria-haspopup=\\"true\\" aria-expanded=\\"false\\" type=\\"button\\" class=\\"btn dropdown-toggle btn-default btn-sm gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only\\">
     <!----> <svg data-testid=\\"link-icon\\" role=\\"img\\" aria-hidden=\\"true\\" class=\\"dropdown-icon gl-icon s16\\">
       <use href=\\"#link\\"></use>

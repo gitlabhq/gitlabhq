@@ -30,6 +30,15 @@ const defaultStubs = {
   },
 };
 
+const mockPreloadedAuthors = [
+  {
+    id: 13,
+    name: 'Administrator',
+    username: 'root',
+    avatar_url: 'avatar/url',
+  },
+];
+
 function createComponent(options = {}) {
   const {
     config = mockAuthorToken,
@@ -65,13 +74,6 @@ describe('AuthorToken', () => {
   const getBaseToken = () => wrapper.findComponent(BaseToken);
 
   beforeEach(() => {
-    window.gon = {
-      ...originalGon,
-      current_user_id: 13,
-      current_user_fullname: 'Administrator',
-      current_username: 'root',
-      current_user_avatar_url: 'avatar/url',
-    };
     mock = new MockAdapter(axios);
   });
 
@@ -133,6 +135,13 @@ describe('AuthorToken', () => {
   });
 
   describe('template', () => {
+    const activateTokenValuesList = async () => {
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
+      const suggestionsSegment = tokenSegments.at(2);
+      suggestionsSegment.vm.$emit('activate');
+      await wrapper.vm.$nextTick();
+    };
+
     it('renders base-token component', () => {
       wrapper = createComponent({
         value: { data: mockAuthors[0].username },
@@ -206,13 +215,11 @@ describe('AuthorToken', () => {
       const defaultAuthors = DEFAULT_NONE_ANY;
       wrapper = createComponent({
         active: true,
-        config: { ...mockAuthorToken, defaultAuthors },
+        config: { ...mockAuthorToken, defaultAuthors, preloadedAuthors: mockPreloadedAuthors },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
-      const suggestionsSegment = tokenSegments.at(2);
-      suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
+
+      await activateTokenValuesList();
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
@@ -239,13 +246,11 @@ describe('AuthorToken', () => {
     it('renders `DEFAULT_LABEL_ANY` as default suggestions', async () => {
       wrapper = createComponent({
         active: true,
-        config: { ...mockAuthorToken },
+        config: { ...mockAuthorToken, preloadedAuthors: mockPreloadedAuthors },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
-      const suggestionsSegment = tokenSegments.at(2);
-      suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
+
+      await activateTokenValuesList();
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
@@ -257,7 +262,11 @@ describe('AuthorToken', () => {
       beforeEach(() => {
         wrapper = createComponent({
           active: true,
-          config: { ...mockAuthorToken, defaultAuthors: [] },
+          config: {
+            ...mockAuthorToken,
+            preloadedAuthors: mockPreloadedAuthors,
+            defaultAuthors: [],
+          },
           stubs: { Portal: true },
         });
       });

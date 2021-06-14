@@ -164,7 +164,7 @@ and [GitLab upgrades](https://docs.gitlab.com/omnibus/update/README.html#use-pos
 1. To find the primary node, run the following on a database node:
 
    ```shell
-   sudo gitlab-ctl repmgr cluster show
+   sudo gitlab-ctl patroni members
    ```
 
 1. Edit `/etc/gitlab/gitlab.rb` on the application node you're performing the task on, and update

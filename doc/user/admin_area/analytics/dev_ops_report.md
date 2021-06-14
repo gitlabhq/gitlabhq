@@ -1,13 +1,12 @@
 ---
-stage: none
-group: unassigned
+stage: Manage
+group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# DevOps Report
+# DevOps Report **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30469) in GitLab 9.3.
-> - [Renamed from Conversational Development Index](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) in GitLab 12.6.
+> [Renamed from Conversational Development Index](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) in GitLab 12.6.
 
 The DevOps Report gives you an overview of your entire instance's adoption of
 [Concurrent DevOps](https://about.gitlab.com/topics/concurrent-devops/)
@@ -15,7 +14,7 @@ from planning to monitoring.
 
 To see DevOps Report, go to **Admin Area > Analytics > DevOps Report**.
 
-## DevOps Score **(FREE)**
+## DevOps Score
 
 NOTE:
 Your GitLab instance's [usage ping](../settings/usage_statistics.md#usage-ping) must be activated in order to use this feature.
@@ -34,7 +33,7 @@ Usage ping data is aggregated on GitLab servers for analysis. Your usage
 information is **not sent** to any other GitLab instances. If you have just started using GitLab, it may take a few weeks for data to be
 collected before this feature is available.
 
-## DevOps Adoption **(ULTIMATE)**
+## DevOps Adoption **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
 > - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.

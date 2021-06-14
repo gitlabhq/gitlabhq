@@ -63,6 +63,10 @@ module Ci
                            .execute(self, fallback_method: method(:calculate_next_run_at))
     end
 
+    def daily_limit
+      project.actual_limits.limit_for(:ci_daily_pipeline_schedule_triggers)
+    end
+
     private
 
     def worker_cron_expression

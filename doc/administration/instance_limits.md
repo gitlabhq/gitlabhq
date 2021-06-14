@@ -112,7 +112,7 @@ Limit the maximum daily member invitations allowed per group hierarchy.
 - GitLab.com: Free members may invite 20 members per day.
 - Self-managed: Invites are not limited.
 
-### Webhook calls
+### Webhook rate limit
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61151) in GitLab 13.12.
 > - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.

@@ -111,10 +111,6 @@ RSpec.describe Ci::Build do
   describe '.with_downloadable_artifacts' do
     subject { described_class.with_downloadable_artifacts }
 
-    before do
-      stub_feature_flags(drop_license_management_artifact: false)
-    end
-
     context 'when job does not have a downloadable artifact' do
       let!(:job) { create(:ci_build) }
 
@@ -1732,8 +1728,6 @@ RSpec.describe Ci::Build do
     subject { build.erase_erasable_artifacts! }
 
     before do
-      stub_feature_flags(drop_license_management_artifact: false)
-
       Ci::JobArtifact.file_types.keys.each do |file_type|
         create(:ci_job_artifact, job: build, file_type: file_type, file_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[file_type.to_sym])
       end

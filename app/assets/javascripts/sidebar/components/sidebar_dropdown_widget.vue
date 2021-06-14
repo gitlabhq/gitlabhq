@@ -293,9 +293,17 @@ export default {
         <span v-else-if="!currentAttribute" class="gl-text-gray-500">
           {{ $options.i18n.none }}
         </span>
-        <gl-link v-else class="gl-text-gray-900! gl-font-weight-bold" :href="attributeUrl">
-          {{ attributeTitle }}
-        </gl-link>
+        <slot
+          v-else
+          name="value"
+          :attributeTitle="attributeTitle"
+          :attributeUrl="attributeUrl"
+          :currentAttribute="currentAttribute"
+        >
+          <gl-link class="gl-text-gray-900! gl-font-weight-bold" :href="attributeUrl">
+            {{ attributeTitle }}
+          </gl-link>
+        </slot>
       </div>
     </template>
     <template #default>
@@ -327,16 +335,24 @@ export default {
           <gl-dropdown-text v-if="emptyPropsList">
             {{ i18n.noAttributesFound }}
           </gl-dropdown-text>
-          <gl-dropdown-item
-            v-for="attrItem in attributesList"
-            :key="attrItem.id"
-            :is-check-item="true"
-            :is-checked="isAttributeChecked(attrItem.id)"
-            :data-testid="`${issuableAttribute}-items`"
-            @click="updateAttribute(attrItem.id)"
+          <slot
+            v-else
+            name="list"
+            :attributesList="attributesList"
+            :isAttributeChecked="isAttributeChecked"
+            :updateAttribute="updateAttribute"
           >
-            {{ attrItem.title }}
-          </gl-dropdown-item>
+            <gl-dropdown-item
+              v-for="attrItem in attributesList"
+              :key="attrItem.id"
+              :is-check-item="true"
+              :is-checked="isAttributeChecked(attrItem.id)"
+              :data-testid="`${issuableAttribute}-items`"
+              @click="updateAttribute(attrItem.id)"
+            >
+              {{ attrItem.title }}
+            </gl-dropdown-item>
+          </slot>
         </template>
       </gl-dropdown>
     </template>

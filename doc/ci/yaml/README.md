@@ -3478,22 +3478,6 @@ concatenate them into a single file. Use a filename pattern (`junit: rspec-*.xml
 an array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`), or a
 combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 
-##### `artifacts:reports:license_management` **(ULTIMATE)**
-
-> - Introduced in GitLab 11.5.
-> - Requires GitLab Runner 11.5 and above.
-
-WARNING:
-This artifact is still valid but is **deprecated** in favor of the
-[artifacts:reports:license_scanning](#artifactsreportslicense_scanning)
-introduced in GitLab 12.8.
-
-The `license_management` report collects [Licenses](../../user/compliance/license_compliance/index.md)
-as artifacts.
-
-The collected License Compliance report uploads to GitLab as an artifact and is summarized in merge requests and the pipeline view. It's also used to provide data for security
-dashboards.
-
 ##### `artifacts:reports:license_scanning` **(ULTIMATE)**
 
 > - Introduced in GitLab 12.8.

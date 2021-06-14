@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
+import CleanupPolicyEnabledAlert from '~/packages_and_registries/shared/components/cleanup_policy_enabled_alert.vue';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import DeleteImage from '~/registry/explorer/components/delete_image.vue';
 import CliCommands from '~/registry/explorer/components/list_page/cli_commands.vue';
@@ -43,21 +44,22 @@ describe('List Page', () => {
   let wrapper;
   let apolloProvider;
 
-  const findDeleteModal = () => wrapper.find(GlModal);
-  const findSkeletonLoader = () => wrapper.find(GlSkeletonLoader);
+  const findDeleteModal = () => wrapper.findComponent(GlModal);
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
-  const findEmptyState = () => wrapper.find(GlEmptyState);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
-  const findCliCommands = () => wrapper.find(CliCommands);
-  const findProjectEmptyState = () => wrapper.find(ProjectEmptyState);
-  const findGroupEmptyState = () => wrapper.find(GroupEmptyState);
-  const findRegistryHeader = () => wrapper.find(RegistryHeader);
+  const findCliCommands = () => wrapper.findComponent(CliCommands);
+  const findProjectEmptyState = () => wrapper.findComponent(ProjectEmptyState);
+  const findGroupEmptyState = () => wrapper.findComponent(GroupEmptyState);
+  const findRegistryHeader = () => wrapper.findComponent(RegistryHeader);
 
-  const findDeleteAlert = () => wrapper.find(GlAlert);
-  const findImageList = () => wrapper.find(ImageList);
-  const findRegistrySearch = () => wrapper.find(RegistrySearch);
+  const findDeleteAlert = () => wrapper.findComponent(GlAlert);
+  const findImageList = () => wrapper.findComponent(ImageList);
+  const findRegistrySearch = () => wrapper.findComponent(RegistrySearch);
   const findEmptySearchMessage = () => wrapper.find('[data-testid="emptySearch"]');
-  const findDeleteImage = () => wrapper.find(DeleteImage);
+  const findDeleteImage = () => wrapper.findComponent(DeleteImage);
+  const findCleanupAlert = () => wrapper.findComponent(CleanupPolicyEnabledAlert);
 
   const waitForApolloRequestRender = async () => {
     jest.runOnlyPendingTimers();
@@ -559,5 +561,34 @@ describe('List Page', () => {
         expect(resolver).toHaveBeenCalledWith(expect.objectContaining(payload));
       },
     );
+  });
+
+  describe('cleanup is on alert', () => {
+    it('exist when showCleanupPolicyOnAlert is true and has the correct props', async () => {
+      mountComponent({
+        config: {
+          showCleanupPolicyOnAlert: true,
+          projectPath: 'foo',
+          isGroupPage: false,
+          cleanupPoliciesSettingsPath: 'bar',
+        },
+      });
+
+      await waitForApolloRequestRender();
+
+      expect(findCleanupAlert().exists()).toBe(true);
+      expect(findCleanupAlert().props()).toMatchObject({
+        projectPath: 'foo',
+        cleanupPoliciesSettingsPath: 'bar',
+      });
+    });
+
+    it('is hidden when showCleanupPolicyOnAlert is false', async () => {
+      mountComponent();
+
+      await waitForApolloRequestRender();
+
+      expect(findCleanupAlert().exists()).toBe(false);
+    });
   });
 });

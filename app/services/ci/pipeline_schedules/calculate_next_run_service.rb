@@ -41,11 +41,11 @@ module Ci
 
       def plan_cron
         strong_memoize(:plan_cron) do
-          daily_scheduled_pipeline_limit = project.actual_limits.limit_for(:ci_daily_pipeline_schedule_triggers)
+          daily_limit = @schedule.daily_limit
 
-          next unless daily_scheduled_pipeline_limit
+          next unless daily_limit
 
-          every_x_minutes = (1.day.in_minutes / daily_scheduled_pipeline_limit).to_i
+          every_x_minutes = (1.day.in_minutes / daily_limit).to_i
 
           Gitlab::Ci::CronParser.parse_natural("every #{every_x_minutes} minutes", Time.zone.name)
         end

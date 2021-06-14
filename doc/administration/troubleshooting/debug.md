@@ -178,7 +178,7 @@ following tips are only recommended if you do NOT mind users being affected by
 downtime. Otherwise skip to the next section.
 
 1. Load the problematic URL
-1. Run `sudo gdb -p <PID>` to attach to the Unicorn process.
+1. Run `sudo gdb -p <PID>` to attach to the Puma process.
 1. In the GDB window, type:
 
    ```plaintext
@@ -186,7 +186,7 @@ downtime. Otherwise skip to the next section.
    ```
 
 1. This forces the process to generate a Ruby backtrace. Check
-   `/var/log/gitlab/unicorn/unicorn_stderr.log` for the backtrace. For example, you may see:
+   `/var/log/gitlab/puma/puma_stderr.log` for the backtrace. For example, you may see:
 
    ```plaintext
    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:33:in `block in start'
@@ -213,16 +213,19 @@ downtime. Otherwise skip to the next section.
    exit
    ```
 
-Note that if the Unicorn process terminates before you are able to run these
+Note that if the Puma process terminates before you are able to run these
 commands, GDB will report an error. To buy more time, you can always raise the
-Unicorn timeout. For omnibus users, you can edit `/etc/gitlab/gitlab.rb` and
-increase it from 60 seconds to 300:
+Puma worker timeout. For omnibus users, you can edit `/etc/gitlab/gitlab.rb` and
+increase it from 60 seconds to 600:
 
 ```ruby
-unicorn['worker_timeout'] = 300
+gitlab_rails['env'] = {
+        'GITLAB_RAILS_RACK_TIMEOUT' => 600
+}
 ```
 
-For source installations, edit `config/unicorn.rb`.
+For source installations, set the environment variable.   
+Refer to [Puma Worker timeout](https://docs.gitlab.com/omnibus/settings/puma.html#worker-timeout).
 
 [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
 
@@ -267,7 +270,7 @@ is a Unicorn worker that is spinning via `top`. Try to use the `gdb`
 techniques above. In addition, using `strace` may help isolate issues:
 
 ```shell
-strace -ttTfyyy -s 1024 -p <PID of unicorn worker> -o /tmp/unicorn.txt
+strace -ttTfyyy -s 1024 -p <PID of puma worker> -o /tmp/puma.txt
 ```
 
 If you cannot isolate which Unicorn worker is the issue, try to run `strace`
@@ -275,10 +278,10 @@ on all the Unicorn workers to see where the
 [`/internal/allowed`](../../development/internal_api.md) endpoint gets stuck:
 
 ```shell
-ps auwx | grep unicorn | awk '{ print " -p " $2}' | xargs  strace -ttTfyyy -s 1024 -o /tmp/unicorn.txt
+ps auwx | grep puma | awk '{ print " -p " $2}' | xargs  strace -ttTfyyy -s 1024 -o /tmp/puma.txt
 ```
 
-The output in `/tmp/unicorn.txt` may help diagnose the root cause.
+The output in `/tmp/puma.txt` may help diagnose the root cause.
 
 ## More information
 

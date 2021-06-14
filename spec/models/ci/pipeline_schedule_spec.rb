@@ -122,6 +122,9 @@ RSpec.describe Ci::PipelineSchedule do
       '*/5 * * * *' | '0 * * * *'   | (1.day.in_minutes / 10).to_i                 | false | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 12, 5)
       '*/5 * * * *' | '0 * * * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | true  | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 12, 0)
       '*/5 * * * *' | '0 * * * *'   | (1.day.in_minutes / 2.hours.in_minutes).to_i | true  | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 12, 5)
+      '*/5 * * * *' | '0 1 * * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | true  | Time.zone.local(2021, 5, 27, 1, 0)   | Time.zone.local(2021, 5, 28, 1, 0)
+      '*/5 * * * *' | '0 1 * * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | true  | Time.zone.local(2021, 5, 27, 1, 0)   | Time.zone.local(2021, 5, 28, 1, 0)
+      '*/5 * * * *' | '0 1 1 * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | true  | Time.zone.local(2021, 5, 1, 1, 0)    | Time.zone.local(2021, 6, 1, 1, 0)
     end
 
     with_them do
@@ -197,5 +200,27 @@ RSpec.describe Ci::PipelineSchedule do
     end
 
     it { is_expected.to contain_exactly(*pipeline_schedule_variables.map(&:to_runner_variable)) }
+  end
+
+  describe '#daily_limit' do
+    let(:pipeline_schedule) { build(:ci_pipeline_schedule) }
+
+    subject(:daily_limit) { pipeline_schedule.daily_limit }
+
+    context 'when there is no limit' do
+      before do
+        create(:plan_limits, :default_plan, ci_daily_pipeline_schedule_triggers: 0)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a limit' do
+      before do
+        create(:plan_limits, :default_plan, ci_daily_pipeline_schedule_triggers: 144)
+      end
+
+      it { is_expected.to eq(144) }
+    end
   end
 end

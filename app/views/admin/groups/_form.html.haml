@@ -27,10 +27,12 @@
   - if @group.new_record?
     .form-group.row
       .offset-sm-2.col-sm-10
-        .gl-alert.gl-alert-info
-          = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-          .gl-alert-body
-            = render 'shared/group_tips'
+        .gl-alert.gl-alert-
+          .gl-alert-container
+            = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+            .gl-alert-content
+              .gl-alert-body
+                = render 'shared/group_tips'
     .form-actions
       = f.submit _('Create group'), class: "gl-button btn btn-confirm"
       = link_to  _('Cancel'), admin_groups_path, class: "gl-button btn btn-default btn-cancel"
