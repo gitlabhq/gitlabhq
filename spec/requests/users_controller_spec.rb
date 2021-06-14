@@ -675,48 +675,6 @@ RSpec.describe UsersController do
     end
   end
 
-  describe 'GET #suggests' do
-    context 'when user exists' do
-      it 'returns JSON indicating the user exists and a suggestion' do
-        get user_suggests_url user.username
-
-        expected_json = { exists: true, suggests: ["#{user.username}1"] }.to_json
-        expect(response.body).to eq(expected_json)
-      end
-
-      context 'when the casing is different' do
-        let(:user) { create(:user, username: 'CamelCaseUser') }
-
-        it 'returns JSON indicating the user exists and a suggestion' do
-          get user_suggests_url user.username.downcase
-
-          expected_json = { exists: true, suggests: ["#{user.username.downcase}1"] }.to_json
-          expect(response.body).to eq(expected_json)
-        end
-      end
-    end
-
-    context 'when the user does not exist' do
-      it 'returns JSON indicating the user does not exist' do
-        get user_suggests_url 'foo'
-
-        expected_json = { exists: false, suggests: [] }.to_json
-        expect(response.body).to eq(expected_json)
-      end
-
-      context 'when a user changed their username' do
-        let(:redirect_route) { user.namespace.redirect_routes.create!(path: 'old-username') }
-
-        it 'returns JSON indicating a user by that username does not exist' do
-          get user_suggests_url 'old-username'
-
-          expected_json = { exists: false, suggests: [] }.to_json
-          expect(response.body).to eq(expected_json)
-        end
-      end
-    end
-  end
-
   describe '#ensure_canonical_path' do
     before do
       sign_in(user)

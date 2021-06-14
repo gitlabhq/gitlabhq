@@ -24,7 +24,13 @@ module MergeRequests
       merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
       merge_request.project.execute_services(merge_data, :merge_request_hooks)
 
+      execute_external_hooks(merge_request, merge_data)
+
       enqueue_jira_connect_messages_for(merge_request)
+    end
+
+    def execute_external_hooks(merge_request, merge_data)
+      # Implemented in EE
     end
 
     def handle_changes(merge_request, options)

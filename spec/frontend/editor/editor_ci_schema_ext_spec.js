@@ -4,6 +4,8 @@ import { EXTENSION_CI_SCHEMA_FILE_NAME_MATCH } from '~/editor/constants';
 import EditorLite from '~/editor/editor_lite';
 import { CiSchemaExtension } from '~/editor/extensions/editor_ci_schema_ext';
 
+const mockRef = 'AABBCCDD';
+
 describe('~/editor/editor_ci_config_ext', () => {
   const defaultBlobPath = '.gitlab-ci.yml';
 
@@ -75,8 +77,6 @@ describe('~/editor/editor_ci_config_ext', () => {
       });
 
       it('with an schema uri that contains project and ref', () => {
-        const mockRef = 'AABBCCDD';
-
         instance.registerCiSchema({
           projectNamespace: mockProjectNamespace,
           projectPath: mockProjectPath,
@@ -95,10 +95,11 @@ describe('~/editor/editor_ci_config_ext', () => {
         instance.registerCiSchema({
           projectNamespace: mockProjectNamespace,
           projectPath: mockProjectPath,
+          ref: mockRef,
         });
 
         expect(getConfiguredYmlSchema()).toEqual({
-          uri: `${TEST_HOST}/${mockProjectNamespace}/${mockProjectPath}/-/schema/master/${EXTENSION_CI_SCHEMA_FILE_NAME_MATCH}`,
+          uri: `${TEST_HOST}/${mockProjectNamespace}/${mockProjectPath}/-/schema/${mockRef}/${EXTENSION_CI_SCHEMA_FILE_NAME_MATCH}`,
           fileMatch: ['another-ci-filename.yml'],
         });
       });

@@ -12,7 +12,35 @@ RSpec.shared_context 'Debian repository shared context' do |container_type, can_
   let_it_be(:user, freeze: true) { create(:user) }
   let_it_be(:personal_access_token, freeze: true) { create(:personal_access_token, user: user) }
 
-  let(:distribution) { 'bullseye' }
+  let_it_be(:private_distribution, freeze: true) { create("debian_#{container_type}_distribution", container: private_container, codename: 'existing-codename') }
+  let_it_be(:private_component, freeze: true) { create("debian_#{container_type}_component", distribution: private_distribution, name: 'existing-component') }
+  let_it_be(:private_architecture_all, freeze: true) { create("debian_#{container_type}_architecture", distribution: private_distribution, name: 'all') }
+  let_it_be(:private_architecture, freeze: true) { create("debian_#{container_type}_architecture", distribution: private_distribution, name: 'existing-arch') }
+
+  let_it_be(:public_distribution, freeze: true) { create("debian_#{container_type}_distribution", container: public_container, codename: 'existing-codename') }
+  let_it_be(:public_component, freeze: true) { create("debian_#{container_type}_component", distribution: public_distribution, name: 'existing-component') }
+  let_it_be(:public_architecture_all, freeze: true) { create("debian_#{container_type}_architecture", distribution: public_distribution, name: 'all') }
+  let_it_be(:public_architecture, freeze: true) { create("debian_#{container_type}_architecture", distribution: public_distribution, name: 'existing-arch') }
+
+  if container_type == :group
+    let_it_be(:private_project) { create(:project, :private, group: private_container) }
+    let_it_be(:public_project) { create(:project, :public, group: public_container) }
+    let_it_be(:private_project_distribution) { create(:debian_project_distribution, container: private_project, codename: 'existing-codename') }
+    let_it_be(:public_project_distribution) { create(:debian_project_distribution, container: public_project, codename: 'existing-codename') }
+  else
+    let_it_be(:private_project) { private_container }
+    let_it_be(:public_project) { public_container }
+    let_it_be(:private_project_distribution) { private_distribution }
+    let_it_be(:public_project_distribution) { public_distribution }
+  end
+
+  let_it_be(:private_package) { create(:debian_package, project: private_project, published_in: private_project_distribution) }
+  let_it_be(:public_package) { create(:debian_package, project: public_project, published_in: public_project_distribution) }
+
+  let(:visibility_level) { :public }
+
+  let(:distribution) { { private: private_distribution, public: public_distribution }[visibility_level] }
+
   let(:component) { 'main' }
   let(:architecture) { 'amd64' }
   let(:source_package) { 'sample' }
@@ -97,7 +125,7 @@ RSpec.shared_examples 'Debian repository GET request' do |status, body = nil|
     expect(response).to have_gitlab_http_status(status)
 
     unless body.nil?
-      expect(response.body).to eq(body)
+      expect(response.body).to match(body)
     end
   end
 end
@@ -125,7 +153,7 @@ RSpec.shared_examples 'Debian repository upload request' do |status, body = nil|
       expect(response.media_type).to eq('text/plain')
 
       unless body.nil?
-        expect(response.body).to eq(body)
+        expect(response.body).to match(body)
       end
     end
     it_behaves_like 'a package tracking event', described_class.name, 'push_package'
@@ -136,7 +164,7 @@ RSpec.shared_examples 'Debian repository upload request' do |status, body = nil|
       expect(response).to have_gitlab_http_status(status)
 
       unless body.nil?
-        expect(response.body).to eq(body)
+        expect(response.body).to match(body)
       end
     end
   end
@@ -182,18 +210,112 @@ RSpec.shared_examples 'Debian repository upload authorize request' do |status, b
       expect(response).to have_gitlab_http_status(status)
 
       unless body.nil?
-        expect(response.body).to eq(body)
+        expect(response.body).to match(body)
       end
     end
   end
 end
 
-RSpec.shared_examples 'rejects Debian access with unknown container id' do
+RSpec.shared_examples 'Debian repository POST distribution request' do |status, body|
+  and_body = body.nil? ? '' : ' and expected body'
+
+  if status == :created
+    it 'creates distribution', :aggregate_failures do
+      expect(::Packages::Debian::CreateDistributionService).to receive(:new).with(container, user, api_params).and_call_original
+
+      expect { subject }
+          .to change { Packages::Debian::GroupDistribution.all.count + Packages::Debian::ProjectDistribution.all.count }.by(1)
+          .and change { Packages::Debian::GroupComponent.all.count + Packages::Debian::ProjectComponent.all.count }.by(1)
+          .and change { Packages::Debian::GroupArchitecture.all.count + Packages::Debian::ProjectArchitecture.all.count }.by(2)
+
+      expect(response).to have_gitlab_http_status(status)
+      expect(response.media_type).to eq('application/json')
+
+      unless body.nil?
+        expect(response.body).to match(body)
+      end
+    end
+  else
+    it "returns #{status}#{and_body}", :aggregate_failures do
+      subject
+
+      expect(response).to have_gitlab_http_status(status)
+
+      unless body.nil?
+        expect(response.body).to match(body)
+      end
+    end
+  end
+end
+
+RSpec.shared_examples 'Debian repository PUT distribution request' do |status, body|
+  and_body = body.nil? ? '' : ' and expected body'
+
+  if status == :success
+    it 'updates distribution', :aggregate_failures do
+      expect(::Packages::Debian::UpdateDistributionService).to receive(:new).with(distribution, api_params.except(:codename)).and_call_original
+
+      expect { subject }
+          .to not_change { Packages::Debian::GroupDistribution.all.count + Packages::Debian::ProjectDistribution.all.count }
+          .and not_change { Packages::Debian::GroupComponent.all.count + Packages::Debian::ProjectComponent.all.count }
+          .and not_change { Packages::Debian::GroupArchitecture.all.count + Packages::Debian::ProjectArchitecture.all.count }
+
+      expect(response).to have_gitlab_http_status(status)
+      expect(response.media_type).to eq('application/json')
+
+      unless body.nil?
+        expect(response.body).to match(body)
+      end
+    end
+  else
+    it "returns #{status}#{and_body}", :aggregate_failures do
+      subject
+
+      expect(response).to have_gitlab_http_status(status)
+
+      unless body.nil?
+        expect(response.body).to match(body)
+      end
+    end
+  end
+end
+
+RSpec.shared_examples 'Debian repository DELETE distribution request' do |status, body|
+  and_body = body.nil? ? '' : ' and expected body'
+
+  if status == :success
+    it 'updates distribution', :aggregate_failures do
+      expect { subject }
+          .to change { Packages::Debian::GroupDistribution.all.count + Packages::Debian::ProjectDistribution.all.count }.by(-1)
+          .and change { Packages::Debian::GroupComponent.all.count + Packages::Debian::ProjectComponent.all.count }.by(-1)
+          .and change { Packages::Debian::GroupArchitecture.all.count + Packages::Debian::ProjectArchitecture.all.count }.by(-2)
+
+      expect(response).to have_gitlab_http_status(status)
+      expect(response.media_type).to eq('application/json')
+
+      unless body.nil?
+        expect(response.body).to match(body)
+      end
+    end
+  else
+    it "returns #{status}#{and_body}", :aggregate_failures do
+      subject
+
+      expect(response).to have_gitlab_http_status(status)
+
+      unless body.nil?
+        expect(response.body).to match(body)
+      end
+    end
+  end
+end
+
+RSpec.shared_examples 'rejects Debian access with unknown container id' do |hidden_status|
   context 'with an unknown container' do
     let(:container) { double(id: non_existing_record_id) }
 
     context 'as anonymous' do
-      it_behaves_like 'Debian repository GET request', :unauthorized, nil
+      it_behaves_like 'Debian repository GET request', hidden_status, nil
     end
 
     context 'as authenticated user' do
@@ -204,19 +326,25 @@ RSpec.shared_examples 'rejects Debian access with unknown container id' do
   end
 end
 
-RSpec.shared_examples 'Debian repository read endpoint' do |desired_behavior, success_status, success_body|
+RSpec.shared_examples 'Debian repository read endpoint' do |desired_behavior, success_status, success_body, authenticate_non_public: true|
+  hidden_status = if authenticate_non_public
+                    :unauthorized
+                  else
+                    :not_found
+                  end
+
   context 'with valid container' do
     using RSpec::Parameterized::TableSyntax
 
     where(:visibility_level, :user_role, :member, :user_token, :expected_status, :expected_body) do
       :public  | :developer  | true  | true  | success_status | success_body
       :public  | :guest      | true  | true  | success_status | success_body
-      :public  | :developer  | true  | false | success_status | success_body
-      :public  | :guest      | true  | false | success_status | success_body
+      :public  | :developer  | true  | false | :unauthorized  | nil
+      :public  | :guest      | true  | false | :unauthorized  | nil
       :public  | :developer  | false | true  | success_status | success_body
       :public  | :guest      | false | true  | success_status | success_body
-      :public  | :developer  | false | false | success_status | success_body
-      :public  | :guest      | false | false | success_status | success_body
+      :public  | :developer  | false | false | :unauthorized  | nil
+      :public  | :guest      | false | false | :unauthorized  | nil
       :public  | :anonymous  | false | true  | success_status | success_body
       :private | :developer  | true  | true  | success_status | success_body
       :private | :guest      | true  | true  | :forbidden     | nil
@@ -226,7 +354,7 @@ RSpec.shared_examples 'Debian repository read endpoint' do |desired_behavior, su
       :private | :guest      | false | true  | :not_found     | nil
       :private | :developer  | false | false | :unauthorized  | nil
       :private | :guest      | false | false | :unauthorized  | nil
-      :private | :anonymous  | false | true  | :unauthorized  | nil
+      :private | :anonymous  | false | true  | hidden_status  | nil
     end
 
     with_them do
@@ -236,10 +364,16 @@ RSpec.shared_examples 'Debian repository read endpoint' do |desired_behavior, su
     end
   end
 
-  it_behaves_like 'rejects Debian access with unknown container id'
+  it_behaves_like 'rejects Debian access with unknown container id', hidden_status
 end
 
-RSpec.shared_examples 'Debian repository write endpoint' do |desired_behavior, success_status, success_body|
+RSpec.shared_examples 'Debian repository write endpoint' do |desired_behavior, success_status, success_body, authenticate_non_public: true|
+  hidden_status = if authenticate_non_public
+                    :unauthorized
+                  else
+                    :not_found
+                  end
+
   context 'with valid container' do
     using RSpec::Parameterized::TableSyntax
 
@@ -261,7 +395,7 @@ RSpec.shared_examples 'Debian repository write endpoint' do |desired_behavior, s
       :private | :guest      | false | true  | :not_found     | nil
       :private | :developer  | false | false | :unauthorized  | nil
       :private | :guest      | false | false | :unauthorized  | nil
-      :private | :anonymous  | false | true  | :unauthorized  | nil
+      :private | :anonymous  | false | true  | hidden_status  | nil
     end
 
     with_them do
@@ -271,5 +405,48 @@ RSpec.shared_examples 'Debian repository write endpoint' do |desired_behavior, s
     end
   end
 
-  it_behaves_like 'rejects Debian access with unknown container id'
+  it_behaves_like 'rejects Debian access with unknown container id', hidden_status
+end
+
+RSpec.shared_examples 'Debian repository maintainer write endpoint' do |desired_behavior, success_status, success_body, authenticate_non_public: true|
+  hidden_status = if authenticate_non_public
+                    :unauthorized
+                  else
+                    :not_found
+                  end
+
+  context 'with valid container' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:visibility_level, :user_role, :member, :user_token, :expected_status, :expected_body) do
+      :public  | :maintainer | true  | true  | success_status | success_body
+      :public  | :developer  | true  | true  | :forbidden     | nil
+      :public  | :guest      | true  | true  | :forbidden     | nil
+      :public  | :maintainer | true  | false | :unauthorized  | nil
+      :public  | :guest      | true  | false | :unauthorized  | nil
+      :public  | :maintainer | false | true  | :forbidden     | nil
+      :public  | :guest      | false | true  | :forbidden     | nil
+      :public  | :maintainer | false | false | :unauthorized  | nil
+      :public  | :guest      | false | false | :unauthorized  | nil
+      :public  | :anonymous  | false | true  | :unauthorized  | nil
+      :private | :maintainer | true  | true  | success_status | success_body
+      :private | :developer  | true  | true  | :forbidden     | nil
+      :private | :guest      | true  | true  | :forbidden     | nil
+      :private | :maintainer | true  | false | :unauthorized  | nil
+      :private | :guest      | true  | false | :unauthorized  | nil
+      :private | :maintainer | false | true  | :not_found     | nil
+      :private | :guest      | false | true  | :not_found     | nil
+      :private | :maintainer | false | false | :unauthorized  | nil
+      :private | :guest      | false | false | :unauthorized  | nil
+      :private | :anonymous  | false | true  | hidden_status  | nil
+    end
+
+    with_them do
+      include_context 'Debian repository access', params[:visibility_level], params[:user_role], params[:member], params[:user_token], :basic do
+        it_behaves_like "Debian repository #{desired_behavior}", params[:expected_status], params[:expected_body]
+      end
+    end
+  end
+
+  it_behaves_like 'rejects Debian access with unknown container id', hidden_status
 end

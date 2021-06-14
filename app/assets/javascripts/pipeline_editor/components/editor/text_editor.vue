@@ -10,7 +10,7 @@ export default {
     EditorLite,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['ciConfigPath', 'projectPath', 'projectNamespace'],
+  inject: ['ciConfigPath', 'projectPath', 'projectNamespace', 'defaultBranch'],
   inheritAttrs: false,
   data() {
     return {
@@ -34,7 +34,7 @@ export default {
         editorInstance.registerCiSchema({
           projectPath: this.projectPath,
           projectNamespace: this.projectNamespace,
-          ref: this.commitSha,
+          ref: this.commitSha || this.defaultBranch,
         });
       }
     },

@@ -74,6 +74,110 @@ deployed behind a feature flag that is **disabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
 can enable it.
 
+## Get project external status checks **(ULTIMATE)**
+
+You can request information about a project's external status checks using the following endpoint:
+
+```plaintext
+GET /projects/:id/external_status_checks
+```
+
+**Parameters:**
+
+| Attribute           | Type    | Required | Description         |
+|---------------------|---------|----------|---------------------|
+| `id`                | integer | yes      | The ID of a project |
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Compliance Check",
+    "project_id": 6,
+    "external_url": "https://gitlab.com/example/test.json",
+    "protected_branches": [
+      {
+        "id": 14,
+        "project_id": 6,
+        "name": "master",
+        "created_at": "2020-10-12T14:04:50.787Z",
+        "updated_at": "2020-10-12T14:04:50.787Z",
+        "code_owner_approval_required": false
+      }
+    ]
+  }
+]
+```
+
+### Create external status check **(ULTIMATE)**
+
+You can create a new external status check for a project using the following endpoint:
+
+```plaintext
+POST /projects/:id/external_status_checks
+```
+
+| Attribute              | Type           | Required | Description                                        |
+|------------------------|----------------|----------|----------------------------------------------------|
+| `id`                   | integer        | yes      | The ID of a project                                |
+| `name`                 | string         | yes      | Display name of status check                      |
+| `external_url`         | string         | yes      | URL of status check resource                  |
+| `protected_branch_ids` | `array<Integer>` | no       | The ids of protected branches to scope the rule by |
+
+### Delete external status check **(ULTIMATE)**
+
+You can delete an external status check for a project using the following endpoint:
+
+```plaintext
+DELETE /projects/:id/external_status_checks/:check_id
+```
+
+| Attribute              | Type           | Required | Description                                        |
+|------------------------|----------------|----------|----------------------------------------------------|
+| `rule_id`              | integer        | yes      | The ID of an status check                         |
+| `id`                   | integer        | yes      | The ID of a project                                |
+
+### Update external status check **(ULTIMATE)**
+
+You can update an existing external status check for a project using the following endpoint:
+
+```plaintext
+PUT /projects/:id/external_status_checks/:check_id
+```
+
+| Attribute              | Type           | Required | Description                                        |
+|------------------------|----------------|----------|----------------------------------------------------|
+| `id`                   | integer        | yes      | The ID of a project                                |
+| `rule_id`              | integer        | yes      | The ID of an external status check                |
+| `name`                 | string         | no       | Display name of status check                      |
+| `external_url`         | string         | no       | URL of external status check resource                  |
+| `protected_branch_ids` | `array<Integer>` | no       | The ids of protected branches to scope the rule by |
+
+### Enable or disable External Project-level MR status checks **(ULTIMATE SELF)**
+
+Enable or disable External Project-level MR status checks is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../user/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+# For the instance
+Feature.enable(:ff_compliance_approval_gates)
+# For a single project
+Feature.enable(:ff_compliance_approval_gates, Project.find(<project id>))
+```
+
+To disable it:
+
+```ruby
+# For the instance
+Feature.disable(:ff_compliance_approval_gates)
+# For a single project
+Feature.disable(:ff_compliance_approval_gates, Project.find(<project id>))
+```
+
 To enable it:
 
 ```ruby

@@ -62,19 +62,19 @@ AND source_id = 13083;
 ```
 
 Here PostgreSQL can perform the query quite efficiently if both columns are
-indexed, but as the query gets more complex it may not be able to use these
-indexes efficiently.
+indexed. As the query gets more complex, it may not be able to use these
+indexes effectively.
 
 ## Mixed Responsibilities
 
-Similar to functions and classes a table should have a single responsibility:
+Similar to functions and classes, a table should have a single responsibility:
 storing data with a certain set of pre-defined columns. When using polymorphic
-associations you are instead storing different types of data (possibly with
+associations, you are storing different types of data (possibly with
 different columns set) in the same table.
 
 ## The Solution
 
-Fortunately there is a very simple solution to these problems: use a
+Fortunately, there is a solution to these problems: use a
 separate table for every type you would otherwise store in the same table. Using
 a separate table allows you to use everything a database may provide to ensure
 consistency and query data efficiently, without any additional application logic
@@ -120,8 +120,8 @@ FROM pending_group_members
 WHERE group_id = 4
 ```
 
-If you want to get both you can use a UNION, though you need to be explicit
-about what columns you want to SELECT as otherwise the result set uses the
+If you want to get both you can use a `UNION`, though you need to be explicit
+about what columns you want to `SELECT` as otherwise the result set uses the
 columns of the first query. For example:
 
 ```sql

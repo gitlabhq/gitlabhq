@@ -1323,8 +1323,8 @@ Use `rules:if` clauses to specify when to add a job to a pipeline:
 
 `rules:if` differs slightly from `only:variables` by accepting only a single
 expression string per rule, rather than an array of them. Any set of expressions to be
-evaluated can be [conjoined into a single expression](../variables/README.md#conjunction--disjunction)
-by using `&&` or `||`, and the [variable matching operators (`==`, `!=`, `=~` and `!~`)](../variables/README.md#syntax-of-cicd-variable-expressions).
+evaluated can be [conjoined into a single expression](../jobs/job_control.md#join-variable-expressions-together-with--or-)
+by using `&&` or `||`, and the [variable matching operators (`==`, `!=`, `=~` and `!~`)](../jobs/job_control.md#cicd-variable-expressions).
 
 Unlike variables in [`script`](../variables/README.md#use-cicd-variables-in-job-scripts)
 sections, variables in rules expressions are always formatted as `$VARIABLE`.
@@ -1598,7 +1598,7 @@ considered for their usage and behavior in this context. Future keyword improvem
 are being discussed in our [epic for improving `rules`](https://gitlab.com/groups/gitlab-org/-/epics/2783),
 where anyone can add suggestions or requests.
 
-You can use [parentheses](../variables/README.md#parentheses) with `&&` and `||` to build more complicated variable expressions.
+You can use [parentheses](../jobs/job_control.md#group-variable-expressions-together-with-parentheses) with `&&` and `||` to build more complicated variable expressions.
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3:
 
 ```yaml
@@ -1726,7 +1726,7 @@ to a pipeline, based on the status of [CI/CD variables](../variables/README.md).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: An array of [CI/CD variable expressions](../variables/README.md#cicd-variable-expressions).
+**Possible inputs**: An array of [CI/CD variable expressions](../jobs/job_control.md#cicd-variable-expressions).
 
 **Example of `only:variables`**:
 

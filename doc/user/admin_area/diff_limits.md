@@ -24,7 +24,8 @@ This affects merge requests and branch comparison views.
 
 To set the maximum diff patch size:
 
-1. Go to the Admin Area (**{admin}**) and select **Settings > General**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand **Diff limits**.
 1. Enter a value for **Maximum diff patch size**, measured in bytes.
 1. Select **Save changes**.

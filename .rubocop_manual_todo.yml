@@ -375,7 +375,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/requests/api/commits_spec.rb
     - ee/spec/requests/api/dora/metrics_spec.rb
     - ee/spec/requests/api/epics_spec.rb
-    - ee/spec/requests/api/external_approval_rules_spec.rb
     - ee/spec/requests/api/geo_spec.rb
     - ee/spec/requests/api/graphql/boards/epic_board_list_epics_query_spec.rb
     - ee/spec/requests/api/graphql/current_user/todos_query_spec.rb
@@ -439,9 +438,9 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/services/dast_scanner_profiles/destroy_service_spec.rb
     - ee/spec/services/dast_scanner_profiles/update_service_spec.rb
     - ee/spec/services/dast_site_profiles/destroy_service_spec.rb
-    - ee/spec/services/external_approval_rules/create_service_spec.rb
-    - ee/spec/services/external_approval_rules/destroy_service_spec.rb
-    - ee/spec/services/external_approval_rules/update_service_spec.rb
+    - ee/spec/services/external_status_checks/create_service_spec.rb
+    - ee/spec/services/external_status_checks/destroy_service_spec.rb
+    - ee/spec/services/external_status_checks/update_service_spec.rb
     - ee/spec/services/gitlab_subscriptions/activate_service_spec.rb
     - ee/spec/services/gitlab_subscriptions/apply_trial_service_spec.rb
     - ee/spec/services/incident_management/incidents/upload_metric_service_spec.rb
@@ -2829,7 +2828,7 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/views/shared/promotions/_promote_repository_features.html.haml'
     - 'ee/app/workers/analytics/code_review_metrics_worker.rb'
     - 'ee/app/workers/group_saml_group_sync_worker.rb'
-    - 'ee/lib/api/external_approval_rules.rb'
+    - 'ee/lib/api/external_status_checks.rb'
     - 'ee/lib/ee/api/entities/approval_state.rb'
     - 'ee/lib/ee/api/entities/board.rb'
     - 'ee/lib/ee/api/entities/issue.rb'

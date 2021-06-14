@@ -389,11 +389,23 @@ class MergeRequestDiff < ApplicationRecord
 
   def diffs_in_batch(batch_page, batch_size, diff_options:)
     fetching_repository_diffs(diff_options) do |comparison|
+      reorder_diff_files!
+      diffs_batch = diffs_in_batch_collection(batch_page, batch_size, diff_options: diff_options)
+
       if comparison
-        comparison.diffs_in_batch(batch_page, batch_size, diff_options: diff_options)
+        if diff_options[:paths].blank? && !without_files?
+          # Return the empty MergeRequestDiffBatch for an out of bound batch request
+          break diffs_batch if diffs_batch.diff_file_paths.blank?
+
+          diff_options.merge!(
+            paths: diffs_batch.diff_file_paths,
+            pagination_data: diffs_batch.pagination_data
+          )
+        end
+
+        comparison.diffs(diff_options)
       else
-        reorder_diff_files!
-        diffs_in_batch_collection(batch_page, batch_size, diff_options: diff_options)
+        diffs_batch
       end
     end
   end

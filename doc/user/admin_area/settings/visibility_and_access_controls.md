@@ -11,8 +11,9 @@ GitLab allows administrators to enforce specific controls.
 
 To access the visibility and access control options:
 
-1. Sign in to GitLab as a user with Administrator [permissions](../../permissions.md).
-1. Go to **Admin Area > Settings > General**.
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 
 ## Default branch protection

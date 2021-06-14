@@ -73,7 +73,7 @@ end-to-end:
       - $CI_COMMIT_MESSAGE =~ /skip-end-to-end-tests/
 ```
 
-You can use [parentheses](../variables/README.md#parentheses) with `&&` and `||`
+You can use [parentheses](#group-variable-expressions-together-with-parentheses) with `&&` and `||`
 to build more complicated variable expressions:
 
 ```yaml
@@ -318,3 +318,114 @@ this feature flag again:
 ```ruby
 Feature.enable(:allow_unsafe_ruby_regexp)
 ```
+
+## CI/CD variable expressions
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37397) in GitLab 10.7 for [the `only` and `except` CI keywords](../yaml/README.md#onlyvariables--exceptvariables)
+> - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3 with [the `rules` keyword](../yaml/README.md#rules)
+
+Use variable expressions to control which jobs are created in a pipeline after changes
+are pushed to GitLab. You can use variable expressions with:
+
+- [`rules:if`](../yaml/README.md#rules).
+- [`only:variables` and `except:variables`](../yaml/README.md#onlyvariables--exceptvariables).
+
+For example, with `rules:if`:
+
+```yaml
+job1:
+  variables:
+    VAR1: "variable1"
+  script:
+    - echo "Test variable comparison
+  rules:
+    - if: $VAR1 == "variable1"
+```
+
+### Compare a variable to a string
+
+You can use the equality operators `==` and `!=` to compare a variable with a
+string. Both single quotes and double quotes are valid. The order doesn't matter,
+so the variable can be first, or the string can be first. For example:
+
+- `if: $VARIABLE == "some value"`
+- `if: $VARIABLE != "some value"`
+- `if: "some value" == $VARIABLE`
+
+### Compare two variables
+
+You can compare the values of two variables. For example:
+
+- `if: $VARIABLE_1 == $VARIABLE_2`
+- `if: $VARIABLE_1 != $VARIABLE_2`
+
+### Check if a variable is undefined
+
+You can compare a variable to the `null` keyword to see if it is defined. For example:
+
+- `if: $VARIABLE == null`
+- `if: $VARIABLE != null`
+
+### Check if a variable is empty
+
+You can check if a variable is defined but empty. For example:
+
+- `if: $VARIABLE == ""`
+- `if: $VARIABLE != ""`
+
+### Check if a variable exists
+
+You can check for the existence of a variable by using just the variable name in
+the expression. The variable must not be empty. For example:
+
+- `if: $VARIABLE`
+
+### Compare a variable to a regex pattern
+
+You can do regex pattern matching on variable values with the `=~` and `!~` operators.
+Variable pattern matching with regular expressions uses the
+[RE2 regular expression syntax](https://github.com/google/re2/wiki/Syntax).
+
+Expressions evaluate as `true` if:
+
+- Matches are found when using `=~`.
+- Matches are *not* found when using `!~`.
+
+For example:
+
+- `$VARIABLE =~ /^content.*/`
+- `$VARIABLE_1 !~ /^content.*/`
+
+Pattern matching is case-sensitive by default. Use the `i` flag modifier to make a
+pattern case-insensitive. For example: `/pattern/i`.
+
+### Join variable expressions together with `&&` or `||`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62867) in GitLab 12.0
+
+You can join multiple expressions using `&&` (and) or `||` (or), for example:
+
+- `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 == "something"`
+- `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 =~ /thing$/ && $VARIABLE3`
+- `$VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/ && $VARIABLE3`
+
+The precedence of operators follows the [Ruby 2.5 standard](https://ruby-doc.org/core-2.5.0/doc/syntax/precedence_rdoc.html),
+so `&&` is evaluated before `||`.
+
+#### Group variable expressions together with parentheses
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/238174) in GitLab 13.5.
+
+You can use parentheses to group expressions together. Parentheses take precedence over
+`&&` and `||`, so expressions enclosed in parentheses are evaluated first, and the
+result is used for the rest of the expression.
+
+You can nest parentheses to create complex conditions, and the inner-most expressions
+in parentheses are evaluated first.
+
+For example:
+
+- `($VARIABLE1 =~ /^content.*/ || $VARIABLE2) && ($VARIABLE3 =~ /thing$/ || $VARIABLE4)`
+- `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
+- `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`

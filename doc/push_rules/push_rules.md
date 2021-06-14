@@ -82,14 +82,19 @@ See [server hooks](../administration/server_hooks.md) for more information.
 
 ## Enabling push rules
 
-NOTE:
-GitLab administrators can set push rules globally under
-**Admin Area > Push Rules** that all new projects inherit. You can later
-override them in a project's settings. They can be also set on a [group level](../user/group/index.md#group-push-rules).
+You can create push rules for all new projects to inherit, but they can be overridden
+at the project level or the [group level](../user/group/index.md#group-push-rules).
 
-1. Navigate to your project's **Settings > Repository** and expand **Push rules**
-1. Set the rule you want
-1. Click **Save Push Rules** for the changes to take effect
+To create global push rules:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Push rules**.
+
+To override global push rules in a project's settings:
+
+1. Navigate to your project's **Settings > Repository** and expand **Push rules**.
+1. Set the rule you want.
+1. Select **Save Push Rules** for the changes to take effect.
 
 The following options are available:
 

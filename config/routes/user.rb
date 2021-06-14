@@ -49,7 +49,6 @@ scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) d
     get :followers
     get :following
     get :exists
-    get :suggests
     get :activity
     post :follow
     post :unfollow

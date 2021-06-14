@@ -24,22 +24,7 @@ RSpec.describe Packages::Nuget::MetadataExtractionService do
         package_tags: []
       }
 
-      context 'with packages_nuget_archive_new_file_reader enabled' do
-        before do
-          expect(service).to receive(:with_new_file_reader).and_call_original
-        end
-
-        it { is_expected.to eq(expected_metadata) }
-      end
-
-      context 'with packages_nuget_archive_new_file_reader disabled' do
-        before do
-          stub_feature_flags(packages_nuget_archive_new_file_reader: false)
-          expect(service).to receive(:with_legacy_file_reader).and_call_original
-        end
-
-        it { is_expected.to eq(expected_metadata) }
-      end
+      it { is_expected.to eq(expected_metadata) }
     end
 
     context 'with nuspec file' do

@@ -228,6 +228,7 @@ module API
       mount ::API::PagesDomains
       mount ::API::ProjectClusters
       mount ::API::ProjectContainerRepositories
+      mount ::API::ProjectDebianDistributions
       mount ::API::ProjectEvents
       mount ::API::ProjectExport
       mount ::API::ProjectImport

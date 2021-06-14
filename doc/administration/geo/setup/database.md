@@ -728,6 +728,10 @@ For each Patroni instance on the secondary site:
    postgresql['sql_replication_password'] = 'POSTGRESQL_REPLICATION_PASSWORD_HASH'
    postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
    postgresql['listen_address'] = '0.0.0.0' # You can use a public or VPC address here instead
+   
+   gitlab_rails['dbpassword'] = 'POSTGRESQL_PASSWORD'
+   gitlab_rails['enable'] = true
+   gitlab_rails['auto_migrate'] = false
    ```
 
 1. Reconfigure GitLab for the changes to take effect.
@@ -882,6 +886,7 @@ For each Patroni instance on the secondary site for the tracking database:
    # GitLab database settings
    gitlab_rails['db_database'] = 'gitlabhq_geo_production'
    gitlab_rails['db_username'] = 'gitlab_geo'
+   gitlab_rails['enable'] = true
 
    # Disable automatic database migrations
    gitlab_rails['auto_migrate'] = false

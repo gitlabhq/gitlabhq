@@ -6396,7 +6396,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.user_preferences_group_overview_details`
 
-Count of users who set personal preference to see Details on Group overview page
+Count of users who set personal preference to see Details on Group information page
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216182203_user_preferences_group_overview_details.yml)
 
@@ -6408,7 +6408,7 @@ Tiers: `ultimate`
 
 ### `counts.user_preferences_group_overview_security_dashboard`
 
-Count of users who set personal preference to see Security Dashboard on Group overview page
+Count of users who set personal preference to see Security Dashboard on Group information page
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216182205_user_preferences_group_overview_security_dashboard.yml)
 
@@ -17440,7 +17440,7 @@ Tiers: `ultimate`
 
 ### `usage_activity_by_stage.secure.user_preferences_group_overview_security_dashboard`
 
-Users who set personal preference to see Details on Group overview page
+Users who set personal preference to see Details on Group information page
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216182207_user_preferences_group_overview_security_dashboard.yml)
 
@@ -19480,7 +19480,7 @@ Tiers: `ultimate`
 
 ### `usage_activity_by_stage_monthly.secure.user_preferences_group_overview_security_dashboard`
 
-Users who set personal preference to see Security Dashboard on Group overview page
+Users who set personal preference to see Security Dashboard on Group information page
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216182209_user_preferences_group_overview_security_dashboard.yml)
 

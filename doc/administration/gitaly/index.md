@@ -235,29 +235,6 @@ A hybrid approach can be used in these instances, where each shard is configured
 cluster. [Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned
 to provide greater flexibility for extremely large GitLab instances.
 
-### Gitaly Cluster compared to Geo
-
-Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the redundancy of:
-
-- Gitaly Cluster provides fault tolerance for data storage and is invisible to the user. Users are
-  not aware when Gitaly Cluster is used.
-- Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/index.md) for
-  an entire instance of GitLab. Users know when they are using Geo for
-  [replication](../geo/index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#limitations-on-replicationverification),
-  including Git data.
-
-The following table outlines the major differences between Gitaly Cluster and Geo:
-
-| Tool           | Nodes    | Locations | Latency tolerance  | Failover                                                                    | Consistency                              | Provides redundancy for |
-|:---------------|:---------|:----------|:-------------------|:----------------------------------------------------------------------------|:-----------------------------------------|:------------------------|
-| Gitaly Cluster | Multiple | Single    | Approximately 1 ms | [Automatic](praefect.md#automatic-failover-and-primary-election-strategies) | [Strong](praefect.md#strong-consistency) | Data storage in Git     |
-| Geo            | Multiple | Multiple  | Up to one minute   | [Manual](../geo/disaster_recovery/index.md)                                 | Eventual                                 | Entire GitLab instance  |
-
-For more information, see:
-
-- Geo [use cases](../geo/index.md#use-cases).
-- Geo [architecture](../geo/index.md#architecture).
-
 ### Architecture
 
 Praefect is a router and transaction manager for Gitaly, and a required
@@ -407,30 +384,31 @@ We welcome your feedback on this process: raise a support ticket, or [comment on
 
 Refer to the information below when troubleshooting Gitaly and Gitaly Cluster.
 
+Before troubleshooting, see the Gitaly and Gitaly Cluster
+[frequently asked questions](faq.md).
+
 ### Troubleshoot Gitaly
 
 The following sections provide possible solutions to Gitaly errors.
 
-See also:
-
-- [Gitaly timeout](../../user/admin_area/settings/gitaly_timeouts.md) settings.
-- [Gitaly troubleshooting information](../reference_architectures/troubleshooting.md#troubleshooting-gitaly)
-  in reference architecture documentation.
+See also [Gitaly timeout](../../user/admin_area/settings/gitaly_timeouts.md) settings.
 
 #### Check versions when using standalone Gitaly servers
 
 When using standalone Gitaly servers, you must make sure they are the same version
-as GitLab to ensure full compatibility. Check **Admin Area > Overview > Gitaly Servers** on
-your GitLab instance and confirm all Gitaly servers indicate that they are up to date.
+as GitLab to ensure full compatibility:
 
-#### `gitaly-debug`
+1. Go to **Admin Area > Overview > Gitaly Servers** on your GitLab instance.
+1. Confirm all Gitaly servers indicate that they are up to date.
+
+#### Use `gitaly-debug`
 
 The `gitaly-debug` command provides "production debugging" tools for Gitaly and Git
 performance. It is intended to help production engineers and support
 engineers investigate Gitaly performance problems.
 
 If you're using GitLab 11.6 or newer, this tool should be installed on
-your GitLab / Gitaly server already at `/opt/gitlab/embedded/bin/gitaly-debug`.
+your GitLab or Gitaly server already at `/opt/gitlab/embedded/bin/gitaly-debug`.
 If you're investigating an older GitLab version you can compile this
 tool offline and copy the executable to your server:
 
@@ -452,13 +430,13 @@ gitaly-debug -h
 remote: GitLab: 401 Unauthorized
 ```
 
-You need to sync your `gitlab-secrets.json` file with your Gitaly clients (GitLab
-app nodes).
+You need to sync your `gitlab-secrets.json` file with your GitLab
+application nodes.
 
 #### Client side gRPC logs
 
 Gitaly uses the [gRPC](https://grpc.io/) RPC framework. The Ruby gRPC
-client has its own log file which may contain debugging information when
+client has its own log file which may contain useful information when
 you are seeing Gitaly errors. You can control the log level of the
 gRPC client with the `GRPC_LOG_LEVEL` environment variable. The
 default level is `WARN`.
@@ -510,12 +488,13 @@ so, there's not that much visibility into what goes on inside
 
 If you have Prometheus set up to scrape your Gitaly process, you can see
 request rates and error codes for individual RPCs in `gitaly-ruby` by
-querying `grpc_client_handled_total`. Strictly speaking, this metric does
-not differentiate between `gitaly-ruby` and other RPCs. However from GitLab 11.9,
-all gRPC calls made by Gitaly itself are internal calls from the main Gitaly process to one of its
-`gitaly-ruby` sidecars.
+querying `grpc_client_handled_total`.
 
-Assuming your `grpc_client_handled_total` counter observes only Gitaly,
+- In theory, this metric does not differentiate between `gitaly-ruby` and other RPCs.
+- In practice from GitLab 11.9, all gRPC calls made by Gitaly itself are internal calls from the
+  main Gitaly process to one of its `gitaly-ruby` sidecars.
+
+Assuming your `grpc_client_handled_total` counter only observes Gitaly,
 the following query shows you RPCs are (most likely) internally
 implemented as calls to `gitaly-ruby`:
 
@@ -549,7 +528,7 @@ Confirm the following are all true:
 - When any user adds or modifies a file from the repository using the GitLab
   UI, it immediately fails with a red `401 Unauthorized` banner.
 - Creating a new project and [initializing it with a README](../../user/project/working_with_projects.md#blank-projects)
-  successfully creates the project, but doesn't create the README.
+  successfully creates the project but doesn't create the README.
 - When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs.html#tail-logs-in-a-console-on-the-server)
   on a Gitaly client and reproducing the error, you get `401` errors
   when reaching the [`/api/v4/internal/allowed`](../../development/internal_api.md) endpoint:
@@ -631,22 +610,24 @@ Verify you can reach Gitaly by using TCP:
 sudo gitlab-rake gitlab:tcp_check[GITALY_SERVER_IP,GITALY_LISTEN_PORT]
 ```
 
-If the TCP connection fails, check your network settings and your firewall rules.
-If the TCP connection succeeds, your networking and firewall rules are correct.
+If the TCP connection:
 
-If you use proxy servers in your command line environment, such as Bash, these
-can interfere with your gRPC traffic.
+- Fails, check your network settings and your firewall rules.
+- Succeeds, your networking and firewall rules are correct.
 
-If you use Bash or a compatible command line environment, run the following commands
-to determine whether you have proxy servers configured:
+If you use proxy servers in your command line environment such as Bash, these can interfere with
+your gRPC traffic.
+
+If you use Bash or a compatible command line environment, run the following commands to determine
+whether you have proxy servers configured:
 
 ```shell
 echo $http_proxy
 echo $https_proxy
 ```
 
-If either of these variables have a value, your Gitaly CLI connections may be
-getting routed through a proxy which cannot connect to Gitaly.
+If either of these variables have a value, your Gitaly CLI connections may be getting routed through
+a proxy which cannot connect to Gitaly.
 
 To remove the proxy setting, run the following commands (depending on which variables had values):
 
@@ -682,6 +663,22 @@ it's likely that the Gitaly servers are experiencing
 
 Ensure the Gitaly clients and servers are synchronized, and use an NTP time
 server to keep them synchronized.
+
+#### Gitaly not listening on new address after reconfiguring
+
+When updating the `gitaly['listen_addr']` or `gitaly['prometheus_listen_addr']` values, Gitaly may
+continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
+
+When this occurs, run `sudo gitlab-ctl restart` to resolve the issue. This should no longer be
+necessary because [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2521) is resolved.
+
+#### Permission denied errors appearing in Gitaly logs when accessing repositories from a standalone Gitaly node
+
+If this error occurs even though file permissions are correct, it's likely that the Gitaly node is
+experiencing [clock drift](https://en.wikipedia.org/wiki/Clock_drift).
+
+Please ensure that the GitLab and Gitaly nodes are synchronized and use an NTP time
+server to keep them synchronized if possible.
 
 ### Troubleshoot Praefect (Gitaly Cluster)
 
@@ -737,7 +734,7 @@ For example:
   {"level":"error","msg":"Error updating node: pq: relation \"node_status\" does not exist","pid":210882,"praefectName":"gitlab1x4m:0.0.0.0:2305","time":"2021-04-01T19:26:19.473Z","virtual_storage":"praefect-cluster-1"}
   ```
 
-To solve this, the database schema migration can be done using `sql-migrate` subcommand of
+To solve this, the database schema migration can be done using `sql-migrate` sub-command of
 the `praefect` command:
 
 ```shell

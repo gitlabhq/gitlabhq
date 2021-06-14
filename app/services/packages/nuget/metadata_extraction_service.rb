@@ -105,22 +105,6 @@ module Packages
       end
 
       def with_zip_file(&block)
-        if ::Feature.enabled?(:packages_nuget_archive_new_file_reader, project, default_enabled: :yaml)
-          with_new_file_reader(&block)
-        else
-          with_legacy_file_reader(&block)
-        end
-      end
-
-      def with_legacy_file_reader
-        package_file.file.use_file do |file_path|
-          Zip::File.open(file_path) do |zip_file|
-            yield(zip_file)
-          end
-        end
-      end
-
-      def with_new_file_reader
         package_file.file.use_open_file do |open_file|
           zip_file = Zip::File.new(open_file, false, true)
           yield(zip_file)

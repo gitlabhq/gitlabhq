@@ -4,8 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Packages::Debian::CreateDistributionService do
   RSpec.shared_examples 'Create Debian Distribution' do |expected_message, expected_components, expected_architectures|
+    let_it_be(:container) { create(container_type) } # rubocop:disable Rails/SaveBang
+
     it 'returns ServiceResponse', :aggregate_failures do
       if expected_message.nil?
+        expect(::Packages::Debian::GenerateDistributionWorker).to receive(:perform_async).with(container_type, an_instance_of(Integer))
+
         expect { response }
           .to change { container.debian_distributions.klass.all.count }
           .from(0).to(1)
@@ -18,6 +22,7 @@ RSpec.describe Packages::Debian::CreateDistributionService do
           .and not_change { Packages::Debian::ProjectComponentFile.count }
           .and not_change { Packages::Debian::GroupComponentFile.count }
       else
+        expect(::Packages::Debian::GenerateDistributionWorker).not_to receive(:perform_async)
         expect { response }
           .to not_change { container.debian_distributions.klass.all.count }
           .and not_change { container.debian_distributions.count }
@@ -109,13 +114,13 @@ RSpec.describe Packages::Debian::CreateDistributionService do
   let(:response) { subject.execute }
 
   context 'within a projet' do
-    let_it_be(:container) { create(:project) }
+    let_it_be(:container_type) { :project }
 
     it_behaves_like 'Debian Create Distribution Service'
   end
 
   context 'within a group' do
-    let_it_be(:container) { create(:group) }
+    let_it_be(:container_type) { :group }
 
     it_behaves_like 'Debian Create Distribution Service'
   end

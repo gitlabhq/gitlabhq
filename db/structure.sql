@@ -12893,6 +12893,41 @@ CREATE SEQUENCE external_pull_requests_id_seq
 
 ALTER SEQUENCE external_pull_requests_id_seq OWNED BY external_pull_requests.id;
 
+CREATE TABLE external_status_checks (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_url text NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_7e3b9eb41a CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_ae0dec3f61 CHECK ((char_length(external_url) <= 255))
+);
+
+CREATE SEQUENCE external_status_checks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE external_status_checks_id_seq OWNED BY external_status_checks.id;
+
+CREATE TABLE external_status_checks_protected_branches (
+    id bigint NOT NULL,
+    external_status_check_id bigint NOT NULL,
+    protected_branch_id bigint NOT NULL
+);
+
+CREATE SEQUENCE external_status_checks_protected_branches_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE external_status_checks_protected_branches_id_seq OWNED BY external_status_checks_protected_branches.id;
+
 CREATE TABLE feature_gates (
     id integer NOT NULL,
     feature_key character varying NOT NULL,
@@ -18127,8 +18162,9 @@ ALTER SEQUENCE sprints_id_seq OWNED BY sprints.id;
 CREATE TABLE status_check_responses (
     id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
-    external_approval_rule_id bigint NOT NULL,
-    sha bytea NOT NULL
+    external_approval_rule_id bigint,
+    sha bytea NOT NULL,
+    external_status_check_id bigint NOT NULL
 );
 
 CREATE SEQUENCE status_check_responses_id_seq
@@ -19863,6 +19899,10 @@ ALTER TABLE ONLY external_approval_rules_protected_branches ALTER COLUMN id SET 
 
 ALTER TABLE ONLY external_pull_requests ALTER COLUMN id SET DEFAULT nextval('external_pull_requests_id_seq'::regclass);
 
+ALTER TABLE ONLY external_status_checks ALTER COLUMN id SET DEFAULT nextval('external_status_checks_id_seq'::regclass);
+
+ALTER TABLE ONLY external_status_checks_protected_branches ALTER COLUMN id SET DEFAULT nextval('external_status_checks_protected_branches_id_seq'::regclass);
+
 ALTER TABLE ONLY feature_gates ALTER COLUMN id SET DEFAULT nextval('feature_gates_id_seq'::regclass);
 
 ALTER TABLE ONLY features ALTER COLUMN id SET DEFAULT nextval('features_id_seq'::regclass);
@@ -21174,6 +21214,12 @@ ALTER TABLE ONLY external_approval_rules_protected_branches
 ALTER TABLE ONLY external_pull_requests
     ADD CONSTRAINT external_pull_requests_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY external_status_checks
+    ADD CONSTRAINT external_status_checks_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY external_status_checks_protected_branches
+    ADD CONSTRAINT external_status_checks_protected_branches_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY feature_gates
     ADD CONSTRAINT feature_gates_pkey PRIMARY KEY (id);
 
@@ -22388,6 +22434,10 @@ CREATE UNIQUE INDEX idx_on_external_approval_rules_project_id_external_url ON ex
 
 CREATE UNIQUE INDEX idx_on_external_approval_rules_project_id_name ON external_approval_rules USING btree (project_id, name);
 
+CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_external_url ON external_status_checks USING btree (project_id, external_url);
+
+CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_name ON external_status_checks USING btree (project_id, name);
+
 CREATE INDEX idx_packages_build_infos_on_package_id ON packages_build_infos USING btree (package_id);
 
 CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON packages_debian_group_component_files USING btree (architecture_id);
@@ -23277,6 +23327,10 @@ CREATE INDEX index_epics_on_start_date ON epics USING btree (start_date);
 CREATE INDEX index_epics_on_start_date_sourcing_epic_id ON epics USING btree (start_date_sourcing_epic_id) WHERE (start_date_sourcing_epic_id IS NOT NULL);
 
 CREATE INDEX index_epics_on_start_date_sourcing_milestone_id ON epics USING btree (start_date_sourcing_milestone_id);
+
+CREATE INDEX index_esc_protected_branches_on_external_status_check_id ON external_status_checks_protected_branches USING btree (external_status_check_id);
+
+CREATE INDEX index_esc_protected_branches_on_protected_branch_id ON external_status_checks_protected_branches USING btree (protected_branch_id);
 
 CREATE INDEX index_events_on_action ON events USING btree (action);
 
@@ -24668,6 +24722,8 @@ CREATE INDEX index_sprints_on_title_trigram ON sprints USING gin (title gin_trgm
 
 CREATE INDEX index_status_check_responses_on_external_approval_rule_id ON status_check_responses USING btree (external_approval_rule_id);
 
+CREATE INDEX index_status_check_responses_on_external_status_check_id ON status_check_responses USING btree (external_status_check_id);
+
 CREATE INDEX index_status_check_responses_on_merge_request_id ON status_check_responses USING btree (merge_request_id);
 
 CREATE UNIQUE INDEX index_status_page_published_incidents_on_issue_id ON status_page_published_incidents USING btree (issue_id);
@@ -25449,9 +25505,6 @@ ALTER TABLE ONLY ci_unit_test_failures
 ALTER TABLE ONLY project_pages_metadata
     ADD CONSTRAINT fk_0fd5b22688 FOREIGN KEY (pages_deployment_id) REFERENCES pages_deployments(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY status_check_responses
-    ADD CONSTRAINT fk_116e7e7369 FOREIGN KEY (external_approval_rule_id) REFERENCES external_approval_rules(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_11e3ebfcdd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -25622,6 +25675,9 @@ ALTER TABLE ONLY clusters_applications_prometheus
 
 ALTER TABLE ONLY terraform_states
     ADD CONSTRAINT fk_558901b030 FOREIGN KEY (locked_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY status_check_responses
+    ADD CONSTRAINT fk_55bd2abc83 FOREIGN KEY (external_status_check_id) REFERENCES external_status_checks(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_56067dcb44 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -25911,6 +25967,9 @@ ALTER TABLE ONLY bulk_import_entities
 ALTER TABLE ONLY compliance_management_frameworks
     ADD CONSTRAINT fk_b74c45b71f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY external_status_checks_protected_branches
+    ADD CONSTRAINT fk_b7d788e813 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY issue_assignees
     ADD CONSTRAINT fk_b7d881734a FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -25970,6 +26029,9 @@ ALTER TABLE ONLY external_approval_rules_protected_branches
 
 ALTER TABLE ONLY external_approval_rules_protected_branches
     ADD CONSTRAINT fk_ca2ffb55e6 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY external_status_checks_protected_branches
+    ADD CONSTRAINT fk_cc0dcc36d1 FOREIGN KEY (external_status_check_id) REFERENCES external_status_checks(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dast_profiles_pipelines
     ADD CONSTRAINT fk_cc206a8c13 FOREIGN KEY (dast_profile_id) REFERENCES dast_profiles(id) ON DELETE CASCADE;
@@ -26357,6 +26419,9 @@ ALTER TABLE ONLY boards_epic_board_positions
 
 ALTER TABLE ONLY geo_repository_created_events
     ADD CONSTRAINT fk_rails_1f49e46a61 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY external_status_checks
+    ADD CONSTRAINT fk_rails_1f5a8aa809 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dora_daily_metrics
     ADD CONSTRAINT fk_rails_1fd07aff6f FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;

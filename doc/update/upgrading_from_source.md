@@ -149,7 +149,7 @@ Remember to set `git -> bin_path` to `/usr/local/bin/git` in `config/gitlab.yml`
 ### 7. Update PostgreSQL
 
 WARNING:
-From GitLab 13.0, you must use at least PostgreSQL 11.
+From GitLab 14.0, you must use at least PostgreSQL 12.
 
 The latest version of GitLab might depend on a more recent PostgreSQL version
 than what you're currently running. You may also need to enable some

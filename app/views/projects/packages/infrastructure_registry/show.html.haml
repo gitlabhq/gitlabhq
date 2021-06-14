@@ -10,4 +10,6 @@
       can_delete: can?(current_user, :destroy_package, @project).to_s,
       svg_path: image_path('illustrations/no-packages.svg'),
       project_name: @project.name,
+      project_path: expose_url(@project.full_path),
+      terraform_help_path: help_page_path('user/infrastructure/index'),
       project_list_url: project_infrastructure_registry_index_path(@project)} }

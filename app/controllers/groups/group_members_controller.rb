@@ -78,6 +78,10 @@ class Groups::GroupMembersController < Groups::ApplicationController
   def membershipable_members
     group.members
   end
+
+  def plain_source_type
+    'group'
+  end
 end
 
 Groups::GroupMembersController.prepend_mod_with('Groups::GroupMembersController')

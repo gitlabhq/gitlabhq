@@ -1485,15 +1485,8 @@ or to move from single Gitaly nodes, the basic process involves:
 1. Create and configure Gitaly Cluster.
 1. [Move the repositories](#move-repositories).
 
-The size of the required storage can vary between instances and depends on the set
-[replication factor](#replication-factor). The migration to Gitaly Cluster might include
-implementing repository storage redundancy.
-
-For a replication factor:
-
-- Of `1`: NFS, Gitaly, and Gitaly Cluster have roughly the same storage requirements.
-- More than `1`: The amount of required storage is `used space * replication factor`. `used space`
-  should include any planned future growth.
+When creating the storage, see some
+[repository storage recommendations](faq.md#what-are-some-repository-storage-recommendations).
 
 ### Move Repositories
 

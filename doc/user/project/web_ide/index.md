@@ -267,7 +267,7 @@ a `main` entry point inside the Web IDE.
 Live Preview is enabled for all projects on GitLab.com. If you are an administrator
 of a self-managed GitLab instance, and you want to enable Live Preview:
 
-1. In the top navigation bar, go to **Admin Area**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, select **Settings > General**.
 1. Scroll to **Web IDE** and select **Expand**:
    ![Administrator Live Preview setting](img/admin_live_preview_v13_0.png)

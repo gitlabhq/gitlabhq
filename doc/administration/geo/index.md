@@ -56,7 +56,8 @@ Geo provides:
 ### Gitaly Cluster
 
 Geo should not be confused with [Gitaly Cluster](../gitaly/praefect.md). For more information about
-the difference between Geo and Gitaly Cluster, see [Gitaly Cluster compared to Geo](../gitaly/index.md#gitaly-cluster-compared-to-geo).
+the difference between Geo and Gitaly Cluster, see
+[How does Gitaly Cluster compare to Geo?](../gitaly/faq.md#how-does-gitaly-cluster-compare-to-geo).
 
 ## How it works
 

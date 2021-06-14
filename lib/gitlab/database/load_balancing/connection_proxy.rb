@@ -29,6 +29,7 @@ module Gitlab
           sanitize_limit
           select
           select_one
+          select_rows
           quote_column_name
         ).freeze
 

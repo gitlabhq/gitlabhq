@@ -97,36 +97,6 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
 - [Require approval from a security team](../../../application_security/index.md#security-approvals-in-merge-requests)
   before merging code that could introduce a vulnerability. **(ULTIMATE)**
 
-## Notify external services **(ULTIMATE)**
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab Ultimate 13.10.
-> - [Deployed behind a feature flag](../../../feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](../../../../api/merge_request_approvals.md#enable-or-disable-external-project-level-mr-approvals). **(ULTIMATE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-You can create an external approval rule to integrate approvals with third-party tools.
-When users create, change, or close merge requests, GitLab sends a notification.
-The users of the third-party tools can then approve merge requests from outside of GitLab.
-
-With this integration, you can integrate with third-party workflow tools, like
-[ServiceNow](https://www.servicenow.co.uk/), or the custom tool of your choice.
-You can modify your external approval rules
-[by using the REST API](../../../../api/merge_request_approvals.md#external-project-level-mr-approvals).
-
-The lack of an external approval doesn't block the merging of a merge request.
-
-When [approval rule overrides](settings.md#prevent-overrides-of-default-approvals) are allowed,
-changes to default approval rules will **not** be applied to existing
-merge requests, except for changes to the [target branch](rules.md#approvals-for-protected-branches)
-of the rule.
-
-To learn more about use cases, feature discovery, and development timelines,
-see the [External API approval rules epic](https://gitlab.com/groups/gitlab-org/-/epics/3869).
-
 ## Related links
 
 - [Merge request approvals API](../../../../api/merge_request_approvals.md)

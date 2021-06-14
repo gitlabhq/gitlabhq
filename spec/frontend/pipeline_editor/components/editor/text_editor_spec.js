@@ -9,6 +9,7 @@ import {
   mockCommitSha,
   mockProjectPath,
   mockProjectNamespace,
+  mockDefaultBranch,
 } from '../../mock_data';
 
 describe('Pipeline Editor | Text editor component', () => {
@@ -38,6 +39,7 @@ describe('Pipeline Editor | Text editor component', () => {
         projectPath: mockProjectPath,
         projectNamespace: mockProjectNamespace,
         ciConfigPath: mockCiConfigPath,
+        defaultBranch: mockDefaultBranch,
         glFeatures,
       },
       attrs: {

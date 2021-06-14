@@ -125,10 +125,10 @@ RSpec.describe Gitlab::Database do
       expect(described_class.postgresql_minimum_supported_version?).to eq(false)
     end
 
-    it 'returns true when using PostgreSQL 11' do
+    it 'returns false when using PostgreSQL 11' do
       allow(described_class).to receive(:version).and_return('11')
 
-      expect(described_class.postgresql_minimum_supported_version?).to eq(true)
+      expect(described_class.postgresql_minimum_supported_version?).to eq(false)
     end
 
     it 'returns true when using PostgreSQL 12' do

@@ -95,6 +95,14 @@ module Packages
 
         mount_file_store_uploader Packages::Debian::DistributionReleaseFileUploader
 
+        def component_names
+          components.pluck(:name).sort
+        end
+
+        def architecture_names
+          architectures.pluck(:name).sort
+        end
+
         def needs_update?
           !file.exists? || time_duration_expired?
         end

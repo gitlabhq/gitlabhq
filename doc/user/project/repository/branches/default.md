@@ -65,7 +65,8 @@ GitLab [administrators](../../../permissions.md) of self-managed instances can
 customize the initial branch for projects hosted on that instance. Individual
 groups and subgroups can override this instance-wide setting for their projects.
 
-1. Go to **Admin Area > Settings > Repository**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Repository**.
 1. Expand **Default initial branch name**.
 1. Change the default initial branch to a custom name of your choice.
 1. Select **Save changes**.

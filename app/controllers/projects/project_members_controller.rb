@@ -62,6 +62,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def membershipable_members
     project.members
   end
+
+  def plain_source_type
+    'project'
+  end
 end
 
 Projects::ProjectMembersController.prepend_mod_with('Projects::ProjectMembersController')

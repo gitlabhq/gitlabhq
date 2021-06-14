@@ -206,7 +206,7 @@ stop;
 After configuring your local PlantUML server, you're ready to enable the PlantUML integration:
 
 1. Sign in to GitLab as an [Administrator](../../user/permissions.md) user.
-1. In the top menu, click **{admin}** **Admin Area**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, go to **Settings > General** and expand the **PlantUML** section.
 1. Select the **Enable PlantUML** check box.
 1. Set the PlantUML instance as `https://gitlab.example.com/-/plantuml/`,

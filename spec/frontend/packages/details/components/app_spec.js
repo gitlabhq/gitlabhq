@@ -1,5 +1,6 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
 
@@ -109,8 +110,10 @@ describe('PackagesApp', () => {
     window.location = location;
   });
 
-  it('renders the app and displays the package title', () => {
+  it('renders the app and displays the package title', async () => {
     createComponent();
+
+    await nextTick();
 
     expect(packageTitle().exists()).toBe(true);
   });

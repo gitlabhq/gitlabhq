@@ -3,7 +3,7 @@
 module API
   module Concerns
     module Packages
-      module DebianEndpoints
+      module DebianPackageEndpoints
         extend ActiveSupport::Concern
 
         DISTRIBUTION_REGEX = %r{[a-zA-Z0-9][a-zA-Z0-9.-]*}.freeze
@@ -32,23 +32,17 @@ module API
 
           helpers ::API::Helpers::PackagesHelpers
           helpers ::API::Helpers::Packages::BasicAuthHelpers
-
-          format :txt
-          content_type :txt, 'text/plain'
-
-          rescue_from ArgumentError do |e|
-            render_api_error!(e.message, 400)
-          end
-
-          rescue_from ActiveRecord::RecordInvalid do |e|
-            render_api_error!(e.message, 400)
-          end
-
-          before do
-            require_packages_enabled!
-          end
+          include ::API::Helpers::Authentication
 
           namespace 'packages/debian' do
+            authenticate_with do |accept|
+              accept.token_types(:personal_access_token, :deploy_token, :job_token)
+                    .sent_through(:http_basic_auth)
+            end
+
+            format :txt
+            content_type :txt, 'text/plain'
+
             params do
               requires :distribution, type: String, desc: 'The Debian Codename', regexp: Gitlab::Regex.debian_distribution_regex
             end
@@ -59,7 +53,7 @@ module API
                 detail 'This feature was introduced in GitLab 13.5'
               end
 
-              route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
+              route_setting :authentication, authenticate_non_public: true
               get 'Release.gpg' do
                 not_found!
               end
@@ -69,7 +63,7 @@ module API
                 detail 'This feature was introduced in GitLab 13.5'
               end
 
-              route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
+              route_setting :authentication, authenticate_non_public: true
               get 'Release' do
                 # https://gitlab.com/gitlab-org/gitlab/-/issues/5835#note_414103286
                 'TODO Release'
@@ -80,7 +74,7 @@ module API
                 detail 'This feature was introduced in GitLab 13.5'
               end
 
-              route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
+              route_setting :authentication, authenticate_non_public: true
               get 'InRelease' do
                 not_found!
               end
@@ -96,7 +90,7 @@ module API
                   detail 'This feature was introduced in GitLab 13.5'
                 end
 
-                route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
+                route_setting :authentication, authenticate_non_public: true
                 get 'Packages' do
                   # https://gitlab.com/gitlab-org/gitlab/-/issues/5835#note_414103286
                   'TODO Packages'
@@ -119,7 +113,7 @@ module API
                 detail 'This feature was introduced in GitLab 13.5'
               end
 
-              route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth, authenticate_non_public: true
+              route_setting :authentication, authenticate_non_public: true
               get ':file_name', requirements: FILE_NAME_REQUIREMENTS do
                 # https://gitlab.com/gitlab-org/gitlab/-/issues/5835#note_414103286
                 'TODO File'

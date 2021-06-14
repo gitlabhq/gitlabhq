@@ -22,6 +22,9 @@ export default () => {
   return new Vue({
     el,
     store,
+    provide: {
+      titleComponent: 'TerraformTitle',
+    },
     render(createElement) {
       return createElement(PackagesApp);
     },

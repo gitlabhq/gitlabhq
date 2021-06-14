@@ -24,7 +24,6 @@ import DependencyRow from './dependency_row.vue';
 import InstallationCommands from './installation_commands.vue';
 import PackageFiles from './package_files.vue';
 import PackageHistory from './package_history.vue';
-import PackageTitle from './package_title.vue';
 
 export default {
   name: 'PackagesApp',
@@ -36,7 +35,9 @@ export default {
     GlTab,
     GlTabs,
     GlSprintf,
-    PackageTitle,
+    PackageTitle: () => import('./package_title.vue'),
+    TerraformTitle: () =>
+      import('~/packages_and_registries/infrastructure_registry/components/details_title.vue'),
     PackagesListLoader,
     PackageListRow,
     DependencyRow,
@@ -50,6 +51,12 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [Tracking.mixin()],
+  inject: {
+    titleComponent: {
+      default: 'PackageTitle',
+      from: 'titleComponent',
+    },
+  },
   trackingActions: { ...TrackingActions },
   data() {
     return {
@@ -160,7 +167,7 @@ export default {
   />
 
   <div v-else class="packages-app">
-    <package-title>
+    <component :is="titleComponent">
       <template #delete-button>
         <gl-button
           v-if="canDelete"
@@ -173,7 +180,7 @@ export default {
           {{ __('Delete') }}
         </gl-button>
       </template>
-    </package-title>
+    </component>
 
     <gl-tabs>
       <gl-tab :title="__('Detail')">

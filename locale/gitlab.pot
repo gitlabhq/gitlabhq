@@ -12382,6 +12382,9 @@ msgstr ""
 msgid "Enter your password to approve"
 msgstr ""
 
+msgid "Enterprise"
+msgstr ""
+
 msgid "Environment"
 msgstr ""
 
@@ -17441,6 +17444,18 @@ msgstr ""
 msgid "Infrastructure Registry"
 msgstr ""
 
+msgid "InfrastructureRegistry|Copy Terraform Command"
+msgstr ""
+
+msgid "InfrastructureRegistry|Copy Terraform Setup Command"
+msgstr ""
+
+msgid "InfrastructureRegistry|Copy and paste into your Terraform configuration, insert the variables, and run Terraform init:"
+msgstr ""
+
+msgid "InfrastructureRegistry|For more information on the Terraform registry, %{linkStart}see our documentation%{linkEnd}."
+msgstr ""
+
 msgid "InfrastructureRegistry|Infrastructure Registry"
 msgstr ""
 
@@ -17451,6 +17466,9 @@ msgid "InfrastructureRegistry|Terraform"
 msgstr ""
 
 msgid "InfrastructureRegistry|Terraform modules are the main way to package and reuse resource configurations with Terraform. Learn more about how to %{noPackagesLinkStart}create Terraform modules%{noPackagesLinkEnd} in GitLab."
+msgstr ""
+
+msgid "InfrastructureRegistry|To authorize access to the Terraform registry:"
 msgstr ""
 
 msgid "InfrastructureRegistry|You have no Terraform modules in your project"
@@ -26592,6 +26610,9 @@ msgid "Protip: %{linkStart}Auto DevOps%{linkEnd} uses Kubernetes clusters to dep
 msgstr ""
 
 msgid "Provider"
+msgstr ""
+
+msgid "Provision instructions"
 msgstr ""
 
 msgid "Provisioned by:"

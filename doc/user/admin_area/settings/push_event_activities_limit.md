@@ -23,9 +23,14 @@ branches), only 1 bulk push event is created instead of 1,000 push
 events. This helps in maintaining good system performance and preventing spam on
 the activity feed.
 
-This setting can be modified in **Admin Area > Settings > Network > Performance Optimization**.
-This can also be configured via the [Application settings API](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)
-as `push_event_activities_limit`. The default value is 3, but it can be greater
-than or equal 0.
+To modify this setting:
+
+- In the Admin Area:
+  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. In the left sidebar, select **Settings > Network**, then expand **Performance optimization**.
+- Through the [Application settings API](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)
+  as `push_event_activities_limit`.
+
+The default value is 3, but it can be greater than or equal 0.
 
 ![Push event activities limit](img/push_event_activities_limit_v12_4.png)

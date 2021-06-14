@@ -17,12 +17,17 @@ while the project remains secure.
 
 ## Configuration
 
-As an administrator, navigate to **Admin Area > Settings > Templates** and
-select the project to serve as the custom template repository.
+To select a project to serve as the custom template repository:
 
-![File templates in the Admin Area](img/file_template_admin_area.png)
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Templates**.
+1. Select the project:
 
-After that, you can add custom templates to the selected repository and use them for the entire instance.
+   ![File templates in the Admin Area](img/file_template_admin_area.png)
+
+1. Add custom templates to the selected repository.
+
+After you add templates, you can use them for the entire instance.
 They are available in the [Web Editor's dropdown](../../project/repository/web_editor.md#template-dropdowns)
 and through the [API settings](../../../api/settings.md).
 
