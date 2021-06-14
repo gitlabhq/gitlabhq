@@ -146,7 +146,7 @@ review-stop:
 
 .allure-report-base:
   image:
-    name: ${GITLAB_DEPENDENCY_PROXY}andrcuns/allure-report-publisher:0.3.1
+    name: ${GITLAB_DEPENDENCY_PROXY}andrcuns/allure-report-publisher:0.3.2
     entrypoint: [""]
   stage: post-qa
   variables:
@@ -162,6 +162,7 @@ review-stop:
         --prefix="$ALLURE_REPORT_PATH_PREFIX/$CI_COMMIT_REF_SLUG" \
         --update-pr="comment" \
         --copy-latest \
+        --ignore-missing-results \
         --color
 
 review-qa-smoke:

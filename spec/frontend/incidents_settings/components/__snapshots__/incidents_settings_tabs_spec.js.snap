@@ -52,7 +52,6 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
           data-testid="PagerDutySettingsForm-tab"
         />
       </gl-tab-stub>
-      <!---->
     </gl-tabs-stub>
   </div>
 </section>

@@ -12,6 +12,11 @@ export default {
     ServiceLevelAgreementForm: () =>
       import('ee_component/incidents_settings/components/service_level_agreement_form.vue'),
   },
+  computed: {
+    activeTabs() {
+      return this.$options.tabs.filter((tab) => tab.active);
+    },
+  },
   tabs: INTEGRATION_TABS_CONFIG,
   i18n: I18N_INTEGRATION_TABS,
 };
@@ -42,8 +47,7 @@ export default {
       <gl-tabs>
         <service-level-agreement-form />
         <gl-tab
-          v-for="(tab, index) in $options.tabs"
-          v-if="tab.active"
+          v-for="(tab, index) in activeTabs"
           :key="`${tab.title}_${index}`"
           :title="tab.title"
         >

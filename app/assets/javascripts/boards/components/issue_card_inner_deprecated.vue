@@ -95,6 +95,9 @@ export default {
       }
       return __('Blocked issue');
     },
+    assignees() {
+      return this.issue.assignees.filter((_, index) => this.shouldRenderAssignee(index));
+    },
   },
   methods: {
     isIndexLessThanlimit(index) {
@@ -215,8 +218,7 @@ export default {
       </div>
       <div class="board-card-assignee gl-display-flex">
         <user-avatar-link
-          v-for="(assignee, index) in issue.assignees"
-          v-if="shouldRenderAssignee(index)"
+          v-for="assignee in assignees"
           :key="assignee.id"
           :link-href="assigneeUrl(assignee)"
           :img-alt="avatarUrlTitle(assignee)"

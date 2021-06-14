@@ -31,11 +31,6 @@ rules:
     - error
     - allowElseIf: true
   lines-between-class-members: off
-  # Disabled for now, to make the plugin-vue 4.5 -> 5.0 update smoother
-  vue/no-confusing-v-for-v-if: error
-  vue/no-use-v-if-with-v-for: off
-  vue/no-v-html: error
-  vue/use-v-on-exact: off
   # all offenses of no-jquery/no-animate-toggle are false positives ( $toast.show() )
   no-jquery/no-animate-toggle: off
   no-jquery/no-event-shorthand: off

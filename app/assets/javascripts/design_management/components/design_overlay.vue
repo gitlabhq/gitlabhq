@@ -70,6 +70,13 @@ export default {
         ? this.getNotePositionStyle(this.movingNoteNewPosition)
         : this.getNotePositionStyle(this.currentCommentForm);
     },
+    visibleNotes() {
+      if (this.resolvedDiscussionsExpanded) {
+        return this.notes;
+      }
+
+      return this.notes.filter((note) => !note.resolved);
+    },
   },
   methods: {
     setNewNoteCoordinates({ x, y }) {
@@ -272,8 +279,7 @@ export default {
     ></button>
 
     <design-note-pin
-      v-for="note in notes"
-      v-if="resolvedDiscussionsExpanded || !note.resolved"
+      v-for="note in visibleNotes"
       :key="note.id"
       :label="note.index"
       :position="
