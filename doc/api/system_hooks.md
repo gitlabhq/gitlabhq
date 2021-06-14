@@ -8,8 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 All methods require administrator authorization.
 
-The URL endpoint of the system hooks can also be configured using the UI in
-the **Admin Area > System Hooks** (`/admin/hooks`).
+You can configure the URL endpoint of the system hooks from the GitLab user interface:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. Select **System Hooks** (`/admin/hooks`).
 
 Read more about [system hooks](../system_hooks/system_hooks.md).
 

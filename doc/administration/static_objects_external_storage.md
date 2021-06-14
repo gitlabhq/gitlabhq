@@ -16,7 +16,8 @@ from an external storage, such as a Content Delivery Network (CDN).
 
 To configure external storage for static objects:
 
-1. Go to **Admin Area > Settings > Repository**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Repository**.
 1. Expand the **Repository static objects** section.
 1. Enter the base URL and an arbitrary token. When you [set up external storage](#set-up-external-storage),
    use a script that sets these values as `ORIGIN_HOSTNAME` and `STORAGE_TOKEN`.

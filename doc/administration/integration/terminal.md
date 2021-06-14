@@ -100,6 +100,7 @@ they receive a `Connection failed` message.
 By default, terminal sessions do not expire. To limit the terminal session
 lifetime in your GitLab instance:
 
-1. Go to the Admin Area (**{admin}**) and select
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. Select
    [**Settings > Web terminal**](../../user/admin_area/settings/index.md#general).
 1. Set a `max session time`.

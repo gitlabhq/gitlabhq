@@ -45,7 +45,8 @@ For GitLab self-managed instances, a GitLab administrator needs to:
 1. Set up a Gitpod instance to integrate with GitLab. Refer to the [Gitpod documentation](https://www.gitpod.io/docs/self-hosted/latest/self-hosted/)
    to get your instance up and running.
 1. Enable it in GitLab:
-   1. Go to **Admin Area > Settings > General**.
+   1. On the top bar, select **Menu >** **{admin}** **Admin**.
+   1. In the left sidebar, select **Settings > General**.
    1. Expand the **Gitpod** configuration section.
    1. Check the **Enable Gitpod integration** checkbox.
    1. Add your Gitpod instance URL (for example, `https://gitpod.example.com`).

@@ -36,7 +36,11 @@ collected before this feature is available.
 
 ## DevOps Adoption **(ULTIMATE)**
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
+> - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59267) in GitLab 14.0.
+> - Enabled on GitLab.com.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-or-enable-devops-adoption). **(ULTIMATE SELF)**
 
 The DevOps Adoption tab shows you which groups within your organization are using the most essential features of GitLab:
 

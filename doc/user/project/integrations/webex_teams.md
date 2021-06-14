@@ -27,7 +27,8 @@ notifications:
 1. Navigate to:
    - **Settings > Integrations** in a project to enable the integration at the project level.
    - **Settings > Integrations** in a group to enable the integration at the group level.
-   - **Settings > Integrations** in the Admin Area (**{admin}**) to enable an instance-level integration.
+   - On the top bar, select **Menu >** **{admin}** **Admin**. Then, in the left sidebar,
+     select **Settings > Integrations** to enable an instance-level integration.
 1. Select the **Webex Teams** integration.
 1. Ensure that the **Active** toggle is enabled.
 1. Select the checkboxes corresponding to the GitLab events you want to receive in Webex Teams.
