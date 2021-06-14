@@ -22,6 +22,9 @@ module Ci
       end
 
       def includes?(target_project)
+        # if the setting is disabled any project is considered to be in scope.
+        return true unless source_project.ci_job_token_scope_enabled?
+
         target_project.id == source_project.id ||
           Ci::JobToken::ProjectScopeLink.from_project(source_project).to_project(target_project).exists?
       end

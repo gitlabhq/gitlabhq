@@ -28,6 +28,7 @@ installation.
 
 - [Secure GitLab](../security/README.md#securing-your-gitlab-installation):
   Recommended practices to secure your GitLab instance.
+- Sign up for the GitLab [Security Newsletter](https://about.gitlab.com/company/preference-center/) to get notified for security updates upon release.
 
 ## Authentication
 

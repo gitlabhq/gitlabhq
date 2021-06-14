@@ -50,6 +50,16 @@ RSpec.describe Ci::JobToken::Scope do
       let(:target_project) { scope_link.target_project }
 
       it { is_expected.to be_falsey }
+
+      context 'when project scope setting is disabled' do
+        before do
+          project.ci_job_token_scope_enabled = false
+        end
+
+        it 'considers any project to be part of the scope' do
+          expect(subject).to be_truthy
+        end
+      end
     end
   end
 end

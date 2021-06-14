@@ -95,6 +95,7 @@ module API
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :ci_default_git_depth
       expose :ci_forward_deployment_enabled
+      expose :ci_job_token_scope_enabled
       expose :public_builds, as: :public_jobs
       expose :build_git_strategy, if: lambda { |project, options| options[:user_can_admin_project] } do |project, options|
         project.build_allow_git_fetch ? 'fetch' : 'clone'
