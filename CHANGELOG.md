@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.12.4 (2021-06-14)
+
+### Fixed (3 changes)
+
+- [Add alias method usage_ping_enabled?](gitlab-org/gitlab@eb8755115a2a7045b6291171aaa0c7ae76f43fec) ([merge request](gitlab-org/gitlab!63974))
+- [Fix MR diff compare with previous version](gitlab-org/gitlab@96d4df8bb4eb5f148e4dabcc4c3eea88ad27cbc3) ([merge request](gitlab-org/gitlab!63974))
+- [Fix double render in project's git URL redirect](gitlab-org/gitlab@be4059b7a5cddd2e70fa760d8935b1d170068759) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62053))
+
 ## 13.12.3 (2021-06-07)
 
 ### Added (1 change)
