@@ -510,7 +510,7 @@ class ProjectsController < Projects::ApplicationController
 
     # `project` calls `find_routable!`, so this will trigger the usual not-found
     # behaviour when the user isn't authorized to see the project
-    return unless project
+    return if project.nil? || performed?
 
     redirect_to(request.original_url.sub(%r{\.git/?\Z}, ''))
   end

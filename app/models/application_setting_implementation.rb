@@ -374,6 +374,7 @@ module ApplicationSettingImplementation
   def usage_ping_enabled
     usage_ping_can_be_configured? && super
   end
+  alias_method :usage_ping_enabled?, :usage_ping_enabled
 
   def allowed_key_types
     SUPPORTED_KEY_TYPES.select do |type|

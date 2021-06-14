@@ -69,6 +69,20 @@ RSpec.describe Projects::MergeRequests::DiffsController do
     end
   end
 
+  shared_examples 'show the right diff files with previous diff_id' do
+    context 'with previous diff_id' do
+      let!(:merge_request_diff_1) { merge_request.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+      let!(:merge_request_diff_2) { merge_request.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e', diff_type: :merge_head) }
+
+      subject { go(diff_id: merge_request_diff_1.id, diff_head: true) }
+
+      it 'shows the right diff files' do
+        subject
+        expect(json_response["diff_files"].size).to eq(merge_request_diff_1.files_count)
+      end
+    end
+  end
+
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
@@ -141,6 +155,8 @@ RSpec.describe Projects::MergeRequests::DiffsController do
     end
 
     it_behaves_like '404 for unexistent diffable'
+
+    it_behaves_like 'show the right diff files with previous diff_id'
 
     context 'when not authorized' do
       let(:another_user) { create(:user) }
@@ -480,6 +496,8 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
     it_behaves_like '404 for unexistent diffable'
 
+    it_behaves_like 'show the right diff files with previous diff_id'
+
     context 'when not authorized' do
       let(:other_user) { create(:user) }
 
@@ -499,7 +517,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-        let(:expected_options) { collection_arguments(current_page: 1, total_pages: 1) }
+        let(:expected_options) { collection_arguments(current_page: 1, total_pages: 1).merge(merge_ref_head_diff: false) }
       end
 
       it_behaves_like 'successful request'
@@ -522,7 +540,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::Compare }
-        let(:expected_options) { collection_arguments }
+        let(:expected_options) { collection_arguments.merge(merge_ref_head_diff: false) }
       end
 
       it_behaves_like 'successful request'

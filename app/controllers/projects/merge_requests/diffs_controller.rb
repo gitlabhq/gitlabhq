@@ -163,7 +163,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   end
 
   def render_merge_ref_head_diff?
-    Gitlab::Utils.to_boolean(params[:diff_head]) && @merge_request.diffable_merge_ref? && @start_sha.nil?
+    params[:diff_id].blank? &&
+      Gitlab::Utils.to_boolean(params[:diff_head]) &&
+      @merge_request.diffable_merge_ref? &&
+      @start_sha.nil?
   end
 
   def note_positions
