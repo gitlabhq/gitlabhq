@@ -8,7 +8,7 @@ class EnableEnforceSshKeyExpiration < ActiveRecord::Migration[6.0]
   def up
     ApplicationSetting.reset_column_information
 
-    ApplicationSetting.where.not(enforce_ssh_key_expiration: false).each do |application_setting|
+    ApplicationSetting.where.not(enforce_ssh_key_expiration: true).each do |application_setting|
       application_setting.update!(enforce_ssh_key_expiration: true)
     end
   end

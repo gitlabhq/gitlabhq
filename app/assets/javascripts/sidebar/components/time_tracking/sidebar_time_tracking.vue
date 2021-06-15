@@ -5,8 +5,6 @@ import { intersection } from 'lodash';
 import '~/smart_interval';
 
 import eventHub from '../../event_hub';
-import Mediator from '../../sidebar_mediator';
-import Store from '../../stores/sidebar_store';
 import IssuableTimeTracker from './time_tracker.vue';
 
 export default {
@@ -14,16 +12,20 @@ export default {
     IssuableTimeTracker,
   },
   props: {
-    issuableId: {
+    fullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    issuableIid: {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      mediator: new Mediator(),
-      store: new Store(),
-    };
+    limitToHours: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   mounted() {
     this.listenForQuickActions();
@@ -47,7 +49,7 @@ export default {
         changedCommands = [];
       }
       if (changedCommands && intersection(subscribedCommands, changedCommands).length) {
-        this.mediator.fetch();
+        eventHub.$emit('timeTracker:refresh');
       }
     },
   },
@@ -57,12 +59,9 @@ export default {
 <template>
   <div class="block">
     <issuable-time-tracker
-      :issuable-id="issuableId"
-      :time-estimate="store.timeEstimate"
-      :time-spent="store.totalTimeSpent"
-      :human-time-estimate="store.humanTimeEstimate"
-      :human-time-spent="store.humanTotalTimeSpent"
-      :limit-to-hours="store.timeTrackingLimitToHours"
+      :full-path="fullPath"
+      :issuable-iid="issuableIid"
+      :limit-to-hours="limitToHours"
     />
   </div>
 </template>

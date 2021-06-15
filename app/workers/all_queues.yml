@@ -808,15 +808,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: gcp_cluster:clusters_cleanup_app
-  :worker_name: Clusters::Cleanup::AppWorker
-  :feature_category: :kubernetes_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: gcp_cluster:clusters_cleanup_project_namespace
   :worker_name: Clusters::Cleanup::ProjectNamespaceWorker
   :feature_category: :kubernetes_management

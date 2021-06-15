@@ -6979,9 +6979,6 @@ msgstr ""
 msgid "ClusterIntegration|All data will be deleted and cannot be restored."
 msgstr ""
 
-msgid "ClusterIntegration|All installed applications and related resources"
-msgstr ""
-
 msgid "ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
@@ -7685,9 +7682,6 @@ msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review 
 msgstr ""
 
 msgid "ClusterIntegration|Subnets"
-msgstr ""
-
-msgid "ClusterIntegration|The %{gitlabNamespace} namespace"
 msgstr ""
 
 msgid "ClusterIntegration|The Amazon Resource Name (ARN) associated with your role. If you do not have a provision role, first create one on  %{startAwsLink}Amazon Web Services %{externalLinkIcon}%{endLink} using the above account and external IDs. %{startMoreInfoLink}More information%{endLink}"
@@ -11261,6 +11255,18 @@ msgstr ""
 msgid "DevopsAdoption|Add a group to get started"
 msgstr ""
 
+msgid "DevopsAdoption|Add group"
+msgstr ""
+
+msgid "DevopsAdoption|Add group to table"
+msgstr ""
+
+msgid "DevopsAdoption|Add sub-group"
+msgstr ""
+
+msgid "DevopsAdoption|Add sub-group to table"
+msgstr ""
+
 msgid "DevopsAdoption|Add/remove groups"
 msgstr ""
 
@@ -11336,6 +11342,9 @@ msgstr ""
 msgid "DevopsAdoption|No filter results."
 msgstr ""
 
+msgid "DevopsAdoption|No results…"
+msgstr ""
+
 msgid "DevopsAdoption|Not adopted"
 msgstr ""
 
@@ -11373,6 +11382,9 @@ msgid "DevopsAdoption|There was an error fetching Group adoption data. Please re
 msgstr ""
 
 msgid "DevopsAdoption|There was an error fetching Groups. Please refresh the page."
+msgstr ""
+
+msgid "DevopsAdoption|This group has no sub-groups"
 msgstr ""
 
 msgid "DevopsAdoption|You cannot remove the group you are currently in."

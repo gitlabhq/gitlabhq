@@ -1,0 +1,13 @@
+query mergeRequestTimeTracking($fullPath: ID!, $iid: String!) {
+  workspace: project(fullPath: $fullPath) {
+    __typename
+    issuable: mergeRequest(iid: $iid) {
+      __typename
+      id
+      humanTimeEstimate
+      humanTotalTimeSpent
+      timeEstimate
+      totalTimeSpent
+    }
+  }
+}

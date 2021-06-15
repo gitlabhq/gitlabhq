@@ -105,9 +105,9 @@ export function stats(file) {
     valid = true;
 
     if (diff > 0) {
-      classes = 'cgreen';
+      classes = 'gl-text-green-600';
     } else if (diff < 0) {
-      classes = 'cred';
+      classes = 'gl-text-red-500';
     }
   }
 

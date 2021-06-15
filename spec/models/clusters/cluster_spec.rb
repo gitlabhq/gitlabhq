@@ -1021,7 +1021,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
         where(:status_name, :cleanup_status) do
           provider_status  | :cleanup_not_started
-          :cleanup_ongoing | :cleanup_uninstalling_applications
           :cleanup_ongoing | :cleanup_removing_project_namespaces
           :cleanup_ongoing | :cleanup_removing_service_account
           :cleanup_errored | :cleanup_errored
@@ -1077,8 +1076,8 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
 
     describe '#start_cleanup!' do
-      let(:expected_worker_class) { Clusters::Cleanup::AppWorker }
-      let(:to_state) { :cleanup_uninstalling_applications }
+      let(:expected_worker_class) { Clusters::Cleanup::ProjectNamespaceWorker }
+      let(:to_state) { :cleanup_removing_project_namespaces }
 
       subject { cluster.start_cleanup! }
 
@@ -1116,25 +1115,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
 
     describe '#continue_cleanup!' do
-      context 'when cleanup_status is cleanup_uninstalling_applications' do
-        let(:expected_worker_class) { Clusters::Cleanup::ProjectNamespaceWorker }
-        let(:from_state) { :cleanup_uninstalling_applications }
-        let(:to_state) { :cleanup_removing_project_namespaces }
+      let(:expected_worker_class) { Clusters::Cleanup::ServiceAccountWorker }
+      let(:from_state) { :cleanup_removing_project_namespaces }
+      let(:to_state) { :cleanup_removing_service_account }
 
-        subject { cluster.continue_cleanup! }
+      subject { cluster.continue_cleanup! }
 
-        it_behaves_like 'cleanup_status transition'
-      end
-
-      context 'when cleanup_status is cleanup_removing_project_namespaces' do
-        let(:expected_worker_class) { Clusters::Cleanup::ServiceAccountWorker }
-        let(:from_state) { :cleanup_removing_project_namespaces }
-        let(:to_state) { :cleanup_removing_service_account }
-
-        subject { cluster.continue_cleanup! }
-
-        it_behaves_like 'cleanup_status transition'
-      end
+      it_behaves_like 'cleanup_status transition'
     end
   end
 

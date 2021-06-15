@@ -345,7 +345,7 @@ end
 
 group :development do
   gem 'lefthook', '~> 0.7.0', require: false
-  gem 'solargraph', '~> 0.40.4', require: false
+  gem 'solargraph', '~> 0.42', require: false
 
   gem 'letter_opener_web', '~> 1.4.0'
 

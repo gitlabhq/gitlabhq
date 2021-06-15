@@ -46,7 +46,7 @@ request is as follows:
    your personal namespace (or group) on GitLab.com.
 1. Create a feature branch in your fork (don't work off `master`).
 1. Write [tests](../rake_tasks.md#run-tests) and code.
-1. [Generate a changelog entry with `bin/changelog`](../changelog.md)
+1. [Ensure a changelog is created](../changelog.md).
 1. If you are writing documentation, make sure to follow the
    [documentation guidelines](../documentation/index.md).
 1. Follow the [commit messages guidelines](#commit-messages-guidelines).

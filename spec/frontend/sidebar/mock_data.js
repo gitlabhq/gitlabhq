@@ -592,4 +592,21 @@ export const emptyProjectMilestonesResponse = {
   },
 };
 
+export const issuableTimeTrackingResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      issuable: {
+        __typename: 'Issue',
+        id: 'gid://gitlab/Issue/1',
+        title: 'Commodi incidunt eos eos libero dicta dolores sed.',
+        timeEstimate: 10_000, // 2h 46m
+        totalTimeSpent: 5_000, // 1h 23m
+        humanTimeEstimate: '2h 46m',
+        humanTotalTimeSpent: '1h 23m',
+      },
+    },
+  },
+};
+
 export default mockData;

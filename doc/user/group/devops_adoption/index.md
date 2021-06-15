@@ -36,7 +36,7 @@ Group DevOps Adoption shows you how individual groups and sub-groups within your
   - Pipelines
   - Deployments
 
-When managing groups in the UI, you can manage your sub-groups with the **Add/Remove sub-groups**
+When managing groups in the UI, you can add your sub-groups with the **Add sub-group to table**
 button, in the top right hand section of your Groups pages.
 
 With DevOps Adoption you can:

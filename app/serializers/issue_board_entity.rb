@@ -17,7 +17,7 @@ class IssueBoardEntity < Grape::Entity
   end
 
   expose :project do |issue|
-    API::Entities::Project.represent issue.project, only: [:id, :path]
+    API::Entities::Project.represent issue.project, only: [:id, :path, :path_with_namespace]
   end
 
   expose :milestone, if: -> (issue) { issue.milestone } do |issue|

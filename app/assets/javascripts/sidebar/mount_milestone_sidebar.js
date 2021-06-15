@@ -15,7 +15,7 @@ export default class SidebarMilestone {
       humanTimeEstimate,
       humanTimeSpent,
       limitToHours,
-      id,
+      iid,
     } = el.dataset;
 
     // eslint-disable-next-line no-new
@@ -30,12 +30,14 @@ export default class SidebarMilestone {
       render: (createElement) =>
         createElement('timeTracker', {
           props: {
-            timeEstimate: parseInt(timeEstimate, 10),
-            timeSpent: parseInt(timeSpent, 10),
-            humanTimeEstimate,
-            humanTimeSpent,
             limitToHours: parseBoolean(limitToHours),
-            issuableId: id.toString(),
+            issuableIid: iid.toString(),
+            initialTimeTracking: {
+              timeEstimate: parseInt(timeEstimate, 10),
+              totalTimeSpent: parseInt(timeSpent, 10),
+              humanTimeEstimate,
+              humanTotalTimeSpent: humanTimeSpent,
+            },
           },
         }),
     });

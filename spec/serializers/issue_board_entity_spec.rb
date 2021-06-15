@@ -15,7 +15,7 @@ RSpec.describe IssueBoardEntity do
 
   it 'has basic attributes' do
     expect(subject).to include(:id, :iid, :title, :confidential, :due_date, :project_id, :relative_position,
-                               :labels, :assignees, project: hash_including(:id, :path))
+                               :labels, :assignees, project: hash_including(:id, :path, :path_with_namespace))
   end
 
   it 'has path and endpoints' do

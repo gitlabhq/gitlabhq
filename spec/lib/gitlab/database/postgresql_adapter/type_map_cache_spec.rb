@@ -4,20 +4,17 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::PostgresqlAdapter::TypeMapCache do
   let(:db_config) { ActiveRecord::Base.configurations.configs_for(env_name: 'test', name: 'primary').configuration_hash }
-  let(:adapter_class) do
-    Class.new(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
+  let(:adapter_class) { ActiveRecord::ConnectionAdapters::PostgreSQLAdapter }
+
+  before do
+    adapter_class.type_map_cache.clear
   end
 
   describe '#initialize_type_map' do
     it 'caches loading of types in memory' do
-      initialize_connection.disconnect!
       recorder_without_cache = ActiveRecord::QueryRecorder.new(skip_schema_queries: false) { initialize_connection.disconnect! }
-
       expect(recorder_without_cache.log).to include(a_string_matching(/FROM pg_type/)).twice
 
-      adapter_class.prepend(described_class)
-
-      initialize_connection.disconnect!
       recorder_with_cache = ActiveRecord::QueryRecorder.new(skip_schema_queries: false) { initialize_connection.disconnect! }
 
       expect(recorder_with_cache.count).to be < recorder_without_cache.count
@@ -29,8 +26,6 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::TypeMapCache do
     end
 
     it 'only reuses the cache if the connection parameters are exactly the same' do
-      adapter_class.prepend(described_class)
-
       initialize_connection.disconnect!
 
       other_config = db_config.dup
@@ -44,8 +39,6 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::TypeMapCache do
 
   describe '#reload_type_map' do
     it 'clears the cache and executes the type map query again' do
-      adapter_class.prepend(described_class)
-
       initialize_connection.disconnect!
 
       connection = initialize_connection

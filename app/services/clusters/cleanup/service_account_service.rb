@@ -2,7 +2,7 @@
 
 module Clusters
   module Cleanup
-    class ServiceAccountService < BaseService
+    class ServiceAccountService < ::Clusters::Cleanup::BaseService
       def execute
         delete_gitlab_service_account
 

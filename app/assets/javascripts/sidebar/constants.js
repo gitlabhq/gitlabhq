@@ -9,8 +9,10 @@ import issueConfidentialQuery from '~/sidebar/queries/issue_confidential.query.g
 import issueDueDateQuery from '~/sidebar/queries/issue_due_date.query.graphql';
 import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
 import issueSubscribedQuery from '~/sidebar/queries/issue_subscribed.query.graphql';
+import issueTimeTrackingQuery from '~/sidebar/queries/issue_time_tracking.query.graphql';
 import mergeRequestReferenceQuery from '~/sidebar/queries/merge_request_reference.query.graphql';
 import mergeRequestSubscribed from '~/sidebar/queries/merge_request_subscribed.query.graphql';
+import mergeRequestTimeTrackingQuery from '~/sidebar/queries/merge_request_time_tracking.query.graphql';
 import updateEpicConfidentialMutation from '~/sidebar/queries/update_epic_confidential.mutation.graphql';
 import updateEpicDueDateMutation from '~/sidebar/queries/update_epic_due_date.mutation.graphql';
 import updateEpicStartDateMutation from '~/sidebar/queries/update_epic_start_date.mutation.graphql';
@@ -117,6 +119,15 @@ export const subscribedQueries = {
   [IssuableType.MergeRequest]: {
     query: mergeRequestSubscribed,
     mutation: updateMergeRequestSubscriptionMutation,
+  },
+};
+
+export const timeTrackingQueries = {
+  [IssuableType.Issue]: {
+    query: issueTimeTrackingQuery,
+  },
+  [IssuableType.MergeRequest]: {
+    query: mergeRequestTimeTrackingQuery,
   },
 };
 

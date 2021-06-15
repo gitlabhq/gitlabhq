@@ -181,7 +181,7 @@ describe('diff_file utilities', () => {
       {
         changed: 1024,
         percent: 100,
-        classes: 'cgreen',
+        classes: 'gl-text-green-600',
         sign: '+',
         text: '+1.00 KiB (+100%)',
         valid: true,
@@ -197,7 +197,7 @@ describe('diff_file utilities', () => {
       {
         changed: -1024,
         percent: -100,
-        classes: 'cred',
+        classes: 'gl-text-red-500',
         sign: '',
         text: '-1.00 KiB (-100%)',
         valid: true,

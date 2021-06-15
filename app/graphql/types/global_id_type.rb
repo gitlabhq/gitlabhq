@@ -52,11 +52,20 @@ module Types
       @id_types ||= {}
 
       @id_types[model_class] ||= Class.new(self) do
-        graphql_name "#{model_class.name.gsub(/::/, '')}ID"
-        description <<~MD
+        model_name = model_class.name
+
+        graphql_name model_name_to_graphql_name(model_name)
+        description <<~MD.strip
           A `#{graphql_name}` is a global ID. It is encoded as a string.
 
-          An example `#{graphql_name}` is: `"#{::Gitlab::GlobalId.build(model_name: model_class.name, id: 1)}"`.
+          An example `#{graphql_name}` is: `"#{::Gitlab::GlobalId.build(model_name: model_name, id: 1)}"`.
+          #{
+            if deprecation = Gitlab::GlobalId::Deprecations.deprecation_by(model_name)
+              'The older format `"' +
+              ::Gitlab::GlobalId.build(model_name: deprecation.old_model_name, id: 1).to_s +
+              '"` was deprecated in ' +  deprecation.milestone + '.'
+            end}
+
         MD
 
         define_singleton_method(:to_s) do
@@ -69,7 +78,7 @@ module Types
 
         define_singleton_method(:as) do |new_name|
           if @renamed && graphql_name != new_name
-            raise "Conflicting names for ID of #{model_class.name}: " \
+            raise "Conflicting names for ID of #{model_name}: " \
                   "#{graphql_name} and #{new_name}"
           end
 
@@ -79,11 +88,11 @@ module Types
         end
 
         define_singleton_method(:coerce_result) do |gid, ctx|
-          global_id = ::Gitlab::GlobalId.as_global_id(gid, model_name: model_class.name)
+          global_id = ::Gitlab::GlobalId.as_global_id(gid, model_name: model_name)
 
           next global_id.to_s if suitable?(global_id)
 
-          raise GraphQL::CoercionError, "Expected a #{model_class.name} ID, got #{global_id}"
+          raise GraphQL::CoercionError, "Expected a #{model_name} ID, got #{global_id}"
         end
 
         define_singleton_method(:suitable?) do |gid|
@@ -97,9 +106,13 @@ module Types
           gid = super(string, ctx)
           next gid if suitable?(gid)
 
-          raise GraphQL::CoercionError, "#{string.inspect} does not represent an instance of #{model_class.name}"
+          raise GraphQL::CoercionError, "#{string.inspect} does not represent an instance of #{model_name}"
         end
       end
+    end
+
+    def self.model_name_to_graphql_name(model_name)
+      "#{model_name.gsub(/::/, '')}ID"
     end
   end
 end

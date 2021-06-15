@@ -53,8 +53,8 @@ export default {
   <div
     class="diff-stats"
     :class="{
-      'is-compare-versions-header d-none d-lg-inline-flex': isCompareVersionsHeader,
-      'd-none d-sm-inline-flex': !isCompareVersionsHeader,
+      'is-compare-versions-header gl-display-none gl-lg-display-inline-flex': isCompareVersionsHeader,
+      'gl-display-none gl-sm-display-inline-flex': !isCompareVersionsHeader,
     }"
   >
     <div v-if="notDiffable" :class="fileStats.classes">
@@ -66,18 +66,18 @@ export default {
         <span class="text-secondary bold">{{ diffFilesCountText }} {{ filesText }}</span>
       </div>
       <div
-        class="diff-stats-group cgreen d-flex align-items-center"
+        class="diff-stats-group gl-text-green-600 gl-display-flex gl-align-items-center"
         :class="{ bold: isCompareVersionsHeader }"
       >
         <span>+</span>
-        <span class="js-file-addition-line">{{ addedLines }}</span>
+        <span data-testid="js-file-addition-line">{{ addedLines }}</span>
       </div>
       <div
-        class="diff-stats-group cred d-flex align-items-center"
+        class="diff-stats-group gl-text-red-500 gl-display-flex gl-align-items-center"
         :class="{ bold: isCompareVersionsHeader }"
       >
         <span>-</span>
-        <span class="js-file-deletion-line">{{ removedLines }}</span>
+        <span data-testid="js-file-deletion-line">{{ removedLines }}</span>
       </div>
     </div>
   </div>

@@ -15378,6 +15378,7 @@ An example `IssueID` is: `"gid://gitlab/Issue/1"`.
 A `IterationID` is a global ID. It is encoded as a string.
 
 An example `IterationID` is: `"gid://gitlab/Iteration/1"`.
+The older format `"gid://gitlab/EEIteration/1"` was deprecated in 13.3.
 
 ### `IterationsCadenceID`
 

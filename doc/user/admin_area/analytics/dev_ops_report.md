@@ -58,7 +58,8 @@ The DevOps Adoption tab shows you which groups within your organization are usin
   - Pipelines
   - Deployments
 
-Buttons to manage your groups appear in the DevOps Adoption section of the page.
+When managing groups in the UI, you can add your groups with the **Add group to table**
+button, in the top right hand section the page.
 
 DevOps Adoption allows you to:
 

@@ -98,7 +98,7 @@
         time_spent: @milestone.total_time_spent,
         human_time_estimate: @milestone.human_total_time_estimate,
         human_time_spent: @milestone.human_total_time_spent,
-        id: @milestone.id,
+        iid: @milestone.iid,
         limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s } }
 
     = render_if_exists 'shared/milestones/weight', milestone: milestone

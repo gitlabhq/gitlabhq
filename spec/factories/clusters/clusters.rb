@@ -138,10 +138,6 @@ FactoryBot.define do
       cleanup_status { 1 }
     end
 
-    trait :cleanup_uninstalling_applications do
-      cleanup_status { 2 }
-    end
-
     trait :cleanup_removing_project_namespaces do
       cleanup_status { 3 }
     end
