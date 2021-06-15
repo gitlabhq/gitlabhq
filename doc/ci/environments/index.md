@@ -99,10 +99,10 @@ deploy_review:
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
-  only:
-    - branches
-  except:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: never
+    - if: $CI_COMMIT_BRANCH
 ```
 
 In this example:
@@ -158,8 +158,8 @@ deploy_prod:
     name: production
     url: https://example.com
   when: manual
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
 The `when: manual` action:
@@ -200,8 +200,8 @@ deploy:
     url: https://example.com
     kubernetes:
       namespace: production
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
 When you use the GitLab Kubernetes integration to deploy to a Kubernetes cluster,

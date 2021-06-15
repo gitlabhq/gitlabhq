@@ -722,6 +722,18 @@ class Group < Namespace
     Gitlab::Routing.url_helpers.activity_group_path(self)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
+  def open_issues_count(current_user = nil)
+    Groups::OpenIssuesCountService.new(self, current_user).count
+  end
+  # rubocop: enable CodeReuse/ServiceClass
+
+  # rubocop: disable CodeReuse/ServiceClass
+  def open_merge_requests_count(current_user = nil)
+    Groups::MergeRequestsCountService.new(self, current_user).count
+  end
+  # rubocop: enable CodeReuse/ServiceClass
+
   private
 
   def max_member_access(user_ids)

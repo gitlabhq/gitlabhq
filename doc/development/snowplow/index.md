@@ -53,7 +53,7 @@ Snowplow tracking is enabled on GitLab.com, and we use it for most of our tracki
 
 To enable Snowplow tracking on a self-managed instance:
 
-1. Go to the Admin Area (**{admin}**) and select **Settings > General**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**, then select **Settings > General**.
    Alternatively, go to `admin/application_settings/general` in your browser.
 
 1. Expand **Snowplow**.

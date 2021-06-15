@@ -50,10 +50,10 @@ More links:
 You can view the exact JSON payload sent to GitLab Inc. in the administration panel. To view the payload:
 
 1. Sign in as a user with [Administrator](../../user/permissions.md) permissions.
-1. In the top navigation bar, click **(admin)** **Admin Area**.
-1. In the left sidebar, go to **Settings > Metrics and profiling**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
-1. Click the **Preview payload** button.
+1. Select **Preview payload**.
 
 For an example payload, see [Example Usage Ping payload](#example-usage-ping-payload).
 
@@ -62,10 +62,10 @@ For an example payload, see [Example Usage Ping payload](#example-usage-ping-pay
 To disable Usage Ping in the GitLab UI:
 
 1. Sign in as a user with [Administrator](../../user/permissions.md) permissions.
-1. In the top navigation bar, click **(admin)** **Admin Area**.
-1. In the left sidebar, go to **Settings > Metrics and profiling**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
-1. Clear the **Usage Ping** checkbox and click **Save changes**.
+1. Clear the **Enable usage ping** checkbox and select **Save changes**.
 
 To disable Usage Ping and prevent it from being configured in the future through
 the administration panel, Omnibus installs can set the following in

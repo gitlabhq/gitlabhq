@@ -99,8 +99,8 @@ build:
        KANIKOCFG="${KANIKOCFG} }"
        echo "${KANIKOCFG}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile $KANIKOPROXYBUILDARGS --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
-  only:
-    - tags
+  rules:
+    - if: $CI_COMMIT_TAG
 ```
 
 ## Using a registry with a custom certificate

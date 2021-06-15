@@ -991,8 +991,8 @@ but you can use as many as eleven. The following example has two levels of inher
 
 ```yaml
 .tests:
-  only:
-    - pushes
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
 
 .rspec:
   extends: .tests
@@ -1028,9 +1028,9 @@ levels. For example:
   variables:
     URL: "http://my-url.internal"
     IMPORTANT_VAR: "the details"
-  only:
-    - main
-    - stable
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == "stable"
   tags:
     - production
   script:
@@ -1061,9 +1061,9 @@ rspec:
     URL: "http://docker-url.internal"
     IMPORTANT_VAR: "the details"
     GITLAB: "is-awesome"
-  only:
-    - main
-    - stable
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == "stable"
   tags:
     - docker
   image: alpine
@@ -2333,8 +2333,8 @@ To protect a manual job:
        name: production
        url: https://example.com
      when: manual
-     only:
-       - main
+     rules:
+       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
    ```
 
 1. In the [protected environments settings](../environments/protected_environments.md#protecting-environments),
@@ -3281,8 +3281,8 @@ Create artifacts only for tags (`default-job` doesn't create artifacts):
 default-job:
   script:
     - mvn test -U
-  except:
-    - tags
+  rules:
+    - if: $CI_COMMIT_BRANCH
 
 release-job:
   script:
@@ -3290,8 +3290,8 @@ release-job:
   artifacts:
     paths:
       - target/*.war
-  only:
-    - tags
+  rules:
+    - if: $CI_COMMIT_TAG
 ```
 
 You can use wildcards for directories too. For example, if you want to get all the files inside the directories that end with `xyz`:
@@ -4370,7 +4370,10 @@ job:
     description: 'Release description'
 ```
 
-It is also possible to create any unique tag, in which case `only: tags` is not mandatory.
+It is also possible for the release job to automatically create a new unique tag. In that case,
+do not use [`rules`](#rules) or [`only`](#only--except) to configure the job to
+only run for tags.
+
 A semantic versioning example:
 
 ```yaml
@@ -4626,8 +4629,8 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
 View the [GitLab Pages user documentation](../../user/project/pages/index.md).

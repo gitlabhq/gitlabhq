@@ -63,7 +63,7 @@ describe('WikiForm', () => {
     persisted: true,
 
     title: 'My page',
-    content: 'My page content',
+    content: '  My page content  ',
     format: 'markdown',
     path: '/project/path/-/wikis/home',
   };
@@ -129,6 +129,12 @@ describe('WikiForm', () => {
     expect(findMessage().element.value).toBe('Update My page');
   });
 
+  it('does not trim page content by default', () => {
+    createWrapper(true);
+
+    expect(findContent().element.value).toBe('  My page content  ');
+  });
+
   it.each`
     value         | text
     ${'markdown'} | ${'[Link Title](page-slug)'}
@@ -183,10 +189,10 @@ describe('WikiForm', () => {
 
   describe('when wiki content is updated', () => {
     beforeEach(() => {
-      createWrapper();
+      createWrapper(true);
 
       const input = findContent();
-      input.setValue('Lorem ipsum dolar sit!');
+      input.setValue(' Lorem ipsum dolar sit! ');
       input.element.dispatchEvent(new Event('input'));
 
       return wrapper.vm.$nextTick();
@@ -212,6 +218,10 @@ describe('WikiForm', () => {
 
       it('does not trigger tracking event', async () => {
         expect(trackingSpy).not.toHaveBeenCalled();
+      });
+
+      it('does not trim page content', () => {
+        expect(findContent().element.value).toBe(' Lorem ipsum dolar sit! ');
       });
     });
   });
@@ -434,7 +444,7 @@ describe('WikiForm', () => {
 
       it('updates content from content editor on form submit', async () => {
         // old value
-        expect(findContent().element.value).toBe('My page content');
+        expect(findContent().element.value).toBe('  My page content  ');
 
         // wait for content editor to load
         await waitForPromises();
@@ -484,7 +494,7 @@ describe('WikiForm', () => {
           });
 
           it('the old editor retains its old value and does not use the content from the content editor', () => {
-            expect(findContent().element.value).toBe('My page content');
+            expect(findContent().element.value).toBe('  My page content  ');
           });
         });
       });

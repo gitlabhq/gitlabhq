@@ -14,7 +14,7 @@ module Projects
       private
 
       def verify_feature_enabled!
-        render_404 unless Feature.enabled?(:infrastructure_registry_page)
+        render_404 unless Feature.enabled?(:infrastructure_registry_page, default_enabled: :yaml)
       end
     end
   end

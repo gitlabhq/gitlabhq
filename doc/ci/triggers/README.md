@@ -57,8 +57,8 @@ trigger_pipeline:
   stage: deploy
   script:
     - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
-  only:
-    - tags
+  rules:
+    - if: $CI_COMMIT_TAG
 ```
 
 Pipelines triggered that way also expose a special variable:
@@ -83,8 +83,8 @@ build_submodule:
     - apt update && apt install -y unzip
     - curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN"
     - unzip artifacts.zip
-  only:
-    - tags
+  rules:
+    - if: $CI_COMMIT_TAG
 ```
 
 This allows you to use that for multi-project pipelines and download artifacts
@@ -163,8 +163,8 @@ trigger_pipeline:
   stage: deploy
   script:
     - 'curl --request POST --form token=TOKEN --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"'
-  only:
-    - tags
+  rules:
+    - if: $CI_COMMIT_TAG
 ```
 
 This means that whenever a new tag is pushed on project A, the job runs and the

@@ -119,7 +119,7 @@ export default {
     return {
       title: this.pageInfo.title?.trim() || '',
       format: this.pageInfo.format || 'markdown',
-      content: this.pageInfo.content?.trim() || '',
+      content: this.pageInfo.content || '',
       isContentEditorLoading: true,
       useContentEditor: false,
       commitMessage: '',
@@ -131,7 +131,7 @@ export default {
   computed: {
     noContent() {
       if (this.isContentEditorActive) return this.contentEditor?.empty;
-      return !this.content;
+      return !this.content.trim();
     },
     csrfToken() {
       return csrf.token;
@@ -326,7 +326,7 @@ export default {
       <div class="col-sm-10">
         <input
           id="wiki_title"
-          v-model.trim="title"
+          v-model="title"
           name="wiki[title]"
           type="text"
           class="form-control"
@@ -418,7 +418,7 @@ export default {
             <textarea
               id="wiki_content"
               ref="textarea"
-              v-model.trim="content"
+              v-model="content"
               name="wiki[content]"
               class="note-textarea js-gfm-input js-autosize markdown-area"
               dir="auto"

@@ -38,7 +38,7 @@ set of concurrently running child pipelines, but within the same project:
 
 Child pipelines work well with other GitLab CI/CD features:
 
-- Use [`only: changes`](yaml/README.md#onlychanges--exceptchanges) to trigger pipelines only when
+- Use [`rules: changes`](yaml/README.md#ruleschanges) to trigger pipelines only when
   certain files change. This is useful for monorepos, for example.
 - Since the parent pipeline in `.gitlab-ci.yml` and the child pipeline run as normal
   pipelines, they can have their own behaviors and sequencing in relation to triggers.

@@ -19,5 +19,11 @@ FactoryBot.define do
 
       sequence(:jid) { |n| "bulk_import_entity_#{n}" }
     end
+
+    trait :failed do
+      status { -1 }
+
+      sequence(:jid) { |n| "bulk_import_entity_#{n}" }
+    end
   end
 end

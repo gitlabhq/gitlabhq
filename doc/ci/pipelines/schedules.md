@@ -8,9 +8,6 @@ type: reference, howto
 
 # Pipeline schedules **(FREE)**
 
-> - Introduced in GitLab 9.1 as [Trigger Schedule](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10533).
-> - [Renamed to Pipeline Schedule](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10853) in GitLab 9.2.
-
 Pipelines are normally run based on certain conditions being met. For example, when a branch is pushed to repository.
 
 Pipeline schedules can be used to also run [pipelines](index.md) at specific intervals. For example:
@@ -54,31 +51,29 @@ is installed on.
 
 ### Using variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12328) in GitLab 9.4.
-
 You can pass any number of arbitrary variables. They are available in
 GitLab CI/CD so that they can be used in your [`.gitlab-ci.yml` file](../../ci/yaml/README.md).
 
 ![Scheduled pipeline variables](img/pipeline_schedule_variables.png)
 
-### Using only and except
+### Using `rules`
 
 To configure a job to be executed only when the pipeline has been
-scheduled (or the opposite), use
-[only and except](../yaml/README.md#only--except) configuration keywords.
+scheduled, use the [`rules`](../yaml/README.md#rules) keyword.
 
-In the example below `make world` runs in scheduled pipelines, and `make build` runs in pipelines that are not scheduled:
+In this example, `make world` runs in scheduled pipelines, and `make build`
+runs in branch and tag pipelines:
 
 ```yaml
 job:on-schedule:
-  only:
-    - schedules
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
     - make world
 
 job:
-  except:
-    - schedules
+  rules:
+    - if: $CI_PIPELINE_SOURCE = "push"
   script:
     - make build
 ```

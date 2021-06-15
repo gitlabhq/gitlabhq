@@ -39,20 +39,14 @@ RSpec.describe Members::InviteEmailExperiment, :clean_gitlab_redis_shared_state 
       allow(instance_1).to receive(:enabled?).and_return(true)
       instance_2 = described_class.new('members/invite_email', **context)
       allow(instance_2).to receive(:enabled?).and_return(true)
-      instance_3 = described_class.new('members/invite_email', **context)
-      allow(instance_3).to receive(:enabled?).and_return(true)
 
       instance_1.try { }
 
-      expect(instance_1.variant.name).to eq('permission_info')
+      expect(instance_1.variant.name).to eq('control')
 
       instance_2.try { }
 
-      expect(instance_2.variant.name).to eq('control')
-
-      instance_3.try { }
-
-      expect(instance_3.variant.name).to eq('avatar')
+      expect(instance_2.variant.name).to eq('activity')
     end
   end
 

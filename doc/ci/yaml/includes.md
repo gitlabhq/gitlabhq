@@ -111,8 +111,8 @@ production:
   environment:
     name: production
     url: https://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
 Content of `.gitlab-ci.yml`:

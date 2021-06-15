@@ -1753,7 +1753,7 @@ class Project < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   # rubocop: disable CodeReuse/ServiceClass
-  def open_merge_requests_count
+  def open_merge_requests_count(_current_user = nil)
     Projects::OpenMergeRequestsCountService.new(self).count
   end
   # rubocop: enable CodeReuse/ServiceClass

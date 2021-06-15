@@ -994,6 +994,39 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#open_issues_count', :aggregate_failures do
+    let(:project) { build(:project) }
+
+    it 'provides the issue count' do
+      expect(project.open_issues_count).to eq 0
+    end
+
+    it 'invokes the count service with current_user' do
+      user = build(:user)
+      count_service = instance_double(Projects::OpenIssuesCountService)
+      expect(Projects::OpenIssuesCountService).to receive(:new).with(project, user).and_return(count_service)
+      expect(count_service).to receive(:count)
+
+      project.open_issues_count(user)
+    end
+
+    it 'invokes the count service with no current_user' do
+      count_service = instance_double(Projects::OpenIssuesCountService)
+      expect(Projects::OpenIssuesCountService).to receive(:new).with(project, nil).and_return(count_service)
+      expect(count_service).to receive(:count)
+
+      project.open_issues_count
+    end
+  end
+
+  describe '#open_merge_requests_count' do
+    it 'provides the merge request count' do
+      project = build(:project)
+
+      expect(project.open_merge_requests_count).to eq 0
+    end
+  end
+
   describe '#issue_exists?' do
     let_it_be(:project) { create(:project) }
 

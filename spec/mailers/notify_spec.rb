@@ -790,7 +790,7 @@ RSpec.describe Notify do
       it_behaves_like 'appearance header and footer not enabled'
       it_behaves_like 'does not render a manage notifications link'
 
-      context 'when there is an inviter' do
+      context 'when there is an inviter', :aggregate_failures do
         it 'contains all the useful information' do
           is_expected.to have_subject "#{inviter.name} invited you to join GitLab"
           is_expected.to have_body_text project.full_name
@@ -799,19 +799,14 @@ RSpec.describe Notify do
           is_expected.to have_link('Join now', href: invite_url(project_member.invite_token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE))
         end
 
-        it 'contains invite link for the avatar' do
-          stub_experiments('members/invite_email': :avatar)
+        it 'contains invite link for the group activity' do
+          stub_experiments('members/invite_email': :activity)
 
+          is_expected.to have_content("#{inviter.name} invited you to join the")
+          is_expected.to have_content('Project details')
+          is_expected.to have_content("What's it about?")
           is_expected.not_to have_content('You are invited!')
           is_expected.not_to have_body_text 'What is a GitLab'
-        end
-
-        it 'contains invite link for the avatar' do
-          stub_experiments('members/invite_email': :permission_info)
-
-          is_expected.not_to have_content('You are invited!')
-          is_expected.to have_body_text 'What is a GitLab'
-          is_expected.to have_body_text 'What can I do with'
         end
 
         it 'has invite link for the control group' do
@@ -821,7 +816,7 @@ RSpec.describe Notify do
         end
       end
 
-      context 'when there is no inviter' do
+      context 'when there is no inviter', :aggregate_failures do
         let(:inviter) { nil }
 
         it 'contains all the useful information' do

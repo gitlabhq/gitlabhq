@@ -58,7 +58,7 @@ module Sidebars
         end
 
         def infrastructure_registry_menu_item
-          if Feature.disabled?(:infrastructure_registry_page, context.current_user)
+          if Feature.disabled?(:infrastructure_registry_page, context.current_user, default_enabled: :yaml)
             return ::Sidebars::NilMenuItem.new(item_id: :infrastructure_registry)
           end
 

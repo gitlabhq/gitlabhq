@@ -349,12 +349,14 @@ variable entry.
 
 GitLab does support a [`when` keyword](../yaml/README.md#when) which is used to indicate when a job should be
 run in case of (or despite) failure, but most of the logic for controlling pipelines can be found in
-our very powerful [`only/except` rules system](../yaml/README.md#only--except)
-(see also our [advanced syntax](../yaml/README.md#only--except)):
+our very powerful [`rules` system](../yaml/README.md#rules):
 
 ```yaml
 my_job:
-  only: [branches]
+  script:
+    - echo
+  rules:
+    - if: $CI_COMMIT_BRANCH
 ```
 
 ## Additional resources

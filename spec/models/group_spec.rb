@@ -2617,12 +2617,62 @@ RSpec.describe Group do
   context 'with export' do
     let(:group) { create(:group, :with_export) }
 
-    it '#export_file_exists returns true' do
+    it '#export_file_exists? returns true' do
       expect(group.export_file_exists?).to be true
     end
 
     it '#export_archive_exists? returns true' do
       expect(group.export_archive_exists?).to be true
+    end
+  end
+
+  describe '#open_issues_count', :aggregate_failures do
+    let(:group) { build(:group) }
+
+    it 'provides the issue count' do
+      expect(group.open_issues_count).to eq 0
+    end
+
+    it 'invokes the count service with current_user' do
+      user = build(:user)
+      count_service = instance_double(Groups::OpenIssuesCountService)
+      expect(Groups::OpenIssuesCountService).to receive(:new).with(group, user).and_return(count_service)
+      expect(count_service).to receive(:count)
+
+      group.open_issues_count(user)
+    end
+
+    it 'invokes the count service with no current_user' do
+      count_service = instance_double(Groups::OpenIssuesCountService)
+      expect(Groups::OpenIssuesCountService).to receive(:new).with(group, nil).and_return(count_service)
+      expect(count_service).to receive(:count)
+
+      group.open_issues_count
+    end
+  end
+
+  describe '#open_merge_requests_count', :aggregate_failures do
+    let(:group) { build(:group) }
+
+    it 'provides the merge request count' do
+      expect(group.open_merge_requests_count).to eq 0
+    end
+
+    it 'invokes the count service with current_user' do
+      user = build(:user)
+      count_service = instance_double(Groups::MergeRequestsCountService)
+      expect(Groups::MergeRequestsCountService).to receive(:new).with(group, user).and_return(count_service)
+      expect(count_service).to receive(:count)
+
+      group.open_merge_requests_count(user)
+    end
+
+    it 'invokes the count service with no current_user' do
+      count_service = instance_double(Groups::MergeRequestsCountService)
+      expect(Groups::MergeRequestsCountService).to receive(:new).with(group, nil).and_return(count_service)
+      expect(count_service).to receive(:count)
+
+      group.open_merge_requests_count
     end
   end
 end

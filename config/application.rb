@@ -165,6 +165,10 @@ module Gitlab
     # like if you have constraints or database-specific column types
     config.active_record.schema_format = :sql
 
+    # Use new connection handling so that we can use Rails 6.1+ multiple
+    # database support.
+    config.active_record.legacy_connection_handling = false
+
     config.action_mailer.delivery_job = "ActionMailer::MailDeliveryJob"
 
     # Enable the asset pipeline

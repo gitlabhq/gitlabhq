@@ -10,28 +10,38 @@ module BulkImports
 
         def initialize(context)
           @context = context
+          @entity = @context.entity
+          @trackers = @entity.trackers
         end
 
         def run
-          return if context.entity.finished?
+          return if entity.finished? || entity.failed?
 
-          context.entity.finish!
+          if all_other_trackers_failed?
+            entity.fail_op!
+          else
+            entity.finish!
+          end
 
           logger.info(
             bulk_import_id: context.bulk_import.id,
             bulk_import_entity_id: context.entity.id,
             bulk_import_entity_type: context.entity.source_type,
             pipeline_class: self.class.name,
-            message: 'Entity finished'
+            message: "Entity #{entity.status_name}"
           )
         end
 
         private
 
-        attr_reader :context
+        attr_reader :context, :entity, :trackers
 
         def logger
           @logger ||= Gitlab::Import::Logger.build
+        end
+
+        def all_other_trackers_failed?
+          trackers.where.not(relation: self.class.name).all? { |tracker| tracker.failed? } # rubocop: disable CodeReuse/ActiveRecord
         end
       end
     end
