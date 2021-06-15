@@ -1897,6 +1897,9 @@ msgstr ""
 msgid "Add a comment to this line or drag for multiple lines"
 msgstr ""
 
+msgid "Add a custom message with details about the instance's shared runners. The message is visible in group and project CI/CD settings, in the Runners section. Markdown is supported."
+msgstr ""
+
 msgid "Add a general comment to this %{noteableDisplayName}."
 msgstr ""
 
@@ -2332,9 +2335,6 @@ msgstr ""
 msgid "AdminSettings|Enable shared runners for new projects"
 msgstr ""
 
-msgid "AdminSettings|Environment variables are protected by default"
-msgstr ""
-
 msgid "AdminSettings|Feed token"
 msgstr ""
 
@@ -2347,7 +2347,13 @@ msgstr ""
 msgid "AdminSettings|Moved to integrations"
 msgstr ""
 
+msgid "AdminSettings|New CI/CD variables in projects and groups default to protected."
+msgstr ""
+
 msgid "AdminSettings|No required pipeline"
+msgstr ""
+
+msgid "AdminSettings|Protect CI/CD variables by default"
 msgstr ""
 
 msgid "AdminSettings|Required pipeline configuration"
@@ -2378,9 +2384,6 @@ msgid "AdminSettings|The latest artifacts for all jobs in the most recent succes
 msgstr ""
 
 msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
-msgstr ""
-
-msgid "AdminSettings|When creating a new environment variable it will be protected by default."
 msgstr ""
 
 msgid "AdminSettings|You can't add new templates. To migrate or remove a Service template, create a new integration at %{settings_link_start}Settings &gt; Integrations%{link_end}. Learn more about %{doc_link_start}Project integration management%{link_end}."
@@ -4709,9 +4712,6 @@ msgstr ""
 msgid "Auto DevOps enabled"
 msgstr ""
 
-msgid "Auto DevOps, runners and job artifacts"
-msgstr ""
-
 msgid "Auto stop successfully canceled."
 msgstr ""
 
@@ -5770,10 +5770,10 @@ msgstr ""
 msgid "CICD|Jobs"
 msgstr ""
 
-msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
+msgid "CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file."
 msgstr ""
 
-msgid "CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found."
+msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
 msgid "CICD|group enabled"
@@ -6464,6 +6464,9 @@ msgid "Choose labels"
 msgstr ""
 
 msgid "Choose specific groups or storage shards"
+msgstr ""
+
+msgid "Choose the preferred Runner and populate the AWS CFT."
 msgstr ""
 
 msgid "Choose the top-level group for your repository imports."
@@ -9030,6 +9033,9 @@ msgstr ""
 msgid "Copy the code below to implement tracking in your application:"
 msgstr ""
 
+msgid "Copy this registration token."
+msgstr ""
+
 msgid "Copy this value"
 msgstr ""
 
@@ -9739,6 +9745,9 @@ msgid "Customizable by an administrator."
 msgstr ""
 
 msgid "Customizable by owners."
+msgstr ""
+
+msgid "Customize CI/CD settings, including Auto DevOps, shared runners, and job artifacts."
 msgstr ""
 
 msgid "Customize colors"
@@ -10455,7 +10464,7 @@ msgstr ""
 msgid "Default"
 msgstr ""
 
-msgid "Default CI configuration path"
+msgid "Default CI/CD configuration file"
 msgstr ""
 
 msgid "Default Timeout Period"
@@ -15898,6 +15907,9 @@ msgstr ""
 msgid "GroupSettings|Prevent forking setting was not saved"
 msgstr ""
 
+msgid "GroupSettings|Prevent members from sending invitations to groups outside of %{group} and its subgroups."
+msgstr ""
+
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr ""
 
@@ -15932,6 +15944,9 @@ msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share proj
 msgstr ""
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting is only available on the top-level group and it applies to all subgroups. Groups that have already been shared with a group outside %{group} will still be shared, and this access will have to be revoked manually."
 msgstr ""
 
 msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
@@ -21791,6 +21806,9 @@ msgstr ""
 msgid "NetworkPolicies|Save changes"
 msgstr ""
 
+msgid "NetworkPolicies|Scan Execution"
+msgstr ""
+
 msgid "NetworkPolicies|Something went wrong, failed to update policy"
 msgstr ""
 
@@ -24158,10 +24176,16 @@ msgstr ""
 msgid "Pipelines|Improve code quality with GitLab CI/CD"
 msgstr ""
 
+msgid "Pipelines|Install GitLab Runners"
+msgstr ""
+
 msgid "Pipelines|It is recommended the code is reviewed thoroughly before running this pipeline with the parent project's CI resource."
 msgstr ""
 
 msgid "Pipelines|Last Used"
+msgstr ""
+
+msgid "Pipelines|Learn about Runners"
 msgstr ""
 
 msgid "Pipelines|Lint"
@@ -28090,6 +28114,9 @@ msgstr ""
 msgid "RightSidebar|deleting the"
 msgstr ""
 
+msgid "Rnners|Don't see what you are looking for? See the full list of options, including a fully customizable option, %{linkStart}here%{linkEnd}."
+msgstr ""
+
 msgid "Roadmap"
 msgstr ""
 
@@ -28168,6 +28195,12 @@ msgstr ""
 msgid "Runners|Active"
 msgstr ""
 
+msgid "Runners|Amazon Linux 2 Docker HA with manual scaling and optional scheduling. %{percentage} spot."
+msgstr ""
+
+msgid "Runners|Amazon Linux 2 Docker HA with manual scaling and optional scheduling. Non-spot. Default choice for Linux Docker executor."
+msgstr ""
+
 msgid "Runners|An error has occurred fetching instructions"
 msgstr ""
 
@@ -28186,6 +28219,9 @@ msgstr ""
 msgid "Runners|Copy instructions"
 msgstr ""
 
+msgid "Runners|Deploy GitLab Runner in AWS"
+msgstr ""
+
 msgid "Runners|Description"
 msgstr ""
 
@@ -28198,7 +28234,13 @@ msgstr ""
 msgid "Runners|Enter the number of seconds. This timeout takes precedence over lower timeouts set for the project."
 msgstr ""
 
+msgid "Runners|For each solution, you will choose a capacity. 1 enables warm HA through Auto Scaling group re-spawn. 2 enables hot HA because the service is available even when a node is lost. 3 or more enables hot HA and manual scaling of runner fleet."
+msgstr ""
+
 msgid "Runners|IP Address"
+msgstr ""
+
+msgid "Runners|If you do not select an AWS VPC, the runner will deploy to the Default VPC in the AWS Region you select. Please consult with your AWS administrator to understand if there are any security risks to deploying into the Default VPC in any given region in your AWS account."
 msgstr ""
 
 msgid "Runners|Install a runner"
@@ -28292,6 +28334,12 @@ msgid "Runners|Version"
 msgstr ""
 
 msgid "Runners|View installation instructions"
+msgstr ""
+
+msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %{percentage} spot."
+msgstr ""
+
+msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. Non-spot. Default choice for Windows Shell executor."
 msgstr ""
 
 msgid "Runners|You can set up a specific runner to be used by multiple projects but you cannot make this a shared runner."
@@ -29904,6 +29952,9 @@ msgid "Shared runners are disabled for the parent group"
 msgstr ""
 
 msgid "Shared runners are disabled on group level"
+msgstr ""
+
+msgid "Shared runners details"
 msgstr ""
 
 msgid "Shared runners help link"
@@ -32344,7 +32395,7 @@ msgstr ""
 msgid "The data source is connected, but there is no data to display. %{documentationLink}"
 msgstr ""
 
-msgid "The default CI configuration path for new projects."
+msgid "The default CI/CD configuration file and path for new projects."
 msgstr ""
 
 msgid "The dependency list details information about the components used within your project."
@@ -35352,7 +35403,13 @@ msgstr ""
 msgid "Use .gitlab-ci.yml"
 msgstr ""
 
+msgid "Use GitLab Runner in AWS"
+msgstr ""
+
 msgid "Use a one-time password authenticator on your mobile device or computer to enable two-factor authentication (2FA)."
+msgstr ""
+
+msgid "Use an AWS CloudFormation Template (CFT) to install and configure GitLab Runner in AWS."
 msgstr ""
 
 msgid "Use cURL"
@@ -36665,6 +36722,9 @@ msgid "What describes you best?"
 msgstr ""
 
 msgid "What does this command do?"
+msgstr ""
+
+msgid "What is Auto DevOps?"
 msgstr ""
 
 msgid "What is repository mirroring?"
@@ -38034,6 +38094,9 @@ msgid "can contain only letters of the Base64 alphabet (RFC4648) with the additi
 msgstr ""
 
 msgid "can only be changed by a group admin."
+msgstr ""
+
+msgid "can only have one escalation policy"
 msgstr ""
 
 msgid "can't be enabled because signed commits are required for this project"

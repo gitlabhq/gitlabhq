@@ -49,26 +49,9 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        experiment(:pipeline_empty_state_templates, namespace: project.root_ancestor) do |e|
-          e.exclude! unless current_user
-          e.exclude! if @pipelines_count.to_i > 0
-          e.exclude! if helpers.has_gitlab_ci?(project)
-
-          e.use {}
-          e.try {}
-          e.record!
-        end
-        experiment(:code_quality_walkthrough, namespace: project.root_ancestor) do |e|
-          e.exclude! unless current_user
-          e.exclude! unless can?(current_user, :create_pipeline, project)
-          e.exclude! unless project.root_ancestor.recent?
-          e.exclude! if @pipelines_count.to_i > 0
-          e.exclude! if helpers.has_gitlab_ci?(project)
-
-          e.use {}
-          e.try {}
-          e.record!
-        end
+        enable_pipeline_empty_state_templates_experiment
+        enable_code_quality_walkthrough_experiment
+        enable_ci_runner_templates_experiment
       end
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
@@ -316,6 +299,45 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def index_params
     params.permit(:scope, :username, :ref, :status)
+  end
+
+  def enable_pipeline_empty_state_templates_experiment
+    experiment(:pipeline_empty_state_templates, namespace: project.root_ancestor) do |e|
+      e.exclude! unless current_user
+      e.exclude! if @pipelines_count.to_i > 0
+      e.exclude! if helpers.has_gitlab_ci?(project)
+
+      e.control {}
+      e.candidate {}
+      e.record!
+    end
+  end
+
+  def enable_code_quality_walkthrough_experiment
+    experiment(:code_quality_walkthrough, namespace: project.root_ancestor) do |e|
+      e.exclude! unless current_user
+      e.exclude! unless can?(current_user, :create_pipeline, project)
+      e.exclude! unless project.root_ancestor.recent?
+      e.exclude! if @pipelines_count.to_i > 0
+      e.exclude! if helpers.has_gitlab_ci?(project)
+
+      e.control {}
+      e.candidate {}
+      e.record!
+    end
+  end
+
+  def enable_ci_runner_templates_experiment
+    experiment(:ci_runner_templates, namespace: project.root_ancestor) do |e|
+      e.exclude! unless current_user
+      e.exclude! unless can?(current_user, :create_pipeline, project)
+      e.exclude! if @pipelines_count.to_i > 0
+      e.exclude! if helpers.has_gitlab_ci?(project)
+
+      e.control {}
+      e.candidate {}
+      e.record!
+    end
   end
 end
 

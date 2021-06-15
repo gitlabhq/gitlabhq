@@ -23,7 +23,7 @@ per minute per user basis:
 
 All rate limits are:
 
-- Configurable at **(admin)** **Admin Area > Settings > Network > Import/Export Rate Limits**
+- Configurable through the top bar at **Menu > Admin > Settings > Network > Import/Export Rate Limits**
 - Applied per minute per user
 - Not applied per IP address
 - Active by default. To disable, set the option to `0`

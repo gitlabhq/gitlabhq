@@ -73,7 +73,7 @@ Project defined timeout (either specific timeout set by user or the default
 For information about setting a maximum artifact size for a project, see
 [Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size).
 
-## Custom CI/CD configuration path
+## Custom CI/CD configuration file
 
 > [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
 
@@ -87,7 +87,7 @@ To customize the path:
 1. Provide a value in the **CI/CD configuration file** field.
 1. Click **Save changes**.
 
-If the CI configuration is stored in the repository in a non-default
+If the CI/CD configuration file is stored in the repository in a non-default
 location, the path must be relative to the root directory. Examples of valid
 paths and file names include:
 
@@ -96,11 +96,11 @@ paths and file names include:
 - `my/path/.gitlab-ci.yml`
 - `my/path/.my-custom-file.yml`
 
-If hosting the CI configuration on an external site, the URL link must end with `.yml`:
+If hosting the CI/CD configuration file on an external site, the URL link must end with `.yml`:
 
 - `http://example.com/generate/ci/config.yml`
 
-If hosting the CI configuration in a different project in GitLab, the path must be relative
+If hosting the CI/CD configuration file in a different project in GitLab, the path must be relative
 to the root directory in the other project. Include the group and project name at the end:
 
 - `.gitlab-ci.yml@mygroup/another-project`

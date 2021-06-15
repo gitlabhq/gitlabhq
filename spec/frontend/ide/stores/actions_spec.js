@@ -777,7 +777,7 @@ describe('Multi-file store actions', () => {
 
       it('routes to the renamed file if the original file has been opened', (done) => {
         store.state.currentProjectId = 'test/test';
-        store.state.currentBranchId = 'master';
+        store.state.currentBranchId = 'main';
 
         Object.assign(store.state.entries.orig, {
           opened: true,
@@ -790,7 +790,7 @@ describe('Multi-file store actions', () => {
           })
           .then(() => {
             expect(router.push.mock.calls).toHaveLength(1);
-            expect(router.push).toHaveBeenCalledWith(`/project/test/test/tree/master/-/renamed/`);
+            expect(router.push).toHaveBeenCalledWith(`/project/test/test/tree/main/-/renamed/`);
           })
           .then(done)
           .catch(done.fail);
@@ -1019,7 +1019,7 @@ describe('Multi-file store actions', () => {
           },
           {
             projectId: 'abc/def',
-            branchId: 'master-testing',
+            branchId: 'main-testing',
           },
         ];
         dispatch = jest.fn();

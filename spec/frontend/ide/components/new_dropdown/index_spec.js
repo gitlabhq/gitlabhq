@@ -13,7 +13,7 @@ describe('new dropdown component', () => {
     const component = Vue.extend(newDropdown);
 
     vm = createComponentWithStore(component, store, {
-      branch: 'master',
+      branch: 'main',
       path: '',
       mouseOver: false,
       type: 'tree',

@@ -36,7 +36,7 @@
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.form-text.text-muted
             = html_escape(_("The name of the CI/CD configuration file. A path relative to the root directory is optional (for example %{code_open}my/path/.myfile.yml%{code_close}).")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'custom-cicd-configuration-path'), target: '_blank'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'custom-cicd-configuration-file'), target: '_blank'
 
         %hr
         .form-group

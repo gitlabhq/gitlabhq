@@ -4,7 +4,7 @@ import { buildTextToken, buildUneditableInlineTokens } from './build_uneditable_
 Use case examples:
 - Majority: two bracket pairs, back-to-back, each with content (including spaces)
   - `[environment terraform plans][terraform]`
-  - `[an issue labelled `~"master:broken"`][broken-master-issues]`
+  - `[an issue labelled `~"main:broken"`][broken-main-issues]`
 - Minority: two bracket pairs the latter being empty or only one pair with content (including spaces)
   - `[this link][]`
   - `[this link]`

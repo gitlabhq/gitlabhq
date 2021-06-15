@@ -22,9 +22,9 @@ describe('WebIDE', () => {
 
   const createComponent = ({ projData = emptyProjData, state = {} } = {}) => {
     store.state.currentProjectId = 'abcproject';
-    store.state.currentBranchId = 'master';
+    store.state.currentBranchId = 'main';
     store.state.projects.abcproject = projData && { ...projData };
-    store.state.trees['abcproject/master'] = {
+    store.state.trees['abcproject/main'] = {
       tree: [],
       loading: false,
     };

@@ -28,7 +28,26 @@ From now on, every existing project and newly created ones that don't have a
 If you want to disable it for a specific project, you can do so in
 [its settings](../../../topics/autodevops/index.md#enable-or-disable-auto-devops).
 
-## Maximum artifacts size
+## Shared runner details
+
+To display details about the instance's shared runners in all projects'
+runner settings:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Enter your shared runner details in the **Shared runner details** field.
+
+You can use [Markdown](../../markdown.md) for improved formatting. To see the rendered
+details:
+
+1. On the top bar, select **Menu > Project** and select any group or project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Runners**.
+
+![Shared runner details example](img/continuous_integration_shared_runner_details_v14_0.png)
+
+## Maximum artifacts size **(FREE SELF)**
 
 The maximum size of the [job artifacts](../../../administration/job_artifacts.md)
 can be set at:
@@ -174,19 +193,28 @@ for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
 
 As of June 22, 2020 the [value is set](../../gitlab_com/index.md#gitlab-cicd) to 3 months on GitLab.com. Jobs created before that date were archived after September 22, 2020.
 
-## Default CI configuration path
+## Protect CI/CD variables by default
+
+To set all new [CI/CD variables](../../../ci/variables/README.md) as
+[protected](../../../ci/variables/README.md#protect-a-cicd-variable) by default:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Select **Protect CI/CD variables by default**.
+
+## Default CI/CD configuration file
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18073) in GitLab 12.5.
 
-The default CI configuration file path for new projects can be set in the Admin
-Area of your GitLab instance (`.gitlab-ci.yml` if not set):
+The default CI/CD configuration file and path for new projects can be set in the Admin Area
+of your GitLab instance (`.gitlab-ci.yml` if not set):
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. On the left sidebar, select **Admin Area > Settings > CI/CD**.
-1. Input the new path in the **Default CI configuration path** field.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Input the new file and path in the **Default CI/CD configuration file** field.
 1. Hit **Save changes** for the changes to take effect.
 
-It is also possible to specify a [custom CI/CD configuration path for a specific project](../../../ci/pipelines/settings.md#custom-cicd-configuration-path).
+It is also possible to specify a [custom CI/CD configuration file for a specific project](../../../ci/pipelines/settings.md#custom-cicd-configuration-file).
 
 ## Required pipeline configuration **(PREMIUM SELF)**
 

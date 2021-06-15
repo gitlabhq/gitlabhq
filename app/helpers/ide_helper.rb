@@ -14,6 +14,7 @@ module IdeHelper
       'render-whitespace-in-code': current_user.render_whitespace_in_code.to_s,
       'codesandbox-bundler-url': Gitlab::CurrentSettings.web_ide_clientside_preview_bundler_url,
       'branch-name' => @branch,
+      'default-branch' => @project && @project.default_branch,
       'file-path' => @path,
       'merge-request' => @merge_request,
       'fork-info' => @fork_info&.to_json,

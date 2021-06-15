@@ -13,6 +13,10 @@
   = render partial: 'ci/runner/how_to_setup_runner_automatically',
            locals: { type: 'group',
                      clusters_path: group_clusters_path(@group) }
+  - if params[:ci_runner_templates]
+    %hr
+    = render partial: 'ci/runner/setup_runner_in_aws',
+             locals: { registration_token: @group.runners_token }
   %hr
   = render partial: 'ci/runner/how_to_setup_runner',
            locals: { registration_token: @group.runners_token,

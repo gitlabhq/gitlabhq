@@ -463,11 +463,11 @@ describe('IDE store merge request actions', () => {
       };
 
       store.state.currentProjectId = 'test/test';
-      store.state.currentBranchId = 'master';
+      store.state.currentBranchId = 'main';
 
       store.state.projects['test/test'] = {
         branches: {
-          master: {
+          main: {
             commit: {
               id: '7297abc',
             },

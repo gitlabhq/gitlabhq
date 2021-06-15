@@ -7,7 +7,7 @@ import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
-import { getExperimentVariant } from '~/experimentation/utils';
+import { getExperimentData, getExperimentVariant } from '~/experimentation/utils';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
@@ -23,6 +23,7 @@ import { stageReply, users, mockSearch, branches } from './mock_data';
 jest.mock('~/flash');
 jest.mock('~/experimentation/utils', () => ({
   ...jest.requireActual('~/experimentation/utils'),
+  getExperimentData: jest.fn().mockReturnValue(false),
   getExperimentVariant: jest.fn().mockReturnValue('control'),
 }));
 
@@ -48,6 +49,7 @@ describe('Pipelines', () => {
     resetCachePath: `${mockProjectPath}/settings/ci_cd/reset_cache`,
     newPipelinePath: `${mockProjectPath}/pipelines/new`,
     codeQualityPagePath: `${mockProjectPath}/-/new/master?commit_message=Add+.gitlab-ci.yml+and+create+a+code+quality+job&file_name=.gitlab-ci.yml&template=Code-Quality`,
+    ciRunnerSettingsPath: `${mockProjectPath}/-/settings/ci_cd#js-runners-settings`,
   };
 
   const noPermissions = {
@@ -563,6 +565,7 @@ describe('Pipelines', () => {
 
       describe('when the code_quality_walkthrough experiment is active', () => {
         beforeAll(() => {
+          getExperimentData.mockImplementation((name) => name === 'code_quality_walkthrough');
           getExperimentVariant.mockReturnValue('candidate');
         });
 
@@ -570,6 +573,29 @@ describe('Pipelines', () => {
           expect(findEmptyState().findComponent(GlButton).text()).toBe('Add a code quality job');
           expect(findEmptyState().findComponent(GlButton).attributes('href')).toBe(
             paths.codeQualityPagePath,
+          );
+        });
+      });
+
+      describe('when the ci_runner_templates experiment is active', () => {
+        beforeAll(() => {
+          getExperimentData.mockImplementation((name) => name === 'ci_runner_templates');
+          getExperimentVariant.mockReturnValue('candidate');
+        });
+
+        it('renders two buttons', () => {
+          expect(findEmptyState().findAllComponents(GlButton).length).toBe(2);
+          expect(findEmptyState().findAllComponents(GlButton).at(0).text()).toBe(
+            'Install GitLab Runners',
+          );
+          expect(findEmptyState().findAllComponents(GlButton).at(0).attributes('href')).toBe(
+            paths.ciRunnerSettingsPath,
+          );
+          expect(findEmptyState().findAllComponents(GlButton).at(1).text()).toBe(
+            'Learn about Runners',
+          );
+          expect(findEmptyState().findAllComponents(GlButton).at(1).attributes('href')).toBe(
+            '/help/ci/quick_start/index.md',
           );
         });
       });

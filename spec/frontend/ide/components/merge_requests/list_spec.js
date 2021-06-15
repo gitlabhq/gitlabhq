@@ -21,7 +21,7 @@ describe('IDE merge requests list', () => {
     const fakeStore = new Vuex.Store({
       state: {
         currentMergeRequestId: '1',
-        currentProjectId: 'project/master',
+        currentProjectId: 'project/main',
         ...restOfState,
       },
       modules: {

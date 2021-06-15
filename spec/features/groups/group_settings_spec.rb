@@ -153,6 +153,26 @@ RSpec.describe 'Edit group settings' do
     end
   end
 
+  describe 'prevent sharing outside group hierarchy setting' do
+    it 'updates the setting' do
+      visit edit_group_path(group)
+
+      check 'group_prevent_sharing_groups_outside_hierarchy'
+
+      expect { save_permissions_group }.to change {
+        group.reload.namespace_settings.prevent_sharing_groups_outside_hierarchy
+      }.to(true)
+    end
+
+    it 'is not present for a subgroup' do
+      subgroup = create(:group, parent: group)
+      visit edit_group_path(subgroup)
+
+      expect(page).to have_text "Permissions"
+      expect(page).not_to have_selector('#group_prevent_sharing_groups_outside_hierarchy')
+    end
+  end
+
   def update_path(new_group_path)
     visit edit_group_path(group)
 

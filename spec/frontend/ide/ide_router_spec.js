@@ -18,14 +18,14 @@ describe('IDE router', () => {
   });
 
   [
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/master/-/src/blob/`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/master/-/src/blob`,
+    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/main/-/src/blob/`,
+    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/main/-/src/blob`,
     `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/blob/-/src/blob`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/master/-/src/tree/`,
+    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/main/-/src/tree/`,
     `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/tree/weird:branch/name-123/-/src/tree/`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/master/-/src/blob`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/master/-/src/edit`,
-    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/master/-/src/merge_requests/2`,
+    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/main/-/src/blob`,
+    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/main/-/src/edit`,
+    `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/main/-/src/merge_requests/2`,
     `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/blob/blob/-/src/blob`,
     `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/edit/blob/-/src/blob`,
     `/project/${PROJECT_NAMESPACE}/${PROJECT_NAME}/merge_requests/2`,

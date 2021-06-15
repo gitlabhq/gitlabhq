@@ -651,6 +651,45 @@ RSpec.describe GroupsController, factory_default: :keep do
     end
   end
 
+  describe 'updating :prevent_sharing_groups_outside_hierarchy' do
+    subject do
+      put :update,
+        params: {
+          id: group.to_param,
+          group: { prevent_sharing_groups_outside_hierarchy: true }
+        }
+    end
+
+    context 'when user is a group owner' do
+      before do
+        group.add_owner(user)
+        sign_in(user)
+      end
+
+      it 'updates the attribute' do
+        expect { subject }
+            .to change { group.namespace_settings.reload.prevent_sharing_groups_outside_hierarchy }
+            .from(false)
+            .to(true)
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when not a group owner' do
+      before do
+        group.add_maintainer(user)
+        sign_in(user)
+      end
+
+      it 'does not update the attribute' do
+        expect { subject }.not_to change { group.namespace_settings.reload.prevent_sharing_groups_outside_hierarchy }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe '#ensure_canonical_path' do
     before do
       sign_in(user)

@@ -3,8 +3,8 @@ import ActionsButton from '~/vue_shared/components/actions_button.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 
-const TEST_EDIT_URL = '/gitlab-test/test/-/edit/master/';
-const TEST_WEB_IDE_URL = '/-/ide/project/gitlab-test/test/edit/master/-/';
+const TEST_EDIT_URL = '/gitlab-test/test/-/edit/main/';
+const TEST_WEB_IDE_URL = '/-/ide/project/gitlab-test/test/edit/main/-/';
 const TEST_GITPOD_URL = 'https://gitpod.test/';
 
 const ACTION_EDIT = {

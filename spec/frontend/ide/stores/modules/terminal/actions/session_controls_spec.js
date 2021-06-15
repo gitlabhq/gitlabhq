@@ -11,7 +11,7 @@ import httpStatus from '~/lib/utils/http_status';
 jest.mock('~/flash');
 
 const TEST_PROJECT_PATH = 'lorem/root';
-const TEST_BRANCH_ID = 'master';
+const TEST_BRANCH_ID = 'main';
 const TEST_SESSION = {
   id: 7,
   status: PENDING,

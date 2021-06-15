@@ -18,7 +18,7 @@ Refer to this feature's version history for more details.
 
 Prerequisites:
 
-- A minimum of [Reporter access](../../permissions.md) to the group.
+- You must have at least the [Reporter role](../../permissions.md) for the group.
 
 To access Group DevOps Adoption, go to your group and select **Analytics > DevOps Adoption**.
 

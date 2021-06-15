@@ -46,7 +46,7 @@ describe('IDE commit module getters', () => {
 
   describe('branchName', () => {
     const rootState = {
-      currentBranchId: 'master',
+      currentBranchId: 'main',
     };
     const localGetters = {
       placeholderBranchName: 'placeholder-branch-name',
@@ -61,7 +61,7 @@ describe('IDE commit module getters', () => {
     it('defaults to currentBranchId when not committing to a new branch', () => {
       localGetters.isCreatingNewBranch = false;
 
-      expect(getters.branchName(state, localGetters, rootState)).toBe('master');
+      expect(getters.branchName(state, localGetters, rootState)).toBe('main');
     });
 
     describe('commit to a new branch', () => {

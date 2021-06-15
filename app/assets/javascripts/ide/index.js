@@ -1,6 +1,7 @@
 import { identity } from 'lodash';
 import Vue from 'vue';
 import { mapActions } from 'vuex';
+import { DEFAULT_BRANCH } from '~/ide/constants';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import Translate from '~/vue_shared/translate';
 import { parseBoolean } from '../lib/utils/common_utils';
@@ -38,7 +39,7 @@ export function initIde(el, options = {}) {
 
   const { rootComponent = ide, extendStore = identity } = options;
   const store = createStore();
-  const router = createRouter(store);
+  const router = createRouter(store, el.dataset.defaultBranch || DEFAULT_BRANCH);
 
   return new Vue({
     el,

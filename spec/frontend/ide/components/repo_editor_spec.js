@@ -63,8 +63,8 @@ const prepareStore = (state, activeFile) => {
     projects: {
       'gitlab-org/gitlab': {
         branches: {
-          master: {
-            name: 'master',
+          main: {
+            name: 'main',
             commit: {
               id: 'abcdefgh',
             },
@@ -73,7 +73,7 @@ const prepareStore = (state, activeFile) => {
       },
     },
     currentProjectId: 'gitlab-org/gitlab',
-    currentBranchId: 'master',
+    currentBranchId: 'main',
     entries: {
       [activeFile.path]: activeFile,
     },

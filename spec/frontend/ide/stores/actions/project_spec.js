@@ -37,11 +37,11 @@ describe('IDE store project actions', () => {
   describe('refreshLastCommitData', () => {
     beforeEach(() => {
       store.state.currentProjectId = 'abc/def';
-      store.state.currentBranchId = 'master';
+      store.state.currentBranchId = 'main';
       store.state.projects['abc/def'] = {
         id: 4,
         branches: {
-          master: {
+          main: {
             commit: null,
           },
         },
@@ -60,7 +60,7 @@ describe('IDE store project actions', () => {
           branchId: store.state.currentBranchId,
         })
         .then(() => {
-          expect(service.getBranchData).toHaveBeenCalledWith('abc/def', 'master');
+          expect(service.getBranchData).toHaveBeenCalledWith('abc/def', 'main');
 
           done();
         })
@@ -81,7 +81,7 @@ describe('IDE store project actions', () => {
             type: 'SET_BRANCH_COMMIT',
             payload: {
               projectId: TEST_PROJECT_ID,
-              branchId: 'master',
+              branchId: 'main',
               commit: { id: '123' },
             },
           },
@@ -97,17 +97,17 @@ describe('IDE store project actions', () => {
     it('dispatches setErrorMessage', (done) => {
       testAction(
         showBranchNotFoundError,
-        'master',
+        'main',
         null,
         [],
         [
           {
             type: 'setErrorMessage',
             payload: {
-              text: "Branch <strong>master</strong> was not found in this project's repository.",
+              text: "Branch <strong>main</strong> was not found in this project's repository.",
               action: expect.any(Function),
               actionText: 'Create branch',
-              actionPayload: 'master',
+              actionPayload: 'main',
             },
           },
         ],
@@ -131,7 +131,7 @@ describe('IDE store project actions', () => {
           },
           getters: {
             currentProject: {
-              default_branch: 'master',
+              default_branch: 'main',
             },
           },
           dispatch() {},
@@ -140,7 +140,7 @@ describe('IDE store project actions', () => {
       )
         .then(() => {
           expect(api.createBranch).toHaveBeenCalledWith('project-path', {
-            ref: 'master',
+            ref: 'main',
             branch: 'new-branch-name',
           });
         })
@@ -158,7 +158,7 @@ describe('IDE store project actions', () => {
           },
           getters: {
             currentProject: {
-              default_branch: 'master',
+              default_branch: 'main',
             },
           },
           dispatch: dispatchSpy,
@@ -180,7 +180,7 @@ describe('IDE store project actions', () => {
           },
           getters: {
             currentProject: {
-              default_branch: 'master',
+              default_branch: 'main',
             },
           },
           dispatch() {},
@@ -199,13 +199,13 @@ describe('IDE store project actions', () => {
     it('creates a blank tree and sets loading state to false', (done) => {
       testAction(
         loadEmptyBranch,
-        { projectId: TEST_PROJECT_ID, branchId: 'master' },
+        { projectId: TEST_PROJECT_ID, branchId: 'main' },
         store.state,
         [
-          { type: 'CREATE_TREE', payload: { treePath: `${TEST_PROJECT_ID}/master` } },
+          { type: 'CREATE_TREE', payload: { treePath: `${TEST_PROJECT_ID}/main` } },
           {
             type: 'TOGGLE_LOADING',
-            payload: { entry: store.state.trees[`${TEST_PROJECT_ID}/master`], forceValue: false },
+            payload: { entry: store.state.trees[`${TEST_PROJECT_ID}/main`], forceValue: false },
           },
         ],
         expect.any(Object),
@@ -214,11 +214,11 @@ describe('IDE store project actions', () => {
     });
 
     it('does nothing, if tree already exists', (done) => {
-      const trees = { [`${TEST_PROJECT_ID}/master`]: [] };
+      const trees = { [`${TEST_PROJECT_ID}/main`]: [] };
 
       testAction(
         loadEmptyBranch,
-        { projectId: TEST_PROJECT_ID, branchId: 'master' },
+        { projectId: TEST_PROJECT_ID, branchId: 'main' },
         { trees },
         [],
         [],

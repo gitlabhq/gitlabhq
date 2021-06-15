@@ -10,7 +10,7 @@ import {
 
 const ACTION_UPDATE_COMMIT_ACTION = 'commit/updateCommitAction';
 
-const BRANCH_DEFAULT = 'master';
+const BRANCH_DEFAULT = 'main';
 const BRANCH_PROTECTED = 'protected/access';
 const BRANCH_PROTECTED_NO_ACCESS = 'protected/no-access';
 const BRANCH_REGULAR = 'regular';
@@ -20,11 +20,7 @@ describe('IDE commit sidebar actions', () => {
   let store;
   let vm;
 
-  const createComponent = ({
-    hasMR = false,
-    currentBranchId = 'master',
-    emptyRepo = false,
-  } = {}) => {
+  const createComponent = ({ hasMR = false, currentBranchId = 'main', emptyRepo = false } = {}) => {
     const Component = Vue.extend(commitActions);
 
     vm = createComponentWithStore(Component, store);
@@ -72,7 +68,7 @@ describe('IDE commit sidebar actions', () => {
   it('renders current branch text', () => {
     createComponent();
 
-    expect(findText()).toContain('Commit to master branch');
+    expect(findText()).toContain('Commit to main branch');
   });
 
   it('hides merge request option when project merge requests are disabled', (done) => {
@@ -112,7 +108,7 @@ describe('IDE commit sidebar actions', () => {
     it('calls again after staged changes', (done) => {
       createComponent({ currentBranchId: null });
 
-      vm.$store.state.currentBranchId = 'master';
+      vm.$store.state.currentBranchId = 'main';
       vm.$store.state.changedFiles.push({});
       vm.$store.state.stagedFiles.push({});
 
@@ -158,7 +154,7 @@ describe('IDE commit sidebar actions', () => {
 
     it('only renders commit to current branch', () => {
       expect(findRadios().length).toBe(1);
-      expect(findText()).toContain('Commit to master branch');
+      expect(findText()).toContain('Commit to main branch');
     });
   });
 });

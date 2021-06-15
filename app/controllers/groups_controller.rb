@@ -265,7 +265,8 @@ class GroupsController < Groups::ApplicationController
       :default_branch_protection,
       :default_branch_name,
       :allow_mfa_for_subgroups,
-      :resource_access_token_creation_allowed
+      :resource_access_token_creation_allowed,
+      :prevent_sharing_groups_outside_hierarchy
     ]
   end
 

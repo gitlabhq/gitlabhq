@@ -7,12 +7,13 @@ type: reference
 
 # GitLab Admin Area **(FREE SELF)**
 
-The Admin Area provides a web UI for administering some features of GitLab self-managed instances.
+The Admin Area provides a web UI to manage and configure some features of GitLab
+self-managed instances. If you are an Admin user, you can access the Admin Area
+by visiting `/admin` on your self-managed instance. You can also access it through
+the UI:
 
-To access the Admin Area, either:
-
-- Click the Admin Area icon (**{admin}**).
-- Visit `/admin` on your self-managed instance.
+- GitLab versions 14.0 and later: on the top bar, select **Menu >** **{admin}** **Admin**.
+- GitLab versions 13.12 and earlier: on the top bar, select the Admin Area icon (**{admin}**).
 
 NOTE:
 Only admin users can access the Admin Area.

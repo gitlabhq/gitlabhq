@@ -8,7 +8,6 @@ variables:
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
 
-  SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, sobelow, pmd-apex, kubesec, mobsf, semgrep"
   SAST_EXCLUDED_ANALYZERS: ""
   SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
   SCAN_KUBERNETES_MANIFESTS: "false"
@@ -49,8 +48,7 @@ bandit-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /bandit/
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /bandit/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.py'
 
@@ -69,8 +67,7 @@ brakeman-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /brakeman/
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /brakeman/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.rb'
         - '**/Gemfile'
@@ -90,8 +87,7 @@ eslint-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /eslint/
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /eslint/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.html'
         - '**/*.js'
@@ -114,8 +110,7 @@ flawfinder-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /flawfinder/
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /flawfinder/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.c'
         - '**/*.cpp'
@@ -136,7 +131,6 @@ kubesec-sast:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /kubesec/
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /kubesec/ &&
           $SCAN_KUBERNETES_MANIFESTS == 'true'
 
 gosec-sast:
@@ -154,8 +148,7 @@ gosec-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /gosec/
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /gosec/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.go'
 
@@ -178,7 +171,6 @@ mobsf-android-sast:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /mobsf/ &&
           $SAST_EXPERIMENTAL_FEATURES == 'true'
       exists:
         - '**/*.apk'
@@ -192,7 +184,6 @@ mobsf-ios-sast:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /mobsf/ &&
           $SAST_EXPERIMENTAL_FEATURES == 'true'
       exists:
         - '**/*.ipa'
@@ -213,8 +204,7 @@ nodejs-scan-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /nodejs-scan/
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /nodejs-scan/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/package.json'
 
@@ -233,8 +223,7 @@ phpcs-security-audit-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /phpcs-security-audit/
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /phpcs-security-audit/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.php'
 
@@ -253,8 +242,7 @@ pmd-apex-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /pmd-apex/
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /pmd-apex/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.cls'
 
@@ -273,8 +261,7 @@ security-code-scan-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /security-code-scan/
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /security-code-scan/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.csproj'
         - '**/*.vbproj'
@@ -294,8 +281,7 @@ semgrep-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /semgrep/
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /semgrep/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.py'
         - '**/*.js'
@@ -318,8 +304,7 @@ sobelow-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /sobelow/
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /sobelow/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - 'mix.exs'
 
@@ -336,15 +321,13 @@ spotbugs-sast:
   rules:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /spotbugs/
       when: never
-    - if: $SAST_DEFAULT_ANALYZERS =~ /mobsf/ &&
-          $SAST_EXPERIMENTAL_FEATURES == 'true'
+    - if: $SAST_EXPERIMENTAL_FEATURES == 'true'
       exists:
         - '**/AndroidManifest.xml'
       when: never
     - if: $SAST_DISABLED
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /spotbugs/
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.groovy'
         - '**/*.java'

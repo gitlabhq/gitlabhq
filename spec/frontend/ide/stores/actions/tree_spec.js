@@ -18,8 +18,8 @@ describe('Multi-file store tree actions', () => {
   const basicCallParameters = {
     endpoint: 'rootEndpoint',
     projectId: 'abcproject',
-    branch: 'master',
-    branchId: 'master',
+    branch: 'main',
+    branchId: 'main',
     ref: '12345678',
   };
 
@@ -31,7 +31,7 @@ describe('Multi-file store tree actions', () => {
     mock = new MockAdapter(axios);
 
     store.state.currentProjectId = 'abcproject';
-    store.state.currentBranchId = 'master';
+    store.state.currentBranchId = 'main';
     store.state.projects.abcproject = {
       web_url: '',
       path_with_namespace: 'foo/abcproject',
@@ -66,7 +66,7 @@ describe('Multi-file store tree actions', () => {
         store
           .dispatch('getFiles', basicCallParameters)
           .then(() => {
-            projectTree = store.state.trees['abcproject/master'];
+            projectTree = store.state.trees['abcproject/main'];
 
             expect(projectTree.tree.length).toBe(2);
             expect(projectTree.tree[0].type).toBe('tree');
@@ -89,7 +89,7 @@ describe('Multi-file store tree actions', () => {
           'abc/def': {
             web_url: `${TEST_HOST}/files`,
             branches: {
-              'master-testing': {
+              'main-testing': {
                 commit: {
                   id: '12345',
                 },
@@ -98,7 +98,7 @@ describe('Multi-file store tree actions', () => {
           },
         };
         const getters = {
-          findBranch: () => store.state.projects['abc/def'].branches['master-testing'],
+          findBranch: () => store.state.projects['abc/def'].branches['main-testing'],
         };
 
         mock.onGet(/(.*)/).replyOnce(500);
@@ -112,7 +112,7 @@ describe('Multi-file store tree actions', () => {
           },
           {
             projectId: 'abc/def',
-            branchId: 'master-testing',
+            branchId: 'main-testing',
           },
         )
           .then(done.fail)
@@ -121,7 +121,7 @@ describe('Multi-file store tree actions', () => {
               text: 'An error occurred while loading all the files.',
               action: expect.any(Function),
               actionText: 'Please try again',
-              actionPayload: { projectId: 'abc/def', branchId: 'master-testing' },
+              actionPayload: { projectId: 'abc/def', branchId: 'main-testing' },
             });
             done();
           });
@@ -178,17 +178,17 @@ describe('Multi-file store tree actions', () => {
   describe('setDirectoryData', () => {
     it('sets tree correctly if there are no opened files yet', (done) => {
       const treeFile = file({ name: 'README.md' });
-      store.state.trees['abcproject/master'] = {};
+      store.state.trees['abcproject/main'] = {};
 
       testAction(
         setDirectoryData,
-        { projectId: 'abcproject', branchId: 'master', treeList: [treeFile] },
+        { projectId: 'abcproject', branchId: 'main', treeList: [treeFile] },
         store.state,
         [
           {
             type: types.SET_DIRECTORY_DATA,
             payload: {
-              treePath: 'abcproject/master',
+              treePath: 'abcproject/main',
               data: [treeFile],
             },
           },

@@ -33,16 +33,16 @@ describe('Multi-file store tree mutations', () => {
     });
 
     it('adds directory data', () => {
-      localState.trees['project/master'] = {
+      localState.trees['project/main'] = {
         tree: [],
       };
 
       mutations.SET_DIRECTORY_DATA(localState, {
         data,
-        treePath: 'project/master',
+        treePath: 'project/main',
       });
 
-      const tree = localState.trees['project/master'];
+      const tree = localState.trees['project/main'];
 
       expect(tree.tree.length).toBe(3);
       expect(tree.tree[0].name).toBe('tree');
@@ -52,30 +52,30 @@ describe('Multi-file store tree mutations', () => {
 
     it('keeps loading state', () => {
       mutations.CREATE_TREE(localState, {
-        treePath: 'project/master',
+        treePath: 'project/main',
       });
       mutations.SET_DIRECTORY_DATA(localState, {
         data,
-        treePath: 'project/master',
+        treePath: 'project/main',
       });
 
-      expect(localState.trees['project/master'].loading).toBe(true);
+      expect(localState.trees['project/main'].loading).toBe(true);
     });
 
     it('does not override tree already in state, but merges the two with correct order', () => {
       const openedFile = file('new');
 
-      localState.trees['project/master'] = {
+      localState.trees['project/main'] = {
         loading: true,
         tree: [openedFile],
       };
 
       mutations.SET_DIRECTORY_DATA(localState, {
         data,
-        treePath: 'project/master',
+        treePath: 'project/main',
       });
 
-      const { tree } = localState.trees['project/master'];
+      const { tree } = localState.trees['project/main'];
 
       expect(tree.length).toBe(4);
       expect(tree[0].name).toBe('blob');
@@ -86,17 +86,17 @@ describe('Multi-file store tree mutations', () => {
 
     it('returns tree unchanged if the opened file is already in the tree', () => {
       const openedFile = file('foo');
-      localState.trees['project/master'] = {
+      localState.trees['project/main'] = {
         loading: true,
         tree: [openedFile],
       };
 
       mutations.SET_DIRECTORY_DATA(localState, {
         data,
-        treePath: 'project/master',
+        treePath: 'project/main',
       });
 
-      const { tree } = localState.trees['project/master'];
+      const { tree } = localState.trees['project/main'];
 
       expect(tree.length).toBe(3);
 

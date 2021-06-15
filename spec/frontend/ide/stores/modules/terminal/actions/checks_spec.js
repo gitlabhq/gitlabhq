@@ -13,7 +13,7 @@ import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 
 const TEST_PROJECT_PATH = 'lorem/root';
-const TEST_BRANCH_ID = 'master';
+const TEST_BRANCH_ID = 'main';
 const TEST_YAML_HELP_PATH = `${TEST_HOST}/test/yaml/help`;
 const TEST_RUNNERS_HELP_PATH = `${TEST_HOST}/test/runners/help`;
 

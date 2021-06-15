@@ -10,9 +10,9 @@ describe('Multi-file store branch mutations', () => {
 
   describe('SET_CURRENT_BRANCH', () => {
     it('sets currentBranch', () => {
-      mutations.SET_CURRENT_BRANCH(localState, 'master');
+      mutations.SET_CURRENT_BRANCH(localState, 'main');
 
-      expect(localState.currentBranchId).toBe('master');
+      expect(localState.currentBranchId).toBe('main');
     });
   });
 
@@ -21,20 +21,20 @@ describe('Multi-file store branch mutations', () => {
       localState.projects = {
         Example: {
           branches: {
-            master: {},
+            main: {},
           },
         },
       };
 
       mutations.SET_BRANCH_COMMIT(localState, {
         projectId: 'Example',
-        branchId: 'master',
+        branchId: 'main',
         commit: {
           title: 'Example commit',
         },
       });
 
-      expect(localState.projects.Example.branches.master.commit.title).toBe('Example commit');
+      expect(localState.projects.Example.branches.main.commit.title).toBe('Example commit');
     });
   });
 

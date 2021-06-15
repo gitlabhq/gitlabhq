@@ -146,7 +146,7 @@ export function getFileEOL(content = '') {
  *  hello.md -> hello-1.md
  *  hello_2.md -> hello_3.md
  *  hello_ -> hello_1
- *  master-patch-22432 -> master-patch-22433
+ *  main-patch-22432 -> main-patch-22433
  *  patch_332 -> patch_333
  *
  * @param {string} filename File name or branch name

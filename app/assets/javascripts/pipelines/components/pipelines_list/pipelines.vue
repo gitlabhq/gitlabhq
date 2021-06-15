@@ -99,6 +99,11 @@ export default {
       required: false,
       default: null,
     },
+    ciRunnerSettingsPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -345,6 +350,7 @@ export default {
         :empty-state-svg-path="emptyStateSvgPath"
         :can-set-ci="canCreatePipeline"
         :code-quality-page-path="codeQualityPagePath"
+        :ci-runner-settings-path="ciRunnerSettingsPath"
       />
 
       <gl-empty-state

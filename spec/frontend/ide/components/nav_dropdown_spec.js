@@ -14,14 +14,14 @@ describe('IDE NavDropdown', () => {
     store = createStore();
     Object.assign(store.state, {
       currentProjectId: TEST_PROJECT_ID,
-      currentBranchId: 'master',
+      currentBranchId: 'main',
       projects: {
         [TEST_PROJECT_ID]: {
           userPermissions: {
             [PERMISSION_READ_MR]: true,
           },
           branches: {
-            master: { id: 'master' },
+            main: { id: 'main' },
           },
         },
       },

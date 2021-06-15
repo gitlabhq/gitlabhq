@@ -18,9 +18,9 @@ describe('IdeTree', () => {
     store = createStore();
 
     store.state.currentProjectId = 'abcproject';
-    store.state.currentBranchId = 'master';
+    store.state.currentBranchId = 'main';
     store.state.projects.abcproject = { ...projectData };
-    Vue.set(store.state.trees, 'abcproject/master', {
+    Vue.set(store.state.trees, 'abcproject/main', {
       tree: [file('fileName')],
       loading: false,
     });

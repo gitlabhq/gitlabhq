@@ -77,6 +77,10 @@ module GroupsHelper
     can?(current_user, :change_share_with_group_lock, group)
   end
 
+  def can_change_prevent_sharing_groups_outside_hierarchy?(group)
+    can?(current_user, :change_prevent_sharing_groups_outside_hierarchy, group)
+  end
+
   def can_disable_group_emails?(group)
     can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
   end
@@ -186,6 +190,14 @@ module GroupsHelper
     else
       ancestor_locked_and_has_been_overridden(group)
     end
+  end
+
+  def link_to_group(group)
+    link_to(group.name, group_path(group))
+  end
+
+  def prevent_sharing_groups_outside_hierarchy_help_text(group)
+    s_("GroupSettings|This setting is only available on the top-level group and it applies to all subgroups. Groups that have already been shared with a group outside %{group} will still be shared, and this access will have to be revoked manually.").html_safe % { group: link_to_group(group) }
   end
 
   def parent_group_options(current_group)

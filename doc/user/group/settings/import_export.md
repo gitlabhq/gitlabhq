@@ -21,9 +21,9 @@ See also:
 
 To enable GitLab import/export:
 
-1. Navigate to **Admin Area > Settings > Visibility and access controls**.
-1. Scroll to **Import sources**
-1. Enable desired **Import sources**
+1. On the top bar, go to **Menu > Admin > Settings > General > Visibility and access controls**.
+1. Scroll to **Import sources**.
+1. Enable the desired **Import sources**.
 
 ## Important Notes
 

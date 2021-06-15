@@ -67,7 +67,7 @@ describe('IDE commit form', () => {
     store = createStore();
     store.state.stagedFiles.push('test');
     store.state.currentProjectId = 'abcproject';
-    store.state.currentBranchId = 'master';
+    store.state.currentBranchId = 'main';
     Vue.set(store.state.projects, 'abcproject', {
       ...projectData,
       userPermissions: { pushCode: true },
