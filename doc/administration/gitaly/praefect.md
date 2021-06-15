@@ -901,9 +901,13 @@ Particular attention should be shown to:
    gitlab-rake gitlab:gitaly:check
    ```
 
-1. Check in **Admin Area > Settings > Repository > Repository storage** that the Praefect storage
-   is configured to store new repositories. Following this guide, the `default` storage should have
-   weight 100 to store all new repositories.
+1. Check that the Praefect storage is configured to store new repositories:
+
+   1. On the top bar, select **Menu >** **{admin}** **Admin**.
+   1. On the left sidebar, select **Settings > Repository**.
+   1. Expand the **Repository storage** section.
+
+   Following this guide, the `default` storage should have weight 100 to store all new repositories.
 
 1. Verify everything is working by creating a new project. Check the
    "Initialize repository with a README" box so that there is content in the

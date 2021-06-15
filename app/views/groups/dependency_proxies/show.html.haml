@@ -24,5 +24,7 @@
       = render 'groups/dependency_proxies/url'
 - else
   .gl-alert.gl-alert-info
-    = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    = _('Dependency proxy feature is limited to public groups for now.')
+    .gl-alert-container
+      = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-content
+        = _('Dependency proxy feature is limited to public groups for now.')

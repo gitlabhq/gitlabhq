@@ -94,7 +94,7 @@ merge-request-pipeline-job:
 ```
 
 You should avoid configuration like this, and only use branch (`push`) pipelines
-or merge request pipelines, when possible. See [`rules` documentation](../../../ci/yaml/README.md#avoid-duplicate-pipelines)
+or merge request pipelines, when possible. See [`rules` documentation](../../../ci/jobs/job_control.md#avoid-duplicate-pipelines)
 for details on avoiding two pipelines for a single merge request.
 
 ### Skipped pipelines

@@ -25,7 +25,7 @@ mythology; Kerberos was a three-headed dog who guarded the gates of Hades.
 
 For GitLab to offer Kerberos token-based authentication, perform the
 following prerequisites. You still need to configure your system for
-Kerberos usage, such as specifying realms. GitLab will make use of the
+Kerberos usage, such as specifying realms. GitLab makes use of the
 system's Kerberos settings.
 
 ### GitLab keytab
@@ -34,7 +34,7 @@ system's Kerberos settings.
    If your GitLab server is `gitlab.example.com` and your Kerberos realm
    `EXAMPLE.COM`, create a Service Principal `HTTP/gitlab.example.com@EXAMPLE.COM`
    in your Kerberos database.
-1. Create a keytab on the GitLab server for the above Service Principal, e.g.
+1. Create a keytab on the GitLab server for the above Service Principal. For example,
    `/etc/http.keytab`.
 
 The keytab is a sensitive file and must be readable by the GitLab user. Set
@@ -107,8 +107,9 @@ set up GitLab to create a new account when a Kerberos user tries to sign in.
 If you're an administrator, you can link a Kerberos account to an
 existing GitLab account. To do so:
 
-1. Navigate to **Admin Area > Overview > Users > Example User**.
-1. Select the Identities tab.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Select a user, then select the **Identities** tab.
 1. Select 'Kerberos SPNEGO' in the 'Provider' dropdown box.
 1. Make sure the **Identifier** corresponds to the Kerberos username.
 1. Select **Save changes**.
@@ -145,8 +146,9 @@ With that information at hand:
       administrator if you think this is an error.
       ```
 
-      1. As an administrator, you can confirm the new, blocked account.
-         Select **Admin Area > Overview > Users** and review the Blocked tab.
+      1. As an administrator, you can confirm the new, blocked account:
+         1. On the top bar, select **Menu >** **{admin}** **Admin**.
+         1. On the left sidebar, select **Overview > Users** and review the **Blocked** tab.
       1. You can enable the user.
    1. If `block_auto_created_users` is false, the Kerberos user is
       authenticated and is signed in to GitLab.
@@ -181,7 +183,7 @@ LDAP Distinguished Names look like `sAMAccountName=foo,dc=ad,dc=example,dc=com`.
 You can configure custom allowed realms when the user's Kerberos realm doesn't
 match the domain from the user's LDAP DN. The configuration value must specify
 all domains that users may be expected to have. Any other domains are
-ignored and an LDAP identity won't be linked.
+ignored and an LDAP identity is not linked.
 
 **For Omnibus installations**
 
@@ -214,12 +216,12 @@ A linked Kerberos account enables you to `git pull` and `git push` using your
 Kerberos account, as well as your standard GitLab credentials.
 
 GitLab users with a linked Kerberos account can also `git pull` and `git push`
-using Kerberos tokens, i.e., without having to send their password with each
+using Kerberos tokens. That is, without having to send their password with each
 operation.
 
 WARNING:
 There is a [known issue](https://github.com/curl/curl/issues/1261) with `libcurl`
-older than version 7.64.1 wherein it won't reuse connections when negotiating.
+older than version 7.64.1 wherein it doesn't reuse connections when negotiating.
 This leads to authorization issues when push is larger than `http.postBuffer`
 configuration. Ensure that Git is using at least `libcurl` 7.64.1 to avoid this. To
 know the `libcurl` version installed, run `curl-config --version`.
@@ -236,13 +238,13 @@ authentication fails.
 
 For GitLab users to be able to use either `basic` or `negotiate` authentication
 with older Git versions, it is possible to offer Kerberos ticket-based
-authentication on a different port (e.g. 8443) while the standard port offers
-only `basic` authentication.
+authentication on a different port (for example, `8443`) while the standard port
+offers only `basic` authentication.
 
 **For source installations with HTTPS**
 
 1. Edit the NGINX configuration file for GitLab
-   (e.g., `/etc/nginx/sites-available/gitlab-ssl`) and configure NGINX to
+   (for example, `/etc/nginx/sites-available/gitlab-ssl`) and configure NGINX to
    listen to port `8443` in addition to the standard HTTPS port:
 
    ```conf

@@ -42,7 +42,7 @@ Only AWS S3 is supported as a deploy target.
 To provide GitLab with the AWS account information needed to push content to your Status Page:
 
 1. Sign into GitLab as a user with Maintainer or greater [permissions](../../user/permissions.md).
-1. Navigate to **{settings}** **Settings > Operations**. Next to **Status Page**,
+1. Navigate to **{settings}** **Settings > Monitor**. Next to **Status Page**,
    click **Expand**.
 1. Click **Active** to enable the Status Page feature.
 1. In **Status Page URL**, provide the URL to your external status page.
@@ -92,10 +92,9 @@ the issue can potentially [publish comments to your GitLab Status Page](#publish
 After creating the CI/CD variables, configure the Project you want to use for
 Incident issues:
 
-1. To view the [Operations Settings](../../user/project/settings/#operations-settings)
-   page, navigate to **{settings}** **Settings > Operations > Status Page**.
-1. Fill in your cloud provider's credentials and make sure the **Active** checkbox is checked.
-1. Click **Save changes**.
+1. To view the Status Page settings, navigate to **{settings}** **Settings > Monitor > Status Page**.
+1. Fill in your cloud provider's credentials and make sure to select the **Active** checkbox.
+1. Select **Save changes**.
 
 ## How to use your GitLab Status Page
 

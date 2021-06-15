@@ -19,7 +19,7 @@ to use this endpoint.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/245331) in GitLab Free 13.5.
 
 With the [Maintainer role or higher](../../user/permissions.md),
-you can view the list of configured alerts integrations by navigating to **Settings > Operations**
+you can view the list of configured alerts integrations by navigating to **Settings > Monitor**
 in your project's sidebar menu, and expanding the **Alerts** section. The list displays
 the integration name, type, and status (enabled or disabled):
 
@@ -38,7 +38,7 @@ receive alert payloads in JSON format. You can always
 
 1. Sign in to GitLab as a user with maintainer [permissions](../../user/permissions.md)
    for a project.
-1. Navigate to **Settings > Operations** in your project.
+1. Navigate to **Settings > Monitor** in your project.
 1. Expand the **Alerts** section, and in the **Select integration type** dropdown menu,
    select **HTTP Endpoint**.
 1. Toggle the **Active** alert setting. The URL and Authorization Key for the webhook configuration
@@ -55,7 +55,7 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
 
 1. Sign in to GitLab as a user with maintainer [permissions](../../user/permissions.md)
    for a project.
-1. Navigate to **Settings > Operations** in your project.
+1. Navigate to **Settings > Monitor** in your project.
 1. Expand the **Alerts** section.
 1. For each endpoint you want to create:
 
@@ -166,7 +166,7 @@ configures an integration, you can trigger a test
 alert to confirm your integration works properly.
 
 1. Sign in as a user with Developer or greater [permissions](../../user/permissions.md).
-1. Navigate to **Settings > Operations** in your project.
+1. Navigate to **Settings > Monitor** in your project.
 1. Click **Alerts** to expand the section.
 1. Click the **{settings}** settings icon on the right side of the integration in [the list](#integrations-list).
 1. Select the **Send test alert** tab to open it.
@@ -220,7 +220,7 @@ active at the same time.
 To enable Opsgenie integration:
 
 1. Sign in as a user with the [Maintainer or Owner role](../../user/permissions.md).
-1. Navigate to **Operations > Alerts**.
+1. Navigate to **Monitor > Alerts**.
 1. In the **Integrations** select box, select **Opsgenie**.
 1. Select the **Active** toggle.
 1. In the **API URL** field, enter the base URL for your Opsgenie integration,
@@ -228,4 +228,4 @@ To enable Opsgenie integration:
 1. Select **Save changes**.
 
 After you enable the integration, navigate to the Alerts list page at
-**Operations > Alerts**, and then select **View alerts in Opsgenie**.
+**Monitor > Alerts**, and then select **View alerts in Opsgenie**.

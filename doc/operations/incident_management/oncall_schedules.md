@@ -28,7 +28,7 @@ Set up an on-call schedule for your team to add rotations to.
 
 Follow these steps to create a schedule:
 
-1. Go to **Operations > On-call Schedules** and select **Add a schedule**.
+1. Go to **Monitor > On-call Schedules** and select **Add a schedule**.
 1. In the **Add schedule** form, enter the schedule's name and description, and select a timezone.
 1. Click **Add schedule**.
 
@@ -41,7 +41,7 @@ create [rotations](#rotations) for your schedule.
 
 Follow these steps to update a schedule:
 
-1. Go to **Operations > On-call Schedules** and select the **Pencil** icon on the top right of the
+1. Go to **Monitor > On-call Schedules** and select the **Pencil** icon on the top right of the
    schedule card, across from the schedule name.
 1. In the **Edit schedule** form, edit the information you wish to update.
 1. Click the **Edit schedule** button to save your changes.
@@ -53,7 +53,7 @@ interval (if one is set) to the corresponding times in the new time zone.
 
 Follow these steps to delete a schedule:
 
-1. Go to **Operations > On-call Schedules** and select the **Trash Can** icon on the top right of the
+1. Go to **Monitor > On-call Schedules** and select the **Trash Can** icon on the top right of the
    schedule card.
 1. In the **Delete schedule** window, click the **Delete schedule** button.
 
@@ -63,7 +63,7 @@ Add rotations to an existing schedule to put your team members on-call.
 
 Follow these steps to create a rotation:
 
-1. Go to **Operations > On-call Schedules** and select **Add a rotation** on the top right of the
+1. Go to **Monitor > On-call Schedules** and select **Add a rotation** on the top right of the
    current schedule.
 1. In the **Add rotation** form, enter the following:
 
@@ -80,7 +80,7 @@ Follow these steps to create a rotation:
 
 Follow these steps to edit a rotation:
 
-1. Go to **Operations > On-call Schedules** and select the **Pencil** icon to the right of the title
+1. Go to **Monitor > On-call Schedules** and select the **Pencil** icon to the right of the title
    of the rotation that you want to update.
 1. In the **Edit rotation** form, make the changes that you want.
 1. Select the **Edit rotation** button.
@@ -89,7 +89,7 @@ Follow these steps to edit a rotation:
 
 Follow these steps to delete a rotation:
 
-1. Go to **Operations > On-call Schedules** and select the **Trash Can** icon to the right of the
+1. Go to **Monitor > On-call Schedules** and select the **Trash Can** icon to the right of the
    title of the rotation that you want to delete.
 1. In the **Delete rotation** window, select the **Delete rotation** button.
 

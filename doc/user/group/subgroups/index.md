@@ -67,8 +67,6 @@ Another example of GitLab as a company would be the following:
     - (project) Chef cookbooks
   - Category Subgroup - Executive team
 
----
-
 When performing actions such as transferring or importing a project between
 subgroups, the behavior is the same as when performing these actions at the
 `group/project` level.
@@ -85,13 +83,20 @@ By default, groups created in:
 
 The setting can be changed for any group by:
 
-- A group owner. Select the group, and navigate to **Settings > General > Permissions, LFS, 2FA**.
-- An administrator. Navigate to **Admin Area > Overview > Groups**, select the group, and choose **Edit**.
+- A group owner:
+  1. Select the group.
+  1. On the left sidebar, select **Settings > General**.
+  1. Expand the **Permissions, LFS, 2FA** section.
+- An administrator:
+  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the left sidebar, select **Overview > Groups**.
+  1. Select the group, and select **Edit**.
 
-For more information check the
-[permissions table](../../permissions.md#group-members-permissions). For a list
-of words that are not allowed to be used as group names see the
-[reserved names](../../reserved_names.md).
+For:
+
+- More information, check the [permissions table](../../permissions.md#group-members-permissions).
+- A list of words that are not allowed to be used as group names, see the
+  [reserved names](../../reserved_names.md).
 
 Users can always create subgroups if they are explicitly added as an Owner (or
 Maintainer, if that setting is enabled) to an immediate parent group, even if group

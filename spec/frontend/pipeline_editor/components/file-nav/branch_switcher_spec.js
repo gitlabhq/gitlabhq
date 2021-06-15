@@ -11,7 +11,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import BranchSwitcher from '~/pipeline_editor/components/file_nav/branch_switcher.vue';
 import { DEFAULT_FAILURE } from '~/pipeline_editor/constants';
-import getAvailableBranches from '~/pipeline_editor/graphql/queries/available_branches.graphql';
+import getAvailableBranchesQuery from '~/pipeline_editor/graphql/queries/available_branches.graphql';
 import {
   mockBranchPaginationLimit,
   mockDefaultBranch,
@@ -22,6 +22,7 @@ import {
   mockTotalBranches,
   mockTotalBranchResults,
   mockTotalSearchResults,
+  mockNewBranch,
 } from '../../mock_data';
 
 const localVue = createLocalVue();
@@ -31,9 +32,12 @@ describe('Pipeline editor branch switcher', () => {
   let wrapper;
   let mockApollo;
   let mockAvailableBranchQuery;
+  let mockCurrentBranchQuery;
+  let mockLastCommitBranchQuery;
 
   const createComponent = (
-    { isQueryLoading, mountFn, options } = {
+    { currentBranch, isQueryLoading, mountFn, options } = {
+      currentBranch: mockDefaultBranch,
       isQueryLoading: false,
       mountFn: shallowMount,
       options: {},
@@ -59,7 +63,7 @@ describe('Pipeline editor branch switcher', () => {
       data() {
         return {
           availableBranches: ['main'],
-          currentBranch: mockDefaultBranch,
+          currentBranch,
         };
       },
       ...options,
@@ -67,8 +71,18 @@ describe('Pipeline editor branch switcher', () => {
   };
 
   const createComponentWithApollo = (mountFn = shallowMount) => {
-    const handlers = [[getAvailableBranches, mockAvailableBranchQuery]];
-    mockApollo = createMockApollo(handlers);
+    const handlers = [[getAvailableBranchesQuery, mockAvailableBranchQuery]];
+    const resolvers = {
+      Query: {
+        currentBranch() {
+          return mockCurrentBranchQuery();
+        },
+        lastCommitBranch() {
+          return mockLastCommitBranchQuery();
+        },
+      },
+    };
+    mockApollo = createMockApollo(handlers, resolvers);
 
     createComponent({
       mountFn,
@@ -76,11 +90,6 @@ describe('Pipeline editor branch switcher', () => {
         localVue,
         apolloProvider: mockApollo,
         mocks: {},
-        data() {
-          return {
-            currentBranch: mockDefaultBranch,
-          };
-        },
       },
     });
   };
@@ -90,9 +99,24 @@ describe('Pipeline editor branch switcher', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findInfiniteScroll = () => wrapper.findComponent(GlInfiniteScroll);
+  const defaultBranchInDropdown = () => findDropdownItems().at(0);
+
+  const setMockResolvedValues = ({ availableBranches, currentBranch, lastCommitBranch }) => {
+    if (availableBranches) {
+      mockAvailableBranchQuery.mockResolvedValue(availableBranches);
+    }
+
+    if (currentBranch) {
+      mockCurrentBranchQuery.mockResolvedValue(currentBranch);
+    }
+
+    mockLastCommitBranchQuery.mockResolvedValue(lastCommitBranch || '');
+  };
 
   beforeEach(() => {
     mockAvailableBranchQuery = jest.fn();
+    mockCurrentBranchQuery = jest.fn();
+    mockLastCommitBranchQuery = jest.fn();
   });
 
   afterEach(() => {
@@ -121,7 +145,10 @@ describe('Pipeline editor branch switcher', () => {
 
   describe('after querying', () => {
     beforeEach(async () => {
-      mockAvailableBranchQuery.mockResolvedValue(mockProjectBranches);
+      setMockResolvedValues({
+        availableBranches: mockProjectBranches,
+        currentBranch: mockDefaultBranch,
+      });
       createComponentWithApollo(mount);
       await waitForPromises();
     });
@@ -136,10 +163,8 @@ describe('Pipeline editor branch switcher', () => {
     });
 
     it('renders current branch with a check mark', () => {
-      const defaultBranchInDropdown = findDropdownItems().at(0);
-
-      expect(defaultBranchInDropdown.text()).toBe(mockDefaultBranch);
-      expect(defaultBranchInDropdown.props('isChecked')).toBe(true);
+      expect(defaultBranchInDropdown().text()).toBe(mockDefaultBranch);
+      expect(defaultBranchInDropdown().props('isChecked')).toBe(true);
     });
 
     it('does not render check mark for other branches', () => {
@@ -152,7 +177,10 @@ describe('Pipeline editor branch switcher', () => {
 
   describe('on fetch error', () => {
     beforeEach(async () => {
-      mockAvailableBranchQuery.mockResolvedValue(new Error());
+      setMockResolvedValues({
+        availableBranches: new Error(),
+        currentBranch: mockDefaultBranch,
+      });
       createComponentWithApollo();
       await waitForPromises();
     });
@@ -169,7 +197,10 @@ describe('Pipeline editor branch switcher', () => {
   describe('when switching branches', () => {
     beforeEach(async () => {
       jest.spyOn(window.history, 'pushState').mockImplementation(() => {});
-      mockAvailableBranchQuery.mockResolvedValue(mockProjectBranches);
+      setMockResolvedValues({
+        availableBranches: mockProjectBranches,
+        currentBranch: mockDefaultBranch,
+      });
       createComponentWithApollo(mount);
       await waitForPromises();
     });
@@ -216,7 +247,10 @@ describe('Pipeline editor branch switcher', () => {
 
   describe('when searching', () => {
     beforeEach(async () => {
-      mockAvailableBranchQuery.mockResolvedValue(mockProjectBranches);
+      setMockResolvedValues({
+        availableBranches: mockProjectBranches,
+        currentBranch: mockDefaultBranch,
+      });
       createComponentWithApollo(mount);
       await waitForPromises();
     });
@@ -316,7 +350,10 @@ describe('Pipeline editor branch switcher', () => {
 
   describe('when scrolling to the bottom of the list', () => {
     beforeEach(async () => {
-      mockAvailableBranchQuery.mockResolvedValue(mockProjectBranches);
+      setMockResolvedValues({
+        availableBranches: mockProjectBranches,
+        currentBranch: mockDefaultBranch,
+      });
       createComponentWithApollo();
       await waitForPromises();
     });
@@ -370,6 +407,37 @@ describe('Pipeline editor branch switcher', () => {
 
         expect(mockAvailableBranchQuery).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('when committing a new branch', () => {
+    const createNewBranch = async () => {
+      setMockResolvedValues({
+        currentBranch: mockNewBranch,
+        lastCommitBranch: mockNewBranch,
+      });
+      await wrapper.vm.$apollo.queries.currentBranch.refetch();
+      await wrapper.vm.$apollo.queries.lastCommitBranch.refetch();
+    };
+
+    beforeEach(async () => {
+      setMockResolvedValues({
+        availableBranches: mockProjectBranches,
+        currentBranch: mockDefaultBranch,
+      });
+      createComponentWithApollo(mount);
+      await waitForPromises();
+      await createNewBranch();
+    });
+
+    it('sets new branch as current branch', () => {
+      expect(defaultBranchInDropdown().text()).toBe(mockNewBranch);
+      expect(defaultBranchInDropdown().props('isChecked')).toBe(true);
+    });
+
+    it('adds new branch to branch switcher', () => {
+      expect(defaultBranchInDropdown().text()).toBe(mockNewBranch);
+      expect(findDropdownItems()).toHaveLength(mockTotalBranchResults + 1);
     });
   });
 });

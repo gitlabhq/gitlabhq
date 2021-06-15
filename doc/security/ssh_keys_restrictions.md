@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 `ssh-keygen` allows users to create RSA keys with as few as 768 bits, which
 falls well below recommendations from certain standards groups (such as the US
-NIST). Some organizations deploying GitLab will need to enforce minimum key
+NIST). Some organizations deploying GitLab need to enforce minimum key
 strength, either to satisfy internal security policy or for regulatory
 compliance.
 
@@ -18,14 +18,17 @@ the older DSA, and administrators may need to limit the allowed SSH key
 algorithms.
 
 GitLab allows you to restrict the allowed SSH key technology as well as specify
-the minimum key length for each technology.
+the minimum key length for each technology:
 
-In **Admin Area > Settings** (`/admin/application_settings/general`), expand the
-**Visibility and access controls** section:
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
+1. Expand the **Visibility and access controls** section:
 
-![SSH keys restriction admin settings](img/ssh_keys_restrictions_settings.png)
+   ![SSH keys restriction admin settings](img/ssh_keys_restrictions_settings.png)
 
-If a restriction is imposed on any key type, users cannot upload new SSH keys that don't meet the requirement. Any existing keys that don't meet it are disabled but not removed and users cannot to pull or push code using them.
+If a restriction is imposed on any key type, users cannot upload new SSH keys that don't meet the
+requirement. Any existing keys that don't meet it are disabled but not removed and users cannot to
+pull or push code using them.
 
 An icon is visible to the user of a restricted key in the SSH keys section of their profile:
 

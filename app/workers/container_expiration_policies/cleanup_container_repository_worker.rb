@@ -65,19 +65,9 @@ module ContainerExpirationPolicies
     def container_repository
       strong_memoize(:container_repository) do
         ContainerRepository.transaction do
-          # rubocop: disable CodeReuse/ActiveRecord
           # We need a lock to prevent two workers from picking up the same row
-          container_repository = if loopless_enabled?
-                                   next_container_repository
-                                 else
-                                   ContainerRepository.waiting_for_cleanup
-                                                      .order(:expiration_policy_cleanup_status, :expiration_policy_started_at)
-                                                      .limit(1)
-                                                      .lock('FOR UPDATE SKIP LOCKED')
-                                                      .first
-                                 end
+          container_repository = next_container_repository
 
-          # rubocop: enable CodeReuse/ActiveRecord
           container_repository&.tap(&:cleanup_ongoing!)
         end
       end
@@ -102,28 +92,20 @@ module ContainerExpirationPolicies
 
     def cleanup_scheduled_count
       strong_memoize(:cleanup_scheduled_count) do
-        if loopless_enabled?
-          limit = max_running_jobs + 1
-          ContainerExpirationPolicy.with_container_repositories
-                                   .runnable_schedules
-                                   .limit(limit)
-                                   .count
-        else
-          ContainerRepository.cleanup_scheduled.count
-        end
+        limit = max_running_jobs + 1
+        ContainerExpirationPolicy.with_container_repositories
+                                 .runnable_schedules
+                                 .limit(limit)
+                                 .count
       end
     end
 
     def cleanup_unfinished_count
       strong_memoize(:cleanup_unfinished_count) do
-        if loopless_enabled?
-          limit = max_running_jobs + 1
-          ContainerRepository.with_unfinished_cleanup
-                             .limit(limit)
-                             .count
-        else
-          ContainerRepository.cleanup_unfinished.count
-        end
+        limit = max_running_jobs + 1
+        ContainerRepository.with_unfinished_cleanup
+                           .limit(limit)
+                           .count
       end
     end
 
@@ -132,19 +114,11 @@ module ContainerExpirationPolicies
 
       now = Time.zone.now
 
-      if loopless_enabled?
-        policy.next_run_at < now || (now + max_cleanup_execution_time.seconds < policy.next_run_at)
-      else
-        now + max_cleanup_execution_time.seconds < policy.next_run_at
-      end
+      policy.next_run_at < now || (now + max_cleanup_execution_time.seconds < policy.next_run_at)
     end
 
     def throttling_enabled?
       Feature.enabled?(:container_registry_expiration_policies_throttling)
-    end
-
-    def loopless_enabled?
-      Feature.enabled?(:container_registry_expiration_policies_loopless)
     end
 
     def max_cleanup_execution_time

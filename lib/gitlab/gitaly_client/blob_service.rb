@@ -77,8 +77,8 @@ module Gitlab
         map_blob_types(response)
       end
 
-      def get_new_lfs_pointers(revision, limit, not_in, dynamic_timeout = nil)
-        request, rpc = create_new_lfs_pointers_request(revision, limit, not_in)
+      def get_new_lfs_pointers(revisions, limit, not_in, dynamic_timeout = nil)
+        request, rpc = create_new_lfs_pointers_request(revisions, limit, not_in)
 
         timeout =
           if dynamic_timeout
@@ -109,7 +109,7 @@ module Gitlab
 
       private
 
-      def create_new_lfs_pointers_request(revision, limit, not_in)
+      def create_new_lfs_pointers_request(revisions, limit, not_in)
         # If the check happens for a change which is using a quarantine
         # environment for incoming objects, then we can avoid doing the
         # necessary graph walk to detect only new LFS pointers and instead scan
@@ -126,7 +126,7 @@ module Gitlab
 
           [request, :list_all_lfs_pointers]
         else
-          revisions = [revision]
+          revisions = Array.wrap(revisions)
           revisions += if not_in.nil? || not_in == :all
                          ["--not", "--all"]
                        else

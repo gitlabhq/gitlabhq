@@ -34,7 +34,7 @@ GitLab provides an easy way to open the Jaeger UI from within your project:
 
 1. [Set up Jaeger](https://www.jaegertracing.io) and configure your application using one of the
    [client libraries](https://www.jaegertracing.io/docs/latest/client-libraries/).
-1. Navigate to your project's **Settings > Operations** and provide the Jaeger URL.
+1. Navigate to your project's **Settings > Monitor** and provide the Jaeger URL.
 1. Click **Save changes** for the changes to take effect.
-1. You can now visit **Operations > Tracing** in your project's sidebar and GitLab redirects you to
+1. You can now visit **Monitor > Tracing** in your project's sidebar and GitLab redirects you to
    the configured Jaeger URL.

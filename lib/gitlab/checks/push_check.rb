@@ -2,7 +2,7 @@
 
 module Gitlab
   module Checks
-    class PushCheck < BaseChecker
+    class PushCheck < BaseSingleChecker
       def validate!
         logger.log_timed("Checking if you are allowed to push...") do
           unless can_push?

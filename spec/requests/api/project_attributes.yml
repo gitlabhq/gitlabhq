@@ -87,7 +87,6 @@ ci_cd_settings:
     - id
     - project_id
     - group_runners_enabled
-    - keep_latest_artifact
     - merge_pipelines_enabled
     - merge_trains_enabled
     - auto_rollback_enabled

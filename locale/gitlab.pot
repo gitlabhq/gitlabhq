@@ -15433,6 +15433,15 @@ msgstr ""
 msgid "Graph"
 msgstr ""
 
+msgid "GraphViewType|Job dependencies"
+msgstr ""
+
+msgid "GraphViewType|Show dependencies"
+msgstr ""
+
+msgid "GraphViewType|Stage"
+msgstr ""
+
 msgid "Gravatar"
 msgstr ""
 
@@ -18728,9 +18737,6 @@ msgid "Job artifact"
 msgstr ""
 
 msgid "Job artifacts"
-msgstr ""
-
-msgid "Job dependencies"
 msgstr ""
 
 msgid "Job has been erased"
@@ -30009,9 +30015,6 @@ msgid "Show commit description"
 msgstr ""
 
 msgid "Show complete raw log"
-msgstr ""
-
-msgid "Show dependencies"
 msgstr ""
 
 msgid "Show details"

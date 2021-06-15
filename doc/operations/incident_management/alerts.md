@@ -11,7 +11,7 @@ Alerts are a critical entity in your incident management workflow. They represen
 ## Alert List
 
 Users with at least Developer [permissions](../../user/permissions.md) can
-access the Alert list at **Operations > Alerts** in your project's
+access the Alert list at **Monitor > Alerts** in your project's
 sidebar. The Alert list displays alerts sorted by start time, but
 you can change the sort order by clicking the headers in the Alert list.
 ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217745) in GitLab 13.1.)
@@ -95,7 +95,7 @@ instance.
 To view the metrics for an alert:
 
 1. Sign in as a user with Developer or higher [permissions](../../user/permissions.md).
-1. Navigate to **Operations > Alerts**.
+1. Navigate to **Monitor > Alerts**.
 1. Select the alert you want to view.
 1. Below the title of the alert, select the **Metrics** tab.
 
@@ -115,7 +115,7 @@ your application's performance and how to resolve any problems.
 To view the logs for an alert:
 
 1. Sign in as a user with Developer or higher [permissions](../../user/permissions.md).
-1. Navigate to **Operations > Alerts**.
+1. Navigate to **Monitor > Alerts**.
 1. Select the alert you want to view.
 1. Below the title of the alert, select the **Metrics** tab.
 1. Select the [menu](../metrics/dashboards/index.md#chart-context-menu) of
@@ -168,7 +168,7 @@ difficult to track who is investigating and working on it. Assigning alerts ease
 
 To assign an alert:
 
-1. To display the list of current alerts, navigate to **Operations > Alerts**.
+1. To display the list of current alerts, navigate to **Monitor > Alerts**.
 
 1. Select your desired alert to display its details.
 
@@ -193,7 +193,7 @@ You can manually create [To-Do list items](../../user/todos.md) for yourself
 from the Alert details screen, and view them later on your **To-Do List**. To
 add a to-do item:
 
-1. To display the list of current alerts, navigate to **Operations > Alerts**.
+1. To display the list of current alerts, navigate to **Monitor > Alerts**.
 1. Select your desired alert to display its **Alert Management Details View**.
 1. Select the **Add a to do** button in the right sidebar:
 

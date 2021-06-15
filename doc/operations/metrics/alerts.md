@@ -25,7 +25,7 @@ For managed Prometheus instances using auto configuration, you can
 [configure alerts for metrics](index.md#adding-custom-metrics) directly in the
 [metrics dashboard](index.md). To set an alert:
 
-1. In your project, navigate to **Operations > Metrics**,
+1. In your project, navigate to **Monitor > Metrics**,
 1. Identify the metric you want to create the alert for, and click the
    **ellipsis** **{ellipsis_v}** icon in the top right corner of the metric.
 1. Choose **Alerts**.
@@ -110,7 +110,7 @@ Prometheus server to use the
 Alerts can be used to trigger actions, like opening an issue automatically
 (disabled by default since `13.1`). To configure the actions:
 
-1. Navigate to your project's **Settings > Operations > Alerts**.
+1. Navigate to your project's **Settings > Monitor > Alerts**.
 1. Enable the option to create issues.
 1. Choose the [issue template](../../user/project/description_templates.md) to create the issue from.
 1. Optionally, select whether to send an email notification to the developers of the project.

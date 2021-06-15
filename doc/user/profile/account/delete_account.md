@@ -13,7 +13,7 @@ Users can be deleted from a GitLab instance, either by:
 - An administrator.
 
 NOTE:
-Deleting a user will delete all projects in that user namespace.
+Deleting a user deletes all projects in that user namespace.
 
 ## As a user
 
@@ -28,7 +28,8 @@ As a user, to delete your own account:
 
 As an administrator, to delete a user account:
 
-1. Go to **Admin Area > Overview > Users**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
 1. Select a user.
 1. Under the **Account** tab, select:
    - **Delete user** to delete only the user but maintain their

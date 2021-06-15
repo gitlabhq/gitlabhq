@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::ChangeAccess do
+RSpec.describe Gitlab::Checks::SingleChangeAccess do
   describe '#validate!' do
     include_context 'change access checks context'
 
@@ -31,14 +31,6 @@ RSpec.describe Gitlab::Checks::ChangeAccess do
 
       it 'calls tags checks' do
         expect_next_instance_of(Gitlab::Checks::TagCheck) do |instance|
-          expect(instance).to receive(:validate!)
-        end
-
-        subject.validate!
-      end
-
-      it 'calls lfs checks' do
-        expect_next_instance_of(Gitlab::Checks::LfsCheck) do |instance|
           expect(instance).to receive(:validate!)
         end
 

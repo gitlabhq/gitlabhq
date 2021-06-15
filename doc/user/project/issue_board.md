@@ -228,8 +228,8 @@ and vice versa.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285074) in GitLab 13.9.
 > - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-graphql-based-issue-boards). **(FREE SELF)**
 
 This in-development feature might not be available for your use. There can be

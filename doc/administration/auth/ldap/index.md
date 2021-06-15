@@ -367,7 +367,7 @@ Instead of having the LDAP integration credentials stored in plaintext in the co
 use an encrypted file for the LDAP credentials. To use this feature, you first need to enable
 [GitLab encrypted configuration](../../encrypted_configuration.md).
 
-The encrypted configuration for LDAP exists in an encrypted YAML file. By default the file will be created at
+The encrypted configuration for LDAP exists in an encrypted YAML file. By default the file is created at
 `shared/encrypted_configuration/ldap.yaml.enc`. This location is configurable in the GitLab configuration.
 
 The unencrypted contents of the file should be a subset of the secret settings from your `servers` block in the LDAP
@@ -646,7 +646,7 @@ For information on adding group links by using CNs and filters, refer to the
 
 As an extension of group sync, you can automatically manage your global GitLab
 administrators. Specify a group CN for `admin_group` and all members of the
-LDAP group will be given administrator privileges. The configuration looks
+LDAP group are given administrator privileges. The configuration looks
 like the following.
 
 NOTE:
@@ -704,7 +704,9 @@ When enabled, the following applies:
 To enable it you need to:
 
 1. [Enable LDAP](#configuration)
-1. Go to the Admin Area (**{admin}**) and select **Settings > Visibility and access controls**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
 1. Ensure the **Lock memberships to LDAP synchronization** checkbox is selected.
 
 ### Adjusting LDAP group sync schedule **(PREMIUM SELF)**
@@ -748,7 +750,7 @@ sync to run once every two hours at the top of the hour.
 
 ### External groups **(PREMIUM SELF)**
 
-Using the `external_groups` setting will allow you to mark all users belonging
+Using the `external_groups` setting allows you to mark all users belonging
 to these groups as [external users](../../../user/permissions.md#external-users).
 Group membership is checked periodically through the `LdapGroupSync` background
 task.

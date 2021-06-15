@@ -12,6 +12,9 @@ module Integrations
     PROJECTS_PER_PAGE = 50
     JIRA_CLOUD_HOST = '.atlassian.net'
 
+    ATLASSIAN_REFERRER_GITLAB_COM = { atlOrigin: 'eyJpIjoiY2QyZTJiZDRkNGZhNGZlMWI3NzRkNTBmZmVlNzNiZTkiLCJwIjoianN3LWdpdGxhYi1pbnQifQ' }.freeze
+    ATLASSIAN_REFERRER_SELF_MANAGED = { atlOrigin: 'eyJpIjoiYjM0MTA4MzUyYTYxNDVkY2IwMzVjOGQ3ZWQ3NzMwM2QiLCJwIjoianN3LWdpdGxhYlNNLWludCJ9' }.freeze
+
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true
     validates :username, presence: true, if: :activated?
@@ -37,8 +40,6 @@ module Integrations
       standard: 1,
       all_details: 2
     }
-
-    alias_method :project_url, :url
 
     # When these are false GitLab does not create cross reference
     # comments on Jira except when an issue gets transitioned.
@@ -82,8 +83,8 @@ module Integrations
       {
         username: username&.strip,
         password: password,
-        site: URI.join(url, '/').to_s, # Intended to find the root
-        context_path: url.path,
+        site: URI.join(url, '/').to_s.delete_suffix('/'), # Intended to find the root
+        context_path: (url.path.presence || '/').delete_suffix('/'),
         auth_type: :basic,
         read_timeout: 120,
         use_cookies: true,
@@ -153,12 +154,37 @@ module Integrations
       ]
     end
 
-    def issues_url
-      "#{url}/browse/:id"
+    def web_url(path = nil, **params)
+      return unless url.present?
+
+      if Gitlab.com?
+        params.merge!(ATLASSIAN_REFERRER_GITLAB_COM) unless Gitlab.staging?
+      else
+        params.merge!(ATLASSIAN_REFERRER_SELF_MANAGED) unless Gitlab.dev_or_test_env?
+      end
+
+      url = Addressable::URI.parse(self.url)
+      url.path = url.path.delete_suffix('/')
+      url.path << "/#{path.delete_prefix('/').delete_suffix('/')}" if path.present?
+      url.query_values = (url.query_values || {}).merge(params)
+      url.query_values = nil if url.query_values.empty?
+
+      url.to_s
     end
 
+    override :project_url
+    def project_url
+      web_url
+    end
+
+    override :issues_url
+    def issues_url
+      web_url('browse/:id')
+    end
+
+    override :new_issue_url
     def new_issue_url
-      "#{url}/secure/CreateIssue!default.jspa"
+      web_url('secure/CreateIssue!default.jspa')
     end
 
     alias_method :original_url, :url

@@ -9,7 +9,9 @@ type: howto
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20912) in GitLab 12.6.
 
-GitLab administrators are responsible for the overall security of their instance. To assist, GitLab provides a Credentials inventory to keep track of all the credentials that can be used to access their self-managed instance.
+GitLab administrators are responsible for the overall security of their instance. To assist, GitLab
+provides a Credentials inventory to keep track of all the credentials that can be used to access
+their self-managed instance.
 
 Using Credentials inventory, you can see all the personal access tokens (PAT), SSH keys, and GPG keys
 that exist in your GitLab instance. In addition, you can [revoke](#revoke-a-users-personal-access-token)
@@ -21,7 +23,10 @@ and [delete](#delete-a-users-ssh-key) and see:
 - When they expire. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214809) in GitLab 13.2.
 - When they were revoked. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214809) in GitLab 13.2.
 
-To access the Credentials inventory, navigate to **Admin Area > Credentials**.
+To access the Credentials inventory:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Credentials**.
 
 The following is an example of the Credentials inventory page:
 

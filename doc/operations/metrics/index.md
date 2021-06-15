@@ -36,7 +36,7 @@ your Prometheus integration depends on where your apps are running:
   and define at least one environment.
 - **For a cluster integrated Prometheus** - GitLab can query
   [an in-cluster Prometheus](../../user/clusters/integrations.md#prometheus-cluster-integration).
-  You must also complete a code deployment to your cluster for the **Operations > Metrics**
+  You must also complete a code deployment to your cluster for the **Monitor > Metrics**
   page to contain data. You can do this using [Auto DevOps](../../topics/autodevops/quick_start_guide.md).
 
 ![Monitoring Dashboard](img/prometheus_monitoring_dashboard_v13_3.png)
@@ -57,7 +57,7 @@ To view the [default metrics dashboard](dashboards/default.md) for an environmen
 
 1. *If the metrics dashboard is only visible to project members,* sign in to
    GitLab as a member of a project. Learn more about [metrics dashboard visibility](#metrics-dashboard-visibility).
-1. In your project, navigate to **Operations > Metrics**.
+1. In your project, navigate to **Monitor > Metrics**.
 
 GitLab displays the [default metrics dashboard](dashboards/default.md) for the environment,
 like the following example:

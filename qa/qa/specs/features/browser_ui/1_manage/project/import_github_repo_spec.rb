@@ -37,7 +37,11 @@ module QA
 
         aggregate_failures do
           verify_repository_import
+          verify_commits_import
+          verify_labels_import
           verify_issues_import
+          verify_milestones_import
+          verify_wikis_import
           verify_merge_requests_import
         end
       end
@@ -47,6 +51,29 @@ module QA
           description: 'A new repo for test',
           import_status: 'finished',
           import_error: nil
+        )
+      end
+
+      def verify_commits_import
+        expect(imported_project.commits.length).to eq(20)
+      end
+
+      def verify_labels_import
+        labels = imported_project.labels.map { |label| label.slice(:name, :color) }
+
+        expect(labels).to eq(
+          [
+            { name: 'bug', color: '#d73a4a' },
+            { name: 'custom new label', color: '#fc8f91' },
+            { name: 'documentation', color: '#0075ca' },
+            { name: 'duplicate', color: '#cfd3d7' },
+            { name: 'enhancement', color: '#a2eeef' },
+            { name: 'good first issue', color: '#7057ff' },
+            { name: 'help wanted', color: '#008672' },
+            { name: 'invalid', color: '#e4e669' },
+            { name: 'question', color: '#d876e3' },
+            { name: 'wontfix', color: '#ffffff' }
+          ]
         )
       end
 
@@ -60,6 +87,20 @@ module QA
           labels: ['custom new label', 'good first issue', 'help wanted'],
           user_notes_count: 1
         )
+      end
+
+      def verify_milestones_import
+        milestones = imported_project.milestones
+
+        expect(milestones.length).to eq(1)
+        expect(milestones.first).to include(title: 'v1.0', description: nil, state: 'active')
+      end
+
+      def verify_wikis_import
+        wikis = imported_project.wikis
+
+        expect(wikis.length).to eq(1)
+        expect(wikis.first).to include(title: 'Home', format: 'markdown')
       end
 
       def verify_merge_requests_import

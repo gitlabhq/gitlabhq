@@ -731,6 +731,8 @@ RSpec.describe Gitlab::GitAccess do
 
     context 'when LFS is not enabled' do
       it 'does not run LFSIntegrity check' do
+        allow(project).to receive(:lfs_enabled?).and_return(false)
+
         expect(Gitlab::Checks::LfsIntegrity).not_to receive(:new)
 
         push_access_check
@@ -1004,10 +1006,10 @@ RSpec.describe Gitlab::GitAccess do
         expect { access.check('git-receive-pack', changes) }.not_to exceed_query_limit(control_count).with_threshold(2)
       end
 
-      it 'raises TimeoutError when #check_single_change_access raises a timeout error' do
+      it 'raises TimeoutError when #check_access! raises a timeout error' do
         message = "Push operation timed out\n\nTiming information for debugging purposes:\nRunning checks for ref: wow"
 
-        expect_next_instance_of(Gitlab::Checks::ChangeAccess) do |check|
+        expect_next_instance_of(Gitlab::Checks::SingleChangeAccess) do |check|
           expect(check).to receive(:validate!).and_raise(Gitlab::Checks::TimedLogger::TimeoutError)
         end
 

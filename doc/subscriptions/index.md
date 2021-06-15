@@ -191,12 +191,12 @@ If you have any questions, send an email to `opensource@gitlab.com` for assistan
 
 #### Verification for Open Source program
 
-As part of the [application verification process](https://about.gitlab.com/solutions/open-source/join/), you must upload three screenshots.
-These screenshots are needed to qualify you for the GitLab for Open Source program.
+As part of the [application verification process](https://about.gitlab.com/solutions/open-source/join/), you must upload <b>three screenshots</b>.
+These are the three screenshots that are needed to qualify you for the GitLab for Open Source program.
 
-- [OSI-approved license overview](#license-overview)
-- [OSI-approved license file](#license-file)
-- [Publicly visible settings](#publicly-visible-settings)
+- [OSI-approved license overview](#screenshot-1-license-overview)
+- [OSI-approved license file](#screenshot-2-license-file)
+- [Publicly visible settings](#screenshot-3-publicly-visible-settings)
 
 ##### OSI-approved license
 
@@ -209,20 +209,20 @@ You must ensure that you add the correct license to each project within your gro
 
 After you ensure that you are using OSI-approved licenses for your projects, you can take your screenshots.
 
-###### License overview
+###### Screenshot 1: License overview
 
 On the left sidebar, select **Project Information > Details**. Take a screenshot that includes a view of the license you've chosen for your project.
 
 ![License overview](img/license-overview.png)
 
-###### License file
+###### Screenshot 2: License file
 
 Navigate to one of the license files that you uploaded. You can usually find the license file by selecting **Project Information > Details** and scanning the page for the license.
 Make sure the screenshot includes the title of the license.
 
 ![License file](img/license-file.png)
 
-##### Publicly visible settings
+##### Screenshot 3: Publicly visible settings
 
 The goal of the GitLab for Open Source program is to enable collaboration on open source projects.
 As a pre-condition to collaboration, people must be able to view the open source project.

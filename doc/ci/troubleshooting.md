@@ -109,7 +109,7 @@ the [`rules` configuration details](yaml/README.md#rules) carefully. The behavio
 of `only/except` and `rules` is different and can cause unexpected behavior when migrating
 between the two.
 
-The [common `if` clauses for `rules`](yaml/README.md#common-if-clauses-for-rules)
+The [common `if` clauses for `rules`](jobs/job_control.md#common-if-clauses-for-rules)
 can be very helpful for examples of how to write rules that behave the way you expect.
 
 #### Two pipelines run at the same time
@@ -119,7 +119,7 @@ associated with it. Usually one pipeline is a merge request pipeline, and the ot
 is a branch pipeline.
 
 This is usually caused by the `rules` configuration, and there are several ways to
-[prevent duplicate pipelines](yaml/README.md#avoid-duplicate-pipelines).
+[prevent duplicate pipelines](jobs/job_control.md#avoid-duplicate-pipelines).
 
 #### A job is not in the pipeline
 
@@ -258,7 +258,7 @@ When you use [`rules`](yaml/README.md#rules) with a `when:` clause without an `i
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
 a branch that has an open merge request associated with it.
 
-To [prevent duplicate pipelines](yaml/README.md#avoid-duplicate-pipelines), use
+To [prevent duplicate pipelines](jobs/job_control.md#avoid-duplicate-pipelines), use
 [`workflow: rules`](yaml/README.md#workflow) or rewrite your rules to control
 which pipelines can run.
 

@@ -35,20 +35,42 @@ RSpec.describe Integrations::Jira do
         username: 'username',
         password: 'test',
         jira_issue_transition_id: 24,
-        url: 'http://jira.test.com/path/'
+        url: 'http://jira.test.com:1234/path/'
       }
     end
 
-    let(:service) { described_class.create!(options) }
+    let(:integration) { described_class.create!(options) }
 
     it 'sets the URL properly' do
       # jira-ruby gem parses the URI and handles trailing slashes fine:
       # https://github.com/sumoheavy/jira-ruby/blob/v1.7.0/lib/jira/http_client.rb#L62
-      expect(service.options[:site]).to eq('http://jira.test.com/')
+      expect(integration.options[:site]).to eq('http://jira.test.com:1234')
     end
 
     it 'leaves out trailing slashes in context' do
-      expect(service.options[:context_path]).to eq('/path')
+      expect(integration.options[:context_path]).to eq('/path')
+    end
+
+    context 'URL without a path' do
+      before do
+        integration.url = 'http://jira.test.com/'
+      end
+
+      it 'leaves out trailing slashes in context' do
+        expect(integration.options[:site]).to eq('http://jira.test.com')
+        expect(integration.options[:context_path]).to eq('')
+      end
+    end
+
+    context 'URL with query string parameters' do
+      before do
+        integration.url << '?nosso&foo=bar'
+      end
+
+      it 'removes query string parameters' do
+        expect(integration.options[:site]).to eq('http://jira.test.com:1234')
+        expect(integration.options[:context_path]).to eq('/path')
+      end
     end
 
     context 'username with trailing whitespaces' do
@@ -57,13 +79,13 @@ RSpec.describe Integrations::Jira do
       end
 
       it 'leaves out trailing whitespaces in username' do
-        expect(service.options[:username]).to eq('username')
+        expect(integration.options[:username]).to eq('username')
       end
     end
 
     it 'provides additional cookies to allow basic auth with oracle webgate' do
-      expect(service.options[:use_cookies]).to eq(true)
-      expect(service.options[:additional_cookies]).to eq(['OBBasicAuth=fromDialog'])
+      expect(integration.options[:use_cookies]).to eq(true)
+      expect(integration.options[:additional_cookies]).to eq(['OBBasicAuth=fromDialog'])
     end
 
     context 'using api URL' do
@@ -72,7 +94,7 @@ RSpec.describe Integrations::Jira do
       end
 
       it 'leaves out trailing slashes in context' do
-        expect(service.options[:context_path]).to eq('/api_path')
+        expect(integration.options[:context_path]).to eq('/api_path')
       end
     end
   end
@@ -990,17 +1012,51 @@ RSpec.describe Integrations::Jira do
   end
 
   context 'generating external URLs' do
-    let(:service) { described_class.new(url: 'http://jira.test.com/path/') }
+    let(:integration) { described_class.new(url: 'http://jira.test.com/path/') }
+
+    describe '#web_url' do
+      it 'handles paths, slashes, and query string' do
+        expect(integration.web_url).to eq(integration.url)
+        expect(integration.web_url('subpath/')).to eq('http://jira.test.com/path/subpath')
+        expect(integration.web_url('/subpath/')).to eq('http://jira.test.com/path/subpath')
+        expect(integration.web_url('subpath', foo: :bar)).to eq('http://jira.test.com/path/subpath?foo=bar')
+      end
+
+      it 'preserves existing query string' do
+        integration.url = 'http://jira.test.com/path/?nosso&foo=bar%20bar'
+
+        expect(integration.web_url).to eq("http://jira.test.com/path?foo=bar%20bar&nosso")
+        expect(integration.web_url('subpath/')).to eq('http://jira.test.com/path/subpath?foo=bar%20bar&nosso')
+        expect(integration.web_url('/subpath/')).to eq('http://jira.test.com/path/subpath?foo=bar%20bar&nosso')
+        expect(integration.web_url('subpath', bar: 'baz baz')).to eq('http://jira.test.com/path/subpath?bar=baz%20baz&foo=bar%20bar&nosso')
+      end
+
+      it 'includes Atlassian referrer for gitlab.com' do
+        allow(Gitlab).to receive(:com?).and_return(true)
+
+        expect(integration.web_url).to eq("http://jira.test.com/path?#{described_class::ATLASSIAN_REFERRER_GITLAB_COM.to_query}")
+
+        allow(Gitlab).to receive(:staging?).and_return(true)
+
+        expect(integration.web_url).to eq(integration.url)
+      end
+
+      it 'includes Atlassian referrer for self-managed' do
+        allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+
+        expect(integration.web_url).to eq("http://jira.test.com/path?#{described_class::ATLASSIAN_REFERRER_SELF_MANAGED.to_query}")
+      end
+    end
 
     describe '#issues_url' do
-      it 'handles trailing slashes' do
-        expect(service.issues_url).to eq('http://jira.test.com/path/browse/:id')
+      it 'returns the correct URL' do
+        expect(integration.issues_url).to eq('http://jira.test.com/path/browse/:id')
       end
     end
 
     describe '#new_issue_url' do
-      it 'handles trailing slashes' do
-        expect(service.new_issue_url).to eq('http://jira.test.com/path/secure/CreateIssue!default.jspa')
+      it 'returns the correct URL' do
+        expect(integration.new_issue_url).to eq('http://jira.test.com/path/secure/CreateIssue!default.jspa')
       end
     end
   end

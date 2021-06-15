@@ -12,7 +12,7 @@ RSpec.shared_context 'change access checks context' do
   let(:timeout) { Gitlab::GitAccess::INTERNAL_TIMEOUT }
   let(:logger) { Gitlab::Checks::TimedLogger.new(timeout: timeout) }
   let(:change_access) do
-    Gitlab::Checks::ChangeAccess.new(
+    Gitlab::Checks::SingleChangeAccess.new(
       changes,
       project: project,
       user_access: user_access,

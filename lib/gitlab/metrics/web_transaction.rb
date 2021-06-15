@@ -6,10 +6,27 @@ module Gitlab
       CONTROLLER_KEY = 'action_controller.instance'
       ENDPOINT_KEY = 'api.endpoint'
       ALLOWED_SUFFIXES = Set.new(%w[json js atom rss xml zip])
+      SMALL_BUCKETS = [0.1, 0.25, 0.5, 1.0, 2.5, 5.0].freeze
 
       def initialize(env)
         super()
         @env = env
+      end
+
+      def run
+        Thread.current[THREAD_KEY] = self
+
+        started_at = System.monotonic_time
+
+        status, _, _ = retval = yield
+
+        finished_at = System.monotonic_time
+        duration = finished_at - started_at
+        record_duration_if_needed(status, duration)
+
+        retval
+      ensure
+        Thread.current[THREAD_KEY] = nil
       end
 
       def labels
@@ -26,6 +43,14 @@ module Gitlab
       end
 
       private
+
+      def record_duration_if_needed(status, duration)
+        return unless Gitlab::Metrics.record_duration_for_status?(status)
+
+        observe(:gitlab_transaction_duration_seconds, duration) do
+          buckets SMALL_BUCKETS
+        end
+      end
 
       def labels_from_controller
         controller = @env[CONTROLLER_KEY]

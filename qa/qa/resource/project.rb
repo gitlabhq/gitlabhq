@@ -131,6 +131,18 @@ module QA
         "/projects/#{id}"
       end
 
+      def api_put_path
+        "/projects/#{id}"
+      end
+
+      def api_post_path
+        '/projects'
+      end
+
+      def api_delete_path
+        "/projects/#{id}"
+      end
+
       def api_get_archive_path(type = 'tar.gz')
         "#{api_get_path}/repository/archive.#{type}"
       end
@@ -183,12 +195,16 @@ module QA
         "#{api_get_path}/issues"
       end
 
-      def api_put_path
-        "/projects/#{id}"
+      def api_labels_path
+        "#{api_get_path}/labels"
       end
 
-      def api_post_path
-        '/projects'
+      def api_milestones_path
+        "#{api_get_path}/milestones"
+      end
+
+      def api_wikis_path
+        "#{api_get_path}/wikis"
       end
 
       def api_post_body
@@ -209,10 +225,6 @@ module QA
         post_body[:template_name] = @template_name if @template_name
 
         post_body
-      end
-
-      def api_delete_path
-        "/projects/#{id}"
       end
 
       def change_repository_storage(new_storage)
@@ -236,11 +248,6 @@ module QA
         )
       end
 
-      def commits
-        response = get(request_url(api_commits_path))
-        parse_body(response)
-      end
-
       def default_branch
         reload!.api_response[:default_branch] || Runtime::Env.default_branch
       end
@@ -259,6 +266,11 @@ module QA
         result[:import_status]
       end
 
+      def commits
+        response = get(request_url(api_commits_path))
+        parse_body(response)
+      end
+
       def merge_requests
         response = get(request_url(api_merge_requests_path))
         parse_body(response)
@@ -269,11 +281,8 @@ module QA
       end
 
       def runners(tag_list: nil)
-        response = if tag_list
-                     get(request_url("#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}", per_page: '100'))
-                   else
-                     get(request_url(api_runners_path, per_page: '100'))
-                   end
+        url = tag_list ? "#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}" : api_runners_path
+        response = get(request_url(url, per_page: '100'))
 
         parse_body(response)
       end
@@ -315,6 +324,21 @@ module QA
 
       def issues
         response = get(request_url(api_issues_path))
+        parse_body(response)
+      end
+
+      def labels
+        response = get(request_url(api_labels_path))
+        parse_body(response)
+      end
+
+      def milestones
+        response = get(request_url(api_milestones_path))
+        parse_body(response)
+      end
+
+      def wikis
+        response = get(request_url(api_wikis_path))
         parse_body(response)
       end
 

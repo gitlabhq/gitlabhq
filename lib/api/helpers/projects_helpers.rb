@@ -16,6 +16,7 @@ module API
         optional :build_coverage_regex, type: String, desc: 'Test coverage parsing'
         optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
         optional :service_desk_enabled, type: Boolean, desc: 'Disable or enable the service desk'
+        optional :keep_latest_artifact, type: Boolean, desc: 'Indicates if the latest artifact should be kept for this project.'
 
         # TODO: remove in API v5, replaced by *_access_level
         optional :issues_enabled, type: Boolean, desc: 'Flag indication if the issue tracker is enabled'
@@ -156,6 +157,7 @@ module API
           :compliance_framework_setting,
           :packages_enabled,
           :service_desk_enabled,
+          :keep_latest_artifact,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

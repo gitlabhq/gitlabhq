@@ -2110,6 +2110,7 @@ RSpec.describe API::Projects do
         expect(json_response['squash_option']).to eq(project.squash_option.to_s)
         expect(json_response['readme_url']).to eq(project.readme_url)
         expect(json_response).to have_key 'packages_enabled'
+        expect(json_response['keep_latest_artifact']).to be_present
       end
 
       it 'returns a group link with expiration date' do
@@ -3298,6 +3299,24 @@ RSpec.describe API::Projects do
 
       it 'enables the service_desk' do
         expect { subject }.to change { project.reload.service_desk_enabled }.to(true)
+      end
+    end
+
+    context 'when updating keep latest artifact' do
+      subject { put(api("/projects/#{project.id}", user), params: { keep_latest_artifact: true }) }
+
+      before do
+        project.update!(keep_latest_artifact: false)
+      end
+
+      it 'returns 200' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'enables keep_latest_artifact' do
+        expect { subject }.to change { project.reload.keep_latest_artifact }.to(true)
       end
     end
   end

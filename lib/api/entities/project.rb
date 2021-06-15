@@ -128,6 +128,7 @@ module API
       expose :repository_storage, if: ->(project, options) {
         Ability.allowed?(options[:current_user], :change_repository_storage, project)
       }
+      expose :keep_latest_artifacts_available?, as: :keep_latest_artifact
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})

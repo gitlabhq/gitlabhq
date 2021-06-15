@@ -20,7 +20,7 @@ or `encryption: 'simple_tls'` and `port: 636`.
 
 #### Connection times out
 
-If GitLab cannot reach your LDAP endpoint, you will see a message like this:
+If GitLab cannot reach your LDAP endpoint, you see a message like this:
 
 ```plaintext
 Could not authenticate you from Ldapmain because "Connection timed out - user specified timeout".
@@ -145,7 +145,8 @@ may see the following message: `Access denied for your LDAP account`.
 
 We have a workaround, based on toggling the access level of affected users:
 
-1. As an administrator, go to **Admin Area > Overview > Users**.
+1. As an administrator, on the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
 1. Select the name of the affected user.
 1. In the user's administrative page, press **Edit** on the top right of the page.
 1. Change the user's access level from `Regular` to `Admin` (or vice versa),
@@ -202,9 +203,11 @@ field contains no data:
 
 To resolve this:
 
-1. Go to both of the following in the Admin Area (**{admin}**):
-    - **Settings > General > Account and limit**
-    - **Settings > General > Sign-up restrictions**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, go to **Settings > General**.
+1. Expand both of the following:
+   - **Account and limit**.
+   - **Sign-up restrictions**.
 1. Check, for example, the **Default projects limit** or **Allowed domains for sign-ups**
    fields and ensure that a relevant value is configured.
 
@@ -345,8 +348,9 @@ things to check to debug the situation.
   group](index.md#adding-group-links).
 - Check that the user has an LDAP identity:
   1. Sign in to GitLab as an administrator user.
-  1. Go to **Admin area > Users**.
-  1. Search for the user
+  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the left sidebar, select **Overview > Users**.
+  1. Search for the user.
   1. Open the user by clicking their name. Do not click **Edit**.
   1. Select the **Identities** tab. There should be an LDAP identity with
      an LDAP DN as the 'Identifier'. If not, this user hasn't signed in with
@@ -383,7 +387,7 @@ the following are true:
 - The configured `admin_group` in the `gitlab.rb` is a CN, rather than a DN or an array.
 - This CN falls under the scope of the configured `group_base`.
 - The members of the `admin_group` have already signed into GitLab with their LDAP
-  credentials. GitLab will only grant this administrator access to the users whose
+  credentials. GitLab only grants this administrator access to the users whose
   accounts are already connected to LDAP.
 
 If all the above are true and the users are still not getting access, [run a manual
@@ -412,7 +416,7 @@ output](#example-console-output-after-a-group-sync).
 ##### Example console output after a group sync **(PREMIUM SELF)**
 
 Like the output from the user sync, the output from the [manual group
-sync](#sync-all-groups) will also be very verbose. However, it contains lots
+sync](#sync-all-groups) is also very verbose. However, it contains lots
 of helpful information.
 
 Indicates the point where syncing actually begins:
@@ -423,7 +427,7 @@ Started syncing 'ldapmain' provider for 'my_group' group
 
 The following entry shows an array of all user DNs GitLab sees in the LDAP server.
 Note that these are the users for a single LDAP group, not a GitLab group. If
-you have multiple LDAP groups linked to this GitLab group, you will see multiple
+you have multiple LDAP groups linked to this GitLab group, you see multiple
 log entries like this - one for each LDAP group. If you don't see an LDAP user
 DN in this log entry, LDAP is not returning the user when we do the lookup.
 Verify the user is actually in the LDAP group.
@@ -437,7 +441,7 @@ Members in 'ldap_group_1' LDAP group: ["uid=john0,ou=people,dc=example,dc=com",
 "uid=mary4,ou=people,dc=example,dc=com"]
 ```
 
-Shortly after each of the above entries, you will see a hash of resolved member
+Shortly after each of the above entries, you see a hash of resolved member
 access levels. This hash represents all user DNs GitLab thinks should have
 access to this group, and at which access level (role). This hash is additive,
 and more DNs may be added, or existing entries modified, based on additional
@@ -478,21 +482,21 @@ Finally, the following entry says syncing has finished for this group:
 Finished syncing all providers for 'my_group' group
 ```
 
-Once all the configured group links have been synchronized, GitLab will look
+Once all the configured group links have been synchronized, GitLab looks
 for any Administrators or External users to sync:
 
 ```shell
 Syncing admin users for 'ldapmain' provider
 ```
 
-The output will look similar to what happens with a single group, and then
-this line will indicate the sync is finished:
+The output looks similar to what happens with a single group, and then
+this line indicates the sync is finished:
 
 ```shell
 Finished syncing admin users for 'ldapmain' provider
 ```
 
-If [administrator sync](index.md#administrator-sync) is not configured, you'll see a message
+If [administrator sync](index.md#administrator-sync) is not configured, you see a message
 stating as such:
 
 ```shell
@@ -518,8 +522,8 @@ group = Group.find_by(name: 'my_gitlab_group')
 EE::Gitlab::Auth::Ldap::Sync::Group.execute_all_providers(group)
 ```
 
-The output will be similar to
-[that you'd get from syncing all groups](#example-console-output-after-a-group-sync).
+The output is similar to
+[that you get from syncing all groups](#example-console-output-after-a-group-sync).
 
 #### Query a group in LDAP **(PREMIUM SELF)**
 
@@ -540,24 +544,25 @@ ldap_group.member_uids
 
 When an LDAP user is created in GitLab, their LDAP DN is stored for later reference.
 
-If GitLab cannot find a user by their DN, it will fall back
-to finding the user by their email. If the lookup is successful, GitLab will
-update the stored DN to the new value so both values will now match what's in
+If GitLab cannot find a user by their DN, it falls back
+to finding the user by their email. If the lookup is successful, GitLab
+updates the stored DN to the new value so both values now match what's in
 LDAP.
 
-If the email has changed and the DN has not, GitLab will find the user with
+If the email has changed and the DN has not, GitLab finds the user with
 the DN and update its own record of the user's email to match the one in LDAP.
 
-However, if the primary email _and_ the DN change in LDAP, then GitLab will
-have no way of identifying the correct LDAP record of the user and, as a
-result, the user will be blocked. To rectify this, the user's existing
-profile will have to be updated with at least one of the new values (primary
+However, if the primary email _and_ the DN change in LDAP, then GitLab 
+has no way of identifying the correct LDAP record of the user and, as a
+result, the user is blocked. To rectify this, the user's existing
+profile must be updated with at least one of the new values (primary
 email or DN) so the LDAP record can be found.
 
-The following script will update the emails for all provided users so they
-won't be blocked or unable to access their accounts.
+The following script updates the emails for all provided users so they
+aren't blocked or unable to access their accounts.
 
->**NOTE**: The following script will require that any new accounts with the new
+NOTE:
+The following script requires that any new accounts with the new
 email address are removed first. This is because emails have to be unique in GitLab.
 
 Go to the [rails console](#rails-console) and then run:
@@ -604,23 +609,23 @@ users, [see what to do when no users are found](#no-users-are-found).
 ### GitLab logs
 
 If a user account is blocked or unblocked due to the LDAP configuration, a
-message will be [logged to `application.log`](../../logs.md#applicationlog).
+message is [logged to `application.log`](../../logs.md#applicationlog).
 
 If there is an unexpected error during an LDAP lookup (configuration error,
-timeout), the sign-in is rejected and a message will be [logged to
+timeout), the sign-in is rejected and a message is [logged to
 `production.log`](../../logs.md#productionlog).
 
 ### ldapsearch
 
-`ldapsearch` is a utility that will allow you to query your LDAP server. You can
+`ldapsearch` is a utility that allows you to query your LDAP server. You can
 use it to test your LDAP settings and ensure that the settings you're using
-will get you the results you expect.
+get you the results you expect.
 
 When using `ldapsearch`, be sure to use the same settings you've already
 specified in your `gitlab.rb` configuration so you can confirm what happens
 when those exact settings are used.
 
-Running this command on the GitLab host will also help confirm that there's no
+Running this command on the GitLab host also helps confirm that there's no
 obstruction between the GitLab host and LDAP.
 
 For example, consider the following GitLab configuration:
@@ -701,9 +706,9 @@ For instructions about how to use the rails console, refer to this
 
 #### Enable debug output
 
-This will provide debug output that will be useful to see
-what GitLab is doing and with what. This value is not persisted, and will only
-be enabled for this session in the rails console.
+This provides debug output that is useful to see
+what GitLab is doing and with what. This value is not persisted, and is only
+enabled for this session in the rails console.
 
 To enable debug output in the rails console, [enter the rails
 console](#rails-console) and run:

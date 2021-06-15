@@ -415,7 +415,7 @@ NOTE:
 Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to remove a fork relationship.
 
-## Operations settings
+## Monitor settings
 
 ### Alerts
 

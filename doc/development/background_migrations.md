@@ -345,25 +345,87 @@ for more details.
    more pressure on DB than you expect (measure on staging,
    or ask someone to measure on production).
 1. Make sure to know how much time it'll take to run all scheduled migrations.
-1. Provide an estimation section in the description, explaining timings from the
-   linked query plans and batches as described in the migration.
+1. Provide an estimation section in the description, estimating both the total migration
+   run time and the query times for each background migration job. Explain plans for each query
+   should also be provided.
 
    For example, assuming a migration that deletes data, include information similar to
    the following section:
 
-   ```ruby
+   ```plaintext
    Background Migration Details:
 
    47600 items to delete
    batch size = 1000
-   47600 / 1000 = 48 loops
+   47600 / 1000 = 48 batches
 
    Estimated times per batch:
-   - 900ms for select statement with 1000 items
-   - 2100ms for delete statement with 1000 items
-   Total: ~3sec per batch
+   - 820ms for select statement with 1000 items (see linked explain plan)
+   - 900ms for delete statement with 1000 items (see linked explain plan)
+   Total: ~2 sec per batch
 
-   2 mins delay per loop (safe for the given total time per batch)
+   2 mins delay per batch (safe for the given total time per batch)
 
-   48 * ( 120 + 3)  = ~98.4 mins to run all the scheduled jobs
+   48 batches * 2 min per batch = 96 mins to run all the scheduled jobs
    ```
+
+   The execution time per batch (2 sec in this example) is not included in the calculation
+   for total migration time. The jobs are scheduled 2 minutes apart without knowledge of
+   the execution time.
+
+## Additional tips and strategies
+
+### Nested batching
+
+A strategy to make the migration run faster is to schedule larger batches, and then use `EachBatch`
+within the background migration to perform multiple statements.
+
+The background migration helpers that queue multiple jobs such as
+`queue_background_migration_jobs_by_range_at_intervals` use [`EachBatch`](iterating_tables_in_batches.md).
+The example above has batches of 1000, where each queued job takes two seconds. If the query has been optimized
+to make the time for the delete statement within the [query performance guidelines](query_performance.md),
+1000 may be the largest number of records that can be deleted in a reasonable amount of time.
+
+The minimum and most common interval for delaying jobs is two minutes. This results in two seconds
+of work for each two minute job. There's nothing that prevents you from executing multiple delete
+statements in each background migration job.
+
+Looking at the example above, you could alternatively do:
+
+```plaintext
+Background Migration Details:
+
+47600 items to delete
+batch size = 10_000
+47600 / 10_000 = 5 batches
+
+Estimated times per batch:
+- Records are updated in sub-batches of 1000 => 10_000 / 1000 = 10 total updates
+- 820ms for select statement with 1000 items (see linked explain plan)
+- 900ms for delete statement with 1000 items (see linked explain plan)
+Sub-batch total: ~2 sec per sub-batch,
+Total batch time: 2 * 10 = 20 sec per batch
+
+2 mins delay per batch
+
+5 batches * 2 min per batch = 10 mins to run all the scheduled jobs
+```
+
+The batch time of 20 seconds still fits comfortably within the two minute delay, yet the total run
+time is cut by a tenth from around 100 minutes to 10 minutes! When dealing with large background
+migrations, this can cut the total migration time by days.
+
+When batching in this way, it is important to look at query times on the higher end
+of the table or relation being updated. `EachBatch` may generate some queries that become much
+slower when dealing with higher ID ranges.
+
+### Delay time
+
+When looking at the batch execution time versus the delay time, the execution time
+should fit comfortably within the delay time for a few reasons:
+
+- To allow for a variance in query times.
+- To allow autovacuum to catch up after periods of high churn.
+
+Never try to optimize by fully filling the delay window even if you are confident
+the queries themselves have no timing variance.

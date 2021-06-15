@@ -398,7 +398,8 @@ See also [Gitaly timeout](../../user/admin_area/settings/gitaly_timeouts.md) set
 When using standalone Gitaly servers, you must make sure they are the same version
 as GitLab to ensure full compatibility:
 
-1. Go to **Admin Area > Overview > Gitaly Servers** on your GitLab instance.
+1. On the top bar, select **Menu >** **{admin}** **Admin** on your GitLab instance.
+1. On the left sidebar, select **Overview > Gitaly Servers**.
 1. Confirm all Gitaly servers indicate that they are up to date.
 
 #### Use `gitaly-debug`

@@ -1,0 +1,3 @@
+mutation updateLastCommitBranch($lastCommitBranch: String) {
+  updateLastCommitBranch(lastCommitBranch: $lastCommitBranch) @client
+}

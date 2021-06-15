@@ -20,14 +20,14 @@ or [duplicate a GitLab-defined Prometheus dashboard](#duplicate-a-gitlab-defined
 
 You can configure a custom dashboard by adding a new YAML file into your project's
 `.gitlab/dashboards/` directory. For the dashboard to display on your project's
-**Operations > Metrics** page, the files must have a `.yml`
+**Monitor > Metrics** page, the files must have a `.yml`
 extension and be present in your project's **default** branch.
 
 To create a new dashboard from the GitLab user interface:
 
 1. Sign in to GitLab as a user with Maintainer or Owner
    [permissions](../../../user/permissions.md#project-members-permissions).
-1. Navigate to your dashboard at **Operations > Metrics**.
+1. Navigate to your dashboard at **Monitor > Metrics**.
 1. In the top-right corner of your dashboard, click the **{ellipsis_v}** **More actions** menu,
    and select **Create new**:
    ![Monitoring Dashboard actions menu with create new item](img/actions_menu_create_new_dashboard_v13_3.png)
@@ -60,7 +60,7 @@ To create a new dashboard from the command line:
    ```
 
 1. Save the file, commit, and push to your repository. The file must be present in your **default** branch.
-1. Navigate to your project's **Operations > Metrics** and choose the custom
+1. Navigate to your project's **Monitor > Metrics** and choose the custom
    dashboard from the dropdown.
 
 Your custom dashboard is available at `https://example.com/project/-/metrics/custom_dashboard_name.yml`.

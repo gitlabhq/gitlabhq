@@ -66,16 +66,16 @@ module Gitlab
       def call(env)
         method = env['REQUEST_METHOD'].downcase
         method = 'INVALID' unless HTTP_METHODS.key?(method)
-        started = Time.now.to_f
+        started = Gitlab::Metrics::System.monotonic_time
         health_endpoint = health_endpoint?(env['PATH_INFO'])
         status = 'undefined'
 
         begin
           status, headers, body = @app.call(env)
 
-          elapsed = Time.now.to_f - started
+          elapsed = Gitlab::Metrics::System.monotonic_time - started
 
-          unless health_endpoint
+          if !health_endpoint && Gitlab::Metrics.record_duration_for_status?(status)
             RequestsRackMiddleware.http_request_duration_seconds.observe({ method: method }, elapsed)
           end
 

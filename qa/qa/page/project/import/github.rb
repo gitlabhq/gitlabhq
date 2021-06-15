@@ -72,7 +72,7 @@ module QA
             # TODO: set reload:false and remove skip_finished_loading_check_on_refresh when
             # https://gitlab.com/gitlab-org/gitlab/-/issues/292861 is fixed
             wait_until(
-              max_duration: 60,
+              max_duration: 90,
               sleep_interval: 5.0,
               reload: true,
               skip_finished_loading_check_on_refresh: true

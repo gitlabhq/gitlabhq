@@ -92,6 +92,26 @@ RSpec.describe Gitlab::Metrics do
     end
   end
 
+  describe '.record_status_for_duration?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:status, :should_record) do
+      100  | false
+      200  | true
+      401  | true
+      nil  | false
+      500  | false
+      503   | false
+      '100' | false
+      '201' | true
+      'nothing' | false
+    end
+
+    with_them do
+      specify { expect(described_class.record_duration_for_status?(status)).to be(should_record) }
+    end
+  end
+
   describe '.add_event' do
     context 'without a transaction' do
       it 'does nothing' do

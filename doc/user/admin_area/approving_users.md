@@ -34,7 +34,8 @@ sign in.
 
 To view user sign ups pending approval:
 
-1. Go to **Admin Area > Overview > Users**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
 1. Select the **Pending approval** tab.
 
 ## Approve or reject a user sign up
@@ -43,9 +44,10 @@ A user sign up pending approval can be approved or rejected from the Admin Area.
 
 To approve or reject a user sign up:
 
-1. Go to  **Admin Area > Overview > Users**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
 1. Select the **Pending approval** tab.
-1. In the user's row select settings (**{settings}**).
+1. In the user's row, select settings (**{settings}**).
 1. Select **Approve** or **Reject**.
 
 Approving a user:

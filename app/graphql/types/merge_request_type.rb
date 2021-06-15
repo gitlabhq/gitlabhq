@@ -162,6 +162,10 @@ module Types
           description: 'Time estimate of the merge request.'
     field :total_time_spent, GraphQL::INT_TYPE, null: false,
           description: 'Total time reported as spent on the merge request.'
+    field :human_time_estimate, GraphQL::STRING_TYPE, null: true,
+          description: 'Human-readable time estimate of the merge request.'
+    field :human_total_time_spent, GraphQL::STRING_TYPE, null: true,
+          description: 'Human-readable total time reported as spent on the merge request.'
     field :reference, GraphQL::STRING_TYPE, null: false, method: :to_reference,
           description: 'Internal reference of the merge request. Returned in shortened format by default.' do
       argument :full, GraphQL::BOOLEAN_TYPE, required: false, default_value: false,

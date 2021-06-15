@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab Performance Monitoring is disabled by default. To enable it and change any of its
 settings:
 
-1. Go to **Admin Area > Settings > Metrics and profiling**
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Metrics and profiling**
   (`/admin/application_settings/metrics_and_profiling`).
 1. Add the necessary configuration changes.
 1. Restart all GitLab for the changes to take effect:

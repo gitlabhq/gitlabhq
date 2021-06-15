@@ -252,7 +252,8 @@ export default {
           .getClient()
           .writeQuery({ query: getIsNewCiConfigFile, data: { isNewCiConfigFile: false } });
       }
-      // Keep track of the latest commited content to know
+
+      // Keep track of the latest committed content to know
       // if the user has made changes to the file that are unsaved.
       this.lastCommittedContent = this.currentCiFileContent;
     },

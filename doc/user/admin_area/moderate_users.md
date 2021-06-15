@@ -21,9 +21,10 @@ administrators can choose to block the user.
 Users can be blocked [via an abuse report](review_abuse_reports.md#blocking-users),
 or directly from the Admin Area. To do this:
 
-1. Navigate to  **Admin Area > Overview > Users**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
 1. Select a user.
-1. Under the **Account** tab, click **Block user**.
+1. Under the **Account** tab, select **Block user**.
 
 A blocked user:
 
@@ -43,10 +44,11 @@ A blocked user does not consume a [seat](../../subscriptions/self_managed/index.
 
 A blocked user can be unblocked from the Admin Area. To do this:
 
-1. Navigate to  **Admin Area > Overview > Users**.
-1. Click on the **Blocked** tab.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Select on the **Blocked** tab.
 1. Select a user.
-1. Under the **Account** tab, click **Unblock user**.
+1. Under the **Account** tab, select **Unblock user**.
 
 Users can also be unblocked using the [GitLab API](../../api/users.md#unblock-user).
 
@@ -74,16 +76,17 @@ with the following differences:
 A deactivated user:
 
 - Cannot access Git repositories or the API.
-- Will not receive any notifications from GitLab.
-- Will not be able to use [slash commands](../../integration/slash_commands.md).
+- Does not receive any notifications from GitLab.
+- Does not be able to use [slash commands](../../integration/slash_commands.md).
 
 Personal projects, and group and user history of the deactivated user are left intact.
 
 A user can be deactivated from the Admin Area. To do this:
 
-1. Navigate to  **Admin Area > Overview > Users**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
 1. Select a user.
-1. Under the **Account** tab, click **Deactivate user**.
+1. Under the **Account** tab, select **Deactivate user**.
 
 Please note that for the deactivation option to be visible to an admin, the user:
 
@@ -99,11 +102,14 @@ A deactivated user does not consume a [seat](../../subscriptions/self_managed/in
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320875) in GitLab 14.0.
 
-Administrators can enable automatic deactivation of users who have not signed in, or have no activity in the last 90 days. To do this:
+Administrators can enable automatic deactivation of users who have not signed in, or have no activity
+in the last 90 days. To do this:
 
-1. Navigate to  **Admin Area > Settings > General > Account and Limit**.
-1. Under the **Dormant users** tab, check **Deactivate dormant users after 90 days of inactivity**.
-1. Click **Save changes**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Account and limit** section.
+1. Under **Dormant users**, check **Deactivate dormant users after 90 days of inactivity**.
+1. Select **Save changes**.
 
 When this feature is enabled, GitLab runs a job once a day to deactivate the dormant users.
 
@@ -117,10 +123,11 @@ A deactivated user can be activated from the Admin Area.
 
 To do this:
 
-1. Navigate to  **Admin Area > Overview > Users**.
-1. Click on the **Deactivated** tab.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Select the **Deactivated** tab.
 1. Select a user.
-1. Under the **Account** tab, click **Activate user**.
+1. Under the **Account** tab, select **Activate user**.
 
 Users can also be activated using the [GitLab API](../../api/users.md#activate-user).
 
@@ -148,23 +155,25 @@ To completely block a user, administrators can choose to ban the user.
 
 Users can be banned using the Admin Area. To do this:
 
-1. Navigate to  **Admin Area > Overview > Users**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
 1. Select a user.
-1. Under the **Account** tab, click **Ban user**.
+1. Under the **Account** tab, select **Ban user**.
 
 NOTE:
 This feature is a work in progress. Currently, banning a user
 only blocks them and does not hide their comments or issues.
-This functionality will be implemented in follow up issues.
+This functionality is planned to be implemented in follow up issues.
 
 ### Unban a user
 
 A banned user can be unbanned using the Admin Area. To do this:
 
-1. Navigate to  **Admin Area > Overview > Users**.
-1. Click on the **Banned** tab.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Select the **Banned** tab.
 1. Select a user.
-1. Under the **Account** tab, click **Unban user**.
+1. Under the **Account** tab, select **Unban user**.
 
 NOTE:
 Unbanning a user changes the user's state to active and consumes a

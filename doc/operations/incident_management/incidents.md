@@ -26,7 +26,7 @@ Incident, you have two options to do this manually.
 
 > [Moved](https://gitlab.com/gitlab-org/monitor/health/-/issues/24) to GitLab Free in 13.3.
 
-- Navigate to **Operations > Incidents** and click **Create Incident**.
+- Navigate to **Monitor > Incidents** and click **Create Incident**.
 - Create a new issue using the `incident` template available when creating it.
 - Create a new issue and assign the `incident` label to it.
 
@@ -51,7 +51,7 @@ Incident, you have two options to do this manually.
 With Maintainer or higher [permissions](../../user/permissions.md), you can enable
  GitLab to create incident automatically whenever an alert is triggered:
 
-1. Navigate to **Settings > Operations > Incidents** and expand **Incidents**.
+1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.
 1. Check the **Create an incident** checkbox.
 1. To customize the incident, select an
    [issue template](../../user/project/description_templates.md#create-an-issue-template).
@@ -70,7 +70,7 @@ for each PagerDuty incident. This configuration requires you to make changes
 in both PagerDuty and GitLab:
 
 1. Sign in as a user with the [Maintainer role](../../user/permissions.md).
-1. Navigate to **Settings > Operations > Incidents** and expand **Incidents**.
+1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.
 1. Select the **PagerDuty integration** tab:
 
    ![PagerDuty incidents integration](img/pagerduty_incidents_integration_v13_3.png)
@@ -87,7 +87,7 @@ confirm that a GitLab incident is created from the incident.
 ## Incident list
 
 For users with at least Guest [permissions](../../user/permissions.md), the
-Incident list is available at **Operations > Incidents**
+Incident list is available at **Monitor > Incidents**
 in your project's sidebar. The list contains the following metrics:
 
 ![Incident List](img/incident_list_v13_5.png)
@@ -132,7 +132,7 @@ For a live example of the incident list in action, visit this
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230847) in GitLab 13.4.
 
 Users with at least Guest [permissions](../../user/permissions.md) can view
-the Incident Details page. Navigate to **Operations > Incidents** in your project's
+the Incident Details page. Navigate to **Monitor > Incidents** in your project's
 sidebar, and select an incident from the list.
 
 When you take any of these actions on an incident, GitLab logs a system note and
@@ -208,7 +208,7 @@ remaining before the SLA period expires. The timer is also dynamically updated
 every 15 minutes so you do not have to refresh the page to see the time remaining.
 To configure the timer:
 
-1. Navigate to **Settings > Operations**.
+1. Navigate to **Settings > Monitor**.
 1. Scroll to **Incidents** and click **Expand**, then select the
    **Incident settings** tab.
 1. Select **Activate "time to SLA" countdown timer**.
@@ -278,7 +278,7 @@ templates.
 With Maintainer or higher [permissions](../../user/permissions.md), you can enable
  GitLab to close an incident automatically when a **Recovery Alert** is received:
 
-1. Navigate to **Settings > Operations > Incidents** and expand **Incidents**.
+1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.
 1. Check the **Automatically close associated Incident** checkbox.
 1. Click **Save changes**.
 

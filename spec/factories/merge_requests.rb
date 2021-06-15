@@ -341,6 +341,11 @@ FactoryBot.define do
         create(:diff_note_on_merge_request, noteable: mr, project: mr.source_project)
       end
     end
+    factory :merge_request_with_multiple_diffs do
+      after(:create) do |mr|
+        mr.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
+      end
+    end
 
     factory :labeled_merge_request do
       transient do

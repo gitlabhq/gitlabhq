@@ -140,8 +140,9 @@ Omnibus stores the repositories in a `repositories` subdirectory of the `git-dat
 After you [configure](#configure-repository-storage-paths) multiple repository storage paths, you
 can choose where new repositories are stored:
 
-1. Go to the Admin Area (**{admin}**).
-1. Go to **Settings > Repository** and expand the **Repository storage** section.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Repository** and expand the **Repository storage**
+   section.
 1. Enter values in the **Storage nodes for new repositories** fields.
 1. Select **Save changes**.
 

@@ -2,7 +2,7 @@
 
 module Gitlab
   module Checks
-    class SnippetCheck < BaseChecker
+    class SnippetCheck < BaseSingleChecker
       ERROR_MESSAGES = {
         create_delete_branch: 'You can not create or delete branches.'
       }.freeze

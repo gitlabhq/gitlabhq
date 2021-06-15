@@ -8,6 +8,8 @@ import {
   COMMIT_SUCCESS,
 } from '../../constants';
 import commitCIFile from '../../graphql/mutations/commit_ci_file.mutation.graphql';
+import updateCurrentBranchMutation from '../../graphql/mutations/update_current_branch.mutation.graphql';
+import updateLastCommitBranchMutation from '../../graphql/mutations/update_last_commit_branch.mutation.graphql';
 import getCommitSha from '../../graphql/queries/client/commit_sha.graphql';
 import getCurrentBranch from '../../graphql/queries/client/current_branch.graphql';
 import getIsNewCiConfigFile from '../../graphql/queries/client/is_new_ci_config_file.graphql';
@@ -113,6 +115,8 @@ export default {
           this.redirectToNewMergeRequest(targetBranch);
         } else {
           this.$emit('commit', { type: COMMIT_SUCCESS });
+          this.updateLastCommitBranch(targetBranch);
+          this.updateCurrentBranch(targetBranch);
         }
       } catch (error) {
         this.$emit('showError', { type: COMMIT_FAILURE, reasons: [error?.message] });
@@ -122,6 +126,18 @@ export default {
     },
     onCommitCancel() {
       this.$emit('resetContent');
+    },
+    updateCurrentBranch(currentBranch) {
+      this.$apollo.mutate({
+        mutation: updateCurrentBranchMutation,
+        variables: { currentBranch },
+      });
+    },
+    updateLastCommitBranch(lastCommitBranch) {
+      this.$apollo.mutate({
+        mutation: updateLastCommitBranchMutation,
+        variables: { lastCommitBranch },
+      });
     },
   },
 };

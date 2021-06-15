@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To enable the GitLab Prometheus metrics:
 
 1. Log into GitLab as a user with [administrator permissions](../../../user/permissions.md).
-1. Go to **Admin Area > Settings > Metrics and profiling**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and click **Enable Prometheus Metrics**.
 1. [Restart GitLab](../../restart_gitlab.md#omnibus-gitlab-restart) for the changes to take effect.
 
@@ -58,7 +59,7 @@ The following metrics are available:
 | `gitlab_transaction_cache_duration_total`                        | Counter     | 10.2    | Counter for total time (seconds) spent in Rails cache calls (aggregate)                                               |                                                           |
 | `gitlab_transaction_cache_read_hit_count_total`                  | Counter     | 10.2    | Counter for cache hits for Rails cache calls                                                                          | `controller`, `action`                                    |
 | `gitlab_transaction_cache_read_miss_count_total`                 | Counter     | 10.2    | Counter for cache misses for Rails cache calls                                                                        | `controller`, `action`                                    |
-| `gitlab_transaction_duration_seconds`                            | Histogram   | 10.2    | Duration for all transactions (`gitlab_transaction_*` metrics)                                                        | `controller`, `action`                                    |
+| `gitlab_transaction_duration_seconds`                            | Histogram   | 10.2    | Duration for successful requests (`gitlab_transaction_*` metrics)                                                     | `controller`, `action`                                    |
 | `gitlab_transaction_event_build_found_total`                     | Counter     | 9.4     | Counter for build found for API /jobs/request                                                                         |                                                           |
 | `gitlab_transaction_event_build_invalid_total`                   | Counter     | 9.4     | Counter for build invalid due to concurrency conflict for API /jobs/request                                           |                                                           |
 | `gitlab_transaction_event_build_not_found_cached_total`          | Counter     | 9.4     | Counter for cached response of build not found for API /jobs/request                                                  |                                                           |
@@ -91,7 +92,7 @@ The following metrics are available:
 | `gitlab_transaction_view_duration_total`                         | Counter     | 9.4     | Duration for views                                                                                                    | `controller`, `action`, `view`                            |
 | `gitlab_view_rendering_duration_seconds`                         | Histogram   | 10.2    | Duration for views (histogram)                                                                                        | `controller`, `action`, `view`                            |
 | `http_requests_total`                                            | Counter     | 9.4     | Rack request count                                                                                                    | `method`, `status`                                        |
-| `http_request_duration_seconds`                                  | Histogram   | 9.4     | HTTP response time from rack middleware                                                                               | `method`                                                  |
+| `http_request_duration_seconds`                                  | Histogram   | 9.4     | HTTP response time from rack middleware for successful requests                                                       | `method`                                                  |
 | `gitlab_transaction_db_count_total`                              | Counter     | 13.1    | Counter for total number of SQL calls                                                                                 | `controller`, `action`                                    |
 | `gitlab_transaction_db_<role>_count_total`                       | Counter     | 13.10   | Counter for total number of SQL calls, grouped by database roles (primary/replica)                                    | `controller`, `action`                                    |
 | `gitlab_transaction_db_write_count_total`                        | Counter     | 13.1    | Counter for total number of write SQL calls                                                                           | `controller`, `action`                                    |

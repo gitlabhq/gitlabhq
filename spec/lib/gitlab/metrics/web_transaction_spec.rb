@@ -38,16 +38,6 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
     end
   end
 
-  describe '#duration' do
-    include_context 'transaction observe metrics'
-
-    it 'returns the duration of a transaction in seconds' do
-      transaction.run { sleep(0.5) }
-
-      expect(transaction.duration).to be >= 0.5
-    end
-  end
-
   describe '#run' do
     include_context 'transaction observe metrics'
 
@@ -58,6 +48,9 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
     it 'stores the transaction in the current thread' do
       transaction.run do
         expect(Thread.current[described_class::THREAD_KEY]).to eq(transaction)
+        expect(described_class.current).to eq(transaction)
+
+        ['200', {}, '']
       end
     end
 
@@ -65,6 +58,33 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
       transaction.run { }
 
       expect(Thread.current[described_class::THREAD_KEY]).to be_nil
+      expect(described_class.current).to be_nil
+    end
+
+    it 'records the duration of the transaction if the request was successful' do
+      expect(transaction).to receive(:observe).with(:gitlab_transaction_duration_seconds, instance_of(Float))
+
+      transaction.run { ['200', {}, ''] }
+    end
+
+    it 'does not record the duration of the transaction if the request failed' do
+      expect(transaction).not_to receive(:observe).with(:gitlab_transaction_duration_seconds, instance_of(Float))
+
+      transaction.run { ['500', {}, ''] }
+    end
+
+    it 'does not record the duration of the transaction if it raised' do
+      expect(transaction).not_to receive(:observe).with(:gitlab_transaction_duration_seconds, instance_of(Float))
+
+      expect do
+        transaction.run { raise 'broken' }
+      end.to raise_error('broken')
+    end
+
+    it 'returns the rack response' do
+      response = ['500', {}, '']
+
+      expect(transaction.run { response }).to eq(response)
     end
   end
 

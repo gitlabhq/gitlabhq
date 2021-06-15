@@ -31,7 +31,7 @@ Besides integration at the project level, Kubernetes clusters can also be
 integrated at the [group level](../../group/clusters/index.md) or
 [GitLab instance level](../../instance/clusters/index.md).
 
-To view your project level Kubernetes clusters, navigate to **Operations > Kubernetes**
+To view your project level Kubernetes clusters, navigate to **Infrastructure > Kubernetes**
 from your project. On this page, you can [add a new cluster](#adding-and-removing-clusters)
 and view information about your existing clusters, such as:
 
@@ -187,7 +187,7 @@ your cluster. This can cause deployment jobs to fail.
 
 To clear the cache:
 
-1. Navigate to your project's **Operations > Kubernetes** page, and select your cluster.
+1. Navigate to your project's **Infrastructure > Kubernetes** page, and select your cluster.
 1. Expand the **Advanced settings** section.
 1. Click **Clear cluster cache**.
 

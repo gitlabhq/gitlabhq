@@ -79,6 +79,17 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
       end
     end
 
+    context '@app.call returns an error code' do
+      let(:status) { '500' }
+
+      it 'tracks count but not duration' do
+        expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '500', feature_category: 'unknown')
+        expect(described_class).not_to receive(:http_request_duration_seconds)
+
+        subject.call(env)
+      end
+    end
+
     context '@app.call throws exception' do
       let(:http_request_duration_seconds) { double('http_request_duration_seconds') }
       let(:http_requests_total) { double('http_requests_total') }
