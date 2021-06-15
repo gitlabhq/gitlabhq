@@ -4,7 +4,7 @@ require 'yaml'
 
 module Backup
   class Repositories
-    def initialize(progress, strategy: GitalyRpcBackup.new(progress))
+    def initialize(progress, strategy:)
       @progress = progress
       @strategy = strategy
     end

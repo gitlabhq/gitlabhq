@@ -8,7 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41416) in GitLab 11.2.
 
-Administrators have access to instance-wide analytics, as shown in **Admin Area > Analytics**.
+Administrators have access to instance-wide analytics:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Analytics**.
 
 There are several kinds of statistics:
 

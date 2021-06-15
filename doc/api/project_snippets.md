@@ -239,7 +239,7 @@ curl "https://gitlab.com/api/v4/projects/1/snippets/2/files/master/snippet%2Erb/
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29508) in GitLab 9.4.
 
-Available only for users with Administrator [permissions](../user/permissions.md).
+Available only for users with the Administrator [role](../user/permissions.md).
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/user_agent_detail
@@ -247,7 +247,7 @@ GET /projects/:id/snippets/:snippet_id/user_agent_detail
 
 | Attribute     | Type    | Required | Description                          |
 |---------------|---------|----------|--------------------------------------|
-| `id`          | Integer | yes      | The ID of a project                  |
+| `id`          | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding). |
 | `snippet_id`  | Integer | yes      | The ID of a snippet                  |
 
 Example request:

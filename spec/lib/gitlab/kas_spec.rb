@@ -65,6 +65,12 @@ RSpec.describe Gitlab::Kas do
     end
   end
 
+  describe '.internal_url' do
+    it 'returns gitlab_kas internal_url config' do
+      expect(described_class.internal_url).to eq(Gitlab.config.gitlab_kas.internal_url)
+    end
+  end
+
   describe '.version' do
     it 'returns gitlab_kas version config' do
       version_file = Rails.root.join(described_class::VERSION_FILE)

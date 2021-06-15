@@ -682,6 +682,8 @@ GEM
       activerecord
       kaminari-core (= 1.2.1)
     kaminari-core (1.2.1)
+    kas-grpc (0.0.2)
+      grpc (~> 1.0)
     knapsack (1.21.1)
       rake
     kramdown (2.3.1)
@@ -1520,6 +1522,7 @@ DEPENDENCIES
   json_schemer (~> 0.2.12)
   jwt (~> 2.1.0)
   kaminari (~> 1.0)
+  kas-grpc (~> 0.0.2)
   knapsack (~> 1.21.1)
   kramdown (~> 2.3.1)
   kubeclient (~> 4.9.1)

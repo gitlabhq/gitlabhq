@@ -22,8 +22,9 @@ For information about email notifications originating from GitLab, read
 
 ## Sending emails to users from within GitLab
 
-1. Navigate to the **Admin Area > Overview > Users** and press the
-   **Send email to users** button.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Overview > Users**.
+1. Select **Send email to users**.
 
    ![admin users](email1.png)
 
