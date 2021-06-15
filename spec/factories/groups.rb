@@ -58,6 +58,13 @@ FactoryBot.define do
       shared_runners_enabled { false }
     end
 
+    trait :with_export do
+      after(:create) do |group, _evaluator|
+        export_file = fixture_file_upload('spec/fixtures/group_export.tar.gz')
+        create(:import_export_upload, group: group, export_file: export_file)
+      end
+    end
+
     trait :allow_descendants_override_disabled_shared_runners do
       allow_descendants_override_disabled_shared_runners { true }
     end

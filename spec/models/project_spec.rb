@@ -4376,6 +4376,18 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  context 'with export' do
+    let(:project) { create(:project, :with_export) }
+
+    it '#export_file_exists? returns true' do
+      expect(project.export_file_exists?).to be true
+    end
+
+    it '#export_archive_exists? returns false' do
+      expect(project.export_archive_exists?).to be true
+    end
+  end
+
   describe '#forks_count' do
     it 'returns the number of forks' do
       project = build(:project)
@@ -6638,7 +6650,7 @@ RSpec.describe Project, factory_default: :keep do
     context 'when project export is completed' do
       before do
         finish_job(project_export_job)
-        allow(project).to receive(:export_file).and_return(double(ImportExportUploader, file: 'exists.zip'))
+        allow(project).to receive(:export_file_exists?).and_return(true)
       end
 
       it { expect(project.export_status).to eq :finished }
@@ -6649,7 +6661,7 @@ RSpec.describe Project, factory_default: :keep do
 
       before do
         finish_job(project_export_job)
-        allow(project).to receive(:export_file).and_return(double(ImportExportUploader, file: 'exists.zip'))
+        allow(project).to receive(:export_file_exists?).and_return(true)
       end
 
       it { expect(project.export_status).to eq :regeneration_in_progress }

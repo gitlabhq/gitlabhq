@@ -17,7 +17,7 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/dast/#available-variables
 
 variables:
-  DAST_VERSION: 1
+  DAST_VERSION: 2
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"

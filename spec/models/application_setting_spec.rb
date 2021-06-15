@@ -990,6 +990,34 @@ RSpec.describe ApplicationSetting do
         end
       end
     end
+
+    describe '#diff_max_files' do
+      context 'validations' do
+        it { is_expected.to validate_presence_of(:diff_max_files) }
+
+        specify do
+          is_expected
+            .to validate_numericality_of(:diff_max_files)
+            .only_integer
+            .is_greater_than_or_equal_to(Commit::DEFAULT_MAX_DIFF_FILES_SETTING)
+            .is_less_than_or_equal_to(Commit::MAX_DIFF_FILES_SETTING_UPPER_BOUND)
+        end
+      end
+    end
+
+    describe '#diff_max_lines' do
+      context 'validations' do
+        it { is_expected.to validate_presence_of(:diff_max_lines) }
+
+        specify do
+          is_expected
+            .to validate_numericality_of(:diff_max_lines)
+            .only_integer
+            .is_greater_than_or_equal_to(Commit::DEFAULT_MAX_DIFF_LINES_SETTING)
+            .is_less_than_or_equal_to(Commit::MAX_DIFF_LINES_SETTING_UPPER_BOUND)
+        end
+      end
+    end
   end
 
   describe '#sourcegraph_url_is_com?' do

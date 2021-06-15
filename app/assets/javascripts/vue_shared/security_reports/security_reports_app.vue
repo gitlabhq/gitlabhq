@@ -191,6 +191,7 @@ export default {
         <security-summary :message="groupedSummaryText" />
 
         <help-icon
+          class="gl-ml-3"
           :help-path="securityReportsDocsPath"
           :discover-project-security-path="discoverProjectSecurityPath"
         />
@@ -219,6 +220,7 @@ export default {
       {{ $options.i18n.scansHaveRun }}
 
       <help-icon
+        class="gl-ml-3"
         :help-path="securityReportsDocsPath"
         :discover-project-security-path="discoverProjectSecurityPath"
       />

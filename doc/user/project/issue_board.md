@@ -34,11 +34,11 @@ boards in the same project.
 Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Tier             | Number of project issue boards | Number of [group issue boards](#group-issue-boards) | [Configurable issue boards](#configurable-issue-boards) | [Assignee lists](#assignee-lists) |
-|------------------|--------------------------------|------------------------------|---------------------------|----------------|
-| Free             | Multiple                       | 1                            | No                        | No             |
-| Premium          | Multiple                       | Multiple                     | Yes                       | Yes            |
-| Ultimate         | Multiple                       | Multiple                     | Yes                       | Yes            |
+| Tier     | Number of project issue boards | Number of [group issue boards](#group-issue-boards) | [Configurable issue boards](#configurable-issue-boards) | [Assignee lists](#assignee-lists) |
+| -------- | ------------------------------ | --------------------------------------------------- | ------------------------------------------------------- | --------------------------------- |
+| Free     | Multiple                       | 1                                                   | No                                                      | No                                |
+| Premium  | Multiple                       | Multiple                                            | Yes                                                     | Yes                               |
+| Ultimate | Multiple                       | Multiple                                            | Yes                                                     | Yes                               |
 
 To learn more, visit [GitLab Enterprise features for issue boards](#gitlab-enterprise-features-for-issue-boards) below.
 
@@ -312,7 +312,7 @@ assignee list:
 1. Search and select the user you want to add as an assignee.
 
 Now that the assignee list is added, you can assign or unassign issues to that user
-by [dragging issues](#drag-issues-between-lists) to and from an assignee list.
+by [moving issues](#move-issues-and-lists) to and from an assignee list.
 To remove an assignee list, just as with a label list, click the trash icon.
 
 ![Assignee lists](img/issue_board_assignee_lists_v13_6.png)
@@ -328,7 +328,7 @@ milestone, giving you more freedom and visibility on the issue board. To add a m
 1. Select the **Milestone** tab.
 1. Search and click the milestone.
 
-Like the assignee lists, you're able to [drag issues](#drag-issues-between-lists)
+Like the assignee lists, you're able to [drag issues](#move-issues-and-lists)
 to and from a milestone list to manipulate the milestone of the dragged issues.
 As in other list types, click the trash icon to remove a list.
 
@@ -355,7 +355,7 @@ iteration. To add an iteration list:
 1. In the dropdown, select an iteration.
 1. Select **Add to board**.
 
-Like the milestone lists, you're able to [drag issues](#drag-issues-between-lists)
+Like the milestone lists, you're able to [drag issues](#move-issues-and-lists)
 to and from a iteration list to manipulate the iteration of the dragged issues.
 
 ![Iteration lists](img/issue_board_iteration_lists_v13_10.png)
@@ -380,7 +380,20 @@ To group issues by epic in an issue board:
 
 ![Epics Swimlanes](img/epics_swimlanes_v13.6.png)
 
-You can also [drag issues](#drag-issues-between-lists) to change their position and epic assignment:
+To edit an issue without leaving this view, select the issue card (not its title), and a sidebar
+appears on the right. There you can see and edit the issue's:
+
+- Title
+- Assignees
+- Epic **PREMIUM**
+- Milestone
+- Time tracking value (view only)
+- Due date
+- Labels
+- Weight
+- Notifications setting
+
+You can also [drag issues](#move-issues-and-lists) to change their position and epic assignment:
 
 - To reorder an issue, drag it to the new position within a list.
 - To assign an issue to another epic, drag it to the epic's horizontal lane.
@@ -435,11 +448,11 @@ This feature is only supported when using the [GraphQL-based boards](#graphql-ba
 - [Remove an issue from a list](#remove-an-issue-from-a-list).
 - [Filter issues](#filter-issues) that appear across your issue board.
 - [Create workflows](#create-workflows).
-- [Drag issues between lists](#drag-issues-between-lists).
+- [Move issues and lists](#move-issues-and-lists).
 - [Multi-select issue cards](#multi-select-issue-cards).
 - Drag and reorder the lists.
 - Change issue labels (by dragging an issue between lists).
-- Close an issue (by dragging it to the **Done** list).
+- Close an issue (by dragging it to the **Closed** list).
 
 If you're not able to do some of the things above, make sure you have the right
 [permissions](#permissions).
@@ -483,12 +496,12 @@ You can now choose it to create a list.
 ### Remove a list
 
 Removing a list doesn't have any effect on issues and labels, as it's just the
-list view that's removed. You can always restore it later if you need.
+list view that's removed. You can always create it again later if you need.
 
 To remove a list from an issue board:
 
-1. Select the **List settings** icon (**{settings}**) on the top of the list you want to remove. The
-   list settings sidebar opens on the right.
+1. On the top of the list you want to remove, select the **List settings** icon (**{settings}**).
+   The list settings sidebar opens on the right.
 1. Select **Remove list**. A confirmation dialog appears.
 1. Select **OK**.
 
@@ -582,16 +595,33 @@ to another list, the label changes and a system note is recorded.
 
 ![issue board system notes](img/issue_board_system_notes_v13_6.png)
 
-### Drag issues between lists
+### Move issues and lists
 
-When dragging issues between lists, different behavior occurs depending on the source list and the target list.
+You can move issues and lists by dragging them.
 
-|                                | To Open            | To Closed    | To label `B` list            | To assignee `Bob` list                |
-| ------------------------------ | ------------------ | ------------ | ---------------------------- | ------------------------------------- |
-| **From Open**                  | -                  | Issue closed | `B` added                    | `Bob` assigned                        |
-| **From Closed**                | Issue reopened     | -            | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned     |
-| **From label `A` list**        | `A` removed        | Issue closed | `A` removed<br/>`B` added    | `Bob` assigned                        |
-| **From assignee `Alice` list** | `Alice` unassigned | Issue closed | `B` added                    | `Alice` unassigned<br/>`Bob` assigned |
+Prerequisites:
+
+- A minimum of [Reporter](../permissions.md#project-members-permissions) access to a project in GitLab.
+
+To move an issue, select the issue card and drag it to another position in its current list or
+into a different list. Learn about possible effects in [Dragging issues between lists](#dragging-issues-between-lists).
+
+To move a list, select its top bar, and drag it horizontally.
+You can't move the **Open** and **Closed** lists, but you can hide them when editing an issue board.
+
+#### Dragging issues between lists
+
+To move an issue to another list, select the issue card and drag it onto that list.
+
+When you drag issues between lists, the result is different depending on the source list
+and the target list.
+
+|                              | To Open        | To Closed   | To label B list                | To assignee Bob list          |
+| ---------------------------- | -------------- | ----------- | ------------------------------ | ----------------------------- |
+| **From Open**                | -              | Close issue | Add label B                    | Assign Bob                    |
+| **From Closed**              | Reopen issue   | -           | Reopen issue and add label B   | Reopen issue and assign Bob   |
+| **From label A list**        | Remove label A | Close issue | Remove label A and add label B | Assign Bob                    |
+| **From assignee Alice list** | Unassign Alice | Close issue | Add label B                    | Unassign Alice and assign Bob |
 
 ### Multi-select issue cards
 

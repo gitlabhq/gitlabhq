@@ -338,6 +338,8 @@ module ApplicationSettingsHelper
       :version_check_enabled,
       :web_ide_clientside_preview_enabled,
       :diff_max_patch_bytes,
+      :diff_max_files,
+      :diff_max_lines,
       :commit_email_hostname,
       :protected_ci_variables,
       :local_markdown_version,

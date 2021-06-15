@@ -1,6 +1,7 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import DiffStats from '~/diffs/components/diff_stats.vue';
+import mockDiffFile from '../mock_data/diff_file';
 
 const TEST_ADDED_LINES = 100;
 const TEST_REMOVED_LINES = 200;
@@ -38,8 +39,36 @@ describe('diff_stats', () => {
     });
   });
 
+  describe('bytes changes', () => {
+    let file;
+    const getBytesContainer = () => wrapper.find('.diff-stats > div:first-child');
+
+    beforeEach(() => {
+      file = {
+        ...mockDiffFile,
+        viewer: {
+          ...mockDiffFile.viewer,
+          name: 'not_diffable',
+        },
+      };
+
+      createComponent({ diffFile: file });
+    });
+
+    it("renders the bytes changes instead of line changes when the file isn't diffable", () => {
+      const content = getBytesContainer();
+
+      expect(content.classes('cgreen')).toBe(true);
+      expect(content.text()).toBe('+1.00 KiB (+100%)');
+    });
+  });
+
   describe('line changes', () => {
     const findFileLine = (name) => wrapper.find(name);
+
+    beforeEach(() => {
+      createComponent();
+    });
 
     it('shows the amount of lines added', () => {
       expect(findFileLine('.js-file-addition-line').text()).toBe(TEST_ADDED_LINES.toString());

@@ -170,6 +170,8 @@ the site during a scan could lead to inaccurate results.
 
 #### Include the DAST template
 
+> This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62597) to DAST_VERSION: 2 in GitLab 14.0.
+
 If you want to manually add DAST to your application, the DAST job is defined
 in a CI/CD template file. Updates to the template are provided with GitLab
 upgrades, allowing you to benefit from any improvements and additions.

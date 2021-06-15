@@ -55,10 +55,14 @@ module QA
         end
 
         def go_to_projects
-          go_to_menu_dropdown_option(:projects_dropdown)
-
-          within_element(:menu_subview_container) do
+          within_projects_menu do
             click_element(:menu_item_link, title: 'Your projects')
+          end
+        end
+
+        def go_to_create_project
+          within_projects_menu do
+            click_element(:menu_item_link, title: 'Create new project')
           end
         end
 
@@ -84,11 +88,11 @@ module QA
         def go_to_admin_area
           click_admin_area
 
-          if has_text?('Enter Admin Mode', wait: 1.0)
-            Admin::NewSession.perform do |new_session|
-              new_session.set_password(Runtime::User.admin_password)
-              new_session.click_enter_admin_mode
-            end
+          return unless has_text?('Enter Admin Mode', wait: 1.0)
+
+          Admin::NewSession.perform do |new_session|
+            new_session.set_password(Runtime::User.admin_password)
+            new_session.click_enter_admin_mode
           end
         end
 
@@ -166,24 +170,26 @@ module QA
 
         private
 
-        def within_top_menu
-          within_element(:navbar) do
-            yield
-          end
+        def within_top_menu(&block)
+          within_element(:navbar, &block)
         end
 
-        def within_user_menu
+        def within_user_menu(&block)
           within_top_menu do
             click_element :user_avatar
 
-            within_element(:user_menu) do
-              yield
-            end
+            within_element(:user_menu, &block)
           end
         end
 
         def within_groups_menu(&block)
           go_to_menu_dropdown_option(:groups_dropdown)
+
+          within_element(:menu_subview_container, &block)
+        end
+
+        def within_projects_menu(&block)
+          go_to_menu_dropdown_option(:projects_dropdown)
 
           within_element(:menu_subview_container, &block)
         end

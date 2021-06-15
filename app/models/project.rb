@@ -1987,7 +1987,11 @@ class Project < ApplicationRecord
   end
 
   def export_file_exists?
-    export_file&.file
+    import_export_upload&.export_file_exists?
+  end
+
+  def export_archive_exists?
+    import_export_upload&.export_archive_exists?
   end
 
   def export_file

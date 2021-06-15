@@ -1065,14 +1065,13 @@ RSpec.describe GroupsController, factory_default: :keep do
 
   describe 'GET #download_export' do
     let(:admin) { create(:admin) }
+    let(:export_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
 
     before do
       enable_admin_mode!(admin)
     end
 
     context 'when there is a file available to download' do
-      let(:export_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
-
       before do
         sign_in(admin)
         create(:import_export_upload, group: group, export_file: export_file)
@@ -1082,6 +1081,22 @@ RSpec.describe GroupsController, factory_default: :keep do
         get :download_export, params: { id: group.to_param }
 
         expect(response.body).to eq export_file.tempfile.read
+      end
+    end
+
+    context 'when the file is no longer present on disk' do
+      before do
+        sign_in(admin)
+
+        create(:import_export_upload, group: group, export_file: export_file)
+        group.export_file.file.delete
+      end
+
+      it 'returns not found' do
+        get :download_export, params: { id: group.to_param }
+
+        expect(flash[:alert]).to include('file containing the export is not available yet')
+        expect(response).to redirect_to(edit_group_path(group))
       end
     end
 

@@ -7969,9 +7969,6 @@ msgstr ""
 msgid "Collapse approvers"
 msgstr ""
 
-msgid "Collapse diffs larger than this size, and show a 'too large' message instead."
-msgstr ""
-
 msgid "Collapse issues"
 msgstr ""
 
@@ -11415,6 +11412,9 @@ msgid "Didn't receive confirmation instructions?"
 msgstr ""
 
 msgid "Didn't receive unlock instructions?"
+msgstr ""
+
+msgid "Diff files surpassing this limit will be presented as 'too large' and won't be expandable."
 msgstr ""
 
 msgid "Diff limits"
@@ -20252,7 +20252,7 @@ msgstr ""
 msgid "Maximum delay (Minutes)"
 msgstr ""
 
-msgid "Maximum diff patch size in bytes"
+msgid "Maximum diff patch size (Bytes)"
 msgstr ""
 
 msgid "Maximum duration of a session."
@@ -20276,6 +20276,9 @@ msgstr ""
 msgid "Maximum file size is 2MB. Please select a smaller file."
 msgstr ""
 
+msgid "Maximum files in a diff"
+msgstr ""
+
 msgid "Maximum import size (MB)"
 msgstr ""
 
@@ -20286,6 +20289,9 @@ msgid "Maximum job timeout has a value which could not be accepted"
 msgstr ""
 
 msgid "Maximum lifetime allowable for Personal Access Tokens is active, your expire date must be set before %{maximum_allowable_date}."
+msgstr ""
+
+msgid "Maximum lines in a diff"
 msgstr ""
 
 msgid "Maximum npm package file size in bytes"
@@ -32423,6 +32429,9 @@ msgid "The environment tier must be one of %{environment_tiers}."
 msgstr ""
 
 msgid "The errors we encountered were:"
+msgstr ""
+
+msgid "The file containing the export is not available yet; it may still be transferring. Please try again later."
 msgstr ""
 
 msgid "The file has been successfully created."

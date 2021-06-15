@@ -1,0 +1,8 @@
+---
+name: configurable_diff_limits
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56722
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/332194
+milestone: '14.0'
+type: development
+group: group::code review
+default_enabled: false

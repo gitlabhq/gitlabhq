@@ -2,10 +2,16 @@
 import { GlIcon } from '@gitlab/ui';
 import { isNumber } from 'lodash';
 import { n__ } from '~/locale';
+import { isNotDiffable, stats } from '../utils/diff_file';
 
 export default {
   components: { GlIcon },
   props: {
+    diffFile: {
+      type: Object,
+      required: false,
+      default: () => null,
+    },
     addedLines: {
       type: Number,
       required: true,
@@ -33,6 +39,12 @@ export default {
     hasDiffFiles() {
       return isNumber(this.diffFilesLength) && this.diffFilesLength >= 0;
     },
+    notDiffable() {
+      return isNotDiffable(this.diffFile);
+    },
+    fileStats() {
+      return stats(this.diffFile);
+    },
   },
 };
 </script>
@@ -45,23 +57,28 @@ export default {
       'd-none d-sm-inline-flex': !isCompareVersionsHeader,
     }"
   >
-    <div v-if="hasDiffFiles" class="diff-stats-group">
-      <gl-icon name="doc-code" class="diff-stats-icon text-secondary" />
-      <span class="text-secondary bold">{{ diffFilesCountText }} {{ filesText }}</span>
+    <div v-if="notDiffable" :class="fileStats.classes">
+      {{ fileStats.text }}
     </div>
-    <div
-      class="diff-stats-group cgreen d-flex align-items-center"
-      :class="{ bold: isCompareVersionsHeader }"
-    >
-      <span>+</span>
-      <span class="js-file-addition-line">{{ addedLines }}</span>
-    </div>
-    <div
-      class="diff-stats-group cred d-flex align-items-center"
-      :class="{ bold: isCompareVersionsHeader }"
-    >
-      <span>-</span>
-      <span class="js-file-deletion-line">{{ removedLines }}</span>
+    <div v-else class="diff-stats-contents">
+      <div v-if="hasDiffFiles" class="diff-stats-group">
+        <gl-icon name="doc-code" class="diff-stats-icon text-secondary" />
+        <span class="text-secondary bold">{{ diffFilesCountText }} {{ filesText }}</span>
+      </div>
+      <div
+        class="diff-stats-group cgreen d-flex align-items-center"
+        :class="{ bold: isCompareVersionsHeader }"
+      >
+        <span>+</span>
+        <span class="js-file-addition-line">{{ addedLines }}</span>
+      </div>
+      <div
+        class="diff-stats-group cred d-flex align-items-center"
+        :class="{ bold: isCompareVersionsHeader }"
+      >
+        <span>-</span>
+        <span class="js-file-deletion-line">{{ removedLines }}</span>
+      </div>
     </div>
   </div>
 </template>

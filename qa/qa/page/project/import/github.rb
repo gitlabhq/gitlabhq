@@ -32,24 +32,20 @@ module QA
           end
 
           def import!(full_path, name)
-            unless already_imported(full_path)
-              choose_test_namespace(full_path)
-              set_path(full_path, name)
-              import_project(full_path)
-              wait_for_success
-            end
+            return if already_imported(full_path)
 
-            go_to_project(name)
+            choose_test_namespace(full_path)
+            set_path(full_path, name)
+            import_project(full_path)
+            wait_for_success
           end
 
           private
 
-          def within_repo_path(full_path)
+          def within_repo_path(full_path, &block)
             project_import_row = find_element(:project_import_row, text: full_path)
 
-            within(project_import_row) do
-              yield
-            end
+            within(project_import_row, &block)
           end
 
           def choose_test_namespace(full_path)
@@ -75,8 +71,13 @@ module QA
           def wait_for_success
             # TODO: set reload:false and remove skip_finished_loading_check_on_refresh when
             # https://gitlab.com/gitlab-org/gitlab/-/issues/292861 is fixed
-            wait_until(max_duration: 60, sleep_interval: 5.0, reload: true, skip_finished_loading_check_on_refresh: true) do
-              page.has_no_content?('Importing 1 repository', wait: 3.0)
+            wait_until(
+              max_duration: 60,
+              sleep_interval: 5.0,
+              reload: true,
+              skip_finished_loading_check_on_refresh: true
+            ) do
+              page.has_no_content?('Importing 1 repository')
             end
           end
 

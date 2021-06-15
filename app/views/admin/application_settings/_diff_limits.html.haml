@@ -3,11 +3,30 @@
 
   %fieldset
     .form-group
-      = f.label :diff_max_patch_bytes, _('Maximum diff patch size in bytes'), class: 'label-light'
+      = f.label :diff_max_patch_bytes, _('Maximum diff patch size (Bytes)'), class: 'label-light'
       = f.number_field :diff_max_patch_bytes, class: 'form-control gl-form-input'
       %span.form-text.text-muted
-        = _("Collapse diffs larger than this size, and show a 'too large' message instead.")
+        = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
 
         = link_to sprite_icon('question-o'),
-          help_page_path('user/admin_area/diff_limits')
+          help_page_path('user/admin_area/diff_limits',
+          anchor: 'diff-limits-administration')
+
+      = f.label :diff_max_files, _('Maximum files in a diff'), class: 'label-light'
+      = f.number_field :diff_max_files, class: 'form-control gl-form-input'
+      %span.form-text.text-muted
+        = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
+
+        = link_to sprite_icon('question-o'),
+          help_page_path('user/admin_area/diff_limits',
+          anchor: 'diff-limits-administration')
+
+      = f.label :diff_max_lines, _('Maximum lines in a diff'), class: 'label-light'
+      = f.number_field :diff_max_lines, class: 'form-control gl-form-input'
+      %span.form-text.text-muted
+        = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
+
+        = link_to sprite_icon('question-o'),
+          help_page_path('user/admin_area/diff_limits',
+          anchor: 'diff-limits-administration')
   = f.submit _('Save changes'), class: 'gl-button btn btn-confirm'

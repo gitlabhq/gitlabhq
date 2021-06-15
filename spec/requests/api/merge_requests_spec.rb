@@ -1353,7 +1353,7 @@ RSpec.describe API::MergeRequests do
 
     context 'when a merge request has more than the changes limit' do
       it "returns a string indicating that more changes were made" do
-        allow(Commit).to receive(:diff_hard_limit_files).and_return(5)
+        allow(Commit).to receive(:diff_max_files).and_return(5)
 
         merge_request_overflow = create(:merge_request, :simple,
                                         author: user,

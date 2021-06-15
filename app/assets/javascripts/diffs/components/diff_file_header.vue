@@ -354,7 +354,11 @@ export default {
       v-if="!diffFile.submodule && addMergeRequestButtons"
       class="file-actions d-flex align-items-center gl-ml-auto gl-align-self-start"
     >
-      <diff-stats :added-lines="diffFile.added_lines" :removed-lines="diffFile.removed_lines" />
+      <diff-stats
+        :diff-file="diffFile"
+        :added-lines="diffFile.added_lines"
+        :removed-lines="diffFile.removed_lines"
+      />
       <gl-form-checkbox
         v-if="isReviewable && showLocalFileReviews"
         v-gl-tooltip.hover

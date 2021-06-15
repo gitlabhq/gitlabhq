@@ -10,10 +10,10 @@ module QA
       include Visibility
 
       attr_accessor :repository_storage # requires admin access
-      attr_writer :initialize_with_readme
-      attr_writer :auto_devops_enabled
-      attr_writer :github_personal_access_token
-      attr_writer :github_repository_path
+      attr_writer :initialize_with_readme,
+                  :auto_devops_enabled,
+                  :github_personal_access_token,
+                  :github_repository_path
 
       attribute :id
       attribute :name
@@ -40,15 +40,11 @@ module QA
       end
 
       attribute :repository_ssh_location do
-        Page::Project::Show.perform do |show|
-          show.repository_clone_ssh_location
-        end
+        Page::Project::Show.perform(&:repository_clone_ssh_location)
       end
 
       attribute :repository_http_location do
-        Page::Project::Show.perform do |show|
-          show.repository_clone_http_location
-        end
+        Page::Project::Show.perform(&:repository_clone_http_location)
       end
 
       def initialize
@@ -104,7 +100,7 @@ module QA
       def has_file?(file_path)
         response = repository_tree
 
-        raise ResourceNotFoundError, "#{response[:message]}" if response.is_a?(Hash) && response.has_key?(:message)
+        raise ResourceNotFoundError, (response[:message]).to_s if response.is_a?(Hash) && response.has_key?(:message)
 
         response.any? { |file| file[:path] == file_path }
       end
@@ -115,14 +111,14 @@ module QA
 
       def has_branches?(branches)
         branches.all? do |branch|
-          response = get(Runtime::API::Request.new(api_client, "#{api_repository_branches_path}/#{branch}").url)
+          response = get(request_url("#{api_repository_branches_path}/#{branch}"))
           response.code == HTTP_STATUS_OK
         end
       end
 
       def has_tags?(tags)
         tags.all? do |tag|
-          response = get(Runtime::API::Request.new(api_client, "#{api_repository_tags_path}/#{tag}").url)
+          response = get(request_url("#{api_repository_tags_path}/#{tag}"))
           response.code == HTTP_STATUS_OK
         end
       end
@@ -183,6 +179,10 @@ module QA
         "#{api_get_path}/pipeline_schedules"
       end
 
+      def api_issues_path
+        "#{api_get_path}/issues"
+      end
+
       def api_put_path
         "/projects/#{id}"
       end
@@ -217,19 +217,28 @@ module QA
 
       def change_repository_storage(new_storage)
         put_body = { repository_storage: new_storage }
-        response = put Runtime::API::Request.new(api_client, api_put_path).url, put_body
+        response = put(request_url(api_put_path), put_body)
 
         unless response.code == HTTP_STATUS_OK
-          raise ResourceUpdateFailedError, "Could not change repository storage to #{new_storage}. Request returned (#{response.code}): `#{response}`."
+          raise(
+            ResourceUpdateFailedError,
+            "Could not change repository storage to #{new_storage}. Request returned (#{response.code}): `#{response}`."
+          )
         end
 
-        wait_until(sleep_interval: 1) { Runtime::API::RepositoryStorageMoves.has_status?(self, 'finished', new_storage) }
+        wait_until(sleep_interval: 1) do
+          Runtime::API::RepositoryStorageMoves.has_status?(self, 'finished', new_storage)
+        end
       rescue Support::Repeater::RepeaterConditionExceededError
-        raise Runtime::API::RepositoryStorageMoves::RepositoryStorageMovesError, 'Timed out while waiting for the repository storage move to finish'
+        raise(
+          Runtime::API::RepositoryStorageMoves::RepositoryStorageMovesError,
+          'Timed out while waiting for the repository storage move to finish'
+        )
       end
 
       def commits
-        parse_body(get(Runtime::API::Request.new(api_client, api_commits_path).url))
+        response = get(request_url(api_commits_path))
+        parse_body(response)
       end
 
       def default_branch
@@ -237,7 +246,7 @@ module QA
       end
 
       def import_status
-        response = get Runtime::API::Request.new(api_client, "/projects/#{id}/import").url
+        response = get(request_url("/projects/#{id}/import"))
 
         unless response.code == HTTP_STATUS_OK
           raise ResourceQueryError, "Could not get import status. Request returned (#{response.code}): `#{response}`."
@@ -251,7 +260,8 @@ module QA
       end
 
       def merge_requests
-        parse_body(get(Runtime::API::Request.new(api_client, api_merge_requests_path).url))
+        response = get(request_url(api_merge_requests_path))
+        parse_body(response)
       end
 
       def merge_request_with_title(title)
@@ -260,42 +270,52 @@ module QA
 
       def runners(tag_list: nil)
         response = if tag_list
-                     get Runtime::API::Request.new(api_client, "#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}", per_page: '100').url
+                     get(request_url("#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}", per_page: '100'))
                    else
-                     get Runtime::API::Request.new(api_client, "#{api_runners_path}", per_page: '100').url
+                     get(request_url(api_runners_path, per_page: '100'))
                    end
 
         parse_body(response)
       end
 
       def registry_repositories
-        response = get Runtime::API::Request.new(api_client, "#{api_registry_repositories_path}").url
+        response = get(request_url(api_registry_repositories_path))
         parse_body(response)
       end
 
       def packages
-        response = get Runtime::API::Request.new(api_client, "#{api_packages_path}").url
+        response = get(request_url(api_packages_path))
         parse_body(response)
       end
 
       def repository_branches
-        parse_body(get(Runtime::API::Request.new(api_client, api_repository_branches_path).url))
+        response = get(request_url(api_repository_branches_path))
+        parse_body(response)
       end
 
       def repository_tags
-        parse_body(get(Runtime::API::Request.new(api_client, api_repository_tags_path).url))
+        response = get(request_url(api_repository_tags_path))
+        parse_body(response)
       end
 
       def repository_tree
-        parse_body(get(Runtime::API::Request.new(api_client, api_repository_tree_path).url))
+        response = get(request_url(api_repository_tree_path))
+        parse_body(response)
       end
 
       def pipelines
-        parse_body(get(Runtime::API::Request.new(api_client, api_pipelines_path).url))
+        response = get(request_url(api_pipelines_path))
+        parse_body(response)
       end
 
       def pipeline_schedules
-        parse_body(get(Runtime::API::Request.new(api_client, api_pipeline_schedules_path).url))
+        response = get(request_url(api_pipeline_schedules_path))
+        parse_body(response)
+      end
+
+      def issues
+        response = get(request_url(api_issues_path))
+        parse_body(response)
       end
 
       private
@@ -306,6 +326,14 @@ module QA
         api_resource[:repository_http_location] =
           Git::Location.new(api_resource[:http_url_to_repo])
         api_resource
+      end
+
+      # Get api request url
+      #
+      # @param [String] path
+      # @return [String]
+      def request_url(path, **opts)
+        Runtime::API::Request.new(api_client, path, **opts).url
       end
     end
   end

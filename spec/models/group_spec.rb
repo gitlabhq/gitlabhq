@@ -2613,4 +2613,16 @@ RSpec.describe Group do
       expect(group.activity_path).to eq(expected_path)
     end
   end
+
+  context 'with export' do
+    let(:group) { create(:group, :with_export) }
+
+    it '#export_file_exists returns true' do
+      expect(group.export_file_exists?).to be true
+    end
+
+    it '#export_archive_exists? returns true' do
+      expect(group.export_archive_exists?).to be true
+    end
+  end
 end

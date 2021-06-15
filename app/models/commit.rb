@@ -33,6 +33,12 @@ class Commit
   # Used by GFM to match and present link extensions on node texts and hrefs.
   LINK_EXTENSION_PATTERN = /(patch)/.freeze
 
+  DEFAULT_MAX_DIFF_LINES_SETTING = 50_000
+  DEFAULT_MAX_DIFF_FILES_SETTING = 1_000
+  MAX_DIFF_LINES_SETTING_UPPER_BOUND = 100_000
+  MAX_DIFF_FILES_SETTING_UPPER_BOUND = 3_000
+  DIFF_SAFE_LIMIT_FACTOR = 10
+
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :full_title, pipeline: :single_line, limit: 1.kilobyte
   cache_markdown_field :description, pipeline: :commit_description, limit: 1.megabyte
@@ -78,20 +84,24 @@ class Commit
     end
 
     def diff_safe_lines(project: nil)
-      Gitlab::Git::DiffCollection.default_limits(project: project)[:max_lines]
+      diff_safe_max_lines(project: project)
     end
 
-    def diff_hard_limit_files(project: nil)
+    def diff_max_files(project: nil)
       if Feature.enabled?(:increased_diff_limits, project)
         3000
+      elsif Feature.enabled?(:configurable_diff_limits, project)
+        Gitlab::CurrentSettings.diff_max_files
       else
         1000
       end
     end
 
-    def diff_hard_limit_lines(project: nil)
+    def diff_max_lines(project: nil)
       if Feature.enabled?(:increased_diff_limits, project)
         100000
+      elsif Feature.enabled?(:configurable_diff_limits, project)
+        Gitlab::CurrentSettings.diff_max_lines
       else
         50000
       end
@@ -99,9 +109,17 @@ class Commit
 
     def max_diff_options(project: nil)
       {
-        max_files: diff_hard_limit_files(project: project),
-        max_lines: diff_hard_limit_lines(project: project)
+        max_files: diff_max_files(project: project),
+        max_lines: diff_max_lines(project: project)
       }
+    end
+
+    def diff_safe_max_files(project: nil)
+      diff_max_files(project: project) / DIFF_SAFE_LIMIT_FACTOR
+    end
+
+    def diff_safe_max_lines(project: nil)
+      diff_max_lines(project: project) / DIFF_SAFE_LIMIT_FACTOR
     end
 
     def from_hash(hash, container)

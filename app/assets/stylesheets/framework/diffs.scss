@@ -646,6 +646,10 @@ table.code {
   align-items: center;
   padding: 0 1rem;
 
+  .diff-stats-contents {
+    display: contents;
+  }
+
   .diff-stats-group {
     padding: 0 0.25rem;
   }
