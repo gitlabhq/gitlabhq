@@ -50,8 +50,8 @@ recover. See below for more details.
 
 The following guide assumes that:
 
-- You are using Omnibus and therefore you are using PostgreSQL 11 or later
-  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/11/app-pgbasebackup.html).
+- You are using Omnibus and therefore you are using PostgreSQL 12 or later
+  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/12/app-pgbasebackup.html).
 - You have a **primary** node already set up (the GitLab server you are
   replicating from), running Omnibus' PostgreSQL (or equivalent version), and
   you have a new **secondary** server set up with the same versions of the OS,
@@ -187,7 +187,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
    The `listen_address` option opens PostgreSQL up to network connections with the interface
-   corresponding to the given address. See [the PostgreSQL documentation](https://www.postgresql.org/docs/11/runtime-config-connection.html)
+   corresponding to the given address. See [the PostgreSQL documentation](https://www.postgresql.org/docs/12/runtime-config-connection.html)
    for more details.
 
    NOTE:
@@ -245,7 +245,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ```
 
    You may also want to edit the `wal_keep_segments` and `max_wal_senders` to match your
-   database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/11/runtime-config-replication.html)
+   database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/12/runtime-config-replication.html)
    for more information.
 
 1. Save the file and reconfigure GitLab for the database listen changes and
@@ -468,7 +468,7 @@ data before running `pg_basebackup`.
      (e.g., you know the network path is secure, or you are using a site-to-site
      VPN). This is **not** safe over the public Internet!
    - You can read more details about each `sslmode` in the
-     [PostgreSQL documentation](https://www.postgresql.org/docs/11/libpq-ssl.html#LIBPQ-SSL-PROTECTION);
+     [PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-ssl.html#LIBPQ-SSL-PROTECTION);
      the instructions above are carefully written to ensure protection against
      both passive eavesdroppers and active "man-in-the-middle" attackers.
    - Change the `--slot-name` to the name of the replication slot

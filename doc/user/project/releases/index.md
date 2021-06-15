@@ -33,7 +33,7 @@ and attach [release assets](#release-assets), like runbooks or packages.
 
 To view a list of releases:
 
-- On the left sidebar, select **Project information > Releases**, or
+- On the left sidebar, select **Deployments > Releases**, or
 
 - On the project's overview page, if at least one release exists, click the number of releases.
 
@@ -64,7 +64,7 @@ Read more about [Release permissions](../../../user/permissions.md#project-membe
 
 To create a new release through the GitLab UI:
 
-1. On the left sidebar, select **Project information > Releases** and select **New release**.
+1. On the left sidebar, select **Deployments > Releases** and select **New release**.
 1. Open the [**Tag name**](#tag-name) dropdown. Select an existing tag or type
    in a new tag name. Selecting an existing tag that is already associated with
    a release will result in a validation error.
@@ -104,7 +104,7 @@ Read more about [Release permissions](../../../user/permissions.md#project-membe
 
 To edit the details of a release:
 
-1. On the left sidebar, select **Project information > Releases**.
+1. On the left sidebar, select **Deployments > Releases**.
 1. In the top-right corner of the release you want to modify, click **Edit this release** (the pencil icon).
 1. On the **Edit Release** page, change the release's details.
 1. Click **Save changes**.
@@ -150,12 +150,12 @@ the [Releases API](../../../api/releases/index.md#create-a-release).
 
 In the user interface, to associate milestones to a release:
 
-1. On the left sidebar, select **Project information > Releases**.
+1. On the left sidebar, select **Deployments > Releases**.
 1. In the top-right corner of the release you want to modify, click **Edit this release** (the pencil icon).
 1. From the **Milestones** list, select each milestone you want to associate. You can select multiple milestones.
 1. Click **Save changes**.
 
-On the **Project information > Releases** page, the **Milestone** is listed in the top
+On the **Deployments > Releases** page, the **Milestone** is listed in the top
 section, along with statistics about the issues in the milestones.
 
 ![A Release with one associated milestone](img/release_with_milestone_v12_9.png)

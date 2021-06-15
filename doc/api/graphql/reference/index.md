@@ -2154,6 +2154,28 @@ Input type: `EscalationPolicyDestroyInput`
 | <a id="mutationescalationpolicydestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationescalationpolicydestroyescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | The escalation policy. |
 
+### `Mutation.escalationPolicyUpdate`
+
+Input type: `EscalationPolicyUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationescalationpolicyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationescalationpolicyupdatedescription"></a>`description` | [`String`](#string) | The description of the escalation policy. |
+| <a id="mutationescalationpolicyupdateid"></a>`id` | [`IncidentManagementEscalationPolicyID!`](#incidentmanagementescalationpolicyid) | The ID of the on-call schedule to create the on-call rotation in. |
+| <a id="mutationescalationpolicyupdatename"></a>`name` | [`String`](#string) | The name of the escalation policy. |
+| <a id="mutationescalationpolicyupdaterules"></a>`rules` | [`[EscalationRuleInput!]`](#escalationruleinput) | The steps of the escalation policy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationescalationpolicyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationescalationpolicyupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationescalationpolicyupdateescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | The escalation policy. |
+
 ### `Mutation.exportRequirements`
 
 Input type: `ExportRequirementsInput`

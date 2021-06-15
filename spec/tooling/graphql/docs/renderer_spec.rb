@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require_relative '../../../../tooling/graphql/docs/renderer'
 
-RSpec.describe Gitlab::Graphql::Docs::Renderer do
+RSpec.describe Tooling::Graphql::Docs::Renderer do
   describe '#contents' do
     shared_examples 'renders correctly as GraphQL documentation' do
       it 'contains the expected section' do
@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
       end
     end
 
-    let(:template) { Rails.root.join('lib/gitlab/graphql/docs/templates/default.md.haml') }
+    let(:template) { Rails.root.join('tooling/graphql/docs/templates/default.md.haml') }
     let(:field_description) { 'List of objects.' }
     let(:type) { ::GraphQL::INT_TYPE }
 

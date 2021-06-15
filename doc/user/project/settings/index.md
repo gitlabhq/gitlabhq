@@ -134,7 +134,7 @@ audit trail:
 
 include: # Execute individual project's configuration
   project: '$CI_PROJECT_PATH'
-  file: '$CI_PROJECT_CONFIG_PATH'
+  file: '$CI_CONFIG_PATH'
 ```
 
 ##### Ensure compliance jobs are always run

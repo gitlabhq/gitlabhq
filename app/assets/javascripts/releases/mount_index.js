@@ -14,7 +14,19 @@ export default () => {
     Vue.use(VueApollo);
 
     const apolloProvider = new VueApollo({
-      defaultClient: createDefaultClient(),
+      defaultClient: createDefaultClient(
+        {},
+        {
+          // This page attempts to decrease the perceived loading time
+          // by sending two requests: one request for the first item only (which
+          // completes relatively quickly), and one for all the items (which is slower).
+          // By default, Apollo Client batches these requests together, which defeats
+          // the purpose of making separate requests. So we explicitly
+          // disable batching on this page.
+          batchMax: 1,
+          assumeImmutableResults: true,
+        },
+      ),
     });
 
     return new Vue({

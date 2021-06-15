@@ -219,7 +219,7 @@ the **primary** database. Use the following as a guide.
    prometheus['enable'] = false
    redis['enable'] = false
    redis_exporter['enable'] = false
-   repmgr['enable'] = false
+   patroni['enable'] = false
    sidekiq['enable'] = false
    sidekiq_cluster['enable'] = false
    puma['enable'] = false
@@ -290,7 +290,7 @@ Configure the tracking database.
    prometheus['enable'] = false
    redis['enable'] = false
    redis_exporter['enable'] = false
-   repmgr['enable'] = false
+   patroni['enable'] = false
    sidekiq['enable'] = false
    sidekiq_cluster['enable'] = false
    puma['enable'] = false
@@ -437,7 +437,7 @@ application servers above, with some changes to run only the `sidekiq` service:
    prometheus['enable'] = false
    redis['enable'] = false
    redis_exporter['enable'] = false
-   repmgr['enable'] = false
+   patroni['enable'] = false
    puma['enable'] = false
 
    ##

@@ -404,7 +404,8 @@ RSpec.describe Packages::Package, type: :model do
         it { is_expected.not_to allow_value(nil).for(:version) }
         it { is_expected.not_to allow_value('').for(:version) }
         it { is_expected.to allow_value('v1.2.3').for(:version) }
-        it { is_expected.not_to allow_value('1.2.3').for(:version) }
+        it { is_expected.to allow_value('1.2.3').for(:version) }
+        it { is_expected.not_to allow_value('v1.2').for(:version) }
       end
 
       it_behaves_like 'validating version to be SemVer compliant for', :npm_package
@@ -892,6 +893,26 @@ RSpec.describe Packages::Package, type: :model do
 
     context 'with debian_package' do
       let(:package) { create(:debian_package) }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
+  describe '#infrastructure_package?' do
+    let(:package) { create(:package) }
+
+    subject { package.infrastructure_package? }
+
+    it { is_expected.to eq(false) }
+
+    context 'with generic package' do
+      let(:package) { create(:generic_package) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with terraform module package' do
+      let(:package) { create(:terraform_module_package) }
 
       it { is_expected.to eq(true) }
     end

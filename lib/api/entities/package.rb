@@ -25,8 +25,12 @@ module API
       expose :status
 
       expose :_links do
-        expose :web_path do |package|
-          ::Gitlab::Routing.url_helpers.project_package_path(package.project, package)
+        expose :web_path do |package, opts|
+          if package.infrastructure_package?
+            ::Gitlab::Routing.url_helpers.namespace_project_infrastructure_registry_path(opts[:namespace], package.project, package)
+          else
+            ::Gitlab::Routing.url_helpers.project_package_path(package.project, package)
+          end
         end
 
         expose :delete_api_path, if: can_destroy(:package, &:project) do |package|

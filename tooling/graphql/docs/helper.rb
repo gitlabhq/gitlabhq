@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-return if Rails.env.production?
+require 'gitlab/utils/strong_memoize'
 
-module Gitlab
+module Tooling
   module Graphql
     module Docs
       # We assume a few things about the schema. We use the graphql-ruby gem, which enforces:

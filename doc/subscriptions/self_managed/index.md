@@ -209,9 +209,14 @@ Seat Link daily sends a count of all users in connected GitLab self-managed inst
 Seat Link provides **only** the following information to GitLab:
 
 - Date
+- Timestamp
 - License key
 - Historical maximum user count
 - Billable users count
+- GitLab version
+- Hostname
+- Instance ID
+- MD5 hash of license
 
 For offline or closed network customers, the existing [true-up model](#users-over-license) is used. Prorated charges are not possible without user count data.
 
@@ -220,6 +225,8 @@ For offline or closed network customers, the existing [true-up model](#users-ove
 
 <pre><code>
 {
+  gitlab_version: '13.12.0',
+  timestamp: '2020-01-29T18:25:57+00:00',
   date: '2020-01-29',
   license_key: 'ZXlKa1lYUmhJam9pWm5WNmVsTjVZekZ2YTJoV2NucDBh
 RXRxTTA5amQxcG1VMVZqDQpXR3RwZEc5SGIyMVhibmxuZDJ0NWFrNXJTVzVH
@@ -255,8 +262,9 @@ TjJ4eVlVUkdkWEJtDQpkSHByYWpreVJrcG9UVlo0Y0hKSU9URndiV2RzVFdO
 VlhHNXRhVmszTkV0SVEzcEpNMWRyZEVoRU4ydHINCmRIRnFRVTlCVUVVM1pV
 SlRORE4xUjFaYVJGb3JlWGM5UFZ4dUlpd2lhWFlpt2lKV00yRnNVbk5RTjJk
 Sg0KU1hNMGExaE9SVGR2V2pKQlBUMWNiaUo5DQo=',
-  max_historical_user_count: 10,
-  billable_users_count: 6
+  hostname: 'gitlab.example.com',
+  instance_id: 'c1ac02cb-cb3f-4120-b7fe-961bbfa3abb7',
+  license_md5: '7cd897fffb3517dddf01b79a0889b515'
 }
 </code></pre>
 

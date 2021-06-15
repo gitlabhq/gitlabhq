@@ -76,7 +76,7 @@ class Packages::Package < ApplicationRecord
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
   validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :golang?
-  validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :helm?
+  validates :version, format: { with: Gitlab::Regex.helm_version_regex }, if: :helm?
   validates :version, format: { with: Gitlab::Regex.semver_regex }, if: -> { composer_tag_version? || npm? || terraform_module? }
 
   validates :version,
@@ -267,6 +267,10 @@ class Packages::Package < ApplicationRecord
 
   def tag_names
     tags.pluck(:name)
+  end
+
+  def infrastructure_package?
+    terraform_module?
   end
 
   def debian_incoming?

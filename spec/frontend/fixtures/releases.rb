@@ -100,6 +100,17 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
            link_type: :image)
   end
 
+  let_it_be(:another_release) do
+    create(:release,
+           project: project,
+           tag: 'v1.2',
+           name: 'The second release',
+           author: admin,
+           description: 'An okay release :shrug:',
+           created_at: Time.zone.parse('2019-01-03'),
+           released_at: Time.zone.parse('2019-01-10'))
+  end
+
   after(:all) do
     remove_repository(project)
   end

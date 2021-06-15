@@ -20,12 +20,16 @@ const apolloProvider = new VueApollo({
 const viewBlobEl = document.querySelector('#js-view-blob-app');
 
 if (viewBlobEl) {
-  const { blobPath, projectPath } = viewBlobEl.dataset;
+  const { blobPath, projectPath, targetBranch, originalBranch } = viewBlobEl.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
     el: viewBlobEl,
     apolloProvider,
+    provide: {
+      targetBranch,
+      originalBranch,
+    },
     render(createElement) {
       return createElement(BlobContentViewer, {
         props: {

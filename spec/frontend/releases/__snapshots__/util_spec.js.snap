@@ -5,6 +5,58 @@ Object {
   "data": Array [
     Object {
       "_links": Object {
+        "closedIssuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.2&scope=all&state=closed",
+        "closedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.2&scope=all&state=closed",
+        "editUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.2/edit",
+        "mergedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.2&scope=all&state=merged",
+        "openedIssuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.2&scope=all&state=opened",
+        "openedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.2&scope=all&state=opened",
+        "self": "http://localhost/releases-namespace/releases-project/-/releases/v1.2",
+        "selfUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.2",
+      },
+      "assets": Object {
+        "count": 4,
+        "links": Array [],
+        "sources": Array [
+          Object {
+            "format": "zip",
+            "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.2/releases-project-v1.2.zip",
+          },
+          Object {
+            "format": "tar.gz",
+            "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.2/releases-project-v1.2.tar.gz",
+          },
+          Object {
+            "format": "tar.bz2",
+            "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.2/releases-project-v1.2.tar.bz2",
+          },
+          Object {
+            "format": "tar",
+            "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.2/releases-project-v1.2.tar",
+          },
+        ],
+      },
+      "author": Object {
+        "avatarUrl": "https://www.gravatar.com/avatar/16f8e2050ce10180ca571c2eb19cfce2?s=80&d=identicon",
+        "username": "administrator",
+        "webUrl": "http://localhost/administrator",
+      },
+      "commit": Object {
+        "shortId": "b83d6e39",
+        "title": "Merge branch 'branch-merged' into 'master'",
+      },
+      "commitPath": "http://localhost/releases-namespace/releases-project/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0",
+      "descriptionHtml": "<p data-sourcepos=\\"1:1-1:23\\" dir=\\"auto\\">An okay release <gl-emoji title=\\"shrug\\" data-name=\\"shrug\\" data-unicode-version=\\"9.0\\">🤷</gl-emoji></p>",
+      "evidences": Array [],
+      "milestones": Array [],
+      "name": "The second release",
+      "releasedAt": "2019-01-10T00:00:00Z",
+      "tagName": "v1.2",
+      "tagPath": "/releases-namespace/releases-project/-/tags/v1.2",
+      "upcomingRelease": true,
+    },
+    Object {
+      "_links": Object {
         "closedIssuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.1&scope=all&state=closed",
         "closedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.1&scope=all&state=closed",
         "editUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/edit",
@@ -124,7 +176,7 @@ Object {
     "endCursor": "eyJyZWxlYXNlZF9hdCI6IjIwMTgtMTItMTAgMDA6MDA6MDAuMDAwMDAwMDAwIFVUQyIsImlkIjoiMSJ9",
     "hasNextPage": false,
     "hasPreviousPage": false,
-    "startCursor": "eyJyZWxlYXNlZF9hdCI6IjIwMTgtMTItMTAgMDA6MDA6MDAuMDAwMDAwMDAwIFVUQyIsImlkIjoiMSJ9",
+    "startCursor": "eyJyZWxlYXNlZF9hdCI6IjIwMTktMDEtMTAgMDA6MDA6MDAuMDAwMDAwMDAwIFVUQyIsImlkIjoiMiJ9",
   },
 }
 `;

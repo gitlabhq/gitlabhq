@@ -583,64 +583,6 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl start
    ```
 
-## Fixing errors during a PostgreSQL upgrade or downgrade
-
-### Message: `ERROR: psql: FATAL:  role "gitlab-consul" does not exist`
-
-When
-[upgrading PostgreSQL on a Geo instance](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance), you might encounter the
-following error:
-
-```plaintext
-$ sudo gitlab-ctl pg-upgrade --target-version=11
-Checking for an omnibus managed postgresql: OK
-Checking if postgresql['version'] is set: OK
-Checking if we already upgraded: NOT OK
-Checking for a newer version of PostgreSQL to install
-Upgrading PostgreSQL to 11.7
-Checking if PostgreSQL bin files are symlinked to the expected location: OK
-Waiting 30 seconds to ensure tasks complete before PostgreSQL upgrade.
-See https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server for details
-If you do not want to upgrade the PostgreSQL server at this time, enter Ctrl-C and see the documentation for details
-
-Please hit Ctrl-C now if you want to cancel the operation.
-..............................Detected an HA cluster.
-Error running command: /opt/gitlab/embedded/bin/psql -qt -d gitlab_repmgr -h /var/opt/gitlab/postgresql -p 5432 -c "SELECT name FROM repmgr_gitlab_cluster.repl_nodes WHERE type='master' AND active != 'f'" -U gitlab-consul
-ERROR: psql: FATAL:  role "gitlab-consul" does not exist
-Traceback (most recent call last):
-    10: from /opt/gitlab/embedded/bin/omnibus-ctl:23:in `<main>'
-      9: from /opt/gitlab/embedded/bin/omnibus-ctl:23:in `load'
-      8: from /opt/gitlab/embedded/lib/ruby/gems/2.6.0/gems/omnibus-ctl-0.6.0/bin/omnibus-ctl:31:in `<top (required)>'
-      7: from /opt/gitlab/embedded/lib/ruby/gems/2.6.0/gems/omnibus-ctl-0.6.0/lib/omnibus-ctl.rb:746:in `run'
-      6: from /opt/gitlab/embedded/lib/ruby/gems/2.6.0/gems/omnibus-ctl-0.6.0/lib/omnibus-ctl.rb:204:in `block in add_command_under_category'
-      5: from /opt/gitlab/embedded/service/omnibus-ctl/pg-upgrade.rb:171:in `block in load_file'
-      4: from /opt/gitlab/embedded/service/omnibus-ctl-ee/lib/repmgr.rb:248:in `is_master?'
-      3: from /opt/gitlab/embedded/service/omnibus-ctl-ee/lib/repmgr.rb:100:in `execute_psql'
-      2: from /opt/gitlab/embedded/service/omnibus-ctl-ee/lib/repmgr.rb:113:in `cmd'
-      1: from /opt/gitlab/embedded/lib/ruby/gems/2.6.0/gems/mixlib-shellout-3.0.9/lib/mixlib/shellout.rb:287:in `error!'
-/opt/gitlab/embedded/lib/ruby/gems/2.6.0/gems/mixlib-shellout-3.0.9/lib/mixlib/shellout.rb:300:in `invalid!': Expected process to exit with [0], but received '2' (Mixlib::ShellOut::ShellCommandFailed)
----- Begin output of /opt/gitlab/embedded/bin/psql -qt -d gitlab_repmgr -h /var/opt/gitlab/postgresql -p 5432 -c "SELECT name FROM repmgr_gitlab_cluster.repl_nodes WHERE type='master' AND active != 'f'" -U gitlab-consul ----
-STDOUT:
-STDERR: psql: FATAL:  role "gitlab-consul" does not exist
----- End output of /opt/gitlab/embedded/bin/psql -qt -d gitlab_repmgr -h /var/opt/gitlab/postgresql -p 5432 -c "SELECT name FROM repmgr_gitlab_cluster.repl_nodes WHERE type='master' AND active != 'f'" -U gitlab-consul ----
-Ran /opt/gitlab/embedded/bin/psql -qt -d gitlab_repmgr -h /var/opt/gitlab/postgresql -p 5432 -c "SELECT name FROM repmgr_gitlab_cluster.repl_nodes WHERE type='master' AND active != 'f'" -U gitlab-consul returned 2
-```
-
-If you are upgrading the PostgreSQL read-replica of a Geo secondary node, and
-you are not using `consul` or `repmgr`, you may need to disable `consul` and/or
-`repmgr` services in `gitlab.rb`:
-
-```ruby
-consul['enable'] = false
-repmgr['enable'] = false
-```
-
-Then reconfigure GitLab:
-
-```shell
-sudo gitlab-ctl reconfigure
-```
-
 ## Fixing errors during a failover or when promoting a secondary to a primary node
 
 The following are possible errors that might be encountered during failover or

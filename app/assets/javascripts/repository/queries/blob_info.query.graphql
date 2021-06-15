@@ -15,6 +15,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!) {
           storedExternally
           rawPath
           replacePath
+          canModifyBlob
           simpleViewer {
             fileType
             tooLarge

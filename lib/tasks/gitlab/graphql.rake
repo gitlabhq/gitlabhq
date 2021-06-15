@@ -3,11 +3,12 @@
 return if Rails.env.production?
 
 require 'graphql/rake_task'
+require_relative '../../../tooling/graphql/docs/renderer'
 
 namespace :gitlab do
   OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference")
   TEMP_SCHEMA_DIR = Rails.root.join('tmp/tests/graphql')
-  TEMPLATES_DIR = 'lib/gitlab/graphql/docs/templates/'
+  TEMPLATES_DIR = 'tooling/graphql/docs/templates/'
 
   # Make all feature flags enabled so that all feature flag
   # controlled fields are considered visible and are output.
@@ -110,7 +111,7 @@ namespace :gitlab do
 
     desc 'GitLab | GraphQL | Generate GraphQL docs'
     task compile_docs: [:environment, :enable_feature_flags] do
-      renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema, render_options)
+      renderer = Tooling::Graphql::Docs::Renderer.new(GitlabSchema, render_options)
 
       renderer.write
 
@@ -119,7 +120,7 @@ namespace :gitlab do
 
     desc 'GitLab | GraphQL | Check if GraphQL docs are up to date'
     task check_docs: [:environment, :enable_feature_flags] do
-      renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema, render_options)
+      renderer = Tooling::Graphql::Docs::Renderer.new(GitlabSchema, render_options)
 
       doc = File.read(Rails.root.join(OUTPUT_DIR, 'index.md'))
 

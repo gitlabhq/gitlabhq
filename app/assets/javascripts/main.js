@@ -20,7 +20,7 @@ import { removeFlashClickListener } from './flash';
 import initTodoToggle from './header';
 import initLayoutNav from './layout_nav';
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
-import { localTimeAgo } from './lib/utils/datetime_utility';
+import { localTimeAgo } from './lib/utils/datetime/timeago_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else

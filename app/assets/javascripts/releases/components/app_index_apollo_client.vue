@@ -33,7 +33,34 @@ export default {
     },
   },
   apollo: {
-    graphqlResponse: {
+    /**
+     * The same query as `fullGraphqlResponse`, except that it limits its
+     * results to a single item. This causes this request to complete much more
+     * quickly than `fullGraphqlResponse`, which allows the page to show
+     * meaningful content to the user much earlier.
+     */
+    singleGraphqlResponse: {
+      query: allReleasesQuery,
+      // This trick only works when paginating _forward_.
+      // When paginating backwards, limiting the query to a single item loads
+      // the _last_ item in the page, which is not useful for our purposes.
+      skip() {
+        return !this.includeSingleQuery;
+      },
+      variables() {
+        return {
+          ...this.queryVariables,
+          first: 1,
+        };
+      },
+      update(data) {
+        return { data };
+      },
+      error() {
+        this.singleRequestError = true;
+      },
+    },
+    fullGraphqlResponse: {
       query: allReleasesQuery,
       variables() {
         return this.queryVariables;
@@ -42,7 +69,7 @@ export default {
         return { data };
       },
       error(error) {
-        this.hasError = true;
+        this.fullRequestError = true;
 
         createFlash({
           message: this.$options.i18n.errorMessage,
@@ -54,7 +81,8 @@ export default {
   },
   data() {
     return {
-      hasError: false,
+      singleRequestError: false,
+      fullRequestError: false,
       cursors: {
         before: getParameterByName('before'),
         after: getParameterByName('after'),
@@ -83,41 +111,65 @@ export default {
         sort: this.sort,
       };
     },
-    isLoading() {
-      return this.$apollo.queries.graphqlResponse.loading;
+    /**
+     * @returns {Boolean} Whether or not to request/include
+     * the results of the single-item query
+     */
+    includeSingleQuery() {
+      return Boolean(!this.cursors.before || this.cursors.after);
+    },
+    isSingleRequestLoading() {
+      return this.$apollo.queries.singleGraphqlResponse.loading;
+    },
+    isFullRequestLoading() {
+      return this.$apollo.queries.fullGraphqlResponse.loading;
+    },
+    /**
+     * @returns {Boolean} `true` if the `singleGraphqlResponse`
+     * query has finished loading without errors
+     */
+    isSingleRequestLoaded() {
+      return Boolean(!this.isSingleRequestLoading && this.singleGraphqlResponse?.data.project);
+    },
+    /**
+     * @returns {Boolean} `true` if the `fullGraphqlResponse`
+     * query has finished loading without errors
+     */
+    isFullRequestLoaded() {
+      return Boolean(!this.isFullRequestLoading && this.fullGraphqlResponse?.data.project);
     },
     releases() {
-      if (!this.graphqlResponse || this.hasError) {
-        return [];
+      if (this.isFullRequestLoaded) {
+        return convertAllReleasesGraphQLResponse(this.fullGraphqlResponse).data;
       }
 
-      return convertAllReleasesGraphQLResponse(this.graphqlResponse).data;
+      if (this.isSingleRequestLoaded && this.includeSingleQuery) {
+        return convertAllReleasesGraphQLResponse(this.singleGraphqlResponse).data;
+      }
+
+      return [];
     },
     pageInfo() {
-      if (!this.graphqlResponse || this.hasError) {
+      if (!this.isFullRequestLoaded) {
         return {
           hasPreviousPage: false,
           hasNextPage: false,
         };
       }
 
-      return this.graphqlResponse.data.project.releases.pageInfo;
+      return this.fullGraphqlResponse.data.project.releases.pageInfo;
     },
     shouldRenderEmptyState() {
-      return !this.releases.length && !this.hasError && !this.isLoading;
-    },
-    shouldRenderSuccessState() {
-      return this.releases.length && !this.isLoading && !this.hasError;
+      return this.isFullRequestLoaded && this.releases.length === 0;
     },
     shouldRenderLoadingIndicator() {
-      return this.isLoading && !this.hasError;
+      return (
+        (this.isSingleRequestLoading && !this.singleRequestError && !this.isFullRequestLoaded) ||
+        (this.isFullRequestLoading && !this.fullRequestError)
+      );
     },
     shouldRenderPagination() {
-      return (
-        !this.isLoading &&
-        !this.hasError &&
-        (this.pageInfo.hasPreviousPage || this.pageInfo.hasNextPage)
-      );
+      return this.isFullRequestLoaded && !this.shouldRenderEmptyState;
     },
   },
   created() {
@@ -130,7 +182,7 @@ export default {
   },
   methods: {
     getReleaseKey(release, index) {
-      return [release.tagNamerstrs, release.name, index].join('|');
+      return [release.tagName, release.name, index].join('|');
     },
     updateQueryParamsFromUrl() {
       this.cursors.before = getParameterByName('before');
@@ -191,18 +243,16 @@ export default {
       >
     </div>
 
+    <releases-empty-state v-if="shouldRenderEmptyState" />
+
+    <release-block
+      v-for="(release, index) in releases"
+      :key="getReleaseKey(release, index)"
+      :release="release"
+      :class="{ 'linked-card': releases.length > 1 && index !== releases.length - 1 }"
+    />
+
     <release-skeleton-loader v-if="shouldRenderLoadingIndicator" />
-
-    <releases-empty-state v-else-if="shouldRenderEmptyState" />
-
-    <div v-else-if="shouldRenderSuccessState">
-      <release-block
-        v-for="(release, index) in releases"
-        :key="getReleaseKey(release, index)"
-        :release="release"
-        :class="{ 'linked-card': releases.length > 1 && index !== releases.length - 1 }"
-      />
-    </div>
 
     <releases-pagination-apollo-client
       v-if="shouldRenderPagination"

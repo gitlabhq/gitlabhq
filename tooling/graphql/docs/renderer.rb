@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-return if Rails.env.production?
+require_relative 'helper'
 
-module Gitlab
+module Tooling
   module Graphql
     module Docs
       # Gitlab renderer for graphql-docs.
@@ -14,7 +14,7 @@ module Gitlab
       #   output_dir: The folder where the markdown files will be saved
       #   template: The path of the haml template to be parsed
       class Renderer
-        include Gitlab::Graphql::Docs::Helper
+        include Tooling::Graphql::Docs::Helper
 
         attr_reader :schema
 

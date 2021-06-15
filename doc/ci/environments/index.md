@@ -31,7 +31,7 @@ Prerequisites:
 
 To view a list of environments and deployments:
 
-1. Go to the project's **Operations > Environments** page.
+1. Go to the project's **Deployments > Environments** page.
    The environments are displayed.
 
    ![Environments list](img/environments_list.png)
@@ -57,7 +57,7 @@ You can create an environment and deployment in the UI or in your `.gitlab-ci.ym
 
 In the UI:
 
-1. Go to the project's **Operations > Environments** page.
+1. Go to the project's **Deployments > Environments** page.
 1. Select **New environment**.
 1. Enter a name and external URL.
 1. Select **Save**.
@@ -326,7 +326,7 @@ If there is a problem with a deployment, you can retry it or roll it back.
 
 To retry or rollback a deployment:
 
-1. Go to the project's **Operations > Environments**.
+1. Go to the project's **Deployments > Environments**.
 1. Select the environment.
 1. To the right of the deployment name:
    - To retry a deployment, select **Re-deploy to environment**.
@@ -465,7 +465,7 @@ GitLab automatically triggers the `stop_review_app` job to stop the environment.
 
 You can view a deployment's expiration date in the GitLab UI.
 
-1. Go to the project's **Operations > Environments** page.
+1. Go to the project's **Deployments > Environments** page.
 1. Select the name of the deployment.
 
 In the top left, next to the environment name, the expiration date is displayed.
@@ -474,7 +474,7 @@ In the top left, next to the environment name, the expiration date is displayed.
 
 You can manually override a deployment's expiration date.
 
-1. Go to the project's **Operations > Environments** page.
+1. Go to the project's **Deployments > Environments** page.
 1. Select the deployment name.
 1. On the top right, select the thumbtack (**{thumbtack}**).
 
@@ -491,7 +491,7 @@ You can delete [stopped environments](#stopping-an-environment) in the GitLab UI
 
 To delete a stopped environment in the GitLab UI:
 
-1. Go to the project's **Operations > Environments** page.
+1. Go to the project's **Deployments > Environments** page.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog box, select **Delete environment**.

@@ -184,7 +184,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What databases and application servers support the application?
 
-- PostgreSQL >= 11, Redis, Sidekiq, Puma.
+- PostgreSQL >= 12, Redis, Sidekiq, Puma.
 
 ### How will database connection strings, encryption keys, and other sensitive components be stored, accessed, and protected from unauthorized detection?
 
