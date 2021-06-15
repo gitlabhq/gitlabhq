@@ -7,7 +7,7 @@ product_stage:
 product_group:
 product_category:
 value_type: number
-status: implemented
+status: data_available
 milestone: "13.12"
 introduced_by_url:
 time_frame: 28d

@@ -24,10 +24,6 @@ RSpec.describe FeatureFlagsFinder do
     let!(:feature_flag_2) { create(:operations_feature_flag, name: 'flag-b', project: project) }
     let(:args) { {} }
 
-    before do
-      stub_feature_flags(remove_legacy_flags: false)
-    end
-
     it 'returns feature flags ordered by name' do
       is_expected.to eq([feature_flag_1, feature_flag_2])
     end
@@ -77,21 +73,11 @@ RSpec.describe FeatureFlagsFinder do
       end
     end
 
-    context 'when new version flags are enabled' do
-      let!(:feature_flag_3) { create(:operations_feature_flag, :new_version_flag, name: 'flag-c', project: project) }
+    context 'with a legacy flag' do
+      let!(:feature_flag_3) { create(:operations_feature_flag, :legacy_flag, name: 'flag-c', project: project) }
 
-      it 'returns new and legacy flags' do
-        is_expected.to eq([feature_flag_1, feature_flag_2, feature_flag_3])
-      end
-
-      context 'when legacy flags are disabled' do
-        before do
-          stub_feature_flags(remove_legacy_flags_override: false, remove_legacy_flags: true)
-        end
-
-        it 'returns only new flags' do
-          is_expected.to eq([feature_flag_3])
-        end
+      it 'returns new flags' do
+        is_expected.to eq([feature_flag_1, feature_flag_2])
       end
     end
   end

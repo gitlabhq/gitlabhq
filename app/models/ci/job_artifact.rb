@@ -43,7 +43,7 @@ module Ci
       dotenv: '.env',
       cobertura: 'cobertura-coverage.xml',
       terraform: 'tfplan.json',
-      cluster_applications: 'gl-cluster-applications.json',
+      cluster_applications: 'gl-cluster-applications.json', # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/333441
       requirements: 'requirements.json',
       coverage_fuzzing: 'gl-coverage-fuzzing.json',
       api_fuzzing: 'gl-api-fuzzing-report.json'

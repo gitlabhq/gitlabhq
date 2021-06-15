@@ -317,21 +317,6 @@ FactoryBot.define do
       end
     end
 
-    trait :cluster_applications do
-      file_type { :cluster_applications }
-      file_format { :gzip }
-
-      transient do
-        file do
-          fixture_file_upload(Rails.root.join('spec/fixtures/helm/helm_list_v2_prometheus_missing.json.gz'), 'application/x-gzip')
-        end
-      end
-
-      after(:build) do |artifact, evaluator|
-        artifact.file = evaluator.file
-      end
-    end
-
     trait :correct_checksum do
       after(:build) do |artifact, evaluator|
         artifact.file_sha256 = Digest::SHA256.file(artifact.file.path).hexdigest

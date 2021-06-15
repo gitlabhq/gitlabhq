@@ -43,7 +43,7 @@ module Gitlab
               validates :cobertura, array_of_strings_or_string: true
               validates :terraform, array_of_strings_or_string: true
               validates :accessibility, array_of_strings_or_string: true
-              validates :cluster_applications, array_of_strings_or_string: true
+              validates :cluster_applications, array_of_strings_or_string: true # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/333441
               validates :requirements, array_of_strings_or_string: true
             end
           end

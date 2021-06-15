@@ -4,7 +4,7 @@
   .gl-md-display-flex
     - if %w(issues merge_requests).include?(@scope)
       #js-search-sidebar{ class: search_bar_classes }
-    .gl-w-full.gl-flex-fill-1.gl-overflow-x-hidden
+    .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
       = render partial: "search/results/empty"
       = render_if_exists 'shared/promotions/promote_advanced_search'
 - else
@@ -14,7 +14,7 @@
   .results.gl-md-display-flex.gl-mt-3
     - if %w(issues merge_requests).include?(@scope)
       #js-search-sidebar{ class: search_bar_classes }
-    .gl-w-full.gl-flex-fill-1.gl-overflow-x-hidden
+    .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
       - if @scope == 'commits'
         %ul.content-list.commit-list
           = render partial: "search/results/commit", collection: @search_objects

@@ -1,6 +1,9 @@
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 import AccessorUtilities from '~/lib/utils/accessor';
+
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+
 import {
   stripQuotes,
   uniqueTokens,
@@ -210,6 +213,19 @@ describe('filterToQueryObject', () => {
     const res = filterToQueryObject({ [token]: value });
     expect(res).toEqual(result);
   });
+
+  it.each([
+    [FILTERED_SEARCH_TERM, [{ value: '' }], { search: '' }],
+    [FILTERED_SEARCH_TERM, [{ value: 'bar' }], { search: 'bar' }],
+    [FILTERED_SEARCH_TERM, [{ value: 'bar' }, { value: '' }], { search: 'bar' }],
+    [FILTERED_SEARCH_TERM, [{ value: 'bar' }, { value: 'baz' }], { search: 'bar baz' }],
+  ])(
+    'when filteredSearchTermKey=search gathers filter values %s=%j into query object=%j',
+    (token, value, result) => {
+      const res = filterToQueryObject({ [token]: value }, { filteredSearchTermKey: 'search' });
+      expect(res).toEqual(result);
+    },
+  );
 });
 
 describe('urlQueryToFilter', () => {
@@ -255,10 +271,61 @@ describe('urlQueryToFilter', () => {
       },
     ],
     ['not[foo][]=bar', { foo: [{ value: 'bar', operator: '!=' }] }],
-  ])('gathers filter values %s into query object=%j', (query, result) => {
-    const res = urlQueryToFilter(query);
-    expect(res).toEqual(result);
-  });
+    ['nop=1&not[nop]=2', {}, { filterNamesAllowList: ['foo'] }],
+    [
+      'foo[]=bar&not[foo][]=baz&nop=xxx&not[nop]=yyy',
+      {
+        foo: [
+          { value: 'bar', operator: '=' },
+          { value: 'baz', operator: '!=' },
+        ],
+      },
+      { filterNamesAllowList: ['foo'] },
+    ],
+    [
+      'search=term&foo=bar',
+      {
+        [FILTERED_SEARCH_TERM]: [{ value: 'term' }],
+        foo: { value: 'bar', operator: '=' },
+      },
+      { filteredSearchTermKey: 'search' },
+    ],
+    [
+      'search=my terms',
+      {
+        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+      },
+      { filteredSearchTermKey: 'search' },
+    ],
+    [
+      'search[]=my&search[]=terms',
+      {
+        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+      },
+      { filteredSearchTermKey: 'search' },
+    ],
+    [
+      'search=my+terms',
+      {
+        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+      },
+      { filteredSearchTermKey: 'search', legacySpacesDecode: false },
+    ],
+    [
+      'search=my terms&foo=bar&nop=xxx',
+      {
+        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+        foo: { value: 'bar', operator: '=' },
+      },
+      { filteredSearchTermKey: 'search', filterNamesAllowList: ['foo'] },
+    ],
+  ])(
+    'gathers filter values %s into query object=%j when options %j',
+    (query, result, options = undefined) => {
+      const res = urlQueryToFilter(query, options);
+      expect(res).toEqual(result);
+    },
+  );
 });
 
 describe('getRecentlyUsedTokenValues', () => {

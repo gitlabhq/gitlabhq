@@ -42,7 +42,6 @@
         "host": {"type": ["string", "null"]},
         "port": {"type": ["integer", "514"]},
         "protocol": {"type": ["integer", "0"]},
-        "cilium_log_enabled": {"type": ["boolean", "true"]},
         "update_available": { "type": ["boolean", "null"] },
         "can_uninstall": { "type": "boolean" },
         "available_domains": {

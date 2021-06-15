@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Resolvers::PackageDetailsResolver do
   include GraphqlHelpers
-  include ::Gitlab::Graphql::Laziness
 
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { project.owner }

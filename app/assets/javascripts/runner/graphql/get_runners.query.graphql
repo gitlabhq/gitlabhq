@@ -6,6 +6,7 @@ query getRunners(
   $after: String
   $first: Int
   $last: Int
+  $search: String
   $status: CiRunnerStatus
   $type: CiRunnerType
   $sort: CiRunnerSort
@@ -15,6 +16,7 @@ query getRunners(
     after: $after
     first: $first
     last: $last
+    search: $search
     status: $status
     type: $type
     sort: $sort

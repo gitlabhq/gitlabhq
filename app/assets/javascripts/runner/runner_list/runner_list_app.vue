@@ -12,7 +12,7 @@ import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
-} from './filtered_search_utils';
+} from './runner_search_utils';
 
 export default {
   components: {

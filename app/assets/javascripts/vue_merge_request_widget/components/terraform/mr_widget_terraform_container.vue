@@ -107,7 +107,7 @@ export default {
       <template #header>
         <div
           data-testid="terraform-header-text"
-          class="gl-flex-fill-1 gl-display-flex gl-flex-direction-column"
+          class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column"
         >
           <p v-if="validPlanCountText" class="gl-m-0">
             <gl-sprintf :message="validPlanCountText">

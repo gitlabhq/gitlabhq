@@ -160,7 +160,7 @@ export default {
   <div class="ci-widget media">
     <template v-if="hasCIError">
       <gl-icon name="status_failed" class="gl-text-red-500" :size="24" />
-      <p class="gl-flex-fill-1 gl-ml-5 gl-mb-0" data-testid="ci-error-message">
+      <p class="gl-flex-grow-1 gl-ml-5 gl-mb-0" data-testid="ci-error-message">
         <gl-sprintf :message="$options.errorText">
           <template #link="{ content }">
             <gl-link :href="mrTroubleshootingDocsPath">{{ content }}</gl-link>
@@ -171,7 +171,7 @@ export default {
     <template v-else-if="!hasPipeline">
       <gl-loading-icon size="md" />
       <p
-        class="gl-flex-fill-1 gl-display-flex gl-ml-5 gl-mb-0"
+        class="gl-flex-grow-1 gl-display-flex gl-ml-5 gl-mb-0"
         data-testid="monitoring-pipeline-message"
       >
         {{ $options.monitoringPipelineText }}

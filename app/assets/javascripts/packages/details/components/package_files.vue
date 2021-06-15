@@ -148,7 +148,7 @@ export default {
 
       <template #row-details="{ item }">
         <div
-          class="gl-display-flex gl-flex-direction-column gl-flex-fill-1 gl-bg-gray-10 gl-rounded-base gl-inset-border-1-gray-100"
+          class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-bg-gray-10 gl-rounded-base gl-inset-border-1-gray-100"
         >
           <file-sha
             v-if="item.file_sha256"

@@ -27,8 +27,6 @@ apply:
     variables:
       - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   artifacts:
-    reports:
-      cluster_applications: gl-cluster-applications.json
     when: on_failure
     paths:
       - tiller.log

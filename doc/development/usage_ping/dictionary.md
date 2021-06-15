@@ -162,7 +162,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers:
 
@@ -282,7 +282,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -594,7 +594,7 @@ Total active instance Runners
 
 Group: `group::pipeline execution`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -606,7 +606,7 @@ Total active and online group Runners
 
 Group: `group::pipeline execution`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -618,7 +618,7 @@ Total active group Runners
 
 Group: `group::pipeline execution`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -630,7 +630,7 @@ Total active and online instance Runners
 
 Group: `group::pipeline execution`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -642,7 +642,7 @@ Total online Runners
 
 Group: `group::pipeline execution`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -654,7 +654,7 @@ Total active project Runners
 
 Group: `group::pipeline execution`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -666,7 +666,7 @@ Total active and online project Runners
 
 Group: `group::pipeline execution`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2118,7 +2118,7 @@ Total clicks on the create track's first email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2130,7 +2130,7 @@ Total sent emails of the create track's first email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2142,7 +2142,7 @@ Total clicks on the create track's second email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2154,7 +2154,7 @@ Total sent emails of the create track's second email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2166,7 +2166,7 @@ Total clicks on the create track's third email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2178,7 +2178,7 @@ Total sent emails of the create track's third email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2190,7 +2190,7 @@ Total sent emails of the experience track's first email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2202,7 +2202,7 @@ Total clicks on the team track's first email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2214,7 +2214,7 @@ Total sent emails of the team track's first email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2226,7 +2226,7 @@ Total clicks on the team track's second email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2238,7 +2238,7 @@ Total sent emails of the team track's second email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2250,7 +2250,7 @@ Total clicks on the team track's third email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2262,7 +2262,7 @@ Total sent emails of the team track's third email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2274,7 +2274,7 @@ Total clicks on the verify trial's first email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2286,7 +2286,7 @@ Total sent emails of the trial track's first email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2298,7 +2298,7 @@ Total clicks on the trial track's second email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2310,7 +2310,7 @@ Total sent emails of the trial track's second email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2322,7 +2322,7 @@ Total clicks on the trial track's third email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2334,7 +2334,7 @@ Total sent emails of the trial track's third email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2346,7 +2346,7 @@ Total clicks on the verify track's first email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2358,7 +2358,7 @@ Total sent emails of the verify track's first email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2370,7 +2370,7 @@ Total clicks on the verify track's second email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2382,7 +2382,7 @@ Total sent emails of the verify track's second email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2394,7 +2394,7 @@ Total clicks on the verify track's third email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2406,7 +2406,7 @@ Total sent emails of the verify track's third email
 
 Group: `group::activation`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -3186,7 +3186,7 @@ Count of Kubernetes API proxy requests
 
 Group: `group::configure`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -6570,7 +6570,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -6582,7 +6582,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -6594,7 +6594,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -6786,7 +6786,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -6798,7 +6798,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -6810,7 +6810,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8166,7 +8166,7 @@ Counts visits to DevOps Adoption page per month
 
 Group: `group::optimize`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -8178,7 +8178,7 @@ Counts visits to DevOps Adoption page per week
 
 Group: `group::optimize`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -8622,7 +8622,7 @@ Count of users clicking diff view setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8634,7 +8634,7 @@ Count of users clicking diff view setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8646,7 +8646,7 @@ Count of users clicking merge request file browser setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8658,7 +8658,7 @@ Count of users with merge request file list setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8670,7 +8670,7 @@ Count of users clicking single file mode setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8682,7 +8682,7 @@ Count of users clicking single file mode setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8694,7 +8694,7 @@ Count of users clicking merge request whitespae setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8706,7 +8706,7 @@ Count of users clicking merge request whitespae setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8718,7 +8718,7 @@ Count of users with show whitespace disabled
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8730,7 +8730,7 @@ Count of users with show whitespace disabled
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8742,7 +8742,7 @@ Count of users with single mode disabled
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8754,7 +8754,7 @@ Count of users with single mode disabled
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8766,7 +8766,7 @@ Count of users with show whitespace enabled
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8778,7 +8778,7 @@ Count of users with show whitespace enabled
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8790,7 +8790,7 @@ Count of users with single file mode enabled
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8802,7 +8802,7 @@ Count of users with single file mode enabled
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8814,7 +8814,7 @@ Count of users with merge request view type as inline
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8826,7 +8826,7 @@ Count of users with merge request view type as inline
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8838,7 +8838,7 @@ Count of users with merge request view type as parallel
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8850,7 +8850,7 @@ Count of users with merge request view type as parallel
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8910,7 +8910,7 @@ Count of users with merge request file list setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8922,7 +8922,7 @@ Count of users with merge request file list setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8934,7 +8934,7 @@ Count of users with merge request file tree setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8946,7 +8946,7 @@ Count of users with merge request file tree setting
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9414,7 +9414,7 @@ Count of unique users per week who load the conflict resolution page
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9426,7 +9426,7 @@ Count of unique users per week who load the conflict resolution page
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9654,7 +9654,7 @@ Count of unique users per week who attempt to resolve a conflict through the ui
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9666,7 +9666,7 @@ Count of unique users per week who attempt to resolve a conflict through the ui
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -10782,7 +10782,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `ultimate`
 
@@ -10794,7 +10794,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `ultimate`
 
@@ -10806,7 +10806,7 @@ Count of MAU creating epic boards
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -10818,7 +10818,7 @@ Count of WAU creating epic boards
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -10830,7 +10830,7 @@ Count of MAU updating epic board names
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -10842,7 +10842,7 @@ Count of WAU updating epic board names
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -10854,7 +10854,7 @@ Count of MAU viewing epic boards
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -10866,7 +10866,7 @@ Count of WAU viewing epic boards
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -10950,7 +10950,7 @@ Count of MAU cross referencing epics
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -10962,7 +10962,7 @@ Counts of WAU cross referencing epics
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -11142,7 +11142,7 @@ Counts of MAU awarding emoji on epic
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -11154,7 +11154,7 @@ Counts of WAU awarding emoji on epic
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -11214,7 +11214,7 @@ Number of users creating an issue from an epic
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`
 
@@ -11226,7 +11226,7 @@ Number of users creating an issue from an epic
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`
 
@@ -11238,7 +11238,7 @@ Counts of MAU removing emoji on epic
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -11250,7 +11250,7 @@ Counts of WAU removing emoji on epic
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -11454,7 +11454,7 @@ Counts of MAU updating parent on epic
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -11466,7 +11466,7 @@ Counts of WAU updating parent on epic
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -11550,7 +11550,7 @@ Counts of MAU checking epic task
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -11562,7 +11562,7 @@ Counts of WAU checking epic task
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -11574,7 +11574,7 @@ Counts of MAU unchecking epic task
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -11586,7 +11586,7 @@ Counts of WAU unchecking epic task
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -12990,7 +12990,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -13002,7 +13002,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -16304,7 +16304,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -16340,7 +16340,7 @@ Total count of all custom compliance framework labels
 
 Group: `compliance`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -18274,7 +18274,7 @@ Missing description
 
 Group: ``
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -18310,7 +18310,7 @@ Monthly count of all custom compliance framework labels
 
 Group: `compliance`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 

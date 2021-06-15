@@ -168,7 +168,6 @@ module API
       mount ::API::ErrorTracking
       mount ::API::Events
       mount ::API::FeatureFlags
-      mount ::API::FeatureFlagScopes
       mount ::API::FeatureFlagsUserLists
       mount ::API::Features
       mount ::API::Files

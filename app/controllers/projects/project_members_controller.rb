@@ -66,6 +66,18 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def plain_source_type
     'project'
   end
+
+  def source_type
+    _("project")
+  end
+
+  def members_page_url
+    project_project_members_path(project)
+  end
+
+  def root_params_key
+    :project_member
+  end
 end
 
 Projects::ProjectMembersController.prepend_mod_with('Projects::ProjectMembersController')

@@ -29,7 +29,7 @@ RSpec.describe Operations::FeatureFlagScope do
     end
 
     context 'when environment scope of a default scope is updated' do
-      let!(:feature_flag) { create(:operations_feature_flag) }
+      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag) }
       let!(:scope_default) { feature_flag.default_scope }
 
       it 'keeps default scope intact' do
@@ -41,7 +41,7 @@ RSpec.describe Operations::FeatureFlagScope do
     end
 
     context 'when a default scope is destroyed' do
-      let!(:feature_flag) { create(:operations_feature_flag) }
+      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag) }
       let!(:scope_default) { feature_flag.default_scope }
 
       it 'prevents from destroying the default scope' do

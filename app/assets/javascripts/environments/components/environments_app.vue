@@ -121,7 +121,7 @@ export default {
           variant="info"
           category="secondary"
           type="button"
-          class="gl-mb-3 gl-flex-fill-1"
+          class="gl-mb-3 gl-flex-grow-1"
           >{{ $options.i18n.reviewAppButtonLabel }}</gl-button
         >
         <gl-button

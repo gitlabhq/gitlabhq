@@ -195,3 +195,7 @@ Feature.disable(:ff_compliance_approval_gates)
 # For a single project
 Feature.disable(:ff_compliance_approval_gates, Project.find(<project id>)
 ```
+
+## Related links
+
+- [External status checks](../user/project/merge_requests/status_checks.md)

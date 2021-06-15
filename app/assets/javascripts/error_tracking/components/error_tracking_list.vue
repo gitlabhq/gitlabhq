@@ -260,7 +260,7 @@ export default {
               </template>
               <div v-else class="px-3">{{ __("You don't have any recent searches") }}</div>
             </gl-dropdown>
-            <div class="filtered-search-input-container gl-flex-fill-1">
+            <div class="filtered-search-input-container gl-flex-grow-1">
               <gl-form-input
                 v-model="errorSearchQuery"
                 class="pl-2 filtered-search"

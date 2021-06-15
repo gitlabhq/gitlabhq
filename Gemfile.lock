@@ -451,7 +451,7 @@ GEM
       terminal-table (~> 1.5, >= 1.5.1)
     gitlab-chronic (0.10.5)
       numerizer (~> 0.2)
-    gitlab-dangerfiles (2.0.0)
+    gitlab-dangerfiles (2.1.2)
       danger-gitlab
     gitlab-experiment (0.5.4)
       activesupport (>= 3.0)
@@ -1474,7 +1474,7 @@ DEPENDENCIES
   gitaly (~> 13.12.0.pre.rc1)
   github-markup (~> 1.7.0)
   gitlab-chronic (~> 0.10.5)
-  gitlab-dangerfiles (~> 2.0.0)
+  gitlab-dangerfiles (~> 2.1.2)
   gitlab-experiment (~> 0.5.4)
   gitlab-fog-azure-rm (~> 1.1.1)
   gitlab-fog-google (~> 1.13)

@@ -61,7 +61,7 @@ export default {
     <span :class="severityClass" class="gl-mr-5" data-testid="codequality-severity-icon">
       <gl-icon v-tooltip="severityLabel" :name="severityIcon" :size="12" />
     </span>
-    <div class="gl-flex-fill-1">
+    <div class="gl-flex-grow-1">
       <div>
         <strong v-if="isStatusSuccess">{{ s__('ciReport|Fixed:') }}</strong>
         {{ issueName }}

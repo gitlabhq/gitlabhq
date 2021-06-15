@@ -10,7 +10,7 @@ You can read more about [project access tokens](../user/project/settings/project
 
 ## List project access tokens
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
 
 Get a list of project access tokens.
 
@@ -45,7 +45,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Create a project access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55408) in GitLab 13.10.
 
 Create a project access token.
 
@@ -86,7 +86,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Revoke a project access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
 
 Revoke a project access token.
 

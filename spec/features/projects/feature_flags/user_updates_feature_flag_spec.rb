@@ -73,16 +73,16 @@ RSpec.describe 'User updates feature flag', :js do
   context 'with a legacy feature flag' do
     let!(:feature_flag) do
       create_flag(project, 'ci_live_trace', true,
-                  description: 'For live trace feature')
+                  description: 'For live trace feature',
+                  version: :legacy_flag)
     end
 
     let!(:scope) { create_scope(feature_flag, 'review/*', true) }
 
-    it 'the user cannot edit the flag' do
+    it 'shows not found error' do
       visit(edit_project_feature_flag_path(project, feature_flag))
 
-      expect(page).to have_text 'This feature flag is read-only, and it will be removed in 14.0.'
-      expect(page).to have_css('button.js-ff-submit.disabled')
+      expect(page).to have_text 'Page Not Found'
     end
   end
 end

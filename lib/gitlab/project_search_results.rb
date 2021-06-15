@@ -43,9 +43,20 @@ module Gitlab
       end
     end
 
+    # rubocop:disable CodeReuse/ActiveRecord
     def users
-      super.where(id: @project.team.members) # rubocop:disable CodeReuse/ActiveRecord
+      results = super
+
+      if @project.is_a?(Array)
+        team_members_for_projects = User.joins(:project_authorizations).where(project_authorizations: { project_id: @project })
+        results = results.where(id: team_members_for_projects)
+      else
+        results = results.where(id: @project.team.members)
+      end
+
+      results
     end
+    # rubocop:enable CodeReuse/ActiveRecord
 
     def limited_blobs_count
       @limited_blobs_count ||= blobs(limit: count_limit).count

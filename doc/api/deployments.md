@@ -9,6 +9,9 @@ type: concepts, howto
 
 ## List project deployments
 
+> The `updated_after` and `updated_before` attributes were removed and replaced
+  by `finished_after` and `finished_before` respectively in GitLab 14.0.
+
 Get a list of deployments in a project.
 
 ```plaintext
@@ -17,27 +20,19 @@ GET /projects/:id/deployments
 
 | Attribute        | Type           | Required | Description                                                                                                     |
 |------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `order_by`       | string         | no       | Return deployments ordered by `id` or `iid` or `created_at` or `updated_at` or `ref` fields. Default is `id`    |
-| `sort`           | string         | no       | Return deployments sorted in `asc` or `desc` order. Default is `asc`                                            |
-| `updated_after`  | datetime       | no       | Return deployments updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `updated_before` | datetime       | no       | Return deployments updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `environment`    | string         | no       | The [name of the environment](../ci/environments/index.md) to filter deployments by       |
-| `status`         | string         | no       | The status to filter deployments by                                                                             |
-
-The status attribute can be one of the following values:
-
-- created
-- running
-- success
-- failed
-- canceled
+| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `order_by`       | string         | no       | Return deployments ordered by either one of `id`, `iid`, `created_at`, `updated_at` or `ref` fields. Default is `id`.    |
+| `sort`           | string         | no       | Return deployments sorted in `asc` or `desc` order. Default is `asc`.                                            |
+| `finished_after`  | datetime       | no       | Return deployments updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `finished_before` | datetime       | no       | Return deployments updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `environment`    | string         | no       | The [name of the environment](../ci/environments/index.md) to filter deployments by.       |
+| `status`         | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments"
 ```
 
-Example of response
+Example response:
 
 ```json
 [
@@ -51,16 +46,16 @@ Example of response
         "author_name": "Administrator",
         "created_at": "2016-08-11T09:36:01.000+02:00",
         "id": "99d03678b90d914dbb1b109132516d71a4a03ea8",
-        "message": "Merge branch 'new-title' into 'master'\r\n\r\nUpdate README\r\n\r\n\r\n\r\nSee merge request !1",
+        "message": "Merge branch 'new-title' into 'main'\r\n\r\nUpdate README\r\n\r\n\r\n\r\nSee merge request !1",
         "short_id": "99d03678",
-        "title": "Merge branch 'new-title' into 'master'\r"
+        "title": "Merge branch 'new-title' into 'main'\r"
       },
       "coverage": null,
       "created_at": "2016-08-11T07:36:27.357Z",
       "finished_at": "2016-08-11T07:36:39.851Z",
       "id": 657,
       "name": "deploy",
-      "ref": "master",
+      "ref": "main",
       "runner": null,
       "stage": "deploy",
       "started_at": null,
@@ -86,7 +81,7 @@ Example of response
       "pipeline": {
         "created_at": "2016-08-11T02:12:10.222Z",
         "id": 36,
-        "ref": "master",
+        "ref": "main",
         "sha": "99d03678b90d914dbb1b109132516d71a4a03ea8",
         "status": "success",
         "updated_at": "2016-08-11T02:12:10.222Z",
@@ -100,7 +95,7 @@ Example of response
     },
     "id": 41,
     "iid": 1,
-    "ref": "master",
+    "ref": "main",
     "sha": "99d03678b90d914dbb1b109132516d71a4a03ea8",
     "user": {
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
@@ -121,16 +116,16 @@ Example of response
         "author_name": "Administrator",
         "created_at": "2016-08-11T13:28:26.000+02:00",
         "id": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
-        "message": "Merge branch 'rename-readme' into 'master'\r\n\r\nRename README\r\n\r\n\r\n\r\nSee merge request !2",
+        "message": "Merge branch 'rename-readme' into 'main'\r\n\r\nRename README\r\n\r\n\r\n\r\nSee merge request !2",
         "short_id": "a91957a8",
-        "title": "Merge branch 'rename-readme' into 'master'\r"
+        "title": "Merge branch 'rename-readme' into 'main'\r"
       },
       "coverage": null,
       "created_at": "2016-08-11T11:32:24.456Z",
       "finished_at": "2016-08-11T11:32:35.145Z",
       "id": 664,
       "name": "deploy",
-      "ref": "master",
+      "ref": "main",
       "runner": null,
       "stage": "deploy",
       "started_at": null,
@@ -156,7 +151,7 @@ Example of response
       "pipeline": {
         "created_at": "2016-08-11T07:43:52.143Z",
         "id": 37,
-        "ref": "master",
+        "ref": "main",
         "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
         "status": "success",
         "updated_at": "2016-08-11T07:43:52.143Z",
@@ -170,7 +165,7 @@ Example of response
     },
     "id": 42,
     "iid": 2,
-    "ref": "master",
+    "ref": "main",
     "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
     "user": {
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
@@ -199,13 +194,13 @@ GET /projects/:id/deployments/:deployment_id
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/1"
 ```
 
-Example of response
+Example response:
 
 ```json
 {
   "id": 42,
   "iid": 2,
-  "ref": "master",
+  "ref": "main",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
   "created_at": "2016-08-11T11:32:35.444Z",
   "updated_at": "2016-08-11T11:34:01.123Z",
@@ -227,7 +222,7 @@ Example of response
     "status": "success",
     "stage": "deploy",
     "name": "deploy",
-    "ref": "master",
+    "ref": "main",
     "tag": false,
     "coverage": null,
     "created_at": "2016-08-11T11:32:24.456Z",
@@ -252,16 +247,16 @@ Example of response
     "commit": {
       "id": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
       "short_id": "a91957a8",
-      "title": "Merge branch 'rename-readme' into 'master'\r",
+      "title": "Merge branch 'rename-readme' into 'main'\r",
       "author_name": "Administrator",
       "author_email": "admin@example.com",
       "created_at": "2016-08-11T13:28:26.000+02:00",
-      "message": "Merge branch 'rename-readme' into 'master'\r\n\r\nRename README\r\n\r\n\r\n\r\nSee merge request !2"
+      "message": "Merge branch 'rename-readme' into 'main'\r\n\r\nRename README\r\n\r\n\r\n\r\nSee merge request !2"
     },
     "pipeline": {
       "created_at": "2016-08-11T07:43:52.143Z",
       "id": 42,
-      "ref": "master",
+      "ref": "main",
       "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
       "status": "success",
       "updated_at": "2016-08-11T07:43:52.143Z",
@@ -280,33 +275,25 @@ POST /projects/:id/deployments
 
 | Attribute     | Type           | Required | Description                                                                                                     |
 |---------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `environment` | string         | yes      | The [name of the environment](../ci/environments/index.md) to create the deployment for                         |
-| `sha`         | string         | yes      | The SHA of the commit that is deployed                                                                          |
-| `ref`         | string         | yes      | The name of the branch or tag that is deployed                                                                  |
-| `tag`         | boolean        | yes      | A boolean that indicates if the deployed ref is a tag (true) or not (false)                                     |
-| `status`      | string         | yes      | The status of the deployment                                                                                    |
-
-The status can be one of the following values:
-
-- created
-- running
-- success
-- failed
-- canceled
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.|
+| `environment` | string         | yes      | The [name of the environment](../ci/environments/index.md) to create the deployment for.                        |
+| `sha`         | string         | yes      | The SHA of the commit that is deployed.                                                                         |
+| `ref`         | string         | yes      | The name of the branch or tag that is deployed.                                                                 |
+| `tag`         | boolean        | yes      | A boolean that indicates if the deployed ref is a tag (`true`) or not (`false`).                                |
+| `status`      | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, or `canceled`.           |
 
 ```shell
-curl --data "environment=production&sha=a91957a858320c0e17f3a0eca7cfacbff50ea29a&ref=master&tag=false&status=success" \
+curl --data "environment=production&sha=a91957a858320c0e17f3a0eca7cfacbff50ea29a&ref=main&tag=false&status=success" \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments"
 ```
 
-Example of a response:
+Example response:
 
 ```json
 {
   "id": 42,
   "iid": 2,
-  "ref": "master",
+  "ref": "main",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
   "created_at": "2016-08-11T11:32:35.444Z",
   "status": "success",
@@ -327,7 +314,7 @@ Example of a response:
 }
 ```
 
-## Updating a deployment
+## Update a deployment
 
 ```plaintext
 PUT /projects/:id/deployments/:deployment_id
@@ -335,21 +322,21 @@ PUT /projects/:id/deployments/:deployment_id
 
 | Attribute        | Type           | Required | Description         |
 |------------------|----------------|----------|---------------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `deployment_id`  | integer        | yes      | The ID of the deployment to update |
-| `status`         | string         | yes      | The new status of the deployment |
+| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `deployment_id`  | integer        | yes      | The ID of the deployment to update. |
+| `status`         | string         | no       | The new status of the deployment. One of `created`, `running`, `success`, `failed`, or `canceled`.           |
 
 ```shell
 curl --request PUT --data "status=success" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/42"
 ```
 
-Example of a response:
+Example response:
 
 ```json
 {
   "id": 42,
   "iid": 2,
-  "ref": "master",
+  "ref": "main",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
   "created_at": "2016-08-11T11:32:35.444Z",
   "status": "success",
@@ -383,5 +370,5 @@ GET /projects/:id/deployments/:deployment_id/merge_requests
 It supports the same parameters as the [Merge Requests API](merge_requests.md#list-merge-requests) and returns a response using the same format:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/42"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/42/merge_requests"
 ```

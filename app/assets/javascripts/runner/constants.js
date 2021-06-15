@@ -10,6 +10,7 @@ export const RUNNER_ENTITY_TYPE = 'Ci::Runner';
 // - Used for URL params names
 // - GlFilteredSearch tokens type
 
+export const PARAM_KEY_SEARCH = 'search';
 export const PARAM_KEY_STATUS = 'status';
 export const PARAM_KEY_RUNNER_TYPE = 'runner_type';
 export const PARAM_KEY_SORT = 'sort';

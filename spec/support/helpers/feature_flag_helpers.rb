@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module FeatureFlagHelpers
-  def create_flag(project, name, active = true, description: nil, version: Operations::FeatureFlag.versions['legacy_flag'])
+  def create_flag(project, name, active = true, description: nil, version: Operations::FeatureFlag.versions['new_version_flag'])
     create(:operations_feature_flag, name: name, active: active, version: version,
                                      description: description, project: project)
   end

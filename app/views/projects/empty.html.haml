@@ -44,6 +44,7 @@
           :preserve
             git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
             cd #{h @project.path}
+            git switch -c #{default_branch_name}
             touch README.md
             git add README.md
             git commit -m "add README"
@@ -56,7 +57,7 @@
         %pre.bg-light
           :preserve
             cd existing_folder
-            git init
+            git init --initial-branch=#{default_branch_name}
             git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
             git add .
             git commit -m "Initial commit"

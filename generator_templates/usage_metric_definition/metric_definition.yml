@@ -11,6 +11,7 @@ milestone: "<%= milestone %>"
 introduced_by_url:
 time_frame: <%= time_frame %>
 data_source:
+data_category: Operational
 distribution:
 <%= distribution %>
 tier:

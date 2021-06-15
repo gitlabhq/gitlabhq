@@ -58,7 +58,7 @@ export default {
           <span
             v-gl-tooltip
             :title="environment.name"
-            class="gl-text-truncate gl-ml-2 gl-mr-2 gl-flex-fill"
+            class="gl-text-truncate gl-ml-2 gl-mr-2 gl-flex-grow-1"
           >
             {{ environment.name }}?
           </span>

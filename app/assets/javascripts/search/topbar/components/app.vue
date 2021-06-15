@@ -48,7 +48,7 @@ export default {
 <template>
   <gl-form class="search-page-form" @submit.prevent="applyQuery">
     <section class="gl-lg-display-flex gl-align-items-flex-end">
-      <div class="gl-flex-fill-1 gl-mb-4 gl-lg-mb-0 gl-lg-mr-2">
+      <div class="gl-flex-grow-1 gl-mb-4 gl-lg-mb-0 gl-lg-mr-2">
         <label>{{ __('What are you searching for?') }}</label>
         <gl-search-box-by-type
           id="dashboard_search"

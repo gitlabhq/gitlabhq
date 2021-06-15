@@ -132,12 +132,6 @@ FactoryBot.define do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp project)
     end
 
-    factory :clusters_applications_fluentd, class: 'Clusters::Applications::Fluentd' do
-      host { 'example.com' }
-      cilium_log_enabled { true }
-      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-    end
-
     factory :clusters_applications_cilium, class: 'Clusters::Applications::Cilium' do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end

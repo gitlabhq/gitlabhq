@@ -21,7 +21,6 @@ module Clusters
       Clusters::Applications::Jupyter.application_name => Clusters::Applications::Jupyter,
       Clusters::Applications::Knative.application_name => Clusters::Applications::Knative,
       Clusters::Applications::ElasticStack.application_name => Clusters::Applications::ElasticStack,
-      Clusters::Applications::Fluentd.application_name => Clusters::Applications::Fluentd,
       Clusters::Applications::Cilium.application_name => Clusters::Applications::Cilium
     }.freeze
     DEFAULT_ENVIRONMENT = '*'
@@ -68,7 +67,6 @@ module Clusters
     has_one_cluster_application :jupyter
     has_one_cluster_application :knative
     has_one_cluster_application :elastic_stack
-    has_one_cluster_application :fluentd
     has_one_cluster_application :cilium
 
     has_many :kubernetes_namespaces

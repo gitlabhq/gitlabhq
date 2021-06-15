@@ -157,7 +157,7 @@ export default {
           :text="importTarget.target_namespace"
           :disabled="isAlreadyImported"
           toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
-          class="import-entities-namespace-dropdown gl-h-7 gl-flex-fill-1"
+          class="import-entities-namespace-dropdown gl-h-7 gl-flex-grow-1"
           data-qa-selector="target_namespace_selector_dropdown"
         >
           <gl-dropdown-item @click="$emit('update-target-namespace', '')">{{
@@ -184,7 +184,7 @@ export default {
         >
           /
         </div>
-        <div class="gl-flex-fill-1">
+        <div class="gl-flex-grow-1">
           <gl-form-input
             class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
             :class="{ 'is-invalid': isInvalid && !isAlreadyImported }"

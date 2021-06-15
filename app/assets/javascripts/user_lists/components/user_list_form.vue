@@ -75,7 +75,7 @@ export default {
           </template>
         </gl-sprintf>
       </div>
-      <div class="gl-flex-fill-1 gl-ml-7">
+      <div class="gl-flex-grow-1 gl-ml-7">
         <gl-form-group
           label-for="user-list-name"
           :label="$options.translations.nameLabel"

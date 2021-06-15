@@ -402,7 +402,7 @@ group :development, :test do
 end
 
 group :development, :test, :danger do
-  gem 'gitlab-dangerfiles', '~> 2.0.0', require: false
+  gem 'gitlab-dangerfiles', '~> 2.1.2', require: false
 end
 
 group :development, :test, :coverage do

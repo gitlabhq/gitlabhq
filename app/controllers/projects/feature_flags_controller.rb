@@ -11,6 +11,7 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   before_action :feature_flag, only: [:edit, :update, :destroy]
 
   before_action :ensure_flag_writable!, only: [:update]
+  before_action :exclude_legacy_flags_check, only: [:edit]
 
   before_action do
     push_frontend_feature_flag(:feature_flag_permissions)
@@ -63,7 +64,6 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   end
 
   def edit
-    exclude_legacy_flags_check
   end
 
   def update
@@ -105,6 +105,12 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   def ensure_flag_writable!
     if feature_flag.legacy_flag?
       render_error_json(['Legacy feature flags are read-only'])
+    end
+  end
+
+  def exclude_legacy_flags_check
+    if feature_flag.legacy_flag?
+      not_found
     end
   end
 
@@ -158,13 +164,5 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   def render_error_json(messages, status = :bad_request)
     render json: { message: messages },
            status: status
-  end
-
-  def exclude_legacy_flags_check
-    if Feature.enabled?(:remove_legacy_flags, project, default_enabled: :yaml) &&
-      Feature.disabled?(:remove_legacy_flags_override, project, default_enabled: :yaml) &&
-      feature_flag.legacy_flag?
-      not_found
-    end
   end
 end

@@ -4521,9 +4521,6 @@ msgstr ""
 msgid "At least one approval from a code owner is required to change files matching the respective CODEOWNER rules."
 msgstr ""
 
-msgid "At least one logging option is required to be enabled"
-msgstr ""
-
 msgid "At least one of group_id or project_id must be specified"
 msgstr ""
 
@@ -7075,9 +7072,6 @@ msgstr ""
 msgid "ClusterIntegration|Cluster name is required."
 msgstr ""
 
-msgid "ClusterIntegration|Cluster_applications artifact too big. Maximum allowable size: %{human_size}"
-msgstr ""
-
 msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
@@ -7282,9 +7276,6 @@ msgstr ""
 msgid "ClusterIntegration|HTTP Error"
 msgstr ""
 
-msgid "ClusterIntegration|Helm release failed to install"
-msgstr ""
-
 msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}."
 msgstr ""
 
@@ -7442,12 +7433,6 @@ msgid "ClusterIntegration|No Key Pairs found"
 msgstr ""
 
 msgid "ClusterIntegration|No VPCs found"
-msgstr ""
-
-msgid "ClusterIntegration|No deployment cluster found for this job"
-msgstr ""
-
-msgid "ClusterIntegration|No deployment found for this job"
 msgstr ""
 
 msgid "ClusterIntegration|No instance type found"

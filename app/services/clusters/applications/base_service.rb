@@ -5,8 +5,6 @@ module Clusters
     class BaseService
       InvalidApplicationError = Class.new(StandardError)
 
-      FLUENTD_KNOWN_ATTRS = %i[host protocol port cilium_log_enabled].freeze
-
       attr_reader :cluster, :current_user, :params
 
       def initialize(cluster, user, params = {})
@@ -28,8 +26,6 @@ module Clusters
           if application.has_attribute?(:stack)
             application.stack = params[:stack]
           end
-
-          apply_fluentd_related_attributes(application)
 
           if application.respond_to?(:oauth_application)
             application.oauth_application = create_oauth_application(application, request)
@@ -94,12 +90,6 @@ module Clusters
         }
 
         ::Applications::CreateService.new(current_user, oauth_application_params).execute(request)
-      end
-
-      def apply_fluentd_related_attributes(application)
-        FLUENTD_KNOWN_ATTRS.each do |attr|
-          application[attr] = params[attr] if application.has_attribute?(attr)
-        end
       end
     end
   end

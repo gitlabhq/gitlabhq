@@ -62,7 +62,7 @@ RSpec.describe API::FeatureFlags do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/feature_flags')
-        expect(json_response.map { |f| f['version'] }).to eq(%w[legacy_flag legacy_flag])
+        expect(json_response.map { |f| f['version'] }).to eq(%w[new_version_flag new_version_flag])
       end
 
       it 'does not have N+1 problem' do
@@ -145,19 +145,7 @@ RSpec.describe API::FeatureFlags do
         expect(response).to match_response_schema('public_api/v4/feature_flag')
         expect(json_response['name']).to eq(feature_flag.name)
         expect(json_response['description']).to eq(feature_flag.description)
-        expect(json_response['version']).to eq('legacy_flag')
-      end
-
-      context 'without legacy flags' do
-        before do
-          stub_feature_flags(remove_legacy_flags: true, remove_legacy_flags_override: false)
-        end
-
-        it 'returns not found' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
+        expect(json_response['version']).to eq('new_version_flag')
       end
 
       it_behaves_like 'check user permission'
@@ -465,246 +453,6 @@ RSpec.describe API::FeatureFlags do
     end
   end
 
-  describe 'POST /projects/:id/feature_flags/:name/enable' do
-    subject do
-      post api("/projects/#{project.id}/feature_flags/#{params[:name]}/enable", user),
-           params: params
-    end
-
-    let(:params) do
-      {
-        name: 'awesome-feature',
-        environment_scope: 'production',
-        strategy: { name: 'userWithId', parameters: { userIds: 'Project:1' } }.to_json
-      }
-    end
-
-    context 'when feature flag does not exist yet' do
-      it 'creates a new feature flag with the specified scope and strategy' do
-        subject
-
-        feature_flag = project.operations_feature_flags.last
-        scope = feature_flag.scopes.find_by_environment_scope(params[:environment_scope])
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/feature_flag')
-        expect(feature_flag.name).to eq(params[:name])
-        expect(scope.strategies).to eq([Gitlab::Json.parse(params[:strategy])])
-        expect(feature_flag.version).to eq('legacy_flag')
-      end
-
-      it 'returns the flag version and strategies in the json response' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/feature_flag')
-        expect(json_response.slice('version', 'strategies')).to eq({
-          'version' => 'legacy_flag',
-          'strategies' => []
-        })
-      end
-
-      it_behaves_like 'check user permission'
-
-      context 'without legacy flags' do
-        before do
-          stub_feature_flags(remove_legacy_flags: true, remove_legacy_flags_override: false)
-        end
-
-        it 'returns not found' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-    end
-
-    context 'when feature flag exists already' do
-      let!(:feature_flag) { create_flag(project, params[:name]) }
-
-      context 'when feature flag scope does not exist yet' do
-        it 'creates a new scope with the specified strategy' do
-          subject
-
-          scope = feature_flag.scopes.find_by_environment_scope(params[:environment_scope])
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(scope.strategies).to eq([Gitlab::Json.parse(params[:strategy])])
-        end
-
-        it_behaves_like 'check user permission'
-      end
-
-      context 'when feature flag scope exists already' do
-        let(:defined_strategy) { { name: 'userWithId', parameters: { userIds: 'Project:2' } } }
-
-        before do
-          create_scope(feature_flag, params[:environment_scope], true, [defined_strategy])
-        end
-
-        it 'adds an additional strategy to the scope' do
-          subject
-
-          scope = feature_flag.scopes.find_by_environment_scope(params[:environment_scope])
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(scope.strategies).to eq([defined_strategy.deep_stringify_keys, Gitlab::Json.parse(params[:strategy])])
-        end
-
-        context 'when the specified strategy exists already' do
-          let(:defined_strategy) { Gitlab::Json.parse(params[:strategy]) }
-
-          it 'does not add a duplicate strategy' do
-            subject
-
-            scope = feature_flag.scopes.find_by_environment_scope(params[:environment_scope])
-            strategy_count = scope.strategies.count { |strategy| strategy['name'] == 'userWithId' }
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(strategy_count).to eq(1)
-          end
-        end
-      end
-
-      context 'without legacy flags' do
-        before do
-          stub_feature_flags(remove_legacy_flags: true, remove_legacy_flags_override: false)
-        end
-
-        it 'returns not found' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-    end
-
-    context 'with a version 2 flag' do
-      let!(:feature_flag) { create(:operations_feature_flag, :new_version_flag, project: project, name: params[:name]) }
-
-      it 'does not change the flag and returns an unprocessable_entity response' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(json_response).to eq({ 'message' => 'Version 2 flags not supported' })
-        feature_flag.reload
-        expect(feature_flag.scopes).to eq([])
-        expect(feature_flag.strategies).to eq([])
-      end
-    end
-  end
-
-  describe 'POST /projects/:id/feature_flags/:name/disable' do
-    subject do
-      post api("/projects/#{project.id}/feature_flags/#{params[:name]}/disable", user),
-           params: params
-    end
-
-    let(:params) do
-      {
-        name: 'awesome-feature',
-        environment_scope: 'production',
-        strategy: { name: 'userWithId', parameters: { userIds: 'Project:1' } }.to_json
-      }
-    end
-
-    context 'when feature flag does not exist yet' do
-      it_behaves_like 'not found'
-    end
-
-    context 'when feature flag exists already' do
-      let!(:feature_flag) { create_flag(project, params[:name]) }
-
-      context 'when feature flag scope does not exist yet' do
-        it_behaves_like 'not found'
-      end
-
-      context 'when feature flag scope exists already and has the specified strategy' do
-        let(:defined_strategies) do
-          [
-            { name: 'userWithId', parameters: { userIds: 'Project:1' } },
-            { name: 'userWithId', parameters: { userIds: 'Project:2' } }
-          ]
-        end
-
-        before do
-          create_scope(feature_flag, params[:environment_scope], true, defined_strategies)
-        end
-
-        it 'removes the strategy from the scope' do
-          subject
-
-          scope = feature_flag.scopes.find_by_environment_scope(params[:environment_scope])
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('public_api/v4/feature_flag')
-          expect(scope.strategies)
-            .to eq([{ name: 'userWithId', parameters: { userIds: 'Project:2' } }.deep_stringify_keys])
-        end
-
-        it 'returns the flag version and strategies in the json response' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('public_api/v4/feature_flag')
-          expect(json_response.slice('version', 'strategies')).to eq({
-            'version' => 'legacy_flag',
-            'strategies' => []
-          })
-        end
-
-        context 'without legacy flags' do
-          before do
-            stub_feature_flags(remove_legacy_flags: true, remove_legacy_flags_override: false)
-          end
-
-          it 'returns not found' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
-
-        it_behaves_like 'check user permission'
-
-        context 'when strategies become empty array after the removal' do
-          let(:defined_strategies) do
-            [{ name: 'userWithId', parameters: { userIds: 'Project:1' } }]
-          end
-
-          it 'destroys the scope' do
-            subject
-
-            scope = feature_flag.scopes.find_by_environment_scope(params[:environment_scope])
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(scope).to be_nil
-          end
-
-          it_behaves_like 'check user permission'
-        end
-      end
-
-      context 'when scope exists already but cannot find the corresponding strategy' do
-        let(:defined_strategy) { { name: 'userWithId', parameters: { userIds: 'Project:2' } } }
-
-        before do
-          create_scope(feature_flag, params[:environment_scope], true, [defined_strategy])
-        end
-
-        it_behaves_like 'not found'
-      end
-    end
-
-    context 'with a version 2 feature flag' do
-      let!(:feature_flag) { create(:operations_feature_flag, :new_version_flag, project: project, name: params[:name]) }
-
-      it 'does not change the flag and returns an unprocessable_entity response' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(json_response).to eq({ 'message' => 'Version 2 flags not supported' })
-        feature_flag.reload
-        expect(feature_flag.scopes).to eq([])
-        expect(feature_flag.strategies).to eq([])
-      end
-    end
-  end
-
   describe 'PUT /projects/:id/feature_flags/:name' do
     context 'with a legacy feature flag' do
       let!(:feature_flag) do
@@ -712,13 +460,13 @@ RSpec.describe API::FeatureFlags do
                name: 'feature1', description: 'old description')
       end
 
-      it 'returns a 422' do
+      it 'returns a 404' do
         params = { description: 'new description' }
 
         put api("/projects/#{project.id}/feature_flags/feature1", user), params: params
 
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(json_response).to eq({ 'message' => 'PUT operations are not supported for legacy feature flags' })
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response).to eq({ 'message' => '404 Not Found' })
         expect(feature_flag.reload.description).to eq('old description')
       end
     end
@@ -1024,20 +772,6 @@ RSpec.describe API::FeatureFlags do
         expect(feature_flag.reload.strategies.first.scopes.count).to eq(0)
       end
     end
-
-    context 'without legacy flags' do
-      before do
-        stub_feature_flags(remove_legacy_flags: true, remove_legacy_flags_override: false)
-      end
-
-      it 'returns not found' do
-        params = { description: 'new description' }
-
-        put api("/projects/#{project.id}/feature_flags/other_flag_name", user), params: params
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   describe 'DELETE /projects/:id/feature_flags/:name' do
@@ -1046,7 +780,7 @@ RSpec.describe API::FeatureFlags do
              params: params
     end
 
-    let!(:feature_flag) { create(:operations_feature_flag, project: project) }
+    let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, project: project) }
     let(:params) { {} }
 
     it 'destroys the feature flag' do

@@ -176,34 +176,9 @@ RSpec.describe API::Unleash do
       it_behaves_like 'authenticated request'
 
       context 'with version 1 (legacy) feature flags' do
-        let(:feature_flag) { create(:operations_feature_flag, project: project, name: 'feature1', active: true, version: 1) }
+        let(:feature_flag) { create(:operations_feature_flag, :legacy_flag, project: project, name: 'feature1', active: true, version: 1) }
 
-        it_behaves_like 'support multiple environments'
-
-        context 'with a list of feature flags' do
-          let(:headers) { { "UNLEASH-INSTANCEID" => client.token, "UNLEASH-APPNAME" => "production" } }
-          let!(:enabled_feature_flag) { create(:operations_feature_flag, project: project, name: 'feature1', active: true, version: 1) }
-          let!(:disabled_feature_flag) { create(:operations_feature_flag, project: project, name: 'feature2', active: false, version: 1) }
-
-          it 'responds with a list of features' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['version']).to eq(1)
-            expect(json_response['features']).not_to be_empty
-            expect(json_response['features'].map { |f| f['name'] }.sort).to eq(%w[feature1 feature2])
-            expect(json_response['features'].sort_by {|f| f['name'] }.map { |f| f['enabled'] }).to eq([true, false])
-          end
-
-          it 'matches json schema' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to match_response_schema('unleash/unleash')
-          end
-        end
-
-        it 'returns a feature flag strategy' do
+        it 'does not return a legacy feature flag' do
           create(:operations_feature_flag_scope,
                  feature_flag: feature_flag,
                  environment_scope: 'sandbox',
@@ -215,81 +190,7 @@ RSpec.describe API::Unleash do
           get api(features_url), headers: headers
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['features'].first['enabled']).to eq(true)
-          strategies = json_response['features'].first['strategies']
-          expect(strategies).to eq([{
-            "name" => "gradualRolloutUserId",
-            "parameters" => {
-              "percentage" => "50",
-              "groupId" => "default"
-            }
-          }])
-        end
-
-        it 'returns a default strategy for a scope' do
-          create(:operations_feature_flag_scope, feature_flag: feature_flag, environment_scope: 'sandbox', active: true)
-          headers = { "UNLEASH-INSTANCEID" => client.token, "UNLEASH-APPNAME" => "sandbox" }
-
-          get api(features_url), headers: headers
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['features'].first['enabled']).to eq(true)
-          strategies = json_response['features'].first['strategies']
-          expect(strategies).to eq([{ "name" => "default", "parameters" => {} }])
-        end
-
-        it 'returns multiple strategies for a feature flag' do
-          create(:operations_feature_flag_scope,
-                 feature_flag: feature_flag,
-                 environment_scope: 'staging',
-                 active: true,
-                 strategies: [{ name: "userWithId", parameters: { userIds: "max,fred" } },
-                              { name: "gradualRolloutUserId",
-                                parameters: { groupId: "default", percentage: "50" } }])
-          headers = { "UNLEASH-INSTANCEID" => client.token, "UNLEASH-APPNAME" => "staging" }
-
-          get api(features_url), headers: headers
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['features'].first['enabled']).to eq(true)
-          strategies = json_response['features'].first['strategies'].sort_by { |s| s['name'] }
-          expect(strategies).to eq([{
-            "name" => "gradualRolloutUserId",
-            "parameters" => {
-              "percentage" => "50",
-              "groupId" => "default"
-            }
-          }, {
-            "name" => "userWithId",
-            "parameters" => {
-              "userIds" => "max,fred"
-            }
-          }])
-        end
-
-        it 'returns a disabled feature when the flag is disabled' do
-          flag = create(:operations_feature_flag, project: project, name: 'test_feature', active: false, version: 1)
-          create(:operations_feature_flag_scope, feature_flag: flag, environment_scope: 'production', active: true)
-          headers = { "UNLEASH-INSTANCEID" => client.token, "UNLEASH-APPNAME" => "production" }
-
-          get api(features_url), headers: headers
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['features'].first['enabled']).to eq(false)
-        end
-
-        context "with an inactive scope" do
-          let!(:scope) { create(:operations_feature_flag_scope, feature_flag: feature_flag, environment_scope: 'production', active: false, strategies: [{ name: "default", parameters: {} }]) }
-          let(:headers) { { "UNLEASH-INSTANCEID" => client.token, "UNLEASH-APPNAME" => "production" } }
-
-          it 'returns a disabled feature' do
-            get api(features_url), headers: headers
-
-            expect(response).to have_gitlab_http_status(:ok)
-            feature_json = json_response['features'].first
-            expect(feature_json['enabled']).to eq(false)
-            expect(feature_json['strategies']).to eq([{ 'name' => 'default', 'parameters' => {} }])
-          end
+          expect(json_response['features']).to be_empty
         end
       end
 
@@ -530,89 +431,6 @@ RSpec.describe API::Unleash do
             'strategies' => [{
               'name' => 'userWithId',
               'parameters' => { 'userIds' => 'user1,user2' }
-            }]
-          }])
-        end
-      end
-
-      context 'when mixing version 1 and version 2 feature flags' do
-        it 'returns both types of flags when both match' do
-          feature_flag_a = create(:operations_feature_flag, project: project,
-                                  name: 'feature_a', active: true, version: 2)
-          strategy = create(:operations_strategy, feature_flag: feature_flag_a,
-                            name: 'userWithId', parameters: { userIds: 'user8' })
-          create(:operations_scope, strategy: strategy, environment_scope: 'staging')
-          feature_flag_b = create(:operations_feature_flag, project: project,
-                                  name: 'feature_b', active: true, version: 1)
-          create(:operations_feature_flag_scope, feature_flag: feature_flag_b,
-                 active: true, strategies: [{ name: 'default', parameters: {} }], environment_scope: 'staging')
-
-          get api(features_url), headers: { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'staging' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['features'].sort_by {|f| f['name']}).to eq([{
-            'name' => 'feature_a',
-            'enabled' => true,
-            'strategies' => [{
-              'name' => 'userWithId',
-              'parameters' => { 'userIds' => 'user8' }
-            }]
-          }, {
-            'name' => 'feature_b',
-            'enabled' => true,
-            'strategies' => [{
-              'name' => 'default',
-              'parameters' => {}
-            }]
-          }])
-        end
-
-        it 'returns legacy flags when only legacy flags match' do
-          feature_flag_a = create(:operations_feature_flag, project: project,
-                                  name: 'feature_a', active: true, version: 2)
-          strategy = create(:operations_strategy, feature_flag: feature_flag_a,
-                            name: 'userWithId', parameters: { userIds: 'user8' })
-          create(:operations_scope, strategy: strategy, environment_scope: 'production')
-          feature_flag_b = create(:operations_feature_flag, project: project,
-                                  name: 'feature_b', active: true, version: 1)
-          create(:operations_feature_flag_scope, feature_flag: feature_flag_b,
-                 active: true, strategies: [{ name: 'default', parameters: {} }], environment_scope: 'staging')
-
-          get api(features_url), headers: { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'staging' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['features']).to eq([{
-            'name' => 'feature_b',
-            'enabled' => true,
-            'strategies' => [{
-              'name' => 'default',
-              'parameters' => {}
-            }]
-          }])
-        end
-
-        it 'returns new flags when legacy flags are disabled' do
-          stub_feature_flags(remove_legacy_flags_override: false, remove_legacy_flags: true)
-
-          feature_flag_a = create(:operations_feature_flag, :new_version_flag, project: project,
-                                  name: 'feature_a', active: true)
-          strategy = create(:operations_strategy, feature_flag: feature_flag_a,
-                            name: 'userWithId', parameters: { userIds: 'user8' })
-          create(:operations_scope, strategy: strategy, environment_scope: 'staging')
-          feature_flag_b = create(:operations_feature_flag, :legacy_flag, project: project,
-                                  name: 'feature_b', active: true)
-          create(:operations_feature_flag_scope, feature_flag: feature_flag_b,
-                 active: true, strategies: [{ name: 'default', parameters: {} }], environment_scope: 'staging')
-
-          get api(features_url), headers: { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'staging' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['features'].sort_by {|f| f['name']}).to eq([{
-            'name' => 'feature_a',
-            'enabled' => true,
-            'strategies' => [{
-              'name' => 'userWithId',
-              'parameters' => { 'userIds' => 'user8' }
             }]
           }])
         end

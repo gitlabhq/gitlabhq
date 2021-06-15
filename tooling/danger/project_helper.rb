@@ -5,7 +5,6 @@ module Tooling
     module ProjectHelper
       LOCAL_RULES ||= %w[
         changelog
-        commit_messages
         database
         datateam
         documentation

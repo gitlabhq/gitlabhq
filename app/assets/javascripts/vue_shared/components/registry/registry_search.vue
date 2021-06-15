@@ -109,7 +109,7 @@ export default {
   <div class="gl-display-flex gl-p-5 gl-bg-gray-10 gl-border-solid gl-border-1 gl-border-gray-100">
     <gl-filtered-search
       v-model="internalFilter"
-      class="gl-mr-4 gl-flex-fill-1"
+      class="gl-mr-4 gl-flex-grow-1"
       :placeholder="__('Filter results')"
       :available-tokens="tokens"
       @submit="submitSearch"

@@ -112,10 +112,10 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'FOO_VERSION'    | [:backend]
 
       'Dangerfile'                                            | [:engineering_productivity]
-      'danger/commit_messages/Dangerfile'                     | [:engineering_productivity]
-      'ee/danger/commit_messages/Dangerfile'                  | [:engineering_productivity]
-      'danger/commit_messages/'                               | [:engineering_productivity]
-      'ee/danger/commit_messages/'                            | [:engineering_productivity]
+      'danger/bundle_size/Dangerfile'                         | [:engineering_productivity]
+      'ee/danger/bundle_size/Dangerfile'                      | [:engineering_productivity]
+      'danger/bundle_size/'                                   | [:engineering_productivity]
+      'ee/danger/bundle_size/'                                | [:engineering_productivity]
       '.gitlab-ci.yml'                                        | [:engineering_productivity]
       '.gitlab/ci/cng.gitlab-ci.yml'                          | [:engineering_productivity]
       '.gitlab/ci/ee-specific-checks.gitlab-ci.yml'           | [:engineering_productivity]
@@ -218,7 +218,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
   describe '.local_warning_message' do
     it 'returns an informational message with rules that can run' do
-      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, commit_messages, database, datateam, documentation, duplicate_yarn_dependencies, eslint, karma, pajamas, pipeline, prettier, product_intelligence, utility_css')
+      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, database, datateam, documentation, duplicate_yarn_dependencies, eslint, karma, pajamas, pipeline, prettier, product_intelligence, utility_css')
     end
   end
 

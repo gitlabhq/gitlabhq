@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe ::CachingArrayResolver do
   include GraphqlHelpers
-  include Gitlab::Graphql::Laziness
 
   let_it_be(:admins) { create_list(:user, 4, admin: true) }
   let(:query_context) { { current_user: admins.first } }

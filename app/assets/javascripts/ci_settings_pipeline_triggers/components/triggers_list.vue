@@ -93,7 +93,7 @@ export default {
           placement="top"
           class="trigger-description gl-display-flex"
         >
-          <div class="gl-flex-fill-1 gl-text-truncate">{{ item.description }}</div>
+          <div class="gl-flex-grow-1 gl-text-truncate">{{ item.description }}</div>
         </tooltip-on-truncate>
       </template>
       <template #cell(owner)="{ item }">

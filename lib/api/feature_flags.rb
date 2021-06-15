@@ -95,54 +95,6 @@ module API
           present_entity(feature_flag)
         end
 
-        desc 'Enable a strategy for a feature flag on an environment' do
-          detail 'This feature was introduced in GitLab 12.5'
-          success ::API::Entities::FeatureFlag
-        end
-        params do
-          requires :environment_scope, type: String, desc: 'The environment scope of the feature flag'
-          requires :strategy,          type: JSON,   desc: 'The strategy to be enabled on the scope'
-        end
-        post :enable do
-          not_found! unless Feature.enabled?(:feature_flag_api, user_project)
-          exclude_legacy_flags_check!
-          render_api_error!('Version 2 flags not supported', :unprocessable_entity) if new_version_flag_present?
-
-          result = ::FeatureFlags::EnableService
-            .new(user_project, current_user, params).execute
-
-          if result[:status] == :success
-            status :ok
-            present_entity(result[:feature_flag])
-          else
-            render_api_error!(result[:message], result[:http_status])
-          end
-        end
-
-        desc 'Disable a strategy for a feature flag on an environment' do
-          detail 'This feature is going to be introduced in GitLab 12.5 if `feature_flag_api` feature flag is removed'
-          success ::API::Entities::FeatureFlag
-        end
-        params do
-          requires :environment_scope, type: String, desc: 'The environment scope of the feature flag'
-          requires :strategy,          type: JSON,   desc: 'The strategy to be disabled on the scope'
-        end
-        post :disable do
-          not_found! unless Feature.enabled?(:feature_flag_api, user_project)
-          exclude_legacy_flags_check!
-          render_api_error!('Version 2 flags not supported', :unprocessable_entity) if feature_flag.new_version_flag?
-
-          result = ::FeatureFlags::DisableService
-            .new(user_project, current_user, params).execute
-
-          if result[:status] == :success
-            status :ok
-            present_entity(result[:feature_flag])
-          else
-            render_api_error!(result[:message], result[:http_status])
-          end
-        end
-
         desc 'Update a feature flag' do
           detail 'This feature was introduced in GitLab 13.2'
           success ::API::Entities::FeatureFlag
@@ -255,9 +207,7 @@ module API
       end
 
       def exclude_legacy_flags_check!
-        if Feature.enabled?(:remove_legacy_flags, project, default_enabled: :yaml) &&
-          Feature.disabled?(:remove_legacy_flags_override, project, default_enabled: :yaml) &&
-          feature_flag.legacy_flag?
+        if feature_flag.legacy_flag?
           not_found!
         end
       end

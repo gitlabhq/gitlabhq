@@ -140,39 +140,15 @@ module MembershipActions
   end
 
   def root_params_key
-    case membershipable
-    when Namespace
-      :group_member
-    when Project
-      :project_member
-    else
-      raise "Unknown membershipable type: #{membershipable}!"
-    end
+    raise NotImplementedError
   end
 
   def members_page_url
-    case membershipable
-    when Namespace
-      polymorphic_url([membershipable, :members])
-    when Project
-      project_project_members_path(membershipable)
-    else
-      raise "Unknown membershipable type: #{membershipable}!"
-    end
+    raise NotImplementedError
   end
 
   def source_type
-    @source_type ||=
-      begin
-        case membershipable
-        when Namespace
-          _("group")
-        when Project
-          _("project")
-        else
-          raise "Unknown membershipable type: #{membershipable}!"
-        end
-      end
+    raise NotImplementedError
   end
 
   def plain_source_type

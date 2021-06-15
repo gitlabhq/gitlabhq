@@ -69,21 +69,7 @@ module API
       def feature_flags
         return [] unless unleash_app_name.present?
 
-        legacy_flags =
-          if exclude_legacy_flags?
-            []
-          else
-            Operations::FeatureFlagScope.for_unleash_client(project, unleash_app_name)
-          end
-
-        new_version_flags = Operations::FeatureFlag.for_unleash_client(project, unleash_app_name)
-
-        legacy_flags + new_version_flags
-      end
-
-      def exclude_legacy_flags?
-        Feature.enabled?(:remove_legacy_flags, project, default_enabled: :yaml) &&
-          Feature.disabled?(:remove_legacy_flags_override, project, default_enabled: :yaml)
+        Operations::FeatureFlag.for_unleash_client(project, unleash_app_name)
       end
     end
   end

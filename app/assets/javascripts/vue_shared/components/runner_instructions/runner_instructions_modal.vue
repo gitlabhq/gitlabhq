@@ -225,7 +225,7 @@ export default {
       <template v-if="!instructionsEmpty">
         <div class="gl-display-flex">
           <pre
-            class="gl-bg-gray gl-flex-fill-1 gl-white-space-pre-line"
+            class="gl-bg-gray gl-flex-grow-1 gl-white-space-pre-line"
             data-testid="binary-instructions"
             >{{ instructions.installInstructions }}</pre
           >
@@ -241,7 +241,7 @@ export default {
         <h5 class="gl-mb-3">{{ $options.i18n.registerRunnerCommand }}</h5>
         <div class="gl-display-flex">
           <pre
-            class="gl-bg-gray gl-flex-fill-1 gl-white-space-pre-line"
+            class="gl-bg-gray gl-flex-grow-1 gl-white-space-pre-line"
             data-testid="register-command"
             >{{ instructions.registerInstructions }}</pre
           >

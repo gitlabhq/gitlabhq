@@ -3,7 +3,7 @@ import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
-} from '~/runner/runner_list/filtered_search_utils';
+} from '~/runner/runner_list/runner_search_utils';
 
 describe('search_params.js', () => {
   const examples = [
@@ -22,6 +22,40 @@ describe('search_params.js', () => {
         sort: 'CREATED_DESC',
       },
       graphqlVariables: { status: 'ACTIVE', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    },
+    {
+      name: 'a single term text search',
+      urlQuery: '?search=something',
+      search: {
+        filters: [
+          {
+            type: 'filtered-search-term',
+            value: { data: 'something' },
+          },
+        ],
+        pagination: { page: 1 },
+        sort: 'CREATED_DESC',
+      },
+      graphqlVariables: { search: 'something', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    },
+    {
+      name: 'a two terms text search',
+      urlQuery: '?search=something+else',
+      search: {
+        filters: [
+          {
+            type: 'filtered-search-term',
+            value: { data: 'something' },
+          },
+          {
+            type: 'filtered-search-term',
+            value: { data: 'else' },
+          },
+        ],
+        pagination: { page: 1 },
+        sort: 'CREATED_DESC',
+      },
+      graphqlVariables: { search: 'something else', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
     },
     {
       name: 'single instance type',
@@ -110,6 +144,13 @@ describe('search_params.js', () => {
       });
     });
 
+    it('When search params appear as array, they are concatenated', () => {
+      expect(fromUrlQueryToSearch('?search[]=my&search[]=text').filters).toEqual([
+        { type: 'filtered-search-term', value: { data: 'my' } },
+        { type: 'filtered-search-term', value: { data: 'text' } },
+      ]);
+    });
+
     it('When a page cannot be parsed as a number, it defaults to `1`', () => {
       expect(fromUrlQueryToSearch('?page=NONSENSE&after=AFTER_CURSOR').pagination).toEqual({
         page: 1,
@@ -136,12 +177,15 @@ describe('search_params.js', () => {
       });
     });
 
-    it('When a filtered search parameter is already present, it gets removed', () => {
-      const initialUrl = `http://test.host/?status[]=ACTIVE`;
+    it.each([
+      'http://test.host/?status[]=ACTIVE',
+      'http://test.host/?runner_type[]=INSTANCE_TYPE',
+      'http://test.host/?search=my_text',
+    ])('When a filter is removed, it is removed from the URL', (initalUrl) => {
       const search = { filters: [], sort: 'CREATED_DESC' };
       const expectedUrl = `http://test.host/`;
 
-      expect(fromSearchToUrl(search, initialUrl)).toEqual(expectedUrl);
+      expect(fromSearchToUrl(search, initalUrl)).toEqual(expectedUrl);
     });
 
     it('When unrelated search parameter is present, it does not get removed', () => {
@@ -157,6 +201,38 @@ describe('search_params.js', () => {
     examples.forEach(({ name, graphqlVariables, search }) => {
       it(`Converts ${name} to a GraphQL query variables object`, () => {
         expect(fromSearchToVariables(search)).toEqual(graphqlVariables);
+      });
+    });
+
+    it('When a search param is empty, it gets removed', () => {
+      expect(
+        fromSearchToVariables({
+          filters: [
+            {
+              type: 'filtered-search-term',
+              value: { data: '' },
+            },
+          ],
+        }),
+      ).toMatchObject({
+        search: '',
+      });
+
+      expect(
+        fromSearchToVariables({
+          filters: [
+            {
+              type: 'filtered-search-term',
+              value: { data: 'something' },
+            },
+            {
+              type: 'filtered-search-term',
+              value: { data: '' },
+            },
+          ],
+        }),
+      ).toMatchObject({
+        search: 'something',
       });
     });
   });
