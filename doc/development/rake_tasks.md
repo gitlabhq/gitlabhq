@@ -236,7 +236,7 @@ task, then check the dimensions of the new sprite sheet and update the
 ## Update project templates
 
 Starting a project from a template needs this project to be exported. On a
-up to date master branch run:
+up to date main branch run:
 
 ```shell
 gdk start
@@ -247,7 +247,7 @@ git commit
 git push -u origin update-project-templates
 ```
 
-Now create a merge request and merge that to master.
+Now create a merge request and merge that to main.
 
 ## Generate route lists
 

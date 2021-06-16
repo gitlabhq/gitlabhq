@@ -288,6 +288,7 @@ export default {
         <div class="diff-td line-codequality left-side" :class="[...parallelViewLeftLineType]">
           <code-quality-gutter-icon
             v-if="showCodequalityLeft"
+            :file-path="filePath"
             :codequality="line.left.codequality"
           />
         </div>
@@ -403,6 +404,7 @@ export default {
         >
           <code-quality-gutter-icon
             v-if="showCodequalityRight"
+            :file-path="filePath"
             :codequality="line.right.codequality"
           />
         </div>

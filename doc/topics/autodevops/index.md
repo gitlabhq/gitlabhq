@@ -286,14 +286,14 @@ The following table is an example of how to configure the three different cluste
 
 To add a different cluster for each environment:
 
-1. Navigate to your project's **Operations > Kubernetes**.
+1. Navigate to your project's **Infrastructure > Kubernetes clusters**.
 1. Create the Kubernetes clusters with their respective environment scope, as
    described from the table above.
 1. After creating the clusters, navigate to each cluster and [install
    Ingress](quick_start_guide.md#install-ingress). Wait for the Ingress IP address to be assigned.
 1. Make sure you've [configured your DNS](#auto-devops-base-domain) with the
    specified Auto DevOps domains.
-1. Navigate to each cluster's page, through **Operations > Kubernetes**,
+1. Navigate to each cluster's page, through **Infrastructure > Kubernetes clusters**,
    and add the domain based on its Ingress IP address.
 
 After completing configuration, you can test your setup by creating a merge request

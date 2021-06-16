@@ -320,7 +320,7 @@ After the `gitlab-ci.yml` template has been added and the `serverless.yml` file
 has been created, pushing a commit to your project results in a CI pipeline
 being executed which deploys each function as a Knative service. After the
 deploy stage has finished, additional details for the function display
-under **Operations > Serverless**.
+under **Infrastructure > Serverless platform**.
 
 ![serverless page](img/serverless-page.png)
 
@@ -454,7 +454,7 @@ With all the pieces in place, the next time a CI pipeline runs the Knative appli
 
 ### Function details
 
-Go to the **Operations > Serverless** page to see the final URL of your functions.
+Go to the **Infrastructure > Serverless platform** page to see the final URL of your functions.
 
 ![function_details](img/function-list_v12_7.png)
 
@@ -579,7 +579,7 @@ or with other versions of Python.
 
    Where `<namespace>` is the namespace created by GitLab for your serverless project (composed of `<project_name>-<project_id>-<environment>`) and
    `example.com` is the domain being used for your project. If you are unsure what the namespace of your project is, navigate
-   to the **Operations > Serverless** page of your project and inspect
+   to the **Infrastructure > Serverless platform** page of your project and inspect
    the endpoint provided for your function/app.
 
    ![function_endpoint](img/function-endpoint.png)

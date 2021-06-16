@@ -21,18 +21,18 @@ RSpec.describe 'Wiki', :js do
 
   context 'switching to content editor' do
     it 'user/project/wiki/img/use_new_editor_button' do
-      screenshot_area = find('.js-quick-submit')
+      screenshot_area = find('[data-testid="wiki-form-content-fieldset"]')
       scroll_to screenshot_area
-      expect(screenshot_area).to have_content 'Use new editor'
-      set_crop_data(screenshot_area, 10)
+      expect(screenshot_area).to have_content 'Use the new editor'
+      set_crop_data(screenshot_area, 0)
     end
   end
 
   context 'content editor' do
     it 'user/project/wiki/img/content_editor' do
-      content_editor_testid = '[data-testid="content-editor"]'
+      content_editor_testid = '[data-testid="wiki-form-content-fieldset"]'
 
-      click_button 'Use new editor'
+      click_button 'Use the new editor'
 
       expect(page).to have_css(content_editor_testid)
 
@@ -41,7 +41,7 @@ RSpec.describe 'Wiki', :js do
 
       find("#{content_editor_testid} [contenteditable]").send_keys '## Using the Content Editor'
 
-      set_crop_data(screenshot_area, 50)
+      set_crop_data(screenshot_area, 0)
     end
   end
 end

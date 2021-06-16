@@ -1148,7 +1148,7 @@ module Spec
     module Helpers
       module CycleAnalyticsHelpers
         def create_commit_referencing_issue(issue, branch_name: random_git_name)
-          project.repository.add_branch(user, branch_name, 'master')
+          project.repository.add_branch(user, branch_name, 'main')
           create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
         end
       end
@@ -1205,7 +1205,7 @@ let(:project) { create(:project, :repository) }
 ```
 
 Where you can, consider using the `:custom_repo` trait instead of `:repository`.
-This allows you to specify exactly what files appear in the `master` branch
+This allows you to specify exactly what files appear in the `main` branch
 of the project's repository. For example:
 
 ```ruby

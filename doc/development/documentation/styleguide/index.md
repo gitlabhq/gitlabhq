@@ -1276,7 +1276,7 @@ hidden on the documentation site, but is displayed by `/help`.
 ## Code blocks
 
 - Always wrap code added to a sentence in inline code blocks (`` ` ``).
-  For example, `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, or `only: [master]`.
+  For example, `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, or `only: [main]`.
   File names, commands, entries, and anything that refers to code should be
   added to code blocks. To make things easier for the user, always add a full
   code block for things that can be useful to copy and paste, as they can do it

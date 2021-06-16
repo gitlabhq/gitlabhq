@@ -81,7 +81,7 @@ End-to-end tests should pass with a feature flag enabled before it is enabled on
 
 If a test enables a feature flag as describe above, it is sufficient to run the `package-and-qa` job in a merge request containing the relevant changes.
 Or, if the feature flag and relevant changes have already been merged, you can confirm that the tests
-pass on `master`. The end-to-end tests run on `master` every two hours, and the results are posted to a [Test
+pass on `main`. The end-to-end tests run on `main` every two hours, and the results are posted to a [Test
 Session Report, which is available in the testcase-sessions project](https://gitlab.com/gitlab-org/quality/testcase-sessions/-/issues?label_name%5B%5D=found%3Amaster).
 
 If the relevant tests do not enable the feature flag themselves, you can check if the tests will need

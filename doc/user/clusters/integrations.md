@@ -73,7 +73,7 @@ To enable the Prometheus integration for your cluster:
 
 1. Go to the cluster's page:
       - For a [project-level cluster](../project/clusters/index.md), navigate to your project's
-      **Operations > Kubernetes**.
+      **Infrastructure > Kubernetes clusters**.
       - For a [group-level cluster](../group/clusters/index.md), navigate to your group's
       **Kubernetes** page.
       - For an [instance-level cluster](../instance/clusters/index.md), navigate to your instance's
@@ -128,7 +128,7 @@ To enable the Elastic Stack integration for your cluster:
 
 1. Go to the cluster's page:
       - For a [project-level cluster](../project/clusters/index.md), navigate to your project's
-      **Operations > Kubernetes**.
+      **Infrastructure > Kubernetes clusters**.
       - For a [group-level cluster](../group/clusters/index.md), navigate to your group's
       **Kubernetes** page.
       - For an [instance-level cluster](../instance/clusters/index.md), navigate to your instance's

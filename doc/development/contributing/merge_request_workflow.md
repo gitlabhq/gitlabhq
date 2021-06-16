@@ -44,7 +44,7 @@ request is as follows:
 
 1. [Fork](../../user/project/repository/forking_workflow.md) the project into
    your personal namespace (or group) on GitLab.com.
-1. Create a feature branch in your fork (don't work off `master`).
+1. Create a feature branch in your fork (don't work off your [default branch](../../user/project/repository/branches/default.md)).
 1. Write [tests](../rake_tasks.md#run-tests) and code.
 1. [Ensure a changelog is created](../changelog.md).
 1. If you are writing documentation, make sure to follow the
@@ -54,7 +54,7 @@ request is as follows:
    commits by [squashing them](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#_squashing),
    but do not change the commit history if you're working on shared branches though.
 1. Push the commit(s) to your working branch in your fork.
-1. Submit a merge request (MR) to the `master` branch in the main GitLab project.
+1. Submit a merge request (MR) to the `main` branch in the main GitLab project.
    1. Your merge request needs at least 1 approval, but depending on your changes
       you might need additional approvals. Refer to the [Approval guidelines](../code_review.md#approval-guidelines).
    1. You don't have to select any specific approvers, but you can if you really want
@@ -196,12 +196,12 @@ the contribution acceptance criteria below:
    exposing a bug in existing code). Every new class should have corresponding
    unit tests, even if the class is exercised at a higher level, such as a feature test.
    - If a failing CI build seems to be unrelated to your contribution, you can try
-     restarting the failing CI job, rebasing from `master` to bring in updates that
+     restarting the failing CI job, rebasing from `main` to bring in updates that
      may resolve the failure, or if it has not been fixed yet, ask a developer to
      help you fix the test.
 1. The MR initially contains a few logically organized commits.
 1. The changes can merge without problems. If not, you should rebase if you're the
-   only one working on your feature branch, otherwise merge `master`.
+   only one working on your feature branch, otherwise merge `main`.
 1. Only one specific issue is fixed or one specific feature is implemented. Do not
    combine things; send separate merge requests for each issue or feature.
 1. Migrations should do only one thing (e.g., create a table, move data to a new

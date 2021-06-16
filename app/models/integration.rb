@@ -43,7 +43,12 @@ class Integration < ApplicationRecord
     asana assembla
     bamboo bugzilla buildkite
     campfire confluence custom_issue_tracker
+    datadog discord drone_ci
   ].to_set.freeze
+
+  def self.renamed?(name)
+    RENAMED_TO_INTEGRATION.include?(name)
+  end
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 

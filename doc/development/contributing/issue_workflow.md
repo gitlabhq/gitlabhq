@@ -325,7 +325,7 @@ the [appropriate product manager](https://about.gitlab.com/handbook/product/#who
 as soon as possible. The product manager will then pull in appropriate GitLab team
 members to further discuss scope, design, and technical considerations. This will
 ensure that your contribution is aligned with the GitLab product and minimize
-any rework and delay in getting it merged into master.
+any rework and delay in getting it merged into main.
 
 GitLab team members who apply the ~"Accepting merge requests" label to an issue
 should update the issue description with a responsible product manager, inviting

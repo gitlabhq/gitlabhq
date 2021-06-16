@@ -56,26 +56,6 @@ RSpec.describe Gitlab::Diff::Highlight do
         expect(subject[5].rich_text).to eq(code)
       end
 
-      context 'when introduce_marker_ranges is false' do
-        before do
-          stub_feature_flags(introduce_marker_ranges: false)
-        end
-
-        it 'keeps the old bevavior (without mode classes)' do
-          code = %Q{+<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="no"><span class="idiff left">RuntimeError</span></span><span class="p"><span class="idiff">,</span></span><span class="idiff right"> </span><span class="s2">"System commands must be given as an array of strings"</span></span>\n}
-
-          expect(subject[5].rich_text).to eq(code)
-        end
-
-        context 'when use_marker_ranges feature flag is false too' do
-          it 'does not affect the result' do
-            code = %Q{+<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="no"><span class="idiff left">RuntimeError</span></span><span class="p"><span class="idiff">,</span></span><span class="idiff right"> </span><span class="s2">"System commands must be given as an array of strings"</span></span>\n}
-
-            expect(subject[5].rich_text).to eq(code)
-          end
-        end
-      end
-
       context 'when no diff_refs' do
         before do
           allow(diff_file).to receive(:diff_refs).and_return(nil)

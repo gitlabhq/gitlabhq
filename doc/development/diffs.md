@@ -156,13 +156,13 @@ Historically, merge request diffs have been calculated by `git diff target...sou
 `HEAD` of the source branch with the merge base (or a common ancestor) of the target branch and the source's.
 This solution works well until the target branch starts containing some of the
 changes introduced by the source branch: Consider the following case, in which the source branch
-is `feature_a` and the target is `master`:
+is `feature_a` and the target is `main`:
 
-1. Checkout a new branch `feature_a` from `master` and remove `file_a` and `file_b` in it.
-1. Add a commit that removes `file_a` to `master`.
+1. Checkout a new branch `feature_a` from `main` and remove `file_a` and `file_b` in it.
+1. Add a commit that removes `file_a` to `main`.
 
 The merge request diff still contains the `file_a` removal while the actual diff compared to
-`master`'s `HEAD` has only the `file_b` removal. The diff with such redundant
+`main`'s `HEAD` has only the `file_b` removal. The diff with such redundant
 changes is harder to review.
 
 In order to display an up-to-date diff, in GitLab 12.9 we
@@ -174,16 +174,16 @@ diff.
 
 Until we complete the epics ["use merge refs for diffs"](https://gitlab.com/groups/gitlab-org/-/epics/854)
 and ["merge conflicts in diffs"](https://gitlab.com/groups/gitlab-org/-/epics/4893),
-both options `master (base)` and `master (HEAD)` are available to be displayed in merge requests:
+both options `main (base)` and `main (HEAD)` are available to be displayed in merge requests:
 
 ![Merge ref head options](img/merge_ref_head_options_v13_6.png)
 
-The `master (HEAD)` option is meant to replace `master (base)` in the future.
+The `main (HEAD)` option is meant to replace `main (base)` in the future.
 
 In order to support comments for both options, diff note positions are stored for
-both `master (base)` and `master (HEAD)` versions ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198457) in 12.10).
-The position for `master (base)` version is stored in `Note#position` and
-`Note#original_position` columns, for `master (HEAD)` version `DiffNotePosition`
+both `main (base)` and `main (HEAD)` versions ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198457) in 12.10).
+The position for `main (base)` version is stored in `Note#position` and
+`Note#original_position` columns, for `main (HEAD)` version `DiffNotePosition`
 has been introduced.
 
 One of the key challenges to deal with when working on merge ref diffs are merge

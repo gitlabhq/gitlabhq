@@ -55,10 +55,10 @@ The website keeps changing and being improved. In order to consolidate
 those changes to the stable branches, we'd need to pick certain changes
 from time to time.
 
-If this is not possible or there are many changes, merge master into them:
+If this is not possible or there are many changes, merge main into them:
 
 ```shell
 git branch 12.0
-git fetch origin master
-git merge origin/master
+git fetch origin main
+git merge origin/main
 ```

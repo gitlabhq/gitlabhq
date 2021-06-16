@@ -46,7 +46,7 @@ To select a cluster management project to use:
 
 1. Navigate to the appropriate configuration page. For a:
    - [Project-level cluster](../project/clusters/index.md), navigate to your project's
-     **Operations > Kubernetes** page.
+     **Infrastructure > Kubernetes clusters** page.
    - [Group-level cluster](../group/clusters/index.md), navigate to your group's **Kubernetes**
      page.
    - [Instance-level cluster](../instance/clusters/index.md), navigate to Admin Area's **Kubernetes**

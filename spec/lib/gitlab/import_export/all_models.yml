@@ -363,9 +363,9 @@ project:
 - integrations
 - campfire_integration
 - confluence_integration
-- datadog_service
-- discord_service
-- drone_ci_service
+- datadog_integration
+- discord_integration
+- drone_ci_integration
 - emails_on_push_service
 - pipelines_email_service
 - mattermost_slash_commands_service

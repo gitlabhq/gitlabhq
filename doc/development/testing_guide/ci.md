@@ -12,7 +12,7 @@ Our current CI parallelization setup is as follows:
 
 1. The `retrieve-tests-metadata` job in the `prepare` stage ensures we have a
    `knapsack/report-master.json` file:
-   - The `knapsack/report-master.json` file is fetched from the latest `master` pipeline which runs `update-tests-metadata`
+   - The `knapsack/report-master.json` file is fetched from the latest `main` pipeline which runs `update-tests-metadata`
      (for now it's the 2-hourly scheduled master pipeline), if it's not here we initialize the file with `{}`.
 1. Each `[rspec|rspec-ee] [unit|integration|system|geo] n m` job are run with
    `knapsack rspec` and should have an evenly distributed share of tests:
@@ -31,7 +31,7 @@ After that, the next pipeline uses the up-to-date `knapsack/report-master.json` 
 
 ## Monitoring
 
-The GitLab test suite is [monitored](../performance.md#rspec-profiling) for the `master` branch, and any branch
+The GitLab test suite is [monitored](../performance.md#rspec-profiling) for the `main` branch, and any branch
 that includes `rspec-profile` in their name.
 
 ## CI setup

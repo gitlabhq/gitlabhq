@@ -63,7 +63,8 @@ to deploy this project to.
 ## Create a Kubernetes cluster from within GitLab
 
 1. On your project's landing page, click **Add Kubernetes cluster**
-   (note that this option is also available when you navigate to **Operations > Kubernetes**).
+   (note that this option is also available when you navigate to
+   **Infrastructure > Kubernetes clusters**).
 
    ![Project landing page](img/guide_project_landing_page_v12_10.png)
 
@@ -216,7 +217,7 @@ to monitor it.
 
 After successfully deploying your application, you can view its website and check
 on its health on the **Environments** page by navigating to
-**Operations > Environments**. This page displays details about
+**Deployments > Environments**. This page displays details about
 the deployed applications, and the right-hand column displays icons that link
 you to common environment tasks:
 

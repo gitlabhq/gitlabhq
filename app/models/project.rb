@@ -146,6 +146,14 @@ class Project < ApplicationRecord
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards
 
+  def self.integration_association_name(name)
+    if ::Integration.renamed?(name)
+      "#{name}_integration"
+    else
+      "#{name}_service"
+    end
+  end
+
   # Project integrations
   has_one :asana_integration, class_name: 'Integrations::Asana'
   has_one :assembla_integration, class_name: 'Integrations::Assembla'
@@ -155,9 +163,9 @@ class Project < ApplicationRecord
   has_one :campfire_integration, class_name: 'Integrations::Campfire'
   has_one :confluence_integration, class_name: 'Integrations::Confluence'
   has_one :custom_issue_tracker_integration, class_name: 'Integrations::CustomIssueTracker'
-  has_one :datadog_service, class_name: 'Integrations::Datadog'
-  has_one :discord_service, class_name: 'Integrations::Discord'
-  has_one :drone_ci_service, class_name: 'Integrations::DroneCi'
+  has_one :datadog_integration, class_name: 'Integrations::Datadog'
+  has_one :discord_integration, class_name: 'Integrations::Discord'
+  has_one :drone_ci_integration, class_name: 'Integrations::DroneCi'
   has_one :emails_on_push_service, class_name: 'Integrations::EmailsOnPush'
   has_one :ewm_service, class_name: 'Integrations::Ewm'
   has_one :external_wiki_service, class_name: 'Integrations::ExternalWiki'

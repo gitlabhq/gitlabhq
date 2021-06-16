@@ -13,7 +13,7 @@ eventually.
 
 ## Quarantined tests
 
-When a test frequently fails in `master`,
+When a test frequently fails in `main`,
 [a ~"master:broken" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master)
 should be created.
 If the test cannot be fixed in a timely fashion, there is an impact on the
@@ -56,7 +56,7 @@ On our CI, we use [RSpec::Retry](https://github.com/NoRedInk/rspec-retry) to aut
 times (see [`spec/spec_helper.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/spec_helper.rb) for the precise retries count).
 
 We also use a home-made `RspecFlaky::Listener` listener which records flaky
-examples in a JSON report file on `master` (`retrieve-tests-metadata` and
+examples in a JSON report file on `main` (`retrieve-tests-metadata` and
 `update-tests-metadata` jobs).
 
 This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13021>.

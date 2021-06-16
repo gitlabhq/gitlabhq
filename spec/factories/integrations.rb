@@ -38,7 +38,7 @@ FactoryBot.define do
     end
   end
 
-  factory :drone_ci_service, class: 'Integrations::DroneCi' do
+  factory :drone_ci_integration, class: 'Integrations::DroneCi' do
     project
     active { true }
     drone_url { 'https://bamboo.example.com' }

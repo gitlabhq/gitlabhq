@@ -46,7 +46,7 @@ permissions in a project or group.
      kubectl apply -f kubernetes/ --namespace cost-model
      ```
 
-To access the cost insights, navigate to **Operations > Metrics** and select
+To access the cost insights, navigate to **Monitor > Metrics** and select
 the `default_costs.yml` dashboard. You can [customize](#customize-the-cost-dashboard)
 this dashboard.
 

@@ -156,15 +156,16 @@ module Gitlab
 
         underscored_service = matched_login['service'].underscore
 
-        if Integration.available_services_names.include?(underscored_service)
-          # We treat underscored_service as a trusted input because it is included
-          # in the Integration.available_services_names allowlist.
-          service = project.public_send("#{underscored_service}_service") # rubocop:disable GitlabSecurity/PublicSend
+        return unless Integration.available_services_names.include?(underscored_service)
 
-          if service && service.activated? && service.valid_token?(password)
-            Gitlab::Auth::Result.new(nil, project, :ci, build_authentication_abilities)
-          end
-        end
+        # We treat underscored_service as a trusted input because it is included
+        # in the Integration.available_services_names allowlist.
+        accessor = Project.integration_association_name(underscored_service)
+        service = project.public_send(accessor) # rubocop:disable GitlabSecurity/PublicSend
+
+        return unless service && service.activated? && service.valid_token?(password)
+
+        Gitlab::Auth::Result.new(nil, project, :ci, build_authentication_abilities)
       end
 
       def user_with_password_for_git(login, password)

@@ -70,12 +70,6 @@ module Gitlab
         return rich_line if marker_ranges.blank?
 
         begin
-          # MarkerRange objects are converted to Ranges to keep the previous behavior
-          # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/324068
-          if Feature.disabled?(:introduce_marker_ranges, project, default_enabled: :yaml)
-            marker_ranges = marker_ranges.map { |marker_range| marker_range.to_range }
-          end
-
           InlineDiffMarker.new(diff_line.text, rich_line).mark(marker_ranges)
         # This should only happen when the encoding of the diff doesn't
         # match the blob, which is a bug. But we shouldn't fail to render

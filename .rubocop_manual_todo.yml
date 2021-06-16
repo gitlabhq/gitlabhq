@@ -29,8 +29,6 @@ Graphql/Descriptions:
 # WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
   Exclude:
-    - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'
-    - 'ee/spec/controllers/subscriptions_controller_spec.rb'
     - 'ee/spec/initializers/fog_google_https_private_urls_spec.rb'
     - 'ee/spec/lib/analytics/merge_request_metrics_calculator_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'

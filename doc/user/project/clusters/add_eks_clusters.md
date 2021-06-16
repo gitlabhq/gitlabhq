@@ -74,7 +74,7 @@ Instance profiles dynamically retrieve temporary credentials from AWS when neede
 To create and add a new Kubernetes cluster to your project, group, or instance:
 
 1. Navigate to your:
-   - Project's **Operations > Kubernetes** page, for a project-level cluster.
+   - Project's **Infrastructure > Kubernetes clusters** page, for a project-level cluster.
    - Group's **Kubernetes** page, for a group-level cluster.
    - **Admin Area > Kubernetes**, for an instance-level cluster.
 1. Click **Integrate with a cluster certificate**.

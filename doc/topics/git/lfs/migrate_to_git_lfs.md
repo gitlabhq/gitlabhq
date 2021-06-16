@@ -137,8 +137,8 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
    # Change into the upstream repo directory:
    cd test-git-lfs-repo-migration
 
-   # You may need to reset your local copy with upstream's `master` after force-pushing from the mirror:
-   git reset --hard origin/master
+   # You may need to reset your local copy with upstream's `main` after force-pushing from the mirror:
+   git reset --hard origin/main
 
    # Track the files with LFS:
    git lfs track "*.gif" "*.png" "*.jpg" "*.psd" "*.mp4" "img/"

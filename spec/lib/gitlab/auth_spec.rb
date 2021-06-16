@@ -196,8 +196,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     end
 
     it 'recognizes other ci services' do
-      project.create_drone_ci_service(active: true)
-      project.drone_ci_service.update(token: 'token')
+      project.create_drone_ci_integration(active: true)
+      project.drone_ci_integration.update(token: 'token')
 
       expect(gl_auth.find_for_git_client('drone-ci-token', 'token', project: project, ip: 'ip')).to eq(Gitlab::Auth::Result.new(nil, project, :ci, described_class.build_authentication_abilities))
     end

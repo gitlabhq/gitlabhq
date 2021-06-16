@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/services/edit' do
-  let(:integration) { create(:drone_ci_service, project: project) }
+  let(:integration) { create(:drone_ci_integration, project: project) }
   let(:project) { create(:project) }
 
   before do

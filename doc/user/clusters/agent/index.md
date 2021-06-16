@@ -486,7 +486,7 @@ cilium:
 ## Management interfaces
 
 Users with at least the [Developer](../../permissions.md) can access the user interface
-for the GitLab Kubernetes agent at **Operations > Kubernetes** under the
+for the GitLab Kubernetes agent at **Infrastructure > Kubernetes clusters**, under the
 **GitLab Agent managed clusters** tab. This page lists all registered agents for
 the current project, and the configuration directory for each agent:
 

@@ -9,7 +9,7 @@ RSpec.describe Types::Projects::ServiceType do
     it 'resolves the corresponding type for objects' do
       expect(described_class.resolve_type(build(:jira_service), {})).to eq(Types::Projects::Services::JiraServiceType)
       expect(described_class.resolve_type(build(:service), {})).to eq(Types::Projects::Services::BaseServiceType)
-      expect(described_class.resolve_type(build(:drone_ci_service), {})).to eq(Types::Projects::Services::BaseServiceType)
+      expect(described_class.resolve_type(build(:drone_ci_integration), {})).to eq(Types::Projects::Services::BaseServiceType)
       expect(described_class.resolve_type(build(:custom_issue_tracker_integration), {})).to eq(Types::Projects::Services::BaseServiceType)
     end
   end

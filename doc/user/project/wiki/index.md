@@ -292,7 +292,7 @@ experience in the Wiki. To opt in for the new editor:
 
 1. Create a new wiki page, or edit an existing one.
 1. Ensure the wiki page uses the Markdown format. Other formats are not yet supported.
-1. Below the **Format** select box, select **Use new editor**:
+1. Below the **Format** select box, select **Use the new editor**:
 
    ![Use new editor button image](img/use_new_editor_button_v14.0.png)
 
@@ -308,11 +308,19 @@ experience in the Wiki. To opt in for the new editor:
 
 ### Switch back to the old editor
 
-1. *If you're editing the page in the content editor,* scroll to **Format**.
-1. Select **Switch to old editor**.
-1. Select **Switch to old editor** in the confirmation popup to confirm.
+1. *If you're editing the page in the content editor,* scroll to **Content**.
+1. Select **Switch me back to the classic editor**.
+1. Select **Switch to classic editor** in the confirmation popup to confirm.
 
 When you switch back to the old editor, any unsaved changes are lost.
+
+### GitLab Flavored Markdown support
+
+Supporting all GitLab Flavored Markdown content types in the Content Editor is a work in progress.
+For the status of the ongoing development for CommonMark and GitLab Flavored Markdown support, read:
+
+- [Basic Markdown formatting extensions](https://gitlab.com/groups/gitlab-org/-/epics/5404) epic.
+- [GitLab Flavored Markdown extensions](https://gitlab.com/groups/gitlab-org/-/epics/5438) epic.
 
 ## Resources
 

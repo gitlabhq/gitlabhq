@@ -15,14 +15,14 @@ There are two software distributions of GitLab:
 
 GitLab is available under [different subscriptions](https://about.gitlab.com/pricing/).
 
-New versions of GitLab are released from stable branches, and the `master` branch is used for
+New versions of GitLab are released from stable branches, and the `main` branch is used for
 bleeding-edge development.
 
 For more information, visit the [GitLab Release Process](https://about.gitlab.com/handbook/engineering/releases/).
 
 Both distributions require additional components. These components are described in the
 [Component details](#components) section, and all have their own repositories.
-New versions of each dependent component are usually tags, but staying on the `master` branch of the
+New versions of each dependent component are usually tags, but staying on the `main` branch of the
 GitLab codebase gives you the latest stable version of those components. New versions are
 generally released around the same time as GitLab releases, with the exception of informal security
 updates deemed critical.

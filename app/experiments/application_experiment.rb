@@ -16,11 +16,14 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
 
     track(:assignment) # track that we've assigned a variant for this context
 
-    begin
-      Gon.push({ experiment: { name => signature } }, true) # push the experiment data to the client
-    rescue NoMethodError
-      # means we're not in the request cycle, and can't add to Gon. Log a warning maybe?
-    end
+    push_to_client
+  end
+
+  # push the experiment data to the client
+  def push_to_client
+    Gon.push({ experiment: { name => signature } }, true)
+  rescue NoMethodError
+    # means we're not in the request cycle, and can't add to Gon. Log a warning maybe?
   end
 
   def track(action, **event_args)

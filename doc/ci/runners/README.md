@@ -5,25 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Runners
-
-In GitLab CI/CD, runners run the code defined in [`.gitlab-ci.yml`](../yaml/README.md).
-A runner is a lightweight, highly-scalable agent that picks up a CI job through
-the coordinator API of GitLab CI/CD, runs the job, and sends the result back to the GitLab instance.
-
-If you are using GitLab SaaS (GitLab.com), your CI jobs automatically run on shared runners. No configuration is required.
+# GitLab SaaS runners
 
 If you are using self-managed GitLab or you want to use your own runners on GitLab.com, you can
 [install and configure your own runners](https://docs.gitlab.com/runner/install/).
 
-## Runners on GitLab.com
+If you are using GitLab SaaS (GitLab.com), your CI jobs automatically run on shared runners. No configuration is required.
+Your jobs can run on [Linux](#linux-shared-runners) or [Windows](#windows-shared-runners-beta).
 
-On GitLab.com, your jobs can run on [Linux](#linux-shared-runners) or [Windows](#windows-shared-runners-beta).
+The number of minutes you can use on these shared runners depends on your
+[quota](../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota),
+which depends on your [subscription plan](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes).
 
-The shared runners provided by GitLab are limited by [shared runner pipeline minutes quotas](../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)
-for each GitLab [subscription plan](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes).
-
-### Linux shared runners
+## Linux shared runners
 
 Linux shared runners on GitLab.com run in autoscale mode and are powered by Google Cloud Platform.
 
@@ -51,7 +45,7 @@ Below are the shared runners settings.
 | Default Docker image                  | `ruby:2.5`                                        | -          |
 | `privileged` (run [Docker in Docker](https://hub.docker.com/_/docker/)) | `true`          | `false`    |
 
-#### Pre-clone script
+### Pre-clone script
 
 Linux shared runners on GitLab.com provide a way to run commands in a CI
 job before the runner attempts to run `git init` and `git fetch` to
@@ -71,7 +65,7 @@ To use this feature, define a [CI/CD variable](../../ci/variables/README.md#cust
 demonstrates how you might use a pre-clone step to seed the build
 directory.
 
-#### `config.toml`
+### `config.toml`
 
 The full contents of our `config.toml` are:
 
@@ -143,7 +137,7 @@ sentry_dsn = "X"
       BucketName = "bucket-name"
 ```
 
-### Windows shared runners (beta)
+## Windows shared runners (beta)
 
 The Windows shared runners are in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
 and shouldn't be used for production workloads.
@@ -165,7 +159,7 @@ We want to keep iterating to get Windows shared runners in a stable state and
 You can follow our work towards this goal in the
 [related epic](https://gitlab.com/groups/gitlab-org/-/epics/2162).
 
-#### Configuration
+### Configuration
 
 The full contents of our `config.toml` are:
 
@@ -228,7 +222,7 @@ VMTag = "windows"
   Directory = "C:\\GitLab-Runner\\autoscaler\\machines"
 ```
 
-#### Example
+### Example
 
 Below is a simple `.gitlab-ci.yml` file to show how to start using the
 Windows shared runners:
@@ -264,7 +258,7 @@ test:
     - echo "running scripts in the test job"
 ```
 
-#### Limitations and known issues
+### Limitations and known issues
 
 - All the limitations mentioned in our [beta
   definition](https://about.gitlab.com/handbook/product/#beta).
