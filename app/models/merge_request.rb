@@ -263,8 +263,9 @@ class MergeRequest < ApplicationRecord
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
   scope :from_project, ->(project) { where(source_project_id: project.id) }
+  scope :from_fork, -> { where('source_project_id <> target_project_id') }
   scope :from_and_to_forks, ->(project) do
-    where('source_project_id <> target_project_id AND (source_project_id = ? OR target_project_id = ?)', project.id, project.id)
+    from_fork.where('source_project_id = ? OR target_project_id = ?', project.id, project.id)
   end
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }

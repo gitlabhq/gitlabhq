@@ -4951,4 +4951,15 @@ RSpec.describe MergeRequest, factory_default: :keep do
       it { is_expected.to eq(true) }
     end
   end
+
+  describe '.from_fork' do
+    let!(:project) { create(:project, :repository) }
+    let!(:forked_project) { fork_project(project) }
+    let!(:fork_mr) { create(:merge_request, source_project: forked_project, target_project: project) }
+    let!(:regular_mr) { create(:merge_request, source_project: project) }
+
+    it 'returns merge requests from forks only' do
+      expect(described_class.from_fork).to eq([fork_mr])
+    end
+  end
 end

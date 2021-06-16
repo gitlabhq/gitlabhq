@@ -38,7 +38,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_one(:slack_service) }
     it { is_expected.to have_one(:microsoft_teams_service) }
     it { is_expected.to have_one(:mattermost_service) }
-    it { is_expected.to have_one(:hangouts_chat_service) }
+    it { is_expected.to have_one(:hangouts_chat_integration) }
     it { is_expected.to have_one(:unify_circuit_service) }
     it { is_expected.to have_one(:webex_teams_service) }
     it { is_expected.to have_one(:packagist_service) }
@@ -51,9 +51,9 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_one(:drone_ci_integration) }
     it { is_expected.to have_one(:emails_on_push_integration) }
     it { is_expected.to have_one(:pipelines_email_service) }
-    it { is_expected.to have_one(:irker_service) }
+    it { is_expected.to have_one(:irker_integration) }
     it { is_expected.to have_one(:pivotaltracker_service) }
-    it { is_expected.to have_one(:flowdock_service) }
+    it { is_expected.to have_one(:flowdock_integration) }
     it { is_expected.to have_one(:assembla_integration) }
     it { is_expected.to have_one(:slack_slash_commands_service) }
     it { is_expected.to have_one(:mattermost_slash_commands_service) }

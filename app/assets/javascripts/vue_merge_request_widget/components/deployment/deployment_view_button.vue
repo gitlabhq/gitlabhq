@@ -71,13 +71,13 @@ export default {
 };
 </script>
 <template>
-  <span>
+  <span class="gl-display-inline-flex">
     <gl-button-group v-if="shouldRenderDropdown" size="small">
       <review-app-link
         :display="appButtonText"
         :link="deploymentExternalUrl"
         size="small"
-        css-class="deploy-link js-deploy-url inline"
+        css-class="deploy-link js-deploy-url inline gl-ml-3"
       />
       <gl-dropdown toggle-class="gl-px-2!" size="small" class="js-mr-wigdet-deployment-dropdown">
         <template #button-content>
@@ -112,7 +112,7 @@ export default {
       :display="appButtonText"
       :link="deploymentExternalUrl"
       size="small"
-      css-class="js-deploy-url deploy-link btn btn-default btn-sm inline"
+      css-class="js-deploy-url deploy-link btn btn-default btn-sm inline gl-ml-3"
     />
     <visual-review-app-link
       v-if="showVisualReviewApp"

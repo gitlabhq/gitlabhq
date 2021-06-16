@@ -11,15 +11,15 @@ This page contains information about the settings that are used on
 
 ## SSH host keys fingerprints
 
-Below are the fingerprints for GitLab.com's SSH host keys. The first time you connect
-to a GitLab.com repository, one of these keys is displayed in the output.
+Below are the fingerprints for GitLab.com's SSH host keys. The first time you
+connect to a GitLab.com repository, one of these keys is displayed in the output.
 
-| Algorithm | MD5 (deprecated) | SHA256  |
-| --------- | --- | ------- |
-|  DSA (deprecated)      | `7a:47:81:3a:ee:89:89:64:33:ca:44:52:3d:30:d4:87` | `p8vZBUOR0XQz6sYiaWSMLmh0t9i8srqYKool/Xfdfqw` |
-|  ECDSA    | `f1:d0:fb:46:73:7a:70:92:5a:ab:5d:ef:43:e2:1c:35` | `HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw` |
-|  ED25519  | `2e:65:6a:c8:cf:bf:b2:8b:9a:bd:6d:9f:11:5c:12:16` | `eUXGGm1YGsMAS7vkcx6JOJdOGHPem5gQp4taiCfCLB8` |
-|  RSA      | `b6:03:0e:39:97:9e:d0:e7:24:ce:a3:77:3e:01:42:09` | `ROQFvPThGrW4RuWLoL9tq9I9zJ42fK4XywyRtbOz/EQ` |
+| Algorithm        | MD5 (deprecated) | SHA256  |
+|------------------|------------------|---------|
+| ED25519          | `2e:65:6a:c8:cf:bf:b2:8b:9a:bd:6d:9f:11:5c:12:16` | `eUXGGm1YGsMAS7vkcx6JOJdOGHPem5gQp4taiCfCLB8` |
+| RSA              | `b6:03:0e:39:97:9e:d0:e7:24:ce:a3:77:3e:01:42:09` | `ROQFvPThGrW4RuWLoL9tq9I9zJ42fK4XywyRtbOz/EQ` |
+| DSA (deprecated) | `7a:47:81:3a:ee:89:89:64:33:ca:44:52:3d:30:d4:87` | `p8vZBUOR0XQz6sYiaWSMLmh0t9i8srqYKool/Xfdfqw` |
+| ECDSA            | `f1:d0:fb:46:73:7a:70:92:5a:ab:5d:ef:43:e2:1c:35` | `HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw` |
 
 ## SSH `known_hosts` entries
 
@@ -34,32 +34,40 @@ gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
 
 ## Mail configuration
 
-GitLab.com sends emails from the `mg.gitlab.com` domain via [Mailgun](https://www.mailgun.com/) and has
-its own dedicated IP address (`192.237.158.143`).
+GitLab.com sends emails from the `mg.gitlab.com` domain by using [Mailgun](https://www.mailgun.com/),
+and has its own dedicated IP address (`192.237.158.143`).
 
-NOTE:
 The IP address for `mg.gitlab.com` is subject to change at any time.
 
 ## Backups
 
 [See our backup strategy](https://about.gitlab.com/handbook/engineering/infrastructure/production/#backups).
 
-There are several ways to perform backups of your content on GitLab.com.
+To back up an entire project on GitLab.com, you can export it either:
 
-Projects can be backed up in their entirety by exporting them either [through the UI](../project/settings/import_export.md) or [API](../../api/project_import_export.md#schedule-an-export), the latter of which can be used to programmatically upload exports to a storage platform such as AWS S3.
+- [Through the UI](../project/settings/import_export.md).
+- [Through the API](../../api/project_import_export.md#schedule-an-export). You
+  can also use the API to programmatically upload exports to a storage platform,
+  such as Amazon S3.
 
-With exports, be sure to take note of [what is and is not](../project/settings/import_export.md#exported-contents), included in a project export.
+With exports, be aware of [what is and is not](../project/settings/import_export.md#exported-contents)
+included in a project export.
 
-Since GitLab is built on Git, you can back up **just** the repository of a project by [cloning](../../gitlab-basics/start-using-git.md#clone-a-repository) it to another machine. Similarly, if you need to back up just the wiki of a repository it can also be cloned and all files uploaded to that wiki are included [if they were uploaded after 2020-08-22](../project/wiki/index.md#create-a-new-wiki-page).
+GitLab is built on Git, so you can back up just the repository of a project by
+[cloning](../../gitlab-basics/start-using-git.md#clone-a-repository) it to
+another computer.
+Similarly, you can clone a project's wiki to back it up. All files
+[uploaded after August 22, 2020](../project/wiki/index.md#create-a-new-wiki-page)
+are included when cloning.
 
 ## Alternative SSH port
 
-GitLab.com can be reached via a [different SSH port](https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.
+GitLab.com can be reached by using a [different SSH port](https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.
 
-| Setting     | Value               |
-| ---------   | ------------------- |
-| `Hostname`  | `altssh.gitlab.com` |
-| `Port`      | `443`               |
+| Setting    | Value               |
+|------------|---------------------|
+| `Hostname` | `altssh.gitlab.com` |
+| `Port`     | `443`               |
 
 An example `~/.ssh/config` is the following:
 
@@ -76,26 +84,26 @@ Host gitlab.com
 
 Below are the settings for [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
 
-| Setting                     | GitLab.com        | Default       |
-| --------------------------- | ----------------  | ------------- |
-| Domain name                 | `gitlab.io`       | -             |
-| IP address                  | `35.185.44.232`   | -             |
-| Custom domains support      | yes               | no            |
-| TLS certificates support    | yes               | no            |
-| Maximum size (compressed) | 1G                | 100M          |
+| Setting                   | GitLab.com             | Default                |
+|---------------------------|------------------------|------------------------|
+| Domain name               | `gitlab.io`            | -                      |
+| IP address                | `35.185.44.232`        | -                      |
+| Custom domains support    | **{check-circle}** Yes | **{dotted-circle}** No |
+| TLS certificates support  | **{check-circle}** Yes | **{dotted-circle}** No |
+| Maximum size (compressed) | 1 GB                   | 100 MB                 |
 
-NOTE:
-The maximum size of your Pages site is regulated by the artifacts maximum size
+The maximum size of your Pages site is regulated by the artifacts maximum size,
 which is part of [GitLab CI/CD](#gitlab-cicd).
 
 ## GitLab CI/CD
 
 Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
-Any settings or feature limits not listed here are using the defaults listed in the related documentation.
+Any settings or feature limits not listed here are using the defaults listed in
+the related documentation.
 
-| Setting                 | GitLab.com        | Default       |
-| -----------             | ----------------- | ------------- |
-| Artifacts maximum size (compressed) | 1G                | 100M          |
+| Setting                             | GitLab.com | Default |
+|-------------------------------------|------------|---------|
+| Artifacts maximum size (compressed) | 1 GB       | 100 MB  |
 | Artifacts [expiry time](../../ci/yaml/README.md#artifactsexpire_in)   | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry).           | deleted after 30 days unless otherwise specified    |
 | Scheduled Pipeline Cron | `*/5 * * * *` | `3-59/10 * * * *` |
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited |
@@ -107,19 +115,22 @@ Any settings or feature limits not listed here are using the defaults listed in 
 
 ## Account and limit settings
 
-GitLab.com has the following [account limits](../admin_area/settings/account_and_limit_settings.md) enabled. If a setting is not listed, it is set to the default value.
+GitLab.com has the following [account limits](../admin_area/settings/account_and_limit_settings.md)
+enabled. If a setting is not listed, it is set to the default value.
 
-If you are near
-or over the repository size limit, you can [reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md).
+If you are near or over the repository size limit, you can
+[reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md).
 
-| Setting                       | GitLab.com  | Default       |
-| -----------                   | ----------- | ------------- |
+| Setting                       | GitLab.com | Default |
+|-------------------------------|------------|---------|
 | [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB       | Unlimited     |
-| Maximum import size           | 5 GB        | Unlimited ([Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to unlimited in GitLab 13.8.    |
-| Maximum attachment size       | 10 MB      |     10 MB   | 
+| Maximum import size           | 5 GB       | Unlimited ([Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to unlimited in GitLab 13.8.    |
+| Maximum attachment size       | 10 MB      | 10 MB   |
 
 NOTE:
-`git push` and GitLab project imports are limited to 5 GB per request through Cloudflare. Git LFS and imports other than a file upload are not affected by this limit.
+`git push` and GitLab project imports are limited to 5 GB per request through
+Cloudflare. Git LFS and imports other than a file upload are not affected by
+this limit.
 
 ## IP range
 
@@ -129,17 +140,16 @@ from those IPs and allow them.
 
 GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4) and [IPv6](https://www.cloudflare.com/ips-v6)).
 
-For outgoing connections from CI/CD runners we are not providing static IP addresses.
-All our runners are deployed into Google Cloud Platform (GCP) - any IP based
-firewall can be configured by looking up all
+For outgoing connections from CI/CD runners, we are not providing static IP
+addresses. All GitLab runners are deployed into Google Cloud Platform (GCP). Any
+IP-based firewall can be configured by looking up all
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
 
 ## Hostname list
 
-To configure allow-lists in local HTTP(S) proxies, or other
-web-blocking software that govern end-user machines,
-pages on GitLab.com will attempt to load content from
-the following hostnames:
+Add these hostnames when you configure allow-lists in local HTTP(S) proxies,
+or other web-blocking software that governs end-user computers. Pages on
+GitLab.com load content from these hostnames:
 
 - `gitlab.com`
 - `*.gitlab.com`
@@ -147,19 +157,18 @@ the following hostnames:
 - `*.gitlab.io`
 - `*.gitlab.net`
 
-Documentation and Company pages served over `docs.gitlab.com`
-and `about.gitlab.com` will attempt to also load certain page
-content directly from common public CDN hostnames.
+Documentation and Company pages served over `docs.gitlab.com` and `about.gitlab.com`
+also load certain page content directly from common public CDN hostnames.
 
 ## Webhooks
 
 The following limits apply for [Webhooks](../project/integrations/webhooks.md):
 
-| Setting | GitLab.com | Default |
-| ------- | ---------- | ------- |
-| [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit) | `120` calls per minute for Free tier, unlimited for all paid tiers | Unlimited
-| [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks) | `100` per-project, `50` per-group | `100` per-project, `50` per-group
-| Maximum payload size | `25 MB` | `25 MB`
+| Setting              | GitLab.com | Default |
+|----------------------|------------|---------|
+| [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit) | `120` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate | Unlimited |
+| [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks) | `100` per project, `50` per group | `100` per project, `50` per group |
+| Maximum payload size | 25 MB      | 25 MB   |
 
 ## Shared runners
 
@@ -172,15 +181,15 @@ For more information, see [choosing a runner](../../ci/runners/README.md).
 GitLab.com runs [Sidekiq](https://sidekiq.org) with arguments `--timeout=4 --concurrency=4`
 and the following environment variables:
 
-| Setting                                    | GitLab.com | Default   |
-|--------                                    |----------- |--------   |
-| `SIDEKIQ_DAEMON_MEMORY_KILLER`             | -          | `1`       |
-| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`            | `2000000`  | `2000000` |
-| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS`     | -          | -         |
-| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL`     | -          | `3`       |
-| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`         | -          | `900`     |
-| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`      | -          | `30`      |
-| `SIDEKIQ_LOG_ARGUMENTS`                    | `1`        | `1`       |
+| Setting                                | GitLab.com | Default   |
+|----------------------------------------|------------|-----------|
+| `SIDEKIQ_DAEMON_MEMORY_KILLER`         | -          | `1`       |
+| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`        | `2000000`  | `2000000` |
+| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` | -          | -         |
+| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL` | -          | `3`       |
+| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`     | -          | `900`     |
+| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`  | -          | `30`      |
+| `SIDEKIQ_LOG_ARGUMENTS`                | `1`        | `1`       |
 
 NOTE:
 The `SIDEKIQ_MEMORY_KILLER_MAX_RSS` setting is `16000000` on Sidekiq import
@@ -228,11 +237,8 @@ The list of GitLab.com specific settings (and their defaults) is as follows:
 | `idle_in_transaction_session_timeout` | 60s                                                                 | 60s                                   |
 
 Some of these settings are in the process being adjusted. For example, the value
-for `shared_buffers` is quite high and as such we are looking into adjusting it.
-More information on this particular change can be found at
-<https://gitlab.com/gitlab-com/infrastructure/-/issues/1555>. An up to date list
-of proposed changes can be found at
-<https://gitlab.com/gitlab-com/infrastructure/-/issues?scope=all&state=opened&label_name[]=database&label_name[]=change>.
+for `shared_buffers` is quite high, and we are
+[considering adjusting it](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/4985).
 
 ## Puma
 
@@ -282,16 +288,18 @@ paths that exceed 10 requests per **minute** per IP address.
 See the source below for which paths are protected. This includes user creation,
 user confirmation, user sign in, and password reset.
 
-[User and IP rate limits](../admin_area/settings/user_and_ip_rate_limits.md#response-headers) includes a list of the headers responded to blocked requests.
+[User and IP rate limits](../admin_area/settings/user_and_ip_rate_limits.md#response-headers)
+includes a list of the headers responded to blocked requests.
 
 See [Protected Paths](../admin_area/settings/protected_paths.md) for more details.
 
 ### IP blocks
 
 IP blocks can occur when GitLab.com receives unusual traffic from a single
-IP address that the system views as potentially malicious, based on rate limit
-settings. After the unusual traffic ceases, the IP address is automatically
-released depending on the type of block, as described in a following section.
+IP address that the system views as potentially malicious. This can be based on
+rate limit settings. After the unusual traffic ceases, the IP address is
+automatically released depending on the type of block, as described in a
+following section.
 
 If you receive a `403 Forbidden` error for all requests to GitLab.com,
 check for any automated processes that may be triggering a block. For
@@ -309,8 +317,8 @@ This applies only to Git requests and container registry (`/jwt/auth`) requests
 This limit:
 
 - Is reset by requests that authenticate successfully. For example, 29
-  failed authentication requests followed by 1 successful request, followed by 29
-  more failed authentication requests would not trigger a ban.
+  failed authentication requests followed by 1 successful request, followed by
+  29 more failed authentication requests would not trigger a ban.
 - Does not apply to JWT requests authenticated by `gitlab-ci-token`.
 
 No response headers are provided.
@@ -326,33 +334,42 @@ doesn't return the following headers:
 
 ### Visibility settings
 
-On GitLab.com, projects, groups, and snippets created
-As of GitLab 12.2 (July 2019), projects, groups, and snippets have the
-[**Internal** visibility](../../public_access/public_access.md#internal-projects) setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+If created before GitLab 12.2 (July 2019), these items have the
+[Internal visibility](../../public_access/public_access.md#internal-projects)
+setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388):
+
+- Projects
+- Groups
+- Snippets
 
 ### SSH maximum number of connections
 
-GitLab.com defines the maximum number of concurrent, unauthenticated SSH connections by
-using the [MaxStartups setting](http://man.openbsd.org/sshd_config.5#MaxStartups).
-If more than the maximum number of allowed connections occur concurrently, they are
-dropped and users get
+GitLab.com defines the maximum number of concurrent, unauthenticated SSH
+connections by using the [MaxStartups setting](http://man.openbsd.org/sshd_config.5#MaxStartups).
+If more than the maximum number of allowed connections occur concurrently, they
+are dropped and users get
 [an `ssh_exchange_identification` error](../../topics/git/troubleshooting_git.md#ssh_exchange_identification-error).
 
 ### Import/export
 
-To help avoid abuse, project and group imports, exports, and export downloads are rate limited. See [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits) and [Group import/export rate limits](../../user/group/settings/import_export.md#rate-limits) for details.
+To help avoid abuse, project and group imports, exports, and export downloads
+are rate limited. See [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits) and [Group import/export rate limits](../../user/group/settings/import_export.md#rate-limits)
+for details.
 
 ### Non-configurable limits
 
-See [non-configurable limits](../../security/rate_limits.md#non-configurable-limits) for information on
-rate limits that are not configurable, and therefore also used on GitLab.com.
+See [non-configurable limits](../../security/rate_limits.md#non-configurable-limits)
+for information on rate limits that are not configurable, and therefore also
+used on GitLab.com.
 
 ## GitLab.com Logging
 
-We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd) to parse our logs. Fluentd sends our logs to
-[Stackdriver Logging](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#stackdriver) and [Cloud Pub/Sub](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#cloud-pubsub).
-Stackdriver is used for storing logs long-term in Google Cold Storage (GCS). Cloud Pub/Sub
-is used to forward logs to an [Elastic cluster](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#elastic) using [`pubsubbeat`](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#pubsubbeat-vms).
+We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd)
+to parse our logs. Fluentd sends our logs to
+[Stackdriver Logging](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#stackdriver)
+and [Cloud Pub/Sub](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#cloud-pubsub).
+Stackdriver is used for storing logs long-term in Google Cold Storage (GCS).
+Cloud Pub/Sub is used to forward logs to an [Elastic cluster](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#elastic) using [`pubsubbeat`](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#pubsubbeat-vms).
 
 You can view more information in our runbooks such as:
 

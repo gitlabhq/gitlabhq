@@ -317,7 +317,7 @@ RSpec.describe API::Services do
     end
 
     before do
-      project.create_hangouts_chat_service(
+      project.create_hangouts_chat_integration(
         active: true,
         properties: params
       )
