@@ -23,7 +23,7 @@
             data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } }>
             = sprite_icon('error')
         - else
-          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: link_classes + 'btn gl-button btn-default btn-icon',
+          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referer), class: link_classes + 'btn gl-button btn-default btn-icon',
             title: s_('UserProfile|Report abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = sprite_icon('error')
       - if can?(current_user, :read_user_profile, @user)

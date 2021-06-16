@@ -8,7 +8,7 @@
 
 = form_for(integration, as: :service, url: scoped_integration_path(integration), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'test-url' => test_project_service_path(@project, integration) } }) do |form|
   = render 'shared/service_settings', form: form, integration: integration
-  %input{ id: 'services_redirect_to', type: 'hidden', name: 'redirect_to', value: request.referrer }
+  %input{ id: 'services_redirect_to', type: 'hidden', name: 'redirect_to', value: request.referer }
 
 - if lookup_context.template_exists?('show', "projects/services/#{integration.to_param}", true)
   %hr

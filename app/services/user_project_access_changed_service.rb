@@ -20,7 +20,7 @@ class UserProjectAccessChangedService
         if priority == HIGH_PRIORITY
           AuthorizedProjectsWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
         else
-          AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in( # rubocop:disable Scalability/BulkPerformWithContext
+          AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.bulk_perform_in( # rubocop:disable Scalability/BulkPerformWithContext
             DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds)
         end
       end

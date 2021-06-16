@@ -711,23 +711,11 @@ module Ci
         end
       end
 
-      context 'when ci_register_job_service_one_by_one is enabled' do
-        before do
-          stub_feature_flags(ci_register_job_service_one_by_one: true)
-        end
-
+      context 'when a long queue is created' do
         it 'picks builds one-by-one' do
           expect(Ci::Build).to receive(:find).with(pending_job.id).and_call_original
 
           expect(execute(specific_runner)).to eq(pending_job)
-        end
-
-        include_examples 'handles runner assignment'
-      end
-
-      context 'when ci_register_job_service_one_by_one is disabled' do
-        before do
-          stub_feature_flags(ci_register_job_service_one_by_one: false)
         end
 
         include_examples 'handles runner assignment'

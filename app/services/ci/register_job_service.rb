@@ -125,20 +125,12 @@ module Ci
         builds = builds.queued_before(params[:job_age].seconds.ago)
       end
 
-      if Feature.enabled?(:ci_register_job_service_one_by_one, runner, default_enabled: true)
-        build_ids = retrieve_queue(-> { builds.pluck(:id) })
+      build_ids = retrieve_queue(-> { builds.pluck(:id) })
 
-        @metrics.observe_queue_size(-> { build_ids.size }, @runner.runner_type)
+      @metrics.observe_queue_size(-> { build_ids.size }, @runner.runner_type)
 
-        build_ids.each do |build_id|
-          yield Ci::Build.find(build_id)
-        end
-      else
-        builds_array = retrieve_queue(-> { builds.to_a })
-
-        @metrics.observe_queue_size(-> { builds_array.size }, @runner.runner_type)
-
-        builds_array.each(&blk)
+      build_ids.each do |build_id|
+        yield Ci::Build.find(build_id)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord

@@ -7,9 +7,10 @@ RSpec.describe 'CI YML Templates' do
 
   let(:all_templates) { Gitlab::Template::GitlabCiYmlTemplate.all.map(&:full_name) }
   let(:excluded_templates) do
-    all_templates.select do |name|
+    excluded = all_templates.select do |name|
       Gitlab::Template::GitlabCiYmlTemplate.excluded_patterns.any? { |pattern| pattern.match?(name) }
     end
+    excluded + ["Terraform.gitlab-ci.yml"]
   end
 
   before do

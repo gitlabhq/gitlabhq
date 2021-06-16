@@ -19,7 +19,7 @@ RSpec.describe UserProjectAccessChangedService do
     end
 
     it 'permits low-priority operation' do
-      expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).to(
+      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
         receive(:bulk_perform_in).with(
           described_class::DELAY,
           [[1], [2]],

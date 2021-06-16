@@ -13,6 +13,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Validate::SecurityOrchestrationPolicy,
                 Gitlab::Ci::Pipeline::Chain::Config::Content,
                 Gitlab::Ci::Pipeline::Chain::Config::Process,
+                Gitlab::Ci::Pipeline::Chain::Validate::AfterConfig,
                 Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs,
                 Gitlab::Ci::Pipeline::Chain::Skip,
                 Gitlab::Ci::Pipeline::Chain::SeedBlock,

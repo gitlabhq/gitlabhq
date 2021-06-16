@@ -4142,13 +4142,7 @@ msgstr ""
 msgid "ApprovalRule|Rule name"
 msgstr ""
 
-msgid "ApprovalRule|Status check"
-msgstr ""
-
 msgid "ApprovalRule|Target branch"
-msgstr ""
-
-msgid "ApprovalRule|Users or groups"
 msgstr ""
 
 msgid "ApprovalStatusTooltip|Adheres to separation of duties"
@@ -13429,9 +13423,6 @@ msgid "External storage URL"
 msgstr ""
 
 msgid "External storage authentication token"
-msgstr ""
-
-msgid "External url has already been taken"
 msgstr ""
 
 msgid "ExternalAuthorizationService|Classification label"
@@ -31122,9 +31113,6 @@ msgstr ""
 msgid "StatusCheck|External API is already in use by another status check."
 msgstr ""
 
-msgid "StatusCheck|Invoke an external API as part of the approvals"
-msgstr ""
-
 msgid "StatusCheck|Invoke an external API as part of the pipeline process."
 msgstr ""
 
@@ -32383,9 +32371,6 @@ msgstr ""
 msgid "The character highlighter helps you keep the subject line to %{titleLength} characters and wrap the body at %{bodyLength} so they are readable in git."
 msgstr ""
 
-msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
-msgstr ""
-
 msgid "The collection of events added to the data gathered for that stage."
 msgstr ""
 
@@ -32547,9 +32532,6 @@ msgstr ""
 msgid "The invitation was successfully resent."
 msgstr ""
 
-msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
-msgstr ""
-
 msgid "The issue was successfully promoted to an epic. Redirecting to epic..."
 msgstr ""
 
@@ -32649,9 +32631,6 @@ msgstr ""
 msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
 msgstr ""
 
-msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
-msgstr ""
-
 msgid "The private key to use when a client certificate is provided. This value is encrypted at rest."
 msgstr ""
 
@@ -32715,9 +32694,6 @@ msgstr ""
 msgid "The repository must be accessible over %{code_open}http://%{code_close}, %{code_open}https://%{code_close}, %{code_open}ssh://%{code_close} or %{code_open}git://%{code_close}."
 msgstr ""
 
-msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
-msgstr ""
-
 msgid "The same shared runner executes code from multiple projects, unless you configure autoscaling with %{link} set to 1 (which it is on GitLab.com)."
 msgstr ""
 
@@ -32742,9 +32718,6 @@ msgstr ""
 msgid "The specified tab is invalid, please select another"
 msgstr ""
 
-msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
-msgstr ""
-
 msgid "The start date must be ealier than the end date."
 msgstr ""
 
@@ -32755,9 +32728,6 @@ msgid "The subject will be used as the title of the new issue, and the message w
 msgstr ""
 
 msgid "The tag name can't be changed for an existing release."
-msgstr ""
-
-msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr ""
 
 msgid "The time taken by each data entry gathered by that stage."

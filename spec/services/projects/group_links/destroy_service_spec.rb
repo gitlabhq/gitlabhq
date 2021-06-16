@@ -31,8 +31,8 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute' do
         subject.execute(group_link)
       end
 
-      it 'calls AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker with a delay to update project authorizations' do
-        expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).to(
+      it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
+        expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
           receive(:bulk_perform_in)
             .with(1.hour,
                   [[user.id]],

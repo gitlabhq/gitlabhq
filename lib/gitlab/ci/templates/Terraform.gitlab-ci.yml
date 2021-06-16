@@ -1,61 +1,22 @@
-# Official image for Hashicorp's Terraform. It uses light image which is Alpine
-# based as it is much lighter.
-#
-# Entrypoint is also needed as image by default set `terraform` binary as an
-# entrypoint.
-image:
-  name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
-  entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-
-# Default output file for Terraform plan
-variables:
-  PLAN: plan.tfplan
-  JSON_PLAN_FILE: tfplan.json
-
-cache:
-  paths:
-    - .terraform
-    - .terraform.lock.hcl
-
-before_script:
-  - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
-  - terraform --version
-  - terraform init
+include:
+  - template: Terraform/Base.latest.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
 
 stages:
+  - init
   - validate
   - build
-  - test
   - deploy
 
+init:
+  extends: .init
+
 validate:
-  stage: validate
-  script:
-    - terraform validate
+  extends: .validate
 
-plan:
-  stage: build
-  script:
-    - terraform plan -out=$PLAN
-    - "terraform show --json $PLAN | convert_report > $JSON_PLAN_FILE"
-  artifacts:
-    paths:
-      - $PLAN
-    reports:
-      terraform: $JSON_PLAN_FILE
+build:
+  extends: .build
 
-# Separate apply job for manual launching Terraform as it can be destructive
-# action.
-apply:
-  stage: deploy
-  environment:
-    name: production
-  script:
-    - terraform apply -input=false $PLAN
+deploy:
+  extends: .deploy
   dependencies:
-    - plan
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
+    - build
