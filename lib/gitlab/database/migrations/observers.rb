@@ -8,7 +8,8 @@ module Gitlab
           [
             TotalDatabaseSizeChange.new,
             QueryStatistics.new,
-            QueryLog.new
+            QueryLog.new,
+            QueryDetails.new
           ]
         end
       end

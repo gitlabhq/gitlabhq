@@ -1,3 +1,5 @@
+import '../webpack';
+
 import setConfigs from '@gitlab/ui/dist/config';
 import Vue from 'vue';
 import { getLocation, sizeToParent } from '~/jira_connect/utils';

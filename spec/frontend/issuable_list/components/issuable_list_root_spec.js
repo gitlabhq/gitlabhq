@@ -1,4 +1,4 @@
-import { GlSkeletonLoading, GlPagination } from '@gitlab/ui';
+import { GlKeysetPagination, GlSkeletonLoading, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueDraggable from 'vuedraggable';
 
@@ -11,9 +11,12 @@ import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filte
 
 import { mockIssuableListProps, mockIssuables } from '../mock_data';
 
-const createComponent = ({ props = mockIssuableListProps, data = {} } = {}) =>
+const createComponent = ({ props = {}, data = {} } = {}) =>
   shallowMount(IssuableListRoot, {
-    propsData: props,
+    propsData: {
+      ...mockIssuableListProps,
+      ...props,
+    },
     data() {
       return data;
     },
@@ -34,6 +37,7 @@ describe('IssuableListRoot', () => {
   let wrapper;
 
   const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
+  const findGlKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findGlPagination = () => wrapper.findComponent(GlPagination);
   const findIssuableItem = () => wrapper.findComponent(IssuableItem);
   const findIssuableTabs = () => wrapper.findComponent(IssuableTabs);
@@ -189,15 +193,15 @@ describe('IssuableListRoot', () => {
   });
 
   describe('template', () => {
-    beforeEach(() => {
-      wrapper = createComponent();
-    });
-
     it('renders component container element with class "issuable-list-container"', () => {
+      wrapper = createComponent();
+
       expect(wrapper.classes()).toContain('issuable-list-container');
     });
 
     it('renders issuable-tabs component', () => {
+      wrapper = createComponent();
+
       const tabsEl = findIssuableTabs();
 
       expect(tabsEl.exists()).toBe(true);
@@ -209,6 +213,8 @@ describe('IssuableListRoot', () => {
     });
 
     it('renders contents for slot "nav-actions" within issuable-tab component', () => {
+      wrapper = createComponent();
+
       const buttonEl = findIssuableTabs().find('button.js-new-issuable');
 
       expect(buttonEl.exists()).toBe(true);
@@ -216,6 +222,8 @@ describe('IssuableListRoot', () => {
     });
 
     it('renders filtered-search-bar component', () => {
+      wrapper = createComponent();
+
       const searchEl = findFilteredSearchBar();
       const {
         namespace,
@@ -239,12 +247,8 @@ describe('IssuableListRoot', () => {
       });
     });
 
-    it('renders gl-loading-icon when `issuablesLoading` prop is true', async () => {
-      wrapper.setProps({
-        issuablesLoading: true,
-      });
-
-      await wrapper.vm.$nextTick();
+    it('renders gl-loading-icon when `issuablesLoading` prop is true', () => {
+      wrapper = createComponent({ props: { issuablesLoading: true } });
 
       expect(wrapper.findAllComponents(GlSkeletonLoading)).toHaveLength(
         wrapper.vm.skeletonItemCount,
@@ -252,6 +256,8 @@ describe('IssuableListRoot', () => {
     });
 
     it('renders issuable-item component for each item within `issuables` array', () => {
+      wrapper = createComponent();
+
       const itemsEl = wrapper.findAllComponents(IssuableItem);
       const mockIssuable = mockIssuableListProps.issuables[0];
 
@@ -262,28 +268,23 @@ describe('IssuableListRoot', () => {
       });
     });
 
-    it('renders contents for slot "empty-state" when `issuablesLoading` is false and `issuables` is empty', async () => {
-      wrapper.setProps({
-        issuables: [],
-      });
-
-      await wrapper.vm.$nextTick();
+    it('renders contents for slot "empty-state" when `issuablesLoading` is false and `issuables` is empty', () => {
+      wrapper = createComponent({ props: { issuables: [] } });
 
       expect(wrapper.find('p.js-issuable-empty-state').exists()).toBe(true);
       expect(wrapper.find('p.js-issuable-empty-state').text()).toBe('Issuable empty state');
     });
 
-    it('renders gl-pagination when `showPaginationControls` prop is true', async () => {
-      wrapper.setProps({
-        showPaginationControls: true,
-        totalItems: 10,
+    it('renders only gl-pagination when `showPaginationControls` prop is true', () => {
+      wrapper = createComponent({
+        props: {
+          showPaginationControls: true,
+          totalItems: 10,
+        },
       });
 
-      await wrapper.vm.$nextTick();
-
-      const paginationEl = findGlPagination();
-      expect(paginationEl.exists()).toBe(true);
-      expect(paginationEl.props()).toMatchObject({
+      expect(findGlKeysetPagination().exists()).toBe(false);
+      expect(findGlPagination().props()).toMatchObject({
         perPage: 20,
         value: 1,
         prevPage: 0,
@@ -292,31 +293,46 @@ describe('IssuableListRoot', () => {
         align: 'center',
       });
     });
+
+    it('renders only gl-keyset-pagination when `showPaginationControls` and `useKeysetPagination` props are true', () => {
+      wrapper = createComponent({
+        props: {
+          hasNextPage: true,
+          hasPreviousPage: true,
+          showPaginationControls: true,
+          useKeysetPagination: true,
+        },
+      });
+
+      expect(findGlPagination().exists()).toBe(false);
+      expect(findGlKeysetPagination().props()).toMatchObject({
+        hasNextPage: true,
+        hasPreviousPage: true,
+      });
+    });
   });
 
   describe('events', () => {
-    beforeEach(() => {
-      wrapper = createComponent({
-        data: {
-          checkedIssuables: {
-            [mockIssuables[0].iid]: { checked: true, issuable: mockIssuables[0] },
-          },
-        },
-      });
-    });
+    const data = {
+      checkedIssuables: {
+        [mockIssuables[0].iid]: { checked: true, issuable: mockIssuables[0] },
+      },
+    };
 
     it('issuable-tabs component emits `click-tab` event on `click-tab` event', () => {
+      wrapper = createComponent({ data });
+
       findIssuableTabs().vm.$emit('click');
 
       expect(wrapper.emitted('click-tab')).toBeTruthy();
     });
 
-    it('sets all issuables as checked when filtered-search-bar component emits `checked-input` event', async () => {
+    it('sets all issuables as checked when filtered-search-bar component emits `checked-input` event', () => {
+      wrapper = createComponent({ data });
+
       const searchEl = findFilteredSearchBar();
 
       searchEl.vm.$emit('checked-input', true);
-
-      await wrapper.vm.$nextTick();
 
       expect(searchEl.emitted('checked-input')).toBeTruthy();
       expect(searchEl.emitted('checked-input').length).toBe(1);
@@ -328,6 +344,8 @@ describe('IssuableListRoot', () => {
     });
 
     it('filtered-search-bar component emits `filter` event on `onFilter` & `sort` event on `onSort` events', () => {
+      wrapper = createComponent({ data });
+
       const searchEl = findFilteredSearchBar();
 
       searchEl.vm.$emit('onFilter');
@@ -336,12 +354,12 @@ describe('IssuableListRoot', () => {
       expect(wrapper.emitted('sort')).toBeTruthy();
     });
 
-    it('sets an issuable as checked when issuable-item component emits `checked-input` event', async () => {
+    it('sets an issuable as checked when issuable-item component emits `checked-input` event', () => {
+      wrapper = createComponent({ data });
+
       const issuableItem = wrapper.findAllComponents(IssuableItem).at(0);
 
       issuableItem.vm.$emit('checked-input', true);
-
-      await wrapper.vm.$nextTick();
 
       expect(issuableItem.emitted('checked-input')).toBeTruthy();
       expect(issuableItem.emitted('checked-input').length).toBe(1);
@@ -353,27 +371,45 @@ describe('IssuableListRoot', () => {
     });
 
     it('emits `update-legacy-bulk-edit` when filtered-search-bar checkbox is checked', () => {
+      wrapper = createComponent({ data });
+
       findFilteredSearchBar().vm.$emit('checked-input');
 
       expect(wrapper.emitted('update-legacy-bulk-edit')).toEqual([[]]);
     });
 
     it('emits `update-legacy-bulk-edit` when issuable-item checkbox is checked', () => {
+      wrapper = createComponent({ data });
+
       findIssuableItem().vm.$emit('checked-input');
 
       expect(wrapper.emitted('update-legacy-bulk-edit')).toEqual([[]]);
     });
 
-    it('gl-pagination component emits `page-change` event on `input` event', async () => {
-      wrapper.setProps({
-        showPaginationControls: true,
-      });
-
-      await wrapper.vm.$nextTick();
+    it('gl-pagination component emits `page-change` event on `input` event', () => {
+      wrapper = createComponent({ data, props: { showPaginationControls: true } });
 
       findGlPagination().vm.$emit('input');
       expect(wrapper.emitted('page-change')).toBeTruthy();
     });
+
+    it.each`
+      event              | glKeysetPaginationEvent
+      ${'next-page'}     | ${'next'}
+      ${'previous-page'} | ${'prev'}
+    `(
+      'emits `$event` event when gl-keyset-pagination emits `$glKeysetPaginationEvent` event',
+      ({ event, glKeysetPaginationEvent }) => {
+        wrapper = createComponent({
+          data,
+          props: { showPaginationControls: true, useKeysetPagination: true },
+        });
+
+        findGlKeysetPagination().vm.$emit(glKeysetPaginationEvent);
+
+        expect(wrapper.emitted(event)).toEqual([[]]);
+      },
+    );
   });
 
   describe('manual sorting', () => {

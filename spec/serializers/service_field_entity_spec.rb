@@ -55,10 +55,11 @@ RSpec.describe ServiceFieldEntity do
     end
 
     context 'EmailsOnPush Service' do
-      let(:service) { create(:emails_on_push_service, send_from_committer_email: '1') }
+      let(:integration) { create(:emails_on_push_integration, send_from_committer_email: '1') }
+      let(:service) { integration } # TODO: remove when https://gitlab.com/gitlab-org/gitlab/-/issues/330300 is complete
 
       context 'field with type checkbox' do
-        let(:field) { service.global_fields.find { |field| field[:name] == 'send_from_committer_email' } }
+        let(:field) { integration.global_fields.find { |field| field[:name] == 'send_from_committer_email' } }
 
         it 'exposes correct attributes and casts value to Boolean' do
           expected_hash = {
@@ -77,7 +78,7 @@ RSpec.describe ServiceFieldEntity do
       end
 
       context 'field with type select' do
-        let(:field) { service.global_fields.find { |field| field[:name] == 'branches_to_be_notified' } }
+        let(:field) { integration.global_fields.find { |field| field[:name] == 'branches_to_be_notified' } }
 
         it 'exposes correct attributes' do
           expected_hash = {

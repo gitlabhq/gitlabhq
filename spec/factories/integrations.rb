@@ -12,7 +12,7 @@ FactoryBot.define do
     issue_tracker
   end
 
-  factory :emails_on_push_service, class: 'Integrations::EmailsOnPush' do
+  factory :emails_on_push_integration, class: 'Integrations::EmailsOnPush' do
     project
     type { 'EmailsOnPushService' }
     active { true }
@@ -103,7 +103,7 @@ FactoryBot.define do
     issue_tracker
   end
 
-  factory :ewm_service, class: 'Integrations::Ewm' do
+  factory :ewm_integration, class: 'Integrations::Ewm' do
     project
     active { true }
     issue_tracker
@@ -127,7 +127,7 @@ FactoryBot.define do
     end
   end
 
-  factory :external_wiki_service, class: 'Integrations::ExternalWiki' do
+  factory :external_wiki_integration, class: 'Integrations::ExternalWiki' do
     project
     type { 'ExternalWikiService' }
     active { true }

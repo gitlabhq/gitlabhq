@@ -19,6 +19,7 @@ import * as Link from '../extensions/link';
 import * as ListItem from '../extensions/list_item';
 import * as OrderedList from '../extensions/ordered_list';
 import * as Paragraph from '../extensions/paragraph';
+import * as Strike from '../extensions/strike';
 import * as Text from '../extensions/text';
 import buildSerializerConfig from './build_serializer_config';
 import { ContentEditor } from './content_editor';
@@ -44,6 +45,7 @@ const builtInContentEditorExtensions = [
   ListItem,
   OrderedList,
   Paragraph,
+  Strike,
   Text,
 ];
 

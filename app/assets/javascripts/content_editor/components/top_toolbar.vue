@@ -64,6 +64,15 @@ export default {
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
+      data-testid="strike"
+      content-type="strike"
+      icon-name="strikethrough"
+      editor-command="toggleStrike"
+      :label="__('Strikethrough')"
+      :tiptap-editor="contentEditor.tiptapEditor"
+      @execute="trackToolbarControlExecution"
+    />
+    <toolbar-button
       data-testid="code"
       content-type="code"
       icon-name="code"

@@ -342,4 +342,45 @@ RSpec.describe Ability do
       end
     end
   end
+
+  describe 'forgetting', :request_store do
+    it 'allows us to discard specific values from the DeclarativePolicy cache' do
+      user_a = build_stubbed(:user)
+      user_b = build_stubbed(:user)
+
+      # expect these keys to remain
+      Gitlab::SafeRequestStore[:administrator] = :wibble
+      Gitlab::SafeRequestStore['admin'] = :wobble
+      described_class.allowed?(user_b, :read_all_resources)
+      # expect the DeclarativePolicy cache keys added by this action not to remain
+      described_class.forgetting(/admin/) do
+        described_class.allowed?(user_a, :read_all_resources)
+      end
+
+      keys = Gitlab::SafeRequestStore.storage.keys
+
+      expect(keys).to include(
+        :administrator,
+        'admin',
+        "/dp/condition/BasePolicy/admin/#{user_b.id}"
+      )
+      expect(keys).not_to include("/dp/condition/BasePolicy/admin/#{user_a.id}")
+    end
+
+    # regression spec for re-entrant admin condition checks
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/332983
+    context 'when bypassing the session' do
+      let(:user) { build_stubbed(:admin) }
+      let(:ability) { :admin_all_resources } # any admin-only ability is fine here.
+
+      def check_ability
+        described_class.forgetting(/admin/) { described_class.allowed?(user, ability) }
+      end
+
+      it 'allows us to have re-entrant evaluation of admin-only permissions' do
+        expect { Gitlab::Auth::CurrentUserMode.bypass_session!(user.id) }
+          .to change { check_ability }.from(false).to(true)
+      end
+    end
+  end
 end

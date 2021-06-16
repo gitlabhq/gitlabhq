@@ -96,7 +96,7 @@ RSpec.describe 'getting group information' do
         expect(graphql_data['group']).to be_nil
       end
 
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries', :assume_throttled do
         pending('See: https://gitlab.com/gitlab-org/gitlab/-/issues/245272')
 
         queries = [{ query: group_query(group1) },

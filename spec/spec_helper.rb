@@ -346,6 +346,15 @@ RSpec.configure do |config|
     Gitlab::WithRequestStore.with_request_store { example.run }
   end
 
+  # previous test runs may have left some resources throttled
+  config.before do
+    ::Gitlab::ExclusiveLease.reset_all!("el:throttle:*")
+  end
+
+  config.before(:example, :assume_throttled) do |example|
+    allow(::Gitlab::ExclusiveLease).to receive(:throttle).and_return(nil)
+  end
+
   config.before(:example, :request_store) do
     # Clear request store before actually starting the spec (the
     # `around` above will have the request store enabled for all

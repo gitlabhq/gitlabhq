@@ -5,15 +5,15 @@ require 'spec_helper'
 RSpec.describe ServiceEventEntity do
   let(:request) { double('request') }
 
-  subject { described_class.new(event, request: request, service: service).as_json }
+  subject { described_class.new(event, request: request, service: integration).as_json }
 
   before do
-    allow(request).to receive(:service).and_return(service)
+    allow(request).to receive(:service).and_return(integration)
   end
 
   describe '#as_json' do
     context 'service without fields' do
-      let(:service) { create(:emails_on_push_service, push_events: true) }
+      let(:integration) { create(:emails_on_push_integration, push_events: true) }
       let(:event) { 'push' }
 
       it 'exposes correct attributes' do
@@ -25,7 +25,7 @@ RSpec.describe ServiceEventEntity do
     end
 
     context 'service with fields' do
-      let(:service) { create(:slack_service, note_events: false, note_channel: 'note-channel') }
+      let(:integration) { create(:slack_service, note_events: false, note_channel: 'note-channel') }
       let(:event) { 'note' }
 
       it 'exposes correct attributes' do

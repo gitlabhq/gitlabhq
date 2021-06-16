@@ -1061,7 +1061,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     let(:service_status) { true }
 
     before do
-      project.create_external_wiki_service(active: service_status, properties: properties)
+      project.create_external_wiki_integration(active: service_status, properties: properties)
       project.reload
     end
 

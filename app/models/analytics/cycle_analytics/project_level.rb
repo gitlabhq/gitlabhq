@@ -47,3 +47,4 @@ module Analytics
     end
   end
 end
+Analytics::CycleAnalytics::ProjectLevel.prepend_mod_with('Analytics::CycleAnalytics::ProjectLevel')

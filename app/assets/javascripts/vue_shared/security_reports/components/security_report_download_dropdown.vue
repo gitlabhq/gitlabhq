@@ -35,7 +35,7 @@ export default {
 <template>
   <gl-dropdown
     v-gl-tooltip
-    :title="s__('SecurityReports|Download results')"
+    :text="s__('SecurityReports|Download results')"
     :loading="loading"
     icon="download"
     size="small"

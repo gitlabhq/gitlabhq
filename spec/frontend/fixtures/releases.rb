@@ -146,6 +146,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
       post_graphql(query, current_user: admin, variables: { fullPath: project.full_path })
 
       expect_graphql_errors_to_be_empty
+      expect(graphql_data_at(:project, :releases)).to be_present
     end
 
     it "graphql/#{one_release_query_path}.json" do
@@ -154,6 +155,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
       post_graphql(query, current_user: admin, variables: { fullPath: project.full_path, tagName: release.tag })
 
       expect_graphql_errors_to_be_empty
+      expect(graphql_data_at(:project, :release)).to be_present
     end
 
     it "graphql/#{one_release_for_editing_query_path}.json" do
@@ -162,6 +164,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
       post_graphql(query, current_user: admin, variables: { fullPath: project.full_path, tagName: release.tag })
 
       expect_graphql_errors_to_be_empty
+      expect(graphql_data_at(:project, :release)).to be_present
     end
   end
 end

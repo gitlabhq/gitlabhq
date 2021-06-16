@@ -123,5 +123,19 @@ RSpec.describe ContainerExpirationPolicyWorker do
         expect(stuck_cleanup.reload).to be_cleanup_unfinished
       end
     end
+
+    context 'policies without container repositories' do
+      let_it_be(:container_expiration_policy1) { create(:container_expiration_policy, enabled: true) }
+      let_it_be(:container_repository1) { create(:container_repository, project_id: container_expiration_policy1.project_id) }
+      let_it_be(:container_expiration_policy2) { create(:container_expiration_policy, enabled: true) }
+      let_it_be(:container_repository2) { create(:container_repository, project_id: container_expiration_policy2.project_id) }
+      let_it_be(:container_expiration_policy3) { create(:container_expiration_policy, enabled: true) }
+
+      it 'disables them' do
+        expect { subject }
+          .to change { ::ContainerExpirationPolicy.active.count }.from(3).to(2)
+        expect(container_expiration_policy3.reload.enabled).to be false
+      end
+    end
   end
 end

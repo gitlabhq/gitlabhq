@@ -182,4 +182,55 @@ RSpec.describe 'Project active tab' do
       it_behaves_like 'page has active sub tab', _('CI/CD')
     end
   end
+
+  context 'on project CI/CD' do
+    context 'browsing Pipelines tabs' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+      context 'Pipeline tab' do
+        before do
+          visit project_pipeline_path(project, pipeline)
+        end
+
+        it_behaves_like 'page has active tab', _('CI/CD')
+        it_behaves_like 'page has active sub tab', _('Pipelines')
+      end
+
+      context 'Needs tab' do
+        before do
+          visit dag_project_pipeline_path(project, pipeline)
+        end
+
+        it_behaves_like 'page has active tab', _('CI/CD')
+        it_behaves_like 'page has active sub tab', _('Pipelines')
+      end
+
+      context 'Builds tab' do
+        before do
+          visit builds_project_pipeline_path(project, pipeline)
+        end
+
+        it_behaves_like 'page has active tab', _('CI/CD')
+        it_behaves_like 'page has active sub tab', _('Pipelines')
+      end
+
+      context 'Failures tab' do
+        before do
+          visit failures_project_pipeline_path(project, pipeline)
+        end
+
+        it_behaves_like 'page has active tab', _('CI/CD')
+        it_behaves_like 'page has active sub tab', _('Pipelines')
+      end
+
+      context 'Test Report tab' do
+        before do
+          visit test_report_project_pipeline_path(project, pipeline)
+        end
+
+        it_behaves_like 'page has active tab', _('CI/CD')
+        it_behaves_like 'page has active sub tab', _('Pipelines')
+      end
+    end
+  end
 end

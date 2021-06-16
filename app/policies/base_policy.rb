@@ -67,7 +67,7 @@ class BasePolicy < DeclarativePolicy::Base
 
   rule { default }.enable :read_cross_project
 
-  condition(:is_gitlab_com) { ::Gitlab.dev_env_or_com? }
+  condition(:is_gitlab_com, score: 0, scope: :global) { ::Gitlab.dev_env_or_com? }
 end
 
 BasePolicy.prepend_mod_with('BasePolicy')

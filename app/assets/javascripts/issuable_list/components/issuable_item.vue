@@ -50,6 +50,9 @@ export default {
     },
   },
   computed: {
+    issuableId() {
+      return getIdFromGraphQLId(this.issuable.id);
+    },
     createdInPastDay() {
       const createdSecondsAgo = differenceInSeconds(new Date(this.issuable.createdAt), new Date());
       return createdSecondsAgo < SECONDS_IN_DAY;
@@ -61,7 +64,7 @@ export default {
       return this.issuable.gitlabWebUrl || this.issuable.webUrl;
     },
     authorId() {
-      return getIdFromGraphQLId(`${this.author.id}`);
+      return getIdFromGraphQLId(this.author.id);
     },
     isIssuableUrlExternal() {
       return isExternal(this.webUrl);
@@ -70,10 +73,10 @@ export default {
       return this.issuable.labels?.nodes || this.issuable.labels || [];
     },
     labelIdsString() {
-      return JSON.stringify(this.labels.map((label) => label.id));
+      return JSON.stringify(this.labels.map((label) => getIdFromGraphQLId(label.id)));
     },
     assignees() {
-      return this.issuable.assignees || [];
+      return this.issuable.assignees?.nodes || this.issuable.assignees || [];
     },
     createdAt() {
       return sprintf(__('created %{timeAgo}'), {
@@ -157,7 +160,7 @@ export default {
 
 <template>
   <li
-    :id="`issuable_${issuable.id}`"
+    :id="`issuable_${issuableId}`"
     class="issue gl-px-5!"
     :class="{ closed: issuable.closedAt, today: createdInPastDay }"
     :data-labels="labelIdsString"
@@ -167,7 +170,7 @@ export default {
         <gl-form-checkbox
           class="gl-mr-0"
           :checked="checked"
-          :data-id="issuable.id"
+          :data-id="issuableId"
           @input="$emit('checked-input', $event)"
         >
           <span class="gl-sr-only">{{ issuable.title }}</span>

@@ -117,4 +117,27 @@ RSpec.describe Gitlab::Pagination::Keyset::Paginator do
       expect { scope.keyset_paginate }.to raise_error(/does not support keyset pagination/)
     end
   end
+
+  context 'when use_union_optimization option is true and ordering by two columns' do
+    let(:scope) { Project.order(name: :asc, id: :desc) }
+
+    it 'uses UNION queries' do
+      paginator_first_page = scope.keyset_paginate(
+        per_page: 2,
+        keyset_order_options: { use_union_optimization: true }
+      )
+
+      paginator_second_page = scope.keyset_paginate(
+        per_page: 2,
+        cursor: paginator_first_page.cursor_for_next_page,
+        keyset_order_options: { use_union_optimization: true }
+      )
+
+      expect_next_instances_of(Gitlab::SQL::Union, 1) do |instance|
+        expect(instance.to_sql).to include(paginator_first_page.records.last.name)
+      end
+
+      paginator_second_page.records.to_a
+    end
+  end
 end

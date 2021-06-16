@@ -28,12 +28,14 @@
             %tr
               %td
                 .gl-alert.gl-alert-danger
-                  = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-                  .gl-alert-body
-                    %strong
-                      = project.full_name
-                  .gl-alert-actions
-                    = link_to s_('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-info btn-md gl-button'
+                  .gl-alert-container
+                    = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+                    .gl-alert-content
+                      .gl-alert-body
+                        %strong
+                          = project.full_name
+                      .gl-alert-actions
+                        = link_to s_('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-confirm btn-md gl-button'
 
     %table.table{ data: { testid: 'unassigned-projects' } }
       %thead

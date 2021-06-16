@@ -25,7 +25,7 @@ To view an epic board, in a group, select **Epics > Boards**.
 
 Prerequisites:
 
-- A minimum of [Reporter](../../permissions.md#group-members-permissions) access to a group in GitLab.
+- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
 
 To create a new epic board:
 
@@ -49,7 +49,7 @@ To change these options later, [edit the board](#edit-the-scope-of-an-epic-board
 
 Prerequisites:
 
-- A minimum of [Reporter](../../permissions.md#group-members-permissions) access to a group in GitLab.
+- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
 - A minimum of two boards present in a group.
 
 To delete the active epic board:
@@ -73,7 +73,7 @@ To delete the active epic board:
 
 Prerequisites:
 
-- A minimum of [Reporter](../../permissions.md#group-members-permissions) access to a group in GitLab.
+- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
 
 To create a new list:
 
@@ -90,7 +90,7 @@ list view that's removed. You can always create it again later if you need.
 
 Prerequisites:
 
-- A minimum of [Reporter](../../permissions.md#group-members-permissions) access to a group in GitLab.
+- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
 
 To remove a list from an epic board:
 
@@ -120,7 +120,7 @@ You can move epics and lists by dragging them.
 
 Prerequisites:
 
-- A minimum of [Reporter](../../permissions.md#group-members-permissions) access to a group in GitLab.
+- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
 
 To move an epic, select the epic card and drag it to another position in its current list or
 into another list. Learn about possible effects in [Dragging epics between lists](#dragging-epics-between-lists).
@@ -143,7 +143,7 @@ and the target list.
 
 Prerequisites:
 
-- A minimum of [Reporter](../../permissions.md#group-members-permissions) access to a group in GitLab.
+- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
 
 To edit the scope of an epic board:
 

@@ -17,6 +17,7 @@ module Users
       yield(@user) if block_given?
 
       user_exists = @user.persisted?
+      @user.user_detail # prevent assignment
 
       discard_read_only_attributes
       assign_attributes

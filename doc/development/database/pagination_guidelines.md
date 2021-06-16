@@ -58,9 +58,7 @@ It's not possible to make all filter and sort combinations performant, so we sho
 
 ### Prepare for scaling
 
-Offset-based pagination is the easiest way to paginate over records, however, it does not scale well for large tables. As a long-term solution, keyset pagination is preferred. The tooling around keyset pagination is not as mature as for offset pagination so currently, it's easier to start with offset pagination and then switch to keyset pagination.
-
-To avoid losing functionality and maintaining backward compatibility when switching pagination methods, it's advised to consider the following approach in the design phase:
+Offset-based pagination is the easiest way to paginate over records, however, it does not scale well for large database tables. As a long-term solution, [keyset pagination](keyset_pagination.md) is preferred. Switching between offset and keyset pagination is generally straightforward and can be done without affecting the end-user if the following conditions are met:
 
 - Avoid presenting total counts, prefer limit counts.
   - Example: count maximum 1001 records, and then on the UI show 1000+ if the count is 1001, show the actual number otherwise.
@@ -304,7 +302,22 @@ LIMIT 20
 
 ##### Tooling
 
-Using keyset pagination outside of GraphQL is not straightforward. We have the low-level blocks for building keyset pagination database queries, however, the usage in application code is still not streamlined yet.
+A generic keyset pagination library is available within the GitLab project which can most of the cases easly replace the existing, kaminari based pagination with significant performance improvements when dealing with large datasets.
+
+Example:
+
+```ruby
+# first page
+paginator = Project.order(:created_at, :id).keyset_paginate(per_page: 20)
+puts paginator.to_a # records
+
+# next page
+cursor = paginator.cursor_for_next_page
+paginator = Project.order(:created_at, :id).keyset_paginate(cursor: cursor, per_page: 20)
+puts paginator.to_a # records
+```
+
+For a comprehensive overview, take a look at the [keyset pagination guide](keyset_pagination.md) page.
 
 #### Performance
 

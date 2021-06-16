@@ -14459,9 +14459,9 @@ List limit metric setting.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="listlimitmetricall_metrics"></a>`all_metrics` |  |
-| <a id="listlimitmetricissue_count"></a>`issue_count` |  |
-| <a id="listlimitmetricissue_weights"></a>`issue_weights` |  |
+| <a id="listlimitmetricall_metrics"></a>`all_metrics` | Limit list by number and total weight of issues. |
+| <a id="listlimitmetricissue_count"></a>`issue_count` | Limit list by number of issues. |
+| <a id="listlimitmetricissue_weights"></a>`issue_weights` | Limit list by total weight of issues. |
 
 ### `MeasurementIdentifier`
 

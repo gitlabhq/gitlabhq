@@ -25,8 +25,8 @@ RSpec.describe API::Services do
     end
 
     context 'project with services' do
-      let!(:active_service) { create(:emails_on_push_service, project: project, active: true) }
-      let!(:service) { create(:custom_issue_tracker_integration, project: project, active: false) }
+      let!(:active_integration) { create(:emails_on_push_integration, project: project, active: true) }
+      let!(:integration) { create(:custom_issue_tracker_integration, project: project, active: false) }
 
       it "returns a list of all active services" do
         get api("/projects/#{project.id}/services", user)

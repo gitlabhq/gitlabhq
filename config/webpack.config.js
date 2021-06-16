@@ -103,6 +103,15 @@ function generateEntries() {
     autoEntries[entry] = defaultEntries.concat(entryPaths);
   });
 
+  /*
+  If you create manual entries, ensure that these import `app/assets/javascripts/webpack.js` right at
+  the top of the entry in order to ensure that the public path is correctly determined for loading
+  assets async. See: https://webpack.js.org/configuration/output/#outputpublicpath
+
+  Note: WebPack 5 has an 'auto' option for the public path which could allow us to remove this option
+  Note 2: If you are using web-workers, you might need to reset the public path, see:
+  https://gitlab.com/gitlab-org/gitlab/-/issues/321656
+   */
   const manualEntries = {
     default: defaultEntries,
     sentry: './sentry/index.js',

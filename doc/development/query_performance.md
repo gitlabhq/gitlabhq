@@ -38,8 +38,8 @@ cache, or what PostgreSQL calls shared buffers. This is the "warm cache" query.
 
 When analyzing an [`EXPLAIN` plan](understanding_explain_plans.md), you can see
 the difference not only in the timing, but by looking at the output for `Buffers`
-by running your explain with `EXPLAIN(analyze, buffers)`. The [#database-lab](understanding_explain_plans.md#database-lab)
-tool will automatically include these options.
+by running your explain with `EXPLAIN(analyze, buffers)`. [Database Lab](understanding_explain_plans.md#database-lab-engine)
+will automatically include these options.
 
 If you are making a warm cache query, you will only see the `shared hits`.
 

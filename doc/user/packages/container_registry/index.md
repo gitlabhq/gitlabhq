@@ -488,6 +488,10 @@ Cleanup policies can be run on all projects, with these exceptions:
   Feature.disable(:container_expiration_policies_historic_entry, Project.find(<project id>))
   ```
 
+WARNING:
+For performance reasons, enabled cleanup policies are automatically disabled for projects on
+GitLab.com that don't have a container image.
+
 ### How the cleanup policy works
 
 The cleanup policy collects all tags in the Container Registry and excludes tags

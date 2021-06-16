@@ -85,7 +85,7 @@ module PolicyActor
     false
   end
 
-  def password_expired?
+  def password_expired_if_applicable?
     false
   end
 

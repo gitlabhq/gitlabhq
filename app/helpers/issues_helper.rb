@@ -190,7 +190,6 @@ module IssuesHelper
       email: current_user&.notification_email,
       emails_help_page_path: help_page_path('development/emails', anchor: 'email-namespace'),
       empty_state_svg_path: image_path('illustrations/issues.svg'),
-      endpoint: expose_path(api_v4_projects_issues_path(id: project.id)),
       export_csv_path: export_csv_project_issues_path(project),
       has_project_issues: project_issues(project).exists?.to_s,
       import_csv_issues_path: import_csv_namespace_project_issues_path,

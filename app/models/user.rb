@@ -84,10 +84,11 @@ class User < ApplicationRecord
 
     update_tracked_fields(request)
 
-    lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
-    return unless lease.try_obtain
-
-    Users::UpdateService.new(self, user: self).execute(validate: false)
+    Gitlab::ExclusiveLease.throttle(id) do
+      ::Ability.forgetting(/admin/) do
+        Users::UpdateService.new(self, user: self).execute(validate: false)
+      end
+    end
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -1866,6 +1867,12 @@ class User < ApplicationRecord
 
   def password_expired?
     !!(password_expires_at && password_expires_at < Time.current)
+  end
+
+  def password_expired_if_applicable?
+    return false unless allow_password_authentication?
+
+    password_expired?
   end
 
   def can_be_deactivated?

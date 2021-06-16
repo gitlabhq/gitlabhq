@@ -17,7 +17,6 @@ RSpec.describe WebHookWorker do
 
     it_behaves_like 'worker with data consistency',
                   described_class,
-                  feature_flag: :load_balancing_for_web_hook_worker,
                   data_consistency: :delayed
   end
 end
