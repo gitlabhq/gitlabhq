@@ -146,12 +146,7 @@ browser performance testing using a
 
 ## Cluster configuration
 
-### Node pools
-
-The `review-apps` cluster is currently set up with
-the following node pools:
-
-- `e2-highcpu-16` (16 vCPU, 16 GB memory) pre-emptible nodes with autoscaling
+The cluster is configured via Terraform in the [`engineering-productivity-infrastructure`](https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure) project.
 
 Node pool image type must be `Container-Optimized OS (cos)`, not `Container-Optimized OS with Containerd (cos_containerd)`,
 due to this [known issue on GitLab Runner Kubernetes executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4755)
