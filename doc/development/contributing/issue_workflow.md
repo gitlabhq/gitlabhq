@@ -14,7 +14,7 @@ submitting your own, there's a good chance somebody else had the same issue or
 feature proposal. Show your support with an award emoji and/or join the
 discussion.
 
-Please submit bugs using the ['Bug' issue template](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/issue_templates/Bug.md) provided on the issue tracker.
+Please submit bugs using the ['Bug' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Bug.md) provided on the issue tracker.
 The text in the parenthesis is there to help you with what to include. Omit it
 when submitting the actual issue. You can copy-paste it and then edit as you
 see fit.
@@ -311,12 +311,12 @@ We automatically add the ~"Accepting merge requests" label to issues
 that match the [triage policy](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#accepting-merge-requests).
 
 We recommend people that have never contributed to any open source project to
-look for issues labeled `~"Accepting merge requests"` with a [weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1) or the `~"Good for new contributors"` [label](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=good%20for%20new%20contributors&assignee_id=None) attached to it.
+look for issues labeled `~"Accepting merge requests"` with a [weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1) or the `~"Good for new contributors"` [label](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&label_name[]=good%20for%20new%20contributors&assignee_id=None) attached to it.
 More experienced contributors are very welcome to tackle
 [any of them](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None).
 
 For more complex features that have a weight of 2 or more and clear scope, we recommend looking at issues
-with the [label `~"Community Challenge"`](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Accepting%20merge%20requests&label_name[]=Community%20challenge).
+with the [label `~"Community Challenge"`](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&label_name[]=Accepting%20merge%20requests&label_name[]=Community%20challenge).
 If your MR for the `~"Community Challenge"` issue gets merged, you will also have a chance to win a custom
 GitLab merchandise.
 
@@ -325,7 +325,7 @@ the [appropriate product manager](https://about.gitlab.com/handbook/product/#who
 as soon as possible. The product manager will then pull in appropriate GitLab team
 members to further discuss scope, design, and technical considerations. This will
 ensure that your contribution is aligned with the GitLab product and minimize
-any rework and delay in getting it merged into master.
+any rework and delay in getting it merged into main.
 
 GitLab team members who apply the ~"Accepting merge requests" label to an issue
 should update the issue description with a responsible product manager, inviting
@@ -358,7 +358,7 @@ code snippet right after your description in a new line: `~feature`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-Please submit Feature Proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/issue_templates/Feature%20proposal%20-%20detailed.md) provided on the issue tracker.
+Please submit Feature Proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal%20-%20detailed.md) provided on the issue tracker.
 
 For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
 be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may

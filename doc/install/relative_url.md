@@ -29,7 +29,7 @@ relative URL is:
 
 - `/home/git/gitlab/config/initializers/relative_url.rb`
 - `/home/git/gitlab/config/gitlab.yml`
-- `/home/git/gitlab/config/unicorn.rb`
+- `/home/git/gitlab/config/puma.rb`
 - `/home/git/gitlab-shell/config.yml`
 - `/etc/default/gitlab`
 
@@ -88,7 +88,7 @@ Make sure to follow all steps below:
    relative_url_root: /gitlab
    ```
 
-1. Edit `/home/git/gitlab/config/unicorn.rb` and uncomment/change the
+1. Edit `/home/git/gitlab/config/puma.rb` and uncomment/change the
    following line:
 
    ```ruby

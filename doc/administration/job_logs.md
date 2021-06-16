@@ -10,7 +10,7 @@ type: reference
 > [Renamed from job traces to job logs](https://gitlab.com/gitlab-org/gitlab/-/issues/29121) in GitLab 12.5.
 
 Job logs are sent by a runner while it's processing a job. You can see
-logs in job pages, pipelines, email notifications, etc.
+logs in job pages, pipelines, email notifications, and so on.
 
 ## Data flow
 
@@ -20,9 +20,8 @@ In the following table you can see the phases a log goes through:
 | Phase          | State        | Condition               | Data flow                                | Stored path |
 | -------------- | ------------ | ----------------------- | -----------------------------------------| ----------- |
 | 1: patching    | log          | When a job is running   | Runner => Puma => file storage | `#{ROOT_PATH}/gitlab-ci/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log` |
-| 2: overwriting | log          | When a job is finished  | Runner => Puma => file storage | `#{ROOT_PATH}/gitlab-ci/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log` |
-| 3: archiving   | archived log | After a job is finished | Sidekiq moves log to artifacts folder    | `#{ROOT_PATH}/gitlab-rails/shared/artifacts/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/job.log` |
-| 4: uploading   | archived log | After a log is archived | Sidekiq moves archived log to [object storage](#uploading-logs-to-object-storage) (if configured) | `#{bucket_name}/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/job.log` |
+| 2: archiving   | archived log | After a job is finished | Sidekiq moves log to artifacts folder    | `#{ROOT_PATH}/gitlab-rails/shared/artifacts/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/job.log` |
+| 3: uploading   | archived log | After a log is archived | Sidekiq moves archived log to [object storage](#uploading-logs-to-object-storage) (if configured) | `#{bucket_name}/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/job.log` |
 
 The `ROOT_PATH` varies per environment. For Omnibus GitLab it
 would be `/var/opt/gitlab`, and for installations from source
@@ -127,6 +126,11 @@ This command permanently deletes the log files and is irreversible.
 ```shell
 find /var/opt/gitlab/gitlab-rails/shared/artifacts -name "job.log" -mtime +60 -delete
 ```
+
+NOTE:
+After execution, broken file references can be reported when running
+[`sudo gitlab-rake gitlab:artifacts:check`](raketasks/check.md#uploaded-files-integrity).
+For more information, see [delete references to missing artifacts](raketasks/check.md#delete-references-to-missing-artifacts).
 
 ## Incremental logging architecture
 

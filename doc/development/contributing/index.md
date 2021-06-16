@@ -27,7 +27,7 @@ To get an overview of GitLab community membership, including those that would re
 your contributions, visit [the community roles page](community_roles.md).
 
 If you want to know how the GitLab [core team](https://about.gitlab.com/community/core-team/)
-operates, see [the GitLab contributing process](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md).
+operates, see [the GitLab contributing process](https://gitlab.com/gitlab-org/gitlab/-/blob/master/PROCESS.md).
 
 GitLab Inc engineers should refer to the [engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/).
 

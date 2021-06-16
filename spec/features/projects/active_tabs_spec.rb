@@ -18,12 +18,11 @@ RSpec.describe 'Project active tab' do
   end
 
   context 'on project Home' do
-    context 'when feature flag :sidebar_refactor is enabled' do
-      before do
-        visit project_path(project)
-      end
+    it 'activates Project scope menu' do
+      visit project_path(project)
 
-      it_behaves_like 'page has active tab', 'Project'
+      expect(page).to have_selector('.sidebar-top-level-items > li.active', count: 1)
+      expect(find('.sidebar-top-level-items > li.active')).to have_content(project.name)
     end
 
     context 'when feature flag :sidebar_refactor is disabled' do
@@ -36,11 +35,23 @@ RSpec.describe 'Project active tab' do
       it_behaves_like 'page has active tab', 'Project'
       it_behaves_like 'page has active sub tab', 'Details'
     end
+  end
 
-    context 'on project Home/Activity' do
+  context 'on Project information' do
+    context 'default link' do
       before do
         visit project_path(project)
-        click_tab('Activity')
+
+        click_link('Project information', match: :first)
+      end
+
+      it_behaves_like 'page has active tab', 'Project'
+      it_behaves_like 'page has active sub tab', 'Activity'
+    end
+
+    context 'on Project information/Activity' do
+      before do
+        visit activity_project_path(project)
       end
 
       it_behaves_like 'page has active tab', 'Project'

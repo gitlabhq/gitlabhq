@@ -24,6 +24,10 @@ RSpec.describe Postgresql::ReplicationSlot do
       expect(described_class).to receive(:in_use?).and_return(true)
     end
 
+    it 'does not raise an exception' do
+      expect { described_class.lag_too_great? }.not_to raise_error
+    end
+
     it 'returns true when replication lag is too great' do
       expect(described_class)
         .to receive(:pluck)

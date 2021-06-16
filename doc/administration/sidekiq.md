@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Configuring Sidekiq
+# Configuring Sidekiq **(FREE SELF)**
 
 This section discusses how to configure an external Sidekiq instance using the
 bundled Sidekiq in the GitLab package.
@@ -26,7 +26,7 @@ you want using steps 1 and 2 from the GitLab downloads page.
    ## Optional: Enable extra Sidekiq processes
    sidekiq_cluster['enable'] = true
    sidekiq['queue_groups'] = [
-     "elastic_indexer",
+     "elastic_commit_indexer",
      "*"
    ]
    ```
@@ -187,4 +187,5 @@ gitlab_rails['monitoring_whitelist'] = ['10.10.1.42', '127.0.0.1']
 Related Sidekiq configuration:
 
 1. [Extra Sidekiq processes](operations/extra_sidekiq_processes.md)
+1. [Extra Sidekiq routing](operations/extra_sidekiq_routing.md)
 1. [Using the GitLab-Sidekiq chart](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/)

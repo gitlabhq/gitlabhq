@@ -147,14 +147,23 @@ RSpec.describe 'Project issue boards', :js do
     end
 
     it 'infinite scrolls list' do
-      create_list(:labeled_issue, 50, project: project, labels: [planning])
+      create_list(:labeled_issue, 30, project: project, labels: [planning])
 
       visit_project_board_path_without_query_limit(project, board)
 
       page.within(find('.board:nth-child(2)')) do
-        expect(page.find('.board-header')).to have_content('58')
+        expect(page.find('.board-header')).to have_content('38')
+        expect(page).to have_selector('.board-card', count: 10)
+        expect(page).to have_content('Showing 10 of 38 issues')
+
+        find('.board .board-list')
+
+        inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+          evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
+        end
+
         expect(page).to have_selector('.board-card', count: 20)
-        expect(page).to have_content('Showing 20 of 58 issues')
+        expect(page).to have_content('Showing 20 of 38 issues')
 
         find('.board .board-list')
 
@@ -162,8 +171,8 @@ RSpec.describe 'Project issue boards', :js do
           evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         end
 
-        expect(page).to have_selector('.board-card', count: 40)
-        expect(page).to have_content('Showing 40 of 58 issues')
+        expect(page).to have_selector('.board-card', count: 30)
+        expect(page).to have_content('Showing 30 of 38 issues')
 
         find('.board .board-list')
 
@@ -171,7 +180,7 @@ RSpec.describe 'Project issue boards', :js do
           evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         end
 
-        expect(page).to have_selector('.board-card', count: 58)
+        expect(page).to have_selector('.board-card', count: 38)
         expect(page).to have_content('Showing all issues')
       end
     end
@@ -464,7 +473,7 @@ RSpec.describe 'Project issue boards', :js do
       end
 
       it 'infinite scrolls list with label filter' do
-        create_list(:labeled_issue, 50, project: project, labels: [planning, testing])
+        create_list(:labeled_issue, 30, project: project, labels: [planning, testing])
 
         set_filter("label", testing.title)
         click_filter_link(testing.title)
@@ -475,9 +484,18 @@ RSpec.describe 'Project issue boards', :js do
         wait_for_requests
 
         page.within(find('.board:nth-child(2)')) do
-          expect(page.find('.board-header')).to have_content('51')
+          expect(page.find('.board-header')).to have_content('31')
+          expect(page).to have_selector('.board-card', count: 10)
+          expect(page).to have_content('Showing 10 of 31 issues')
+
+          find('.board .board-list')
+
+          inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+            evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
+          end
+
           expect(page).to have_selector('.board-card', count: 20)
-          expect(page).to have_content('Showing 20 of 51 issues')
+          expect(page).to have_content('Showing 20 of 31 issues')
 
           find('.board .board-list')
 
@@ -485,15 +503,15 @@ RSpec.describe 'Project issue boards', :js do
             evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
           end
 
-          expect(page).to have_selector('.board-card', count: 40)
-          expect(page).to have_content('Showing 40 of 51 issues')
+          expect(page).to have_selector('.board-card', count: 30)
+          expect(page).to have_content('Showing 30 of 31 issues')
 
           find('.board .board-list')
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
             evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
           end
 
-          expect(page).to have_selector('.board-card', count: 51)
+          expect(page).to have_selector('.board-card', count: 31)
           expect(page).to have_content('Showing all issues')
         end
       end

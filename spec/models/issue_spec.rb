@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Issue do
   include ExternalAuthorizationServiceHelpers
 
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user) }
   let_it_be(:reusable_project) { create(:project) }
 
@@ -1287,15 +1289,33 @@ RSpec.describe Issue do
       end
     end
 
-    let(:project) { build_stubbed(:project_empty_repo) }
-    let(:issue) { build_stubbed(:issue, relative_position: 100, project: project) }
+    shared_examples 'schedules issues rebalancing' do
+      let(:issue) { build_stubbed(:issue, relative_position: 100, project: project) }
 
-    it 'schedules rebalancing if we time-out when moving' do
-      lhs = build_stubbed(:issue, relative_position: 99, project: project)
-      to_move = build(:issue, project: project)
-      expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
+      it 'schedules rebalancing if we time-out when moving' do
+        lhs = build_stubbed(:issue, relative_position: 99, project: project)
+        to_move = build(:issue, project: project)
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project_id, namespace_id)
 
-      expect { to_move.move_between(lhs, issue) }.to raise_error(ActiveRecord::QueryCanceled)
+        expect { to_move.move_between(lhs, issue) }.to raise_error(ActiveRecord::QueryCanceled)
+      end
+    end
+
+    context 'when project in user namespace' do
+      let(:project) { build_stubbed(:project_empty_repo) }
+      let(:project_id) { project.id }
+      let(:namespace_id) { nil }
+
+      it_behaves_like 'schedules issues rebalancing'
+    end
+
+    context 'when project in a group namespace' do
+      let(:group) { create(:group) }
+      let(:project) { build_stubbed(:project_empty_repo, group: group) }
+      let(:project_id) { nil }
+      let(:namespace_id) { group.id }
+
+      it_behaves_like 'schedules issues rebalancing'
     end
   end
 
@@ -1312,6 +1332,26 @@ RSpec.describe Issue do
 
     it 'raises error when feature is invalid' do
       expect { issue.issue_type_supports?(:unkown_feature) }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe '#supports_time_tracking?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:issue) { create(:incident, project: project) }
+
+    where(:issue_type, :supports_time_tracking) do
+      :issue | true
+      :incident | true
+    end
+
+    with_them do
+      before do
+        issue.update!(issue_type: issue_type)
+      end
+
+      it do
+        expect(issue.supports_time_tracking?).to eq(supports_time_tracking)
+      end
     end
   end
 

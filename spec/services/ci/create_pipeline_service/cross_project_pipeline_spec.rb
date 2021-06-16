@@ -53,6 +53,8 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
     end
 
     context 'when sidekiq processes the job', :sidekiq_inline do
+      let_it_be(:runner) { create(:ci_runner, :online) }
+
       it 'transitions to pending status and triggers a downstream pipeline' do
         pipeline = create_pipeline!
 

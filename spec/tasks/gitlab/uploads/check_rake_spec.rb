@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:uploads rake tasks' do
+RSpec.describe 'gitlab:uploads rake tasks', :silence_stdout do
   describe 'check' do
     let!(:upload) { create(:upload, path: Rails.root.join('spec/fixtures/banana_sample.gif')) }
 

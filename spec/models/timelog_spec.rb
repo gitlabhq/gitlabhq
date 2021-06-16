@@ -64,25 +64,57 @@ RSpec.describe Timelog do
     let_it_be(:subgroup_issue) { create(:issue, project: subgroup_project) }
     let_it_be(:subgroup_merge_request) { create(:merge_request, source_project: subgroup_project) }
 
-    let_it_be(:timelog) { create(:issue_timelog, spent_at: 65.days.ago) }
-    let_it_be(:timelog1) { create(:issue_timelog, spent_at: 15.days.ago, issue: group_issue) }
-    let_it_be(:timelog2) { create(:issue_timelog, spent_at: 5.days.ago, issue: subgroup_issue) }
-    let_it_be(:timelog3) { create(:merge_request_timelog, spent_at: 65.days.ago) }
-    let_it_be(:timelog4) { create(:merge_request_timelog, spent_at: 15.days.ago, merge_request: group_merge_request) }
-    let_it_be(:timelog5) { create(:merge_request_timelog, spent_at: 5.days.ago, merge_request: subgroup_merge_request) }
+    let_it_be(:short_time_ago) { 5.days.ago }
+    let_it_be(:medium_time_ago) { 15.days.ago }
+    let_it_be(:long_time_ago) { 65.days.ago }
 
-    describe 'in_group' do
+    let_it_be(:timelog) { create(:issue_timelog, spent_at: long_time_ago) }
+    let_it_be(:timelog1) { create(:issue_timelog, spent_at: medium_time_ago, issue: group_issue) }
+    let_it_be(:timelog2) { create(:issue_timelog, spent_at: short_time_ago, issue: subgroup_issue) }
+    let_it_be(:timelog3) { create(:merge_request_timelog, spent_at: long_time_ago) }
+    let_it_be(:timelog4) { create(:merge_request_timelog, spent_at: medium_time_ago, merge_request: group_merge_request) }
+    let_it_be(:timelog5) { create(:merge_request_timelog, spent_at: short_time_ago, merge_request: subgroup_merge_request) }
+
+    describe '.in_group' do
       it 'return timelogs created for group issues and merge requests' do
         expect(described_class.in_group(group)).to contain_exactly(timelog1, timelog2, timelog4, timelog5)
       end
     end
 
-    describe 'between_times' do
-      it 'returns collection of timelogs within given times' do
-        timelogs = described_class.between_times(20.days.ago, 10.days.ago)
+    describe '.at_or_after' do
+      it 'returns timelogs at the time limit' do
+        timelogs = described_class.at_or_after(short_time_ago)
 
-        expect(timelogs).to contain_exactly(timelog1, timelog4)
+        expect(timelogs).to contain_exactly(timelog2, timelog5)
       end
+
+      it 'returns timelogs after given time' do
+        timelogs = described_class.at_or_after(just_before(short_time_ago))
+
+        expect(timelogs).to contain_exactly(timelog2, timelog5)
+      end
+    end
+
+    describe '.at_or_before' do
+      it 'returns timelogs at the time limit' do
+        timelogs = described_class.at_or_before(long_time_ago)
+
+        expect(timelogs).to contain_exactly(timelog, timelog3)
+      end
+
+      it 'returns timelogs before given time' do
+        timelogs = described_class.at_or_before(just_after(long_time_ago))
+
+        expect(timelogs).to contain_exactly(timelog, timelog3)
+      end
+    end
+
+    def just_before(time)
+      time - 1.day
+    end
+
+    def just_after(time)
+      time + 1.day
     end
   end
 end

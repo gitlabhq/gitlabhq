@@ -140,7 +140,7 @@ RSpec.describe Groups::CreateService, '#execute' do
     end
 
     it 'create the chat team with the group' do
-      allow_any_instance_of(Mattermost::Team).to receive(:create)
+      allow_any_instance_of(::Mattermost::Team).to receive(:create)
         .and_return({ 'name' => 'tanuki', 'id' => 'lskdjfwlekfjsdifjj' })
 
       expect { subject }.to change { ChatTeam.count }.from(0).to(1)

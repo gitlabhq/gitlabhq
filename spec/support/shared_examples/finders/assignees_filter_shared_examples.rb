@@ -24,6 +24,12 @@ RSpec.shared_examples 'assignee NOT username filter' do
   end
 end
 
+RSpec.shared_examples 'assignee OR filter' do
+  it 'returns issuables assigned to the given users' do
+    expect(issuables).to contain_exactly(*expected_issuables)
+  end
+end
+
 RSpec.shared_examples 'no assignee filter' do
   let(:params) { { assignee_id: 'None' } }
 

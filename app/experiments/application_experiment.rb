@@ -12,13 +12,18 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
   def publish(_result = nil)
     return unless should_track? # don't track events for excluded contexts
 
+    record_experiment if @record # record the subject in the database if the context contains a namespace, group, project, actor or user
+
     track(:assignment) # track that we've assigned a variant for this context
 
-    begin
-      Gon.push({ experiment: { name => signature } }, true) # push the experiment data to the client
-    rescue NoMethodError
-      # means we're not in the request cycle, and can't add to Gon. Log a warning maybe?
-    end
+    push_to_client
+  end
+
+  # push the experiment data to the client
+  def push_to_client
+    Gon.push({ experiment: { name => signature } }, true)
+  rescue NoMethodError
+    # means we're not in the request cycle, and can't add to Gon. Log a warning maybe?
   end
 
   def track(action, **event_args)
@@ -30,6 +35,10 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
         'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0', signature
       )
     ))
+  end
+
+  def record!
+    @record = true
   end
 
   def exclude!
@@ -48,5 +57,14 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
 
   def experiment_group?
     Feature.enabled?(feature_flag_name, self, type: :experiment, default_enabled: :yaml)
+  end
+
+  def record_experiment
+    subject = context.value[:namespace] || context.value[:group] || context.value[:project] || context.value[:user] || context.value[:actor]
+    return unless ExperimentSubject.valid_subject?(subject)
+
+    variant = :experimental if @variant_name != :control
+
+    Experiment.add_subject(name, variant: variant || :control, subject: subject)
   end
 end

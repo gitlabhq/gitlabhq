@@ -74,6 +74,11 @@ module API
 
       save_current_user_in_env(@current_user) if @current_user
 
+      if @current_user
+        ::Gitlab::Database::LoadBalancing::RackMiddleware
+          .stick_or_unstick(env, :user, @current_user.id)
+      end
+
       @current_user
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -482,9 +487,8 @@ module API
     def handle_api_exception(exception)
       if report_exception?(exception)
         define_params_for_grape_middleware
-        Gitlab::ApplicationContext.with_context(user: current_user) do
-          Gitlab::ErrorTracking.track_exception(exception)
-        end
+        Gitlab::ApplicationContext.push(user: current_user)
+        Gitlab::ErrorTracking.track_exception(exception)
       end
 
       # This is used with GrapeLogging::Loggers::ExceptionLogger
@@ -599,6 +603,7 @@ module API
                  :custom_attributes,
                  :last_activity_after,
                  :last_activity_before,
+                 :topic,
                  :repository_storage)
           .symbolize_keys
           .compact
@@ -611,7 +616,6 @@ module API
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:id_after] = sanitize_id_param(params[:id_after]) if params[:id_after]
       finder_params[:id_before] = sanitize_id_param(params[:id_before]) if params[:id_before]
-      finder_params[:tag] = params[:topic] if params[:topic].present?
       finder_params
     end
 

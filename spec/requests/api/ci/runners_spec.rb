@@ -137,11 +137,11 @@ RSpec.describe API::Ci::Runners do
           get api('/runners/all', admin)
 
           expect(json_response).to match_array [
-            a_hash_including('description' => 'Project runner'),
-            a_hash_including('description' => 'Two projects runner'),
-            a_hash_including('description' => 'Group runner A'),
-            a_hash_including('description' => 'Group runner B'),
-            a_hash_including('description' => 'Shared runner')
+            a_hash_including('description' => 'Project runner', 'is_shared' => false, 'runner_type' => 'project_type'),
+            a_hash_including('description' => 'Two projects runner', 'is_shared' => false, 'runner_type' => 'project_type'),
+            a_hash_including('description' => 'Group runner A', 'is_shared' => false, 'runner_type' => 'group_type'),
+            a_hash_including('description' => 'Group runner B', 'is_shared' => false, 'runner_type' => 'group_type'),
+            a_hash_including('description' => 'Shared runner', 'is_shared' => true, 'runner_type' => 'instance_type')
           ]
         end
 

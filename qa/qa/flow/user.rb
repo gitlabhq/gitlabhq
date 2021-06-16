@@ -9,13 +9,13 @@ module QA
         Capybara.current_session
       end
 
-      def confirm_user(username)
+      def confirm_user(user)
         Flow::Login.while_signed_in_as_admin do
           Page::Main::Menu.perform(&:go_to_admin_area)
           Page::Admin::Menu.perform(&:go_to_users_overview)
           Page::Admin::Overview::Users::Index.perform do |index|
-            index.search_user(username)
-            index.click_user(username)
+            index.search_user(user.email)
+            index.click_user(user.name)
           end
 
           Page::Admin::Overview::Users::Show.perform(&:confirm_user)

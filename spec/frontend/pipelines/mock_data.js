@@ -10,6 +10,7 @@ export const mockPipelineHeader = {
   id: 123,
   userPermissions: {
     destroyPipeline: true,
+    updatePipeline: true,
   },
   createdAt: threeWeeksAgo.toISOString(),
   user: {
@@ -34,8 +35,58 @@ export const mockFailedPipelineHeader = {
   },
 };
 
+export const mockFailedPipelineNoPermissions = {
+  id: 123,
+  userPermissions: {
+    destroyPipeline: false,
+    updatePipeline: false,
+  },
+  createdAt: threeWeeksAgo.toISOString(),
+  user: {
+    name: 'Foo',
+    username: 'foobar',
+    email: 'foo@bar.com',
+    avatarUrl: 'link',
+  },
+  status: PIPELINE_RUNNING,
+  retryable: true,
+  cancelable: false,
+  detailedStatus: {
+    group: 'running',
+    icon: 'status_running',
+    label: 'running',
+    text: 'running',
+    detailsPath: 'path',
+  },
+};
+
 export const mockRunningPipelineHeader = {
   ...mockPipelineHeader,
+  status: PIPELINE_RUNNING,
+  retryable: false,
+  cancelable: true,
+  detailedStatus: {
+    group: 'running',
+    icon: 'status_running',
+    label: 'running',
+    text: 'running',
+    detailsPath: 'path',
+  },
+};
+
+export const mockRunningPipelineNoPermissions = {
+  id: 123,
+  userPermissions: {
+    destroyPipeline: false,
+    updatePipeline: false,
+  },
+  createdAt: threeWeeksAgo.toISOString(),
+  user: {
+    name: 'Foo',
+    username: 'foobar',
+    email: 'foo@bar.com',
+    avatarUrl: 'link',
+  },
   status: PIPELINE_RUNNING,
   retryable: false,
   cancelable: true,

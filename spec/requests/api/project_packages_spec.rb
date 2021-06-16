@@ -40,10 +40,36 @@ RSpec.describe API::ProjectPackages do
       context 'with terraform module package' do
         let_it_be(:terraform_module_package) { create(:terraform_module_package, project: project) }
 
-        it 'filters out terraform module packages when no package_type filter is set' do
-          subject
+        context 'when no package_type filter is set' do
+          let(:params) { {} }
 
-          expect(json_response).not_to include(a_hash_including('package_type' => 'terraform_module'))
+          it 'filters out terraform module packages' do
+            subject
+
+            expect(json_response).not_to include(a_hash_including('package_type' => 'terraform_module'))
+          end
+
+          it 'returns packages with the package registry web_path' do
+            subject
+
+            expect(json_response).to include(a_hash_including('_links' => a_hash_including('web_path' => include('packages'))))
+          end
+        end
+
+        context 'when package_type filter is set to terraform_module' do
+          let(:params) { { package_type: :terraform_module } }
+
+          it 'returns the terraform module package' do
+            subject
+
+            expect(json_response).to include(a_hash_including('package_type' => 'terraform_module'))
+          end
+
+          it 'returns the terraform module package with the infrastructure registry web_path' do
+            subject
+
+            expect(json_response).to include(a_hash_including('_links' => a_hash_including('web_path' => include('infrastructure_registry'))))
+          end
         end
       end
 

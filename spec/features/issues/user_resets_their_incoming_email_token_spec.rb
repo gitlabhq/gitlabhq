@@ -16,11 +16,11 @@ RSpec.describe 'Issues > User resets their incoming email token' do
   end
 
   it 'changes incoming email address token', :js do
-    page.find('[data-testid="issuable-email-modal-btn"]').click
+    click_button 'Email a new issue to this project'
 
     page.within '#issuable-email-modal' do
       previous_token = page.find('input[type="text"]').value
-      page.find('[data-testid="incoming-email-token-reset"]').click
+      find('[data-testid="reset_email_token_link"]').click
 
       wait_for_requests
 

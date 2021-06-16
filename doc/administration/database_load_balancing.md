@@ -4,9 +4,10 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Database Load Balancing **(PREMIUM SELF)**
+# Database Load Balancing **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1283) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1283) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60894) from GitLab Premium to GitLab Free in 14.0.
 
 Distribute read-only queries among multiple database servers.
 
@@ -21,8 +22,6 @@ component may increase reliability and availability through redundancy.
 
 When database load balancing is enabled in GitLab, the load is balanced using
 a simple round-robin algorithm, without any external dependencies such as Redis.
-Load balancing is not enabled for Sidekiq as this would lead to consistency
-problems, and Sidekiq mostly performs writes anyway.
 
 In the following image, you can see the load is balanced rather evenly among
 all the secondaries (`db4`, `db5`, `db6`). Because `SELECT` queries are not
@@ -105,6 +104,32 @@ the following. This will balance the load between `host1.example.com` and
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
+### Enable the load balancer for Sidekiq
+
+Sidekiq mostly writes to the database, which means that most of its traffic hits the
+primary database.
+
+Some background jobs can use database replicas to read application state. 
+This allows to offload the primary database.
+
+Load balancing is disabled by default in Sidekiq. When enabled, we can define
+[the data consistency](../development/sidekiq_style_guide.md#job-data-consistency)
+requirements for a specific job.
+
+To enable it, define the `ENABLE_LOAD_BALANCING_FOR_SIDEKIQ` variable to the environment, as shown below. 
+
+For Omnibus installations:
+               
+```ruby
+gitlab_rails['env'] = {"ENABLE_LOAD_BALANCING_FOR_SIDEKIQ" => "true"}
+```
+
+For installations from source:
+
+```shell
+export ENABLE_LOAD_BALANCING_FOR_SIDEKIQ="true"
+```
+
 ## Service Discovery
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5883) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.0.
@@ -170,28 +195,6 @@ upper limit on the time it takes to terminate all old database connections.
 Some nameservers (like [Consul](https://www.consul.io/docs/discovery/dns#udp-based-dns-queries)) can return a truncated list of hosts when
 queried over UDP. To overcome this issue, you can use TCP for querying by setting
 `use_tcp` to `true`.
-
-### Forking
-
-NOTE:
-Starting with GitLab 13.0, Puma is the default web server used in GitLab
-all-in-one package based installations as well as GitLab Helm chart deployments.
-
-If you use an application server that forks, such as Unicorn, you _have to_
-update your Unicorn configuration to start service discovery _after_ a fork.
-Failure to do so leads to service discovery only running in the parent
-process. If you are using Unicorn, then you can add the following to your
-Unicorn configuration file:
-
-```ruby
-after_fork do |server, worker|
-  defined?(Gitlab::Database::LoadBalancing) &&
-    Gitlab::Database::LoadBalancing.start_service_discovery
-end
-```
-
-This ensures that service discovery is started in both the parent and all
-child processes.
 
 ## Balancing queries
 

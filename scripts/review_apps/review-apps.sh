@@ -40,7 +40,7 @@ function previous_deploy_failed() {
 }
 
 function delete_release() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
 
   if [ -z "${release}" ]; then
@@ -48,39 +48,11 @@ function delete_release() {
     return
   fi
 
-  # Check if helm release exists before attempting to delete
-  # There may be situation where k8s resources exist, but helm release does not,
-  # for example, following a failed helm install.
-  # In such cases, we still want to continue to clean up k8s resources.
-  if deploy_exists "${namespace}" "${release}"; then
-    helm_delete_release "${namespace}" "${release}"
-  fi
-  kubectl_cleanup_release "${namespace}" "${release}"
-}
-
-function helm_delete_release() {
-  local namespace="${1}"
-  local release="${2}"
-
-  echoinfo "Deleting Helm release '${release}'..." true
-
-  helm uninstall --namespace "${namespace}" "${release}"
-}
-
-function kubectl_cleanup_release() {
-  local namespace="${1}"
-  local release="${2}"
-
-  echoinfo "Deleting all K8s resources matching '${release}'..." true
-  kubectl --namespace "${namespace}" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,clusterrole,clusterrolebinding,role,rolebinding,sa,crd 2>&1 \
-    | grep "${release}" \
-    | awk '{print $1}' \
-    | xargs kubectl --namespace "${namespace}" delete --ignore-not-found \
-    || true
+  delete_k8s_release_namespace
 }
 
 function delete_failed_release() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
 
   if [ -z "${release}" ]; then
@@ -93,7 +65,7 @@ function delete_failed_release() {
   else
     # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
     if previous_deploy_failed "${namespace}" "${release}" ; then
-      echoinfo "Review App deployment in bad state, cleaning up ${release}"
+      echoinfo "Review App deployment in bad state, cleaning up namespace ${release}"
       delete_release
     else
       echoinfo "Review App deployment in good state"
@@ -101,8 +73,14 @@ function delete_failed_release() {
   fi
 }
 
+function delete_k8s_release_namespace() {
+  local namespace="${CI_ENVIRONMENT_SLUG}"
+
+  kubectl delete namespace "${namespace}" --wait
+}
+
 function get_pod() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
   local app_name="${1}"
   local status="${2-Running}"
@@ -133,7 +111,7 @@ function get_pod() {
 }
 
 function run_task() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local ruby_cmd="${1}"
   local task_runner_pod=$(get_pod "task-runner")
 
@@ -149,13 +127,12 @@ function disable_sign_ups() {
   fi
 
   # Create the root token
-  local ruby_cmd="token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Token to disable sign-ups'); token.set_token('${REVIEW_APPS_ROOT_TOKEN}'); begin; token.save!; rescue(ActiveRecord::RecordNotUnique); end"
-  retry "run_task \"${ruby_cmd}\""
+  local set_token_rb="token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Token to disable sign-ups'); token.set_token('${REVIEW_APPS_ROOT_TOKEN}'); begin; token.save!; rescue(ActiveRecord::RecordNotUnique); end"
+  retry "run_task \"${set_token_rb}\""
 
   # Disable sign-ups
-  local signup_enabled=$(retry 'curl --silent --show-error --request PUT --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/application/settings?signup_enabled=false" | jq ".signup_enabled"')
-
-  if [[ "${signup_enabled}" == "false" ]]; then
+  local disable_signup_rb="Gitlab::CurrentSettings.current_application_settings.update!(signup_enabled: false)"
+  if (retry "run_task \"${disable_signup_rb}\""); then
     echoinfo "Sign-ups have been disabled successfully."
   else
     echoerr "Sign-ups are still enabled!"
@@ -177,11 +154,20 @@ function check_kube_domain() {
 }
 
 function ensure_namespace() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${1}"
 
   echoinfo "Ensuring the ${namespace} namespace exists..." true
 
   kubectl describe namespace "${namespace}" || kubectl create namespace "${namespace}"
+}
+
+function label_namespace() {
+  local namespace="${1}"
+  local label="${2}"
+
+  echoinfo "Labeling the ${namespace} namespace with ${label}" true
+
+  kubectl label namespace "${namespace}" "${label}"
 }
 
 function install_external_dns() {
@@ -245,7 +231,7 @@ function install_certmanager() {
 }
 
 function create_application_secret() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
   local initial_root_password_shared_secret
   local gitlab_license_shared_secret
@@ -306,7 +292,7 @@ function parse_gitaly_image_tag() {
 }
 
 function deploy() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
   local base_config_file_ref="${CI_DEFAULT_BRANCH}"
   if [[ "$(base_config_changed)" == "true" ]]; then base_config_file_ref="${CI_COMMIT_SHA}"; fi
@@ -324,11 +310,15 @@ function deploy() {
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-ee"
 
+  ensure_namespace "${namespace}"
+  label_namespace "${namespace}" "tls=review-apps-tls" # label namespace for kubed to sync tls
+
   create_application_secret
 
 HELM_CMD=$(cat << EOF
   helm upgrade \
     --namespace="${namespace}" \
+    --create-namespace \
     --install \
     --wait \
     --timeout "${HELM_INSTALL_TIMEOUT:-20m}" \
@@ -370,6 +360,7 @@ HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
   --version="${CI_PIPELINE_ID}-${CI_JOB_ID}" \
   -f "${base_config_file}" \
+  -v "${HELM_LOG_VERBOSITY:-1}" \
   "${release}" "gitlab-${GITLAB_HELM_CHART_REF}"
 EOF
 )
@@ -380,8 +371,20 @@ EOF
   eval "${HELM_CMD}"
 }
 
+function verify_deploy() {
+  echoinfo "Verifying deployment at ${CI_ENVIRONMENT_URL}"
+
+  if retry "test_url \"${CI_ENVIRONMENT_URL}\" curl_output.txt"; then
+    echoinfo "Review app is deployed to ${CI_ENVIRONMENT_URL}"
+    return 0
+  else
+    echoerr "Review app is not available at ${CI_ENVIRONMENT_URL}. See curl_output.txt artifact for detail."
+    return 1
+  fi
+}
+
 function display_deployment_debug() {
-  local namespace="${KUBE_NAMESPACE}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
 
   # Get all pods for this release

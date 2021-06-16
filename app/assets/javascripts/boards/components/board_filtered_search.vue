@@ -3,6 +3,7 @@ import { pickBy } from 'lodash';
 import { mapActions } from 'vuex';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 export default {
@@ -104,7 +105,9 @@ export default {
     },
     getFilterParams(filters = []) {
       const notFilters = filters.filter((item) => item.value.operator === '!=');
-      const equalsFilters = filters.filter((item) => item.value.operator === '=');
+      const equalsFilters = filters.filter(
+        (item) => item?.value?.operator === '=' || item.type === FILTERED_SEARCH_TERM,
+      );
 
       return { ...this.generateParams(equalsFilters), not: { ...this.generateParams(notFilters) } };
     },

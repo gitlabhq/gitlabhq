@@ -69,6 +69,8 @@ The following resources are migrated to the target instance:
   - name
   - link URL
   - image URL
+- Boards
+- Board Lists
 
 Any other items are **not** migrated.
 
@@ -105,7 +107,7 @@ on an existing group's page.
 
    ![Navigation paths to create a new group](img/new_group_navigation_v13_8.png)
 
-1. On the New Group page, select the **Import group** tab.
+1. On the New Group page, select **Import group**.
 
    ![Fill in import details](img/import_panel_v13_8.png)
 
@@ -115,7 +117,8 @@ on an existing group's page.
 
 ### Selecting which groups to import
 
-After you have authorized access to GitLab instance, you are redirected to the GitLab Group Migration importer page and your remote GitLab groups are listed.
+After you have authorized access to the GitLab instance, you are redirected to the GitLab Group
+Migration importer page. Your remote GitLab groups, which you have Owner access to, are listed.
 
 1. By default, the proposed group namespaces match the names as they exist in remote instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
 

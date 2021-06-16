@@ -12,12 +12,9 @@ module Gitlab
 
             DEFAULT_VALIDATION_REQUEST_TIMEOUT = 5
             ACCEPTED_STATUS = 200
-            DOT_COM_REJECTED_STATUS = 406
-            GENERAL_REJECTED_STATUS = (400..499).freeze
+            REJECTED_STATUS = 406
 
             def perform!
-              return unless enabled?
-
               pipeline_authorized = validate_external
 
               log_message = pipeline_authorized ? 'authorized' : 'not authorized'
@@ -32,24 +29,17 @@ module Gitlab
 
             private
 
-            def enabled?
-              return true unless Gitlab.com?
-
-              ::Feature.enabled?(:ci_external_validation_service, project, default_enabled: :yaml)
-            end
-
             def validate_external
               return true unless validation_service_url
 
               # 200 - accepted
-              # 406 - not accepted on GitLab.com
-              # 4XX - not accepted for other installations
+              # 406 - rejected
               # everything else - accepted and logged
               response_code = validate_service_request.code
               case response_code
               when ACCEPTED_STATUS
                 true
-              when rejected_status
+              when REJECTED_STATUS
                 false
               else
                 raise InvalidResponseCode, "Unsupported response code received from Validation Service: #{response_code}"
@@ -58,14 +48,6 @@ module Gitlab
               Gitlab::ErrorTracking.track_exception(ex, project_id: project.id)
 
               true
-            end
-
-            def rejected_status
-              if Gitlab.com?
-                DOT_COM_REJECTED_STATUS
-              else
-                GENERAL_REJECTED_STATUS
-              end
             end
 
             def validate_service_request
@@ -107,7 +89,9 @@ module Gitlab
                   id: current_user.id,
                   username: current_user.username,
                   email: current_user.email,
-                  created_at: current_user.created_at&.iso8601
+                  created_at: current_user.created_at&.iso8601,
+                  current_sign_in_ip: current_user.current_sign_in_ip,
+                  last_sign_in_ip: current_user.last_sign_in_ip
                 },
                 pipeline: {
                   sha: pipeline.sha,

@@ -51,7 +51,7 @@ export default {
         <gl-icon :name="iconName" :size="24" />
       </span>
 
-      <div class="gl-display-flex gl-flex-fill-1 gl-flex-direction-column gl-md-flex-direction-row">
+      <div class="gl-display-flex gl-flex-grow-1 gl-flex-direction-column gl-md-flex-direction-row">
         <slot name="header"></slot>
 
         <div>

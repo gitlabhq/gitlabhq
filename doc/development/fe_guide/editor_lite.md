@@ -15,6 +15,7 @@ GitLab features use it, including:
 - [CI Linter](../../ci/lint.md)
 - [Snippets](../../user/snippets.md)
 - [Web Editor](../../user/project/repository/web_editor.md)
+- [Security Policies](../../user/application_security/threat_monitoring/index.md)
 
 ## How to use Editor Lite
 

@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/services/edit' do
-  let(:service) { create(:drone_ci_service, project: project) }
+  let(:integration) { create(:drone_ci_integration, project: project) }
   let(:project) { create(:project) }
 
   before do
     assign :project, project
-    assign :service, service
+    assign :integration, integration
   end
 
   it do
@@ -17,7 +17,7 @@ RSpec.describe 'projects/services/edit' do
     expect(rendered).not_to have_text('Recent Deliveries')
   end
 
-  context 'service using WebHooks' do
+  context 'integration using WebHooks' do
     before do
       assign(:web_hook_logs, [])
     end

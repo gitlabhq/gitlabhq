@@ -1,3 +1,4 @@
+import { GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
@@ -27,6 +28,7 @@ describe('Interval Pattern Input Component', () => {
   const findAllLabels = () => wrapper.findAll('label');
   const findSelectedRadio = () =>
     wrapper.findAll('input[type="radio"]').wrappers.find((x) => x.element.checked);
+  const findIcon = () => wrapper.findComponent(GlIcon);
   const findSelectedRadioKey = () => findSelectedRadio()?.attributes('data-testid');
   const selectEveryDayRadio = () => findEveryDayRadio().trigger('click');
   const selectEveryWeekRadio = () => findEveryWeekRadio().trigger('click');
@@ -40,6 +42,11 @@ describe('Interval Pattern Input Component', () => {
 
     wrapper = mount(IntervalPatternInput, {
       propsData: { ...props },
+      provide: {
+        glFeatures: {
+          ciDailyLimitForPipelineSchedules: true,
+        },
+      },
       data() {
         return {
           randomHour: data?.hour || mockHour,
@@ -200,6 +207,26 @@ describe('Interval Pattern Input Component', () => {
 
     it('loads with the custom option being selected', () => {
       expect(findSelectedRadioKey()).toBe(customKey);
+    });
+  });
+
+  describe('Custom cron syntax quota info', () => {
+    it('the info message includes 5 minutes', () => {
+      createWrapper({ dailyLimit: '288' });
+
+      expect(findIcon().attributes('title')).toContain('5 minutes');
+    });
+
+    it('the info message includes 60 minutes', () => {
+      createWrapper({ dailyLimit: '24' });
+
+      expect(findIcon().attributes('title')).toContain('60 minutes');
+    });
+
+    it('the info message icon is not shown when there is no daily limit', () => {
+      createWrapper();
+
+      expect(findIcon().exists()).toBe(false);
     });
   });
 });

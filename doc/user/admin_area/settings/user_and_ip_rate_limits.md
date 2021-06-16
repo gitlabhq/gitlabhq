@@ -11,20 +11,21 @@ Rate limiting is a common technique used to improve the security and durability
 of a web application. For more details, see
 [Rate limits](../../../security/rate_limits.md).
 
-The following limits can be enforced in **Admin Area > Settings > Network > User and
-IP rate limits**:
+The following limits are disabled by default:
 
 - Unauthenticated requests
 - Authenticated API requests
 - Authenticated web requests
 
-These limits are disabled by default.
+To enforce any or all of them:
 
-NOTE:
-By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
-may trigger the rate limits configured for unauthenticated requests.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**:
+   ![user-and-ip-rate-limits](img/user_and_ip_rate_limits.png)
 
-![user-and-ip-rate-limits](img/user_and_ip_rate_limits.png)
+   NOTE:
+   By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
+   may trigger the rate limits configured for unauthenticated requests.
 
 ## Response text
 

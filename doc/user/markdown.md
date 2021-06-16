@@ -5,24 +5,35 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# GitLab Markdown **(FREE)**
+# GitLab Flavored Markdown **(FREE)**
 
-This Markdown guide is **valid only for the GitLab internal Markdown rendering system for entries and files**.
-It is **not** valid for the [GitLab documentation website](https://docs.gitlab.com)
-or the [GitLab main website](https://about.gitlab.com), as they both use
-[Kramdown](https://kramdown.gettalong.org) as their Markdown engine. The documentation
-website uses an extended Kramdown gem, [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown).
-Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/markdown-guide/)
-for a complete Kramdown reference.
+GitLab automatically renders Markdown content. For example, when you add a comment to an issue,
+you type the text in the Markdown language. When you save the issue, the text is rendered
+with a set of styles. These styles are described on this page.
 
-NOTE:
-We encourage you to view this document as [rendered by GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).
+For example, in Markdown, an ordered list looks like this:
 
-## GitLab Flavored Markdown
+```markdown
+- Cat
+- Dog
+- Turtle
+```
 
-GitLab uses "GitLab Flavored Markdown". It extends the [CommonMark specification](https://spec.commonmark.org/current/)
-(which is based on standard Markdown) in several ways to add more features.
+When this list is rendered, it looks like this:
+
+- Cat
+- Dog
+- Turtle
+
+These styles are **valid for GitLab only**. The [GitLab documentation website](https://docs.gitlab.com)
+and the [main GitLab website](https://about.gitlab.com) use [Kramdown](https://kramdown.gettalong.org) instead.
+
+You should not view this page in the documentation, but instead [view these styles as they appear on GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md).
+
+GitLab Flavored Markdown extends the [CommonMark specification](https://spec.commonmark.org/current/).
 It was inspired by [GitHub Flavored Markdown](https://docs.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax).
+
+## Where you can use GitLab Flavored Markdown
 
 You can use GitLab Flavored Markdown in the following areas:
 
@@ -33,86 +44,29 @@ You can use GitLab Flavored Markdown in the following areas:
 - Snippets (the snippet must be named with a `.md` extension)
 - Wiki pages
 - Markdown documents inside repositories
-- Epics **(ULTIMATE)**
+- Epics
 
 You can also use other rich text files in GitLab. You might have to install a dependency
-to do so. Please see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup)
-for more information.
+to do so. For more information, see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup).
 
-### Transition from Redcarpet to CommonMark
+### Differences between GitLab Flavored Markdown and standard Markdown
 
-- In GitLab version 11.8, the [Redcarpet Ruby library](https://github.com/vmg/redcarpet)
-  was removed. All issues and comments, including those from pre-11.1, are now processed
-  using the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker).
-- GitLab versions 11.3 and greater use CommonMark to process wiki pages and Markdown
-  files (`*.md`) in repositories.
-- GitLab versions 11.1 and greater use the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker)
-  for Markdown processing of all new issues, merge requests, comments, and other Markdown
-  content in the GitLab system.
+GitLab uses standard CommonMark formatting. However, GitLab Flavored Markdown
+extends standard Markdown with features made specifically for GitLab.
 
-The documentation website migrated its Markdown engine
-[from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/108)
-in October 2018.
+Features not found in standard Markdown:
 
-You may have older issues, merge requests, or Markdown documents in your
-repository that relied upon nuances of the GitLab RedCarpet version
-of Markdown. Because CommonMark uses slightly stricter syntax, these documents
-may now appear differently after the transition to CommonMark.
-
-For example, numbered lists with nested lists may
-render incorrectly:
-
-```markdown
-1. Chocolate
-  - dark
-  - milk
-```
-
-To correct their rendering, add a space to each nested item to align the `-` with the first
-character of the top list item (`C` in this case):
-
-```markdown
-1. Chocolate
-   - dark
-   - milk
-```
-
-1. Chocolate
-   - dark
-   - milk
-
-We flag any significant differences between Redcarpet and CommonMark Markdown in this document.
-
-If you have many Markdown files, it can be tedious to determine
-if they display correctly or not. You can use the
-[`diff_redcarpet_cmark`](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark)
-tool to generate a list of files and the
-differences between how RedCarpet and CommonMark render the files. It indicates
-if any changes are needed.
-
-`diff_redcarpet_cmark` is not an officially supported product.
-
-### GitLab Flavored Markdown extends standard Markdown
-
-GitLab makes full use of the standard (CommonMark) formatting, but also includes more
-helpful features for GitLab users.
-
-It makes use of [new Markdown features](#new-gitlab-flavored-markdown-extensions),
-not found in standard Markdown:
-
-- [Color chips written in HEX, RGB or HSL](#colors)
+- [Color chips written in `HEX`, `RGB` or `HSL`](#colors)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
-- [Emoji](#emoji)
+- [Emoji](#emojis)
 - [Front matter](#front-matter)
 - [Inline diffs](#inline-diff)
 - [Math equations and symbols written in LaTeX](#math)
-- [Special GitLab references](#special-gitlab-references)
 - [Task Lists](#task-lists)
 - [Table of Contents](#table-of-contents)
 - [Wiki specific Markdown](#wiki-specific-markdown)
 
-It also has [extended Markdown features](#standard-markdown-and-extensions-in-gitlab), without
-changing how standard Markdown is used:
+Features [extended from standard Markdown](#features-extended-from-standard-markdown):
 
 | Standard Markdown                     | Extended Markdown in GitLab |
 | ------------------------------------- | ------------------------- |
@@ -124,22 +78,23 @@ changing how standard Markdown is used:
 | [line breaks](#line-breaks)           | [more line break control](#newlines) |
 | [links](#links)                       | [automatically linking URLs](#url-auto-linking) |
 
-## New GitLab Flavored Markdown extensions
+## Features not found in standard Markdown
+
+The following features are not found in standard Markdown.
 
 ### Colors
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#colors).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colors).
 
-It's possible to have color written in HEX, RGB, or HSL format rendered with a color
-indicator.
+You can write a color in the formats: `HEX`, `RGB`, or `HSL`.
 
-Supported formats (named colors are not supported):
+- `HEX`: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
+- `RGB`: `` `RGB[A](R, G, B[, A])` ``
+- `HSL`: `` `HSL[A](H, S, L[, A])` ``
 
-- HEX: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
-- RGB: `` `RGB[A](R, G, B[, A])` ``
-- HSL: `` `HSL[A](H, S, L[, A])` ``
+Named colors are not supported.
 
-Color written inside backticks is followed by a color "chip":
+Colors in backticks are followed by a color indicator:
 
 ```markdown
 - `#F00`
@@ -165,8 +120,8 @@ Color written inside backticks is followed by a color "chip":
 
 ### Diagrams and flowcharts
 
-It's possible to generate diagrams and flowcharts from text in GitLab using [Mermaid](https://mermaidjs.github.io/) or [PlantUML](https://plantuml.com).
-It's also possible to use [Kroki](https://kroki.io) to create a wide variety of diagrams.
+You can generate diagrams and flowcharts from text by using [Mermaid](https://mermaidjs.github.io/) or [PlantUML](https://plantuml.com).
+You can also use [Kroki](https://kroki.io) to create a wide variety of diagrams.
 
 #### Mermaid
 
@@ -197,7 +152,7 @@ graph TD;
   C-->D;
 ```
 
-Subgraphs can also be included:
+You can also include subgraphs:
 
 ````markdown
 ```mermaid
@@ -237,16 +192,17 @@ end
 
 #### PlantUML
 
-To make PlantUML available in GitLab, a GitLab administrator needs to enable it first. Read more in [PlantUML & GitLab](../administration/integration/plantuml.md).
+To make PlantUML available in GitLab, a GitLab administrator must enable it. For more information, see the
+[PlantUML & GitLab](../administration/integration/plantuml.md) page.
 
 #### Kroki
 
-To make Kroki available in GitLab, a GitLab administrator needs to enable it first.
-Read more in the [Kroki integration](../administration/integration/kroki.md) page.
+To make Kroki available in GitLab, a GitLab administrator must enable it.
+For more information, see the [Kroki integration](../administration/integration/kroki.md) page.
 
-### Emoji
+### Emojis
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#emoji).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#emojis).
 
 ```markdown
 Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
@@ -270,13 +226,13 @@ If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-f
 
 Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">
 
-#### Emoji and your OS
+#### Emojis and your operating system
 
-The emoji example above uses hard-coded images for this documentation. Rendered emoji
-in GitLab may appear different depending on the OS and browser used.
+The previous emoji example uses hard-coded images. Rendered emojis
+in GitLab may be different depending on the OS and browser used.
 
-Most emoji are natively supported on macOS, Windows, iOS, Android, and fall back on image-based
-emoji where there is no support.
+Most emojis are natively supported on macOS, Windows, iOS, Android, and fall back on image-based
+emojis where there is no support.
 
 <!-- vale gitlab.Spelling = NO -->
 
@@ -291,17 +247,17 @@ this font installed by default.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23331) in GitLab 11.6.
 
 Front matter is metadata included at the beginning of a Markdown document, preceding
-its content. This data can be used by static site generators such as [Jekyll](https://jekyllrb.com/docs/front-matter/),
+the content. This data can be used by static site generators like [Jekyll](https://jekyllrb.com/docs/front-matter/),
 [Hugo](https://gohugo.io/content-management/front-matter/), and many other applications.
 
-When you view a Markdown file rendered by GitLab, any front matter is displayed as-is,
+When you view a Markdown file rendered by GitLab, front matter is displayed as-is,
 in a box at the top of the document. The HTML content displays after the front matter. To view an example,
 you can toggle between the source and rendered version of a
-[GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/README.md).
+[GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/README.md).
 
-In GitLab, front matter is only used in Markdown files and wiki pages, not the other
+In GitLab, front matter is used only in Markdown files and wiki pages, not the other
 places where Markdown formatting is supported. It must be at the very top of the document
-and must be between delimiters, as explained below.
+and must be between delimiters.
 
 The following delimiters are supported:
 
@@ -352,9 +308,9 @@ $example = array(
 
 ### Inline diff
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#inline-diff).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#inline-diff).
 
-With inline diff tags you can display `{+ additions +}` or `[- deletions -]`.
+With inline diff tags, you can display `{+ additions +}` or `[- deletions -]`.
 
 The wrapping tags can be either curly braces or square brackets:
 
@@ -369,7 +325,7 @@ The wrapping tags can be either curly braces or square brackets:
 
 ---
 
-However, the wrapping tags can't be mixed:
+However, you cannot mix the wrapping tags:
 
 ```markdown
 - {+ addition +]
@@ -379,7 +335,7 @@ However, the wrapping tags can't be mixed:
 ```
 
 If your diff includes words in `` `code` `` font, make sure to escape each backtick `` ` `` with a
-backslash `\`, otherwise the diff highlight don't render correctly:
+backslash `\`. Otherwise the diff highlight does not render correctly:
 
 ```markdown
 - {+ Just regular text +}
@@ -391,18 +347,18 @@ backslash `\`, otherwise the diff highlight don't render correctly:
 
 ### Math
 
-If this section is not rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#math).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#math).
 
-It's possible to have math written with LaTeX syntax rendered using [KaTeX](https://github.com/KaTeX/KaTeX).
+Math written in LaTeX syntax is rendered with [KaTeX](https://github.com/KaTeX/KaTeX).
 
-Math written between dollar signs `$` are rendered inline with the text. Math written
-inside a [code block](#code-spans-and-blocks) with the language declared as `math`, are rendered
+Math written between dollar signs `$` is rendered inline with the text. Math written
+in a [code block](#code-spans-and-blocks) with the language declared as `math` is rendered
 on a separate line:
 
 ````markdown
 This math is inline $`a^2+b^2=c^2`$.
 
-This is on a separate line
+This is on a separate line:
 
 ```math
 a^2+b^2=c^2
@@ -417,14 +373,139 @@ This is on a separate line
 a^2+b^2=c^2
 ```
 
-_Be advised that KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
+_KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
 
-This also works for the Asciidoctor `:stem: latexmath`. For details, see
+This syntax also works for the Asciidoctor `:stem: latexmath`. For details, see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
-### Special GitLab references
+### Task lists
 
-GitLab Flavored Markdown recognizes special GitLab related references. For example, you can reference
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#task-lists).
+
+You can add task lists anywhere Markdown is supported.
+
+- In issues, merge requests, and comments, you can click to select the boxes.
+- In all other places, you cannot click to select the boxes. You must edit the Markdown manually
+  by adding or removing an `x` in the brackets.
+
+To create a task list, follow the format of an ordered or unordered list:
+
+```markdown
+- [x] Completed task
+- [ ] Incomplete task
+  - [ ] Sub-task 1
+  - [x] Sub-task 2
+  - [ ] Sub-task 3
+
+1. [x] Completed task
+1. [ ] Incomplete task
+   1. [ ] Sub-task 1
+   1. [x] Sub-task 2
+```
+
+![Task list as rendered by GitLab](img/completed_tasks_v13_3.png)
+
+### Table of contents
+
+A table of contents is an unordered list that links to subheadings in the document.
+
+To add a table of contents to a Markdown file, wiki page, issue request, or merge request
+description, add the `[[_TOC_]]` tag on its own line.
+
+```markdown
+This is an intro sentence to my Wiki page.
+
+[[_TOC_]]
+
+## My first heading
+
+First section content.
+
+## My second heading
+
+Second section content.
+```
+
+![Preview of an auto-generated table of contents in a Wiki](img/markdown_toc_preview_v12_9.png)
+
+### Wiki-specific Markdown
+
+The following topics show how links inside wikis behave.
+
+#### Wiki - direct page link
+
+A direct page link includes the slug for a page that points to that page,
+at the base level of the wiki.
+
+This example links to a `documentation` page at the root of your wiki:
+
+```markdown
+[Link to Documentation](documentation)
+```
+
+#### Wiki - direct file link
+
+A direct file link points to a file extension for a file, relative to the current page.
+
+If the following example is on a page at `<your_wiki>/documentation/related`,
+it links to `<your_wiki>/documentation/file.md`:
+
+```markdown
+[Link to File](file.md)
+```
+
+#### Wiki - hierarchical link
+
+A hierarchical link can be constructed relative to the current wiki page by using `./<page>`,
+`../<page>`, and so on.
+
+If this example is on a page at `<your_wiki>/documentation/main`,
+it links to `<your_wiki>/documentation/related`:
+
+```markdown
+[Link to Related Page](related)
+```
+
+If this example is on a page at `<your_wiki>/documentation/related/content`,
+it links to `<your_wiki>/documentation/main`:
+
+```markdown
+[Link to Related Page](../main)
+```
+
+If this example is on a page at `<your_wiki>/documentation/main`,
+it links to `<your_wiki>/documentation/related.md`:
+
+```markdown
+[Link to Related Page](related.md)
+```
+
+If this example is on a page at `<your_wiki>/documentation/related/content`,
+it links to `<your_wiki>/documentation/main.md`:
+
+```markdown
+[Link to Related Page](../main.md)
+```
+
+#### Wiki - root link
+
+A root link starts with a `/` and is relative to the wiki root.
+
+This example links to `<wiki_root>/documentation`:
+
+```markdown
+[Link to Related Page](/documentation)
+```
+
+This example links to `<wiki_root>/miscellaneous.md`:
+
+```markdown
+[Link to Related Page](/miscellaneous.md)
+```
+
+## GitLab-specific references
+
+GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
 an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
 that reference into a link so you can navigate between them.
 
@@ -471,136 +552,12 @@ In addition to this, links to some objects are also recognized and formatted. So
 - The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, which are rendered as `#1234 (designs)`.
 - Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, which are rendered as `#1234[layout.png]`.
 
-### Task lists
-
-If this section isn't rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#task-lists).
-
-You can add task lists anywhere Markdown is supported, but only issues, merge requests, and
-comments support clicking to toggle the boxes. In other
-places, you must edit the Markdown manually to change the status by adding or
-removing an `x` inside the square brackets.
-
-To create a task list, add a specially-formatted Markdown list. You can use either
-unordered or ordered lists:
-
-```markdown
-- [x] Completed task
-- [ ] Incomplete task
-  - [ ] Sub-task 1
-  - [x] Sub-task 2
-  - [ ] Sub-task 3
-
-1. [x] Completed task
-1. [ ] Incomplete task
-   1. [ ] Sub-task 1
-   1. [x] Sub-task 2
-```
-
-![Task list as rendered by the GitLab interface](img/completed_tasks_v13_3.png)
-
-### Table of contents
-
-Add a table of contents to a Markdown file, wiki page, issue request, or merge request
-description by adding the tag `[[_TOC_]]` on its own line.
-It displays an unordered list that links to subheadings in the document.
-
-```markdown
-This is an intro sentence to my Wiki page.
-
-[[_TOC_]]
-
-## My first heading
-
-First section content.
-
-## My second heading
-
-Second section content.
-```
-
-![Preview of an auto-generated table of contents in a Wiki](img/markdown_toc_preview_v12_9.png)
-
-### Wiki-specific Markdown
-
-The following examples show how links inside wikis behave.
-
-#### Wiki - direct page link
-
-A link which just includes the slug for a page points to that page,
-_at the base level of the wiki_.
-
-This snippet would link to a `documentation` page at the root of your wiki:
-
-```markdown
-[Link to Documentation](documentation)
-```
-
-#### Wiki - direct file link
-
-Links with a file extension point to that file, _relative to the current page_.
-
-If the snippet below was placed on a page at `<your_wiki>/documentation/related`,
-it would link to `<your_wiki>/documentation/file.md`:
-
-```markdown
-[Link to File](file.md)
-```
-
-#### Wiki - hierarchical link
-
-A link can be constructed relative to the current wiki page using `./<page>`,
-`../<page>`, and so on.
-
-If this snippet was placed on a page at `<your_wiki>/documentation/main`,
-it would link to `<your_wiki>/documentation/related`:
-
-```markdown
-[Link to Related Page](related)
-```
-
-If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
-it would link to `<your_wiki>/documentation/main`:
-
-```markdown
-[Link to Related Page](../main)
-```
-
-If this snippet was placed on a page at `<your_wiki>/documentation/main`,
-it would link to `<your_wiki>/documentation/related.md`:
-
-```markdown
-[Link to Related Page](related.md)
-```
-
-If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
-it would link to `<your_wiki>/documentation/main.md`:
-
-```markdown
-[Link to Related Page](../main.md)
-```
-
-#### Wiki - root link
-
-A link starting with a `/` is relative to the wiki root.
-
-This snippet links to `<wiki_root>/documentation`:
-
-```markdown
-[Link to Related Page](/documentation)
-```
-
-This snippet links to `<wiki_root>/miscellaneous.md`:
-
-```markdown
-[Link to Related Page](/miscellaneous.md)
-```
-
 ### Embedding metrics in GitLab Flavored Markdown
 
 Metric charts can be embedded in GitLab Flavored Markdown. Read
 [Embedding Metrics in GitLab flavored Markdown](../operations/metrics/embed.md) for more details.
 
-## Standard Markdown and extensions in GitLab
+## Features extended from standard Markdown
 
 All standard Markdown formatting should work as expected in GitLab. Some standard
 functionality is extended with additional features, without affecting the standard usage.
@@ -629,7 +586,7 @@ Quote break.
 
 #### Multiline blockquote
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#multiline-blockquote).
+If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#multiline-blockquote).
 
 GitLab Flavored Markdown extends the standard Markdown by also supporting multi-line blockquotes
 fenced by `>>>`:
@@ -713,7 +670,7 @@ Tildes are OK too.
 #### Colored code and syntax highlighting
 
 If this section isn't rendered correctly,
-[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#colored-code-and-syntax-highlighting).
+[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colored-code-and-syntax-highlighting).
 
 GitLab uses the [Rouge Ruby library](http://rouge.jneen.net/) for more colorful syntax
 highlighting in code blocks. For a list of supported languages visit the
@@ -804,7 +761,7 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 #### Multiple underscores in words and mid-word emphasis
 
 If this section isn't rendered correctly,
-[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#multiple-underscores-in-words).
+[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#multiple-underscores-in-words).
 
 Avoid italicizing a portion of a word, especially when you're
 dealing with code and names that often appear with multiple underscores.
@@ -995,7 +952,7 @@ Do not change to a reference style link.
 
 #### Videos
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#videos).
+If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#videos).
 
 Image tags that link to files with a video extension are automatically converted to
 a video player. The valid video extensions are `.mp4`, `.m4v`, `.mov`, `.webm`, and `.ogv`:
@@ -1012,7 +969,7 @@ Here's a sample video:
 
 #### Audio
 
-If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#audio).
+If this section isn't rendered correctly, [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#audio).
 
 Similar to videos, link tags for files with an audio extension are automatically converted to
 an audio player. The valid audio extensions are `.mp3`, `.oga`, `.ogg`, `.spx`, and `.wav`:
@@ -1030,7 +987,7 @@ Here's a sample audio clip:
 ### Inline HTML
 
 To see the second example of Markdown rendered in HTML,
-[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#inline-html).
+[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#inline-html).
 
 You can also use raw HTML in your Markdown, and it usually works pretty well.
 
@@ -1095,7 +1052,7 @@ Markdown is fine in GitLab.
 #### Collapsible section
 
 To see the second Markdown example rendered in HTML,
-[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#details-and-summary).
+[view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#details-and-summary).
 
 Content can be collapsed using HTML's [`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details)
 and [`<summary>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary)
@@ -1439,26 +1396,32 @@ while the equation for the theory of relativity is E = mc<sup>2</sup>.
 Tables are not part of the core Markdown spec, but they are part of GitLab Flavored Markdown.
 
 1. The first line contains the headers, separated by "pipes" (`|`).
-1. The second line separates the headers from the cells, and must contain three or more dashes.
+1. The second line separates the headers from the cells.
+   - The cells can contain only empty spaces, hyphens, and
+     (optionally) colons for horizontal alignment.
+   - Each cell must contain at least one hyphen, but adding more hyphens to a
+     cell does not change the cell's rendering.
+   - Any content other than hyphens, whitespace, or colons is not allowed
 1. The third, and any following lines, contain the cell values.
    - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines,
      but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
    - The cell sizes **don't** have to match each other. They are flexible, but must be separated
      by pipes (`|`).
    - You **can** have blank cells.
+1. Column widths are calculated dynamically based on the content of the cells.
 
 Example:
 
 ```markdown
 | header 1 | header 2 | header 3 |
-| ---      |  ------  |----------|
+| ---      | ---      | ---      |
 | cell 1   | cell 2   | cell 3   |
 | cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
 | cell 7   |          | cell 9   |
 ```
 
 | header 1 | header 2 | header 3 |
-| ---      |  ------  |----------|
+| ---      | ---      | ---      |
 | cell 1   | cell 2   | cell 3   |
 | cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
 | cell 7   |          | cell 9   |
@@ -1467,18 +1430,18 @@ Additionally, you can choose the alignment of text in columns by adding colons (
 to the sides of the "dash" lines in the second row. This affects every cell in the column:
 
 ```markdown
-| Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
-| :---         | :---:    | ---:          | :----------- | :------: | ------------: |
-| Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
-| Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
+| Left Aligned | Centered | Right Aligned |
+| :---         | :---:    | ---:          |
+| Cell 1       | Cell 2   | Cell 3        |
+| Cell 4       | Cell 5   | Cell 6        |
 ```
 
-| Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
-| :---         | :---:    | ---:          | :----------- | :------: | ------------: |
-| Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
-| Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
+| Left Aligned | Centered | Right Aligned |
+| :---         | :---:    | ---:          |
+| Cell 1       | Cell 2   | Cell 3        |
+| Cell 4       | Cell 5   | Cell 6        |
 
-[In GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#tables),
+[In GitLab itself](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#tables),
 the headers are always left-aligned in Chrome and Firefox, and centered in Safari.
 
 You can use HTML formatting to adjust the rendering of tables. For example, you can
@@ -1486,13 +1449,13 @@ use `<br>` tags to force a cell to have multiple lines:
 
 ```markdown
 | Name | Details |
-|------|---------|
+| ---  | ---     |
 | Item1 | This is on one line |
 | Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
 ```
 
 | Name | Details |
-|------|---------|
+| ---  | ---     |
 | Item1 | This is on one line |
 | Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
 
@@ -1501,7 +1464,7 @@ but they do not render properly on `docs.gitlab.com`:
 
 ```markdown
 | header 1 | header 2 |
-|----------|----------|
+| ---      | ---      |
 | cell 1   | cell 2   |
 | cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
 ```
@@ -1529,3 +1492,56 @@ entry and paste the spreadsheet:
   at Daring Fireball is an excellent resource for a detailed explanation of standard Markdown.
 - You can find the detailed specification for CommonMark in the [CommonMark Spec](https://spec.commonmark.org/current/).
 - The [CommonMark Dingus](https://spec.commonmark.org/dingus/) helps you test CommonMark syntax.
+
+## Transition from Redcarpet to CommonMark
+
+- In GitLab 11.8, the [Redcarpet Ruby library](https://github.com/vmg/redcarpet)
+  was removed. All issues and comments, including those in 11.1 and earlier, are now processed
+  by using the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker).
+- In GitLab 11.3 and later, CommonMark processes wiki pages and Markdown
+  files (`*.md`) in repositories.
+- In GitLab 11.1 and later, the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker)
+  for Markdown processes all new issues, merge requests, comments, and other Markdown
+  content.
+
+The documentation website migrated its Markdown engine
+[from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/108)
+in October 2018.
+
+You may have older issues, merge requests, or Markdown documents in your
+repository that relied upon nuances of the GitLab RedCarpet version
+of Markdown. Because CommonMark uses slightly stricter syntax, these documents
+may now appear differently after the transition to CommonMark.
+
+For example, numbered lists with nested lists may
+render incorrectly:
+
+```markdown
+1. Chocolate
+  - dark
+  - milk
+```
+
+To fix this issue, add a space to each nested item. The `-` must be aligned with the first
+character of the top list item (`C` in this case):
+
+```markdown
+1. Chocolate
+   - dark
+   - milk
+```
+
+1. Chocolate
+   - dark
+   - milk
+
+We flag any significant differences between Redcarpet and CommonMark Markdown in this document.
+
+If you have many Markdown files, it can be tedious to determine
+if they display correctly or not. You can use the
+[`diff_redcarpet_cmark`](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark)
+tool to generate a list of files and the
+differences between how RedCarpet and CommonMark render the files. It indicates
+if any changes are needed.
+
+`diff_redcarpet_cmark` is not an officially supported product.

@@ -224,7 +224,7 @@ from the OmniAuth provider's documentation.
   sudo service gitlab stop
   ```
 
-- Add the gem to your [`Gemfile`](https://gitlab.com/gitlab-org/gitlab/blob/master/Gemfile):
+- Add the gem to your [`Gemfile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/Gemfile):
 
   ```shell
   gem "omniauth-your-auth-provider"
@@ -261,7 +261,7 @@ By default, **Sign In** is enabled by using all the OAuth Providers that have be
 
 To enable/disable an OmniAuth provider:
 
-1. In the top navigation bar, go to **Admin Area**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, go to **Settings**.
 1. Scroll to the **Sign-in Restrictions** section, and click **Expand**.
 1. Below **Enabled OAuth Sign-In sources**, select the check box for each provider you want to enable or disable.

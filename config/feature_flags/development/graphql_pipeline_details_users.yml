@@ -1,6 +1,6 @@
 ---
 name: graphql_pipeline_details_users
-introduced_by_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52092
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/299112
 milestone: '13.9'
 type: development

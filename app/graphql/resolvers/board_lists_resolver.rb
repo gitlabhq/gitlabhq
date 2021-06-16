@@ -2,7 +2,7 @@
 
 module Resolvers
   class BoardListsResolver < BaseResolver
-    include BoardIssueFilterable
+    include BoardItemFilterable
     include Gitlab::Graphql::Authorize::AuthorizeResource
     include LooksAhead
 
@@ -22,7 +22,7 @@ module Resolvers
 
     def resolve_with_lookahead(id: nil, issue_filters: {})
       lists = board_lists(id)
-      context.scoped_set!(:issue_filters, issue_filters(issue_filters))
+      context.scoped_set!(:issue_filters, item_filters(issue_filters))
 
       List.preload_preferences_for_user(lists, current_user) if load_preferences?
 

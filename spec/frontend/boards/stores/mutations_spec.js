@@ -273,6 +273,53 @@ describe('Board Store Mutations', () => {
     });
   });
 
+  describe('RESET_ITEMS_FOR_LIST', () => {
+    it('should remove issues from boardItemsByListId state', () => {
+      const listId = 'gid://gitlab/List/1';
+      const boardItemsByListId = {
+        [listId]: [mockIssue.id],
+      };
+
+      state = {
+        ...state,
+        boardItemsByListId,
+      };
+
+      mutations[types.RESET_ITEMS_FOR_LIST](state, listId);
+
+      expect(state.boardItemsByListId[listId]).toEqual([]);
+    });
+  });
+
+  describe('REQUEST_ITEMS_FOR_LIST', () => {
+    const listId = 'gid://gitlab/List/1';
+    const boardItemsByListId = {
+      [listId]: [mockIssue.id],
+    };
+
+    it.each`
+      fetchNext | isLoading    | isLoadingMore
+      ${true}   | ${undefined} | ${true}
+      ${false}  | ${true}      | ${undefined}
+    `(
+      'sets isLoading to $isLoading and isLoadingMore to $isLoadingMore when fetchNext is $fetchNext',
+      ({ fetchNext, isLoading, isLoadingMore }) => {
+        state = {
+          ...state,
+          boardItemsByListId,
+          listsFlags: {
+            [listId]: {},
+          },
+        };
+
+        mutations[types.REQUEST_ITEMS_FOR_LIST](state, { listId, fetchNext });
+
+        expect(state.listsFlags[listId].isLoading).toBe(isLoading);
+        expect(state.listsFlags[listId].isLoadingMore).toBe(isLoadingMore);
+      },
+    );
+  });
+
   describe('RECEIVE_ITEMS_FOR_LIST_SUCCESS', () => {
     it('updates boardItemsByListId and issues on state', () => {
       const listIssues = {

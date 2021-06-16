@@ -271,14 +271,9 @@ class Namespace < ApplicationRecord
   # Includes projects from this namespace and projects from all subgroups
   # that belongs to this namespace
   def all_projects
-    namespace = user? ? self : self_and_descendants
-    Project.where(namespace: namespace)
-  end
+    namespace = user? ? self : self_and_descendant_ids
 
-  # Includes pipelines from this namespace and pipelines from all subgroups
-  # that belongs to this namespace
-  def all_pipelines
-    Ci::Pipeline.where(project: all_projects)
+    Project.where(namespace: namespace)
   end
 
   def has_parent?
@@ -442,12 +437,6 @@ class Namespace < ApplicationRecord
   end
 
   def all_projects_with_pages
-    if all_projects.pages_metadata_not_migrated.exists?
-      Gitlab::BackgroundMigration::MigratePagesMetadata.new.perform_on_relation(
-        all_projects.pages_metadata_not_migrated
-      )
-    end
-
     all_projects.with_pages_deployed
   end
 

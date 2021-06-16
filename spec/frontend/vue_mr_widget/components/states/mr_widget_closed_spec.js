@@ -18,8 +18,8 @@ describe('MRWidgetClosed', () => {
             avatarUrl:
               'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
           },
-          mergedAt: 'Jan 24, 2018 1:02pm GMT+0000',
-          closedAt: 'Jan 24, 2018 1:02pm GMT+0000',
+          mergedAt: 'Jan 24, 2018 1:02pm UTC',
+          closedAt: 'Jan 24, 2018 1:02pm UTC',
           readableMergedAt: '',
           readableClosedAt: 'less than a minute ago',
         },

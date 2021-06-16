@@ -38,7 +38,7 @@ For example, given a project `mycorp/awesome-project` that imports a library
 at `myfriend/awesome-lib`, adding a feature in `awesome-project` may **also**
 require changes to `awesome-lib`, and so necessitate two merge requests. Merging
 the `awesome-project` merge request before the `awesome-lib` one would
-break the `master`branch.
+break the default branch.
 
 The `awesome-project` merge request could be [marked as **Draft**](drafts.md),
 and the reason for the draft stated included in the comments. However, this

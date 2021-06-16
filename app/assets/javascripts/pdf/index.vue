@@ -24,6 +24,9 @@ export default {
     hasPDF() {
       return this.pdf && this.pdf.length > 0;
     },
+    availablePages() {
+      return this.pages.filter(Boolean);
+    },
   },
   watch: { pdf: 'load' },
   mounted() {
@@ -61,13 +64,7 @@ export default {
 
 <template>
   <div v-if="hasPDF" class="pdf-viewer">
-    <page
-      v-for="(page, index) in pages"
-      v-if="page"
-      :key="index"
-      :page="page"
-      :number="index + 1"
-    />
+    <page v-for="(page, index) in availablePages" :key="index" :page="page" :number="index + 1" />
   </div>
 </template>
 

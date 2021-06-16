@@ -53,6 +53,14 @@
         = _('Specify an e-mail address regex pattern to identify default internal users.')
         = link_to _('More information'), help_page_path('user/permissions', anchor: 'setting-new-users-to-external'),
           target: '_blank'
+    - unless Gitlab.com?
+      .form-group
+        = f.label :deactivate_dormant_users, _('Dormant users'), class: 'label-bold'
+        .form-check
+          = f.check_box :deactivate_dormant_users, class: 'form-check-input'
+          = f.label :deactivate_dormant_users, class: 'form-check-label' do
+            = _('Deactivate dormant users after 90 days of inactivity. Users can return to active status by signing in to their account. While inactive, a user is not counted as an active user in the instance.')
+            = link_to _('More information'), help_page_path('user/admin_area/moderate_users', anchor: 'automatically-deactivate-dormant-users'), target: '_blank'
     .form-group
       = f.label :personal_access_token_prefix, _('Personal Access Token prefix'), class: 'label-light'
       = f.text_field :personal_access_token_prefix, placeholder: _('Max 20 characters'), class: 'form-control gl-form-input'

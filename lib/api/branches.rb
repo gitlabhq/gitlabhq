@@ -17,6 +17,10 @@ module API
       authorize! :download_code, user_project
     end
 
+    rescue_from Gitlab::Git::Repository::NoRepository do
+      not_found!
+    end
+
     helpers do
       params :filter_params do
         optional :search, type: String, desc: 'Return list of branches matching the search criteria'

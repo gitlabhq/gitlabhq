@@ -1,7 +1,15 @@
 <script>
-import { GlFormRadio, GlFormRadioGroup, GlLink, GlSprintf } from '@gitlab/ui';
+import {
+  GlFormRadio,
+  GlFormRadioGroup,
+  GlIcon,
+  GlLink,
+  GlSprintf,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { getWeekdayNames } from '~/lib/utils/datetime_utility';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const KEY_EVERY_DAY = 'everyDay';
 const KEY_EVERY_WEEK = 'everyWeek';
@@ -12,11 +20,21 @@ export default {
   components: {
     GlFormRadio,
     GlFormRadioGroup,
+    GlIcon,
     GlLink,
     GlSprintf,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  mixins: [glFeatureFlagMixin()],
   props: {
     initialCronInterval: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    dailyLimit: {
       type: String,
       required: false,
       default: '',
@@ -80,6 +98,17 @@ export default {
     weekday() {
       return getWeekdayNames()[this.randomWeekDayIndex];
     },
+    parsedDailyLimit() {
+      return this.dailyLimit ? (24 * 60) / this.dailyLimit : null;
+    },
+    scheduleDailyLimitMsg() {
+      return sprintf(
+        __(
+          'Scheduled pipelines cannot run more frequently than once per %{limit} minutes. A pipeline configured to run more frequently only starts after %{limit} minutes have elapsed since the last time it ran.',
+        ),
+        { limit: this.parsedDailyLimit },
+      );
+    },
   },
   watch: {
     cronInterval() {
@@ -111,6 +140,11 @@ export default {
     generateRandomDay() {
       return Math.floor(Math.random() * 28);
     },
+    showDailyLimitMessage({ value }) {
+      return (
+        value === KEY_CUSTOM && this.glFeatures.ciDailyLimitForPipelineSchedules && this.dailyLimit
+      );
+    },
   },
 };
 </script>
@@ -131,7 +165,15 @@ export default {
             </gl-link>
           </template>
         </gl-sprintf>
+
         <template v-else>{{ option.text }}</template>
+
+        <gl-icon
+          v-if="showDailyLimitMessage(option)"
+          v-gl-tooltip.hover
+          name="question"
+          :title="scheduleDailyLimitMsg"
+        />
       </gl-form-radio>
     </gl-form-radio-group>
     <input

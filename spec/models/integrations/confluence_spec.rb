@@ -72,19 +72,19 @@ RSpec.describe Integrations::Confluence do
     subject { project.project_setting.has_confluence? }
 
     it 'sets the property to true when service is active' do
-      create(:confluence_service, project: project, active: true)
+      create(:confluence_integration, project: project, active: true)
 
       is_expected.to be(true)
     end
 
     it 'sets the property to false when service is not active' do
-      create(:confluence_service, project: project, active: false)
+      create(:confluence_integration, project: project, active: false)
 
       is_expected.to be(false)
     end
 
     it 'creates a project_setting record if one was not already created' do
-      expect { create(:confluence_service) }.to change { ProjectSetting.count }.by(1)
+      expect { create(:confluence_integration) }.to change(ProjectSetting, :count).by(1)
     end
   end
 end

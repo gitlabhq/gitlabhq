@@ -59,7 +59,7 @@ GET /projects
 | `sort`                                     | string   | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                                  | boolean  | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                               | boolean  | **{dotted-circle}** No | Include project statistics. |
-| `topic`                                    | string   | **{dotted-circle}** No | Comma-separated topic names. Limit results to projects that match all of given topics. See `tag_list` attribute. |
+| `topic`                                    | string   | **{dotted-circle}** No | Comma-separated topic names. Limit results to projects that match all of given topics. See `topics` attribute. |
 | `visibility`                               | string   | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
 | `wiki_checksum_failed` **(PREMIUM)**       | boolean  | **{dotted-circle}** No | Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2). |
 | `with_custom_attributes`                   | boolean  | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(admins only)_ |
@@ -82,7 +82,11 @@ When `simple=true` or the user is unauthenticated this returns something like:
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
     "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "disapora client"
+    ],
+    "topics": [
       "example",
       "disapora client"
     ],
@@ -116,7 +120,11 @@ When the user is authenticated and `simple` is not set this returns something li
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
     "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "disapora client"
+    ],
+    "topics": [
       "example",
       "disapora client"
     ],
@@ -166,6 +174,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "squash_option": "default_on",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
     "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
@@ -200,7 +209,11 @@ When the user is authenticated and `simple` is not set this returns something li
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
     "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "puppet"
+    ],
+    "topics": [
       "example",
       "puppet"
     ],
@@ -261,6 +274,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "squash_option": "default_on",
     "auto_devops_enabled": true,
     "auto_devops_deploy_strategy": "continuous",
     "repository_storage": "default",
@@ -299,6 +313,10 @@ When the user is authenticated and `simple` is not set this returns something li
   }
 ]
 ```
+
+NOTE:
+The `tag_list` attribute has been deprecated
+and is removed in API v5 in favor of the `topics` attribute.
 
 NOTE:
 For users of [GitLab Premium or higher](https://about.gitlab.com/pricing/),
@@ -378,7 +396,11 @@ GET /users/:user_id/projects
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
     "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "disapora client"
+    ],
+    "topics": [
       "example",
       "disapora client"
     ],
@@ -428,6 +450,7 @@ GET /users/:user_id/projects
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "squash_option": "default_on",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
     "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
@@ -462,7 +485,11 @@ GET /users/:user_id/projects
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
     "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "puppet"
+    ],
+    "topics": [
       "example",
       "puppet"
     ],
@@ -523,6 +550,7 @@ GET /users/:user_id/projects
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "squash_option": "default_on",
     "auto_devops_enabled": true,
     "auto_devops_deploy_strategy": "continuous",
     "repository_storage": "default",
@@ -606,7 +634,11 @@ Example response:
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
     "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "disapora client"
+    ],
+    "topics": [
       "example",
       "disapora client"
     ],
@@ -654,6 +686,7 @@ Example response:
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "squash_option": "default_on",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
     "statistics": {
@@ -683,7 +716,11 @@ Example response:
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
     "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "puppet"
+    ],
+    "topics": [
       "example",
       "puppet"
     ],
@@ -742,6 +779,7 @@ Example response:
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "squash_option": "default_on",
     "auto_devops_enabled": true,
     "auto_devops_deploy_strategy": "continuous",
     "repository_storage": "default",
@@ -789,7 +827,7 @@ GET /projects/:id
 
 | Attribute                | Type           | Required               | Description |
 |--------------------------|----------------|------------------------|-------------|
-| `id`                     | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`                     | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `license`                | boolean        | **{dotted-circle}** No | Include project license data. |
 | `statistics`             | boolean        | **{dotted-circle}** No | Include project statistics. |
 | `with_custom_attributes` | boolean        | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(admins only)_ |
@@ -804,7 +842,11 @@ GET /projects/:id
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
   "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-  "tag_list": [
+  "tag_list": [ //deprecated, use `topics` instead
+    "example",
+    "disapora project"
+  ],
+  "topics": [
     "example",
     "disapora project"
   ],
@@ -900,6 +942,7 @@ GET /projects/:id
   "printing_merge_requests_link_enabled": true,
   "request_access_enabled": false,
   "merge_method": "merge",
+  "squash_option": "default_on",
   "auto_devops_enabled": true,
   "auto_devops_deploy_strategy": "continuous",
   "approvals_before_merge": 0,
@@ -940,6 +983,10 @@ GET /projects/:id
 }
 ```
 
+NOTE:
+The `tag_list` attribute has been deprecated
+and is removed in API v5 in favor of the `topics` attribute.
+
 Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
 can also see the `approvals_before_merge` parameter:
 
@@ -974,12 +1021,13 @@ If the project is a fork, and you provide a valid token to authenticate, the
       "path_with_namespace":"gitlab-org/gitlab-foss",
       "created_at":"2013-09-26T06:02:36.000Z",
       "default_branch":"master",
-      "tag_list":[],
+      "tag_list":[], //deprecated, use `topics` instead
+      "topics":[],
       "ssh_url_to_repo":"git@gitlab.com:gitlab-org/gitlab-foss.git",
       "http_url_to_repo":"https://gitlab.com/gitlab-org/gitlab-foss.git",
       "web_url":"https://gitlab.com/gitlab-org/gitlab-foss",
       "avatar_url":"https://assets.gitlab-static.net/uploads/-/system/project/avatar/13083/logo-extra-whitespace.png",
-      "license_url": "https://gitlab.com/gitlab-org/gitlab/blob/master/LICENSE",
+      "license_url": "https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE",
       "license": {
         "key": "mit",
         "name": "MIT License",
@@ -1032,7 +1080,7 @@ GET /projects/:id/users
 
 | Attribute    | Type           | Required               | Description |
 |--------------|----------------|------------------------|-------------|
-| `id`         | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `search`     | string         | **{dotted-circle}** No | Search for specific users. |
 | `skip_users` | integer array  | **{dotted-circle}** No | Filter out users with the specified IDs. |
 
@@ -1067,7 +1115,7 @@ GET /projects/:id/groups
 
 | Attribute                   | Type              | Required               | Description |
 |-----------------------------|-------------------|------------------------|-------------|
-| `id`                        | integer/string    | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`                        | integer or string    | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `search`                    | string            | **{dotted-circle}** No | Search for specific groups. |
 | `skip_groups`               | array of integers | **{dotted-circle}** No | Skip the group IDs passed. |
 | `with_shared`               | boolean           | **{dotted-circle}** No | Include projects shared with this group. Default is `false`. |
@@ -1117,7 +1165,7 @@ POST /projects
 | `path`                                                      | string  | **{check-circle}** Yes (if name isn't provided) | Repository name for new project. Generated based on name if not provided (generated as lowercase with dashes). |
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
 | `analytics_access_level`                                    | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. |
+| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
@@ -1130,7 +1178,7 @@ POST /projects
 | `ci_config_path`                                            | string  | **{dotted-circle}** No | The path to CI configuration file. |
 | `container_expiration_policy_attributes`                    | hash    | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). Valid values for `cadence` are: `1d` (every day), `7d` (every week), `14d` (every two weeks), `1month` (every month), or `3month` (every quarter). |
 | `container_registry_enabled`                                | boolean | **{dotted-circle}** No | Enable container registry for this project. |
-| `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. |
+| `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
 | `emails_disabled`                                           | boolean | **{dotted-circle}** No | Disable email notifications. |
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
@@ -1165,9 +1213,11 @@ POST /projects
 | `show_default_award_emojis`                                 | boolean | **{dotted-circle}** No | Show default award emojis. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
-| `tag_list`                                                  | array   | **{dotted-circle}** No | The list of tags for a project; put array of tags, that should be finally assigned to a project. |
+| `squash_option`                                             | string  | **{dotted-circle}** No | One of `never`, `always`, `default_on`, or `default_off`. |
+| `tag_list`                                                  | array   | **{dotted-circle}** No | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0)_ The list of tags for a project; put array of tags, that should be finally assigned to a project. Use `topics` instead. |
 | `template_name`                                             | string  | **{dotted-circle}** No | When used without `use_custom_template`, name of a [built-in project template](../user/project/working_with_projects.md#built-in-templates). When used with `use_custom_template`, name of a custom project template. |
 | `template_project_id` **(PREMIUM)**                         | integer | **{dotted-circle}** No | When used with `use_custom_template`, project ID of a custom project template. This is preferable to using `template_name` since `template_name` may be ambiguous. |
+| `topics`                                                    | array   | **{dotted-circle}** No | The list of topics for a project; put array of topics, that should be finally assigned to a project. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0.)_ |
 | `use_custom_template` **(PREMIUM)**                         | boolean | **{dotted-circle}** No | Use either custom [instance](../user/admin_area/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. |
 | `visibility`                                                | string  | **{dotted-circle}** No | See [project visibility level](#project-visibility-level). |
 | `wiki_access_level`                                         | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1191,7 +1241,7 @@ POST /projects/user/:user_id
 | `name`                                                      | string  | **{check-circle}** Yes | The name of the new project. |
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
 | `analytics_access_level`                                    | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. |
+| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
@@ -1204,6 +1254,7 @@ POST /projects/user/:user_id
 | `ci_config_path`                                            | string  | **{dotted-circle}** No | The path to CI configuration file. |
 | `container_registry_enabled`                                | boolean | **{dotted-circle}** No | Enable container registry for this project. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
+| `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
 | `emails_disabled`                                           | boolean | **{dotted-circle}** No | Disable email notifications. |
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1238,9 +1289,11 @@ POST /projects/user/:user_id
 | `show_default_award_emojis`                                 | boolean | **{dotted-circle}** No | Show default award emojis. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
-| `suggestion_commit_message`                                 | string  | **{dotted-circle}** No | The commit message used to apply merge request suggestions. |
-| `tag_list`                                                  | array   | **{dotted-circle}** No | The list of tags for a project; put array of tags, that should be finally assigned to a project. |
+| `squash_option`                                             | string  | **{dotted-circle}** No | One of `never`, `always`, `default_on`, or `default_off`. |
+| `suggestion_commit_message`                                 | string  | **{dotted-circle}** No | The commit message used to apply merge request [suggestions](../user/project/merge_requests/reviews/suggestions.md). |
+| `tag_list`                                                  | array   | **{dotted-circle}** No | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0)_ The list of tags for a project; put array of tags, that should be finally assigned to a project. Use `topics` instead. |
 | `template_name`                                             | string  | **{dotted-circle}** No | When used without `use_custom_template`, name of a [built-in project template](../user/project/working_with_projects.md#built-in-templates). When used with `use_custom_template`, name of a custom project template. |
+| `topics`                                                    | array   | **{dotted-circle}** No | The list of topics for the project. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0.)_ |
 | `use_custom_template` **(PREMIUM)**                         | boolean | **{dotted-circle}** No | Use either custom [instance](../user/admin_area/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. |
 | `visibility`                                                | string  | **{dotted-circle}** No | See [project visibility level](#project-visibility-level). |
 | `wiki_access_level`                                         | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1262,7 +1315,7 @@ PUT /projects/:id
 |-------------------------------------------------------------|----------------|------------------------|-------------|
 | `allow_merge_on_skipped_pipeline`                           | boolean        | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
 | `analytics_access_level`                                    | string         | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge request by default. |
+| `approvals_before_merge` **(PREMIUM)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge request by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
 | `auto_cancel_pending_pipelines`                             | string         | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string         | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean        | **{dotted-circle}** No | Enable Auto DevOps for this project. |
@@ -1282,7 +1335,7 @@ PUT /projects/:id
 | `emails_disabled`                                           | boolean        | **{dotted-circle}** No | Disable email notifications. |
 | `external_authorization_classification_label` **(PREMIUM)** | string         | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
-| `id`                                                        | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`                                                        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `import_url`                                                | string         | **{dotted-circle}** No | URL to import repository from. |
 | `issues_access_level`                                       | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `issues_enabled`                                            | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
@@ -1316,13 +1369,16 @@ PUT /projects/:id
 | `show_default_award_emojis`                                 | boolean        | **{dotted-circle}** No | Show default award emojis. |
 | `snippets_access_level`                                     | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
+| `squash_option`                                             | string         | **{dotted-circle}** No | One of `never`, `always`, `default_on`, or `default_off`. |
 | `suggestion_commit_message`                                 | string         | **{dotted-circle}** No | The commit message used to apply merge request suggestions. |
-| `tag_list`                                                  | array          | **{dotted-circle}** No | The list of tags for a project; put array of tags, that should be finally assigned to a project. |
+| `tag_list`                                                  | array          | **{dotted-circle}** No | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0)_ The list of tags for a project; put array of tags, that should be finally assigned to a project. Use `topics` instead. |
+| `topics`                                                    | array          | **{dotted-circle}** No | The list of topics for the project. This replaces any existing topics that are already added to the project. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0.)_ |
 | `visibility`                                                | string         | **{dotted-circle}** No | See [project visibility level](#project-visibility-level). |
 | `wiki_access_level`                                         | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `wiki_enabled`                                              | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
 | `issues_template` **(PREMIUM)**                             | string         | **{dotted-circle}** No | Default description for Issues. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). |
 | `merge_requests_template` **(PREMIUM)**                     | string         | **{dotted-circle}** No | Default description for Merge Requests. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). |
+| `keep_latest_artifact`                                      | boolean        | **{dotted-circle}** No | Disable or enable the ability to keep the latest artifact for this project. |
 
 ## Fork project
 
@@ -1338,11 +1394,11 @@ POST /projects/:id/fork
 
 | Attribute        | Type           | Required               | Description |
 |------------------|----------------|------------------------|-------------|
-| `id`             | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`             | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `name`           | string         | **{dotted-circle}** No | The name assigned to the resultant project after forking.                        |
 | `namespace_id`   | integer        | **{dotted-circle}** No | The ID of the namespace that the project is forked to.                           |
 | `namespace_path` | string         | **{dotted-circle}** No | The path of the namespace that the project is forked to.                         |
-| `namespace`      | integer/string | **{dotted-circle}** No | _(Deprecated)_ The ID or path of the namespace that the project is forked to.    |
+| `namespace`      | integer or string | **{dotted-circle}** No | _(Deprecated)_ The ID or path of the namespace that the project is forked to.    |
 | `path`           | string         | **{dotted-circle}** No | The path assigned to the resultant project after forking.                        |
 | `description`    | string         | **{dotted-circle}** No | The description assigned to the resultant project after forking.                 |
 | `visibility`     | string         | **{dotted-circle}** No | The [visibility level](#project-visibility-level) assigned to the resultant project after forking. |
@@ -1361,7 +1417,7 @@ GET /projects/:id/forks
 | Attribute                     | Type           | Required               | Description |
 |-------------------------------|----------------|------------------------|-------------|
 | `archived`                    | boolean        | **{dotted-circle}** No | Limit by archived status. |
-| `id`                          | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`                          | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `membership`                  | boolean        | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
 | `min_access_level`            | integer        | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
 | `order_by`                    | string         | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
@@ -1393,7 +1449,11 @@ Example responses:
     "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
     "web_url": "http://example.com/diaspora/diaspora-project-site",
     "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-    "tag_list": [
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "disapora project"
+    ],
+    "topics": [
       "example",
       "disapora project"
     ],
@@ -1435,6 +1495,7 @@ Example responses:
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "squash_option": "default_on",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
     "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -1462,7 +1523,7 @@ POST /projects/:id/star
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/star"
@@ -1480,7 +1541,11 @@ Example response:
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
   "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-  "tag_list": [
+  "tag_list": [ //deprecated, use `topics` instead
+    "example",
+    "disapora project"
+  ],
+  "topics": [
     "example",
     "disapora project"
   ],
@@ -1530,6 +1595,7 @@ Example response:
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
+  "squash_option": "default_on",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -1555,7 +1621,7 @@ POST /projects/:id/unstar
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/unstar"
@@ -1573,7 +1639,11 @@ Example response:
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
   "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-  "tag_list": [
+  "tag_list": [ //deprecated, use `topics` instead
+    "example",
+    "disapora project"
+  ],
+  "topics": [
     "example",
     "disapora project"
   ],
@@ -1623,6 +1693,7 @@ Example response:
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
+  "squash_option": "default_on",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -1648,7 +1719,7 @@ GET /projects/:id/starrers
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `search`  | string         | **{dotted-circle}** No | Search for specific users. |
 
 ```shell
@@ -1694,7 +1765,7 @@ GET /projects/:id/languages
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/languages"
@@ -1723,7 +1794,7 @@ POST /projects/:id/archive
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/archive"
@@ -1741,7 +1812,11 @@ Example response:
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
   "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-  "tag_list": [
+  "tag_list": [ //deprecated, use `topics` instead
+    "example",
+    "disapora project"
+  ],
+  "topics": [
     "example",
     "disapora project"
   ],
@@ -1810,6 +1885,7 @@ Example response:
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
+  "squash_option": "default_on",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -1837,7 +1913,7 @@ POST /projects/:id/unarchive
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/unarchive"
@@ -1855,7 +1931,11 @@ Example response:
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
   "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
-  "tag_list": [
+  "tag_list": [ //deprecated, use `topics` instead
+    "example",
+    "disapora project"
+  ],
+  "topics": [
     "example",
     "disapora project"
   ],
@@ -1924,6 +2004,7 @@ Example response:
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
+  "squash_option": "default_on",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
@@ -1963,7 +2044,7 @@ DELETE /projects/:id
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ## Restore project marked for deletion **(PREMIUM)**
 
@@ -1977,12 +2058,13 @@ POST /projects/:id/restore
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ## Upload a file
 
 Uploads a file to the specified project to be used in an issue or merge request
-description, or a comment.
+description, or a comment. GitLab versions 14.0 and later
+[enforce](#max-attachment-size-enforcement) this limit.
 
 ```plaintext
 POST /projects/:id/uploads
@@ -1991,7 +2073,7 @@ POST /projects/:id/uploads
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
 | `file`    | string         | **{check-circle}** Yes | The file to be uploaded. |
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 To upload a file from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The
@@ -1999,7 +2081,8 @@ cURL to post data using the header `Content-Type: multipart/form-data`. The
 `@`. For example:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "file=@dk.png" "https://gitlab.example.com/api/v4/projects/5/uploads"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "file=@dk.png" "https://gitlab.example.com/api/v4/projects/5/uploads"
 ```
 
 Returned object:
@@ -2021,7 +2104,8 @@ the format in `markdown` is used.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57250) in GitLab 13.11.
 
-GitLab 13.11 added enforcement of the [maximum attachment size limit](../user/admin_area/settings/account_and_limit_settings.md#max-attachment-size) behind the `enforce_max_attachment_size_upload_api` feature flag. GitLab 14.0 will enable this by default.
+GitLab 13.11 added enforcement of the [maximum attachment size limit](../user/admin_area/settings/account_and_limit_settings.md#max-attachment-size) behind the `enforce_max_attachment_size_upload_api` feature flag. GitLab 14.0 enables this by default.
+To disable this enforcement:
 
 **In Omnibus installations:**
 
@@ -2031,10 +2115,10 @@ GitLab 13.11 added enforcement of the [maximum attachment size limit](../user/ad
    sudo gitlab-rails console
    ```
 
-1. Enable the feature flag:
+1. Disable the feature flag:
 
    ```ruby
-   Feature.enable(:enforce_max_attachment_size_upload_api)
+   Feature.disable(:enforce_max_attachment_size_upload_api)
    ```
 
 **In installations from source:**
@@ -2046,10 +2130,10 @@ GitLab 13.11 added enforcement of the [maximum attachment size limit](../user/ad
    sudo -u git -H bundle exec rails console -e production
    ```
 
-1. Enable the feature flag to disable the validation:
+1. Disable the feature flag:
 
    ```ruby
-   Feature.enable(:enforce_max_attachment_size_upload_api)
+   Feature.disable(:enforce_max_attachment_size_upload_api)
    ```
 
 ## Upload a project avatar
@@ -2063,7 +2147,7 @@ PUT /projects/:id
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
 | `avatar`  | string         | **{check-circle}** Yes | The file to be uploaded. |
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 To upload an avatar from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The
@@ -2073,7 +2157,8 @@ preceded by `@`. For example:
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "avatar=@dk.png" "https://gitlab.example.com/api/v4/projects/5"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "avatar=@dk.png" "https://gitlab.example.com/api/v4/projects/5"
 ```
 
 Returned object:
@@ -2097,7 +2182,7 @@ POST /projects/:id/share
 | `expires_at`   | string         | **{dotted-circle}** No | Share expiration date in ISO 8601 format: 2016-09-26 |
 | `group_access` | integer        | **{check-circle}** Yes | The [access level](members.md#valid-access-levels) to grant the group. |
 | `group_id`     | integer        | **{check-circle}** Yes | The ID of the group to share with. |
-| `id`           | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`           | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ## Delete a shared project link within a group
 
@@ -2110,7 +2195,7 @@ DELETE /projects/:id/share/:group_id
 | Attribute  | Type           | Required               | Description |
 |------------|----------------|------------------------|-------------|
 | `group_id` | integer        | **{check-circle}** Yes | The ID of the group. |
-| `id`       | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`       | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
@@ -2131,7 +2216,7 @@ GET /projects/:id/hooks
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ### Get project hook
 
@@ -2144,7 +2229,7 @@ GET /projects/:id/hooks/:hook_id
 | Attribute | Type           | Required               | Description               |
 |-----------|----------------|------------------------|---------------------------|
 | `hook_id` | integer        | **{check-circle}** Yes | The ID of a project hook. |
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ```json
 {
@@ -2183,7 +2268,7 @@ POST /projects/:id/hooks
 | `confidential_note_events`   | boolean        | **{dotted-circle}** No | Trigger hook on confidential note events. |
 | `deployment_events`          | boolean        | **{dotted-circle}** No | Trigger hook on deployment events. |
 | `enable_ssl_verification`    | boolean        | **{dotted-circle}** No | Do SSL verification when triggering the hook. |
-| `id`                         | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`                         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `issues_events`              | boolean        | **{dotted-circle}** No | Trigger hook on issues events. |
 | `job_events`                 | boolean        | **{dotted-circle}** No | Trigger hook on job events. |
 | `merge_requests_events`      | boolean        | **{dotted-circle}** No | Trigger hook on merge requests events. |
@@ -2211,7 +2296,7 @@ PUT /projects/:id/hooks/:hook_id
 | `deployment_events`          | boolean        | **{dotted-circle}** No | Trigger hook on deployment events. |
 | `enable_ssl_verification`    | boolean        | **{dotted-circle}** No | Do SSL verification when triggering the hook. |
 | `hook_id`                    | integer        | **{check-circle}** Yes | The ID of the project hook. |
-| `id`                         | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`                         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `issues_events`              | boolean        | **{dotted-circle}** No | Trigger hook on issues events. |
 | `job_events`                 | boolean        | **{dotted-circle}** No | Trigger hook on job events. |
 | `merge_requests_events`      | boolean        | **{dotted-circle}** No | Trigger hook on merge requests events. |
@@ -2237,7 +2322,7 @@ DELETE /projects/:id/hooks/:hook_id
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
 | `hook_id` | integer        | **{check-circle}** Yes | The ID of the project hook. |
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 Note the JSON response differs if the hook is available or not. If the project
 hook is available before it's returned in the JSON response or an empty response
@@ -2257,7 +2342,7 @@ POST /projects/:id/fork/:forked_from_id
 | Attribute        | Type           | Required               | Description |
 |------------------|----------------|------------------------|-------------|
 | `forked_from_id` | ID             | **{check-circle}** Yes | The ID of the project that was forked from. |
-| `id`             | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`             | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ### Delete an existing forked from relationship
 
@@ -2267,7 +2352,7 @@ DELETE /projects/:id/fork
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ## Search for projects by name
 
@@ -2297,7 +2382,7 @@ POST /projects/:id/housekeeping
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ## Push Rules **(PREMIUM)**
 
@@ -2312,7 +2397,7 @@ GET /projects/:id/push_rule
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```json
 {
@@ -2364,7 +2449,7 @@ POST /projects/:id/push_rule
 | `commit_message_regex`                  | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
 | `file_name_regex`                       | string         | **{dotted-circle}** No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
-| `id`                                    | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
+| `id`                                    | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding), |
 | `max_file_size`                         | integer        | **{dotted-circle}** No | Maximum file size (MB). |
 | `member_check`                          | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`                       | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
@@ -2387,7 +2472,7 @@ PUT /projects/:id/push_rule
 | `commit_message_regex`                  | string         | **{dotted-circle}** No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | **{dotted-circle}** No | Deny deleting a tag. |
 | `file_name_regex`                       | string         | **{dotted-circle}** No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
-| `id`                                    | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
+| `id`                                    | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `max_file_size`                         | integer        | **{dotted-circle}** No | Maximum file size (MB). |
 | `member_check`                          | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`                       | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
@@ -2406,7 +2491,7 @@ DELETE /projects/:id/push_rule
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ## Transfer a project to a new namespace
 
@@ -2418,8 +2503,8 @@ PUT /projects/:id/transfer
 
 | Attribute   | Type           | Required               | Description |
 |-------------|----------------|------------------------|-------------|
-| `id`        | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
-| `namespace` | integer/string | **{check-circle}** Yes | The ID or path of the namespace to transfer to project to. |
+| `id`        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `namespace` | integer or string | **{check-circle}** Yes | The ID or path of the namespace to transfer to project to. |
 
 Example request:
 
@@ -2439,7 +2524,8 @@ Example response:
   "path_with_namespace": "cute-cats/hello-world",
   "created_at": "2020-10-15T16:25:22.415Z",
   "default_branch": "master",
-  "tag_list": [],
+  "tag_list": [], //deprecated, use `topics` instead
+  "topics": [],
   "ssh_url_to_repo": "git@gitlab.example.com:cute-cats/hello-world.git",
   "http_url_to_repo": "https://gitlab.example.com/cute-cats/hello-world.git",
   "web_url": "https://gitlab.example.com/cute-cats/hello-world",
@@ -2521,6 +2607,7 @@ Example response:
   "remove_source_branch_after_merge": true,
   "printing_merge_request_link_enabled": true,
   "merge_method": "merge",
+  "squash_option": "default_on",
   "suggestion_commit_message": null,
   "auto_devops_enabled": true,
   "auto_devops_deploy_strategy": "continuous",
@@ -2566,7 +2653,7 @@ POST /projects/:id/mirror/pull
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
@@ -2595,5 +2682,30 @@ GET /projects/:id/snapshot
 
 | Attribute | Type           | Required               | Description |
 |-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `wiki`    | boolean        | **{dotted-circle}** No | Whether to download the wiki, rather than project, repository. |
+
+## Get the path to repository storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29861) in GitLab 14.0.
+
+Get the path to repository storage for specified project. Available for administrators only.
+
+```plaintext
+GET /projects/:id/storage
+```
+
+| Attribute    | Type           | Required               | Description |
+|--------------|----------------|------------------------|-------------|
+| `id`         | integer or string | **{check-circle}** Yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+
+```json
+[
+  {
+    "project_id": 1,
+    "disk_path": "@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "created_at": "2012-10-12T17:04:47Z",
+    "repository_storage": "default"
+  }
+]
+```

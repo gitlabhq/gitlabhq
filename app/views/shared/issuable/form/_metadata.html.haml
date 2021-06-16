@@ -2,10 +2,18 @@
 - issuable = local_assigns.fetch(:issuable)
 - presenter = local_assigns.fetch(:presenter)
 
-- return unless can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
+- return unless can?(current_user, :"set_#{issuable.to_ability_name}_metadata", issuable)
 
 - has_due_date = issuable.has_attribute?(:due_date)
 - form = local_assigns.fetch(:form)
+
+- if issuable.respond_to?(:confidential)
+  .form-group.row
+    .offset-sm-2.col-sm-10
+      .form-check
+        = form.check_box :confidential, class: 'form-check-input'
+        = form.label :confidential, class: 'form-check-label' do
+          This issue is confidential and should only be visible to team members with at least Reporter access.
 
 %hr
 .row

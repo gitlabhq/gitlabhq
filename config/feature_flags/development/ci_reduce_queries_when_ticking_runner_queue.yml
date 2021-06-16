@@ -1,8 +1,0 @@
----
-name: ci_reduce_queries_when_ticking_runner_queue
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55496
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323328
-milestone: '13.10'
-type: development
-group: group::continuous integration
-default_enabled: true

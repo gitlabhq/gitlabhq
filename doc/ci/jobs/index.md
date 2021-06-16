@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -29,7 +29,7 @@ jobs, where each of the jobs executes a different command.
 Of course a command can execute code directly (`./configure;make;make install`)
 or run a script (`test.sh`) in the repository.
 
-Jobs are picked up by [runners](../runners/README.md) and executed within the
+Jobs are picked up by [runners](../runners/README.md) and executed in the
 environment of the runner. What is important is that each job is run
 independently from each other.
 
@@ -136,7 +136,7 @@ In the pipeline, the result is a group named `build ruby` with three jobs:
 The jobs are ordered by comparing the numbers from left to right. You
 usually want the first number to be the index and the second number to be the total.
 
-[This regular expression](https://gitlab.com/gitlab-org/gitlab/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99)
+[This regular expression](https://gitlab.com/gitlab-org/gitlab/-/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99)
 evaluates the job names: `([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+)))+\s*\z`.
 One or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences are removed from the **end**
 of job names only. Matching substrings found at the beginning or in the middle of

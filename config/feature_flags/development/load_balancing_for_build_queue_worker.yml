@@ -1,0 +1,8 @@
+---
+name: load_balancing_for_build_queue_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63212
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/332586
+milestone: '14.0'
+type: development
+group: group::memory
+default_enabled: false

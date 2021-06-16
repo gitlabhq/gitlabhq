@@ -27,20 +27,30 @@ RSpec.describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
       expect(subject.new(url: example_url, http_method: 'whatever')).not_to be_valid
     end
 
-    it 'onyl allow urls as upload urls' do
+    it 'only allow urls as upload urls' do
       expect(subject.new(url: example_url)).to be_valid
       expect(subject.new(url: 'whatever')).not_to be_valid
     end
   end
 
   describe '#execute' do
-    it 'removes the exported project file after the upload' do
-      allow(strategy).to receive(:send_file)
-      allow(strategy).to receive(:handle_response_error)
+    context 'when upload succeeds' do
+      before do
+        allow(strategy).to receive(:send_file)
+        allow(strategy).to receive(:handle_response_error)
+      end
 
-      expect(project).to receive(:remove_exports)
+      it 'does not remove the exported project file after the upload' do
+        expect(project).not_to receive(:remove_exports)
 
-      strategy.execute(user, project)
+        strategy.execute(user, project)
+      end
+
+      it 'has finished export status' do
+        strategy.execute(user, project)
+
+        expect(project.export_status).to eq(:finished)
+      end
     end
 
     context 'when upload fails' do

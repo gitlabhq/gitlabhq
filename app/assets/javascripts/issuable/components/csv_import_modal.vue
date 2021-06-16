@@ -48,13 +48,7 @@ export default {
 
 <template>
   <gl-modal :modal-id="modalId" :title="__('Import issues')">
-    <form
-      ref="form"
-      :action="importCsvIssuesPath"
-      enctype="multipart/form-data"
-      method="post"
-      data-testid="import-csv-form"
-    >
+    <form ref="form" :action="importCsvIssuesPath" enctype="multipart/form-data" method="post">
       <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
       <p>
         {{

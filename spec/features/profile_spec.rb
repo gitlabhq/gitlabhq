@@ -70,7 +70,7 @@ RSpec.describe 'Profile account page', :js do
       within('.feed-token-reset') do
         previous_token = find("#feed_token").value
 
-        accept_confirm { click_link('reset it') }
+        accept_confirm { find('[data-testid="reset_feed_token_link"]').click }
 
         expect(find('#feed_token').value).not_to eq(previous_token)
       end
@@ -89,7 +89,7 @@ RSpec.describe 'Profile account page', :js do
       within('.incoming-email-token-reset') do
         previous_token = find('#incoming_email_token').value
 
-        accept_confirm { click_link('reset it') }
+        accept_confirm { find('[data-testid="reset_email_token_link"]').click }
 
         expect(find('#incoming_email_token').value).not_to eq(previous_token)
       end

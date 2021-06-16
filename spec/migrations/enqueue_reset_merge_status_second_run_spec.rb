@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20190620112608_enqueue_reset_merge_status_second_run.rb')
+require_migration!
 
 RSpec.describe EnqueueResetMergeStatusSecondRun do
   let(:namespaces) { table(:namespaces) }

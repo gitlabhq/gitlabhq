@@ -91,7 +91,7 @@ Here's an example setup flow from scratch:
 
 1. Prepare an [Auto DevOps-enabled](../../topics/autodevops/index.md) project.
 1. Set up a [Kubernetes Cluster](../../user/project/clusters/index.md) in your project.
-1. Install [Ingress](../../user/clusters/applications.md#ingress) as a GitLab Managed App.
+1. Install [NGINX Ingress](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx) in your cluster.
 1. Set up [the base domain](../../user/project/clusters/index.md#base-domain) based on the Ingress
    Endpoint assigned above.
 1. Check if [`v2.0.0+` of `auto-deploy-image` is used in your Auto DevOps pipelines](../../topics/autodevops/upgrading_auto_deploy_dependencies.md#verify-dependency-versions).
@@ -116,7 +116,7 @@ or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md
 
 To use your [Deploy Board](../../user/project/deploy_boards.md):
 
-1. Navigate to **Operations > Environments** for your project.
+1. Navigate to **Deployments > Environments** for your project.
 1. Set the new weight with the dropdown on the right side.
 1. Confirm your selection.
 

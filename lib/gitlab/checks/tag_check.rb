@@ -2,7 +2,7 @@
 
 module Gitlab
   module Checks
-    class TagCheck < BaseChecker
+    class TagCheck < BaseSingleChecker
       ERROR_MESSAGES = {
         change_existing_tags: 'You are not allowed to change existing tags on this project.',
         update_protected_tag: 'Protected tags cannot be updated.',

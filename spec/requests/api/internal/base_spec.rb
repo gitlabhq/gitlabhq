@@ -341,9 +341,9 @@ RSpec.describe API::Internal::Base do
   end
 
   describe "GET /internal/authorized_keys" do
-    context "using an existing key's fingerprint" do
+    context "using an existing key" do
       it "finds the key" do
-        get(api('/internal/authorized_keys'), params: { fingerprint: key.fingerprint, secret_token: secret_token })
+        get(api('/internal/authorized_keys'), params: { key: key.key.split[1], secret_token: secret_token })
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq(key.id)
@@ -351,58 +351,23 @@ RSpec.describe API::Internal::Base do
       end
 
       it 'exposes the comment of the key as a simple identifier of username + hostname' do
-        get(api('/internal/authorized_keys'), params: { fingerprint: key.fingerprint, secret_token: secret_token })
+        get(api('/internal/authorized_keys'), params: { key: key.key.split[1], secret_token: secret_token })
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['key']).to include("#{key.user_name} (#{Gitlab.config.gitlab.host})")
       end
     end
 
-    context "non existing key's fingerprint" do
-      it "returns 404" do
-        get(api('/internal/authorized_keys'), params: { fingerprint: "no:t-:va:li:d0", secret_token: secret_token })
+    it "returns 404 with a partial key" do
+      get(api('/internal/authorized_keys'), params: { key: key.key.split[1][0...-3], secret_token: secret_token })
 
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    context "using a partial fingerprint" do
-      it "returns 404" do
-        get(api('/internal/authorized_keys'), params: { fingerprint: "#{key.fingerprint[0..5]}%", secret_token: secret_token })
+    it "returns 404 with an not valid base64 string" do
+      get(api('/internal/authorized_keys'), params: { key: "whatever!", secret_token: secret_token })
 
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context "sending the key" do
-      context "using an existing key" do
-        it "finds the key" do
-          get(api('/internal/authorized_keys'), params: { key: key.key.split[1], secret_token: secret_token })
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['id']).to eq(key.id)
-          expect(json_response['key'].split[1]).to eq(key.key.split[1])
-        end
-
-        it 'exposes the comment of the key as a simple identifier of username + hostname' do
-          get(api('/internal/authorized_keys'), params: { fingerprint: key.fingerprint, secret_token: secret_token })
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['key']).to include("#{key.user_name} (#{Gitlab.config.gitlab.host})")
-        end
-      end
-
-      it "returns 404 with a partial key" do
-        get(api('/internal/authorized_keys'), params: { key: key.key.split[1][0...-3], secret_token: secret_token })
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it "returns 404 with an not valid base64 string" do
-        get(api('/internal/authorized_keys'), params: { key: "whatever!", secret_token: secret_token })
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 

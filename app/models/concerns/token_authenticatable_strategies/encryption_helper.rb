@@ -5,10 +5,6 @@ module TokenAuthenticatableStrategies
     DYNAMIC_NONCE_IDENTIFIER = "|"
     NONCE_SIZE = 12
 
-    def self.encrypt_token(plaintext_token)
-      Gitlab::CryptoHelper.aes256_gcm_encrypt(plaintext_token)
-    end
-
     def self.decrypt_token(token)
       return unless token
 
@@ -21,6 +17,14 @@ module TokenAuthenticatableStrategies
       else
         Gitlab::CryptoHelper.aes256_gcm_decrypt(token)
       end
+    end
+
+    def self.encrypt_token(plaintext_token)
+      return Gitlab::CryptoHelper.aes256_gcm_encrypt(plaintext_token) unless Feature.enabled?(:dynamic_nonce, type: :ops)
+
+      iv = ::Digest::SHA256.hexdigest(plaintext_token).bytes.take(NONCE_SIZE).pack('c*')
+      token = Gitlab::CryptoHelper.aes256_gcm_encrypt(plaintext_token, nonce: iv)
+      "#{DYNAMIC_NONCE_IDENTIFIER}#{token}#{iv}"
     end
   end
 end

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Load Balancer for multi-node GitLab
+# Load Balancer for multi-node GitLab **(FREE SELF)**
 
 In an multi-node GitLab configuration, you need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use

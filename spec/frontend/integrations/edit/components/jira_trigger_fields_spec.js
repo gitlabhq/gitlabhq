@@ -1,5 +1,6 @@
 import { GlFormCheckbox } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+
 import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
 
 describe('JiraTriggerFields', () => {
@@ -12,7 +13,7 @@ describe('JiraTriggerFields', () => {
   };
 
   const createComponent = (props, isInheriting = false) => {
-    wrapper = mount(JiraTriggerFields, {
+    wrapper = mountExtended(JiraTriggerFields, {
       propsData: { ...defaultProps, ...props },
       computed: {
         isInheriting: () => isInheriting,
@@ -21,18 +22,15 @@ describe('JiraTriggerFields', () => {
   };
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
   });
 
-  const findCommentSettings = () => wrapper.find('[data-testid="comment-settings"]');
-  const findCommentDetail = () => wrapper.find('[data-testid="comment-detail"]');
-  const findCommentSettingsCheckbox = () => findCommentSettings().find(GlFormCheckbox);
+  const findCommentSettings = () => wrapper.findByTestId('comment-settings');
+  const findCommentDetail = () => wrapper.findByTestId('comment-detail');
+  const findCommentSettingsCheckbox = () => findCommentSettings().findComponent(GlFormCheckbox);
   const findIssueTransitionEnabled = () =>
     wrapper.find('[data-testid="issue-transition-enabled"] input[type="checkbox"]');
-  const findIssueTransitionMode = () => wrapper.find('[data-testid="issue-transition-mode"]');
+  const findIssueTransitionMode = () => wrapper.findByTestId('issue-transition-mode');
   const findIssueTransitionModeRadios = () =>
     findIssueTransitionMode().findAll('input[type="radio"]');
   const findIssueTransitionIdsField = () =>

@@ -6,9 +6,9 @@
     = s_('WikiEmpty|Confluence is enabled')
   %p
     - wiki_confluence_epic_link_url = 'https://gitlab.com/groups/gitlab-org/-/epics/3629'
-    - wiki_confluence_epic_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: wiki_confluence_epic_link_url }
-    = s_("WikiEmpty|You've enabled the Confluence Workspace integration. Your wiki will be viewable directly within Confluence. We are hard at work integrating Confluence more seamlessly into GitLab. If you'd like to stay up to date, follow our %{wiki_confluence_epic_link_start}Confluence epic%{wiki_confluence_epic_link_end}.").html_safe % { wiki_confluence_epic_link_start: wiki_confluence_epic_link_start, wiki_confluence_epic_link_end: '</a>'.html_safe }
-  = link_to @project.confluence_service.confluence_url, target: '_blank', rel: 'noopener noreferrer', class: 'gl-button btn btn-success external-url', title: s_('WikiEmpty|Go to Confluence') do
+    - wiki_confluence_epic_link_start = format('<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe, url: wiki_confluence_epic_link_url)
+    = format(s_("WikiEmpty|You've enabled the Confluence Workspace integration. Your wiki will be viewable directly within Confluence. We are hard at work integrating Confluence more seamlessly into GitLab. If you'd like to stay up to date, follow our %{wiki_confluence_epic_link_start}Confluence epic%{wiki_confluence_epic_link_end}.").html_safe, wiki_confluence_epic_link_start: wiki_confluence_epic_link_start, wiki_confluence_epic_link_end: '</a>'.html_safe)
+  = link_to @project.confluence_integration.confluence_url, target: '_blank', rel: 'noopener noreferrer', class: 'gl-button btn btn-success external-url', title: s_('WikiEmpty|Go to Confluence') do
     = sprite_icon('external-link')
     = s_('WikiEmpty|Go to Confluence')
 

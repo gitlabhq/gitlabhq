@@ -1,16 +1,18 @@
 ---
 key_path: counts.packages
-description: Number of packages
+description: The total number of packages published to the registry
 product_section: ops
-product_stage:
+product_stage: package
 product_group: group::package
-product_category:
+product_category: package registry
 value_type: number
 status: data_available
 time_frame: all
 data_source: database
 distribution:
+- ee
 - ce
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

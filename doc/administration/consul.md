@@ -15,11 +15,17 @@ turn communicate with the servers.
 GitLab Premium includes a bundled version of [Consul](https://www.consul.io/)
 a service networking solution that you can manage by using `/etc/gitlab/gitlab.rb`.
 
+## Prerequisites
+
+Before configuring Consul:
+
+1. Review the [reference architecture](reference_architectures/index.md#available-reference-architectures)
+   documentation to determine the number of Consul server nodes you should have.
+1. If necessary, ensure the [appropriate ports are open](https://docs.gitlab.com/omnibus/package-information/defaults.html#ports) in your firewall.
+
 ## Configure the Consul nodes
 
-After you review the [reference architecture](reference_architectures/index.md#available-reference-architectures)
-documentation to determine the number of Consul server nodes you should have,
-on _each_ Consul server node:
+On _each_ Consul server node:
 
 1. Follow the instructions to [install](https://about.gitlab.com/install/)
    GitLab by choosing your preferred platform, but do not supply the
@@ -78,6 +84,15 @@ within each node. The command will return an empty array if the cluster is healt
 
 ```shell
 curl "http://127.0.0.1:8500/v1/health/state/critical"
+```
+
+If the Consul version has changed, you'll see a notice at the end of `gitlab-ctl reconfigure`
+informing you that Consul needs to be restarted for the new version to be used.
+
+Restart Consul one node at a time:
+
+```shell
+sudo gitlab-ctl restart consul
 ```
 
 Consul nodes communicate using the raft protocol. If the current leader goes

@@ -160,21 +160,7 @@ RSpec.describe NotificationRecipients::Builder::Default do
         end
       end
 
-      before do
-        stub_feature_flags(notification_setting_recipient_refactor: enabled)
-      end
-
-      context 'with notification_setting_recipient_refactor enabled' do
-        let(:enabled) { true }
-
-        it_behaves_like 'custom notification recipients'
-      end
-
-      context 'with notification_setting_recipient_refactor disabled' do
-        let(:enabled) { false }
-
-        it_behaves_like 'custom notification recipients'
-      end
+      it_behaves_like 'custom notification recipients'
     end
   end
 end

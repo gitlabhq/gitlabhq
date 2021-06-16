@@ -7,17 +7,14 @@ type: howto
 
 # Disaster Recovery (Geo) **(PREMIUM SELF)**
 
-Geo replicates your database, your Git repositories, and few other assets.
-We will support and replicate more data in the future, that will enable you to
-failover with minimal effort, in a disaster situation.
-
-See [Geo limitations](../index.md#limitations) for more information.
+Geo replicates your database, your Git repositories, and few other assets,
+but there are some [limitations](../index.md#limitations).
 
 WARNING:
 Disaster recovery for multi-secondary configurations is in **Alpha**.
 For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/3574).
 Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
-will cause downtime.
+causes downtime.
 
 ## Promoting a **secondary** Geo node in single-secondary configurations
 
@@ -91,13 +88,16 @@ Note the following when promoting a secondary:
   before proceeding. If the secondary node
   [has been paused](../../geo/index.md#pausing-and-resuming-replication), the promotion
   performs a point-in-time recovery to the last known state.
-  Data that was created on the primary while the secondary was paused will be lost.
+  Data that was created on the primary while the secondary was paused is lost.
 - A new **secondary** should not be added at this time. If you want to add a new
   **secondary**, do this after you have completed the entire process of promoting
   the **secondary** to the **primary**.
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
   error message during this process, for more information, see this
   [troubleshooting advice](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-node).
+- If you run into errors when using `--force` or `--skip-preflight-checks` before 13.5 during this process,
+  for more information, see this
+  [troubleshooting advice](../replication/troubleshooting.md#errors-when-using---skip-preflight-checks-or---force).
 
 #### Promoting a **secondary** node running on a single machine
 
@@ -243,6 +243,7 @@ required:
    sets the database to read-write. The instructions vary depending on where your database is hosted:
    - [Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html#USER_ReadRepl.Promote)
    - [Azure PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/howto-read-replicas-portal#stop-replication)
+   - [Google Cloud SQL](https://cloud.google.com/sql/docs/mysql/replication/manage-replicas#promote-replica)
    - For other external PostgreSQL databases, save the following script in your
      secondary node, for example `/tmp/geo_promote.sh`, and modify the connection
      parameters to match your environment. Then, execute it to promote the replica:
@@ -493,7 +494,7 @@ must disable the **primary** site:
 WARNING:
 If the secondary site [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
 a point-in-time recovery to the last known state.
-Data that was created on the primary while the secondary was paused will be lost.
+Data that was created on the primary while the secondary was paused is lost.
 
 1. SSH in to the database node in the **secondary** and trigger PostgreSQL to
    promote to read-write:
@@ -509,7 +510,7 @@ Data that was created on the primary while the secondary was paused will be lost
    `geo_secondary_role`:
 
    NOTE:
-   Depending on your architecture these steps will need to be run on any GitLab node that is external to the **secondary** Kubernetes cluster.
+   Depending on your architecture, these steps need to run on any GitLab node that is external to the **secondary** Kubernetes cluster.
 
    ```ruby
    ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
@@ -537,13 +538,13 @@ Data that was created on the primary while the secondary was paused will be lost
 
 1. Update the existing cluster configuration.
 
-   You can retrieve the existing config with Helm:
+   You can retrieve the existing configuration with Helm:
 
    ```shell
    helm --namespace gitlab get values gitlab-geo > gitlab.yaml
    ```
 
-   The existing config will contain a section for Geo that should resemble:
+   The existing configuration contains a section for Geo that should resemble:
 
    ```yaml
    geo:
@@ -560,9 +561,9 @@ Data that was created on the primary while the secondary was paused will be lost
 
    To promote the **secondary** cluster to a **primary** cluster, update `role: secondary` to `role: primary`.
 
-   You can remove the entire `psql` section if the cluster will remain as a primary site, this refers to the tracking database and will be ignored whilst the cluster is acting as a primary site.
+   If the cluster remains as a primary site, you can remove the entire `psql` section; it refers to the tracking database and is ignored whilst the cluster is acting as a primary site.
 
-   Update the cluster with the new config:
+   Update the cluster with the new configuration:
 
    ```shell
    helm upgrade --install --version <current Chart version> gitlab-geo gitlab/gitlab --namespace gitlab -f gitlab.yaml

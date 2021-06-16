@@ -4,7 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor do
   describe '.call' do
-    let(:event) { Raven::Event.from_exception(exception, data) }
+    let(:required_options) do
+      {
+        configuration: Raven.configuration,
+        context: Raven.context,
+        breadcrumbs: Raven.breadcrumbs
+      }
+    end
+
+    let(:event) { Raven::Event.from_exception(exception, required_options.merge(data)) }
     let(:result_hash) { described_class.call(event).to_hash }
 
     context 'when there is no GRPC exception' do

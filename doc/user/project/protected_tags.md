@@ -21,7 +21,7 @@ anyone without Maintainer [permissions](../permissions.md) is prevented from cre
 
 ## Configuring protected tags
 
-To protect a tag, you need to have at least Maintainer [permissions](../permissions.md).
+To protect a tag, you need to have at least the [Maintainer role](../permissions.md).
 
 1. Go to the project's **Settings > Repository**.
 

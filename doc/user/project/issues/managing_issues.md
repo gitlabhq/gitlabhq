@@ -315,10 +315,15 @@ issues are still displayed, but are not closed automatically.
 
 ![disable issue auto close - settings](img/disable_issue_auto_close.png)
 
+The automatic issue closing is also disabled in a project if the project has the issue tracker
+disabled. If you want to enable automatic issue closing, make sure to
+[enable GitLab Issues](../settings/index.md#sharing-and-permissions).
+
 This only applies to issues affected by new merge requests or commits. Already
-closed issues remain as-is. Disabling automatic issue closing only affects merge
-requests *in* the project and does not prevent other projects from closing it
-via cross-project issues.
+closed issues remain as-is.
+If issue tracking is enabled, disabling automatic issue closing only applies to merge requests
+attempting to automatically close issues within the same project.
+Merge requests in other projects can still close another project's issues.
 
 #### Customizing the issue closing pattern **(FREE SELF)**
 
@@ -326,9 +331,20 @@ In order to change the default issue closing pattern, GitLab administrators must
 [`gitlab.rb` or `gitlab.yml` file](../../../administration/issue_closing_pattern.md)
 of your installation.
 
+## Change the issue type
+
+Users with [developer permission](../../permissions.md)
+can change an issue's type. To do this, edit the issue and select an issue type from the
+**Issue type** selector menu:
+
+- [Issue](index.md)
+- [Incident](../../../operations/incident_management/index.md)
+
+![Change the issue type](img/issue_type_change_v13_12.png)
+
 ## Deleting issues
 
-Users with [project owner permission](../../permissions.md) can delete an issue by
+Users with the [Owner role](../../permissions.md) can delete an issue by
 editing it and selecting **Delete issue**.
 
 ![delete issue - button](img/delete_issue_v13_11.png)

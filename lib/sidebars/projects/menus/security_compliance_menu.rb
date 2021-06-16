@@ -17,7 +17,7 @@ module Sidebars
 
         override :link
         def link
-          project_security_configuration_path(context.project)
+          renderable_items.first&.link
         end
 
         override :title
@@ -33,18 +33,16 @@ module Sidebars
         private
 
         def configuration_menu_item
-          strong_memoize(:configuration_menu_item) do
-            unless render_configuration_menu_item?
-              next ::Sidebars::NilMenuItem.new(item_id: :configuration)
-            end
-
-            ::Sidebars::MenuItem.new(
-              title: _('Configuration'),
-              link: project_security_configuration_path(context.project),
-              active_routes: { path: configuration_menu_item_paths },
-              item_id: :configuration
-            )
+          unless render_configuration_menu_item?
+            return ::Sidebars::NilMenuItem.new(item_id: :configuration)
           end
+
+          ::Sidebars::MenuItem.new(
+            title: _('Configuration'),
+            link: project_security_configuration_path(context.project),
+            active_routes: { path: configuration_menu_item_paths },
+            item_id: :configuration
+          )
         end
 
         def render_configuration_menu_item?

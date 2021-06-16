@@ -8,7 +8,7 @@ module MergeRequests
           merge_request.id,
           current_user.id,
           old_assignees.map(&:id),
-          options
+          options.stringify_keys # see: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1090
         )
     end
 

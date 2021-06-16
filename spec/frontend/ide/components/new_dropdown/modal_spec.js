@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import modal from '~/ide/components/new_dropdown/modal.vue';
 import { createStore } from '~/ide/stores';
 
@@ -182,14 +182,14 @@ describe('new file modal component', () => {
 
       vm.submitForm();
 
-      expect(createFlash).toHaveBeenCalledWith(
-        'The name "test-path/test" is already taken in this directory.',
-        'alert',
-        expect.anything(),
-        null,
-        false,
-        true,
-      );
+      expect(createFlash).toHaveBeenCalledWith({
+        message: 'The name "test-path/test" is already taken in this directory.',
+        type: 'alert',
+        parent: expect.anything(),
+        actionConfig: null,
+        fadeTransition: false,
+        addBodyClass: true,
+      });
     });
 
     it('does not throw error when target entry does not exist', () => {

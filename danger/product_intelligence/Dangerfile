@@ -18,82 +18,16 @@ UPDATE_DICTIONARY_MESSAGE = <<~MSG
   ```
 MSG
 
-all_changed_files = helper.all_changed_files
+# exit if not matching files
+matching_changed_files = product_intelligence.matching_changed_files
+return unless matching_changed_files.any?
 
-tracking_files = [
-  'lib/gitlab/tracking.rb',
-  'spec/lib/gitlab/tracking_spec.rb',
-  'app/helpers/tracking_helper.rb',
-  'spec/helpers/tracking_helper_spec.rb',
-  'app/assets/javascripts/tracking.js',
-  'spec/frontend/tracking_spec.js',
-  'generator_templates/usage_metric_definition/metric_definition.yml',
-  'lib/generators/gitlab/usage_metric_definition_generator.rb',
-  'lib/generators/gitlab/usage_metric_definition/redis_hll_generator.rb',
-  'spec/lib/generators/gitlab/usage_metric_definition_generator_spec.rb',
-  'spec/lib/generators/gitlab/usage_metric_definition/redis_hll_generator_spec.rb',
-  'config/metrics/schema.json'
-]
+warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files))
+fail format(UPDATE_DICTIONARY_MESSAGE) if product_intelligence.need_dictionary_changes?
 
-tracking_changed_files   = all_changed_files & tracking_files
-usage_data_changed_files = all_changed_files.grep(%r{(usage_data)})
-dictionary_changed_file  = all_changed_files.grep(%r{(doc/development/usage_ping/dictionary.md)})
-metrics_changed_files    = all_changed_files.grep(%r{((ee/)?config/metrics/.*\.yml)})
+labels = product_intelligence.missing_labels
+return unless labels.any?
 
-def matching_files?(file, extension:, pattern:)
-  return unless file.end_with?(extension)
-
-  helper.changed_lines(file).grep(pattern).any?
-end
-
-js_patterns = Regexp.union(
-  'Tracking.event',
-  /\btrack\(/,
-  'data-track-event',
-  'data-track-action'
-)
-
-dictionary_pattern = Regexp.union(
-  'key_path:',
-  'description:',
-  'product_section:',
-  'product_stage:',
-  'product_group:',
-  'status:',
-  'tier:'
-)
-
-snowplow_changed_files = all_changed_files.select do |file|
-  matching_files?(file, extension: '.rb', pattern: %r{Gitlab::Tracking\.event}) ||
-    matching_files?(file, extension: '.js', pattern: js_patterns) ||
-    matching_files?(file, extension: '.vue', pattern: js_patterns) ||
-    matching_files?(file, extension: '.haml', pattern: %r{data: \{ track})
-end
-
-required_dictionary_update_changed_files = metrics_changed_files.select do |file|
-  matching_files?(file, extension: '.yml', pattern: dictionary_pattern)
-end
-
-matching_changed_files = usage_data_changed_files +
-                         tracking_changed_files +
-                         metrics_changed_files +
-                         dictionary_changed_file +
-                         snowplow_changed_files
-
-if matching_changed_files.any?
-  warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files))
-
-  fail format(UPDATE_DICTIONARY_MESSAGE) if required_dictionary_update_changed_files.any? && dictionary_changed_file.empty?
-
-  return unless helper.ci?
-
-  labels = []
-  labels << 'product intelligence' unless helper.mr_has_labels?('product intelligence')
-  labels << 'product intelligence::review pending' unless helper.mr_has_labels?(['product intelligence::approved', 'product intelligence::review pending'])
-
-  if labels.any?
-    gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
+gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
                                     gitlab.mr_json['iid'],
                                     add_labels: labels)
-  end
-end

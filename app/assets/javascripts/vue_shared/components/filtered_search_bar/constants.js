@@ -21,7 +21,7 @@ export const DEFAULT_ITERATIONS = DEFAULT_NONE_ANY.concat([
   { value: FILTER_CURRENT, text: __(FILTER_CURRENT) },
 ]);
 
-export const DEFAULT_LABELS = [{ value: 'No label', text: __('No label') }]; // eslint-disable-line @gitlab/require-i18n-strings
+export const DEFAULT_LABELS = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
 
 export const DEFAULT_MILESTONES = DEFAULT_NONE_ANY.concat([
   { value: 'Upcoming', text: __('Upcoming') }, // eslint-disable-line @gitlab/require-i18n-strings

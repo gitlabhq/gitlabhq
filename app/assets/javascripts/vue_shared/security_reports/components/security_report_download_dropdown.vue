@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
 export default {
@@ -7,6 +7,9 @@ export default {
   components: {
     GlDropdown,
     GlDropdownItem,
+  },
+  directives: {
+    GlTooltip,
   },
   props: {
     artifacts: {
@@ -31,9 +34,11 @@ export default {
 
 <template>
   <gl-dropdown
-    :text="s__('SecurityReports|Download results')"
+    v-gl-tooltip
+    :title="s__('SecurityReports|Download results')"
     :loading="loading"
     icon="download"
+    size="small"
     right
   >
     <gl-dropdown-item

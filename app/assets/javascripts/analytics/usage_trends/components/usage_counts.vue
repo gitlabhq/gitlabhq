@@ -1,7 +1,6 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import MetricCard from '~/analytics/shared/components/metric_card.vue';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { number } from '~/lib/utils/unit_format';
 import { s__ } from '~/locale';
 import usageTrendsCountQuery from '../graphql/queries/usage_trends_count.query.graphql';
@@ -34,8 +33,11 @@ export default {
         });
       },
       error(error) {
-        createFlash(this.$options.i18n.loadCountsError);
-        Sentry.captureException(error);
+        createFlash({
+          message: this.$options.i18n.loadCountsError,
+          captureError: true,
+          error,
+        });
       },
     },
   },

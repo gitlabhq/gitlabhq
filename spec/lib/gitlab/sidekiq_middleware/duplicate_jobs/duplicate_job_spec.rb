@@ -18,14 +18,43 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
   end
 
   describe '#schedule' do
-    it 'calls schedule on the strategy' do
-      expect do |block|
-        expect_next_instance_of(Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuting) do |strategy|
-          expect(strategy).to receive(:schedule).with(job, &block)
+    shared_examples 'scheduling with deduplication class' do |strategy_class|
+      it 'calls schedule on the strategy' do
+        expect do |block|
+          expect_next_instance_of("Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::#{strategy_class}".constantize) do |strategy|
+            expect(strategy).to receive(:schedule).with(job, &block)
+          end
+
+          duplicate_job.schedule(&block)
+        end.to yield_control
+      end
+    end
+
+    it_behaves_like 'scheduling with deduplication class', 'UntilExecuting'
+
+    context 'when the deduplication depends on a FF' do
+      before do
+        skip_feature_flags_yaml_validation
+        skip_default_enabled_yaml_check
+
+        allow(AuthorizedProjectsWorker).to receive(:get_deduplication_options).and_return(feature_flag: :my_feature_flag)
+      end
+
+      context 'when the feature flag is enabled' do
+        before do
+          stub_feature_flags(my_feature_flag: true)
         end
 
-        duplicate_job.schedule(&block)
-      end.to yield_control
+        it_behaves_like 'scheduling with deduplication class', 'UntilExecuting'
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(my_feature_flag: false)
+        end
+
+        it_behaves_like 'scheduling with deduplication class', 'None'
+      end
     end
   end
 
@@ -50,6 +79,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
           .to change { read_idempotency_key_with_ttl(idempotency_key) }
                 .from([nil, -2])
                 .to(['123', be_within(1).of(described_class::DUPLICATE_KEY_TTL)])
+      end
+
+      it "adds the idempotency key to the jobs payload" do
+        expect { duplicate_job.check! }.to change { job['idempotency_key'] }.from(nil).to(idempotency_key)
       end
     end
 
@@ -81,14 +114,39 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
 
     context 'when the key exists in redis' do
       before do
-        set_idempotency_key(idempotency_key, 'existing-key')
+        set_idempotency_key(idempotency_key, 'existing-jid')
       end
 
-      it 'removes the key from redis' do
-        expect { duplicate_job.delete! }
-          .to change { read_idempotency_key_with_ttl(idempotency_key) }
-                .from(['existing-key', -1])
-                .to([nil, -2])
+      shared_examples 'deleting the duplicate job' do
+        it 'removes the key from redis' do
+          expect { duplicate_job.delete! }
+            .to change { read_idempotency_key_with_ttl(idempotency_key) }
+                  .from(['existing-jid', -1])
+                  .to([nil, -2])
+        end
+      end
+
+      context 'when the idempotency key is not part of the job' do
+        it_behaves_like 'deleting the duplicate job'
+
+        it 'recalculates the idempotency hash' do
+          expect(duplicate_job).to receive(:idempotency_hash).and_call_original
+
+          duplicate_job.delete!
+        end
+      end
+
+      context 'when the idempotency key is part of the job' do
+        let(:idempotency_key) { 'not the same as what we calculate' }
+        let(:job) { super().merge('idempotency_key' => idempotency_key) }
+
+        it_behaves_like 'deleting the duplicate job'
+
+        it 'does not recalculate the idempotency hash' do
+          expect(duplicate_job).not_to receive(:idempotency_hash)
+
+          duplicate_job.delete!
+        end
       end
     end
   end

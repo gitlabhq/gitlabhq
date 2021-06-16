@@ -1,0 +1,3 @@
+mutation updateCurrentBranch($currentBranch: String) {
+  updateCurrentBranch(currentBranch: $currentBranch) @client
+}

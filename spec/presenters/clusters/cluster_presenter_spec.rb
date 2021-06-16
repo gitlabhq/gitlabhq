@@ -304,9 +304,9 @@ RSpec.describe Clusters::ClusterPresenter do
         expect(presenter.gitlab_managed_apps_logs_path).to eq k8s_project_logs_path(project, cluster_id: cluster.id, format: :json)
       end
 
-      context 'cluster has elastic stack application installed' do
+      context 'cluster has elastic stack integration enabled' do
         before do
-          create(:clusters_applications_elastic_stack, :installed, cluster: cluster)
+          create(:clusters_integrations_elastic_stack, cluster: cluster)
         end
 
         it 'returns path to logs' do

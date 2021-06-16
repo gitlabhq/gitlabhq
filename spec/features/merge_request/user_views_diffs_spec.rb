@@ -66,6 +66,7 @@ RSpec.describe 'User views diffs', :js do
     expect(page).to have_button('Expand all')
 
     click_button 'Expand all'
+    wait_for_requests
 
     expect(page).not_to have_button('Expand all')
   end

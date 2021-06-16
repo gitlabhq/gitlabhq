@@ -4,11 +4,16 @@ import SidebarInviteMembers from '~/sidebar/components/assignees/sidebar_invite_
 
 describe('Sidebar invite members component', () => {
   let wrapper;
+  const issuableType = 'issue';
 
   const findDirectInviteLink = () => wrapper.findComponent(InviteMembersTrigger);
 
   const createComponent = () => {
-    wrapper = shallowMount(SidebarInviteMembers);
+    wrapper = shallowMount(SidebarInviteMembers, {
+      propsData: {
+        issuableType,
+      },
+    });
   };
 
   afterEach(() => {
@@ -22,6 +27,10 @@ describe('Sidebar invite members component', () => {
 
     it('renders a direct link to project members path', () => {
       expect(findDirectInviteLink().exists()).toBe(true);
+    });
+
+    it('has expected attributes on the trigger', () => {
+      expect(findDirectInviteLink().props('triggerSource')).toBe('issue-assignee-dropdown');
     });
   });
 });

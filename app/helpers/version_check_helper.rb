@@ -19,7 +19,7 @@ module VersionCheckHelper
   end
 
   def source_host_url
-    Gitlab::COM_URL
+    Gitlab::Saas.com_url
   end
 
   def source_code_group

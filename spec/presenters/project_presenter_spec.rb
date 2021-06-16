@@ -585,7 +585,7 @@ RSpec.describe ProjectPresenter do
                 "can_push_code" => "true",
                 "original_branch" => "master",
                 "path" => "/#{project.full_path}/-/create/master",
-                "project_path" => project.path,
+                "project_path" => project.full_path,
                 "target_branch" => "master"
               }
             )

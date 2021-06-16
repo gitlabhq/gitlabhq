@@ -273,6 +273,18 @@ class ApplicationSetting < ApplicationRecord
                             greater_than_or_equal_to: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
                             less_than_or_equal_to: Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND }
 
+  validates :diff_max_files,
+            presence: true,
+            numericality: { only_integer: true,
+                            greater_than_or_equal_to: Commit::DEFAULT_MAX_DIFF_FILES_SETTING,
+                            less_than_or_equal_to: Commit::MAX_DIFF_FILES_SETTING_UPPER_BOUND }
+
+  validates :diff_max_lines,
+            presence: true,
+            numericality: { only_integer: true,
+                            greater_than_or_equal_to: Commit::DEFAULT_MAX_DIFF_LINES_SETTING,
+                            less_than_or_equal_to: Commit::MAX_DIFF_LINES_SETTING_UPPER_BOUND }
+
   validates :user_default_internal_regex, js_regex: true, allow_nil: true
 
   validates :personal_access_token_prefix,

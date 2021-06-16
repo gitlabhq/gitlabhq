@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200305151736_delete_template_project_services.rb')
+require_migration!
 
 RSpec.describe DeleteTemplateProjectServices, :migration do
   let(:services) { table(:services) }

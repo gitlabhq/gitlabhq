@@ -334,23 +334,15 @@ module Gitlab
         # clear stale lock files.
         project.repository.clean_stale_repository_files if project.present?
 
-        # Iterate over all changes to find if user allowed all of them to be applied
-        changes_list.each.with_index do |change, index|
-          first_change = index == 0
-
-          # If user does not have access to make at least one change, cancel all
-          # push by allowing the exception to bubble up
-          check_single_change_access(change, skip_lfs_integrity_check: !first_change)
-        end
+        check_access!
       end
     end
 
-    def check_single_change_access(change, skip_lfs_integrity_check: false)
-      Checks::ChangeAccess.new(
-        change,
+    def check_access!
+      Checks::ChangesAccess.new(
+        changes_list.changes,
         user_access: user_access,
         project: project,
-        skip_lfs_integrity_check: skip_lfs_integrity_check,
         protocol: protocol,
         logger: logger
       ).validate!

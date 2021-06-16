@@ -20,7 +20,6 @@ const CLUSTERS_MOCK_DATA = {
             external_ip: null,
             external_hostname: null,
             can_uninstall: false,
-            modsecurity_enabled: false,
           },
           {
             name: 'runner',
@@ -154,7 +153,6 @@ const APPLICATIONS_MOCK_STATE = {
   ingress: {
     title: 'Ingress',
     status: 'installable',
-    modsecurity_enabled: false,
   },
   crossplane: { title: 'Crossplane', status: 'installable', stack: '' },
   cert_manager: { title: 'Cert-Manager', status: 'installable' },
@@ -163,7 +161,6 @@ const APPLICATIONS_MOCK_STATE = {
   jupyter: { title: 'JupyterHub', status: 'installable', hostname: '' },
   knative: { title: 'Knative ', status: 'installable', hostname: '' },
   elastic_stack: { title: 'Elastic Stack', status: 'installable' },
-  fluentd: { title: 'Fluentd', status: 'installable' },
   cilium: {
     title: 'GitLab Container Network Policies',
     status: 'not_installable',

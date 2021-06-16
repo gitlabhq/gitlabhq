@@ -24,7 +24,7 @@ class FeatureFlagsFinder
   private
 
   def feature_flags
-    project.operations_feature_flags
+    project.operations_feature_flags.new_version_only
   end
 
   def by_scope(items)

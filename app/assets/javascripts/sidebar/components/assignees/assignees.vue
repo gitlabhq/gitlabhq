@@ -48,17 +48,15 @@ export default {
     <collapsed-assignee-list :users="sortedAssigness" :issuable-type="issuableType" />
 
     <div data-testid="expanded-assignee" class="value hide-collapsed">
-      <template v-if="hasNoUsers">
-        <span class="assign-yourself no-value">
-          {{ __('None') }}
-          <template v-if="editable">
-            -
-            <button type="button" class="btn-link" @click="assignSelf">
-              {{ __('assign yourself') }}
-            </button>
-          </template>
-        </span>
-      </template>
+      <span v-if="hasNoUsers" class="no-value" data-testid="no-value">
+        {{ __('None') }}
+        <template v-if="editable">
+          -
+          <button type="button" class="btn-link" data-testid="assign-yourself" @click="assignSelf">
+            {{ __('assign yourself') }}
+          </button>
+        </template>
+      </span>
 
       <uncollapsed-assignee-list v-else :users="sortedAssigness" :issuable-type="issuableType" />
     </div>

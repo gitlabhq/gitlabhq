@@ -15,6 +15,12 @@
         "type": "string"
       }
     },
+    "topics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "ssh_url_to_repo": { "type": "string" },
     "http_url_to_repo": { "type": "string" },
     "web_url": { "type": "string" },
@@ -37,7 +43,7 @@
   },
   "required": [
     "id", "name", "name_with_namespace", "description", "path",
-    "path_with_namespace", "created_at", "default_branch", "tag_list",
+    "path_with_namespace", "created_at", "default_branch", "tag_list", "topics",
     "ssh_url_to_repo", "http_url_to_repo", "web_url", "readme_url", "avatar_url",
     "star_count", "forks_count", "last_activity_at", "namespace"
   ],

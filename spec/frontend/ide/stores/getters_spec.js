@@ -209,12 +209,12 @@ describe('IDE store getters', () => {
   describe('currentBranch', () => {
     it('returns current projects branch', () => {
       localState.currentProjectId = 'abcproject';
-      localState.currentBranchId = 'master';
+      localState.currentBranchId = 'main';
       localState.projects.abcproject = {
         name: 'abcproject',
         branches: {
-          master: {
-            name: 'master',
+          main: {
+            name: 'main',
           },
         },
       };
@@ -223,7 +223,7 @@ describe('IDE store getters', () => {
       };
       getters.currentBranch(localState, localGetters);
 
-      expect(localGetters.findBranch).toHaveBeenCalledWith('abcproject', 'master');
+      expect(localGetters.findBranch).toHaveBeenCalledWith('abcproject', 'main');
     });
   });
 
@@ -243,12 +243,12 @@ describe('IDE store getters', () => {
 
     it('returns the selected branch from a project', () => {
       localState.currentProjectId = 'abcproject';
-      localState.currentBranchId = 'master';
+      localState.currentBranchId = 'main';
       localState.projects.abcproject = {
         name: 'abcproject',
         branches: {
-          master: {
-            name: 'master',
+          main: {
+            name: 'main',
           },
         },
       };
@@ -256,9 +256,9 @@ describe('IDE store getters', () => {
         findProject: () => localState.projects.abcproject,
       };
 
-      result = getters.findBranch(localState, localGetters)('abcproject', 'master');
+      result = getters.findBranch(localState, localGetters)('abcproject', 'main');
 
-      expect(result.name).toBe('master');
+      expect(result.name).toBe('main');
     });
   });
 
@@ -274,9 +274,9 @@ describe('IDE store getters', () => {
     it("returns true when project's default branch matches current branch", () => {
       const localGetters = {
         currentProject: {
-          default_branch: 'master',
+          default_branch: 'main',
         },
-        branchName: 'master',
+        branchName: 'main',
       };
 
       expect(getters.isOnDefaultBranch({}, localGetters)).toBeTruthy();
@@ -285,7 +285,7 @@ describe('IDE store getters', () => {
     it("returns false when project's default branch doesn't match current branch", () => {
       const localGetters = {
         currentProject: {
-          default_branch: 'master',
+          default_branch: 'main',
         },
         branchName: 'feature',
       };
@@ -620,10 +620,10 @@ describe('IDE store getters', () => {
   describe('getUrlForPath', () => {
     it('returns a route url for the given path', () => {
       localState.currentProjectId = 'test/test';
-      localState.currentBranchId = 'master';
+      localState.currentBranchId = 'main';
 
       expect(localStore.getters.getUrlForPath('path/to/foo/bar-1.jpg')).toBe(
-        `/project/test/test/tree/master/-/path/to/foo/bar-1.jpg/`,
+        `/project/test/test/tree/main/-/path/to/foo/bar-1.jpg/`,
       );
     });
   });
@@ -631,13 +631,13 @@ describe('IDE store getters', () => {
   describe('getJsonSchemaForPath', () => {
     beforeEach(() => {
       localState.currentProjectId = 'path/to/some/project';
-      localState.currentBranchId = 'master';
+      localState.currentBranchId = 'main';
     });
 
     it('returns a json schema uri and match config for a json/yaml file that can be loaded by monaco', () => {
       expect(localStore.getters.getJsonSchemaForPath('.gitlab-ci.yml')).toEqual({
         fileMatch: ['*.gitlab-ci.yml'],
-        uri: `${TEST_HOST}/path/to/some/project/-/schema/master/.gitlab-ci.yml`,
+        uri: `${TEST_HOST}/path/to/some/project/-/schema/main/.gitlab-ci.yml`,
       });
     });
 
@@ -645,8 +645,8 @@ describe('IDE store getters', () => {
       localState.projects['path/to/some/project'] = {
         name: 'project',
         branches: {
-          master: {
-            name: 'master',
+          main: {
+            name: 'main',
             commit: {
               id: 'abcdef123456',
             },

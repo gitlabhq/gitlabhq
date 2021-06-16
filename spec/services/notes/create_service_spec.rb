@@ -307,7 +307,7 @@ RSpec.describe Notes::CreateService do
               ),
               # Set WIP status
               QuickAction.new(
-                action_text: "/wip",
+                action_text: "/draft",
                 before_action: -> {
                   issuable.reload.update!(title: "title")
                 },
@@ -317,7 +317,7 @@ RSpec.describe Notes::CreateService do
               ),
               # Remove WIP status
               QuickAction.new(
-                action_text: "/wip",
+                action_text: "/draft",
                 before_action: -> {
                   issuable.reload.update!(title: "WIP: title")
                 },

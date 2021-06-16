@@ -3,6 +3,7 @@ import GroupRunnersFilteredSearchTokenKeys from '~/filtered_search/group_runners
 import initSharedRunnersForm from '~/group_settings/mount_shared_runners';
 import { FILTERED_SEARCH } from '~/pages/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
+import { initRunnerAwsDeployments } from '~/pages/shared/mount_runner_aws_deployments';
 import { initInstallRunner } from '~/pages/shared/mount_runner_instructions';
 import initSettingsPanels from '~/settings_panels';
 
@@ -20,3 +21,4 @@ initSharedRunnersForm();
 initVariableList();
 
 initInstallRunner();
+initRunnerAwsDeployments();

@@ -16,9 +16,7 @@ class Group < Namespace
   include Gitlab::Utils::StrongMemoize
   include GroupAPICompatibility
   include EachBatch
-  include HasTimelogsReport
-
-  ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
+  include BulkMemberAccessLoad
 
   has_many :all_group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :group_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
@@ -81,6 +79,8 @@ class Group < Namespace
 
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :debian_distributions, class_name: 'Packages::Debian::GroupDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
+  delegate :prevent_sharing_groups_outside_hierarchy, to: :namespace_settings
 
   accepts_nested_attributes_for :variables, allow_destroy: true
 
@@ -444,6 +444,12 @@ class Group < Namespace
     end
   end
 
+  def self_and_descendants_ids
+    strong_memoize(:self_and_descendants_ids) do
+      self_and_descendants.pluck(:id)
+    end
+  end
+
   def direct_members
     GroupMember.active_without_invites_and_requests
                .non_minimal_access
@@ -569,24 +575,8 @@ class Group < Namespace
   def max_member_access_for_user(user, only_concrete_membership: false)
     return GroupMember::NO_ACCESS unless user
     return GroupMember::OWNER if user.can_admin_all_resources? && !only_concrete_membership
-    # Use the preloaded value that exists instead of performing the db query again(cached or not).
-    # Groups::GroupMembersController#preload_max_access makes use of this by
-    # calling Group#max_member_access. This helps when we have a process
-    # that may query this multiple times from the outside through a policy query
-    # like the GroupPolicy#lookup_access_level! does as a condition for any role
-    return user.max_access_for_group[id] if user.max_access_for_group[id]
 
-    max_member_access(user)
-  end
-
-  def max_member_access(user)
-    max_member_access = members_with_parents
-                          .where(user_id: user)
-                          .reorder(access_level: :desc)
-                          .first
-                          &.access_level
-
-    max_member_access || GroupMember::NO_ACCESS
+    max_member_access([user.id])[user.id]
   end
 
   def mattermost_team_params
@@ -649,7 +639,7 @@ class Group < Namespace
   end
 
   def access_request_approvers_to_be_notified
-    members.owners.connected_to_user.order_recent_sign_in.limit(ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
+    members.owners.connected_to_user.order_recent_sign_in.limit(Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
   end
 
   def supports_events?
@@ -657,11 +647,15 @@ class Group < Namespace
   end
 
   def export_file_exists?
-    export_file&.file
+    import_export_upload&.export_file_exists?
   end
 
   def export_file
     import_export_upload&.export_file
+  end
+
+  def export_archive_exists?
+    import_export_upload&.export_archive_exists?
   end
 
   def adjourned_deletion?
@@ -728,7 +722,25 @@ class Group < Namespace
     Gitlab::Routing.url_helpers.activity_group_path(self)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
+  def open_issues_count(current_user = nil)
+    Groups::OpenIssuesCountService.new(self, current_user).count
+  end
+  # rubocop: enable CodeReuse/ServiceClass
+
+  # rubocop: disable CodeReuse/ServiceClass
+  def open_merge_requests_count(current_user = nil)
+    Groups::MergeRequestsCountService.new(self, current_user).count
+  end
+  # rubocop: enable CodeReuse/ServiceClass
+
   private
+
+  def max_member_access(user_ids)
+    max_member_access_for_resource_ids(User, user_ids) do |user_ids|
+      members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
+    end
+  end
 
   def update_two_factor_requirement
     return unless saved_change_to_require_two_factor_authentication? || saved_change_to_two_factor_grace_period?

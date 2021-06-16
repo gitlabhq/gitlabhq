@@ -65,7 +65,7 @@ RSpec.describe 'getting project information' do
       end
 
       it 'includes topics array' do
-        project.update!(tag_list: 'topic1, topic2, topic3')
+        project.update!(topic_list: 'topic1, topic2, topic3')
 
         post_graphql(query, current_user: current_user)
 
@@ -116,6 +116,29 @@ RSpec.describe 'getting project information' do
           'project' => { 'id' => project.to_global_id.to_s }
         )
       )
+    end
+  end
+
+  context 'when the user has reporter access to the project' do
+    let(:statistics_query) do
+      <<~GRAPHQL
+        {
+          project(fullPath: "#{project.full_path}") {
+            statistics { wikiSize }
+          }
+        }
+      GRAPHQL
+    end
+
+    before do
+      project.add_reporter(current_user)
+      create(:project_statistics, project: project, wiki_size: 100)
+    end
+
+    it 'allows fetching project statistics' do
+      post_graphql(statistics_query, current_user: current_user)
+
+      expect(graphql_data.dig('project', 'statistics')).to include('wikiSize' => 100.0)
     end
   end
 

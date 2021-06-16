@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200615111857_unconfirm_wrongfully_verified_emails.rb')
+require_migration!
 
 RSpec.describe UnconfirmWrongfullyVerifiedEmails do
   before do

@@ -8,7 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can analyze your users' GitLab activities over time.
 
-To see user cohorts, go to **Admin Area > Overview > Users**.
+To view user cohorts:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Overview > Users**.
+1. Select the **Cohorts** tab.
 
 ## Overview
 

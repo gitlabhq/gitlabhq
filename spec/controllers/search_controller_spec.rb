@@ -258,7 +258,7 @@ RSpec.describe SearchController do
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        expect(response.headers['Cache-Control']).to include('max-age=60, private')
+        expect(response.headers['Cache-Control']).to eq('no-store')
       end
     end
 

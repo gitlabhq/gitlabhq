@@ -1,5 +1,6 @@
 ---
 redirect_to: '../../../user/group/index.md'
+remove_date: '2021-08-13'
 ---
 
 This document was moved to [another location](../../../user/group/index.md).

@@ -3,11 +3,7 @@
 module Ci
   class PlayBuildService < ::BaseService
     def execute(build, job_variables_attributes = nil)
-      raise Gitlab::Access::AccessDeniedError unless can?(current_user, :play_job, build)
-
-      if job_variables_attributes.present? && !can?(current_user, :set_pipeline_variables, project)
-        raise Gitlab::Access::AccessDeniedError
-      end
+      check_access!(build, job_variables_attributes)
 
       # Try to enqueue the build, otherwise create a duplicate.
       #
@@ -23,5 +19,17 @@ module Ci
         Ci::Build.retry(build, current_user)
       end
     end
+
+    private
+
+    def check_access!(build, job_variables_attributes)
+      raise Gitlab::Access::AccessDeniedError unless can?(current_user, :play_job, build)
+
+      if job_variables_attributes.present? && !can?(current_user, :set_pipeline_variables, project)
+        raise Gitlab::Access::AccessDeniedError
+      end
+    end
   end
 end
+
+Ci::PlayBuildService.prepend_mod_with('Ci::PlayBuildService')

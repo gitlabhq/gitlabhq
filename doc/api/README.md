@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use the GitLab [REST](http://spec.openapis.org/oas/v3.0.3) API to automate GitLab.
 
-You can also use a partial [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/api/openapi/openapi.yaml),
+You can also use a partial [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/openapi/openapi.yaml),
 to test the API directly from the GitLab user interface.
 Contributions are welcome.
 
@@ -59,8 +59,8 @@ version number.
 
 New features and bug fixes are released in tandem with GitLab. Apart
 from incidental patch and security releases, GitLab is released on the 22nd of each
-month. Backward-incompatible changes (for example, endpoint and parameter removal),
-and removal of entire API versions are done in tandem with major GitLab releases.
+month. Major API version changes, and removal of entire API versions, are done in tandem 
+with major GitLab releases.
 
 All deprecations and changes between versions are in the documentation.
 For the changes between v3 and v4, see the [v3 to v4 documentation](v3_to_v4.md).
@@ -73,7 +73,7 @@ Only API version v4 is available. Version v3 was removed in
 ## How to use the API
 
 API requests must include both `api` and the API version. The API
-version is defined in [`lib/api.rb`](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/api/api.rb).
+version is defined in [`lib/api.rb`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/api.rb).
 For example, the root of the v4 API is at `/api/v4`.
 
 ### Valid API request
@@ -597,7 +597,8 @@ send the payload body:
 - Request payload (JSON):
 
   ```shell
-  curl --request POST --header "Content-Type: application/json" --data '{"name":"<example-name>", "description":"<example-description"}' "https://gitlab/api/v4/projects"
+  curl --request POST --header "Content-Type: application/json" \
+       --data '{"name":"<example-name>", "description":"<example-description"}' "https://gitlab/api/v4/projects"
   ```
 
 URL encoded query strings have a length limitation. Requests that are too large

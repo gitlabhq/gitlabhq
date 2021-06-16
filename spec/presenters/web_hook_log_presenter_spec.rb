@@ -18,10 +18,10 @@ RSpec.describe WebHookLogPresenter do
     end
 
     context 'service hook' do
-      let(:web_hook) { create(:service_hook, integration: service) }
-      let(:service) { create(:drone_ci_service, project: project) }
+      let(:web_hook) { create(:service_hook, integration: integration) }
+      let(:integration) { create(:drone_ci_integration, project: project) }
 
-      it { is_expected.to eq(project_service_hook_log_path(project, service, web_hook_log)) }
+      it { is_expected.to eq(project_service_hook_log_path(project, integration, web_hook_log)) }
     end
   end
 
@@ -38,10 +38,10 @@ RSpec.describe WebHookLogPresenter do
     end
 
     context 'service hook' do
-      let(:web_hook) { create(:service_hook, integration: service) }
-      let(:service) { create(:drone_ci_service, project: project) }
+      let(:web_hook) { create(:service_hook, integration: integration) }
+      let(:integration) { create(:drone_ci_integration, project: project) }
 
-      it { is_expected.to eq(retry_project_service_hook_log_path(project, service, web_hook_log)) }
+      it { is_expected.to eq(retry_project_service_hook_log_path(project, integration, web_hook_log)) }
     end
   end
 end

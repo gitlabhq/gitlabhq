@@ -5,11 +5,13 @@
 
 - if @conflict
   .gl-alert.gl-alert-danger.gl-mb-5.gl-mt-5
-    = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    .gl-alert-body
-      Someone edited the file the same time you did. Please check out
-      = link_to "the file", project_blob_path(@project, tree_join(@branch_name, @file_path)), target: "_blank", rel: 'noopener noreferrer', class: 'gl-link'
-      and make sure your changes will not unintentionally remove theirs.
+    .gl-alert-container
+      = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-content
+        .gl-alert-body
+          Someone edited the file the same time you did. Please check out
+          = link_to _('the file'), project_blob_path(@project, tree_join(@branch_name, @file_path)), target: "_blank", rel: 'noopener noreferrer', class: 'gl-link'
+          and make sure your changes will not unintentionally remove theirs.
 
 %h3.page-title.blob-edit-page-title
   Edit file

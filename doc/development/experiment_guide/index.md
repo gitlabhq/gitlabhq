@@ -12,7 +12,7 @@ Experiments are run as an A/B/n test, and are behind a feature flag to turn the 
 
 ## Experiment tracking issue
 
-Each experiment should have an [Experiment tracking](https://gitlab.com/groups/gitlab-org/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=growth%20experiment&search=%22Experiment+tracking%22) issue to track the experiment from roll-out through to cleanup/removal. The tracking issue is similar to a feature flag rollout issue, and is also used to track the status of an experiment. Immediately after an experiment is deployed, the due date of the issue should be set (this depends on the experiment but can be up to a few weeks in the future).
+Each experiment should have an [Experiment tracking](https://gitlab.com/groups/gitlab-org/-/issues?scope=all&state=opened&label_name[]=growth%20experiment&search=%22Experiment+tracking%22) issue to track the experiment from roll-out through to cleanup/removal. The tracking issue is similar to a feature flag rollout issue, and is also used to track the status of an experiment. Immediately after an experiment is deployed, the due date of the issue should be set (this depends on the experiment but can be up to a few weeks in the future).
 After the deadline, the issue needs to be resolved and either:
 
 - It was successful and the experiment becomes the new default.
@@ -46,17 +46,25 @@ One is built into GitLab directly and has been around for a while (this is calle
 to as `Gitlab::Experiment` -- GLEX for short.
 
 Both approaches use [experiment](../feature_flags/index.md#experiment-type)
-feature flags, and there is currently no strong suggestion to use one over the other.
+feature flags. We recommend using GLEX rather than `Experimentation Module` for new experiments.
 
-| Feature              | `Experimentation Module` | GLEX |
-| -------------------- |------------------------- | ---- |
-| Record user grouping | Yes                      | No   |
-| Uses feature flags   | Yes                      | Yes  |
-| Multivariate (A/B/n) | No                       | Yes  |
-
-- [Implementing an A/B experiment using `Experimentation Module`](experimentation.md)
 - [Implementing an A/B/n experiment using GLEX](gitlab_experiment.md)
+- [Implementing an A/B experiment using `Experimentation Module`](experimentation.md)
 
 Historical Context: `Experimentation Module` was built iteratively with the needs that
 appeared while implementing Growth sub-department experiments, while GLEX was built
 with the findings of the team and an easier to use API.
+
+### Add new icons and illustrations for experiments
+
+Some experiments may require you to add custom icons or illustrations to our codebase.
+This process is lengthy and at this stage, the outcome of the experiment uncertain.
+Therefore, you should postpone this effort until the [experiment cleanup process](https://about.gitlab.com/handbook/engineering/development/growth/#experiment-cleanup-issue).
+
+We recommend the following workflow:
+
+1. Add an icon or illustration as an `.svg` file in the `/app/assets/images` (or EE) path in the GitLab repository.
+1. Use `image_tag` or `image_path` to render it via the asset pipeline.
+1. **If the experiment is a success**, designers add the new icon or illustration to the Pajamas UI kit as part of the cleanup process.
+   Engineers can then add it to the [SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/) and modify the implementation based on the
+   [Frontend Development Guidelines](../fe_guide/icons.md#usage-in-hamlrails-2).

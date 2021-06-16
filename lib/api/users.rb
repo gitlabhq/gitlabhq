@@ -241,7 +241,7 @@ module API
         authenticated_as_admin!
 
         params = declared_params(include_missing: false)
-        user = ::Users::CreateService.new(current_user, params).execute(skip_authorization: true)
+        user = ::Users::AuthorizedCreateService.new(current_user, params).execute
 
         if user.persisted?
           present user, with: Entities::UserWithAdmin, current_user: current_user
@@ -1025,7 +1025,9 @@ module API
         detail 'This feature was introduced in GitLab 13.10.'
       end
       params do
-        requires :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
+        optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
+        optional :show_whitespace_in_diffs, type: Boolean, desc: 'Flag indicating the user sees whitespace changes in diffs'
+        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs
       end
       put "preferences", feature_category: :users do
         authenticate!
@@ -1041,6 +1043,14 @@ module API
         else
           render_api_error!('400 Bad Request', 400)
         end
+      end
+
+      desc "Get the current user's preferences" do
+        success Entities::UserPreferences
+        detail 'This feature was introduced in GitLab 14.0.'
+      end
+      get "preferences", feature_category: :users do
+        present current_user.user_preference, with: Entities::UserPreferences
       end
 
       desc 'Get a single email address owned by the currently authenticated user' do

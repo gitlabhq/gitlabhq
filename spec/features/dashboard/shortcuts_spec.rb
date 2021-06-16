@@ -15,8 +15,6 @@ RSpec.describe 'Dashboard shortcuts', :js do
       end
 
       it 'navigate to tabs' do
-        pending_on_combined_menu_flag
-
         find('body').send_keys([:shift, 'I'])
 
         check_page_title('Issues')
@@ -40,6 +38,10 @@ RSpec.describe 'Dashboard shortcuts', :js do
         find('body').send_keys([:shift, 'A'])
 
         check_page_title('Activity')
+
+        find('body').send_keys([:shift, 'L'])
+
+        check_page_title('Milestones')
       end
     end
 
@@ -49,8 +51,6 @@ RSpec.describe 'Dashboard shortcuts', :js do
       end
 
       it 'navigate to tabs' do
-        pending_on_combined_menu_flag
-
         find('body').send_keys([:shift, 'G'])
 
         find('.nothing-here-block')
@@ -73,9 +73,7 @@ RSpec.describe 'Dashboard shortcuts', :js do
     end
   end
 
-  context 'with combined_menu: feature flag on' do
-    let(:needs_rewrite_for_combined_menu_flag_on) { true }
-
+  context 'with combined_menu feature flag on' do
     before do
       stub_feature_flags(combined_menu: true)
     end
@@ -84,16 +82,10 @@ RSpec.describe 'Dashboard shortcuts', :js do
   end
 
   context 'with combined_menu feature flag off' do
-    let(:needs_rewrite_for_combined_menu_flag_on) { false }
-
     before do
       stub_feature_flags(combined_menu: false)
     end
 
     it_behaves_like 'combined_menu: feature flag examples'
-  end
-
-  def pending_on_combined_menu_flag
-    pending 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587' if needs_rewrite_for_combined_menu_flag_on
   end
 end

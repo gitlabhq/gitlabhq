@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'post_migrate', '20210205104425_add_new_post_eoa_plans.rb')
+require_migration!
 
 RSpec.describe AddNewPostEoaPlans do
   let(:plans) { table(:plans) }

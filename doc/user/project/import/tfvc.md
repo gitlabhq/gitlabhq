@@ -1,11 +1,11 @@
 ---
-stage: none
-group: unassigned
+stage: Manage
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: concepts
 ---
 
-# Migrate from TFVC to Git
+# Migrate from TFVC to Git **(FREE)**
 
 Team Foundation Server (TFS), renamed [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/)
 in 2019, is a set of tools developed by Microsoft which also includes

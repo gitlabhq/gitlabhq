@@ -7,8 +7,6 @@ module Prometheus
     def worker_id
       if Gitlab::Runtime.sidekiq?
         sidekiq_worker_id
-      elsif Gitlab::Runtime.unicorn?
-        unicorn_worker_id
       elsif Gitlab::Runtime.puma?
         puma_worker_id
       else
@@ -23,16 +21,6 @@ module Prometheus
         "sidekiq_#{worker}"
       else
         'sidekiq'
-      end
-    end
-
-    def unicorn_worker_id
-      if matches = process_name.match(/unicorn.*worker\[([0-9]+)\]/)
-        "unicorn_#{matches[1]}"
-      elsif process_name =~ /unicorn/
-        "unicorn_master"
-      else
-        unknown_process_id
       end
     end
 

@@ -1,8 +1,0 @@
----
-name: ci_cross_pipeline_artifacts_download
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48342 
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/287622 
-milestone: '13.7'
-type: development
-group: group::continuous integration
-default_enabled: true

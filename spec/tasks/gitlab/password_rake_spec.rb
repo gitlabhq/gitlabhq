@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:password rake tasks' do
+RSpec.describe 'gitlab:password rake tasks', :silence_stdout do
   let_it_be(:user_1) { create(:user, username: 'foobar', password: 'initial_password') }
 
   def stub_username(username)

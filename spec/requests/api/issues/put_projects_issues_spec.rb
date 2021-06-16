@@ -402,17 +402,6 @@ RSpec.describe API::Issues do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['state']).to eq 'opened'
     end
-
-    it 'removes labels marked to be removed on issue closed' do
-      removable_label = create(:label, project: project, remove_on_close: true)
-      create(:label_link, target: issue, label: removable_label)
-
-      put api_for_user, params: { state_event: 'close' }
-
-      expect(issue.reload.label_ids).not_to include(removable_label.id)
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['state']).to eq 'closed'
-    end
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid to update updated_at param' do

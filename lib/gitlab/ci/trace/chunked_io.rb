@@ -229,13 +229,8 @@ module Gitlab
 
         def next_chunk
           @chunks_cache[chunk_index] = begin
-            if ::Ci::BuildTraceChunk.consistent_reads_enabled?(build)
-              ::Ci::BuildTraceChunk
-                .safe_find_or_create_by(build: build, chunk_index: chunk_index)
-            else
-              ::Ci::BuildTraceChunk
-                .new(build: build, chunk_index: chunk_index)
-            end
+            ::Ci::BuildTraceChunk
+              .safe_find_or_create_by(build: build, chunk_index: chunk_index)
           end
         end
 

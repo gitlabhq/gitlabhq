@@ -57,11 +57,11 @@ In GitLab versions 13.0 and later, snippets are [versioned by default](#versione
 
 To discover all snippets visible to you in GitLab, you can:
 
-- **View all snippets visible to you**: In the top navigation bar of your GitLab
-  instance, go to **More > Snippets** to view your snippets dashboard.
+- **View all snippets visible to you**: On the top bar of your GitLab
+  instance, select **Menu > Snippets** to view your snippets dashboard.
 - **Visit [GitLab snippets](https://gitlab.com/dashboard/snippets)** for your snippets on GitLab.com.
-- **Explore all public snippets**: In the top navigation bar of your GitLab
-  instance, go to **More > Snippets** and select **Explore snippets** to view
+- **Explore all public snippets**: On the top bar of your GitLab
+  instance, select **Menu > Snippets** and select **Explore snippets** to view
   [all public snippets](https://gitlab.com/explore/snippets).
 - **View a project's snippets**: In your project,
   go to **Snippets**.

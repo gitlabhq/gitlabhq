@@ -15,6 +15,7 @@ class HealthController < ActionController::Base
     Gitlab::HealthChecks::Redis::CacheCheck,
     Gitlab::HealthChecks::Redis::QueuesCheck,
     Gitlab::HealthChecks::Redis::SharedStateCheck,
+    Gitlab::HealthChecks::Redis::TraceChunksCheck,
     Gitlab::HealthChecks::GitalyCheck
   ].freeze
 

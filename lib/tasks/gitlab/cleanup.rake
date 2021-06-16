@@ -92,9 +92,9 @@ namespace :gitlab do
     task orphan_lfs_files: :gitlab_environment do
       warn_user_is_not_gitlab
 
-      removed_files = RemoveUnreferencedLfsObjectsWorker.new.perform
+      number_of_removed_files = RemoveUnreferencedLfsObjectsWorker.new.perform
 
-      logger.info "Removed unreferenced LFS files: #{removed_files.count}".color(:green)
+      logger.info "Removed unreferenced LFS files: #{number_of_removed_files}".color(:green)
     end
 
     namespace :sessions do
@@ -178,7 +178,7 @@ namespace :gitlab do
       return @logger if defined?(@logger)
 
       @logger = if Rails.env.development? || Rails.env.production?
-                  Logger.new(STDOUT).tap do |stdout_logger|
+                  Logger.new($stdout).tap do |stdout_logger|
                     stdout_logger.extend(ActiveSupport::Logger.broadcast(Rails.logger))
                     stdout_logger.level = debug? ? Logger::DEBUG : Logger::INFO
                   end

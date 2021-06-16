@@ -651,6 +651,45 @@ RSpec.describe GroupsController, factory_default: :keep do
     end
   end
 
+  describe 'updating :prevent_sharing_groups_outside_hierarchy' do
+    subject do
+      put :update,
+        params: {
+          id: group.to_param,
+          group: { prevent_sharing_groups_outside_hierarchy: true }
+        }
+    end
+
+    context 'when user is a group owner' do
+      before do
+        group.add_owner(user)
+        sign_in(user)
+      end
+
+      it 'updates the attribute' do
+        expect { subject }
+            .to change { group.namespace_settings.reload.prevent_sharing_groups_outside_hierarchy }
+            .from(false)
+            .to(true)
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when not a group owner' do
+      before do
+        group.add_maintainer(user)
+        sign_in(user)
+      end
+
+      it 'does not update the attribute' do
+        expect { subject }.not_to change { group.namespace_settings.reload.prevent_sharing_groups_outside_hierarchy }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe '#ensure_canonical_path' do
     before do
       sign_in(user)
@@ -1026,14 +1065,13 @@ RSpec.describe GroupsController, factory_default: :keep do
 
   describe 'GET #download_export' do
     let(:admin) { create(:admin) }
+    let(:export_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
 
     before do
       enable_admin_mode!(admin)
     end
 
     context 'when there is a file available to download' do
-      let(:export_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
-
       before do
         sign_in(admin)
         create(:import_export_upload, group: group, export_file: export_file)
@@ -1043,6 +1081,22 @@ RSpec.describe GroupsController, factory_default: :keep do
         get :download_export, params: { id: group.to_param }
 
         expect(response.body).to eq export_file.tempfile.read
+      end
+    end
+
+    context 'when the file is no longer present on disk' do
+      before do
+        sign_in(admin)
+
+        create(:import_export_upload, group: group, export_file: export_file)
+        group.export_file.file.delete
+      end
+
+      it 'returns not found' do
+        get :download_export, params: { id: group.to_param }
+
+        expect(flash[:alert]).to include('file containing the export is not available yet')
+        expect(response).to redirect_to(edit_group_path(group))
       end
     end
 

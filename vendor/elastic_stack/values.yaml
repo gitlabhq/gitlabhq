@@ -61,12 +61,6 @@ filebeat:
               target_field: tie_breaker_id
           - add_cloud_metadata: ~
           - add_kubernetes_metadata: ~
-          - decode_json_fields:
-              fields: ["message"]
-              when:
-                equals:
-                  kubernetes.container.namespace: "gitlab-managed-apps"
-                  kubernetes.container.name: "modsecurity-log"
 kibana:
   enabled: false
   elasticsearchHosts: "http://elastic-stack-elasticsearch-master:9200"

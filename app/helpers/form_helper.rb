@@ -2,19 +2,29 @@
 
 module FormHelper
   def form_errors(model, type: 'form', truncate: [])
-    return unless model.errors.any?
+    errors = model.errors
 
-    headline = n_('The %{type} contains the following error:', 'The %{type} contains the following errors:', model.errors.count) % { type: type }
+    return unless errors.any?
+
+    headline = n_(
+      'The %{type} contains the following error:',
+      'The %{type} contains the following errors:',
+      errors.count
+    ) % { type: type }
+
     truncate = Array.wrap(truncate)
 
-    content_tag(:div, class: 'alert alert-danger', id: 'error_explanation') do
-      content_tag(:h4, headline) <<
-        content_tag(:ul) do
-          messages = model.errors.map do |attribute, message|
-            message = html_escape_once(model.errors.full_message(attribute, message)).html_safe
-            message = content_tag(:span, message, class: 'str-truncated-100') if truncate.include?(attribute)
+    tag.div(class: 'alert alert-danger', id: 'error_explanation') do
+      tag.h4(headline) <<
+        tag.ul do
+          messages = errors.map do |error|
+            attribute = error.attribute
+            message = error.message
 
-            content_tag(:li, message)
+            message = html_escape_once(errors.full_message(attribute, message)).html_safe
+            message = tag.span(message, class: 'str-truncated-100') if truncate.include?(attribute)
+
+            tag.li(message)
           end
 
           messages.join.html_safe

@@ -15,6 +15,7 @@ const isProject = false;
 const inviteeType = 'members';
 const accessLevels = { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 };
 const defaultAccessLevel = 10;
+const inviteSource = 'unknown';
 const helpLink = 'https://example.com';
 
 const user1 = { id: 1, name: 'Name One', username: 'one_1', avatar_url: '' };
@@ -173,6 +174,7 @@ describe('InviteMembersModal', () => {
         user_id: '1',
         access_level: defaultAccessLevel,
         expires_at: undefined,
+        invite_source: inviteSource,
         format: 'json',
       };
 
@@ -245,6 +247,7 @@ describe('InviteMembersModal', () => {
         access_level: defaultAccessLevel,
         expires_at: undefined,
         email: 'email@example.com',
+        invite_source: inviteSource,
         format: 'json',
       };
 
@@ -293,6 +296,7 @@ describe('InviteMembersModal', () => {
       const postData = {
         access_level: defaultAccessLevel,
         expires_at: undefined,
+        invite_source: inviteSource,
         format: 'json',
       };
 
@@ -308,20 +312,39 @@ describe('InviteMembersModal', () => {
           jest.spyOn(Api, 'addGroupMembersByUserId').mockResolvedValue({ data: postData });
           jest.spyOn(wrapper.vm, 'showToastMessageSuccess');
           jest.spyOn(wrapper.vm, 'trackInvite');
+        });
+
+        describe('when triggered from regular mounting', () => {
+          beforeEach(() => {
+            clickInviteButton();
+          });
+
+          it('calls Api inviteGroupMembersByEmail with the correct params', () => {
+            expect(Api.inviteGroupMembersByEmail).toHaveBeenCalledWith(id, emailPostData);
+          });
+
+          it('calls Api addGroupMembersByUserId with the correct params', () => {
+            expect(Api.addGroupMembersByUserId).toHaveBeenCalledWith(id, idPostData);
+          });
+
+          it('displays the successful toastMessage', () => {
+            expect(wrapper.vm.showToastMessageSuccess).toHaveBeenCalled();
+          });
+        });
+
+        it('calls Apis with the invite source passed through to openModal', () => {
+          wrapper.vm.openModal({ inviteeType: 'members', source: '_invite_source_' });
 
           clickInviteButton();
-        });
 
-        it('calls Api inviteGroupMembersByEmail with the correct params', () => {
-          expect(Api.inviteGroupMembersByEmail).toHaveBeenCalledWith(id, emailPostData);
-        });
-
-        it('calls Api addGroupMembersByUserId with the correct params', () => {
-          expect(Api.addGroupMembersByUserId).toHaveBeenCalledWith(id, idPostData);
-        });
-
-        it('displays the successful toastMessage', () => {
-          expect(wrapper.vm.showToastMessageSuccess).toHaveBeenCalled();
+          expect(Api.inviteGroupMembersByEmail).toHaveBeenCalledWith(id, {
+            ...emailPostData,
+            invite_source: '_invite_source_',
+          });
+          expect(Api.addGroupMembersByUserId).toHaveBeenCalledWith(id, {
+            ...idPostData,
+            invite_source: '_invite_source_',
+          });
         });
       });
 
@@ -403,18 +426,11 @@ describe('InviteMembersModal', () => {
     });
 
     describe('tracking', () => {
-      const postData = {
-        user_id: '1',
-        access_level: defaultAccessLevel,
-        expires_at: undefined,
-        format: 'json',
-      };
-
       beforeEach(() => {
         wrapper = createComponent({ newUsersToInvite: [user3] });
 
         wrapper.vm.$toast = { show: jest.fn() };
-        jest.spyOn(Api, 'inviteGroupMembersByEmail').mockResolvedValue({ data: postData });
+        jest.spyOn(Api, 'inviteGroupMembersByEmail').mockResolvedValue({});
       });
 
       it('tracks the invite', () => {

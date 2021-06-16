@@ -204,7 +204,7 @@ RSpec.describe 'Signup' do
 
           expect { click_button 'Register' }.to change { User.count }.by(1)
           expect(current_path).to eq users_almost_there_path
-          expect(page).to have_content('Please check your email to confirm your account')
+          expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
 
           confirm_email
 

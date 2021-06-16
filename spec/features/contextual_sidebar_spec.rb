@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe 'Contextual sidebar', :js do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
+
+  let(:user) { project.owner }
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
 
     visit project_path(project)
   end
 
-  it 'shows flyout navs when collapsed or expanded apart from on the active item when expanded' do
+  it 'shows flyout navs when collapsed or expanded apart from on the active item when expanded', :aggregate_failures do
     expect(page).not_to have_selector('.js-sidebar-collapsed')
 
     find('.rspec-link-pipelines').hover

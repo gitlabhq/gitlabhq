@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# This concern is used by registerd services such as TeamCityService and
-# DroneCiService and add methods to perform validations on the received
+# This concern is used by registered integrations such as Integrations::TeamCity and
+# Integrations::DroneCi and adds methods to perform validations on the received
 # data.
 
 module ServicePushDataValidations

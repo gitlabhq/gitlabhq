@@ -172,7 +172,7 @@ RSpec.describe 'File blob', :js do
         end
       end
 
-      context 'sucessfully change ref of similar name' do
+      context 'successfully change ref of similar name' do
         before do
           project.repository.create_branch('dev')
           project.repository.create_branch('development')
@@ -182,14 +182,32 @@ RSpec.describe 'File blob', :js do
           visit_blob('files/js/application.js', ref: 'development')
           switch_ref_to('dev')
 
-          expect(page.find('.file-title-name').text).to eq('application.js')
+          aggregate_failures do
+            expect(page.find('.file-title-name').text).to eq('application.js')
+            expect(page).not_to have_css('flash-container')
+          end
         end
 
         it 'switch ref from shorter to longer ref name' do
           visit_blob('files/js/application.js', ref: 'dev')
           switch_ref_to('development')
 
+          aggregate_failures do
+            expect(page.find('.file-title-name').text).to eq('application.js')
+            expect(page).not_to have_css('flash-container')
+          end
+        end
+      end
+
+      it 'successfully changes ref when the ref name matches the project name' do
+        project.repository.create_branch(project.name)
+
+        visit_blob('files/js/application.js', ref: project.name)
+        switch_ref_to('master')
+
+        aggregate_failures do
           expect(page.find('.file-title-name').text).to eq('application.js')
+          expect(page).not_to have_css('flash-container')
         end
       end
     end

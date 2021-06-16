@@ -1,15 +1,23 @@
 import Vue from 'vue';
-import VueApollo from 'vue-apollo';
-import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import issuableApp from './components/app.vue';
 import incidentTabs from './components/incidents/incident_tabs.vue';
-
-Vue.use(VueApollo);
+import { issueState } from './constants';
+import apolloProvider from './graphql';
+import getIssueStateQuery from './queries/get_issue_state.query.graphql';
 
 export default function initIssuableApp(issuableData = {}) {
-  const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
+  const el = document.getElementById('js-issuable-app');
+
+  if (!el) {
+    return undefined;
+  }
+
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: getIssueStateQuery,
+    data: {
+      issueState: { ...issueState, issueType: el.dataset.issueType },
+    },
   });
 
   const {
@@ -25,7 +33,7 @@ export default function initIssuableApp(issuableData = {}) {
   const fullPath = `${projectNamespace}/${projectPath}`;
 
   return new Vue({
-    el: document.getElementById('js-issuable-app'),
+    el,
     apolloProvider,
     components: {
       issuableApp,

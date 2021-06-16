@@ -100,6 +100,16 @@ RSpec.describe ProfilesController, :request_store do
       expect(user.reload.job_title).to eq(title)
       expect(response).to have_gitlab_http_status(:found)
     end
+
+    it 'allows updating user specified pronouns', :aggregate_failures do
+      pronouns = 'they/them'
+      sign_in(user)
+
+      put :update, params: { user: { pronouns: pronouns } }
+
+      expect(user.reload.pronouns).to eq(pronouns)
+      expect(response).to have_gitlab_http_status(:found)
+    end
   end
 
   describe 'GET audit_log' do
@@ -110,7 +120,8 @@ RSpec.describe ProfilesController, :request_store do
 
       expect_snowplow_event(
         category: 'ProfilesController',
-        action: 'search_audit_event'
+        action: 'search_audit_event',
+        user: user
       )
     end
   end

@@ -4,7 +4,7 @@
       .modal-header
         %h3.page-title= _('Fork project?')
         %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
-          %span{ "aria-hidden": true } &times;
+          %span{ "aria-hidden": "true" } &times;
       .modal-body.p-3
         %p= _("You can’t %{tag_start}edit%{tag_end} files directly in this project. Fork this project and submit a merge request with your changes.") % { tag_start: '', tag_end: ''}
       .modal-footer

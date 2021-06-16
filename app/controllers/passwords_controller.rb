@@ -67,6 +67,10 @@ class PasswordsController < Devise::PasswordsController
     redirect_to new_user_session_path,
       notice: I18n.t('devise.passwords.send_paranoid_instructions')
   end
+
+  def context_user
+    resource
+  end
 end
 
 PasswordsController.prepend_mod_with('PasswordsController')

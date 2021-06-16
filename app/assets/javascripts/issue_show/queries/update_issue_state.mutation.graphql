@@ -1,0 +1,3 @@
+mutation updateIssueState($issueType: String, $isDirty: Boolean) {
+  updateIssueState(issueType: $issueType, isDirty: $isDirty) @client
+}

@@ -45,7 +45,9 @@ exports[`self monitor component When the self monitor project has not been creat
         Enabling this feature creates a project that can be used to monitor the health of your instance.
       </p>
        
-      <gl-form-group-stub>
+      <gl-form-group-stub
+        labeldescription=""
+      >
         <gl-toggle-stub
           label="Create Project"
           labelposition="top"

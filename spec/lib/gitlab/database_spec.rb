@@ -65,6 +65,28 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.disable_prepared_statements' do
+    around do |example|
+      original_config = ::Gitlab::Database.config
+
+      example.run
+
+      ActiveRecord::Base.establish_connection(original_config)
+    end
+
+    it 'disables prepared statements' do
+      ActiveRecord::Base.establish_connection(::Gitlab::Database.config.merge(prepared_statements: true))
+      expect(ActiveRecord::Base.connection.prepared_statements).to eq(true)
+
+      expect(ActiveRecord::Base).to receive(:establish_connection)
+        .with(a_hash_including({ 'prepared_statements' => false })).and_call_original
+
+      described_class.disable_prepared_statements
+
+      expect(ActiveRecord::Base.connection.prepared_statements).to eq(false)
+    end
+  end
+
   describe '.postgresql?' do
     subject { described_class.postgresql? }
 
@@ -103,10 +125,10 @@ RSpec.describe Gitlab::Database do
       expect(described_class.postgresql_minimum_supported_version?).to eq(false)
     end
 
-    it 'returns true when using PostgreSQL 11' do
+    it 'returns false when using PostgreSQL 11' do
       allow(described_class).to receive(:version).and_return('11')
 
-      expect(described_class.postgresql_minimum_supported_version?).to eq(true)
+      expect(described_class.postgresql_minimum_supported_version?).to eq(false)
     end
 
     it 'returns true when using PostgreSQL 12' do
@@ -307,7 +329,7 @@ RSpec.describe Gitlab::Database do
         expect(pool)
           .to be_kind_of(ActiveRecord::ConnectionAdapters::ConnectionPool)
 
-        expect(pool.spec.config[:pool]).to eq(5)
+        expect(pool.db_config.pool).to eq(5)
       ensure
         pool.disconnect!
       end
@@ -317,7 +339,7 @@ RSpec.describe Gitlab::Database do
       pool = described_class.create_connection_pool(5, '127.0.0.1')
 
       begin
-        expect(pool.spec.config[:host]).to eq('127.0.0.1')
+        expect(pool.db_config.host).to eq('127.0.0.1')
       ensure
         pool.disconnect!
       end
@@ -327,8 +349,8 @@ RSpec.describe Gitlab::Database do
       pool = described_class.create_connection_pool(5, '127.0.0.1', 5432)
 
       begin
-        expect(pool.spec.config[:host]).to eq('127.0.0.1')
-        expect(pool.spec.config[:port]).to eq(5432)
+        expect(pool.db_config.host).to eq('127.0.0.1')
+        expect(pool.db_config.configuration_hash[:port]).to eq(5432)
       ensure
         pool.disconnect!
       end

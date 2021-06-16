@@ -9,44 +9,47 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13561) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
 
-Each security vulnerability in a project's [Vulnerability Report](../vulnerability_report/index.md) has an individual page which includes:
+Each vulnerability in a project has a Vulnerability Page. This page contains details of the
+vulnerability. The details included vary according to the type of vulnerability. Details of each
+vulnerability include:
 
-- Details of the vulnerability.
-- The status of the vulnerability in the project.
-- Available actions for the vulnerability.
-- Any issues related to the vulnerability.
+- Description
+- When it was detected
+- Current status
+- Available actions
+- Linked issues
+- Actions log
 
 On the vulnerability's page, you can:
 
 - [Change the vulnerability's status](#change-vulnerability-status).
 - [Create an issue](#create-an-issue-for-a-vulnerability).
-- [Link issues to the vulnerability](#link-gitlab-issues-to-the-vulnerability).
-- [Remediate a vulnerability automatically](#remediate-a-vulnerability-automatically), if an
-  automatic solution is available.
-- [Remediate a vulnerability manually](#remediate-a-vulnerability-manually), if a solution is
+- [Link issues to the vulnerability](#linked-issues).
+- [Resolve a vulnerability](#resolve-a-vulnerability), if a solution is
   available.
+
+## Vulnerability status values
+
+A vulnerability's status can be one of the following:
+
+| Status    | Description |
+|:----------|:------------|
+| Detected  | The default state for a newly discovered vulnerability. |
+| Confirmed | A user has seen this vulnerability and confirmed it to be accurate. |
+| Dismissed | A user has seen this vulnerability and dismissed it because it is not accurate or otherwise not to be resolved. |
+| Resolved  | The vulnerability has been fixed and is no longer valid. |
 
 ## Change vulnerability status
 
-You can change the status of a vulnerability using the **Status** dropdown to one of
-the following values:
-
-| Status    | Description                                                                                                    |
-|-----------|----------------------------------------------------------------------------------------------------------------|
-| Detected  | The default state for a newly discovered vulnerability                                                         |
-| Confirmed | A user has seen this vulnerability and confirmed it to be accurate                                             |
-| Dismissed | A user has seen this vulnerability and dismissed it because it is not accurate or otherwise not to be resolved |
-| Resolved  | The vulnerability has been fixed and is no longer valid                                                        |
-
-A timeline shows you when the vulnerability status has changed
-and allows you to comment on a change.
+To change a vulnerability's status, select a new value from the **Status** dropdown then select
+**Change status**. Optionally, add a comment to the log entry at the bottom of the page.
 
 ## Create an issue for a vulnerability
 
 From a vulnerability's page you can create an issue to track all action taken to resolve or
 mitigate it.
 
-From a vulnerability you can create either:
+You can create either:
 
 - [A GitLab issue](#create-a-gitlab-issue-for-a-vulnerability) (default).
 - [A Jira issue](#create-a-jira-issue-for-a-vulnerability).
@@ -68,14 +71,7 @@ The issue is then opened so you can take further action.
 ### Create a Jira issue for a vulnerability
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4677) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to
->   [disable it](#enable-or-disable-jira-integration-for-vulnerabilities).
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/283850) in GitLab 13.12.
 
 Prerequisites:
 
@@ -92,54 +88,47 @@ To create a Jira issue for a vulnerability:
 The Jira issue is created and opened in a new browser tab. The **Summary** and **Description**
 fields are pre-populated from the vulnerability's details.
 
-### Enable or disable Jira integration for vulnerabilities **(ULTIMATE SELF)**
+Unlike GitLab issues, the status of whether a Jira issue is open or closed does not display in the GitLab user interface.
 
-The option to create a Jira issue for a vulnerability is under development but ready for production
-use. It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:jira_for_vulnerabilities)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:jira_for_vulnerabilities)
-```
-
-## Link GitLab issues to the vulnerability
+## Linked issues
 
 NOTE:
 If Jira issue support is enabled, GitLab issues are disabled so this feature is not available.
 
-You can link one or more existing GitLab issues to the vulnerability. This allows you to
-indicate that this vulnerability affects multiple issues. It also allows you to indicate
-that the resolution of one issue would resolve multiple vulnerabilities.
+You can link one or more existing GitLab issues to a vulnerability. Adding a link helps track
+the issue that resolves or mitigates a vulnerability.
 
-Linked issues are shown in the Vulnerability Report and the vulnerability's page.
+Issues linked to a vulnerability are shown in the Vulnerability Report and the vulnerability's page.
 
-## Link to an existing issue
-
-If you already have an open issue, you can link to it from the vulnerability.
+Be aware of the following conditions between a vulnerability and a linked issue:
 
 - The vulnerability page shows related issues, but the issue page doesn't show the vulnerability it's related to.
 - An issue can only be related to one vulnerability at a time.
 - Issues can be linked across groups and projects.
 
-To link to an existing issue:
+## Link to existing issues
 
-1. Open the vulnerability.
-1. [Add a linked issue](../../project/issues/related_issues.md).
+To link a vulnerability to existing issues:
 
-## Remediate a vulnerability automatically
+1. Go to the vulnerability's page.
+1. In the **Linked issues** section, select the plus icon (**{plus}**).
+1. For each issue to be linked, either:
+   - Paste a link to the issue.
+   - Enter the issue's ID (prefixed with a hash `#`).
+1. Select **Add**.
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5656) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.7.
+The selected issues are added to the **Linked issues** section, and the linked issues counter is updated.
 
-Some vulnerabilities can be fixed by applying the solution that GitLab automatically generates.
+## Resolve a vulnerability
+
+For some vulnerabilities a solution is already known. In those instances, a vulnerability's page
+includes a **Resolve with merge request** option.
+
+To resolve a vulnerability, you can either:
+
+- [Resolve a vulnerability with a merge request](#resolve-a-vulnerability-with-a-merge-request).
+- [Resolve a vulnerability manually](#resolve-a-vulnerability-manually).
+
 The following scanners are supported:
 
 - [Dependency Scanning](../dependency_scanning/index.md).
@@ -147,34 +136,25 @@ The following scanners are supported:
   `yarn`.
 - [Container Scanning](../container_scanning/index.md).
 
-### Remediate a vulnerability manually
+![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4.png)
+
+### Resolve a vulnerability with a merge request
+
+To resolve the vulnerability with a merge request, go to the vulnerability's page and from the
+**Resolve with merge request** dropdown select **Resolve with merge request**.
+
+A merge request is created which applies the patch required to resolve the vulnerability.
+Process the merge request according to your standard workflow.
+
+### Resolve a vulnerability manually
 
 To manually apply the patch that GitLab generated for a vulnerability:
 
-1. Select the **Resolve with merge request** dropdown, then select **Download patch to resolve**:
-
-   ![Resolve with Merge Request button dropdown](img/vulnerability_page_merge_request_button_dropdown_v13_1.png)
-
+1. Go to the vulnerability's page and from the **Resolve with merge request** dropdown select
+   **Download patch to resolve**.
 1. Ensure your local project has the same commit checked out that was used to generate the patch.
 1. Run `git apply remediation.patch`.
 1. Verify and commit the changes to your branch.
-
-### Create a merge request with the suggested patch
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9224) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.9.
-
-In some cases, you can create a merge request that automatically remediates the
-vulnerability. Any vulnerability that has a
-[solution](#remediate-a-vulnerability-automatically) can have a merge
-request created to automatically solve the issue.
-
-If this action is available:
-
-1. Select the **Resolve with merge request** dropdown, then select **Resolve with merge request**.
-
-   ![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4.png)
-
-A merge request is created. It applies the solution to the source branch.
 
 ## Vulnerability scanner maintenance
 
@@ -182,7 +162,7 @@ The following vulnerability scanners and their databases are regularly updated:
 
 | Secure scanning tool                                            | Vulnerabilities database updates |
 |:----------------------------------------------------------------|----------------------------------|
-| [Container Scanning](../container_scanning/index.md)            | Uses either `trivy` or `clair`. For the `trivy` scanner, a job runs on a daily basis to build a new image with the latest vulnerability database updates from the [upstream `trivy-db`](https://github.com/aquasecurity/trivy-db). For the `clair` scanner, the latest `clair-db` version is used; `clair-db` database [is updated daily according to the author](https://github.com/arminc/clair-local-scan#clair-server-or-local). |
+| [Container Scanning](../container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. |
 | [Dependency Scanning](../dependency_scanning/index.md)          | Relies on `bundler-audit` (for Ruby gems), `retire.js` (for npm packages), and `gemnasium` (the GitLab tool for all libraries). Both `bundler-audit` and `retire.js` fetch their vulnerabilities data from GitHub repositories, so vulnerabilities added to `ruby-advisory-db` and `retire.js` are immediately available. The tools themselves are updated once per month if there's a new version. The [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is updated at least once a week. See our [current measurement of time from CVE being issued to our product being updated](https://about.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
 | [Dynamic Application Security Testing (DAST)](../dast/index.md) | The scanning engine is updated on a periodic basis. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/master/Dockerfile#L1). The scanning rules are downloaded at scan runtime. |
 | [Static Application Security Testing (SAST)](../sast/index.md)  | Relies exclusively on [the tools GitLab wraps](../sast/index.md#supported-languages-and-frameworks). The underlying analyzers are updated at least once per month if a relevant update is available. The vulnerabilities database is updated by the upstream tools. |

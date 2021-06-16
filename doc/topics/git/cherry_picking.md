@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# Cherry Pick
+# Cherry pick **(FREE)**
 
 Given an existing commit on one branch, apply the change to another branch.
 

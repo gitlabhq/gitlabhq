@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Alert integration settings form default state should match the default snapshot 1`] = `
+<div>
+  <p>
+    <gl-sprintf-stub
+      message="Action to take when receiving an alert. %{docsLink}"
+    />
+  </p>
+   
+  <form>
+    <gl-form-group-stub
+      class="gl-pl-0"
+      labeldescription=""
+    >
+      <gl-form-checkbox-stub
+        checked="true"
+        data-qa-selector="create_issue_checkbox"
+      >
+        <span>
+          Create an incident. Incidents are created for each alert triggered.
+        </span>
+      </gl-form-checkbox-stub>
+    </gl-form-group-stub>
+     
+    <gl-form-group-stub
+      class="col-8 col-md-9 gl-px-6"
+      label-for="alert-integration-settings-issue-template"
+      label-size="sm"
+      labeldescription=""
+    >
+      <label
+        class="gl-display-inline-flex"
+        for="alert-integration-settings-issue-template"
+      >
+        
+        Incident template (optional).
+        
+        <gl-link-stub
+          href="/help/user/project/description_templates#create-an-issue-template"
+          target="_blank"
+        >
+          <span
+            class="gl-font-weight-normal gl-pl-2"
+          >
+            Learn more.
+          </span>
+        </gl-link-stub>
+      </label>
+       
+      <gl-dropdown-stub
+        block="true"
+        category="primary"
+        data-qa-selector="incident_templates_dropdown"
+        headertext=""
+        hideheaderborder="true"
+        id="alert-integration-settings-issue-template"
+        size="medium"
+        text="selecte_tmpl"
+        variant="default"
+      >
+        <gl-dropdown-item-stub
+          avatarurl=""
+          data-qa-selector="incident_templates_item"
+          iconcolor=""
+          iconname=""
+          iconrightarialabel=""
+          iconrightname=""
+          ischeckitem="true"
+          secondarytext=""
+        >
+          
+          No template selected
+        
+        </gl-dropdown-item-stub>
+      </gl-dropdown-stub>
+    </gl-form-group-stub>
+     
+    <gl-form-group-stub
+      class="gl-pl-0 gl-mb-5"
+      labeldescription=""
+    >
+      <gl-form-checkbox-stub>
+        <span>
+          Send a single email notification to Owners and Maintainers for new alerts.
+        </span>
+      </gl-form-checkbox-stub>
+    </gl-form-group-stub>
+     
+    <gl-form-group-stub
+      class="gl-pl-0 gl-mb-5"
+      labeldescription=""
+    >
+      <gl-form-checkbox-stub
+        checked="true"
+      >
+        <span>
+          Automatically close associated incident when a recovery alert notification resolves an alert
+        </span>
+      </gl-form-checkbox-stub>
+    </gl-form-group-stub>
+     
+    <gl-button-stub
+      buttontextclasses=""
+      category="primary"
+      class="js-no-auto-disable"
+      data-qa-selector="save_changes_button"
+      icon=""
+      size="medium"
+      type="submit"
+      variant="confirm"
+    >
+      
+      Save changes
+    
+    </gl-button-stub>
+  </form>
+</div>
+`;

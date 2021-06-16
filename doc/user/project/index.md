@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Projects **(FREE)**
+# Organize work with projects **(FREE)**
 
 In GitLab, you can create projects to host
 your codebase. You can also use projects to track issues, plan work,
@@ -97,7 +97,7 @@ Projects include the following [features](https://about.gitlab.com/features/):
 - [Security Dashboard](../application_security/security_dashboard/index.md) **(ULTIMATE)**
 - [Syntax highlighting](highlighting.md): Customize
   your code blocks, overriding the default language choice.
-- [Badges](badges.md): Add an image to the project overview.
+- [Badges](badges.md): Add an image to the **Project information** page.
 - [Releases](releases/index.md): Take a snapshot of
   the source, build output, metadata, and artifacts
   associated with a released version of your code.

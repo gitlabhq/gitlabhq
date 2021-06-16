@@ -5,10 +5,7 @@ import Vuex from 'vuex';
 import BoardSidebarSubscription from '~/boards/components/sidebar/board_sidebar_subscription.vue';
 import { createStore } from '~/boards/stores';
 import * as types from '~/boards/stores/mutation_types';
-import createFlash from '~/flash';
 import { mockActiveIssue } from '../../mock_data';
-
-jest.mock('~/flash.js');
 
 Vue.use(Vuex);
 
@@ -153,13 +150,15 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
       jest.spyOn(wrapper.vm, 'setActiveItemSubscribed').mockImplementation(async () => {
         throw new Error();
       });
+      jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
 
       findToggle().trigger('click');
 
       await wrapper.vm.$nextTick();
-      expect(createFlash).toHaveBeenNthCalledWith(1, {
-        message: wrapper.vm.$options.i18n.updateSubscribedErrorMessage,
-      });
+      expect(wrapper.vm.setError).toHaveBeenCalled();
+      expect(wrapper.vm.setError.mock.calls[0][0].message).toBe(
+        wrapper.vm.$options.i18n.updateSubscribedErrorMessage,
+      );
     });
   });
 });

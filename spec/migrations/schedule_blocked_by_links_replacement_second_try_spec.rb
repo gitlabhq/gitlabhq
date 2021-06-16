@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20201102073808_schedule_blocked_by_links_replacement_second_try')
+require_migration!
 
 RSpec.describe ScheduleBlockedByLinksReplacementSecondTry do
   let(:namespace) { table(:namespaces).create!(name: 'gitlab', path: 'gitlab-org') }

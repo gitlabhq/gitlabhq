@@ -80,7 +80,7 @@ Check this document to learn more about [using Git LFS](../../topics/git/lfs/ind
 
 ### Configure Exclusive File Locks
 
-You need [Maintainer permissions](../permissions.md) to configure
+You need the [Maintainer role](../permissions.md) to configure
 Exclusive File Locks for your project through the command line.
 
 The first thing to do before using File Locking is to tell Git LFS which
@@ -201,8 +201,8 @@ This process allows you to lock one file at a time through the GitLab UI and
 requires access to [GitLab Premium](https://about.gitlab.com/pricing/)
 or higher tiers.
 
-Default branch file and directory locks only apply to the default branch set in
-the project's settings (usually `master`).
+Default branch file and directory locks only apply to the
+[default branch](repository/branches/default.md) set in the project's settings.
 
 Changes to locked files on the default branch are blocked, including merge
 requests that modify locked files. Unlock the file to allow changes.
@@ -226,6 +226,6 @@ who locked the file.
 
 The **Locked Files**, accessed from **Project > Repository** left menu, lists
 all file and directory locks. Locks can be removed by their author, or any user
-with Maintainer permissions and above.
+with the [Maintainer role](../permissions.md) and above.
 
 This list shows all the files locked either through LFS or GitLab UI.

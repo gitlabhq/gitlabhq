@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 # This file should only be used by sub-classes, not directly by any clients of the sub-classes
-# please require all dependencies below:
+
+# Explicitly load parts of ActiveSupport because MailRoom does not load
+# Rails.
 require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/module/delegation'
+require 'active_support/core_ext/string/inflections'
 
 module Gitlab
   module Redis
     class Wrapper
-      DEFAULT_REDIS_URL = 'redis://localhost:6379'
-      REDIS_CONFIG_ENV_VAR_NAME = 'GITLAB_REDIS_CONFIG_FILE'
-
       class << self
         delegate :params, :url, to: :new
 
@@ -51,33 +51,47 @@ module Gitlab
             end
         end
 
-        def default_url
-          DEFAULT_REDIS_URL
+        def config_file_path(filename)
+          path = File.join(rails_root, 'config', filename)
+          return path if File.file?(path)
         end
 
-        # Return the absolute path to a Rails configuration file
-        #
-        # We use this instead of `Rails.root` because for certain tasks
-        # utilizing these classes, `Rails` might not be available.
-        def config_file_path(filename)
-          File.expand_path("../../../config/#{filename}", __dir__)
+        # We need this local implementation of Rails.root because MailRoom
+        # doesn't load Rails.
+        def rails_root
+          File.expand_path('../../..', __dir__)
         end
 
         def config_file_name
-          # if ENV set for wrapper class, use it even if it points to a file does not exist
-          file_name = ENV[REDIS_CONFIG_ENV_VAR_NAME]
-          return file_name unless file_name.nil?
+          [
+            # Instance specific config sources:
+            ENV["GITLAB_REDIS_#{store_name.underscore.upcase}_CONFIG_FILE"],
+            config_file_path("redis.#{store_name.underscore}.yml"),
 
-          # otherwise, if config files exists for wrapper class, use it
-          file_name = config_file_path('resque.yml')
-          return file_name if File.file?(file_name)
+            # The current Redis instance may have been split off from another one
+            # (e.g. TraceChunks was split off from SharedState). There are
+            # installations out there where the lowest priority config source
+            # (resque.yml) contains bogus values. In those cases, config_file_name
+            # should resolve to the instance we originated from (the
+            # "config_fallback") rather than resque.yml.
+            config_fallback&.config_file_name,
 
-          # nil will force use of DEFAULT_REDIS_URL when config file is absent
+            # Global config sources:
+            ENV['GITLAB_REDIS_CONFIG_FILE'],
+            config_file_path('resque.yml')
+          ].compact.first
+        end
+
+        def store_name
+          name.demodulize
+        end
+
+        def config_fallback
           nil
         end
 
         def instrumentation_class
-          raise NotImplementedError
+          "::Gitlab::Instrumentation::Redis::#{store_name}".constantize
         end
       end
 
@@ -135,7 +149,7 @@ module Gitlab
         if config_data
           config_data.is_a?(String) ? { url: config_data } : config_data.deep_symbolize_keys
         else
-          { url: self.class.default_url }
+          { url: '' }
         end
       end
 

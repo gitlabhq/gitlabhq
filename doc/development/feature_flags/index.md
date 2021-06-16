@@ -41,7 +41,7 @@ should be leveraged:
 
   1. [Create a new feature flag](#create-a-new-feature-flag)
      which is **off** by default, in the first merge request which uses the flag.
-     Flags [should not be added separately](#risk-of-a-broken-master-main-branch).
+     Flags [should not be added separately](#risk-of-a-broken-main-branch).
   1. Submit incremental changes via one or more merge requests, ensuring that any
      new code added can only be reached if the feature flag is **on**.
      You can keep the feature flag enabled on your local GDK during development.
@@ -59,11 +59,11 @@ flag does not have to stick around for a specific amount of time
 is deemed stable. Stable means it works on GitLab.com without causing any
 problems, such as outages.
 
-## Risk of a broken master (main) branch
+## Risk of a broken main branch
 
-Feature flags **must** be used in the MR that introduces them. Not doing so causes a
-[broken master](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
-to the `rspec:feature-flags` job that only runs on the `master` branch.
+Feature flags must be used in the MR that introduces them. Not doing so causes a
+[broken main branch](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
+to the `rspec:feature-flags` job that only runs on the `main` branch.
 
 ## Types of feature flags
 
@@ -635,7 +635,7 @@ with how it interacts with `ActiveRecord`.
 ### End-to-end (QA) tests
 
 Toggling feature flags works differently in end-to-end (QA) tests. The end-to-end test framework does not have direct access to
-Rails or the database, so it can't use Flipper. Instead, it uses [the public API](../../api/features.md#set-or-create-a-feature). Each end-to-end test can [enable or disable a feature flag during the test](../testing_guide/end_to_end/feature_flags.md). Alternatively, you can enable or disable a feature flag before one or more tests when you [run them from your GitLab repository's `qa` directory](https://gitlab.com/gitlab-org/gitlab/tree/master/qa#running-tests-with-a-feature-flag-enabled-or-disabled), or if you [run the tests via GitLab QA](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#running-tests-with-a-feature-flag-enabled).
+Rails or the database, so it can't use Flipper. Instead, it uses [the public API](../../api/features.md#set-or-create-a-feature). Each end-to-end test can [enable or disable a feature flag during the test](../testing_guide/end_to_end/feature_flags.md). Alternatively, you can enable or disable a feature flag before one or more tests when you [run them from your GitLab repository's `qa` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa#running-tests-with-a-feature-flag-enabled-or-disabled), or if you [run the tests via GitLab QA](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#running-tests-with-a-feature-flag-enabled).
 
 [As noted above, feature flags are not enabled by default in end-to-end tests.](#feature-flags-in-tests)
 This means that end-to-end tests will run with feature flags in the default state implemented in the source

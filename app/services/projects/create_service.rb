@@ -11,6 +11,9 @@ module Projects
       @initialize_with_readme = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_readme))
       @import_data = @params.delete(:import_data)
       @relations_block = @params.delete(:relations_block)
+      @default_branch = @params.delete(:default_branch)
+
+      build_topics
     end
 
     def execute
@@ -128,20 +131,16 @@ module Projects
             access_level: group_access_level)
         end
 
-        if Feature.enabled?(:specialized_project_authorization_workers, default_enabled: :yaml)
-          AuthorizedProjectUpdate::ProjectCreateWorker.perform_async(@project.id)
-          # AuthorizedProjectsWorker uses an exclusive lease per user but
-          # specialized workers might have synchronization issues. Until we
-          # compare the inconsistency rates of both approaches, we still run
-          # AuthorizedProjectsWorker but with some delay and lower urgency as a
-          # safety net.
-          @project.group.refresh_members_authorized_projects(
-            blocking: false,
-            priority: UserProjectAccessChangedService::LOW_PRIORITY
-          )
-        else
-          @project.group.refresh_members_authorized_projects(blocking: false)
-        end
+        AuthorizedProjectUpdate::ProjectCreateWorker.perform_async(@project.id)
+        # AuthorizedProjectsWorker uses an exclusive lease per user but
+        # specialized workers might have synchronization issues. Until we
+        # compare the inconsistency rates of both approaches, we still run
+        # AuthorizedProjectsWorker but with some delay and lower urgency as a
+        # safety net.
+        @project.group.refresh_members_authorized_projects(
+          blocking: false,
+          priority: UserProjectAccessChangedService::LOW_PRIORITY
+        )
       else
         @project.add_maintainer(@project.namespace.owner, current_user: current_user)
       end
@@ -149,7 +148,7 @@ module Projects
 
     def create_readme
       commit_attrs = {
-        branch_name: @project.default_branch_or_main,
+        branch_name: @default_branch.presence || @project.default_branch_or_main,
         commit_message: 'Initial commit',
         file_path: 'README.md',
         file_content: "# #{@project.name}\n\n#{@project.description}"
@@ -260,6 +259,14 @@ module Projects
       @project_visibility ||= Gitlab::VisibilityLevelChecker
         .new(current_user, @project, project_params: { import_data: @import_data })
         .level_restricted?
+    end
+
+    def build_topics
+      topics = params.delete(:topics)
+      tag_list = params.delete(:tag_list)
+      topic_list = topics || tag_list
+
+      params[:topic_list] ||= topic_list if topic_list
     end
   end
 end

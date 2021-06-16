@@ -60,7 +60,7 @@ hash of the project ID instead, if project migrates to the new approach (introdu
 We provide an [all-in-one Rake task](../administration/raketasks/uploads/migrate.md)
 to migrate all uploads to object storage in one go. If a new Uploader class or model
 type is introduced, make sure you add a Rake task invocation corresponding to it to the
-[category list](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/uploads/migrate.rake).
+[category list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/uploads/migrate.rake).
 
 ### Path segments
 

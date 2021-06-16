@@ -206,8 +206,12 @@ RSpec.describe Gitlab::Profiler do
       end
     end
 
-    before do
-      stub_const('STDOUT', stdout)
+    around do |example|
+      original_stdout = $stdout
+
+      $stdout = stdout # rubocop: disable RSpec/ExpectOutput
+      example.run
+      $stdout = original_stdout # rubocop: disable RSpec/ExpectOutput
     end
 
     it 'prints a profile result sorted by total time' do

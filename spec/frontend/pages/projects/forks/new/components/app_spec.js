@@ -13,6 +13,7 @@ describe('App component', () => {
     projectPath: 'project-name',
     projectDescription: 'some project description',
     projectVisibility: 'private',
+    restrictedVisibilityLevels: [],
   };
 
   const createComponent = (props = {}) => {

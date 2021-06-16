@@ -6,11 +6,12 @@
     = header_message
     = render partial: "layouts/header/default", locals: { project: @project, group: @group }
     .mobile-overlay
-    .alert-wrapper
+    .alert-wrapper.hide-when-top-nav-responsive-open
       = render 'shared/outdated_browser'
       = render "layouts/broadcast"
       = yield :flash_message
       = render "layouts/flash"
-    .content-wrapper{ id: "content-body", class: "d-flex flex-column align-items-stretch mt-0" }
+    .content-wrapper.hide-when-top-nav-responsive-open{ id: "content-body", class: "d-flex flex-column align-items-stretch" }
       = yield
+    = render "layouts/nav/top_nav_responsive", class: "gl-flex-grow-1 gl-overflow-y-auto"
     = footer_message

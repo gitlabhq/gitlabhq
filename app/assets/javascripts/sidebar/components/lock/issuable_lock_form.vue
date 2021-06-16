@@ -86,7 +86,7 @@ export default {
       <gl-icon :name="lockStatus.icon" class="sidebar-item-icon is-active" />
     </div>
 
-    <div class="title hide-collapsed">
+    <div class="hide-collapsed gl-line-height-20 gl-mb-2 gl-text-gray-900">
       {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
       <a
         v-if="isEditable"

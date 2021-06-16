@@ -207,7 +207,7 @@ Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see 
 ```
 
 Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see
-the `group_saml` provider option:
+the `group_saml` provider option and `provisioned_by_group_id` parameter:
 
 ```json
 [
@@ -220,6 +220,7 @@ the `group_saml` provider option:
       {"provider": "google_oauth2", "extern_uid": "8776128412476123468721346"},
       {"provider": "group_saml", "extern_uid": "123789", "saml_provider_id": 10}
     ],
+    "provisioned_by_group_id": 123789
     ...
   }
 ]
@@ -374,7 +375,7 @@ the `shared_runners_minutes_limit`, `is_auditor`, and `extra_shared_runners_minu
 ```
 
 Users on GitLab.com [Premium or higher](https://about.gitlab.com/pricing/) also
-see the `group_saml` option:
+see the `group_saml` option and `provisioned_by_group_id` parameter:
 
 ```json
 {
@@ -388,6 +389,7 @@ see the `group_saml` option:
     {"provider": "google_oauth2", "extern_uid": "8776128412476123468721346"},
     {"provider": "group_saml", "extern_uid": "123789", "saml_provider_id": 10}
   ],
+  "provisioned_by_group_id": 123789
   ...
 }
 ```
@@ -630,7 +632,14 @@ GET /user
 }
 ```
 
-Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, `is_auditor`, and `using_license_seat` parameters.
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see these
+parameters:
+
+- `shared_runners_minutes_limit`
+- `extra_shared_runners_minutes_limit`
+- `is_auditor`
+- `provisioned_by_group_id`
+- `using_license_seat`
 
 ## User status
 
@@ -684,6 +693,29 @@ Example response:
 }
 ```
 
+## Get user preferences
+
+Get a list of currently authenticated user's preferences.
+
+```plaintext
+GET /user/preferences
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+    "user_id": 1
+      "view_diffs_file_by_file": true,
+      "show_whitespace_in_diffs": false
+}
+```
+
+Parameters:
+
+- **none**
+
 ## User preference modification
 
 Update the current user's preferences.
@@ -696,7 +728,8 @@ PUT /user/preferences
 {
   "id": 1,
     "user_id": 1
-      "view_diffs_file_by_file": true
+      "view_diffs_file_by_file": true,
+      "show_whitespace_in_diffs": false
 }
 ```
 
@@ -705,6 +738,7 @@ Parameters:
 | Attribute                    | Required | Description                                                 |
 | :--------------------------- | :------- | :---------------------------------------------------------- |
 | `view_diffs_file_by_file`    | Yes      | Flag indicating the user sees only one file diff per page.  |
+| `show_whitespace_in_diffs`   | Yes      | Flag indicating the user sees whitespace changes in diffs.  |
 
 ## Set user status
 
@@ -723,7 +757,8 @@ PUT /user/status
 When both parameters `emoji` and `message` are empty, the status is cleared. When the `clear_status_after` parameter is missing from the request, the previously set value for `"clear_status_after` is cleared.
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "clear_status_after=1_day" --data "emoji=coffee" --data "message=I crave coffee" "https://gitlab.example.com/api/v4/user/status"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "clear_status_after=1_day" --data "emoji=coffee" \
+     --data "message=I crave coffee" "https://gitlab.example.com/api/v4/user/status"
 ```
 
 Example responses
@@ -1058,7 +1093,8 @@ Parameters:
 | key       | string | yes      | The new GPG key |
 
 ```shell
-curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys"
+curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..." \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys"
 ```
 
 Example response:
@@ -1169,7 +1205,8 @@ Parameters:
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
-curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/2/gpg_keys"
+curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..." \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/2/gpg_keys"
 ```
 
 Example response:
@@ -1579,7 +1616,8 @@ POST /users/:user_id/impersonation_tokens
 | `scopes`     | array   | yes      | The array of scopes of the impersonation token (`api`, `read_user`)         |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" \
+     --data "scopes[]=api" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
 ```
 
 Example response:
@@ -1643,7 +1681,8 @@ POST /users/:user_id/personal_access_tokens
 | `scopes`     | array   | yes      | The array of scopes of the personal access token (`api`, `read_user`, `read_api`, `read_repository`, `write_repository`) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" "https://gitlab.example.com/api/v4/users/42/personal_access_tokens"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" \
+     --data "scopes[]=api" "https://gitlab.example.com/api/v4/users/42/personal_access_tokens"
 ```
 
 Example response:

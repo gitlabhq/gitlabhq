@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200406102120_backfill_deployment_clusters_from_deployments.rb')
+require_migration!('backfill_deployment_clusters_from_deployments')
 
 RSpec.describe BackfillDeploymentClustersFromDeployments, :migration, :sidekiq, schema: 20200227140242 do
   describe '#up' do

@@ -1,5 +1,8 @@
 # Read more about this feature https://docs.gitlab.com/ee/user/application_security/coverage_fuzzing
 
+# Configure coverage fuzzing with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/coverage_fuzzing/#available-cicd-variables
+
 variables:
   # Which branch we want to run full fledged long running fuzzing jobs.
   # All others will run fuzzing regression

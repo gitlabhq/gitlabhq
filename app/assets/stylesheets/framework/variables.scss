@@ -9,7 +9,7 @@ $sidebar-transition-duration: 0.3s;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: 0.15s;
 $contextual-sidebar-width: 220px;
-$contextual-sidebar-collapsed-width: 50px;
+$contextual-sidebar-collapsed-width: 48px;
 $toggle-sidebar-height: 48px;
 
 /**
@@ -573,6 +573,9 @@ $inactive-badge-background: rgba($black, 0.08);
 $sidebar-toggle-height: 60px;
 $sidebar-toggle-width: 40px;
 $sidebar-milestone-toggle-bottom-margin: 10px;
+$sidebar-avatar-size: 32px;
+$sidebar-top-item-lr-margin: 4px;
+$sidebar-top-item-tb-margin: 1px;
 
 /*
 * Buttons
@@ -712,6 +715,18 @@ $job-log-line-padding: 55px;
 $job-line-number-width: 50px;
 $job-line-number-margin: 43px;
 $job-arrow-margin: 55px;
+
+/*
+ * Calendar
+ */
+// See https://gitlab.com/gitlab-org/gitlab/-/issues/332150 to align with Pajamas Design System
+$calendar-activity-colors: (
+  #ededed,
+  #acd5f2,
+  #7fa8c9,
+  #527ba0,
+  #254e77,
+);
 
 /*
 * Commit Page

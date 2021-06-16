@@ -3,7 +3,6 @@ import { GlLoadingIcon, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import certManagerLogo from 'images/cluster_app_logos/cert_manager.png';
 import crossplaneLogo from 'images/cluster_app_logos/crossplane.png';
 import elasticStackLogo from 'images/cluster_app_logos/elastic_stack.png';
-import fluentdLogo from 'images/cluster_app_logos/fluentd.png';
 import gitlabLogo from 'images/cluster_app_logos/gitlab.png';
 import helmLogo from 'images/cluster_app_logos/helm.png';
 import jupyterhubLogo from 'images/cluster_app_logos/jupyterhub.png';
@@ -15,8 +14,6 @@ import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import { CLUSTER_TYPE, PROVIDER_TYPE, APPLICATION_STATUS, INGRESS } from '../constants';
 import applicationRow from './application_row.vue';
 import CrossplaneProviderStack from './crossplane_provider_stack.vue';
-import FluentdOutputSettings from './fluentd_output_settings.vue';
-import IngressModsecuritySettings from './ingress_modsecurity_settings.vue';
 import KnativeDomainEditor from './knative_domain_editor.vue';
 
 export default {
@@ -28,8 +25,6 @@ export default {
     GlLink,
     KnativeDomainEditor,
     CrossplaneProviderStack,
-    IngressModsecuritySettings,
-    FluentdOutputSettings,
     GlAlert,
   },
   props: {
@@ -63,11 +58,7 @@ export default {
       required: false,
       default: '',
     },
-    ingressModSecurityHelpPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
+
     cloudRunHelpPath: {
       type: String,
       required: false,
@@ -165,7 +156,6 @@ export default {
     knativeLogo,
     prometheusLogo,
     elasticStackLogo,
-    fluentdLogo,
   },
 };
 </script>
@@ -219,10 +209,6 @@ export default {
         :request-reason="applications.ingress.requestReason"
         :installed="applications.ingress.installed"
         :install-failed="applications.ingress.installFailed"
-        :install-application-request-params="{
-          modsecurity_enabled: applications.ingress.modsecurity_enabled,
-          modsecurity_mode: applications.ingress.modsecurity_mode,
-        }"
         :uninstallable="applications.ingress.uninstallable"
         :uninstall-successful="applications.ingress.uninstallSuccessful"
         :uninstall-failed="applications.ingress.uninstallFailed"
@@ -237,11 +223,6 @@ export default {
                         centralizing a number of services into a single entrypoint.`)
             }}
           </p>
-
-          <ingress-modsecurity-settings
-            :ingress="ingress"
-            :ingress-mod-security-help-path="ingressModSecurityHelpPath"
-          />
 
           <template v-if="ingressInstalled">
             <div class="form-group">
@@ -641,50 +622,6 @@ export default {
               )
             }}
           </p>
-        </template>
-      </application-row>
-
-      <application-row
-        id="fluentd"
-        :logo-url="$options.logos.fluentdLogo"
-        :title="applications.fluentd.title"
-        :status="applications.fluentd.status"
-        :status-reason="applications.fluentd.statusReason"
-        :request-status="applications.fluentd.requestStatus"
-        :request-reason="applications.fluentd.requestReason"
-        :installed="applications.fluentd.installed"
-        :install-failed="applications.fluentd.installFailed"
-        :install-application-request-params="{
-          host: applications.fluentd.host,
-          port: applications.fluentd.port,
-          protocol: applications.fluentd.protocol,
-          waf_log_enabled: applications.fluentd.wafLogEnabled,
-          cilium_log_enabled: applications.fluentd.ciliumLogEnabled,
-        }"
-        :uninstallable="applications.fluentd.uninstallable"
-        :uninstall-successful="applications.fluentd.uninstallSuccessful"
-        :uninstall-failed="applications.fluentd.uninstallFailed"
-        :updateable="false"
-        title-link="https://github.com/helm/charts/tree/master/stable/fluentd"
-      >
-        <template #description>
-          <p>
-            {{
-              s__(
-                `ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. It requires at least one of the following logs to be successfully installed.`,
-              )
-            }}
-          </p>
-
-          <fluentd-output-settings
-            :port="applications.fluentd.port"
-            :protocol="applications.fluentd.protocol"
-            :host="applications.fluentd.host"
-            :waf-log-enabled="applications.fluentd.wafLogEnabled"
-            :cilium-log-enabled="applications.fluentd.ciliumLogEnabled"
-            :status="applications.fluentd.status"
-            :update-failed="applications.fluentd.updateFailed"
-          />
         </template>
       </application-row>
 

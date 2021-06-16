@@ -109,6 +109,10 @@ module Banzai
           context[:group]
         end
 
+        def requires_unescaping?
+          false
+        end
+
         private
 
         # Returns a data attribute String to attach to a reference link

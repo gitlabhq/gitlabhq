@@ -21,6 +21,7 @@ import invalidUrl from '~/lib/utils/invalid_url';
 import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
 import { __, n__ } from '~/locale';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { panelTypes } from '../constants';
 
 import { graphDataToCsv } from '../csv_export';
@@ -61,6 +62,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     TrackEvent: TrackEventDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     clipboardText: {
       type: String,
@@ -258,7 +260,8 @@ export default {
         this.prometheusAlertsAvailable &&
         this.alertsEndpoint &&
         this.graphData &&
-        this.hasMetricsInDb
+        this.hasMetricsInDb &&
+        !this.glFeatures.managedAlertsDeprecation
       );
     },
     alertModalId() {

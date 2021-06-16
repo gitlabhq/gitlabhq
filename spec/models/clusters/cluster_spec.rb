@@ -42,7 +42,8 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   it { is_expected.to delegate_method(:available?).to(:application_helm).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_ingress).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_knative).with_prefix }
-  it { is_expected.to delegate_method(:available?).to(:application_elastic_stack).with_prefix }
+  it { is_expected.to delegate_method(:available?).to(:integration_elastic_stack).with_prefix }
+  it { is_expected.to delegate_method(:available?).to(:integration_prometheus).with_prefix }
   it { is_expected.to delegate_method(:external_ip).to(:application_ingress).with_prefix }
   it { is_expected.to delegate_method(:external_hostname).to(:application_ingress).with_prefix }
 
@@ -191,28 +192,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     context 'cluster does not have prometheus application' do
       let(:cluster) { create(:cluster) }
 
-      it { is_expected.not_to include(cluster) }
-    end
-  end
-
-  describe '.with_enabled_modsecurity' do
-    subject { described_class.with_enabled_modsecurity }
-
-    let_it_be(:cluster) { create(:cluster) }
-
-    context 'cluster has ingress application with enabled modsecurity' do
-      let!(:application) { create(:clusters_applications_ingress, :installed, :modsecurity_logging, cluster: cluster) }
-
-      it { is_expected.to include(cluster) }
-    end
-
-    context 'cluster has ingress application with disabled modsecurity' do
-      let!(:application) { create(:clusters_applications_ingress, :installed, :modsecurity_disabled, cluster: cluster) }
-
-      it { is_expected.not_to include(cluster) }
-    end
-
-    context 'cluster does not have ingress application' do
       it { is_expected.not_to include(cluster) }
     end
   end
@@ -1042,7 +1021,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
         where(:status_name, :cleanup_status) do
           provider_status  | :cleanup_not_started
-          :cleanup_ongoing | :cleanup_uninstalling_applications
           :cleanup_ongoing | :cleanup_removing_project_namespaces
           :cleanup_ongoing | :cleanup_removing_service_account
           :cleanup_errored | :cleanup_errored
@@ -1098,8 +1076,8 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
 
     describe '#start_cleanup!' do
-      let(:expected_worker_class) { Clusters::Cleanup::AppWorker }
-      let(:to_state) { :cleanup_uninstalling_applications }
+      let(:expected_worker_class) { Clusters::Cleanup::ProjectNamespaceWorker }
+      let(:to_state) { :cleanup_removing_project_namespaces }
 
       subject { cluster.start_cleanup! }
 
@@ -1137,25 +1115,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
 
     describe '#continue_cleanup!' do
-      context 'when cleanup_status is cleanup_uninstalling_applications' do
-        let(:expected_worker_class) { Clusters::Cleanup::ProjectNamespaceWorker }
-        let(:from_state) { :cleanup_uninstalling_applications }
-        let(:to_state) { :cleanup_removing_project_namespaces }
+      let(:expected_worker_class) { Clusters::Cleanup::ServiceAccountWorker }
+      let(:from_state) { :cleanup_removing_project_namespaces }
+      let(:to_state) { :cleanup_removing_service_account }
 
-        subject { cluster.continue_cleanup! }
+      subject { cluster.continue_cleanup! }
 
-        it_behaves_like 'cleanup_status transition'
-      end
-
-      context 'when cleanup_status is cleanup_removing_project_namespaces' do
-        let(:expected_worker_class) { Clusters::Cleanup::ServiceAccountWorker }
-        let(:from_state) { :cleanup_removing_project_namespaces }
-        let(:to_state) { :cleanup_removing_service_account }
-
-        subject { cluster.continue_cleanup! }
-
-        it_behaves_like 'cleanup_status transition'
-      end
+      it_behaves_like 'cleanup_status transition'
     end
   end
 
@@ -1349,45 +1315,23 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#application_prometheus_available?' do
+  describe '#integration_prometheus_available?' do
     let_it_be_with_reload(:cluster) { create(:cluster, :project) }
 
-    subject { cluster.application_prometheus_available? }
+    subject { cluster.integration_prometheus_available? }
 
     it { is_expected.to be_falsey }
 
-    context 'has a integration_prometheus' do
-      let_it_be(:integration) { create(:clusters_integrations_prometheus, cluster: cluster) }
+    context 'when integration is enabled' do
+      let!(:integration) { create(:clusters_integrations_prometheus, cluster: cluster) }
 
       it { is_expected.to be_truthy }
-
-      context 'disabled' do
-        before do
-          cluster.integration_prometheus.enabled = false
-        end
-
-        it { is_expected.to be_falsey }
-      end
     end
 
-    context 'has a application_prometheus' do
-      let_it_be(:application) { create(:clusters_applications_prometheus, :installed, :no_helm_installed, cluster: cluster) }
+    context 'when integration is disabled' do
+      let!(:integration) { create(:clusters_integrations_prometheus, enabled: false, cluster: cluster) }
 
-      it { is_expected.to be_truthy }
-
-      context 'errored' do
-        before do
-          cluster.application_prometheus.status = Clusters::Applications::Prometheus.state_machines[:status].states[:errored]
-        end
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'also has a integration_prometheus' do
-        let_it_be(:integration) { create(:clusters_integrations_prometheus, cluster: cluster) }
-
-        it { is_expected.to be_truthy }
-      end
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -1398,7 +1342,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       expect(cluster.prometheus_adapter).to be_nil
     end
 
-    context 'has a integration_prometheus' do
+    context 'has integration_prometheus' do
       let_it_be(:integration) { create(:clusters_integrations_prometheus, cluster: cluster) }
 
       it 'returns the integration' do
@@ -1406,11 +1350,11 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       end
     end
 
-    context 'has a application_prometheus' do
+    context 'has application_prometheus' do
       let_it_be(:application) { create(:clusters_applications_prometheus, :no_helm_installed, cluster: cluster) }
 
-      it 'returns the application' do
-        expect(cluster.prometheus_adapter).to eq(application)
+      it 'returns nil' do
+        expect(cluster.prometheus_adapter).to be_nil
       end
 
       context 'also has a integration_prometheus' do

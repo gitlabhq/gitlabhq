@@ -24,7 +24,40 @@ module MergeRequests
       merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
       merge_request.project.execute_services(merge_data, :merge_request_hooks)
 
+      execute_external_hooks(merge_request, merge_data)
+
       enqueue_jira_connect_messages_for(merge_request)
+    end
+
+    def execute_external_hooks(merge_request, merge_data)
+      # Implemented in EE
+    end
+
+    def handle_changes(merge_request, options)
+      old_associations = options.fetch(:old_associations, {})
+      old_assignees = old_associations.fetch(:assignees, [])
+      old_reviewers = old_associations.fetch(:reviewers, [])
+
+      handle_assignees_change(merge_request, old_assignees) if merge_request.assignees != old_assignees
+      handle_reviewers_change(merge_request, old_reviewers) if merge_request.reviewers != old_reviewers
+    end
+
+    def handle_assignees_change(merge_request, old_assignees)
+      MergeRequests::HandleAssigneesChangeService
+        .new(project: project, current_user: current_user)
+        .async_execute(merge_request, old_assignees)
+    end
+
+    def handle_reviewers_change(merge_request, old_reviewers)
+      affected_reviewers = (old_reviewers + merge_request.reviewers) - (old_reviewers & merge_request.reviewers)
+      create_reviewer_note(merge_request, old_reviewers)
+      notification_service.async.changed_reviewer_of_merge_request(merge_request, current_user, old_reviewers)
+      todo_service.reassigned_reviewable(merge_request, current_user, old_reviewers)
+      invalidate_cache_counts(merge_request, users: affected_reviewers.compact)
+
+      new_reviewers = merge_request.reviewers - old_reviewers
+      merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
+      merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
     end
 
     def cleanup_environments(merge_request)

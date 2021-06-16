@@ -9,13 +9,13 @@ export const ANY_OPTION = Object.freeze({
 export const GROUP_DATA = {
   headerText: __('Filter results by group'),
   queryParam: 'group_id',
-  selectedDisplayValue: 'name',
-  itemsDisplayValue: 'full_name',
+  name: 'name',
+  fullName: 'full_name',
 };
 
 export const PROJECT_DATA = {
   headerText: __('Filter results by project'),
   queryParam: 'project_id',
-  selectedDisplayValue: 'name_with_namespace',
-  itemsDisplayValue: 'name_with_namespace',
+  name: 'name',
+  fullName: 'name_with_namespace',
 };

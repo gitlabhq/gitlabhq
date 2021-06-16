@@ -9,8 +9,10 @@ import issueConfidentialQuery from '~/sidebar/queries/issue_confidential.query.g
 import issueDueDateQuery from '~/sidebar/queries/issue_due_date.query.graphql';
 import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
 import issueSubscribedQuery from '~/sidebar/queries/issue_subscribed.query.graphql';
+import issueTimeTrackingQuery from '~/sidebar/queries/issue_time_tracking.query.graphql';
 import mergeRequestReferenceQuery from '~/sidebar/queries/merge_request_reference.query.graphql';
 import mergeRequestSubscribed from '~/sidebar/queries/merge_request_subscribed.query.graphql';
+import mergeRequestTimeTrackingQuery from '~/sidebar/queries/merge_request_time_tracking.query.graphql';
 import updateEpicConfidentialMutation from '~/sidebar/queries/update_epic_confidential.mutation.graphql';
 import updateEpicDueDateMutation from '~/sidebar/queries/update_epic_due_date.mutation.graphql';
 import updateEpicStartDateMutation from '~/sidebar/queries/update_epic_start_date.mutation.graphql';
@@ -19,6 +21,8 @@ import updateIssueConfidentialMutation from '~/sidebar/queries/update_issue_conf
 import updateIssueDueDateMutation from '~/sidebar/queries/update_issue_due_date.mutation.graphql';
 import updateIssueSubscriptionMutation from '~/sidebar/queries/update_issue_subscription.mutation.graphql';
 import updateMergeRequestSubscriptionMutation from '~/sidebar/queries/update_merge_request_subscription.mutation.graphql';
+import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
+import getAlertAssignees from '~/vue_shared/components/sidebar/queries/get_alert_assignees.query.graphql';
 import getIssueAssignees from '~/vue_shared/components/sidebar/queries/get_issue_assignees.query.graphql';
 import issueParticipantsQuery from '~/vue_shared/components/sidebar/queries/get_issue_participants.query.graphql';
 import getIssueTimelogsQuery from '~/vue_shared/components/sidebar/queries/get_issue_timelogs.query.graphql';
@@ -27,6 +31,9 @@ import getMergeRequestParticipants from '~/vue_shared/components/sidebar/queries
 import getMrTimelogsQuery from '~/vue_shared/components/sidebar/queries/get_mr_timelogs.query.graphql';
 import updateIssueAssigneesMutation from '~/vue_shared/components/sidebar/queries/update_issue_assignees.mutation.graphql';
 import updateMergeRequestAssigneesMutation from '~/vue_shared/components/sidebar/queries/update_mr_assignees.mutation.graphql';
+import projectIssueMilestoneMutation from './queries/project_issue_milestone.mutation.graphql';
+import projectIssueMilestoneQuery from './queries/project_issue_milestone.query.graphql';
+import projectMilestonesQuery from './queries/project_milestones.query.graphql';
 
 export const ASSIGNEES_DEBOUNCE_DELAY = 250;
 
@@ -40,6 +47,10 @@ export const assigneesQueries = {
     query: getMergeRequestAssignees,
     mutation: updateMergeRequestAssigneesMutation,
   },
+  [IssuableType.Alert]: {
+    query: getAlertAssignees,
+    mutation: updateAlertAssigneesMutation,
+  },
 };
 
 export const participantsQueries = {
@@ -51,6 +62,10 @@ export const participantsQueries = {
   },
   [IssuableType.Epic]: {
     query: epicParticipantsQuery,
+  },
+  [IssuableType.Alert]: {
+    query: '',
+    skipQuery: true,
   },
 };
 
@@ -107,6 +122,15 @@ export const subscribedQueries = {
   },
 };
 
+export const timeTrackingQueries = {
+  [IssuableType.Issue]: {
+    query: issueTimeTrackingQuery,
+  },
+  [IssuableType.MergeRequest]: {
+    query: mergeRequestTimeTrackingQuery,
+  },
+};
+
 export const dueDateQueries = {
   [IssuableType.Issue]: {
     query: issueDueDateQuery,
@@ -131,5 +155,35 @@ export const timelogQueries = {
   },
   [IssuableType.MergeRequest]: {
     query: getMrTimelogsQuery,
+  },
+};
+
+export const noAttributeId = null;
+
+export const issuableMilestoneQueries = {
+  [IssuableType.Issue]: {
+    query: projectIssueMilestoneQuery,
+    mutation: projectIssueMilestoneMutation,
+  },
+};
+
+export const milestonesQueries = {
+  [IssuableType.Issue]: {
+    query: projectMilestonesQuery,
+  },
+};
+
+export const IssuableAttributeType = {
+  Milestone: 'milestone',
+};
+
+export const IssuableAttributeState = {
+  [IssuableAttributeType.Milestone]: 'active',
+};
+
+export const issuableAttributesQueries = {
+  [IssuableAttributeType.Milestone]: {
+    current: issuableMilestoneQueries,
+    list: milestonesQueries,
   },
 };

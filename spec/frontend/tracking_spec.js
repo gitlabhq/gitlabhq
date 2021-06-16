@@ -1,14 +1,31 @@
 import { setHTMLFixture } from 'helpers/fixtures';
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
 import { getExperimentData } from '~/experimentation/utils';
-import Tracking, { initUserTracking, initDefaultTrackers, STANDARD_CONTEXT } from '~/tracking';
+import Tracking, { initUserTracking, initDefaultTrackers } from '~/tracking';
+import getStandardContext from '~/tracking/get_standard_context';
 
 jest.mock('~/experimentation/utils', () => ({ getExperimentData: jest.fn() }));
 
 describe('Tracking', () => {
+  let standardContext;
   let snowplowSpy;
   let bindDocumentSpy;
   let trackLoadEventsSpy;
+  let enableFormTracking;
+
+  beforeAll(() => {
+    window.gl = window.gl || {};
+    window.gl.snowplowStandardContext = {
+      schema: 'iglu:com.gitlab/gitlab_standard',
+      data: {
+        environment: 'testing',
+        source: 'unknown',
+        extra: {},
+      },
+    };
+
+    standardContext = getStandardContext();
+  });
 
   beforeEach(() => {
     getExperimentData.mockReturnValue(undefined);
@@ -38,6 +55,10 @@ describe('Tracking', () => {
         formTracking: false,
         linkClickTracking: false,
         pageUnloadTimer: 10,
+        formTrackingConfig: {
+          fields: { allow: [] },
+          forms: { allow: [] },
+        },
       });
     });
   });
@@ -46,12 +67,15 @@ describe('Tracking', () => {
     beforeEach(() => {
       bindDocumentSpy = jest.spyOn(Tracking, 'bindDocument').mockImplementation(() => null);
       trackLoadEventsSpy = jest.spyOn(Tracking, 'trackLoadEvents').mockImplementation(() => null);
+      enableFormTracking = jest
+        .spyOn(Tracking, 'enableFormTracking')
+        .mockImplementation(() => null);
     });
 
     it('should activate features based on what has been enabled', () => {
       initDefaultTrackers();
       expect(snowplowSpy).toHaveBeenCalledWith('enableActivityTracking', 30, 30);
-      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', null, [STANDARD_CONTEXT]);
+      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', null, [standardContext]);
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableFormTracking');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableLinkClickTracking');
 
@@ -59,10 +83,11 @@ describe('Tracking', () => {
         ...window.snowplowOptions,
         formTracking: true,
         linkClickTracking: true,
+        formTrackingConfig: { forms: { whitelist: ['foo'] }, fields: { whitelist: ['bar'] } },
       };
 
       initDefaultTrackers();
-      expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking');
+      expect(enableFormTracking).toHaveBeenCalledWith(window.snowplowOptions.formTrackingConfig);
       expect(snowplowSpy).toHaveBeenCalledWith('enableLinkClickTracking');
     });
 
@@ -84,34 +109,6 @@ describe('Tracking', () => {
       navigator.msDoNotTrack = undefined;
     });
 
-    describe('builds the standard context', () => {
-      let standardContext;
-
-      beforeAll(async () => {
-        window.gl = window.gl || {};
-        window.gl.snowplowStandardContext = {
-          schema: 'iglu:com.gitlab/gitlab_standard',
-          data: {
-            environment: 'testing',
-            source: 'unknown',
-          },
-        };
-
-        jest.resetModules();
-
-        ({ STANDARD_CONTEXT: standardContext } = await import('~/tracking'));
-      });
-
-      it('uses server data', () => {
-        expect(standardContext.schema).toBe('iglu:com.gitlab/gitlab_standard');
-        expect(standardContext.data.environment).toBe('testing');
-      });
-
-      it('overrides schema source', () => {
-        expect(standardContext.data.source).toBe('gitlab-javascript');
-      });
-    });
-
     it('tracks to snowplow (our current tracking system)', () => {
       Tracking.event('_category_', '_eventName_', { label: '_label_' });
 
@@ -122,7 +119,31 @@ describe('Tracking', () => {
         '_label_',
         undefined,
         undefined,
-        [STANDARD_CONTEXT],
+        [standardContext],
+      );
+    });
+
+    it('allows adding extra data to the default context', () => {
+      const extra = { foo: 'bar' };
+
+      Tracking.event('_category_', '_eventName_', { extra });
+
+      expect(snowplowSpy).toHaveBeenCalledWith(
+        'trackStructEvent',
+        '_category_',
+        '_eventName_',
+        undefined,
+        undefined,
+        undefined,
+        [
+          {
+            ...standardContext,
+            data: {
+              ...standardContext.data,
+              extra,
+            },
+          },
+        ],
       );
     });
 
@@ -156,26 +177,23 @@ describe('Tracking', () => {
   });
 
   describe('.enableFormTracking', () => {
-    it('tells snowplow to enable form tracking', () => {
-      const config = { forms: { whitelist: [''] }, fields: { whitelist: [''] } };
-      Tracking.enableFormTracking(config, ['_passed_context_']);
+    it('tells snowplow to enable form tracking, with only explicit contexts', () => {
+      const config = { forms: { allow: ['form-class1'] }, fields: { allow: ['input-class1'] } };
+      Tracking.enableFormTracking(config, ['_passed_context_', standardContext]);
 
-      expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking', config, [
-        { data: { source: 'gitlab-javascript' }, schema: undefined },
-        '_passed_context_',
-      ]);
+      expect(snowplowSpy).toHaveBeenCalledWith(
+        'enableFormTracking',
+        { forms: { whitelist: ['form-class1'] }, fields: { whitelist: ['input-class1'] } },
+        ['_passed_context_'],
+      );
     });
 
-    it('throws an error if no whitelist rules are provided', () => {
-      const expectedError = new Error(
-        'Unable to enable form event tracking without whitelist rules.',
-      );
+    it('throws an error if no allow rules are provided', () => {
+      const expectedError = new Error('Unable to enable form event tracking without allow rules.');
 
       expect(() => Tracking.enableFormTracking()).toThrow(expectedError);
-      expect(() => Tracking.enableFormTracking({ fields: { whitelist: [] } })).toThrow(
-        expectedError,
-      );
-      expect(() => Tracking.enableFormTracking({ fields: { whitelist: [1] } })).not.toThrow(
+      expect(() => Tracking.enableFormTracking({ fields: { allow: true } })).toThrow(expectedError);
+      expect(() => Tracking.enableFormTracking({ fields: { allow: [] } })).not.toThrow(
         expectedError,
       );
     });
@@ -197,7 +215,7 @@ describe('Tracking', () => {
         '_label_',
         undefined,
         undefined,
-        [STANDARD_CONTEXT],
+        [standardContext],
       );
     });
   });
@@ -213,13 +231,15 @@ describe('Tracking', () => {
       eventSpy = jest.spyOn(Tracking, 'event');
       Tracking.bindDocument('_category_'); // only happens once
       setHTMLFixture(`
-        <input data-track-${term}="click_input1" data-track-label="_label_" value="_value_"/>
-        <input data-track-${term}="click_input2" data-track-value="_value_override_" value="_value_"/>
-        <input type="checkbox" data-track-${term}="toggle_checkbox" value="_value_" checked/>
+        <input data-track-${term}="click_input1" data-track-label="_label_" value=0 />
+        <input data-track-${term}="click_input2" data-track-value=0 value=0/>
+        <input type="checkbox" data-track-${term}="toggle_checkbox" value=1 checked/>
         <input class="dropdown" data-track-${term}="toggle_dropdown"/>
         <div data-track-${term}="nested_event"><span class="nested"></span></div>
         <input data-track-bogus="click_bogusinput" data-track-label="_label_" value="_value_"/>
         <input data-track-${term}="click_input3" data-track-experiment="example" value="_value_"/>
+        <input data-track-${term}="event_with_extra" data-track-extra='{ "foo": "bar" }' />
+        <input data-track-${term}="event_with_invalid_extra" data-track-extra="invalid_json" />
       `);
     });
 
@@ -228,7 +248,7 @@ describe('Tracking', () => {
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input1', {
         label: '_label_',
-        value: '_value_',
+        value: '0',
       });
     });
 
@@ -242,7 +262,7 @@ describe('Tracking', () => {
       document.querySelector(`[data-track-${term}="click_input2"]`).click();
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input2', {
-        value: '_value_override_',
+        value: '0',
       });
     });
 
@@ -252,13 +272,13 @@ describe('Tracking', () => {
       checkbox.click(); // unchecking
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_checkbox', {
-        value: false,
+        value: 0,
       });
 
       checkbox.click(); // checking
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_checkbox', {
-        value: '_value_',
+        value: '1',
       });
     });
 
@@ -295,6 +315,20 @@ describe('Tracking', () => {
         context: { schema: TRACKING_CONTEXT_SCHEMA, data: mockExperimentData },
       });
     });
+
+    it('supports extra data as JSON', () => {
+      document.querySelector(`[data-track-${term}="event_with_extra"]`).click();
+
+      expect(eventSpy).toHaveBeenCalledWith('_category_', 'event_with_extra', {
+        extra: { foo: 'bar' },
+      });
+    });
+
+    it('ignores extra if provided JSON is invalid', () => {
+      document.querySelector(`[data-track-${term}="event_with_invalid_extra"]`).click();
+
+      expect(eventSpy).toHaveBeenCalledWith('_category_', 'event_with_invalid_extra', {});
+    });
   });
 
   describe.each`
@@ -307,8 +341,8 @@ describe('Tracking', () => {
     beforeEach(() => {
       eventSpy = jest.spyOn(Tracking, 'event');
       setHTMLFixture(`
-        <input data-track-${term}="render" data-track-label="label1" value="_value_" data-track-property="_property_"/>
-        <span data-track-${term}="render" data-track-label="label2" data-track-value="_value_">
+        <input data-track-${term}="render" data-track-label="label1" value=1 data-track-property="_property_"/>
+        <span data-track-${term}="render" data-track-label="label2" data-track-value=1>
           Something
         </span>
         <input data-track-${term}="_render_bogus_" data-track-label="label3" value="_value_" data-track-property="_property_"/>
@@ -323,7 +357,7 @@ describe('Tracking', () => {
           'render',
           {
             label: 'label1',
-            value: '_value_',
+            value: '1',
             property: '_property_',
           },
         ],
@@ -332,7 +366,7 @@ describe('Tracking', () => {
           'render',
           {
             label: 'label2',
-            value: '_value_',
+            value: '1',
           },
         ],
       ]);

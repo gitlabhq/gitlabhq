@@ -17,6 +17,28 @@ RSpec.shared_examples 'namespace traversal' do
     end
   end
 
+  describe '#root_ancestor' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:nested_group) { create(:group, parent: group) }
+    let_it_be(:deep_nested_group) { create(:group, parent: nested_group) }
+
+    it 'returns the correct root ancestor' do
+      expect(group.root_ancestor).to eq(group)
+      expect(nested_group.root_ancestor).to eq(group)
+      expect(deep_nested_group.root_ancestor).to eq(group)
+    end
+
+    describe '#recursive_root_ancestor' do
+      let(:groups) { [group, nested_group, deep_nested_group] }
+
+      it "is equivalent to #recursive_root_ancestor" do
+        groups.each do |group|
+          expect(group.root_ancestor).to eq(group.recursive_root_ancestor)
+        end
+      end
+    end
+  end
+
   describe '#self_and_hierarchy' do
     let!(:group) { create(:group, path: 'git_lab') }
     let!(:nested_group) { create(:group, parent: group) }
@@ -120,6 +142,22 @@ RSpec.shared_examples 'namespace traversal' do
       let(:groups) { [group, nested_group, deep_nested_group, very_deep_nested_group] }
 
       it_behaves_like 'recursive version', :self_and_descendants
+    end
+  end
+
+  describe '#self_and_descendant_ids' do
+    let!(:group) { create(:group, path: 'git_lab') }
+    let!(:nested_group) { create(:group, parent: group) }
+    let!(:deep_nested_group) { create(:group, parent: nested_group) }
+
+    subject { group.self_and_descendant_ids.pluck(:id) }
+
+    it { is_expected.to contain_exactly(group.id, nested_group.id, deep_nested_group.id) }
+
+    describe '#recursive_self_and_descendant_ids' do
+      let(:groups) { [group, nested_group, deep_nested_group] }
+
+      it_behaves_like 'recursive version', :self_and_descendant_ids
     end
   end
 end

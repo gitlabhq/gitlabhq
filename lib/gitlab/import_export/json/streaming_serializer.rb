@@ -2,7 +2,7 @@
 
 module Gitlab
   module ImportExport
-    module JSON
+    module Json
       class StreamingSerializer
         include Gitlab::ImportExport::CommandLineUtil
 

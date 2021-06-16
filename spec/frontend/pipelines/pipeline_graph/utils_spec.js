@@ -111,6 +111,28 @@ describe('utils functions', () => {
       });
     });
 
+    it('removes needs which are not in the data', () => {
+      const inexistantJobName = 'job5';
+      const jobsWithNeeds = {
+        [jobName1]: job1,
+        [jobName2]: job2,
+        [jobName3]: job3,
+        [jobName4]: {
+          name: jobName4,
+          script: 'echo deploy',
+          stage: 'deploy',
+          needs: [inexistantJobName],
+        },
+      };
+
+      expect(generateJobNeedsDict(jobsWithNeeds)).toEqual({
+        [jobName1]: [],
+        [jobName2]: [],
+        [jobName3]: [jobName1, jobName2],
+        [jobName4]: [],
+      });
+    });
+
     it('handles parallel jobs by adding the group name as a need', () => {
       const size = 3;
       const jobOptimize1 = 'optimize_1';

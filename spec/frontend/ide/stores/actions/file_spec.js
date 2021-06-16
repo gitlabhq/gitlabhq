@@ -29,7 +29,7 @@ describe('IDE store file actions', () => {
     store = createStore();
 
     store.state.currentProjectId = 'test/test';
-    store.state.currentBranchId = 'master';
+    store.state.currentBranchId = 'main';
 
     router = createRouter(store);
 
@@ -85,7 +85,7 @@ describe('IDE store file actions', () => {
         .dispatch('closeFile', localFile)
         .then(Vue.nextTick)
         .then(() => {
-          expect(router.push).toHaveBeenCalledWith('/project/test/test/tree/master/-/newOpenFile/');
+          expect(router.push).toHaveBeenCalledWith('/project/test/test/tree/main/-/newOpenFile/');
         });
     });
 
@@ -177,11 +177,11 @@ describe('IDE store file actions', () => {
       store.state.entries[localFile.path] = localFile;
 
       store.state.currentProjectId = 'test/test';
-      store.state.currentBranchId = 'master';
+      store.state.currentBranchId = 'main';
 
       store.state.projects['test/test'] = {
         branches: {
-          master: {
+          main: {
             commit: {
               id: '7297abc',
             },
@@ -260,7 +260,7 @@ describe('IDE store file actions', () => {
 
       it('sets document title with the branchId', () => {
         return store.dispatch('getFileData', { path: localFile.path }).then(() => {
-          expect(document.title).toBe(`${localFile.path} · master · test/test · GitLab`);
+          expect(document.title).toBe(`${localFile.path} · main · test/test · GitLab`);
         });
       });
 
@@ -329,7 +329,7 @@ describe('IDE store file actions', () => {
 
       it('sets document title considering `prevPath` on a file', () => {
         return store.dispatch('getFileData', { path: localFile.path }).then(() => {
-          expect(document.title).toBe(`new-shiny-file · master · test/test · GitLab`);
+          expect(document.title).toBe(`new-shiny-file · main · test/test · GitLab`);
         });
       });
     });
@@ -702,7 +702,7 @@ describe('IDE store file actions', () => {
         });
 
         it('pushes route for active file', () => {
-          expect(router.push).toHaveBeenCalledWith('/project/test/test/tree/master/-/tempFile/');
+          expect(router.push).toHaveBeenCalledWith('/project/test/test/tree/main/-/tempFile/');
         });
       });
     });
@@ -778,7 +778,7 @@ describe('IDE store file actions', () => {
 
     it('pushes router URL when added', () => {
       return store.dispatch('openPendingTab', { file: f, keyPrefix: 'pending' }).then(() => {
-        expect(router.push).toHaveBeenCalledWith('/project/test/test/tree/master/');
+        expect(router.push).toHaveBeenCalledWith('/project/test/test/tree/main/');
       });
     });
   });

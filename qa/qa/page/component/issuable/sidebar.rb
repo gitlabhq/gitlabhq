@@ -30,7 +30,7 @@ module QA
               element :labels_dropdown_content
             end
 
-            base.view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select/dropdown_title.vue' do
+            base.view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select_vue/dropdown_title.vue' do
               element :labels_edit_button
             end
 
@@ -65,13 +65,13 @@ module QA
 
           def has_assignee?(username)
             within_element(:assignee_block) do
-              has_text?(username, wait: 120)
+              has_text?(username, wait: 1)
             end
           end
 
           def has_no_assignee?(username)
             within_element(:assignee_block) do
-              has_no_text?(username, wait: 120)
+              has_no_text?(username, wait: 1)
             end
           end
 

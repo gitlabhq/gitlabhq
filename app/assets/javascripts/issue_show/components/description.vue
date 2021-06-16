@@ -1,7 +1,7 @@
 <script>
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import $ from 'jquery';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import TaskList from '../../task_list';
 import animateMixin from '../mixins/animate';
@@ -92,8 +92,8 @@ export default {
     },
 
     taskListUpdateError() {
-      createFlash(
-        sprintf(
+      createFlash({
+        message: sprintf(
           s__(
             'Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again.',
           ),
@@ -101,7 +101,7 @@ export default {
             issueType: this.issuableType,
           },
         ),
-      );
+      });
 
       this.$emit('taskListUpdateFailed');
     },

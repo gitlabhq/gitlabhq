@@ -381,7 +381,7 @@ export default {
         :label="s__('ProjectSettings|Project visibility')"
       >
         <div class="project-feature-controls gl-display-flex gl-align-items-center gl-my-3 gl-mx-0">
-          <div class="select-wrapper gl-flex-fill-1">
+          <div class="select-wrapper gl-flex-grow-1">
             <select
               v-model="visibilityLevel"
               :disabled="!canChangeVisibilityLevel"

@@ -91,11 +91,11 @@ To run a License Compliance scanning job, you need GitLab Runner with the
 
 For GitLab 12.8 and later, to enable License Compliance, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml)
+[`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml)
 that's provided as a part of your GitLab installation.
 For older versions of GitLab from 11.9 to 12.7, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml).
+[`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/d2cc841c55d65bc8134bfb3a467e66c36ac32b0a/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml).
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
 
@@ -121,7 +121,7 @@ always take the latest License Compliance artifact available. Behind the scenes,
 [GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/license-finder)
 is used to detect the languages/frameworks and in turn analyzes the licenses.
 
-The License Compliance settings can be changed through [CI/CD variables](#available-variables) by using the
+The License Compliance settings can be changed through [CI/CD variables](#available-cicd-variables) by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 
 ### When License Compliance runs
@@ -129,7 +129,7 @@ The License Compliance settings can be changed through [CI/CD variables](#availa
 When using the GitLab `License-Scanning.gitlab-ci.yml` template, the License Compliance job doesn't
 wait for other stages to complete.
 
-### Available variables
+### Available CI/CD variables
 
 License Compliance can be configured using CI/CD variables.
 
@@ -153,7 +153,7 @@ License Compliance can be configured using CI/CD variables.
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.
 
-The `license_management` image already embeds many auto-detection scripts, languages,
+The `license_finder` image already embeds many auto-detection scripts, languages,
 and packages. Nevertheless, it's almost impossible to cover all cases for all projects.
 That's why sometimes it's necessary to install extra packages, or to have extra steps
 in the project automated setup, like the download and installation of a certificate.
@@ -265,11 +265,11 @@ license_scanning:
 ### Custom root certificates for Python
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables).
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
 
 #### Using private Python repositories
 
-If you have a private Python repository you can use the `PIP_INDEX_URL` [CI/CD variable](#available-variables)
+If you have a private Python repository you can use the `PIP_INDEX_URL` [CI/CD variable](#available-cicd-variables)
 to specify its location.
 
 ### Configuring npm projects
@@ -292,7 +292,7 @@ registry = https://npm.example.com
 #### Custom root certificates for npm
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables).
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
 
 To disable TLS verification you can provide the [`strict-ssl`](https://docs.npmjs.com/using-npm/config/#strict-ssl)
 setting.
@@ -323,7 +323,7 @@ npmRegistryServer: "https://npm.example.com"
 #### Custom root certificates for Yarn
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables).
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
 
 ### Configuring Bower projects
 
@@ -347,7 +347,7 @@ For example:
 #### Custom root certificates for Bower
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables), or by
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
 specifying a `ca` setting in a [`.bowerrc`](https://bower.io/docs/config/#bowerrc-specification)
 file.
 
@@ -368,7 +368,7 @@ source "https://gems.example.com"
 #### Custom root certificates for Bundler
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables), or by
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
 specifying a [`BUNDLE_SSL_CA_CERT`](https://bundler.io/v2.0/man/bundle-config.1.html)
 [variable](../../../ci/variables/README.md#custom-cicd-variables)
 in the job definition.
@@ -392,7 +392,7 @@ my-registry = { index = "https://my-intranet:8080/git/index" }
 
 To supply a custom root certificate to complete TLS verification, do one of the following:
 
-- Use the `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables).
+- Use the `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
 - Specify a [`CARGO_HTTP_CAINFO`](https://doc.rust-lang.org/cargo/reference/environment-variables.html)
   [variable](../../../ci/variables/README.md#custom-cicd-variables)
   in the job definition.
@@ -425,7 +425,7 @@ For example:
 #### Custom root certificates for Composer
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables), or by
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
 specifying a [`COMPOSER_CAFILE`](https://getcomposer.org/doc/03-cli.md#composer-cafile)
 [variable](../../../ci/variables/README.md#custom-cicd-variables)
 in the job definition.
@@ -499,7 +499,7 @@ You can provide custom certificates by adding a `.conan/cacert.pem` file to the 
 setting [`CA_CERT_PATH`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-cacert-path)
 to `.conan/cacert.pem`.
 
-If you specify the `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables), this
+If you specify the `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), this
 variable's X.509 certificates are installed in the Docker image's default trust store and Conan is
 configured to use this as the default `CA_CERT_PATH`.
 
@@ -507,7 +507,7 @@ configured to use this as the default `CA_CERT_PATH`.
 
 To configure [Go modules](https://github.com/golang/go/wiki/Modules)
 based projects, specify [CI/CD variables](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
-in the `license_scanning` job's [variables](#available-variables) section in `.gitlab-ci.yml`.
+in the `license_scanning` job's [variables](#available-cicd-variables) section in `.gitlab-ci.yml`.
 
 If a project has [vendored](https://golang.org/pkg/cmd/go/#hdr-Vendor_Directories) its modules,
 then the combination of the `vendor` directory and `mod.sum` file are used to detect the software
@@ -556,9 +556,12 @@ For example:
 #### Custom root certificates for NuGet
 
 You can supply a custom root certificate to complete TLS verification by using the
-`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-variables).
+`ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
 
 ### Migration from `license_management` to `license_scanning`
+
+WARNING:
+The `license_management` job was deprecated in GitLab 12.8. The `License-Management.gitlab-ci.yml` template was removed from GitLab 14.0.
 
 In GitLab 12.8 a new name for `license_management` job was introduced. This change was made to improve clarity around the purpose of the scan, which is to scan and collect the types of licenses present in a projects dependencies.
 GitLab 13.0 drops support for `license_management`.
@@ -730,8 +733,9 @@ Developers of the project can view the policies configured in a project.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
-`License-Check` is a [security approval](../../application_security/index.md#enabling-security-approvals-within-a-project) rule you can enable to allow an individual or group to approve a
-merge request that contains a `denied` license.
+`License-Check` is a [merge request approval](../../project/merge_requests/approvals/index.md) rule
+you can enable to allow an individual or group to approve a merge request that contains a `denied`
+license.
 
 You can enable `License-Check` one of two ways:
 
@@ -816,7 +820,7 @@ license_scanning:
     ASDF_RUBY_VERSION: '2.7.2'
 ```
 
-A full list of variables can be found in [CI/CD variables](#available-variables).
+A full list of variables can be found in [CI/CD variables](#available-cicd-variables).
 
 To find out what tools are pre-installed in the `license_scanning` Docker image use the following command:
 

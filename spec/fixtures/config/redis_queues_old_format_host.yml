@@ -1,5 +1,0 @@
-# redis://[:password@]host[:port][/db-number][?option=value]
-# more details: http://www.iana.org/assignments/uri-schemes/prov/redis
-development: redis://:mypassword@localhost:6381/11
-test: redis://:mypassword@localhost:6381/11
-production: redis://:mypassword@localhost:6381/11

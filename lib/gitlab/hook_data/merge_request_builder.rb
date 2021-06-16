@@ -37,6 +37,7 @@ module Gitlab
         assignees
         labels
         total_time_spent
+        time_change
       ].freeze
 
       alias_method :merge_request, :object
@@ -50,7 +51,9 @@ module Gitlab
           last_commit: merge_request.diff_head_commit&.hook_attrs,
           work_in_progress: merge_request.work_in_progress?,
           total_time_spent: merge_request.total_time_spent,
+          time_change: merge_request.time_change,
           human_total_time_spent: merge_request.human_total_time_spent,
+          human_time_change: merge_request.human_time_change,
           human_time_estimate: merge_request.human_time_estimate,
           assignee_ids: merge_request.assignee_ids,
           assignee_id: merge_request.assignee_ids.first, # This key is deprecated

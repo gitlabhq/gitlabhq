@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:ldap:rename_provider rake task' do
+RSpec.describe 'gitlab:ldap:rename_provider rake task', :silence_stdout do
   it 'completes without error' do
     Rake.application.rake_require 'tasks/gitlab/ldap'
     stub_warn_user_is_not_gitlab
@@ -93,8 +93,8 @@ RSpec.describe 'gitlab:ldap:secret rake tasks' do
 
   describe 'write' do
     before do
-      allow(STDIN).to receive(:tty?).and_return(false)
-      allow(STDIN).to receive(:read).and_return('testvalue')
+      allow($stdin).to receive(:tty?).and_return(false)
+      allow($stdin).to receive(:read).and_return('testvalue')
     end
 
     it 'creates encrypted file from stdin' do

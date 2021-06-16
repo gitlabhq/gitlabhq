@@ -90,7 +90,7 @@ and complete an integration with the Secure stage.
      - Documentation for [SAST reports](../../user/application_security/sast/index.md#reports-json-format).
      - Documentation for [Dependency Scanning reports](../../user/application_security/dependency_scanning/index.md#reports-json-format).
      - Documentation for [Container Scanning reports](../../user/application_security/container_scanning/index.md#reports-json-format).
-     - See this [example secure job definition that also defines the artifact created](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
+     - See this [example secure job definition that also defines the artifact created](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
      - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new#)
        and add the label `devops::secure`.
    - Once the job is completed, the data can be seen:
@@ -101,7 +101,7 @@ and complete an integration with the Secure stage.
    - Users can interact with the findings from your artifact within their workflow. They can dismiss the findings or accept them and create a backlog issue.
    - To automatically create issues without user interaction, use the [issue API](../../api/issues.md).
 1. Optional: Provide auto-remediation steps:
-   - If you specified `remediations` in your artifact, it is proposed through our [automatic remediation](../../user/application_security/vulnerabilities/index.md#remediate-a-vulnerability-automatically)
+   - If you specified `remediations` in your artifact, it is proposed through our [remediation](../../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
      interface.
 1. Demo the integration to GitLab:
    - After you have tested and are ready to demo your integration please

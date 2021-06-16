@@ -284,7 +284,8 @@ HTTP Basic Authentication with the application's `client_id` and `client_secret`
 
 ```shell
 echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
-curl --data "@auth.txt" --user client_id:client_secret --request POST "https://gitlab.example.com/oauth/token"
+curl --data "@auth.txt" --user client_id:client_secret \
+     --request POST "https://gitlab.example.com/oauth/token"
 ```
 
 Then, you receive a response containing the access token:

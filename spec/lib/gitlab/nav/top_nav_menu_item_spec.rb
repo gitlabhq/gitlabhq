@@ -11,10 +11,10 @@ RSpec.describe ::Gitlab::Nav::TopNavMenuItem do
         active: true,
         icon: 'icon',
         href: 'href',
-        method: 'method',
         view: 'view',
         css_class: 'css_class',
-        data: {}
+        data: {},
+        emoji: 'smile'
       }
 
       expect(described_class.build(**item)).to eq(item)

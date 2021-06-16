@@ -18,8 +18,8 @@ The information in this page applies only to Omnibus GitLab.
 
 For a list of the existing Sidekiq queues, check the following files:
 
-- [Queues for both GitLab Community and Enterprise Editions](https://gitlab.com/gitlab-org/gitlab/blob/master/app/workers/all_queues.yml)
-- [Queues for GitLab Enterprise Editions only](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/all_queues.yml)
+- [Queues for both GitLab Community and Enterprise Editions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/all_queues.yml)
+- [Queues for GitLab Enterprise Editions only](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/all_queues.yml)
 
 Each entry in the above files represents a queue on which Sidekiq processes
 can be started.
@@ -38,11 +38,11 @@ To start multiple processes:
    process, and values in each item determine the queues it works on.
 
    For example, the following setting creates three Sidekiq processes, one to run on
-   `elastic_indexer`, one to run on `mailers`, and one process running on all queues:
+   `elastic_commit_indexer`, one to run on `mailers`, and one process running on all queues:
 
    ```ruby
    sidekiq['queue_groups'] = [
-     "elastic_indexer",
+     "elastic_commit_indexer",
      "mailers",
      "*"
    ]
@@ -53,7 +53,7 @@ To start multiple processes:
 
    ```ruby
    sidekiq['queue_groups'] = [
-     "elastic_indexer, elastic_commit_indexer",
+     "elastic_commit_indexer, elastic_association_indexer",
      "mailers",
      "*"
    ]
@@ -70,11 +70,11 @@ To start multiple processes:
    ]
    ```
 
-   `*` cannot be combined with concrete queue names - `*, mailers` will
-   just handle the `mailers` queue.
+   `*` cannot be combined with concrete queue names - `*, mailers`
+   just handles the `mailers` queue.
 
    When `sidekiq-cluster` is only running on a single node, make sure that at least
-   one process is running on all queues using `*`. This means a process will
+   one process is running on all queues using `*`. This means a process is
    This includes queues that have dedicated processes.
 
    If `sidekiq-cluster` is running on more than one node, you can also use
@@ -116,83 +116,10 @@ you list:
 > - [Sidekiq cluster, including queue selector, moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab Free in 12.10.
 > - [Renamed from `experimental_queue_selector` to `queue_selector`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/147) in GitLab 13.6.
 
-In addition to selecting queues by name, as above, the `queue_selector`
-option allows queue groups to be selected in a more general way using
-the following components:
-
-- Attributes that can be selected.
-- Operators used to construct a query.
-
-When `queue_selector` is set, all `queue_groups` must be in the queue
-selector syntax.
-
-### Available attributes
-
-- [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/261) in GitLab 13.1, `tags`.
-
-From the [list of all available
-attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/all_queues.yml),
-`queue_selector` allows selecting of queues by the following attributes:
-
-- `feature_category` - the [GitLab feature
-  category](https://about.gitlab.com/direction/maturity/#category-maturity) the
-  queue belongs to. For example, the `merge` queue belongs to the
-  `source_code_management` category.
-- `has_external_dependencies` - whether or not the queue connects to external
-  services. For example, all importers have this set to `true`.
-- `urgency` - how important it is that this queue's jobs run
-  quickly. Can be `high`, `low`, or `throttled`. For example, the
-  `authorized_projects` queue is used to refresh user permissions, and
-  is high urgency.
-- `worker_name` - the worker name. The other attributes are typically more useful as
-  they are more general, but this is available in case a particular worker needs
-  to be selected.
-- `name` - the queue name. Similiarly, this is available in case a particular queue needs
-  to be selected.
-- `resource_boundary` - if the queue is bound by `cpu`, `memory`, or
-  `unknown`. For example, the `project_export` queue is memory bound as it has
-  to load data in memory before saving it for export.
-- `tags` - short-lived annotations for queues. These are expected to frequently
-  change from release to release, and may be removed entirely.
-
-`has_external_dependencies` is a boolean attribute: only the exact
-string `true` is considered true, and everything else is considered
-false.
-
-`tags` is a set, which means that `=` checks for intersecting sets, and
-`!=` checks for disjoint sets. For example, `tags=a,b` selects queues
-that have tags `a`, `b`, or both. `tags!=a,b` selects queues that have
-neither of those tags.
-
-### Available operators
-
-`queue_selector` supports the following operators, listed from highest
-to lowest precedence:
-
-- `|` - the logical OR operator. For example, `query_a|query_b` (where `query_a`
-  and `query_b` are queries made up of the other operators here) will include
-  queues that match either query.
-- `&` - the logical AND operator. For example, `query_a&query_b` (where
-  `query_a` and `query_b` are queries made up of the other operators here) will
-  only include queues that match both queries.
-- `!=` - the NOT IN operator. For example, `feature_category!=issue_tracking`
-  excludes all queues from the `issue_tracking` feature category.
-- `=` - the IN operator. For example, `resource_boundary=cpu` includes all
-  queues that are CPU bound.
-- `,` - the concatenate set operator. For example,
-  `feature_category=continuous_integration,pages` includes all queues from
-  either the `continuous_integration` category or the `pages` category. This
-  example is also possible using the OR operator, but allows greater brevity, as
-  well as being lower precedence.
-
-The operator precedence for this syntax is fixed: it's not possible to make AND
-have higher precedence than OR.
-
-[In GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26594) and
-later, as with the standard queue group syntax above, a single `*` as the
-entire queue group selects all queues.
-
-### Example queries
+In addition to selecting queues by name, as above, the `queue_selector` option
+allows queue groups to be selected in a more general way using a [worker matching
+query](extra_sidekiq_routing.md#worker-matching-query). After `queue_selector`
+is set, all `queue_groups` must follow the aforementioned syntax.
 
 In `/etc/gitlab/gitlab.rb`:
 
@@ -215,7 +142,7 @@ WARNING:
 Sidekiq cluster is [scheduled](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/240)
 to be the only way to start Sidekiq in GitLab 14.0.
 
-By default, the Sidekiq service will run `sidekiq-cluster`. To disable this behavior,
+By default, the Sidekiq service runs `sidekiq-cluster`. To disable this behavior,
 add the following to the Sidekiq configuration:
 
 ```ruby
@@ -224,7 +151,7 @@ sidekiq['cluster'] = false
 ```
 
 All of the aforementioned configuration options for `sidekiq`
-are available. By default, they will be configured as follows:
+are available. By default, they are configured as follows:
 
 ```ruby
 sidekiq['queue_selector'] = false
@@ -241,14 +168,14 @@ cluster as above.
 
 When disabling `sidekiq_cluster`, you must copy your configuration for
 `sidekiq_cluster`over to `sidekiq`. Anything configured for
-`sidekiq_cluster` will be overridden by the options for `sidekiq` when
+`sidekiq_cluster` is overridden by the options for `sidekiq` when
 setting `sidekiq['cluster'] = true`.
 
-When using this feature, the service called `sidekiq` will now be
+When using this feature, the service called `sidekiq` is now 
 running `sidekiq-cluster`.
 
 The [concurrency](#manage-concurrency) and other options configured
-for Sidekiq will be respected.
+for Sidekiq are respected.
 
 By default, logs for `sidekiq-cluster` go to `/var/log/gitlab/sidekiq`
 like regular Sidekiq logs.
@@ -293,7 +220,7 @@ use all of its resources to perform those operations. To set up a separate
 Each process defined under `sidekiq` starts with a
 number of threads that equals the number of queues, plus one spare thread.
 For example, a process that handles the `process_commit` and `post_receive`
-queues will use three threads in total.
+queues uses three threads in total.
 
 ## Manage concurrency
 
@@ -324,16 +251,16 @@ Running Sidekiq cluster is the default in GitLab 13.0 and later.
    ```
 
 `min_concurrency` and `max_concurrency` are independent; one can be set without
-the other. Setting `min_concurrency` to `0` will disable the limit.
+the other. Setting `min_concurrency` to `0` disables the limit.
 
 For each queue group, let `N` be one more than the number of queues. The
-concurrency factor will be set to:
+concurrency factor are set to:
 
 1. `N`, if it's between `min_concurrency` and `max_concurrency`.
 1. `max_concurrency`, if `N` exceeds this value.
 1. `min_concurrency`, if `N` is less than this value.
 
-If `min_concurrency` is equal to `max_concurrency`, then this value will be used
+If `min_concurrency` is equal to `max_concurrency`, then this value is used
 regardless of the number of queues.
 
 When `min_concurrency` is greater than `max_concurrency`, it is treated as
@@ -360,7 +287,7 @@ Running Sidekiq directly is scheduled to be removed in GitLab
    sudo gitlab-ctl reconfigure
    ```
 
-This will set the concurrency (number of threads) for the Sidekiq process.
+This sets the concurrency (number of threads) for the Sidekiq process.
 
 ## Modify the check interval
 
@@ -426,21 +353,21 @@ you'd use the following:
 
 ### Monitor the `sidekiq-cluster` command
 
-The `sidekiq-cluster` command will not terminate once it has started the desired
-amount of Sidekiq processes. Instead, the process will continue running and
+The `sidekiq-cluster` command does not terminate once it has started the desired
+amount of Sidekiq processes. Instead, the process continues running and
 forward any signals to the child processes. This makes it easy to stop all
 Sidekiq processes as you simply send a signal to the `sidekiq-cluster` process,
 instead of having to send it to the individual processes.
 
 If the `sidekiq-cluster` process crashes or receives a `SIGKILL`, the child
-processes will terminate themselves after a few seconds. This ensures you don't
+processes terminate themselves after a few seconds. This ensures you don't
 end up with zombie Sidekiq processes.
 
 All of this makes monitoring the processes fairly easy. Simply hook up
 `sidekiq-cluster` to your supervisor of choice (for example, runit) and you're good to
 go.
 
-If a child process died the `sidekiq-cluster` command will signal all remaining
+If a child process died the `sidekiq-cluster` command signals all remaining
 process to terminate, then terminate itself. This removes the need for
 `sidekiq-cluster` to re-implement complex process monitoring/restarting code.
 Instead you should make sure your supervisor restarts the `sidekiq-cluster`
@@ -456,7 +383,7 @@ file is written, but this can be changed by passing the `--pidfile` option to
 /opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster --pidfile /var/run/gitlab/sidekiq_cluster.pid process_commit
 ```
 
-Keep in mind that the PID file will contain the PID of the `sidekiq-cluster`
+Keep in mind that the PID file contains the PID of the `sidekiq-cluster`
 command and not the PID(s) of the started Sidekiq processes.
 
 ### Environment

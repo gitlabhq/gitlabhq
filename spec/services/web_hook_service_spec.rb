@@ -128,11 +128,10 @@ RSpec.describe WebHookService do
     end
 
     it 'handles exceptions' do
-      exceptions = [
-        SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED,
-        Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout,
-        Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep
+      exceptions = Gitlab::HTTP::HTTP_ERRORS + [
+        Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError
       ]
+
       exceptions.each do |exception_class|
         exception = exception_class.new('Exception message')
         project_hook.enable!
@@ -175,13 +174,19 @@ RSpec.describe WebHookService do
     context 'execution logging' do
       let(:hook_log) { project_hook.web_hook_logs.last }
 
+      def run_service
+        service_instance.execute
+        ::WebHooks::LogExecutionWorker.drain
+        project_hook.reload
+      end
+
       context 'with success' do
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
         end
 
         it 'log successful execution' do
-          service_instance.execute
+          run_service
 
           expect(hook_log.trigger).to eq('push_hooks')
           expect(hook_log.url).to eq(project_hook.url)
@@ -192,12 +197,16 @@ RSpec.describe WebHookService do
           expect(hook_log.internal_error_message).to be_nil
         end
 
+        it 'does not log in the service itself' do
+          expect { service_instance.execute }.not_to change(::WebHookLog, :count)
+        end
+
         it 'does not increment the failure count' do
-          expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+          expect { run_service }.not_to change(project_hook, :recent_failures)
         end
 
         it 'does not change the disabled_until attribute' do
-          expect { service_instance.execute }.not_to change(project_hook, :disabled_until)
+          expect { run_service }.not_to change(project_hook, :disabled_until)
         end
 
         context 'when the hook had previously failed' do
@@ -206,7 +215,7 @@ RSpec.describe WebHookService do
           end
 
           it 'resets the failure count' do
-            expect { service_instance.execute }.to change(project_hook, :recent_failures).to(0)
+            expect { run_service }.to change(project_hook, :recent_failures).to(0)
           end
         end
       end
@@ -217,7 +226,7 @@ RSpec.describe WebHookService do
         end
 
         it 'logs failed execution' do
-          service_instance.execute
+          run_service
 
           expect(hook_log).to have_attributes(
             trigger: eq('push_hooks'),
@@ -231,17 +240,17 @@ RSpec.describe WebHookService do
         end
 
         it 'increments the failure count' do
-          expect { service_instance.execute }.to change(project_hook, :recent_failures).by(1)
+          expect { run_service }.to change(project_hook, :recent_failures).by(1)
         end
 
         it 'does not change the disabled_until attribute' do
-          expect { service_instance.execute }.not_to change(project_hook, :disabled_until)
+          expect { run_service }.not_to change(project_hook, :disabled_until)
         end
 
         it 'does not allow the failure count to overflow' do
           project_hook.update!(recent_failures: 32767)
 
-          expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+          expect { run_service }.not_to change(project_hook, :recent_failures)
         end
 
         context 'when the web_hooks_disable_failed FF is disabled' do
@@ -253,7 +262,7 @@ RSpec.describe WebHookService do
           it 'does not allow the failure count to overflow' do
             project_hook.update!(recent_failures: 32767)
 
-            expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+            expect { run_service }.not_to change(project_hook, :recent_failures)
           end
         end
       end
@@ -264,7 +273,7 @@ RSpec.describe WebHookService do
         end
 
         it 'log failed execution' do
-          service_instance.execute
+          run_service
 
           expect(hook_log.trigger).to eq('push_hooks')
           expect(hook_log.url).to eq(project_hook.url)
@@ -276,16 +285,15 @@ RSpec.describe WebHookService do
         end
 
         it 'does not increment the failure count' do
-          expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+          expect { run_service }.not_to change(project_hook, :recent_failures)
         end
 
-        it 'sets the disabled_until attribute' do
-          expect { service_instance.execute }
-            .to change(project_hook, :disabled_until).to(project_hook.next_backoff.from_now)
+        it 'backs off' do
+          expect { run_service }.to change(project_hook, :disabled_until)
         end
 
         it 'increases the backoff count' do
-          expect { service_instance.execute }.to change(project_hook, :backoff_count).by(1)
+          expect { run_service }.to change(project_hook, :backoff_count).by(1)
         end
 
         context 'when the previous cool-off was near the maximum' do
@@ -294,11 +302,7 @@ RSpec.describe WebHookService do
           end
 
           it 'sets the disabled_until attribute' do
-            expect { service_instance.execute }.to change(project_hook, :disabled_until).to(1.day.from_now)
-          end
-
-          it 'sets the last_backoff attribute' do
-            expect { service_instance.execute }.to change(project_hook, :backoff_count).by(1)
+            expect { run_service }.to change(project_hook, :disabled_until).to(1.day.from_now)
           end
         end
 
@@ -308,11 +312,7 @@ RSpec.describe WebHookService do
           end
 
           it 'sets the disabled_until attribute' do
-            expect { service_instance.execute }.to change(project_hook, :disabled_until).to(1.day.from_now)
-          end
-
-          it 'sets the last_backoff attribute' do
-            expect { service_instance.execute }.to change(project_hook, :backoff_count).by(1)
+            expect { run_service }.to change(project_hook, :disabled_until).to(1.day.from_now)
           end
         end
       end
@@ -320,7 +320,7 @@ RSpec.describe WebHookService do
       context 'with unsafe response body' do
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: "\xBB")
-          service_instance.execute
+          run_service
         end
 
         it 'log successful execution' do
@@ -375,15 +375,18 @@ RSpec.describe WebHookService do
         it 'does not queue a worker and logs an error' do
           expect(WebHookWorker).not_to receive(:perform_async)
 
-          payload = {
-            message: 'Webhook rate limit exceeded',
-            hook_id: project_hook.id,
-            hook_type: 'ProjectHook',
-            hook_name: 'push_hooks'
-          }
-
-          expect(Gitlab::AuthLogger).to receive(:error).with(payload)
-          expect(Gitlab::AppLogger).to receive(:error).with(payload)
+          expect(Gitlab::AuthLogger).to receive(:error).with(
+            include(
+              message: 'Webhook rate limit exceeded',
+              hook_id: project_hook.id,
+              hook_type: 'ProjectHook',
+              hook_name: 'push_hooks',
+              "correlation_id" => kind_of(String),
+              "meta.project" => project.full_path,
+              "meta.related_class" => 'ProjectHook',
+              "meta.root_namespace" => project.root_namespace.full_path
+            )
+          )
 
           service_instance.async_execute
         end
@@ -403,7 +406,6 @@ RSpec.describe WebHookService do
 
         it 'stops queueing workers and logs errors' do
           expect(Gitlab::AuthLogger).to receive(:error).twice
-          expect(Gitlab::AppLogger).to receive(:error).twice
 
           2.times { service_instance.async_execute }
         end
@@ -428,6 +430,20 @@ RSpec.describe WebHookService do
 
           service_instance.async_execute
         end
+      end
+    end
+
+    context 'when hook has custom context attributes' do
+      it 'includes the attributes in the worker context' do
+        expect(WebHookWorker).to receive(:perform_async) do
+          expect(Gitlab::ApplicationContext.current).to include(
+            'meta.project' => project_hook.project.full_path,
+            'meta.root_namespace' => project.root_ancestor.path,
+            'meta.related_class' => 'ProjectHook'
+          )
+        end
+
+        service_instance.async_execute
       end
     end
   end

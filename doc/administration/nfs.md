@@ -5,11 +5,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Using NFS with GitLab
+# Using NFS with GitLab **(FREE SELF)**
 
 NFS can be used as an alternative for object storage but this isn't typically
-recommended for performance reasons. Note however it is required for [GitLab
-Pages](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196).
+recommended for performance reasons.
 
 For data objects such as LFS, Uploads, Artifacts, etc., an [Object Storage service](object_storage.md)
 is recommended over NFS where possible, due to better performance.
@@ -17,7 +16,7 @@ is recommended over NFS where possible, due to better performance.
 File system performance can impact overall GitLab performance, especially for
 actions that read or write to Git repositories. For steps you can use to test
 file system performance, see
-[File system Performance Benchmarking](operations/filesystem_benchmarking.md).
+[File System Performance Benchmarking](operations/filesystem_benchmarking.md).
 
 ## Gitaly and NFS deprecation
 
@@ -445,11 +444,11 @@ In case of NFS-related problems, it can be helpful to trace
 the file system requests that are being made by using `perf`:
 
 ```shell
-sudo perf trace -e 'nfs4:*' -p $(pgrep -fd ',' puma && pgrep -fd ',' unicorn)
+sudo perf trace -e 'nfs4:*' -p $(pgrep -fd ',' puma)
 ```
 
 On Ubuntu 16.04, use:
 
 ```shell
-sudo perf trace --no-syscalls --event 'nfs4:*' -p $(pgrep -fd ',' puma && pgrep -fd ',' unicorn)
+sudo perf trace --no-syscalls --event 'nfs4:*' -p $(pgrep -fd ',' puma)
 ```

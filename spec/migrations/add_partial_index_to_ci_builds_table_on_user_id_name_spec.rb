@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200908064229_add_partial_index_to_ci_builds_table_on_user_id_name.rb')
+require_migration!
 
 RSpec.describe AddPartialIndexToCiBuildsTableOnUserIdName do
   let(:migration) { described_class.new }

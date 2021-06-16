@@ -775,7 +775,7 @@ RSpec.describe API::Releases do
     end
 
     context 'when using JOB-TOKEN auth' do
-      let(:job) { create(:ci_build, user: maintainer) }
+      let(:job) { create(:ci_build, user: maintainer, project: project) }
       let(:params) do
         {
           name: 'Another release',

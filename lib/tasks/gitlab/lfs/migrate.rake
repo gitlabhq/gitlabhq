@@ -6,7 +6,7 @@ desc "GitLab | LFS | Migrate LFS objects to remote storage"
 namespace :gitlab do
   namespace :lfs do
     task migrate: :environment do
-      logger = Logger.new(STDOUT)
+      logger = Logger.new($stdout)
       logger.info('Starting transfer of LFS files to object storage')
 
       LfsObject.with_files_stored_locally
@@ -20,7 +20,7 @@ namespace :gitlab do
     end
 
     task migrate_to_local: :environment do
-      logger = Logger.new(STDOUT)
+      logger = Logger.new($stdout)
       logger.info('Starting transfer of LFS files to local storage')
 
       LfsObject.with_files_stored_remotely

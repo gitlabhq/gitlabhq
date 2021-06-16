@@ -2,15 +2,16 @@
 
 module ActiveRecord
   class QueryRecorder
-    attr_reader :log, :skip_cached, :cached, :data
+    attr_reader :log, :skip_cached, :skip_schema_queries, :cached, :data
 
     UNKNOWN = %w[unknown unknown].freeze
 
-    def initialize(skip_cached: true, log_file: nil, query_recorder_debug: false, &block)
+    def initialize(skip_cached: true, skip_schema_queries: true, log_file: nil, query_recorder_debug: false, &block)
       @data = Hash.new { |h, k| h[k] = { count: 0, occurrences: [], backtrace: [], durations: [] } }
       @log = []
       @cached = []
       @skip_cached = skip_cached
+      @skip_schema_queries = skip_schema_queries
       @query_recorder_debug = ENV['QUERY_RECORDER_DEBUG'] || query_recorder_debug
       @log_file = log_file
       record(&block) if block_given?
@@ -79,7 +80,7 @@ module ActiveRecord
 
       if values[:cached] && skip_cached
         @cached << values[:sql]
-      elsif !values[:name]&.include?("SCHEMA")
+      elsif !skip_schema_queries || !values[:name]&.include?("SCHEMA")
         backtrace = @query_recorder_debug ? show_backtrace(values, duration) : nil
         @log << values[:sql]
         store_sql_by_source(values: values, duration: duration, backtrace: backtrace)

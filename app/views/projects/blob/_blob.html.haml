@@ -1,4 +1,6 @@
 = render "projects/blob/breadcrumb", blob: blob
+- project = @project.present(current_user: current_user)
+- ref = local_assigns[:ref] || @ref
 
 .info-well.d-none.d-sm-block
   .well-segment
@@ -12,7 +14,12 @@
   - if @code_navigation_path
     #js-code-navigation{ data: { code_navigation_path: @code_navigation_path, blob_path: blob.path, definition_path_prefix: project_blob_path(@project, @ref) } }
   - if Feature.enabled?(:refactor_blob_viewer, @project, default_enabled: :yaml)
-    #js-view-blob-app{ data: { blob_path: blob.path, project_path: @project.full_path } }
+    -# Data info will be removed once we migrate this to use GraphQL
+    -# Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/330406
+    #js-view-blob-app{ data: { blob_path: blob.path,
+                              project_path: @project.full_path,
+                              target_branch: project.empty_repo? ? ref : @ref,
+                              original_branch: @ref } }
       .gl-spinner-container
         = loading_icon(size: 'md')
   - else

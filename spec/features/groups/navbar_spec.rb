@@ -13,6 +13,7 @@ RSpec.describe 'Group navbar' do
 
   let(:structure) do
     [
+      group_context_nav_item,
       group_information_nav_item,
       {
         nav_item: _('Issues'),
@@ -35,6 +36,13 @@ RSpec.describe 'Group navbar' do
 
   let(:members_nav_item) do
     nil
+  end
+
+  let(:group_context_nav_item) do
+    {
+      nav_item: "#{group.name[0, 1].upcase} #{group.name}",
+      nav_sub_items: []
+    }
   end
 
   before do
@@ -79,6 +87,10 @@ RSpec.describe 'Group navbar' do
   end
 
   context 'when feature flag :sidebar_refactor is disabled' do
+    let(:group_context_nav_item) do
+      nil
+    end
+
     let(:group_information_nav_item) do
       {
         nav_item: _('Group overview'),

@@ -1,11 +1,11 @@
 ---
-stage: none
-group: unassigned
+stage: Create
+group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 ---
 
-# Git Stash
+# Git Stash **(FREE)**
 
 We use `git stash` to store our changes when they are not ready to be committed
 and we need to change to a different branch.

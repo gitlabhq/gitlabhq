@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Kubernetes, GitLab and You
+# Kubernetes, GitLab, and you **(FREE SELF)**
 
 This is a list of useful information regarding Kubernetes that the GitLab Support
 Team sometimes uses while troubleshooting. GitLab is making this public, so that anyone
@@ -147,7 +147,7 @@ and they will assist you with any issues you are having.
 
   You can also use `gitlab-rake`, instead of `/usr/local/bin/gitlab-rake`.
 
-- Troubleshooting **Operations > Kubernetes** integration:
+- Troubleshooting **Infrastructure > Kubernetes** integration:
 
   - Check the output of `kubectl get events -w --all-namespaces`.
   - Check the logs of pods within `gitlab-managed-apps` namespace.

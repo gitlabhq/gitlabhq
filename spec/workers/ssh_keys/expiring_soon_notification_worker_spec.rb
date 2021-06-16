@@ -35,16 +35,6 @@ RSpec.describe SshKeys::ExpiringSoonNotificationWorker, type: :worker do
           perform_multiple(worker: worker)
         end
       end
-
-      context 'when feature is not enabled' do
-        before do
-          stub_feature_flags(ssh_key_expiration_email_notification: false)
-        end
-
-        it 'does not update notified column' do
-          expect { worker.perform }.not_to change { expiring_soon.reload.before_expiry_notification_delivered_at }
-        end
-      end
     end
 
     context 'when key has expired in the past' do

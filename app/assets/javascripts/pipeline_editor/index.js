@@ -6,6 +6,7 @@ import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
 import { CODE_SNIPPET_SOURCE_SETTINGS } from './components/code_snippet_alert/constants';
 import getCommitSha from './graphql/queries/client/commit_sha.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
+import getLastCommitBranchQuery from './graphql/queries/client/last_commit_branch.query.graphql';
 import getPipelineEtag from './graphql/queries/client/pipeline_etag.graphql';
 import { resolvers } from './graphql/resolvers';
 import typeDefs from './graphql/typedefs.graphql';
@@ -79,6 +80,13 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     query: getPipelineEtag,
     data: {
       pipelineEtag,
+    },
+  });
+
+  cache.writeQuery({
+    query: getLastCommitBranchQuery,
+    data: {
+      lastCommitBranch: '',
     },
   });
 

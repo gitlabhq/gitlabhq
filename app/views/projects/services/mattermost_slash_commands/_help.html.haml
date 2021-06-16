@@ -10,8 +10,8 @@
     %p.inline
       = s_("MattermostService|After you configure the integration, view your new Mattermost commands by entering")
     %kbd.inline /&lt;trigger&gt; help
-    - if !enabled && @service.project_level?
-      = render 'projects/services/mattermost_slash_commands/detailed_help', subject: @service
+    - if !enabled && integration.project_level?
+      = render 'projects/services/mattermost_slash_commands/detailed_help', integration: integration
 
-- if enabled && @service.project_level?
-  = render 'projects/services/mattermost_slash_commands/installation_info', subject: @service
+- if enabled && integration.project_level?
+  = render 'projects/services/mattermost_slash_commands/installation_info', integration: integration

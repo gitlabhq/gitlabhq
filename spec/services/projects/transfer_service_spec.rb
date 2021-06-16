@@ -195,8 +195,6 @@ RSpec.describe Projects::TransferService do
     end
 
     it 'does not update storage location' do
-      create(:project_repository, project: project)
-
       attempt_project_transfer
 
       expect(project.project_repository).to have_attributes(

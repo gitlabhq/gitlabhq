@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Project importing from GitLab.com to your private GitLab instance
+# Project importing from GitLab.com to your private GitLab instance **(FREE)**
 
 You can import your existing GitLab.com projects to your GitLab instance, but keep in
 mind that it is possible only if GitLab.com integration is enabled on your GitLab instance.

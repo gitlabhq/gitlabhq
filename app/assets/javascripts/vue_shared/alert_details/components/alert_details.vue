@@ -24,7 +24,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { PAGE_CONFIG, SEVERITY_LEVELS } from '../constants';
 import createIssueMutation from '../graphql/mutations/alert_issue_create.mutation.graphql';
 import toggleSidebarStatusMutation from '../graphql/mutations/alert_sidebar_status.mutation.graphql';
-import alertQuery from '../graphql/queries/alert_details.query.graphql';
+import alertQuery from '../graphql/queries/alert_sidebar_details.query.graphql';
 import sidebarStatusQuery from '../graphql/queries/alert_sidebar_status.query.graphql';
 import AlertMetrics from './alert_metrics.vue';
 import AlertSidebar from './alert_sidebar.vue';

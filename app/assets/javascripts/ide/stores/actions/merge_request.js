@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import { leftSidebarViews, PERMISSION_READ_MR, MAX_MR_FILES_AUTO_OPEN } from '../../constants';
 import service from '../../services';
@@ -34,14 +34,14 @@ export const getMergeRequestsForBranch = (
       }
     })
     .catch((e) => {
-      flash(
-        __(`Error fetching merge requests for ${branchId}`),
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      );
+      createFlash({
+        message: __(`Error fetching merge requests for ${branchId}`),
+        type: 'alert',
+        parent: document,
+        actionConfig: null,
+        fadeTransition: false,
+        addBodyClass: true,
+      });
       throw e;
     });
 };
@@ -236,7 +236,7 @@ export const openMergeRequest = async (
 
     await dispatch('openMergeRequestChanges', changes);
   } catch (e) {
-    flash(__('Error while loading the merge request. Please try again.'));
+    createFlash({ message: __('Error while loading the merge request. Please try again.') });
     throw e;
   }
 };

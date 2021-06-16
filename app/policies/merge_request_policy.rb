@@ -20,12 +20,17 @@ class MergeRequestPolicy < IssuablePolicy
 
   rule { ~anonymous & can?(:read_merge_request) }.policy do
     enable :create_todo
+    enable :update_subscription
   end
 
   condition(:can_merge) { @subject.can_be_merged_by?(@user) }
 
   rule { can_merge }.policy do
     enable :accept_merge_request
+  end
+
+  rule { can?(:admin_merge_request) }.policy do
+    enable :set_merge_request_metadata
   end
 end
 

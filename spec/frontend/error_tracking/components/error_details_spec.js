@@ -21,7 +21,7 @@ import {
   trackErrorDetailsViewsOptions,
   trackErrorStatusUpdateOptions,
 } from '~/error_tracking/utils';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 
@@ -160,10 +160,10 @@ describe('ErrorDetails', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
         expect(wrapper.find(GlLink).exists()).toBe(false);
-        expect(createFlash).toHaveBeenCalledWith(
-          'Could not connect to Sentry. Refresh the page to try again.',
-          'warning',
-        );
+        expect(createFlash).toHaveBeenCalledWith({
+          message: 'Could not connect to Sentry. Refresh the page to try again.',
+          type: 'warning',
+        });
         expect(mocks.$apollo.queries.error.stopPolling).toHaveBeenCalled();
       });
     });

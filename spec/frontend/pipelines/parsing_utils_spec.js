@@ -10,7 +10,7 @@ import {
   getMaxNodes,
 } from '~/pipelines/components/parsing_utils';
 
-import { mockParsedGraphQLNodes } from './components/dag/mock_data';
+import { mockParsedGraphQLNodes, missingJob } from './components/dag/mock_data';
 import { generateResponse, mockPipelineResponse } from './graph/mock_data';
 
 describe('DAG visualization parsing utilities', () => {
@@ -23,6 +23,12 @@ describe('DAG visualization parsing utilities', () => {
       expect(unfilteredLinks[0]).toHaveProperty('source', 'build_a');
       expect(unfilteredLinks[0]).toHaveProperty('target', 'test_a');
       expect(unfilteredLinks[0]).toHaveProperty('value', 10);
+    });
+
+    it('does not generate a link for non-existing jobs', () => {
+      const sources = unfilteredLinks.map(({ source }) => source);
+
+      expect(sources.includes(missingJob)).toBe(false);
     });
   });
 
@@ -88,7 +94,7 @@ describe('DAG visualization parsing utilities', () => {
         These lengths are determined by the mock data.
         If the data changes, the numbers may also change.
       */
-      expect(parsed.nodes).toHaveLength(21);
+      expect(parsed.nodes).toHaveLength(mockParsedGraphQLNodes.length);
       expect(cleanedNodes).toHaveLength(12);
     });
   });

@@ -5,8 +5,8 @@ module Types
     class ServiceTypeEnum < BaseEnum
       graphql_name 'ServiceType'
 
-      ::Integration.available_services_types(include_dev: false).each do |service_type|
-        value service_type.underscore.upcase, value: service_type, description: "#{service_type} type"
+      ::Integration.available_services_types(include_dev: false).each do |type|
+        value type.underscore.upcase, value: type, description: "#{type} type"
       end
     end
   end

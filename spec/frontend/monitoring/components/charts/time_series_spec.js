@@ -208,7 +208,7 @@ describe('Time series component', () => {
             });
 
             it('formats tooltip title', () => {
-              expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 10:14AM (GMT+0000)');
+              expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 10:14AM (UTC)');
             });
 
             it('formats tooltip content', () => {
@@ -282,7 +282,7 @@ describe('Time series component', () => {
             });
 
             it('formats tooltip title', () => {
-              expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 10:14AM (GMT+0000)');
+              expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 10:14AM (UTC)');
             });
 
             it('formats tooltip sha', () => {
@@ -301,7 +301,7 @@ describe('Time series component', () => {
             });
 
             it('formats tooltip title', () => {
-              expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 10:14AM (GMT+0000)');
+              expect(wrapper.vm.tooltip.title).toBe('16 Jul 2019, 10:14AM (UTC)');
             });
 
             it('formats tooltip sha', () => {
@@ -334,7 +334,7 @@ describe('Time series component', () => {
 
           it('formats tooltip title and sets tooltip content', () => {
             const formattedTooltipData = wrapper.vm.formatAnnotationsTooltipText(mockMarkPoint);
-            expect(formattedTooltipData.title).toBe('19 Feb 2020, 10:01AM (GMT+0000)');
+            expect(formattedTooltipData.title).toBe('19 Feb 2020, 10:01AM (UTC)');
             expect(formattedTooltipData.content).toBe(annotationsMetadata.tooltipData.content);
           });
         });

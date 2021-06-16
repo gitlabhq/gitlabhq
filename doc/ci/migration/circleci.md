@@ -1,12 +1,12 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 type: index, howto
 ---
 
-# Migrating from CircleCI
+# Migrating from CircleCI **(FREE)**
 
 If you are currently using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../introduction/index.md),
 and start making use of all its powerful features. Check out our
@@ -41,7 +41,7 @@ jobs:
 
 Example of the same job definition in GitLab CI/CD:
 
-``` yaml
+```yaml
 job1:
   script: "execute-script-for-job1"
 ```
@@ -209,7 +209,7 @@ jobs:
   deploy:
     branches:
       only:
-        - master
+        - main
         - /rc-.*/
 ```
 
@@ -221,12 +221,12 @@ deploy_prod:
   script:
     - echo "Deploy to production server"
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
 ```
 
 ### Caching
 
-GitLab provides a caching mechanism to speed up build times for your jobs by reusing previously downloaded dependencies. It's important to know the different between [cache and artifacts](../caching/index.md#cache-vs-artifacts) to make the best use of these features.
+GitLab provides a caching mechanism to speed up build times for your jobs by reusing previously downloaded dependencies. It's important to know the different between [cache and artifacts](../caching/index.md#how-cache-is-different-from-artifacts) to make the best use of these features.
 
 CircleCI example of a job using a cache:
 
@@ -265,7 +265,7 @@ test_async:
 
 ## Contexts and variables
 
-CircleCI provides [Contexts](https://circleci.com/docs/2.0/contexts/) to securely pass environment variables across project pipelines. In GitLab, a [Group](../../user/group/index.md) can be created to assemble related projects together. At the group level, [CI/CD variables](../variables/README.md#group-cicd-variables) can be stored outside the individual projects, and securely passed into pipelines across multiple projects.
+CircleCI provides [Contexts](https://circleci.com/docs/2.0/contexts/) to securely pass environment variables across project pipelines. In GitLab, a [Group](../../user/group/index.md) can be created to assemble related projects together. At the group level, [CI/CD variables](../variables/README.md#add-a-cicd-variable-to-a-group) can be stored outside the individual projects, and securely passed into pipelines across multiple projects.
 
 ## Orbs
 

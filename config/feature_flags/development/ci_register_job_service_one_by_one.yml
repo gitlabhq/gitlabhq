@@ -1,8 +1,0 @@
----
-name: ci_register_job_service_one_by_one
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55194
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323177
-milestone: '13.10'
-type: development
-group: group::memory
-default_enabled: true

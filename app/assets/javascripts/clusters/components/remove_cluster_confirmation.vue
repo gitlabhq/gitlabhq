@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlModal, GlButton, GlFormInput, GlSprintf } from '@gitlab/ui';
+import { GlModal, GlButton, GlFormInput } from '@gitlab/ui';
 import { escape } from 'lodash';
 import csrf from '~/lib/utils/csrf';
 import { s__, sprintf } from '~/locale';
@@ -30,7 +30,6 @@ export default {
     GlModal,
     GlButton,
     GlFormInput,
-    GlSprintf,
   },
   props: {
     clusterPath: {
@@ -135,17 +134,6 @@ export default {
       <div v-if="confirmCleanup">
         {{ s__('ClusterIntegration|This will permanently delete the following resources:') }}
         <ul>
-          <li>
-            {{ s__('ClusterIntegration|All installed applications and related resources') }}
-          </li>
-          <li>
-            <gl-sprintf :message="s__('ClusterIntegration|The %{gitlabNamespace} namespace')">
-              <template #gitlabNamespace>
-                <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
-                <code>{{ 'gitlab-managed-apps' }}</code>
-              </template>
-            </gl-sprintf>
-          </li>
           <li>{{ s__('ClusterIntegration|Any project namespaces') }}</li>
           <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
           <li><code>clusterroles</code></li>

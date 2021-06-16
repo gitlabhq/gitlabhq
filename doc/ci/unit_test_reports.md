@@ -307,6 +307,25 @@ test:
         - report.xml
 ```
 
+### PHP example
+
+This example uses [PHPUnit](https://phpunit.de/) with the `--log-junit` flag.
+You can also add this option using
+[XML](https://phpunit.readthedocs.io/en/stable/configuration.html#the-junit-element)
+in the `phpunit.xml` configuration file.
+
+```yaml
+phpunit:
+  stage: test
+  script:
+    - composer install
+    - vendor/bin/phpunit --log-junit report.xml
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+```
+
 ## Viewing Unit test reports on GitLab
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5 behind a feature flag (`junit_pipeline_view`), disabled by default.
@@ -339,12 +358,12 @@ If parsing JUnit report XML results in an error, an indicator is shown next to t
 Upload your screenshots as [artifacts](yaml/README.md#artifactsreportsjunit) to GitLab. If JUnit
 report format XML files contain an `attachment` tag, GitLab parses the attachment. Note that:
 
-- The `attachment` tag **must** contain the absolute path to the screenshots you uploaded. For
+- The `attachment` tag **must** contain the relative path to `$CI_PROJECT_DIR` of the screenshots you uploaded. For
   example:
 
   ```xml
   <testcase time="1.00" name="Test">
-    <system-out>[[ATTACHMENT|/absolute/path/to/some/file]]</system-out>
+    <system-out>[[ATTACHMENT|/path/to/some/file]]</system-out>
   </testcase>
   ```
 

@@ -9,17 +9,7 @@ class BuildHooksWorker # rubocop:disable Scalability/IdempotentWorker
   queue_namespace :pipeline_hooks
   feature_category :continuous_integration
   urgency :high
-  data_consistency :delayed, feature_flag: :load_balancing_for_build_hooks_worker
-
-  DATA_CONSISTENCY_DELAY = 3
-
-  def self.perform_async(*args)
-    if Feature.enabled?(:delayed_perform_for_build_hooks_worker, default_enabled: :yaml)
-      perform_in(DATA_CONSISTENCY_DELAY.seconds, *args)
-    else
-      super
-    end
-  end
+  data_consistency :delayed
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)

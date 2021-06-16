@@ -20,7 +20,7 @@ RSpec.describe 'User activates Slack notifications', :js do
   end
 
   context 'when service is already configured' do
-    let(:service) { SlackService.new }
+    let(:service) { Integrations::Slack.new }
     let(:project) { create(:project, slack_service: service) }
 
     before do

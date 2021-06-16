@@ -48,7 +48,7 @@ If the requirements are not met, the **Designs** tab displays a message to the u
 Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`,
 `gif`, `bmp`, `tiff`, `ico`, `webp`, or `svg`.
 
-Support for [PDF](https://gitlab.com/gitlab-org/gitlab/issues/32811) is planned for a future release.
+Support for [PDF](https://gitlab.com/gitlab-org/gitlab/-/issues/32811) is planned for a future release.
 
 ## Limitations
 
@@ -219,11 +219,14 @@ There are two ways to resolve/unresolve a Design thread:
 
   ![Resolve checkbox](img/resolve_design-discussion_checkbox_v13_1.png)
 
+Resolving a discussion thread also marks any pending to-do items related to notes
+inside the thread as done. This is applicable only for to-do items owned by the user triggering the action.
+
 Note that your resolved comment pins disappear from the Design to free up space for new discussions.
 However, if you need to revisit or find a resolved discussion, all of your resolved threads are
 available in the **Resolved Comment** area at the bottom of the right sidebar.
 
-## Add to dos for designs
+## Add to-do items for designs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198439) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245074) in GitLab 13.5.

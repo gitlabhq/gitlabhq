@@ -7,8 +7,15 @@ RSpec.describe 'Database config initializer' do
     load Rails.root.join('config/initializers/database_config.rb')
   end
 
+  around do |example|
+    original_config = ActiveRecord::Base.connection_db_config
+
+    example.run
+
+    ActiveRecord::Base.establish_connection(original_config)
+  end
+
   before do
-    allow(ActiveRecord::Base).to receive(:establish_connection)
     allow(Gitlab::Runtime).to receive(:max_threads).and_return(max_threads)
   end
 
@@ -21,6 +28,8 @@ RSpec.describe 'Database config initializer' do
 
     it "sets it based on the max number of worker threads" do
       expect { subject }.to change { Gitlab::Database.config['pool'] }.from(nil).to(18)
+
+      expect(ActiveRecord::Base.connection_db_config.pool).to eq(18)
     end
   end
 
@@ -31,6 +40,8 @@ RSpec.describe 'Database config initializer' do
 
     it "sets it based on the max number of worker threads" do
       expect { subject }.to change { Gitlab::Database.config['pool'] }.from(1).to(18)
+
+      expect(ActiveRecord::Base.connection_db_config.pool).to eq(18)
     end
   end
 
@@ -41,6 +52,8 @@ RSpec.describe 'Database config initializer' do
 
     it "sets it based on the max number of worker threads" do
       expect { subject }.to change { Gitlab::Database.config['pool'] }.from(100).to(18)
+
+      expect(ActiveRecord::Base.connection_db_config.pool).to eq(18)
     end
   end
 
@@ -56,15 +69,16 @@ RSpec.describe 'Database config initializer' do
       expect { subject }.to change { Gitlab::Database.config['pool'] }
                               .from(1)
                               .to(max_threads + headroom)
+
+      expect(ActiveRecord::Base.connection_db_config.pool).to eq(max_threads + headroom)
     end
   end
 
   def stub_database_config(pool_size:)
-    config = {
-      'adapter' => 'postgresql',
-      'host' => 'db.host.com',
-      'pool' => pool_size
-    }.compact
+    original_config = Gitlab::Database.config
+
+    config = original_config.dup
+    config['pool'] = pool_size
 
     allow(Gitlab::Database).to receive(:config).and_return(config)
   end

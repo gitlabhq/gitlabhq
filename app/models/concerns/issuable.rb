@@ -101,20 +101,19 @@ module Issuable
     scope :unassigned, -> do
       where("NOT EXISTS (SELECT TRUE FROM #{to_ability_name}_assignees WHERE #{to_ability_name}_id = #{to_ability_name}s.id)")
     end
-    scope :assigned_to, ->(u) do
-      assignees_table = Arel::Table.new("#{to_ability_name}_assignees")
-      sql = assignees_table.project('true').where(assignees_table[:user_id].in(u.id)).where(Arel::Nodes::SqlLiteral.new("#{to_ability_name}_id = #{to_ability_name}s.id"))
-      where("EXISTS (#{sql.to_sql})")
+    scope :assigned_to, ->(users) do
+      assignees_class = self.reflect_on_association("#{to_ability_name}_assignees").klass
+
+      condition = assignees_class.where(user_id: users).where(Arel.sql("#{to_ability_name}_id = #{to_ability_name}s.id"))
+      where(condition.arel.exists)
+    end
+    scope :not_assigned_to, ->(users) do
+      assignees_class = self.reflect_on_association("#{to_ability_name}_assignees").klass
+
+      condition = assignees_class.where(user_id: users).where(Arel.sql("#{to_ability_name}_id = #{to_ability_name}s.id"))
+      where(condition.arel.exists.not)
     end
     # rubocop:enable GitlabSecurity/SqlInjection
-
-    scope :not_assigned_to, ->(users) do
-      assignees_table = Arel::Table.new("#{to_ability_name}_assignees")
-      sql = assignees_table.project('true')
-                .where(assignees_table[:user_id].in(users))
-                .where(Arel::Nodes::SqlLiteral.new("#{to_ability_name}_id = #{to_ability_name}s.id"))
-      where(sql.exists.not)
-    end
 
     scope :without_particular_labels, ->(label_names) do
       labels_table = Label.arel_table
@@ -469,9 +468,11 @@ module Issuable
 
       if self.respond_to?(:total_time_spent)
         old_total_time_spent = old_associations.fetch(:total_time_spent, total_time_spent)
+        old_time_change = old_associations.fetch(:time_change, time_change)
 
         if old_total_time_spent != total_time_spent
           changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
+          changes[:time_change] = [old_time_change, time_change]
         end
       end
     end

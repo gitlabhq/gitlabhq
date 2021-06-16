@@ -12,7 +12,7 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
   let_it_be(:package) { create(:terraform_module_package, project: project) }
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:user) { personal_access_token.user }
-  let_it_be(:job) { create(:ci_build, :running, user: user) }
+  let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
 
@@ -188,6 +188,7 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
       with_them do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package.name}/#{package.version}/file?token=#{token}") }
+        let(:snowplow_gitlab_standard_context) { { project: project, user: user, namespace: project.namespace } }
 
         before do
           group.update!(visibility: visibility.to_s)
@@ -330,6 +331,16 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:user_headers) { user_role == :anonymous ? {} : { token_header => token } }
         let(:headers) { user_headers.merge(workhorse_headers) }
+        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: snowplow_user } }
+        let(:snowplow_user) do
+          if token_type == :deploy_token
+            deploy_token
+          elsif token_type == :job_token
+            job.user
+          else
+            user
+          end
+        end
 
         before do
           project.update!(visibility: visibility.to_s)

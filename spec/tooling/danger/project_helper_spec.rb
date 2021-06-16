@@ -112,10 +112,10 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'FOO_VERSION'    | [:backend]
 
       'Dangerfile'                                            | [:engineering_productivity]
-      'danger/commit_messages/Dangerfile'                     | [:engineering_productivity]
-      'ee/danger/commit_messages/Dangerfile'                  | [:engineering_productivity]
-      'danger/commit_messages/'                               | [:engineering_productivity]
-      'ee/danger/commit_messages/'                            | [:engineering_productivity]
+      'danger/bundle_size/Dangerfile'                         | [:engineering_productivity]
+      'ee/danger/bundle_size/Dangerfile'                      | [:engineering_productivity]
+      'danger/bundle_size/'                                   | [:engineering_productivity]
+      'ee/danger/bundle_size/'                                | [:engineering_productivity]
       '.gitlab-ci.yml'                                        | [:engineering_productivity]
       '.gitlab/ci/cng.gitlab-ci.yml'                          | [:engineering_productivity]
       '.gitlab/ci/ee-specific-checks.gitlab-ci.yml'           | [:engineering_productivity]
@@ -139,18 +139,18 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'db/post_migrate/foo'                                       | [:database, :migration]
       'ee/db/geo/migrate/foo'                                     | [:database, :migration]
       'ee/db/geo/post_migrate/foo'                                | [:database, :migration]
-      'app/models/project_authorization.rb'                       | [:database]
-      'app/services/users/refresh_authorized_projects_service.rb' | [:database]
-      'app/services/authorized_project_update/find_records_due_for_refresh_service.rb' | [:database]
-      'lib/gitlab/background_migration.rb'                        | [:database]
-      'lib/gitlab/background_migration/foo'                       | [:database]
-      'ee/lib/gitlab/background_migration/foo'                    | [:database]
-      'lib/gitlab/database.rb'                                    | [:database]
-      'lib/gitlab/database/foo'                                   | [:database]
-      'ee/lib/gitlab/database/foo'                                | [:database]
-      'lib/gitlab/github_import.rb'                               | [:database]
-      'lib/gitlab/github_import/foo'                              | [:database]
-      'lib/gitlab/sql/foo'                                        | [:database]
+      'app/models/project_authorization.rb'                       | [:database, :backend]
+      'app/services/users/refresh_authorized_projects_service.rb' | [:database, :backend]
+      'app/services/authorized_project_update/find_records_due_for_refresh_service.rb' | [:database, :backend]
+      'lib/gitlab/background_migration.rb'                        | [:database, :backend]
+      'lib/gitlab/background_migration/foo'                       | [:database, :backend]
+      'ee/lib/gitlab/background_migration/foo'                    | [:database, :backend]
+      'lib/gitlab/database.rb'                                    | [:database, :backend]
+      'lib/gitlab/database/foo'                                   | [:database, :backend]
+      'ee/lib/gitlab/database/foo'                                | [:database, :backend]
+      'lib/gitlab/github_import.rb'                               | [:database, :backend]
+      'lib/gitlab/github_import/foo'                              | [:database, :backend]
+      'lib/gitlab/sql/foo'                                        | [:database, :backend]
       'rubocop/cop/migration/foo'                                 | [:database]
 
       'db/fixtures/foo.rb'                                 | [:backend]
@@ -162,8 +162,6 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'workhorse/main.go' | [:workhorse]
       'workhorse/internal/upload/upload.go' | [:workhorse]
 
-      'changelogs/foo'    | [:none]
-      'ee/changelogs/foo' | [:none]
       'locale/gitlab.pot' | [:none]
 
       'FOO'          | [:unknown]
@@ -220,7 +218,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
   describe '.local_warning_message' do
     it 'returns an informational message with rules that can run' do
-      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, commit_messages, database, datateam, documentation, duplicate_yarn_dependencies, eslint, karma, pajamas, pipeline, prettier, product_intelligence, utility_css')
+      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, database, datateam, documentation, duplicate_yarn_dependencies, eslint, karma, pajamas, pipeline, prettier, product_intelligence, utility_css')
     end
   end
 

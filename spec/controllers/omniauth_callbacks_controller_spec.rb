@@ -293,6 +293,18 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
 
             expect(request.env['warden']).to be_authenticated
           end
+
+          it 'sets the username and caller_id in the context' do
+            expect(controller).to receive(:atlassian_oauth2).and_wrap_original do |m, *args|
+              m.call(*args)
+
+              expect(Gitlab::ApplicationContext.current)
+                .to include('meta.user' => user.username,
+                            'meta.caller_id' => 'OmniauthCallbacksController#atlassian_oauth2')
+            end
+
+            post :atlassian_oauth2
+          end
         end
 
         context 'for a new user' do
@@ -453,6 +465,18 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
 
       it 'doesn\'t link a new identity to the user' do
         expect { post :saml, params: { SAMLResponse: mock_saml_response } }.not_to change { user.identities.count }
+      end
+
+      it 'sets the username and caller_id in the context' do
+        expect(controller).to receive(:saml).and_wrap_original do |m, *args|
+          m.call(*args)
+
+          expect(Gitlab::ApplicationContext.current)
+            .to include('meta.user' => user.username,
+                        'meta.caller_id' => 'OmniauthCallbacksController#saml')
+        end
+
+        post :saml, params: { SAMLResponse: mock_saml_response }
       end
     end
   end

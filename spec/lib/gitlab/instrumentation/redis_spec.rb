@@ -26,46 +26,6 @@ RSpec.describe Gitlab::Instrumentation::Redis do
   it_behaves_like 'aggregation of redis storage data', :read_bytes
   it_behaves_like 'aggregation of redis storage data', :write_bytes
 
-  describe '.known_payload_keys' do
-    it 'returns all known payload keys' do
-      expected_keys = [
-        :redis_calls,
-        :redis_duration_s,
-        :redis_read_bytes,
-        :redis_write_bytes,
-        :redis_action_cable_calls,
-        :redis_action_cable_duration_s,
-        :redis_action_cable_read_bytes,
-        :redis_action_cable_write_bytes,
-        :redis_cache_calls,
-        :redis_cache_duration_s,
-        :redis_cache_read_bytes,
-        :redis_cache_write_bytes,
-        :redis_queues_calls,
-        :redis_queues_duration_s,
-        :redis_queues_read_bytes,
-        :redis_queues_write_bytes,
-        :redis_shared_state_calls,
-        :redis_shared_state_duration_s,
-        :redis_shared_state_read_bytes,
-        :redis_shared_state_write_bytes
-      ]
-
-      expect(described_class.known_payload_keys).to eq(expected_keys)
-    end
-
-    it 'does not call storage calculation methods' do
-      described_class::STORAGES.each do |storage|
-        expect(storage).not_to receive(:get_request_count)
-        expect(storage).not_to receive(:query_time)
-        expect(storage).not_to receive(:read_bytes)
-        expect(storage).not_to receive(:write_bytes)
-      end
-
-      described_class.known_payload_keys
-    end
-  end
-
   describe '.payload', :request_store do
     before do
       Gitlab::Redis::Cache.with { |redis| redis.set('cache-test', 321) }
@@ -108,7 +68,8 @@ RSpec.describe Gitlab::Instrumentation::Redis do
         .to contain_exactly(details_row.merge(storage: 'ActionCable'),
                             details_row.merge(storage: 'Cache'),
                             details_row.merge(storage: 'Queues'),
-                            details_row.merge(storage: 'SharedState'))
+                            details_row.merge(storage: 'SharedState'),
+                            details_row.merge(storage: 'TraceChunks'))
     end
   end
 end

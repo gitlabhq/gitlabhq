@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Documentation deployment process
 
-The [`dockerfiles` directory](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/dockerfiles/)
+The [`dockerfiles` directory](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/)
 contains all needed Dockerfiles to build and deploy <https://docs.gitlab.com>. It
 is heavily inspired by Docker's
 [Dockerfile](https://github.com/docker/docker.github.io/blob/06ed03db13895bfe867761b6fc2ad40acf6026dd/Dockerfile).
@@ -15,10 +15,10 @@ The following Dockerfiles are used.
 
 | Dockerfile | Docker image | Description |
 | ---------- | ------------ | ----------- |
-| [`Dockerfile.bootstrap`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/dockerfiles/Dockerfile.bootstrap) | `gitlab-docs:bootstrap` | Contains all the dependencies that are needed to build the website. If the gems are updated and `Gemfile{,.lock}` changes, the image must be rebuilt. |
-| [`Dockerfile.builder.onbuild`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/dockerfiles/Dockerfile.builder.onbuild) | `gitlab-docs:builder-onbuild` | Base image to build the docs website. It uses `ONBUILD` to perform all steps and depends on `gitlab-docs:bootstrap`. |
-| [`Dockerfile.nginx.onbuild`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/dockerfiles/Dockerfile.nginx.onbuild) | `gitlab-docs:nginx-onbuild` | Base image to use for building documentation archives. It uses `ONBUILD` to perform all required steps to copy the archive, and relies upon its parent `Dockerfile.builder.onbuild` that is invoked when building single documentation archives (see the `Dockerfile` of each branch. |
-| [`Dockerfile.archives`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/dockerfiles/Dockerfile.archives) | `gitlab-docs:archives` | Contains all the versions of the website in one archive. It copies all generated HTML files from every version in one location. |
+| [`Dockerfile.bootstrap`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/Dockerfile.bootstrap) | `gitlab-docs:bootstrap` | Contains all the dependencies that are needed to build the website. If the gems are updated and `Gemfile{,.lock}` changes, the image must be rebuilt. |
+| [`Dockerfile.builder.onbuild`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/Dockerfile.builder.onbuild) | `gitlab-docs:builder-onbuild` | Base image to build the docs website. It uses `ONBUILD` to perform all steps and depends on `gitlab-docs:bootstrap`. |
+| [`Dockerfile.nginx.onbuild`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/Dockerfile.nginx.onbuild) | `gitlab-docs:nginx-onbuild` | Base image to use for building documentation archives. It uses `ONBUILD` to perform all required steps to copy the archive, and relies upon its parent `Dockerfile.builder.onbuild` that is invoked when building single documentation archives (see the `Dockerfile` of each branch. |
+| [`Dockerfile.archives`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/Dockerfile.archives) | `gitlab-docs:archives` | Contains all the versions of the website in one archive. It copies all generated HTML files from every version in one location. |
 
 ## How to build the images
 
@@ -36,7 +36,7 @@ and tag all tooling images locally:
    ```
 
 For each image, there's a manual job under the `images` stage in
-[`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/.gitlab-ci.yml) which can be invoked at any time.
+[`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/.gitlab-ci.yml) which can be invoked at any time.
 
 ## Update an old Docker image with new upstream docs content
 
@@ -55,10 +55,10 @@ The website keeps changing and being improved. In order to consolidate
 those changes to the stable branches, we'd need to pick certain changes
 from time to time.
 
-If this is not possible or there are many changes, merge master into them:
+If this is not possible or there are many changes, merge main into them:
 
 ```shell
 git branch 12.0
-git fetch origin master
-git merge origin/master
+git fetch origin main
+git merge origin/main
 ```

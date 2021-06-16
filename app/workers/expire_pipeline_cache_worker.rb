@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop: disable Scalability/IdempotentWorker
 class ExpirePipelineCacheWorker
   include ApplicationWorker
 
@@ -9,8 +10,12 @@ class ExpirePipelineCacheWorker
   queue_namespace :pipeline_cache
   urgency :high
   worker_resource_boundary :cpu
+  data_consistency :delayed, feature_flag: :load_balancing_for_expire_pipeline_cache_worker
 
-  idempotent!
+  # This worker _should_ be idempotent, but due to us moving this to data_consistency :delayed
+  # and an ongoing incompatibility between the two switches, we need to disable this.
+  # Uncomment once https://gitlab.com/gitlab-org/gitlab/-/issues/325291 is resolved
+  # idempotent!
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id)
@@ -21,3 +26,4 @@ class ExpirePipelineCacheWorker
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end
+# rubocop:enable Scalability/IdempotentWorker

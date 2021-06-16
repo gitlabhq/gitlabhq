@@ -12,7 +12,7 @@ RSpec.describe BulkImports::Groups::Extractors::SubgroupsExtractor do
       response = [{ 'test' => 'group' }]
       context = BulkImports::Pipeline::Context.new(tracker)
 
-      allow_next_instance_of(BulkImports::Clients::Http) do |client|
+      allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
         allow(client).to receive(:each_page).and_return(response)
       end
 

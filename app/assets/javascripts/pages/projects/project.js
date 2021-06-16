@@ -129,7 +129,7 @@ export default class Project {
               const currentRef = $dropdown.data('ref');
               // The split and startWith is to ensure an exact word match
               // and avoid partial match ie. currentRef is "dev" and loc is "development"
-              const splitPathAfterRefPortion = loc.split(currentRef)[1];
+              const splitPathAfterRefPortion = loc.split('/-/')[1].split(currentRef)[1];
               const doesPathContainRef = splitPathAfterRefPortion?.startsWith('/');
 
               if (doesPathContainRef) {

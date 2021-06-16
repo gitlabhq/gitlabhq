@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210423160427_schedule_drop_invalid_vulnerabilities.rb')
+require_migration!('schedule_drop_invalid_vulnerabilities')
 
 RSpec.describe ScheduleDropInvalidVulnerabilities, :migration do
   let_it_be(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }

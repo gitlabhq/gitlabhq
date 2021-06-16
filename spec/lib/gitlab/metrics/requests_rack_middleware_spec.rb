@@ -7,8 +7,16 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
   subject { described_class.new(app) }
 
+  around do |example|
+    # Simulate application context middleware
+    # In fact, this middleware cleans up the contexts after a request lifecycle
+    ::Gitlab::ApplicationContext.with_context({}) do
+      example.run
+    end
+  end
+
   describe '#call' do
-    let(:status) { 100 }
+    let(:status) { 200 }
     let(:env) { { 'REQUEST_METHOD' => 'GET' } }
     let(:stack_result) { [status, {}, 'body'] }
 
@@ -71,6 +79,17 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
       end
     end
 
+    context '@app.call returns an error code' do
+      let(:status) { '500' }
+
+      it 'tracks count but not duration' do
+        expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '500', feature_category: 'unknown')
+        expect(described_class).not_to receive(:http_request_duration_seconds)
+
+        subject.call(env)
+      end
+    end
+
     context '@app.call throws exception' do
       let(:http_request_duration_seconds) { double('http_request_duration_seconds') }
       let(:http_requests_total) { double('http_requests_total') }
@@ -91,9 +110,9 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
     end
 
     context 'feature category header' do
-      context 'when a feature category header is present' do
+      context 'when a feature category context is present' do
         before do
-          allow(app).to receive(:call).and_return([200, { described_class::FEATURE_CATEGORY_HEADER => 'issue_tracking' }, nil])
+          ::Gitlab::ApplicationContext.push(feature_category: 'issue_tracking')
         end
 
         it 'adds the feature category to the labels for http_requests_total' do
@@ -113,11 +132,20 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
         end
       end
 
-      context 'when the feature category header is an empty string' do
+      context 'when application raises an exception when the feature category context is present' do
         before do
-          allow(app).to receive(:call).and_return([200, { described_class::FEATURE_CATEGORY_HEADER => '' }, nil])
+          ::Gitlab::ApplicationContext.push(feature_category: 'issue_tracking')
+          allow(app).to receive(:call).and_raise(StandardError)
         end
 
+        it 'adds the feature category to the labels for http_requests_total' do
+          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: 'undefined', feature_category: 'issue_tracking')
+
+          expect { subject.call(env) }.to raise_error(StandardError)
+        end
+      end
+
+      context 'when the feature category context is not available' do
         it 'sets the feature category to unknown' do
           expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'unknown')
           expect(described_class).not_to receive(:http_health_requests_total)

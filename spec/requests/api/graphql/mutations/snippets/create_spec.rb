@@ -86,7 +86,7 @@ RSpec.describe 'Creating a Snippet' do
         it 'passes disable_spam_action_service param to service' do
           expect(::Snippets::CreateService)
             .to receive(:new)
-                  .with(anything, anything, hash_including(disable_spam_action_service: true))
+                  .with(project: anything, current_user: anything, params: hash_including(disable_spam_action_service: true))
                   .and_call_original
 
           subject
@@ -190,7 +190,7 @@ RSpec.describe 'Creating a Snippet' do
 
         it do
           expect(::Snippets::CreateService).to receive(:new)
-            .with(nil, user, hash_including(files: expected_value))
+            .with(project: nil, current_user: user, params: hash_including(files: expected_value))
             .and_return(double(execute: creation_response))
 
           subject

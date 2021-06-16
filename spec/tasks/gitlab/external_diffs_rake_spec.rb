@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:external_diffs rake tasks' do
+RSpec.describe 'gitlab:external_diffs rake tasks', :silence_stdout do
   before do
     Rake.application.rake_require 'tasks/gitlab/external_diffs'
   end

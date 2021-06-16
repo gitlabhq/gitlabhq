@@ -25,7 +25,7 @@ module BulkImports
 
       delegate :query, :parse, :execute, to: :client
 
-      def initialize(url: Gitlab::COM_URL, token: nil)
+      def initialize(url: Gitlab::Saas.com_url, token: nil)
         @url = Gitlab::Utils.append_path(url, '/api/graphql')
         @token = token
         @client = Graphlient::Client.new(

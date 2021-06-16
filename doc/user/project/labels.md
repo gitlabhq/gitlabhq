@@ -282,4 +282,4 @@ To resolve the duplication, [in GitLab 13.2](https://gitlab.com/gitlab-org/gitla
 and later, some duplicate labels have `_duplicate<number>` appended to their titles.
 
 You can safely change these labels' titles if you prefer.
-For details of the original problem, see [issue 30390](https://gitlab.com/gitlab-org/gitlab/issues/30390).
+For details of the original problem, see [issue 30390](https://gitlab.com/gitlab-org/gitlab/-/issues/30390).

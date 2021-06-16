@@ -86,45 +86,6 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
         expect(timebox.errors[:project_id]).to include("#{timebox_type} should belong either to a project or a group.")
       end
     end
-
-    describe "#uniqueness_of_title" do
-      context "per project" do
-        it "does not accept the same title in a project twice" do
-          new_timebox = timebox.dup
-          expect(new_timebox).not_to be_valid
-        end
-
-        it "accepts the same title in another project" do
-          project = create(:project)
-          new_timebox = timebox.dup
-          new_timebox.project = project
-
-          expect(new_timebox).to be_valid
-        end
-      end
-
-      context "per group" do
-        let(:timebox) { create(timebox_type, *timebox_args, group: group) }
-
-        before do
-          project.update!(group: group)
-        end
-
-        it "does not accept the same title in a group twice" do
-          new_timebox = described_class.new(group: group, title: timebox.title)
-
-          expect(new_timebox).not_to be_valid
-        end
-
-        it "does not accept the same title of a child project timebox" do
-          create(timebox_type, *timebox_args, project: group.projects.first)
-
-          new_timebox = described_class.new(group: group, title: timebox.title)
-
-          expect(new_timebox).not_to be_valid
-        end
-      end
-    end
   end
 
   describe "Associations" do

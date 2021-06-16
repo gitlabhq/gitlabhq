@@ -94,7 +94,7 @@ describe('MRWidgetPipeline', () => {
 
     it('should render pipeline finished timestamp', () => {
       expect(findPipelineFinishedAt().attributes()).toMatchObject({
-        title: 'Apr 7, 2017 2:00pm GMT+0000',
+        title: 'Apr 7, 2017 2:00pm UTC',
         datetime: mockData.pipeline.details.finished_at,
       });
     });

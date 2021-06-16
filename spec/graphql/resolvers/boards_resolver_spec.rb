@@ -9,7 +9,7 @@ RSpec.describe Resolvers::BoardsResolver do
 
   shared_examples_for 'group and project boards resolver' do
     it 'does not create a default board' do
-      expect(resolve_boards).to eq []
+      expect(resolve_boards).to be_empty
     end
 
     it 'calls Boards::BoardsFinder' do

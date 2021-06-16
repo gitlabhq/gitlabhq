@@ -44,6 +44,30 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
     end
   end
 
+  describe '#compact' do
+    subject do
+      described_class.new
+        .append(key: 'STRING', value: 'string')
+        .append(key: 'NIL', value: nil)
+        .append(key: nil, value: 'string')
+    end
+
+    it 'returns a new Collection instance', :aggregate_failures do
+      collection = subject.compact
+
+      expect(collection).to be_an_instance_of(described_class)
+      expect(collection).not_to eql(subject)
+    end
+
+    it 'rejects pair that has nil value', :aggregate_failures do
+      collection = subject.compact
+
+      expect(collection).not_to include(key: 'NIL', value: nil, public: true)
+      expect(collection).to include(key: 'STRING', value: 'string', public: true)
+      expect(collection).to include(key: nil, value: 'string', public: true)
+    end
+  end
+
   describe '#concat' do
     it 'appends all elements from an array' do
       collection = described_class.new([{ key: 'VAR_1', value: '1' }])
@@ -229,6 +253,11 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
             value: 'key${MISSING_VAR}-${CI_JOB_NAME}',
             result: 'key${MISSING_VAR}-test-1',
             keep_undefined: true
+          },
+          "escaped characters are kept intact": {
+            value: 'key-$TEST1-%%HOME%%-$${HOME}',
+            result: 'key-test-3-%%HOME%%-$${HOME}',
+            keep_undefined: false
           }
         }
       end
@@ -287,6 +316,14 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
               variables: [
                 { key: 'variable3', value: 'key_${variable}_${variable2}' },
                 { key: 'variable', value: '$variable2', raw: true },
+                { key: 'variable2', value: 'value2' }
+              ],
+              keep_undefined: false
+            },
+            "escaped characters in complex expansions are kept intact": {
+              variables: [
+                { key: 'variable3', value: 'key_${variable}_$${HOME}_%%HOME%%' },
+                { key: 'variable', value: '$variable2' },
                 { key: 'variable2', value: 'value2' }
               ],
               keep_undefined: false
@@ -391,6 +428,30 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
                 { key: 'variable3', value: 'keyvalueresult' }
               ]
             },
+            "escaped characters in complex expansions keeping undefined are kept intact": {
+              variables: [
+                { key: 'variable3', value: 'key_${variable}_$${HOME}_%%HOME%%' },
+                { key: 'variable', value: '$variable2' },
+                { key: 'variable2', value: 'value' }
+              ],
+              keep_undefined: true,
+              result: [
+                { key: 'variable', value: 'value' },
+                { key: 'variable2', value: 'value' },
+                { key: 'variable3', value: 'key_value_$${HOME}_%%HOME%%' }
+              ]
+            },
+            "escaped characters in complex expansions discarding undefined are kept intact": {
+              variables: [
+                { key: 'variable2', value: 'key_${variable4}_$${HOME}_%%HOME%%' },
+                { key: 'variable', value: 'value_$${HOME}_%%HOME%%' }
+              ],
+              keep_undefined: false,
+              result: [
+                { key: 'variable', value: 'value_$${HOME}_%%HOME%%' },
+                { key: 'variable2', value: 'key__$${HOME}_%%HOME%%' }
+              ]
+            },
             "out-of-order expansion": {
               variables: [
                 { key: 'variable3', value: 'key$variable2$variable' },
@@ -417,7 +478,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
                 { key: 'variable3', value: 'keyresultvalue' }
               ]
             },
-            "missing variable": {
+            "missing variable discarding original": {
               variables: [
                 { key: 'variable2', value: 'key$variable' }
               ],
@@ -459,6 +520,19 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
                 { key: 'variable', value: '$variable2', raw: true },
                 { key: 'variable2', value: 'value2' },
                 { key: 'variable3', value: 'key_$variable2_value2' }
+              ]
+            },
+            "variable value referencing password with special characters": {
+              variables: [
+                { key: 'VAR', value: '$PASSWORD' },
+                { key: 'PASSWORD', value: 'my_password$$_%%_$A' },
+                { key: 'A', value: 'value' }
+              ],
+              keep_undefined: false,
+              result: [
+                { key: 'VAR', value: 'my_password$$_%%_value' },
+                { key: 'PASSWORD', value: 'my_password$$_%%_value' },
+                { key: 'A', value: 'value' }
               ]
             },
             "cyclic dependency causes original array to be returned": {

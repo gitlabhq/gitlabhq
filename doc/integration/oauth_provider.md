@@ -27,8 +27,8 @@ of the resource owner or the end-user.
 OAuth 2 can be used:
 
 - To allow users to sign in to your application with their GitLab.com account.
-- To set up GitLab.com for authentication to your GitLab instance.
-(see [GitLab OmniAuth](gitlab.md)).
+- To set up GitLab.com for authentication to your GitLab instance. See
+  [GitLab OmniAuth](gitlab.md).
 
 The 'GitLab Importer' feature also uses OAuth 2 to give access
 to repositories without sharing user credentials to your GitLab.com account.
@@ -63,7 +63,7 @@ To add a new application for your user:
 To add a new application for a group:
 
 1. Navigate to the desired group.
-1. In the left sidebar, select **Settings > Applications**.
+1. On the left sidebar, select **Settings > Applications**.
 1. Enter a **Name**, **Redirect URI** and OAuth 2 scopes as defined in [Authorized Applications](#authorized-applications).
    The **Redirect URI** is the URL where users are sent after they authorize with GitLab.
 1. Select **Save application**. GitLab displays:
@@ -73,10 +73,13 @@ To add a new application for a group:
 
 ## Instance-wide applications
 
-To create an application for your GitLab instance, select
-**Admin Area > Applications > New application**.
+To create an application for your GitLab instance:
 
-When creating an **Admin Area** application, you can mark it as _trusted_.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Applications**.
+1. Select **New application**.
+
+When creating application in the **Admin Area** , you can mark it as _trusted_.
 The user authorization step is automatically skipped for this application.
 
 ## Authorized applications

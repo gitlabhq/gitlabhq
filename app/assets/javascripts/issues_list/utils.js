@@ -16,6 +16,7 @@ import {
   RELATIVE_POSITION_DESC,
   SPECIAL_FILTER,
   SPECIAL_FILTER_VALUES,
+  TOKEN_TYPE_ASSIGNEE,
   UPDATED_ASC,
   UPDATED_DESC,
   urlSortParams,
@@ -173,7 +174,7 @@ export const getFilterTokens = (locationSearch) => {
 
 const getFilterType = (data, tokenType = '') =>
   SPECIAL_FILTER_VALUES.includes(data) ||
-  (tokenType === 'assignee_username' && isPositiveInteger(data))
+  (tokenType === TOKEN_TYPE_ASSIGNEE && isPositiveInteger(data))
     ? SPECIAL_FILTER
     : NORMAL_FILTER;
 

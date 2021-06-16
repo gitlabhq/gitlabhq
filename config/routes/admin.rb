@@ -95,6 +95,7 @@ namespace :admin do
 
   get :instance_review, to: 'instance_review#index'
 
+  resources :background_migrations, only: [:index]
   resource :health_check, controller: 'health_check', only: [:show]
   resource :background_jobs, controller: 'background_jobs', only: [:show]
 
@@ -103,7 +104,6 @@ namespace :admin do
 
   resources :projects, only: [:index]
 
-  get '/instance_statistics', to: redirect('admin/usage_trends')
   resources :usage_trends, only: :index
   resource :dev_ops_report, controller: 'dev_ops_report', only: :show
   resources :cohorts, only: :index
@@ -121,15 +121,6 @@ namespace :admin do
       end
 
       resources :runner_projects, only: [:create, :destroy]
-    end
-  end
-
-  resource :appearances, only: [:show, :create, :update], path: 'appearance' do
-    member do
-      get :preview_sign_in
-      delete :logo
-      delete :header_logos
-      delete :favicon
     end
   end
 
@@ -153,6 +144,15 @@ namespace :admin do
     get :status_create_self_monitoring_project
     delete :delete_self_monitoring_project
     get :status_delete_self_monitoring_project
+
+    resource :appearances, only: [:show, :create, :update], path: 'appearance', module: 'application_settings' do
+      member do
+        get :preview_sign_in
+        delete :logo
+        delete :header_logos
+        delete :favicon
+      end
+    end
   end
 
   resources :plan_limits, only: :create

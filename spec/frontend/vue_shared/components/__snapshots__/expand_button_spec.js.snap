@@ -14,6 +14,7 @@ exports[`Expand button on click when short text is provided renders button after
       aria-hidden="true"
       class="gl-button-icon gl-icon s16"
       data-testid="ellipsis_h-icon"
+      role="img"
     >
       <use
         href="#ellipsis_h"
@@ -43,6 +44,7 @@ exports[`Expand button on click when short text is provided renders button after
       aria-hidden="true"
       class="gl-button-icon gl-icon s16"
       data-testid="ellipsis_h-icon"
+      role="img"
     >
       <use
         href="#ellipsis_h"
@@ -67,6 +69,7 @@ exports[`Expand button when short text is provided renders button before text 1`
       aria-hidden="true"
       class="gl-button-icon gl-icon s16"
       data-testid="ellipsis_h-icon"
+      role="img"
     >
       <use
         href="#ellipsis_h"
@@ -96,6 +99,7 @@ exports[`Expand button when short text is provided renders button before text 1`
       aria-hidden="true"
       class="gl-button-icon gl-icon s16"
       data-testid="ellipsis_h-icon"
+      role="img"
     >
       <use
         href="#ellipsis_h"

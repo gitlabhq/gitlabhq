@@ -68,7 +68,7 @@ RSpec.describe 'Pipeline Badge' do
         visit pipeline_project_badges_path(project, ref: ref, format: :svg)
 
         expect(page.status_code).to eq(200)
-        expect(page.response_headers['Cache-Control']).to include 'no-cache'
+        expect(page.response_headers['Cache-Control']).to eq('no-store')
       end
     end
 

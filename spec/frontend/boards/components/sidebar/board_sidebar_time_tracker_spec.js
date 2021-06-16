@@ -26,6 +26,7 @@ describe('BoardSidebarTimeTracker', () => {
     store = createStore();
     store.state.boardItems = {
       1: {
+        iid: 1,
         timeEstimate: 3600,
         totalTimeSpent: 1800,
         humanTimeEstimate: '1h',
@@ -46,12 +47,16 @@ describe('BoardSidebarTimeTracker', () => {
       createComponent({ provide: { timeTrackingLimitToHours } });
 
       expect(wrapper.find(IssuableTimeTracker).props()).toEqual({
-        timeEstimate: 3600,
-        timeSpent: 1800,
-        humanTimeEstimate: '1h',
-        humanTimeSpent: '30min',
         limitToHours: timeTrackingLimitToHours,
         showCollapsed: false,
+        issuableIid: '1',
+        fullPath: '',
+        initialTimeTracking: {
+          timeEstimate: 3600,
+          totalTimeSpent: 1800,
+          humanTimeEstimate: '1h',
+          humanTotalTimeSpent: '30min',
+        },
       });
     },
   );

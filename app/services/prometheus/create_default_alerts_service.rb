@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# DEPRECATED: To be removed as part of https://gitlab.com/groups/gitlab-org/-/epics/5877
 module Prometheus
   class CreateDefaultAlertsService < BaseService
     include Gitlab::Utils::StrongMemoize
@@ -53,12 +54,12 @@ module Prometheus
     end
 
     def schedule_prometheus_update
-      return unless prometheus_application
+      return unless prometheus_adapter
 
-      ::Clusters::Applications::ScheduleUpdateService.new(prometheus_application, project).execute
+      ::Clusters::Applications::ScheduleUpdateService.new(prometheus_adapter, project).execute
     end
 
-    def prometheus_application
+    def prometheus_adapter
       environment.cluster_prometheus_adapter
     end
 

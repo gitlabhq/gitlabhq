@@ -21,7 +21,8 @@ JS_CONSOLE_FILTER = Regexp.union([
   '"[WDS] Hot Module Replacement enabled."',
   '"[WDS] Live Reloading enabled."',
   'Download the Vue Devtools extension',
-  'Download the Apollo DevTools'
+  'Download the Apollo DevTools',
+  "Unrecognized feature: 'interest-cohort'"
 ])
 
 CAPYBARA_WINDOW_SIZE = [1366, 768].freeze

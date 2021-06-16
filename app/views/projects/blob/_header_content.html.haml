@@ -1,4 +1,6 @@
 .file-header-content
+  - if Gitlab::MarkupHelper.gitlab_markdown?(blob.path)
+    .js-table-contents
   = blob_icon blob.mode, blob.name
 
   %strong.file-title-name.gl-word-break-all{ data: { qa_selector: 'file_name_content' } }

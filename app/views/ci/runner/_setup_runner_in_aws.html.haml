@@ -1,0 +1,16 @@
+%h5= _('Use GitLab Runner in AWS')
+
+%p
+  = _('Use an AWS CloudFormation Template (CFT) to install and configure GitLab Runner in AWS.')
+
+%ol
+  %li
+    = _('Copy this registration token.')
+    %br
+    %code#registration_token{ data: { testid: 'registration_token' } }= registration_token
+    = clipboard_button(target: '#registration_token', title: _('Copy token'), class: 'btn-transparent btn-clipboard')
+  %li
+    = _('Choose the preferred Runner and populate the AWS CFT.')
+    = link_to _('Learn more.'), 'https://gitlab.com/guided-explorations/aws/gitlab-runner-autoscaling-aws-asg', target: '_blank', rel: 'noopener noreferrer'
+
+#js-runner-aws-deployments

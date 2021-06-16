@@ -21,6 +21,24 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: authorized_project_update:authorized_project_update_project_recalculate
+  :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: authorized_project_update:authorized_project_update_user_refresh_from_replica
+  :worker_name: AuthorizedProjectUpdate::UserRefreshFromReplicaWorker
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_over_user_range
   :worker_name: AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker
   :feature_category: :authentication_and_authorization
@@ -144,16 +162,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: cronjob:analytics_instance_statistics_count_job_trigger
-  :worker_name: Analytics::InstanceStatistics::CountJobTriggerWorker
-  :feature_category: :devops_reports
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
 - :name: cronjob:analytics_usage_trends_count_job_trigger
   :worker_name: Analytics::UsageTrends::CountJobTriggerWorker
   :feature_category: :devops_reports
@@ -423,15 +431,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: cronjob:prune_web_hook_logs
-  :worker_name: PruneWebHookLogsWorker
-  :feature_category: :integrations
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: cronjob:releases_manage_evidence
   :worker_name: Releases::ManageEvidenceWorker
   :feature_category: :release_evidence
@@ -477,7 +476,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: cronjob:repository_archive_cache
   :worker_name: RepositoryArchiveCacheWorker
@@ -647,15 +646,6 @@
   :idempotent:
   :tags:
   - :exclude_from_kubernetes
-- :name: deployment:deployments_execute_hooks
-  :worker_name: Deployments::ExecuteHooksWorker
-  :feature_category: :continuous_delivery
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 3
-  :idempotent:
-  :tags: []
 - :name: deployment:deployments_finished
   :worker_name: Deployments::FinishedWorker
   :feature_category: :continuous_delivery
@@ -824,15 +814,6 @@
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :cpu
-  :weight: 1
-  :idempotent:
-  :tags: []
-- :name: gcp_cluster:clusters_cleanup_app
-  :worker_name: Clusters::Cleanup::AppWorker
-  :feature_category: :kubernetes_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
   :weight: 1
   :idempotent:
   :tags: []
@@ -1088,15 +1069,6 @@
   :weight: 2
   :idempotent:
   :tags: []
-- :name: incident_management:incident_management_process_alert
-  :worker_name: IncidentManagement::ProcessAlertWorker
-  :feature_category: :incident_management
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent:
-  :tags: []
 - :name: incident_management:incident_management_process_alert_worker_v2
   :worker_name: IncidentManagement::ProcessAlertWorkerV2
   :feature_category: :incident_management
@@ -1105,15 +1077,6 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: true
-  :tags: []
-- :name: incident_management:incident_management_process_prometheus_alert
-  :worker_name: IncidentManagement::ProcessPrometheusAlertWorker
-  :feature_category: :incident_management
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 2
-  :idempotent:
   :tags: []
 - :name: jira_connect:jira_connect_sync_branch
   :worker_name: JiraConnect::SyncBranchWorker
@@ -1317,6 +1280,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: package_repositories:packages_debian_generate_distribution
+  :worker_name: Packages::Debian::GenerateDistributionWorker
+  :feature_category: :package_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_repositories:packages_debian_process_changes
   :worker_name: Packages::Debian::ProcessChangesWorker
   :feature_category: :package_registry
@@ -1401,8 +1373,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
+  :tags: []
 - :name: pipeline_background:ci_pipeline_artifacts_create_quality_report
   :worker_name: Ci::PipelineArtifacts::CreateQualityReportWorker
   :feature_category: :code_testing
@@ -1457,7 +1428,7 @@
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 3
-  :idempotent: true
+  :idempotent:
   :tags: []
 - :name: pipeline_creation:create_pipeline
   :worker_name: CreatePipelineWorker
@@ -1564,7 +1535,7 @@
   :worker_name: PipelineHooksWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
-  :urgency: :high
+  :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
   :idempotent:
@@ -1634,15 +1605,6 @@
   :tags: []
 - :name: pipeline_processing:pipeline_process
   :worker_name: PipelineProcessWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies:
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 5
-  :idempotent:
-  :tags: []
-- :name: pipeline_processing:pipeline_update
-  :worker_name: PipelineUpdateWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1777,16 +1739,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: analytics_instance_statistics_counter_job
-  :worker_name: Analytics::InstanceStatistics::CounterJobWorker
-  :feature_category: :devops_reports
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
 - :name: analytics_usage_trends_counter_job
   :worker_name: Analytics::UsageTrends::CounterJobWorker
   :feature_category: :devops_reports
@@ -2116,15 +2068,6 @@
   :idempotent: true
   :tags:
   - :exclude_from_kubernetes
-- :name: git_garbage_collect
-  :worker_name: GitGarbageCollectWorker
-  :feature_category: :gitaly
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: github_import_advance_stage
   :worker_name: Gitlab::GithubImport::AdvanceStageWorker
   :feature_category: :importers
@@ -2288,15 +2231,6 @@
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: merge_requests_assignees_change
-  :worker_name: MergeRequests::AssigneesChangeWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies:
-  :urgency: :high
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -2570,15 +2504,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: project_schedule_bulk_repository_shard_moves
-  :worker_name: ProjectScheduleBulkRepositoryShardMovesWorker
-  :feature_category: :gitaly
-  :has_external_dependencies:
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: project_service
   :worker_name: ProjectServiceWorker
   :feature_category: :integrations
@@ -2587,15 +2512,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
-- :name: project_update_repository_storage
-  :worker_name: ProjectUpdateRepositoryStorageWorker
-  :feature_category: :gitaly
-  :has_external_dependencies:
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: projects_git_garbage_collect
   :worker_name: Projects::GitGarbageCollectWorker
@@ -2811,24 +2727,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: snippet_schedule_bulk_repository_shard_moves
-  :worker_name: SnippetScheduleBulkRepositoryShardMovesWorker
-  :feature_category: :gitaly
-  :has_external_dependencies:
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: snippet_update_repository_storage
-  :worker_name: SnippetUpdateRepositoryStorageWorker
-  :feature_category: :gitaly
-  :has_external_dependencies:
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: snippets_schedule_bulk_repository_shard_moves
   :worker_name: Snippets::ScheduleBulkRepositoryShardMovesWorker
   :feature_category: :gitaly
@@ -2901,16 +2799,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: users_update_open_issue_count
-  :worker_name: Users::UpdateOpenIssueCountWorker
-  :feature_category: :users
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags:
-  - :exclude_from_kubernetes
 - :name: web_hook
   :worker_name: WebHookWorker
   :feature_category: :integrations
@@ -2930,6 +2818,15 @@
   :idempotent: true
   :tags:
   - :exclude_from_kubernetes
+- :name: web_hooks_log_execution
+  :worker_name: WebHooks::LogExecutionWorker
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: wikis_git_garbage_collect
   :worker_name: Wikis::GitGarbageCollectWorker
   :feature_category: :gitaly

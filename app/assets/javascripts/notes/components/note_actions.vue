@@ -304,7 +304,7 @@ export default {
         v-else
         v-gl-tooltip
         :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
-        class="note-action-button note-emoji-button add-reaction-button btn-icon js-add-award js-note-emoji"
+        class="note-action-button note-emoji-button add-reaction-button js-add-award js-note-emoji"
         category="tertiary"
         variant="default"
         :title="$options.i18n.addReactionLabel"

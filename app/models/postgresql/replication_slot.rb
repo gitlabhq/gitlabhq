@@ -26,8 +26,8 @@ module Postgresql
         "(pg_current_wal_insert_lsn(), restart_lsn)::bigint"
 
       # We force the use of a transaction here so the query always goes to the
-      # primary, even when using the EE DB load balancer.
-      sizes = transaction { pluck(lag_function) }
+      # primary, even when using the DB load balancer.
+      sizes = transaction { pluck(Arel.sql(lag_function)) }
       too_great = sizes.compact.count { |size| size >= max }
 
       # If too many replicas are falling behind too much, the availability of a

@@ -6,7 +6,7 @@
     = link_to s_('PrometheusService|More information'), help_page_path('operations/metrics/index.md', anchor: 'adding-custom-metrics'), target: '_blank', rel: "noopener noreferrer"
 
 .col-lg-9
-  .card.custom-monitored-metrics.js-panel-custom-monitored-metrics{ data: { qa_selector: 'custom_metrics_container', active_custom_metrics: project_prometheus_metrics_path(project), environments_data: environments_list_data, service_active: "#{@service.active}" } }
+  .card.custom-monitored-metrics.js-panel-custom-monitored-metrics{ data: { qa_selector: 'custom_metrics_container', active_custom_metrics: project_prometheus_metrics_path(project), environments_data: environments_list_data, service_active: "#{integration.active}" } }
     .card-header
       %strong
         = s_('PrometheusService|Custom metrics')

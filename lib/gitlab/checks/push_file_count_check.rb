@@ -2,7 +2,7 @@
 
 module Gitlab
   module Checks
-    class PushFileCountCheck < BaseChecker
+    class PushFileCountCheck < BaseSingleChecker
       attr_reader :repository, :newrev, :limit, :logger
 
       LOG_MESSAGES = {

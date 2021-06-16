@@ -1,16 +1,15 @@
 - breadcrumb_title _('Packages & Registries')
 - page_title _('Packages & Registries')
 - @content_class = 'limit-container-width' unless fluid_layout
-- expanded = true
 
-%section.settings.no-animate#js-registry-policies{ class: ('expanded' if expanded) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _("Clean up image tags")
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
-      = expanded ? _('Collapse') : _('Expand')
-    %p
-      = _("Save space and find images in the Container Registry. Remove unneeded tags and keep only the ones you want.")
-      = link_to _('How does cleanup work?'), help_page_path('user/packages/container_registry/index', anchor: 'cleanup-policy'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
-    = render 'projects/registry/settings/index'
+#js-registry-settings{ data: { project_id: @project.id,
+    project_path: @project.full_path,
+    cadence_options: cadence_options.to_json,
+    keep_n_options: keep_n_options.to_json,
+    older_than_options: older_than_options.to_json,
+    is_admin: current_user&.admin.to_s,
+    admin_settings_path: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'),
+    enable_historic_entries: container_expiration_policies_historic_entry_enabled?(@project).to_s,
+    help_page_path: help_page_path('user/packages/container_registry/index', anchor: 'cleanup-policy'),
+    show_cleanup_policy_on_alert: show_cleanup_policy_on_alert(@project).to_s,
+    tags_regex_help_page_path: help_page_path('user/packages/container_registry/index', anchor: 'regex-pattern-examples') } }

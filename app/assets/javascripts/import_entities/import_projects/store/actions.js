@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -75,19 +75,19 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
       if (hasRedirectInError(e)) {
         redirectToUrlInError(e);
       } else if (tooManyRequests(e)) {
-        createFlash(
-          sprintf(s__('ImportProjects|%{provider} rate limit exceeded. Try again later'), {
+        createFlash({
+          message: sprintf(s__('ImportProjects|%{provider} rate limit exceeded. Try again later'), {
             provider: capitalizeFirstCharacter(provider),
           }),
-        );
+        });
 
         commit(types.RECEIVE_REPOS_ERROR);
       } else {
-        createFlash(
-          sprintf(s__('ImportProjects|Requesting your %{provider} repositories failed'), {
+        createFlash({
+          message: sprintf(s__('ImportProjects|Requesting your %{provider} repositories failed'), {
             provider,
           }),
-        );
+        });
 
         commit(types.RECEIVE_REPOS_ERROR);
       }
@@ -126,7 +126,9 @@ const fetchImportFactory = (importPath = isRequired()) => ({ state, commit, gett
           )
         : s__('ImportProjects|Importing the project failed');
 
-      createFlash(flashMessage);
+      createFlash({
+        message: flashMessage,
+      });
 
       commit(types.RECEIVE_IMPORT_ERROR, repoId);
     });
@@ -149,7 +151,9 @@ export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, d
       if (hasRedirectInError(e)) {
         redirectToUrlInError(e);
       } else {
-        createFlash(s__('ImportProjects|Update of imported projects with realtime changes failed'));
+        createFlash({
+          message: s__('ImportProjects|Update of imported projects with realtime changes failed'),
+        });
       }
     },
   });
@@ -175,7 +179,9 @@ const fetchNamespacesFactory = (namespacesPath = isRequired()) => ({ commit }) =
       commit(types.RECEIVE_NAMESPACES_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true })),
     )
     .catch(() => {
-      createFlash(s__('ImportProjects|Requesting namespaces failed'));
+      createFlash({
+        message: s__('ImportProjects|Requesting namespaces failed'),
+      });
 
       commit(types.RECEIVE_NAMESPACES_ERROR);
     });

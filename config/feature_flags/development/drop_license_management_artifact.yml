@@ -1,8 +1,0 @@
----
-name: drop_license_management_artifact
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31247
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/299114
-milestone: 13.0
-type: development
-group: group::composition analysis
-default_enabled: true

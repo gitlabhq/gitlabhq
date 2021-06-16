@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Migrating from SVN to GitLab
+# Migrating from SVN to GitLab **(FREE)**
 
 Subversion (SVN) is a central version control system (VCS) while
 Git is a distributed version control system. There are some major differences
@@ -111,6 +111,10 @@ For any questions related to SVN to GitLab migration with SubGit, you can
 contact the SubGit team directly at [support@subgit.com](mailto:support@subgit.com).
 
 ## Cut over migration with svn2git
+
+NOTE:
+Any issues with svn2git should be directed to the [relevant project and maintainer](https://github.com/nirvdrum/svn2git).
+Check for existing issues and history for update frequency.
 
 If you are currently using an SVN repository, you can migrate the repository
 to Git and GitLab. We recommend a hard cut over - run the migration command once

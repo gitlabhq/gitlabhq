@@ -40,7 +40,14 @@ RSpec.describe OperationsHelper do
           'prometheus_url' => notify_project_prometheus_alerts_url(project, format: :json),
           'disabled' => 'false',
           'project_path' => project.full_path,
-          'multi_integrations' => 'false'
+          'multi_integrations' => 'false',
+          'templates' => '[]',
+          'create_issue' => 'false',
+          'issue_template_key' => '',
+          'send_email' => 'false',
+          'auto_close_incident' => 'true',
+          'operations_settings_endpoint' => project_settings_operations_path(project),
+          'pagerduty_reset_key_path' => reset_pagerduty_token_project_settings_operations_path(project)
         )
       end
     end
@@ -106,9 +113,7 @@ RSpec.describe OperationsHelper do
       create(
         :project_incident_management_setting,
         project: project,
-        issue_template_key: 'template-key',
-        pagerduty_active: true,
-        auto_close_incident: false
+        pagerduty_active: true
       )
     end
 
@@ -117,11 +122,6 @@ RSpec.describe OperationsHelper do
     it 'returns the correct set of data' do
       is_expected.to include(
         operations_settings_endpoint: project_settings_operations_path(project),
-        templates: '[]',
-        create_issue: 'false',
-        issue_template_key: 'template-key',
-        send_email: 'false',
-        auto_close_incident: 'false',
         pagerduty_active: 'true',
         pagerduty_token: operations_settings.pagerduty_token,
         pagerduty_webhook_url: project_incidents_integrations_pagerduty_url(project, token: operations_settings.pagerduty_token),

@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:praefect:replicas' do
+RSpec.describe 'gitlab:praefect:replicas', :silence_stdout do
   before do
     Rake.application.rake_require 'tasks/gitlab/praefect'
   end

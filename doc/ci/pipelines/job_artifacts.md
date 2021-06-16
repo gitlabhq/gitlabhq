@@ -1,12 +1,12 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Testing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/job_artifacts.html'
 type: reference, howto
 ---
 
-# Job artifacts
+# Job artifacts **(FREE)**
 
 > Introduced in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16675), artifacts in internal and private projects can be previewed when [GitLab Pages access control](../../administration/pages/index.md#access-control) is enabled.
 
@@ -140,10 +140,10 @@ namespace:
 https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/main/download?job=coverage
 ```
 
-To download the file `coverage/index.html` from the same artifacts:
+To download the file `review/index.html` from the same artifacts:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/raw/coverage/index.html?job=coverage
+https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/main/raw/review/index.html?job=coverage
 ```
 
 To browse the latest job artifacts:
@@ -155,7 +155,7 @@ https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/browse?job=<job
 For example:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/browse?job=coverage
+https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/main/browse?job=coverage
 ```
 
 To download specific files, including HTML files that
@@ -168,7 +168,7 @@ https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/file/<path>?job
 For example, when a job `coverage` creates the artifact `htmlcov/index.html`:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/file/htmlcov/index.html?job=coverage
+https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/main/file/htmlcov/index.html?job=coverage
 ```
 
 ## When job artifacts are deleted

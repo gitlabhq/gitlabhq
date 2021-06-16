@@ -1,34 +1,33 @@
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import groupFolderComponent from '~/groups/components/group_folder.vue';
-import groupItemComponent from '~/groups/components/group_item.vue';
+import GroupFolder from '~/groups/components/group_folder.vue';
+import GroupItem from '~/groups/components/group_item.vue';
+import ItemActions from '~/groups/components/item_actions.vue';
 import eventHub from '~/groups/event_hub';
 import { getGroupItemMicrodata } from '~/groups/store/utils';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import { mockParentGroupItem, mockChildren } from '../mock_data';
 
-const createComponent = (group = mockParentGroupItem, parentGroup = mockChildren[0]) => {
-  const Component = Vue.extend(groupItemComponent);
-
-  return mountComponent(Component, {
-    group,
-    parentGroup,
+const createComponent = (
+  propsData = { group: mockParentGroupItem, parentGroup: mockChildren[0] },
+) => {
+  return mount(GroupItem, {
+    propsData,
+    components: { GroupFolder },
   });
 };
 
 describe('GroupItemComponent', () => {
-  let vm;
+  let wrapper;
 
   beforeEach(() => {
-    Vue.component('GroupFolder', groupFolderComponent);
-
-    vm = createComponent();
+    wrapper = createComponent();
 
     return Vue.nextTick();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   const withMicrodata = (group) => ({
@@ -39,14 +38,14 @@ describe('GroupItemComponent', () => {
   describe('computed', () => {
     describe('groupDomId', () => {
       it('should return ID string suffixed with group ID', () => {
-        expect(vm.groupDomId).toBe('group-55');
+        expect(wrapper.vm.groupDomId).toBe('group-55');
       });
     });
 
     describe('rowClass', () => {
       it('should return map of classes based on group details', () => {
         const classes = ['is-open', 'has-children', 'has-description', 'being-removed'];
-        const { rowClass } = vm;
+        const { rowClass } = wrapper.vm;
 
         expect(Object.keys(rowClass).length).toBe(classes.length);
         Object.keys(rowClass).forEach((className) => {
@@ -57,58 +56,55 @@ describe('GroupItemComponent', () => {
 
     describe('hasChildren', () => {
       it('should return boolean value representing if group has any children present', () => {
-        let newVm;
         const group = { ...mockParentGroupItem };
 
         group.childrenCount = 5;
-        newVm = createComponent(group);
+        wrapper = createComponent({ group });
 
-        expect(newVm.hasChildren).toBeTruthy();
-        newVm.$destroy();
+        expect(wrapper.vm.hasChildren).toBe(true);
+        wrapper.destroy();
 
         group.childrenCount = 0;
-        newVm = createComponent(group);
+        wrapper = createComponent({ group });
 
-        expect(newVm.hasChildren).toBeFalsy();
-        newVm.$destroy();
+        expect(wrapper.vm.hasChildren).toBe(false);
+        wrapper.destroy();
       });
     });
 
     describe('hasAvatar', () => {
       it('should return boolean value representing if group has any avatar present', () => {
-        let newVm;
         const group = { ...mockParentGroupItem };
 
         group.avatarUrl = null;
-        newVm = createComponent(group);
+        wrapper = createComponent({ group });
 
-        expect(newVm.hasAvatar).toBeFalsy();
-        newVm.$destroy();
+        expect(wrapper.vm.hasAvatar).toBe(false);
+        wrapper.destroy();
 
         group.avatarUrl = '/uploads/group_avatar.png';
-        newVm = createComponent(group);
+        wrapper = createComponent({ group });
 
-        expect(newVm.hasAvatar).toBeTruthy();
-        newVm.$destroy();
+        expect(wrapper.vm.hasAvatar).toBe(true);
+        wrapper.destroy();
       });
     });
 
     describe('isGroup', () => {
       it('should return boolean value representing if group item is of type `group` or not', () => {
-        let newVm;
         const group = { ...mockParentGroupItem };
 
         group.type = 'group';
-        newVm = createComponent(group);
+        wrapper = createComponent({ group });
 
-        expect(newVm.isGroup).toBeTruthy();
-        newVm.$destroy();
+        expect(wrapper.vm.isGroup).toBe(true);
+        wrapper.destroy();
 
         group.type = 'project';
-        newVm = createComponent(group);
+        wrapper = createComponent({ group });
 
-        expect(newVm.isGroup).toBeFalsy();
-        newVm.$destroy();
+        expect(wrapper.vm.isGroup).toBe(false);
+        wrapper.destroy();
       });
     });
   });
@@ -137,22 +133,22 @@ describe('GroupItemComponent', () => {
       it('should emit `toggleChildren` event when expand is clicked on a group and it has children present', () => {
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
 
-        vm.onClickRowGroup(event);
+        wrapper.vm.onClickRowGroup(event);
 
-        expect(eventHub.$emit).toHaveBeenCalledWith('toggleChildren', vm.group);
+        expect(eventHub.$emit).toHaveBeenCalledWith('toggleChildren', wrapper.vm.group);
       });
 
       it('should navigate page to group homepage if group does not have any children present', () => {
         jest.spyOn(urlUtilities, 'visitUrl').mockImplementation();
         const group = { ...mockParentGroupItem };
         group.childrenCount = 0;
-        const newVm = createComponent(group);
+        wrapper = createComponent({ group });
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
 
-        newVm.onClickRowGroup(event);
+        wrapper.vm.onClickRowGroup(event);
 
         expect(eventHub.$emit).not.toHaveBeenCalled();
-        expect(urlUtilities.visitUrl).toHaveBeenCalledWith(newVm.group.relativePath);
+        expect(urlUtilities.visitUrl).toHaveBeenCalledWith(wrapper.vm.group.relativePath);
       });
     });
   });
@@ -163,11 +159,11 @@ describe('GroupItemComponent', () => {
     describe('for a group pending deletion', () => {
       beforeEach(() => {
         group = { ...mockParentGroupItem, pendingRemoval: true };
-        vm = createComponent(group);
+        wrapper = createComponent({ group });
       });
 
       it('renders the group pending removal badge', () => {
-        const badgeEl = vm.$el.querySelector('.badge-warning');
+        const badgeEl = wrapper.vm.$el.querySelector('.badge-warning');
 
         expect(badgeEl).toBeDefined();
         expect(badgeEl.innerHTML).toContain('pending removal');
@@ -177,21 +173,41 @@ describe('GroupItemComponent', () => {
     describe('for a group not scheduled for deletion', () => {
       beforeEach(() => {
         group = { ...mockParentGroupItem, pendingRemoval: false };
-        vm = createComponent(group);
+        wrapper = createComponent({ group });
       });
 
       it('does not render the group pending removal badge', () => {
-        const groupTextContainer = vm.$el.querySelector('.group-text-container');
+        const groupTextContainer = wrapper.vm.$el.querySelector('.group-text-container');
 
         expect(groupTextContainer).not.toContain('pending removal');
+      });
+
+      it('renders `item-actions` component and passes correct props to it', () => {
+        wrapper = createComponent({
+          group: mockParentGroupItem,
+          parentGroup: mockChildren[0],
+          action: 'subgroups_and_projects',
+        });
+        const itemActionsComponent = wrapper.findComponent(ItemActions);
+
+        expect(itemActionsComponent.exists()).toBe(true);
+        expect(itemActionsComponent.props()).toEqual({
+          group: mockParentGroupItem,
+          parentGroup: mockChildren[0],
+          action: 'subgroups_and_projects',
+        });
       });
     });
 
     it('should render component template correctly', () => {
-      const visibilityIconEl = vm.$el.querySelector('[data-testid="group-visibility-icon"]');
+      const visibilityIconEl = wrapper.vm.$el.querySelector(
+        '[data-testid="group-visibility-icon"]',
+      );
+
+      const { vm } = wrapper;
 
       expect(vm.$el.getAttribute('id')).toBe('group-55');
-      expect(vm.$el.classList.contains('group-row')).toBeTruthy();
+      expect(vm.$el.classList.contains('group-row')).toBe(true);
 
       expect(vm.$el.querySelector('.group-row-contents')).toBeDefined();
       expect(vm.$el.querySelector('.group-row-contents .controls')).toBeDefined();
@@ -220,13 +236,13 @@ describe('GroupItemComponent', () => {
   describe('schema.org props', () => {
     describe('when showSchemaMarkup is disabled on the group', () => {
       it.each(['itemprop', 'itemtype', 'itemscope'], 'it does not set %s', (attr) => {
-        expect(vm.$el.getAttribute(attr)).toBeNull();
+        expect(wrapper.vm.$el.getAttribute(attr)).toBeNull();
       });
       it.each(
         ['.js-group-avatar', '.js-group-name', '.js-group-description'],
         'it does not set `itemprop` on sub-nodes',
         (selector) => {
-          expect(vm.$el.querySelector(selector).getAttribute('itemprop')).toBeNull();
+          expect(wrapper.vm.$el.querySelector(selector).getAttribute('itemprop')).toBeNull();
         },
       );
     });
@@ -238,7 +254,7 @@ describe('GroupItemComponent', () => {
           description: 'Foo Bar',
         });
 
-        vm = createComponent(group);
+        wrapper = createComponent({ group });
       });
 
       it.each`
@@ -247,7 +263,7 @@ describe('GroupItemComponent', () => {
         ${'itemtype'}  | ${'https://schema.org/Organization'}
         ${'itemprop'}  | ${'subOrganization'}
       `('it does set correct $attr', ({ attr, value } = {}) => {
-        expect(vm.$el.getAttribute(attr)).toBe(value);
+        expect(wrapper.vm.$el.getAttribute(attr)).toBe(value);
       });
 
       it.each`
@@ -256,7 +272,7 @@ describe('GroupItemComponent', () => {
         ${'[data-testid="group-name"]'}        | ${'name'}
         ${'[data-testid="group-description"]'} | ${'description'}
       `('it does set correct $selector', ({ selector, propValue } = {}) => {
-        expect(vm.$el.querySelector(selector).getAttribute('itemprop')).toBe(propValue);
+        expect(wrapper.vm.$el.querySelector(selector).getAttribute('itemprop')).toBe(propValue);
       });
     });
   });

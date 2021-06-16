@@ -3,7 +3,7 @@
 require 'securerandom'
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages do
+  RSpec.describe 'Package', :orchestrated, :packages, :reliable do
     describe 'Maven Repository' do
       include Runtime::Fixtures
 
@@ -44,7 +44,7 @@ module QA
           runner.name = "qa-runner-#{Time.now.to_i}"
           runner.tags = ["runner-for-#{project.group.name}"]
           runner.executor = :docker
-          runner.token = project.group.sandbox.runners_token
+          runner.token = project.group.runners_token
         end
       end
 

@@ -1,7 +1,9 @@
+- event_url = event_feed_url(event)
+
 %div{ xmlns: "http://www.w3.org/1999/xhtml" }
   %p
     %strong= event.author_name
-    = link_to "(#{truncate_sha(event.commit_id)})", event_feed_url(event)
+    = link_to "(#{truncate_sha(event.commit_id)})", event_url if event_url
     %i
       at
       = event.created_at.to_s(:short)

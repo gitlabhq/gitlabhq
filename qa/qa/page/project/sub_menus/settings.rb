@@ -53,10 +53,10 @@ module QA
             end
           end
 
-          def go_to_operations_settings
+          def go_to_monitor_settings
             hover_settings do
               within_submenu do
-                click_element(:sidebar_menu_item_link, menu_item: 'Operations')
+                click_element(:sidebar_menu_item_link, menu_item: 'Monitor')
               end
             end
           end

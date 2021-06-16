@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20201026200736_seed_merge_trains_enabled.rb')
+require_migration!
 
 RSpec.describe SeedMergeTrainsEnabled do
   describe 'migrate' do

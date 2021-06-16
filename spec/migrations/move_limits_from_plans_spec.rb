@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20191030152934_move_limits_from_plans.rb')
+require_migration!
 
 RSpec.describe MoveLimitsFromPlans do
   let(:plans) { table(:plans) }

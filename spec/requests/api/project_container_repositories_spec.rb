@@ -32,6 +32,8 @@ RSpec.describe API::ProjectContainerRepositories do
   let(:method) { :get }
   let(:params) { {} }
 
+  let(:snowplow_gitlab_standard_context) { { user: api_user, project: project, namespace: project.namespace } }
+
   before_all do
     project.add_maintainer(maintainer)
     project.add_developer(developer)
@@ -405,7 +407,7 @@ RSpec.describe API::ProjectContainerRepositories do
               subject
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect_snowplow_event(category: described_class.name, action: 'delete_tag')
+              expect_snowplow_event(category: described_class.name, action: 'delete_tag', project: project, user: api_user, namespace: project.namespace)
             end
           end
 
@@ -421,7 +423,7 @@ RSpec.describe API::ProjectContainerRepositories do
               subject
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect_snowplow_event(category: described_class.name, action: 'delete_tag')
+              expect_snowplow_event(category: described_class.name, action: 'delete_tag', project: project, user: api_user, namespace: project.namespace)
             end
           end
         end

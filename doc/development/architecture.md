@@ -15,14 +15,14 @@ There are two software distributions of GitLab:
 
 GitLab is available under [different subscriptions](https://about.gitlab.com/pricing/).
 
-New versions of GitLab are released from stable branches, and the `master` branch is used for
+New versions of GitLab are released from stable branches, and the `main` branch is used for
 bleeding-edge development.
 
 For more information, visit the [GitLab Release Process](https://about.gitlab.com/handbook/engineering/releases/).
 
 Both distributions require additional components. These components are described in the
 [Component details](#components) section, and all have their own repositories.
-New versions of each dependent component are usually tags, but staying on the `master` branch of the
+New versions of each dependent component are usually tags, but staying on the `main` branch of the
 GitLab codebase gives you the latest stable version of those components. New versions are
 generally released around the same time as GitLab releases, with the exception of informal security
 updates deemed critical.
@@ -46,14 +46,14 @@ and pre-compiled assets.
 
 The GitLab application uses PostgreSQL for persistent database information (for example, users,
 permissions, issues, or other metadata). GitLab stores the bare Git repositories in the location
-defined in [the configuration file, `repositories:` section](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example).
+defined in [the configuration file, `repositories:` section](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example).
 It also keeps default branch and hook information with the bare repository.
 
 When serving repositories over HTTP/HTTPS GitLab uses the GitLab API to resolve authorization and
 access and to serve Git objects.
 
 The add-on component GitLab Shell serves repositories over SSH. It manages the SSH keys within the
-location defined in [the configuration file, `GitLab Shell` section](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example).
+location defined in [the configuration file, `GitLab Shell` section](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example).
 The file in that location should never be manually edited. GitLab Shell accesses the bare
 repositories through Gitaly to serve Git objects, and communicates with Redis to submit jobs to
 Sidekiq for GitLab to process. GitLab Shell queries the GitLab API to determine authorization and access.
@@ -215,7 +215,7 @@ click NodeExporter "./architecture.html#node-exporter"
 ### Component legend
 
 - ✅ - Installed by default
-- ⚙ - Requires additional configuration, or GitLab Managed Apps
+- ⚙ - Requires additional configuration
 - ⤓ - Manual installation required
 - ❌ - Not supported or no instructions available
 - N/A - Not applicable
@@ -234,7 +234,6 @@ Component statuses are linked to configuration documentation for each component.
 | [GitLab Exporter](#gitlab-exporter)                   | Generates a variety of GitLab metrics                                |       ✅       |       ✅        |      ✅       |        ✅         |     ✅      |   ❌    |  ❌  | CE & EE |
 | [GitLab Geo Node](#gitlab-geo)                        | Geographically distributed GitLab nodes                              |       ⚙        |       ⚙      |        ❌      |        ❌         |     ✅      |   ❌    |  ⚙  | EE Only |
 | [GitLab Kubernetes Agent](#gitlab-kubernetes-agent)   | Integrate Kubernetes clusters in a cloud-native way                  |       ⚙       |       ⚙        |      ⚙       |        ❌         |     ❌      |   ⤓    |  ⚙   | EE Only |
-| [GitLab Managed Apps](#gitlab-managed-apps)           | Deploy Helm, Ingress, Cert-Manager, Prometheus, GitLab Runner, JupyterHub, or Knative to a cluster |  ⤓  |  ⤓  |  ⤓  |      ⤓       |     ⤓      |   ⤓    |  ⤓  | CE & EE |
 | [GitLab Pages](#gitlab-pages)                         | Hosts static websites                                                |       ⚙       |       ⚙        |      ❌       |        ❌         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [GitLab Kubernetes Agent](#gitlab-kubernetes-agent)   | Integrate Kubernetes clusters in a cloud-native way                  |       ⚙       |       ⚙        |      ⚙       |        ❌         |     ❌      |   ⤓    |  ⚙   | EE Only |
 | [GitLab self-monitoring: Alertmanager](#alertmanager) | Deduplicates, groups, and routes alerts from Prometheus              |       ⚙       |       ⚙        |      ✅       |        ⚙         |     ✅      |   ❌    |  ❌  | CE & EE |
@@ -435,7 +434,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/)
   - [Source](../install/installation.md#install-gitlab-shell)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - GitLab.com: [Service Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
 
@@ -668,8 +667,8 @@ An external registry can also be configured to use GitLab as an auth endpoint.
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/configuration.html#error-reporting-and-logging-with-sentry)
   - [Charts](https://docs.gitlab.com/charts/charts/globals#sentry-settings)
-  - [Source](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
+  - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Monitoring
 - GitLab.com: [Searching Sentry](https://about.gitlab.com/handbook/support/workflows/500_errors.html#searching-sentry)
 
@@ -685,8 +684,8 @@ For monitoring deployed apps, see the [Sentry integration docs](../operations/er
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/)
   - [Minikube Minimal](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html)
-  - [Source](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
+  - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - Process: `sidekiq`
 - GitLab.com: [Sidekiq](../user/gitlab_com/index.md#sidekiq)
@@ -695,44 +694,26 @@ Sidekiq is a Ruby background job processor that pulls jobs from the Redis queue 
 
 #### Puma
 
-Starting with GitLab 13.0, Puma is the default web server and Unicorn has been
-disabled by default.
+Starting with GitLab 13.0, Puma is the default web server.
 
-- [Project page](https://gitlab.com/gitlab-org/gitlab/blob/master/README.md)
+- [Project page](https://gitlab.com/gitlab-org/gitlab/-/blob/master/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/puma.html)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/webservice/)
   - [Source](../install/installation.md#configure-it)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - Process: `puma`
 - GitLab.com: [Puma](../user/gitlab_com/index.md#puma)
 
 [Puma](https://puma.io/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often this displays in process output as `bundle` or `config.ru` depending on the GitLab version.
 
-#### Unicorn
-
-Starting with GitLab 13.0, Puma is the default web server and Unicorn has been
-disabled by default.
-
-- [Project page](https://gitlab.com/gitlab-org/gitlab/blob/master/README.md)
-- Configuration:
-  - [Omnibus](https://docs.gitlab.com/omnibus/settings/unicorn.html)
-  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/webservice/)
-  - [Source](../install/installation.md#configure-it)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
-- Layer: Core Service (Processor)
-- Process: `unicorn`
-- GitLab.com: [Unicorn](../user/gitlab_com/index.md#unicorn)
-
-[Unicorn](https://yhbt.net/unicorn/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often this displays in process output as `bundle` or `config.ru` depending on the GitLab version.
-
 #### LDAP Authentication
 
 - Configuration:
   - [Omnibus](../administration/auth/ldap/index.md)
   - [Charts](https://docs.gitlab.com/charts/charts/globals.html#ldap)
-  - [Source](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
+  - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/ldap.md)
 - Layer: Core Service (Processor)
 - GitLab.com: [Product Tiers](https://about.gitlab.com/pricing/#gitlab-com)
@@ -742,8 +723,8 @@ disabled by default.
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/smtp.html)
   - [Charts](https://docs.gitlab.com/charts/installation/command-line-options.html#outgoing-email-configuration)
-  - [Source](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
+  - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - GitLab.com: [Mail configuration](../user/gitlab_com/index.md#mail-configuration)
 
@@ -752,32 +733,10 @@ disabled by default.
 - Configuration:
   - [Omnibus](../administration/incoming_email.md)
   - [Charts](https://docs.gitlab.com/charts/installation/command-line-options.html#incoming-email-configuration)
-  - [Source](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
+  - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - GitLab.com: [Mail configuration](../user/gitlab_com/index.md#mail-configuration)
-
-#### GitLab Managed Apps
-
-- Configuration:
-  - [Omnibus](../user/project/clusters/index.md#installing-applications)
-  - [Charts](../user/project/clusters/index.md#installing-applications)
-  - [Source](../user/project/clusters/index.md#installing-applications)
-  - [GDK](../user/project/clusters/index.md#installing-applications)
-- Layer: Core Service (Processor)
-
-GitLab provides [GitLab Managed Apps](../user/project/clusters/index.md#installing-applications),
-a one-click install for various applications which can be added directly to your configured cluster.
-These applications are needed for Review Apps and deployments when using Auto DevOps.
-You can install them after you create a cluster. This includes:
-
-- [Helm](https://helm.sh/docs/)
-- [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
-- [Cert-Manager](https://cert-manager.io/docs/)
-- [Prometheus](https://prometheus.io/docs/introduction/overview/)
-- [GitLab Runner](https://docs.gitlab.com/runner/)
-- [JupyterHub](https://jupyter.org)
-- [Knative](https://cloud.google.com/knative/)
 
 ## GitLab by request type
 
@@ -896,7 +855,7 @@ instead of `git upload-pack`.
 
 If fast SSH key lookups are not enabled, the SSH server reads from the
 `~git/.ssh/authorized_keys` file to determine what command to run for a given
-SSH session. This is kept up to date by an [`AuthorizedKeysWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/workers/authorized_keys_worker.rb)
+SSH session. This is kept up to date by an [`AuthorizedKeysWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/authorized_keys_worker.rb)
 in Rails, scheduled to run whenever an SSH key is modified by a user.
 
 [SSH certificates](../administration/operations/ssh_certificates.md) may be used
@@ -1035,7 +994,7 @@ GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
 
 ### Maintenance tasks
 
-[GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides Rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance Rake tasks](../administration/raketasks/maintenance.md).
+[GitLab](https://gitlab.com/gitlab-org/gitlab/-/tree/master) provides Rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance Rake tasks](../administration/raketasks/maintenance.md).
 In a nutshell, do the following:
 
 ```shell

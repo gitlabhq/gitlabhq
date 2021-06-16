@@ -1,7 +1,8 @@
 import { queryToObject } from '~/lib/utils/url_utility';
 import { FILTERED_SEARCH_TERM } from './constants';
 
-export const getQueryParams = (query) => queryToObject(query, { gatherArrays: true });
+export const getQueryParams = (query) =>
+  queryToObject(query, { gatherArrays: true, legacySpacesDecode: true });
 
 export const keyValueToFilterToken = (type, data) => ({ type, value: { data } });
 

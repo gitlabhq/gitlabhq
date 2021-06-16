@@ -40,3 +40,5 @@ module Types
     end
   end
 end
+
+Types::Ci::RunnerType.prepend_mod_with('Types::Ci::RunnerType')

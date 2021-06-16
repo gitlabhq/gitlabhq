@@ -6,61 +6,11 @@ RSpec.describe Gitlab::Ci::Badge::Pipeline::Template do
   let(:badge) { double(entity: 'pipeline', status: 'success', customization: {}) }
   let(:template) { described_class.new(badge) }
 
-  describe '#key_text' do
-    it 'says pipeline by default' do
-      expect(template.key_text).to eq 'pipeline'
-    end
-
-    context 'when custom key_text is defined' do
-      before do
-        allow(badge).to receive(:customization).and_return({ key_text: 'custom text' })
-      end
-
-      it 'returns custom value' do
-        expect(template.key_text).to eq 'custom text'
-      end
-
-      context 'when its size is larger than the max allowed value' do
-        before do
-          allow(badge).to receive(:customization).and_return({ key_text: 't' * 65 })
-        end
-
-        it 'returns default value' do
-          expect(template.key_text).to eq 'pipeline'
-        end
-      end
-    end
-  end
+  it_behaves_like 'a badge template', 'pipeline'
 
   describe '#value_text' do
     it 'is status value' do
       expect(template.value_text).to eq 'passed'
-    end
-  end
-
-  describe '#key_width' do
-    it 'is fixed by default' do
-      expect(template.key_width).to eq 62
-    end
-
-    context 'when custom key_width is defined' do
-      before do
-        allow(badge).to receive(:customization).and_return({ key_width: 101 })
-      end
-
-      it 'returns custom value' do
-        expect(template.key_width).to eq 101
-      end
-
-      context 'when it is larger than the max allowed value' do
-        before do
-          allow(badge).to receive(:customization).and_return({ key_width: 513 })
-        end
-
-        it 'returns default value' do
-          expect(template.key_width).to eq 62
-        end
-      end
     end
   end
 

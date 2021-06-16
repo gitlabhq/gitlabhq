@@ -152,6 +152,10 @@ We recommend:
 - **Unique User Identifier (Name identifier)** set to `user.objectID`.
 - **nameid-format** set to persistent.
 
+If using [Group Sync](#group-sync), customize the name of the group claim to match the required attribute.
+
+See the [troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md#azure-active-directory) for an example configuration.
+
 ### Okta setup notes
 
 Please follow the Okta documentation on [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/) with the notes below for consideration.
@@ -324,18 +328,23 @@ Ensure your SAML identity provider sends an attribute statement named `Groups` o
 </saml:AttributeStatement>
 ```
 
+NOTE:
+To inspect the SAML response, you can use one of these [SAML debugging tools](#saml-debugging-tools).
+Also note that the value for `Groups` or `groups` in the SAML reponse can be either the group name or 
+the group ID depending what the IdP sends to GitLab.
+
 When SAML SSO is enabled for the top-level group, `Maintainer` and `Owner` level users
-see a new menu item in group **Settings > SAML Group Links**. Each group (parent or subgroup) can specify
-one or more group links to map a SAML identity provider group name to a GitLab access level.
+see a new menu item in group **Settings > SAML Group Links**. You can configure one or more **SAML Group Links** to map 
+a SAML identity provider group name to a GitLab Access Level. This can be done for the parent group or the subgroups.
 
-To link the SAML `Freelancers` group in the attribute statement example above:
+To link the SAML groups from the `saml:AttributeStatement` example above:
 
-1. Enter `Freelancers` in the `SAML Group Name` field.
+1. Enter the value of `saml:AttributeValue` in the `SAML Group Name` field.
 1. Choose the desired `Access Level`.
 1. **Save** the group link.
 1. Repeat to add additional group links if desired.
 
-![SAML Group Links](img/saml_group_links_v13_6.png)
+![SAML Group Links](img/saml_group_links_v13_9.png)
 
 If a user is a member of multiple SAML groups mapped to the same GitLab group,
 the user gets the highest access level from the groups. For example, if one group
@@ -450,7 +459,7 @@ SAML configuration for GitLab.com is mostly the same as for self-managed instanc
 However, self-managed GitLab instances use a configuration file that supports more options as described in the external [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml/).
 Internally that uses the [`ruby-saml` library](https://github.com/onelogin/ruby-saml), so we sometimes check there to verify low level details of less commonly used options.
 
-It can also help to compare the XML response from your provider with our [example XML used for internal testing](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/spec/fixtures/saml/response.xml).
+It can also help to compare the XML response from your provider with our [example XML used for internal testing](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/fixtures/saml/response.xml).
 
 ### Searching Rails log
 

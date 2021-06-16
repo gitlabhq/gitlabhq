@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"os"
 
-	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/mask"
 )
 
@@ -98,11 +97,11 @@ func (m *Multipart) readAndUploadOnePart(ctx context.Context, partURL string, pu
 	if err != nil {
 		return nil, fmt.Errorf("create temporary buffer file: %v", err)
 	}
-	defer func(path string) {
-		if err := os.Remove(path); err != nil {
-			log.WithError(err).WithField("file", path).Warning("Unable to delete temporary file")
-		}
-	}(file.Name())
+	defer file.Close()
+
+	if err := os.Remove(file.Name()); err != nil {
+		return nil, err
+	}
 
 	n, err := io.Copy(file, src)
 	if err != nil {

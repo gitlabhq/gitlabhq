@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as messages from '../messages';
 import * as types from '../mutation_types';
@@ -42,7 +42,7 @@ export const receiveSessionStatusSuccess = ({ commit, dispatch }, data) => {
 };
 
 export const receiveSessionStatusError = ({ dispatch }) => {
-  flash(messages.UNEXPECTED_ERROR_STATUS);
+  createFlash({ message: messages.UNEXPECTED_ERROR_STATUS });
   dispatch('killSession');
 };
 

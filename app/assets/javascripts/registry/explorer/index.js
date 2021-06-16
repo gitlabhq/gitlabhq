@@ -34,6 +34,7 @@ export default () => {
     expirationPolicy,
     isGroupPage,
     isAdmin,
+    showCleanupPolicyOnAlert,
     showUnfinishedTagCleanupCallout,
     ...config
   } = el.dataset;
@@ -64,6 +65,7 @@ export default () => {
             expirationPolicy: expirationPolicy ? JSON.parse(expirationPolicy) : undefined,
             isGroupPage: parseBoolean(isGroupPage),
             isAdmin: parseBoolean(isAdmin),
+            showCleanupPolicyOnAlert: parseBoolean(showCleanupPolicyOnAlert),
             showUnfinishedTagCleanupCallout: parseBoolean(showUnfinishedTagCleanupCallout),
           },
           /* eslint-disable @gitlab/require-i18n-strings */

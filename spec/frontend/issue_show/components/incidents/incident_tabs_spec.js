@@ -9,7 +9,7 @@ import IncidentTabs from '~/issue_show/components/incidents/incident_tabs.vue';
 import INVALID_URL from '~/lib/utils/invalid_url';
 import Tracking from '~/tracking';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
-import { descriptionProps } from '../../mock_data';
+import { descriptionProps } from '../../mock_data/mock_data';
 
 const mockAlert = {
   __typename: 'AlertManagementAlert',

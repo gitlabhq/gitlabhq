@@ -3,8 +3,6 @@
 module Security
   module CiConfiguration
     class SastBuildAction < BaseBuildAction
-      SAST_DEFAULT_ANALYZERS = 'bandit, brakeman, eslint, flawfinder, gosec, kubesec, nodejs-scan, phpcs-security-audit, pmd-apex, security-code-scan, semgrep, sobelow, spotbugs'
-
       def initialize(auto_devops_enabled, params, existing_gitlab_ci_content)
         super(auto_devops_enabled, existing_gitlab_ci_content)
         @variables = variables(params)
@@ -114,7 +112,6 @@ module Security
 
       def sast_variables
         %w(
-          SAST_ANALYZER_IMAGE_TAG
           SAST_EXCLUDED_PATHS
           SEARCH_MAX_DEPTH
           SAST_EXCLUDED_ANALYZERS

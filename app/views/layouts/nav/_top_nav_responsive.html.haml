@@ -1,0 +1,7 @@
+- return unless Feature.enabled?(:combined_menu, current_user, default_enabled: :yaml)
+
+- top_class = local_assigns.fetch(:class, nil)
+- view_model = top_nav_responsive_view_model(project: @project, group: @group)
+
+.top-nav-responsive{ class: top_class }
+  #js-top-nav-responsive{ data: { view_model: view_model.to_json } }

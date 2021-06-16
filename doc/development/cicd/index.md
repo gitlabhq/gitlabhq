@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: index, concepts, howto
 ---
@@ -67,7 +67,7 @@ The communication between runners and the Rails server occurs through a set of A
 the `Runner API Gateway`.
 
 We can register, delete, and verify runners, which also causes read/write queries to the database. After a runner is connected,
-it keeps asking for the next job to execute. This invokes the [`RegisterJobService`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/services/ci/register_job_service.rb)
+it keeps asking for the next job to execute. This invokes the [`RegisterJobService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/register_job_service.rb)
 which picks the next job and assigns it to the runner. At this point the job transitions to a
 `running` state, which again triggers `ProcessPipelineService` due to the status change.
 For more details read [Job scheduling](#job-scheduling)).
@@ -103,7 +103,7 @@ A job with the `created` state isn't seen by the runner yet. To make it possible
 When the runner is connected, it requests the next `pending` job to run by polling the server continuously.
 
 NOTE:
-API endpoints used by the runner to interact with GitLab are defined in [`lib/api/ci/runner.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/ci/runner.rb)
+API endpoints used by the runner to interact with GitLab are defined in [`lib/api/ci/runner.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/ci/runner.rb)
 
 After the server receives the request it selects a `pending` job based on the [`Ci::RegisterJobService` algorithm](#ciregisterjobservice), then assigns and sends the job to the runner.
 
@@ -121,7 +121,7 @@ Once the runner is [registered](https://docs.gitlab.com/runner/register/) using 
 
 The runner initiates the communication by requesting jobs to execute with `POST /api/v4/jobs/request`. Although this polling generally happens every few seconds we leverage caching via HTTP headers to reduce the server-side work load if the job queue doesn't change.
 
-This API endpoint runs [`Ci::RegisterJobService`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/services/ci/register_job_service.rb), which:
+This API endpoint runs [`Ci::RegisterJobService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/register_job_service.rb), which:
 
 1. Picks the next job to run from the pool of `pending` jobs
 1. Assigns it to the runner
@@ -185,17 +185,3 @@ Watch a walkthrough of this feature in details in the video below.
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/NmdWRGT8kZg" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
-
-## External pipeline validation service
-
-The [external CI/CD pipeline validation service](../../administration/external_pipeline_validation.md)
-is available for use on self-managed GitLab instances, but is not in use on GitLab.com.
-It is configured with [environment variables](../../administration/environment_variables.md)
-on the instance.
-
-To enable the feature on GitLab.com, enable the `ci_external_validation_service`
-[feature flag](../feature_flags/index.md). The valid "Not accepted" response code
-for GitLab.com is `406` only.
-
-For more details, see the linked issues and MRs in the
-[feature flag rollout issue](https://gitlab.com/gitlab-org/gitlab/-/issues/325982).

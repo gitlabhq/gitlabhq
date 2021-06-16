@@ -436,14 +436,11 @@ module API
         mr_params = declared_params(include_missing: false)
         mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params.has_key?(:remove_source_branch)
         mr_params = convert_parameters_from_legacy_format(mr_params)
+        mr_params[:use_specialized_service] = true
 
-        service = if mr_params.one? && (mr_params.keys & %i[assignee_id assignee_ids]).one?
-                    ::MergeRequests::UpdateAssigneesService
-                  else
-                    ::MergeRequests::UpdateService
-                  end
-
-        merge_request = service.new(project: user_project, current_user: current_user, params: mr_params).execute(merge_request)
+        merge_request = ::MergeRequests::UpdateService
+          .new(project: user_project, current_user: current_user, params: mr_params)
+          .execute(merge_request)
 
         handle_merge_request_errors!(merge_request)
 

@@ -67,8 +67,8 @@ After you have created the merge request, you can also:
 - [Discuss](../../discussions/index.md) your implementation with your team in the merge request thread.
 - [Perform inline code reviews](reviews/index.md#perform-inline-code-reviews).
 - Add [merge request dependencies](merge_request_dependencies.md) to restrict it to be merged only when other merge requests have been merged. **(PREMIUM)**
-- Preview continuous integration [pipelines on the merge request widget](reviews/index.md#pipeline-status-in-merge-requests-widgets).
-- Preview how your changes look directly on your deployed application with [Review Apps](reviews/index.md#live-preview-with-review-apps).
+- Preview continuous integration [pipelines on the merge request widget](widgets.md).
+- Preview how your changes look directly on your deployed application with [Review Apps](widgets.md#live-preview-with-review-apps).
 - [Allow collaboration on merge requests across forks](allow_collaboration.md).
 - Perform a [Review](reviews/index.md) to create multiple comments on a diff and publish them when you're ready.
 - Add [code suggestions](reviews/suggestions.md) to change the content of merge requests directly into merge request threads, and easily apply them to the codebase directly from the UI.
@@ -114,9 +114,6 @@ It is also possible to manage multiple assignees:
 
 ### Reviewer
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216054) in GitLab 13.5.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245190) in GitLab 13.9.
-
 WARNING:
 Requesting a code review is an important part of contributing code. However, deciding who should review
 your code and asking for a review are no easy tasks. Using the "assignee" field for both authors and
@@ -132,44 +129,7 @@ To request a review of a merge request, expand the **Reviewers** select box in
 the right-hand sidebar. Search for the users you want to request a review from.
 When selected, GitLab creates a [to-do list item](../../todos.md) for each reviewer.
 
-#### Approval Rule information for Reviewers **(PREMIUM)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
-
-When editing the **Reviewers** field in a new or existing merge request, GitLab
-displays the name of the matching [approval rule](approvals/rules.md)
-below the name of each suggested reviewer. [Code Owners](../code_owners.md) are displayed as `Codeowner` without group detail.
-
-This example shows reviewers and approval rules when creating a new merge request:
-
-![Reviewer approval rules in new/edit form](img/reviewer_approval_rules_form_v13_8.png)
-
-This example shows reviewers and approval rules in a merge request sidebar:
-
-![Reviewer approval rules in sidebar](img/reviewer_approval_rules_sidebar_v13_8.png)
-
-#### Requesting a new review
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293933) in GitLab 13.9.
-
-After a reviewer completes their [merge request reviews](../../discussions/index.md),
-the author of the merge request can request a new review from the reviewer:
-
-1. If the right sidebar in the merge request is collapsed, click the
-   **{chevron-double-lg-left}** **Expand Sidebar** icon to expand it.
-1. In the **Reviewers** section, click the **Re-request a review** icon (**{redo}**)
-   next to the reviewer's name.
-
-GitLab creates a new [to-do item](../../todos.md) for the reviewer, and sends
-them a notification email.
-
-#### Approval status
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292936) in GitLab 13.10.
-
-If a user in the reviewer list has approved the merge request, a green tick symbol is
-shown to the right of their name.
+To learn more, read [Review and manage merge requests](reviews/index.md).
 
 ### Merge requests to close issues
 
@@ -193,7 +153,7 @@ enabled by default for all new merge requests, enable it in the
 
 This option is also visible in an existing merge request next to
 the merge request button and can be selected or deselected before merging.
-It is only visible to users with [Maintainer permissions](../../permissions.md)
+It is only visible to users with the [Maintainer role](../../permissions.md)
 in the source project.
 
 If the user viewing the merge request does not have the correct
@@ -216,18 +176,18 @@ open merge request, if the destination branch merges while the merge request is
 open. Merge requests are often chained in this manner, with one merge request
 depending on another:
 
-- **Merge request 1**: merge `feature-alpha` into `master`.
+- **Merge request 1**: merge `feature-alpha` into `main`.
 - **Merge request 2**: merge `feature-beta` into `feature-alpha`.
 
 These merge requests are usually handled in one of these ways:
 
-- Merge request 1 is merged into `master` first. Merge request 2 is then
-  retargeted to `master`.
+- Merge request 1 is merged into `main` first. Merge request 2 is then
+  retargeted to `main`.
 - Merge request 2 is merged into `feature-alpha`. The updated merge request 1, which
-  now contains the contents of `feature-alpha` and `feature-beta`, is merged into `master`.
+  now contains the contents of `feature-alpha` and `feature-beta`, is merged into `main`.
 
 GitLab retargets up to four merge requests when their target branch is merged into
-`master`, so you don't need to perform this operation manually. Merge requests from
+`main`, so you don't need to perform this operation manually. Merge requests from
 forks are not retargeted.
 
 The feature today works only on merge. Clicking the **Remove source branch** button

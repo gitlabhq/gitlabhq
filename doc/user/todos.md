@@ -112,6 +112,7 @@ Actions that dismiss to-do items include:
 - Changing the milestone
 - Adding/removing a label
 - Commenting on the issue
+- Resolving a [design discussion thread](project/issues/design_management.md#resolve-design-threads)
 
 Your To-Do List is personal, and items are only marked as done if you take
 action. If you close the issue or merge request, your to-do item is marked as

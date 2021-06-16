@@ -7,7 +7,8 @@ type: reference, api
 
 # DevOps Research and Assessment (DORA) key metrics API **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10.
+> - The legacy key/value pair `{ "<date>" => "<value>" }` was removed from the payload in GitLab 14.0.
 
 All methods require [reporter permissions and above](../../user/permissions.md).
 
@@ -38,14 +39,14 @@ Example response:
 
 ```json
 [
-  { "2021-03-01": 3, "date": "2021-03-01", "value": 3 },
-  { "2021-03-02": 6, "date": "2021-03-02", "value": 6 },
-  { "2021-03-03": 0, "date": "2021-03-03", "value": 0 },
-  { "2021-03-04": 0, "date": "2021-03-04", "value": 0 },
-  { "2021-03-05": 0, "date": "2021-03-05", "value": 0 },
-  { "2021-03-06": 0, "date": "2021-03-06", "value": 0 },
-  { "2021-03-07": 0, "date": "2021-03-07", "value": 0 },
-  { "2021-03-08": 4, "date": "2021-03-08", "value": 4 }
+  { "date": "2021-03-01", "value": 3 },
+  { "date": "2021-03-02", "value": 6 },
+  { "date": "2021-03-03", "value": 0 },
+  { "date": "2021-03-04", "value": 0 },
+  { "date": "2021-03-05", "value": 0 },
+  { "date": "2021-03-06", "value": 0 },
+  { "date": "2021-03-07", "value": 0 },
+  { "date": "2021-03-08", "value": 4 }
 ]
 ```
 
@@ -78,14 +79,14 @@ Example response:
 
 ```json
 [
-  { "2021-03-01": 3, "date": "2021-03-01", "value": 3 },
-  { "2021-03-02": 6, "date": "2021-03-02", "value": 6 },
-  { "2021-03-03": 0, "date": "2021-03-03", "value": 0 },
-  { "2021-03-04": 0, "date": "2021-03-04", "value": 0 },
-  { "2021-03-05": 0, "date": "2021-03-05", "value": 0 },
-  { "2021-03-06": 0, "date": "2021-03-06", "value": 0 },
-  { "2021-03-07": 0, "date": "2021-03-07", "value": 0 },
-  { "2021-03-08": 4, "date": "2021-03-08", "value": 4 }
+  { "date": "2021-03-01", "value": 3 },
+  { "date": "2021-03-02", "value": 6 },
+  { "date": "2021-03-03", "value": 0 },
+  { "date": "2021-03-04", "value": 0 },
+  { "date": "2021-03-05", "value": 0 },
+  { "date": "2021-03-06", "value": 0 },
+  { "date": "2021-03-07", "value": 0 },
+  { "date": "2021-03-08", "value": 4 }
 ]
 ```
 

@@ -196,6 +196,19 @@ RSpec.describe API::ProjectExport, :clean_gitlab_redis_cache do
         end
       end
 
+      context 'when export object is not present' do
+        before do
+          project_after_export.export_file.file.delete
+        end
+
+        it 'returns 404' do
+          get api(download_path_export_action, user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('The project export file is not available yet')
+        end
+      end
+
       context 'when upload complete' do
         before do
           project_after_export.remove_exports

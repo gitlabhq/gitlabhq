@@ -27,16 +27,16 @@ least Maintainer [permissions](../user/permissions.md) to enable the Sentry inte
 1. [Create](https://docs.sentry.io/product/sentry-basics/guides/integrate-frontend/create-new-project/) a new Sentry project. For each GitLab project that you want to integrate, we recommend that you create a new Sentry project.
 1. [Find or generate](https://docs.sentry.io/api/auth/) a Sentry auth token for your Sentry project.
    Make sure to give the token at least the following scopes: `event:read` and `project:read`.
-1. In GitLab, navigate to your project's **Operations > Error Tracking** page, and
+1. In GitLab, navigate to your project's **Monitor > Error Tracking** page, and
    click **Enable Error Tracking**.
-1. Navigate to your project's **Settings > Operations**. In the **Error Tracking** section,
+1. Navigate to your project's **Settings > Monitor**. In the **Error Tracking** section,
    ensure the **Active** checkbox is set.
 1. In the **Sentry API URL** field, enter your Sentry hostname. For example, enter `https://sentry.example.com` if this is the address at which your Sentry instance is available. For the SaaS version of Sentry, the hostname is `https://sentry.io`.
 1. In the **Auth Token** field, enter the token you previously generated.
 1. Click the **Connect** button to test the connection to Sentry and populate the **Project** dropdown.
 1. From the **Project** dropdown, choose a Sentry project to link to your GitLab project.
 1. Click **Save changes** for the changes to take effect.
-1. You can now visit **Operations > Error Tracking** in your project's sidebar to [view a list](#error-tracking-list) of Sentry errors.
+1. You can now visit **Monitor > Error Tracking** in your project's sidebar to [view a list](#error-tracking-list) of Sentry errors.
 
 ### Enabling GitLab issues links
 
@@ -45,7 +45,7 @@ You may also want to enable Sentry's GitLab integration by following the steps i
 ## Error Tracking List
 
 Users with at least Reporter [permissions](../user/permissions.md)
-can find the Error Tracking list at **Operations > Error Tracking** in your project's sidebar.
+can find the Error Tracking list at **Monitor > Error Tracking** in your project's sidebar.
 Here, you can filter errors by title or by status (one of Ignored , Resolved, or Unresolved) and sort in descending order by Frequency, First Seen, or Last Seen. By default, the error list is ordered by Last Seen and filtered to Unresolved errors.
 
 ![Error Tracking list](img/error_tracking_list_v12_6.png)

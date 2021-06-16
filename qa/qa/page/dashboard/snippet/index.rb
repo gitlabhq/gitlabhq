@@ -7,6 +7,9 @@ module QA
         class Index < Page::Base
           view 'app/views/layouts/header/_new_dropdown.html.haml' do
             element :new_menu_toggle
+          end
+
+          view 'app/helpers/nav/new_dropdown_helper.rb' do
             element :global_new_snippet_link
           end
 

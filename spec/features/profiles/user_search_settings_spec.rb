@@ -14,7 +14,7 @@ RSpec.describe 'User searches their settings', :js do
       visit profile_path
     end
 
-    it_behaves_like 'can search settings', 'Public Avatar', 'Main settings'
+    it_behaves_like 'can search settings', 'Public avatar', 'Main settings'
   end
 
   context 'in preferences page' do

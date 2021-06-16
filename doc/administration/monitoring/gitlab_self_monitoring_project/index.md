@@ -20,7 +20,8 @@ GitLab instance.
 
 All administrators at the time of creation of the project and group are
 added as maintainers of the group and project, and as an administrator, you can
-add new members to the group to give them maintainer access to the project.
+add new members to the group to give them the [Maintainer role](../../../user/permissions.md) for
+the project.
 
 This project is used to self monitor your GitLab instance. The metrics dashboard
 of the project shows some basic resource usage charts, such as CPU and memory usage
@@ -32,9 +33,12 @@ metrics exposed by the [GitLab exporter](../prometheus/gitlab_metrics.md#metrics
 
 ## Creating the self monitoring project
 
-1. Go to **Admin Area > Settings > Metrics and profiling** and expand the **Self monitoring** section.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Metrics and profiling** and expand **Self monitoring**.
 1. Toggle the **Create Project** button on.
-1. Once your GitLab instance creates the project, GitLab displays a link to the project in the text above the **Create Project** toggle. You can also find it under **Projects > Your projects**.
+1. After your GitLab instance creates the project, GitLab displays a link to the
+   project in the text above the **Create Project** toggle. You can also find it
+   from the top bar by selecting **Menu > Project**, then selecting **Your projects**.
 
 ## Deleting the self monitoring project
 
@@ -42,7 +46,8 @@ WARNING:
 Deleting the self monitoring project removes any changes made to the project. If
 you create the project again, it's created in its default state.
 
-1. Go to **Admin Area > Settings > Metrics and profiling** and expand the **Self monitoring** section.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, go to **Settings > Metrics and profiling** and expand **Self monitoring**.
 1. Toggle the **Create Project** button off.
 1. In the confirmation dialog that opens, click **Delete project**.
    It can take a few seconds for it to be deleted.

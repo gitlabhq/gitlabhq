@@ -89,7 +89,7 @@ export default {
       data-testid="manual-action-link"
       @click="onClickAction(action)"
     >
-      <span class="gl-flex-fill-1">{{ action.name }}</span>
+      <span class="gl-flex-grow-1">{{ action.name }}</span>
       <span v-if="action.scheduledAt" class="gl-text-gray-500 float-right">
         <gl-icon name="clock" />
         {{ remainingTime(action) }}

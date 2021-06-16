@@ -25,34 +25,6 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
   end
 
   context 'aggregated_metrics_data' do
-    shared_examples 'db sourced aggregated metrics without database_sourced_aggregated_metrics feature' do
-      before do
-        allow_next_instance_of(described_class) do |instance|
-          allow(instance).to receive(:aggregated_metrics).and_return(aggregated_metrics)
-        end
-      end
-
-      context 'with disabled database_sourced_aggregated_metrics feature flag' do
-        before do
-          stub_feature_flags(database_sourced_aggregated_metrics: false)
-        end
-
-        let(:aggregated_metrics) do
-          [
-            aggregated_metric(name: "gmau_2", source: "database", time_frame: time_frame)
-          ]
-        end
-
-        it 'skips database sourced metrics', :aggregate_failures do
-          results = {}
-          params = { start_date: start_date, end_date: end_date, recorded_at: recorded_at }
-
-          expect(sources::PostgresHll).not_to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event1 event2 event3]))
-          expect(aggregated_metrics_data).to eq(results)
-        end
-      end
-    end
-
     shared_examples 'aggregated_metrics_data' do
       context 'no aggregated metric is defined' do
         it 'returns empty hash' do
@@ -237,7 +209,6 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
       let(:time_frame) { ['all'] }
 
       it_behaves_like 'database_sourced_aggregated_metrics'
-      it_behaves_like 'db sourced aggregated metrics without database_sourced_aggregated_metrics feature'
 
       context 'redis sourced aggregated metrics' do
         let(:aggregated_metrics) { [aggregated_metric(name: 'gmau_1', time_frame: time_frame)] }
@@ -278,7 +249,6 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
 
       it_behaves_like 'database_sourced_aggregated_metrics'
       it_behaves_like 'redis_sourced_aggregated_metrics'
-      it_behaves_like 'db sourced aggregated metrics without database_sourced_aggregated_metrics feature'
     end
 
     describe '.aggregated_metrics_monthly_data' do
@@ -289,7 +259,6 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
 
       it_behaves_like 'database_sourced_aggregated_metrics'
       it_behaves_like 'redis_sourced_aggregated_metrics'
-      it_behaves_like 'db sourced aggregated metrics without database_sourced_aggregated_metrics feature'
     end
   end
 end

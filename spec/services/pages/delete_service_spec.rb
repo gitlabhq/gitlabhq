@@ -6,7 +6,6 @@ RSpec.describe Pages::DeleteService do
   let_it_be(:admin) { create(:admin) }
 
   let(:project) { create(:project, path: "my.project")}
-  let!(:domain) { create(:pages_domain, project: project) }
   let(:service) { described_class.new(project, admin)}
 
   before do
@@ -14,8 +13,6 @@ RSpec.describe Pages::DeleteService do
   end
 
   it 'deletes published pages', :sidekiq_inline do
-    expect(project.pages_deployed?).to be(true)
-
     expect_next_instance_of(Gitlab::PagesTransfer) do |pages_transfer|
       expect(pages_transfer).to receive(:rename_project).and_return true
     end
@@ -23,11 +20,9 @@ RSpec.describe Pages::DeleteService do
     expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, project.namespace.full_path, anything)
 
     service.execute
-
-    expect(project.pages_deployed?).to be(false)
   end
 
-  it "doesn't remove anything from the legacy storage", :sidekiq_inline do
+  it "doesn't remove anything from the legacy storage if local_store is disabled", :sidekiq_inline do
     allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
 
     expect(project.pages_deployed?).to be(true)
@@ -38,12 +33,20 @@ RSpec.describe Pages::DeleteService do
     expect(project.pages_deployed?).to be(false)
   end
 
-  it 'deletes all domains', :sidekiq_inline do
-    expect(project.pages_domains.count).to eq(1)
+  it 'marks pages as not deployed' do
+    expect do
+      service.execute
+    end.to change { project.reload.pages_deployed? }.from(true).to(false)
+  end
+
+  it 'deletes all domains' do
+    domain = create(:pages_domain, project: project)
+    unrelated_domain = create(:pages_domain)
 
     service.execute
 
-    expect(project.reload.pages_domains.count).to eq(0)
+    expect(PagesDomain.find_by_id(domain.id)).to eq(nil)
+    expect(PagesDomain.find_by_id(unrelated_domain.id)).to be
   end
 
   it 'schedules a destruction of pages deployments' do
@@ -60,21 +63,5 @@ RSpec.describe Pages::DeleteService do
     expect do
       service.execute
     end.to change { PagesDeployment.count }.by(-1)
-  end
-
-  it 'marks pages as not deployed, deletes domains and schedules worker to remove pages from disk' do
-    expect(project.pages_deployed?).to eq(true)
-    expect(project.pages_domains.count).to eq(1)
-
-    service.execute
-
-    expect(project.pages_deployed?).to eq(false)
-    expect(project.pages_domains.count).to eq(0)
-
-    expect_next_instance_of(Gitlab::PagesTransfer) do |pages_transfer|
-      expect(pages_transfer).to receive(:rename_project).and_return true
-    end
-
-    Sidekiq::Worker.drain_all
   end
 end

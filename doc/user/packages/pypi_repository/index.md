@@ -216,7 +216,7 @@ run:
   script:
     - pip install twine
     - python setup.py sdist bdist_wheel
-    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url https://gitlab.example.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 ```
 
 You can also use `CI_JOB_TOKEN` in a `~/.pypirc` file that you check in to
@@ -231,6 +231,14 @@ index-servers =
 repository = https://gitlab.example.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/pypi
 username = gitlab-ci-token
 password = ${env.CI_JOB_TOKEN}
+```
+
+### Authenticate to access packages within a group
+
+Follow the instructions above for the token type, but use the group URL in place of the project URL:
+
+```shell
+https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/pypi
 ```
 
 ## Publish a PyPI package
@@ -316,6 +324,8 @@ more than once, a `404 Bad Request` error occurs.
 
 ## Install a PyPI package
 
+### Install from the project level
+
 To install the latest version of a package, use the following command:
 
 ```shell
@@ -348,6 +358,33 @@ Collecting mypypipackage
   Downloading https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/pypi/files/d53334205552a355fee8ca35a164512ef7334f33d309e60240d57073ee4386e6/mypypipackage-0.0.1-py3-none-any.whl (1.6 kB)
 Installing collected packages: mypypipackage
 Successfully installed mypypipackage-0.0.1
+```
+
+### Install from the group level
+
+To install the latest version of a package from a group, use the following command:
+
+```shell
+pip install --index-url https://<personal_access_token_name>:<personal_access_token>@gitlab.example.com/api/v4/groups/<group_id>/-/packages/pypi/simple --no-deps <package_name>
+```
+
+In this command:
+
+- `<package_name>` is the package name.
+- `<personal_access_token_name>` is a personal access token name with the `read_api` scope.
+- `<personal_access_token>` is a personal access token with the `read_api` scope.
+- `<group_id>` is the group ID.
+
+In these commands, you can use `--extra-index-url` instead of `--index-url`. However, using
+`--extra-index-url` makes you vulnerable to dependency confusion attacks because it checks the PyPi
+repository for the package before it checks the custom repository. `--extra-index-url` adds the
+provided URL as an additional registry which the client checks if the package is present.
+`--index-url` tells the client to check for the package at the provided URL only.
+
+If you're following the guide and want to install the `MyPyPiPackage` package, you can run:
+
+```shell
+pip install mypypipackage --no-deps --index-url https://<personal_access_token_name>:<personal_access_token>@gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/pypi/simple
 ```
 
 ### Package names

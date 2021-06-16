@@ -2,15 +2,21 @@
 
 require 'digest/md5'
 
-MESSAGE = <<MARKDOWN
+REVIEW_ROULETTE_SECTION = <<MARKDOWN
 ## Reviewer roulette
-
-Changes that require review have been detected! A merge request is normally
-reviewed by both a reviewer and a maintainer in its primary category (e.g.
-~frontend or ~backend), and by a maintainer in all other categories.
 MARKDOWN
 
-CATEGORY_TABLE_HEADER = <<MARKDOWN
+CATEGORY_TABLE = <<MARKDOWN
+
+Changes that require review have been detected!
+
+Please refer to the table below for assigning reviewers and maintainers suggested by Danger in the specified category:
+
+| Category | Reviewer | Maintainer |
+| -------- | -------- | ---------- |
+MARKDOWN
+
+POST_TABLE_MESSAGE = <<MARKDOWN
 
 To spread load more evenly across eligible reviewers, Danger has picked a candidate for each
 review slot, based on their timezone. Feel free to
@@ -26,12 +32,15 @@ Please consider assigning a reviewer or maintainer who is a
 
 Once you've decided who will review this merge request, assign them as a reviewer!
 Danger does not automatically notify them for you.
+MARKDOWN
 
-| Category | Reviewer | Maintainer |
-| -------- | -------- | ---------- |
+NO_SUGGESTIONS = <<MARKDOWN
+
+There are no reviewer and maintainer suggestions for the changes in this MR.
 MARKDOWN
 
 UNKNOWN_FILES_MESSAGE = <<MARKDOWN
+### Uncategorised files
 
 These files couldn't be categorised, so Danger was unable to suggest a reviewer.
 Please consider creating a merge request to
@@ -99,8 +108,14 @@ if changes.any?
     markdown_row_for_spins(spin.category, [spin])
   end
 
-  markdown(MESSAGE)
-  markdown(CATEGORY_TABLE_HEADER + rows.join("\n")) unless rows.empty?
+  markdown(REVIEW_ROULETTE_SECTION)
+
+  if rows.empty?
+    markdown(NO_SUGGESTIONS)
+  else
+    markdown(CATEGORY_TABLE + rows.join("\n"))
+    markdown(POST_TABLE_MESSAGE)
+  end
 
   unknown = changes.fetch(:unknown, [])
   markdown(UNKNOWN_FILES_MESSAGE + helper.markdown_list(unknown)) unless unknown.empty?

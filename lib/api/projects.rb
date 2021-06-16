@@ -61,7 +61,7 @@ module API
       # Temporarily introduced for upload API: https://gitlab.com/gitlab-org/gitlab/-/issues/325788
       def project_attachment_size(user_project)
         return PROJECT_ATTACHMENT_SIZE_EXEMPT if exempt_from_global_attachment_size?(user_project)
-        return user_project.max_attachment_size if Feature.enabled?(:enforce_max_attachment_size_upload_api, user_project)
+        return user_project.max_attachment_size if Feature.enabled?(:enforce_max_attachment_size_upload_api, user_project, default_enabled: :yaml)
 
         PROJECT_ATTACHMENT_SIZE_EXEMPT
       end
@@ -234,6 +234,7 @@ module API
       params do
         optional :name, type: String, desc: 'The name of the project'
         optional :path, type: String, desc: 'The path of the repository'
+        optional :default_branch, type: String, desc: 'The default branch of the project'
         at_least_one_of :name, :path
         use :optional_create_project_params
         use :create_params
@@ -659,6 +660,18 @@ module API
         else
           render_api_error!("Failed to transfer project #{user_project.errors.messages}", 400)
         end
+      end
+
+      desc 'Show the storage information' do
+        success Entities::ProjectRepositoryStorage
+      end
+      params do
+        requires :id, type: String, desc: 'ID of a project'
+      end
+      get ':id/storage', feature_category: :projects do
+        authenticated_as_admin!
+
+        present user_project, with: Entities::ProjectRepositoryStorage, current_user: current_user
       end
     end
   end

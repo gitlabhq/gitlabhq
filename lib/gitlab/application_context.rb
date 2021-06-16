@@ -44,6 +44,10 @@ module Gitlab
       current.include?(Labkit::Context.log_key(attribute_name))
     end
 
+    def self.current_context_attribute(attribute_name)
+      Labkit::Context.current&.get_attribute(attribute_name)
+    end
+
     def initialize(**args)
       unknown_attributes = args.keys - APPLICATION_ATTRIBUTES.map(&:name)
       raise ArgumentError, "#{unknown_attributes} are not known keys" if unknown_attributes.any?

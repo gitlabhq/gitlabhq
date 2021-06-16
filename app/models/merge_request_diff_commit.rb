@@ -12,7 +12,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   sha_attribute :sha
   alias_attribute :id, :sha
 
-  serialize :trailers, Serializers::JSON # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :trailers, Serializers::Json # rubocop:disable Cop/ActiveRecordSerialize
   validates :trailers, json_schema: { filename: 'git_trailers' }
 
   # Deprecated; use `bulk_insert!` from `BulkInsertSafe` mixin instead.

@@ -41,6 +41,10 @@ class SearchService
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def projects
+    # overridden in EE
+  end
+
   def show_snippets?
     return @show_snippets if defined?(@show_snippets)
 

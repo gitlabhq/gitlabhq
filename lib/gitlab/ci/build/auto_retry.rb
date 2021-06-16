@@ -7,6 +7,11 @@ class Gitlab::Ci::Build::AutoRetry
     scheduler_failure: 2
   }.freeze
 
+  RETRY_OVERRIDES = {
+    ci_quota_exceeded: 0,
+    no_matching_runner: 0
+  }.freeze
+
   def initialize(build)
     @build = build
   end
@@ -19,13 +24,18 @@ class Gitlab::Ci::Build::AutoRetry
 
   private
 
+  delegate :failure_reason, to: :@build
+
   def within_max_retry_limit?
     max_allowed_retries > 0 && max_allowed_retries > @build.retries_count
   end
 
   def max_allowed_retries
     strong_memoize(:max_allowed_retries) do
-      options_retry_max || DEFAULT_RETRIES.fetch(@build.failure_reason.to_sym, 0)
+      RETRY_OVERRIDES[failure_reason.to_sym] ||
+        options_retry_max ||
+        DEFAULT_RETRIES[failure_reason.to_sym] ||
+        0
     end
   end
 
@@ -38,7 +48,7 @@ class Gitlab::Ci::Build::AutoRetry
   end
 
   def retry_on_reason_or_always?
-    options_retry_when.include?(@build.failure_reason.to_s) ||
+    options_retry_when.include?(failure_reason.to_s) ||
       options_retry_when.include?('always')
   end
 

@@ -40,6 +40,13 @@ RSpec.describe 'Milestones through GroupQuery' do
 
         expect_array_response(milestone_2.to_global_id.to_s, milestone_3.to_global_id.to_s)
       end
+
+      it 'fetches milestones between timeframe start and end arguments' do
+        today = Date.today
+        fetch_milestones(user, { timeframe: { start: today.to_s, end: (today + 2.days).to_s } })
+
+        expect_array_response(milestone_2.to_global_id.to_s, milestone_3.to_global_id.to_s)
+      end
     end
 
     context 'when filtering by state' do

@@ -160,3 +160,58 @@ func TestWatchKeyMassivelyParallel(t *testing.T) {
 	processMessages(runTimes, "somethingelse")
 	wg.Wait()
 }
+
+func TestShutdown(t *testing.T) {
+	conn, td := setupMockPool()
+	defer td()
+	defer func() { shutdown = make(chan struct{}) }()
+
+	conn.Command("GET", runnerKey).Expect("something")
+
+	wg := &sync.WaitGroup{}
+	wg.Add(2)
+
+	go func() {
+		val, err := WatchKey(runnerKey, "something", 10*time.Second)
+
+		require.NoError(t, err, "Expected no error")
+		require.Equal(t, WatchKeyStatusNoChange, val, "Expected value not to change")
+		wg.Done()
+	}()
+
+	go func() {
+		for countWatchers(runnerKey) == 0 {
+			time.Sleep(time.Millisecond)
+		}
+
+		require.Equal(t, 1, countWatchers(runnerKey))
+
+		Shutdown()
+		wg.Done()
+	}()
+
+	wg.Wait()
+
+	for countWatchers(runnerKey) == 1 {
+		time.Sleep(time.Millisecond)
+	}
+
+	require.Equal(t, 0, countWatchers(runnerKey))
+
+	// Adding a key after the shutdown should result in an immediate response
+	var val WatchKeyStatus
+	var err error
+	done := make(chan struct{})
+	go func() {
+		val, err = WatchKey(runnerKey, "something", 10*time.Second)
+		close(done)
+	}()
+
+	select {
+	case <-done:
+		require.NoError(t, err, "Expected no error")
+		require.Equal(t, WatchKeyStatusNoChange, val, "Expected value not to change")
+	case <-time.After(100 * time.Millisecond):
+		t.Fatal("timeout waiting for WatchKey")
+	}
+}

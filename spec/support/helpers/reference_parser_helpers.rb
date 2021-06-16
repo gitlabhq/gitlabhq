@@ -11,20 +11,20 @@ module ReferenceParserHelpers
   end
 
   RSpec.shared_examples 'no project N+1 queries' do
-    it 'avoids N+1 queries in #nodes_visible_to_user', :request_store do
+    it 'avoids N+1 queries in #nodes_visible_to_user' do
       context = Banzai::RenderContext.new(project, user)
 
-      record_queries = lambda do |links|
-        ActiveRecord::QueryRecorder.new do
-          described_class.new(context).nodes_visible_to_user(user, links)
-        end
+      request = lambda do |links|
+        described_class.new(context).nodes_visible_to_user(user, links)
       end
 
-      control = record_queries.call(control_links)
-      actual = record_queries.call(actual_links)
+      control = ActiveRecord::QueryRecorder.new { request.call(control_links) }
 
-      expect(actual.count).to be <= control.count
-      expect(actual.cached_count).to be <= control.cached_count
+      create(:group_member, group: project.group) if project.group
+      create(:project_member, project: project)
+      create(:project_group_link, project: project)
+
+      expect { request.call(actual_links) }.not_to exceed_query_limit(control)
     end
   end
 

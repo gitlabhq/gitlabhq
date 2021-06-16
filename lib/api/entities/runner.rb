@@ -8,6 +8,7 @@ module API
       expose :ip_address
       expose :active
       expose :instance_type?, as: :is_shared
+      expose :runner_type
       expose :name
       expose :online?, as: :online
       expose :status

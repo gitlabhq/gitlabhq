@@ -49,7 +49,7 @@ ActiveRecord and ActionController log output to that logger. Further options are
 documented with the method source.
 
 ```ruby
-Gitlab::Profiler.profile('/gitlab-org/gitlab-test', user: User.first, logger: Logger.new(STDOUT))
+Gitlab::Profiler.profile('/gitlab-org/gitlab-test', user: User.first, logger: Logger.new($stdout))
 ```
 
 There is also a RubyProf printer available:

@@ -18,7 +18,7 @@ RSpec.describe 'Merge request > User awards emoji', :js do
 
     it 'adds award to merge request' do
       first('[data-testid="award-button"]').click
-      expect(page).to have_selector('[data-testid="award-button"].is-active')
+      expect(page).to have_selector('[data-testid="award-button"].selected')
       expect(first('[data-testid="award-button"]')).to have_content '1'
 
       visit project_merge_request_path(project, merge_request)
@@ -27,7 +27,7 @@ RSpec.describe 'Merge request > User awards emoji', :js do
 
     it 'removes award from merge request' do
       first('[data-testid="award-button"]').click
-      find('[data-testid="award-button"].is-active').click
+      find('[data-testid="award-button"].selected').click
       expect(first('[data-testid="award-button"]')).to have_content '0'
 
       visit project_merge_request_path(project, merge_request)

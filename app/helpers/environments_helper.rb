@@ -36,7 +36,7 @@ module EnvironmentsHelper
       "environment_name": environment.name,
       "environments_path": api_v4_projects_environments_path(id: project.id),
       "environment_id": environment.id,
-      "cluster_applications_documentation_path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack'),
+      "cluster_applications_documentation_path" => help_page_path('user/clusters/integrations.md', anchor: 'elastic-stack-cluster-integration'),
       "clusters_path": project_clusters_path(project, format: :json)
     }
   end
@@ -74,7 +74,6 @@ module EnvironmentsHelper
       'metrics_dashboard_base_path' => metrics_dashboard_base_path(environment, project),
       'current_environment_name'    => environment.name,
       'has_metrics'                 => "#{environment.has_metrics?}",
-      'prometheus_status'           => "#{environment.prometheus_status}",
       'environment_state'           => "#{environment.state}"
     }
   end

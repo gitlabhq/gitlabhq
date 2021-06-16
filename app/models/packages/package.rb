@@ -8,6 +8,23 @@ class Packages::Package < ApplicationRecord
   DISPLAYABLE_STATUSES = [:default, :error].freeze
   INSTALLABLE_STATUSES = [:default].freeze
 
+  enum package_type: {
+    maven: 1,
+    npm: 2,
+    conan: 3,
+    nuget: 4,
+    pypi: 5,
+    composer: 6,
+    generic: 7,
+    golang: 8,
+    debian: 9,
+    rubygems: 10,
+    helm: 11,
+    terraform_module: 12
+  }
+
+  enum status: { default: 0, hidden: 1, processing: 2, error: 3 }
+
   belongs_to :project
   belongs_to :creator, class_name: 'User'
 
@@ -59,7 +76,7 @@ class Packages::Package < ApplicationRecord
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
   validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :golang?
-  validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :helm?
+  validates :version, format: { with: Gitlab::Regex.helm_version_regex }, if: :helm?
   validates :version, format: { with: Gitlab::Regex.semver_regex }, if: -> { composer_tag_version? || npm? || terraform_module? }
 
   validates :version,
@@ -71,12 +88,6 @@ class Packages::Package < ApplicationRecord
     format: { with: Gitlab::Regex.debian_version_regex },
     if: :debian_package?
   validate :forbidden_debian_changes, if: :debian?
-
-  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5,
-                       composer: 6, generic: 7, golang: 8, debian: 9,
-                       rubygems: 10, helm: 11, terraform_module: 12 }
-
-  enum status: { default: 0, hidden: 1, processing: 2, error: 3 }
 
   scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :with_name, ->(name) { where(name: name) }
@@ -133,14 +144,24 @@ class Packages::Package < ApplicationRecord
   scope :order_type_desc, -> { reorder(package_type: :desc) }
   scope :order_project_name, -> { joins(:project).reorder('projects.name ASC') }
   scope :order_project_name_desc, -> { joins(:project).reorder('projects.name DESC') }
-  scope :order_project_path, -> { joins(:project).reorder('projects.path ASC, id ASC') }
-  scope :order_project_path_desc, -> { joins(:project).reorder('projects.path DESC, id DESC') }
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
+
+  scope :order_project_path, -> do
+    keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :asc)
+
+    joins(:project).reorder(keyset_order)
+  end
+
+  scope :order_project_path_desc, -> do
+    keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :desc)
+
+    joins(:project).reorder(keyset_order)
+  end
 
   after_commit :update_composer_cache, on: :destroy, if: -> { composer? }
 
   def self.only_maven_packages_with_path(path, use_cte: false)
-    if use_cte && Feature.enabled?(:maven_metadata_by_path_with_optimization_fence, default_enabled: :yaml)
+    if use_cte
       # This is an optimization fence which assumes that looking up the Metadatum record by path (globally)
       # and then filter down the packages (by project or by group and subgroups) will be cheaper than
       # looking up all packages within a project or group and filter them by path.
@@ -196,6 +217,32 @@ class Packages::Package < ApplicationRecord
     end
   end
 
+  def self.keyset_pagination_order(join_class:, column_name:, direction: :asc)
+    join_table = join_class.table_name
+    asc_order_expression = Gitlab::Database.nulls_last_order("#{join_table}.#{column_name}", :asc)
+    desc_order_expression = Gitlab::Database.nulls_first_order("#{join_table}.#{column_name}", :desc)
+    order_direction = direction == :asc ? asc_order_expression : desc_order_expression
+    reverse_order_direction = direction == :asc ? desc_order_expression : asc_order_expression
+    arel_order_classes = ::Gitlab::Pagination::Keyset::ColumnOrderDefinition::AREL_ORDER_CLASSES.invert
+
+    ::Gitlab::Pagination::Keyset::Order.build([
+      ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: "#{join_table}_#{column_name}",
+        column_expression: join_class.arel_table[column_name],
+        order_expression: order_direction,
+        reversed_order_expression: reverse_order_direction,
+        order_direction: direction,
+        distinct: false,
+        add_to_projections: true
+      ),
+      ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: 'id',
+        order_expression: arel_order_classes[direction].new(Packages::Package.arel_table[:id]),
+        add_to_projections: true
+      )
+    ])
+  end
+
   def versions
     project.packages
            .including_build_info
@@ -220,6 +267,10 @@ class Packages::Package < ApplicationRecord
 
   def tag_names
     tags.pluck(:name)
+  end
+
+  def infrastructure_package?
+    terraform_module?
   end
 
   def debian_incoming?

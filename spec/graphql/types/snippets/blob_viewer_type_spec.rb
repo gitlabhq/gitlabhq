@@ -31,7 +31,7 @@ RSpec.describe GitlabSchema.types['SnippetBlobViewer'] do
     end
 
     it 'returns false' do
-      snippet_blob = subject.dig('data', 'snippets', 'edges')[0].dig('node', 'blob')
+      snippet_blob = subject.dig('data', 'snippets', 'edges').first.dig('node', 'blobs', 'nodes').find { |b| b['path'] == blob.path }
 
       expect(snippet_blob['path']).to eq blob.path
       expect(blob_attribute).to be_nil
@@ -47,10 +47,12 @@ RSpec.describe GitlabSchema.types['SnippetBlobViewer'] do
             snippets(ids: "#{snippet.to_global_id}") {
               edges {
                 node {
-                  blob {
-                    path
-                    simpleViewer {
-                      collapsed
+                  blobs {
+                    nodes {
+                      path
+                      simpleViewer {
+                        collapsed
+                      }
                     }
                   }
                 }
@@ -73,10 +75,12 @@ RSpec.describe GitlabSchema.types['SnippetBlobViewer'] do
             snippets(ids: "#{snippet.to_global_id}") {
               edges {
                 node {
-                  blob {
-                    path
-                    simpleViewer {
-                      tooLarge
+                  blobs {
+                    nodes {
+                      path
+                      simpleViewer {
+                        tooLarge
+                      }
                     }
                   }
                 }

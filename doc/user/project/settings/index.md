@@ -30,7 +30,7 @@ Adjust your project's name, description, avatar, [default branch](../repository/
 
 ![general project settings](img/general_settings_v13_11.png)
 
-The project description also partially supports [standard Markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
+The project description also partially supports [standard Markdown](../../markdown.md#features-extended-from-standard-markdown). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
 #### Compliance frameworks **(PREMIUM)**
 
@@ -79,7 +79,7 @@ Example `.compliance-gitlab-ci.yml`
 ```yaml
 # Allows compliance team to control the ordering and interweaving of stages/jobs.
 # Stages without jobs defined will remain hidden.
-stages: 
+stages:
 - pre-compliance
 - build
 - test
@@ -93,25 +93,81 @@ variables: # can be overriden by a developer's local .gitlab-ci.yml
 sast: # none of these attributes can be overriden by a developer's local .gitlab-ci.yml
   variables:
     FOO: sast
+  image: ruby:2.6
   stage: pre-compliance
+  rules:
+        - when: always
+  allow_failure: false
+  before_script:
+  - "# No before scripts."
   script:
   - echo "running $FOO"
+  after_script:
+  - "# No after scripts."
 
 sanity check:
+  image: ruby:2.6
   stage: pre-deploy-compliance
+  rules:
+        - when: always
+  allow_failure: false
+  before_script:
+  - "# No before scripts."
   script:
   - echo "running $FOO"
+  after_script:
+  - "# No after scripts."
 
 
 audit trail:
+  image: ruby:2.6
   stage: post-compliance
+  rules:
+        - when: always
+  allow_failure: false
+  before_script:
+  - "# No before scripts."
   script:
   - echo "running $FOO"
+  after_script:
+  - "# No after scripts."
 
 include: # Execute individual project's configuration
   project: '$CI_PROJECT_PATH'
-  file: '$CI_PROJECT_CONFIG_PATH'
+  file: '$CI_CONFIG_PATH'
 ```
+
+##### Ensure compliance jobs are always run
+
+Compliance pipelines use GitLab CI/CD to give you an incredible amount of flexibility
+for defining any sort of compliance jobs you like. Depending on your goals, these jobs
+can be configured to be:
+
+- Modified by users.
+- Non-modifiable.
+
+At a high-level, if a value in a compliance job:
+
+- Is set, it cannot be changed or overridden by project-level configurations.
+- Is not set, a project-level configuration may set.
+
+Either might be wanted or not depending on your use case.
+
+There are a few best practices for ensuring that these jobs are always run exactly
+as you define them and that downstream, project-level pipeline configurations
+cannot change them:
+
+- Add a `rules:when:always` block to each of your compliance jobs. This ensures they are
+  non-modifiable and are always run.
+- Explicitly set any variables the job references. This:
+  - Ensures that project-level pipeline configurations do not set them and alter their
+    behavior.
+  - Includes any jobs that drive the logic of your job.
+- Explicitly set the container image file to run the job in. This ensures that your script
+  steps execute in the correct environment.
+- Explicitly set any relevant GitLab pre-defined [job keywords](../../../ci/yaml/README.md#job-keywords).
+  This ensures that your job uses the settings you intend and that they are not overriden by
+  project-level pipelines.
 
 ### Sharing and permissions
 
@@ -123,7 +179,7 @@ section.
 You can now change the [Project visibility](../../../public_access/public_access.md).
 If you set **Project Visibility** to public, you can limit access to some features
 to **Only Project Members**. In addition, you can select the option to
-[Allow users to request access](../members/index.md#project-membership-and-requesting-access).
+[Allow users to request access](../members/index.md#prevent-users-from-requesting-access-to-a-project).
 
 Use the switches to enable or disable the following features:
 
@@ -193,6 +249,7 @@ Set up your project's merge request settings:
 - Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.md)).
 - Add merge request [description templates](../description_templates.md#description-templates).
 - Enable [merge request approvals](../merge_requests/approvals/index.md).
+- Enable [status checks](../merge_requests/status_checks.md).
 - Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
 - Enable [merge only when all threads are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved).
 - Enable [require an associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
@@ -242,10 +299,11 @@ To find an archived project:
 1. If you:
    - Have the project's URL, open the project's page in your browser.
    - Don't have the project's URL:
-   1. Click **Projects > Explore projects**.
-   1. In the **Sort projects** dropdown box, select **Show archived projects**.
-   1. In the **Filter by name** field, provide the project's name.
-   1. Click the link to the project to open its **Details** page.
+     1. On the top bar, select **Menu > Project**.
+     1. Select **Explore projects**.
+     1. In the **Sort projects** dropdown box, select **Show archived projects**.
+     1. In the **Filter by name** field, provide the project's name.
+     1. Click the link to the project to open its **Details** page.
 
 Next, to unarchive the project:
 
@@ -273,7 +331,7 @@ To rename a repository:
 
 Remember that this can have unintended side effects since everyone with the
 old URL can't push or pull. Read more about what happens with the
-[redirects when renaming repositories](../repository/index.md#redirects-when-changing-repository-paths).
+[redirects when renaming repositories](../repository/index.md#what-happens-when-a-repository-path-changes).
 
 #### Transferring an existing project into another namespace
 
@@ -283,7 +341,7 @@ to transfer a project.
 
 You can transfer an existing project into a [group](../../group/index.md) if:
 
-- You have at least **Maintainer** [permissions](../../permissions.md#project-members-permissions) to that group.
+- You have at least the Maintainer** role in that group.
 - You're at least an **Owner** of the project to be transferred.
 - The group to which the project is being transferred to must allow creation of new projects.
 
@@ -297,7 +355,7 @@ To transfer a project:
 
 Once done, you are redirected to the new project's namespace. At this point,
 read what happens with the
-[redirects from the old project to the new one](../repository/index.md#redirects-when-changing-repository-paths).
+[redirects from the old project to the new one](../repository/index.md#what-happens-when-a-repository-path-changes).
 
 NOTE:
 GitLab administrators can use the administration interface to move any project to any
@@ -306,7 +364,7 @@ namespace if needed.
 #### Delete a project
 
 NOTE:
-Only project owners and administrators have [permissions](../../permissions.md#project-members-permissions) to delete a project.
+Only project Owners and administrators have [permissions](../../permissions.md#project-members-permissions) to delete a project.
 
 To delete a project:
 
@@ -318,10 +376,10 @@ This action:
 
 - Deletes a project including all associated resources (issues, merge requests etc).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
-group owners can [configure](../../group/index.md#enable-delayed-project-removal) projects within a group
-to be deleted after a delayed period.
-When enabled, actual deletion happens after number of days
-specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+  group Owners can [configure](../../group/index.md#enable-delayed-project-removal) projects within a group
+  to be deleted after a delayed period.
+  When enabled, actual deletion happens after number of days
+  specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
 WARNING:
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
@@ -354,10 +412,10 @@ To do so:
 1. Confirm the action by typing the project's path as instructed.
 
 NOTE:
-Only project owners have the [permissions](../../permissions.md#project-members-permissions)
+Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to remove a fork relationship.
 
-## Operations settings
+## Monitor settings
 
 ### Alerts
 

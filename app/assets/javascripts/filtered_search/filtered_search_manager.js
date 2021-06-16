@@ -801,7 +801,7 @@ export default class FilteredSearchManager {
       paths.push(`search=${sanitized}`);
     }
 
-    let parameterizedUrl = `?scope=all&utf8=%E2%9C%93&${paths.join('&')}`;
+    let parameterizedUrl = `?scope=all&${paths.join('&')}`;
 
     if (this.anchor) {
       parameterizedUrl += `#${this.anchor}`;

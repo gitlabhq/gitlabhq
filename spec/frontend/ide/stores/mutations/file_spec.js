@@ -319,8 +319,8 @@ describe('IDE store file mutations', () => {
       localFile.content = 'test';
       localFile.changed = true;
       localState.currentProjectId = 'gitlab-ce';
-      localState.currentBranchId = 'master';
-      localState.trees['gitlab-ce/master'] = {
+      localState.currentBranchId = 'main';
+      localState.trees['gitlab-ce/main'] = {
         tree: [],
       };
     });
@@ -337,7 +337,7 @@ describe('IDE store file mutations', () => {
 
       mutations.DISCARD_FILE_CHANGES(localState, localFile.path);
 
-      expect(localState.trees['gitlab-ce/master'].tree).toEqual([{ ...localFile, deleted: false }]);
+      expect(localState.trees['gitlab-ce/main'].tree).toEqual([{ ...localFile, deleted: false }]);
     });
 
     it('adds to parent tree if deleted', () => {

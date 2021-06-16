@@ -114,11 +114,9 @@ See the documentation on [File Locking](../../../user/project/file_lock.md).
 ## LFS objects in project archives
 
 > - Support for including Git LFS blobs inside [project source downloads](../../../user/project/repository/index.md) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
-> - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/268409) in GitLab 13.6.
 > - Enabled on GitLab.com.
 > - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-lfs-objects-in-project-archives).
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -134,32 +132,40 @@ oid sha256:3ea5dd307f195f449f0e08234183b82e92c3d5f4cff11c2a6bb014f9e0de12aa
 size 177735
 ```
 
-Starting with GitLab 13.5, these pointers are converted to the uploaded
-LFS object if the `include_lfs_blobs_in_archive` feature flag is
-enabled.
+In GitLab version 13.5 and later, these pointers are converted to the uploaded
+LFS object.
 
 Technical details about how this works can be found in the [development documentation for LFS](../../../development/lfs.md#including-lfs-blobs-in-project-archives).
 
-### Enable or disable LFS objects in project archives
-
-_LFS objects in project archives_ is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:include_lfs_blobs_in_archive)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:include_lfs_blobs_in_archive)
-```
-
 ## Troubleshooting
+
+### Encountered `n` file(s) that should have been pointers, but weren't
+
+This error indicates the file (or files) are expected to be tracked by LFS, but for
+some reason the repository is not tracking them as LFS. This issue can be one
+potential reason for this error:
+[Files not tracked with LFS when uploaded through the web interface](https://gitlab.com/gitlab-org/gitlab/-/issues/326342#note_586820485)
+
+To resolve the problem, migrate the affected file (or files) and push back to the repository:
+
+1. Migrate the file to LFS:
+
+   ```shell
+   git lfs migrate import --yes --no-rewrite "<your-file>"
+   ```
+
+1. Push back to your repository:
+
+   ```shell
+   git push
+   ```
+
+1. (Optional) Clean up your `.git` folder:
+
+   ```shell
+   git reflog expire --expire-unreachable=now --all
+   git gc --prune=now
+   ```
 
 ### error: Repository or object not found
 

@@ -8,6 +8,6 @@ module SecurityScansQueue
 
   included do
     queue_namespace :security_scans
-    feature_category :static_application_security_testing
+    feature_category :vulnerability_management
   end
 end

@@ -1,8 +1,6 @@
-import { GlModal } from '@gitlab/ui';
-import { getByRole, getByLabelText } from '@testing-library/dom';
-import { mount } from '@vue/test-utils';
+import { GlButton, GlModal } from '@gitlab/ui';
 import { stubComponent } from 'helpers/stub_component';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CsvImportModal from '~/issuable/components/csv_import_modal.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -13,23 +11,21 @@ describe('CsvImportModal', () => {
 
   function createComponent(options = {}) {
     const { injectedProperties = {}, props = {} } = options;
-    return extendedWrapper(
-      mount(CsvImportModal, {
-        propsData: {
-          modalId: 'csv-import-modal',
-          ...props,
-        },
-        provide: {
-          issuableType: 'issues',
-          ...injectedProperties,
-        },
-        stubs: {
-          GlModal: stubComponent(GlModal, {
-            template: '<div><slot></slot><slot name="modal-footer"></slot></div>',
-          }),
-        },
-      }),
-    );
+    return mountExtended(CsvImportModal, {
+      propsData: {
+        modalId: 'csv-import-modal',
+        ...props,
+      },
+      provide: {
+        issuableType: 'issues',
+        ...injectedProperties,
+      },
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          template: '<div><slot></slot><slot name="modal-footer"></slot></div>',
+        }),
+      },
+    });
   }
 
   beforeEach(() => {
@@ -41,9 +37,9 @@ describe('CsvImportModal', () => {
   });
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findPrimaryButton = () => getByRole(wrapper.element, 'button', { name: 'Import issues' });
-  const findForm = () => wrapper.findByTestId('import-csv-form');
-  const findFileInput = () => getByLabelText(wrapper.element, 'Upload CSV file');
+  const findPrimaryButton = () => wrapper.findComponent(GlButton);
+  const findForm = () => wrapper.find('form');
+  const findFileInput = () => wrapper.findByLabelText('Upload CSV file');
   const findAuthenticityToken = () => new FormData(findForm().element).get('authenticity_token');
 
   describe('template', () => {
@@ -76,8 +72,8 @@ describe('CsvImportModal', () => {
         expect(findPrimaryButton()).toExist();
       });
 
-      it('submits the form when the primary action is clicked', async () => {
-        findPrimaryButton().click();
+      it('submits the form when the primary action is clicked', () => {
+        findPrimaryButton().trigger('click');
 
         expect(formSubmitSpy).toHaveBeenCalled();
       });

@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, index
 last_update: 2019-07-03
@@ -70,7 +70,7 @@ build:
   stage: build
   script: ./build
   only:
-    - master
+    - main
 
 test:
   stage: test
@@ -82,7 +82,7 @@ deploy:
   stage: deploy
   script: ./deploy
   only:
-    - master
+    - main
 ```
 
 #### Excluding certain jobs
@@ -100,10 +100,10 @@ Consider the following pipeline, with jobs `A`, `B`, and `C`. Imagine you want:
 
 To achieve this, you can configure your `.gitlab-ci.yml` file as follows:
 
-``` yaml
+```yaml
 .only-default: &only-default
   only:
-    - master
+    - main
     - merge_requests
     - tags
 
@@ -219,15 +219,15 @@ The variable names begin with the `CI_MERGE_REQUEST_` prefix.
 ### Two pipelines created when pushing to a merge request
 
 If you are experiencing duplicated pipelines when using `rules`, take a look at
-the [important differences between `rules` and `only`/`except`](../yaml/README.md#avoid-duplicate-pipelines),
+the [important differences between `rules` and `only`/`except`](../jobs/job_control.md#avoid-duplicate-pipelines),
 which helps you get your starting configuration correct.
 
 If you are seeing two pipelines when using `only/except`, please see the caveats
 related to using `only/except` above (or, consider moving to `rules`).
 
-It is not possible to run a job for branch pipelines first, then only for merge request
-pipelines after the merge request is created (skipping the duplicate branch pipeline). See
-the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) for more details.
+In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) and later,
+you can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/README.md#switch-between-branch-pipelines-and-merge-request-pipelines)
+after a merge request is open on the branch.
 
 ### Two pipelines created when pushing an invalid CI configuration file
 

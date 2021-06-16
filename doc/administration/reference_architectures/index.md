@@ -138,12 +138,12 @@ As long as at least one of each component is online and capable of handling the 
 ### Automated database failover **(PREMIUM SELF)**
 
 > - Level of complexity: **High**
-> - Required domain knowledge: PgBouncer, Repmgr or Patroni, shared storage, distributed systems
+> - Required domain knowledge: PgBouncer, Patroni, shared storage, distributed systems
 
 By adding automatic failover for database systems, you can enable higher uptime
 with additional database nodes. This extends the default database with
 cluster management and failover policies.
-[PgBouncer in conjunction with Repmgr or Patroni](../postgresql/replication_and_failover.md)
+[PgBouncer in conjunction with Patroni](../postgresql/replication_and_failover.md)
 is recommended.
 
 ### Instance level replication with GitLab Geo **(PREMIUM SELF)**

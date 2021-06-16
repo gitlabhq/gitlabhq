@@ -17,12 +17,11 @@ your group, enabling you to use the same cluster across multiple projects.
 To view your group level Kubernetes clusters, navigate to your project and select
 **Kubernetes** from the left-hand menu.
 
-## Installing applications
+## Cluster management project
 
-GitLab can install and manage some applications in your group-level
-cluster. For more information on installing, upgrading, uninstalling,
-and troubleshooting applications for your group cluster, see
-[GitLab Managed Apps](../../clusters/applications.md).
+Attach a [cluster management project](../../clusters/management_project.md)
+to your cluster to manage shared resources requiring `cluster-admin` privileges for
+installation, such as an Ingress controller.
 
 ## RBAC compatibility
 
@@ -72,9 +71,6 @@ for deployments with a cluster not managed by GitLab, you must ensure:
   (this is [not automatic](https://gitlab.com/gitlab-org/gitlab/-/issues/31519)). Editing
   `KUBE_NAMESPACE` directly is discouraged.
 
-If you [install applications](#installing-applications) on your cluster, GitLab creates
-the resources required to run them, even if you choose to manage your own cluster.
-
 ### Clearing the cluster cache
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31759) in GitLab 12.6.
@@ -100,7 +96,7 @@ per [multiple Kubernetes clusters](#multiple-kubernetes-clusters) When specifyin
 this is automatically set as an environment variable (`KUBE_INGRESS_BASE_DOMAIN`) during
 the [Auto DevOps](../../../topics/autodevops/index.md) stages.
 
-The domain should have a wildcard DNS configured to the Ingress IP address.
+The domain should have a wildcard DNS configured to the Ingress IP address. [More details](../../project/clusters/index.md#base-domain).
 
 ## Environment scopes **(PREMIUM)**
 

@@ -91,7 +91,7 @@ describe('IssueAssigneesComponent', () => {
     });
 
     it('computes alt text for assignee avatar', () => {
-      expect(vm.avatarUrlTitle(mockAssigneesList[0])).toBe('Avatar for Terrell Graham');
+      expect(vm.avatarUrlTitle(mockAssigneesList[0])).toBe('Assigned to Terrell Graham');
     });
 
     it('renders component root element with class `issue-assignees`', () => {
@@ -106,7 +106,7 @@ describe('IssueAssigneesComponent', () => {
       const expected = mockAssigneesList.slice(0, TEST_MAX_VISIBLE - 1).map((x) =>
         expect.objectContaining({
           linkHref: x.web_url,
-          imgAlt: `Avatar for ${x.name}`,
+          imgAlt: `Assigned to ${x.name}`,
           imgCssClasses: TEST_CSS_CLASSES,
           imgSrc: x.avatar_url,
           imgSize: TEST_ICON_SIZE,

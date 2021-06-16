@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Project import/export
+# Project import/export **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/3050) in GitLab 8.9.
 > - From GitLab 10.0, administrators can disable the project export option on the GitLab instance.
@@ -24,9 +24,9 @@ See also:
 
 To set up a project import/export:
 
-  1. Navigate to **Admin Area > Settings > Visibility and access controls**.
-  1. Scroll to **Import sources**
-  1. Enable desired **Import sources**
+  1. On the top bar, go to **Menu > Admin > Settings > General > Visibility and access controls**.
+  1. Scroll to **Import sources**.
+  1. Enable the desired **Import sources**.
 
 ## Important notes
 
@@ -43,7 +43,7 @@ Note the following:
   and are moved to your configured `uploads_directory`. Every 24 hours, a specific worker deletes these export files.
 - Group members are exported as project members, as long as the user has
   maintainer or administrator access to the group where the exported project lives.
-- Project members with owner access are imported as maintainers.
+- Project members with the [Owner role](../../permissions.md) are imported as Maintainers.
 - Imported users can be mapped by their primary email on self-managed instances, if an administrative user (not an owner) does the import.
   Otherwise, a supplementary comment is left to mention that the original author and
   the MRs, notes, or issues are owned by the importer.
@@ -139,7 +139,7 @@ The following items are **not** exported:
 
 NOTE:
 For more details on the specific data persisted in a project export, see the
-[`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/import_export/project/import_export.yml) file.
+[`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml) file.
 
 ## Exporting a project and its data
 

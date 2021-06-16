@@ -35,6 +35,9 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: {
+    currentUserId: {
+      default: null,
+    },
     boardId: {
       default: '',
     },
@@ -63,7 +66,7 @@ export default {
   computed: {
     ...mapState(['activeId']),
     isLoggedIn() {
-      return Boolean(gon.current_user_id);
+      return Boolean(this.currentUserId);
     },
     listType() {
       return this.list.type;
@@ -88,6 +91,12 @@ export default {
     },
     showListDetails() {
       return this.list.isExpanded || !this.isSwimlanesHeader;
+    },
+    showListHeaderActions() {
+      if (this.isLoggedIn) {
+        return this.isNewIssueShown || this.isSettingsShown;
+      }
+      return false;
     },
     issuesCount() {
       return this.list.issuesSize;
@@ -320,10 +329,7 @@ export default {
           </template>
         </span>
       </div>
-      <gl-button-group
-        v-if="isNewIssueShown || isSettingsShown"
-        class="board-list-button-group pl-2"
-      >
+      <gl-button-group v-if="showListHeaderActions" class="board-list-button-group pl-2">
         <gl-button
           v-if="isNewIssueShown"
           ref="newIssueBtn"

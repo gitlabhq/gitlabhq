@@ -21,4 +21,12 @@ module GitlabScriptTagHelper
 
     super
   end
+
+  def preload_link_tag(source, options = {})
+    # Chrome requires a nonce, see https://gitlab.com/gitlab-org/gitlab/-/issues/331810#note_584964908
+    # It's likely to be a browser bug, but we need to work around it anyway
+    options[:nonce] = content_security_policy_nonce
+
+    super
+  end
 end

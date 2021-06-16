@@ -7,12 +7,6 @@ module Mutations
 
       authorize :update_user
 
-      field :updated_ids,
-            [::Types::GlobalIDType[::Todo]],
-            null: false,
-            deprecated: { reason: 'Use to-do items', milestone: '13.2' },
-            description: 'IDs of the updated to-do items.'
-
       field :todos, [::Types::TodoType],
             null: false,
             description: 'Updated to-do items.'
@@ -23,7 +17,6 @@ module Mutations
         updated_ids = mark_all_todos_done
 
         {
-          updated_ids: updated_ids,
           todos: Todo.id_in(updated_ids),
           errors: []
         }

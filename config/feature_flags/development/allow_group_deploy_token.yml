@@ -1,8 +1,0 @@
----
-name: allow_group_deploy_token
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23460
-rollout_issue_url: 
-milestone: '12.8'
-type: development
-group: group::release
-default_enabled: true

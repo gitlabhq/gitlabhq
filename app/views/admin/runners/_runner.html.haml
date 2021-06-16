@@ -1,7 +1,7 @@
 -# Note: This file should stay aligned with:
 -# `app/views/groups/runners/_runner.html.haml`
 
-.gl-responsive-table-row{ id: dom_id(runner) }
+.gl-responsive-table-row{ data: { testid: "runner-row-#{runner.id}" } }
   .table-section.section-10.section-wrap
     .table-mobile-header{ role: 'rowheader' }= _('Type')
     .table-mobile-content

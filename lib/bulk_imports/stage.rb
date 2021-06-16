@@ -29,9 +29,13 @@ module BulkImports
         pipeline: BulkImports::Groups::Pipelines::BadgesPipeline,
         stage: 1
       },
+      boards: {
+        pipeline: BulkImports::Groups::Pipelines::BoardsPipeline,
+        stage: 2
+      },
       finisher: {
         pipeline: BulkImports::Groups::Pipelines::EntityFinisher,
-        stage: 2
+        stage: 3
       }
     }.freeze
 

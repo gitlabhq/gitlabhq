@@ -19,7 +19,7 @@ _only_ for Omnibus packages. The reason for this is that the MemoryKiller
 relies on runit to restart Sidekiq after a memory-induced shutdown and GitLab
 installations from source do not all use runit or an equivalent.
 
-With the default settings, the MemoryKiller will cause a Sidekiq restart no
+With the default settings, the MemoryKiller causes a Sidekiq restart no
 more often than once every 15 minutes, with the restart causing about one
 minute of delay for incoming background jobs.
 
@@ -48,13 +48,13 @@ The MemoryKiller is controlled using environment variables.
   `SIDEKIQ_MEMORY_KILLER_MAX_RSS` defines the Sidekiq process allowed RSS.
 
   In _legacy_ mode, if the Sidekiq process exceeds the allowed RSS then an irreversible
-  delayed graceful restart will be triggered. The restart of Sidekiq will happen
+  delayed graceful restart is triggered. The restart of Sidekiq happens
   after `SIDEKIQ_MEMORY_KILLER_GRACE_TIME` seconds.
 
   In _daemon_ mode, if the Sidekiq process exceeds the allowed RSS for longer than
-  `SIDEKIQ_MEMORY_KILLER_GRACE_TIME` the graceful restart will be triggered. If the
+  `SIDEKIQ_MEMORY_KILLER_GRACE_TIME` the graceful restart is triggered. If the
   Sidekiq process go below the allowed RSS within `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`,
-  the restart will be aborted.
+  the restart is aborted.
 
   The default value for Omnibus packages is set
   [in the Omnibus GitLab
@@ -71,13 +71,13 @@ The MemoryKiller is controlled using environment variables.
   The usage of this variable is described as part of `SIDEKIQ_MEMORY_KILLER_MAX_RSS`.
 
 - `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`: defaults to 30 seconds. This defines the
-  maximum time allowed for all Sidekiq jobs to finish. No new jobs will be accepted
-  during that time, and the process will exit as soon as all jobs finish.
+  maximum time allowed for all Sidekiq jobs to finish. No new jobs are accepted
+  during that time, and the process exits as soon as all jobs finish.
 
-  If jobs do not finish during that time, the MemoryKiller will interrupt all currently
+  If jobs do not finish during that time, the MemoryKiller interrupts all currently
   running jobs by sending `SIGTERM` to the Sidekiq process.
 
   If the process hard shutdown/restart is not performed by Sidekiq,
-  the Sidekiq process will be forcefully terminated after
+  the Sidekiq process is forcefully terminated after
   `Sidekiq.options[:timeout] + 2` seconds. An external supervision mechanism
   (e.g. runit) must restart Sidekiq afterwards.

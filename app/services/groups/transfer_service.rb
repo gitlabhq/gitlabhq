@@ -108,10 +108,13 @@ module Groups
 
       @group.parent = @new_parent_group
       @group.clear_memoization(:self_and_ancestors_ids)
+      @group.clear_memoization(:root_ancestor) if different_root_ancestor?
 
       inherit_group_shared_runners_settings
 
       @group.save!
+      # #reload is called to make sure traversal_ids are reloaded
+      @group.reload # rubocop:disable Cop/ActiveRecordAssociationReload
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

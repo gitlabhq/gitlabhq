@@ -71,12 +71,14 @@ RSpec.describe API::NpmProjectPackages do
     end
 
     context 'a public project' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
+
       it_behaves_like 'successfully downloads the file'
       it_behaves_like 'a package tracking event', 'API::NpmPackages', 'pull_package'
 
       context 'with a job token for a different user' do
         let_it_be(:other_user) { create(:user) }
-        let_it_be_with_reload(:other_job) { create(:ci_build, :running, user: other_user) }
+        let_it_be_with_reload(:other_job) { create(:ci_build, :running, user: other_user, project: project) }
 
         let(:headers) { build_token_auth_header(other_job.token) }
 
@@ -161,6 +163,7 @@ RSpec.describe API::NpmProjectPackages do
 
       context 'valid package record' do
         let(:params) { upload_params(package_name: package_name) }
+        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
 
         shared_examples 'handling upload with different authentications' do
           context 'with access token' do

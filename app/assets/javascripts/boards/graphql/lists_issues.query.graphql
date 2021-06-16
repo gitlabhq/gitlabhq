@@ -12,11 +12,11 @@ query ListIssues(
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     board(id: $boardId) {
-      lists(id: $id) {
+      lists(id: $id, issueFilters: $filters) {
         nodes {
           id
+          issuesCount
           issues(first: $first, filters: $filters, after: $after) {
-            count
             edges {
               node {
                 ...IssueNode
@@ -33,11 +33,11 @@ query ListIssues(
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
     board(id: $boardId) {
-      lists(id: $id) {
+      lists(id: $id, issueFilters: $filters) {
         nodes {
           id
+          issuesCount
           issues(first: $first, filters: $filters, after: $after) {
-            count
             edges {
               node {
                 ...IssueNode

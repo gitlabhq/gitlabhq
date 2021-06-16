@@ -67,12 +67,12 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
         expect(subject[:next_page]).to eq(2)
       end
 
-      it 'parses the body as markdown and returns html' do
-        expect(subject[:items].first['body']).to match("<h2 id=\"bright-and-sunshinin-day\">bright and sunshinin’ day</h2>")
+      it 'parses the body as markdown and returns html, and links are target="_blank"' do
+        expect(subject[:items].first['body']).to match('<p data-sourcepos="1:1-1:62" dir="auto">bright and sunshinin\' <a href="https://en.wikipedia.org/wiki/Day" rel="nofollow noreferrer noopener" target="_blank">day</a></p>')
       end
 
       it 'logs an error if theres an error parsing markdown for an item, and skips it' do
-        allow(Kramdown::Document).to receive(:new).and_raise
+        allow(Banzai).to receive(:render).and_raise
 
         expect(Gitlab::ErrorTracking).to receive(:track_exception)
         expect(subject[:items]).to be_empty

@@ -1,17 +1,11 @@
 # frozen_string_literal: true
 
 class AddRemoveOnIssueCloseToLabels < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
+  # This migration was reverted in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62056
 
   def up
-    with_lock_retries do
-      add_column :labels, :remove_on_close, :boolean, null: false, default: false
-    end
   end
 
   def down
-    with_lock_retries do
-      remove_column :labels, :remove_on_close, :boolean
-    end
   end
 end

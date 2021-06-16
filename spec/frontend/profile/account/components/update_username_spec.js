@@ -2,7 +2,7 @@ import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import UpdateUsername from '~/profile/account/components/update_username.vue';
@@ -146,7 +146,9 @@ describe('UpdateUsername component', () => {
 
       await expect(wrapper.vm.onConfirm()).rejects.toThrow();
 
-      expect(createFlash).toBeCalledWith('Invalid username');
+      expect(createFlash).toBeCalledWith({
+        message: 'Invalid username',
+      });
     });
 
     it("shows a fallback error message if the error response doesn't have a `message` property", async () => {
@@ -156,9 +158,9 @@ describe('UpdateUsername component', () => {
 
       await expect(wrapper.vm.onConfirm()).rejects.toThrow();
 
-      expect(createFlash).toBeCalledWith(
-        'An error occurred while updating your username, please try again.',
-      );
+      expect(createFlash).toBeCalledWith({
+        message: 'An error occurred while updating your username, please try again.',
+      });
     });
   });
 });

@@ -96,7 +96,9 @@ class Note < ApplicationRecord
 
   validate :does_not_exceed_notes_limit?, on: :create, unless: [:system?, :importing?]
 
-  # @deprecated attachments are handler by the MarkdownUploader
+  # @deprecated attachments are handled by the Upload model.
+  #
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/20830
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
@@ -274,6 +276,10 @@ class Note < ApplicationRecord
     noteable_type == 'AlertManagement::Alert'
   end
 
+  def for_vulnerability?
+    noteable_type == "Vulnerability"
+  end
+
   def for_project_snippet?
     noteable.is_a?(ProjectSnippet)
   end
@@ -409,6 +415,8 @@ class Note < ApplicationRecord
       'snippet'
     elsif for_alert_mangement_alert?
       'alert_management_alert'
+    elsif for_vulnerability?
+      'security_resource'
     else
       noteable_type.demodulize.underscore
     end

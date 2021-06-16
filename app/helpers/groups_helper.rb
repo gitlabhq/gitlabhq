@@ -3,14 +3,16 @@
 module GroupsHelper
   def group_overview_nav_link_paths
     %w[
-      groups#show
-      groups#details
       groups#activity
       groups#subgroups
     ].tap do |paths|
-      break paths if Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+      extra_routes = if sidebar_refactor_disabled?
+                       ['groups#show', 'groups#details']
+                     else
+                       ['labels#index', 'group_members#index']
+                     end
 
-      paths.concat(['labels#index', 'group_members#index'])
+      paths.concat(extra_routes)
     end
   end
 
@@ -43,7 +45,7 @@ module GroupsHelper
   end
 
   def group_information_title(group)
-    if Feature.enabled?(:sidebar_refactor, current_user)
+    if Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
       group.subgroup? ? _('Subgroup information') : _('Group information')
     else
       group.subgroup? ? _('Subgroup overview') : _('Group overview')
@@ -75,6 +77,10 @@ module GroupsHelper
     can?(current_user, :change_share_with_group_lock, group)
   end
 
+  def can_change_prevent_sharing_groups_outside_hierarchy?(group)
+    can?(current_user, :change_prevent_sharing_groups_outside_hierarchy, group)
+  end
+
   def can_disable_group_emails?(group)
     can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
   end
@@ -84,14 +90,6 @@ module GroupsHelper
       .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
       .execute
       .count
-  end
-
-  def group_open_merge_requests_count(group)
-    if Feature.enabled?(:cached_sidebar_merge_requests_count, group, default_enabled: :yaml)
-      cached_issuables_count(@group, type: :merge_requests)
-    else
-      number_with_delimiter(group_merge_requests_count(state: 'opened'))
-    end
   end
 
   def group_merge_requests_count(state:)
@@ -192,6 +190,14 @@ module GroupsHelper
     else
       ancestor_locked_and_has_been_overridden(group)
     end
+  end
+
+  def link_to_group(group)
+    link_to(group.name, group_path(group))
+  end
+
+  def prevent_sharing_groups_outside_hierarchy_help_text(group)
+    s_("GroupSettings|This setting is only available on the top-level group and it applies to all subgroups. Groups that have already been shared with a group outside %{group} will still be shared, and this access will have to be revoked manually.").html_safe % { group: link_to_group(group) }
   end
 
   def parent_group_options(current_group)

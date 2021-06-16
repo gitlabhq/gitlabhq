@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210205214003_remove_alerts_service_records_again.rb')
+require_migration!
 
 RSpec.describe RemoveAlertsServiceRecordsAgain do
   let(:services) { table(:services) }

@@ -1,0 +1,8 @@
+---
+name: github_review_importer_query_only_unimported_merge_requests
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62036
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/332982
+milestone: '14.0'
+type: development
+group: group::import
+default_enabled: true

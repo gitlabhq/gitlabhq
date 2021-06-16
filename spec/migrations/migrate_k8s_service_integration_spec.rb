@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20190517153211_migrate_k8s_service_integration.rb')
+require_migration!
 
 RSpec.describe MigrateK8sServiceIntegration do
   context 'template service' do

@@ -1,7 +1,7 @@
 import { GlButton, GlLink, GlFormGroup, GlFormInput, GlFormSelect } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { timezones } from '~/monitoring/format_date';
@@ -56,7 +56,7 @@ describe('operation settings external dashboard component', () => {
 
   it('renders header text', () => {
     mountComponent();
-    expect(wrapper.find('.js-section-header').text()).toBe('Metrics dashboard');
+    expect(wrapper.find('.js-section-header').text()).toBe('Metrics');
   });
 
   describe('expand/collapse button', () => {
@@ -77,13 +77,13 @@ describe('operation settings external dashboard component', () => {
     });
 
     it('renders descriptive text', () => {
-      expect(subHeader.text()).toContain('Manage Metrics Dashboard settings.');
+      expect(subHeader.text()).toContain('Manage metrics dashboard settings.');
     });
 
     it('renders help page link', () => {
       const link = subHeader.find(GlLink);
 
-      expect(link.text()).toBe('Learn more');
+      expect(link.text()).toBe('Learn more.');
       expect(link.attributes().href).toBe(helpPage);
     });
   });
@@ -203,10 +203,10 @@ describe('operation settings external dashboard component', () => {
           .$nextTick()
           .then(jest.runAllTicks)
           .then(() =>
-            expect(createFlash).toHaveBeenCalledWith(
-              `There was an error saving your changes. ${message}`,
-              'alert',
-            ),
+            expect(createFlash).toHaveBeenCalledWith({
+              message: `There was an error saving your changes. ${message}`,
+              type: 'alert',
+            }),
           );
       });
     });

@@ -10,7 +10,7 @@ import notify from '~/lib/utils/notify';
 import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
-import { deprecatedCreateFlash as createFlash } from '../flash';
+import createFlash from '../flash';
 import { setFaviconOverlay } from '../lib/utils/favicon';
 import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
 import GroupedCodequalityReportsApp from '../reports/codequality_report/grouped_codequality_reports_app.vue';
@@ -198,6 +198,9 @@ export default {
     formattedHumanAccess() {
       return (this.mr.humanAccess || '').toLowerCase();
     },
+    hasAlerts() {
+      return this.mr.mergeError || this.showMergePipelineForkWarning;
+    },
   },
   watch: {
     state(newVal, oldVal) {
@@ -214,7 +217,9 @@ export default {
         this.initWidget(data);
       })
       .catch(() =>
-        createFlash(__('Unable to load the merge request widget. Try reloading the page.')),
+        createFlash({
+          message: __('Unable to load the merge request widget. Try reloading the page.'),
+        }),
       );
   },
   beforeDestroy() {
@@ -295,7 +300,11 @@ export default {
             cb.call(null, data);
           }
         })
-        .catch(() => createFlash(__('Something went wrong. Please try again.')));
+        .catch(() =>
+          createFlash({
+            message: __('Something went wrong. Please try again.'),
+          }),
+        );
     },
     setFaviconHelper() {
       if (this.mr.ciStatusFaviconPath) {
@@ -349,11 +358,11 @@ export default {
         .catch(() => this.throwDeploymentsError());
     },
     throwDeploymentsError() {
-      createFlash(
-        __(
+      createFlash({
+        message: __(
           'Something went wrong while fetching the environments for this merge request. Please try again.',
         ),
-      );
+      });
     },
     fetchActionsContent() {
       this.service
@@ -367,7 +376,11 @@ export default {
             Project.initRefSwitcher();
           }
         })
-        .catch(() => createFlash(__('Something went wrong. Please try again.')));
+        .catch(() =>
+          createFlash({
+            message: __('Something went wrong. Please try again.'),
+          }),
+        );
     },
     handleNotification(data) {
       if (data.ci_status === this.mr.ciStatus) return;
@@ -432,7 +445,12 @@ export default {
 </script>
 <template>
   <div v-if="isLoaded" class="mr-state-widget gl-mt-3">
-    <mr-widget-header :mr="mr" />
+    <header class="gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100">
+      <mr-widget-alert-message v-if="shouldRenderCollaborationStatus" type="info">
+        {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}
+      </mr-widget-alert-message>
+      <mr-widget-header :mr="mr" />
+    </header>
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"
       data-testid="mr-suggest-pipeline"
@@ -456,10 +474,32 @@ export default {
       :service="service"
     />
     <div class="mr-section-container mr-widget-workflow">
+      <div v-if="hasAlerts" class="gl-overflow-hidden mr-widget-alert-container">
+        <mr-widget-alert-message v-if="mr.mergeError" type="danger" dismissible>
+          <span v-safe-html="mergeError"></span>
+        </mr-widget-alert-message>
+        <mr-widget-alert-message
+          v-if="showMergePipelineForkWarning"
+          type="warning"
+          :help-path="mr.mergeRequestPipelinesHelpPath"
+        >
+          {{
+            s__(
+              'mrWidget|If the last pipeline ran in the fork project, it may be inaccurate. Before merge, we advise running a pipeline in this project.',
+            )
+          }}
+          <template #link-content>
+            {{ __('Learn more') }}
+          </template>
+        </mr-widget-alert-message>
+      </div>
       <!-- <extensions-container :mr="mr" /> -->
       <grouped-codequality-reports-app
         v-if="shouldRenderCodeQuality"
         :base-path="mr.codeclimate.base_path"
+        :head-path="mr.codeclimate.head_path"
+        :head-blob-path="mr.headBlobPath"
+        :base-blob-path="mr.baseBlobPath"
         :codequality-reports-path="mr.codequalityReportsPath"
         :codequality-help-path="mr.codequalityHelpPath"
       />
@@ -492,33 +532,11 @@ export default {
         <component :is="componentName" :mr="mr" :service="service" />
 
         <div class="mr-widget-info">
-          <section v-if="shouldRenderCollaborationStatus" class="mr-info-list mr-links">
-            <p>
-              {{ s__('mrWidget|Allows commits from members who can merge to the target branch') }}
-            </p>
-          </section>
-
           <mr-widget-related-links
             v-if="shouldRenderRelatedLinks"
             :state="mr.state"
             :related-links="mr.relatedLinks"
           />
-
-          <mr-widget-alert-message
-            v-if="showMergePipelineForkWarning"
-            type="warning"
-            :help-path="mr.mergeRequestPipelinesHelpPath"
-          >
-            {{
-              s__(
-                'mrWidget|If the last pipeline ran in the fork project, it may be inaccurate. Before merge, we advise running a pipeline in this project.',
-              )
-            }}
-          </mr-widget-alert-message>
-
-          <mr-widget-alert-message v-if="mr.mergeError" type="danger">
-            <span v-safe-html="mergeError"></span>
-          </mr-widget-alert-message>
 
           <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
         </div>

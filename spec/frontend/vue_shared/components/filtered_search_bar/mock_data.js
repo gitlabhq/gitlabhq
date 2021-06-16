@@ -65,8 +65,8 @@ export const mockMilestones = [
 ];
 
 export const mockEpics = [
-  { iid: 1, id: 1, title: 'Foo' },
-  { iid: 2, id: 2, title: 'Bar' },
+  { iid: 1, id: 1, title: 'Foo', group_full_path: 'gitlab-org' },
+  { iid: 2, id: 2, title: 'Bar', group_full_path: 'gitlab-org/design' },
 ];
 
 export const mockEmoji1 = {

@@ -41,11 +41,18 @@ export const deleteDraft = ({ commit, getters }, draft) =>
     })
     .catch(() => flash(__('An error occurred while deleting the comment')));
 
-export const fetchDrafts = ({ commit, getters }) =>
+export const fetchDrafts = ({ commit, getters, state, dispatch }) =>
   service
     .fetchDrafts(getters.getNotesData.draftsPath)
     .then((res) => res.data)
     .then((data) => commit(types.SET_BATCH_COMMENTS_DRAFTS, data))
+    .then(() => {
+      state.drafts.forEach((draft) => {
+        if (!draft.line_code) {
+          dispatch('convertToDiscussion', draft.discussion_id, { root: true });
+        }
+      });
+    })
     .catch(() => flash(__('An error occurred while fetching pending comments')));
 
 export const publishSingleDraft = ({ commit, dispatch, getters }, draftId) => {

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20201112130710_schedule_remove_duplicate_vulnerabilities_findings.rb')
+require_migration!('schedule_remove_duplicate_vulnerabilities_findings')
 
 RSpec.describe ScheduleRemoveDuplicateVulnerabilitiesFindings, :migration do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }

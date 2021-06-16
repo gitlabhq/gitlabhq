@@ -43,7 +43,7 @@ module API
           declared(params).slice(:exclude_subgroups, :order_by, :sort, :package_type, :package_name, :include_versionless, :status)
         ).execute
 
-        present paginate(packages), with: ::API::Entities::Package, user: current_user, group: true
+        present paginate(packages), with: ::API::Entities::Package, user: current_user, group: true, namespace: user_group.root_ancestor
       end
     end
   end

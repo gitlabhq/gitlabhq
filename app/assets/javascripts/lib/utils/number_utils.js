@@ -72,11 +72,13 @@ export function bytesToGiB(number) {
  * @returns {String}
  */
 export function numberToHumanSize(size) {
-  if (size < BYTES_IN_KIB) {
+  const abs = Math.abs(size);
+
+  if (abs < BYTES_IN_KIB) {
     return sprintf(__('%{size} bytes'), { size });
-  } else if (size < BYTES_IN_KIB * BYTES_IN_KIB) {
+  } else if (abs < BYTES_IN_KIB ** 2) {
     return sprintf(__('%{size} KiB'), { size: bytesToKiB(size).toFixed(2) });
-  } else if (size < BYTES_IN_KIB * BYTES_IN_KIB * BYTES_IN_KIB) {
+  } else if (abs < BYTES_IN_KIB ** 3) {
     return sprintf(__('%{size} MiB'), { size: bytesToMiB(size).toFixed(2) });
   }
   return sprintf(__('%{size} GiB'), { size: bytesToGiB(size).toFixed(2) });

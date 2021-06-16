@@ -12,8 +12,6 @@ module SshKeys
     idempotent!
 
     def perform
-      return unless ::Feature.enabled?(:ssh_key_expiration_email_notification, default_enabled: :yaml)
-
       # rubocop:disable CodeReuse/ActiveRecord
       User.with_ssh_key_expiring_soon.find_each(batch_size: 10_000) do |user|
         with_context(user: user) do

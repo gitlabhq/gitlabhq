@@ -38,6 +38,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     projectId,
     params,
     codeQualityPagePath,
+    ciRunnerSettingsPath,
   } = el.dataset;
 
   return new Vue({
@@ -76,6 +77,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
           projectId,
           params: JSON.parse(params),
           codeQualityPagePath,
+          ciRunnerSettingsPath,
         },
       });
     },

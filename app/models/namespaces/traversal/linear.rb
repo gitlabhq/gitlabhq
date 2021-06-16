@@ -46,6 +46,12 @@ module Namespaces
         after_update :sync_traversal_ids, if: -> { sync_traversal_ids? && saved_change_to_parent_id? }
 
         scope :traversal_ids_contains, ->(ids) { where("traversal_ids @> (?)", ids) }
+        # When filtering namespaces by the traversal_ids column to compile a
+        # list of namespace IDs, it's much faster to reference the ID in
+        # traversal_ids than the primary key ID column.
+        # WARNING This scope must be used behind a linear query feature flag
+        # such as `use_traversal_ids`.
+        scope :as_ids, -> { select('traversal_ids[array_length(traversal_ids, 1)] AS id') }
       end
 
       def sync_traversal_ids?
@@ -58,10 +64,28 @@ module Namespaces
         traversal_ids.present?
       end
 
+      def root_ancestor
+        return super if parent.nil?
+        return super unless persisted?
+
+        return super if traversal_ids.blank?
+        return super unless Feature.enabled?(:use_traversal_ids_for_root_ancestor, default_enabled: :yaml)
+
+        strong_memoize(:root_ancestor) do
+          Namespace.find_by(id: traversal_ids.first)
+        end
+      end
+
       def self_and_descendants
         return super unless use_traversal_ids?
 
         lineage(top: self)
+      end
+
+      def self_and_descendant_ids
+        return super unless use_traversal_ids?
+
+        self_and_descendants.as_ids
       end
 
       def descendants
@@ -88,7 +112,8 @@ module Namespaces
         # Clear any previously memoized root_ancestor as our ancestors have changed.
         clear_memoization(:root_ancestor)
 
-        Namespace::TraversalHierarchy.for_namespace(root_ancestor).sync_traversal_ids!
+        # We cannot rely on Namespaces::Traversal::Linear#root_ancestor because it might be stale
+        Namespace::TraversalHierarchy.for_namespace(recursive_root_ancestor).sync_traversal_ids!
       end
 
       # Lock the root of the hierarchy we just left, and lock the root of the hierarchy

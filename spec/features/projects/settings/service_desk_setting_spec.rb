@@ -89,25 +89,10 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache do
       before do
         stub_licensed_features(custom_file_templates_for_namespace: false, custom_file_templates: false)
         group.update_columns(file_template_project_id: group_template_repo.id)
+        visit edit_project_path(project)
       end
 
-      context 'when inherited_issuable_templates enabled' do
-        before do
-          stub_feature_flags(inherited_issuable_templates: true)
-          visit edit_project_path(project)
-        end
-
-        it_behaves_like 'issue description templates from current project only'
-      end
-
-      context 'when inherited_issuable_templates disabled' do
-        before do
-          stub_feature_flags(inherited_issuable_templates: false)
-          visit edit_project_path(project)
-        end
-
-        it_behaves_like 'issue description templates from current project only'
-      end
+      it_behaves_like 'issue description templates from current project only'
     end
   end
 end

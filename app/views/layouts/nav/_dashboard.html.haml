@@ -4,7 +4,7 @@
 -# [1]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587
 %ul.list-unstyled.navbar-sub-nav
   - if dashboard_nav_link?(:projects)
-    = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects qa-projects-dropdown", data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" } }) do
+    = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects", data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" } }) do
       %button{ type: 'button', data: { toggle: "dropdown" } }
         = _('Projects')
         = sprite_icon('chevron-down', css_class: 'caret-down')
@@ -12,7 +12,7 @@
         = render "layouts/nav/projects_dropdown/show"
 
   - if dashboard_nav_link?(:groups)
-    = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { id: 'nav-groups-dropdown', class: "d-none d-md-block home dropdown header-groups qa-groups-dropdown", data: { track_label: "groups_dropdown", track_event: "click_dropdown" } }) do
+    = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { id: 'nav-groups-dropdown', class: "d-none d-md-block home dropdown header-groups", data: { track_label: "groups_dropdown", track_event: "click_dropdown" } }) do
       %button{ type: 'button', data: { toggle: "dropdown" } }
         = _('Groups')
         = sprite_icon('chevron-down', css_class: 'caret-down')
@@ -21,28 +21,28 @@
 
   - if any_dashboard_nav_link?([:groups, :milestones, :activity, :snippets])
     = nav_link(html_options: { id: 'nav-more-dropdown', class: "header-more dropdown", data: { track_label: "more_dropdown", track_event: "click_more_link" } }) do
-      %a{ href: "#", data: { toggle: "dropdown", qa_selector: 'more_dropdown' } }
+      %a{ href: "#", data: { toggle: "dropdown" } }
         = _('More')
         = sprite_icon('chevron-down', css_class: 'caret-down')
       .dropdown-menu
         %ul
           - if dashboard_nav_link?(:groups)
             %li.d-md-none
-              = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', data: { qa_selector: 'groups_link' } do
+              = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups' do
                 = _('Groups')
           - if dashboard_nav_link?(:activity)
             = nav_link(path: 'dashboard#activity') do
-              = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', data: { qa_selector: 'activity_link' } do
+              = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity' do
                 = _('Activity')
 
           - if dashboard_nav_link?(:milestones)
             = nav_link(controller: 'dashboard/milestones') do
-              = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', data: { qa_selector: 'milestones_link' } do
+              = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones' do
                 = _('Milestones')
 
           - if dashboard_nav_link?(:snippets)
             = nav_link(controller: 'dashboard/snippets') do
-              = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', data: { qa_selector: 'snippets_link' } do
+              = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets' do
                 = _('Snippets')
 
           %li.dropdown
@@ -50,7 +50,7 @@
 
           - if current_user.admin?
             = nav_link(controller: 'admin/dashboard') do
-              = link_to admin_root_path, class: 'admin-icon qa-admin-area-link d-xl-none' do
+              = link_to admin_root_path, class: 'admin-icon d-xl-none' do
                 = _('Admin Area')
           - if Gitlab::CurrentSettings.admin_mode
             - if header_link?(:admin_mode)
@@ -68,7 +68,7 @@
 
   - if current_user.admin?
     = nav_link(controller: 'admin/dashboard', html_options: { class: "d-none d-xl-block"}) do
-      = link_to admin_root_path, class: 'admin-icon qa-admin-area-link', title: _('Admin Area'), aria: { label: _('Admin Area') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+      = link_to admin_root_path, class: 'admin-icon', title: _('Admin Area'), aria: { label: _('Admin Area') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = sprite_icon('admin', size: 18)
 
   - if Gitlab::CurrentSettings.admin_mode

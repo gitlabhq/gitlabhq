@@ -4,7 +4,7 @@ module Types
   class TimelogType < BaseObject
     graphql_name 'Timelog'
 
-    authorize :read_group_timelogs
+    authorize :read_issue
 
     field :spent_at,
           Types::TimeType,

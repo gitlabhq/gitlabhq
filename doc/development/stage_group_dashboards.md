@@ -52,6 +52,26 @@ component has 2 indicators:
 
 1. [Apdex](https://en.wikipedia.org/wiki/Apdex): The rate of
    operations that performed adequately.
+
+   The threshold for 'performed adequately' is stored in our [metrics
+   catalog](https://gitlab.com/gitlab-com/runbooks/-/tree/master/metrics-catalog)
+   and depends on the service in question. For the Puma (Rails)
+   component of the
+   [API](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/api.jsonnet#L127),
+   [Git](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/git.jsonnet#L216),
+   and
+   [Web](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/web.jsonnet#L154)
+   services, that threshold is **1 second**.
+
+   For Sidekiq job execution, the threshold depends on the [job
+   urgency](sidekiq_style_guide.md#job-urgency). It is
+   [currently](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/lib/sidekiq-helpers.libsonnet#L25-38)
+   **10 seconds** for high-urgency jobs and **5 minutes** for other
+   jobs.
+
+   Some stage groups may have more services than these, and the
+   thresholds for those will be in the metrics catalog as well.
+
 1. Error rate: The rate of operations that had errors.
 
 The calculation to a ratio then happens as follows:
@@ -143,14 +163,7 @@ stageGroupDashboards.dashboard('product_planning')
 .stageGroupDashboardTrailer()
 ```
 
-We provide basic customization to filter out the components essential to your group's activities. By default, all components `web`, `api`, `git`, and `sidekiq` are available in the dashboard. We can change this to only show `web` and `api`, or only show `sidekiq`:
-
-```jsonnet
-stageGroupDashboards.dashboard('product_planning', components=['web', 'api']).stageGroupDashboardTrailer()
-# Or
-stageGroupDashboards.dashboard('product_planning', components=['sidekiq']).stageGroupDashboardTrailer()
-
-```
+We provide basic customization to filter out the components essential to your group's activities. By default, only the `web`, `api`, and `sidekiq` components are available in the dashboard, while `git` is hidden. See [how to enable available components and optional graphs](#optional-graphs).
 
 You can also append further information or custom metrics to a dashboard. This is an example that adds some links and a total request rate on the top of the page:
 
@@ -166,7 +179,7 @@ stageGroupDashboards.dashboard('source_code')
     mode='markdown',
     content=|||
       Useful link for the Source Code Management group dashboard:
-      - [Issue list](https://gitlab.com/groups/gitlab-org/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name%5B%5D=repository)
+      - [Issue list](https://gitlab.com/groups/gitlab-org/-/issues?scope=all&state=opened&label_name%5B%5D=repository)
       - [Epic list](https://gitlab.com/groups/gitlab-org/-/epics?label_name[]=repository)
     |||,
   ),
@@ -199,3 +212,31 @@ If you want to see the workflow in action, we've recorded a pairing session on c
 available on [GitLab Unfiltered](https://youtu.be/shEd_eiUjdI).
 
 For deeper customization and more complicated metrics, visit the [Grafonnet lib](https://github.com/grafana/grafonnet-lib) project and the [GitLab Prometheus Metrics](../administration/monitoring/prometheus/gitlab_metrics.md#gitlab-prometheus-metrics) documentation.
+
+### Optional Graphs
+
+Some Graphs aren't relevant for all groups, so they aren't added to
+the dashboard by default. They can be added by customizing the
+dashboard.
+
+By default, only the `web`, `api`, and `sidekiq` metrics are
+shown. If you wish to see the metrics from the `git` fleet (or any
+other component that might be added in the future), this could be
+configured as follows:
+
+```jsonnet
+stageGroupDashboards
+.dashboard('source_code', components=stageGroupDashboards.supportedComponents)
+.stageGroupDashboardTrailer()
+```
+
+If your group is interested in Sidekiq job durations and their
+thresholds, these graphs can be added by calling the
+`.addSidekiqJobDurationByUrgency` function:
+
+```jsonnet
+stageGroupDashboards
+.dashboard('access')
+.addSidekiqJobDurationByUrgency()
+.stageGroupDashboardTrailer()
+```

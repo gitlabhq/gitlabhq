@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200204113225_schedule_recalculate_project_authorizations_third_run.rb')
+require_migration!
 
 RSpec.describe ScheduleRecalculateProjectAuthorizationsThirdRun do
   let(:users_table) { table(:users) }

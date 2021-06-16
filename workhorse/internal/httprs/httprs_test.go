@@ -53,6 +53,10 @@ func (f *fakeRoundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+	if err := os.Remove(fw.tmp.Name()); err != nil {
+		return nil, err
+	}
+
 	if f.downgradeZeroToNoRange {
 		// There are implementations that downgrades bytes=0- to a normal un-ranged GET
 		if r.Header.Get("Range") == "bytes=0-" {
@@ -79,6 +83,10 @@ func newRSFactory(flags int) RSFactory {
 		if err != nil {
 			return nil
 		}
+		if err := os.Remove(tmp.Name()); err != nil {
+			return nil
+		}
+
 		for i := 0; i < SZ; i++ {
 			tmp.WriteString(fmt.Sprintf("%04d", i))
 		}

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20201028182809_backfill_jira_tracker_deployment_type2.rb')
+require_migration!('backfill_jira_tracker_deployment_type2')
 
 RSpec.describe BackfillJiraTrackerDeploymentType2, :sidekiq, schema: 20201028182809 do
   let(:services) { table(:services) }

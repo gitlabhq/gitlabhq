@@ -142,7 +142,6 @@ describe('Diff settings dropdown component', () => {
 
       expect(store.dispatch).toHaveBeenCalledWith('diffs/setShowWhitespace', {
         showWhitespace: !checked,
-        pushState: true,
       });
     });
   });

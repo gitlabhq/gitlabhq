@@ -2,7 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::AuthJobFinder do
-  let_it_be(:job, reload: true) { create(:ci_build, status: :running) }
+  let_it_be(:user, reload: true) { create(:user) }
+  let_it_be(:job, reload: true) { create(:ci_build, status: :running, user: user) }
 
   let(:token) { job.token }
 
@@ -55,10 +56,31 @@ RSpec.describe Ci::AuthJobFinder do
   describe '#execute' do
     subject(:execute) { finder.execute }
 
-    before do
-      job.success!
+    context 'when job is not running' do
+      before do
+        job.success!
+      end
+
+      it { is_expected.to be_nil }
     end
 
-    it { is_expected.to be_nil }
+    context 'when job is running', :request_store do
+      it 'sets ci_job_token_scope on the job user', :aggregate_failures do
+        expect(subject).to eq(job)
+        expect(subject.user).to be_from_ci_job_token
+        expect(subject.user.ci_job_token_scope.source_project).to eq(job.project)
+      end
+
+      context 'when feature flag ci_scoped_job_token is disabled' do
+        before do
+          stub_feature_flags(ci_scoped_job_token: false)
+        end
+
+        it 'does not set ci_job_token_scope on the job user' do
+          expect(subject).to eq(job)
+          expect(subject.user).not_to be_from_ci_job_token
+        end
+      end
+    end
   end
 end

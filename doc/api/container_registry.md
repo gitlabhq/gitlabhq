@@ -90,7 +90,8 @@ GET /groups/:id/registry/repositories
 | `tags_count` | boolean | no | If the parameter is included as true, each repository includes `"tags_count"` in the response ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32141) in GitLab 13.1). |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/2/registry/repositories?tags=1&tags_count=true"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/groups/2/registry/repositories?tags=1&tags_count=true"
 ```
 
 Example response:
@@ -161,7 +162,8 @@ GET /registry/repositories/:id
 | `tags_count` | boolean | no | If the parameter is included as `true`, the response includes `"tags_count"`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/registry/repositories/2?tags=true&tags_count=true"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/registry/repositories/2?tags=true&tags_count=true"
 ```
 
 Example response:
@@ -202,7 +204,8 @@ DELETE /projects/:id/registry/repositories/:repository_id
 | `repository_id` | integer | yes | The ID of registry repository. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2"
 ```
 
 ## List registry repository tags
@@ -221,7 +224,8 @@ GET /projects/:id/registry/repositories/:repository_id/tags
 | `repository_id` | integer | yes | The ID of registry repository. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
 ```
 
 Example response:
@@ -256,7 +260,8 @@ GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 | `tag_name` | string | yes | The name of tag. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
 ```
 
 Example response:
@@ -289,7 +294,8 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 | `tag_name` | string | yes | The name of tag. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
 ```
 
 This action doesn't delete blobs. To delete them and recycle disk space,
@@ -350,23 +356,27 @@ Examples:
    and remove ones that are older than 2 days:
 
    ```shell
-   curl --request DELETE --data 'name_regex_delete=[0-9a-z]{40}' --data 'keep_n=5' --data 'older_than=2d' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+   curl --request DELETE --data 'name_regex_delete=[0-9a-z]{40}' --data 'keep_n=5' --data 'older_than=2d' \
+        --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
    ```
 
 1. Remove all tags, but keep always the latest 5:
 
    ```shell
-   curl --request DELETE --data 'name_regex_delete=.*' --data 'keep_n=5' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+   curl --request DELETE --data 'name_regex_delete=.*' --data 'keep_n=5' \
+        --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
    ```
 
 1. Remove all tags, but keep always tags beginning with `stable`:
 
    ```shell
-   curl --request DELETE --data 'name_regex_delete=.*' --data 'name_regex_keep=stable.*' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+   curl --request DELETE --data 'name_regex_delete=.*' --data 'name_regex_keep=stable.*' \
+        --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
    ```
 
 1. Remove all tags that are older than 1 month:
 
    ```shell
-   curl --request DELETE --data 'name_regex_delete=.*' --data 'older_than=1month' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+   curl --request DELETE --data 'name_regex_delete=.*' --data 'older_than=1month' \
+        --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
    ```

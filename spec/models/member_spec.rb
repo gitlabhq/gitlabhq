@@ -408,6 +408,20 @@ RSpec.describe Member do
       it { is_expected.not_to include @member_with_minimal_access }
     end
 
+    describe '.without_invites_and_requests' do
+      subject { described_class.without_invites_and_requests.to_a }
+
+      it { is_expected.to include @owner }
+      it { is_expected.to include @maintainer }
+      it { is_expected.not_to include @invited_member }
+      it { is_expected.to include @accepted_invite_member }
+      it { is_expected.not_to include @requested_member }
+      it { is_expected.to include @accepted_request_member }
+      it { is_expected.to include @blocked_maintainer }
+      it { is_expected.to include @blocked_developer }
+      it { is_expected.not_to include @member_with_minimal_access }
+    end
+
     describe '.connected_to_user' do
       subject { described_class.connected_to_user.to_a }
 
@@ -589,6 +603,18 @@ RSpec.describe Member do
               expect(source.users).not_to include(user)
 
               described_class.add_user(source, user.email, :maintainer)
+
+              expect(source.users.reload).to include(user)
+            end
+          end
+
+          context 'when called with a known user secondary email' do
+            let(:secondary_email) { create(:email, email: 'secondary@example.com', user: user) }
+
+            it 'adds the user as a member' do
+              expect(source.users).not_to include(user)
+
+              described_class.add_user(source, secondary_email.email, :maintainer)
 
               expect(source.users.reload).to include(user)
             end
@@ -778,8 +804,25 @@ RSpec.describe Member do
     let(:invited_member) { create(:project_member, invite_email: "user@example.com", user: nil) }
     let(:requester) { create(:project_member, requested_at: Time.current.utc) }
 
-    it { expect(invited_member).to be_invite }
+    it { expect(invited_member).to be_pending }
     it { expect(requester).to be_pending }
+  end
+
+  describe '#hook_prerequisites_met?' do
+    let(:member) { create(:project_member) }
+
+    context 'when the member does not have an associated user' do
+      it 'returns false' do
+        member.update_column(:user_id, nil)
+        expect(member.reload.hook_prerequisites_met?).to eq(false)
+      end
+    end
+
+    context 'when the member has an associated user' do
+      it 'returns true' do
+        expect(member.hook_prerequisites_met?).to eq(true)
+      end
+    end
   end
 
   describe "#accept_invite!" do

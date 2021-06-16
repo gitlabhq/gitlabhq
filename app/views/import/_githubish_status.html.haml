@@ -1,9 +1,12 @@
 - add_page_specific_style 'page_bundles/import'
-- provider = local_assigns.fetch(:provider)
+- provider = local_assigns.fetch(:provider).to_sym
 - extra_data = local_assigns.fetch(:extra_data, {})
 - filterable = local_assigns.fetch(:filterable, true)
 - paginatable = local_assigns.fetch(:paginatable, false)
 - provider_title = Gitlab::ImportSources.title(provider)
+
+- header_title _("New project"), new_project_path
+- add_to_breadcrumbs s_('ProjectsNew|Import project'), new_projects_path(anchor: 'import_project')
 
 #import-projects-mount-element{ data: { provider: provider, provider_title: provider_title,
                                can_select_namespace: current_user.can_select_namespace?.to_s,

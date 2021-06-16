@@ -95,6 +95,10 @@ describe('AlertsSettingsWrapper', () => {
         },
         provide: {
           ...provide,
+          alertSettings: {
+            templates: [],
+          },
+          service: {},
         },
         mocks: {
           $apollo: {
@@ -129,12 +133,17 @@ describe('AlertsSettingsWrapper', () => {
     wrapper = mount(AlertsSettingsWrapper, {
       localVue,
       apolloProvider: fakeApollo,
+      provide: {
+        alertSettings: {
+          templates: [],
+        },
+        service: {},
+      },
     });
   }
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('template', () => {

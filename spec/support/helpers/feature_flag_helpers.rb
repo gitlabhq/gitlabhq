@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module FeatureFlagHelpers
-  def create_flag(project, name, active = true, description: nil, version: Operations::FeatureFlag.versions['legacy_flag'])
+  def create_flag(project, name, active = true, description: nil, version: Operations::FeatureFlag.versions['new_version_flag'])
     create(:operations_feature_flag, name: name, active: active, version: version,
                                      description: description, project: project)
   end
@@ -90,6 +90,5 @@ module FeatureFlagHelpers
 
   def expect_user_to_see_feature_flags_index_page
     expect(page).to have_text('Feature Flags')
-    expect(page).to have_text('Lists')
   end
 end

@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Tracking::StandardContext do
 
       context 'staging' do
         before do
-          stub_config_setting(url: 'https://staging.gitlab.com')
+          stub_config_setting(url: Gitlab::Saas.staging_com_url)
         end
 
         include_examples 'contains environment', 'staging'
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Tracking::StandardContext do
 
       context 'production' do
         before do
-          stub_config_setting(url: 'https://gitlab.com')
+          stub_config_setting(url: Gitlab::Saas.com_url)
         end
 
         include_examples 'contains environment', 'production'
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Tracking::StandardContext do
 
       context 'org' do
         before do
-          stub_config_setting(url: 'https://dev.gitlab.org')
+          stub_config_setting(url: Gitlab::Saas.dev_url)
         end
 
         include_examples 'contains environment', 'org'

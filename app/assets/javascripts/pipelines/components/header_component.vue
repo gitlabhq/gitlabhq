@@ -132,6 +132,16 @@ export default {
           };
       }
     },
+    canRetryPipeline() {
+      const { retryable, userPermissions } = this.pipeline;
+
+      return retryable && userPermissions.updatePipeline;
+    },
+    canCancelPipeline() {
+      const { cancelable, userPermissions } = this.pipeline;
+
+      return cancelable && userPermissions.updatePipeline;
+    },
   },
   watch: {
     isFinished(finished) {
@@ -219,7 +229,7 @@ export default {
       item-name="Pipeline"
     >
       <gl-button
-        v-if="pipeline.retryable"
+        v-if="canRetryPipeline"
         :loading="isRetrying"
         :disabled="isRetrying"
         category="secondary"
@@ -232,7 +242,7 @@ export default {
       </gl-button>
 
       <gl-button
-        v-if="pipeline.cancelable"
+        v-if="canCancelPipeline"
         :loading="isCanceling"
         :disabled="isCanceling"
         class="gl-ml-3"

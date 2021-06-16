@@ -25,7 +25,7 @@ RSpec.describe 'Alert integrations settings form', :js do
 
       it 'shows the alerts setting form title' do
         page.within('#js-alert-management-settings') do
-          expect(find('h4')).to have_content('Alert integrations')
+          expect(find('h4')).to have_content('Alerts')
         end
       end
 

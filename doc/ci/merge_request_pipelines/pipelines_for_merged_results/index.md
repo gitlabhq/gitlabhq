@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 last_update: 2019-07-03
@@ -45,7 +45,7 @@ pipeline for merged results.
 
 To enable pipelines for merge results:
 
-- You must have maintainer [permissions](../../../user/permissions.md).
+- You must have the [Maintainer role](../../../user/permissions.md).
 - You must be using [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or later.
 - You must not be using
   [fast forward merges](../../../user/project/merge_requests/fast_forward_merge.md) yet.

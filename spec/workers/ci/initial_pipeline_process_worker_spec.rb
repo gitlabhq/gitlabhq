@@ -4,7 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Ci::InitialPipelineProcessWorker do
   describe '#perform' do
-    let_it_be(:pipeline) { create(:ci_pipeline, :with_job, status: :created) }
+    let_it_be_with_reload(:pipeline) do
+      create(:ci_pipeline, :with_job, status: :created)
+    end
 
     include_examples 'an idempotent worker' do
       let(:job_args) { pipeline.id }

@@ -13,8 +13,6 @@ module Gitlab
 
       THREAD_KEY = :_gitlab_metrics_transaction
 
-      SMALL_BUCKETS = [0.1, 0.25, 0.5, 1.0, 2.5, 5.0].freeze
-
       # The series to store events (e.g. Git pushes) in.
       EVENT_SERIES = 'events'
 
@@ -39,29 +37,10 @@ module Gitlab
 
       def initialize
         @methods = {}
-
-        @started_at = nil
-        @finished_at = nil
-      end
-
-      def duration
-        @finished_at ? (@finished_at - @started_at) : 0.0
       end
 
       def run
-        Thread.current[THREAD_KEY] = self
-
-        @started_at = System.monotonic_time
-
-        yield
-      ensure
-        @finished_at = System.monotonic_time
-
-        observe(:gitlab_transaction_duration_seconds, duration) do
-          buckets SMALL_BUCKETS
-        end
-
-        Thread.current[THREAD_KEY] = nil
+        raise NotImplementedError
       end
 
       # Tracks a business level event

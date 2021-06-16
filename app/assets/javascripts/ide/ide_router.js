@@ -16,8 +16,8 @@ Vue.use(IdeRouter);
 /**
  * Routes below /-/ide/:
 
-/project/h5bp/html5-boilerplate/blob/master
-/project/h5bp/html5-boilerplate/blob/master/app/js/test.js
+/project/h5bp/html5-boilerplate/blob/main
+/project/h5bp/html5-boilerplate/blob/main/app/js/test.js
 
 /project/h5bp/html5-boilerplate/mr/123
 /project/h5bp/html5-boilerplate/mr/123/app/js/test.js
@@ -39,7 +39,7 @@ const EmptyRouterComponent = {
   },
 };
 
-export const createRouter = (store) => {
+export const createRouter = (store, defaultBranch) => {
   const router = new IdeRouter({
     mode: 'history',
     base: joinPaths(gon.relative_url_root || '', '/-/ide/'),
@@ -58,7 +58,7 @@ export const createRouter = (store) => {
           },
           {
             path: ':targetmode(edit|tree|blob)',
-            redirect: (to) => joinPaths(to.path, '/master/-/'),
+            redirect: (to) => joinPaths(to.path, `/${defaultBranch}/-/`),
           },
           {
             path: 'merge_requests/:mrid',
@@ -66,7 +66,7 @@ export const createRouter = (store) => {
           },
           {
             path: '',
-            redirect: (to) => joinPaths(to.path, '/edit/master/-/'),
+            redirect: (to) => joinPaths(to.path, `/edit/${defaultBranch}/-/`),
           },
         ],
       },

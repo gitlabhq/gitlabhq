@@ -5,12 +5,6 @@ require 'spec_helper'
 RSpec.describe Ci::BuildTraceChunks::Database do
   let(:data_store) { described_class.new }
 
-  describe '#available?' do
-    subject { data_store.available? }
-
-    it { is_expected.to be_truthy }
-  end
-
   describe '#data' do
     subject { data_store.data(model) }
 

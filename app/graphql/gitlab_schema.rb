@@ -51,9 +51,8 @@ class GitlabSchema < GraphQL::Schema
     end
 
     def get_type(type_name)
-      # This is a backwards compatibility hack to work around an accidentally
-      # released argument typed as EEIterationID
-      type_name = type_name.gsub(/^EE/, '') if type_name.end_with?('ID')
+      type_name = Gitlab::GlobalId::Deprecations.apply_to_graphql_name(type_name)
+
       super(type_name)
     end
 
@@ -162,10 +161,9 @@ class GitlabSchema < GraphQL::Schema
     end
   end
 
-  # This is a backwards compatibility hack to work around an accidentally
-  # released argument typed as EE{Type}ID
   def get_type(type_name)
-    type_name = type_name.gsub(/^EE/, '') if type_name.end_with?('ID')
+    type_name = Gitlab::GlobalId::Deprecations.apply_to_graphql_name(type_name)
+
     super(type_name)
   end
 end

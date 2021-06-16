@@ -7,29 +7,14 @@ type: index, reference
 
 # Review and manage merge requests **(FREE)**
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216054) in GitLab 13.5.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245190) in GitLab 13.9.
+
 [Merge requests](../index.md) are the primary method of making changes to files in a
 GitLab project. [Create and submit a merge request](../creating_merge_requests.md)
-to propose changes. Your team makes [suggestions](suggestions.md) and leaves
-[comments](../../../discussions/index.md). When your work is reviewed, your team
-members can choose to accept or reject it.
-
-## View merge requests
-
-You can view merge requests for a specific project, or for all projects in a group:
-
-- **Specific project**: Go to your project and select **Merge requests**.
-- **All projects in a group**: Go to your group and select **Merge requests**.
-  If your group contains subgroups, this view also displays merge requests from the subgroup projects.
-  GitLab displays a count of open merge requests in the left sidebar, but
-  [caches the value](#cached-merge-request-count) for groups with a large number of
-  open merge requests.
-
-GitLab displays open merge requests, with tabs to filter the list by open and closed status:
-
-![Project merge requests list view](img/project_merge_requests_list_view_v13_5.png)
-
-You can [search and filter](../../../search/index.md#filtering-issue-and-merge-request-lists),
-the results, or select a merge request to begin a review.
+to propose changes. Your team leaves [comments](../../../discussions/index.md), and
+makes [code suggestions](suggestions.md) you can accept from the user interface.
+When your work is reviewed, your team members can choose to accept or reject it.
 
 ## Bulk edit merge requests at the project level
 
@@ -136,6 +121,45 @@ If you have a review in progress, you will be presented with the option to **Add
 
 ![New thread](img/mr_review_new_comment_v13_11.png)
 
+### Approval Rule information for Reviewers **(PREMIUM)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
+
+When editing the **Reviewers** field in a new or existing merge request, GitLab
+displays the name of the matching [approval rule](../approvals/rules.md)
+below the name of each suggested reviewer. [Code Owners](../../code_owners.md) are displayed as `Codeowner` without group detail.
+
+This example shows reviewers and approval rules when creating a new merge request:
+
+![Reviewer approval rules in new/edit form](img/reviewer_approval_rules_form_v13_8.png)
+
+This example shows reviewers and approval rules in a merge request sidebar:
+
+![Reviewer approval rules in sidebar](img/reviewer_approval_rules_sidebar_v13_8.png)
+
+### Requesting a new review
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293933) in GitLab 13.9.
+
+After a reviewer completes their [merge request reviews](../../../discussions/index.md),
+the author of the merge request can request a new review from the reviewer:
+
+1. If the right sidebar in the merge request is collapsed, click the
+   **{chevron-double-lg-left}** **Expand Sidebar** icon to expand it.
+1. In the **Reviewers** section, click the **Re-request a review** icon (**{redo}**)
+   next to the reviewer's name.
+
+GitLab creates a new [to-do item](../../../todos.md) for the reviewer, and sends
+them a notification email.
+
+#### Approval status
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292936) in GitLab 13.10.
+
+If a user in the reviewer list has approved the merge request, a green tick symbol is
+shown to the right of their name.
+
 ## Semi-linear history merge requests
 
 A merge commit is created for every merge, but the branch is only merged if
@@ -179,56 +203,6 @@ to by either:
 Multiline comments display the comment's line numbers above the body of the comment:
 
 ![Multiline comment selection displayed above comment](img/multiline-comment-saved.png)
-
-## Pipeline status in merge requests widgets
-
-If you've set up [GitLab CI/CD](../../../../ci/README.md) in your project,
-you can see:
-
-- Both pre-merge and post-merge pipelines and the environment information if any.
-- Which deployments are in progress.
-
-If an application is successfully deployed to an
-[environment](../../../../ci/environments/index.md), the deployed environment and the link to the
-Review App are both shown.
-
-NOTE:
-When the pipeline fails in a merge request but it can still be merged,
-the **Merge** button is colored red.
-
-### Post-merge pipeline status
-
-When a merge request is merged, you can see the post-merge pipeline status of
-the branch the merge request was merged into. For example, when a merge request
-is merged into the [default branch](../../repository/branches/default.md) and then triggers a deployment to the staging
-environment.
-
-Ongoing deployments are shown, and the state (deploying or deployed)
-for environments. If it's the first time the branch is deployed, the link
-returns a `404` error until done. During the deployment, the stop button is
-disabled. If the pipeline fails to deploy, the deployment information is hidden.
-
-![Merge request pipeline](img/merge_request_pipeline.png)
-
-For more information, [read about pipelines](../../../../ci/pipelines/index.md).
-
-### Merge when pipeline succeeds (MWPS)
-
-Set a merge request that looks ready to merge to
-[merge automatically when CI pipeline succeeds](../merge_when_pipeline_succeeds.md).
-
-### Live preview with Review Apps
-
-If you configured [Review Apps](https://about.gitlab.com/stages-devops-lifecycle/review-apps/) for your project,
-you can preview the changes submitted to a feature branch through a merge request
-on a per-branch basis. You don't need to checkout the branch, install, and preview locally.
-All your changes are available to preview by anyone with the Review Apps link.
-
-With GitLab [Route Maps](../../../../ci/review_apps/index.md#route-maps) set, the
-merge request widget takes you directly to the pages changed, making it easier and
-faster to preview proposed modifications.
-
-[Read more about Review Apps](../../../../ci/review_apps/index.md).
 
 ## Associated features
 
@@ -386,32 +360,7 @@ All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) 
 ## Cached merge request count
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299542) in GitLab 13.11.
-> - It's [deployed behind a feature flag](../../../feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-cached-merge-request-count).
-
-WARNING:
-This feature might not be available to you. Refer to the previous **version history** note for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/327319) in GitLab 14.0.
 
 In a group, the sidebar displays the total count of open merge requests. This value is cached if it's greater than
 than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
-
-### Enable or disable cached merge request count **(FREE SELF)**
-
-Cached merge request count in the left sidebar is under development but ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../../administration/feature_flags.md)
-can disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:cached_sidebar_merge_requests_count)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:cached_sidebar_merge_requests_count)
-```

@@ -9,7 +9,6 @@ RSpec.describe Security::CiConfiguration::SastParserService do
     let(:configuration) { described_class.new(project).configuration }
     let(:secure_analyzers_prefix) { configuration['global'][0] }
     let(:sast_excluded_paths) { configuration['global'][1] }
-    let(:sast_analyzer_image_tag) { configuration['global'][2] }
     let(:sast_pipeline_stage) { configuration['pipeline'][0] }
     let(:sast_search_max_depth) { configuration['pipeline'][1] }
     let(:bandit) { configuration['analyzers'][0] }
@@ -19,7 +18,6 @@ RSpec.describe Security::CiConfiguration::SastParserService do
     it 'parses the configuration for SAST' do
       expect(secure_analyzers_prefix['default_value']).to eql('registry.gitlab.com/gitlab-org/security-products/analyzers')
       expect(sast_excluded_paths['default_value']).to eql('spec, test, tests, tmp')
-      expect(sast_analyzer_image_tag['default_value']).to eql('2')
       expect(sast_pipeline_stage['default_value']).to eql('test')
       expect(sast_search_max_depth['default_value']).to eql('4')
       expect(brakeman['enabled']).to be(true)
@@ -32,21 +30,11 @@ RSpec.describe Security::CiConfiguration::SastParserService do
           allow(project.repository).to receive(:blob_data_at).and_return(gitlab_ci_yml_content)
           expect(secure_analyzers_prefix['value']).to eql('registry.gitlab.com/gitlab-org/security-products/analyzers2')
           expect(sast_excluded_paths['value']).to eql('spec, executables')
-          expect(sast_analyzer_image_tag['value']).to eql('2')
           expect(sast_pipeline_stage['value']).to eql('our_custom_security_stage')
           expect(sast_search_max_depth['value']).to eql('8')
           expect(brakeman['enabled']).to be(false)
           expect(bandit['enabled']).to be(true)
           expect(sast_brakeman_level['value']).to eql('2')
-        end
-
-        context 'SAST_DEFAULT_ANALYZERS is set' do
-          it 'enables analyzers correctly' do
-            allow(project.repository).to receive(:blob_data_at).and_return(gitlab_ci_yml_default_analyzers_content)
-
-            expect(brakeman['enabled']).to be(false)
-            expect(bandit['enabled']).to be(true)
-          end
         end
 
         context 'SAST_EXCLUDED_ANALYZERS is set' do
@@ -64,7 +52,23 @@ RSpec.describe Security::CiConfiguration::SastParserService do
           allow(project.repository).to receive(:blob_data_at).and_return(nil)
           expect(secure_analyzers_prefix['value']).to eql('registry.gitlab.com/gitlab-org/security-products/analyzers')
           expect(sast_excluded_paths['value']).to eql('spec, test, tests, tmp')
-          expect(sast_analyzer_image_tag['value']).to eql('2')
+          expect(sast_pipeline_stage['value']).to eql('test')
+          expect(sast_search_max_depth['value']).to eql('4')
+          expect(brakeman['enabled']).to be(true)
+          expect(sast_brakeman_level['value']).to eql('1')
+        end
+      end
+
+      context 'when .gitlab-ci.yml does not include the sast job' do
+        before do
+          allow(project.repository).to receive(:blob_data_at).and_return(
+            File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+          )
+        end
+
+        it 'populates the current values with the default values' do
+          expect(secure_analyzers_prefix['value']).to eql('registry.gitlab.com/gitlab-org/security-products/analyzers')
+          expect(sast_excluded_paths['value']).to eql('spec, test, tests, tmp')
           expect(sast_pipeline_stage['value']).to eql('test')
           expect(sast_search_max_depth['value']).to eql('4')
           expect(brakeman['enabled']).to be(true)

@@ -24,6 +24,14 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator do
       it 'returns true' do
         expect(subject.valid?).to eq(true)
       end
+
+      context 'when waiter thread no longer exists' do
+        it 'does not raise exception' do
+          allow(Process).to receive(:getpgid).and_raise(Errno::ESRCH)
+
+          expect(subject.valid?).to eq(true)
+        end
+      end
     end
 
     context 'when file exceeds allowed decompressed size' do

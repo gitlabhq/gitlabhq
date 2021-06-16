@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsFileReferences do
       expect(null_logger).to receive(:info).with(/Looking for orphan LFS files/)
       expect(null_logger).to receive(:info).with(/Nothing to do/)
 
-      project.lfs_objects_projects.delete_all
+      LfsObjectsProject.where(project: project).delete_all
 
       expect(service).not_to receive(:remove_orphan_references)
 

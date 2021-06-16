@@ -53,23 +53,6 @@ module Gitlab
           gitaly_repository.relative_path == other_repository.relative_path
       end
 
-      def fetch_env
-        gitaly_ssh = File.absolute_path(File.join(Gitlab.config.gitaly.client_path, 'gitaly-ssh'))
-        gitaly_address = gitaly_client.address(storage)
-        gitaly_token = gitaly_client.token(storage)
-
-        request = Gitaly::SSHUploadPackRequest.new(repository: gitaly_repository)
-        env = {
-          'GITALY_ADDRESS' => gitaly_address,
-          'GITALY_PAYLOAD' => request.to_json,
-          'GITALY_WD' => Dir.pwd,
-          'GIT_SSH_COMMAND' => "#{gitaly_ssh} upload-pack"
-        }
-        env['GITALY_TOKEN'] = gitaly_token if gitaly_token.present?
-
-        env
-      end
-
       def path
         @repository.path
       end

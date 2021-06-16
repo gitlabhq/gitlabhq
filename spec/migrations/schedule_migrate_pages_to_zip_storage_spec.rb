@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210302150310_schedule_migrate_pages_to_zip_storage.rb')
+require_migration!
 
 RSpec.describe ScheduleMigratePagesToZipStorage, :sidekiq_might_not_need_inline, schema: 20201231133921 do
   let(:migration_class) { described_class::MIGRATION }

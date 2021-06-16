@@ -10,11 +10,9 @@
   %h2.page-title
     = s_('Runners|Runner #%{runner_id}' % { runner_id: @runner.id })
     = render 'shared/runners/runner_type_badge', runner: @runner
-
-= render 'shared/runners/runner_type_alert', runner: @runner
-
-.gl-mb-6
-  = render 'shared/runners/form', runner: @runner, runner_form_url: admin_runner_path(@runner), in_gitlab_com_admin_context: Gitlab.com?
+  = render 'shared/runners/runner_type_alert', runner: @runner
+  .gl-mb-6
+    = render 'shared/runners/form', runner: @runner, runner_form_url: admin_runner_path(@runner), in_gitlab_com_admin_context: Gitlab.com?
 
 .row
   .col-md-6

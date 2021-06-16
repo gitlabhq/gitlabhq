@@ -46,7 +46,9 @@
         = form_tag profile_two_factor_auth_path, method: :post do |f|
           - if @error
             .gl-alert.gl-alert-danger.gl-mb-5
-              = @error
+              .gl-alert-container
+                .gl-alert-content
+                  = @error
           .form-group
             = label_tag :pin_code, _('Pin code'), class: "label-bold"
             = text_field_tag :pin_code, nil, class: "form-control gl-form-input", required: true, data: { qa_selector: 'pin_code_field' }

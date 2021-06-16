@@ -1,0 +1,37 @@
+@import 'mixins_and_variables_and_functions';
+
+.escalation-policy-modal {
+  width: 640px;
+}
+
+.rule-control {
+  width: 240px;
+}
+
+.rule-close-icon {
+  right: 1rem;
+}
+
+$stroke-size: 1px;
+
+.right-arrow {
+  @include gl-relative;
+  @include gl-mx-5;
+  @include gl-display-inline-block;
+  @include gl-vertical-align-middle;
+  height: $stroke-size;
+  background-color: var(--gray-900, $gray-900);
+  min-width: $gl-spacing-scale-7;
+
+  &-head {
+    @include gl-absolute;
+    top: -2*$stroke-size;
+    left: calc(100% - #{5*$stroke-size});
+    @include gl-display-inline-block;
+    @include gl-p-1;
+    @include gl-border-solid;
+    border-width: 0 $stroke-size $stroke-size 0;
+    border-color: var(--gray-900, $gray-900);
+    transform: rotate(-45deg);
+  }
+}

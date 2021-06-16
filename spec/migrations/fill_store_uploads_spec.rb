@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200513235347_fill_store_uploads.rb')
+require_migration!
 
 RSpec.describe FillStoreUploads do
   let(:uploads) { table(:uploads) }

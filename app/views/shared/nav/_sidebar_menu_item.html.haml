@@ -1,4 +1,4 @@
-= nav_link(**sidebar_menu_item.active_routes) do
+= nav_link(**sidebar_menu_item.active_routes, html_options: sidebar_menu_item.nav_link_html_options) do
   = link_to sidebar_menu_item.link, **sidebar_menu_item.container_html_options, data: { qa_selector: 'sidebar_menu_item_link', qa_menu_item: sidebar_menu_item.title } do
     %span
       = sidebar_menu_item.title

@@ -1,5 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+
 import ConfirmationModal from '~/integrations/edit/components/confirmation_modal.vue';
 import { createStore } from '~/integrations/edit/store';
 
@@ -13,13 +14,10 @@ describe('ConfirmationModal', () => {
   };
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
   });
 
-  const findGlModal = () => wrapper.find(GlModal);
+  const findGlModal = () => wrapper.findComponent(GlModal);
 
   describe('template', () => {
     beforeEach(() => {

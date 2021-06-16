@@ -41,7 +41,7 @@ With pagination, the data is split into equal pieces (pages). On the first visit
 
 ### Pick the right approach
 
-Let the database handle the pagination, filtering, and data retrieval. Implementing in-memory pagination on the backend (`paginate_array` from kaminari) or on the frontend (JavaScript) might work for a few hundreds of records. If application limits are not defined, things can get out of control quickly.
+Let the database handle the pagination, filtering, and data retrieval. Implementing in-memory pagination on the backend (`paginate_array` from Kaminari) or on the frontend (JavaScript) might work for a few hundreds of records. If application limits are not defined, things can get out of control quickly.
 
 ### Reduce complexity
 
@@ -78,7 +78,7 @@ Infinite scroll can use keyset pagination without affecting the user experience 
 
 ### Offset pagination
 
-The most common way to paginate lists is using offset-based pagination (UI and REST API). It's backed by the popular [kaminari](https://github.com/kaminari/kaminari) Ruby gem, which provides convenient helper methods to implement pagination on ActiveRecord queries.
+The most common way to paginate lists is using offset-based pagination (UI and REST API). It's backed by the popular [Kaminari](https://github.com/kaminari/kaminari) Ruby gem, which provides convenient helper methods to implement pagination on ActiveRecord queries.
 
 Offset-based pagination is leveraging the `LIMIT` and `OFFSET` SQL clauses to take out a specific slice from the table.
 
@@ -97,9 +97,9 @@ Notice that the query also orders the rows by the primary key (`id`). When pagin
 
 Example pagination bar:
 
-![Page selector rendered by kaminari](../img/offset_pagination_ui_v13_11.jpg)
+![Page selector rendered by Kaminari](../img/offset_pagination_ui_v13_11.jpg)
 
-The kaminari gem renders a nice pagination bar on the UI with page numbers and optionally quick shortcuts the next, previous, first, and last page buttons. To render these buttons, kaminari needs to know the number of rows, and for that, a count query is executed.
+The Kaminari gem renders a nice pagination bar on the UI with page numbers and optionally quick shortcuts the next, previous, first, and last page buttons. To render these buttons, Kaminari needs to know the number of rows, and for that, a count query is executed.
 
 ```sql
 SELECT COUNT(*) FROM issues WHERE project_id = 1
@@ -158,7 +158,7 @@ Here we're leveraging the ordered property of the b-tree database index. Values 
 
 Kaminari by default executes a count query to determine the number of pages for rendering the page links. Count queries can be quite expensive for a large table, in an unfortunate scenario the queries will simply time out.
 
-To work around this, we can run kaminari without invoking the count SQL query.
+To work around this, we can run Kaminari without invoking the count SQL query.
 
 ```ruby
 Issue.where(project_id: 1).page(1).per(20).without_count
@@ -311,5 +311,5 @@ Using keyset pagination outside of GraphQL is not straightforward. We have the l
 Keyset pagination provides stable performance regardless of the number of pages we moved forward. To achieve this performance, the paginated query needs an index that covers all the columns in the `ORDER BY` clause, similarly to the offset pagination.
 
 ### General performance guidelines
-                                                                                   
+
 See the [pagination general performance guidelines page](pagination_performance_guidelines.md).

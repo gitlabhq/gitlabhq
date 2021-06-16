@@ -52,8 +52,6 @@ module API
       api_endpoint = env['api.endpoint']
       feature_category = api_endpoint.options[:for].try(:feature_category_for_app, api_endpoint).to_s
 
-      header[Gitlab::Metrics::RequestsRackMiddleware::FEATURE_CATEGORY_HEADER] = feature_category
-
       Gitlab::ApplicationContext.push(
         user: -> { @current_user },
         project: -> { @project },
@@ -170,11 +168,11 @@ module API
       mount ::API::ErrorTracking
       mount ::API::Events
       mount ::API::FeatureFlags
-      mount ::API::FeatureFlagScopes
       mount ::API::FeatureFlagsUserLists
       mount ::API::Features
       mount ::API::Files
       mount ::API::FreezePeriods
+      mount ::API::GroupAvatar
       mount ::API::GroupBoards
       mount ::API::GroupClusters
       mount ::API::GroupExport
@@ -224,10 +222,12 @@ module API
       mount ::API::NpmInstancePackages
       mount ::API::GenericPackages
       mount ::API::GoProxy
+      mount ::API::HelmPackages
       mount ::API::Pages
       mount ::API::PagesDomains
       mount ::API::ProjectClusters
       mount ::API::ProjectContainerRepositories
+      mount ::API::ProjectDebianDistributions
       mount ::API::ProjectEvents
       mount ::API::ProjectExport
       mount ::API::ProjectImport

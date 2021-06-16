@@ -12,6 +12,7 @@ Vue.use(Translate);
 function initIntervalPatternInput() {
   const intervalPatternMount = document.getElementById('interval-pattern-input');
   const initialCronInterval = intervalPatternMount?.dataset?.initialInterval;
+  const dailyLimit = intervalPatternMount.dataset?.dailyLimit;
 
   return new Vue({
     el: intervalPatternMount,
@@ -22,6 +23,7 @@ function initIntervalPatternInput() {
       return createElement('interval-pattern-input', {
         props: {
           initialCronInterval,
+          dailyLimit,
         },
       });
     },

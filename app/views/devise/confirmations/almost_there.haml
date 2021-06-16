@@ -1,8 +1,10 @@
+- user_email = "(#{params[:email]})" if params[:email].present?
+
 .well-confirmation.gl-text-center.gl-mb-6
   %h1.gl-mt-0
     = _("Almost there...")
   %p.lead.gl-mb-6
-    = _("Please check your email to confirm your account")
+    = _('Please check your email %{email} to confirm your account') % { email: user_email }
   %hr
 - if Gitlab::CurrentSettings.after_sign_up_text.present?
   .well-confirmation.gl-text-center
@@ -10,5 +12,5 @@
 %p.text-center
   = _("No confirmation email received? Please check your spam folder or")
 .gl-mb-6.prepend-top-20.gl-text-center
-  %a.btn.gl-button.btn-confirm{ href: new_user_confirmation_path }
+  %a.gl-link{ href: new_user_confirmation_path }
     = _("Request new confirmation email")

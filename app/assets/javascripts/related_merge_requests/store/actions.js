@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
@@ -29,6 +29,8 @@ export const fetchMergeRequests = ({ state, dispatch }) => {
     })
     .catch(() => {
       dispatch('receiveDataError');
-      createFlash(s__('Something went wrong while fetching related merge requests.'));
+      createFlash({
+        message: s__('Something went wrong while fetching related merge requests.'),
+      });
     });
 };

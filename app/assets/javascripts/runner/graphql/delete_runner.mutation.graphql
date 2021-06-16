@@ -1,0 +1,5 @@
+mutation runnerDelete($input: RunnerDeleteInput!) {
+  runnerDelete(input: $input) {
+    errors
+  }
+}

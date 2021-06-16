@@ -25,6 +25,7 @@ module QA
       after do
         Runtime::Feature.disable('real_time_issue_sidebar', project: project)
         Runtime::Feature.disable('broadcast_issue_updates', project: project)
+        Runtime::Feature.disable(:invite_members_group_modal, project: project)
       end
 
       it 'update without refresh', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1048' do
@@ -37,7 +38,9 @@ module QA
 
         Page::Project::Issue::Show.perform do |show|
           expect(show).to have_assignee(user1.name)
-
+          # We need to wait 1 second for the page to connect to the websocket to subscribe to updates
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/293699#note_583959786
+          sleep 1
           issue.set_issue_assignees(assignee_ids: [user2.id])
 
           expect(show).to have_assignee(user2.name)

@@ -1,8 +1,0 @@
----
-name: limit_projects_in_groups_api
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20023
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/257829
-milestone: '12.6'
-type: development
-group: group::access
-default_enabled: true

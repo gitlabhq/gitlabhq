@@ -4,6 +4,6 @@
       = s_('PrometheusService|Metrics')
 
 .row.gl-mb-3.prometheus-metrics-monitoring.js-prometheus-metrics-monitoring
-  = render 'projects/services/prometheus/metrics', project: @project
+  = render 'projects/services/prometheus/metrics', project: @project, integration: integration
 
-= render 'projects/services/prometheus/external_alerts', project: @project
+= render 'projects/services/prometheus/external_alerts', project: @project, integration: integration

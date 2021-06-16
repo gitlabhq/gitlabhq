@@ -220,6 +220,10 @@ module IssuablesHelper
     @show_full_reference ? issuable.to_reference(full: true) : issuable.to_reference(@group || @project)
   end
 
+  def issuable_project_reference(issuable)
+    "#{issuable.project.full_name} #{issuable.to_reference}"
+  end
+
   def issuable_initial_data(issuable)
     data = {
       endpoint: issuable_path(issuable),

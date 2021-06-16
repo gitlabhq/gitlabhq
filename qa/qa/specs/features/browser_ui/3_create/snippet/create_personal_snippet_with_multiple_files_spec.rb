@@ -7,7 +7,7 @@ module QA
         Flow::Login.sign_in
 
         Page::Main::Menu.perform do |menu|
-          menu.go_to_more_dropdown_option(:snippets_link)
+          menu.go_to_menu_dropdown_option(:snippets_link)
         end
 
         Resource::Snippet.fabricate_via_browser_ui! do |snippet|

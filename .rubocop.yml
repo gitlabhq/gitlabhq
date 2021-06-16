@@ -36,8 +36,9 @@ AllCops:
     - 'plugins/**/*'
     - 'file_hooks/**/*'
     - 'workhorse/**/*'
+    - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
   CacheRootDirectory: tmp
-  MaxFilesInCache: 18000
+  MaxFilesInCache: 25000
 
 Cop/AvoidKeywordArgumentsInSidekiqWorkers:
   Enabled: true
@@ -89,6 +90,7 @@ RSpec/FilePath:
     - 'spec/frontend/fixtures/*'
     - 'ee/spec/frontend/fixtures/*'
     - 'spec/requests/api/v3/*'
+    - 'spec/fixtures/**/*'
 
 # Configuration parameters: AllowSubject.
 RSpec/MultipleMemoizedHelpers:
@@ -663,3 +665,8 @@ Style/RegexpLiteralMixedPreserve:
     - mixed
     - mixed_preserve
   EnforcedStyle: mixed_preserve
+
+RSpec/TopLevelDescribePath:
+  Exclude:
+    - 'spec/fixtures/**/*.rb'
+    - 'ee/spec/fixtures/**/*.rb'

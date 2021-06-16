@@ -91,7 +91,7 @@ export default {
       label-position="hidden"
       @change="toggleFeature"
     />
-    <div class="select-wrapper gl-flex-fill-1">
+    <div class="select-wrapper gl-flex-grow-1">
       <select
         :disabled="displaySelectInput"
         class="form-control project-repo-select select-control"

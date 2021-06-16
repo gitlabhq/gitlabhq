@@ -100,25 +100,6 @@ module NotificationRecipients
       # Get project/group users with CUSTOM notification level
       # rubocop: disable CodeReuse/ActiveRecord
       def add_custom_notifications
-        return new_add_custom_notifications if Feature.enabled?(:notification_setting_recipient_refactor, project, default_enabled: :yaml)
-
-        user_ids = []
-
-        # Users with a notification setting on group or project
-        user_ids += user_ids_notifiable_on(project, :custom)
-        user_ids += user_ids_notifiable_on(group, :custom)
-
-        # Users with global level custom
-        user_ids_with_project_level_global = user_ids_notifiable_on(project, :global)
-        user_ids_with_group_level_global   = user_ids_notifiable_on(group, :global)
-
-        global_users_ids = user_ids_with_project_level_global.concat(user_ids_with_group_level_global)
-        user_ids += user_ids_with_global_level_custom(global_users_ids, custom_action)
-
-        add_recipients(user_scope.where(id: user_ids), :custom, nil)
-      end
-
-      def new_add_custom_notifications
         notification_by_sources = related_notification_settings_sources(:custom)
 
         return if notification_by_sources.blank?
@@ -172,22 +153,6 @@ module NotificationRecipients
       # Get project users with WATCH notification level
       # rubocop: disable CodeReuse/ActiveRecord
       def project_watchers
-        return new_project_watchers if Feature.enabled?(:notification_setting_recipient_refactor, project, default_enabled: :yaml)
-
-        project_members_ids = user_ids_notifiable_on(project)
-
-        user_ids_with_project_global = user_ids_notifiable_on(project, :global)
-        user_ids_with_group_global   = user_ids_notifiable_on(project.group, :global)
-
-        user_ids = user_ids_with_global_level_watch((user_ids_with_project_global + user_ids_with_group_global).uniq)
-
-        user_ids_with_project_setting = select_project_members_ids(user_ids_with_project_global, user_ids)
-        user_ids_with_group_setting = select_group_members_ids(project.group, project_members_ids, user_ids_with_group_global, user_ids)
-
-        user_scope.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq)
-      end
-
-      def new_project_watchers
         notification_by_sources = related_notification_settings_sources(:watch)
 
         return if notification_by_sources.blank?
@@ -200,16 +165,6 @@ module NotificationRecipients
 
       # rubocop: disable CodeReuse/ActiveRecord
       def group_watchers
-        return new_group_watchers if Feature.enabled?(:notification_setting_recipient_refactor, project, default_enabled: :yaml)
-
-        user_ids_with_group_global = user_ids_notifiable_on(group, :global)
-        user_ids = user_ids_with_global_level_watch(user_ids_with_group_global)
-        user_ids_with_group_setting = select_group_members_ids(group, [], user_ids_with_group_global, user_ids)
-
-        user_scope.where(id: user_ids_with_group_setting)
-      end
-
-      def new_group_watchers
         return [] unless group
 
         user_ids = group

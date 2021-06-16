@@ -37,7 +37,7 @@ class MergeRequest < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 
   ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON = {
-    'Ci::CompareMetricsReportsService'     => ->(project) { ::Gitlab::Ci::Features.merge_base_pipeline_for_metrics_comparison?(project) },
+    'Ci::CompareMetricsReportsService'     => ->(project) { true },
     'Ci::CompareCodequalityReportsService' => ->(project) { true }
   }.freeze
 
@@ -124,6 +124,8 @@ class MergeRequest < ApplicationRecord
     :sha
   ].freeze
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
+
+  before_validation :set_draft_status
 
   after_create :ensure_merge_request_diff
   after_update :clear_memoized_shas
@@ -267,6 +269,7 @@ class MergeRequest < ApplicationRecord
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
   scope :open_and_closed, -> { with_states(:opened, :closed) }
+  scope :drafts, -> { where(draft: true) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
   scope :by_commit_sha, ->(sha) do
     where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
@@ -1907,6 +1910,10 @@ class MergeRequest < ApplicationRecord
   end
 
   private
+
+  def set_draft_status
+    self.draft = draft?
+  end
 
   def missing_report_error(report_type)
     { status: :error, status_reason: "This merge request does not have #{report_type} reports" }

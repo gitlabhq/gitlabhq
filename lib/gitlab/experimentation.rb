@@ -45,12 +45,6 @@ module Gitlab
       remove_known_trial_form_fields: {
         tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFields'
       },
-      invite_members_empty_project_version_a: {
-        tracking_category: 'Growth::Expansion::Experiment::InviteMembersEmptyProjectVersionA'
-      },
-      trial_during_signup: {
-        tracking_category: 'Growth::Conversion::Experiment::TrialDuringSignup'
-      },
       invite_members_new_dropdown: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'
       },
@@ -62,10 +56,12 @@ module Gitlab
         tracking_category: 'Growth::Conversion::Experiment::TrialOnboardingIssues'
       },
       learn_gitlab_a: {
-        tracking_category: 'Growth::Conversion::Experiment::LearnGitLabA'
+        tracking_category: 'Growth::Conversion::Experiment::LearnGitLabA',
+        rollout_strategy: :user
       },
       learn_gitlab_b: {
-        tracking_category: 'Growth::Activation::Experiment::LearnGitLabB'
+        tracking_category: 'Growth::Activation::Experiment::LearnGitLabB',
+        rollout_strategy: :user
       },
       in_product_marketing_emails: {
         tracking_category: 'Growth::Activation::Experiment::InProductMarketingEmails'

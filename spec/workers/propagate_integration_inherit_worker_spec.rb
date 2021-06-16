@@ -6,7 +6,7 @@ RSpec.describe PropagateIntegrationInheritWorker do
   describe '#perform' do
     let_it_be(:integration) { create(:redmine_service, :instance) }
     let_it_be(:integration1) { create(:redmine_service, inherit_from_id: integration.id) }
-    let_it_be(:integration2) { create(:bugzilla_service, inherit_from_id: integration.id) }
+    let_it_be(:integration2) { create(:bugzilla_integration, inherit_from_id: integration.id) }
     let_it_be(:integration3) { create(:redmine_service) }
 
     it_behaves_like 'an idempotent worker' do

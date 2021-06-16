@@ -23,7 +23,8 @@ For larger organizations, you can also create [subgroups](subgroups/index.md).
 
 To view groups:
 
-1. In the top menu, select **Groups > Your Groups**. All groups you are a member of are displayed.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**. All groups you are a member of are displayed.
 1. To view a list of public groups, select **Explore public groups**.
 
 You can also view groups by namespace.
@@ -48,9 +49,10 @@ For example, consider a user named Alex:
 
 To create a group:
 
-1. From the top menu, either:
-   - Select **Groups > Your Groups**, and on the right, select the **New group** button.
+1. On the top bar, either:
+   - Select **Menu > Groups**, and on the right, select **Create group**.
    - To the left of the search box, select the plus sign and then **New group**.
+1. Select **Create group**.
 1. For the **Group name**, use only:
    - Alphanumeric characters
    - Emojis
@@ -74,18 +76,20 @@ For details about groups, watch [GitLab Namespaces (users, groups and subgroups)
 
 You can give a user access to all projects in a group.
 
-1. From the top menu, select **Groups > Your Groups**.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
 1. Find your group and select it.
 1. From the left sidebar, select **Members**.
 1. Fill in the fields.
-   - The role applies to all projects in the group. [Learn more about permissions](../permissions.md#permissions).
+   - The role applies to all projects in the group. [Learn more about permissions](../permissions.md).
    - On the **Access expiration date**, the user can no longer access projects in the group.
 
 ## Request access to a group
 
 As a user, you can request to be a member of a group, if an administrator allows it.
 
-1. From the top menu, select **Groups > Your Groups**.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
 1. Find the group and select it.
 1. Under the group name, select **Request Access**.
 
@@ -100,7 +104,8 @@ If you change your mind before your request is approved, select
 As a group owner, you can prevent non-members from requesting access to
 your group.
 
-1. From the top menu, select **Groups > Your Groups**.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
 1. Expand the **Permissions, LFS, 2FA** section.
@@ -110,22 +115,22 @@ your group.
 ## Change the owner of a group
 
 You can change the owner of a group. Each group must always have at least one
-member with [Owner permission](../permissions.md#group-members-permissions).
+member with the [Owner role](../permissions.md#group-members-permissions).
 
 - As an administrator:
   1. Go to the group and from the left menu, select **Members**.
-  1. Give a different member **Owner** permissions.
-  1. Refresh the page. You can now remove **Owner** permissions from the original owner.
+  1. Give a different member the **Owner** role.
+  1. Refresh the page. You can now remove the **Owner** role from the original owner.
 - As the current group's owner:
   1. Go to the group and from the left menu, select **Members**.
-  1. Give a different member **Owner** permissions.
-  1. Have the new owner sign in and remove **Owner** permissions from you.
+  1. Give a different member the **Owner** role.
+  1. Have the new owner sign in and remove the **Owner** role from you.
 
 ## Remove a member from the group
 
 Prerequisites:
 
-- You must have [Owner permissions](../permissions.md#group-members-permissions).
+- You must have the [Owner role](../permissions.md#group-members-permissions).
 - The member must have direct membership in the group. If
   membership is inherited from a parent group, then the member can be removed
   from the parent group only.
@@ -245,9 +250,10 @@ These Group Activity Analytics can be enabled with the `group_activity_analytics
 
 You can view the most recent actions taken in a group.
 
-1. From the top menu, select **Groups > Your Groups**.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
 1. Find the group and select it.
-1. From the left menu, select **Group overview > Activity**.
+1. On the left sidebar, select **Group information > Activity**.
 
 To view the activity feed in Atom format, select the
 **RSS** (**{rss}**) icon.
@@ -270,7 +276,7 @@ To share a given group, for example, `Frontend` with another group, for example,
 1. From the left menu, select **Members**.
 1. Select the **Invite group** tab.
 1. In the **Select a group to invite** list, select `Engineering`.
-1. For the **Max access level**, select an access level.
+1. For the **Max role**, select a [role](../permissions.md).
 1. Select **Invite**.
 
 All the members of the `Engineering` group are added to the `Frontend` group.
@@ -292,7 +298,7 @@ To share a group after enabling this feature:
 
 1. Go to your group's page.
 1. In the left sidebar, go to **Members**, and then select **Invite a group**.
-1. Select a group, and select a **Max access level**.
+1. Select a group, and select a **Max role**.
 1. (Optional) Select an **Access expiration date**.
 1. Select **Invite**.
 
@@ -351,7 +357,7 @@ You can transfer groups in the following ways:
 
 When transferring groups, note:
 
-- Changing a group's parent can have unintended side effects. See [Redirects when changing repository paths](../project/repository/index.md#redirects-when-changing-repository-paths).
+- Changing a group's parent can have unintended side effects. See [what happens when a repository path changes](../project/repository/index.md#what-happens-when-a-repository-path-changes).
 - You can only transfer groups to groups you manage.
 - You must update your local repositories to point to the new location.
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.
@@ -361,7 +367,7 @@ When transferring groups, note:
 ## Change a group's path
 
 Changing a group's path (group URL) can have unintended side effects. Read
-[how redirects behave](../project/repository/index.md#redirects-when-changing-repository-paths)
+[how redirects behave](../project/repository/index.md#what-happens-when-a-repository-path-changes)
 before you proceed.
 
 If you are changing the path so it can be claimed by another group or user,
@@ -418,6 +424,30 @@ To restore a group that is marked for deletion:
 1. Go to your group's **Settings > General** page.
 1. Expand the **Path, transfer, remove** section.
 1. In the Restore group section, select **Restore group**.
+
+## Prevent group sharing outside the group hierarchy
+
+This setting is only available on top-level groups. It affects all subgroups.
+
+When checked, any group within the top-level group hierarchy can be shared only with other groups within the hierarchy.
+
+For example, with these groups:
+
+- **Animals > Dogs**
+- **Animals > Cats**
+- **Plants > Trees**
+
+If you select this setting in the **Animals** group:
+
+- **Dogs** can be shared with **Cats**.
+- **Dogs** cannot be shared with **Trees**.
+
+To prevent sharing outside of the group's hierarchy:
+
+1. Go to the group's **Settings > General** page.
+1. Expand the **Permissions, LFS, 2FA** section.
+1. Select **Prevent members from sending invitations to groups outside of `<group_name>` and its subgroups**.
+1. Select **Save changes**.
 
 ## Prevent a project from being shared with groups
 

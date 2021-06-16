@@ -1,11 +1,8 @@
-import { FEATURE_FLAG_SCOPE, USER_LIST_SCOPE } from '../../constants';
-
 export default ({ endpoint, projectId, unleashApiInstanceId, rotateInstanceIdPath }) => ({
-  [FEATURE_FLAG_SCOPE]: [],
-  [USER_LIST_SCOPE]: [],
+  featureFlags: [],
   alerts: [],
-  count: {},
-  pageInfo: { [FEATURE_FLAG_SCOPE]: {}, [USER_LIST_SCOPE]: {} },
+  count: 0,
+  pageInfo: {},
   isLoading: true,
   hasError: false,
   endpoint,

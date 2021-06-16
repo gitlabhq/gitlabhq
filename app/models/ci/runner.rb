@@ -10,6 +10,8 @@ module Ci
     include TokenAuthenticatable
     include IgnorableColumns
     include FeatureGate
+    include Gitlab::Utils::StrongMemoize
+    include TaggableQueries
 
     add_authentication_token_field :token, encrypted: -> { Feature.enabled?(:ci_runners_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 
@@ -58,6 +60,7 @@ module Ci
     scope :active, -> { where(active: true) }
     scope :paused, -> { where(active: false) }
     scope :online, -> { where('contacted_at > ?', online_contact_time_deadline) }
+    scope :recent, -> { where('ci_runners.created_at > :date OR ci_runners.contacted_at > :date', date: 3.months.ago) }
     # The following query using negation is cheaper than using `contacted_at <= ?`
     # because there are less runners online than have been created. The
     # resulting query is quickly finding online ones and then uses the regular
@@ -131,6 +134,8 @@ module Ci
     end
 
     scope :order_contacted_at_asc, -> { order(contacted_at: :asc) }
+    scope :order_contacted_at_desc, -> { order(contacted_at: :desc) }
+    scope :order_created_at_asc, -> { order(created_at: :asc) }
     scope :order_created_at_desc, -> { order(created_at: :desc) }
     scope :with_tags, -> { preload(:tags) }
 
@@ -161,20 +166,17 @@ module Ci
       numericality: { greater_than_or_equal_to: 0.0,
                       message: 'needs to be non-negative' }
 
+    validates :config, json_schema: { filename: 'ci_runner_config' }
+
     # Searches for runners matching the given query.
     #
-    # This method uses ILIKE on PostgreSQL.
-    #
-    # This method performs a *partial* match on tokens, thus a query for "a"
-    # will match any runner where the token contains the letter "a". As a result
-    # you should *not* use this method for non-admin purposes as otherwise users
-    # might be able to query a list of all runners.
+    # This method uses ILIKE on PostgreSQL for the description field and performs a full match on tokens.
     #
     # query - The search query as a String.
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query)
-      fuzzy_search(query, [:token, :description])
+      where(token: query).or(fuzzy_search(query, [:description]))
     end
 
     def self.online_contact_time_deadline
@@ -190,10 +192,51 @@ module Ci
     end
 
     def self.order_by(order)
-      if order == 'contacted_asc'
+      case order
+      when 'contacted_asc'
         order_contacted_at_asc
+      when 'contacted_desc'
+        order_contacted_at_desc
+      when 'created_at_asc'
+        order_created_at_asc
       else
         order_created_at_desc
+      end
+    end
+
+    def self.runner_matchers
+      unique_params = [
+        :runner_type,
+        :public_projects_minutes_cost_factor,
+        :private_projects_minutes_cost_factor,
+        :run_untagged,
+        :access_level,
+        Arel.sql("(#{arel_tag_names_array.to_sql})")
+      ]
+
+      # we use distinct to de-duplicate data
+      distinct.pluck(*unique_params).map do |values|
+        Gitlab::Ci::Matching::RunnerMatcher.new({
+          runner_type: values[0],
+          public_projects_minutes_cost_factor: values[1],
+          private_projects_minutes_cost_factor: values[2],
+          run_untagged: values[3],
+          access_level: values[4],
+          tag_list: values[5]
+        })
+      end
+    end
+
+    def runner_matcher
+      strong_memoize(:runner_matcher) do
+        Gitlab::Ci::Matching::RunnerMatcher.new({
+          runner_type: runner_type,
+          public_projects_minutes_cost_factor: public_projects_minutes_cost_factor,
+          private_projects_minutes_cost_factor: private_projects_minutes_cost_factor,
+          run_untagged: run_untagged,
+          access_level: access_level,
+          tag_list: tag_list
+        })
       end
     end
 
@@ -298,6 +341,14 @@ module Ci
     end
 
     def tick_runner_queue
+      ##
+      # We only stick a runner to primary database to be able to detect the
+      # replication lag in `EE::Ci::RegisterJobService#execute`. The
+      # intention here is not to execute `Ci::RegisterJobService#execute` on
+      # the primary database.
+      #
+      ::Gitlab::Database::LoadBalancing::Sticking.stick(:runner, id)
+
       SecureRandom.hex.tap do |new_update|
         ::Gitlab::Workhorse.set_key_and_notify(runner_queue_key, new_update,
           expire: RUNNER_QUEUE_EXPIRY_TIME, overwrite: true)
@@ -315,21 +366,24 @@ module Ci
     end
 
     def heartbeat(values)
-      values = values&.slice(:version, :revision, :platform, :architecture, :ip_address) || {}
-      values[:contacted_at] = Time.current
+      ##
+      # We can safely ignore writes performed by a runner heartbeat. We do
+      # not want to upgrade database connection proxy to use the primary
+      # database after heartbeat write happens.
+      #
+      ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
+        values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config) || {}
+        values[:contacted_at] = Time.current
 
-      cache_attributes(values)
+        cache_attributes(values)
 
-      # We save data without validation, it will always change due to `contacted_at`
-      self.update_columns(values) if persist_cached_data?
+        # We save data without validation, it will always change due to `contacted_at`
+        self.update_columns(values) if persist_cached_data?
+      end
     end
 
     def pick_build!(build)
-      if Feature.enabled?(:ci_reduce_queries_when_ticking_runner_queue, self, default_enabled: :yaml)
-        tick_runner_queue if matches_build?(build)
-      else
-        tick_runner_queue if can_pick?(build)
-      end
+      tick_runner_queue if matches_build?(build)
     end
 
     def uncached_contacted_at
@@ -395,13 +449,7 @@ module Ci
     end
 
     def matches_build?(build)
-      return false if self.ref_protected? && !build.protected?
-
-      accepting_tags?(build)
-    end
-
-    def accepting_tags?(build)
-      (run_untagged? || build.has_tags?) && (build.tag_list - tag_list).empty?
+      runner_matcher.matches?(build.build_matcher)
     end
   end
 end

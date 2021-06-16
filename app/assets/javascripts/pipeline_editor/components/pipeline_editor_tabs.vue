@@ -22,7 +22,7 @@ import EditorTab from './ui/editor_tab.vue';
 
 export default {
   i18n: {
-    tabEdit: s__('Pipelines|Write pipeline configuration'),
+    tabEdit: s__('Pipelines|Edit'),
     tabGraph: s__('Pipelines|Visualize'),
     tabLint: s__('Pipelines|Lint'),
     tabMergedYaml: s__('Pipelines|View merged YAML'),
@@ -114,6 +114,7 @@ export default {
       :empty-message="$options.i18n.empty.visualization"
       :is-empty="isEmpty"
       :is-invalid="isInvalid"
+      :keep-component-mounted="false"
       :title="$options.i18n.tabGraph"
       lazy
       data-testid="visualization-tab"

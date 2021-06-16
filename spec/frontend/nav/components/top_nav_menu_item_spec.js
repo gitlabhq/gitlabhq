@@ -7,6 +7,7 @@ const TEST_MENU_ITEM = {
   icon: 'search',
   href: '/pretty/good/burger',
   view: 'burger-view',
+  data: { qa_selector: 'not-a-real-selector', method: 'post', testFoo: 'test' },
 };
 
 describe('~/nav/components/top_nav_menu_item.vue', () => {
@@ -29,7 +30,10 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
   const findButtonIcons = () =>
     findButton()
       .findAllComponents(GlIcon)
-      .wrappers.map((x) => x.props('name'));
+      .wrappers.map((x) => ({
+        name: x.props('name'),
+        classes: x.classes(),
+      }));
 
   beforeEach(() => {
     listener = jest.fn();
@@ -47,6 +51,16 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
       expect(button.text()).toBe(TEST_MENU_ITEM.title);
     });
 
+    it('renders button data attributes', () => {
+      const button = findButton();
+
+      expect(button.attributes()).toMatchObject({
+        'data-qa-selector': TEST_MENU_ITEM.data.qa_selector,
+        'data-method': TEST_MENU_ITEM.data.method,
+        'data-test-foo': TEST_MENU_ITEM.data.testFoo,
+      });
+    });
+
     it('passes listeners to button', () => {
       expect(listener).not.toHaveBeenCalled();
 
@@ -54,11 +68,42 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
 
       expect(listener).toHaveBeenCalledWith('TEST');
     });
+
+    it('renders expected icons', () => {
+      expect(findButtonIcons()).toEqual([
+        {
+          name: TEST_MENU_ITEM.icon,
+          classes: ['gl-mr-2!'],
+        },
+        {
+          name: 'chevron-right',
+          classes: ['gl-ml-auto'],
+        },
+      ]);
+    });
+  });
+
+  describe('with icon-only', () => {
+    beforeEach(() => {
+      createComponent({ iconOnly: true });
+    });
+
+    it('does not render title or view icon', () => {
+      expect(wrapper.text()).toBe('');
+    });
+
+    it('only renders menuItem icon', () => {
+      expect(findButtonIcons()).toEqual([
+        {
+          name: TEST_MENU_ITEM.icon,
+          classes: [],
+        },
+      ]);
+    });
   });
 
   describe.each`
     desc                      | menuItem                                         | expectedIcons
-    ${'default'}              | ${TEST_MENU_ITEM}                                | ${[TEST_MENU_ITEM.icon, 'chevron-right']}
     ${'with no icon'}         | ${{ ...TEST_MENU_ITEM, icon: null }}             | ${['chevron-right']}
     ${'with no view'}         | ${{ ...TEST_MENU_ITEM, view: null }}             | ${[TEST_MENU_ITEM.icon]}
     ${'with no icon or view'} | ${{ ...TEST_MENU_ITEM, view: null, icon: null }} | ${[]}
@@ -68,7 +113,32 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
     });
 
     it(`renders expected icons ${JSON.stringify(expectedIcons)}`, () => {
-      expect(findButtonIcons()).toEqual(expectedIcons);
+      expect(findButtonIcons().map((x) => x.name)).toEqual(expectedIcons);
+    });
+  });
+
+  describe.each`
+    desc                         | active   | cssClass                        | expectedClasses
+    ${'default'}                 | ${false} | ${''}                           | ${[]}
+    ${'with css class'}          | ${false} | ${'test-css-class testing-123'} | ${['test-css-class', 'testing-123']}
+    ${'with css class & active'} | ${true}  | ${'test-css-class'}             | ${['test-css-class', ...TopNavMenuItem.ACTIVE_CLASS.split(' ')]}
+  `('$desc', ({ active, cssClass, expectedClasses }) => {
+    beforeEach(() => {
+      createComponent({
+        menuItem: {
+          ...TEST_MENU_ITEM,
+          active,
+          css_class: cssClass,
+        },
+      });
+    });
+
+    it('renders expected classes', () => {
+      expect(wrapper.classes()).toStrictEqual([
+        'top-nav-menu-item',
+        'gl-display-block',
+        ...expectedClasses,
+      ]);
     });
   });
 });

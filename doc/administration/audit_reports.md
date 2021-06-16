@@ -5,10 +5,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: 'Learn how to create evidence artifacts typically requested by a 3rd party auditor.'
 ---
 
-# Audit Reports
+# Audit reports **(FREE)**
 
 GitLab can help owners and administrators respond to auditors by generating
-comprehensive reports. These **Audit Reports** vary in scope, depending on the
+comprehensive reports. These audit reports vary in scope, depending on the
 needs.
 
 ## Use cases

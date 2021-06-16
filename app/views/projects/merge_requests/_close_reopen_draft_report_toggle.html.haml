@@ -1,10 +1,9 @@
 - display_issuable_type = issuable_display_type(@merge_request)
-- button_action_class = @merge_request.closed? ? 'btn-default' : 'btn-warning btn-warning-secondary'
 - button_class = "btn gl-button #{!@merge_request.closed? && 'js-draft-toggle-button'}"
 - toggle_class = "btn gl-button dropdown-toggle"
 
 .float-left.btn-group.gl-ml-3.gl-display-none.gl-md-display-flex
-  = link_to @merge_request.closed? ? reopen_issuable_path(@merge_request) : toggle_draft_merge_request_path(@merge_request), method: :put, class: "#{button_class} #{button_action_class}" do
+  = link_to @merge_request.closed? ? reopen_issuable_path(@merge_request) : toggle_draft_merge_request_path(@merge_request), method: :put, class: "#{button_class} btn-confirm-secondary" do
     - if @merge_request.closed?
       = _('Reopen')
       = display_issuable_type
@@ -12,9 +11,9 @@
       = @merge_request.work_in_progress? ? _('Mark as ready') : _('Mark as draft')
 
   - if !@merge_request.closed? || !issuable_author_is_current_user(@merge_request)
-    = button_tag type: 'button', class: "#{toggle_class} #{button_action_class}", data: { 'toggle' => 'dropdown' } do
+    = button_tag type: 'button', class: "#{toggle_class} btn-confirm-secondary btn-icon", data: { 'toggle' => 'dropdown' } do
       %span.gl-sr-only= _('Toggle dropdown')
-      = sprite_icon "angle-down", size: 12
+      = sprite_icon "chevron-down", size: 12, css_class: "gl-button-icon"
 
     %ul.dropdown-menu.dropdown-menu-right
       - if @merge_request.open?

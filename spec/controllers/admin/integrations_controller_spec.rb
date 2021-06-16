@@ -93,8 +93,8 @@ RSpec.describe Admin::IntegrationsController do
     end
 
     it 'deletes the integration and all inheriting integrations' do
-      expect { subject }.to change { JiraService.for_instance.count }.by(-1)
-        .and change { JiraService.inherit_from_id(integration.id).count }.by(-1)
+      expect { subject }.to change { Integrations::Jira.for_instance.count }.by(-1)
+        .and change { Integrations::Jira.inherit_from_id(integration.id).count }.by(-1)
     end
   end
 end

@@ -1,21 +1,22 @@
-- artifacts_endpoint_placeholder = ':pipeline_artifacts_id'
+= cache_if(Feature.enabled?(:cached_mr_widget, @merge_request.project), [@merge_request.project, @merge_request, current_user], expires_in: 10.minutes) do
+  - artifacts_endpoint_placeholder = ':pipeline_artifacts_id'
 
-= javascript_tag do
-  :plain
-    window.gl = window.gl || {};
-    window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget', issues_links: true)}
+  = javascript_tag do
+    :plain
+      window.gl = window.gl || {};
+      window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget', issues_links: true)}
 
-    window.gl.mrWidgetData.artifacts_endpoint = '#{downloadable_artifacts_project_pipeline_path(@project, artifacts_endpoint_placeholder, format: :json)}';
-    window.gl.mrWidgetData.artifacts_endpoint_placeholder = '#{artifacts_endpoint_placeholder}';
-    window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
-    window.gl.mrWidgetData.ci_troubleshooting_docs_path = '#{help_page_path('ci/troubleshooting.md')}';
-    window.gl.mrWidgetData.mr_troubleshooting_docs_path = '#{help_page_path('user/project/merge_requests/reviews/index.md', anchor: 'troubleshooting')}';
-    window.gl.mrWidgetData.pipeline_must_succeed_docs_path = '#{help_page_path('user/project/merge_requests/merge_when_pipeline_succeeds.md', anchor: 'only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds')}';
-    window.gl.mrWidgetData.security_approvals_help_page_path = '#{help_page_path('user/application_security/index.md', anchor: 'security-approvals-in-merge-requests')}';
-    window.gl.mrWidgetData.license_compliance_docs_path = '#{help_page_path('user/compliance/license_compliance/index.md', anchor: 'policies')}';
-    window.gl.mrWidgetData.eligible_approvers_docs_path = '#{help_page_path('user/project/merge_requests/merge_request_approvals', anchor: 'eligible-approvers')}';
-    window.gl.mrWidgetData.approvals_help_path = '#{help_page_path("user/project/merge_requests/merge_request_approvals")}';
-    window.gl.mrWidgetData.pipelines_empty_svg_path = '#{image_path('illustrations/pipelines_empty.svg')}';
-    window.gl.mrWidgetData.codequality_help_path = '#{help_page_path("user/project/merge_requests/code_quality", anchor: "code-quality-reports")}';
+      window.gl.mrWidgetData.artifacts_endpoint = '#{downloadable_artifacts_project_pipeline_path(@project, artifacts_endpoint_placeholder, format: :json)}';
+      window.gl.mrWidgetData.artifacts_endpoint_placeholder = '#{artifacts_endpoint_placeholder}';
+      window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
+      window.gl.mrWidgetData.ci_troubleshooting_docs_path = '#{help_page_path('ci/troubleshooting.md')}';
+      window.gl.mrWidgetData.mr_troubleshooting_docs_path = '#{help_page_path('user/project/merge_requests/reviews/index.md', anchor: 'troubleshooting')}';
+      window.gl.mrWidgetData.pipeline_must_succeed_docs_path = '#{help_page_path('user/project/merge_requests/merge_when_pipeline_succeeds.md', anchor: 'only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds')}';
+      window.gl.mrWidgetData.security_approvals_help_page_path = '#{help_page_path('user/application_security/index.md', anchor: 'security-approvals-in-merge-requests')}';
+      window.gl.mrWidgetData.license_compliance_docs_path = '#{help_page_path('user/compliance/license_compliance/index.md', anchor: 'policies')}';
+      window.gl.mrWidgetData.eligible_approvers_docs_path = '#{help_page_path('user/project/merge_requests/merge_request_approvals', anchor: 'eligible-approvers')}';
+      window.gl.mrWidgetData.approvals_help_path = '#{help_page_path("user/project/merge_requests/merge_request_approvals")}';
+      window.gl.mrWidgetData.pipelines_empty_svg_path = '#{image_path('illustrations/pipelines_empty.svg')}';
+      window.gl.mrWidgetData.codequality_help_path = '#{help_page_path("user/project/merge_requests/code_quality", anchor: "code-quality-reports")}';
 
-#js-vue-mr-widget.mr-widget
+  #js-vue-mr-widget.mr-widget

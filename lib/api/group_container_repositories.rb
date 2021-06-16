@@ -31,7 +31,7 @@ module API
           user: current_user, subject: user_group
         ).execute
 
-        track_package_event('list_repositories', :container)
+        track_package_event('list_repositories', :container, user: current_user, namespace: user_group)
 
         present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
       end

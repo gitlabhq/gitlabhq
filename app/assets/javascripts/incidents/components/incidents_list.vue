@@ -10,6 +10,7 @@ import {
   GlIcon,
   GlEmptyState,
 } from '@gitlab/ui';
+import { isValidSlaDueAt } from 'ee_else_ce/vue_shared/components/incidents/utils';
 import { visitUrl, mergeUrlParams, joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { INCIDENT_SEVERITY } from '~/sidebar/components/severity/constants';
@@ -287,6 +288,7 @@ export default {
     errorAlertDismissed() {
       this.isErrorAlertDismissed = true;
     },
+    isValidSlaDueAt,
   },
 };
 </script>
@@ -367,7 +369,13 @@ export default {
           </template>
 
           <template v-if="slaFeatureAvailable" #cell(incidentSla)="{ item }">
-            <service-level-agreement-cell :sla-due-at="item.slaDueAt" data-testid="incident-sla" />
+            <service-level-agreement-cell
+              v-if="isValidSlaDueAt(item.slaDueAt)"
+              :issue-iid="item.iid"
+              :project-path="projectPath"
+              :sla-due-at="item.slaDueAt"
+              data-testid="incident-sla"
+            />
           </template>
 
           <template #cell(assignees)="{ item }">

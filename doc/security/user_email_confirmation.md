@@ -11,8 +11,14 @@ GitLab can be configured to require confirmation of a user's email address when
 the user signs up. When this setting is enabled, the user is unable to sign in until
 they confirm their email address.
 
-In **Admin Area > Settings** (`/admin/application_settings/general`), go to the section
-**Sign-up Restrictions** and look for the **Send confirmation email on sign-up** option.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
+1. Expand the **Sign-up restrictions** section and look for the **Send confirmation email on sign-up** option.
+
+## Confirmation token expiry
+
+By default, a user can confirm their account within 24 hours after the confirmation email was sent.
+After 24 hours, the confirmation token becomes invalid.
 
 <!-- ## Troubleshooting
 

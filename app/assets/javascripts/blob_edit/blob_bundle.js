@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
 import initCodeQualityWalkthrough from '~/code_quality_walkthrough';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { disableButtonIfEmptyField, setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
 import BlobFileDropzone from '../blob/blob_file_dropzone';
@@ -84,7 +84,11 @@ export default () => {
         initPopovers();
         initCodeQualityWalkthroughStep();
       })
-      .catch((e) => createFlash(e));
+      .catch((e) =>
+        createFlash({
+          message: e,
+        }),
+      );
 
     cancelLink.on('click', () => {
       window.onbeforeunload = null;

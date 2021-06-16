@@ -7,7 +7,7 @@ type: reference
 
 # Enforce accepting Terms of Service **(FREE SELF)**
 
-An admin can enforce acceptance of a terms of service and privacy policy. When this option is enabled, new and existing users must accept the terms.
+An administrator can enforce acceptance of a terms of service and privacy policy. When this option is enabled, new and existing users must accept the terms.
 
 If configured, the Terms of Service page can be viewed via `https://your-instance.com/-/users/terms` at anytime.
 
@@ -16,7 +16,8 @@ If configured, the Terms of Service page can be viewed via `https://your-instanc
 To enforce acceptance of a Terms of Service and Privacy Policy:
 
 1. Log in to the GitLab instance as an admin user.
-1. Go to **Admin Area > Settings > General**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand the **Terms of Service and Privacy Policy** section.
 1. Check the **Require all users to accept Terms of Service and Privacy Policy when they access
    GitLab.** checkbox.

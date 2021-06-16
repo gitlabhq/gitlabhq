@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'migrate', '20210503105845_add_project_value_stream_id_to_project_stages.rb')
+require_migration!('add_project_value_stream_id_to_project_stages')
 
 RSpec.describe AddProjectValueStreamIdToProjectStages, schema: 20210503105022 do
   let(:stages) { table(:analytics_cycle_analytics_project_stages) }

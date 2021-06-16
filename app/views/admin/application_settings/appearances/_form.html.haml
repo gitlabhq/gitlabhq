@@ -1,0 +1,114 @@
+- parsed_with_gfm = (_("Content parsed with %{link}.") % { link: link_to('GitLab Flavored Markdown', help_page_path('user/markdown'), target: '_blank') }).html_safe
+
+= form_for @appearance, url: admin_application_settings_appearances_path, html: { class: 'gl-mt-3' } do |f|
+  = form_errors(@appearance)
+
+
+  .row
+    .col-lg-4.profile-settings-sidebar
+      %h4.gl-mt-0= _('Navigation bar')
+
+    .col-lg-8
+      .form-group
+        = f.label :header_logo, _('Header logo'), class: 'col-form-label label-bold pt-0'
+        %p
+          - if @appearance.header_logo?
+            = image_tag @appearance.header_logo_path, class: 'appearance-light-logo-preview'
+            - if @appearance.persisted?
+              %br
+              = link_to _('Remove header logo'), header_logos_admin_application_settings_appearances_path, data: { confirm: _("Header logo will be removed. Are you sure?") }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm"
+            %hr
+          = f.hidden_field :header_logo_cache
+          = f.file_field :header_logo, class: "", accept: 'image/*'
+          .hint
+            = _('Maximum file size is 1MB. Pages are optimized for a 28px tall header logo')
+  %hr
+  .row
+    .col-lg-4.profile-settings-sidebar
+      %h4.gl-mt-0 Favicon
+
+    .col-lg-8
+      .form-group
+        = f.label :favicon, _('Favicon'), class: 'col-form-label label-bold pt-0'
+        %p
+          - if @appearance.favicon?
+            = image_tag @appearance.favicon_path, class: 'appearance-light-logo-preview'
+            - if @appearance.persisted?
+              %br
+              = link_to _('Remove favicon'), favicon_admin_application_settings_appearances_path, data: { confirm: _("Favicon will be removed. Are you sure?") }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm"
+            %hr
+          = f.hidden_field :favicon_cache
+          = f.file_field :favicon, class: '', accept: 'image/*'
+          .hint
+            = _("Maximum file size is 1MB. Image size must be 32x32px. Allowed image formats are  %{favicon_extension_whitelist}.") % { favicon_extension_whitelist: favicon_extension_whitelist }
+            %br
+            = _("Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior.")
+
+  = render partial: 'admin/application_settings/appearances/system_header_footer_form', locals: { form: f }
+
+  %hr
+  .row
+    .col-lg-4.profile-settings-sidebar
+      %h4.gl-mt-0= _('Sign in/Sign up pages')
+
+    .col-lg-8
+      .form-group
+        = f.label :title, class: 'col-form-label label-bold'
+        = f.text_field :title, class: "form-control gl-form-input"
+      .form-group
+        = f.label :description, class: 'col-form-label label-bold'
+        = f.text_area :description, class: "form-control gl-form-input", rows: 10
+        .hint
+          = parsed_with_gfm
+      .form-group
+        = f.label :logo, class: 'col-form-label label-bold pt-0'
+        %p
+          - if @appearance.logo?
+            = image_tag @appearance.logo_path, class: 'appearance-logo-preview'
+            - if @appearance.persisted?
+              %br
+              = link_to _('Remove logo'), logo_admin_application_settings_appearances_path, data: { confirm: _("Logo will be removed. Are you sure?") }, method: :delete, class: "btn gl-button btn-danger btn-danger-secondary btn-sm remove-logo"
+            %hr
+          = f.hidden_field :logo_cache
+          = f.file_field :logo, class: "", accept: 'image/*'
+          .hint
+            = _('Maximum file size is 1MB. Pages are optimized for a 640x360 px logo.')
+
+  %hr
+  .row
+    .col-lg-4.profile-settings-sidebar
+      %h4.gl-mt-0= _('New project pages')
+
+    .col-lg-8
+      .form-group
+        = f.label :new_project_guidelines, class: 'col-form-label label-bold'
+        %p
+          = f.text_area :new_project_guidelines, class: "form-control gl-form-input", rows: 10
+          .hint
+            = parsed_with_gfm
+
+  %hr
+  .row
+    .col-lg-4.profile-settings-sidebar
+      %h4.gl-mt-0= _('Profile image guideline')
+
+    .col-lg-8
+      .form-group
+        = f.label :profile_image_guidelines, class: 'col-form-label label-bold'
+        %p
+          = f.text_area :profile_image_guidelines, class: "form-control gl-form-input", rows: 10
+          .hint
+            = parsed_with_gfm
+
+      .gl-mt-3.gl-mb-3
+        = f.submit _('Update appearance settings'), class: 'btn gl-button btn-confirm'
+        - if @appearance.persisted? || @appearance.updated_at
+          .mt-4
+            - if @appearance.persisted?
+              Preview last save:
+              = link_to _('Sign-in page'), preview_sign_in_admin_application_settings_appearances_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
+              = link_to _('New project page'), new_project_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
+
+            - if @appearance.updated_at
+              %span.float-right
+                Last edit #{time_ago_with_tooltip(@appearance.updated_at)}

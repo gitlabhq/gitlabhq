@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { GlButton, GlFormGroup, GlFormInput, GlModal, GlModalDirective } from '@gitlab/ui';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -65,7 +65,9 @@ export default {
           this.authorizationKey = res.data.token;
         })
         .catch(() => {
-          createFlash(__('Failed to reset key. Please try again.'));
+          createFlash({
+            message: __('Failed to reset key. Please try again.'),
+          });
         });
     },
   },

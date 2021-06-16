@@ -155,6 +155,7 @@ module Gitlab
         params '<1w 3d 2h 14m>'
         types Issue, MergeRequest
         condition do
+          quick_action_target.supports_time_tracking? &&
           current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
         end
         parse_params do |raw_duration|
@@ -177,6 +178,7 @@ module Gitlab
         params '<time(1h30m | -1h30m)> <date(YYYY-MM-DD)>'
         types Issue, MergeRequest
         condition do
+          quick_action_target.supports_time_tracking? &&
           current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         parse_params do |raw_time_date|

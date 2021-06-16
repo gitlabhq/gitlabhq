@@ -3,6 +3,7 @@
 class WebHook < ApplicationRecord
   include Sortable
 
+  MAX_FAILURES = 100
   FAILURE_THRESHOLD = 3 # three strikes
   INITIAL_BACKOFF = 10.minutes
   MAX_BACKOFF = 1.day
@@ -72,12 +73,27 @@ class WebHook < ApplicationRecord
   end
 
   def enable!
+    return if recent_failures == 0 && disabled_until.nil? && backoff_count == 0
+
     update!(recent_failures: 0, disabled_until: nil, backoff_count: 0)
+  end
+
+  def backoff!
+    update!(disabled_until: next_backoff.from_now, backoff_count: backoff_count.succ.clamp(0, MAX_FAILURES))
+  end
+
+  def failed!
+    update!(recent_failures: recent_failures + 1) if recent_failures < MAX_FAILURES
   end
 
   # Overridden in ProjectHook and GroupHook, other webhooks are not rate-limited.
   def rate_limit
     nil
+  end
+
+  # Custom attributes to be included in the worker context.
+  def application_context
+    { related_class: type }
   end
 
   private

@@ -20,9 +20,8 @@ describe('Global Search Store Actions', () => {
   let mock;
   let state;
 
-  const noCallback = () => {};
-  const flashCallback = () => {
-    expect(createFlash).toHaveBeenCalledTimes(1);
+  const flashCallback = (callCount) => {
+    expect(createFlash).toHaveBeenCalledTimes(callCount);
     createFlash.mockClear();
   };
 
@@ -37,19 +36,21 @@ describe('Global Search Store Actions', () => {
   });
 
   describe.each`
-    action                   | axiosMock                                             | type         | expectedMutations                                                                                       | callback
-    ${actions.fetchGroups}   | ${{ method: 'onGet', code: 200, res: MOCK_GROUPS }}   | ${'success'} | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_SUCCESS, payload: MOCK_GROUPS }]}       | ${noCallback}
-    ${actions.fetchGroups}   | ${{ method: 'onGet', code: 500, res: null }}          | ${'error'}   | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_ERROR }]}                               | ${flashCallback}
-    ${actions.fetchProjects} | ${{ method: 'onGet', code: 200, res: MOCK_PROJECTS }} | ${'success'} | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_SUCCESS, payload: MOCK_PROJECTS }]} | ${noCallback}
-    ${actions.fetchProjects} | ${{ method: 'onGet', code: 500, res: null }}          | ${'error'}   | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_ERROR }]}                           | ${flashCallback}
-  `(`axios calls`, ({ action, axiosMock, type, expectedMutations, callback }) => {
+    action                   | axiosMock                                             | type         | expectedMutations                                                                                       | flashCallCount
+    ${actions.fetchGroups}   | ${{ method: 'onGet', code: 200, res: MOCK_GROUPS }}   | ${'success'} | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_SUCCESS, payload: MOCK_GROUPS }]}       | ${0}
+    ${actions.fetchGroups}   | ${{ method: 'onGet', code: 500, res: null }}          | ${'error'}   | ${[{ type: types.REQUEST_GROUPS }, { type: types.RECEIVE_GROUPS_ERROR }]}                               | ${1}
+    ${actions.fetchProjects} | ${{ method: 'onGet', code: 200, res: MOCK_PROJECTS }} | ${'success'} | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_SUCCESS, payload: MOCK_PROJECTS }]} | ${0}
+    ${actions.fetchProjects} | ${{ method: 'onGet', code: 500, res: null }}          | ${'error'}   | ${[{ type: types.REQUEST_PROJECTS }, { type: types.RECEIVE_PROJECTS_ERROR }]}                           | ${2}
+  `(`axios calls`, ({ action, axiosMock, type, expectedMutations, flashCallCount }) => {
     describe(action.name, () => {
       describe(`on ${type}`, () => {
         beforeEach(() => {
           mock[axiosMock.method]().replyOnce(axiosMock.code, axiosMock.res);
         });
         it(`should dispatch the correct mutations`, () => {
-          return testAction({ action, state, expectedMutations }).then(() => callback());
+          return testAction({ action, state, expectedMutations }).then(() =>
+            flashCallback(flashCallCount),
+          );
         });
       });
     });

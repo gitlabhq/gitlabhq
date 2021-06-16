@@ -5,7 +5,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# SSL/TLS Certificates
+# SSL/TLS certificates **(FREE)**
 
 _Read this document for a brief overview of SSL/TLS certificates in
 the scope of GitLab Pages, for beginners in web development._

@@ -17,24 +17,26 @@ module Sidebars
 
         override :link
         def link
-          project_path(context.project)
+          renderable_items.first.link
         end
 
         override :extra_container_html_options
         def extra_container_html_options
-          {
-            class: 'shortcuts-project rspec-project-link'
-          }
+          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
+            { class: 'shortcuts-project-information' }
+          else
+            { class: 'shortcuts-project rspec-project-link' }
+          end
         end
 
-        override :nav_link_html_options
-        def nav_link_html_options
+        override :extra_nav_link_html_options
+        def extra_nav_link_html_options
           { class: 'home' }
         end
 
         override :title
         def title
-          if Feature.enabled?(:sidebar_refactor, context.current_user)
+          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
             _('Project information')
           else
             _('Project overview')
@@ -43,24 +45,17 @@ module Sidebars
 
         override :sprite_icon
         def sprite_icon
-          if Feature.enabled?(:sidebar_refactor, context.current_user)
+          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
             'project'
           else
             'home'
           end
         end
 
-        override :active_routes
-        def active_routes
-          return {} if Feature.disabled?(:sidebar_refactor, context.current_user)
-
-          { path: 'projects#show' }
-        end
-
         private
 
         def details_menu_item
-          return if Feature.enabled?(:sidebar_refactor, context.current_user)
+          return if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
 
           ::Sidebars::MenuItem.new(
             title: _('Details'),
@@ -103,7 +98,7 @@ module Sidebars
         end
 
         def labels_menu_item
-          if Feature.disabled?(:sidebar_refactor, context.current_user)
+          if Feature.disabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
             return ::Sidebars::NilMenuItem.new(item_id: :labels)
           end
 

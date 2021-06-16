@@ -62,13 +62,12 @@
       %p.form-text.text-muted
         = s_('ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}.').html_safe % { help_link_start_machine_type: help_link_start % { url: machine_type_link_url }, help_link_start_pricing: help_link_start % { url: pricing_link_url }, help_link_end: help_link_end }
 
-    - if Feature.enabled?(:create_cloud_run_clusters, clusterable, default_enabled: true)
-      .form-group
-        = provider_gcp_field.check_box :cloud_run, { label: s_('ClusterIntegration|Enable Cloud Run for Anthos'),
-          label_class: 'label-bold' }
-        .form-text.text-muted
-          = s_('ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster.')
-          = link_to _('More information'), help_page_path('user/project/clusters/add_gke_clusters.md', anchor: 'cloud-run-for-anthos'), target: '_blank'
+    .form-group
+      = provider_gcp_field.check_box :cloud_run, { label: s_('ClusterIntegration|Enable Cloud Run for Anthos'),
+        label_class: 'label-bold' }
+      .form-text.text-muted
+        = s_('ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster.')
+        = link_to _('More information'), help_page_path('user/project/clusters/add_gke_clusters.md', anchor: 'cloud-run-for-anthos'), target: '_blank'
 
   .form-group
     = field.check_box :managed, { label: s_('ClusterIntegration|GitLab-managed cluster'),

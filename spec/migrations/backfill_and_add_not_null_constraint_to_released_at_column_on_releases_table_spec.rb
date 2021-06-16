@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20190628185004_backfill_and_add_not_null_constraint_to_released_at_column_on_releases_table.rb')
+require_migration!
 
 RSpec.describe BackfillAndAddNotNullConstraintToReleasedAtColumnOnReleasesTable do
   let(:releases)   { table(:releases) }

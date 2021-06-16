@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe API::CommitStatuses do
-  let!(:project) { create(:project, :repository) }
-  let(:commit) { project.repository.commit }
-  let(:guest) { create_user(:guest) }
-  let(:reporter) { create_user(:reporter) }
-  let(:developer) { create_user(:developer) }
-  let(:sha) { commit.id }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:commit) { project.repository.commit }
+  let_it_be(:guest) { create_user(:guest) }
+  let_it_be(:reporter) { create_user(:reporter) }
+  let_it_be(:developer) { create_user(:developer) }
+  let_it_be(:sha) { commit.id }
 
   describe "GET /projects/:id/repository/commits/:sha/statuses" do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
@@ -233,27 +233,44 @@ RSpec.describe API::CommitStatuses do
           end
         end
 
-        context 'when updatig a commit status' do
+        context 'when updating a commit status' do
+          let(:parameters) do
+            {
+              state: 'success',
+              name: 'coverage',
+              ref: 'master'
+            }
+          end
+
+          let(:updatable_optional_attributes) do
+            {
+              description: 'new description',
+              coverage: 90.0
+            }
+          end
+
+          # creating the initial commit status
           before do
             post api(post_url, developer), params: {
               state: 'running',
               context: 'coverage',
               ref: 'master',
               description: 'coverage test',
-              coverage: 0.0,
+              coverage: 10.0,
               target_url: 'http://gitlab.com/status'
             }
+          end
 
+          subject(:send_request) do
             post api(post_url, developer), params: {
-              state: 'success',
-              name: 'coverage',
-              ref: 'master',
-              description: 'new description',
-              coverage: 90.0
+              **parameters,
+              **updatable_optional_attributes
             }
           end
 
           it 'updates a commit status' do
+            send_request
+
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['sha']).to eq(commit.id)
             expect(json_response['status']).to eq('success')
@@ -265,7 +282,28 @@ RSpec.describe API::CommitStatuses do
           end
 
           it 'does not create a new commit status' do
-            expect(CommitStatus.count).to eq 1
+            expect { send_request }.not_to change { CommitStatus.count }
+          end
+
+          context 'when the `state` parameter is sent the same' do
+            let(:parameters) do
+              {
+                state: 'running',
+                name: 'coverage',
+                ref: 'master'
+              }
+            end
+
+            it 'does not update the commit status' do
+              send_request
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+
+              commit_status = project.commit_statuses.find_by!(name: 'coverage')
+
+              expect(commit_status.description).to eq('coverage test')
+              expect(commit_status.coverage).to eq(10.0)
+            end
           end
         end
 

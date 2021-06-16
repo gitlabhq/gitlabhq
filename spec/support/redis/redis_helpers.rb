@@ -17,4 +17,9 @@ module RedisHelpers
   def redis_shared_state_cleanup!
     Gitlab::Redis::SharedState.with(&:flushall)
   end
+
+  # Usage: CI trace chunks
+  def redis_trace_chunks_cleanup!
+    Gitlab::Redis::TraceChunks.with(&:flushall)
+  end
 end

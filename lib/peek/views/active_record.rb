@@ -43,6 +43,11 @@ module Peek
           count[item[:transaction]] ||= 0
           count[item[:transaction]] += 1
         end
+
+        if ::Gitlab::Database::LoadBalancing.enable?
+          count[item[:db_role]] ||= 0
+          count[item[:db_role]] += 1
+        end
       end
 
       def setup_subscribers
@@ -60,11 +65,19 @@ module Peek
           sql: data[:sql].strip,
           backtrace: Gitlab::BacktraceCleaner.clean_backtrace(caller),
           cached: data[:cached] ? 'Cached' : '',
-          transaction: data[:connection].transaction_open? ? 'In a transaction' : ''
+          transaction: data[:connection].transaction_open? ? 'In a transaction' : '',
+          db_role: db_role(data)
         }
+      end
+
+      def db_role(data)
+        return unless ::Gitlab::Database::LoadBalancing.enable?
+
+        role = ::Gitlab::Database::LoadBalancing.db_role_for_connection(data[:connection]) ||
+          ::Gitlab::Database::LoadBalancing::ROLE_UNKNOWN
+
+        role.to_s.capitalize
       end
     end
   end
 end
-
-Peek::Views::ActiveRecord.prepend_mod_with('Peek::Views::ActiveRecord')

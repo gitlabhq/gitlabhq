@@ -1,15 +1,15 @@
-- if lookup_context.template_exists?('top', "projects/services/#{@service.to_param}", true)
-  = render "projects/services/#{@service.to_param}/top"
+- if lookup_context.template_exists?('top', "projects/services/#{integration.to_param}", true)
+  = render "projects/services/#{integration.to_param}/top", integration: integration
 
 %h3.page-title
-  = @service.title
-  - if @service.operating?
+  = integration.title
+  - if integration.operating?
     = sprite_icon('check', css_class: 'gl-text-green-500')
 
-= form_for(@service, as: :service, url: scoped_integration_path(@service), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'test-url' => test_project_service_path(@project, @service) } }) do |form|
-  = render 'shared/service_settings', form: form, integration: @service
-  %input{ id: 'services_redirect_to', type: 'hidden', name: 'redirect_to', value: request.referrer }
+= form_for(integration, as: :service, url: scoped_integration_path(integration), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'test-url' => test_project_service_path(@project, integration) } }) do |form|
+  = render 'shared/service_settings', form: form, integration: integration
+  %input{ id: 'services_redirect_to', type: 'hidden', name: 'redirect_to', value: request.referer }
 
-- if lookup_context.template_exists?('show', "projects/services/#{@service.to_param}", true)
+- if lookup_context.template_exists?('show', "projects/services/#{integration.to_param}", true)
   %hr
-  = render "projects/services/#{@service.to_param}/show"
+  = render "projects/services/#{integration.to_param}/show", integration: integration

@@ -55,7 +55,6 @@ export const CERT_MANAGER = 'cert_manager';
 export const CROSSPLANE = 'crossplane';
 export const PROMETHEUS = 'prometheus';
 export const ELASTIC_STACK = 'elastic_stack';
-export const FLUENTD = 'fluentd';
 
 export const APPLICATIONS = [
   HELM,
@@ -66,7 +65,6 @@ export const APPLICATIONS = [
   CERT_MANAGER,
   PROMETHEUS,
   ELASTIC_STACK,
-  FLUENTD,
 ];
 
 export const INGRESS_DOMAIN_SUFFIX = '.nip.io';

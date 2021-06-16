@@ -30,8 +30,7 @@ module Gitlab
           # application: https://gitlab.com/gitlab-org/gitlab/issues/35343
           self.readiness_checks = [
             WebExporter::ExporterCheck.new(self),
-            Gitlab::HealthChecks::PumaCheck,
-            Gitlab::HealthChecks::UnicornCheck
+            Gitlab::HealthChecks::PumaCheck
           ]
         end
 

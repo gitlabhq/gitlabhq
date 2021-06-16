@@ -11,6 +11,7 @@ import {
 } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { ANY_OPTION } from '../constants';
+import SearchableDropdownItem from './searchable_dropdown_item.vue';
 
 export default {
   i18n: {
@@ -25,6 +26,7 @@ export default {
     GlIcon,
     GlButton,
     GlSkeletonLoader,
+    SearchableDropdownItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -35,12 +37,12 @@ export default {
       required: false,
       default: "__('Filter')",
     },
-    selectedDisplayValue: {
+    name: {
       type: String,
       required: false,
       default: 'name',
     },
-    itemsDisplayValue: {
+    fullName: {
       type: String,
       required: false,
       default: 'name',
@@ -75,6 +77,9 @@ export default {
     resetDropdown() {
       this.$emit('change', ANY_OPTION);
     },
+    updateDropdown(item) {
+      this.$emit('change', item);
+    },
   },
   ANY_OPTION,
 };
@@ -83,15 +88,16 @@ export default {
 <template>
   <gl-dropdown
     class="gl-w-full"
-    menu-class="gl-w-full!"
+    menu-class="global-search-dropdown-menu"
     toggle-class="gl-text-truncate"
     :header-text="headerText"
-    @show="$emit('search', searchText)"
+    :right="true"
+    @show="openDropdown"
     @shown="$refs.searchBox.focusInput()"
   >
     <template #button-content>
       <span class="dropdown-toggle-text gl-flex-grow-1 gl-text-truncate">
-        {{ selectedItem[selectedDisplayValue] }}
+        {{ selectedItem[name] }}
       </span>
       <gl-loading-icon v-if="loading" inline class="gl-mr-3" />
       <gl-button
@@ -115,27 +121,29 @@ export default {
         v-model="searchText"
         class="gl-m-3"
         :debounce="500"
-        @input="$emit('search', searchText)"
+        @input="openDropdown"
       />
       <gl-dropdown-item
         class="gl-border-b-solid gl-border-b-gray-100 gl-border-b-1 gl-pb-2! gl-mb-2"
         :is-check-item="true"
         :is-checked="isSelected($options.ANY_OPTION)"
-        @click="resetDropdown"
+        :is-check-centered="true"
+        @click="updateDropdown($options.ANY_OPTION)"
       >
-        {{ $options.ANY_OPTION.name }}
+        <span data-testid="item-title">{{ $options.ANY_OPTION.name }}</span>
       </gl-dropdown-item>
     </div>
     <div v-if="!loading">
-      <gl-dropdown-item
+      <searchable-dropdown-item
         v-for="item in items"
         :key="item.id"
-        :is-check-item="true"
-        :is-checked="isSelected(item)"
-        @click="$emit('change', item)"
-      >
-        {{ item[itemsDisplayValue] }}
-      </gl-dropdown-item>
+        :item="item"
+        :selected-item="selectedItem"
+        :search-text="searchText"
+        :name="name"
+        :full-name="fullName"
+        @change="updateDropdown"
+      />
     </div>
     <div v-if="loading" class="gl-mx-4 gl-mt-3">
       <gl-skeleton-loader :height="100">

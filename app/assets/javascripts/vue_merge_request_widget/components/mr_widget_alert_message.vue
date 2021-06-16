@@ -1,45 +1,46 @@
 <script>
-import { GlLink, GlIcon } from '@gitlab/ui';
-import { WARNING, DANGER, WARNING_MESSAGE_CLASS, DANGER_MESSAGE_CLASS } from '../constants';
+import { GlLink, GlAlert } from '@gitlab/ui';
 
 export default {
-  name: 'MrWidgetAlertMessage',
+  name: 'MRWidgetAlertMessage',
   components: {
+    GlAlert,
     GlLink,
-    GlIcon,
   },
   props: {
     type: {
       type: String,
-      required: false,
-      default: DANGER,
-      validator: (value) => [WARNING, DANGER].includes(value),
+      required: true,
     },
     helpPath: {
       type: String,
       required: false,
       default: undefined,
     },
+    dismissible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
-  computed: {
-    messageClass() {
-      if (this.type === WARNING) {
-        return WARNING_MESSAGE_CLASS;
-      } else if (this.type === DANGER) {
-        return DANGER_MESSAGE_CLASS;
-      }
-
-      return '';
+  data() {
+    return {
+      isDismissed: false,
+    };
+  },
+  methods: {
+    onDismiss() {
+      this.isDismissed = true;
     },
   },
 };
 </script>
 
 <template>
-  <div class="gl-m-3 gl-ml-7" :class="messageClass">
+  <gl-alert v-if="!isDismissed" :variant="type" :dismissible="dismissible" @dismiss="onDismiss">
     <slot></slot>
-    <gl-link v-if="helpPath" :href="helpPath" target="_blank">
-      <gl-icon :size="16" name="question-o" class="align-middle" />
+    <gl-link v-if="helpPath" :href="helpPath" target="_blank" class="gl-label-link">
+      <slot name="link-content"></slot>
     </gl-link>
-  </div>
+  </gl-alert>
 </template>

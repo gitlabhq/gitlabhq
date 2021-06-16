@@ -109,8 +109,13 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-align-items-center" @click.self="collapse">
-      <span class="hide-collapsed" data-testid="title" @click="collapse">{{ title }}</span>
+    <div
+      class="gl-display-flex gl-align-items-center gl-line-height-20 gl-mb-2 gl-text-gray-900"
+      @click.self="collapse"
+    >
+      <span class="hide-collapsed" data-testid="title" @click="collapse">
+        {{ title }}
+      </span>
       <slot name="title-extra"></slot>
       <gl-loading-icon v-if="loading || initialLoading" inline class="gl-ml-2 hide-collapsed" />
       <gl-loading-icon
@@ -135,7 +140,7 @@ export default {
       </gl-button>
     </div>
     <template v-if="!initialLoading">
-      <div v-show="!edit" data-testid="collapsed-content">
+      <div v-show="!edit" data-testid="collapsed-content" class="gl-line-height-14">
         <slot name="collapsed">{{ __('None') }}</slot>
       </div>
       <div v-show="edit" data-testid="expanded-content" :class="{ 'gl-mt-3': !isClassicSidebar }">

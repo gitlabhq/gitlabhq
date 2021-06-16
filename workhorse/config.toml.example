@@ -1,4 +1,5 @@
 # alt_document_root = '/home/git/public/assets'
+# shutdown_timeout = "60s"
 
 [redis]
 URL = "unix:/home/git/gitlab/redis/redis.socket"

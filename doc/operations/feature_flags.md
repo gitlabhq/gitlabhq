@@ -38,7 +38,7 @@ with GitLab, so it's up to developers to use a compatible client library and
 
 To create and enable a feature flag:
 
-1. Navigate to your project's **Operations > Feature Flags**.
+1. Navigate to your project's **Deployments > Feature Flags**.
 1. Click the **New feature flag** button.
 1. Enter a name that starts with a letter and contains only lowercase letters, digits, underscores (`_`),
    or dashes (`-`), and does not end with a dash (`-`) or underscore (`_`).
@@ -90,7 +90,7 @@ and the supported strategies are:
 - [User List](#user-list)
 
 Strategies can be added to feature flags when [creating a feature flag](#create-a-feature-flag),
-or by editing an existing feature flag after creation by navigating to **Operations > Feature Flags**
+or by editing an existing feature flag after creation by navigating to **Deployments > Feature Flags**
 and clicking **{pencil}** (edit).
 
 ### All users
@@ -184,14 +184,16 @@ For example:
 
 #### Create a user list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322425) in GitLab 14.0.
 
 To create a user list:
 
-1. In your project, navigate to **Operations > Feature Flags**.
-1. Click on **New list**.
+1. In your project, navigate to **Deployments > Feature Flags**.
+1. Select **View user lists**
+1. Select **New user list**.
 1. Enter a name for the list.
-1. Click **Create**.
+1. Select **Create**.
 
 You can view a list's User IDs by clicking the **{pencil}** (edit) button next to it.
 When viewing a list, you can rename it by clicking the **Edit** button.
@@ -202,7 +204,7 @@ When viewing a list, you can rename it by clicking the **Edit** button.
 
 To add users to a user list:
 
-1. In your project, navigate to **Operations > Feature Flags**.
+1. In your project, navigate to **Deployments > Feature Flags**.
 1. Click on the **{pencil}** (edit) button next to the list you want to add users to.
 1. Click on **Add Users**.
 1. Enter the user IDs as a comma-separated list of values. For example,
@@ -215,7 +217,7 @@ To add users to a user list:
 
 To remove users from a user list:
 
-1. In your project, navigate to **Operations > Feature Flags**.
+1. In your project, navigate to **Deployments > Feature Flags**.
 1. Click on the **{pencil}** (edit) button next to the list you want to change.
 1. Click on the **{remove}** (remove) button next to the ID you want to remove.
 
@@ -253,7 +255,7 @@ See [this video tutorial](https://www.youtube.com/watch?v=CAJY2IGep7Y) for help 
 In [GitLab 13.0 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/8621),
 to disable a feature flag for a specific environment:
 
-1. Navigate to your project's **Operations > Feature Flags**.
+1. Navigate to your project's **Deployments > Feature Flags**.
 1. For the feature flag you want to disable, click the Pencil icon.
 1. To disable the flag:
 
@@ -267,7 +269,7 @@ to disable a feature flag for a specific environment:
 
 To disable a feature flag for all environments:
 
-1. Navigate to your project's **Operations > Feature Flags**.
+1. Navigate to your project's **Deployments > Feature Flags**.
 1. For the feature flag you want to disable, slide the Status toggle to **Disabled**.
 
 The feature flag is displayed on the **Disabled** tab.
@@ -281,7 +283,7 @@ Then prepare your application with a client library.
 
 To get the access credentials that your application needs to communicate with GitLab:
 
-1. Navigate to your project's **Operations > Feature Flags**.
+1. Navigate to your project's **Deployments > Feature Flags**.
 1. Click the **Configure** button to view the following:
    - **API URL**: URL where the client (application) connects to get a list of feature flags.
    - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.

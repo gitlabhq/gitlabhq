@@ -7,7 +7,7 @@ product_stage: growth
 product_group: group::activation
 product_category: onboarding
 value_type: number
-status: implemented
+status: data_available
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56752
 time_frame: all

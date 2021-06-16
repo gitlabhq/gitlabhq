@@ -154,6 +154,12 @@ A good example of that would be a cache expiration worker.
 A job scheduled for an idempotent worker is [deduplicated](#deduplication) when
 an unstarted job with the same arguments is already in the queue.
 
+WARNING:
+For [data consistency jobs](#job-data-consistency), the deduplication is not compatible with the
+`data_consistency` attribute set to `:sticky` or `:delayed`.
+The reason for this is that deduplication always takes into account the latest binary replication pointer into account, not the first one.
+There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/325291) to improve this.
+
 ### Ensuring a worker is idempotent
 
 Make sure the worker tests pass using the following shared example:
@@ -455,6 +461,68 @@ If we expect an increase of **less than 5%**, then no further action is needed.
 
 Otherwise, please ping `@gitlab-org/scalability` on the merge request and ask
 for a review.
+
+## Job data consistency
+
+In order to utilize [Sidekiq read-only database replicas capabilities](../administration/database_load_balancing.md#enable-the-load-balancer-for-sidekiq), 
+set the `data_consistency` attribute of the job to `:always`, `:sticky`, or `:delayed`. 
+
+| **Data Consistency**  | **Description**  |
+|--------------|-----------------------------|
+| `:always`    | The job is required to use the primary database (default). |
+| `:sticky`    | The job uses a replica as long as possible. It switches to primary either on write or long replication lag. It should be used on jobs that require to be executed as fast as possible.  |
+| `:delayed`   | The job always uses replica, but switches to primary on write. The job is delayed if there's a long replication lag. If the replica is not up-to-date with the next retry, it switches to the primary. It should be used on jobs where we are fine to delay the execution of a given job due to their importance such as expire caches, execute hooks, etc. |
+
+To set a data consistency for a job, use the `data_consistency` class method:
+
+```ruby
+class DelayedWorker
+  include ApplicationWorker
+
+  data_consistency :delayed
+
+  # ...
+end
+```
+
+For [idempotent jobs](#idempotent-jobs), the deduplication is not compatible with the
+`data_consistency` attribute set to `:sticky` or `:delayed`.
+The reason for this is that deduplication always takes into account the latest binary replication pointer into account, not the first one.
+There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/325291) to improve this.
+
+### `feature_flag` property
+
+The `feature_flag` property allows you to toggle a job's `data_consistency`,
+which permits you to safely toggle load balancing capabilities for a specific job.
+When `feature_flag` is disabled, the job defaults to `:always`, which means that the job will always use the primary database.
+
+The `feature_flag` property does not allow the use of
+[feature gates based on actors](../development/feature_flags/index.md).
+This means that the feature flag cannot be toggled only for particular
+projects, groups, or users, but instead, you can safely use [percentage of time rollout](../development/feature_flags/index.md). 
+Note that since we check the feature flag on both Sidekiq client and server, rolling out a 10% of the time, 
+will likely results in 1% (0.1 [from client]*0.1 [from server]) of effective jobs using replicas.
+
+Example:
+
+```ruby
+class DelayedWorker
+  include ApplicationWorker
+
+  data_consistency :delayed, feature_flag: :load_balancing_for_delayed_worker
+
+  # ...
+end
+```
+
+### Delayed job execution
+
+Scheduling workers that utilize [Sidekiq read-only database replicas capabilities](#job-data-consistency),
+(workers with `data_consistency` attribute set to `:sticky` or `:delayed`), 
+by calling `SomeWorker.perform_async` results in a worker performing in the future (1 second in the future).
+
+This way, the replica has a chance to catch up, and the job will likely use the replica.
+For workers with `data_consistency` set to `:delayed`, it can also reduce the number of retried jobs.
 
 ## Jobs with External Dependencies
 

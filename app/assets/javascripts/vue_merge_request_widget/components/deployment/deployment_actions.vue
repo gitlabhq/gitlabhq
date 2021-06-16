@@ -1,5 +1,5 @@
 <script>
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -128,7 +128,9 @@ export default {
             }
           })
           .catch(() => {
-            createFlash(errorMessage);
+            createFlash({
+              message: errorMessage,
+            });
           })
           .finally(() => {
             this.actionInProgress = null;

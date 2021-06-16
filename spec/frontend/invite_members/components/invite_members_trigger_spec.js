@@ -7,6 +7,8 @@ import eventHub from '~/invite_members/event_hub';
 jest.mock('~/experimentation/experiment_tracking');
 
 const displayText = 'Invite team members';
+const triggerSource = '_trigger_source_';
+
 let wrapper;
 let triggerProps;
 let findButton;
@@ -26,7 +28,7 @@ const createComponent = (props = {}) => {
 };
 
 describe.each(['button', 'anchor'])('with triggerElement as %s', (triggerElement) => {
-  triggerProps = { triggerElement };
+  triggerProps = { triggerElement, triggerSource };
   findButton = () => wrapper.findComponent(triggerComponent[triggerElement]);
 
   afterEach(() => {
@@ -48,22 +50,14 @@ describe.each(['button', 'anchor'])('with triggerElement as %s', (triggerElement
       spy = jest.spyOn(eventHub, '$emit');
     });
 
-    it('emits openModal from an unknown source', () => {
-      createComponent();
-
-      findButton().vm.$emit('click');
-
-      expect(spy).toHaveBeenCalledWith('openModal', { inviteeType: 'members', source: 'unknown' });
-    });
-
     it('emits openModal from a named source', () => {
-      createComponent({ triggerSource: '_trigger_source_' });
+      createComponent();
 
       findButton().vm.$emit('click');
 
       expect(spy).toHaveBeenCalledWith('openModal', {
         inviteeType: 'members',
-        source: '_trigger_source_',
+        source: triggerSource,
       });
     });
   });

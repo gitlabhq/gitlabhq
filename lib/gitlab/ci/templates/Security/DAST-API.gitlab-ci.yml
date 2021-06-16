@@ -13,9 +13,8 @@
 
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast_api/index.html
 
-# Configure the scanning tool with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html)
-# List of variables available to configure the DAST API scanning tool:
-# https://docs.gitlab.com/ee/user/application_security/dast_api/index.html#available-cicd-variables
+# Configure DAST API scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/dast_api/index.html#available-cicd-variables
 
 variables:
   # Setting this variable affects all Security templates

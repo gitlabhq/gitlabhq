@@ -24,11 +24,19 @@ developed and tested. We aim to be compatible with most external
    sudo -i
    ```
 
-1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** ID for your node (arbitrary value):
+1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
-   # The unique identifier for the Geo node.
-   gitlab_rails['geo_node_name'] = '<node_name_here>'
+   ##
+   ## Geo Primary role
+   ## - configure dependent flags automatically to enable Geo
+   ##
+   roles ['geo_primary_role']
+
+   ##
+   ## The unique identifier for the Geo site.
+   ##
+   gitlab_rails['geo_node_name'] = '<geo_site_name_here>'
    ```
 
 1. Reconfigure the **primary** node for the change to take effect:
@@ -49,7 +57,7 @@ developed and tested. We aim to be compatible with most external
 
 To set up an external database, you can either:
 
-- Set up [streaming replication](https://www.postgresql.org/docs/11/warm-standby.html#STREAMING-REPLICATION-SLOTS) yourself (for example AWS RDS, bare metal not managed by Omnibus, etc.).
+- Set up [streaming replication](https://www.postgresql.org/docs/12/warm-standby.html#STREAMING-REPLICATION-SLOTS) yourself (for example AWS RDS, bare metal not managed by Omnibus, etc.).
 - Perform the Omnibus configuration manually as follows.
 
 #### Leverage your cloud provider's tools to replicate the primary database
@@ -64,8 +72,9 @@ cloud providers:
 
 - Amazon RDS - [Creating a Read Replica](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html#USER_ReadRepl.Create)
 - Azure Database for PostgreSQL - [Create and manage read replicas in Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/howto-read-replicas-portal)
+- Google Cloud SQL - [Creating read replicas](https://cloud.google.com/sql/docs/postgres/replication/create-replica)
 
-Once your read-only replica is set up, you can skip to [configure you secondary application node](#configure-secondary-application-nodes-to-use-the-external-read-replica).
+Once your read-only replica is set up, you can skip to [configure your secondary application node](#configure-secondary-application-nodes-to-use-the-external-read-replica).
 
 #### Manually configure the primary database for replication
 
@@ -182,9 +191,12 @@ to grant additional roles to your tracking database user (by default, this is
 
 - Amazon RDS requires the [`rds_superuser`](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.Roles) role.
 - Azure Database for PostgreSQL requires the [`azure_pg_admin`](https://docs.microsoft.com/en-us/azure/postgresql/howto-create-users#how-to-create-additional-admin-users-in-azure-database-for-postgresql) role.
+- Google Cloud SQL requires the [`cloudsqlsuperuser`](https://cloud.google.com/sql/docs/postgres/users#default-users) role.
 
-If you have an external database ready to be used as the tracking database,
-follow the instructions below to use it:
+This is for the installation of extensions during installation and upgrades. As an alternative,
+[ensure the extensions are installed manually, and read about the problems that may arise during future GitLab upgrades](../../../install/postgresql_extensions.md).
+
+To setup an external tracking database, follow the instructions below:
 
 NOTE:
 If you want to use AWS RDS as a tracking database, make sure it has access to
@@ -193,8 +205,12 @@ outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to 
 rule to the read-replica's security group allowing any TCP traffic from
 the tracking database on port 5432.
 
-1. Ensure that your secondary node can communicate with your tracking database by
-   manually changing the `pg_hba.conf` that is associated with your tracking database.
+1. Set up PostgreSQL according to the
+   [database requirements document](../../../install/requirements.md#database).
+1. Set up a `gitlab_geo` user with a password of your choice, create the `gitlabhq_geo_production` database, and make the user an owner of the database. You can see an example of this setup in the [installation from source documentation](../../../install/installation.md#6-database).
+1. If you are **not** using a cloud-managed PostgreSQL database, ensure that your secondary 
+   node can communicate with your tracking database by manually changing the 
+   `pg_hba.conf` that is associated with your tracking database.
    Remember to restart PostgreSQL afterwards for the changes to take effect:
 
     ```plaintext
@@ -226,9 +242,14 @@ the tracking database on port 5432.
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
 
-1. Run the tracking database migrations:
+1. The reconfigure should automatically create the database. If needed, you can perform this task manually. Note that this task (whether run by itself or during reconfigure) requires the database user to be a superuser.
 
    ```shell
    gitlab-rake geo:db:create
+   ```
+
+1. The reconfigure should automatically migrate the database. You can migrate the database manually if needed, for example if `gitlab_rails['auto_migrate'] = false`:
+
+   ```shell
    gitlab-rake geo:db:migrate
    ```

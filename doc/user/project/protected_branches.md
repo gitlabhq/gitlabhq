@@ -36,7 +36,7 @@ The default branch protection level is set in the [Admin Area](../admin_area/set
 
 Prerequisite:
 
-- You must have at least maintainer permissions.
+- You must have at least the [Maintainer role](../permissions.md).
 
 To protect a branch:
 
@@ -163,7 +163,7 @@ To create a new branch through the user interface:
 ## Delete a protected branch
 
 From time to time, you may need to delete or clean up protected branches.
-User with [Maintainer permissions](../permissions.md) and greater can manually delete protected
+User with the [Maintainer role](../permissions.md) and greater can manually delete protected
 branches by using the GitLab web interface:
 
 1. Go to **Repository > Branches**.
@@ -179,24 +179,22 @@ command line or a Git client application.
 ## Allow force push on protected branches
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15611) in GitLab 13.10 behind a disabled feature flag.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-allow-force-push-on-protected-branches).
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323431) in GitLab 14.0.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-You can allow force pushes to protected branches by either setting **Allow force push**
+You can allow [force pushes](../../topics/git/git_rebase.md#force-push) to
+protected branches by either setting **Allowed to force push**
 when you protect a new branch, or by configuring an already-protected branch.
 
 To protect a new branch and enable Force push:
 
 1. Navigate to your project's **Settings > Repository**.
 1. Expand **Protected branches**, and scroll to **Protect a branch**.
-   ![Code Owners approval - new protected branch](img/code_owners_approval_new_protected_branch_v13_10.png)
 1. Select a **Branch** or wildcard you'd like to protect.
 1. Select the user levels **Allowed to merge** and **Allowed to push**.
-1. To allow all users with push access to force push, toggle the **Allow force push** slider.
+1. To allow all users with push access to force push, toggle the **Allowed to force push** slider.
 1. To reject code pushes that change files listed in the `CODEOWNERS` file, toggle
    **Require approval from code owners**.
 1. Click **Protect**.
@@ -205,8 +203,7 @@ To enable force pushes on branches already protected:
 
 1. Navigate to your project's **Settings > Repository**.
 1. Expand **Protected branches** and scroll to **Protected branch**.
-   ![Code Owners approval - branch already protected](img/code_owners_approval_protected_branch_v13_10.png)
-1. Toggle the **Allow force push** slider for the chosen branch.
+1. Toggle the **Allowed to force push** slider for the chosen branch.
 
 When enabled, members who are allowed to push to this branch can also force push.
 
@@ -226,14 +223,10 @@ To protect a new branch and enable Code Owner's approval:
 1. Scroll down to **Protect a branch**, select a **Branch** or wildcard you'd like to protect, select who's **Allowed to merge** and **Allowed to push**, and toggle the **Require approval from code owners** slider.
 1. Click **Protect**.
 
-![Code Owners approval - new protected branch](img/code_owners_approval_new_protected_branch_v13_10.png)
-
 To enable Code Owner's approval to branches already protected:
 
 1. Navigate to your project's **Settings > Repository** and expand **Protected branches**.
 1. Scroll down to **Protected branch** and toggle the **Code owner approval** slider for the chosen branch.
-
-![Code Owners approval - branch already protected](img/code_owners_approval_protected_branch_v13_10.png)
 
 When enabled, all merge requests targeting these branches require approval
 by a Code Owner per matched rule before they can be merged.
@@ -248,25 +241,6 @@ run CI/CD pipelines and execute actions on jobs that are related to those branch
 
 See [Security on protected branches](../../ci/pipelines/index.md#pipeline-security-on-protected-branches)
 for details about the pipelines security model.
-
-## Enable or disable allow force push on protected branches **(FREE SELF)**
-
-Allow force push on protected branches is ready for
-production use. It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:allow_force_push_to_protected_branches)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:allow_force_push_to_protected_branches)
-```
 
 ## Changelog
 

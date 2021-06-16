@@ -352,14 +352,6 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       it_behaves_like 'a tracked merge request unique event' do
         let(:action) { described_class::MR_INCLUDING_CI_CONFIG_ACTION }
       end
-
-      context 'when FF usage_data_o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile is disabled' do
-        before do
-          stub_feature_flags(usage_data_o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile: false)
-        end
-
-        it_behaves_like 'not tracked merge request unique event'
-      end
     end
 
     context 'when merge request does not include any ci config change' do
@@ -384,6 +376,22 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
 
     it_behaves_like 'a tracked merge request unique event' do
       let(:action) { described_class::MR_LABELS_CHANGED_ACTION }
+    end
+  end
+
+  describe '.track_loading_conflict_ui_action' do
+    subject { described_class.track_loading_conflict_ui_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_LOAD_CONFLICT_UI_ACTION }
+    end
+  end
+
+  describe '.track_resolve_conflict_action' do
+    subject { described_class.track_resolve_conflict_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_RESOLVE_CONFLICT_ACTION }
     end
   end
 end

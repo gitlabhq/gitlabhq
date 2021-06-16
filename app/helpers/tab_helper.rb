@@ -123,7 +123,21 @@ module TabHelper
 
   def route_matches_pages?(pages)
     Array(pages).compact.any? do |single_page|
-      current_page?(single_page)
+      # We need to distinguish between Hash argument and other types of
+      # arguments (for example String) in order to fix deprecation kwargs
+      # warning.
+      #
+      # This can be refactored to
+      #
+      # current_page?(single_page)
+      #
+      # When we migrate to Ruby 3 or the Rails version contains the following:
+      # https://github.com/rails/rails/commit/81d90d81d0ee1fc1a649ab705119a71f2d04c8a2
+      if single_page.is_a?(Hash)
+        current_page?(**single_page)
+      else
+        current_page?(single_page)
+      end
     end
   end
 

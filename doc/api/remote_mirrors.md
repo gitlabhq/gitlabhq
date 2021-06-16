@@ -71,7 +71,8 @@ POST /projects/:id/remote_mirrors
 Example request:
 
 ```shell
-curl --request POST --data "url=https://username:token@example.com/gitlab/example.git" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors"
+curl --request POST --data "url=https://username:token@example.com/gitlab/example.git" \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors"
 ```
 
 Example response:

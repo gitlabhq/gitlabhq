@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:lfs namespace rake task' do
+RSpec.describe 'gitlab:lfs namespace rake task', :silence_stdout do
   before :all do
     Rake.application.rake_require 'tasks/gitlab/lfs/migrate'
   end

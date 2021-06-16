@@ -15,7 +15,6 @@ module Gitlab
 
       HEALTH_ENDPOINT = /^\/-\/(liveness|readiness|health|metrics)\/?$/.freeze
 
-      FEATURE_CATEGORY_HEADER = 'X-Gitlab-Feature-Category'
       FEATURE_CATEGORY_DEFAULT = 'unknown'
 
       # These were the top 5 categories at a point in time, chosen as a
@@ -67,18 +66,16 @@ module Gitlab
       def call(env)
         method = env['REQUEST_METHOD'].downcase
         method = 'INVALID' unless HTTP_METHODS.key?(method)
-        started = Time.now.to_f
+        started = Gitlab::Metrics::System.monotonic_time
         health_endpoint = health_endpoint?(env['PATH_INFO'])
         status = 'undefined'
-        feature_category = nil
 
         begin
           status, headers, body = @app.call(env)
 
-          elapsed = Time.now.to_f - started
-          feature_category = headers&.fetch(FEATURE_CATEGORY_HEADER, nil)
+          elapsed = Gitlab::Metrics::System.monotonic_time - started
 
-          unless health_endpoint
+          if !health_endpoint && Gitlab::Metrics.record_duration_for_status?(status)
             RequestsRackMiddleware.http_request_duration_seconds.observe({ method: method }, elapsed)
           end
 
@@ -103,6 +100,10 @@ module Gitlab
         return false if path.blank?
 
         HEALTH_ENDPOINT.match?(CGI.unescape(path))
+      end
+
+      def feature_category
+        ::Gitlab::ApplicationContext.current_context_attribute(:feature_category)
       end
     end
   end

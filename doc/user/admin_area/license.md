@@ -34,13 +34,13 @@ is locked.
 
 The first time you visit your GitLab EE installation signed in as an administrator,
 you should see a note urging you to upload a license with a link that takes you
-to **Admin Area > License**.
+to the **License** area.
 
-Otherwise, you can:
+Otherwise, to manually go to the **License** area:
 
-1. Navigate manually to the **Admin Area** by selecting the wrench (**{admin}**) icon in the top menu.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
 
-1. Navigate to the **License** tab, and select **Upload New License**.
+1. On the left sidebar, select **License**, and select **Upload New License**.
 
    - *If you've received a `.gitlab-license` file:*
      1. Download the license file to your local machine.
@@ -113,9 +113,9 @@ before this occurs.
 
 To remove a license from a self-managed instance:
 
-1. In the top navigation bar, click the **{admin}** wrench icon to navigate to the [Admin Area](index.md).
-1. Click **License** in the left sidebar.
-1. Click **Remove License**.
+1. On the top bar, select **Menu >** **{admin}** **Admin** to go to the [Admin Area](index.md).
+1. On the left sidebar, select **License**.
+1. Select **Remove license**.
 
 ## License history
 

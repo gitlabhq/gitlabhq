@@ -715,6 +715,12 @@ RSpec.describe Issuable do
         expect(issue.total_time_spent).to eq(1800)
       end
 
+      it 'stores the time change' do
+        spend_time(1800)
+
+        expect(issue.time_change).to eq(1800)
+      end
+
       it 'updates issues updated_at' do
         issue
 
@@ -733,6 +739,12 @@ RSpec.describe Issuable do
         spend_time(-900)
 
         expect(issue.total_time_spent).to eq(900)
+      end
+
+      it 'stores negative time change' do
+        spend_time(-900)
+
+        expect(issue.time_change).to eq(-900)
       end
 
       context 'when time to subtract exceeds the total time spent' do

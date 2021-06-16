@@ -30,12 +30,12 @@ see [Custom group-level project templates](../group/custom_project_templates.md)
 ## Configuring
 
 GitLab administrators can configure a GitLab group that serves as template
-source for an entire GitLab instance by:
+source for an entire GitLab instance:
 
-1. Navigating to **Admin Area > Settings > Templates**.
-1. Expanding **Custom project templates**.
-1. Selecting a group to use.
-1. Pressing **Save changes**.
+1. On the top bar, navigate to **Menu > Admin > Settings > Templates**.
+1. Expand **Custom project templates**.
+1. Select a group to use.
+1. Select **Save changes**.
 
 NOTE:
 Projects below subgroups of the template group are **not** supported.

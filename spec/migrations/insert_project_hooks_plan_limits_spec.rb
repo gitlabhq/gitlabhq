@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20191216183532_insert_project_hooks_plan_limits.rb')
+require_migration!
 
 RSpec.describe InsertProjectHooksPlanLimits do
   let(:migration) { described_class.new }

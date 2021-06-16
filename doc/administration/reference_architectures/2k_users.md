@@ -18,20 +18,24 @@ For a full list of reference architectures, see
 
 | Service                                  | Nodes  | Configuration           | GCP             | AWS          | Azure    |
 |------------------------------------------|--------|-------------------------|-----------------|--------------|----------|
-| Load balancer                            | 1      | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| PostgreSQL*                              | 1      | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| Redis**                                  | 1      | 1 vCPU, 3.75 GB memory  | `n1-standard-1` | `m5.large`   | `D2s v3` |
+| Load balancer(3)                         | 1      | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| PostgreSQL(1)                            | 1      | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
+| Redis(2)                                 | 1      | 1 vCPU, 3.75 GB memory  | `n1-standard-1` | `m5.large`   | `D2s v3` |
 | Gitaly                                   | 1      | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
 | GitLab Rails                             | 2      | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
 | Monitoring node                          | 1      | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Object storage                           | n/a    | n/a                     | n/a             | n/a          | n/a      |
+| Object storage(4)                        | n/a    | n/a                     | n/a             | n/a          | n/a      |
 | NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`  | `F4s v2` |
 
+<!-- markdownlint-disable MD029 -->
+1. Can be optionally run on reputable third party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work, however Azure Database for PostgreSQL is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to performance issues. Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
+2. Can be optionally run as reputable third party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
+3. Can be optionally run as reputable third party load balancing services (LB PaaS). AWS ELB is known to work.
+4. Should be run on reputable third party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+<!-- markdownlint-enable MD029 -->
+
 NOTE:
-Components marked with * can be optionally run on reputable
-third party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work.
-Components marked with ** can be optionally run on reputable
-third party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
+For all PaaS solutions that involve configuring instances, it is strongly recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
 
 ```plantuml
 @startuml 2k
@@ -84,7 +88,7 @@ To set up GitLab and its components to accommodate up to 2,000 users:
 1. [Configure Gitaly](#configure-gitaly), which provides access to the Git
    repositories.
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
-   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend
+   to run Puma, Workhorse, GitLab Shell, and to serve all frontend
    requests (which include UI, API, and Git over HTTP/SSH).
 1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab
    environment.
@@ -265,10 +269,8 @@ further configuration steps.
      database. Example: `%w(123.123.123.123/32 123.123.123.234/32)`
 
    ```ruby
-   # Disable all components except PostgreSQL
-   roles ['postgres_role']
-   patroni['enable'] = false
-   consul['enable'] = false
+   # Disable all components except PostgreSQL related ones
+   roles(['postgres_role'])
    prometheus['enable'] = false
    alertmanager['enable'] = false
    pgbouncer_exporter['enable'] = false
@@ -294,6 +296,9 @@ further configuration steps.
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
    ```
+
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
+   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Note the PostgreSQL node's IP address or hostname, port, and
@@ -346,20 +351,18 @@ Omnibus:
    ```ruby
    ## Enable Redis
    redis['enable'] = true
-
-   ## Disable all other services
+   
+   # Avoid running unnecessary services on the Redis server
+   gitaly['enable'] = false
+   postgresql['enable'] = false
+   puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
-   puma['enable'] = false
-   unicorn['enable'] = false
-   postgresql['enable'] = false
-   nginx['enable'] = false
    prometheus['enable'] = false
    alertmanager['enable'] = false
-   pgbouncer_exporter['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitaly['enable'] = false
    grafana['enable'] = false
+   gitlab_exporter['enable'] = false
+   nginx['enable'] = false
 
    redis['bind'] = '0.0.0.0'
    redis['port'] = 6379
@@ -376,7 +379,11 @@ Omnibus:
    }
    ```
 
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
+   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
 1. Note the Redis node's IP address or hostname, port, and
    Redis password. These will be necessary when [configuring the GitLab
    application servers](#configure-gitlab-rails) later.
@@ -455,16 +462,14 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
    # Avoid running unnecessary services on the Gitaly server
    postgresql['enable'] = false
    redis['enable'] = false
-   nginx['enable'] = false
    puma['enable'] = false
-   unicorn['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
-   grafana['enable'] = false
-
-   # If you run a separate monitoring node you can disable these services
-   alertmanager['enable'] = false
    prometheus['enable'] = false
+   alertmanager['enable'] = false
+   grafana['enable'] = false
+   gitlab_exporter['enable'] = false
+   nginx['enable'] = false
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -472,8 +477,10 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
    # Configure the gitlab-shell API callback URL. Without this, `git push` will
    # fail. This can be your 'front door' GitLab URL or an internal load
    # balancer.
-   # Don't forget to copy `/etc/gitlab/gitlab-secrets.json` from web server to Gitaly server.
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
+
+   # Gitaly
+   gitaly['enable'] = true
 
    # Make Gitaly accept connections on all network interfaces. You must use
    # firewalls to restrict access to this address/port.
@@ -494,7 +501,11 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
    })
    ```
 
-1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
+   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
 1. Confirm that Gitaly can perform callbacks to the internal API:
 
    ```shell
@@ -629,7 +640,7 @@ On each node perform the following:
    })
 
    ## Disable components that will not be on the GitLab application server
-   roles ['application_role']
+   roles(['application_role'])
    gitaly['enable'] = false
    nginx['enable'] = true
 
@@ -658,10 +669,7 @@ On each node perform the following:
    gitlab_rails['monitoring_whitelist'] = ['<MONITOR NODE IP>/32', '127.0.0.0/8']
    nginx['status']['options']['allow'] = ['<MONITOR NODE IP>/32', '127.0.0.0/8']
 
-   #############################
-   ###     Object storage    ###
-   #############################
-
+   # Object Storage
    # This is an example for configuring Object Storage on GCP
    # Replace this config with your chosen Object Storage provider as desired
    gitlab_rails['object_store']['connection'] = {
@@ -676,6 +684,13 @@ On each node perform the following:
    gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-packages-bucket-name>"
    gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-dependency-proxy-bucket-name>"
    gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-terraform-state-bucket-name>"
+
+   gitlab_rails['backup_upload_connection'] = {
+     'provider' => 'Google',
+     'google_project' => '<gcp-project-name>',
+     'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
+   gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
 
    ## Uncomment and edit the following options if you have set up NFS
    ##
@@ -710,18 +725,26 @@ On each node perform the following:
       sudo cp cert.pem /etc/gitlab/trusted-certs/
       ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
+   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+
+1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
+
+   ```shell
+   sudo touch /etc/gitlab/skip-auto-reconfigure
+   ```
+
+   Only a single designated node should handle migrations as detailed in the
+   [GitLab Rails post-configuration](#gitlab-rails-post-configuration) section.
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
 1. Run `sudo gitlab-rake gitlab:gitaly:check` to confirm the node can connect to Gitaly.
 1. Tail the logs to see the requests:
 
    ```shell
    sudo gitlab-ctl tail gitaly
    ```
-
-1. Save the `/etc/gitlab/gitlab-secrets.json` file from one of the two
-   application nodes and install it on the other application node and the
-   [Gitaly node](#configure-gitaly) and
-   [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 When you specify `https` in the `external_url`, as in the previous example,
 GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the
@@ -765,38 +788,21 @@ running [Prometheus](../monitoring/prometheus/index.md) and
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
+   roles(['monitoring_role'])
+
    external_url 'http://gitlab.example.com'
 
-   # Enable Prometheus
-   prometheus['enable'] = true
+   # Prometheus
    prometheus['listen_address'] = '0.0.0.0:9090'
    prometheus['monitor_kubernetes'] = false
 
-   # Enable Login form
+   # Grafana
+   grafana['enable'] = true
+   grafana['admin_password'] = '<grafana_password>'
    grafana['disable_login_form'] = false
 
-   # Enable Grafana
-   grafana['enable'] = true
-   grafana['admin_password'] = 'toomanysecrets'
-
-   # Disable all other services
-   alertmanager['enable'] = false
-   gitaly['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitlab_workhorse['enable'] = false
+   # Nginx - For Grafana access
    nginx['enable'] = true
-   postgres_exporter['enable'] = false
-   postgresql['enable'] = false
-   redis['enable'] = false
-   redis_exporter['enable'] = false
-   sidekiq['enable'] = false
-   puma['enable'] = false
-   unicorn['enable'] = false
-   node_exporter['enable'] = false
-   gitlab_exporter['enable'] = false
-
-   # Prevent database migrations from running on upgrade automatically
-   gitlab_rails['auto_migrate'] = false
    ```
 
 1. Prometheus also needs some scrape configurations to pull all the data from the various

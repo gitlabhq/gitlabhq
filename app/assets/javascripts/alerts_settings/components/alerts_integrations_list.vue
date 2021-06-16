@@ -23,7 +23,6 @@ import getCurrentIntegrationQuery from '../graphql/queries/get_current_integrati
 export const i18n = {
   deleteIntegration: s__('AlertSettings|Delete integration'),
   editIntegration: s__('AlertSettings|Edit integration'),
-  title: s__('AlertsIntegrations|Current integrations'),
   emptyState: s__('AlertsIntegrations|No integrations have been added yet.'),
   status: {
     enabled: {
@@ -141,7 +140,6 @@ export default {
 
 <template>
   <div class="incident-management-list">
-    <h5 class="gl-font-lg gl-mt-5">{{ $options.i18n.title }}</h5>
     <gl-table
       class="integration-list"
       :items="integrations"
@@ -155,7 +153,7 @@ export default {
         <span v-if="item.active" data-testid="integration-activated-status">
           <gl-icon
             v-gl-tooltip
-            name="check-circle-filled"
+            name="check"
             :size="16"
             class="gl-text-green-500 gl-hover-cursor-pointer gl-mr-3"
             :title="$options.i18n.status.enabled.tooltip"

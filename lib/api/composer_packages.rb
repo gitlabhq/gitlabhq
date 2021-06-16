@@ -137,7 +137,7 @@ module API
             bad_request!
           end
 
-          track_package_event('push_package', :composer)
+          track_package_event('push_package', :composer, project: authorized_user_project, user: current_user, namespace: authorized_user_project.namespace)
 
           ::Packages::Composer::CreatePackageService
             .new(authorized_user_project, current_user, declared_params.merge(build: current_authenticated_job))
@@ -161,7 +161,7 @@ module API
 
           not_found! unless metadata
 
-          track_package_event('pull_package', :composer)
+          track_package_event('pull_package', :composer, project: unauthorized_user_project, namespace: unauthorized_user_project.namespace)
 
           send_git_archive unauthorized_user_project.repository, ref: metadata.target_sha, format: 'zip', append_sha: true
         end

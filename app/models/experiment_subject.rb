@@ -5,7 +5,7 @@ class ExperimentSubject < ApplicationRecord
 
   belongs_to :experiment, inverse_of: :experiment_subjects
   belongs_to :user
-  belongs_to :group
+  belongs_to :namespace
   belongs_to :project
 
   validates :experiment, presence: true
@@ -14,15 +14,19 @@ class ExperimentSubject < ApplicationRecord
 
   enum variant: { GROUP_CONTROL => 0, GROUP_EXPERIMENTAL => 1 }
 
+  def self.valid_subject?(subject)
+    subject.is_a?(Namespace) || subject.is_a?(User) || subject.is_a?(Project)
+  end
+
   private
 
   def must_have_one_subject_present
     if non_nil_subjects.length != 1
-      errors.add(:base, s_("ExperimentSubject|Must have exactly one of User, Group, or Project."))
+      errors.add(:base, s_("ExperimentSubject|Must have exactly one of User, Namespace, or Project."))
     end
   end
 
   def non_nil_subjects
-    @non_nil_subjects ||= [user, group, project].reject(&:blank?)
+    @non_nil_subjects ||= [user, namespace, project].reject(&:blank?)
   end
 end

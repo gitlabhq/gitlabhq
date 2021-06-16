@@ -170,7 +170,7 @@ module Gitlab
     def self.print_by_total_time(result, options = {})
       default_options = { sort_method: :total_time, filter_by: :total_time }
 
-      RubyProf::FlatPrinter.new(result).print(STDOUT, default_options.merge(options))
+      RubyProf::FlatPrinter.new(result).print($stdout, default_options.merge(options))
     end
   end
 end

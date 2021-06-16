@@ -66,7 +66,7 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
   <gl-area-chart-stub
     annotations=""
     data="[object Object]"
-    formattooltiptext="function () { [native code] }"
+    formattooltiptext="[Function]"
     height="200"
     includelegendavgmax="true"
     legendaveragetext="Avg"

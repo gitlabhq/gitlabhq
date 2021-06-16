@@ -96,13 +96,11 @@ func TestConfigureMinimalConfig(t *testing.T) {
 
 func TestConfigureFullConfig(t *testing.T) {
 	i, a := 4, 10
-	r := config.TomlDuration{Duration: 3}
 	cfg := &config.RedisConfig{
-		URL:         config.TomlURL{},
-		Password:    "",
-		MaxIdle:     &i,
-		MaxActive:   &a,
-		ReadTimeout: &r,
+		URL:       config.TomlURL{},
+		Password:  "",
+		MaxIdle:   &i,
+		MaxActive: &a,
 	}
 	Configure(cfg, DefaultDialFunc)
 
@@ -219,11 +217,7 @@ func TestDialOptionsBuildersSetTimeouts(t *testing.T) {
 }
 
 func TestDialOptionsBuildersSetTimeoutsConfig(t *testing.T) {
-	cfg := &config.RedisConfig{
-		ReadTimeout:  &config.TomlDuration{Duration: time.Second * time.Duration(15)},
-		WriteTimeout: &config.TomlDuration{Duration: time.Second * time.Duration(15)},
-	}
-	dopts := dialOptionsBuilder(cfg, true)
+	dopts := dialOptionsBuilder(nil, true)
 	require.Equal(t, 2, len(dopts))
 }
 

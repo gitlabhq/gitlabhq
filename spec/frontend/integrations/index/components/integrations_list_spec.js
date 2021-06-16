@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+
 import IntegrationsList from '~/integrations/index/components/integrations_list.vue';
 import { mockActiveIntegrations, mockInactiveIntegrations } from '../mock_data';
 
@@ -10,7 +10,7 @@ describe('IntegrationsList', () => {
   const findInactiveIntegrationsTable = () => wrapper.findByTestId('inactive-integrations-table');
 
   const createComponent = (propsData = {}) => {
-    wrapper = extendedWrapper(shallowMount(IntegrationsList, { propsData }));
+    wrapper = shallowMountExtended(IntegrationsList, { propsData });
   };
 
   afterEach(() => {

@@ -1,6 +1,6 @@
 ---
-stage: Verify
-group: Testing
+stage: Secure
+group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto
 ---
@@ -54,20 +54,25 @@ See also the Code Climate list of [Supported Languages for Maintainability](http
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267612) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.11.
 > - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 13.12.
+> - [Feature enhanced](https://gitlab.com/gitlab-org/gitlab/-/issues/2526) in GitLab 14.0.
 
 Changes to files in merge requests can cause Code Quality to fall if merged. In these cases,
-an indicator is displayed (**{information-o}** **Code Quality**) on the file in the merge request's diff view. For example:
+the merge request's diff view displays an indicator next to lines with new Code Quality violations. For example:
+
+![Code Quality MR diff report](img/code_quality_mr_diff_report_v14.png)
+
+Previously, an indicator was displayed (**{information-o}** **Code Quality**) on the file in the merge request's diff view:
 
 ![Code Quality MR diff report](img/code_quality_mr_diff_report_v13_11.png)
 
-To disable this feature, a GitLab administrator can run the following in a
+To switch to the previous version of this feature, a GitLab administrator can run the following in a
 [Rails console](../../../administration/operations/rails_console.md):
 
 ```ruby
 # For the instance
-Feature.disable(:codequality_mr_diff)
+Feature.disable(:codequality_mr_diff_annotations)
 # For a single project
-Feature.disable(:codequality_mr_diff, Project.find(<project id>))
+Feature.disable(:codequality_mr_diff_annotations, Project.find(<project id>))
 ```
 
 ## Use cases
@@ -527,7 +532,7 @@ This can be due to multiple reasons:
 - You just added the Code Quality job in your `.gitlab-ci.yml`. The report does not
   have anything to compare to yet, so no information can be displayed. It only displays
   after future merge requests have something to compare to.
-- Your pipeline is not set to run the code quality job on your default branch. If there is no report generated from the default branch, your MR branch reports have nothing to compare to.
+- Your pipeline is not set to run the code quality job on your target branch. If there is no report generated from the target branch, your MR branch reports have nothing to compare to.
 - If no [degradation or error is detected](https://docs.codeclimate.com/docs/maintainability#section-checks),
   nothing is displayed.
 - The [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in) CI/CD

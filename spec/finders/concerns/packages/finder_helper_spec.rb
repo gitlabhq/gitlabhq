@@ -113,41 +113,22 @@ RSpec.describe ::Packages::FinderHelper do
       let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
       let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
 
-      shared_examples 'handling all conditions' do
-        where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
-          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both packages'
-          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning both packages'
-          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning both packages'
-          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning both packages'
-        end
-
-        with_them do
-          before do
-            project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
-            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
-            project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-            group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-          end
-
-          it_behaves_like params[:shared_example_name]
-        end
+      where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
+        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both packages'
+        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning both packages'
+        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning both packages'
+        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning both packages'
       end
 
-      context 'with packages_finder_helper_deploy_token enabled' do
+      with_them do
         before do
-          expect(group).not_to receive(:all_projects)
+          project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
+          subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
+          project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+          group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
         end
 
-        it_behaves_like 'handling all conditions'
-      end
-
-      context 'with packages_finder_helper_deploy_token disabled' do
-        before do
-          stub_feature_flags(packages_finder_helper_deploy_token: false)
-          expect(group).to receive(:all_projects).and_call_original
-        end
-
-        it_behaves_like 'handling all conditions'
+        it_behaves_like params[:shared_example_name]
       end
     end
   end
@@ -236,41 +217,22 @@ RSpec.describe ::Packages::FinderHelper do
       let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
       let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
 
-      shared_examples 'handling all conditions' do
-        where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
-          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both projects'
-          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning both projects'
-          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
-          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
-        end
-
-        with_them do
-          before do
-            project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
-            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
-            project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-            group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-          end
-
-          it_behaves_like params[:shared_example_name]
-        end
+      where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
+        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both projects'
+        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning both projects'
+        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
+        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
       end
 
-      context 'with packages_finder_helper_deploy_token enabled' do
+      with_them do
         before do
-          expect(group).not_to receive(:all_projects)
+          project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
+          subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
+          project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+          group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
         end
 
-        it_behaves_like 'handling all conditions'
-      end
-
-      context 'with packages_finder_helper_deploy_token disabled' do
-        before do
-          stub_feature_flags(packages_finder_helper_deploy_token: false)
-          expect(group).to receive(:all_projects).and_call_original
-        end
-
-        it_behaves_like 'handling all conditions'
+        it_behaves_like params[:shared_example_name]
       end
     end
   end

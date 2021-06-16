@@ -1,16 +1,18 @@
 ---
 key_path: dependency_proxy_enabled
-description: Whether dependency proxy is enabled
-product_section: growth
-product_stage: growth
-product_group: group::product intelligence
-product_category: collection
+description: A count of projects where the dependency proxy is enabled
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category: container registry
 value_type: boolean
 status: data_available
 time_frame: none
 data_source: system
 distribution:
+- ee
 - ce
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

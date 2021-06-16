@@ -5,6 +5,7 @@ import {
   getCustomizations,
   keybindingGroups,
   TOGGLE_PERFORMANCE_BAR,
+  HIDE_APPEARING_CONTENT,
   LOCAL_STORAGE_KEY,
   WEB_IDE_COMMIT,
 } from '~/behaviors/shortcuts/keybindings';
@@ -93,6 +94,16 @@ describe('~/behaviors/shortcuts/keybindings', () => {
 
     it('returns the default keybinding for the command', () => {
       expect(keysFor(TOGGLE_PERFORMANCE_BAR)).toEqual(['p b']);
+    });
+  });
+
+  describe('when tooltips or popovers are visible', () => {
+    beforeEach(() => {
+      setupCustomizations();
+    });
+
+    it('returns the default keybinding for the command', () => {
+      expect(keysFor(HIDE_APPEARING_CONTENT)).toEqual(['esc']);
     });
   });
 });

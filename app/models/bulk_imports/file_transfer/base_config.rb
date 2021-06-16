@@ -13,6 +13,14 @@ module BulkImports
         attributes_finder.find_root(portable_class_sym)
       end
 
+      def top_relation_tree(relation)
+        portable_relations_tree[relation.to_s]
+      end
+
+      def relation_excluded_keys(relation)
+        attributes_finder.find_excluded_keys(relation)
+      end
+
       def export_path
         strong_memoize(:export_path) do
           relative_path = File.join(base_export_path, SecureRandom.hex)
@@ -45,6 +53,10 @@ module BulkImports
 
       def portable_class_sym
         @portable_class_sym ||= portable_class.to_s.demodulize.underscore.to_sym
+      end
+
+      def portable_relations_tree
+        @portable_relations_tree ||= attributes_finder.find_relations_tree(portable_class_sym).deep_stringify_keys
       end
 
       def import_export_yaml

@@ -49,7 +49,6 @@ module ContainerExpirationPolicies
     private
 
     def schedule_next_run_if_needed
-      return unless Feature.enabled?(:container_registry_expiration_policies_loopless)
       return if policy.next_run_at.future?
 
       repos_before_next_run = ::ContainerRepository.for_project_id(policy.project_id)

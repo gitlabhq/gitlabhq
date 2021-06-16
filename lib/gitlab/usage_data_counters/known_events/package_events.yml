@@ -47,6 +47,14 @@
   category: user_packages
   aggregation: weekly
   redis_slot: package
+- name: i_package_helm_deploy_token
+  category: deploy_token_packages
+  aggregation: weekly
+  redis_slot: package
+- name: i_package_helm_user
+  category: user_packages
+  aggregation: weekly
+  redis_slot: package
 - name: i_package_maven_deploy_token
   category: deploy_token_packages
   aggregation: weekly

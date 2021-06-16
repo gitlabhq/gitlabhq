@@ -5,7 +5,7 @@ group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Vulnerability severity levels
+# Vulnerability severity levels **(ULTIMATE)**
 
 GitLab vulnerability analyzers attempt to return vulnerability severity level values whenever
 possible. The following is a list of available GitLab vulnerability severity levels, ranked from
@@ -62,10 +62,9 @@ the following tables:
 
 ## Container Scanning
 
-| GitLab scanner                                                        | Outputs severity levels? | Native severity level type | Native severity level example                                |
+| GitLab analyzer                                                        | Outputs severity levels? | Native severity level type | Native severity level example                                |
 |------------------------------------------------------------------------|--------------------------|----------------------------|--------------------------------------------------------------|
-| [`clair`](https://gitlab.com/gitlab-org/security-products/analyzers/klar) | **{check-circle}** Yes   | String                     | `Negligible`, `Low`, `Medium`, `High`, `Critical`, `Defcon1` |
-| [`trivy`](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning)| **{check-circle}** Yes | String | `Unknown`, `Low`, `Medium`, `High`, `Critical` |
+| [`container-scanning`](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning)| **{check-circle}** Yes | String | `Unknown`, `Low`, `Medium`, `High`, `Critical` |
 
 ## Fuzz Testing
 

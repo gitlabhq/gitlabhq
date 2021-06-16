@@ -25,10 +25,6 @@ RSpec.describe API::Terraform::State do
     context 'without authentication' do
       let(:auth_header) { basic_auth_header('bad', 'token') }
 
-      before do
-        stub_feature_flags(usage_data_p_terraform_state_api_unique_users: false)
-      end
-
       it 'does not track unique event' do
         expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
 
@@ -156,15 +152,6 @@ RSpec.describe API::Terraform::State do
           expect(response).to have_gitlab_http_status(:ok)
           expect(Gitlab::Json.parse(response.body)).to be_empty
         end
-
-        context 'on Unicorn', :unicorn do
-          it 'updates the state' do
-            expect { request }.to change { Terraform::State.count }.by(0)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(Gitlab::Json.parse(response.body)).to be_empty
-          end
-        end
       end
 
       context 'without body' do
@@ -199,15 +186,6 @@ RSpec.describe API::Terraform::State do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(Gitlab::Json.parse(response.body)).to be_empty
-        end
-
-        context 'on Unicorn', :unicorn do
-          it 'creates a new state' do
-            expect { request }.to change { Terraform::State.count }.by(1)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(Gitlab::Json.parse(response.body)).to be_empty
-          end
         end
       end
 

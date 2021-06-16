@@ -7,13 +7,21 @@
     .form-group
       = render 'shared/allow_request_access', form: f
 
+    - if @group.root?
+      .form-group.gl-mb-3
+        .gl-form-checkbox.custom-control.custom-checkbox
+          = f.check_box :prevent_sharing_groups_outside_hierarchy, disabled: !can_change_prevent_sharing_groups_outside_hierarchy?(@group), class: 'custom-control-input'
+          = f.label :prevent_sharing_groups_outside_hierarchy, class: 'custom-control-label' do
+            %span
+              = s_('GroupSettings|Prevent members from sending invitations to groups outside of %{group} and its subgroups.').html_safe % { group: link_to_group(@group) }
+            %p.js-descr.help-text= prevent_sharing_groups_outside_hierarchy_help_text(@group)
+
     .form-group.gl-mb-3
       .gl-form-checkbox.custom-control.custom-checkbox
         = f.check_box :share_with_group_lock, disabled: !can_change_share_with_group_lock?(@group), class: 'custom-control-input'
         = f.label :share_with_group_lock, class: 'custom-control-label' do
           %span
-            - group_link = link_to @group.name, group_path(@group)
-            = s_('GroupSettings|Prevent sharing a project within %{group} with other groups').html_safe % { group: group_link }
+            = s_('GroupSettings|Prevent sharing a project within %{group} with other groups').html_safe % { group: link_to_group(@group) }
           %p.js-descr.help-text= share_with_group_lock_help_text(@group)
 
     .form-group.gl-mb-3

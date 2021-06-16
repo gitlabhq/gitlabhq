@@ -7,22 +7,18 @@ module QA
     class ProjectImportedFromGithub < Resource::Project
       def fabricate!
         self.import = true
-        super
 
-        group.visit!
+        Page::Main::Menu.perform(&:go_to_create_project)
 
-        Page::Group::Show.perform(&:go_to_new_project)
-        go_to_import_page
-        Page::Project::New.perform(&:click_github_link)
+        Page::Project::New.perform do |project_page|
+          project_page.click_import_project
+          project_page.click_github_link
+        end
 
         Page::Project::Import::Github.perform do |import_page|
           import_page.add_personal_access_token(@github_personal_access_token)
           import_page.import!(@github_repository_path, @name)
         end
-      end
-
-      def go_to_import_page
-        Page::Project::New.perform(&:click_import_project)
       end
     end
   end

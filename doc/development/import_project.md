@@ -53,7 +53,7 @@ This method takes longer to import than the other methods and depends on several
 
 ### Importing via a Rake task
 
-> The [Rake task](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/import_export/import.rake) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20724) in GitLab 12.6, replacing a GitLab.com Ruby script.
+> The [Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/import_export/import.rake) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20724) in GitLab 12.6, replacing a GitLab.com Ruby script.
 
 This script was introduced in GitLab 12.6 for importing large GitLab project exports.
 

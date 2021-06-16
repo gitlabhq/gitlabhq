@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { getJSONFixture } from 'helpers/fixtures';
 import testAction from 'helpers/vuex_action_helper';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
 import createReleaseAssetLinkMutation from '~/releases/graphql/mutations/create_release_link.mutation.graphql';
@@ -151,9 +151,9 @@ describe('Release edit/new actions', () => {
         it(`shows a flash message`, () => {
           return actions.fetchRelease({ commit: jest.fn(), state, rootState: state }).then(() => {
             expect(createFlash).toHaveBeenCalledTimes(1);
-            expect(createFlash).toHaveBeenCalledWith(
-              'Something went wrong while getting the release details.',
-            );
+            expect(createFlash).toHaveBeenCalledWith({
+              message: 'Something went wrong while getting the release details.',
+            });
           });
         });
       });
@@ -352,9 +352,9 @@ describe('Release edit/new actions', () => {
             .createRelease({ commit: jest.fn(), dispatch: jest.fn(), state, getters: {} })
             .then(() => {
               expect(createFlash).toHaveBeenCalledTimes(1);
-              expect(createFlash).toHaveBeenCalledWith(
-                'Something went wrong while creating a new release.',
-              );
+              expect(createFlash).toHaveBeenCalledWith({
+                message: 'Something went wrong while creating a new release.',
+              });
             });
         });
       });
@@ -483,9 +483,9 @@ describe('Release edit/new actions', () => {
           await actions.updateRelease({ commit, dispatch, state, getters });
 
           expect(createFlash).toHaveBeenCalledTimes(1);
-          expect(createFlash).toHaveBeenCalledWith(
-            'Something went wrong while saving the release details.',
-          );
+          expect(createFlash).toHaveBeenCalledWith({
+            message: 'Something went wrong while saving the release details.',
+          });
         });
       });
 
@@ -503,9 +503,9 @@ describe('Release edit/new actions', () => {
             await actions.updateRelease({ commit, dispatch, state, getters });
 
             expect(createFlash).toHaveBeenCalledTimes(1);
-            expect(createFlash).toHaveBeenCalledWith(
-              'Something went wrong while saving the release details.',
-            );
+            expect(createFlash).toHaveBeenCalledWith({
+              message: 'Something went wrong while saving the release details.',
+            });
           });
         };
 

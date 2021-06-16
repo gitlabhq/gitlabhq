@@ -12,7 +12,7 @@ module Snippets
 
       return invalid_params_error(@snippet) unless valid_params?
 
-      unless visibility_allowed?(snippet, snippet.visibility_level)
+      unless visibility_allowed?(snippet.visibility_level)
         return forbidden_visibility_error(snippet)
       end
 

@@ -109,6 +109,6 @@ describe('RemoveGroupLinkModal', () => {
   it('modal does not show when `removeGroupLinkModalVisible` is `false`', () => {
     createComponent({ removeGroupLinkModalVisible: false });
 
-    expect(findModal().vm.$attrs.visible).toBe(false);
+    expect(findModal().props().visible).toBe(false);
   });
 });

@@ -7,6 +7,13 @@ import refQuery from './queries/ref.query.graphql';
 
 const fetchpromises = {};
 const resolvers = {};
+let maxOffset;
+let nextOffset;
+let currentPath;
+
+function setNextOffset(offset) {
+  nextOffset = offset || null;
+}
 
 export function resolveCommit(commits, path, { resolve, entry }) {
   const commit = commits.find(
@@ -18,7 +25,25 @@ export function resolveCommit(commits, path, { resolve, entry }) {
   }
 }
 
-export function fetchLogsTree(client, path, offset, resolver = null) {
+export function fetchLogsTree(client, path, offset, resolver = null, _maxOffset = null) {
+  if (_maxOffset) {
+    maxOffset = _maxOffset;
+  }
+
+  if (!currentPath || currentPath !== path) {
+    // ensures the nextOffset is reset if the user changed directories
+    setNextOffset(null);
+  }
+
+  currentPath = path;
+
+  const offsetNumber = Number(offset);
+
+  if (!nextOffset && offsetNumber > maxOffset) {
+    setNextOffset(offsetNumber - 25); // ensures commit data is fetched for newly added rows that need data from the previous request (requests are made in batches of 25).
+    return Promise.resolve();
+  }
+
   if (resolver) {
     if (!resolvers[path]) {
       resolvers[path] = [resolver];
@@ -38,7 +63,7 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
         path.replace(/^\//, ''),
       )}`,
       {
-        params: { format: 'json', offset },
+        params: { format: 'json', offset: nextOffset || offset },
       },
     )
     .then(({ data: newData, headers }) => {
@@ -57,9 +82,12 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
       delete fetchpromises[path];
 
       if (headerLogsOffset) {
+        setNextOffset(null);
         fetchLogsTree(client, path, headerLogsOffset);
       } else {
         delete resolvers[path];
+        maxOffset = null;
+        setNextOffset(null);
       }
     });
 

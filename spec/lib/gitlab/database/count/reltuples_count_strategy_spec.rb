@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Database::Count::ReltuplesCountStrategy do
     end
 
     context 'when models using single-type inheritance are used' do
-      let(:models) { [Group, CiService, Namespace] }
+      let(:models) { [Group, Integrations::BaseCi, Namespace] }
 
       before do
         models.each do |model|

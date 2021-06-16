@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Tabs' do
+RSpec.describe 'Projects > Members > Tabs', :js do
   include Spec::Support::Helpers::Features::MembersHelpers
   using RSpec::Parameterized::TableSyntax
 
@@ -44,7 +44,7 @@ RSpec.describe 'Projects > Members > Tabs' do
     end
   end
 
-  context 'when searching "Groups"', :js do
+  context 'when searching "Groups"' do
     before do
       click_link 'Groups'
 

@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Testing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -90,7 +90,7 @@ Parameters
 Example request using the `PRIVATE-TOKEN` header:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test"
 ```
 
 To use this in a [`script` definition](../ci/yaml/README.md#script) inside
@@ -98,25 +98,25 @@ To use this in a [`script` definition](../ci/yaml/README.md#script) inside
 
 - The `JOB-TOKEN` header with the GitLab-provided `CI_JOB_TOKEN` variable.
   For example, the following job downloads the artifacts of the `test` job
-  of the `master` branch. Note that the command is wrapped into single quotes
+  of the `main` branch. Note that the command is wrapped into single quotes
   because it contains a colon (`:`):
 
   ```yaml
   artifact_download:
     stage: test
     script:
-      - 'curl --location --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/$CI_PROJECT_ID/jobs/artifacts/master/download?job=test"'
+      - 'curl --location --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/$CI_PROJECT_ID/jobs/artifacts/main/download?job=test"'
   ```
 
 - Or the `job_token` attribute with the GitLab-provided `CI_JOB_TOKEN` variable.
   For example, the following job downloads the artifacts of the `test` job
-  of the `master` branch:
+  of the `main` branch:
 
   ```yaml
   artifact_download:
     stage: test
     script:
-      - 'curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/$CI_PROJECT_ID/jobs/artifacts/master/download?job=test&job_token=$CI_JOB_TOKEN"'
+      - 'curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/$CI_PROJECT_ID/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN"'
   ```
 
 Possible response status codes:
@@ -193,7 +193,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/raw/some/release/file.pdf?job=pdf"
+curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/raw/some/release/file.pdf?job=pdf"
 ```
 
 Possible response status codes:
@@ -243,7 +243,7 @@ Example response:
   "download_url": null,
   "id": 42,
   "name": "rubocop",
-  "ref": "master",
+  "ref": "main",
   "artifacts": [],
   "runner": null,
   "stage": "test",

@@ -463,7 +463,7 @@ Creating a global, mutable wrapper provides a number of advantages, including th
     let wrapper;
 
     // this can now be reused across tests
-    const findMyComponent = wrapper.find(MyComponent);
+    const findMyComponent = wrapper.findComponent(MyComponent);
     // ...
   })
   ```
@@ -565,16 +565,15 @@ the mounting function (`mount` or `shallowMount`) to be used to mount the compon
     function createComponent({ mountFn = shallowMount } = {}) { }
     ```
 
-1. Wrap calls to `mount` and `shallowMount` in `extendedWrapper`, this exposes `wrapper.findByTestId()`:
+1. Use the `mountExtended` and `shallowMountExtended` helpers to expose `wrapper.findByTestId()`:
 
     ```javascript
-    import { shallowMount } from '@vue/test-utils';
-    import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+    import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
     import { SomeComponent } from 'components/some_component.vue';
 
     let wrapper;
 
-    const createWrapper = () => { wrapper = extendedWrapper(shallowMount(SomeComponent)); };
+    const createWrapper = () => { wrapper = shallowMountExtended(SomeComponent); };
     const someButton = () => wrapper.findByTestId('someButtonTestId');
     ```
 

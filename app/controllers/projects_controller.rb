@@ -39,6 +39,11 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
   end
 
+  before_action only: [:new] do
+    # Run experiment before render so it will be written to the `gon` for FE
+    helpers.new_repo_experiment_text
+  end
+
   layout :determine_layout
 
   feature_category :projects, [
@@ -221,7 +226,14 @@ class ProjectsController < Projects::ApplicationController
 
   def download_export
     if @project.export_file_exists?
-      send_upload(@project.export_file, attachment: @project.export_file.filename)
+      if @project.export_archive_exists?
+        send_upload(@project.export_file, attachment: @project.export_file.filename)
+      else
+        redirect_to(
+          edit_project_path(@project, anchor: 'js-export-project'),
+          alert: _("The file containing the export is not available yet; it may still be transferring. Please try again later.")
+        )
+      end
     else
       redirect_to(
         edit_project_path(@project, anchor: 'js-export-project'),
@@ -330,11 +342,7 @@ class ProjectsController < Projects::ApplicationController
         experiment(:empty_repo_upload, project: @project).track(:view_project_show, property: property)
       end
 
-      if @project.empty_repo?
-        record_experiment_user(:invite_members_empty_project_version_a)
-
-        render 'projects/empty'
-      end
+      render 'projects/empty' if @project.empty_repo?
     else
       if can?(current_user, :read_wiki, @project)
         @wiki = @project.wiki
@@ -435,6 +443,7 @@ class ProjectsController < Projects::ApplicationController
       :request_access_enabled,
       :runners_token,
       :tag_list,
+      :topics,
       :visibility_level,
       :template_name,
       :template_project_id,

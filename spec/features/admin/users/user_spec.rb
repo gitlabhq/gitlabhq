@@ -356,27 +356,19 @@ RSpec.describe 'Admin::Users::User' do
     end
   end
 
-  [true, false].each do |vue_admin_users|
-    context "with vue_admin_users feature flag set to #{vue_admin_users}", js: vue_admin_users do
-      before do
-        stub_feature_flags(vue_admin_users: vue_admin_users)
-      end
+  describe 'GET /admin/users', :js do
+    context 'user pending approval' do
+      it 'shows user info', :aggregate_failures do
+        user = create(:user, :blocked_pending_approval)
 
-      describe 'GET /admin/users' do
-        context 'user pending approval' do
-          it 'shows user info', :aggregate_failures do
-            user = create(:user, :blocked_pending_approval)
+        visit admin_users_path
+        click_link 'Pending approval'
+        click_link user.name
 
-            visit admin_users_path
-            click_link 'Pending approval'
-            click_link user.name
-
-            expect(page).to have_content(user.name)
-            expect(page).to have_content('Pending approval')
-            expect(page).to have_link('Approve user')
-            expect(page).to have_link('Reject request')
-          end
-        end
+        expect(page).to have_content(user.name)
+        expect(page).to have_content('Pending approval')
+        expect(page).to have_link('Approve user')
+        expect(page).to have_link('Reject request')
       end
     end
   end

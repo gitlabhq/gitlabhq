@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'post_migrate', '20210430135954_copy_adoption_segments_namespace.rb')
+require_migration!('copy_adoption_segments_namespace')
 
 RSpec.describe CopyAdoptionSegmentsNamespace, :migration do
   let(:namespaces_table) { table(:namespaces) }

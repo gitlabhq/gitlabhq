@@ -587,6 +587,31 @@ RSpec.describe Projects::UpdateService do
         it_behaves_like 'the transfer was not scheduled'
       end
     end
+
+    describe 'when updating topics' do
+      let(:project) { create(:project, topic_list: 'topic1, topic2') }
+
+      it 'update using topics' do
+        result = update_project(project, user, { topics: 'topics' })
+
+        expect(result[:status]).to eq(:success)
+        expect(project.topic_list).to eq(%w[topics])
+      end
+
+      it 'update using topic_list' do
+        result = update_project(project, user, { topic_list: 'topic_list' })
+
+        expect(result[:status]).to eq(:success)
+        expect(project.topic_list).to eq(%w[topic_list])
+      end
+
+      it 'update using tag_list (deprecated)' do
+        result = update_project(project, user, { tag_list: 'tag_list' })
+
+        expect(result[:status]).to eq(:success)
+        expect(project.topic_list).to eq(%w[tag_list])
+      end
+    end
   end
 
   describe '#run_auto_devops_pipeline?' do

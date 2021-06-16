@@ -21,7 +21,7 @@ large database imports.
 echo "postgresql['checkpoint_segments'] = 64" | sudo tee -a /etc/gitlab/gitlab.rb
 sudo touch /etc/gitlab/skip-auto-reconfigure
 sudo gitlab-ctl reconfigure
-sudo gitlab-ctl stop unicorn
+sudo gitlab-ctl stop puma
 sudo gitlab-ctl stop sidekiq
 ```
 

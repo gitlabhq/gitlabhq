@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Polling configuration
+# Polling configuration **(FREE SELF)**
 
 The GitLab UI polls for updates for different resources (issue notes, issue
 titles, pipeline statuses, etc.) on a schedule appropriate to the resource.

@@ -5,9 +5,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Project Import Decompressed Archive Size Limits
+# Project import decompressed archive size limits **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31564) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31564) in GitLab 13.2.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63025) in GitLab 14.0.
 
 When using [Project Import](../user/project/settings/import_export.md), the size of the decompressed project archive is limited to 10Gb.
 
@@ -15,7 +16,6 @@ If decompressed size exceeds this limit, `Decompressed archive size validation f
 
 ## Enable/disable size validation
 
-Decompressed size validation is enabled by default.
 If you have a project with decompressed size exceeding this limit,
 it is possible to disable the validation by turning off the
 `validate_import_decompressed_archive_size` feature flag.

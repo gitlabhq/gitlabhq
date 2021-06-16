@@ -43,6 +43,15 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory do
       end
     end
 
+    context 'when author relation' do
+      let(:relation_sym) { :author }
+      let(:relation_hash) { { 'name' => 'User', 'project_id' => project.id } }
+
+      it 'returns author hash unchanged' do
+        expect(subject).to eq(relation_hash)
+      end
+    end
+
     context 'when #setup_models is not implemented' do
       it 'raises NotImplementedError' do
         expect { subject }.to raise_error(NotImplementedError)

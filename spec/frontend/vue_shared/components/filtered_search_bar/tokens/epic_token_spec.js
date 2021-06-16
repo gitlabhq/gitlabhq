@@ -67,18 +67,6 @@ describe('EpicToken', () => {
 
       await wrapper.vm.$nextTick();
     });
-
-    describe('activeEpic', () => {
-      it('returns object for currently present `value.data`', async () => {
-        wrapper.setProps({
-          value: { data: `${mockEpics[0].iid}` },
-        });
-
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.vm.activeEpic).toEqual(mockEpics[0]);
-      });
-    });
   });
 
   describe('methods', () => {
@@ -86,9 +74,12 @@ describe('EpicToken', () => {
       it('calls `config.fetchEpics` with provided searchTerm param', () => {
         jest.spyOn(wrapper.vm.config, 'fetchEpics');
 
-        wrapper.vm.fetchEpicsBySearchTerm('foo');
+        wrapper.vm.fetchEpicsBySearchTerm({ search: 'foo' });
 
-        expect(wrapper.vm.config.fetchEpics).toHaveBeenCalledWith('foo');
+        expect(wrapper.vm.config.fetchEpics).toHaveBeenCalledWith({
+          epicPath: '',
+          search: 'foo',
+        });
       });
 
       it('sets response to `epics` when request is successful', async () => {
@@ -96,7 +87,7 @@ describe('EpicToken', () => {
           data: mockEpics,
         });
 
-        wrapper.vm.fetchEpicsBySearchTerm();
+        wrapper.vm.fetchEpicsBySearchTerm({});
 
         await waitForPromises();
 
@@ -106,7 +97,7 @@ describe('EpicToken', () => {
       it('calls `createFlash` with flash error message when request fails', async () => {
         jest.spyOn(wrapper.vm.config, 'fetchEpics').mockRejectedValue({});
 
-        wrapper.vm.fetchEpicsBySearchTerm('foo');
+        wrapper.vm.fetchEpicsBySearchTerm({ search: 'foo' });
 
         await waitForPromises();
 
@@ -118,7 +109,7 @@ describe('EpicToken', () => {
       it('sets `loading` to false when request completes', async () => {
         jest.spyOn(wrapper.vm.config, 'fetchEpics').mockRejectedValue({});
 
-        wrapper.vm.fetchEpicsBySearchTerm('foo');
+        wrapper.vm.fetchEpicsBySearchTerm({ search: 'foo' });
 
         await waitForPromises();
 
@@ -128,9 +119,11 @@ describe('EpicToken', () => {
   });
 
   describe('template', () => {
+    const getTokenValueEl = () => wrapper.findAllComponents(GlFilteredSearchTokenSegment).at(2);
+
     beforeEach(async () => {
       wrapper = createComponent({
-        value: { data: `${mockEpics[0].iid}` },
+        value: { data: `${mockEpics[0].group_full_path}::&${mockEpics[0].iid}` },
         data: { epics: mockEpics },
       });
 
@@ -146,6 +139,20 @@ describe('EpicToken', () => {
 
       expect(tokenSegments).toHaveLength(3);
       expect(tokenSegments.at(2).text()).toBe(`${mockEpics[0].title}::&${mockEpics[0].iid}`);
+    });
+
+    it.each`
+      value                                                      | valueType   | tokenValueString
+      ${`${mockEpics[0].group_full_path}::&${mockEpics[0].iid}`} | ${'string'} | ${`${mockEpics[0].title}::&${mockEpics[0].iid}`}
+      ${`${mockEpics[1].group_full_path}::&${mockEpics[1].iid}`} | ${'number'} | ${`${mockEpics[1].title}::&${mockEpics[1].iid}`}
+    `('renders token item when selection is a $valueType', async ({ value, tokenValueString }) => {
+      wrapper.setProps({
+        value: { data: value },
+      });
+
+      await wrapper.vm.$nextTick();
+
+      expect(getTokenValueEl().text()).toBe(tokenValueString);
     });
   });
 });

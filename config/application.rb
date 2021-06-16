@@ -47,7 +47,6 @@ module Gitlab
     config.eager_load_paths.push(*%W[#{config.root}/lib
                                      #{config.root}/app/models/badges
                                      #{config.root}/app/models/hooks
-                                     #{config.root}/app/models/integrations
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/graphql/resolvers/concerns
@@ -166,6 +165,10 @@ module Gitlab
     # like if you have constraints or database-specific column types
     config.active_record.schema_format = :sql
 
+    # Use new connection handling so that we can use Rails 6.1+ multiple
+    # database support.
+    config.active_record.legacy_connection_handling = false
+
     config.action_mailer.delivery_job = "ActionMailer::MailDeliveryJob"
 
     # Enable the asset pipeline
@@ -200,6 +203,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/epics.css"
     config.assets.precompile << "page_bundles/error_tracking_details.css"
     config.assets.precompile << "page_bundles/error_tracking_index.css"
+    config.assets.precompile << "page_bundles/group.css"
     config.assets.precompile << "page_bundles/ide.css"
     config.assets.precompile << "page_bundles/import.css"
     config.assets.precompile << "page_bundles/incident_management_list.css"
@@ -213,11 +217,13 @@ module Gitlab
     config.assets.precompile << "page_bundles/milestone.css"
     config.assets.precompile << "page_bundles/new_namespace.css"
     config.assets.precompile << "page_bundles/oncall_schedules.css"
+    config.assets.precompile << "page_bundles/escalation_policies.css"
     config.assets.precompile << "page_bundles/pipeline.css"
     config.assets.precompile << "page_bundles/pipeline_schedules.css"
     config.assets.precompile << "page_bundles/pipelines.css"
     config.assets.precompile << "page_bundles/productivity_analytics.css"
     config.assets.precompile << "page_bundles/profile_two_factor_auth.css"
+    config.assets.precompile << "page_bundles/project.css"
     config.assets.precompile << "page_bundles/reports.css"
     config.assets.precompile << "page_bundles/roadmap.css"
     config.assets.precompile << "page_bundles/security_dashboard.css"
@@ -309,11 +315,33 @@ module Gitlab
       end
 
       # Cross-origin requests must be enabled for the Authorization code with PKCE OAuth flow when used from a browser.
+      %w(/oauth/token /oauth/revoke).each do |oauth_path|
+        allow do
+          origins '*'
+          resource oauth_path,
+            headers: %w(Authorization),
+            credentials: false,
+            methods: %i(post)
+        end
+      end
+
+      # These are routes from doorkeeper-openid_connect:
+      # https://github.com/doorkeeper-gem/doorkeeper-openid_connect#routes
       allow do
         origins '*'
-        resource '/oauth/token',
+        resource '/oauth/userinfo',
+          headers: %w(Authorization),
           credentials: false,
-          methods: [:post]
+          methods: %i(get head post)
+      end
+
+      %w(/oauth/discovery/keys /.well-known/openid-configuration /.well-known/webfinger).each do |openid_path|
+        allow do
+          origins '*'
+          resource openid_path,
+          credentials: false,
+          methods: %i(get head)
+        end
       end
     end
 

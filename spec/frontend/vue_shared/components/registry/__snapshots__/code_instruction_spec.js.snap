@@ -59,6 +59,7 @@ exports[`Package code instruction single line to match the default snapshot 1`] 
             aria-hidden="true"
             class="gl-button-icon gl-icon s16"
             data-testid="copy-to-clipboard-icon"
+            role="img"
           >
             <use
               href="#copy-to-clipboard"

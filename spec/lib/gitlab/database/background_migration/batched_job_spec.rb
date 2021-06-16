@@ -49,16 +49,6 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
     let(:batched_job) { build(:batched_background_migration_job) }
     let(:batched_migration) { batched_job.batched_migration }
 
-    describe '#migration_aborted?' do
-      before do
-        batched_migration.status = :aborted
-      end
-
-      it 'returns the migration aborted?' do
-        expect(batched_job.migration_aborted?).to eq(batched_migration.aborted?)
-      end
-    end
-
     describe '#migration_job_class' do
       it 'returns the migration job_class' do
         expect(batched_job.migration_job_class).to eq(batched_migration.job_class)

@@ -84,6 +84,8 @@ module Gitlab
         end
 
         def valid_project_slug?(found_project)
+          return false unless found_project
+
           project_slug == found_project.full_path_slug
         end
 

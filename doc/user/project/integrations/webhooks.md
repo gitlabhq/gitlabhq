@@ -34,8 +34,10 @@ Webhooks are available:
 - Per project, at a project's **Settings > Webhooks** menu. **(FREE)**
 - Additionally per group, at a group's **Settings > Webhooks** menu. **(PREMIUM)**
 
-NOTE:
-On GitLab.com, the [maximum number of webhooks and their size](../../../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
+GitLab.com enforces various [webhook limits](../../../user/gitlab_com/index.md#webhooks), including:
+
+- The maximum number of webhooks and their size, both per project, and per group.
+- The number of webhook calls per minute.
 
 ## Possible uses for webhooks
 
@@ -308,8 +310,10 @@ X-Gitlab-Event: Issue Hook
     "duplicated_to_id": null,
     "time_estimate": 0,
     "total_time_spent": 0,
+    "time_change": 0,
     "human_total_time_spent": null,
     "human_time_estimate": null,
+    "human_time_change": null,
     "weight": null,
     "iid": 23,
     "url": "http://example.com/diaspora/issues/23",
@@ -1161,6 +1165,7 @@ X-Gitlab-Event: Pipeline Hook
             "id": 380987,
             "description": "shared-runners-manager-6.gitlab.com",
             "active": true,
+            "runner_type": "instance_type",
             "is_shared": true,
             "tags": [
               "linux",
@@ -1196,7 +1201,8 @@ X-Gitlab-Event: Pipeline Hook
             "id":380987,
             "description":"shared-runners-manager-6.gitlab.com",
             "active":true,
-            "is_shared":true,
+            "runner_type": "instance_type",
+            "is_shared": true,
             "tags": [
               "linux",
               "docker"
@@ -1230,6 +1236,7 @@ X-Gitlab-Event: Pipeline Hook
             "id": 380987,
             "description": "shared-runners-manager-6.gitlab.com",
             "active": true,
+            "runner_type": "instance_type",
             "is_shared": true,
             "tags": [
               "linux",
@@ -1333,6 +1340,7 @@ X-Gitlab-Event: Job Hook
   },
   "runner": {
     "active": true,
+    "runner_type": "project_type", 
     "is_shared": false,
     "id": 380987,
     "description": "shared-runners-manager-6.gitlab.com",

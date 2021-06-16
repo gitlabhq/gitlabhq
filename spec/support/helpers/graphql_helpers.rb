@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module GraphqlHelpers
+  def self.included(base)
+    base.include(::Gitlab::Graphql::Laziness)
+  end
+
   MutationDefinition = Struct.new(:query, :variables)
 
   NoData = Class.new(StandardError)

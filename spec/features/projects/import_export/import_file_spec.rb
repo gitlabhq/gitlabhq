@@ -30,14 +30,14 @@ RSpec.describe 'Import/Export - project import integration test', :js do
 
     it 'user imports an exported project successfully', :sidekiq_might_not_need_inline do
       visit new_project_path
-      click_import_project_tab
+      click_import_project
       click_link 'GitLab export'
 
       fill_in :name, with: 'Test Project Name', visible: true
       fill_in :path, with: 'test-project-path', visible: true
       attach_file('file', file)
 
-      expect { click_on 'Import project' }.to change { Project.count }.by(1)
+      expect { click_button 'Import project' }.to change { Project.count }.by(1)
 
       project = Project.last
       expect(project).not_to be_nil
@@ -49,11 +49,11 @@ RSpec.describe 'Import/Export - project import integration test', :js do
 
       visit new_project_path
 
-      click_import_project_tab
+      click_import_project
       click_link 'GitLab export'
       fill_in :name, with: project.name, visible: true
       attach_file('file', file)
-      click_on 'Import project'
+      click_button 'Import project'
 
       page.within('.flash-container') do
         expect(page).to have_content('Project could not be imported')
@@ -61,7 +61,7 @@ RSpec.describe 'Import/Export - project import integration test', :js do
     end
   end
 
-  def click_import_project_tab
+  def click_import_project
     find('[data-qa-selector="import_project_link"]').click
   end
 end

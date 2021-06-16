@@ -31,7 +31,7 @@ function organizeQuery(obj, isFallbackKey = false) {
 }
 
 function format(searchTerm, isFallbackKey = false) {
-  const queryObject = queryToObject(searchTerm);
+  const queryObject = queryToObject(searchTerm, { legacySpacesDecode: true });
   const organizeQueryObject = organizeQuery(queryObject, isFallbackKey);
   const formattedQuery = objectToQuery(organizeQueryObject);
 

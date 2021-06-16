@@ -1,12 +1,12 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 type: index, howto
 ---
 
-# Migrating from Jenkins
+# Migrating from Jenkins **(FREE)**
 
 A lot of GitLab users have successfully migrated to GitLab CI/CD from Jenkins. To make this
 easier if you're just getting started, we've collected several resources here that you might find useful
@@ -128,16 +128,16 @@ agents you were using.
 
 There are some important differences in the way runners work in comparison to agents:
 
-- Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/README.md#types-of-runners).
+- Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/runners_scope.md).
   They self-select jobs from the scopes you've defined automatically.
-- You can also [use tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) for finer control, and
+- You can also [use tags](../runners/configure_runners.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) for finer control, and
   associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
 - GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale.html).
   Use autoscaling to provision runners only when needed, and scale down when not needed.
   This is similar to ephemeral agents in Jenkins.
 
-If you are using `gitlab.com`, you can take advantage of our [shared runner fleet](../../user/gitlab_com/index.md#shared-runners)
+If you are using `gitlab.com`, you can take advantage of our [shared runner fleet](../runners/README.md)
 to run jobs without provisioning your own runners. We are investigating making them
 [available for self-managed instances](https://gitlab.com/groups/gitlab-org/-/epics/835)
 as well.
@@ -230,7 +230,7 @@ and is meant to be a mapping of concepts there to concepts in GitLab.
 The agent section is used to define how a pipeline executes. For GitLab, we use [runners](../runners/README.md)
 to provide this capability. You can configure your own runners in Kubernetes or on any host, or take advantage
 of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users).
-We also support using [tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) to direct different jobs
+We also support using [tags](../runners/configure_runners.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) to direct different jobs
 to different runners (execution agents).
 
 The `agent` section also allows you to define which Docker images should be used for execution, for which we use
@@ -349,12 +349,14 @@ variable entry.
 
 GitLab does support a [`when` keyword](../yaml/README.md#when) which is used to indicate when a job should be
 run in case of (or despite) failure, but most of the logic for controlling pipelines can be found in
-our very powerful [`only/except` rules system](../yaml/README.md#only--except)
-(see also our [advanced syntax](../yaml/README.md#only--except)):
+our very powerful [`rules` system](../yaml/README.md#rules):
 
 ```yaml
 my_job:
-  only: [branches]
+  script:
+    - echo
+  rules:
+    - if: $CI_COMMIT_BRANCH
 ```
 
 ## Additional resources

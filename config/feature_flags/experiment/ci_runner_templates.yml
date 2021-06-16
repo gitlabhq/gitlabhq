@@ -1,0 +1,8 @@
+---
+name: ci_runner_templates
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58357
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326725
+milestone: "14.0"
+type: experiment
+group: group::activation
+default_enabled: false

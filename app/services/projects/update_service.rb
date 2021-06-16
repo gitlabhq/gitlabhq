@@ -8,6 +8,7 @@ module Projects
     ValidationError = Class.new(StandardError)
 
     def execute
+      build_topics
       remove_unallowed_params
       validate!
 
@@ -166,6 +167,14 @@ module Projects
       new_repository_storage && project.repository.exists? &&
         project.repository_storage != new_repository_storage &&
         can?(current_user, :change_repository_storage, project)
+    end
+
+    def build_topics
+      topics = params.delete(:topics)
+      tag_list = params.delete(:tag_list)
+      topic_list = topics || tag_list
+
+      params[:topic_list] ||= topic_list if topic_list
     end
   end
 end

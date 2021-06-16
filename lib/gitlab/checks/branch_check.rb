@@ -2,7 +2,7 @@
 
 module Gitlab
   module Checks
-    class BranchCheck < BaseChecker
+    class BranchCheck < BaseSingleChecker
       ERROR_MESSAGES = {
         delete_default_branch: 'The default branch of a project cannot be deleted.',
         force_push_protected_branch: 'You are not allowed to force push code to a protected branch on this project.',

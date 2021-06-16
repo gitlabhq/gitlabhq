@@ -17,12 +17,13 @@ RSpec.describe 'User deletes feature flag user list', :js do
     end
 
     it 'deletes the list' do
-      visit(project_feature_flags_path(project, scope: 'userLists'))
+      visit(project_feature_flags_user_lists_path(project, scope: 'userLists'))
 
       delete_user_list_button.click
       delete_user_list_modal_confirmation_button.click
 
-      expect(page).to have_text('Lists 0')
+      expect(page).to have_text('Lists')
+      expect(page).not_to have_selector('[data-testid="ffUserListName"]')
     end
   end
 
@@ -34,7 +35,7 @@ RSpec.describe 'User deletes feature flag user list', :js do
     end
 
     it 'does not delete the list' do
-      visit(project_feature_flags_path(project, scope: 'userLists'))
+      visit(project_feature_flags_user_lists_path(project, scope: 'userLists'))
 
       delete_user_list_button.click
       delete_user_list_modal_confirmation_button.click

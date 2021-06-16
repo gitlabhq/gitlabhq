@@ -33,7 +33,7 @@ RSpec.describe Projects::PostCreationWorker do
           end
 
           before do
-            create(:clusters_applications_prometheus, :installed, cluster: cluster)
+            create(:clusters_integrations_prometheus, cluster: cluster)
           end
 
           it 'creates PrometheusService record', :aggregate_failures do
@@ -50,7 +50,7 @@ RSpec.describe Projects::PostCreationWorker do
           let(:cluster) { create(:cluster, :instance) }
 
           before do
-            create(:clusters_applications_prometheus, :installed, cluster: cluster)
+            create(:clusters_integrations_prometheus, cluster: cluster)
           end
 
           it 'creates PrometheusService record', :aggregate_failures do

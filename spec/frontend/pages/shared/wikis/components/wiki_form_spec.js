@@ -2,15 +2,23 @@ import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
 import WikiForm from '~/pages/shared/wikis/components/wiki_form.vue';
+import {
+  WIKI_CONTENT_EDITOR_TRACKING_LABEL,
+  CONTENT_EDITOR_LOADED_ACTION,
+  SAVED_USING_CONTENT_EDITOR_ACTION,
+} from '~/pages/shared/wikis/constants';
+
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
 describe('WikiForm', () => {
   let wrapper;
   let mock;
+  let trackingSpy;
 
   const findForm = () => wrapper.find('form');
   const findTitle = () => wrapper.find('#wiki_title');
@@ -19,9 +27,11 @@ describe('WikiForm', () => {
   const findMessage = () => wrapper.find('#wiki_message');
   const findSubmitButton = () => wrapper.findByTestId('wiki-submit-button');
   const findCancelButton = () => wrapper.findByRole('link', { name: 'Cancel' });
-  const findUseNewEditorButton = () => wrapper.findByRole('button', { name: 'Use new editor' });
+  const findUseNewEditorButton = () => wrapper.findByRole('button', { name: 'Use the new editor' });
+  const findDismissContentEditorAlertButton = () =>
+    wrapper.findByRole('button', { name: 'Try this later' });
   const findSwitchToOldEditorButton = () =>
-    wrapper.findByRole('button', { name: 'Switch to old editor' });
+    wrapper.findByRole('button', { name: 'Switch me back to the classic editor.' });
   const findTitleHelpLink = () => wrapper.findByRole('link', { name: 'More Information.' });
   const findMarkdownHelpLink = () => wrapper.findByTestId('wiki-markdown-help-link');
 
@@ -55,15 +65,12 @@ describe('WikiForm', () => {
     persisted: true,
 
     title: 'My page',
-    content: 'My page content',
+    content: '  My page content  ',
     format: 'markdown',
     path: '/project/path/-/wikis/home',
   };
 
-  function createWrapper(
-    persisted = false,
-    { pageInfo, glFeatures } = { glFeatures: { wikiContentEditor: false } },
-  ) {
+  function createWrapper(persisted = false, { pageInfo } = {}) {
     wrapper = extendedWrapper(
       mount(
         WikiForm,
@@ -79,7 +86,6 @@ describe('WikiForm', () => {
               ...(persisted ? pageInfoPersisted : pageInfoNew),
               ...pageInfo,
             },
-            glFeatures,
           },
         },
         { attachToDocument: true },
@@ -88,6 +94,7 @@ describe('WikiForm', () => {
   }
 
   beforeEach(() => {
+    trackingSpy = mockTracking(undefined, null, jest.spyOn);
     mock = new MockAdapter(axios);
   });
 
@@ -122,6 +129,12 @@ describe('WikiForm', () => {
     await wrapper.vm.$nextTick();
 
     expect(findMessage().element.value).toBe('Update My page');
+  });
+
+  it('does not trim page content by default', () => {
+    createWrapper(true);
+
+    expect(findContent().element.value).toBe('  My page content  ');
   });
 
   it.each`
@@ -178,10 +191,10 @@ describe('WikiForm', () => {
 
   describe('when wiki content is updated', () => {
     beforeEach(() => {
-      createWrapper();
+      createWrapper(true);
 
       const input = findContent();
-      input.setValue('Lorem ipsum dolar sit!');
+      input.setValue(' Lorem ipsum dolar sit! ');
       input.element.dispatchEvent(new Event('input'));
 
       return wrapper.vm.$nextTick();
@@ -193,13 +206,25 @@ describe('WikiForm', () => {
       expect(e.preventDefault).toHaveBeenCalledTimes(1);
     });
 
-    it('when form submitted, unsets before unload warning', async () => {
-      triggerFormSubmit();
+    describe('form submit', () => {
+      beforeEach(async () => {
+        triggerFormSubmit();
 
-      await wrapper.vm.$nextTick();
+        await wrapper.vm.$nextTick();
+      });
 
-      const e = dispatchBeforeUnload();
-      expect(e.preventDefault).not.toHaveBeenCalled();
+      it('when form submitted, unsets before unload warning', async () => {
+        const e = dispatchBeforeUnload();
+        expect(e.preventDefault).not.toHaveBeenCalled();
+      });
+
+      it('does not trigger tracking event', async () => {
+        expect(trackingSpy).not.toHaveBeenCalled();
+      });
+
+      it('does not trim page content', () => {
+        expect(findContent().element.value).toBe(' Lorem ipsum dolar sit! ');
+      });
     });
   });
 
@@ -251,9 +276,9 @@ describe('WikiForm', () => {
     );
   });
 
-  describe('when feature flag wikiContentEditor is enabled', () => {
+  describe('wiki content editor', () => {
     beforeEach(() => {
-      createWrapper(true, { glFeatures: { wikiContentEditor: true } });
+      createWrapper(true);
     });
 
     it.each`
@@ -261,7 +286,7 @@ describe('WikiForm', () => {
       ${'markdown'} | ${true}
       ${'rdoc'}     | ${false}
     `(
-      'switch to new editor button exists: $buttonExists if format is $format',
+      'gl-alert containing "use new editor" button exists: $buttonExists if format is $format',
       async ({ format, buttonExists }) => {
         setFormat(format);
 
@@ -270,6 +295,12 @@ describe('WikiForm', () => {
         expect(findUseNewEditorButton().exists()).toBe(buttonExists);
       },
     );
+
+    it('gl-alert containing "use new editor" button is dismissed on clicking dismiss button', async () => {
+      await findDismissContentEditorAlertButton().trigger('click');
+
+      expect(findUseNewEditorButton().exists()).toBe(false);
+    });
 
     const assertOldEditorIsVisible = () => {
       expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
@@ -284,7 +315,7 @@ describe('WikiForm', () => {
       );
     };
 
-    it('shows old editor by default', assertOldEditorIsVisible);
+    it('shows classic editor by default', assertOldEditorIsVisible);
 
     describe('switch format to rdoc', () => {
       beforeEach(async () => {
@@ -293,7 +324,7 @@ describe('WikiForm', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('continues to show the old editor', assertOldEditorIsVisible);
+      it('continues to show the classic editor', assertOldEditorIsVisible);
 
       describe('switch format back to markdown', () => {
         beforeEach(async () => {
@@ -303,7 +334,7 @@ describe('WikiForm', () => {
         });
 
         it(
-          'still shows the old editor and does not automatically switch to the content editor ',
+          'still shows the classic editor and does not automatically switch to the content editor ',
           assertOldEditorIsVisible,
         );
       });
@@ -328,12 +359,12 @@ describe('WikiForm', () => {
         expect(findSubmitButton().props('disabled')).toBe(true);
       });
 
-      describe('clicking "switch to old editor"', () => {
+      describe('clicking "switch to classic editor"', () => {
         beforeEach(() => {
           return findSwitchToOldEditorButton().trigger('click');
         });
 
-        it('switches to old editor directly without showing a modal', () => {
+        it('switches to classic editor directly without showing a modal', () => {
           expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
           expect(wrapper.findComponent(MarkdownField).exists()).toBe(true);
         });
@@ -351,10 +382,11 @@ describe('WikiForm', () => {
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
 
+      it('shows a tip to send feedback', () => {
+        expect(wrapper.text()).toContain('Tell us your experiences with the new Markdown editor');
+      });
+
       it('shows warnings that the rich text editor is in beta and may not work properly', () => {
-        expect(wrapper.text()).toContain(
-          "Switching will discard any changes you've made in the new editor.",
-        );
         expect(wrapper.text()).toContain(
           "This editor is in beta and may not display the page's contents properly.",
         );
@@ -366,6 +398,15 @@ describe('WikiForm', () => {
 
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
         expect(wrapper.findComponent(ContentEditor).exists()).toBe(true);
+      });
+
+      it('sends tracking event when editor loads', async () => {
+        // wait for content editor to load
+        await waitForPromises();
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, CONTENT_EDITOR_LOADED_ACTION, {
+          label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
+        });
       });
 
       it('disables the format dropdown', () => {
@@ -400,9 +441,19 @@ describe('WikiForm', () => {
         });
       });
 
+      it('triggers tracking event on form submit', async () => {
+        triggerFormSubmit();
+
+        await wrapper.vm.$nextTick();
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, SAVED_USING_CONTENT_EDITOR_ACTION, {
+          label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
+        });
+      });
+
       it('updates content from content editor on form submit', async () => {
         // old value
-        expect(findContent().element.value).toBe('My page content');
+        expect(findContent().element.value).toBe('  My page content  ');
 
         // wait for content editor to load
         await waitForPromises();
@@ -414,7 +465,7 @@ describe('WikiForm', () => {
         expect(findContent().element.value).toBe('hello **world**');
       });
 
-      describe('clicking "switch to old editor"', () => {
+      describe('clicking "switch to classic editor"', () => {
         let modal;
 
         beforeEach(async () => {
@@ -428,7 +479,7 @@ describe('WikiForm', () => {
           expect(modal.vm.show).toHaveBeenCalled();
         });
 
-        describe('confirming "switch to old editor" in the modal', () => {
+        describe('confirming "switch to classic editor" in the modal', () => {
           beforeEach(async () => {
             wrapper.vm.contentEditor.tiptapEditor.commands.setContent(
               '<p>hello __world__ from content editor</p>',
@@ -440,7 +491,7 @@ describe('WikiForm', () => {
             await wrapper.vm.$nextTick();
           });
 
-          it('switches to old editor', () => {
+          it('switches to classic editor', () => {
             expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
             expect(wrapper.findComponent(MarkdownField).exists()).toBe(true);
           });
@@ -451,8 +502,8 @@ describe('WikiForm', () => {
             );
           });
 
-          it('the old editor retains its old value and does not use the content from the content editor', () => {
-            expect(findContent().element.value).toBe('My page content');
+          it('the classic editor retains its old value and does not use the content from the content editor', () => {
+            expect(findContent().element.value).toBe('  My page content  ');
           });
         });
       });

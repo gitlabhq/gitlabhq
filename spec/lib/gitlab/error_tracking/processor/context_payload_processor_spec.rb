@@ -4,7 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ErrorTracking::Processor::ContextPayloadProcessor do
   describe '.call' do
-    let(:event) { Raven::Event.new(payload) }
+    let(:required_options) do
+      {
+        configuration: Raven.configuration,
+        context: Raven.context,
+        breadcrumbs: Raven.breadcrumbs
+      }
+    end
+
+    let(:event) { Raven::Event.new(required_options.merge(payload)) }
     let(:result_hash) { described_class.call(event).to_hash }
 
     before do

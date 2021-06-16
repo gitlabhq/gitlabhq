@@ -87,6 +87,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Polish
   - Filip Mech - [GitLab](https://gitlab.com/mehenz), [CrowdIn](https://crowdin.com/profile/mehenz)
   - Maksymilian Roman - [GitLab](https://gitlab.com/villaincandle), [CrowdIn](https://crowdin.com/profile/villaincandle)
+  - Jakub Gładykowski - [GitLab](https://gitlab.com/gladykov), [CrowdIn](https://crowdin.com/profile/gladykov)
 - Portuguese
   - Diogo Trindade - [GitLab](https://gitlab.com/luisdiogo2071317), [CrowdIn](https://crowdin.com/profile/ldiogotrindade)
 - Portuguese, Brazilian
@@ -108,7 +109,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Spanish
   - Pedro Garcia - [GitLab](https://gitlab.com/pedgarrod), [CrowdIn](https://crowdin.com/profile/breaking_pitt)
 - Swedish
-  - Proofreaders needed.
+  - Johannes Nilsson - [GitLab](https://gitlab.com/nlssn), [CrowdIn](https://crowdin.com/profile/nlssn)
 - Turkish
   - Ali Demirtaş - [GitLab](https://gitlab.com/alidemirtas), [CrowdIn](https://crowdin.com/profile/alidemirtas)
   - Rıfat Ünalmış (Rifat Unalmis) - [GitLab](https://gitlab.com/runalmis), [CrowdIn](https://crowdin.com/profile/runalmis)
@@ -121,35 +122,35 @@ are very appreciative of the work done by translators and proofreaders!
 
 ## Become a proofreader
 
-Before requesting Proofreader permissions in CrowdIn, be sure you have a history
-of contributing translations to the GitLab project.
+Before requesting proofreader permissions in CrowdIn, be sure you have a history of contributing
+translations to the GitLab project.
 
 1. Contribute translations to GitLab. See instructions for
    [translating GitLab](translation.md).
 
-   Translating GitLab is a community effort that requires team work and
-   attention to detail. Proofreaders play an important role helping new
-   contributors, and ensuring the consistency and quality of translations.
-   Your conduct and contributions as a translator should reflect this before
-   requesting to be a proofreader.
+   Translating GitLab is a community effort that requires teamwork and attention to detail.
+   Proofreaders play an important role helping new contributors, and ensuring the consistency and
+   quality of translations. Your conduct and contributions as a translator should reflect this
+   before requesting to be a proofreader.
 
-1. Request proofreader permissions by opening a merge request to add yourself
-   to the list of proofreaders.
+1. Request proofreader permissions by opening a merge request to add yourself to the list of
+   proofreaders.
 
-   Open the [proofreader.md source file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/i18n/proofreader.md) and click **Edit**.
+   Open the [`proofreader.md` source file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/i18n/proofreader.md) and click **Edit**.
 
-   Add your language in alphabetical order, and add yourself to the list
-   including:
-   - name
-   - link to your GitLab profile
-   - link to your CrowdIn profile
+   Add your language in alphabetical order and add yourself to the list, including:
 
-   In the merge request description, include links to any projects you have
-   previously translated.
+   - Name
+   - Link to your GitLab profile
+   - Link to your CrowdIn profile
 
-1. Your request to become a proofreader is considered on the merits of
-   your previous translations by [GitLab team members](https://about.gitlab.com/company/team/)
-   or [Core team members](https://about.gitlab.com/community/core-team/) who are fluent in
-   the language or current proofreaders.
-   - When a request is made for the first proofreader for a language and there are no [GitLab team members](https://about.gitlab.com/company/team/)
-   or [Core team members](https://about.gitlab.com/community/core-team/) who speak the language, we shall request links to previous translation work in other communities or projects.
+   In the merge request description, include links to any projects you have previously translated.
+
+1. [GitLab team members](https://about.gitlab.com/company/team/),
+   [Core team members](https://about.gitlab.com/community/core-team/),
+   or current proofreaders fluent in the language consider your request to become a proofreader
+   based on the merits of your previous translations.
+
+   - If you request to become the first proofreader for a language and there are no GitLab or Core
+     team members who speak that language, we request links to previous translation work in other
+     communities or projects.

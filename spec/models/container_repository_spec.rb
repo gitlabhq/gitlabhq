@@ -320,7 +320,7 @@ RSpec.describe ContainerRepository do
 
       before do
         group.parent = test_group
-        group.save
+        group.save!
       end
 
       it { is_expected.to contain_exactly(repository, another_repository) }
@@ -330,6 +330,40 @@ RSpec.describe ContainerRepository do
       let(:test_group) { create(:group) }
 
       it { is_expected.to eq([]) }
+    end
+
+    context 'with read_container_registry_access_level disabled' do
+      before do
+        stub_feature_flags(read_container_registry_access_level: false)
+      end
+
+      context 'in a group' do
+        let(:test_group) { group }
+
+        it { is_expected.to contain_exactly(repository) }
+      end
+
+      context 'with a subgroup' do
+        let(:test_group) { create(:group) }
+        let(:another_project) { create(:project, path: 'test', group: test_group) }
+
+        let(:another_repository) do
+          create(:container_repository, name: 'my_image', project: another_project)
+        end
+
+        before do
+          group.parent = test_group
+          group.save!
+        end
+
+        it { is_expected.to contain_exactly(repository, another_repository) }
+      end
+
+      context 'group without container_repositories' do
+        let(:test_group) { create(:group) }
+
+        it { is_expected.to eq([]) }
+      end
     end
   end
 
@@ -358,6 +392,17 @@ RSpec.describe ContainerRepository do
     subject { described_class.expiration_policy_started_at_nil_or_before(3.hours.ago) }
 
     it { is_expected.to contain_exactly(repository1, repository2, repository4) }
+  end
+
+  describe '.with_stale_ongoing_cleanup' do
+    let_it_be(:repository1) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: 1.day.ago) }
+    let_it_be(:repository2) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: 25.minutes.ago) }
+    let_it_be(:repository3) { create(:container_repository, :cleanup_ongoing, expiration_policy_started_at: 1.week.ago) }
+    let_it_be(:repository4) { create(:container_repository, :cleanup_unscheduled, expiration_policy_started_at: 25.minutes.ago) }
+
+    subject { described_class.with_stale_ongoing_cleanup(27.minutes.ago) }
+
+    it { is_expected.to contain_exactly(repository1, repository3) }
   end
 
   describe '.waiting_for_cleanup' do
@@ -422,6 +467,14 @@ RSpec.describe ContainerRepository do
         end
 
         it { is_expected.to eq([repository]) }
+      end
+
+      context 'with repository cleanup started at after policy next run at' do
+        before do
+          repository.update!(expiration_policy_started_at: policy.next_run_at + 5.minutes)
+        end
+
+        it { is_expected.to eq([]) }
       end
     end
 

@@ -1,5 +1,6 @@
 ---
 redirect_to: 'review_abuse_reports.md'
+remove_date: '2021-07-21'
 ---
 
 This file was moved to [another location](review_abuse_reports.md).

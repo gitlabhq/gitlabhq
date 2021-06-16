@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:artifacts rake tasks' do
+RSpec.describe 'gitlab:artifacts rake tasks', :silence_stdout do
   describe 'check' do
     let!(:artifact) { create(:ci_job_artifact, :archive, :correct_checksum) }
 

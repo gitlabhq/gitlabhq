@@ -1,7 +1,6 @@
 import { GlModal, GlIcon, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CsvExportModal from '~/issuable/components/csv_export_modal.vue';
 
 describe('CsvExportModal', () => {
@@ -9,26 +8,24 @@ describe('CsvExportModal', () => {
 
   function createComponent(options = {}) {
     const { injectedProperties = {}, props = {} } = options;
-    return extendedWrapper(
-      mount(CsvExportModal, {
-        propsData: {
-          modalId: 'csv-export-modal',
-          exportCsvPath: 'export/csv/path',
-          issuableCount: 1,
-          ...props,
-        },
-        provide: {
-          issuableType: 'issues',
-          ...injectedProperties,
-        },
-        stubs: {
-          GlModal: stubComponent(GlModal, {
-            template:
-              '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-footer"></slot></div>',
-          }),
-        },
-      }),
-    );
+    return mount(CsvExportModal, {
+      propsData: {
+        modalId: 'csv-export-modal',
+        exportCsvPath: 'export/csv/path',
+        issuableCount: 1,
+        ...props,
+      },
+      provide: {
+        issuableType: 'issues',
+        ...injectedProperties,
+      },
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          template:
+            '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-footer"></slot></div>',
+        }),
+      },
+    });
   }
 
   afterEach(() => {
@@ -61,14 +58,13 @@ describe('CsvExportModal', () => {
     describe('issuable count info text', () => {
       it('displays the info text when issuableCount is > -1', () => {
         wrapper = createComponent({ props: { issuableCount: 10 } });
-        expect(wrapper.findByTestId('issuable-count-note').exists()).toBe(true);
-        expect(wrapper.findByTestId('issuable-count-note').text()).toContain('10 issues selected');
+        expect(wrapper.text()).toContain('10 issues selected');
         expect(findIcon().exists()).toBe(true);
       });
 
       it("doesn't display the info text when issuableCount is -1", () => {
         wrapper = createComponent({ props: { issuableCount: -1 } });
-        expect(wrapper.findByTestId('issuable-count-note').exists()).toBe(false);
+        expect(wrapper.text()).not.toContain('issues selected');
       });
     });
 

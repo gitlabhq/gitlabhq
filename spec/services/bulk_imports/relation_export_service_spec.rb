@@ -62,7 +62,7 @@ RSpec.describe BulkImports::RelationExportService do
       let(:upload) { create(:bulk_import_export_upload, export: export) }
 
       it 'removes existing export before exporting' do
-        upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/labels.ndjson.gz'))
+        upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
 
         expect_any_instance_of(BulkImports::ExportUpload) do |upload|
           expect(upload).to receive(:remove_export_file!)

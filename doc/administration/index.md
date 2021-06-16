@@ -54,7 +54,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Environment variables](environment_variables.md): Supported environment
   variables that can be used to override their default values to configure
   GitLab.
-- [Plugins](file_hooks.md): With custom plugins, GitLab administrators can
+- [File hooks](file_hooks.md): With custom file hooks, GitLab administrators can
   introduce custom integrations without modifying GitLab source code.
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
@@ -103,7 +103,6 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [GitLab in maintenance mode](maintenance_mode/index.md): Put GitLab in maintenance mode.
 - [Update GitLab](../update/index.md): Update guides to upgrade your installation to a new version.
 - [Upgrading without downtime](../update/index.md#upgrading-without-downtime): Upgrade to a newer major, minor, or patch version of GitLab without taking your GitLab instance offline.
-- [Migrate your GitLab CI/CD data to another version of GitLab](../migrate_ci_to_ce/README.md): If you have an old GitLab installation (older than 8.0), follow this guide to migrate your existing GitLab CI/CD data to another version of GitLab.
 
 ### Upgrading or downgrading GitLab
 
@@ -172,7 +171,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [External Pipeline Validation](external_pipeline_validation.md): Enable, disable, and configure external pipeline validation.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).
 - [Job logs](job_logs.md): Information about the job logs.
-- [Register runners](../ci/runners/README.md#types-of-runners): Learn how to register and configure runners.
+- [Register runners](../ci/runners/runners_scope.md): Learn how to register and configure runners.
 - [Shared runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota): Limit the usage of pipeline minutes for shared runners.
 - [Enable/disable Auto DevOps](../topics/autodevops/index.md#enable-or-disable-auto-devops): Enable or disable Auto DevOps for your instance.
 

@@ -154,60 +154,6 @@ RSpec.describe Projects::FeatureFlagsController do
       end
     end
 
-    context 'when feature flags have additional scopes' do
-      let!(:feature_flag_active_scope) do
-        create(:operations_feature_flag_scope,
-               feature_flag: feature_flag_active,
-               environment_scope: 'production',
-               active: false)
-      end
-
-      let!(:feature_flag_inactive_scope) do
-        create(:operations_feature_flag_scope,
-               feature_flag: feature_flag_inactive,
-               environment_scope: 'staging',
-               active: false)
-      end
-
-      it 'returns a correct summary' do
-        subject
-
-        expect(json_response['count']['all']).to eq(2)
-        expect(json_response['count']['enabled']).to eq(1)
-        expect(json_response['count']['disabled']).to eq(1)
-      end
-
-      it 'recognizes feature flag 1 as active' do
-        subject
-
-        expect(json_response['feature_flags'].first['active']).to be_truthy
-      end
-
-      it 'recognizes feature flag 2 as inactive' do
-        subject
-
-        expect(json_response['feature_flags'].second['active']).to be_falsy
-      end
-
-      it 'has ordered scopes' do
-        subject
-
-        expect(json_response['feature_flags'][0]['scopes'][0]['id'])
-          .to be < json_response['feature_flags'][0]['scopes'][1]['id']
-        expect(json_response['feature_flags'][1]['scopes'][0]['id'])
-          .to be < json_response['feature_flags'][1]['scopes'][1]['id']
-      end
-
-      it 'does not have N+1 problem' do
-        recorded = ActiveRecord::QueryRecorder.new { subject }
-
-        related_count = recorded.log
-          .count { |query| query.include?('operations_feature_flag') }
-
-        expect(related_count).to be_within(5).of(2)
-      end
-    end
-
     context 'with version 1 and 2 feature flags' do
       let!(:new_version_feature_flag) do
         create(:operations_feature_flag, :new_version_flag, project: project, name: 'feature_flag_c')
@@ -235,7 +181,7 @@ RSpec.describe Projects::FeatureFlagsController do
     subject { get(:show, params: params, format: :json) }
 
     let!(:feature_flag) do
-      create(:operations_feature_flag, project: project)
+      create(:operations_feature_flag, :legacy_flag, project: project)
     end
 
     let(:params) do
@@ -367,6 +313,42 @@ RSpec.describe Projects::FeatureFlagsController do
         subject
 
         expect(json_response['strategies'].map { |s| s['id'] }).to eq([first_strategy.id, second_strategy.id])
+      end
+    end
+  end
+
+  describe 'GET edit' do
+    subject { get(:edit, params: params) }
+
+    context 'with legacy flags' do
+      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, project: project) }
+
+      let(:params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          iid: feature_flag.iid
+        }
+      end
+
+      it 'returns not found' do
+        is_expected.to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with new version flags' do
+      let!(:feature_flag) { create(:operations_feature_flag, project: project) }
+
+      let(:params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          iid: feature_flag.iid
+        }
+      end
+
+      it 'returns successfully' do
+        is_expected.to have_gitlab_http_status(:ok)
       end
     end
   end
@@ -762,7 +744,7 @@ RSpec.describe Projects::FeatureFlagsController do
   describe 'DELETE destroy.json' do
     subject { delete(:destroy, params: params, format: :json) }
 
-    let!(:feature_flag) { create(:operations_feature_flag, project: project) }
+    let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, project: project) }
 
     let(:params) do
       {

@@ -9,7 +9,17 @@ import MembersTable from './table/members_table.vue';
 export default {
   name: 'MembersApp',
   components: { MembersTable, FilterSortContainer, GlAlert },
-  inject: ['namespace'],
+  provide() {
+    return {
+      namespace: this.namespace,
+    };
+  },
+  props: {
+    namespace: {
+      type: String,
+      required: true,
+    },
+  },
   computed: {
     ...mapState({
       showError(state) {

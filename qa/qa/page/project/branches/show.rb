@@ -5,13 +5,23 @@ module QA
     module Project
       module Branches
         class Show < Page::Base
+          view 'app/assets/javascripts/branches/components/delete_branch_button.vue' do
+            element :delete_branch_button
+          end
+
+          view 'app/assets/javascripts/branches/components/delete_branch_modal.vue' do
+            element :delete_branch_confirmation_button
+          end
+
           view 'app/views/projects/branches/_branch.html.haml' do
             element :remove_btn
             element :branch_name
           end
+
           view 'app/views/projects/branches/_panel.html.haml' do
             element :all_branches
           end
+
           view 'app/views/projects/branches/index.html.haml' do
             element :delete_merged_branches
           end
@@ -19,11 +29,11 @@ module QA
           def delete_branch(branch_name)
             within_element(:all_branches) do
               within(".js-branch-#{branch_name}") do
-                accept_alert do
-                  click_element(:remove_btn)
-                end
+                click_element(:delete_branch_button)
               end
             end
+
+            click_element(:delete_branch_confirmation_button)
 
             finished_loading?
           end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20190606175050_encrypt_feature_flags_clients_tokens.rb')
+require_migration!
 
 RSpec.describe EncryptFeatureFlagsClientsTokens do
   let(:migration) { described_class.new }

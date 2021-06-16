@@ -4,7 +4,7 @@ group: Container Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Container Host Security
+# Container Host Security **(FREE)**
 
 Container Host Security in GitLab provides Intrusion Detection and Prevention capabilities that can
 monitor and (optionally) block activity inside the containers themselves. This is done by leveraging
@@ -28,8 +28,8 @@ users define profiles for these technologies.
 
 See the [installation guide](quick_start_guide.md) for the recommended steps to install the
 Container Host Security capabilities. This guide shows the recommended way of installing Container
-Host Security through GMAv2. However, it's also possible to do a manual installation through our
-Helm chart.
+Host Security through the Cluster Management Project. However, it's also possible to do a manual
+installation through our Helm chart.
 
 ## Features
 

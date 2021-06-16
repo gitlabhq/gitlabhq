@@ -11,6 +11,7 @@ module Ci
     include Importable
     include Ci::HasRef
     include IgnorableColumns
+    include TaggableQueries
 
     BuildArchivedError = Class.new(StandardError)
 
@@ -37,6 +38,8 @@ module Ci
 
     has_one :deployment, as: :deployable, class_name: 'Deployment'
     has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
+    has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id
+    has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
     has_many :report_results, class_name: 'Ci::BuildReportResult', inverse_of: :build
@@ -86,16 +89,6 @@ module Ci
           end
         end
       end
-    end
-
-    # Initializing an object instead of fetching `persisted_environment` for avoiding unnecessary queries.
-    # We're planning to introduce a direct relationship between build and environment
-    # in https://gitlab.com/gitlab-org/gitlab/-/issues/326445 to let us to preload
-    # in batch.
-    def instantized_environment
-      return unless has_environment?
-
-      ::Environment.new(project: self.project, name: self.expanded_environment_name)
     end
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
@@ -212,6 +205,8 @@ module Ci
     end
 
     scope :with_coverage, -> { where.not(coverage: nil) }
+    scope :without_coverage, -> { where(coverage: nil) }
+    scope :with_coverage_regex, -> { where.not(coverage_regex: nil) }
 
     scope :for_project, -> (project_id) { where(project_id: project_id) }
 
@@ -221,6 +216,8 @@ module Ci
 
     before_save :ensure_token
     before_destroy { unscoped_project }
+
+    after_save :stick_build_if_status_changed
 
     after_create unless: :importing? do |build|
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
@@ -304,10 +301,33 @@ module Ci
         end
       end
 
-      after_transition any => [:pending] do |build|
+      # rubocop:disable CodeReuse/ServiceClass
+      after_transition any => [:pending] do |build, transition|
+        Ci::UpdateBuildQueueService.new.push(build, transition)
+
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
         end
+      end
+
+      after_transition pending: any do |build, transition|
+        Ci::UpdateBuildQueueService.new.pop(build, transition)
+      end
+
+      after_transition any => [:running] do |build, transition|
+        Ci::UpdateBuildQueueService.new.track(build, transition)
+      end
+
+      after_transition running: any do |build, transition|
+        Ci::UpdateBuildQueueService.new.untrack(build, transition)
+
+        Ci::BuildRunnerSession.where(build: build).delete_all
+      end
+
+      # rubocop:enable CodeReuse/ServiceClass
+      #
+      after_transition pending: :running do |build|
+        build.ensure_metadata.update_timeout_state
       end
 
       after_transition pending: :running do |build|
@@ -362,20 +382,39 @@ module Ci
         end
       end
 
-      after_transition pending: :running do |build|
-        build.ensure_metadata.update_timeout_state
-      end
-
-      after_transition running: any do |build|
-        Ci::BuildRunnerSession.where(build: build).delete_all
-      end
-
       after_transition any => [:skipped, :canceled] do |build, transition|
         if transition.to_name == :skipped
           build.deployment&.skip
         else
           build.deployment&.cancel
         end
+      end
+    end
+
+    def self.build_matchers(project)
+      unique_params = [
+        :protected,
+        Arel.sql("(#{arel_tag_names_array.to_sql})")
+      ]
+
+      group(*unique_params).pluck('array_agg(id)', *unique_params).map do |values|
+        Gitlab::Ci::Matching::BuildMatcher.new({
+          build_ids: values[0],
+          protected: values[1],
+          tag_list: values[2],
+          project: project
+        })
+      end
+    end
+
+    def build_matcher
+      strong_memoize(:build_matcher) do
+        Gitlab::Ci::Matching::BuildMatcher.new({
+          protected: protected?,
+          tag_list: tag_list,
+          build_ids: [id],
+          project: project
+        })
       end
     end
 
@@ -442,7 +481,13 @@ module Ci
     end
 
     def retryable?
-      !archived? && (success? || failed? || canceled?)
+      if Feature.enabled?(:prevent_retry_of_retried_jobs, project, default_enabled: :yaml)
+        return false if retried? || archived?
+
+        success? || failed? || canceled?
+      else
+        !archived? && (success? || failed? || canceled?)
+      end
     end
 
     def retries_count
@@ -559,6 +604,8 @@ module Ci
         break variables unless persisted? && persisted_environment.present?
 
         variables.concat(persisted_environment.predefined_variables)
+
+        variables.append(key: 'CI_ENVIRONMENT_ACTION', value: environment_action)
 
         # Here we're passing unexpanded environment_url for runner to expand,
         # and we need to make sure that CI_ENVIRONMENT_NAME and
@@ -716,22 +763,14 @@ module Ci
     end
 
     def any_runners_online?
-      if Feature.enabled?(:runners_cached_states, project, default_enabled: :yaml)
-        cache_for_online_runners do
-          project.any_online_runners? { |runner| runner.match_build_if_online?(self) }
-        end
-      else
-        project.any_active_runners? { |runner| runner.match_build_if_online?(self) }
+      cache_for_online_runners do
+        project.any_online_runners? { |runner| runner.match_build_if_online?(self) }
       end
     end
 
     def any_runners_available?
-      if Feature.enabled?(:runners_cached_states, project, default_enabled: :yaml)
-        cache_for_available_runners do
-          project.active_runners.exists?
-        end
-      else
-        project.any_active_runners?
+      cache_for_available_runners do
+        project.active_runners.exists?
       end
     end
 
@@ -1039,6 +1078,28 @@ module Ci
       options.dig(:allow_failure_criteria, :exit_codes).present?
     end
 
+    def create_queuing_entry!
+      ::Ci::PendingBuild.upsert_from_build!(self)
+    end
+
+    ##
+    # We can have only one queuing entry or running build tracking entry,
+    # because there is a unique index on `build_id` in each table, but we need
+    # a relation to remove these entries more efficiently in a single statement
+    # without actually loading data.
+    #
+    def all_queuing_entries
+      ::Ci::PendingBuild.where(build_id: self.id)
+    end
+
+    def all_runtime_metadata
+      ::Ci::RunningBuild.where(build_id: self.id)
+    end
+
+    def shared_runner_build?
+      runner&.instance_type?
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1048,6 +1109,13 @@ module Ci
     end
 
     private
+
+    def stick_build_if_status_changed
+      return unless saved_change_to_status?
+      return unless running?
+
+      ::Gitlab::Database::LoadBalancing::Sticking.stick(:build, id)
+    end
 
     def status_commit_hooks
       @status_commit_hooks ||= []

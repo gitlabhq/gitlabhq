@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20190920194925_backfill_releases_table_updated_at_and_add_not_null_constraints_to_timestamps.rb')
+require_migration!
 
 RSpec.describe BackfillReleasesTableUpdatedAtAndAddNotNullConstraintsToTimestamps do
   let(:releases)   { table(:releases) }

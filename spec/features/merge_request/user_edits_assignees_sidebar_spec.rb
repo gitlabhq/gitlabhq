@@ -68,14 +68,14 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js do
     end
   end
 
-  context 'with invite members experiment considerations' do
+  context 'with invite members considerations' do
     let_it_be(:user) { create(:user) }
 
     before do
       sign_in(user)
     end
 
-    include_examples 'issuable invite members experiments' do
+    include_examples 'issuable invite members' do
       let(:issuable_path) { project_merge_request_path(project, merge_request) }
     end
   end

@@ -3,10 +3,9 @@
 module Gitlab
   module CycleAnalytics
     class StageSummary
-      def initialize(project, from:, to: nil, current_user:)
+      def initialize(project, options:, current_user:)
         @project = project
-        @from = from
-        @to = to
+        @options = options
         @current_user = current_user
       end
 
@@ -20,15 +19,15 @@ module Gitlab
       private
 
       def issue_stats
-        serialize(Summary::Issue.new(project: @project, from: @from, to: @to, current_user: @current_user))
+        serialize(Summary::Issue.new(project: @project, options: @options, current_user: @current_user))
       end
 
       def commit_stats
-        serialize(Summary::Commit.new(project: @project, from: @from, to: @to))
+        serialize(Summary::Commit.new(project: @project, options: @options))
       end
 
       def deployments_summary
-        @deployments_summary ||= Summary::Deploy.new(project: @project, from: @from, to: @to)
+        @deployments_summary ||= Summary::Deploy.new(project: @project, options: @options)
       end
 
       def deploy_stats
@@ -39,8 +38,7 @@ module Gitlab
         serialize(
           Summary::DeploymentFrequency.new(
             deployments: deployments_summary.value.raw_value,
-            from: @from,
-            to: @to),
+            options: @options),
           with_unit: true
         )
       end
@@ -50,8 +48,7 @@ module Gitlab
       end
 
       def serialize(summary_object, with_unit: false)
-        AnalyticsSummarySerializer.new.represent(
-          summary_object, with_unit: with_unit)
+        AnalyticsSummarySerializer.new.represent(summary_object, with_unit: with_unit)
       end
     end
   end

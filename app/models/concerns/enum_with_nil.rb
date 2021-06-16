@@ -11,14 +11,6 @@ module EnumWithNil
       # override auto-defined methods only for the
       # key which uses nil value
       definitions.each do |name, values|
-        next unless key_with_nil = values.key(nil)
-
-        # E.g. for enum_with_nil failure_reason: { unknown_failure: nil }
-        # this overrides auto-generated method `unknown_failure?`
-        define_method("#{key_with_nil}?") do
-          self[name].nil?
-        end
-
         # E.g. for enum_with_nil failure_reason: { unknown_failure: nil }
         # this overrides auto-generated method `failure_reason`
         define_method(name) do

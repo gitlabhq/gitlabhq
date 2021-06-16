@@ -11,6 +11,8 @@ module QA
         @path = Runtime::Namespace.sandbox_name
       end
 
+      alias_method :full_path, :path
+
       def fabricate!
         Page::Main::Menu.perform(&:go_to_groups)
 

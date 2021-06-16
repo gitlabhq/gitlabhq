@@ -54,7 +54,7 @@ export default {
 <template>
   <div class="build-job gl-relative" :class="classes">
     <gl-link
-      v-gl-tooltip:tooltip-container.left
+      v-gl-tooltip.left.viewport
       :href="job.status.details_path"
       :title="tooltipText"
       class="gl-display-flex gl-align-items-center"

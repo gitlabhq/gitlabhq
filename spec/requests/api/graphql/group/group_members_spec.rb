@@ -14,6 +14,23 @@ RSpec.describe 'getting group members information' do
     [user_1, user_2].each { |user| parent_group.add_guest(user) }
   end
 
+  context 'when a member is invited only via email' do
+    before do
+      create(:group_member, :invited, source: parent_group)
+    end
+
+    it 'returns null in the user field' do
+      fetch_members(group: parent_group, args: { relations: [:DIRECT] })
+
+      expect(graphql_errors).to be_nil
+      expect(graphql_data_at(:group, :group_members, :edges, :node)).to contain_exactly(
+        { 'user' => { 'id' => global_id_of(user_1) } },
+        { 'user' => { 'id' => global_id_of(user_2) } },
+        'user' => nil
+      )
+    end
+  end
+
   context 'when the request is correct' do
     it_behaves_like 'a working graphql query' do
       before do

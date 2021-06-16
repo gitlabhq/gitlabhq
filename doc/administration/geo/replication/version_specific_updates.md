@@ -11,6 +11,10 @@ Review this page for update instructions for your version. These steps
 accompany the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to GitLab 13.11
+
+We found an [issue with Git clone/pull through HTTP(s)](https://gitlab.com/gitlab-org/gitlab/-/issues/330787) on Geo secondaries and on any GitLab instance if maintenance mode is enabled. This was caused by a regression in GitLab Workhorse. This is fixed in the [GitLab 13.11.4 patch release](https://about.gitlab.com/releases/2021/05/14/gitlab-13-11-4-released/). To avoid this issue, upgrade to GitLab 13.11.4 or later. 
+
 ## Updating to GitLab 13.9
 
 We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
@@ -77,6 +81,12 @@ In GitLab 13.3, promoting a secondary node to a primary while the secondary is
 paused fails. Do not pause replication before promoting a secondary. If the
 node is paused, be sure to resume before promoting. To avoid this issue,
 upgrade to GitLab 13.4 or later.
+
+WARNING:
+Promoting the database during a failover can fail on XFS and filesystems ordering files lexically,
+when using `--force` or `--skip-preflight-checks`, due to [an issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6076) fixed in 13.5.
+The [troubleshooting steps](troubleshooting.md#errors-when-using---skip-preflight-checks-or---force)
+contain a workaround if you run into errors during the failover.
 
 ## Updating to GitLab 13.2
 

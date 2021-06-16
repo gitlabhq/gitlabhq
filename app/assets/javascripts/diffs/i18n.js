@@ -23,4 +23,5 @@ export const DIFF_FILE = {
 export const SETTINGS_DROPDOWN = {
   whitespace: __('Show whitespace changes'),
   fileByFile: __('Show one file at a time'),
+  preferences: __('Preferences'),
 };

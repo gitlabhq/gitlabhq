@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Bamboo < CiService
+  class Bamboo < BaseCi
     include ActionView::Helpers::UrlHelper
     include ReactiveService
 

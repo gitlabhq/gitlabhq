@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20201026185514_ensure_u2f_registrations_migrated.rb')
+require_migration!
 
 RSpec.describe EnsureU2fRegistrationsMigrated, schema: 20201022144501 do
   let(:u2f_registrations) { table(:u2f_registrations) }

@@ -8,27 +8,20 @@ RSpec.describe Lfs::PushService do
 
   let_it_be(:project) { create(:forked_project_with_submodules) }
   let_it_be(:remote_mirror) { create(:remote_mirror, project: project, enabled: true) }
-  let_it_be(:lfs_object) { create_linked_lfs_object(project, :project) }
 
   let(:params) { { url: remote_mirror.bare_url, credentials: remote_mirror.credentials } }
 
   subject(:service) { described_class.new(project, nil, params) }
 
   describe "#execute" do
+    let_it_be(:lfs_object) { create_linked_lfs_object(project, :project) }
+
     it 'uploads the object when upload is requested' do
       stub_lfs_batch(lfs_object)
 
       expect(lfs_client)
         .to receive(:upload!)
         .with(lfs_object, upload_action_spec(lfs_object), authenticated: true)
-
-      expect(service.execute).to eq(status: :success)
-    end
-
-    it 'does nothing if there are no LFS objects' do
-      lfs_object.destroy!
-
-      expect(lfs_client).not_to receive(:upload!)
 
       expect(service.execute).to eq(status: :success)
     end
@@ -86,6 +79,12 @@ RSpec.describe Lfs::PushService do
         expect(service.execute).to eq(status: :success)
       end
     end
+  end
+
+  it 'does nothing if there are no LFS objects' do
+    expect(lfs_client).not_to receive(:upload!)
+
+    expect(service.execute).to eq(status: :success)
   end
 
   def create_linked_lfs_object(project, type)

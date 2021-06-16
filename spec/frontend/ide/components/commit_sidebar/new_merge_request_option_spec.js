@@ -24,7 +24,7 @@ describe('create new MR checkbox', () => {
     store.state.projects[store.state.currentProjectId].userPermissions = permissions;
   };
 
-  const createComponent = ({ currentBranchId = 'master', createNewBranch = false } = {}) => {
+  const createComponent = ({ currentBranchId = 'main', createNewBranch = false } = {}) => {
     const Component = Vue.extend(NewMergeRequestOption);
 
     vm = createComponentWithStore(Component, store);
@@ -63,7 +63,7 @@ describe('create new MR checkbox', () => {
     describe('is rendered when pushing to a new branch', () => {
       beforeEach(() => {
         createComponent({
-          currentBranchId: 'master',
+          currentBranchId: 'main',
           createNewBranch: true,
         });
       });
@@ -87,7 +87,7 @@ describe('create new MR checkbox', () => {
     describe('is NOT rendered when pushing to the same branch', () => {
       beforeEach(() => {
         createComponent({
-          currentBranchId: 'master',
+          currentBranchId: 'main',
           createNewBranch: false,
         });
       });

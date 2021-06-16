@@ -67,7 +67,7 @@ class ProfilesController < Profiles::ApplicationController
       .order("created_at DESC")
       .page(params[:page])
 
-    Gitlab::Tracking.event(self.class.name, 'search_audit_event')
+    Gitlab::Tracking.event(self.class.name, 'search_audit_event', user: current_user)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -127,6 +127,7 @@ class ProfilesController < Profiles::ApplicationController
       :include_private_contributions,
       :timezone,
       :job_title,
+      :pronouns,
       status: [:emoji, :message, :availability]
     )
   end

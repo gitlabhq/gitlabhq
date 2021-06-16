@@ -3,7 +3,6 @@
 module API
   class Jobs < ::API::Base
     include PaginationParams
-
     before { authenticate! }
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do

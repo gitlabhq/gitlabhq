@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'generator_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::UsageMetricDefinitionGenerator do
+RSpec.describe Gitlab::UsageMetricDefinitionGenerator, :silence_stdout do
   include UsageDataHelpers
 
   let(:key_path) { 'counts_weekly.test_metric' }

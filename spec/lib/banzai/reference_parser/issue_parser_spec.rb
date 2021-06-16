@@ -5,9 +5,11 @@ require 'spec_helper'
 RSpec.describe Banzai::ReferenceParser::IssueParser do
   include ReferenceParserHelpers
 
-  let(:project) { create(:project, :public) }
-  let(:user)    { create(:user) }
-  let(:issue)   { create(:issue, project: project) }
+  let_it_be(:group)   { create(:group, :public) }
+  let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:user)    { create(:user) }
+  let_it_be(:issue)   { create(:issue, project: project) }
+
   let(:link)    { empty_html_link }
 
   subject       { described_class.new(Banzai::RenderContext.new(project, user)) }
@@ -121,7 +123,7 @@ RSpec.describe Banzai::ReferenceParser::IssueParser do
     end
   end
 
-  context 'when checking multiple merge requests on another project' do
+  context 'when checking multiple issues on another project' do
     let(:other_project) { create(:project, :public) }
     let(:other_issue) { create(:issue, project: other_project) }
 

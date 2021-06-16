@@ -60,7 +60,9 @@ const createFlashEl = (message, type) => `
 `;
 
 const removeFlashClickListener = (flashEl, fadeTransition) => {
-  getCloseEl(flashEl).addEventListener('click', () => hideFlash(flashEl, fadeTransition));
+  // There are some flash elements which do not have a closeEl.
+  // https://gitlab.com/gitlab-org/gitlab/blob/763426ef344488972eb63ea5be8744e0f8459e6b/ee/app/views/layouts/header/_read_only_banner.html.haml
+  getCloseEl(flashEl)?.addEventListener('click', () => hideFlash(flashEl, fadeTransition));
 };
 
 /*

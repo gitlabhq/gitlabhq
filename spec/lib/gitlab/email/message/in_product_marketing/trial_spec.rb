@@ -6,8 +6,9 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Trial do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:group) { build(:group) }
+  let_it_be(:user) { build(:user) }
 
-  subject(:message) { described_class.new(group: group, series: series)}
+  subject(:message) { described_class.new(group: group, user: user, series: series)}
 
   describe "public methods" do
     where(series: [0, 1, 2])

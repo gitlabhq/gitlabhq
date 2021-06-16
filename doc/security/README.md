@@ -6,7 +6,7 @@ comments: false
 type: index
 ---
 
-# Security
+# Security **(FREE)**
 
 - [Password storage](password_storage.md)
 - [Password length limits](password_length_limits.md)
@@ -23,7 +23,7 @@ type: index
 - [Send email confirmation on sign-up](user_email_confirmation.md)
 - [Security of running jobs](https://docs.gitlab.com/runner/security/)
 - [Proxying images](asset_proxy.md)
-- [CI/CD variables](cicd_variables.md)
+- [CI/CD variables](../ci/variables/README.md#cicd-variable-security)
 - [Token overview](token_overview.md)
 - [Project Import decompressed archive size limits](project_import_decompressed_archive_size_limits.md)
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200907124300_complete_namespace_settings_migration.rb')
+require_migration!
 
 RSpec.describe CompleteNamespaceSettingsMigration, :redis do
   let(:migration) { spy('migration') }

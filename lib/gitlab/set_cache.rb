@@ -14,15 +14,21 @@ module Gitlab
       "#{key}:set"
     end
 
+    # NOTE Remove as part of https://gitlab.com/gitlab-org/gitlab/-/issues/331319
+    def new_cache_key(key)
+      "#{cache_namespace}:#{key}:set"
+    end
+
     # Returns the number of keys deleted by Redis
     def expire(*keys)
       return 0 if keys.empty?
 
       with do |redis|
-        keys = keys.map { |key| cache_key(key) }
+        keys_to_expire = keys.map { |key| cache_key(key) }
+        keys_to_expire += keys.map { |key| new_cache_key(key) } # NOTE Remove as part of #331319
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          redis.unlink(*keys)
+          redis.unlink(*keys_to_expire)
         end
       end
     end
@@ -72,6 +78,10 @@ module Gitlab
 
     def with(&blk)
       Gitlab::Redis::Cache.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
+    end
+
+    def cache_namespace
+      Gitlab::Redis::Cache::CACHE_NAMESPACE
     end
   end
 end

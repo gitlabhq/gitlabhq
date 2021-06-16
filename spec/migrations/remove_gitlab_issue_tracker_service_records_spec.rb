@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200623142159_remove_gitlab_issue_tracker_service_records.rb')
+require_migration!
 
 RSpec.describe RemoveGitlabIssueTrackerServiceRecords do
   let(:services) { table(:services) }

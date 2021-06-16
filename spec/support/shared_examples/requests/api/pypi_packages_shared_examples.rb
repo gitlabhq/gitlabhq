@@ -110,6 +110,7 @@ RSpec.shared_examples 'PyPI package versions' do |user_type, status, add_member 
   context "for user type #{user_type}" do
     before do
       project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      group.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it 'returns the package listing' do
@@ -127,6 +128,7 @@ RSpec.shared_examples 'PyPI package download' do |user_type, status, add_member 
   context "for user type #{user_type}" do
     before do
       project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      group.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it 'returns the package listing' do
@@ -144,9 +146,22 @@ RSpec.shared_examples 'process PyPI api request' do |user_type, status, add_memb
   context "for user type #{user_type}" do
     before do
       project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      group.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
+  end
+end
+
+RSpec.shared_examples 'unknown PyPI scope id' do
+  context 'as anonymous' do
+    it_behaves_like 'process PyPI api request', :anonymous, :not_found
+  end
+
+  context 'as authenticated user' do
+    subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
+
+    it_behaves_like 'process PyPI api request', :anonymous, :not_found
   end
 end
 
@@ -154,14 +169,162 @@ RSpec.shared_examples 'rejects PyPI access with unknown project id' do
   context 'with an unknown project' do
     let(:project) { OpenStruct.new(id: 1234567890) }
 
-    context 'as anonymous' do
-      it_behaves_like 'process PyPI api request', :anonymous, :not_found
+    it_behaves_like 'unknown PyPI scope id'
+  end
+end
+
+RSpec.shared_examples 'rejects PyPI access with unknown group id' do
+  context 'with an unknown project' do
+    let(:group) { OpenStruct.new(id: 1234567890) }
+
+    it_behaves_like 'unknown PyPI scope id'
+  end
+end
+
+RSpec.shared_examples 'pypi simple API endpoint' do
+  using RSpec::Parameterized::TableSyntax
+
+  context 'with valid project' do
+    where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
+      :public  | :developer  | true  | true  | 'PyPI package versions' | :success
+      :public  | :guest      | true  | true  | 'PyPI package versions' | :success
+      :public  | :developer  | true  | false | 'PyPI package versions' | :success
+      :public  | :guest      | true  | false | 'PyPI package versions' | :success
+      :public  | :developer  | false | true  | 'PyPI package versions' | :success
+      :public  | :guest      | false | true  | 'PyPI package versions' | :success
+      :public  | :developer  | false | false | 'PyPI package versions' | :success
+      :public  | :guest      | false | false | 'PyPI package versions' | :success
+      :public  | :anonymous  | false | true  | 'PyPI package versions' | :success
+      :private | :developer  | true  | true  | 'PyPI package versions' | :success
+      :private | :guest      | true  | true  | 'process PyPI api request' | :forbidden
+      :private | :developer  | true  | false | 'process PyPI api request' | :unauthorized
+      :private | :guest      | true  | false | 'process PyPI api request' | :unauthorized
+      :private | :developer  | false | true  | 'process PyPI api request' | :not_found
+      :private | :guest      | false | true  | 'process PyPI api request' | :not_found
+      :private | :developer  | false | false | 'process PyPI api request' | :unauthorized
+      :private | :guest      | false | false | 'process PyPI api request' | :unauthorized
+      :private | :anonymous  | false | true  | 'process PyPI api request' | :unauthorized
     end
 
-    context 'as authenticated user' do
-      subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
+    with_them do
+      let(:token) { user_token ? personal_access_token.token : 'wrong' }
+      let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
-      it_behaves_like 'process PyPI api request', :anonymous, :not_found
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level.to_s))
+        group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level.to_s))
+      end
+
+      it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
     end
+  end
+
+  context 'with a normalized package name' do
+    let_it_be(:package) { create(:pypi_package, project: project, name: 'my.package') }
+
+    let(:url) { "/projects/#{project.id}/packages/pypi/simple/my-package" }
+    let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+    let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
+
+    it_behaves_like 'PyPI package versions', :developer, :success
+  end
+end
+
+RSpec.shared_examples 'pypi file download endpoint' do
+  using RSpec::Parameterized::TableSyntax
+
+  context 'with valid project' do
+    where(:visibility_level, :user_role, :member, :user_token) do
+      :public  | :developer  | true  | true
+      :public  | :guest      | true  | true
+      :public  | :developer  | true  | false
+      :public  | :guest      | true  | false
+      :public  | :developer  | false | true
+      :public  | :guest      | false | true
+      :public  | :developer  | false | false
+      :public  | :guest      | false | false
+      :public  | :anonymous  | false | true
+      :private | :developer  | true  | true
+      :private | :guest      | true  | true
+      :private | :developer  | true  | false
+      :private | :guest      | true  | false
+      :private | :developer  | false | true
+      :private | :guest      | false | true
+      :private | :developer  | false | false
+      :private | :guest      | false | false
+      :private | :anonymous  | false | true
+    end
+
+    with_them do
+      let(:token) { user_token ? personal_access_token.token : 'wrong' }
+      let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level.to_s))
+        group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level.to_s))
+      end
+
+      it_behaves_like 'PyPI package download', params[:user_role], :success, params[:member]
+    end
+  end
+
+  context 'with deploy token headers' do
+    let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token) }
+
+    context 'valid token' do
+      it_behaves_like 'returning response status', :success
+    end
+
+    context 'invalid token' do
+      let(:headers) { basic_auth_header('foo', 'bar') }
+
+      it_behaves_like 'returning response status', :success
+    end
+  end
+
+  context 'with job token headers' do
+    let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token) }
+
+    context 'valid token' do
+      it_behaves_like 'returning response status', :success
+    end
+
+    context 'invalid token' do
+      let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, 'bar') }
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+
+    context 'invalid user' do
+      let(:headers) { basic_auth_header('foo', job.token) }
+
+      it_behaves_like 'returning response status', :success
+    end
+  end
+end
+
+RSpec.shared_examples 'a pypi user namespace endpoint' do
+  using RSpec::Parameterized::TableSyntax
+
+  # only group namespaces are supported at this time
+  where(:visibility_level, :user_role, :expected_status) do
+    :public  | :owner     | :not_found
+    :private | :owner     | :not_found
+    :public  | :external  | :not_found
+    :private | :external  | :not_found
+    :public  | :anonymous | :not_found
+    :private | :anonymous | :not_found
+  end
+
+  with_them do
+    let_it_be_with_reload(:group) { create(:namespace) }
+    let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, personal_access_token.token) }
+
+    before do
+      group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level.to_s))
+      group.update_column(:owner_id, user.id) if user_role == :owner
+    end
+
+    it_behaves_like 'returning response status', params[:expected_status]
   end
 end

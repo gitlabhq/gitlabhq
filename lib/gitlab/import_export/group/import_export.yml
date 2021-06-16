@@ -70,11 +70,14 @@ ee:
         - :award_emoji
         - events:
           - :push_event_payload
+        - label_links:
+          - :label
         - notes:
           - :author
           - :award_emoji
           - events:
             - :push_event_payload
+          - :system_note_metadata
       - boards:
         - :board_assignee
         - :milestone

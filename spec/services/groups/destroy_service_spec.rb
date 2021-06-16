@@ -41,7 +41,7 @@ RSpec.describe Groups::DestroyService do
       let!(:chat_team) { create(:chat_team, namespace: group) }
 
       it 'destroys the team too' do
-        expect_next_instance_of(Mattermost::Team) do |instance|
+        expect_next_instance_of(::Mattermost::Team) do |instance|
           expect(instance).to receive(:destroy)
         end
 

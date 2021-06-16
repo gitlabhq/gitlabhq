@@ -108,7 +108,7 @@ RSpec.describe Awardable do
       it "doesn't include unused thumbs buttons when disabled in project" do
         issue_without_downvote.project.show_default_award_emojis = false
 
-        expect(issue_without_downvote.grouped_awards.keys.sort).to eq []
+        expect(issue_without_downvote.grouped_awards.keys.sort).to be_empty
       end
 
       it "includes unused thumbs buttons when enabled in project" do
@@ -118,7 +118,7 @@ RSpec.describe Awardable do
       end
 
       it "doesn't include unused thumbs buttons in summary" do
-        expect(issue_without_downvote.grouped_awards(with_thumbs: false).keys).to eq []
+        expect(issue_without_downvote.grouped_awards(with_thumbs: false).keys).to be_empty
       end
 
       it "includes used thumbs buttons when disabled in project" do

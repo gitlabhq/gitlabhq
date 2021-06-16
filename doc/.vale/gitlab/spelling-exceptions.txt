@@ -13,6 +13,7 @@ anonymization
 anonymized
 Ansible
 Anthos
+Apdex
 approvers
 architected
 architecting
@@ -207,6 +208,7 @@ formatters
 Fugit
 fuzzer
 Gantt
+Gemfile
 Gemnasium
 Gemojione
 Getter
@@ -281,6 +283,7 @@ jQuery
 jsdom
 Jsonnet
 JupyterHub
+Kaminari
 kanban
 kanbans
 kaniko
@@ -292,7 +295,6 @@ keytab
 keytabs
 Kibana
 Kinesis
-Klar
 Knative
 Kramdown
 Kroki
@@ -439,6 +441,7 @@ Pritaly
 Priyanka
 profiler
 Prometheus
+ProseMirror
 protobuf
 protobufs
 proxied
@@ -546,6 +549,7 @@ serializer
 serializers
 serializing
 serverless
+severities
 sharded
 sharding
 shfmt
@@ -639,6 +643,7 @@ timeboxed
 timeboxes
 timeboxing
 timecop
+tiptap
 todos
 tokenizer
 Tokenizers

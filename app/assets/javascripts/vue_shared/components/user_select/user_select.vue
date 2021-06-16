@@ -60,6 +60,11 @@ export default {
       required: false,
       default: 'issue',
     },
+    isEditing: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -73,6 +78,9 @@ export default {
     participants: {
       query() {
         return participantsQueries[this.issuableType].query;
+      },
+      skip() {
+        return Boolean(participantsQueries[this.issuableType].skipQuery) || !this.isEditing;
       },
       variables() {
         return {
@@ -99,10 +107,13 @@ export default {
           first: 20,
         };
       },
+      skip() {
+        return !this.isEditing;
+      },
       update(data) {
         // TODO Remove null filter (BE fix required)
         // https://gitlab.com/gitlab-org/gitlab/-/issues/329750
-        return data.workspace?.users?.nodes.filter((x) => x).map(({ user }) => user) || [];
+        return data.workspace?.users?.nodes.filter((x) => x?.user).map(({ user }) => user) || [];
       },
       debounce: ASSIGNEES_DEBOUNCE_DELAY,
       error({ graphQLErrors }) {

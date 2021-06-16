@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23922) in GitLab 11.7.
 
-Users need at least [Maintainer](../user/permissions.md) access to use these endpoints.
+Users need at least the [Maintainer](../user/permissions.md) role to use these endpoints.
 
 ## List project clusters
 
@@ -22,7 +22,7 @@ Parameters:
 
 | Attribute | Type    | Required | Description                                           |
 | --------- | ------- | -------- | ----------------------------------------------------- |
-| `id`      | integer | yes      | The ID of the project owned by the authenticated user |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 Example request:
 
@@ -92,7 +92,7 @@ Parameters:
 
 | Attribute    | Type    | Required | Description                                           |
 | ------------ | ------- | -------- | ----------------------------------------------------- |
-| `id`         | integer | yes      | The ID of the project owned by the authenticated user |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `cluster_id` | integer | yes      | The ID of the cluster                                 |
 
 Example request:
@@ -151,7 +151,8 @@ Example response:
     "path_with_namespace":"root/project-with-clusters-api",
     "created_at":"2019-01-02T20:13:32.600Z",
     "default_branch":null,
-    "tag_list":[],
+    "tag_list":[], //deprecated, use `topics` instead
+    "topics":[],
     "ssh_url_to_repo":"ssh://gitlab.example.com/root/project-with-clusters-api.git",
     "http_url_to_repo":"https://gitlab.example.com/root/project-with-clusters-api.git",
     "web_url":"https://gitlab.example.com/root/project-with-clusters-api",
@@ -185,7 +186,7 @@ Parameters:
 
 | Attribute                                            | Type    | Required | Description                                                                                           |
 | ---------------------------------------------------- | ------- | -------- | ----------------------------------------------------------------------------------------------------- |
-| `id`                                                 | integer | yes      | The ID of the project owned by the authenticated user                                                 |
+| `id`                                                 | integer or string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                                                 |
 | `name`                                               | string  | yes      | The name of the cluster                                                                               |
 | `domain`                                             | string  | no       | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster                       |
 | `management_project_id`                              | integer | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster            |
@@ -247,7 +248,8 @@ Example response:
     "path_with_namespace":"root/project-with-clusters-api",
     "created_at":"2019-01-02T20:13:32.600Z",
     "default_branch":null,
-    "tag_list":[],
+    "tag_list":[], //deprecated, use `topics` instead
+    "topics":[],
     "ssh_url_to_repo":"ssh:://gitlab.example.com/root/project-with-clusters-api.git",
     "http_url_to_repo":"https://gitlab.example.com/root/project-with-clusters-api.git",
     "web_url":"https://gitlab.example.com/root/project-with-clusters-api",
@@ -281,7 +283,7 @@ Parameters:
 
 | Attribute                                   | Type    | Required | Description                                                                                |
 | ------------------------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------ |
-| `id`                                        | integer | yes      | The ID of the project owned by the authenticated user                                      |
+| `id`                                        | integer or string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                                      |
 | `cluster_id`                                | integer | yes      | The ID of the cluster                                                                      |
 | `name`                                      | string  | no       | The name of the cluster                                                                    |
 | `domain`                                    | string  | no       | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster            |
@@ -357,7 +359,8 @@ Example response:
     "path_with_namespace":"root/project-with-clusters-api",
     "created_at":"2019-01-02T20:13:32.600Z",
     "default_branch":null,
-    "tag_list":[],
+    "tag_list":[], //deprecated, use `topics` instead
+    "topics":[],
     "ssh_url_to_repo":"ssh:://gitlab.example.com/root/project-with-clusters-api.git",
     "http_url_to_repo":"https://gitlab.example.com/root/project-with-clusters-api.git",
     "web_url":"https://gitlab.example.com/root/project-with-clusters-api",
@@ -392,7 +395,7 @@ Parameters:
 
 | Attribute    | Type    | Required | Description                                           |
 | ------------ | ------- | -------- | ----------------------------------------------------- |
-| `id`         | integer | yes      | The ID of the project owned by the authenticated user |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `cluster_id` | integer | yes      | The ID of the cluster                                 |
 
 Example request:

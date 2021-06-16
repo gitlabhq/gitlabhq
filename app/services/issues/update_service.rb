@@ -20,17 +20,6 @@ module Issues
       super
     end
 
-    override :filter_params
-    def filter_params(issue)
-      super
-
-      # filter confidential in `Issues::UpdateService` and not in `IssuableBaseService#filter_params`
-      # because we do allow users that cannot admin issues to set confidential flag when creating an issue
-      unless can_admin_issuable?(issue)
-        params.delete(:confidential)
-      end
-    end
-
     def before_update(issue, skip_spam_check: false)
       return if skip_spam_check
 
@@ -43,6 +32,7 @@ module Issues
     end
 
     def handle_changes(issue, options)
+      super
       old_associations = options.fetch(:old_associations, {})
       old_labels = old_associations.fetch(:labels, [])
       old_mentioned_users = old_associations.fetch(:mentioned_users, [])
@@ -203,6 +193,16 @@ module Issues
 
     def create_confidentiality_note(issue)
       SystemNoteService.change_issue_confidentiality(issue, issue.project, current_user)
+    end
+
+    override :add_incident_label?
+    def add_incident_label?(issue)
+      issue.issue_type != params[:issue_type] && !issue.incident?
+    end
+
+    override :remove_incident_label?
+    def remove_incident_label?(issue)
+      issue.issue_type != params[:issue_type] && issue.incident?
     end
   end
 end

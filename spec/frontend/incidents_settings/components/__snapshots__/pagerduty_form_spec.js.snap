@@ -13,6 +13,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
   <form>
     <gl-form-group-stub
       class="col-8 col-md-9 gl-p-0"
+      labeldescription=""
     >
       <gl-toggle-stub
         id="active"
@@ -26,6 +27,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
       class="col-8 col-md-9 gl-p-0"
       label="Webhook URL"
       label-for="url"
+      labeldescription=""
     >
       <gl-form-input-group-stub
         data-testid="webhook-url"
@@ -66,20 +68,6 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
       
       </gl-modal-stub>
     </gl-form-group-stub>
-     
-    <gl-button-stub
-      buttontextclasses=""
-      category="primary"
-      class="js-no-auto-disable"
-      icon=""
-      size="medium"
-      type="submit"
-      variant="success"
-    >
-      
-      Save changes
-    
-    </gl-button-stub>
   </form>
 </div>
 `;

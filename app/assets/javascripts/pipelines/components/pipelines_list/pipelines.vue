@@ -1,7 +1,7 @@
 <script>
 import { GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { isEqual } from 'lodash';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
@@ -95,6 +95,11 @@ export default {
       required: true,
     },
     codeQualityPagePath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    ciRunnerSettingsPath: {
       type: String,
       required: false,
       default: null,
@@ -249,11 +254,16 @@ export default {
         .postAction(endpoint)
         .then(() => {
           this.isResetCacheButtonLoading = false;
-          createFlash(s__('Pipelines|Project cache successfully reset.'), 'notice');
+          createFlash({
+            message: s__('Pipelines|Project cache successfully reset.'),
+            type: 'notice',
+          });
         })
         .catch(() => {
           this.isResetCacheButtonLoading = false;
-          createFlash(s__('Pipelines|Something went wrong while cleaning runners cache.'));
+          createFlash({
+            message: s__('Pipelines|Something went wrong while cleaning runners cache.'),
+          });
         });
     },
     resetRequestData() {
@@ -278,7 +288,10 @@ export default {
         }
 
         if (!filter.type) {
-          createFlash(RAW_TEXT_WARNING, 'warning');
+          createFlash({
+            message: RAW_TEXT_WARNING,
+            type: 'warning',
+          });
         }
       });
 
@@ -337,6 +350,7 @@ export default {
         :empty-state-svg-path="emptyStateSvgPath"
         :can-set-ci="canCreatePipeline"
         :code-quality-page-path="codeQualityPagePath"
+        :ci-runner-settings-path="ciRunnerSettingsPath"
       />
 
       <gl-empty-state

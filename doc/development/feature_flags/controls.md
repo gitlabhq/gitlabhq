@@ -99,7 +99,7 @@ Guidelines:
 Before toggling any feature flag, check that there are no ongoing
 significant incidents on GitLab.com. You can do this by checking the
 `#production` and `#incident-management` Slack channels, or looking for
-[open incident issues](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=incident)
+[open incident issues](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/?scope=all&state=opened&label_name[]=incident)
 (although check the dates and times).
 
 We do not want to introduce changes during an incident, as it can make
@@ -213,9 +213,6 @@ actors.
 Feature.enabled?(:some_feature, group)
 ```
 
-**Percentage of time** rollout is not a good idea if what you want is to make sure a feature
-is always on or off to the users. In that case, **Percentage of actors** rollout is a better method.
-
 Lastly, to verify that the feature is deemed stable in as many cases as possible,
 you should fully roll out the feature by enabling the flag **globally** by running:
 
@@ -225,6 +222,32 @@ you should fully roll out the feature by enabling the flag **globally** by runni
 
 This changes the feature flag state to be **enabled** always, which overrides the
 existing gates (e.g. `--group=gitlab-org`) in the above processes.
+
+Note, that if an actor based feature gate is present, switching the
+`default_enabled` attribute of the YAML definition from `false` to `true`
+will not have any effect. The feature gate must be deleted first.
+
+For example, a feature flag is set via chatops:
+
+```shell
+/chatops run feature set --project=gitlab-org/gitlab some_feature true
+```
+
+When the `default_enabled` attribute in the YAML definition is switched to
+`true`, the feature gate must be deleted to have the desired effect:
+
+```shell
+/chatops run feature delete some_feature
+```
+
+##### Percentage of actors vs percentage of time rollouts
+
+If you want to make sure a feature is always on or off for users, use a **Percentage of actors**
+rollout. Avoid using percentage of _time_ rollouts in this case.
+
+A percentage of _time_ rollout can introduce inconsistent behavior when `Feature.enabled?`
+is used multiple times in the code because the feature flag value is randomized each time
+`Feature.enabled?` is called on your code path.
 
 ##### Disabling feature flags
 
@@ -250,7 +273,7 @@ Any feature flag change that affects GitLab.com (production) via [ChatOps](https
 is automatically logged in an issue.
 
 The issue is created in the
-[gl-infra/feature-flag-log](https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/-/issues?scope=all&utf8=%E2%9C%93&state=closed)
+[gl-infra/feature-flag-log](https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/-/issues?scope=all&state=closed)
 project, and it will at minimum log the Slack handle of person enabling
 a feature flag, the time, and the name of the flag being changed.
 

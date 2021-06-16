@@ -60,6 +60,8 @@ module ApplicationSettingImplementation
         default_projects_limit: Settings.gitlab['default_projects_limit'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
+        diff_max_files: Commit::DEFAULT_MAX_DIFF_FILES_SETTING,
+        diff_max_lines: Commit::DEFAULT_MAX_DIFF_LINES_SETTING,
         disable_feed_token: false,
         disabled_oauth_sign_in_sources: [],
         dns_rebinding_protection_enabled: true,

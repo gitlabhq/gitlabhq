@@ -1,0 +1,57 @@
+.context-header {
+  position: relative;
+  margin-right: 2px;
+  width: $contextual-sidebar-width;
+
+  > a,
+  > button {
+    transition: padding $sidebar-transition-duration;
+    font-weight: $gl-font-weight-bold;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: 10px 16px 10px 10px;
+    color: $gl-text-color;
+    background-color: transparent;
+    border: 0;
+    text-align: left;
+
+    &:hover,
+    &:focus {
+      background-color: $link-hover-background;
+      color: $gl-text-color;
+      outline: 0;
+    }
+  }
+
+  .avatar-container {
+    flex: 0 0 40px;
+    background-color: $white;
+  }
+
+  .sidebar-context-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.text-secondary {
+      font-weight: normal;
+      font-size: 0.8em;
+    }
+  }
+}
+
+@mixin context-header-collapsed {
+  .context-header {
+    height: 60px;
+    width: $contextual-sidebar-collapsed-width;
+
+    a {
+      padding: 10px 4px;
+    }
+  }
+
+  .sidebar-context-title {
+    @include gl-sr-only;
+  }
+}
+

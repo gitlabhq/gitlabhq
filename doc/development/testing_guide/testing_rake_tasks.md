@@ -11,19 +11,21 @@ in lieu of the standard Spec helper. Instead of `require 'spec_helper'`, use
 `require 'rake_helper'`. The helper includes `spec_helper` for you, and configures
 a few other things to make testing Rake tasks easier.
 
-At a minimum, requiring the Rake helper redirects `stdout`, include the
-runtime task helpers, and include the `RakeHelpers` Spec support module.
+At a minimum, requiring the Rake helper includes the runtime task helpers, and
+includes the `RakeHelpers` Spec support module.
 
 The `RakeHelpers` module exposes a `run_rake_task(<task>)` method to make
 executing tasks simple. See `spec/support/helpers/rake_helpers.rb` for all available
 methods.
+
+`$stdout` can be redirected by adding `:silence_stdout`.
 
 Example:
 
 ```ruby
 require 'rake_helper'
 
-describe 'gitlab:shell rake tasks' do
+describe 'gitlab:shell rake tasks', :silence_stdout do
   before do
     Rake.application.rake_require 'tasks/gitlab/shell'
 

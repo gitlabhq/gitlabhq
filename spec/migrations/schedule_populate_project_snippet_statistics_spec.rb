@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200709101408_schedule_populate_project_snippet_statistics.rb')
+require_migration!
 
 RSpec.describe SchedulePopulateProjectSnippetStatistics do
   let(:users) { table(:users) }

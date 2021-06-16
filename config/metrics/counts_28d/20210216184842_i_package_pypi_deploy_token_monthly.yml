@@ -1,16 +1,19 @@
 ---
 key_path: redis_hll_counters.deploy_token_packages.i_package_pypi_deploy_token_monthly
-description: ''
-product_section: ''
-product_stage: ''
-product_group: ''
-product_category: ''
+description: A monthly count of PyPI packages published to the registry using a deploy token
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category: package registry
 value_type: number
 status: data_available
 time_frame: 28d
 data_source: redis_hll
 distribution:
+- ee
 - ce
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate
+

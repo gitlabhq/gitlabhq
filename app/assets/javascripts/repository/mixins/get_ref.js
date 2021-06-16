@@ -6,7 +6,7 @@ export default {
       query: refQuery,
       manual: true,
       result({ data, loading }) {
-        if (!loading) {
+        if (data && !loading) {
           this.ref = data.ref;
           this.escapedRef = data.escapedRef;
         }

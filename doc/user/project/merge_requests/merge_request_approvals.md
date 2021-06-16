@@ -1,5 +1,6 @@
 ---
 redirect_to: 'approvals/index.md'
+remove_date: '2021-07-27'
 ---
 
 This document was moved to [another location](approvals/index.md).

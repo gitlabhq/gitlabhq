@@ -9,7 +9,7 @@ RSpec.describe 'Admin Appearance' do
   it 'create new appearance' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
-    visit admin_appearances_path
+    visit admin_application_settings_appearances_path
 
     fill_in 'appearance_title', with: 'MyCompany'
     fill_in 'appearance_description', with: 'dev server'
@@ -17,7 +17,7 @@ RSpec.describe 'Admin Appearance' do
     fill_in 'appearance_profile_image_guidelines', with: 'Custom profile image guidelines'
     click_button 'Update appearance settings'
 
-    expect(current_path).to eq admin_appearances_path
+    expect(current_path).to eq admin_application_settings_appearances_path
     expect(page).to have_content 'Appearance'
 
     expect(page).to have_field('appearance_title', with: 'MyCompany')
@@ -31,7 +31,7 @@ RSpec.describe 'Admin Appearance' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
 
-    visit admin_appearances_path
+    visit admin_application_settings_appearances_path
     click_link "Sign-in page"
 
     expect_custom_sign_in_appearance(appearance)
@@ -41,7 +41,7 @@ RSpec.describe 'Admin Appearance' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
 
-    visit admin_appearances_path
+    visit admin_application_settings_appearances_path
     click_link "New project page"
 
     expect_custom_new_project_appearance(appearance)
@@ -55,7 +55,7 @@ RSpec.describe 'Admin Appearance' do
 
     context 'when system header and footer messages are empty' do
       it 'shows custom system header and footer fields' do
-        visit admin_appearances_path
+        visit admin_application_settings_appearances_path
 
         expect(page).to have_field('appearance_header_message', with: '')
         expect(page).to have_field('appearance_footer_message', with: '')
@@ -70,7 +70,7 @@ RSpec.describe 'Admin Appearance' do
       end
 
       it 'shows custom system header and footer fields' do
-        visit admin_appearances_path
+        visit admin_application_settings_appearances_path
 
         expect(page).to have_field('appearance_header_message', with: appearance.header_message)
         expect(page).to have_field('appearance_footer_message', with: appearance.footer_message)
@@ -99,7 +99,7 @@ RSpec.describe 'Admin Appearance' do
     before do
       sign_in(create(:admin))
       gitlab_enable_admin_mode_sign_in(admin)
-      visit admin_appearances_path
+      visit admin_application_settings_appearances_path
       fill_in 'appearance_profile_image_guidelines', with: 'Custom profile image guidelines, please :smile:!'
       click_button 'Update appearance settings'
     end
@@ -115,7 +115,7 @@ RSpec.describe 'Admin Appearance' do
   it 'appearance logo' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
-    visit admin_appearances_path
+    visit admin_application_settings_appearances_path
 
     attach_file(:appearance_logo, logo_fixture)
     click_button 'Update appearance settings'
@@ -128,7 +128,7 @@ RSpec.describe 'Admin Appearance' do
   it 'header logos' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
-    visit admin_appearances_path
+    visit admin_application_settings_appearances_path
 
     attach_file(:appearance_header_logo, logo_fixture)
     click_button 'Update appearance settings'
@@ -141,7 +141,7 @@ RSpec.describe 'Admin Appearance' do
   it 'Favicon' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
-    visit admin_appearances_path
+    visit admin_application_settings_appearances_path
 
     attach_file(:appearance_favicon, logo_fixture)
     click_button 'Update appearance settings'

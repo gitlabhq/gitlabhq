@@ -64,6 +64,23 @@ RSpec.describe API::GroupExport do
             expect(response).to have_gitlab_http_status(:not_found)
           end
         end
+
+        context 'when object is not present' do
+          let(:other_group) { create(:group, :with_export) }
+          let(:other_download_path) { "/groups/#{other_group.id}/export/download" }
+
+          before do
+            other_group.add_owner(user)
+            other_group.export_file.file.delete
+          end
+
+          it 'returns 404' do
+            get api(other_download_path, user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).to eq('The group export file is not available yet')
+          end
+        end
       end
 
       context 'when export file does not exist' do
@@ -215,7 +232,7 @@ RSpec.describe API::GroupExport do
 
       context 'when export file exists' do
         it 'downloads exported group archive' do
-          upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/labels.ndjson.gz'))
+          upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
 
           get api(download_path, user)
 

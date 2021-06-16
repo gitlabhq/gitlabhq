@@ -47,6 +47,8 @@ RSpec.describe Gitlab::DataBuilder::Build do
     it { expect(data[:runner][:id]).to eq(build.runner.id) }
     it { expect(data[:runner][:tags]).to match_array(tag_names) }
     it { expect(data[:runner][:description]).to eq(build.runner.description) }
+    it { expect(data[:runner][:runner_type]).to eq(build.runner.runner_type) }
+    it { expect(data[:runner][:is_shared]).to eq(build.runner.instance_type?) }
     it { expect(data[:environment]).to be_nil }
 
     context 'commit author_url' do

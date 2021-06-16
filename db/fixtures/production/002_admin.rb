@@ -23,7 +23,11 @@ if user.persisted?
   puts "login:    root".color(:green)
 
   if user_args.key?(:password)
-    puts "password: #{user_args[:password]}".color(:green)
+    if ::Settings.gitlab['display_initial_root_password']
+      puts "password: #{user_args[:password]}".color(:green)
+    else
+      puts "password: *** - You opted not to display initial root password to STDOUT."
+    end
   else
     puts "password: You'll be prompted to create one on your first visit.".color(:green)
   end

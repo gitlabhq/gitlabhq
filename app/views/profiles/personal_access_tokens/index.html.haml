@@ -40,15 +40,15 @@
       %h4.gl-mt-0
         = s_('AccessTokens|Feed token')
       %p
-        = s_('AccessTokens|Your feed token is used to authenticate you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar, and is included in those feed URLs.')
+        = s_('AccessTokens|Your feed token authenticates you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar. It is visible in those feed URLs.')
       %p
         = s_('AccessTokens|It cannot be used to access any other data.')
     .col-lg-8.feed-token-reset
       = label_tag :feed_token, s_('AccessTokens|Feed token'), class: 'label-bold'
       = text_field_tag :feed_token, current_user.feed_token, class: 'form-control gl-form-input js-select-on-focus', readonly: true
       %p.form-text.text-muted
-        - reset_link = link_to s_('AccessTokens|reset it'), [:reset, :feed_token, :profile], method: :put, data: { confirm: s_('AccessTokens|Are you sure? Any RSS or calendar URLs currently in use will stop working.') }
-        - reset_message = s_('AccessTokens|Keep this token secret. Anyone who gets ahold of it can read activity and issue RSS feeds or your calendar feed as if they were you. You should %{link_reset_it} if that ever happens.') % { link_reset_it: reset_link }
+        - reset_link = link_to s_('AccessTokens|reset this token'), [:reset, :feed_token, :profile], method: :put, data: { confirm: s_('AccessTokens|Are you sure? Any RSS or calendar URLs currently in use will stop working.'), testid: :reset_feed_token_link }
+        - reset_message = s_('AccessTokens|Keep this token secret. Anyone who has it can read activity and issue RSS feeds or your calendar feed as if they were you. If that happens, %{link_reset_it}.') % { link_reset_it: reset_link }
         = reset_message.html_safe
 
 - if incoming_email_token_enabled?
@@ -59,15 +59,15 @@
       %h4.gl-mt-0
         = s_('AccessTokens|Incoming email token')
       %p
-        = s_('AccessTokens|Your incoming email token is used to authenticate you when you create a new issue by email, and is included in your personal project-specific email addresses.')
+        = s_('AccessTokens|Your incoming email token authenticates you when you create a new issue by email, and is included in your personal project-specific email addresses.')
       %p
         = s_('AccessTokens|It cannot be used to access any other data.')
     .col-lg-8.incoming-email-token-reset
       = label_tag :incoming_email_token, s_('AccessTokens|Incoming email token'), class: 'label-bold'
       = text_field_tag :incoming_email_token, current_user.incoming_email_token, class: 'form-control gl-form-input js-select-on-focus', readonly: true
       %p.form-text.text-muted
-        - reset_link = link_to s_('AccessTokens|reset it'), [:reset, :incoming_email_token, :profile], method: :put, data: { confirm: s_('AccessTokens|Are you sure? Any issue email addresses currently in use will stop working.') }
-        - reset_message = s_('AccessTokens|Keep this token secret. Anyone who gets ahold of it can create issues as if they were you. You should %{link_reset_it} if that ever happens.') % { link_reset_it: reset_link }
+        - reset_link = link_to s_('AccessTokens|reset this token'), [:reset, :incoming_email_token, :profile], method: :put, data: { confirm: s_('AccessTokens|Are you sure? Any issue email addresses currently in use will stop working.'), testid: :reset_email_token_link }
+        - reset_message = s_('AccessTokens|Keep this token secret. Anyone who has it can create issues as if they were you. If that happens, %{link_reset_it}.') % { link_reset_it: reset_link }
         = reset_message.html_safe
 
 - if static_objects_external_storage_enabled?
@@ -78,7 +78,7 @@
       %h4.gl-mt-0
         = s_('AccessTokens|Static object token')
       %p
-        = s_('AccessTokens|Your static object token is used to authenticate you when repository static objects (e.g. archives, blobs, ...) are being served from an external storage.')
+        = s_('AccessTokens|Your static object token authenticates you when repository static objects (such as archives or blobs) are served from an external storage.')
       %p
         = s_('AccessTokens|It cannot be used to access any other data.')
     .col-lg-8
@@ -88,5 +88,5 @@
         - reset_link = url_for [:reset, :static_object_token, :profile]
         - reset_link_start = '<a data-confirm="%{confirm}" rel="nofollow" data-method="put" href="%{url}">'.html_safe % { confirm: s_('AccessTokens|Are you sure?'), url: reset_link }
         - reset_link_end = '</a>'.html_safe
-        - reset_message = s_('AccessTokens|Keep this token secret. Anyone who gets ahold of it can access repository static objects as if they were you. You should %{reset_link_start}reset it%{reset_link_end} if that ever happens.') % { reset_link_start: reset_link_start, reset_link_end: reset_link_end }
+        - reset_message = s_('AccessTokens|Keep this token secret. Anyone who has it can access repository static objects as if they were you. If that ever happens, %{reset_link_start}reset this token%{reset_link_end}.') % { reset_link_start: reset_link_start, reset_link_end: reset_link_end }
         = reset_message.html_safe

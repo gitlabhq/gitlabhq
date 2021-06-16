@@ -25,7 +25,7 @@ class Projects::TemplatesController < Projects::ApplicationController
 
   def names
     respond_to do |format|
-      format.json { render json: TemplateFinder.all_template_names_hash_or_array(project, params[:template_type].to_s) }
+      format.json { render json: TemplateFinder.all_template_names(project, params[:template_type].to_s.pluralize) }
     end
   end
 

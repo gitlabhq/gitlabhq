@@ -1,7 +1,7 @@
 <script>
 import { GlModal, GlButton } from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { __, sprintf, s__ } from '~/locale';
 import { modalTypes } from '../../constants';
 import { trimPathComponents, getPathParent } from '../../utils';
@@ -57,16 +57,16 @@ export default {
 
       if (this.modalType === modalTypes.rename) {
         if (this.entries[this.entryName] && !this.entries[this.entryName].deleted) {
-          flash(
-            sprintf(s__('The name "%{name}" is already taken in this directory.'), {
+          createFlash({
+            message: sprintf(s__('The name "%{name}" is already taken in this directory.'), {
               name: this.entryName,
             }),
-            'alert',
-            document,
-            null,
-            false,
-            true,
-          );
+            type: 'alert',
+            parent: document,
+            actionConfig: null,
+            fadeTransition: false,
+            addBodyClass: true,
+          });
         } else {
           let parentPath = this.entryName.split('/');
           const name = parentPath.pop();

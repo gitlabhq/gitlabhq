@@ -1,5 +1,6 @@
 <script>
 import { GlTable } from '@gitlab/ui';
+import { DEFAULT_TH_CLASSES } from '~/lib/utils/constants';
 import { s__, __ } from '~/locale';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import ActionsCell from './cells/actions_cell.vue';
@@ -9,7 +10,7 @@ import PipelineCell from './cells/pipeline_cell.vue';
 
 const defaultTableClasses = {
   tdClass: 'gl-p-5!',
-  thClass: 'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!',
+  thClass: DEFAULT_TH_CLASSES,
 };
 // eslint-disable-next-line @gitlab/require-i18n-strings
 const coverageTdClasses = `${defaultTableClasses.tdClass} gl-display-none! gl-lg-display-table-cell!`;

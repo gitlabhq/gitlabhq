@@ -46,7 +46,10 @@ module ReleaseHighlights
 
     def add_line_numbers_to_errors!
       errors.messages.each do |attribute, messages|
-        messages.map! { |m| "#{m} (line #{line_number_for(attribute)})" }
+        extended_messages = messages.map { |m| "#{m} (line #{line_number_for(attribute)})" }
+
+        errors.delete(attribute)
+        extended_messages.each { |extended_message| errors.add(attribute, extended_message) }
       end
     end
 

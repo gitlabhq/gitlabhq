@@ -132,6 +132,7 @@ $monokai-gh: #75715e;
 
     .diff-td.diff-line-num.hll:not(.empty-cell),
     .diff-td.line-coverage.hll:not(.empty-cell),
+    .diff-td.line-codequality.hll:not(.empty-cell),
     .diff-td.line_content.hll:not(.empty-cell),
     td.diff-line-num.hll:not(.empty-cell),
     td.line-coverage.hll:not(.empty-cell),
@@ -146,6 +147,7 @@ $monokai-gh: #75715e;
 
     .diff-line-num.new,
     .line-coverage.new,
+    .line-codequality.new,
     .line_content.new {
       @include diff-background($monokai-new-bg, $monokai-new-idiff, $monokai-diff-border);
 
@@ -157,6 +159,7 @@ $monokai-gh: #75715e;
 
     .diff-line-num.old,
     .line-coverage.old,
+    .line-codequality.old,
     .line_content.old {
       @include diff-background($monokai-old-bg, $monokai-old-idiff, $monokai-diff-border);
 

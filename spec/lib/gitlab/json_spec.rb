@@ -411,7 +411,7 @@ RSpec.describe Gitlab::Json do
   end
 
   describe Gitlab::Json::LimitedEncoder do
-    subject { described_class.encode(obj, limit: 8.kilobytes) }
+    subject { described_class.encode(obj, limit: 10.kilobytes) }
 
     context 'when object size is acceptable' do
       let(:obj) { { test: true } }
@@ -428,6 +428,16 @@ RSpec.describe Gitlab::Json do
         expect { subject }.to raise_error(
           Gitlab::Json::LimitedEncoder::LimitExceeded
         )
+      end
+    end
+
+    context 'when object contains ASCII-8BIT encoding' do
+      let(:obj) { [{ a: "\x8F" }] * 1000 }
+
+      it 'does not raise encoding error' do
+        expect { subject }.not_to raise_error
+        expect(subject).to be_a(String)
+        expect(subject.size).to eq(10001)
       end
     end
 

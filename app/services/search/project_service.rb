@@ -8,8 +8,8 @@ module Search
 
     attr_accessor :project, :current_user, :params
 
-    def initialize(project, user, params)
-      @project = project
+    def initialize(project_or_projects, user, params)
+      @project = project_or_projects
       @current_user = user
       @params = params.dup
     end

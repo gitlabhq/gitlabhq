@@ -1,5 +1,6 @@
 ---
 redirect_to: '../user_cohorts.md'
+remove_date: '2021-06-01'
 ---
 
 This document was moved to [another location](../user_cohorts.md).

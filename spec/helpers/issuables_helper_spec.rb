@@ -202,6 +202,20 @@ RSpec.describe IssuablesHelper do
     end
   end
 
+  describe '#issuable_project_reference' do
+    it 'display project name and simple reference with `#` to an issue' do
+      issue = build_stubbed(:issue)
+
+      expect(helper.issuable_project_reference(issue)).to eq("#{issue.project.full_name} ##{issue.iid}")
+    end
+
+    it 'display project name and simple reference with `!` to an MR' do
+      merge_request = build_stubbed(:merge_request)
+
+      expect(helper.issuable_project_reference(merge_request)).to eq("#{merge_request.project.full_name} !#{merge_request.iid}")
+    end
+  end
+
   describe '#updated_at_by' do
     let(:user) { create(:user) }
     let(:unedited_issuable) { create(:issue) }

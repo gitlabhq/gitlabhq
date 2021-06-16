@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Using the Libravatar service with GitLab
+# Using the Libravatar service with GitLab **(FREE SELF)**
 
 GitLab by default supports the [Gravatar](https://gravatar.com) avatar service.
 
@@ -17,7 +17,7 @@ server.
 
 ## Configuration
 
-In the [`gitlab.yml` gravatar section](https://gitlab.com/gitlab-org/gitlab/blob/672bd3902d86b78d730cea809fce312ec49d39d7/config/gitlab.yml.example#L122), set
+In the [`gitlab.yml` gravatar section](https://gitlab.com/gitlab-org/gitlab/-/blob/672bd3902d86b78d730cea809fce312ec49d39d7/config/gitlab.yml.example#L122), set
 the configuration options as follows:
 
 ### For HTTP

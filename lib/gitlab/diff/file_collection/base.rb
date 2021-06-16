@@ -19,6 +19,7 @@ module Gitlab
 
           @diffable = diffable
           @include_stats = diff_options.delete(:include_stats)
+          @pagination_data = diff_options.delete(:pagination_data)
           @project = project
           @diff_options = diff_options
           @diff_refs = diff_refs
@@ -47,11 +48,7 @@ module Gitlab
         end
 
         def pagination_data
-          {
-            current_page: nil,
-            next_page: nil,
-            total_pages: nil
-          }
+          @pagination_data || empty_pagination_data
         end
 
         # This mutates `diff_files` lines.
@@ -89,6 +86,14 @@ module Gitlab
         end
 
         private
+
+        def empty_pagination_data
+          {
+            current_page: nil,
+            next_page: nil,
+            total_pages: nil
+          }
+        end
 
         def diff_stats_collection
           strong_memoize(:diff_stats) do

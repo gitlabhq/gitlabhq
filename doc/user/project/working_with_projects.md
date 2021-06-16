@@ -13,8 +13,8 @@ code are saved in projects, and most features are in the scope of projects.
 
 You can explore other popular projects available on GitLab. To explore projects:
 
-1. Click **Projects** in the navigation bar.
-1. Click **Explore Projects**.
+1. On the top bar, select **Menu > Project**.
+1. Select **Explore Projects**.
 
 GitLab displays a list of projects, sorted by last updated date. To view
 projects with the most [stars](#star-a-project), click **Most stars**. To view
@@ -84,6 +84,7 @@ Built-in templates are project templates that are:
 - Developed and maintained in the [`project-templates`](https://gitlab.com/gitlab-org/project-templates)
   and [`pages`](https://gitlab.com/pages) groups.
 - Released with GitLab.
+- Anyone can contribute a built-in template by following [these steps](https://about.gitlab.com/community/contribute/project-templates).
 
 To use a built-in template on the **New project** page:
 
@@ -196,8 +197,8 @@ To star a project:
 
 To view your starred projects:
 
-1. Click **Projects** in the navigation bar.
-1. Click **Starred Projects**.
+1. On the top bar, select **Menu > Project**.
+1. Select **Starred Projects**.
 1. GitLab displays information about your starred projects, including:
 
    - Project description, including name, description, and icon
@@ -227,10 +228,16 @@ Read through the documentation on [project settings](settings/index.md).
 
 ## Project activity
 
-To view the activity of a project, navigate to **Project overview > Activity**.
-From there, you can click on the tabs to see **All** the activity, or see it
-filtered by **Push events**, **Merge events**, **Issue events**, **Comments**,
-**Team**, and **Wiki**.
+To view the activity of a project:
+
+1. On the left sidebar, select **Project information > Activity**.
+1. Select a tab to view **All** the activity, or to filter it by any of these criteria:
+   - **Push events**
+   - **Merge events**
+   - **Issue events**
+   - **Comments**
+   - **Team**
+   - **Wiki**
 
 ### Leave a project
 
@@ -333,7 +340,7 @@ For public projects, and to members of internal and private projects
 with [permissions to view the project's code](../permissions.md#project-members-permissions):
 
 - The content of a
-  [`README` or an index file](repository/#repository-readme-and-index-files)
+  [`README` or an index file](repository/index.md#readme-and-index-files)
   is displayed (if any), followed by the list of directories in the
   project's repository.
 - If the project doesn't contain either of these files, the

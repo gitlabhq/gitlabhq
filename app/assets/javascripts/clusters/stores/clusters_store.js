@@ -13,7 +13,6 @@ import {
   UPDATE_EVENT,
   UNINSTALL_EVENT,
   ELASTIC_STACK,
-  FLUENTD,
 } from '../constants';
 import transitionApplicationState from '../services/application_state_machine';
 
@@ -55,12 +54,8 @@ export default class ClusterStore {
         ingress: {
           ...applicationInitialState,
           title: s__('ClusterIntegration|Ingress'),
-          modsecurity_enabled: false,
-          modsecurity_mode: null,
           externalIp: null,
           externalHostname: null,
-          isEditingModSecurityEnabled: false,
-          isEditingModSecurityMode: false,
           updateFailed: false,
           updateAvailable: false,
         },
@@ -105,16 +100,6 @@ export default class ClusterStore {
         elastic_stack: {
           ...applicationInitialState,
           title: s__('ClusterIntegration|Elastic Stack'),
-        },
-        fluentd: {
-          ...applicationInitialState,
-          title: s__('ClusterIntegration|Fluentd'),
-          host: null,
-          port: null,
-          protocol: null,
-          wafLogEnabled: null,
-          ciliumLogEnabled: null,
-          isEditingSettings: false,
         },
         cilium: {
           ...applicationInitialState,
@@ -219,12 +204,6 @@ export default class ClusterStore {
         this.state.applications.ingress.externalIp = serverAppEntry.external_ip;
         this.state.applications.ingress.externalHostname = serverAppEntry.external_hostname;
         this.state.applications.ingress.updateAvailable = updateAvailable;
-        if (!this.state.applications.ingress.isEditingModSecurityEnabled) {
-          this.state.applications.ingress.modsecurity_enabled = serverAppEntry.modsecurity_enabled;
-        }
-        if (!this.state.applications.ingress.isEditingModSecurityMode) {
-          this.state.applications.ingress.modsecurity_mode = serverAppEntry.modsecurity_mode;
-        }
       } else if (appId === CERT_MANAGER) {
         this.state.applications.cert_manager.email =
           this.state.applications.cert_manager.email || serverAppEntry.email;
@@ -257,14 +236,6 @@ export default class ClusterStore {
       } else if (appId === ELASTIC_STACK) {
         this.state.applications.elastic_stack.version = version;
         this.state.applications.elastic_stack.updateAvailable = updateAvailable;
-      } else if (appId === FLUENTD) {
-        if (!this.state.applications.fluentd.isEditingSettings) {
-          this.state.applications.fluentd.port = serverAppEntry.port;
-          this.state.applications.fluentd.host = serverAppEntry.host;
-          this.state.applications.fluentd.protocol = serverAppEntry.protocol;
-          this.state.applications.fluentd.wafLogEnabled = serverAppEntry.waf_log_enabled;
-          this.state.applications.fluentd.ciliumLogEnabled = serverAppEntry.cilium_log_enabled;
-        }
       }
     });
   }

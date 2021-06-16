@@ -41,11 +41,11 @@ Does sufficient test coverage exist at the unit, feature, or integration levels?
 If you answered *yes*, then you *don't* need an end-to-end test.
 
 For information about the distribution of tests per level in GitLab, see
-[Testing Levels](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md).
+[Testing Levels](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/testing_levels.md).
 
 - See the
-  [How to test at the correct level?](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md#how-to-test-at-the-correct-level)
-  section of the [Testing levels](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md) document.
+  [How to test at the correct level?](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/testing_levels.md#how-to-test-at-the-correct-level)
+  section of the [Testing levels](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/testing_levels.md) document.
 - Review how often the feature changes. Stable features that don't change very often
   might not be worth covering with end-to-end tests if they are already covered
   in lower level tests.

@@ -1,5 +1,5 @@
 <script>
-import { GlLabel, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlLabel, GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { sortBy } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
@@ -17,6 +17,7 @@ import IssueTimeEstimate from './issue_time_estimate.vue';
 export default {
   components: {
     GlLabel,
+    GlLoadingIcon,
     GlIcon,
     UserAvatarLink,
     TooltipOnTruncate,
@@ -181,9 +182,13 @@ export default {
           class="confidential-icon gl-mr-2"
           :aria-label="__('Confidential')"
         />
-        <a :href="item.path || item.webUrl || ''" :title="item.title" @mousemove.stop>{{
-          item.title
-        }}</a>
+        <a
+          :href="item.path || item.webUrl || ''"
+          :title="item.title"
+          :class="{ 'gl-text-gray-400!': item.isLoading }"
+          @mousemove.stop
+          >{{ item.title }}</a
+        >
       </h4>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-display-flex gl-flex-wrap">
@@ -206,6 +211,7 @@ export default {
       <div
         class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden js-board-card-number-container"
       >
+        <gl-loading-icon v-if="item.isLoading" size="md" class="mt-3" />
         <span
           v-if="item.referencePath"
           class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3"

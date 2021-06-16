@@ -281,7 +281,7 @@ image: conanio/gcc7
 create_package:
   stage: deploy
   script:
-    - conan remote add gitlab https://gitlab.example.com/api/v4/packages/conan
+    - conan remote add gitlab ${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/conan
     - conan new <package-name>/0.1 -t
     - conan create . <group-name>+<project-name>/stable
     - CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload <package-name>/0.1@<group-name>+<project-name>/stable --all --remote=gitlab

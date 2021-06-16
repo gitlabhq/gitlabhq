@@ -38,6 +38,10 @@ export default {
       type: String,
       required: true,
     },
+    restrictedVisibilityLevels: {
+      type: Array,
+      required: true,
+    },
   },
 };
 </script>
@@ -66,6 +70,7 @@ export default {
         :project-path="projectPath"
         :project-description="projectDescription"
         :project-visibility="projectVisibility"
+        :restricted-visibility-levels="restrictedVisibilityLevels"
       />
     </div>
   </div>

@@ -342,10 +342,9 @@ container_repositories:
 - project
 - name
 project:
-- external_approval_rules
+- external_status_checks
 - taggings
 - base_tags
-- tags
 - topic_taggings
 - topics
 - chat_services
@@ -362,11 +361,11 @@ project:
 - boards
 - last_event
 - integrations
-- campfire_service
-- confluence_service
-- datadog_service
-- discord_service
-- drone_ci_service
+- campfire_integration
+- confluence_integration
+- datadog_integration
+- discord_integration
+- drone_ci_integration
 - emails_on_push_service
 - pipelines_email_service
 - mattermost_slash_commands_service
@@ -376,26 +375,25 @@ project:
 - pivotaltracker_service
 - prometheus_service
 - flowdock_service
-- assembla_service
-- asana_service
+- assembla_integration
+- asana_integration
 - slack_service
 - microsoft_teams_service
 - mattermost_service
 - hangouts_chat_service
 - unify_circuit_service
-- buildkite_service
-- bamboo_service
+- buildkite_integration
+- bamboo_integration
 - teamcity_service
 - pushover_service
 - jira_service
 - redmine_service
 - youtrack_service
-- custom_issue_tracker_service
-- bugzilla_service
+- custom_issue_tracker_integration
+- bugzilla_integration
 - ewm_service
 - external_wiki_service
 - mock_ci_service
-- mock_deployment_service
 - mock_monitoring_service
 - forked_to_members
 - forked_from_project
@@ -571,6 +569,7 @@ project:
 - exported_protected_branches
 - incident_management_oncall_schedules
 - incident_management_oncall_rotations
+- incident_management_escalation_policies
 - debian_distributions
 - merge_request_metrics
 - security_orchestration_policy_configuration
@@ -624,6 +623,7 @@ metrics_setting:
 - project
 protected_environments:
 - project
+- group
 - deploy_access_levels
 deploy_access_levels:
 - protected_environment

@@ -1,5 +1,6 @@
 import { GlLabel } from '@gitlab/ui';
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 
 import BoardCard from '~/boards/components/board_card.vue';
@@ -12,8 +13,7 @@ describe('Board card', () => {
   let store;
   let mockActions;
 
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
+  Vue.use(Vuex);
 
   const createStore = ({ initialState = {} } = {}) => {
     mockActions = {
@@ -41,14 +41,14 @@ describe('Board card', () => {
     provide = {},
     mountFn = shallowMount,
     stubs = { BoardCardInner },
+    item = mockIssue,
   } = {}) => {
     wrapper = mountFn(BoardCard, {
-      localVue,
       stubs,
       store,
       propsData: {
         list: mockLabelList,
-        item: mockIssue,
+        item,
         disabled: false,
         index: 0,
         ...propsData,
@@ -71,6 +71,10 @@ describe('Board card', () => {
     wrapper.trigger('mouseup', { ctrlKey: true });
     await wrapper.vm.$nextTick();
   };
+
+  beforeEach(() => {
+    window.gon = { features: {} };
+  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -140,6 +144,10 @@ describe('Board card', () => {
     });
 
     describe('when using multi-select', () => {
+      beforeEach(() => {
+        window.gon = { features: { boardMultiSelect: true } };
+      });
+
       it('should call vuex action "multiSelectBoardItem" with correct parameters', async () => {
         await multiSelectCard();
 
@@ -149,6 +157,26 @@ describe('Board card', () => {
           mockIssue,
         );
       });
+    });
+  });
+
+  describe('when card is loading', () => {
+    it('card is disabled and user cannot drag', () => {
+      createStore();
+      mountComponent({ item: { ...mockIssue, isLoading: true } });
+
+      expect(wrapper.classes()).toContain('is-disabled');
+      expect(wrapper.classes()).not.toContain('user-can-drag');
+    });
+  });
+
+  describe('when card is not loading', () => {
+    it('user can drag', () => {
+      createStore();
+      mountComponent();
+
+      expect(wrapper.classes()).not.toContain('is-disabled');
+      expect(wrapper.classes()).toContain('user-can-drag');
     });
   });
 });

@@ -295,75 +295,69 @@ RSpec.describe 'Query.project(fullPath).releases()' do
     end
   end
 
-  describe 'sorting behavior' do
-    let_it_be(:today) { Time.now }
-    let_it_be(:yesterday) { today - 1.day }
-    let_it_be(:tomorrow) { today + 1.day }
+  describe 'sorting and pagination' do
+    let_it_be(:sort_project) { create(:project, :public) }
 
-    let_it_be(:project) { create(:project, :repository, :public) }
+    let(:data_path)          { [:project, :releases] }
+    let(:current_user)       { developer }
 
-    let_it_be(:release_v1) { create(:release, project: project, tag: 'v1', released_at: yesterday, created_at: tomorrow) }
-    let_it_be(:release_v2) { create(:release, project: project, tag: 'v2', released_at: today,     created_at: yesterday) }
-    let_it_be(:release_v3) { create(:release, project: project, tag: 'v3', released_at: tomorrow,  created_at: today) }
-
-    let(:current_user) { developer }
-
-    let(:params) { nil }
-
-    let(:sorted_tags) do
-      graphql_data.dig('project', 'releases', 'nodes').map { |release| release['tagName'] }
+    def pagination_query(params)
+      graphql_query_for(
+        :project,
+        { full_path: sort_project.full_path },
+        query_graphql_field(:releases, params, "#{page_info} nodes { tagName }")
+      )
     end
 
-    let(:query) do
-      graphql_query_for(:project, { fullPath: project.full_path },
-        %{
-          releases#{params ? "(#{params})" : ""} {
-            nodes {
-              tagName
-            }
-          }
-        })
+    def pagination_results_data(nodes)
+      nodes.map { |release| release['tagName'] }
     end
 
-    before do
-      post_query
-    end
+    context 'when sorting by released_at' do
+      let_it_be(:release5) { create(:release, project: sort_project, tag: 'v5.5.0', released_at: 3.days.from_now) }
+      let_it_be(:release1) { create(:release, project: sort_project, tag: 'v5.1.0', released_at: 3.days.ago) }
+      let_it_be(:release4) { create(:release, project: sort_project, tag: 'v5.4.0', released_at: 2.days.from_now) }
+      let_it_be(:release2) { create(:release, project: sort_project, tag: 'v5.2.0', released_at: 2.days.ago) }
+      let_it_be(:release3) { create(:release, project: sort_project, tag: 'v5.3.0', released_at: 1.day.ago) }
 
-    context 'when no sort: parameter is provided' do
-      it 'returns the results with the default sort applied (sort: RELEASED_AT_DESC)' do
-        expect(sorted_tags).to eq(%w(v3 v2 v1))
+      context 'when ascending' do
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param)       { :RELEASED_AT_ASC }
+          let(:first_param)      { 2 }
+          let(:expected_results) { [release1.tag, release2.tag, release3.tag, release4.tag, release5.tag] }
+        end
+      end
+
+      context 'when descending' do
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param)       { :RELEASED_AT_DESC }
+          let(:first_param)      { 2 }
+          let(:expected_results) { [release5.tag, release4.tag, release3.tag, release2.tag, release1.tag] }
+        end
       end
     end
 
-    context 'with sort: RELEASED_AT_DESC' do
-      let(:params) { 'sort: RELEASED_AT_DESC' }
+    context 'when sorting by created_at' do
+      let_it_be(:release5) { create(:release, project: sort_project, tag: 'v5.5.0', created_at: 3.days.from_now) }
+      let_it_be(:release1) { create(:release, project: sort_project, tag: 'v5.1.0', created_at: 3.days.ago) }
+      let_it_be(:release4) { create(:release, project: sort_project, tag: 'v5.4.0', created_at: 2.days.from_now) }
+      let_it_be(:release2) { create(:release, project: sort_project, tag: 'v5.2.0', created_at: 2.days.ago) }
+      let_it_be(:release3) { create(:release, project: sort_project, tag: 'v5.3.0', created_at: 1.day.ago) }
 
-      it 'returns the releases ordered by released_at in descending order' do
-        expect(sorted_tags).to eq(%w(v3 v2 v1))
+      context 'when ascending' do
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param)       { :CREATED_ASC }
+          let(:first_param)      { 2 }
+          let(:expected_results) { [release1.tag, release2.tag, release3.tag, release4.tag, release5.tag] }
+        end
       end
-    end
 
-    context 'with sort: RELEASED_AT_ASC' do
-      let(:params) { 'sort: RELEASED_AT_ASC' }
-
-      it 'returns the releases ordered by released_at in ascending order' do
-        expect(sorted_tags).to eq(%w(v1 v2 v3))
-      end
-    end
-
-    context 'with sort: CREATED_DESC' do
-      let(:params) { 'sort: CREATED_DESC' }
-
-      it 'returns the releases ordered by created_at in descending order' do
-        expect(sorted_tags).to eq(%w(v1 v3 v2))
-      end
-    end
-
-    context 'with sort: CREATED_ASC' do
-      let(:params) { 'sort: CREATED_ASC' }
-
-      it 'returns the releases ordered by created_at in ascending order' do
-        expect(sorted_tags).to eq(%w(v2 v3 v1))
+      context 'when descending' do
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param)       { :CREATED_DESC }
+          let(:first_param)      { 2 }
+          let(:expected_results) { [release5.tag, release4.tag, release3.tag, release2.tag, release1.tag] }
+        end
       end
     end
   end

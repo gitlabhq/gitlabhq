@@ -2,7 +2,7 @@
 
 module Gitlab
   module ImportExport
-    module JSON
+    module Json
       class LegacyReader
         class File < LegacyReader
           include Gitlab::Utils::StrongMemoize

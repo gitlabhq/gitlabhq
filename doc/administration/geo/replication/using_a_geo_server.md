@@ -1,5 +1,6 @@
 ---
 redirect_to: '../../geo/replication/usage.md'
+remove_date: '2022-06-01'
 ---
 
 This document was moved to [another location](../../geo/replication/usage.md).

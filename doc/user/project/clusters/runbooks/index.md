@@ -63,18 +63,93 @@ information.
 Follow this step-by-step guide to configure an executable runbook in GitLab using
 the components outlined above and the pre-loaded demo runbook.
 
-1. Add a Kubernetes cluster to your project by following the steps outlined in
-   [Create new cluster](../add_remove_clusters.md#create-new-cluster).
+1. Create an [OAuth Application for JupyterHub](../../../../integration/oauth_provider.md#gitlab-as-oauth2-authentication-service-provider).
+1. When [installing JupyterHub with Helm](https://zero-to-jupyterhub.readthedocs.io/en/latest/jupyterhub/installation.html), use the following values
 
-1. Click the **Install** button next to the **Ingress** application to install Ingress.
+   ```yaml
+   #-----------------------------------------------------------------------------
+   # The gitlab and ingress sections must be customized!
+   #-----------------------------------------------------------------------------
 
-   ![install ingress](img/ingress-install.png)
+   gitlab:
+      clientId: <Your OAuth Application ID>
+      clientSecret: <Your OAuth Application Secret>
+      callbackUrl: http://<Jupyter Hostname>/hub/oauth_callback,
+      # Limit access to members of specific projects or groups:
+      # allowedGitlabGroups: [ "my-group-1", "my-group-2" ]
+      # allowedProjectIds: [ 12345, 6789 ]
 
-1. After Ingress has been installed successfully, click the **Install** button next
-   to the **JupyterHub** application. You need the **Jupyter Hostname** provided
-   here in the next step.
+   # ingress is required for OAuth to work
+   ingress:
+      enabled: true
+      host: <JupyterHostname>
+      # tls:
+      #    - hosts:
+      #       - <JupyterHostanme>
+      #         secretName: jupyter-cert
+      # annotations:
+      #    kubernetes.io/ingress.class: "nginx"
+      #    kubernetes.io/tls-acme: "true"
 
-   ![install JupyterHub](img/jupyterhub-install.png)
+   #-----------------------------------------------------------------------------
+   # NO MODIFICATIONS REQUIRED BEYOND THIS POINT
+   #-----------------------------------------------------------------------------
+
+   hub:
+      extraEnv:
+         JUPYTER_ENABLE_LAB: 1
+      extraConfig: |
+         c.KubeSpawner.cmd = ['jupyter-labhub']
+         c.GitLabOAuthenticator.scope = ['api read_repository write_repository']
+
+         async def add_auth_env(spawner):
+            '''
+            We set user's id, login and access token on single user image to
+            enable repository integration for JupyterHub.
+            See: https://gitlab.com/gitlab-org/gitlab-foss/issues/47138#note_154294790
+            '''
+            auth_state = await spawner.user.get_auth_state()
+
+            if not auth_state:
+               spawner.log.warning("No auth state for %s", spawner.user)
+               return
+
+            spawner.environment['GITLAB_ACCESS_TOKEN'] = auth_state['access_token']
+            spawner.environment['GITLAB_USER_LOGIN'] = auth_state['gitlab_user']['username']
+            spawner.environment['GITLAB_USER_ID'] = str(auth_state['gitlab_user']['id'])
+            spawner.environment['GITLAB_USER_EMAIL'] = auth_state['gitlab_user']['email']
+            spawner.environment['GITLAB_USER_NAME'] = auth_state['gitlab_user']['name']
+
+         c.KubeSpawner.pre_spawn_hook = add_auth_env
+
+   auth:
+      type: gitlab
+      state:
+         enabled: true
+
+   singleuser:
+      defaultUrl: "/lab"
+      image:
+         name: registry.gitlab.com/gitlab-org/jupyterhub-user-image
+         tag: latest
+      lifecycleHooks:
+         postStart:
+            exec:
+            command:
+               - "sh"
+               - "-c"
+               - >
+                  git clone https://gitlab.com/gitlab-org/nurtch-demo.git DevOps-Runbook-Demo || true;
+                  echo "https://oauth2:${GITLAB_ACCESS_TOKEN}@${GITLAB_HOST}" > ~/.git-credentials;
+                  git config --global credential.helper store;
+                  git config --global user.email "${GITLAB_USER_EMAIL}";
+                  git config --global user.name "${GITLAB_USER_NAME}";
+                  jupyter serverextension enable --py jupyterlab_git
+
+   proxy:
+      service:
+         type: ClusterIP
+   ```
 
 1. After JupyterHub has been installed successfully, open the **Jupyter Hostname**
    in your browser. Click the **Sign in with GitLab** button to log in to

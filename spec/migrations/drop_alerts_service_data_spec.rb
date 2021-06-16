@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210205213933_drop_alerts_service_data.rb')
+require_migration!
 
 RSpec.describe DropAlertsServiceData do
   let_it_be(:alerts_service_data) { table(:alerts_service_data) }

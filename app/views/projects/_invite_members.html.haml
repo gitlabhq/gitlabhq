@@ -3,6 +3,10 @@
   track_event: 'render' } }
   = s_('InviteMember|Invite your team')
 %p= s_('InviteMember|Add members to this project and start collaborating with your team.')
-= link_to s_('InviteMember|Invite members'), project_project_members_path(@project, sort: :access_level_desc),
-        class: 'gl-button btn btn-confirm gl-mb-8 gl-xs-w-full',
-        data: { track_event: 'click_button', track_label: 'invite_members_empty_project' }
+.js-invite-members-trigger{ data: { variant: 'confirm',
+  classes: 'gl-mb-8 gl-xs-w-full',
+  display_text: s_('InviteMember|Invite members'),
+  event: 'click_button',
+  label: 'invite_members_empty_project' } }
+
+= render 'shared/issuable/invite_members_trigger', project: @project

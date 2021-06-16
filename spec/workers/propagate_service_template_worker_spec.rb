@@ -7,7 +7,7 @@ RSpec.describe PropagateServiceTemplateWorker do
 
   describe '#perform' do
     it 'calls the propagate service with the template' do
-      template = PushoverService.create!(
+      template = Integrations::Pushover.create!(
         template: true,
         active: true,
         properties: {

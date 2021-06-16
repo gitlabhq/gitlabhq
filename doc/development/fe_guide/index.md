@@ -93,6 +93,11 @@ General information about frontend [dependencies](dependencies.md) and how we ma
 
 How we implement [keyboard shortcuts](keyboard_shortcuts.md) that can be customized and disabled.
 
+## Editors
+
+GitLab text editing experiences are provided by the [Source Editor](editor_lite.md) and
+the [Content Editor](content_editor.md).
+
 ## Frontend FAQ
 
 Read the [frontend's FAQ](frontend_faq.md) for common small pieces of helpful information.

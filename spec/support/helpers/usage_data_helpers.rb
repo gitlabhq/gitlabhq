@@ -99,7 +99,6 @@ module UsageDataHelpers
       projects_with_repositories_enabled
       projects_with_error_tracking_enabled
       projects_with_enabled_alert_integrations
-      projects_with_prometheus_alerts
       projects_with_tracing_enabled
       projects_with_expiration_policy_enabled
       projects_with_expiration_policy_disabled
@@ -163,7 +162,6 @@ module UsageDataHelpers
       database
       prometheus_metrics_enabled
       web_ide_clientside_preview_enabled
-      ingress_modsecurity_enabled
       object_store
       topology
     ).freeze

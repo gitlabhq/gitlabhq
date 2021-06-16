@@ -175,6 +175,23 @@ describe('BaseToken', () => {
 
         expect(setTokenValueToRecentlyUsed).toHaveBeenCalledWith(mockStorageKey, mockTokenValue);
       });
+
+      it('does not add token from preloadedTokenValues', async () => {
+        const mockTokenValue = {
+          id: 1,
+          title: 'Foo',
+        };
+
+        wrapper.setProps({
+          preloadedTokenValues: [mockTokenValue],
+        });
+
+        await wrapper.vm.$nextTick();
+
+        wrapper.vm.handleTokenValueSelected(mockTokenValue);
+
+        expect(setTokenValueToRecentlyUsed).not.toHaveBeenCalled();
+      });
     });
   });
 

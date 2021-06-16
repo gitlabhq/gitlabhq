@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:user_management tasks' do
+RSpec.describe 'gitlab:user_management tasks', :silence_stdout do
   before do
     Rake.application.rake_require 'tasks/gitlab/user_management'
   end

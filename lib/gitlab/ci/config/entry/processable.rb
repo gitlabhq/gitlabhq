@@ -98,7 +98,6 @@ module Gitlab
           def validate_against_warnings
             # If rules are valid format and workflow rules are not specified
             return unless rules_value
-            return unless Gitlab::Ci::Features.raise_job_rules_without_workflow_rules_warning?
 
             last_rule = rules_value.last
 

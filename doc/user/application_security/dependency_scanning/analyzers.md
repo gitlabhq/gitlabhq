@@ -80,7 +80,7 @@ include:
   template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DS_EXCLUDED_ANALYZERS: "gemnasium, gemansium-maven, gemnasium-python, bundler-audit, retire.js"
+  DS_EXCLUDED_ANALYZERS: "gemnasium, gemnasium-maven, gemnasium-python, bundler-audit, retire.js"
 ```
 
 This is used when one totally relies on [custom analyzers](#custom-analyzers).

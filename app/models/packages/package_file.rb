@@ -33,9 +33,16 @@ class Packages::PackageFile < ApplicationRecord
   scope :with_files_stored_locally, -> { where(file_store: ::Packages::PackageFileUploader::Store::LOCAL) }
   scope :preload_conan_file_metadata, -> { preload(:conan_file_metadatum) }
   scope :preload_debian_file_metadata, -> { preload(:debian_file_metadatum) }
+  scope :preload_helm_file_metadata, -> { preload(:helm_file_metadatum) }
 
   scope :for_rubygem_with_file_name, ->(project, file_name) do
     joins(:package).merge(project.packages.rubygems).with_file_name(file_name)
+  end
+
+  scope :for_helm_with_channel, ->(project, channel) do
+    joins(:package).merge(project.packages.helm.installable)
+                   .joins(:helm_file_metadatum)
+                   .where(packages_helm_file_metadata: { channel: channel })
   end
 
   scope :with_conan_file_type, ->(file_type) do

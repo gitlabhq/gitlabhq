@@ -20,7 +20,7 @@
               "type": "object",
               "properties": {
                 "name":               { "type": "string", "description": "The name of the GitLab service running on this node" },
-                "server":             { "type": "string", "description": "The type of web server used (Unicorn or Puma)" },
+                "server":             { "type": "string", "description": "The type of web server used (Puma only from 14.0)" },
                 "process_count":      { "type": "number", "description": "The number of processes running for this service" },
                 "process_memory_rss": { "type": "number", "description": "The average Resident Set Size of a service process" },
                 "process_memory_uss": { "type": "number", "description": "The average Unique Set Size of a service process" },

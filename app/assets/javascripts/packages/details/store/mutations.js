@@ -11,4 +11,7 @@ export default {
       versions,
     };
   },
+  [types.UPDATE_PACKAGE_FILES](state, files) {
+    state.packageFiles = files;
+  },
 };

@@ -24,7 +24,7 @@ describe('ideStatusBar', () => {
     store = createStore();
     store.state.currentProjectId = TEST_PROJECT_ID;
     store.state.projects[TEST_PROJECT_ID] = _.clone(projectData);
-    store.state.currentBranchId = 'master';
+    store.state.currentBranchId = 'main';
   });
 
   afterEach(() => {

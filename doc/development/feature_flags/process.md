@@ -1,5 +1,6 @@
 ---
 redirect_to: 'https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/'
+remove_date: '2021-06-01'
 ---
 
 This document was moved to [another location](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).

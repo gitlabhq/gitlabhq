@@ -16,6 +16,7 @@ module Namespaces
           parent.root_ancestor
         end
       end
+      alias_method :recursive_root_ancestor, :root_ancestor
 
       # Returns all ancestors, self, and descendants of the current namespace.
       def self_and_hierarchy
@@ -60,6 +61,11 @@ module Namespaces
           .base_and_descendants
       end
       alias_method :recursive_self_and_descendants, :self_and_descendants
+
+      def self_and_descendant_ids
+        self_and_descendants.select(:id)
+      end
+      alias_method :recursive_self_and_descendant_ids, :self_and_descendant_ids
 
       def object_hierarchy(ancestors_base)
         Gitlab::ObjectHierarchy.new(ancestors_base, options: { use_distinct: Feature.enabled?(:use_distinct_in_object_hierarchy, self) })

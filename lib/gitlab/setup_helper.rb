@@ -129,7 +129,7 @@ module Gitlab
 
           config[:'gitaly-ruby'] = { dir: File.join(gitaly_dir, 'ruby') } if gitaly_ruby
           config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }
-          config[:bin_dir] = Gitlab.config.gitaly.client_path
+          config[:bin_dir] = File.join(gitaly_dir, '_build', 'bin') # binaries by default are in `_build/bin`
           config[:gitlab] = { url: Gitlab.config.gitlab.url }
           config[:logging] = { dir: Rails.root.join('log').to_s }
 
@@ -153,8 +153,14 @@ module Gitlab
           second_storage_nodes = [{ storage: 'test_second_storage', address: "unix:#{gitaly_dir}/gitaly2.socket", primary: true, token: 'secret' }]
 
           storages = [{ name: 'default', node: nodes }, { name: 'test_second_storage', node: second_storage_nodes }]
-          failover = { enabled: false }
-          config = { socket_path: "#{gitaly_dir}/praefect.socket", memory_queue_enabled: true, virtual_storage: storages, failover: failover }
+          failover = { enabled: false, election_strategy: 'local' }
+          config = {
+            i_understand_my_election_strategy_is_unsupported_and_will_be_removed_without_warning: true,
+            socket_path: "#{gitaly_dir}/praefect.socket",
+            memory_queue_enabled: true,
+            virtual_storage: storages,
+            failover: failover
+          }
           config[:token] = 'secret' if Rails.env.test?
 
           TomlRB.dump(config)

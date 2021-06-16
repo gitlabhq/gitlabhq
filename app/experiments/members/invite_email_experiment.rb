@@ -12,7 +12,7 @@ module Members
     end
 
     def resolve_variant_name
-      RoundRobin.new(feature_flag_name, %i[avatar permission_info control]).execute
+      RoundRobin.new(feature_flag_name, %i[activity control]).execute
     end
   end
 

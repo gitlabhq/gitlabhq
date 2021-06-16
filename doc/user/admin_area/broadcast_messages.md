@@ -5,21 +5,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Broadcast Messages **(FREE SELF)**
+# Broadcast messages **(FREE SELF)**
 
 GitLab can display broadcast messages to all users of a GitLab instance. There are two types of broadcast messages:
 
-- banners
-- notifications
+- Banners
+- Notifications
 
-You can style a message's content using the `a` and `br` HTML tags. The `br` tag inserts a line break. The `a` HTML tag accepts `class` and `style` attributes with the following CSS properties:
-
-- `color`
-- `border`
-- `background`
-- `padding`
-- `margin`
-- `text-decoration`
+Broadcast messages can be managed using the [broadcast messages API](../../api/broadcast_messages.md).
 
 ## Banners
 
@@ -36,6 +29,8 @@ remote:
 ...
 ```
 
+If more than one banner is active at one time, they are displayed in a stack in order of creation.
+
 ## Notifications
 
 Notifications are shown on the bottom right of a page and can contain placeholders. A placeholder is replaced with an attribute of the active user. Placeholders must be surrounded by curly braces, for example `{{name}}`.
@@ -51,65 +46,63 @@ If the user is not signed in, user related values are empty.
 
 ![Broadcast Message Notification](img/broadcast_messages_notification_v12_10.png)
 
-Broadcast messages can be managed using the [broadcast messages API](../../api/broadcast_messages.md).
+If more than one notification is active at one time, only the newest is shown.
 
-NOTE:
-If more than one banner message is active at one time, they are displayed in a stack in order of creation.
-If more than one notification message is active at one time, only the newest is shown.
+## Add a broadcast message
 
-## Adding a broadcast message
-
-To display messages to users on your GitLab instance, add broadcast message.
+To display messages to users on your GitLab instance, add a broadcast message.
 
 To add a broadcast message:
 
-1. Navigate to the **Admin Area > Messages** page.
-1. Add the text for the message to the **Message** field. Markdown and emoji are supported.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Messages**.
+1. Add the text for the message to the **Message** field. You can style a message's content using Markdown, emoji, and the `a` and `br` HTML tags.
+   The `br` tag inserts a line break. The `a` HTML tag accepts `class` and `style` attributes with the following CSS properties:
+    - `color`
+    - `border`
+    - `background`
+    - `padding`
+    - `margin`
+    - `text-decoration`
 1. Select one of the suggested background colors, or add the hex code of a different color. The default color is orange.
+1. Select the **Dismissable** checkbox to enable users to dismiss the broadcast message.
 1. If required, add a **Target Path** to only show the broadcast message on URLs matching that path. You can use the wildcard character `*` to match multiple URLs, for example `mygroup/myproject*`.
 1. Select a date for the message to start and end.
-1. Click the **Add broadcast message** button.
-
-NOTE:
-When scoping messages, you can't use preceding or trailing slashes. For example,
-instead of `/mygroup/myproject/`, you must use `mygroup/myproject`. A fix is
-[planned for GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59482).
+1. Select **Add broadcast message**.
 
 NOTE:
 The **Background color** field expects the value to be a hexadecimal code because
 the form uses the [color_field](https://api.rubyonrails.org/v6.0.3.4/classes/ActionView/Helpers/FormHelper.html#method-i-color_field)
 helper method, which generates the proper HTML to render.
 
-NOTE:
-Once a broadcast message has expired, it is no longer displayed in the UI but is still listed in the
-list of broadcast messages. User can also dismiss a broadcast message if the option **Dismissable** is set.
+When a broadcast message expires, it no longer displays in the user interface but is still listed in the
+list of broadcast messages.
 
-## Editing a broadcast message
+## Edit a broadcast message
 
-If changes are required to a broadcast message, they can be edited.
+If you need to make changes to a broadcast message, you can edit it.
 
 To edit a broadcast message:
 
-1. Navigate to the **Admin Area > Messages** page.
-1. From the list of broadcast messages, click the appropriate button to edit the message.
-1. After making the required changes, click the **Update broadcast message** button.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Messages**.
+1. From the list of broadcast messages, select the edit button for the message.
+1. After making the required changes, select **Update broadcast message**.
 
-NOTE:
 Expired messages can be made active again by changing their end date.
 
-## Deleting a broadcast message
+## Delete a broadcast message
 
-Broadcast messages that are no longer required can be deleted.
+If you no longer require a broadcast message, you can delete it.
+You can delete a broadcast message while it's active.
 
 To delete a broadcast message:
 
-1. Navigate to the **Admin Area > Messages** page.
-1. From the list of broadcast messages, click the appropriate button to delete the message.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Messages**.
+1. From the list of broadcast messages, select the delete button for the message.
 
-Once deleted, the broadcast message is removed from the list of broadcast messages.
-
-NOTE:
-Broadcast messages can be deleted while active.
+When a broadcast message is deleted, it's removed from the list of broadcast messages.
 
 <!-- ## Troubleshooting
 

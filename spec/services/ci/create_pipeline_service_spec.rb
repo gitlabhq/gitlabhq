@@ -7,6 +7,7 @@ RSpec.describe Ci::CreatePipelineService do
 
   let_it_be(:project, reload: true) { create(:project, :repository) }
   let_it_be(:user, reload: true) { project.owner }
+  let_it_be(:runner) { create(:ci_runner, :online, tag_list: %w[postgres mysql ruby]) }
 
   let(:ref_name) { 'refs/heads/master' }
 
@@ -532,7 +533,7 @@ RSpec.describe Ci::CreatePipelineService do
         it 'pull it from Auto-DevOps' do
           pipeline = execute_service
           expect(pipeline).to be_auto_devops_source
-          expect(pipeline.builds.map(&:name)).to match_array(%w[brakeman-sast build code_quality eslint-sast secret_detection_default_branch semgrep-sast test])
+          expect(pipeline.builds.map(&:name)).to match_array(%w[brakeman-sast build code_quality eslint-sast secret_detection semgrep-sast test])
         end
       end
 

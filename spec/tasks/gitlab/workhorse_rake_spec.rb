@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:workhorse namespace rake task' do
+RSpec.describe 'gitlab:workhorse namespace rake task', :silence_stdout do
   before :all do
     Rake.application.rake_require 'tasks/gitlab/workhorse'
   end

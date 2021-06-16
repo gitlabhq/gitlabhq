@@ -71,8 +71,8 @@ export default {
       <gl-icon :name="iconType" :size="16" data-testid="change-type-icon" />
     </span>
 
-    <div class="gl-display-flex gl-flex-fill-1 gl-flex-direction-column flex-md-row gl-pl-3">
-      <div class="gl-flex-fill-1 gl-display-flex gl-flex-direction-column gl-pr-3">
+    <div class="gl-display-flex gl-flex-grow-1 gl-flex-direction-column flex-md-row gl-pl-3">
+      <div class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-pr-3">
         <p class="gl-mb-3 gl-line-height-normal">
           <gl-sprintf :message="reportHeaderText">
             <template #name>

@@ -108,7 +108,6 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
           let(:expected_next_page_link) { %Q(<#{incoming_api_projects_url}?#{query.merge(page_token: branch2.name).to_query}>; rel="next") }
 
           it 'uses keyset pagination and adds link headers' do
-            expect(request_context).to receive(:header).with('Links', expected_next_page_link)
             expect(request_context).to receive(:header).with('Link', expected_next_page_link)
 
             pager.paginate(finder)
@@ -119,7 +118,6 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
           let(:branches) { [branch1] }
 
           it 'uses keyset pagination without link headers' do
-            expect(request_context).not_to receive(:header).with('Links', anything)
             expect(request_context).not_to receive(:header).with('Link', anything)
 
             pager.paginate(finder)

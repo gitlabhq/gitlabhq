@@ -24,18 +24,8 @@ RSpec.describe BuildHooksWorker do
   end
 
   describe '.perform_async' do
-    context 'when delayed_perform_for_build_hooks_worker feature flag is disabled' do
-      before do
-        stub_feature_flags(delayed_perform_for_build_hooks_worker: false)
-      end
-
-      it 'does not call perform_in' do
-        expect(described_class).not_to receive(:perform_in)
-      end
-    end
-
-    it 'delays scheduling a job by calling perform_in' do
-      expect(described_class).to receive(:perform_in).with(described_class::DATA_CONSISTENCY_DELAY.second, 123)
+    it 'delays scheduling a job by calling perform_in with default delay' do
+      expect(described_class).to receive(:perform_in).with(ApplicationWorker::DEFAULT_DELAY_INTERVAL.second, 123)
 
       described_class.perform_async(123)
     end
@@ -43,6 +33,5 @@ RSpec.describe BuildHooksWorker do
 
   it_behaves_like 'worker with data consistency',
                   described_class,
-                  feature_flag: :load_balancing_for_build_hooks_worker,
                   data_consistency: :delayed
 end

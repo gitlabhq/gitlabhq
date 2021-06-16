@@ -4,6 +4,7 @@ import {
   shallowMount,
   Wrapper as VTUWrapper,
   WrapperArray as VTUWrapperArray,
+  ErrorWrapper as VTUErrorWrapper,
 } from '@vue/test-utils';
 import {
   extendedWrapper,
@@ -195,7 +196,7 @@ describe('Vue test utils helpers', () => {
         });
 
         it('returns a VTU error wrapper', () => {
-          expect(wrapper[findMethod](text, options).exists()).toBe(false);
+          expect(wrapper[findMethod](text, options)).toBeInstanceOf(VTUErrorWrapper);
         });
       });
     });

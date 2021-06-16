@@ -27,62 +27,44 @@ Scanning a web application with both the browser-based crawler and GitLab DAST s
 
 The browser-based crawler is an extension to the GitLab DAST product. DAST should be included in the CI/CD configuration and the browser-based crawler enabled using CI/CD variables:
 
-1. Install the DAST [prerequisites](index.md#prerequisite).
+1. Ensure the DAST [prerequisites](index.md#prerequisites) are met.
 1. Include the [DAST CI template](index.md#include-the-dast-template).
 1. Set the target website using the `DAST_WEBSITE` CI/CD variable.
 1. Set the CI/CD variable `DAST_BROWSER_SCAN` to `true`.
- 
+
 An example configuration might look like the following:
 
 ```yaml
 include:
   - template: DAST.gitlab-ci.yml
 
-variables:
-  DAST_WEBSITE: "https://example.com"
-  DAST_BROWSER_SCAN: "true"
+dast:
+  variables:
+    DAST_WEBSITE: "https://example.com"
+    DAST_BROWSER_SCAN: "true"
 ```
 
-### Available variables
+### Available CI/CD variables
 
 The browser-based crawler can be configured using CI/CD variables.
 
-| CI/CD variable                       | Type            | Example                           | Description | 
+| CI/CD variable                       | Type            | Example                           | Description |
 |--------------------------------------| ----------------| --------------------------------- | ------------|
 | `DAST_WEBSITE`                       | URL             | `http://www.site.com`             | The URL of the website to scan. |
-| `DAST_BROWSER_SCAN`               | boolean         | `true`                            | Configures DAST to use the browser-based crawler engine. |
-| `DAST_BROWSER_ALLOWED_HOSTS`      | List of strings | `site.com,another.com`            | Hostnames included in this variable are considered in scope when crawled. By default the `DAST_WEBSITE` hostname is included in the allowed hosts list. |
-| `DAST_BROWSER_EXCLUDED_HOSTS`     | List of strings | `site.com,another.com`            | Hostnames included in this variable are considered excluded and connections are forcibly dropped. |
-| `DAST_BROWSER_IGNORED_HOSTS`      | List of strings | `site.com,another.com`            | Hostnames included in this variable are accessed but not reported against. |
-| `DAST_BROWSER_MAX_ACTIONS`        | number          | `10000`                           | The maximum number of actions that the crawler performs. For example, clicking a link, or filling a form.  |
-| `DAST_BROWSER_MAX_DEPTH`          | number          | `10`                              | The maximum number of chained actions that the crawler takes. For example, `Click -> Form Fill -> Click` is a depth of three. |
-| `DAST_BROWSER_NUMBER_OF_BROWSERS` | number          | `3`                               | The maximum number of concurrent browser instances to use. For shared runners on GitLab.com we recommended a maximum of three. Private runners with more resources may benefit from a higher number, but will likely produce little benefit after five to seven instances. |
-| `DAST_BROWSER_COOKIES`            | dictionary      | `abtesting_group:3,region:locked` | A cookie name and value to be added to every request. |
-| `DAST_BROWSER_LOG`                | List of strings | `brows:debug,auth:debug`          | A list of modules and their intended log level. |
-| `DAST_AUTH_URL`                      | string          | `https://example.com/sign-in`     | The URL of page that hosts the sign-in form. |
-| `DAST_USERNAME`                      | string          | `user123`                         | The username to enter into the username field on the sign-in HTML form. |
-| `DAST_PASSWORD`                      | string          | `p@55w0rd`                        | The password to enter into the password field on the sign-in HTML form. |
-| `DAST_USERNAME_FIELD`                | selector        | `id:user`                         | A selector describing the username field on the sign-in HTML form. |
-| `DAST_PASSWORD_FIELD`                | selector        | `css:.password-field`             | A selector describing the password field on the sign-in HTML form. | 
-| `DAST_SUBMIT_FIELD`                  | selector        | `xpath://input[@value='Login']`   | A selector describing the element that when clicked submits the login form or the password form of a multi-page login process. |
-| `DAST_FIRST_SUBMIT_FIELD`            | selector        | `.submit`                         | A selector describing the element that when clicked submits the username form of a multi-page login process. |
+| `DAST_BROWSER_SCAN`                  | boolean         | `true`                            | Configures DAST to use the browser-based crawler engine. |
+| `DAST_BROWSER_ALLOWED_HOSTS`         | List of strings | `site.com,another.com`            | Hostnames included in this variable are considered in scope when crawled. By default the `DAST_WEBSITE` hostname is included in the allowed hosts list. |
+| `DAST_BROWSER_EXCLUDED_HOSTS`        | List of strings | `site.com,another.com`            | Hostnames included in this variable are considered excluded and connections are forcibly dropped. |
+| `DAST_BROWSER_IGNORED_HOSTS`         | List of strings | `site.com,another.com`            | Hostnames included in this variable are accessed but not reported against. |
+| `DAST_BROWSER_MAX_ACTIONS`           | number          | `10000`                           | The maximum number of actions that the crawler performs. For example, clicking a link, or filling a form.  |
+| `DAST_BROWSER_MAX_DEPTH`             | number          | `10`                              | The maximum number of chained actions that the crawler takes. For example, `Click -> Form Fill -> Click` is a depth of three. |
+| `DAST_BROWSER_NUMBER_OF_BROWSERS`    | number          | `3`                               | The maximum number of concurrent browser instances to use. For shared runners on GitLab.com we recommended a maximum of three. Private runners with more resources may benefit from a higher number, but will likely produce little benefit after five to seven instances. |
+| `DAST_BROWSER_COOKIES`               | dictionary      | `abtesting_group:3,region:locked` | A cookie name and value to be added to every request. |
+| `DAST_BROWSER_LOG`                   | List of strings | `brows:debug,auth:debug`          | A list of modules and their intended log level. |
 
-The [DAST variables](index.md#available-variables) `SECURE_ANALYZERS_PREFIX`, `DAST_FULL_SCAN_ENABLED`, `DAST_AUTO_UPDATE_ADDONS`, `DAST_EXCLUDE_RULES`, `DAST_REQUEST_HEADERS`, `DAST_HTML_REPORT`, `DAST_MARKDOWN_REPORT`, `DAST_XML_REPORT`,
+The [DAST variables](index.md#available-cicd-variables) `SECURE_ANALYZERS_PREFIX`, `DAST_FULL_SCAN_ENABLED`, `DAST_AUTO_UPDATE_ADDONS`, `DAST_EXCLUDE_RULES`, `DAST_REQUEST_HEADERS`, `DAST_HTML_REPORT`, `DAST_MARKDOWN_REPORT`, `DAST_XML_REPORT`,
+`DAST_AUTH_URL`, `DAST_USERNAME`, `DAST_PASSWORD`, `DAST_USERNAME_FIELD`, `DAST_PASSWORD_FIELD`, `DAST_FIRST_SUBMIT_FIELD`, `DAST_SUBMIT_FIELD`, `DAST_EXCLUDE_URLS`, `DAST_AUTH_VERIFICATION_URL`, `DAST_BROWSER_AUTH_VERIFICATION_SELECTOR`, `DAST_BROWSER_AUTH_VERIFICATION_LOGIN_FORM`, `DAST_BROWSER_AUTH_REPORT`,
 `DAST_INCLUDE_ALPHA_VULNERABILITIES`, `DAST_PATHS_FILE`, `DAST_PATHS`, `DAST_ZAP_CLI_OPTIONS`, and `DAST_ZAP_LOG_CONFIGURATION` are also compatible with browser-based crawler scans.   
-
-#### Selectors
-
-Selectors are used by CI/CD variables to specify the location of an element displayed on a page in a browser.
-Selectors have the format `type`:`search string`. The crawler will search for the selector using the search string based on the type.
-
-| Selector type | Example                        | Description |
-| ------------- | ------------------------------ | ----------- |
-| `css`         | `css:.password-field`          | Searches for a HTML element having the supplied CSS selector. Selectors should be as specific as possible for performance reasons. |
-| `id`          | `id:element`                   | Searches for an HTML element with the provided element ID. |
-| `name`        | `name:element`                 | Searches for an HTML element with the provided element name. |
-| `xpath`       | `xpath://*[@id="my-button"]/a` | Searches for a HTML element with the provided XPath. Note that XPath searches are expected to be less performant than other searches. |
-| None provided | `a.click-me`                   | Defaults to searching using a CSS selector. |
-
+ 
 ## Vulnerability detection
 
 While the browser-based crawler crawls modern web applications efficiently, vulnerability detection is still managed by the standard DAST/Zed Attack Proxy (ZAP) solution.
@@ -100,9 +82,9 @@ This can come at a cost of increased scan time.
 
 You can manage the trade-off between coverage and scan time with the following measures:
 
-- Limit the number of actions executed by the browser with the [variable](#available-variables) `DAST_BROWSER_MAX_ACTIONS`. The default is `10,000`.
-- Limit the page depth that the browser-based crawler will check coverage on with the [variable](#available-variables) `DAST_BROWSER_MAX_DEPTH`. The crawler uses a breadth-first search strategy, so pages with smaller depth are crawled first. The default is `10`.
-- Vertically scaling the runner and using a higher number of browsers with [variable](#available-variables) `DAST_BROWSER_NUMBER_OF_BROWSERS`. The default is `3`.
+- Limit the number of actions executed by the browser with the [variable](#available-cicd-variables) `DAST_BROWSER_MAX_ACTIONS`. The default is `10,000`.
+- Limit the page depth that the browser-based crawler will check coverage on with the [variable](#available-cicd-variables) `DAST_BROWSER_MAX_DEPTH`. The crawler uses a breadth-first search strategy, so pages with smaller depth are crawled first. The default is `10`.
+- Vertically scaling the runner and using a higher number of browsers with [variable](#available-cicd-variables) `DAST_BROWSER_NUMBER_OF_BROWSERS`. The default is `3`.
 
 ## Debugging scans using logging
 
@@ -116,10 +98,11 @@ For example, the following job definition enables the browsing module and the au
 include:
   - template: DAST.gitlab-ci.yml
 
-variables:
-  DAST_WEBSITE: "https://my.site.com"
-  DAST_BROWSER_SCAN: "true"
-  DAST_BROWSER_LOG: "brows:debug,auth:debug"
+dast:
+  variables:
+    DAST_WEBSITE: "https://my.site.com"
+    DAST_BROWSER_SCAN: "true"
+    DAST_BROWSER_LOG: "brows:debug,auth:debug"
 ```
 
 ### Log message format

@@ -22,15 +22,15 @@
     .account-well.gl-mb-3
       %ul
         %li
-          = _('Your Primary Email will be used for avatar detection.')
+          - profile_message = _('Your primary email is used for avatar detection. You can change it in your %{openingTag}profile settings%{closingTag}.') % { openingTag: "<a href='#{profile_path}'>".html_safe, closingTag: '</a>'.html_safe}
+          = profile_message.html_safe
         %li
-          = _('Your Commit Email will be used for web based operations, such as edits and merges.')
+          = _('Your commit email is used for web based operations, such as edits and merges.')
         %li
-          - address = profile_notifications_path
-          - notification_message = _('Your Default Notification Email will be used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set.') % { openingTag: "<a href='#{address}'>".html_safe, closingTag: '</a>'.html_safe}
+          - notification_message = _('Your default notification email is used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set.') % { openingTag: "<a href='#{profile_notifications_path}'>".html_safe, closingTag: '</a>'.html_safe}
           = notification_message.html_safe
         %li
-          = _('Your Public Email will be displayed on your public profile.')
+          = _('Your public email will be displayed on your public profile.')
         %li
           = _('All email addresses will be used to identify your commits.')
     %ul.content-list

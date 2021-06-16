@@ -65,7 +65,6 @@ GET /issues?state=opened
 | `issue_type`        | string           | no         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. _(Introduced in [GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/260375))_ |
 | `iteration_id` **(PREMIUM)** | integer | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
 | `iteration_title` **(PREMIUM)** | string | no       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
-| `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.                             |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.                             |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016) in GitLab 10.0)_ |
@@ -996,7 +995,7 @@ POST /projects/:id/issues
 | `issue_type`                              | string         | no       | The type of issue. One of `issue`, `incident`, or `test_case`. Default is `issue`. |
 | `labels`                                  | string         | no       | Comma-separated label names for an issue  |
 | `merge_request_to_resolve_discussions_of` | integer        | no       | The IID of a merge request in which to resolve all issues. This fills out the issue with a default description and mark all discussions as resolved. When passing a description or title, these values take precedence over the default values.|
-| `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue  |
+| `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue. To find the `milestone_id` associated with a milestone, view an issue with the milestone assigned and [use the API](#single-project-issue) to retrieve the issue's details. |
 | `title`                                   | string         | yes      | The title of an issue |
 | `weight` **(PREMIUM)**                    | integer        | no       | The weight of the issue. Valid values are greater than or equal to 0. |
 
@@ -2081,6 +2080,7 @@ Example response:
     "source_project_id": 1,
     "target_project_id": 1,
     "labels": [],
+    "draft": false,
     "work_in_progress": false,
     "milestone": {
       "id": 27,
@@ -2232,6 +2232,7 @@ Example response:
     "closed_at": null,
     "closed_by": null,
     "labels": [],
+    "draft": false,
     "work_in_progress": false,
     "milestone": null,
     "merge_when_pipeline_succeeds": false,

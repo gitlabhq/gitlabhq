@@ -1,5 +1,5 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import updateAlertStatusMutation from '~/graphql_shared//mutations/alert_status_update.mutation.graphql';
 import Tracking from '~/tracking';
@@ -10,9 +10,10 @@ const mockAlert = mockAlerts[0];
 
 describe('AlertManagementStatus', () => {
   let wrapper;
-  const findStatusDropdown = () => wrapper.find(GlDropdown);
-  const findFirstStatusOption = () => findStatusDropdown().find(GlDropdownItem);
+  const findStatusDropdown = () => wrapper.findComponent(GlDropdown);
+  const findFirstStatusOption = () => findStatusDropdown().findComponent(GlDropdownItem);
   const findAllStatusOptions = () => findStatusDropdown().findAll(GlDropdownItem);
+  const findStatusDropdownHeader = () => wrapper.findByTestId('dropdown-header');
 
   const selectFirstStatusOption = () => {
     findFirstStatusOption().vm.$emit('click');
@@ -21,7 +22,7 @@ describe('AlertManagementStatus', () => {
   };
 
   function mountComponent({ props = {}, provide = {}, loading = false, stubs = {} } = {}) {
-    wrapper = shallowMount(AlertManagementStatus, {
+    wrapper = shallowMountExtended(AlertManagementStatus, {
       propsData: {
         alert: { ...mockAlert },
         projectPath: 'gitlab-org/gitlab',
@@ -43,15 +44,27 @@ describe('AlertManagementStatus', () => {
     });
   }
 
-  beforeEach(() => {
-    mountComponent();
-  });
-
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
-      wrapper = null;
     }
+  });
+
+  describe('sidebar', () => {
+    it('displays the dropdown status header', () => {
+      mountComponent({ props: { isSidebar: true } });
+      expect(findStatusDropdownHeader().exists()).toBe(true);
+    });
+
+    it('hides the dropdown by default', () => {
+      mountComponent({ props: { isSidebar: true } });
+      expect(wrapper.classes()).toContain('gl-display-none');
+    });
+
+    it('shows the dropdown', () => {
+      mountComponent({ props: { isSidebar: true, isDropdownShowing: true } });
+      expect(wrapper.classes()).toContain('show');
+    });
   });
 
   describe('updating the alert status', () => {
@@ -97,6 +110,13 @@ describe('AlertManagementStatus', () => {
         expect(wrapper.emitted('alert-error')[0]).toEqual([
           'There was an error while updating the status of the alert. Please try again.',
         ]);
+      });
+
+      it('emits an update event at the start and ending of the updating', async () => {
+        await selectFirstStatusOption();
+        expect(wrapper.emitted('handle-updating').length > 1).toBe(true);
+        expect(wrapper.emitted('handle-updating')[0]).toEqual([true]);
+        expect(wrapper.emitted('handle-updating')[1]).toEqual([false]);
       });
 
       it('emits an error when triggered a second time', async () => {

@@ -248,68 +248,54 @@ RSpec.describe DeployToken do
           deploy_token.groups << group
         end
 
-        context 'and the allow_group_deploy_token feature flag is turned off' do
-          it 'is false' do
-            stub_feature_flags(allow_group_deploy_token: false)
+        context 'and the passed-in project does not belong to any group' do
+          it { is_expected.to be_falsy }
+        end
 
-            is_expected.to be_falsy
+        context 'and the passed-in project belongs to the token group' do
+          it 'is true' do
+            group.projects << project
+
+            is_expected.to be_truthy
           end
         end
 
-        context 'and the allow_group_deploy_token feature flag is turned on' do
+        context 'and the passed-in project belongs to a subgroup' do
+          let(:child_group) { create(:group, parent_id: group.id) }
+          let(:grandchild_group) { create(:group, parent_id: child_group.id) }
+
           before do
-            stub_feature_flags(allow_group_deploy_token: true)
+            grandchild_group.projects << project
           end
 
-          context 'and the passed-in project does not belong to any group' do
-            it { is_expected.to be_falsy }
+          context 'and the token group is an ancestor (grand-parent) of this group' do
+            it { is_expected.to be_truthy }
           end
 
-          context 'and the passed-in project belongs to the token group' do
-            it 'is true' do
-              group.projects << project
-
-              is_expected.to be_truthy
-            end
-          end
-
-          context 'and the passed-in project belongs to a subgroup' do
-            let(:child_group) { create(:group, parent_id: group.id) }
-            let(:grandchild_group) { create(:group, parent_id: child_group.id) }
-
-            before do
-              grandchild_group.projects << project
-            end
-
-            context 'and the token group is an ancestor (grand-parent) of this group' do
-              it { is_expected.to be_truthy }
-            end
-
-            context 'and the token group is not ancestor of this group' do
-              let(:child2_group) { create(:group, parent_id: group.id) }
-
-              it 'is false' do
-                deploy_token.groups = [child2_group]
-
-                is_expected.to be_falsey
-              end
-            end
-          end
-
-          context 'and the passed-in project does not belong to the token group' do
-            it { is_expected.to be_falsy }
-          end
-
-          context 'and the project belongs to a group that is parent of the token group' do
-            let(:super_group) { create(:group) }
-            let(:deploy_token) { create(:deploy_token, :group) }
-            let(:group) { create(:group, parent_id: super_group.id) }
+          context 'and the token group is not ancestor of this group' do
+            let(:child2_group) { create(:group, parent_id: group.id) }
 
             it 'is false' do
-              super_group.projects << project
+              deploy_token.groups = [child2_group]
 
               is_expected.to be_falsey
             end
+          end
+        end
+
+        context 'and the passed-in project does not belong to the token group' do
+          it { is_expected.to be_falsy }
+        end
+
+        context 'and the project belongs to a group that is parent of the token group' do
+          let(:super_group) { create(:group) }
+          let(:deploy_token) { create(:deploy_token, :group) }
+          let(:group) { create(:group, parent_id: super_group.id) }
+
+          it 'is false' do
+            super_group.projects << project
+
+            is_expected.to be_falsey
           end
         end
       end

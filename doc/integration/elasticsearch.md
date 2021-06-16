@@ -120,7 +120,7 @@ The former Ruby-based indexer was removed in [GitLab 12.3](https://gitlab.com/gi
 First, we need to install some dependencies, then we build and install
 the indexer itself.
 
-This project relies on [ICU](http://site.icu-project.org/) for text encoding,
+This project relies on [International Components for Unicode](http://site.icu-project.org/) (ICU) for text encoding,
 therefore we need to ensure the development packages for your platform are
 installed before running `make`.
 
@@ -140,7 +140,7 @@ To install on CentOS or RHEL, run:
 sudo yum install libicu-devel
 ```
 
-#### Mac OSX
+#### macOS
 
 To install on macOS, run:
 
@@ -481,19 +481,19 @@ The following are some available Rake tasks:
 
 | Task                                                                                                                                                    | Description                                                                                                                                                                               |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Enables Elasticsearch indexing and run `gitlab:elastic:create_empty_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_projects`, and `gitlab:elastic:index_snippets`.                          |
-| [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Iterates over all projects and queues Sidekiq jobs to index them in the background.                                                                                                       |
-| [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Determines the overall status of the indexing. It is done by counting the total number of indexed projects, dividing by a count of the total number of projects, then multiplying by 100. |
-| [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | Deletes all instances of IndexStatus for all projects. Note that this command will result in a complete wipe of the index, and it should be used with caution.                                                                                              |
-| [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Generates empty indexes (the default index and a separate issues index) and assigns an alias for each on the Elasticsearch side only if it doesn't already exist.                                                                                                      |
-| [`sudo gitlab-rake gitlab:elastic:delete_index`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Removes the GitLab indexes and aliases (if they exist) on the Elasticsearch instance.                                                                                                                                   |
-| [`sudo gitlab-rake gitlab:elastic:recreate_index`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)     | Wrapper task for `gitlab:elastic:delete_index` and `gitlab:elastic:create_empty_index`.                                                                       |
-| [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Performs an Elasticsearch import that indexes the snippets data.                                                                                                                          |
-| [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Displays which projects are not indexed.                                                                                                                                                  |
-| [`sudo gitlab-rake gitlab:elastic:reindex_cluster`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)                  | Schedules a zero-downtime cluster reindexing task. This feature should be used with an index that was created after GitLab 13.0. |
-| [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Mark the most recent re-index job as failed. |
-| [`sudo gitlab-rake gitlab:elastic:list_pending_migrations`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)          | List pending migrations. Pending migrations include those that have not yet started, have started but not finished, and those that are halted. |
-| [`sudo gitlab-rake gitlab:elastic:estimate_cluster_size`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of cluster size based on the total repository size. |
+| [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Enables Elasticsearch indexing and run `gitlab:elastic:create_empty_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_projects`, and `gitlab:elastic:index_snippets`.                          |
+| [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Iterates over all projects and queues Sidekiq jobs to index them in the background.                                                                                                       |
+| [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Determines the overall status of the indexing. It is done by counting the total number of indexed projects, dividing by a count of the total number of projects, then multiplying by 100. |
+| [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | Deletes all instances of IndexStatus for all projects. Note that this command will result in a complete wipe of the index, and it should be used with caution.                                                                                              |
+| [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Generates empty indexes (the default index and a separate issues index) and assigns an alias for each on the Elasticsearch side only if it doesn't already exist.                                                                                                      |
+| [`sudo gitlab-rake gitlab:elastic:delete_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Removes the GitLab indexes and aliases (if they exist) on the Elasticsearch instance.                                                                                                                                   |
+| [`sudo gitlab-rake gitlab:elastic:recreate_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)     | Wrapper task for `gitlab:elastic:delete_index` and `gitlab:elastic:create_empty_index`.                                                                       |
+| [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Performs an Elasticsearch import that indexes the snippets data.                                                                                                                          |
+| [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Displays which projects are not indexed.                                                                                                                                                  |
+| [`sudo gitlab-rake gitlab:elastic:reindex_cluster`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                  | Schedules a zero-downtime cluster reindexing task. This feature should be used with an index that was created after GitLab 13.0. |
+| [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Mark the most recent re-index job as failed. |
+| [`sudo gitlab-rake gitlab:elastic:list_pending_migrations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)          | List pending migrations. Pending migrations include those that have not yet started, have started but not finished, and those that are halted. |
+| [`sudo gitlab-rake gitlab:elastic:estimate_cluster_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of cluster size based on the total repository size. |
 
 ### Environment variables
 
@@ -603,11 +603,12 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
    This step is optional but may help significantly speed up large indexing operations.
 
    ```shell
-   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
-       "index" : {
-           "refresh_interval" : "-1",
-           "number_of_replicas" : 0
-       } }'
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
+        --data '{
+          "index" : {
+              "refresh_interval" : "-1",
+              "number_of_replicas" : 0
+          } }'
    ```
 
 1. Index projects and their associated data:
@@ -622,7 +623,7 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
 
    This enqueues a Sidekiq job for each project that needs to be indexed.
    You can view the jobs in **Admin Area > Monitoring > Background Jobs > Queues Tab**
-   and click `elastic_indexer`, or you can query indexing status using a Rake task:
+   and click `elastic_commit_indexer`, or you can query indexing status using a Rake task:
 
    ```shell
    # Omnibus installations
@@ -684,11 +685,12 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
 1. Enable replication and refreshing again after indexing (only if you previously disabled it):
 
    ```shell
-   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
-       "index" : {
-           "number_of_replicas" : 1,
-           "refresh_interval" : "1s"
-       } }'
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
+        --data '{
+          "index" : {
+              "number_of_replicas" : 1,
+              "refresh_interval" : "1s"
+          } }'
    ```
 
    A force merge should be called after enabling the refreshing above.
@@ -696,10 +698,11 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
    For Elasticsearch 6.x, the index should be in read-only mode before proceeding with the force merge:
 
    ```shell
-   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
-     "settings": {
-       "index.blocks.write": true
-     } }'
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
+        --data '{
+          "settings": {
+            "index.blocks.write": true
+          } }'
    ```
 
    Then, initiate the force merge:
@@ -711,10 +714,11 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
    After this, if your index is in read-only mode, switch back to read-write:
 
    ```shell
-   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
-     "settings": {
-       "index.blocks.write": false
-     } }'
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
+        --data '{
+          "settings": {
+            "index.blocks.write": false
+          } }'
    ```
 
 1. After the indexing has completed, enable [**Search with Elasticsearch enabled**](#enabling-advanced-search).
@@ -730,21 +734,23 @@ However, some larger installations may wish to tune the merge policy settings:
 - Consider reducing the `index.merge.policy.max_merged_segment` size from the default 5 GB to maybe 2 GB or 3 GB. Merging only happens when a segment has at least 50% deletions. Smaller segment sizes will allow merging to happen more frequently.
 
   ```shell
-  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
-    "index" : {
-      "merge.policy.max_merged_segment": "2gb"
-    }
-  }'
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
+       --data '{
+         "index" : {
+           "merge.policy.max_merged_segment": "2gb"
+         }
+       }'
   ```
 
 - You can also adjust `index.merge.policy.reclaim_deletes_weight`, which controls how aggressively deletions are targeted. But this can lead to costly merge decisions, so we recommend not changing this unless you understand the tradeoffs.
 
   ```shell
-  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
-    "index" : {
-      "merge.policy.reclaim_deletes_weight": "3.0"
-    }
-  }'
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
+       --data '{
+         "index" : {
+           "merge.policy.reclaim_deletes_weight": "3.0"
+         }
+       }'
   ```
 
 - Do not do a [force merge](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") to remove deleted documents. A warning in the [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") states that this can lead to very large segments that may never get reclaimed, and can also cause significant performance or availability issues.
@@ -917,11 +923,12 @@ Setting the number of replicas to `0` is discouraged (this is not allowed in the
 If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, please make sure you understand the risks outlined in the previous paragraph and then run the following query to set the number of replicas to `0`(the cluster will no longer try to create any shard replicas):
 
 ```shell
-curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
-"index" : {
-   "number_of_replicas" : 0
-  }
-}'
+curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
+     --data '{
+       "index" : {
+         "number_of_replicas" : 0
+       }
+     }'
 ```
 
 ### `health check timeout: no Elasticsearch node available` error in Sidekiq

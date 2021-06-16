@@ -1,17 +1,18 @@
 ---
 key_path: container_registry_server.vendor
-description: Identifies if a user is using an external container registry and what
-  type
+description: Identifies if a user is using an external container registry and what type
 product_section: ops
 product_stage: package
 product_group: group::package
-product_category:
+product_category: container registry
 value_type: number
 status: data_available
 time_frame: all
-data_source:
+data_source: database
 distribution:
+- ee
 - ce
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

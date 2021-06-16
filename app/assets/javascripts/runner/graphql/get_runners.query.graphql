@@ -1,0 +1,31 @@
+#import "~/runner/graphql/runner_node.fragment.graphql"
+#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+
+query getRunners(
+  $before: String
+  $after: String
+  $first: Int
+  $last: Int
+  $search: String
+  $status: CiRunnerStatus
+  $type: CiRunnerType
+  $sort: CiRunnerSort
+) {
+  runners(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    search: $search
+    status: $status
+    type: $type
+    sort: $sort
+  ) {
+    nodes {
+      ...RunnerNode
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

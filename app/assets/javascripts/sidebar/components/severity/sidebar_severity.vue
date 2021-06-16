@@ -148,7 +148,9 @@ export default {
     </div>
 
     <div class="hide-collapsed">
-      <p class="title gl-display-flex gl-justify-content-space-between">
+      <p
+        class="gl-line-height-20 gl-mb-0 gl-text-gray-900 gl-display-flex gl-justify-content-space-between"
+      >
         {{ $options.i18n.SEVERITY }}
         <gl-link
           data-testid="editButton"

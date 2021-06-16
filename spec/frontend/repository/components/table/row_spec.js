@@ -1,5 +1,6 @@
 import { GlBadge, GlLink, GlIcon } from '@gitlab/ui';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import TableRow from '~/repository/components/table/row.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { FILE_SYMLINK_MODE } from '~/vue_shared/constants';
@@ -18,6 +19,10 @@ function factory(propsData = {}) {
       name: propsData.path,
       projectPath: 'gitlab-org/gitlab-ce',
       url: `https://test.com`,
+      totalEntries: 10,
+    },
+    directives: {
+      GlHoverLoad: createMockDirective(),
     },
     provide: {
       glFeatures: { refactorBlobViewer: true },
@@ -34,6 +39,8 @@ function factory(propsData = {}) {
 }
 
 describe('Repository table row component', () => {
+  const findRouterLink = () => vm.find(RouterLinkStub);
+
   afterEach(() => {
     vm.destroy();
   });
@@ -79,6 +86,21 @@ describe('Repository table row component', () => {
     return vm.vm.$nextTick().then(() => {
       expect(vm.element).toMatchSnapshot();
     });
+  });
+
+  it('renders a gl-hover-load directive', () => {
+    factory({
+      id: '1',
+      sha: '123',
+      path: 'test',
+      type: 'blob',
+      currentPath: '/',
+    });
+
+    const hoverLoadDirective = getBinding(findRouterLink().element, 'gl-hover-load');
+
+    expect(hoverLoadDirective).not.toBeUndefined();
+    expect(hoverLoadDirective.value).toBeInstanceOf(Function);
   });
 
   it.each`

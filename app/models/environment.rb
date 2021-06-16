@@ -223,6 +223,7 @@ class Environment < ApplicationRecord
     Gitlab::Ci::Variables::Collection.new
       .append(key: 'CI_ENVIRONMENT_NAME', value: name)
       .append(key: 'CI_ENVIRONMENT_SLUG', value: slug)
+      .append(key: 'CI_ENVIRONMENT_TIER', value: tier)
   end
 
   def recently_updated_on_branch?(ref)
@@ -333,10 +334,6 @@ class Environment < ApplicationRecord
 
   def metrics
     prometheus_adapter.query(:environment, self) if has_metrics_and_can_query?
-  end
-
-  def prometheus_status
-    deployment_platform&.cluster&.application_prometheus&.status_name
   end
 
   def additional_metrics(*args)

@@ -13,8 +13,6 @@
 # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/322903
 Graphql/Descriptions:
   Exclude:
-    - 'app/graphql/types/snippets/blob_action_enum.rb'
-    - 'app/graphql/types/snippets/visibility_scopes_enum.rb'
     - 'ee/app/graphql/ee/types/list_limit_metric_enum.rb'
     - 'ee/app/graphql/types/epic_state_enum.rb'
     - 'ee/app/graphql/types/health_status_enum.rb'
@@ -31,8 +29,6 @@ Graphql/Descriptions:
 # WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
   Exclude:
-    - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'
-    - 'ee/spec/controllers/subscriptions_controller_spec.rb'
     - 'ee/spec/initializers/fog_google_https_private_urls_spec.rb'
     - 'ee/spec/lib/analytics/merge_request_metrics_calculator_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'
@@ -157,11 +153,7 @@ Rails/SaveBang:
     - 'spec/lib/gitlab/shard_health_cache_spec.rb'
     - 'spec/mailers/notify_spec.rb'
     - 'spec/models/clusters/applications/helm_spec.rb'
-    - 'spec/models/container_repository_spec.rb'
     - 'spec/models/design_management/version_spec.rb'
-    - 'spec/models/diff_discussion_spec.rb'
-    - 'spec/models/diff_note_spec.rb'
-    - 'spec/models/email_spec.rb'
     - 'spec/models/environment_spec.rb'
     - 'spec/models/event_spec.rb'
     - 'spec/models/fork_network_spec.rb'
@@ -170,10 +162,6 @@ Rails/SaveBang:
     - 'spec/models/group_spec.rb'
     - 'spec/models/identity_spec.rb'
     - 'spec/models/jira_import_state_spec.rb'
-    - 'spec/models/key_spec.rb'
-    - 'spec/models/lfs_objects_project_spec.rb'
-    - 'spec/models/merge_request_spec.rb'
-    - 'spec/models/milestone_spec.rb'
     - 'spec/models/namespace_spec.rb'
     - 'spec/models/note_spec.rb'
     - 'spec/models/notification_setting_spec.rb'
@@ -385,7 +373,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/requests/api/commits_spec.rb
     - ee/spec/requests/api/dora/metrics_spec.rb
     - ee/spec/requests/api/epics_spec.rb
-    - ee/spec/requests/api/external_approval_rules_spec.rb
     - ee/spec/requests/api/geo_spec.rb
     - ee/spec/requests/api/graphql/boards/epic_board_list_epics_query_spec.rb
     - ee/spec/requests/api/graphql/current_user/todos_query_spec.rb
@@ -449,9 +436,9 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/services/dast_scanner_profiles/destroy_service_spec.rb
     - ee/spec/services/dast_scanner_profiles/update_service_spec.rb
     - ee/spec/services/dast_site_profiles/destroy_service_spec.rb
-    - ee/spec/services/external_approval_rules/create_service_spec.rb
-    - ee/spec/services/external_approval_rules/destroy_service_spec.rb
-    - ee/spec/services/external_approval_rules/update_service_spec.rb
+    - ee/spec/services/external_status_checks/create_service_spec.rb
+    - ee/spec/services/external_status_checks/destroy_service_spec.rb
+    - ee/spec/services/external_status_checks/update_service_spec.rb
     - ee/spec/services/gitlab_subscriptions/activate_service_spec.rb
     - ee/spec/services/gitlab_subscriptions/apply_trial_service_spec.rb
     - ee/spec/services/incident_management/incidents/upload_metric_service_spec.rb
@@ -732,7 +719,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - spec/services/wiki_pages/event_create_service_spec.rb
     - spec/support/shared_examples/graphql/design_fields_shared_examples.rb
     - spec/support/shared_examples/graphql/mutations/set_assignees_shared_examples.rb
-    - spec/support/shared_examples/models/slack_mattermost_notifications_shared_examples.rb
     - spec/support/shared_examples/quick_actions/issuable/issuable_quick_actions_shared_examples.rb
     - spec/support/shared_examples/services/container_registry_auth_service_shared_examples.rb
     - spec/support/shared_examples/services/packages_shared_examples.rb
@@ -771,7 +757,6 @@ RSpec/TimecopFreeze:
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/summary/group/stage_time_summary_spec.rb'
     - 'ee/spec/lib/gitlab/analytics/type_of_work/tasks_by_type_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/sso_enforcer_spec.rb'
-    - 'ee/spec/lib/gitlab/database/load_balancing/host_spec.rb'
     - 'ee/spec/lib/gitlab/geo/base_request_spec.rb'
     - 'ee/spec/lib/gitlab/geo/event_gap_tracking_spec.rb'
     - 'ee/spec/lib/gitlab/geo/git_push_http_spec.rb'
@@ -882,7 +867,6 @@ RSpec/AnyInstanceOf:
     - 'ee/spec/features/issues/form_spec.rb'
     - 'ee/spec/features/merge_request/user_creates_merge_request_spec.rb'
     - 'ee/spec/features/projects/new_project_spec.rb'
-    - 'ee/spec/features/projects/services/user_activates_jira_spec.rb'
     - 'ee/spec/features/registrations/welcome_spec.rb'
     - 'ee/spec/features/security/project/internal_access_spec.rb'
     - 'ee/spec/features/security/project/private_access_spec.rb'
@@ -1161,6 +1145,8 @@ RSpec/AnyInstanceOf:
     - 'spec/models/hooks/service_hook_spec.rb'
     - 'spec/models/hooks/system_hook_spec.rb'
     - 'spec/models/hooks/web_hook_spec.rb'
+    - 'spec/models/integrations/jira_spec.rb'
+    - 'spec/models/integrations/mattermost_slash_commands_spec.rb'
     - 'spec/models/issue_spec.rb'
     - 'spec/models/key_spec.rb'
     - 'spec/models/member_spec.rb'
@@ -1168,8 +1154,6 @@ RSpec/AnyInstanceOf:
     - 'spec/models/merge_request_spec.rb'
     - 'spec/models/note_spec.rb'
     - 'spec/models/project_import_state_spec.rb'
-    - 'spec/models/project_services/jira_service_spec.rb'
-    - 'spec/models/project_services/mattermost_slash_commands_service_spec.rb'
     - 'spec/models/project_spec.rb'
     - 'spec/models/repository_spec.rb'
     - 'spec/models/user_spec.rb'
@@ -1302,8 +1286,8 @@ RSpec/AnyInstanceOf:
     - 'spec/support/shared_examples/features/snippets_shared_examples.rb'
     - 'spec/support/shared_examples/lib/gitlab/ci/ci_trace_shared_examples.rb'
     - 'spec/support/shared_examples/models/atomic_internal_id_shared_examples.rb'
-    - 'spec/support/shared_examples/models/chat_slash_commands_shared_examples.rb'
     - 'spec/support/shared_examples/models/diff_note_after_commit_shared_examples.rb'
+    - 'spec/support/shared_examples/models/integrations/base_slash_commands_shared_examples.rb'
     - 'spec/support/shared_examples/models/mentionable_shared_examples.rb'
     - 'spec/support/shared_examples/models/with_uploads_shared_examples.rb'
     - 'spec/support/shared_examples/path_extraction_shared_examples.rb'
@@ -1320,7 +1304,6 @@ RSpec/AnyInstanceOf:
     - 'spec/support/shared_examples/workers/authorized_projects_worker_shared_example.rb'
     - 'spec/support/shared_examples/workers/reactive_cacheable_shared_examples.rb'
     - 'spec/support/snowplow.rb'
-    - 'spec/support/unicorn.rb'
     - 'spec/tasks/gitlab/cleanup_rake_spec.rb'
     - 'spec/tasks/gitlab/container_registry_rake_spec.rb'
     - 'spec/tasks/gitlab/db_rake_spec.rb'
@@ -1602,6 +1585,7 @@ Gitlab/NamespacedClass:
     - 'app/models/list_user_preference.rb'
     - 'app/models/member.rb'
     - 'app/models/members/group_member.rb'
+    - 'app/models/members/last_group_owner_assigner.rb'
     - 'app/models/members/project_member.rb'
     - 'app/models/members_preloader.rb'
     - 'app/models/merge_request.rb'
@@ -1658,48 +1642,9 @@ Gitlab/NamespacedClass:
     - 'app/models/project_pages_metadatum.rb'
     - 'app/models/project_repository.rb'
     - 'app/models/project_repository_storage_move.rb'
-    - 'app/models/project_services/alerts_service.rb'
-    - 'app/models/project_services/alerts_service_data.rb'
-    - 'app/models/project_services/bugzilla_service.rb'
-    - 'app/models/project_services/buildkite_service.rb'
-    - 'app/models/project_services/chat_notification_service.rb'
-    - 'app/models/project_services/ci_service.rb'
-    - 'app/models/project_services/custom_issue_tracker_service.rb'
-    - 'app/models/project_services/discord_service.rb'
-    - 'app/models/project_services/drone_ci_service.rb'
-    - 'app/models/project_services/ewm_service.rb'
-    - 'app/models/project_services/external_wiki_service.rb'
-    - 'app/models/project_services/flowdock_service.rb'
-    - 'app/models/project_services/hangouts_chat_service.rb'
-    - 'app/models/project_services/hipchat_service.rb'
-    - 'app/models/project_services/irker_service.rb'
-    - 'app/models/project_services/issue_tracker_data.rb'
-    - 'app/models/project_services/issue_tracker_service.rb'
-    - 'app/models/project_services/jenkins_service.rb'
-    - 'app/models/project_services/jira_service.rb'
-    - 'app/models/project_services/jira_tracker_data.rb'
-    - 'app/models/project_services/mattermost_service.rb'
-    - 'app/models/project_services/mattermost_slash_commands_service.rb'
-    - 'app/models/project_services/microsoft_teams_service.rb'
-    - 'app/models/project_services/mock_ci_service.rb'
-    - 'app/models/project_services/mock_deployment_service.rb'
     - 'app/models/project_services/mock_monitoring_service.rb'
     - 'app/models/project_services/monitoring_service.rb'
-    - 'app/models/project_services/open_project_service.rb'
-    - 'app/models/project_services/open_project_tracker_data.rb'
-    - 'app/models/project_services/packagist_service.rb'
-    - 'app/models/project_services/pipelines_email_service.rb'
-    - 'app/models/project_services/pivotaltracker_service.rb'
     - 'app/models/project_services/prometheus_service.rb'
-    - 'app/models/project_services/pushover_service.rb'
-    - 'app/models/project_services/redmine_service.rb'
-    - 'app/models/project_services/slack_service.rb'
-    - 'app/models/project_services/slack_slash_commands_service.rb'
-    - 'app/models/project_services/slash_commands_service.rb'
-    - 'app/models/project_services/teamcity_service.rb'
-    - 'app/models/project_services/unify_circuit_service.rb'
-    - 'app/models/project_services/webex_teams_service.rb'
-    - 'app/models/project_services/youtrack_service.rb'
     - 'app/models/project_setting.rb'
     - 'app/models/project_snippet.rb'
     - 'app/models/project_statistics.rb'
@@ -2404,11 +2349,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/models/project_alias.rb'
     - 'ee/app/models/project_repository_state.rb'
     - 'ee/app/models/project_security_setting.rb'
-    - 'ee/app/models/project_services/github_service.rb'
-    - 'ee/app/models/project_services/github_service/remote_project.rb'
-    - 'ee/app/models/project_services/github_service/status_message.rb'
-    - 'ee/app/models/project_services/github_service/status_notifier.rb'
-    - 'ee/app/models/project_services/gitlab_slack_application_service.rb'
     - 'ee/app/models/protected_environment.rb'
     - 'ee/app/models/push_rule.rb'
     - 'ee/app/models/resource_iteration_event.rb'
@@ -2533,7 +2473,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/workers/elastic_full_index_worker.rb'
     - 'ee/app/workers/elastic_index_bulk_cron_worker.rb'
     - 'ee/app/workers/elastic_index_initial_bulk_cron_worker.rb'
-    - 'ee/app/workers/elastic_indexer_worker.rb'
     - 'ee/app/workers/elastic_indexing_control_worker.rb'
     - 'ee/app/workers/elastic_namespace_indexer_worker.rb'
     - 'ee/app/workers/elastic_namespace_rollout_worker.rb'
@@ -2699,7 +2638,6 @@ Performance/OpenStruct:
     - 'ee/lib/gitlab/graphql/aggregations/epics/epic_node.rb'
     - 'lib/api/wikis.rb'
     - 'lib/gitlab/ci/ansi2html.rb'
-    - 'lib/gitlab/ci/reports/test_suite_comparer.rb'
     - 'lib/gitlab/git/diff_collection.rb'
     - 'lib/gitlab/import_export/after_export_strategies/base_after_export_strategy.rb'
     - 'lib/gitlab/testing/request_inspector_middleware.rb'
@@ -2712,8 +2650,8 @@ Gitlab/DelegatePredicateMethods:
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/concerns/ci/metadatable.rb'
     - 'app/models/concerns/diff_positionable_note.rb'
+    - 'app/models/concerns/integrations/base_data_fields.rb'
     - 'app/models/concerns/resolvable_discussion.rb'
-    - 'app/models/concerns/services/data_fields.rb'
     - 'app/models/project.rb'
     - 'ee/app/models/concerns/ee/ci/metadatable.rb'
     - 'ee/app/models/ee/group.rb'
@@ -2888,7 +2826,7 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/views/shared/promotions/_promote_repository_features.html.haml'
     - 'ee/app/workers/analytics/code_review_metrics_worker.rb'
     - 'ee/app/workers/group_saml_group_sync_worker.rb'
-    - 'ee/lib/api/external_approval_rules.rb'
+    - 'ee/lib/api/external_status_checks.rb'
     - 'ee/lib/ee/api/entities/approval_state.rb'
     - 'ee/lib/ee/api/entities/board.rb'
     - 'ee/lib/ee/api/entities/issue.rb'
@@ -2936,8 +2874,6 @@ Style/RegexpLiteralMixedPreserve:
     - 'ee/spec/controllers/groups/groups_controller_spec.rb'
     - 'ee/spec/features/groups/saml_enforcement_spec.rb'
     - 'ee/spec/features/markdown/metrics_spec.rb'
-    - 'ee/spec/lib/gitlab/database/load_balancing/load_balancer_spec.rb'
-    - 'ee/spec/models/project_services/jira_service_spec.rb'
     - 'ee/spec/services/jira/requests/issues/list_service_spec.rb'
     - 'lib/api/invitations.rb'
     - 'lib/gitlab/ci/pipeline/expression/lexeme/pattern.rb'
@@ -2966,5 +2902,4 @@ Style/RegexpLiteralMixedPreserve:
     - 'spec/support/helpers/grafana_api_helpers.rb'
     - 'spec/support/helpers/query_recorder.rb'
     - 'spec/support/helpers/require_migration.rb'
-    - 'spec/support/shared_examples/models/slack_mattermost_notifications_shared_examples.rb'
     - 'spec/views/layouts/_head.html.haml_spec.rb'

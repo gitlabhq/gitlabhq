@@ -214,7 +214,7 @@ export default {
         <div></div>
       </template>
     </gl-modal>
-    <span class="gl-text-white">{{ title }}</span>
+    {{ title }}
     <request-warning :html-id="htmlId" :warnings="warnings" />
   </div>
 </template>

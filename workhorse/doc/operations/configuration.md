@@ -11,7 +11,7 @@ All new configuration options that get added to Workhorse should go into the con
 
 Options:
   -apiCiLongPollingDuration duration
-      Long polling duration for job requesting for runners (default 50s - enabled) (default 50ns)
+      Long polling duration for job requesting for runners (default 50ns)
   -apiLimit uint
       Number of API requests allowed at single time
   -apiQueueDuration duration
@@ -103,15 +103,11 @@ Optional fields are as follows:
 ```
 [redis]
 DB = 0
-ReadTimeout = "1s"
-KeepAlivePeriod = "5m"
 MaxIdle = 1
 MaxActive = 1
 ```
 
 - `DB` is the Database to connect to. Defaults to `0`
-- `ReadTimeout` is how long a redis read-command can take. Defaults to `1s`
-- `KeepAlivePeriod` is how long the redis connection is to be kept alive without anything flowing through it. Defaults to `5m`
 - `MaxIdle` is how many idle connections can be in the redis-pool at once. Defaults to 1
 - `MaxActive` is how many connections the pool can keep. Defaults to 1
 

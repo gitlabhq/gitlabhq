@@ -1,7 +1,6 @@
 <script>
 import { GlToggle } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
-import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
 
 export default {
@@ -39,17 +38,16 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setActiveItemSubscribed']),
+    ...mapActions(['setActiveItemSubscribed', 'setError']),
     async handleToggleSubscription() {
       this.loading = true;
-
       try {
         await this.setActiveItemSubscribed({
           subscribed: !this.activeBoardItem.subscribed,
           projectPath: this.projectPathForActiveIssue,
         });
       } catch (error) {
-        createFlash({ message: this.$options.i18n.updateSubscribedErrorMessage });
+        this.setError({ error, message: this.$options.i18n.updateSubscribedErrorMessage });
       } finally {
         this.loading = false;
       }

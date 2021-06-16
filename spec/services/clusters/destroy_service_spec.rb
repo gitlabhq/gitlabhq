@@ -37,7 +37,7 @@ RSpec.describe Clusters::DestroyService do
         let(:params) { { cleanup: 'true' } }
 
         before do
-          allow(Clusters::Cleanup::AppWorker).to receive(:perform_async)
+          allow(Clusters::Cleanup::ProjectNamespaceWorker).to receive(:perform_async)
         end
 
         it 'does not destroy cluster' do
@@ -45,10 +45,10 @@ RSpec.describe Clusters::DestroyService do
           expect(Clusters::Cluster.where(id: cluster.id).exists?).not_to be_falsey
         end
 
-        it 'transition cluster#cleanup_status from cleanup_not_started to cleanup_uninstalling_applications' do
+        it 'transition cluster#cleanup_status from cleanup_not_started to cleanup_removing_project_namespaces' do
           expect { subject }.to change { cluster.cleanup_status_name }
             .from(:cleanup_not_started)
-            .to(:cleanup_uninstalling_applications)
+            .to(:cleanup_removing_project_namespaces)
         end
       end
     end

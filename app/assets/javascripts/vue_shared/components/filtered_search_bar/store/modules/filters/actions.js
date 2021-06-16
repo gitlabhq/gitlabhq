@@ -1,5 +1,5 @@
 import Api from '~/api';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import * as types from './mutation_types';
@@ -24,7 +24,9 @@ export function fetchBranches({ commit, state }, search = '') {
     .catch(({ response }) => {
       const { status } = response;
       commit(types.RECEIVE_BRANCHES_ERROR, status);
-      createFlash(__('Failed to load branches. Please try again.'));
+      createFlash({
+        message: __('Failed to load branches. Please try again.'),
+      });
     });
 }
 
@@ -41,7 +43,9 @@ export const fetchMilestones = ({ commit, state }, search_title = '') => {
     .catch(({ response }) => {
       const { status } = response;
       commit(types.RECEIVE_MILESTONES_ERROR, status);
-      createFlash(__('Failed to load milestones. Please try again.'));
+      createFlash({
+        message: __('Failed to load milestones. Please try again.'),
+      });
     });
 };
 
@@ -57,7 +61,9 @@ export const fetchLabels = ({ commit, state }, search = '') => {
     .catch(({ response }) => {
       const { status } = response;
       commit(types.RECEIVE_LABELS_ERROR, status);
-      createFlash(__('Failed to load labels. Please try again.'));
+      createFlash({
+        message: __('Failed to load labels. Please try again.'),
+      });
     });
 };
 
@@ -80,7 +86,9 @@ function fetchUser(options = {}) {
     .catch(({ response }) => {
       const { status } = response;
       commit(`RECEIVE_${action}_ERROR`, status);
-      createFlash(errorMessage);
+      createFlash({
+        message: errorMessage,
+      });
     });
 }
 

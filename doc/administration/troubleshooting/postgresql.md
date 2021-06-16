@@ -53,8 +53,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - [PostgreSQL scaling](../postgresql/replication_and_failover.md)
   - Including [troubleshooting](../postgresql/replication_and_failover.md#troubleshooting)
-    `gitlab-ctl repmgr-check-master` (or `gitlab-ctl patroni check-leader` if
-    you're using Patroni) and PgBouncer errors.
+    `gitlab-ctl patroni check-leader` and PgBouncer errors.
 
 - [Developer database documentation](../../development/README.md#database-guides),
   some of which is absolutely not for production use. Including:

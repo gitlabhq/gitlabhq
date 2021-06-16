@@ -44,18 +44,5 @@ RSpec.describe Banzai::Pipeline::PostProcessPipeline do
 
       subject
     end
-
-    context 'when "optimize_linkable_attributes" is disabled' do
-      before do
-        stub_feature_flags(optimize_linkable_attributes: false)
-      end
-
-      it 'searches for attributes twice' do
-        expect(doc).to receive(:xpath).exactly(non_related_xpath_calls + 2).times
-          .and_call_original
-
-        subject
-      end
-    end
   end
 end

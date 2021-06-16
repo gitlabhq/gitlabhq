@@ -33,8 +33,8 @@ RSpec.describe Integrations::Campfire do
     let(:project) { create(:project, :repository) }
 
     before do
-      @campfire_service = described_class.new
-      allow(@campfire_service).to receive_messages(
+      @campfire_integration = described_class.new
+      allow(@campfire_integration).to receive_messages(
         project_id: project.id,
         project: project,
         service_hook: true,
@@ -62,7 +62,7 @@ RSpec.describe Integrations::Campfire do
       speak_url = 'https://project-name.campfirenow.com/room/123/speak.json'
       stub_full_request(speak_url, method: :post).with(basic_auth: @auth)
 
-      @campfire_service.execute(@sample_data)
+      @campfire_integration.execute(@sample_data)
 
       expect(WebMock).to have_requested(:get, stubbed_hostname(@rooms_url)).once
       expect(WebMock).to have_requested(:post, stubbed_hostname(speak_url))
@@ -78,7 +78,7 @@ RSpec.describe Integrations::Campfire do
         headers: @headers
       )
 
-      @campfire_service.execute(@sample_data)
+      @campfire_integration.execute(@sample_data)
 
       expect(WebMock).to have_requested(:get, 'https://8.8.8.9/rooms.json').once
       expect(WebMock).not_to have_requested(:post, '*/room/.*/speak.json')

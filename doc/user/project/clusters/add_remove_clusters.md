@@ -4,7 +4,16 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Adding and removing Kubernetes clusters **(FREE)**
+# Add a cluster using cluster certificates **(FREE)**
+
+> [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/6049) in GitLab 14.0.
+
+WARNING:
+Creating a new cluster or adding an existing cluster to GitLab through the certificate-based method
+is deprecated and no longer recommended. Kubernetes cluster, similar to any other
+infrastructure, should be created, updated, and maintained using [Infrastructure as Code](../../infrastructure/index.md).
+GitLab is developing a built-in capability to create clusters with Terraform.
+You can follow along in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/6049). 
 
 GitLab offers integrated cluster creation for the following Kubernetes providers:
 
@@ -35,9 +44,9 @@ Before [adding a Kubernetes cluster](#create-new-cluster) using GitLab, you need
   - A [self-managed installation](https://about.gitlab.com/pricing/#self-managed) with GitLab version
     12.5 or later. This ensures the GitLab UI can be used for cluster creation.
 - The following GitLab access:
-  - [Maintainer access to a project](../../permissions.md#project-members-permissions) for a
+  - [Maintainer role for a project](../../permissions.md#project-members-permissions) for a
     project-level cluster.
-  - [Maintainer access to a group](../../permissions.md#group-members-permissions) for a
+  - [Maintainer role for a group](../../permissions.md#group-members-permissions) for a
     group-level cluster.
   - [Admin Area access](../../admin_area/index.md) for a self-managed instance-level
     cluster. **(FREE SELF)**
@@ -52,15 +61,9 @@ When creating a cluster in GitLab, you are asked if you would like to create eit
   cluster, which is the GitLab default and recommended option.
 - An [Attribute-based access control (ABAC)](https://kubernetes.io/docs/reference/access-authn-authz/abac/) cluster.
 
-GitLab creates the necessary service accounts and privileges to install and run
-[GitLab managed applications](index.md#installing-applications). When GitLab creates the cluster,
+When GitLab creates the cluster,
 a `gitlab` service account with `cluster-admin` privileges is created in the `default` namespace
 to manage the newly created cluster.
-
-The first time you install an application into your cluster, the `tiller` service
-account is created with `cluster-admin` privileges in the
-`gitlab-managed-apps` namespace. This service account is used by Helm to
-install and run [GitLab managed applications](index.md#installing-applications).
 
 Helm also creates additional service accounts and other resources for each
 installed application. Consult the documentation of the Helm charts for each application
@@ -132,11 +135,8 @@ If you don't want to use a runner in privileged mode, either:
 
 - Use shared runners on GitLab.com. They don't have this security issue.
 - Set up your own runners using the configuration described at
-  [shared runners](../../gitlab_com/index.md#shared-runners). This involves:
-  1. Making sure that you don't have it installed via
-     [the applications](index.md#installing-applications).
-  1. Installing a runner
-     [using `docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
+  [shared runners](../../gitlab_com/index.md#shared-runners) using
+  [`docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
 ## Create new cluster
 
@@ -144,36 +144,38 @@ New clusters can be created using GitLab on Google Kubernetes Engine (GKE) or
 Amazon Elastic Kubernetes Service (EKS) at the project, group, or instance level:
 
 1. Navigate to your:
-   - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
+   - Project's **{cloud-gear}** **Infrastructure > Kubernetes clusters** page, for a project-level
+     cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    - **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
-1. Click **Add Kubernetes cluster**.
+1. Click **Integrate with a cluster certificate**.
 1. Click the **Create new cluster** tab.
 1. Click either **Amazon EKS** or **Google GKE**, and follow the instructions for your desired service:
    - [Amazon EKS](add_eks_clusters.md#new-eks-cluster).
    - [Google GKE](add_gke_clusters.md#creating-the-cluster-on-gke).
 
-After creating a cluster, you can install runners for it as described in
-[GitLab Managed Apps](../../clusters/applications.md).
+After creating a cluster, you can [install runners](https://docs.gitlab.com/runner/install/kubernetes.html),
+add a [cluster management project](../../clusters/management_project.md),
+configure [Auto DevOps](../../../topics/autodevops/index.md),
+or start [deploying right away](index.md#deploying-to-a-kubernetes-cluster).
 
 ## Add existing cluster
 
 If you have an existing Kubernetes cluster, you can add it to a project, group,
-or instance.
+or instance, and [install runners](https://docs.gitlab.com/runner/install/kubernetes.html)
+on it (the cluster does not need to be added to GitLab first).
 
-Kubernetes integration isn't supported for arm64 clusters. See the issue
-[Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab/-/issues/29838)
-for details.
-
-After adding an existing cluster, you can install runners for it as described in
-[GitLab Managed Apps](../../clusters/applications.md).
+After adding a cluster, you can add a [cluster management project](../../clusters/management_project.md),
+configure [Auto DevOps](../../../topics/autodevops/index.md),
+or start [deploying right away](index.md#deploying-to-a-kubernetes-cluster).
 
 ### Existing Kubernetes cluster
 
 To add a Kubernetes cluster to your project, group, or instance:
 
 1. Navigate to your:
-   1. Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
+   1. Project's **{cloud-gear}** **Infrastructure > Kubernetes clusters** page, for a project-level
+      cluster.
    1. Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    1. **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
@@ -316,8 +318,7 @@ To add a Kubernetes cluster to your project, group, or instance:
 
 1. Finally, click the **Create Kubernetes cluster** button.
 
-After a couple of minutes, your cluster is ready. You can now proceed
-to install some [pre-defined applications](index.md#installing-applications).
+After a couple of minutes, your cluster is ready.
 
 #### Disable Role-Based Access Control (RBAC) (optional)
 
@@ -351,7 +352,8 @@ The Kubernetes cluster integration enables after you have successfully either cr
 a new cluster or added an existing one. To disable Kubernetes cluster integration:
 
 1. Navigate to your:
-   - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
+   - Project's **{cloud-gear}** **Infrastructure > Kubernetes clusters** page, for a project-level
+     cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    - **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
 1. Click on the name of the cluster.

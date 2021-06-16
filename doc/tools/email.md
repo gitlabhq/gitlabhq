@@ -5,9 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto, reference
 ---
 
-# Email from GitLab **(STARTER ONLY)**
+# Email from GitLab **(PREMIUM SELF)**
 
-GitLab provides a simple tool to administrators for emailing all users, or users of
+GitLab provides a tool to administrators for emailing all users, or users of
 a chosen group or project, right from the Admin Area. Users receive the email
 at their primary email address.
 
@@ -22,8 +22,9 @@ For information about email notifications originating from GitLab, read
 
 ## Sending emails to users from within GitLab
 
-1. Navigate to the **Admin Area > Overview > Users** and press the
-   **Send email to users** button.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Overview > Users**.
+1. Select **Send email to users**.
 
    ![admin users](email1.png)
 

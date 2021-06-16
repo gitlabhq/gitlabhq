@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Import your project from FogBugz to GitLab
+# Import your project from FogBugz to GitLab **(FREE)**
 
 It only takes a few simple steps to import your project from FogBugz.
 The importer imports all your cases and comments with original case

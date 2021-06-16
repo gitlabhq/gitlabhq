@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'post_migrate', '20200703064117_generate_missing_routes_for_bots.rb')
+require_migration!
 
 RSpec.describe GenerateMissingRoutesForBots, :migration do
   let(:users) { table(:users) }

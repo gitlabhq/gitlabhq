@@ -17,18 +17,14 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
   end
 
   describe '/api/v4/jobs' do
-    let(:group) { create(:group, :nested) }
-    let(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
-    let(:runner) { create(:ci_runner, :project, projects: [project]) }
-    let(:user) { create(:user) }
-    let(:job) do
-      create(:ci_build, :artifacts, :extended_options,
-             pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
-    end
+    let_it_be(:group) { create(:group, :nested) }
+    let_it_be(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
+    let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be(:user) { create(:user) }
 
     describe 'PUT /api/v4/jobs/:id' do
-      let(:job) do
+      let_it_be_with_reload(:job) do
         create(:ci_build, :pending, :trace_live, pipeline: pipeline, project: project, user: user, runner_id: runner.id)
       end
 
@@ -204,53 +200,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         end
       end
 
-      context 'when trace is given' do
-        it 'creates a trace artifact' do
-          allow(BuildFinishedWorker).to receive(:perform_async).with(job.id) do
-            ArchiveTraceWorker.new.perform(job.id)
-          end
-
-          update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
-
-          job.reload
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(job.trace.raw).to eq 'BUILD TRACE UPDATED'
-          expect(job.job_artifacts_trace.open.read).to eq 'BUILD TRACE UPDATED'
-        end
-
-        context 'when concurrent update of trace is happening' do
-          before do
-            job.trace.write('wb') do
-              update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
-            end
-          end
-
-          it 'returns that operation conflicts' do
-            expect(response).to have_gitlab_http_status(:conflict)
-          end
-        end
-      end
-
-      context 'when no trace is given' do
-        it 'does not override trace information' do
-          update_job
-
-          expect(job.reload.trace.raw).to eq 'BUILD TRACE'
-        end
-
-        context 'when running state is sent' do
-          it 'updates update_at value' do
-            expect { update_job_after_time }.to change { job.reload.updated_at }
-          end
-        end
-
-        context 'when other state is sent' do
-          it "doesn't update update_at value" do
-            expect { update_job_after_time(20.minutes, state: 'success') }.not_to change { job.reload.updated_at }
-          end
-        end
-      end
-
       context 'when job has been erased' do
         let(:job) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
 
@@ -267,20 +216,19 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           job.drop!(:script_failure)
         end
 
-        it 'does not update job status and job trace' do
-          update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
+        it 'does not update job status' do
+          update_job(state: 'success')
 
           job.reload
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(response.header['Job-Status']).to eq 'failed'
-          expect(job.trace.raw).to eq 'Job failed'
           expect(job).to be_failed
         end
       end
 
       context 'when job does not exist anymore' do
         it 'returns 403 Forbidden' do
-          update_job(non_existing_record_id, state: 'success', trace: 'BUILD TRACE UPDATED')
+          update_job(non_existing_record_id, state: 'success')
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end

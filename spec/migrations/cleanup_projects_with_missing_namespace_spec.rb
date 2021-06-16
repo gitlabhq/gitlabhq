@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'post_migrate', '20200511080113_add_projects_foreign_key_to_namespaces.rb')
-require Rails.root.join('db', 'post_migrate', '20200511083541_cleanup_projects_with_missing_namespace.rb')
+require_migration!('add_projects_foreign_key_to_namespaces')
+require_migration!
 
 # In order to test the CleanupProjectsWithMissingNamespace migration, we need
 #  to first create an orphaned project (one with an invalid namespace_id)

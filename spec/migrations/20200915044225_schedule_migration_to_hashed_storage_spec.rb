@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200915044225_schedule_migration_to_hashed_storage.rb')
+require_migration!('schedule_migration_to_hashed_storage')
 
 RSpec.describe ScheduleMigrationToHashedStorage, :sidekiq do
   describe '#up' do

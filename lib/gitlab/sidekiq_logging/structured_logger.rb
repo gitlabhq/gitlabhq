@@ -55,8 +55,6 @@ module Gitlab
         scheduling_latency_s = ::Gitlab::InstrumentationHelper.queue_duration_for_job(payload)
         payload['scheduling_latency_s'] = scheduling_latency_s if scheduling_latency_s
 
-        payload['job_size_bytes'] = Sidekiq.dump_json(job).bytesize
-
         payload
       end
 

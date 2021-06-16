@@ -43,7 +43,6 @@ export default {
     GlAlert,
   },
   i18n: {
-    MODAL_TITLE,
     COMMIT_LABEL,
     TARGET_BRANCH_LABEL,
     TOGGLE_CREATE_MR_LABEL,
@@ -51,6 +50,16 @@ export default {
     NEW_BRANCH_IN_FORK,
   },
   props: {
+    modalTitle: {
+      type: String,
+      default: MODAL_TITLE,
+      required: false,
+    },
+    primaryBtnText: {
+      type: String,
+      default: PRIMARY_OPTIONS_TEXT,
+      required: false,
+    },
     modalId: {
       type: String,
       required: true,
@@ -75,6 +84,11 @@ export default {
       type: String,
       required: true,
     },
+    replacePath: {
+      type: String,
+      default: null,
+      required: false,
+    },
   },
   data() {
     return {
@@ -90,7 +104,7 @@ export default {
   computed: {
     primaryOptions() {
       return {
-        text: PRIMARY_OPTIONS_TEXT,
+        text: this.primaryBtnText,
         attributes: [
           {
             variant: 'confirm',
@@ -136,6 +150,45 @@ export default {
       this.file = null;
       this.filePreviewURL = null;
     },
+    submitForm() {
+      return this.replacePath ? this.replaceFile() : this.uploadFile();
+    },
+    submitRequest(method, url) {
+      return axios({
+        method,
+        url,
+        data: this.formData(),
+        headers: {
+          ...ContentTypeMultipartFormData,
+        },
+      })
+        .then((response) => {
+          if (!this.replacePath) {
+            trackFileUploadEvent('click_upload_modal_form_submit');
+          }
+          visitUrl(response.data.filePath);
+        })
+        .catch(() => {
+          this.loading = false;
+          createFlash(ERROR_MESSAGE);
+        });
+    },
+    formData() {
+      const formData = new FormData();
+      formData.append('branch_name', this.target);
+      formData.append('create_merge_request', this.createNewMr);
+      formData.append('commit_message', this.commit);
+      formData.append('file', this.file);
+
+      return formData;
+    },
+    replaceFile() {
+      this.loading = true;
+
+      // The PUT path can be geneated from $route (similar to "uploadFile") once router is connected
+      // Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/332736
+      return this.submitRequest('put', this.replacePath);
+    },
     uploadFile() {
       this.loading = true;
 
@@ -146,26 +199,7 @@ export default {
       } = this;
       const uploadPath = joinPaths(this.path, path);
 
-      const formData = new FormData();
-      formData.append('branch_name', this.target);
-      formData.append('create_merge_request', this.createNewMr);
-      formData.append('commit_message', this.commit);
-      formData.append('file', this.file);
-
-      return axios
-        .post(uploadPath, formData, {
-          headers: {
-            ...ContentTypeMultipartFormData,
-          },
-        })
-        .then((response) => {
-          trackFileUploadEvent('click_upload_modal_form_submit');
-          visitUrl(response.data.filePath);
-        })
-        .catch(() => {
-          this.loading = false;
-          createFlash(ERROR_MESSAGE);
-        });
+      return this.submitRequest('post', uploadPath);
     },
   },
   validFileMimetypes: [],
@@ -175,10 +209,10 @@ export default {
   <gl-form>
     <gl-modal
       :modal-id="modalId"
-      :title="$options.i18n.MODAL_TITLE"
+      :title="modalTitle"
       :action-primary="primaryOptions"
       :action-cancel="cancelOptions"
-      @primary.prevent="uploadFile"
+      @primary.prevent="submitForm"
     >
       <upload-dropzone
         class="gl-h-200! gl-mb-4"

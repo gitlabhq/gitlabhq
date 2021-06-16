@@ -150,8 +150,7 @@ the following:
 
 ![Security Center Dashboard with projects](img/security_center_dashboard_v13_4.png)
 
-To view the Security Center, from the navigation bar at the top of the page, select
-**More > Security**.
+To view the Security Center, on the top bar, select **Menu > Security**.
 
 ### Adding projects to the Security Center
 

@@ -112,6 +112,9 @@ export default {
     dateValue() {
       return this.issuable?.[this.dateType] || null;
     },
+    firstDay() {
+      return gon.first_day_of_week;
+    },
     isLoading() {
       return this.$apollo.queries.issuable.loading || this.loading;
     },
@@ -286,6 +289,7 @@ export default {
         ref="datePicker"
         class="gl-relative"
         :default-date="parsedDate"
+        :first-day="firstDay"
         show-clear-button
         autocomplete="off"
         @input="setDate"

@@ -1,7 +1,7 @@
 <script>
-import { GlModal } from '@gitlab/ui';
-import { mapGetters } from 'vuex';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import { GlModal, GlAlert } from '@gitlab/ui';
+import { mapGetters, mapActions, mapState } from 'vuex';
+import ListLabel from '~/boards/models/label';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -44,6 +44,7 @@ export default {
     BoardScope: () => import('ee_component/boards/components/board_scope.vue'),
     GlModal,
     BoardConfigurationOptions,
+    GlAlert,
   },
   inject: {
     fullPath: {
@@ -107,6 +108,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(['error']),
     ...mapGetters(['isIssueBoard', 'isGroupBoard', 'isProjectBoard']),
     isNewForm() {
       return this.currentPage === formType.new;
@@ -222,9 +224,7 @@ export default {
     }
   },
   methods: {
-    setIteration(iterationId) {
-      this.board.iteration_id = iterationId;
-    },
+    ...mapActions(['setError', 'unsetError']),
     boardCreateResponse(data) {
       return data.createBoard.board.webPath;
     },
@@ -234,6 +234,9 @@ export default {
         ? `?group_by=${getParameterByName('group_by')}`
         : '';
       return `${path}${param}`;
+    },
+    cancel() {
+      this.$emit('cancel');
     },
     async createOrUpdateBoard() {
       const response = await this.$apollo.mutate({
@@ -263,7 +266,7 @@ export default {
           await this.deleteBoard();
           visitUrl(this.rootPath);
         } catch {
-          Flash(this.$options.i18n.deleteErrorMessage);
+          this.setError({ message: this.$options.i18n.deleteErrorMessage });
         } finally {
           this.isLoading = false;
         }
@@ -272,14 +275,11 @@ export default {
           const url = await this.createOrUpdateBoard();
           visitUrl(url);
         } catch {
-          Flash(this.$options.i18n.saveErrorMessage);
+          this.setError({ message: this.$options.i18n.saveErrorMessage });
         } finally {
           this.isLoading = false;
         }
       }
-    },
-    cancel() {
-      this.$emit('cancel');
     },
     resetFormState() {
       if (this.isNewForm) {
@@ -288,6 +288,25 @@ export default {
       } else if (this.currentBoard && Object.keys(this.currentBoard).length) {
         this.board = { ...boardDefaults, ...this.currentBoard };
       }
+    },
+    setIteration(iterationId) {
+      this.board.iteration_id = iterationId;
+    },
+    setBoardLabels(labels) {
+      labels.forEach((label) => {
+        if (label.set && !this.board.labels.find((l) => l.id === label.id)) {
+          this.board.labels.push(
+            new ListLabel({
+              id: label.id,
+              title: label.title,
+              color: label.color,
+              textColor: label.text_color,
+            }),
+          );
+        } else if (!label.set) {
+          this.board.labels = this.board.labels.filter((selected) => selected.id !== label.id);
+        }
+      });
     },
   },
 };
@@ -308,6 +327,15 @@ export default {
     @close="cancel"
     @hide.prevent
   >
+    <gl-alert
+      v-if="error"
+      class="gl-mb-3"
+      variant="danger"
+      :dismissible="true"
+      @dismiss="unsetError"
+    >
+      {{ error }}
+    </gl-alert>
     <p v-if="isDeleteForm" data-testid="delete-confirmation-message">
       {{ $options.i18n.deleteConfirmationMessage }}
     </p>
@@ -346,6 +374,7 @@ export default {
         :group-id="groupId"
         :weights="weights"
         @set-iteration="setIteration"
+        @set-board-labels="setBoardLabels"
       />
     </form>
   </gl-modal>

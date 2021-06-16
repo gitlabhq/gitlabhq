@@ -8,7 +8,7 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import Api from '~/api';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import {
   ANY_TRIGGER_AUTHOR,
   FETCH_AUTHOR_ERROR_MESSAGE,
@@ -61,7 +61,9 @@ export default {
           this.loading = false;
         })
         .catch((err) => {
-          createFlash(FETCH_AUTHOR_ERROR_MESSAGE);
+          createFlash({
+            message: FETCH_AUTHOR_ERROR_MESSAGE,
+          });
           this.loading = false;
           throw err;
         });

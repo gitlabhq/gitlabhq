@@ -1,5 +1,6 @@
 ---
 redirect_to: 'index.md'
+remove_date: '2021-08-15'
 ---
 
 This document was deleted.

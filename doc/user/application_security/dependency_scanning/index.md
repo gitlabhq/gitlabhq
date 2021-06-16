@@ -91,7 +91,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 To enable dependency scanning for GitLab 11.9 and later, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
+[`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
 that is provided as a part of your GitLab installation.
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
@@ -112,7 +112,7 @@ always take the latest dependency scanning artifact available.
 
 ### Customizing the dependency scanning settings
 
-The dependency scanning settings can be changed through [CI/CD variables](#available-variables) by using the
+The dependency scanning settings can be changed through [CI/CD variables](#available-cicd-variables) by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 For example:
 
@@ -157,7 +157,7 @@ gemnasium-dependency_scanning:
   dependencies: ["build"]
 ```
 
-### Available variables
+### Available CI/CD variables
 
 Dependency scanning can be [configured](#customizing-the-dependency-scanning-settings)
 using environment variables.
@@ -189,7 +189,7 @@ The following variables are used for configuring specific analyzers (used for a 
 | `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the Gemnasium database. |
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`                     | Enable automatic remediation of vulnerable dependencies. |
-| `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `11`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`, `15`. Maven and Gradle use the Java version specified by this value. |
+| `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `11`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`, `15`, `16`. Maven and Gradle use the Java version specified by this value (Dependency Scanning for Gradle does not currently support Java `16`). |
 | `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repositories). |
 | `GRADLE_CLI_OPTS`                    | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
 | `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
@@ -231,11 +231,11 @@ Read more on [how to use private Maven repositories](../index.md#using-private-m
 Once a vulnerability is found, you can interact with it. Read more on how to
 [address the vulnerabilities](../vulnerabilities/index.md).
 
-## Solutions for vulnerabilities (auto-remediation)
+## Solutions for vulnerabilities
 
 Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates. Read more about the
-[solutions for vulnerabilities](../vulnerabilities/index.md#remediate-a-vulnerability-automatically).
+[solutions for vulnerabilities](../vulnerabilities/index.md#resolve-a-vulnerability).
 
 ## Security Dashboard
 

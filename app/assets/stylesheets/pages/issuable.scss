@@ -67,10 +67,6 @@
 
   .emoji-block {
     padding: $gl-padding-4 0;
-
-    @include media-breakpoint-down(md) {
-      padding: $gl-padding-8 0;
-    }
   }
 }
 
@@ -271,11 +267,6 @@
 
     .value {
       line-height: 1;
-
-      .assign-yourself {
-        margin-top: 10px;
-        display: block;
-      }
     }
 
     .issuable-sidebar {
@@ -290,10 +281,6 @@
       .issuable-sidebar-header {
         display: none;
       }
-    }
-
-    .assign-yourself .btn-link {
-      padding-left: 0;
     }
 
     .light {

@@ -178,4 +178,34 @@ RSpec.describe LfsObject do
       expect(described_class.calculate_oid(path)).to eq expected
     end
   end
+
+  context 'when an lfs object is associated with a project' do
+    let!(:lfs_object) { create(:lfs_object) }
+    let!(:lfs_object_project) { create(:lfs_objects_project, lfs_object: lfs_object) }
+
+    it 'cannot be deleted' do
+      expect { lfs_object.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
+
+      lfs_object_project.destroy!
+
+      expect { lfs_object.destroy! }.not_to raise_error
+    end
+  end
+
+  describe '.unreferenced_in_batches' do
+    let!(:unreferenced_lfs_object1) { create(:lfs_object, oid: '1') }
+    let!(:referenced_lfs_object) { create(:lfs_objects_project).lfs_object }
+    let!(:unreferenced_lfs_object2) { create(:lfs_object, oid: '2') }
+
+    it 'returns lfs objects in batches' do
+      stub_const('LfsObject::BATCH_SIZE', 1)
+
+      batches = []
+      described_class.unreferenced_in_batches { |batch| batches << batch }
+
+      expect(batches.size).to eq(2)
+      expect(batches.first).to eq([unreferenced_lfs_object2])
+      expect(batches.last).to eq([unreferenced_lfs_object1])
+    end
+  end
 end

@@ -30,4 +30,12 @@ RSpec.configure do |config|
 
     redis_queues_cleanup!
   end
+
+  config.around(:each, :clean_gitlab_redis_trace_chunks) do |example|
+    redis_trace_chunks_cleanup!
+
+    example.run
+
+    redis_trace_chunks_cleanup!
+  end
 end

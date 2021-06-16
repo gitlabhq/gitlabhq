@@ -21,26 +21,10 @@ class TemplateFinder
       end
     end
 
-    # This is temporary and will be removed once we introduce group level inherited templates and
-    # remove the inherited_issuable_templates FF
-    def all_template_names_hash_or_array(project, issuable_type)
-      if project.inherited_issuable_templates_enabled?
-        all_template_names(project, issuable_type.pluralize)
-      else
-        all_template_names_array(project, issuable_type.pluralize)
-      end
-    end
-
     def all_template_names(project, type)
       return {} if !VENDORED_TEMPLATES.key?(type.to_s) && type.to_s != 'licenses'
 
       build(type, project).template_names
-    end
-
-    # This is for issues and merge requests description templates only.
-    # This will be removed once we introduce group level inherited templates and remove the inherited_issuable_templates FF
-    def all_template_names_array(project, type)
-      all_template_names(project, type).values.flatten.select { |tmpl| tmpl[:project_id] == project.id }.compact.uniq
     end
   end
 

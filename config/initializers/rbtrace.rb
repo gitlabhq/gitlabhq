@@ -2,8 +2,8 @@
 
 if ENV['ENABLE_RBTRACE']
   Gitlab::Cluster::LifecycleEvents.on_worker_start do
-    # Unicorn clears out signals before it forks, so rbtrace won't work
-    # unless it is enabled after the fork.
+    # We need to require `rbtrace` in a context of a worker process.
+    # See https://github.com/tmm1/rbtrace/issues/56#issuecomment-648683596.
     require 'rbtrace'
   end
 end

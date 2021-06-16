@@ -18,7 +18,7 @@ module CreatesCommit
 
     @start_branch ||= @ref || @branch_name
 
-    start_project = Feature.enabled?(:pick_into_project, @project, default_enabled: :yaml) ? @project_to_commit_into : @project
+    start_project = @project_to_commit_into
 
     commit_params = @commit_params.merge(
       start_project: start_project,

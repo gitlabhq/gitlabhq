@@ -7,7 +7,6 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import mockAlerts from 'jest/vue_shared/alert_details/mocks/alerts.json';
 import AlertManagementTable from '~/alert_management/components/alert_management_table.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
-import AlertDeprecationWarning from '~/vue_shared/components/alerts_deprecation_warning.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import defaultProvideValues from '../mocks/alerts_provide_config.json';
@@ -41,8 +40,7 @@ describe('AlertManagementTable', () => {
     resolved: 11,
     all: 26,
   };
-  const findDeprecationNotice = () =>
-    wrapper.findComponent(AlertDeprecationWarning).findComponent(GlAlert);
+  const findDeprecationNotice = () => wrapper.findByTestId('alerts-deprecation-warning');
 
   function mountComponent({ provide = {}, data = {}, loading = false, stubs = {} } = {}) {
     wrapper = extendedWrapper(
@@ -239,19 +237,21 @@ describe('AlertManagementTable', () => {
       expect(visitUrl).toHaveBeenCalledWith('/1527542/details', true);
     });
 
-    describe('deprecation notice', () => {
-      it('shows the deprecation notice when available', () => {
-        mountComponent({ provide: { hasManagedPrometheus: true } });
-
-        expect(findDeprecationNotice().exists()).toBe(true);
-      });
-
-      it('hides the deprecation notice when not available', () => {
-        mountComponent();
-
-        expect(findDeprecationNotice().exists()).toBe(false);
-      });
-    });
+    it.each`
+      managedAlertsDeprecation | hasManagedPrometheus | isVisible
+      ${false}                 | ${false}             | ${false}
+      ${false}                 | ${true}              | ${true}
+      ${true}                  | ${false}             | ${false}
+      ${true}                  | ${true}              | ${false}
+    `(
+      'when the deprecation feature flag is $managedAlertsDeprecation and has managed prometheus is $hasManagedPrometheus',
+      ({ hasManagedPrometheus, managedAlertsDeprecation, isVisible }) => {
+        mountComponent({
+          provide: { hasManagedPrometheus, glFeatures: { managedAlertsDeprecation } },
+        });
+        expect(findDeprecationNotice().exists()).toBe(isVisible);
+      },
+    );
 
     describe('alert issue links', () => {
       beforeEach(() => {

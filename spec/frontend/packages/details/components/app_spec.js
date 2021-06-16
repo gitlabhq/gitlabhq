@@ -1,5 +1,6 @@
-import { GlEmptyState, GlModal } from '@gitlab/ui';
+import { GlEmptyState } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
 
@@ -34,6 +35,7 @@ describe('PackagesApp', () => {
   let store;
   const fetchPackageVersions = jest.fn();
   const deletePackage = jest.fn();
+  const deletePackageFile = jest.fn();
   const defaultProjectName = 'bar';
   const { location } = window;
 
@@ -59,6 +61,7 @@ describe('PackagesApp', () => {
       actions: {
         deletePackage,
         fetchPackageVersions,
+        deletePackageFile,
       },
       getters,
     });
@@ -82,8 +85,8 @@ describe('PackagesApp', () => {
   const packageTitle = () => wrapper.find(PackageTitle);
   const emptyState = () => wrapper.find(GlEmptyState);
   const deleteButton = () => wrapper.find('.js-delete-button');
-  const deleteModal = () => wrapper.find(GlModal);
-  const modalDeleteButton = () => wrapper.find({ ref: 'modal-delete-button' });
+  const findDeleteModal = () => wrapper.find({ ref: 'deleteModal' });
+  const findDeleteFileModal = () => wrapper.find({ ref: 'deleteFileModal' });
   const versionsTab = () => wrapper.find('.js-versions-tab > a');
   const packagesLoader = () => wrapper.find(PackagesListLoader);
   const packagesVersionRows = () => wrapper.findAll(PackageListRow);
@@ -107,10 +110,12 @@ describe('PackagesApp', () => {
     window.location = location;
   });
 
-  it('renders the app and displays the package title', () => {
+  it('renders the app and displays the package title', async () => {
     createComponent();
 
-    expect(packageTitle()).toExist();
+    await nextTick();
+
+    expect(packageTitle().exists()).toBe(true);
   });
 
   it('renders an empty state component when no an invalid package is passed as a prop', () => {
@@ -118,7 +123,7 @@ describe('PackagesApp', () => {
       packageEntity: {},
     });
 
-    expect(emptyState()).toExist();
+    expect(emptyState().exists()).toBe(true);
   });
 
   it('package history has the right props', () => {
@@ -152,7 +157,16 @@ describe('PackagesApp', () => {
     });
 
     it('shows the delete confirmation modal when delete is clicked', () => {
-      expect(deleteModal()).toExist();
+      expect(findDeleteModal().exists()).toBe(true);
+    });
+  });
+
+  describe('deleting package files', () => {
+    it('shows the delete confirmation modal when delete is clicked', () => {
+      createComponent();
+      findPackageFiles().vm.$emit('delete-file', mavenFiles[0]);
+
+      expect(findDeleteFileModal().exists()).toBe(true);
     });
   });
 
@@ -228,13 +242,7 @@ describe('PackagesApp', () => {
   });
 
   describe('tracking and delete', () => {
-    const doDelete = async () => {
-      deleteButton().trigger('click');
-      await wrapper.vm.$nextTick();
-      modalDeleteButton().trigger('click');
-    };
-
-    describe('delete', () => {
+    describe('delete package', () => {
       const originalReferrer = document.referrer;
       const setReferrer = (value = defaultProjectName) => {
         Object.defineProperty(document, 'referrer', {
@@ -250,9 +258,9 @@ describe('PackagesApp', () => {
         });
       });
 
-      it('calls the proper vuex action', async () => {
+      it('calls the proper vuex action', () => {
         createComponent({ packageEntity: npmPackage });
-        await doDelete();
+        findDeleteModal().vm.$emit('primary');
         expect(deletePackage).toHaveBeenCalled();
       });
 
@@ -260,7 +268,7 @@ describe('PackagesApp', () => {
         setReferrer();
         deletePackage.mockResolvedValue();
         createComponent({ packageEntity: npmPackage });
-        await doDelete();
+        findDeleteModal().vm.$emit('primary');
         await deletePackage();
         expect(window.location.replace).toHaveBeenCalledWith(
           'project_url?showSuccessDeleteAlert=true',
@@ -271,11 +279,22 @@ describe('PackagesApp', () => {
         setReferrer('baz');
         deletePackage.mockResolvedValue();
         createComponent({ packageEntity: npmPackage });
-        await doDelete();
+        findDeleteModal().vm.$emit('primary');
         await deletePackage();
         expect(window.location.replace).toHaveBeenCalledWith(
           'group_url?showSuccessDeleteAlert=true',
         );
+      });
+    });
+
+    describe('delete file', () => {
+      it('calls the proper vuex action', () => {
+        createComponent({ packageEntity: npmPackage });
+
+        findPackageFiles().vm.$emit('delete-file', mavenFiles[0]);
+        findDeleteFileModal().vm.$emit('primary');
+
+        expect(deletePackageFile).toHaveBeenCalled();
       });
     });
 
@@ -295,12 +314,62 @@ describe('PackagesApp', () => {
         expect(utilSpy).toHaveBeenCalledWith('conan');
       });
 
-      it(`delete button on delete modal call event with ${TrackingActions.DELETE_PACKAGE}`, async () => {
+      it(`delete button on delete modal call event with ${TrackingActions.DELETE_PACKAGE}`, () => {
         createComponent({ packageEntity: npmPackage });
-        await doDelete();
+        findDeleteModal().vm.$emit('primary');
         expect(eventSpy).toHaveBeenCalledWith(
           category,
           TrackingActions.DELETE_PACKAGE,
+          expect.any(Object),
+        );
+      });
+
+      it(`canceling a package deletion tracks  ${TrackingActions.CANCEL_DELETE_PACKAGE}`, () => {
+        createComponent({ packageEntity: npmPackage });
+
+        findDeleteModal().vm.$emit('canceled');
+
+        expect(eventSpy).toHaveBeenCalledWith(
+          category,
+          TrackingActions.CANCEL_DELETE_PACKAGE,
+          expect.any(Object),
+        );
+      });
+
+      it(`request a file deletion tracks  ${TrackingActions.REQUEST_DELETE_PACKAGE_FILE}`, () => {
+        createComponent({ packageEntity: npmPackage });
+
+        findPackageFiles().vm.$emit('delete-file', mavenFiles[0]);
+
+        expect(eventSpy).toHaveBeenCalledWith(
+          category,
+          TrackingActions.REQUEST_DELETE_PACKAGE_FILE,
+          expect.any(Object),
+        );
+      });
+
+      it(`confirming a file deletion tracks  ${TrackingActions.DELETE_PACKAGE_FILE}`, () => {
+        createComponent({ packageEntity: npmPackage });
+
+        findPackageFiles().vm.$emit('delete-file', npmPackage);
+        findDeleteFileModal().vm.$emit('primary');
+
+        expect(eventSpy).toHaveBeenCalledWith(
+          category,
+          TrackingActions.REQUEST_DELETE_PACKAGE_FILE,
+          expect.any(Object),
+        );
+      });
+
+      it(`canceling a file deletion tracks  ${TrackingActions.CANCEL_DELETE_PACKAGE_FILE}`, () => {
+        createComponent({ packageEntity: npmPackage });
+
+        findPackageFiles().vm.$emit('delete-file', npmPackage);
+        findDeleteFileModal().vm.$emit('canceled');
+
+        expect(eventSpy).toHaveBeenCalledWith(
+          category,
+          TrackingActions.CANCEL_DELETE_PACKAGE_FILE,
           expect.any(Object),
         );
       });

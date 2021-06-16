@@ -82,6 +82,34 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
   end
 
+  describe 'topics' do
+    subject(:project) { create_project(user, opts) }
+
+    context "with 'topics' parameter" do
+      let(:opts) { { topics: 'topics' } }
+
+      it 'keeps them as specified' do
+        expect(project.topic_list).to eq(%w[topics])
+      end
+    end
+
+    context "with 'topic_list' parameter" do
+      let(:opts) { { topic_list: 'topic_list' } }
+
+      it 'keeps them as specified' do
+        expect(project.topic_list).to eq(%w[topic_list])
+      end
+    end
+
+    context "with 'tag_list' parameter (deprecated)" do
+      let(:opts) { { tag_list: 'tag_list' } }
+
+      it 'keeps them as specified' do
+        expect(project.topic_list).to eq(%w[tag_list])
+      end
+    end
+  end
+
   context 'user namespace' do
     it do
       project = create_project(user, opts)
@@ -270,7 +298,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
   context 'error handling' do
     it 'handles invalid options' do
-      opts[:default_branch] = 'master'
+      opts[:invalid] = 'option'
       expect(create_project(user, opts)).to eq(nil)
     end
   end
@@ -663,7 +691,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       stub_feature_flags(projects_post_creation_worker: false)
     end
 
-    context 'Prometheus application is shared via group cluster' do
+    context 'Prometheus integration is shared via group cluster' do
       let(:cluster) { create(:cluster, :group, groups: [group]) }
       let(:group) do
         create(:group).tap do |group|
@@ -672,7 +700,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       end
 
       before do
-        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+        create(:clusters_integrations_prometheus, cluster: cluster)
       end
 
       it 'creates PrometheusService record', :aggregate_failures do
@@ -685,11 +713,11 @@ RSpec.describe Projects::CreateService, '#execute' do
       end
     end
 
-    context 'Prometheus application is shared via instance cluster' do
+    context 'Prometheus integration is shared via instance cluster' do
       let(:cluster) { create(:cluster, :instance) }
 
       before do
-        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+        create(:clusters_integrations_prometheus, cluster: cluster)
       end
 
       it 'creates PrometheusService record', :aggregate_failures do
@@ -712,7 +740,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       end
     end
 
-    context 'shared Prometheus application is not available' do
+    context 'shared Prometheus integration is not available' do
       it 'does not persist PrometheusService record', :aggregate_failures do
         project = create_project(user, opts)
 
@@ -778,7 +806,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
   end
 
-  context 'with specialized_project_authorization_workers' do
+  context 'with specialized project_authorization workers' do
     let_it_be(:other_user) { create(:user) }
     let_it_be(:group) { create(:group) }
 
@@ -809,7 +837,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(AuthorizedProjectUpdate::ProjectCreateWorker).to(
         receive(:perform_async).and_call_original
       )
-      expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).to(
+      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
         receive(:bulk_perform_in)
           .with(1.hour,
                 array_including([user.id], [other_user.id]),
@@ -818,34 +846,6 @@ RSpec.describe Projects::CreateService, '#execute' do
       )
 
       create_project(user, opts)
-    end
-
-    context 'when feature is disabled' do
-      before do
-        stub_feature_flags(specialized_project_authorization_workers: false)
-      end
-
-      it 'updates authorization for current_user' do
-        project = create_project(user, opts)
-
-        expect(
-          Ability.allowed?(user, :read_project, project)
-        ).to be_truthy
-      end
-
-      it 'uses AuthorizedProjectsWorker' do
-        expect(AuthorizedProjectsWorker).to(
-          receive(:bulk_perform_async).with(array_including([user.id], [other_user.id])).and_call_original
-        )
-        expect(AuthorizedProjectUpdate::ProjectCreateWorker).not_to(
-          receive(:perform_async)
-        )
-        expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).not_to(
-          receive(:bulk_perform_in)
-        )
-
-        create_project(user, opts)
-      end
     end
   end
 

@@ -37,24 +37,6 @@ RSpec.describe 'Admin::Hooks' do
       expect(page).to have_content('foo.rb')
       expect(page).to have_content('bar.clj')
     end
-
-    context 'deprecation warning' do
-      it 'shows warning for plugins directory' do
-        allow(Gitlab::FileHook).to receive(:files).and_return(['plugins/foo.rb'])
-
-        visit admin_hooks_path
-
-        expect(page).to have_content('Plugins directory is deprecated and will be removed in 14.0')
-      end
-
-      it 'does not show warning for file_hooks directory' do
-        allow(Gitlab::FileHook).to receive(:files).and_return(['file_hooks/foo.rb'])
-
-        visit admin_hooks_path
-
-        expect(page).not_to have_content('Plugins directory is deprecated and will be removed in 14.0')
-      end
-    end
   end
 
   describe 'New Hook' do

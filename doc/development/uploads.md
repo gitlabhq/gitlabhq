@@ -216,8 +216,8 @@ Workhorse asks rails for temporary pre-signed object storage URLs and directly u
 
 In this setup, an extra Rails route must be implemented in order to handle authorization. Examples of this can be found in:
 
-- [`Projects::LfsStorageController`](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/app/controllers/projects/lfs_storage_controller.rb)
-  and [its routes](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/config/routes/git_http.rb#L31-32).
+- [`Projects::LfsStorageController`](https://gitlab.com/gitlab-org/gitlab/-/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/app/controllers/projects/lfs_storage_controller.rb)
+  and [its routes](https://gitlab.com/gitlab-org/gitlab/-/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/config/routes/git_http.rb#L31-32).
 - [API endpoints for uploading packages](packages.md#file-uploads).
 
 This falls back to _disk buffered upload_ when `direct_upload` is disabled inside the [object storage setting](../administration/uploads.md#object-storage-settings).
@@ -323,7 +323,7 @@ For a Grape API upload, we can have [body or a multipart](#upload-encodings) upl
 Workhorse pre-upload authorization and one for accepting the upload metadata from Workhorse:
 
 1. Implement an endpoint with the URL + `/authorize` suffix that will:
-   - Check that the request is coming from Workhorse with the `require_gitlab_workhorse!` from the [API helpers](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/helpers.rb).
+   - Check that the request is coming from Workhorse with the `require_gitlab_workhorse!` from the [API helpers](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/helpers.rb).
    - Check user permissions.
    - Set the status to `200` with `status 200`.
    - Set the content type with `content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE`.
@@ -334,7 +334,7 @@ Workhorse pre-upload authorization and one for accepting the upload metadata fro
 use `requires :file, type: ::API::Validations::Types::WorkhorseFile`.
       - Body upload requests have their upload available under the parameter `file`.
    - Check that the request is coming from Workhorse with the `require_gitlab_workhorse!` from the
-[API helpers](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/helpers.rb).
+[API helpers](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/helpers.rb).
    - Check the user permissions.
    - The remaining code of the processing. This is where the code must be reading the parameter (for
 our example, it would be `params[:file]`).

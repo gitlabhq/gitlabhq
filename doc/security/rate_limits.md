@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Rate limits
+# Rate limits **(FREE SELF)**
 
 NOTE:
 For GitLab.com, please see

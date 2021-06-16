@@ -1,0 +1,8 @@
+---
+name: managed_alerts_deprecation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62528
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331863
+milestone: '14.0'
+type: development
+group: group::monitor
+default_enabled: true

@@ -4,10 +4,10 @@ description: What Object Storage provider has been configured for External Diffs
 product_section: enablement
 product_stage: enablement
 product_group: group::memory
-product_category: operational_metrics
+product_category: memory
 value_type: string
 status: data_available
-time_frame: all
+time_frame: none
 data_source: system
 distribution:
 - ce
@@ -16,4 +16,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

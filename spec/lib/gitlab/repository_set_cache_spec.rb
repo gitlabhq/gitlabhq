@@ -7,6 +7,7 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
 
   let(:repository) { project.repository }
   let(:namespace) { "#{repository.full_path}:#{project.id}" }
+  let(:gitlab_cache_namespace) { Gitlab::Redis::Cache::CACHE_NAMESPACE }
   let(:cache) { described_class.new(repository) }
 
   describe '#cache_key' do
@@ -52,6 +53,24 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
     end
   end
 
+  describe '#write' do
+    subject(:write_cache) { cache.write('branch_names', ['main']) }
+
+    it 'writes the value to the cache' do
+      write_cache
+
+      redis_keys = Gitlab::Redis::Cache.with { |redis| redis.scan(0, match: "*") }.last
+      expect(redis_keys).to include("branch_names:#{namespace}:set")
+      expect(cache.fetch('branch_names')).to contain_exactly('main')
+    end
+
+    it 'sets the expiry of the set' do
+      write_cache
+
+      expect(cache.ttl('branch_names')).to be_within(1).of(cache.expires_in.seconds)
+    end
+  end
+
   describe '#expire' do
     subject { cache.expire(*keys) }
 
@@ -74,6 +93,12 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
         subject
 
         expect(cache.read(:foo)).to be_empty
+      end
+
+      it 'expires the new key format' do
+        expect_any_instance_of(Redis).to receive(:unlink).with(cache.cache_key(:foo), cache.new_cache_key(:foo)) # rubocop:disable RSpec/AnyInstanceOf
+
+        subject
       end
     end
 

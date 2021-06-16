@@ -8,7 +8,7 @@ import {
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 
@@ -52,7 +52,9 @@ export default {
           this.results = data || [];
         })
         .catch(() => {
-          createFlash(__('Something went wrong on our end. Please try again.'));
+          createFlash({
+            message: __('Something went wrong on our end. Please try again.'),
+          });
         })
         .finally(() => {
           this.isLoading = false;

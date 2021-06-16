@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
@@ -18,11 +18,14 @@ const Api = {
   groupMembersPath: '/api/:version/groups/:id/members',
   groupMilestonesPath: '/api/:version/groups/:id/milestones',
   subgroupsPath: '/api/:version/groups/:id/subgroups',
+  descendantGroupsPath: '/api/:version/groups/:id/descendant_groups',
   namespacesPath: '/api/:version/namespaces.json',
   groupInvitationsPath: '/api/:version/groups/:id/invitations',
   groupPackagesPath: '/api/:version/groups/:id/packages',
   projectPackagesPath: '/api/:version/projects/:id/packages',
   projectPackagePath: '/api/:version/projects/:id/packages/:package_id',
+  projectPackageFilePath:
+    '/api/:version/projects/:id/packages/:package_id/package_files/:package_file_id',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   groupSharePath: '/api/:version/groups/:id/share',
   projectsPath: '/api/:version/projects.json',
@@ -121,6 +124,15 @@ const Api = {
 
   deleteProjectPackage(projectId, packageId) {
     const url = this.buildProjectPackageUrl(projectId, packageId);
+    return axios.delete(url);
+  },
+
+  deleteProjectPackageFile(projectId, packageId, fileId) {
+    const url = Api.buildUrl(this.projectPackageFilePath)
+      .replace(':id', projectId)
+      .replace(':package_id', packageId)
+      .replace(':package_file_id', fileId);
+
     return axios.delete(url);
   },
 
@@ -443,7 +455,9 @@ const Api = {
       })
       .then(({ data }) => (callback ? callback(data) : data))
       .catch(() => {
-        flash(__('Something went wrong while fetching projects'));
+        createFlash({
+          message: __('Something went wrong while fetching projects'),
+        });
         if (callback) {
           callback();
         }
@@ -631,7 +645,11 @@ const Api = {
         params: { ...defaults, ...options },
       })
       .then(({ data }) => callback(data))
-      .catch(() => flash(__('Something went wrong while fetching projects')));
+      .catch(() =>
+        createFlash({
+          message: __('Something went wrong while fetching projects'),
+        }),
+      );
   },
 
   branches(id, query = '', options = {}) {
@@ -866,7 +884,7 @@ const Api = {
   },
 
   trackRedisHllUserEvent(event) {
-    if (!gon.features?.usageDataApi) {
+    if (!gon.current_user_id || !gon.features?.usageDataApi) {
       return null;
     }
 

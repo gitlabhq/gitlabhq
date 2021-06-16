@@ -31,7 +31,7 @@ Prerequisites:
 
 To view a list of environments and deployments:
 
-1. Go to the project's **Operations > Environments** page.
+1. Go to the project's **Deployments > Environments** page.
    The environments are displayed.
 
    ![Environments list](img/environments_list.png)
@@ -57,7 +57,7 @@ You can create an environment and deployment in the UI or in your `.gitlab-ci.ym
 
 In the UI:
 
-1. Go to the project's **Operations > Environments** page.
+1. Go to the project's **Deployments > Environments** page.
 1. Select **New environment**.
 1. Enter a name and external URL.
 1. Select **Save**.
@@ -99,10 +99,10 @@ deploy_review:
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
-  only:
-    - branches
-  except:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: never
+    - if: $CI_COMMIT_BRANCH
 ```
 
 In this example:
@@ -136,7 +136,7 @@ you can use tiers:
 | Environment tier | Environment name examples                          |
 |------------------|----------------------------------------------------|
 | `production`     | Production, Live                                   |
-| `staging`        | Staging, Model, Pre, Demo                          |
+| `staging`        | Staging, Model, Demo                               |
 | `testing`        | Test, QC                                           |
 | `development`    | Dev, [Review apps](../review_apps/index.md), Trunk |
 | `other`          |                                                    |
@@ -158,8 +158,8 @@ deploy_prod:
     name: production
     url: https://example.com
   when: manual
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
 The `when: manual` action:
@@ -200,8 +200,8 @@ deploy:
     url: https://example.com
     kubernetes:
       namespace: production
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
 When you use the GitLab Kubernetes integration to deploy to a Kubernetes cluster,
@@ -326,7 +326,7 @@ If there is a problem with a deployment, you can retry it or roll it back.
 
 To retry or rollback a deployment:
 
-1. Go to the project's **Operations > Environments**.
+1. Go to the project's **Deployments > Environments**.
 1. Select the environment.
 1. To the right of the deployment name:
    - To retry a deployment, select **Re-deploy to environment**.
@@ -409,7 +409,7 @@ The job with [`action: stop` might not run](#the-job-with-action-stop-doesnt-run
 if it's in a later stage than the job that started the environment.
 
 If you can't use [pipelines for merge requests](../merge_request_pipelines/index.md),
-set the [`GIT_STRATEGY`](../runners/README.md#git-strategy) to `none` in the
+set the [`GIT_STRATEGY`](../runners/configure_runners.md#git-strategy) to `none` in the
 `stop_review` job. Then the [runner](https://docs.gitlab.com/runner/) doesn't
 try to check out the code after the branch is deleted.
 
@@ -465,7 +465,7 @@ GitLab automatically triggers the `stop_review_app` job to stop the environment.
 
 You can view a deployment's expiration date in the GitLab UI.
 
-1. Go to the project's **Operations > Environments** page.
+1. Go to the project's **Deployments > Environments** page.
 1. Select the name of the deployment.
 
 In the top left, next to the environment name, the expiration date is displayed.
@@ -474,7 +474,7 @@ In the top left, next to the environment name, the expiration date is displayed.
 
 You can manually override a deployment's expiration date.
 
-1. Go to the project's **Operations > Environments** page.
+1. Go to the project's **Deployments > Environments** page.
 1. Select the deployment name.
 1. On the top right, select the thumbtack (**{thumbtack}**).
 
@@ -491,7 +491,7 @@ You can delete [stopped environments](#stopping-an-environment) in the GitLab UI
 
 To delete a stopped environment in the GitLab UI:
 
-1. Go to the project's **Operations > Environments** page.
+1. Go to the project's **Deployments > Environments** page.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog box, select **Delete environment**.

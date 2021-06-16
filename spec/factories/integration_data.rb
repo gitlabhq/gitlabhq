@@ -3,15 +3,15 @@
 # These factories should not be called directly unless we are testing a _tracker_data model.
 # The factories are used when creating integrations.
 FactoryBot.define do
-  factory :jira_tracker_data do
+  factory :jira_tracker_data, class: 'Integrations::JiraTrackerData' do
     integration factory: :jira_service
   end
 
-  factory :issue_tracker_data do
+  factory :issue_tracker_data, class: 'Integrations::IssueTrackerData' do
     integration
   end
 
-  factory :open_project_tracker_data do
+  factory :open_project_tracker_data, class: 'Integrations::OpenProjectTrackerData' do
     integration factory: :open_project_service
     url { 'http://openproject.example.com'}
     token { 'supersecret' }

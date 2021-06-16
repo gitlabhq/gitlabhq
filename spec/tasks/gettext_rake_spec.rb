@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "rake_helper"
+require 'rake_helper'
 
-RSpec.describe 'gettext' do
+RSpec.describe 'gettext', :silence_stdout do
   let(:locale_path) { Rails.root.join('tmp/gettext_spec') }
   let(:pot_file_path) { File.join(locale_path, 'gitlab.pot') }
 

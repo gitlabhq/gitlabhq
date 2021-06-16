@@ -15,8 +15,8 @@ project level.
 
 To enable merge request approval rules for an instance:
 
-1. Navigate to **Admin Area >** **{push-rules}** **Push Rules** and expand **Merge
-requests approvals**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **{push-rules}** **Push Rules**, and expand **Merge request (MR) approvals**.
 1. Set the required rule.
 1. Click **Save changes**.
 

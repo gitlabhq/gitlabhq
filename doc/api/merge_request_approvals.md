@@ -29,7 +29,7 @@ GET /projects/:id/approvals
 
 | Attribute | Type    | Required | Description         |
 | --------- | ------- | -------- | ------------------- |
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 
 ```json
 {
@@ -58,7 +58,7 @@ POST /projects/:id/approvals
 
 | Attribute                                        | Type    | Required | Description                                                                                         |
 | ------------------------------------------------ | ------- | -------- | --------------------------------------------------------------------------------------------------- |
-| `id`                                             | integer | yes      | The ID of a project                                                                                 |
+| `id`                                             | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding)  |
 | `approvals_before_merge`                         | integer | no       | How many approvals are required before an MR can be merged. Deprecated in 12.0 in favor of Approval Rules API. |
 | `reset_approvals_on_push`                        | boolean | no       | Reset approvals on a new push                                                                       |
 | `disable_overriding_approvers_per_merge_request` | boolean | no       | Allow/Disallow overriding approvers per MR                                                          |
@@ -93,7 +93,7 @@ GET /projects/:id/approval_rules
 
 | Attribute            | Type    | Required | Description                                               |
 |----------------------|---------|----------|-----------------------------------------------------------|
-| `id`                 | integer | yes      | The ID of a project                                       |
+| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 
 ```json
 [
@@ -192,7 +192,7 @@ GET /projects/:id/approval_rules/:approval_rule_id
 
 | Attribute            | Type    | Required | Description                                               |
 |----------------------|---------|----------|-----------------------------------------------------------|
-| `id`                 | integer | yes      | The ID of a project                                       |
+| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 | `approval_rule_id`   | integer | yes      | The ID of a approval rule                                 |
 
 ```json
@@ -291,7 +291,7 @@ POST /projects/:id/approval_rules
 
 | Attribute              | Type    | Required | Description                                                      |
 |------------------------|---------|----------|------------------------------------------------------------------|
-| `id`                   | integer | yes      | The ID of a project                                              |
+| `id`                   | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 | `name`                 | string  | yes      | The name of the approval rule                                    |
 | `approvals_required`   | integer | yes      | The number of required approvals for this rule                   |
 | `user_ids`             | Array   | no       | The ids of users as approvers                                    |
@@ -396,7 +396,7 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 
 | Attribute              | Type    | Required | Description                                                      |
 |------------------------|---------|----------|------------------------------------------------------------------|
-| `id`                   | integer | yes      | The ID of a project                                              |
+| `id`                   | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 | `approval_rule_id`     | integer | yes      | The ID of a approval rule                                        |
 | `name`                 | string  | yes      | The name of the approval rule                                    |
 | `approvals_required`   | integer | yes      | The number of required approvals for this rule                   |
@@ -500,122 +500,8 @@ DELETE /projects/:id/approval_rules/:approval_rule_id
 
 | Attribute            | Type    | Required | Description                                               |
 |----------------------|---------|----------|-----------------------------------------------------------|
-| `id`                 | integer | yes      | The ID of a project                                       |
+| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 | `approval_rule_id`   | integer | yes      | The ID of a approval rule
-
-## External Project-level MR approvals **(ULTIMATE)**
-
-Configuration for approvals on a specific Merge Request which makes a call to an external HTTP resource.
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 13.10.
-> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-external-project-level-mr-approvals). **(ULTIMATE SELF)**
-
-### Get project external approval rules **(ULTIMATE)**
-
-You can request information about a project's external approval rules using the following endpoint:
-
-```plaintext
-GET /projects/:id/external_approval_rules
-```
-
-**Parameters:**
-
-| Attribute           | Type    | Required | Description         |
-|---------------------|---------|----------|---------------------|
-| `id`                | integer | yes      | The ID of a project |
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Compliance Check",
-    "project_id": 6,
-    "external_url": "https://gitlab.com/example/test.json",
-    "protected_branches": [
-      {
-        "id": 14,
-        "project_id": 6,
-        "name": "master",
-        "created_at": "2020-10-12T14:04:50.787Z",
-        "updated_at": "2020-10-12T14:04:50.787Z",
-        "code_owner_approval_required": false
-      }
-    ]
-  }
-]
-```
-
-### Create external approval rule **(ULTIMATE)**
-
-You can create a new external approval rule for a project using the following endpoint:
-
-```plaintext
-POST /projects/:id/external_approval_rules
-```
-
-| Attribute              | Type           | Required | Description                                        |
-|------------------------|----------------|----------|----------------------------------------------------|
-| `id`                   | integer        | yes      | The ID of a project                                |
-| `name`                 | string         | yes      | Display name of approval rule                      |
-| `external_url`         | string         | yes      | URL of external approval resource                  |
-| `protected_branch_ids` | `array<Integer>` | no       | The ids of protected branches to scope the rule by |
-
-### Delete external approval rule **(ULTIMATE)**
-
-You can delete an external approval rule for a project using the following endpoint:
-
-```plaintext
-DELETE /projects/:id/external_approval_rules/:rule_id
-```
-
-| Attribute              | Type           | Required | Description                                        |
-|------------------------|----------------|----------|----------------------------------------------------|
-| `rule_id`              | integer        | yes      | The ID of an approval rule                         |
-| `id`                   | integer        | yes      | The ID of a project                                |
-
-### Update external approval rule **(ULTIMATE)**
-
-You can update an existing external approval rule for a project using the following endpoint:
-
-```plaintext
-PUT /projects/:id/external_approval_rules/:rule_id
-```
-
-| Attribute              | Type           | Required | Description                                        |
-|------------------------|----------------|----------|----------------------------------------------------|
-| `id`                   | integer        | yes      | The ID of a project                                |
-| `rule_id`              | integer        | yes      | The ID of an external approval rule                |
-| `name`                 | string         | no       | Display name of approval rule                      |
-| `external_url`         | string         | no       | URL of external approval resource                  |
-| `protected_branch_ids` | `array<Integer>` | no       | The ids of protected branches to scope the rule by |
-
-### Enable or disable External Project-level MR approvals **(ULTIMATE SELF)**
-
-Enable or disable External Project-level MR approvals is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../user/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-# For the instance
-Feature.enable(:ff_compliance_approval_gates)
-# For a single project
-Feature.enable(:ff_compliance_approval_gates, Project.find(<project id>))
-```
-
-To disable it:
-
-```ruby
-# For the instance
-Feature.disable(:ff_compliance_approval_gates)
-# For a single project
-Feature.disable(:ff_compliance_approval_gates, Project.find(<project id>))
-```
 
 ## Merge Request-level MR approvals
 
@@ -637,7 +523,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
 
 | Attribute           | Type    | Required | Description         |
 |---------------------|---------|----------|---------------------|
-| `id`                | integer | yes      | The ID of a project |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer | yes      | The IID of MR       |
 
 ```json
@@ -684,7 +570,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approvals
 
 | Attribute            | Type    | Required | Description                                |
 |----------------------|---------|----------|--------------------------------------------|
-| `id`                 | integer | yes      | The ID of a project                        |
+| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 | `merge_request_iid`  | integer | yes      | The IID of MR                              |
 | `approvals_required` | integer | yes      | Approvals required before MR can be merged. Deprecated in 12.0 in favor of Approval Rules API. |
 
@@ -726,7 +612,7 @@ This includes additional information about the users who have already approved
 
 | Attribute            | Type    | Required | Description         |
 |----------------------|---------|----------|---------------------|
-| `id`                 | integer | yes      | The ID of a project |
+| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 | `merge_request_iid`  | integer | yes      | The IID of MR       |
 
 ```json
@@ -793,7 +679,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
 
 | Attribute           | Type    | Required | Description         |
 |---------------------|---------|----------|---------------------|
-| `id`                | integer | yes      | The ID of a project |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer | yes      | The IID of MR       |
 
 ```json
@@ -871,7 +757,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
 
 | Attribute                  | Type    | Required | Description                                    |
 |----------------------------|---------|----------|------------------------------------------------|
-| `id`                       | integer | yes      | The ID of a project                            |
+| `id`                       | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 | `merge_request_iid`        | integer | yes      | The IID of MR                                  |
 | `name`                     | string  | yes      | The name of the approval rule                  |
 | `approvals_required`       | integer | yes      | The number of required approvals for this rule |
@@ -961,7 +847,7 @@ These are system generated rules.
 
 | Attribute            | Type    | Required | Description                                    |
 |----------------------|---------|----------|------------------------------------------------|
-| `id`                 | integer | yes      | The ID of a project                            |
+| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
 | `merge_request_iid`  | integer | yes      | The ID of MR                                   |
 | `approval_rule_id`   | integer | yes      | The ID of a approval rule                      |
 | `name`               | string  | yes      | The name of the approval rule                  |
@@ -1045,9 +931,9 @@ These are system generated rules.
 
 | Attribute           | Type    | Required | Description               |
 |---------------------|---------|----------|---------------------------|
-| `id`                | integer | yes      | The ID of a project       |
-| `merge_request_iid` | integer | yes      | The ID of MR              |
-| `approval_rule_id`  | integer | yes      | The ID of a approval rule |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
+| `merge_request_iid` | integer | yes      | The IID of the merge request |
+| `approval_rule_id`  | integer | yes      | The ID of an approval rule |
 
 ## Approve Merge Request
 
@@ -1065,9 +951,9 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 
 | Attribute           | Type    | Required | Description             |
 |---------------------|---------|----------|-------------------------|
-| `id`                | integer | yes      | The ID of a project     |
-| `merge_request_iid` | integer | yes      | The IID of MR           |
-| `sha`               | string  | no       | The HEAD of the MR      |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
+| `merge_request_iid` | integer | yes      | The IID of the merge request |
+| `sha`               | string  | no       | The `HEAD` of the merge request |
 | `approval_password` **(PREMIUM)** | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-authentication-for-approvals) is enabled in the project settings. |
 
 The `sha` parameter works in the same way as
@@ -1129,5 +1015,5 @@ POST /projects/:id/merge_requests/:merge_request_iid/unapprove
 
 | Attribute           | Type    | Required | Description         |
 |---------------------|---------|----------|---------------------|
-| `id`                | integer | yes      | The ID of a project |
-| `merge_request_iid` | integer | yes      | The IID of MR       |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](README.md#namespaced-path-encoding) |
+| `merge_request_iid` | integer | yes      | The IID of a merge request |

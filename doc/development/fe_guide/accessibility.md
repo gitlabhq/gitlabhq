@@ -39,8 +39,19 @@ so when in doubt don't use `aria-*`, `role`, and `tabindex` and stick with seman
   - [Clickable icons](#icons-that-are-clickable) are buttons, that is, `<gl-button icon="close" />` is used and not `<gl-icon />`.
   - Icon-only buttons have an `aria-label`.
 - Interactive elements can be [accessed with the Tab key](#support-keyboard-only-use) and have a visible focus state.
+- Elements with [tooltips](#tooltips) are focusable using the Tab key.
 - Are any `role`, `tabindex` or `aria-*` attributes unnecessary?
 - Can any `div` or `span` elements be replaced with a more semantic [HTML element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) like `p`, `button`, or `time`?
+
+## Provide a good document outline
+
+[Headings are the primary mechanism used by screen reader users to navigate content](https://webaim.org/projects/screenreadersurvey8/#finding).
+Therefore, the structure of headings on a page should make sense, like a good table of contents.
+We should ensure that:
+
+- There is only one `h1` element on the page.
+- Heading levels are not skipped.
+- Heading levels are nested correctly.
 
 ## Provide accessible names for screen readers
 
@@ -257,6 +268,9 @@ Image examples:
 
 <!-- SVGs implicitly have a graphics role so if it is semantically an image we should apply `role="img"` -->
 <svg role="img" :alt="__('A description of the image')" />
+
+<!-- A decorative image, hidden from screen readers -->
+<img :src="imagePath" :alt="" />
 ```
 
 #### Buttons and links with descriptive accessible names
@@ -273,6 +287,14 @@ Buttons and links should have accessible names that are descriptive enough to be
 <gl-button @click="handleClick">{{ __('Submit review') }}</gl-button>
 
 <gl-link :href="url">{{ __("GitLab's accessibility page") }}</gl-link>
+```
+
+#### Links styled like buttons
+
+Links can be styled like buttons using `GlButton`.
+
+```html
+ <gl-button :href="url">{{ __('Link styled as a button') }}</gl-button>
 ```
 
 ## Role
@@ -336,7 +358,7 @@ Once the markup is semantically complete, use CSS to update it to its desired vi
 <div role="button" tabindex="0" @click="expand">Expand</div>
 
 <!-- good -->
-<gl-button @click="expand">Expand</gl-button>
+<gl-button class="gl-p-0!" category="tertiary" @click="expand">Expand</gl-button>
 ```
 
 ### Do not use `tabindex="0"` on interactive elements
@@ -423,6 +445,30 @@ Icons that are clickable are semantically buttons, so they should be rendered as
 <gl-button icon="close" category="tertiary" :aria-label="__('Close')" @click="handleClick" />
 ```
 
+## Tooltips
+
+When adding tooltips, we must ensure that the element with the tooltip can receive focus so keyboard users can see the tooltip.
+If the element is a static one, such as an icon, we can enclose it in a button, which already is
+focusable, so we don't have to add `tabindex=0` to the icon.
+
+The following code snippet is a good example of an icon with a tooltip.
+
+- It is automatically focusable, as it is a button.
+- It is given an accessible name with `aria-label`, as it is a button with no text.
+- We can use the `gl-hover-bg-transparent!` class if we don't want the button's background to become gray on hover.
+- We can use the `gl-p-0!` class to remove the button padding, if needed.
+
+```html
+<gl-button
+  v-gl-tooltip
+  class="gl-hover-bg-transparent! gl-p-0!"
+  icon="warning"
+  category="tertiary"
+  :title="tooltipText"
+  :aria-label="__('Warning')"
+/>
+```
+
 ## Hiding elements
 
 Use the following table to hide elements from users, when appropriate.
@@ -478,5 +524,3 @@ We have two options for Web accessibility testing:
 - [The A11Y Project](https://www.a11yproject.com/) is a good resource for accessibility
 - [Awesome Accessibility](https://github.com/brunopulis/awesome-a11y)
   is a compilation of accessibility-related material
-- You can read [Chrome Accessibility Developer Tools'](https://github.com/GoogleChrome/accessibility-developer-tools)
-  rules on its [Audit Rules page](https://github.com/GoogleChrome/accessibility-developer-tools/wiki/Audit-Rules)

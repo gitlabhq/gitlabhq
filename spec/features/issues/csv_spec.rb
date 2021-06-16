@@ -16,9 +16,7 @@ RSpec.describe 'Issues csv', :js do
 
   def request_csv(params = {})
     visit project_issues_path(project, params)
-    page.within('.nav-controls') do
-      find('[data-testid="export-csv-button"]').click
-    end
+    click_button 'Export as CSV'
     click_on 'Export issues'
   end
 

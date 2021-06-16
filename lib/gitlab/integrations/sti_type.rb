@@ -4,7 +4,10 @@ module Gitlab
   module Integrations
     class StiType < ActiveRecord::Type::String
       NAMESPACED_INTEGRATIONS = Set.new(%w(
-        Asana Assembla Bamboo Campfire Confluence Datadog EmailsOnPush
+        Asana Assembla Bamboo Bugzilla Buildkite Campfire Confluence CustomIssueTracker Datadog
+        Discord DroneCi EmailsOnPush Ewm ExternalWiki Flowdock HangoutsChat Irker
+        Jenkins Jira Mattermost MattermostSlashCommands MicrosoftTeams MockCi Packagist PipelinesEmail Pivotaltracker
+        Pushover Redmine Slack SlackSlashCommands Teamcity UnifyCircuit Youtrack WebexTeams
       )).freeze
 
       def cast(value)
@@ -29,12 +32,16 @@ module Gitlab
 
       private
 
+      def namespaced_integrations
+        NAMESPACED_INTEGRATIONS
+      end
+
       def new_cast(value)
         value = prepare_value(value)
         return unless value
 
         stripped_name = value.delete_suffix('Service')
-        return unless NAMESPACED_INTEGRATIONS.include?(stripped_name)
+        return unless namespaced_integrations.include?(stripped_name)
 
         "Integrations::#{stripped_name}"
       end
@@ -55,3 +62,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Integrations::StiType.prepend_mod

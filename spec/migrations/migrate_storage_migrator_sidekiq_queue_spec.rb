@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20190124200344_migrate_storage_migrator_sidekiq_queue.rb')
+require_migration!
 
 RSpec.describe MigrateStorageMigratorSidekiqQueue, :redis do
   include Gitlab::Database::MigrationHelpers

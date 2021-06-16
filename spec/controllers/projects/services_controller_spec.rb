@@ -47,7 +47,7 @@ RSpec.describe Projects::ServicesController do
           let(:service) { project.create_microsoft_teams_service(webhook: 'http://webhook.com') }
 
           it 'returns success' do
-            allow_any_instance_of(MicrosoftTeams::Notifier).to receive(:ping).and_return(true)
+            allow_any_instance_of(::MicrosoftTeams::Notifier).to receive(:ping).and_return(true)
 
             put :test, params: project_params
 
@@ -95,7 +95,7 @@ RSpec.describe Projects::ServicesController do
 
           expect(response).to be_successful
           expect(json_response).to be_empty
-          expect(BuildkiteService.first).to be_present
+          expect(Integrations::Buildkite.first).to be_present
         end
 
         it 'creates the ServiceHook object' do
@@ -103,7 +103,7 @@ RSpec.describe Projects::ServicesController do
 
           expect(response).to be_successful
           expect(json_response).to be_empty
-          expect(BuildkiteService.first.service_hook).to be_present
+          expect(Integrations::Buildkite.first.service_hook).to be_present
         end
 
         def do_put
@@ -145,7 +145,7 @@ RSpec.describe Projects::ServicesController do
         end
 
         it 'returns an error response when a network exception is raised' do
-          expect_next(SlackService).to receive(:test).and_raise(Errno::ECONNREFUSED)
+          expect_next(Integrations::Slack).to receive(:test).and_raise(Errno::ECONNREFUSED)
 
           put :test, params: project_params
 

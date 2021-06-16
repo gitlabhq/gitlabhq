@@ -11,6 +11,8 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
   let(:comment) { 'My comment' }
 
   it 'clicking "Comment" will post a comment' do
+    wait_for_all_requests
+
     expect(page).to have_selector toggle_selector
 
     find("#{form_selector} .note-textarea").send_keys(comment)
@@ -29,6 +31,8 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
       find("#{form_selector} .note-textarea").send_keys(comment)
 
       find(toggle_selector).click
+
+      wait_for_all_requests
     end
 
     it 'has a "Comment" item (selected by default) and "Start thread" item' do

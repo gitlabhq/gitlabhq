@@ -33,6 +33,10 @@ RSpec.describe Gitlab::MailRoom do
     described_class.instance_variable_set(:@enabled_configs, nil)
   end
 
+  after do
+    described_class.instance_variable_set(:@enabled_configs, nil)
+  end
+
   describe '#enabled_configs' do
     before do
       allow(described_class).to receive(:load_yaml).and_return(configs)

@@ -1,5 +1,6 @@
 import { GlDropdown, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
 import { integrationLevels, overrideDropdownDescriptions } from '~/integrations/edit/constants';
 import { createStore } from '~/integrations/edit/store';
@@ -26,14 +27,11 @@ describe('OverrideDropdown', () => {
   };
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
   });
 
-  const findGlLink = () => wrapper.find(GlLink);
-  const findGlDropdown = () => wrapper.find(GlDropdown);
+  const findGlLink = () => wrapper.findComponent(GlLink);
+  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
 
   describe('template', () => {
     describe('override prop is true', () => {

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::ImportExport::JSON::NdjsonWriter do
+RSpec.describe Gitlab::ImportExport::Json::NdjsonWriter do
   include ImportExport::CommonUtil
 
   let(:path) { "#{Dir.tmpdir}/ndjson_writer_spec/tree" }

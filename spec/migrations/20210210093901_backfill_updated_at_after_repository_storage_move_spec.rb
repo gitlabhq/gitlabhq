@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210210093901_backfill_updated_at_after_repository_storage_move.rb')
+require_migration!('backfill_updated_at_after_repository_storage_move')
 
 RSpec.describe BackfillUpdatedAtAfterRepositoryStorageMove, :sidekiq do
   let_it_be(:projects) { table(:projects) }

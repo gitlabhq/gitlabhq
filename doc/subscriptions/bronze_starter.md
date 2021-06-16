@@ -10,7 +10,9 @@ Although GitLab has discontinued selling the Bronze and Starter tiers, GitLab
 continues to honor the entitlements of existing Bronze and Starter tier GitLab
 customers for the duration of their contracts at that level.
 
-These features remain available to Bronze and Starter customers, even though
+New paid features will not be released in Bronze and Starter tiers after GitLab 13.9.
+
+The following features remain available to Bronze and Starter customers, even though
 the tiers are no longer mentioned in GitLab documentation:
 
 - [Activate GitLab EE with a license](../user/admin_area/license.md)
@@ -66,7 +68,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Full code quality reports in the code quality tab](../user/project/merge_requests/code_quality.md#code-quality-reports)
   - [Merge request approvals](../user/project/merge_requests/approvals/index.md)
   - [Multiple assignees](../user/project/merge_requests/getting_started.md#multiple-assignees)
-  - [Approval Rule information for Reviewers](../user/project/merge_requests/getting_started.md#approval-rule-information-for-reviewers) **(PREMIUM)**
+  - [Approval Rule information for Reviewers](../user/project/merge_requests/reviews/index.md#approval-rule-information-for-reviewers) **(PREMIUM)**
   - [Required Approvals](../user/project/merge_requests/approvals/index.md#required-approvals)
   - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features

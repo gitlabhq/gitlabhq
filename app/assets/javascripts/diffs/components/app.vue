@@ -12,7 +12,7 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
 } from '~/behaviors/shortcuts/keybindings';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
@@ -181,7 +181,6 @@ export default {
       plainDiffPath: (state) => state.diffs.plainDiffPath,
       emailPatchPath: (state) => state.diffs.emailPatchPath,
       retrievingBatches: (state) => state.diffs.retrievingBatches,
-      codequalityDiff: (state) => state.diffs.codequalityDiff,
     }),
     ...mapState('diffs', [
       'showTreeList',
@@ -425,7 +424,9 @@ export default {
           if (toggleTree) this.setTreeDisplay();
         })
         .catch(() => {
-          createFlash(__('Something went wrong on our end. Please try again!'));
+          createFlash({
+            message: __('Something went wrong on our end. Please try again!'),
+          });
         });
 
       this.fetchDiffFilesBatch()
@@ -438,7 +439,9 @@ export default {
           this.setDiscussions();
         })
         .catch(() => {
-          createFlash(__('Something went wrong on our end. Please try again!'));
+          createFlash({
+            message: __('Something went wrong on our end. Please try again!'),
+          });
         });
 
       if (this.endpointCoverage) {

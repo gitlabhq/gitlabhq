@@ -25,13 +25,33 @@ RSpec.describe BulkImports::Groups::Pipelines::EntityFinisher do
       .to change(entity, :status_name).to(:finished)
   end
 
-  it 'does nothing when the entity is already finished' do
-    entity = create(:bulk_import_entity, :finished)
-    pipeline_tracker = create(:bulk_import_tracker, entity: entity)
-    context = BulkImports::Pipeline::Context.new(pipeline_tracker)
-    subject = described_class.new(context)
+  context 'when entity is in a final finished or failed state' do
+    shared_examples 'performs no state update' do |entity_state|
+      it 'does nothing' do
+        entity = create(:bulk_import_entity, entity_state)
+        pipeline_tracker = create(:bulk_import_tracker, entity: entity)
+        context = BulkImports::Pipeline::Context.new(pipeline_tracker)
+        subject = described_class.new(context)
 
-    expect { subject.run }
-      .not_to change(entity, :status_name)
+        expect { subject.run }
+          .not_to change(entity, :status_name)
+      end
+    end
+
+    include_examples 'performs no state update', :finished
+    include_examples 'performs no state update', :failed
+  end
+
+  context 'when all entity trackers failed' do
+    it 'marks entity as failed' do
+      entity = create(:bulk_import_entity, :started)
+      create(:bulk_import_tracker, :failed, entity: entity)
+      pipeline_tracker = create(:bulk_import_tracker, entity: entity, relation: described_class)
+      context = BulkImports::Pipeline::Context.new(pipeline_tracker)
+
+      described_class.new(context).run
+
+      expect(entity.reload.failed?).to eq(true)
+    end
   end
 end

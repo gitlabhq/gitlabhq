@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'npm.latest.gitlab-ci.yml' do
-  subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('npm.latest') }
+RSpec.describe 'npm.gitlab-ci.yml' do
+  subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('npm') }
 
   describe 'the created pipeline' do
     let(:repo_files) { { 'package.json' => '{}', 'README.md' => '' } }

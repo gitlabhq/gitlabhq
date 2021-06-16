@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import * as terminalService from '../../../../services/terminals';
@@ -26,7 +26,7 @@ export const receiveStartSessionSuccess = ({ commit, dispatch }, data) => {
 };
 
 export const receiveStartSessionError = ({ dispatch }) => {
-  flash(messages.UNEXPECTED_ERROR_STARTING);
+  createFlash({ message: messages.UNEXPECTED_ERROR_STARTING });
   dispatch('killSession');
 };
 
@@ -59,7 +59,7 @@ export const receiveStopSessionSuccess = ({ dispatch }) => {
 };
 
 export const receiveStopSessionError = ({ dispatch }) => {
-  flash(messages.UNEXPECTED_ERROR_STOPPING);
+  createFlash({ message: messages.UNEXPECTED_ERROR_STOPPING });
   dispatch('killSession');
 };
 

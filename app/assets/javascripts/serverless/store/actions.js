@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';
 import statusCodes from '~/lib/utils/http_status';
@@ -59,7 +59,9 @@ export const fetchFunctions = ({ dispatch }, { functionsPath }) => {
     .then((data) => {
       if (data === TIMEOUT) {
         dispatch('receiveFunctionsTimeout');
-        createFlash(__('Loading functions timed out. Please reload the page to try again.'));
+        createFlash({
+          message: __('Loading functions timed out. Please reload the page to try again.'),
+        });
       } else if (data.functions !== null && data.functions.length) {
         dispatch('receiveFunctionsSuccess', data);
       } else {
@@ -68,7 +70,9 @@ export const fetchFunctions = ({ dispatch }, { functionsPath }) => {
     })
     .catch((error) => {
       dispatch('receiveFunctionsError', error);
-      createFlash(error);
+      createFlash({
+        message: error,
+      });
     });
 };
 
@@ -120,6 +124,8 @@ export const fetchMetrics = ({ dispatch }, { metricsPath, hasPrometheus }) => {
     })
     .catch((error) => {
       dispatch('receiveMetricsError', error);
-      createFlash(error);
+      createFlash({
+        message: error,
+      });
     });
 };

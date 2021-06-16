@@ -13,5 +13,4 @@ export const tracking = {
 
 export const logExplorerOptions = {
   environments: 'environments',
-  managedApps: 'managedApps',
 };

@@ -1,7 +1,7 @@
 %p
   = _('Hi %{username}!') % { username: sanitize_name(@user.name) }
 %p
-  = _('Your SSH keys with the following fingerprints have expired. Expired SSH keys will not be usable in future versions of GitLab:')
+  = _('SSH keys with the following fingerprints have expired and can no longer be used:')
 %table
   %tbody
     - @fingerprints.each do |fingerprint|

@@ -11,9 +11,11 @@ module Gitlab
     end
 
     def self.too_large?(size)
-      return false unless size.to_i > Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
+      file_size_limit = Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
 
-      over_highlight_size_limit.increment(source: "text highlighter") if Feature.enabled?(:track_file_size_over_highlight_limit)
+      return false unless size.to_i > file_size_limit
+
+      over_highlight_size_limit.increment(source: "file size: #{file_size_limit}") if Feature.enabled?(:track_file_size_over_highlight_limit)
 
       true
     end
@@ -68,6 +70,8 @@ module Gitlab
     end
 
     def highlight_rich(text, continue: true)
+      add_highlight_attempt_metric
+
       tag = lexer.tag
       tokens = lexer.lex(text, continue: continue)
       Timeout.timeout(timeout_time) { @formatter.format(tokens, context.merge(tag: tag)).html_safe }
@@ -88,10 +92,23 @@ module Gitlab
       Gitlab::DependencyLinker.link(blob_name, text, highlighted_text)
     end
 
+    def add_highlight_attempt_metric
+      return unless Feature.enabled?(:track_highlight_timeouts)
+
+      highlighting_attempt.increment(source: (@language || "undefined"))
+    end
+
     def add_highlight_timeout_metric
       return unless Feature.enabled?(:track_highlight_timeouts)
 
       highlight_timeout.increment(source: Gitlab::Runtime.sidekiq? ? "background" : "foreground")
+    end
+
+    def highlighting_attempt
+      @highlight_attempt ||= Gitlab::Metrics.counter(
+        :file_highlighting_attempt,
+        'Counts the times highlighting has been attempted on a file'
+      )
     end
 
     def highlight_timeout

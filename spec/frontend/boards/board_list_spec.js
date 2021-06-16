@@ -80,6 +80,7 @@ const createComponent = ({
       rootPath: '/',
       weightFeatureAvailable: false,
       boardWeight: null,
+      canAdminList: true,
     },
     stubs: {
       BoardCard,
@@ -179,12 +180,6 @@ describe('Board list component', () => {
       wrapper = createComponent({
         listProps: { issuesCount: 25 },
       });
-    });
-
-    it('loads more issues after scrolling', () => {
-      wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
-
-      expect(actions.fetchItemsForList).toHaveBeenCalled();
     });
 
     it('does not load issues if already loading', () => {

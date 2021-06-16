@@ -47,7 +47,7 @@ format. To embed panels from a Grafana instance, the data source must be:
 To set up the Grafana API in Grafana:
 
 1. In Grafana, [generate an Admin-level API Token](https://grafana.com/docs/grafana/latest/http_api/auth/#create-api-token).
-1. In your GitLab project, go to **Settings > Operations** and expand the **Grafana authentication**
+1. In your GitLab project, go to **Settings > Monitor** and expand the **Grafana authentication**
    section.
 1. To enable the integration, check the **Active** checkbox.
 1. For **Grafana URL**, enter the base URL of the Grafana instance.

@@ -22,6 +22,10 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
    roles to your `gitlab` user:
    - Amazon RDS requires the [`rds_superuser`](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.Roles) role.
    - Azure Database for PostgreSQL requires the [`azure_pg_admin`](https://docs.microsoft.com/en-us/azure/postgresql/howto-create-users#how-to-create-additional-admin-users-in-azure-database-for-postgresql) role.
+   - Google Cloud SQL requires the [`cloudsqlsuperuser`](https://cloud.google.com/sql/docs/postgres/users#default-users) role.
+
+   This is for the installation of extensions during installation and upgrades. As an alternative,
+   [ensure the extensions are installed manually, and read about the problems that may arise during future GitLab upgrades](../../install/postgresql_extensions.md).
 
 1. Configure the GitLab application servers with the appropriate connection details
    for your external PostgreSQL service in your `/etc/gitlab/gitlab.rb` file:

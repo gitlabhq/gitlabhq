@@ -16,33 +16,7 @@ Monitoring** page.
 
 GitLab supports statistics for the following security features:
 
-- [Web Application Firewall](../../clusters/applications.md#web-application-firewall-modsecurity)
 - [Container Network Policies](../../../topics/autodevops/stages.md#network-policy)
-
-## Web Application Firewall
-
-The Web Application Firewall section provides metrics for the NGINX
-Ingress controller and ModSecurity firewall. This section has the
-following prerequisites:
-
-- Project has to have at least one [environment](../../../ci/environments/index.md).
-- [Web Application Firewall](../../clusters/applications.md#web-application-firewall-modsecurity) has to be enabled.
-- [Elastic Stack](../../clusters/applications.md#web-application-firewall-modsecurity) has to be installed.
-
-If you are using custom Helm values for the Elastic Stack you have to
-configure Filebeat similarly to the [vendored values](https://gitlab.com/gitlab-org/gitlab/-/blob/f610a080b1ccc106270f588a50cb3c07c08bdd5a/vendor/elastic_stack/values.yaml).
-
-The **Web Application Firewall** section displays the following information
-about your Ingress traffic:
-
-- The total amount of requests to your application
-- The proportion of traffic that is considered anomalous according to
-  the configured rules
-- The request breakdown graph for the selected time interval
-
-If a significant percentage of traffic is anomalous, you should
-investigate it for potential threats by
-[examining the Web Application Firewall logs](../../clusters/applications.md#web-application-firewall-modsecurity).
 
 ## Container Network Policy
 
@@ -88,7 +62,7 @@ investigate it for potential threats by
 
 The **Threat Monitoring** page's **Policy** tab displays deployed
 network policies for all available environments. You can check a
-network policy's `yaml` manifest, toggle the policy's enforcement
+network policy's `yaml` manifest, its enforcement
 status, and create and edit deployed policies. This section has the
 following prerequisites:
 
@@ -97,8 +71,7 @@ following prerequisites:
 
 Network policies are fetched directly from the selected environment's
 deployment platform. Changes performed outside of this tab are
-reflected upon refresh. Enforcement status changes are deployed
-directly to a deployment namespace of the selected environment.
+reflected upon refresh.
 
 By default, the network policy list contains predefined policies in a
 disabled state. Once enabled, a predefined policy deploys to the
@@ -115,8 +88,9 @@ users must make changes by following the
 To change a network policy's enforcement status:
 
 - Click the network policy you want to update.
-- Click the **Enforcement status** toggle to update the selected policy.
-- Click the **Apply changes** button to deploy network policy changes.
+- Click the **Edit policy** button.
+- Click the **Policy status** toggle to update the selected policy.
+- Click the **Save changes** button to deploy network policy changes.
 
 Disabled network policies have the `network-policy.gitlab.com/disabled_by: gitlab` selector inside
 the `podSelector` block. This narrows the scope of such a policy and as a result it doesn't affect
@@ -165,7 +139,8 @@ button at the bottom of the editor.
 
 ### Configuring Network Policy Alerts
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3438) and [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/287676) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.9.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3438) and [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/287676) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.9.
+> - The feature flag was removed and the Threat Monitoring Alerts Project was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/287676) in GitLab 14.0.
 
 You can use policy alerts to track your policy's impact. Alerts are only available if you've
 [installed](../../clusters/agent/repository.md)
@@ -185,25 +160,6 @@ There are two ways to create policy alerts:
   ```
 
 Once added, the UI updates and displays a warning about the dangers of too many alerts.
-
-#### Enable or disable Policy Alerts **(ULTIMATE)**
-
-Policy Alerts is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:threat_monitoring_alerts)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:threat_monitoring_alerts)
-```
 
 ### Container Network Policy Alert list
 

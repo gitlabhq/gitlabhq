@@ -7,7 +7,7 @@
 = render "home_panel"
 = render "archived_notice", project: @project
 
-= render "invite_members" if experiment_enabled?(:invite_members_empty_project_version_a) && can_import_members?
+= render "invite_members" if can_import_members?
 
 %h4.gl-mt-0.gl-mb-3
   = _('The repository for this project is empty')
@@ -44,6 +44,7 @@
           :preserve
             git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
             cd #{h @project.path}
+            git switch -c #{default_branch_name}
             touch README.md
             git add README.md
             git commit -m "add README"
@@ -56,7 +57,7 @@
         %pre.bg-light
           :preserve
             cd existing_folder
-            git init
+            git init --initial-branch=#{default_branch_name}
             git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
             git add .
             git commit -m "Initial commit"

@@ -1,11 +1,11 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
-# Pipeline Architecture
+# Pipeline architecture **(FREE)**
 
 Pipelines are the fundamental building blocks for CI/CD in GitLab. This page documents
 some of the important concepts related to them.

@@ -1,16 +1,18 @@
 ---
 key_path: usage_activity_by_stage.package.projects_with_packages
-description: Projects with package registry configured
+description: Projects with package registry enabled
 product_section: ops
 product_stage: package
 product_group: group::package
-product_category:
+product_category: package registry
 value_type: number
 status: data_available
 time_frame: all
-data_source:
+data_source: redis
 distribution:
+- ee
 - ce
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

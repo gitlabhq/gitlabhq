@@ -100,7 +100,7 @@ Rails.cache.instance_variable_get(:@data).keys
 
 ```ruby
 # Before 11.6.0
-logger = Logger.new(STDOUT)
+logger = Logger.new($stdout)
 admin_token = User.find_by_username('ADMIN_USERNAME').personal_access_tokens.first.token
 app.get("URL/?private_token=#{admin_token}")
 
@@ -113,7 +113,7 @@ Gitlab::Profiler.with_user(admin) { app.get(url) }
 ## Using the GitLab profiler inside console (used as of 10.5)
 
 ```ruby
-logger = Logger.new(STDOUT)
+logger = Logger.new($stdout)
 admin = User.find_by_username('ADMIN_USERNAME')
 Gitlab::Profiler.profile('URL', logger: logger, user: admin)
 ```
@@ -279,6 +279,21 @@ p.each do |project|
 end
 ```
 
+## Bulk update to change all the Jira integrations to Jira instance-level values
+
+To change all Jira project to use the instance-level integration settings:
+
+1. In a Rails console:
+
+   ```ruby
+   jira_service_instance_id = JiraService.find_by(instance: true).id
+   JiraService.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |service|
+     service.update_attribute(:inherit_from_id, jira_service_instance_id)
+   end
+   ```
+
+1. Modify and save again the instance-level integration from the UI to propagate the changes to all the group-level and project-level integrations.
+
 ### Bulk update to disable the Slack Notification service
 
 To disable notifications for all projects that have Slack service enabled, do:
@@ -302,7 +317,18 @@ the displayed size may still show old sizes or commit numbers. To force an updat
 p = Project.find_by_full_path('<namespace>/<project>')
 pp p.statistics
 p.statistics.refresh!
-pp p.statistics  # compare with earlier values
+pp p.statistics
+# compare with earlier values
+
+# check the total artifact storage space separately
+builds_with_artifacts = p.builds.with_downloadable_artifacts.all
+
+artifact_storage = 0
+builds_with_artifacts.find_each do |build|
+  artifact_storage += build.artifacts_size
+end
+
+puts "#{artifact_storage} bytes"
 ```
 
 ### Identify deploy keys associated with blocked and non-member users 
@@ -339,6 +365,16 @@ DeployKeysProject.with_write_access.find_each do |deploy_key_mapping|
        ", Can push to default branch #{project.repository.root_ref}?: " + (can_push_to_default ? 'YES' : 'NO') +
        ", User: #{username}, User state: #{user_state}"
 end
+```
+
+### Find projects using an SQL query
+
+Find and store an array of projects based on an SQL query:
+
+```ruby
+# Finds projects that end with '%ject'
+projects = Project.find_by_sql("SELECT * FROM projects WHERE name LIKE '%ject'")
+=> [#<Project id:12 root/my-first-project>>, #<Project id:13 root/my-second-project>>]
 ```
 
 ## Wikis
@@ -524,7 +560,8 @@ User.billable.count
 Using cURL and jq (up to a max 100, see the [pagination docs](../../api/README.md#pagination)):
 
 ```shell
-curl --silent --header "Private-Token: ********************" "https://gitlab.example.com/api/v4/users?per_page=100&active" | jq --compact-output '.[] | [.id,.name,.username]'
+curl --silent --header "Private-Token: ********************" \
+     "https://gitlab.example.com/api/v4/users?per_page=100&active" | jq --compact-output '.[] | [.id,.name,.username]'
 ```
 
 ### Block or Delete Users that have no projects or groups
@@ -694,6 +731,16 @@ emails.each do |e|
 end
 ```
 
+### Find groups using an SQL query
+
+Find and store an array of groups based on an SQL query:
+
+```ruby
+# Finds groups and subgroups that end with '%oup'
+Group.find_by_sql("SELECT * FROM namespaces WHERE name LIKE '%oup'")
+=> [#<Group id:3 @test-group>, #<Group id:4 @template-group/template-subgroup>]
+```
+
 ## Routes
 
 ### Remove redirecting routes
@@ -839,7 +886,7 @@ License.current.trial?
 
 ### Check if a project feature is available on the instance
 
-Features listed in <https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/license.rb>.
+Features listed in <https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/license.rb>.
 
 ```ruby
 License.current.feature_available?(:jira_dev_panel_integration)
@@ -847,7 +894,7 @@ License.current.feature_available?(:jira_dev_panel_integration)
 
 ### Check if a project feature is available in a project
 
-Features listed in [`license.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/license.rb).
+Features listed in [`license.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/license.rb).
 
 ```ruby
 p = Project.find_by_full_path('<group>/<project>')
@@ -861,55 +908,6 @@ key = "<key>"
 license = License.new(data: key)
 license.save
 License.current # check to make sure it applied
-```
-
-## Unicorn
-
-From [Zendesk ticket #91083](https://gitlab.zendesk.com/agent/tickets/91083) (internal)
-
-### Poll Unicorn requests by seconds
-
-```ruby
-require 'rubygems'
-require 'unicorn'
-
-# Usage for this program
-def usage
-  puts "ruby unicorn_status.rb <path to unix socket> <poll interval in seconds>"
-  puts "Polls the given Unix socket every interval in seconds. Will not allow you to drop below 3 second poll intervals."
-  puts "Example: /opt/gitlab/embedded/bin/ruby poll_unicorn.rb /var/opt/gitlab/gitlab-rails/sockets/gitlab.socket 10"
-end
-
-# Look for required args. Throw usage and exit if they don't exist.
-if ARGV.count < 2
-  usage
-  exit 1
-end
-
-# Get the socket and threshold values.
-socket = ARGV[0]
-threshold = (ARGV[1]).to_i
-
-# Check threshold - is it less than 3? If so, set to 3 seconds. Safety first!
-if threshold.to_i < 3
-  threshold = 3
-end
-
-# Check - does that socket exist?
-unless File.exist?(socket)
-  puts "Socket file not found: #{socket}"
-  exit 1
-end
-
-# Poll the given socket every THRESHOLD seconds as specified above.
-puts "Running infinite loop. Use CTRL+C to exit."
-puts "------------------------------------------"
-loop do
-  Raindrops::Linux.unix_listener_stats([socket]).each do |addr, stats|
-    puts DateTime.now.to_s + " Active: " + stats.active.to_s + " Queued: " + stats.queued.to_s
-  end
-  sleep threshold
-end
 ```
 
 ## Registry
@@ -1189,6 +1187,28 @@ Prints the metrics saved in `conversational_development_index_metrics`.
 rake gitlab:usage_data:generate_and_send
 ```
 
+## Kubernetes integration
+
+Find cluster:
+
+```ruby
+cluster = Clusters::Cluster.find(1)
+cluster = Clusters::Cluster.find_by(name: 'cluster_name')
+```
+
+Delete cluster without associated resources:
+
+```ruby
+# Find an admin user
+user = User.find_by(username: 'admin_user')
+
+# Find the cluster with the ID
+cluster = Clusters::Cluster.find(1)
+
+# Delete the cluster
+Clusters::DestroyService.new(user).execute(cluster)
+```
+
 ## Elasticsearch
 
 ### Configuration attributes
@@ -1206,11 +1226,11 @@ Among other attributes, in the output you will notice that all the settings avai
 You can then set anyone of Elasticsearch integration settings by issuing a command similar to:
 
 ```ruby
-ApplicationSetting.last.update_attributes(elasticsearch_url: '<your ES URL and port>')
+ApplicationSetting.last.update(elasticsearch_url: '<your ES URL and port>')
 
 #or
 
-ApplicationSetting.last.update_attributes(elasticsearch_indexing: false)
+ApplicationSetting.last.update(elasticsearch_indexing: false)
 ```
 
 #### Getting attributes

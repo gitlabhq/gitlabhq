@@ -126,7 +126,7 @@ index 6eed627b502..1824669e881 100644
 +++ b/app/models/application_setting_implementation.rb
 @@ -391,7 +391,7 @@ def static_objects_external_storage_enabled?
    # This will eventually be configurable
-   # https://gitlab.com/gitlab-org/gitlab/issues/208161
+   # https://gitlab.com/gitlab-org/gitlab/-/issues/208161
    def web_ide_clientside_preview_bundler_url
 -    'https://sandbox-prod.gitlab-static.net'
 +    'https://sandpack.local:8044'

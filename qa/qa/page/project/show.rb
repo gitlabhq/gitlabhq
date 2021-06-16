@@ -24,7 +24,10 @@ module QA
 
         view 'app/views/layouts/header/_new_dropdown.html.haml' do
           element :new_menu_toggle
-          element :new_issue_link, "link_to _('New issue'), new_project_issue_path(@project)" # rubocop:disable QA/ElementWithPattern
+        end
+
+        view 'app/helpers/nav/new_dropdown_helper.rb' do
+          element :new_issue_link
         end
 
         view 'app/views/projects/_last_push.html.haml' do
@@ -115,7 +118,7 @@ module QA
 
         def go_to_new_issue
           click_element :new_menu_toggle
-          click_link 'New issue'
+          click_element(:new_issue_link)
         end
 
         def has_file?(name)

@@ -14,6 +14,8 @@ module Gitlab
       UPDATE_FREQUENCY_DEFAULT = 60.seconds
       UPDATE_FREQUENCY_WHEN_BEING_WATCHED = 3.seconds
 
+      LOAD_BALANCING_STICKING_NAMESPACE = 'ci/build/trace'
+
       ArchiveError = Class.new(StandardError)
       AlreadyArchivedError = Class.new(StandardError)
       LockedError = Class.new(StandardError)
@@ -296,18 +298,26 @@ module Gitlab
         read_trace_artifact(job) { job.job_artifacts_trace }
       end
 
-      ##
-      # Overridden in EE
-      #
-      def destroy_stream(job)
+      def destroy_stream(build)
+        if consistent_archived_trace?(build)
+          ::Gitlab::Database::LoadBalancing::Sticking
+            .stick(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
+        end
+
         yield
       end
 
-      ##
-      # Overriden in EE
-      #
-      def read_trace_artifact(job)
+      def read_trace_artifact(build)
+        if consistent_archived_trace?(build)
+          ::Gitlab::Database::LoadBalancing::Sticking
+            .unstick_or_continue_sticking(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
+        end
+
         yield
+      end
+
+      def consistent_archived_trace?(build)
+        ::Feature.enabled?(:gitlab_ci_archived_trace_consistent_reads, build.project, default_enabled: false)
       end
 
       def being_watched_cache_key
@@ -316,5 +326,3 @@ module Gitlab
     end
   end
 end
-
-::Gitlab::Ci::Trace.prepend_mod_with('Gitlab::Ci::Trace')

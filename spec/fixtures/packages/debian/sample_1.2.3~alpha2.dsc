@@ -12,8 +12,8 @@ Package-List:
  sample-dev deb libdevel optional arch=any
  sample-udeb udeb libs optional arch=any
 Checksums-Sha1:
- 5f8bba5574eb01ac3b1f5e2988e8c29307788236 864 sample_1.2.3~alpha2.tar.xz
+ c5cfc111ea924842a89a06d5673f07dfd07de8ca 864 sample_1.2.3~alpha2.tar.xz
 Checksums-Sha256:
- b5a599e88e7cbdda3bde808160a21ba1dd1ec76b2ec8d4912aae769648d68362 864 sample_1.2.3~alpha2.tar.xz
+ 40e4682bb24a73251ccd7c7798c0094a649091e5625d6a14bcec9b4e7174f3da 864 sample_1.2.3~alpha2.tar.xz
 Files:
- d79b34f58f61ff4ad696d9bd0b8daa68 864 sample_1.2.3~alpha2.tar.xz
+ d5ca476e4229d135a88f9c729c7606c9 864 sample_1.2.3~alpha2.tar.xz

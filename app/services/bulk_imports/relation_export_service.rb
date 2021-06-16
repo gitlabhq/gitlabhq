@@ -86,7 +86,7 @@ module BulkImports
 
     # rubocop: disable CodeReuse/Serializer
     def serializer
-      @serializer ||= ::Gitlab::ImportExport::JSON::StreamingSerializer.new(
+      @serializer ||= ::Gitlab::ImportExport::Json::StreamingSerializer.new(
         portable,
         portable_tree,
         json_writer,
@@ -96,7 +96,7 @@ module BulkImports
     # rubocop: enable CodeReuse/Serializer
 
     def json_writer
-      @json_writer ||= ::Gitlab::ImportExport::JSON::NdjsonWriter.new(export_path)
+      @json_writer ||= ::Gitlab::ImportExport::Json::NdjsonWriter.new(export_path)
     end
 
     def ndjson_filename

@@ -298,7 +298,7 @@ RSpec.shared_examples 'wiki controller actions' do
           expect(response.headers['Content-Disposition']).to match(/^inline/)
           expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq('true')
           expect(response.cache_control[:public]).to be(false)
-          expect(response.cache_control[:extras]).to include('no-store')
+          expect(response.headers['Cache-Control']).to eq('no-store')
         end
       end
     end
@@ -486,7 +486,7 @@ RSpec.shared_examples 'wiki controller actions' do
           end.not_to change { wiki.list_pages.size }
 
           expect(response).to render_template('shared/wikis/edit')
-          expect(assigns(:error).message).to eq('Could not delete wiki page')
+          expect(assigns(:error)).to eq('Could not delete wiki page')
         end
       end
     end

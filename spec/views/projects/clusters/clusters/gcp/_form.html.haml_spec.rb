@@ -23,16 +23,4 @@ RSpec.describe 'clusters/clusters/gcp/_form' do
       expect(rendered).to have_selector("input[id='cluster_provider_gcp_attributes_cloud_run']")
     end
   end
-
-  context 'with cloud run feature flag disabled' do
-    before do
-      stub_feature_flags(create_cloud_run_clusters: false)
-    end
-
-    it 'does not have a cloud run checkbox' do
-      render
-
-      expect(rendered).not_to have_selector("input[id='cluster_provider_gcp_attributes_cloud_run']")
-    end
-  end
 end

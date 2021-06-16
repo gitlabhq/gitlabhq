@@ -9,14 +9,12 @@ import createBoardMutation from '~/boards/graphql/board_create.mutation.graphql'
 import destroyBoardMutation from '~/boards/graphql/board_destroy.mutation.graphql';
 import updateBoardMutation from '~/boards/graphql/board_update.mutation.graphql';
 import { createStore } from '~/boards/stores';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn().mockName('visitUrlMock'),
   stripFinalUrlSegment: jest.requireActual('~/lib/utils/url_utility').stripFinalUrlSegment,
 }));
-jest.mock('~/flash');
 
 const currentBoard = {
   id: 1,
@@ -194,9 +192,11 @@ describe('BoardForm', () => {
         expect(visitUrl).toHaveBeenCalledWith('test-path');
       });
 
-      it('shows an error flash if GraphQL mutation fails', async () => {
+      it('shows a GlAlert if GraphQL mutation fails', async () => {
         mutate = jest.fn().mockRejectedValue('Houston, we have a problem');
         createComponent({ canAdminBoard: true, currentPage: formType.new });
+        jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
+
         fillForm();
 
         await waitForPromises();
@@ -205,7 +205,7 @@ describe('BoardForm', () => {
 
         await waitForPromises();
         expect(visitUrl).not.toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalled();
+        expect(wrapper.vm.setError).toHaveBeenCalled();
       });
     });
   });
@@ -290,9 +290,11 @@ describe('BoardForm', () => {
       expect(visitUrl).toHaveBeenCalledWith('test-path?group_by=epic');
     });
 
-    it('shows an error flash if GraphQL mutation fails', async () => {
+    it('shows a GlAlert if GraphQL mutation fails', async () => {
       mutate = jest.fn().mockRejectedValue('Houston, we have a problem');
       createComponent({ canAdminBoard: true, currentPage: formType.edit });
+      jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
+
       findInput().trigger('keyup.enter', { metaKey: true });
 
       await waitForPromises();
@@ -301,7 +303,7 @@ describe('BoardForm', () => {
 
       await waitForPromises();
       expect(visitUrl).not.toHaveBeenCalled();
-      expect(createFlash).toHaveBeenCalled();
+      expect(wrapper.vm.setError).toHaveBeenCalled();
     });
   });
 
@@ -335,9 +337,11 @@ describe('BoardForm', () => {
       expect(visitUrl).toHaveBeenCalledWith('root');
     });
 
-    it('shows an error flash if GraphQL mutation fails', async () => {
+    it('dispatches `setError` action when GraphQL mutation fails', async () => {
       mutate = jest.fn().mockRejectedValue('Houston, we have a problem');
       createComponent({ canAdminBoard: true, currentPage: formType.delete });
+      jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
+
       findModal().vm.$emit('primary');
 
       await waitForPromises();
@@ -346,7 +350,7 @@ describe('BoardForm', () => {
 
       await waitForPromises();
       expect(visitUrl).not.toHaveBeenCalled();
-      expect(createFlash).toHaveBeenCalled();
+      expect(wrapper.vm.setError).toHaveBeenCalled();
     });
   });
 });

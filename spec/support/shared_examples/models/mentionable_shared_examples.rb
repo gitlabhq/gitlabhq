@@ -66,7 +66,7 @@ RSpec.shared_examples 'a mentionable' do
     expect(subject.gfm_reference).to eq(backref_text)
   end
 
-  it "extracts references from its reference property" do
+  it "extracts references from its reference property", :clean_gitlab_redis_cache do
     # De-duplicate and omit itself
     refs = subject.referenced_mentionables
     expect(refs.size).to eq(6)
@@ -98,7 +98,7 @@ RSpec.shared_examples 'a mentionable' do
     end
   end
 
-  it 'creates cross-reference notes' do
+  it 'creates cross-reference notes', :clean_gitlab_redis_cache do
     mentioned_objects = [mentioned_issue, mentioned_mr, mentioned_commit,
                          ext_issue, ext_mr, ext_commit]
 

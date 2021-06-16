@@ -13,7 +13,7 @@ module DesignManagement
     attr_reader :issue
 
     def target_branch
-      repository.root_ref || "master"
+      repository.root_ref || Gitlab::DefaultBranch.value(object: project)
     end
 
     def collection

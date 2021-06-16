@@ -4,9 +4,7 @@ export const SUCCESS = 'success';
 export const WARNING = 'warning';
 export const DANGER = 'danger';
 export const INFO = 'info';
-
-export const WARNING_MESSAGE_CLASS = 'warning_message';
-export const DANGER_MESSAGE_CLASS = 'danger_message';
+export const CONFIRM = 'confirm';
 
 export const MWPS_MERGE_STRATEGY = 'merge_when_pipeline_succeeds';
 export const MTWPS_MERGE_STRATEGY = 'add_to_merge_train_when_pipeline_succeeds';

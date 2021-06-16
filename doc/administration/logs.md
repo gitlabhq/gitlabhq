@@ -21,6 +21,42 @@ including adjusting log retention, log forwarding,
 switching logs from JSON to plain text logging, and more.
 - [How to parse and analyze JSON logs](troubleshooting/log_parsing.md).
 
+## Log Rotation
+
+The logs for a given service may be managed and rotated by:
+
+- `logrotate`
+- `svlogd` (`runit`'s service logging daemon)
+- `logrotate` and `svlogd`
+- Or not at all
+
+The table below includes information about what is responsible for managing and rotating logs for
+the included services. Logs
+[managed by `svlogd`](https://docs.gitlab.com/omnibus/settings/logs.html#runit-logs)
+are written to a file called `current`. The `logrotate` service built into GitLab
+[manages all logs](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate)
+except those captured by `runit`.
+
+| Log Type                                        | Managed by logrotate | Managed by svlogd/runit |
+| ----------------------------------------------- | -------------------- | ----------------------- |
+| [Alertmanager Logs](#alertmanager-logs)         | N                    | Y                       |
+| [Crond Logs](#crond-logs)                       | N                    | Y                       |
+| [Gitaly](#gitaly-logs)                          | Y                    | Y                       |
+| [GitLab Exporter For Omnibus](#gitlab-exporter) | N                    | Y                       |
+| [GitLab Pages Logs](#pages-logs)                | Y                    | Y                       |
+| GitLab Rails                                    | Y                    | N                       |
+| [GitLab Shell Logs](#gitlab-shelllog)           | Y                    | N                       |
+| [Grafana Logs](#grafana-logs)                   | N                    | Y                       |
+| [LogRotate Logs](#logrotate-logs)               | N                    | Y                       |
+| [Mailroom](#mail_room_jsonlog-default)          | Y                    | Y                       |
+| [NGINX](#nginx-logs)                            | Y                    | Y                       |
+| [PostgreSQL Logs](#postgresql-logs)             | N                    | Y                       |
+| [Prometheus Logs](#prometheus-logs)             | N                    | Y                       |
+| [Puma](#puma-logs)                              | Y                    | Y                       |
+| [Redis Logs](#redis-logs)                       | N                    | Y                       |
+| [Registry Logs](#registry-logs)                 | N                    | Y                       |
+| [Workhorse Logs](#workhorse-logs)               | Y                    | Y                       |
+
 ## `production_json.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/production_json.log` for
@@ -275,7 +311,7 @@ installations from source.
 
 It contains the JSON version of the logs in `application.log` like the example below:
 
-``` json
+```json
 {
   "severity":"INFO",
   "time":"2020-01-14T13:35:15.466Z",
@@ -302,7 +338,7 @@ It contains information about [integrations](../user/project/integrations/overvi
 {
   "severity":"ERROR",
   "time":"2018-09-06T14:56:20.439Z",
-  "service_class":"JiraService",
+  "service_class":"Integrations::Jira",
   "project_id":8,
   "project_path":"h5bp/html5-boilerplate",
   "message":"Error sending message",
@@ -312,7 +348,7 @@ It contains information about [integrations](../user/project/integrations/overvi
 {
   "severity":"INFO",
   "time":"2018-09-06T17:15:16.365Z",
-  "service_class":"JiraService",
+  "service_class":"Integrations::Jira",
   "project_id":3,
   "project_path":"namespace2/project2",
   "message":"Successfully posted",
@@ -611,41 +647,6 @@ This file lives in `/var/log/gitlab/puma/puma_stderr.log` for
 Omnibus GitLab packages, or in `/home/git/gitlab/log/puma_stderr.log` for
 installations from source.
 
-## Unicorn Logs
-
-Starting with GitLab 13.0, Puma is the default web server used in GitLab
-all-in-one package based installations, and GitLab Helm chart deployments.
-
-### `unicorn_stdout.log`
-
-This file lives in `/var/log/gitlab/unicorn/unicorn_stdout.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/unicorn_stdout.log` for
-for installations from source.
-
-### `unicorn_stderr.log`
-
-This file lives in `/var/log/gitlab/unicorn/unicorn_stderr.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/unicorn_stderr.log` for
-for installations from source.
-
-These logs contain all information about the state of Unicorn processes at any given time.
-
-```plaintext
-I, [2015-02-13T06:14:46.680381 #9047]  INFO -- : Refreshing Gem list
-I, [2015-02-13T06:14:56.931002 #9047]  INFO -- : listening on addr=127.0.0.1:8080 fd=12
-I, [2015-02-13T06:14:56.931381 #9047]  INFO -- : listening on addr=/var/opt/gitlab/gitlab-rails/sockets/gitlab.socket fd=13
-I, [2015-02-13T06:14:56.936638 #9047]  INFO -- : master process ready
-I, [2015-02-13T06:14:56.946504 #9092]  INFO -- : worker=0 spawned pid=9092
-I, [2015-02-13T06:14:56.946943 #9092]  INFO -- : worker=0 ready
-I, [2015-02-13T06:14:56.947892 #9094]  INFO -- : worker=1 spawned pid=9094
-I, [2015-02-13T06:14:56.948181 #9094]  INFO -- : worker=1 ready
-W, [2015-02-13T07:16:01.312916 #9094]  WARN -- : #<Unicorn::HttpServer:0x0000000208f618>: worker (pid: 9094) exceeds memory limit (320626688 bytes > 247066940 bytes)
-W, [2015-02-13T07:16:01.313000 #9094]  WARN -- : Unicorn::WorkerKiller send SIGQUIT (pid: 9094) alive: 3621 sec (trial 1)
-I, [2015-02-13T07:16:01.530733 #9047]  INFO -- : reaped #<Process::Status: pid 9094 exit 0> worker=1
-I, [2015-02-13T07:16:01.534501 #13379]  INFO -- : worker=1 spawned pid=13379
-I, [2015-02-13T07:16:01.534848 #13379]  INFO -- : worker=1 ready
-```
-
 ## `repocheck.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/repocheck.log` for
@@ -774,7 +775,7 @@ When enabled, access logs are generated in
 packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
 installations from source.
 
-If Prometheus metrics and the Web Exporter are both enabled, Puma/Unicorn
+If Prometheus metrics and the Web Exporter are both enabled, Puma
 starts a Web server and listen to the defined port (default: `8083`), and access logs
 are generated:
 
@@ -824,7 +825,7 @@ Line breaks have been added to the following example line for clarity:
 
 This file logs the information about exceptions being tracked by
 `Gitlab::ErrorTracking`, which provides a standard and consistent way of
-[processing rescued exceptions](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/logging.md#exception-handling). This file is stored in:
+[processing rescued exceptions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/logging.md#exception-handling). This file is stored in:
 
 - `/var/log/gitlab/gitlab-rails/exceptions_json.log` for Omnibus GitLab packages.
 - `/home/git/gitlab/log/exceptions_json.log` for installations from source.

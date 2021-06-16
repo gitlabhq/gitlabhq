@@ -136,7 +136,7 @@ class DeploymentsFinder
     # Implicitly enforce the ordering when filtered by `updated_at` column for performance optimization.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/325627#note_552417509.
     # We remove this in https://gitlab.com/gitlab-org/gitlab/-/issues/328500.
-    if filter_by_updated_at? && implicitly_enforce_ordering_for_updated_at_filter?
+    if filter_by_updated_at?
       sort_params.replace('updated_at' => sort_direction)
     end
 
@@ -168,15 +168,6 @@ class DeploymentsFinder
 
   def order_by_finished_at?
     params[:order_by].to_s == 'finished_at'
-  end
-
-  def implicitly_enforce_ordering_for_updated_at_filter?
-    return false unless params[:project].present?
-
-    ::Feature.enabled?(
-      :deployments_finder_implicitly_enforce_ordering_for_updated_at_filter,
-      params[:project],
-      default_enabled: :yaml)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

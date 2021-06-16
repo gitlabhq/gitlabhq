@@ -35,7 +35,7 @@ required scheduled maintenance period significantly.
 A common strategy for keeping this period as short as possible for data stored
 in files is to use `rsync` to transfer the data. An initial `rsync` can be
 performed ahead of the maintenance window; subsequent `rsync`s (including a
-final transfer inside the maintenance window) will then transfer only the
+final transfer inside the maintenance window) then transfers only the
 *changes* between the **primary** node and the **secondary** nodes.
 
 Repository-centric strategies for using `rsync` effectively can be found in the
@@ -50,7 +50,7 @@ this command reports `ERROR - Replication is not up-to-date` even if
 replication is actually up-to-date. This bug was fixed in GitLab 13.8 and
 later.
 
-Run this command to list out all preflight checks and automatically check if replication and verification are complete before scheduling a planned failover to ensure the process will go smoothly:
+Run this command to list out all preflight checks and automatically check if replication and verification are complete before scheduling a planned failover to ensure the process goes smoothly:
 
 ```shell
 gitlab-ctl promotion-preflight-checks
@@ -73,7 +73,7 @@ In GitLab 12.4, you can optionally allow GitLab to manage replication of Object 
 Database settings are automatically replicated to the **secondary**  node, but the
 `/etc/gitlab/gitlab.rb` file must be set up manually, and differs between
 nodes. If features such as Mattermost, OAuth or LDAP integration are enabled
-on the **primary** node but not the **secondary** node, they will be lost during failover.
+on the **primary** node but not the **secondary** node, they are lost during failover.
 
 Review the `/etc/gitlab/gitlab.rb` file for both nodes and ensure the **secondary** node
 supports everything the **primary** node does **before** scheduling a planned failover.
@@ -119,7 +119,7 @@ time to complete
 
 If any objects are failing to replicate, this should be investigated before
 scheduling the maintenance window. Following a planned failover, anything that
-failed to replicate will be **lost**.
+failed to replicate is **lost**.
 
 You can use the [Geo status API](../../../api/geo_nodes.md#retrieve-project-sync-or-verification-failures-that-occurred-on-the-current-node) to review failed objects and
 the reasons for failure.
@@ -136,9 +136,9 @@ This [content was moved to another location](background_verification.md).
 
 On the **primary** node, navigate to **Admin Area > Messages**, add a broadcast
 message. You can check under **Admin Area > Geo** to estimate how long it
-will take to finish syncing. An example message would be:
+takes to finish syncing. An example message would be:
 
-> A scheduled maintenance will take place at XX:XX UTC. We expect it to take
+> A scheduled maintenance takes place at XX:XX UTC. We expect it to take
 > less than 1 hour.
 
 ## Prevent updates to the **primary** node
@@ -151,7 +151,7 @@ be disabled on the primary site:
 1. Disable non-Geo periodic background jobs on the **primary** node by navigating
    to **Admin Area > Monitoring > Background Jobs > Cron**, pressing `Disable All`,
    and then pressing `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
-   This job will re-enable several other cron jobs that are essential for planned
+   This job re-enables several other cron jobs that are essential for planned
    failover to complete successfully.
 
 ## Finish replicating and verifying all data
@@ -161,7 +161,7 @@ be disabled on the primary site:
 1. On the **primary** node, navigate to **Admin Area > Monitoring > Background Jobs > Queues**
    and wait for all queues except those with `geo` in the name to drop to 0.
    These queues contain work that has been submitted by your users; failing over
-   before it is completed will cause the work to be lost.
+   before it is completed, causes the work to be lost.
 1. On the **primary** node, navigate to **Admin Area > Geo** and wait for the
    following conditions to be true of the **secondary** node you are failing over to:
 
@@ -176,15 +176,15 @@ be disabled on the primary site:
    to verify the integrity of CI artifacts, LFS objects, and uploads in file
    storage.
 
-At this point, your **secondary** node will contain an up-to-date copy of everything the
-**primary** node has, meaning nothing will be lost when you fail over.
+At this point, your **secondary** node contains an up-to-date copy of everything the
+**primary** node has, meaning nothing was lost when you fail over.
 
 ## Promote the **secondary** node
 
 Finally, follow the [Disaster Recovery docs](index.md) to promote the
-**secondary** node to a **primary** node. This process will cause a brief outage on the **secondary** node, and users may need to log in again.
+**secondary** node to a **primary** node. This process causes a brief outage on the **secondary** node, and users may need to log in again.
 
-Once it is completed, the maintenance window is over! Your new **primary** node will now
+Once it is completed, the maintenance window is over! Your new **primary** node, now
 begin to diverge from the old one. If problems do arise at this point, failing
 back to the old **primary** node [is possible](bring_primary_back.md), but likely to result
 in the loss of any data uploaded to the new **primary** in the meantime.

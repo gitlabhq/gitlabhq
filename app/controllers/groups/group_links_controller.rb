@@ -11,8 +11,8 @@ class Groups::GroupLinksController < Groups::ApplicationController
 
     if shared_with_group
       result = Groups::GroupLinks::CreateService
-                 .new(shared_with_group, current_user, group_link_create_params)
-                 .execute(group)
+                 .new(group, shared_with_group, current_user, group_link_create_params)
+                 .execute
 
       return render_404 if result[:http_status] == 404
 

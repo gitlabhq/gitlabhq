@@ -31,15 +31,7 @@ RSpec.describe Packages::Pypi::PackageFinder do
     context 'within a group' do
       let(:scope) { group }
 
-      it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
-
-      context 'user with access' do
-        before do
-          project.add_developer(user)
-        end
-
-        it { is_expected.to eq(package2) }
-      end
+      it { is_expected.to eq(package2) }
     end
   end
 end

@@ -109,20 +109,18 @@ module Gitlab
       end
 
       check_size_before_push!
-
-      changes_list.each do |change|
-        # If user does not have access to make at least one change, cancel all
-        # push by allowing the exception to bubble up
-        check_single_change_access(change)
-      end
-
+      check_access!
       check_push_size!
     end
 
-    override :check_single_change_access
-    def check_single_change_access(change, _skip_lfs_integrity_check: false)
-      Checks::SnippetCheck.new(change, default_branch: snippet.default_branch, root_ref: snippet.repository.root_ref, logger: logger).validate!
-      Checks::PushFileCountCheck.new(change, repository: repository, limit: Snippet.max_file_limit, logger: logger).validate!
+    override :check_access!
+    def check_access!
+      changes_list.each do |change|
+        # If user does not have access to make at least one change, cancel all
+        # push by allowing the exception to bubble up
+        Checks::SnippetCheck.new(change, default_branch: snippet.default_branch, root_ref: snippet.repository.root_ref, logger: logger).validate!
+        Checks::PushFileCountCheck.new(change, repository: repository, limit: Snippet.max_file_limit, logger: logger).validate!
+      end
     rescue Checks::TimedLogger::TimeoutError
       raise TimeoutError, logger.full_message
     end

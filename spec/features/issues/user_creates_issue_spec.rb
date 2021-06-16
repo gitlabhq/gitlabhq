@@ -30,7 +30,7 @@ RSpec.describe "User creates issue" do
     end
   end
 
-  context "when signed in as guest" do
+  context "when signed in as guest", :js do
     before do
       project.add_guest(user)
       sign_in(user)
@@ -38,41 +38,19 @@ RSpec.describe "User creates issue" do
       visit(new_project_issue_path(project))
     end
 
-    it "creates issue", :js do
-      page.within(".issue-form") do
-        expect(page).to have_no_content("Assign to")
-        .and have_no_content("Labels")
-        .and have_no_content("Milestone")
-
-        expect(page.find('#issue_title')['placeholder']).to eq 'Title'
-        expect(page.find('#issue_description')['placeholder']).to eq 'Write a description or drag your files here…'
+    context 'available metadata' do
+      it 'allows guest to set issue metadata' do
+        page.within(".issue-form") do
+          expect(page).to have_content("Title")
+            .and have_content("Description")
+            .and have_content("Type")
+            .and have_content("Assignee")
+            .and have_content("Milestone")
+            .and have_content("Labels")
+            .and have_content("Due date")
+            .and have_content("This issue is confidential and should only be visible to team members with at least Reporter access.")
+        end
       end
-
-      issue_title = "500 error on profile"
-
-      fill_in("Title", with: issue_title)
-      first('.js-md').click
-      first('.rspec-issuable-form-description').native.send_keys('Description')
-
-      click_button("Create issue")
-
-      expect(page).to have_content(issue_title)
-        .and have_content(user.name)
-        .and have_content(project.name)
-      expect(page).to have_selector('strong', text: 'Description')
-    end
-
-    it 'does not render the issue type dropdown' do
-      expect(page).not_to have_selector('.s-issuable-type-filter-dropdown-wrap')
-    end
-  end
-
-  context "when signed in as developer", :js do
-    before do
-      project.add_developer(user)
-      sign_in(user)
-
-      visit(new_project_issue_path(project))
     end
 
     context "when previewing" do

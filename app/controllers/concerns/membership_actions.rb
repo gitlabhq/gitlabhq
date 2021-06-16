@@ -6,7 +6,7 @@ module MembershipActions
 
   def create
     create_params = params.permit(:user_ids, :access_level, :expires_at)
-    result = Members::CreateService.new(current_user, create_params.merge({ source: membershipable })).execute
+    result = Members::CreateService.new(current_user, create_params.merge({ source: membershipable, invite_source: "#{plain_source_type}-members-page" })).execute
 
     if result[:status] == :success
       redirect_to members_page_url, notice: _('Users were successfully added.')
@@ -108,7 +108,7 @@ module MembershipActions
 
     respond_to do |format|
       format.html do
-        redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
+        redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize.to_sym]
         redirect_to redirect_path, notice: notice
       end
 
@@ -140,39 +140,19 @@ module MembershipActions
   end
 
   def root_params_key
-    case membershipable
-    when Namespace
-      :group_member
-    when Project
-      :project_member
-    else
-      raise "Unknown membershipable type: #{membershipable}!"
-    end
+    raise NotImplementedError
   end
 
   def members_page_url
-    case membershipable
-    when Namespace
-      polymorphic_url([membershipable, :members])
-    when Project
-      project_project_members_path(membershipable)
-    else
-      raise "Unknown membershipable type: #{membershipable}!"
-    end
+    raise NotImplementedError
   end
 
   def source_type
-    @source_type ||=
-      begin
-        case membershipable
-        when Namespace
-          _("group")
-        when Project
-          _("project")
-        else
-          raise "Unknown membershipable type: #{membershipable}!"
-        end
-      end
+    raise NotImplementedError
+  end
+
+  def plain_source_type
+    raise NotImplementedError
   end
 
   def requested_relations

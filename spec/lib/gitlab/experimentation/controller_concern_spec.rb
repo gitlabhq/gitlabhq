@@ -196,9 +196,12 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
   end
 
   describe '#track_experiment_event', :snowplow do
+    let(:user) { build(:user) }
+
     context 'when the experiment is enabled' do
       before do
         stub_experiment(test_experiment: true)
+        allow(controller).to receive(:current_user).and_return(user)
       end
 
       context 'the user is part of the experimental group' do
@@ -213,7 +216,8 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
             category: 'Team',
             action: 'start',
             property: 'experimental_group',
-            value: 1
+            value: 1,
+            user: user
           )
         end
       end
@@ -230,7 +234,8 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
             category: 'Team',
             action: 'start',
             property: 'control_group',
-            value: 1
+            value: 1,
+            user: user
           )
         end
       end
@@ -247,7 +252,8 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
             category: 'Team',
             action: 'start',
             property: 'control_group',
-            value: 1
+            value: 1,
+            user: user
           )
         end
       end
@@ -280,7 +286,8 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
             action: 'start',
             property: 'control_group',
             value: 1,
-            label: Digest::MD5.hexdigest('abc')
+            label: Digest::MD5.hexdigest('abc'),
+            user: user
           )
         end
 
@@ -294,7 +301,8 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
             action: 'start',
             property: 'control_group',
             value: 1,
-            label: Digest::MD5.hexdigest('somestring')
+            label: Digest::MD5.hexdigest('somestring'),
+            user: user
           )
         end
       end
@@ -313,7 +321,8 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
             action: 'start',
             property: 'control_group',
             value: 1,
-            label: cookies.permanent.signed[:experimentation_subject_id]
+            label: cookies.permanent.signed[:experimentation_subject_id],
+            user: user
           )
         end
       end

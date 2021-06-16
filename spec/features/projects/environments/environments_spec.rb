@@ -81,7 +81,7 @@ RSpec.describe 'Environments page', :js do
 
       context 'when cluster is not reachable' do
         let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-        let!(:application_prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+        let!(:integration_prometheus) { create(:clusters_integrations_prometheus, cluster: cluster) }
 
         before do
           allow_next_instance_of(Kubeclient::Client) do |instance|

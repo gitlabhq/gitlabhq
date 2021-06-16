@@ -111,6 +111,22 @@ module Gitlab
           @ci_config.variables_with_data
         end
 
+        def yaml_variables_for(job_name)
+          job = jobs[job_name]
+
+          return [] unless job
+
+          Gitlab::Ci::Variables::Helpers.inherit_yaml_variables(
+            from: root_variables,
+            to: transform_to_yaml_variables(job[:job_variables]),
+            inheritance: job.fetch(:root_variables_inheritance, true)
+          )
+        end
+
+        def stage_for(job_name)
+          jobs.dig(job_name, :stage)
+        end
+
         private
 
         def variables

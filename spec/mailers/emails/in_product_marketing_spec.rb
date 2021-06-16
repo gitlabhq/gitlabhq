@@ -9,6 +9,8 @@ RSpec.describe Emails::InProductMarketing do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
 
+  let!(:onboarding_progress) { create(:onboarding_progress, namespace: group) }
+
   describe '#in_product_marketing_email' do
     using RSpec::Parameterized::TableSyntax
 
@@ -45,29 +47,35 @@ RSpec.describe Emails::InProductMarketing do
     end
 
     where(:track, :series) do
-      :create | 0
-      :create | 1
-      :create | 2
-      :verify | 0
-      :verify | 1
-      :verify | 2
-      :trial  | 0
-      :trial  | 1
-      :trial  | 2
-      :team   | 0
-      :team   | 1
-      :team   | 2
+      :create     | 0
+      :create     | 1
+      :create     | 2
+      :verify     | 0
+      :verify     | 1
+      :verify     | 2
+      :trial      | 0
+      :trial      | 1
+      :trial      | 2
+      :team       | 0
+      :team       | 1
+      :team       | 2
+      :experience | 0
     end
 
     with_them do
       it 'has the correct subject and content' do
-        message = Gitlab::Email::Message::InProductMarketing.for(track).new(group: group, series: series)
+        message = Gitlab::Email::Message::InProductMarketing.for(track).new(group: group, user: user, series: series)
 
         aggregate_failures do
           is_expected.to have_subject(message.subject_line)
           is_expected.to have_body_text(message.title)
           is_expected.to have_body_text(message.subtitle)
-          is_expected.to have_body_text(CGI.unescapeHTML(message.cta_link))
+
+          if track == :experience
+            is_expected.to have_body_text(CGI.unescapeHTML(message.feedback_link(1)))
+          else
+            is_expected.to have_body_text(CGI.unescapeHTML(message.cta_link))
+          end
         end
       end
     end

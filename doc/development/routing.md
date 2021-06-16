@@ -69,6 +69,18 @@ gitlab-org/gitlab/-/settings/repository
 gitlab-org/serverless/runtimes/-/settings/repository
 ```
 
+## Changing existing routes
+
+Don't change a URL to an existing page, unless it's necessary. If you must make a change,
+make it unnoticeable for users, because we don't want them to receive `404 Not Found`
+if we can avoid it. This table should help:
+
+| URL description | Example  | What to do  |
+|---|---|---|
+| Can be used in scripts and automation | `snippet#raw` | Support both an old and new URL for one major release. Then, support a redirect from an old URL to a new URL for another major release. |
+| Likely to be saved or shared | `issue#show` | Add a redirect from an old URL to a new URL until the next major release. |
+| Limited use, unlikely to be shared | `admin#labels` | No extra steps required. |
+
 ## Migrating unscoped routes
 
 Currently, the majority of routes are placed under the `/-/` scope. However,

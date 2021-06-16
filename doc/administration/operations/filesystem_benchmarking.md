@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# File system Performance Benchmarking
+# File system performance benchmarking **(FREE SELF)**
 
 File system performance has a big impact on overall GitLab performance,
 especially for actions that read or write to Git repositories. This information

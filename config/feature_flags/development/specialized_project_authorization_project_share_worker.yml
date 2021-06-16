@@ -1,8 +1,0 @@
----
-name: specialized_project_authorization_project_share_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32864
-rollout_issue_url:
-milestone: '13.2'
-type: development
-group: group::access
-default_enabled: true

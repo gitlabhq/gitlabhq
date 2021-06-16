@@ -1,6 +1,0 @@
-development:
-  url: unix:/path/to/redis.cache.sock
-test:
-  url: unix:/path/to/redis.cache.sock
-production:
-  url: unix:/path/to/redis.cache.sock

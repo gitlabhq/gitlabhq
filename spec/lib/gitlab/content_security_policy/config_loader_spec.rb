@@ -58,6 +58,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
 
         expect(directives['script_src']).to eq("'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net https://apis.google.com https://example.com")
         expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://example.com")
+        expect(directives['font_src']).to eq("'self' https://example.com")
       end
     end
   end

@@ -10,9 +10,14 @@ RSpec.describe WebHookWorker do
 
   describe '#perform' do
     it 'delegates to WebHookService' do
-      expect_next(WebHookService, project_hook, data.with_indifferent_access, hook_name).to receive(:execute)
+      expect_next(WebHookService, project_hook, data.with_indifferent_access, hook_name, anything).to receive(:execute)
 
       subject.perform(project_hook.id, data, hook_name)
     end
+
+    it_behaves_like 'worker with data consistency',
+                  described_class,
+                  feature_flag: :load_balancing_for_web_hook_worker,
+                  data_consistency: :delayed
   end
 end

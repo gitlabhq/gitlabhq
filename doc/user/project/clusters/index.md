@@ -31,7 +31,7 @@ Besides integration at the project level, Kubernetes clusters can also be
 integrated at the [group level](../../group/clusters/index.md) or
 [GitLab instance level](../../instance/clusters/index.md).
 
-To view your project level Kubernetes clusters, navigate to **Operations > Kubernetes**
+To view your project level Kubernetes clusters, navigate to **Infrastructure > Kubernetes**
 from your project. On this page, you can [add a new cluster](#adding-and-removing-clusters)
 and view information about your existing clusters, such as:
 
@@ -60,6 +60,9 @@ Kubernetes version to any supported version at any time:
 - 1.15 (support ends on May 22, 2021)
 
 Some GitLab features may support versions outside the range provided here.
+
+NOTE:
+[GKE Cluster creation](add_remove_clusters.md#create-new-cluster) by GitLab is currently not supported for Kubernetes 1.19+. For these versions you can create the cluster through GCP, then [Add existing cluster](add_remove_clusters.md#add-existing-cluster). See [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331922) for more information.
 
 ### Adding and removing clusters
 
@@ -169,14 +172,9 @@ for your deployment jobs to use. Otherwise, a namespace is created for you.
 
 #### Important notes
 
-Note the following with GitLab and clusters:
-
-- If you [install applications](#installing-applications) on your cluster, GitLab will
-  create the resources required to run these even if you have chosen to manage your own
-  cluster.
-- Be aware that manually managing resources that have been created by GitLab, like
-  namespaces and service accounts, can cause unexpected errors. If this occurs, try
-  [clearing the cluster cache](#clearing-the-cluster-cache).
+Be aware that manually managing resources that have been created by GitLab, like
+namespaces and service accounts, can cause unexpected errors. If this occurs, try
+[clearing the cluster cache](#clearing-the-cluster-cache).
 
 #### Clearing the cluster cache
 
@@ -189,7 +187,7 @@ your cluster. This can cause deployment jobs to fail.
 
 To clear the cache:
 
-1. Navigate to your project's **Operations > Kubernetes** page, and select your cluster.
+1. Navigate to your project's **Infrastructure > Kubernetes** page, and select your cluster.
 1. Expand the **Advanced settings** section.
 1. Click **Clear cluster cache**.
 
@@ -197,19 +195,15 @@ To clear the cache:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
 
-You do not need to specify a base domain on cluster settings when using GitLab Serverless. The domain in that case
-is specified as part of the Knative installation. See [Installing Applications](#installing-applications).
-
 Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an deployment variable.
 If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain is used for the different
 stages. For example, Auto Review Apps and Auto Deploy.
 
 The domain should have a wildcard DNS configured to the Ingress IP address.
-After Ingress has been installed (see [Installing Applications](#installing-applications)),
-you can either:
+You can either:
 
 - Create an `A` record that points to the Ingress IP address with your domain provider.
-- Enter a wildcard DNS address using a service such as nip.io or xip.io. For example, `192.168.1.1.xip.io`.
+- Enter a wildcard DNS address using a service such as `nip.io` or `xip.io`. For example, `192.168.1.1.xip.io`.
 
 To determine the external Ingress IP address, or external Ingress hostname:
 
@@ -259,13 +253,11 @@ This list provides a generic solution, and some GitLab-specific approaches:
 
 If you see a trailing `%` on some Kubernetes versions, do not include it.
 
-## Installing applications
+## Cluster management project
 
-GitLab can install and manage some applications like Helm, GitLab Runner, Ingress,
-Prometheus, and so on, in your project-level cluster. For more information on
-installing, upgrading, uninstalling, and troubleshooting applications for
-your project cluster, see
-[GitLab Managed Apps](../../clusters/applications.md).
+Attach a [Cluster management project](../../clusters/management_project.md)
+to your cluster to manage shared resources requiring `cluster-admin` privileges for
+installation, such as an Ingress controller.
 
 ## Auto DevOps
 
@@ -351,16 +343,17 @@ You can customize the deployment namespace in a few ways:
 When you customize the namespace, existing environments remain linked to their current
 namespaces until you [clear the cluster cache](#clearing-the-cluster-cache).
 
-WARNING:
+#### Protecting credentials
+
 By default, anyone who can create a deployment job can access any CI/CD variable in
 an environment's deployment job. This includes `KUBECONFIG`, which gives access to
 any secret available to the associated service account in your cluster.
 To keep your production credentials safe, consider using
 [protected environments](../../../ci/environments/protected_environments.md),
-combined with either
+combined with *one* of the following:
 
-- a GitLab-managed cluster and namespace per environment,
-- *or*, an environment-scoped cluster per protected environment. The same cluster
+- A GitLab-managed cluster and namespace per environment.
+- An environment-scoped cluster per protected environment. The same cluster
   can be added multiple times with multiple restricted service accounts.
 
 ### Integrations
@@ -453,6 +446,6 @@ Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4701) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/208224) to GitLab Free in 13.2.
 
-When [Prometheus is deployed](#installing-applications), GitLab monitors the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
+When [the Prometheus cluster integration is enabled](../../clusters/integrations.md#prometheus-cluster-integration), GitLab monitors the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
 
 ![Cluster Monitoring](img/k8s_cluster_monitoring.png)

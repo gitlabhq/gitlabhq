@@ -6,13 +6,12 @@ module Users
 
     private
 
-    override :allow_caller_to_request_skip_confirmation?
-    def allow_caller_to_request_skip_confirmation?
-      true
+    def signup_params
+      super + [:skip_confirmation]
     end
 
     override :assign_skip_confirmation_from_settings?
-    def assign_skip_confirmation_from_settings?(user_params)
+    def assign_skip_confirmation_from_settings?
       user_params[:skip_confirmation].blank?
     end
   end

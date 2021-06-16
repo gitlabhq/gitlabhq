@@ -418,13 +418,13 @@ WARNING:
 - Start a new merge request pipeline with the `Run pipeline` button in the merge
   request's "Pipelines" tab, and enable "Merge When Pipeline Succeeds" (MWPS).
   Note that:
-  - If **[master is broken](https://about.gitlab.com/handbook/engineering/workflow/#broken-master),
+  - If **[main is broken](https://about.gitlab.com/handbook/engineering/workflow/#broken-master),
     do not merge the merge request** except for
     [very specific cases](https://about.gitlab.com/handbook/engineering/workflow/#criteria-for-merging-during-broken-master).
     For other cases, follow these [handbook instructions](https://about.gitlab.com/handbook/engineering/workflow/#merging-during-broken-master).
   - If the **latest [Pipeline for Merged Results](../ci/merge_request_pipelines/pipelines_for_merged_results/#pipelines-for-merged-results)** finished less than 2 hours ago, you
     might merge without starting a new pipeline as the merge request is close
-    enough to `master`.
+    enough to `main`.
 - When you set the MR to "Merge When Pipeline Succeeds", you should take over
   subsequent revisions for anything that would be spotted after that.
 - For merge requests that have had [Squash and
@@ -434,11 +434,11 @@ WARNING:
 
 Thanks to **Pipeline for Merged Results**, authors no longer have to rebase their
 branch as frequently anymore (only when there are conflicts) because the Merge
-Results Pipeline already incorporate the latest changes from `master`.
+Results Pipeline already incorporate the latest changes from `main`.
 This results in faster review/merge cycles because maintainers don't have to ask
 for a final rebase: instead, they only have to start a MR pipeline and set MWPS.
 This step brings us very close to the actual Merge Trains feature by testing the
-Merge Results against the latest `master` at the time of the pipeline creation.
+Merge Results against the latest `main` at the time of the pipeline creation.
 
 ### Community contributions
 

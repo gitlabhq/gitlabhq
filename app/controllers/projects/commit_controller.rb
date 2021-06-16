@@ -19,9 +19,6 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_commit_box_vars, only: [:show, :pipelines]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
-  before_action do
-    push_frontend_feature_flag(:pick_into_project, @project, default_enabled: :yaml)
-  end
 
   BRANCH_SEARCH_LIMIT = 1000
   COMMIT_DIFFS_PER_PAGE = 20
@@ -220,7 +217,6 @@ class Projects::CommitController < Projects::ApplicationController
 
   def find_cherry_pick_target_project
     return @project if params[:target_project_id].blank?
-    return @project unless Feature.enabled?(:pick_into_project, @project, default_enabled: :yaml)
 
     MergeRequestTargetProjectFinder
       .new(current_user: current_user, source_project: @project, project_feature: :repository)

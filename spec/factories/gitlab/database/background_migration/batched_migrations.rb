@@ -9,6 +9,7 @@ FactoryBot.define do
     job_class_name { 'CopyColumnUsingBackgroundMigrationJob' }
     table_name { :events }
     column_name { :id }
+    sequence(:job_arguments) { |n| [["column_#{n}"], ["column_#{n}_convert_to_bigint"]] }
     total_tuple_count { 10_000 }
     pause_ms { 100 }
   end

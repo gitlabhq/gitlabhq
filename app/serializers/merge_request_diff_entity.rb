@@ -6,13 +6,13 @@ class MergeRequestDiffEntity < Grape::Entity
   include MergeRequestsHelper
 
   expose :version_index do |merge_request_diff|
-    @merge_request_diffs = options[:merge_request_diffs]
+    merge_request_diffs = options[:merge_request_diffs]
     diff = options[:merge_request_diff]
 
-    next unless diff.present?
-    next unless @merge_request_diffs.size > 1
+    next unless merge_request_diffs.include?(diff)
+    next unless merge_request_diffs.size > 1
 
-    version_index(merge_request_diff)
+    merge_request_diffs.size - merge_request_diffs.index(merge_request_diff)
   end
 
   expose :created_at

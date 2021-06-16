@@ -20,7 +20,7 @@ RSpec.describe Sidebars::Projects::Menus::ExternalIssueTrackerMenu do
     end
 
     context 'when active external issue tracker' do
-      let(:external_issue_tracker) { build(:custom_issue_tracker_service, project: project) }
+      let(:external_issue_tracker) { build(:custom_issue_tracker_integration, project: project) }
 
       context 'is present' do
         it 'returns true' do

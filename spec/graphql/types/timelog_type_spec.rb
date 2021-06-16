@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['Timelog'] do
 
   it { expect(described_class.graphql_name).to eq('Timelog') }
   it { expect(described_class).to have_graphql_fields(fields) }
-  it { expect(described_class).to require_graphql_authorizations(:read_group_timelogs) }
+  it { expect(described_class).to require_graphql_authorizations(:read_issue) }
 
   describe 'user field' do
     subject { described_class.fields['user'] }

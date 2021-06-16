@@ -220,6 +220,14 @@ RSpec.describe 'User page' do
     expect(page).to have_content("Working hard!")
   end
 
+  it 'shows the pronouns of the user if there was one' do
+    user.user_detail.update_column(:pronouns, 'they/them')
+
+    subject
+
+    expect(page).to have_content("(they/them)")
+  end
+
   context 'signup disabled' do
     it 'shows the sign in link' do
       stub_application_setting(signup_enabled: false)

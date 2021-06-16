@@ -1,6 +1,0 @@
-development:
-  url: unix:/path/to/redis.shared_state.sock
-test:
-  url: unix:/path/to/redis.shared_state.sock
-production:
-  url: unix:/path/to/redis.shared_state.sock

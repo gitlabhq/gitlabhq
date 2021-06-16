@@ -17,20 +17,6 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline do
       result
     end
 
-    context 'when feature flag honor_escaped_markdown is disabled' do
-      before do
-        stub_feature_flags(honor_escaped_markdown: false)
-      end
-
-      it 'does not escape the markdown' do
-        result = described_class.call(%q(\!), project: project)
-        output = result[:output].to_html
-
-        expect(output).to eq('<p data-sourcepos="1:1-1:2">!</p>')
-        expect(result[:escaped_literals]).to be_falsey
-      end
-    end
-
     describe 'CommonMark tests', :aggregate_failures do
       it 'converts all reference punctuation to literals' do
         reference_chars = Banzai::Filter::MarkdownPreEscapeFilter::REFERENCE_CHARACTERS

@@ -1,5 +1,6 @@
 ---
 redirect_to: '../topics/index.md'
+remove_date: '2021-08-13'
 ---
 
 This document was removed. See our [topics](../topics/index.md) for similar content.

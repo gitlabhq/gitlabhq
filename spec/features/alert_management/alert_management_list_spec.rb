@@ -55,4 +55,28 @@ RSpec.describe 'Alert Management index', :js do
       it_behaves_like 'alert page with title, filtered search, and table'
     end
   end
+
+  describe 'managed_alerts_deprecation feature flag' do
+    subject { page }
+
+    before do
+      stub_feature_flags(managed_alerts_deprecation: feature_flag_value)
+      sign_in(developer)
+
+      visit project_alert_management_index_path(project)
+      wait_for_requests
+    end
+
+    context 'feature flag on' do
+      let(:feature_flag_value) { true }
+
+      it { is_expected.to have_pushed_frontend_feature_flags(managedAlertsDeprecation: true) }
+    end
+
+    context 'feature flag off' do
+      let(:feature_flag_value) { false }
+
+      it { is_expected.to have_pushed_frontend_feature_flags(managedAlertsDeprecation: false) }
+    end
+  end
 end

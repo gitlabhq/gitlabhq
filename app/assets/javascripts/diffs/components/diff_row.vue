@@ -24,6 +24,8 @@ import * as utils from './diff_row_utils';
 export default {
   components: {
     DiffGutterAvatars,
+    CodeQualityGutterIcon: () =>
+      import('ee_component/diffs/components/code_quality_gutter_icon.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -88,6 +90,20 @@ export default {
     coverageStateRight() {
       if (!this.line.right) return {};
       return this.fileLineCoverage(this.filePath, this.line.right.new_line);
+    },
+    showCodequalityLeft() {
+      return (
+        this.glFeatures.codequalityMrDiffAnnotations &&
+        this.inline &&
+        this.line.left?.codequality?.length > 0
+      );
+    },
+    showCodequalityRight() {
+      return (
+        this.glFeatures.codequalityMrDiffAnnotations &&
+        !this.inline &&
+        this.line.right?.codequality?.length > 0
+      );
     },
     classNameMapCellLeft() {
       return utils.classNameMapCell({
@@ -269,6 +285,13 @@ export default {
           :class="[...parallelViewLeftLineType, coverageStateLeft.class]"
           class="diff-td line-coverage left-side"
         ></div>
+        <div class="diff-td line-codequality left-side" :class="[...parallelViewLeftLineType]">
+          <code-quality-gutter-icon
+            v-if="showCodequalityLeft"
+            :file-path="filePath"
+            :codequality="line.left.codequality"
+          />
+        </div>
         <div
           :id="line.left.line_code"
           :key="line.left.line_code"
@@ -296,6 +319,11 @@ export default {
         ></div>
         <div
           class="diff-td line-coverage left-side empty-cell"
+          :class="emptyCellLeftClassMap"
+        ></div>
+        <div
+          v-if="inline"
+          class="diff-td line-codequality left-side empty-cell"
           :class="emptyCellLeftClassMap"
         ></div>
         <div
@@ -371,6 +399,16 @@ export default {
           class="diff-td line-coverage right-side"
         ></div>
         <div
+          class="diff-td line-codequality right-side"
+          :class="[line.right.type, { hll: isHighlighted, hll: isCommented }]"
+        >
+          <code-quality-gutter-icon
+            v-if="showCodequalityRight"
+            :file-path="filePath"
+            :codequality="line.right.codequality"
+          />
+        </div>
+        <div
           :id="line.right.line_code"
           :key="line.right.rich_text"
           :class="[
@@ -403,6 +441,10 @@ export default {
         ></div>
         <div
           class="diff-td line-coverage right-side empty-cell"
+          :class="emptyCellRightClassMap"
+        ></div>
+        <div
+          class="diff-td line-codequality right-side empty-cell"
           :class="emptyCellRightClassMap"
         ></div>
         <div

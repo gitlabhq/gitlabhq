@@ -417,6 +417,30 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
       end
     end
 
+    context 'when attachment is specified in test case with error' do
+      let(:junit) do
+        <<~EOF
+          <testsuites>
+            <testsuite>
+              <testcase classname='Calculator' name='sumTest1' time='0.01'>
+                <error>Some error</error>
+                <system-out>[[ATTACHMENT|some/path.png]]</system-out>
+              </testcase>
+            </testsuite>
+          </testsuites>
+        EOF
+      end
+
+      it 'assigns correct attributes to the test case' do
+        expect { subject }.not_to raise_error
+
+        expect(test_cases[0].has_attachment?).to be_truthy
+        expect(test_cases[0].attachment).to eq("some/path.png")
+
+        expect(test_cases[0].job).to eq(job)
+      end
+    end
+
     private
 
     def flattened_test_cases(test_suite)

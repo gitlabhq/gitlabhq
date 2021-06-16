@@ -81,6 +81,8 @@ the following table.
 
 ## Enable or disable project access token creation
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287707) in GitLab 13.11.
+
 You may enable or disable project access token creation for all projects in a group in **Group > Settings > General > Permissions, LFS, 2FA > Allow project access token creation**.
 Even when creation is disabled, you can still use and revoke existing project access tokens.
 This setting is available only on top-level groups.

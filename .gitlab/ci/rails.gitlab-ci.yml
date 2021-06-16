@@ -8,7 +8,7 @@
 
 .minimal-bundle-install:
   script:
-    - export BUNDLE_WITHOUT="${BUNDLE_WITHOUT}:default:test:puma:unicorn:kerberos:metrics:omnibus:ed25519"
+    - export BUNDLE_WITHOUT="${BUNDLE_WITHOUT}:default:test:puma:kerberos:metrics:omnibus:ed25519"
     - bundle_install_script
 
 .base-script:
@@ -189,6 +189,14 @@ update-setup-test-env-cache:
     - setup-test-env
     - .setup-test-env-cache-push
     - .shared:rules:update-cache
+  artifacts:
+    paths: []  # This job's purpose is only to update the cache.
+
+update-gitaly-binaries-cache:
+  extends:
+    - setup-test-env
+    - .gitaly-binaries-cache-push
+    - .shared:rules:update-gitaly-binaries-cache
   artifacts:
     paths: []  # This job's purpose is only to update the cache.
 

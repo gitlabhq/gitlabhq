@@ -6,6 +6,8 @@ RSpec.describe Packages::Debian::UpdateDistributionService do
   RSpec.shared_examples 'Update Debian Distribution' do |expected_message, expected_components, expected_architectures, component_file_delta = 0|
     it 'returns ServiceResponse', :aggregate_failures do
       expect(distribution).to receive(:update).with(simple_params).and_call_original if expected_message.nil?
+      expect(::Packages::Debian::GenerateDistributionWorker).to receive(:perform_async).with(distribution.class.container_type, distribution.id).and_call_original if expected_message.nil?
+      expect(::Packages::Debian::GenerateDistributionWorker).not_to receive(:perform_async) unless expected_message.nil?
 
       if component_file_delta.zero?
         expect { response }

@@ -54,7 +54,7 @@ describe('ExpiresAt', () => {
       const tooltipDirective = getTooltipDirective(expiredText);
 
       expect(tooltipDirective).not.toBeUndefined();
-      expect(expiredText.attributes('title')).toBe('Mar 15, 2019 12:00am GMT+0000');
+      expect(expiredText.attributes('title')).toBe('Mar 15, 2019 12:00am UTC');
     });
   });
 

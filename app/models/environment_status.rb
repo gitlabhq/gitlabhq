@@ -100,7 +100,7 @@ class EnvironmentStatus
   def self.build_environments_status(mr, user, pipeline)
     return [] unless pipeline
 
-    pipeline.environments.includes(:project).available.map do |environment|
+    pipeline.environments_in_self_and_descendants.includes(:project).available.map do |environment|
       next unless Ability.allowed?(user, :read_environment, environment)
 
       EnvironmentStatus.new(pipeline.project, environment, mr, pipeline.sha)

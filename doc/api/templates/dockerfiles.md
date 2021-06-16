@@ -75,10 +75,6 @@ Example response:
     "name": "OpenJDK"
   },
   {
-    "key": "OpenJDK-alpine",
-    "name": "OpenJDK-alpine"
-  },
-  {
     "key": "PHP",
     "name": "PHP"
   },

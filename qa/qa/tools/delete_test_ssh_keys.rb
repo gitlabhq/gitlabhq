@@ -30,18 +30,18 @@ module QA
       end
 
       def run
-        STDOUT.puts 'Running...'
+        $stdout.puts 'Running...'
 
         keys_head_response = head Runtime::API::Request.new(@api_client, "/user/keys", per_page: ITEMS_PER_PAGE).url
         total_pages = keys_head_response.headers[:x_total_pages]
 
         test_ssh_key_ids = fetch_test_ssh_key_ids(total_pages)
-        STDOUT.puts "Number of test ssh keys to be deleted: #{test_ssh_key_ids.length}"
+        $stdout.puts "Number of test ssh keys to be deleted: #{test_ssh_key_ids.length}"
 
         return if dry_run?
 
         delete_ssh_keys(test_ssh_key_ids) unless test_ssh_key_ids.empty?
-        STDOUT.puts "\nDone"
+        $stdout.puts "\nDone"
       end
 
       private
@@ -50,7 +50,7 @@ module QA
       alias_method :dry_run?, :dry_run
 
       def delete_ssh_keys(ssh_key_ids)
-        STDOUT.puts "Deleting #{ssh_key_ids.length} ssh keys..."
+        $stdout.puts "Deleting #{ssh_key_ids.length} ssh keys..."
         ssh_key_ids.each do |key_id|
           delete_response = delete Runtime::API::Request.new(@api_client, "/user/keys/#{key_id}").url
           dot_or_f = delete_response.code == 204 ? "\e[32m.\e[0m" : "\e[31mF\e[0m"

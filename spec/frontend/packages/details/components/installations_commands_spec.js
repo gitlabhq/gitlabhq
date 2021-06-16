@@ -7,6 +7,7 @@ import MavenInstallation from '~/packages/details/components/maven_installation.
 import NpmInstallation from '~/packages/details/components/npm_installation.vue';
 import NugetInstallation from '~/packages/details/components/nuget_installation.vue';
 import PypiInstallation from '~/packages/details/components/pypi_installation.vue';
+import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/components/terraform_installation.vue';
 
 import {
   conanPackage,
@@ -15,6 +16,7 @@ import {
   nugetPackage,
   pypiPackage,
   composerPackage,
+  terraformModule,
 } from '../../mock_data';
 
 describe('InstallationCommands', () => {
@@ -32,6 +34,7 @@ describe('InstallationCommands', () => {
   const nugetInstallation = () => wrapper.find(NugetInstallation);
   const pypiInstallation = () => wrapper.find(PypiInstallation);
   const composerInstallation = () => wrapper.find(ComposerInstallation);
+  const terraformInstallation = () => wrapper.findComponent(TerraformInstallation);
 
   afterEach(() => {
     wrapper.destroy();
@@ -46,6 +49,7 @@ describe('InstallationCommands', () => {
       ${nugetPackage}    | ${nugetInstallation}
       ${pypiPackage}     | ${pypiInstallation}
       ${composerPackage} | ${composerInstallation}
+      ${terraformModule} | ${terraformInstallation}
     `('renders', ({ packageEntity, selector }) => {
       it(`${packageEntity.package_type} instructions exist`, () => {
         createComponent({ packageEntity });

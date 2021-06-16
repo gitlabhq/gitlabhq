@@ -7,7 +7,7 @@ RSpec.describe API::MavenPackages do
   include_context 'workhorse headers'
 
   let_it_be_with_refind(:package_settings) { create(:namespace_package_setting, :group) }
-  let_it_be(:group) { package_settings.namespace }
+  let_it_be_with_refind(:group) { package_settings.namespace }
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :public, namespace: group) }
   let_it_be(:package, reload: true) { create(:maven_package, project: project, name: project.full_path) }
@@ -15,12 +15,13 @@ RSpec.describe API::MavenPackages do
   let_it_be(:package_file) { package.package_files.with_file_name_like('%.xml').first }
   let_it_be(:jar_file) { package.package_files.with_file_name_like('%.jar').first }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
-  let_it_be(:job, reload: true) { create(:ci_build, user: user, status: :running) }
+  let_it_be(:job, reload: true) { create(:ci_build, user: user, status: :running, project: project) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
   let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true) }
   let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token_for_group, group: group) }
 
+  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
   let(:package_name) { 'com/example/my-app' }
   let(:headers) { workhorse_headers }
   let(:headers_with_token) { headers.merge('Private-Token' => personal_access_token.token) }
@@ -39,22 +40,73 @@ RSpec.describe API::MavenPackages do
     project.add_developer(user)
   end
 
+  shared_examples 'handling groups and subgroups for' do |shared_example_name, visibilities: %i[public]|
+    context 'within a group' do
+      visibilities.each do |visibility|
+        context "that is #{visibility}" do
+          before do
+            group.update!(visibility_level: Gitlab::VisibilityLevel.level_value(visibility.to_s))
+          end
+
+          it_behaves_like shared_example_name
+        end
+      end
+    end
+
+    context 'within a subgroup' do
+      let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+
+      before do
+        move_project_to_namespace(subgroup)
+      end
+
+      visibilities.each do |visibility|
+        context "that is #{visibility}" do
+          before do
+            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.level_value(visibility.to_s))
+            group.update!(visibility_level: Gitlab::VisibilityLevel.level_value(visibility.to_s))
+          end
+
+          it_behaves_like shared_example_name
+        end
+      end
+    end
+  end
+
+  shared_examples 'handling groups, subgroups and user namespaces for' do |shared_example_name, visibilities: %i[public]|
+    it_behaves_like 'handling groups and subgroups for', shared_example_name, visibilities: visibilities
+
+    context 'within a user namespace' do
+      before do
+        move_project_to_namespace(user.namespace)
+      end
+
+      visibilities.each do |visibility|
+        context "that is #{visibility}" do
+          before do
+            user.namespace.update!(visibility_level: Gitlab::VisibilityLevel.level_value(visibility.to_s))
+          end
+
+          it_behaves_like shared_example_name
+        end
+      end
+    end
+  end
+
   shared_examples 'tracking the file download event' do
     context 'with jar file' do
       let_it_be(:package_file) { jar_file }
+
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
 
       it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
     end
   end
 
   shared_examples 'rejecting the request for non existing maven path' do |expected_status: :not_found|
-    before do
-      if Feature.enabled?(:check_maven_path_first, default_enabled: :yaml)
-        expect(::Packages::Maven::PackageFinder).not_to receive(:new)
-      end
-    end
-
     it 'rejects the request' do
+      expect(::Packages::Maven::PackageFinder).not_to receive(:new)
+
       subject
 
       expect(response).to have_gitlab_http_status(expected_status)
@@ -166,10 +218,10 @@ RSpec.describe API::MavenPackages do
   end
 
   describe 'GET /api/v4/packages/maven/*path/:file_name' do
-    shared_examples 'handling all conditions' do
-      context 'a public project' do
-        subject { download_file(file_name: package_file.file_name) }
+    context 'a public project' do
+      subject { download_file(file_name: package_file.file_name) }
 
+      shared_examples 'getting a file' do
         it_behaves_like 'tracking the file download event'
 
         it 'returns the file' do
@@ -194,14 +246,18 @@ RSpec.describe API::MavenPackages do
         end
       end
 
-      context 'internal project' do
-        before do
-          project.team.truncate
-          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-        end
+      it_behaves_like 'handling groups, subgroups and user namespaces for', 'getting a file'
+    end
 
-        subject { download_file_with_token(file_name: package_file.file_name) }
+    context 'internal project' do
+      before do
+        project.team.truncate
+        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+      end
 
+      subject { download_file_with_token(file_name: package_file.file_name) }
+
+      shared_examples 'getting a file' do
         it_behaves_like 'tracking the file download event'
 
         it 'returns the file' do
@@ -228,13 +284,17 @@ RSpec.describe API::MavenPackages do
         end
       end
 
-      context 'private project' do
-        subject { download_file_with_token(file_name: package_file.file_name) }
+      it_behaves_like 'handling groups, subgroups and user namespaces for', 'getting a file', visibilities: %i[public internal]
+    end
 
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-        end
+    context 'private project' do
+      subject { download_file_with_token(file_name: package_file.file_name) }
 
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      shared_examples 'getting a file' do
         it_behaves_like 'tracking the file download event'
 
         it 'returns the file' do
@@ -245,11 +305,13 @@ RSpec.describe API::MavenPackages do
         end
 
         it 'denies download when not enough permissions' do
-          project.add_guest(user)
+          unless project.root_namespace == user.namespace
+            project.add_guest(user)
 
-          subject
+            subject
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
         end
 
         it 'denies download when no private token' do
@@ -286,33 +348,19 @@ RSpec.describe API::MavenPackages do
         end
       end
 
-      context 'project name is different from a package name' do
-        before do
-          maven_metadatum.update!(path: "wrong_name/#{package.version}")
-        end
-
-        it 'rejects request' do
-          download_file(file_name: package_file.file_name)
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
-      end
+      it_behaves_like 'handling groups, subgroups and user namespaces for', 'getting a file', visibilities: %i[public internal private]
     end
 
-    context 'with check_maven_path_first enabled' do
+    context 'project name is different from a package name' do
       before do
-        stub_feature_flags(check_maven_path_first: true)
+        maven_metadatum.update!(path: "wrong_name/#{package.version}")
       end
 
-      it_behaves_like 'handling all conditions'
-    end
+      it 'rejects request' do
+        download_file(file_name: package_file.file_name)
 
-    context 'with check_maven_path_first disabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: false)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
-
-      it_behaves_like 'handling all conditions'
     end
 
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path)
@@ -328,14 +376,16 @@ RSpec.describe API::MavenPackages do
     let(:path) { package.maven_metadatum.path }
     let(:url) { "/packages/maven/#{path}/#{package_file.file_name}" }
 
-    it_behaves_like 'processing HEAD requests', instance_level: true
+    shared_examples 'heading a file' do
+      it_behaves_like 'processing HEAD requests', instance_level: true
+    end
 
     context 'with check_maven_path_first enabled' do
       before do
         stub_feature_flags(check_maven_path_first: true)
       end
 
-      it_behaves_like 'processing HEAD requests', instance_level: true
+      it_behaves_like 'handling groups, subgroups and user namespaces for', 'heading a file'
     end
 
     context 'with check_maven_path_first disabled' do
@@ -343,7 +393,7 @@ RSpec.describe API::MavenPackages do
         stub_feature_flags(check_maven_path_first: false)
       end
 
-      it_behaves_like 'processing HEAD requests', instance_level: true
+      it_behaves_like 'handling groups, subgroups and user namespaces for', 'heading a file'
     end
   end
 
@@ -353,10 +403,10 @@ RSpec.describe API::MavenPackages do
       group.add_developer(user)
     end
 
-    shared_examples 'handling all conditions' do
-      context 'a public project' do
-        subject { download_file(file_name: package_file.file_name) }
+    context 'a public project' do
+      subject { download_file(file_name: package_file.file_name) }
 
+      shared_examples 'getting a file for a group' do
         it_behaves_like 'tracking the file download event'
 
         it 'returns the file' do
@@ -381,14 +431,18 @@ RSpec.describe API::MavenPackages do
         end
       end
 
-      context 'internal project' do
-        before do
-          group.group_member(user).destroy!
-          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-        end
+      it_behaves_like 'handling groups and subgroups for', 'getting a file for a group'
+    end
 
-        subject { download_file_with_token(file_name: package_file.file_name) }
+    context 'internal project' do
+      before do
+        group.group_member(user).destroy!
+        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+      end
 
+      subject { download_file_with_token(file_name: package_file.file_name) }
+
+      shared_examples 'getting a file for a group' do
         it_behaves_like 'tracking the file download event'
 
         it 'returns the file' do
@@ -415,13 +469,17 @@ RSpec.describe API::MavenPackages do
         end
       end
 
-      context 'private project' do
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-        end
+      it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: %i[internal public]
+    end
 
-        subject { download_file_with_token(file_name: package_file.file_name) }
+    context 'private project' do
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
 
+      subject { download_file_with_token(file_name: package_file.file_name) }
+
+      shared_examples 'getting a file for a group' do
         it_behaves_like 'tracking the file download event'
 
         it 'returns the file' do
@@ -480,101 +538,87 @@ RSpec.describe API::MavenPackages do
             it_behaves_like 'rejecting the request for non existing maven path'
           end
         end
-
-        context 'with a reporter from a subgroup accessing the root group' do
-          let_it_be(:root_group) { create(:group, :private) }
-          let_it_be(:group) { create(:group, :private, parent: root_group) }
-
-          subject { download_file_with_token(file_name: package_file.file_name, request_headers: headers_with_token, group_id: root_group.id) }
-
-          before do
-            project.update!(namespace: group)
-            group.add_reporter(user)
-          end
-
-          it 'returns the file' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response.media_type).to eq('application/octet-stream')
-          end
-
-          context 'with a non existing maven path' do
-            subject { download_file_with_token(file_name: package_file.file_name, path: 'foo/bar/1.2.3', request_headers: headers_with_token, group_id: root_group.id) }
-
-            it_behaves_like 'rejecting the request for non existing maven path'
-          end
-        end
       end
 
-      context 'maven metadata file' do
-        let_it_be(:sub_group1) { create(:group, parent: group) }
-        let_it_be(:sub_group2)   { create(:group, parent: group) }
-        let_it_be(:project1) { create(:project, :private, group: sub_group1) }
-        let_it_be(:project2) { create(:project, :private, group: sub_group2) }
-        let_it_be(:project3) { create(:project, :private, group: sub_group1) }
-        let_it_be(:package_name) { 'foo' }
-        let_it_be(:package1) { create(:maven_package, project: project1, name: package_name, version: nil) }
-        let_it_be(:package_file1) { create(:package_file, :xml, package: package1, file_name: 'maven-metadata.xml') }
-        let_it_be(:package2) { create(:maven_package, project: project2, name: package_name, version: nil) }
-        let_it_be(:package_file2) { create(:package_file, :xml, package: package2, file_name: 'maven-metadata.xml') }
-        let_it_be(:package3) { create(:maven_package, project: project3, name: package_name, version: nil) }
-        let_it_be(:package_file3) { create(:package_file, :xml, package: package3, file_name: 'maven-metadata.xml') }
+      it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: %i[private internal public]
 
-        let(:maven_metadatum) { package3.maven_metadatum }
+      context 'with a reporter from a subgroup accessing the root group' do
+        let_it_be(:root_group) { create(:group, :private) }
+        let_it_be(:group) { create(:group, :private, parent: root_group) }
 
-        subject { download_file_with_token(file_name: package_file3.file_name) }
+        subject { download_file_with_token(file_name: package_file.file_name, request_headers: headers_with_token, group_id: root_group.id) }
 
         before do
-          sub_group1.add_developer(user)
-          sub_group2.add_developer(user)
-          # the package with the most recently published file should be returned
-          create(:package_file, :xml, package: package2)
+          project.update!(namespace: group)
+          group.add_reporter(user)
         end
 
-        context 'in multiple versionless packages' do
-          it 'downloads the file' do
-            expect(::Packages::PackageFileFinder)
-              .to receive(:new).with(package2, 'maven-metadata.xml').and_call_original
+        it 'returns the file' do
+          subject
 
-            subject
-          end
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('application/octet-stream')
         end
 
-        context 'in multiple snapshot packages' do
-          before do
-            version = '1.0.0-SNAPSHOT'
-            [package1, package2, package3].each do |pkg|
-              pkg.update!(version: version)
+        context 'with a non existing maven path' do
+          subject { download_file_with_token(file_name: package_file.file_name, path: 'foo/bar/1.2.3', request_headers: headers_with_token, group_id: root_group.id) }
 
-              pkg.maven_metadatum.update!(path: "#{pkg.name}/#{pkg.version}")
-            end
-          end
-
-          it 'downloads the file' do
-            expect(::Packages::PackageFileFinder)
-              .to receive(:new).with(package3, 'maven-metadata.xml').and_call_original
-
-            subject
-          end
+          it_behaves_like 'rejecting the request for non existing maven path'
         end
       end
     end
 
-    context 'with check_maven_path_first enabled' do
+    context 'maven metadata file' do
+      let_it_be(:sub_group1) { create(:group, parent: group) }
+      let_it_be(:sub_group2)   { create(:group, parent: group) }
+      let_it_be(:project1) { create(:project, :private, group: sub_group1) }
+      let_it_be(:project2) { create(:project, :private, group: sub_group2) }
+      let_it_be(:project3) { create(:project, :private, group: sub_group1) }
+      let_it_be(:package_name) { 'foo' }
+      let_it_be(:package1) { create(:maven_package, project: project1, name: package_name, version: nil) }
+      let_it_be(:package_file1) { create(:package_file, :xml, package: package1, file_name: 'maven-metadata.xml') }
+      let_it_be(:package2) { create(:maven_package, project: project2, name: package_name, version: nil) }
+      let_it_be(:package_file2) { create(:package_file, :xml, package: package2, file_name: 'maven-metadata.xml') }
+      let_it_be(:package3) { create(:maven_package, project: project3, name: package_name, version: nil) }
+      let_it_be(:package_file3) { create(:package_file, :xml, package: package3, file_name: 'maven-metadata.xml') }
+
+      let(:maven_metadatum) { package3.maven_metadatum }
+
+      subject { download_file_with_token(file_name: package_file3.file_name) }
+
       before do
-        stub_feature_flags(check_maven_path_first: true)
+        sub_group1.add_developer(user)
+        sub_group2.add_developer(user)
+        # the package with the most recently published file should be returned
+        create(:package_file, :xml, package: package2)
       end
 
-      it_behaves_like 'handling all conditions'
-    end
+      context 'in multiple versionless packages' do
+        it 'downloads the file' do
+          expect(::Packages::PackageFileFinder)
+            .to receive(:new).with(package2, 'maven-metadata.xml').and_call_original
 
-    context 'with check_maven_path_first disabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: false)
+          subject
+        end
       end
 
-      it_behaves_like 'handling all conditions'
+      context 'in multiple snapshot packages' do
+        before do
+          version = '1.0.0-SNAPSHOT'
+          [package1, package2, package3].each do |pkg|
+            pkg.update!(version: version)
+
+            pkg.maven_metadatum.update!(path: "#{pkg.name}/#{pkg.version}")
+          end
+        end
+
+        it 'downloads the file' do
+          expect(::Packages::PackageFileFinder)
+            .to receive(:new).with(package3, 'maven-metadata.xml').and_call_original
+
+          subject
+        end
+      end
     end
 
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path, group_id: group.id)
@@ -595,7 +639,7 @@ RSpec.describe API::MavenPackages do
         stub_feature_flags(check_maven_path_first: true)
       end
 
-      it_behaves_like 'processing HEAD requests'
+      it_behaves_like 'handling groups and subgroups for', 'processing HEAD requests'
     end
 
     context 'with check_maven_path_first disabled' do
@@ -603,95 +647,77 @@ RSpec.describe API::MavenPackages do
         stub_feature_flags(check_maven_path_first: false)
       end
 
-      it_behaves_like 'processing HEAD requests'
+      it_behaves_like 'handling groups and subgroups for', 'processing HEAD requests'
     end
   end
 
   describe 'GET /api/v4/projects/:id/packages/maven/*path/:file_name' do
-    shared_examples 'handling all conditions' do
-      context 'a public project' do
-        subject { download_file(file_name: package_file.file_name) }
+    context 'a public project' do
+      subject { download_file(file_name: package_file.file_name) }
 
-        it_behaves_like 'tracking the file download event'
+      it_behaves_like 'tracking the file download event'
 
-        it 'returns the file' do
-          subject
+      it 'returns the file' do
+        subject
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('application/octet-stream')
-        end
-
-        it 'returns sha1 of the file' do
-          download_file(file_name: package_file.file_name + '.sha1')
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('text/plain')
-          expect(response.body).to eq(package_file.file_sha1)
-        end
-
-        context 'with a non existing maven path' do
-          subject { download_file(file_name: package_file.file_name, path: 'foo/bar/1.2.3') }
-
-          it_behaves_like 'rejecting the request for non existing maven path'
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq('application/octet-stream')
       end
 
-      context 'private project' do
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-        end
+      it 'returns sha1 of the file' do
+        download_file(file_name: package_file.file_name + '.sha1')
 
-        subject { download_file_with_token(file_name: package_file.file_name) }
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq('text/plain')
+        expect(response.body).to eq(package_file.file_sha1)
+      end
 
-        it_behaves_like 'tracking the file download event'
+      context 'with a non existing maven path' do
+        subject { download_file(file_name: package_file.file_name, path: 'foo/bar/1.2.3') }
 
-        it 'returns the file' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('application/octet-stream')
-        end
-
-        it 'denies download when not enough permissions' do
-          project.add_guest(user)
-
-          subject
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
-
-        it 'denies download when no private token' do
-          download_file(file_name: package_file.file_name)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-
-        it_behaves_like 'downloads with a job token'
-
-        it_behaves_like 'downloads with a deploy token'
-
-        context 'with a non existing maven path' do
-          subject { download_file_with_token(file_name: package_file.file_name, path: 'foo/bar/1.2.3') }
-
-          it_behaves_like 'rejecting the request for non existing maven path'
-        end
+        it_behaves_like 'rejecting the request for non existing maven path'
       end
     end
 
-    context 'with check_maven_path_first enabled' do
+    context 'private project' do
       before do
-        stub_feature_flags(check_maven_path_first: true)
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
       end
 
-      it_behaves_like 'handling all conditions'
-    end
+      subject { download_file_with_token(file_name: package_file.file_name) }
 
-    context 'with check_maven_path_first disabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: false)
+      it_behaves_like 'tracking the file download event'
+
+      it 'returns the file' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq('application/octet-stream')
       end
 
-      it_behaves_like 'handling all conditions'
+      it 'denies download when not enough permissions' do
+        project.add_guest(user)
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      it 'denies download when no private token' do
+        download_file(file_name: package_file.file_name)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it_behaves_like 'downloads with a job token'
+
+      it_behaves_like 'downloads with a deploy token'
+
+      context 'with a non existing maven path' do
+        subject { download_file_with_token(file_name: package_file.file_name, path: 'foo/bar/1.2.3') }
+
+        it_behaves_like 'rejecting the request for non existing maven path'
+      end
     end
 
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path)
@@ -1019,5 +1045,11 @@ RSpec.describe API::MavenPackages do
     def upload_file_with_token(params: {}, request_headers: headers_with_token, file_extension: 'jar')
       upload_file(params: params, request_headers: request_headers, file_extension: file_extension)
     end
+  end
+
+  def move_project_to_namespace(namespace)
+    project.update!(namespace: namespace)
+    package.update!(name: project.full_path)
+    maven_metadatum.update!(path: "#{package.name}/#{package.version}")
   end
 end

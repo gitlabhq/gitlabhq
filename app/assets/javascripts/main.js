@@ -20,7 +20,7 @@ import { removeFlashClickListener } from './flash';
 import initTodoToggle from './header';
 import initLayoutNav from './layout_nav';
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
-import { localTimeAgo } from './lib/utils/datetime_utility';
+import { localTimeAgo } from './lib/utils/datetime/timeago_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else
@@ -36,6 +36,7 @@ import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
 import { initTopNav } from './nav';
+import navEventHub, { EVENT_RESPONSIVE_TOGGLE } from './nav/event_hub';
 
 import 'ee_else_ce/main_ee';
 
@@ -202,7 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('.navbar-toggler').on('click', () => {
+    // The order is important. The `menu-expanded` is used as a source of truth for now.
+    // This can be simplified when the :combined_menu feature flag is removed.
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/333180
     $('.header-content').toggleClass('menu-expanded');
+    navEventHub.$emit(EVENT_RESPONSIVE_TOGGLE);
   });
 
   /**

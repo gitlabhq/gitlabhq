@@ -2,21 +2,24 @@
 import { GlAlert } from '@gitlab/ui';
 import $ from 'jquery';
 import Autosave from '~/autosave';
+import { IssuableType } from '~/issue_show/constants';
 import eventHub from '../event_hub';
-import editActions from './edit_actions.vue';
-import descriptionField from './fields/description.vue';
-import descriptionTemplate from './fields/description_template.vue';
-import titleField from './fields/title.vue';
-import lockedWarning from './locked_warning.vue';
+import EditActions from './edit_actions.vue';
+import DescriptionField from './fields/description.vue';
+import DescriptionTemplateField from './fields/description_template.vue';
+import IssuableTitleField from './fields/title.vue';
+import IssuableTypeField from './fields/type.vue';
+import LockedWarning from './locked_warning.vue';
 
 export default {
   components: {
-    lockedWarning,
-    titleField,
-    descriptionField,
-    descriptionTemplate,
-    editActions,
+    DescriptionField,
+    DescriptionTemplateField,
+    EditActions,
     GlAlert,
+    IssuableTitleField,
+    IssuableTypeField,
+    LockedWarning,
   },
   props: {
     canDestroy: {
@@ -88,6 +91,9 @@ export default {
     },
     showLockedWarning() {
       return this.formState.lockedWarningVisible && !this.formState.updateLoading;
+    },
+    isIssueType() {
+      return this.issuableType === IssuableType.Issue;
     },
   },
   created() {
@@ -162,7 +168,7 @@ export default {
 </script>
 
 <template>
-  <form>
+  <form data-testid="issuable-form">
     <locked-warning v-if="showLockedWarning" />
     <gl-alert
       v-if="showOutdatedDescriptionWarning"
@@ -179,23 +185,23 @@ export default {
         )
       }}</gl-alert
     >
+    <div class="row gl-mb-3">
+      <div class="col-12">
+        <issuable-title-field ref="title" :form-state="formState" />
+      </div>
+    </div>
     <div class="row">
-      <div v-if="hasIssuableTemplates" class="col-sm-4 col-lg-3">
-        <description-template
+      <div v-if="isIssueType" class="col-12 col-md-4 pr-md-0">
+        <issuable-type-field ref="issue-type" />
+      </div>
+      <div v-if="hasIssuableTemplates" class="col-12 col-md-4 pl-md-2">
+        <description-template-field
           :form-state="formState"
           :issuable-templates="issuableTemplates"
           :project-path="projectPath"
           :project-id="projectId"
           :project-namespace="projectNamespace"
         />
-      </div>
-      <div
-        :class="{
-          'col-sm-8 col-lg-9': hasIssuableTemplates,
-          'col-12': !hasIssuableTemplates,
-        }"
-      >
-        <title-field ref="title" :form-state="formState" :issuable-templates="issuableTemplates" />
       </div>
     </div>
     <description-field

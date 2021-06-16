@@ -79,6 +79,32 @@ RSpec.describe CommitStatus do
     end
   end
 
+  describe '.updated_before' do
+    let!(:lookback) { 5.days.ago }
+    let!(:timeout) { 1.day.ago }
+    let!(:before_lookback) { lookback - 1.hour }
+    let!(:after_lookback) { lookback + 1.hour }
+    let!(:before_timeout) { timeout - 1.hour }
+    let!(:after_timeout) { timeout + 1.hour }
+
+    subject { described_class.updated_before(lookback: lookback, timeout: timeout) }
+
+    def create_build_with_set_timestamps(created_at:, updated_at:)
+      travel_to(created_at) { create(:ci_build, created_at: Time.current) }.tap do |build|
+        travel_to(updated_at) { build.update!(status: :failed) }
+      end
+    end
+
+    it 'finds builds updated and created in the window between lookback and timeout' do
+      build_in_lookback_timeout_window = create_build_with_set_timestamps(created_at: after_lookback, updated_at: before_timeout)
+      build_outside_lookback_window = create_build_with_set_timestamps(created_at: before_lookback, updated_at: before_timeout)
+      build_outside_timeout_window = create_build_with_set_timestamps(created_at: after_lookback, updated_at: after_timeout)
+
+      expect(subject).to contain_exactly(build_in_lookback_timeout_window)
+      expect(subject).not_to include(build_outside_lookback_window, build_outside_timeout_window)
+    end
+  end
+
   describe '#processed' do
     subject { commit_status.processed }
 

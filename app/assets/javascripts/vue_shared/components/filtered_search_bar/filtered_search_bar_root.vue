@@ -12,7 +12,7 @@ import {
 import RecentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesStore from '~/filtered_search/stores/recent_searches_store';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 
 import { SortDirection } from './constants';
@@ -211,7 +211,9 @@ export default {
         .catch((error) => {
           if (error.name === 'RecentSearchesServiceError') return undefined;
 
-          createFlash(__('An error occurred while parsing recent searches'));
+          createFlash({
+            message: __('An error occurred while parsing recent searches'),
+          });
 
           // Gracefully fail to empty array
           return [];

@@ -88,6 +88,13 @@ RSpec.describe EventsHelper do
 
       expect(helper.event_feed_url(event)).to eq(push_event_feed_url(event))
     end
+
+    it 'returns nil for push event with multiple refs' do
+      event = create(:push_event)
+      create(:push_event_payload, event: event, ref_count: 2, ref: nil, ref_type: :tag, commit_count: 0, action: :pushed)
+
+      expect(helper.event_feed_url(event)).to eq(nil)
+    end
   end
 
   describe '#event_preposition' do

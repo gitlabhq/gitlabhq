@@ -202,6 +202,9 @@ export default {
     externalUrlLabel() {
       return sprintf(__('View on %{url}'), { url: this.diffFile.formatted_external_url });
     },
+    showCodequalityBadge() {
+      return this.codequalityDiff?.length > 0 && !this.glFeatures.codequalityMrDiffAnnotations;
+    },
   },
   methods: {
     ...mapActions('diffs', [
@@ -334,7 +337,7 @@ export default {
       />
 
       <code-quality-badge
-        v-if="codequalityDiff.length"
+        v-if="showCodequalityBadge"
         :file-name="filePath"
         :codequality-diff="codequalityDiff"
         class="gl-mr-2"
@@ -351,7 +354,11 @@ export default {
       v-if="!diffFile.submodule && addMergeRequestButtons"
       class="file-actions d-flex align-items-center gl-ml-auto gl-align-self-start"
     >
-      <diff-stats :added-lines="diffFile.added_lines" :removed-lines="diffFile.removed_lines" />
+      <diff-stats
+        :diff-file="diffFile"
+        :added-lines="diffFile.added_lines"
+        :removed-lines="diffFile.removed_lines"
+      />
       <gl-form-checkbox
         v-if="isReviewable && showLocalFileReviews"
         v-gl-tooltip.hover

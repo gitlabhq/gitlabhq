@@ -3,24 +3,6 @@
 module Gitlab
   module SidekiqMiddleware
     class InstrumentationLogger
-      def self.keys
-        @keys ||= [
-          :cpu_s,
-          :gitaly_calls,
-          :gitaly_duration_s,
-          :rugged_calls,
-          :rugged_duration_s,
-          :elasticsearch_calls,
-          :elasticsearch_duration_s,
-          :elasticsearch_timed_out_count,
-          *::Gitlab::Memory::Instrumentation::KEY_MAPPING.values,
-          *::Gitlab::Instrumentation::Redis.known_payload_keys,
-          *::Gitlab::Metrics::Subscribers::ActiveRecord.known_payload_keys,
-          *::Gitlab::Metrics::Subscribers::ExternalHttp::KNOWN_PAYLOAD_KEYS,
-          *::Gitlab::Metrics::Subscribers::RackAttack::PAYLOAD_KEYS
-        ]
-      end
-
       def call(worker, job, queue)
         ::Gitlab::InstrumentationHelper.init_instrumentation_data
 
@@ -37,7 +19,6 @@ module Gitlab
         # https://github.com/mperham/sidekiq/blob/53bd529a0c3f901879925b8390353129c465b1f2/lib/sidekiq/processor.rb#L115-L118
         job[:instrumentation] = {}.tap do |instrumentation_values|
           ::Gitlab::InstrumentationHelper.add_instrumentation_data(instrumentation_values)
-          instrumentation_values.slice!(*self.class.keys)
         end
       end
     end

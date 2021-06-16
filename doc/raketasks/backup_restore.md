@@ -63,6 +63,12 @@ including:
 - Snippets
 - Group wikis **(PREMIUM)**
 
+Backups do not include:
+
+- [Terraform state files](../administration/terraform_state.md)
+- [Package registry files](../administration/packages/index.md)
+- [Mattermost data](https://docs.mattermost.com/administration/config-settings.html#file-storage)
+
 WARNING:
 GitLab does not back up any configuration files, SSL certificates, or system
 files. You are highly advised to read about [storing configuration files](#storing-configuration-files).
@@ -116,7 +122,7 @@ Similar to the Kubernetes case, if you have scaled out your GitLab cluster to
 use multiple application servers, you should pick a designated node (that isn't
 auto-scaled away) for running the backup Rake task. Because the backup Rake
 task is tightly coupled to the main Rails application, this is typically a node
-on which you're also running Unicorn/Puma or Sidekiq.
+on which you're also running Puma or Sidekiq.
 
 Example output:
 
@@ -367,7 +373,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURREN
 You can let the backup script upload (using the [Fog library](http://fog.io/))
 the `.tar` file it creates. In the following example, we use Amazon S3 for
 storage, but Fog also lets you use [other storage providers](http://fog.io/storage/).
-GitLab also [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L113)
+GitLab also [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab/-/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L113)
 for AWS, Google, OpenStack Swift, Rackspace, and Aliyun. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
 
@@ -922,7 +928,6 @@ Stop the processes that are connected to the database. Leave the rest of GitLab
 running:
 
 ```shell
-sudo gitlab-ctl stop unicorn
 sudo gitlab-ctl stop puma
 sudo gitlab-ctl stop sidekiq
 # Verify
@@ -990,7 +995,6 @@ For Docker installations, the restore task can be run from host:
 
 ```shell
 # Stop the processes that are connected to the database
-docker exec -it <name of container> gitlab-ctl stop unicorn
 docker exec -it <name of container> gitlab-ctl stop puma
 docker exec -it <name of container> gitlab-ctl stop sidekiq
 

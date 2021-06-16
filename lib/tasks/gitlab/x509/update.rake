@@ -10,7 +10,7 @@ namespace :gitlab do
     end
 
     def update_certificates
-      logger = Logger.new(STDOUT)
+      logger = Logger.new($stdout)
 
       unless X509CommitSignature.exists?
         logger.info("Unable to find any x509 commit signatures. Exiting.")

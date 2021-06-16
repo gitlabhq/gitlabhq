@@ -3,6 +3,7 @@
 module Ci
   class PipelineSchedule < ApplicationRecord
     extend Gitlab::Ci::Model
+    extend ::Gitlab::Utils::Override
     include Importable
     include StripAttribute
     include CronSchedulable
@@ -53,6 +54,17 @@ module Ci
 
     def job_variables
       variables&.map(&:to_runner_variable) || []
+    end
+
+    override :set_next_run_at
+    def set_next_run_at
+      self.next_run_at = ::Ci::PipelineSchedules::CalculateNextRunService # rubocop: disable CodeReuse/ServiceClass
+                           .new(project)
+                           .execute(self, fallback_method: method(:calculate_next_run_at))
+    end
+
+    def daily_limit
+      project.actual_limits.limit_for(:ci_daily_pipeline_schedule_triggers)
     end
 
     private

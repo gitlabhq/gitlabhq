@@ -33,10 +33,10 @@ RSpec.describe 'User uses search filters', :js do
       wait_for_requests
 
       page.within('[data-testid="project-filter"]') do
-        click_on(group_project.full_name)
+        click_on(group_project.name)
       end
 
-      expect(find('[data-testid="project-filter"]')).to have_content(group_project.full_name)
+      expect(find('[data-testid="project-filter"]')).to have_content(group_project.name)
     end
 
     context 'when the group filter is set' do
@@ -65,10 +65,10 @@ RSpec.describe 'User uses search filters', :js do
       wait_for_requests
 
       page.within('[data-testid="project-filter"]') do
-        click_on(project.full_name)
+        click_on(project.name)
       end
 
-      expect(find('[data-testid="project-filter"]')).to have_content(project.full_name)
+      expect(find('[data-testid="project-filter"]')).to have_content(project.name)
     end
 
     context 'when the project filter is set' do

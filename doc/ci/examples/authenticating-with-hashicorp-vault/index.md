@@ -50,6 +50,7 @@ The JWT's payload looks like this:
   "user_login": "myuser"                         # GitLab @username
   "user_email": "myuser@example.com",            # Email of the user executing the job
   "pipeline_id": "1212",                         #
+  "pipeline_source": "web",                      # Pipeline source, see: https://docs.gitlab.com/ee/ci/yaml/#common-if-clauses-for-rules
   "job_id": "1212",                              #
   "ref": "auto-deploy-2020-04-01",               # Git ref for this job
   "ref_type": "branch",                          # Git ref type, branch or tag
@@ -201,6 +202,10 @@ read_secrets:
     # This will fail because the role myproject-staging can not read secrets from secret/myproject/production/*
     - export PASSWORD="$(vault kv get -field=password secret/myproject/production/db)"
 ```
+
+NOTE:
+If you're using a Vault instance provided by HashiCorp Cloud Platform, 
+you need to export the `VAULT_NAMESPACE` variable. Its default value is `admin`.
 
 ![read_secrets staging](img/vault-read-secrets-staging.png)
 

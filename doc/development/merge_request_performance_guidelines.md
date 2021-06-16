@@ -292,13 +292,13 @@ in a batch style.
 
 **Summary:** You should set a reasonable timeout when the system invokes HTTP calls
 to external services (such as Kubernetes), and it should be executed in Sidekiq, not
-in Puma/Unicorn threads.
+in Puma threads.
 
 Often, GitLab needs to communicate with an external service such as Kubernetes
 clusters. In this case, it's hard to estimate when the external service finishes
 the requested process, for example, if it's a user-owned cluster that's inactive for some reason,
 GitLab might wait for the response forever ([Example](https://gitlab.com/gitlab-org/gitlab/-/issues/31475)).
-This could result in Puma/Unicorn timeout and should be avoided at all cost.
+This could result in Puma timeout and should be avoided at all cost.
 
 You should set a reasonable timeout, gracefully handle exceptions and surface the
 errors in UI or logging internally.
@@ -598,10 +598,10 @@ Each feature that accepts data uploads or allows to download them needs to use
 saved directly to Object Storage by Workhorse, and all downloads needs to be served
 by Workhorse.
 
-Performing uploads/downloads via Unicorn/Puma is an expensive operation,
-as it blocks the whole processing slot (worker or thread) for the duration of the upload.
+Performing uploads/downloads via Puma is an expensive operation,
+as it blocks the whole processing slot (thread) for the duration of the upload.
 
-Performing uploads/downloads via Unicorn/Puma also has a problem where the operation
+Performing uploads/downloads via Puma also has a problem where the operation
 can time out, which is especially problematic for slow clients. If clients take a long time
 to upload/download the processing slot might be killed due to request processing
 timeout (usually between 30s-60s).

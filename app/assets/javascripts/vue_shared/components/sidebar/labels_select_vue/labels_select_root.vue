@@ -5,13 +5,12 @@ import Vuex, { mapState, mapActions, mapGetters } from 'vuex';
 import { isInViewport } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 
-import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select/dropdown_value_collapsed.vue';
-
 import { DropdownVariant } from './constants';
 import DropdownButton from './dropdown_button.vue';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownTitle from './dropdown_title.vue';
 import DropdownValue from './dropdown_value.vue';
+import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
 import labelsSelectModule from './store';
 
 Vue.use(Vuex);
@@ -60,6 +59,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    hideCollapsedView: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     labelsSelectInProgress: {
       type: Boolean,
@@ -294,6 +298,7 @@ export default {
   >
     <template v-if="isDropdownVariantSidebar">
       <dropdown-value-collapsed
+        v-if="!hideCollapsedView"
         ref="dropdownButtonCollapsed"
         :labels="selectedLabels"
         @onValueClick="handleCollapsedValueClick"

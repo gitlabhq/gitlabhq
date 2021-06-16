@@ -6,7 +6,7 @@ type: index
 description: "Test your code and display reports in merge requests"
 ---
 
-# Tests and reports in merge requests
+# Tests and reports in merge requests **(FREE)**
 
 GitLab has the ability to test the changes included in a feature branch and display reports
 or link to useful information directly from merge requests:

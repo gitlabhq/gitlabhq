@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200210135504_remove_packages_deprecated_dependencies.rb')
+require_migration!
 
 RSpec.describe RemovePackagesDeprecatedDependencies do
   let(:projects) { table(:projects) }

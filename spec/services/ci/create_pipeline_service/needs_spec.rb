@@ -211,7 +211,7 @@ RSpec.describe Ci::CreatePipelineService do
         deploy_a = processables.find { |processable| processable.name == 'deploy_a' }
         deploy_b = processables.find { |processable| processable.name == 'deploy_b' }
 
-        expect(pipeline).to be_persisted
+        expect(pipeline).to be_created_successfully
         expect(build_a.status).to eq('pending')
         expect(test_a.status).to eq('created')
         expect(test_b.status).to eq('pending')

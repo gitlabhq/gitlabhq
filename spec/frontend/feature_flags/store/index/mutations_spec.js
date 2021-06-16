@@ -3,7 +3,7 @@ import * as types from '~/feature_flags/store/index/mutation_types';
 import mutations from '~/feature_flags/store/index/mutations';
 import state from '~/feature_flags/store/index/state';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
-import { getRequestData, rotateData, featureFlag, userList } from '../../mock_data';
+import { getRequestData, rotateData, featureFlag } from '../../mock_data';
 
 describe('Feature flags store Mutations', () => {
   let stateCopy;
@@ -59,71 +59,17 @@ describe('Feature flags store Mutations', () => {
     });
 
     it('should set count with the given data', () => {
-      expect(stateCopy.count.featureFlags).toEqual(37);
+      expect(stateCopy.count).toEqual(37);
     });
 
     it('should set pagination', () => {
-      expect(stateCopy.pageInfo.featureFlags).toEqual(
-        parseIntPagination(normalizeHeaders(headers)),
-      );
+      expect(stateCopy.pageInfo).toEqual(parseIntPagination(normalizeHeaders(headers)));
     });
   });
 
   describe('RECEIVE_FEATURE_FLAGS_ERROR', () => {
     beforeEach(() => {
       mutations[types.RECEIVE_FEATURE_FLAGS_ERROR](stateCopy);
-    });
-
-    it('should set isLoading to false', () => {
-      expect(stateCopy.isLoading).toEqual(false);
-    });
-
-    it('should set hasError to true', () => {
-      expect(stateCopy.hasError).toEqual(true);
-    });
-  });
-
-  describe('REQUEST_USER_LISTS', () => {
-    it('sets isLoading to true', () => {
-      mutations[types.REQUEST_USER_LISTS](stateCopy);
-      expect(stateCopy.isLoading).toBe(true);
-    });
-  });
-
-  describe('RECEIVE_USER_LISTS_SUCCESS', () => {
-    const headers = {
-      'x-next-page': '2',
-      'x-page': '1',
-      'X-Per-Page': '2',
-      'X-Prev-Page': '',
-      'X-TOTAL': '37',
-      'X-Total-Pages': '5',
-    };
-
-    beforeEach(() => {
-      mutations[types.RECEIVE_USER_LISTS_SUCCESS](stateCopy, { data: [userList], headers });
-    });
-
-    it('sets isLoading to false', () => {
-      expect(stateCopy.isLoading).toBe(false);
-    });
-
-    it('sets userLists to the received userLists', () => {
-      expect(stateCopy.userLists).toEqual([userList]);
-    });
-
-    it('sets pagination info for user lits', () => {
-      expect(stateCopy.pageInfo.userLists).toEqual(parseIntPagination(normalizeHeaders(headers)));
-    });
-
-    it('sets the count for user lists', () => {
-      expect(stateCopy.count.userLists).toBe(parseInt(headers['X-TOTAL'], 10));
-    });
-  });
-
-  describe('RECEIVE_USER_LISTS_ERROR', () => {
-    beforeEach(() => {
-      mutations[types.RECEIVE_USER_LISTS_ERROR](stateCopy);
     });
 
     it('should set isLoading to false', () => {
@@ -214,7 +160,7 @@ describe('Feature flags store Mutations', () => {
         ...flagState,
         scopes: mapToScopesViewModel(flag.scopes || []),
       }));
-      stateCopy.count.featureFlags = stateCount;
+      stateCopy.count = stateCount;
 
       mutations[types.RECEIVE_UPDATE_FEATURE_FLAG_SUCCESS](stateCopy, {
         ...featureFlag,
@@ -241,8 +187,6 @@ describe('Feature flags store Mutations', () => {
         ...flag,
         scopes: mapToScopesViewModel(flag.scopes || []),
       }));
-      stateCopy.count = { enabled: 1, disabled: 0 };
-
       mutations[types.RECEIVE_UPDATE_FEATURE_FLAG_ERROR](stateCopy, featureFlag.id);
     });
 
@@ -254,36 +198,6 @@ describe('Feature flags store Mutations', () => {
           active: false,
         },
       ]);
-    });
-  });
-
-  describe('REQUEST_DELETE_USER_LIST', () => {
-    beforeEach(() => {
-      stateCopy.userLists = [userList];
-      mutations[types.REQUEST_DELETE_USER_LIST](stateCopy, userList);
-    });
-
-    it('should remove the deleted list', () => {
-      expect(stateCopy.userLists).not.toContain(userList);
-    });
-  });
-
-  describe('RECEIVE_DELETE_USER_LIST_ERROR', () => {
-    beforeEach(() => {
-      stateCopy.userLists = [];
-      mutations[types.RECEIVE_DELETE_USER_LIST_ERROR](stateCopy, {
-        list: userList,
-        error: 'some error',
-      });
-    });
-
-    it('should set isLoading to false and hasError to false', () => {
-      expect(stateCopy.isLoading).toBe(false);
-      expect(stateCopy.hasError).toBe(false);
-    });
-
-    it('should add the user list back to the list of user lists', () => {
-      expect(stateCopy.userLists).toContain(userList);
     });
   });
 

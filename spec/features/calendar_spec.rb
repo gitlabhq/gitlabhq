@@ -15,10 +15,9 @@ RSpec.describe 'Contributions Calendar', :js do
   issue_title = 'Bug in old browser'
   issue_params = { title: issue_title }
 
-  def get_cell_color_selector(contributions)
-    activity_colors = ["#ededed", "rgb(172, 213, 242)", "rgb(127, 168, 201)", "rgb(82, 123, 160)", "rgb(37, 78, 119)"]
+  def get_cell_level_selector(contributions)
     # We currently don't actually test the cases with contributions >= 20
-    activity_colors_index =
+    activity_level_index =
       if contributions > 0 && contributions < 10
         1
       elsif contributions >= 10 && contributions < 20
@@ -31,7 +30,7 @@ RSpec.describe 'Contributions Calendar', :js do
         0
       end
 
-    ".user-contrib-cell[fill='#{activity_colors[activity_colors_index]}']"
+    ".user-contrib-cell:not(.contrib-legend)[data-level='#{activity_level_index}']"
   end
 
   def get_cell_date_selector(contributions, date)
@@ -42,7 +41,7 @@ RSpec.describe 'Contributions Calendar', :js do
         "#{contributions} #{'contribution'.pluralize(contributions)}"
       end
 
-    "#{get_cell_color_selector(contributions)}[title='#{contribution_text}<br /><span class=\"gl-text-gray-300\">#{date}</span>']"
+    "#{get_cell_level_selector(contributions)}[title='#{contribution_text}<br /><span class=\"gl-text-gray-300\">#{date}</span>']"
   end
 
   def push_code_contribution
@@ -137,7 +136,7 @@ RSpec.describe 'Contributions Calendar', :js do
       include_context 'visit user page'
 
       it 'displays calendar activity square for 1 contribution', :sidekiq_might_not_need_inline do
-        expect(find('#js-overview')).to have_selector(get_cell_color_selector(contribution_count), count: 1)
+        expect(find('#js-overview')).to have_selector(get_cell_level_selector(contribution_count), count: 1)
 
         today = Date.today.strftime(date_format)
         expect(find('#js-overview')).to have_selector(get_cell_date_selector(contribution_count, today), count: 1)
@@ -187,7 +186,7 @@ RSpec.describe 'Contributions Calendar', :js do
       include_context 'visit user page'
 
       it 'displays calendar activity squares for both days', :sidekiq_might_not_need_inline do
-        expect(find('#js-overview')).to have_selector(get_cell_color_selector(1), count: 2)
+        expect(find('#js-overview')).to have_selector(get_cell_level_selector(1), count: 2)
       end
 
       it 'displays calendar activity square for yesterday', :sidekiq_might_not_need_inline do

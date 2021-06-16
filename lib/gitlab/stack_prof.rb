@@ -118,7 +118,6 @@ module Gitlab
       #
       # see also:
       # * https://github.com/puma/puma/blob/master/docs/signals.md#puma-signals
-      # * https://github.com/phusion/unicorn/blob/master/SIGNALS
       # * https://github.com/mperham/sidekiq/wiki/Signals
       Signal.trap('SIGUSR2') do
         write.write('.')

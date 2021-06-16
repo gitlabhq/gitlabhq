@@ -117,8 +117,8 @@ class PrometheusService < MonitoringService
     return false if template?
     return false unless project
 
-    project.all_clusters.enabled.eager_load(:application_prometheus).any? do |cluster|
-      cluster.application_prometheus&.available?
+    project.all_clusters.enabled.eager_load(:integration_prometheus).any? do |cluster|
+      cluster.integration_prometheus_available?
     end
   end
 

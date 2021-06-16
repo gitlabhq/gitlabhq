@@ -6,8 +6,7 @@
     "color",
     "description",
     "description_html",
-    "text_color",
-    "remove_on_close"
+    "text_color"
   ],
   "properties": {
     "id": { "type": "integer" },
@@ -21,8 +20,7 @@
     "text_color": {
       "type": "string",
       "pattern": "^#[0-9A-Fa-f]{3}{1,2}$"
-    },
-    "remove_on_close": { "type": "boolean" }
+    }
   },
   "additionalProperties": false
 }

@@ -1,3 +1,0 @@
-- return unless Gitlab::Experimentation.active?(:invite_members_new_dropdown) && can?(current_user, :admin_group_member, @group)
-
-%li= dropdown_invite_members_link(@group)

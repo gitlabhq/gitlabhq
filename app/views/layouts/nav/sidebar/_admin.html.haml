@@ -1,14 +1,17 @@
+- avatar_size = sidebar_refactor_disabled? ? 24 : 18
+- avatar_size_class = sidebar_refactor_disabled? ? 's40' : 's32'
+
 %aside.nav-sidebar.qa-admin-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), 'aria-label': _('Admin navigation') }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to admin_root_path, title: _('Admin Overview') do
-        %span.avatar-container.s40.settings-avatar
-          = sprite_icon('admin', size: 24)
+        %span{ class: ['avatar-container', 'settings-avatar', 'rect-avatar', avatar_size_class] }
+          = sprite_icon('admin', size: avatar_size)
         %span.sidebar-context-title
           = _('Admin Area')
     %ul.sidebar-top-level-items{ data: { qa_selector: 'admin_sidebar_overview_submenu_content' } }
       = nav_link(controller: %w(dashboard admin admin/projects users groups jobs runners gitaly_servers), html_options: {class: 'home'}) do
-        = link_to admin_root_path do
+        = link_to admin_root_path, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('overview')
           %span.nav-item-name
@@ -49,7 +52,7 @@
                 = _('Gitaly Servers')
 
       = nav_link(controller: admin_analytics_nav_links) do
-        = link_to admin_dev_ops_report_path, data: { qa_selector: 'admin_analytics_link' } do
+        = link_to admin_dev_ops_report_path, data: { qa_selector: 'admin_analytics_link' }, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('chart')
           %span.nav-item-name
@@ -71,14 +74,14 @@
                 = _('Usage Trends')
 
       = nav_link(controller: admin_monitoring_nav_links) do
-        = link_to admin_system_info_path, data: { qa_selector: 'admin_monitoring_link' } do
+        = link_to admin_system_info_path, data: { qa_selector: 'admin_monitoring_link' }, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('monitor')
           %span.nav-item-name
             = _('Monitoring')
 
         %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_monitoring_submenu_content' } }
-          = nav_link(controller: %w(system_info background_jobs health_check requests_profiles), html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: admin_monitoring_nav_links, html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_system_info_path do
               %strong.fly-out-top-item-name
                 = _('Monitoring')
@@ -87,6 +90,10 @@
             = link_to admin_system_info_path, title: _('System Info') do
               %span
                 = _('System Info')
+          = nav_link(controller: :background_migrations) do
+            = link_to admin_background_migrations_path, title: _('Background Migrations') do
+              %span
+                = _('Background Migrations')
           = nav_link(controller: :background_jobs) do
             = link_to admin_background_jobs_path, title: _('Background Jobs') do
               %span
@@ -227,20 +234,8 @@
               %strong.fly-out-top-item-name
                 = _('Labels')
 
-      = nav_link(controller: :appearances) do
-        = link_to admin_appearances_path do
-          .nav-icon-container
-            = sprite_icon('appearance')
-          %span.nav-item-name
-            = _('Appearance')
-        %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: :appearances, html_options: { class: "fly-out-top-item" } ) do
-            = link_to admin_appearances_path do
-              %strong.fly-out-top-item-name
-                = _('Appearance')
-
-      = nav_link(controller: [:application_settings, :integrations]) do
-        = link_to general_admin_application_settings_path do
+      = nav_link(controller: [:application_settings, :integrations, :appearances]) do
+        = link_to general_admin_application_settings_path, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('settings')
           %span.nav-item-name.qa-admin-settings-item
@@ -248,7 +243,7 @@
 
         %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_settings_submenu_content' } }
           -# This active_nav_link check is also used in `app/views/layouts/admin.html.haml`
-          = nav_link(controller: [:application_settings, :integrations], html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: [:application_settings, :integrations, :appearances], html_options: { class: "fly-out-top-item" } ) do
             = link_to general_admin_application_settings_path do
               %strong.fly-out-top-item-name
                 = _('Settings')
@@ -295,6 +290,10 @@
               = link_to network_admin_application_settings_path, title: _('Network'), data: { qa_selector: 'admin_settings_network_item' } do
                 %span
                   = _('Network')
+            = nav_link(controller: :appearances ) do
+              = link_to admin_application_settings_appearances_path do
+                %span
+                  = _('Appearance')
             = nav_link(path: 'application_settings#preferences') do
               = link_to preferences_admin_application_settings_path, title: _('Preferences'), data: { qa_selector: 'admin_settings_preferences_link' } do
                 %span

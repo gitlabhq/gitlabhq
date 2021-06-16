@@ -26,7 +26,7 @@ export default {
       return this.missingData
         ? s__(`ServerlessDetails|Invocation metrics loading or not available at this time.`)
         : s__(
-            `ServerlessDetails|Function invocation metrics require Prometheus to be installed first.`,
+            `ServerlessDetails|Function invocation metrics require the Prometheus cluster integration.`,
           );
     },
   },
@@ -48,7 +48,7 @@ export default {
 
         <div v-if="!missingData" class="text-left">
           <gl-button :href="clustersPath" variant="success" category="primary">
-            {{ s__('ServerlessDetails|Install Prometheus') }}
+            {{ s__('ServerlessDetails|Configure cluster.') }}
           </gl-button>
         </div>
       </div>

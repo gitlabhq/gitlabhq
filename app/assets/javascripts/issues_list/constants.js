@@ -281,8 +281,18 @@ export const SPECIAL_FILTER = 'specialFilter';
 export const ALTERNATIVE_FILTER = 'alternativeFilter';
 export const SPECIAL_FILTER_VALUES = [FILTER_NONE, FILTER_ANY, FILTER_CURRENT];
 
+export const TOKEN_TYPE_AUTHOR = 'author_username';
+export const TOKEN_TYPE_ASSIGNEE = 'assignee_username';
+export const TOKEN_TYPE_MILESTONE = 'milestone';
+export const TOKEN_TYPE_LABEL = 'labels';
+export const TOKEN_TYPE_MY_REACTION = 'my_reaction_emoji';
+export const TOKEN_TYPE_CONFIDENTIAL = 'confidential';
+export const TOKEN_TYPE_ITERATION = 'iteration';
+export const TOKEN_TYPE_EPIC = 'epic_id';
+export const TOKEN_TYPE_WEIGHT = 'weight';
+
 export const filters = {
-  author_username: {
+  [TOKEN_TYPE_AUTHOR]: {
     [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'author_username',
@@ -300,7 +310,7 @@ export const filters = {
       },
     },
   },
-  assignee_username: {
+  [TOKEN_TYPE_ASSIGNEE]: {
     [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'assignee_username',
@@ -321,7 +331,7 @@ export const filters = {
       },
     },
   },
-  milestone: {
+  [TOKEN_TYPE_MILESTONE]: {
     [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'milestone',
@@ -339,7 +349,7 @@ export const filters = {
       },
     },
   },
-  labels: {
+  [TOKEN_TYPE_LABEL]: {
     [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'labels',
@@ -357,7 +367,7 @@ export const filters = {
       },
     },
   },
-  my_reaction_emoji: {
+  [TOKEN_TYPE_MY_REACTION]: {
     [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'my_reaction_emoji',
@@ -371,7 +381,7 @@ export const filters = {
       },
     },
   },
-  confidential: {
+  [TOKEN_TYPE_CONFIDENTIAL]: {
     [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'confidential',
@@ -383,7 +393,7 @@ export const filters = {
       },
     },
   },
-  iteration: {
+  [TOKEN_TYPE_ITERATION]: {
     [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'iteration_title',
@@ -403,7 +413,7 @@ export const filters = {
       },
     },
   },
-  epic_id: {
+  [TOKEN_TYPE_EPIC]: {
     [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'epic_id',
@@ -423,7 +433,7 @@ export const filters = {
       },
     },
   },
-  weight: {
+  [TOKEN_TYPE_WEIGHT]: {
     [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'weight',

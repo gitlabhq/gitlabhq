@@ -13,14 +13,18 @@
 
 - if can?(current_user, :read_issue, @project) && @milestone.total_issues_count == 0
   .gl-alert.gl-alert-info.gl-mt-3.gl-mb-5{ data: { testid: 'no-issues-alert' } }
-    = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    .gl-alert-body
-      %span= _('Assign some issues to this milestone.')
+    .gl-alert-container
+      = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-content
+        .gl-alert-body
+          %span= _('Assign some issues to this milestone.')
 - elsif @milestone.complete? && @milestone.active?
   .gl-alert.gl-alert-success.gl-mt-3.gl-mb-5{ data: { testid: 'all-issues-closed-alert' } }
-    = sprite_icon('check-circle', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    .gl-alert-body
-      %span= _('All issues for this milestone are closed. You may close this milestone now.')
+    .gl-alert-container
+      = sprite_icon('check-circle', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-content
+        .gl-alert-body
+          %span= _('All issues for this milestone are closed. You may close this milestone now.')
 
 = render 'shared/milestones/tabs', milestone: @milestone
 = render 'shared/milestones/sidebar', milestone: @milestone, project: @project, affix_offset: 153

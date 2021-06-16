@@ -1,0 +1,8 @@
+---
+name: ci_untrack_shared_runner_builds
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62912
+rollout_issue_url:
+milestone: '14.0'
+type: development
+group: group::pipeline execution
+default_enabled: false

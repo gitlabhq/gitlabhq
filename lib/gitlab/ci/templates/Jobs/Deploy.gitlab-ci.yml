@@ -1,5 +1,5 @@
 .auto-deploy:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v1.0.7"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v2.6.0"
   dependencies: []
 
 review:
@@ -91,7 +91,7 @@ canary:
     - auto-deploy ensure_namespace
     - auto-deploy initialize_tiller
     - auto-deploy create_secret
-    - auto-deploy deploy canary
+    - auto-deploy deploy canary 50
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
@@ -114,7 +114,6 @@ canary:
     - auto-deploy create_secret
     - auto-deploy deploy
     - auto-deploy delete canary
-    - auto-deploy delete rollout
     - auto-deploy persist_environment_url
   environment:
     name: production
@@ -163,9 +162,7 @@ production_manual:
     - auto-deploy ensure_namespace
     - auto-deploy initialize_tiller
     - auto-deploy create_secret
-    - auto-deploy deploy rollout $ROLLOUT_PERCENTAGE
-    - auto-deploy scale stable $((100-ROLLOUT_PERCENTAGE))
-    - auto-deploy delete canary
+    - auto-deploy deploy canary $ROLLOUT_PERCENTAGE
     - auto-deploy persist_environment_url
   environment:
     name: production

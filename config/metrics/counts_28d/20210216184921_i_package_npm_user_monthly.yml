@@ -1,16 +1,18 @@
 ---
 key_path: redis_hll_counters.user_packages.i_package_npm_user_monthly
-description: ''
-product_section: ''
-product_stage: ''
-product_group: ''
-product_category: ''
+description: A monthly count of users that have published an npm package to the registry
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category: package registry
 value_type: number
 status: data_available
 time_frame: 28d
 data_source: redis_hll
 distribution:
+- ee
 - ce
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

@@ -19,6 +19,8 @@ export default {
   renamed_file: false,
   old_path: 'CHANGELOG',
   new_path: 'CHANGELOG',
+  old_size: 1024,
+  new_size: 2048,
   mode_changed: false,
   a_mode: '100644',
   b_mode: '100644',

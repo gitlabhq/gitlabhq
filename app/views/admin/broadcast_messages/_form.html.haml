@@ -1,10 +1,12 @@
 .broadcast-message.broadcast-banner-message.gl-alert-warning.js-broadcast-banner-message-preview.gl-mt-3{ style: broadcast_message_style(@broadcast_message), class: ('gl-display-none' unless @broadcast_message.banner? ) }
-  = sprite_icon('bullhorn', css_class: 'vertical-align-text-top')
-  .js-broadcast-message-preview
-    - if @broadcast_message.message.present?
-      = render_broadcast_message(@broadcast_message)
-    - else
-      = _('Your message here')
+  .gl-alert-container
+    = sprite_icon('bullhorn', css_class: 'vertical-align-text-top')
+    .js-broadcast-message-preview
+      .gl-alert-content
+        - if @broadcast_message.message.present?
+          = render_broadcast_message(@broadcast_message)
+        - else
+          = _('Your message here')
 .d-flex.justify-content-center
   .broadcast-message.broadcast-notification-message.preview.js-broadcast-notification-message-preview.mt-2{ class: ('hidden' unless @broadcast_message.notification? ) }
     = sprite_icon('bullhorn', css_class: 'vertical-align-text-top')

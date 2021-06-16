@@ -15,16 +15,10 @@ module Banzai
       def call
         return doc if context[:system_note]
 
-        if Feature.enabled?(:optimize_linkable_attributes, project, default_enabled: :yaml)
-          # We exclude processed upload links from the linkable attributes to
-          # prevent further modifications by RepositoryLinkFilter
-          linkable_attributes.reject! do |attr|
-            process_link_to_upload_attr(attr)
-          end
-        else
-          linkable_attributes.each do |attr|
-            process_link_to_upload_attr(attr)
-          end
+        # We exclude processed upload links from the linkable attributes to
+        # prevent further modifications by RepositoryLinkFilter
+        linkable_attributes.reject! do |attr|
+          process_link_to_upload_attr(attr)
         end
 
         doc

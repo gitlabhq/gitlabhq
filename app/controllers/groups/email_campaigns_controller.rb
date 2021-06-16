@@ -16,7 +16,7 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
 
   def track_click
     if Gitlab.com?
-      message = Gitlab::Email::Message::InProductMarketing.for(@track).new(group: group, series: @series)
+      message = Gitlab::Email::Message::InProductMarketing.for(@track).new(group: group, user: current_user, series: @series)
 
       data = {
         namespace_id: group.id,
@@ -26,7 +26,7 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
       }
       context = SnowplowTracker::SelfDescribingJson.new(EMAIL_CAMPAIGNS_SCHEMA_URL, data)
 
-      ::Gitlab::Tracking.event(self.class.name, 'click', context: [context])
+      ::Gitlab::Tracking.event(self.class.name, 'click', context: [context], user: current_user, namespace: group)
     else
       ::Users::InProductMarketingEmail.save_cta_click(current_user, @track, @series)
     end
@@ -58,8 +58,9 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
     @series = params[:series]&.to_i
 
     track_valid = @track.in?(Namespaces::InProductMarketingEmailsService::TRACKS.keys)
-    series_valid = @series.in?(0..Namespaces::InProductMarketingEmailsService::INTERVAL_DAYS.size - 1)
+    return render_404 unless track_valid
 
-    render_404 unless track_valid && series_valid
+    series_valid = @series.in?(0..Namespaces::InProductMarketingEmailsService::TRACKS[@track][:interval_days].size - 1)
+    render_404 unless series_valid
   end
 end

@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.deploy_token_packages.i_package_rubygems_deploy_token_weekly
-description: Distinct RubyGems pakages deployed in recent 7 days
+description: A weekly count of distinct RubyGems packages published using a deploy token
 product_section: ops
 product_stage: package
 product_group: group::package

@@ -549,30 +549,39 @@ RSpec.describe Gitlab::ProjectSearchResults do
 
   describe 'user search' do
     let(:query) { 'gob' }
-    let(:group) { create(:group) }
-    let(:project) { create(:project, namespace: group) }
+
+    let_it_be(:user_1) { create(:user, username: 'gob_bluth') }
+    let_it_be(:user_2) { create(:user, username: 'michael_bluth') }
+    let_it_be(:user_3) { create(:user, username: 'gob_2018') }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, namespace: group) }
 
     subject(:objects) { results.objects('users') }
 
     it 'returns the user belonging to the project matching the search query' do
-      user1 = create(:user, username: 'gob_bluth')
-      create(:project_member, :developer, user: user1, project: project)
+      create(:project_member, :developer, user: user_1, project: project)
+      create(:project_member, :developer, user: user_2, project: project)
 
-      user2 = create(:user, username: 'michael_bluth')
-      create(:project_member, :developer, user: user2, project: project)
-
-      create(:user, username: 'gob_2018')
-
-      expect(objects).to contain_exactly(user1)
+      expect(objects).to contain_exactly(user_1)
     end
 
     it 'returns the user belonging to the group matching the search query' do
-      user1 = create(:user, username: 'gob_bluth')
-      create(:group_member, :developer, user: user1, group: group)
+      create(:group_member, :developer, user: user_1, group: group)
 
-      create(:user, username: 'gob_2018')
+      expect(objects).to contain_exactly(user_1)
+    end
 
-      expect(objects).to contain_exactly(user1)
+    context 'when multiple projects provided' do
+      let_it_be(:project_2) { create(:project, namespace: group) }
+
+      subject(:results) { described_class.new(user, query, project: [project, project_2], repository_ref: repository_ref, filters: filters) }
+
+      it 'returns users belonging to projects matching the search query' do
+        create(:project_member, :developer, user: user_1, project: project)
+        create(:project_member, :developer, user: user_3, project: project_2)
+
+        expect(objects).to contain_exactly(user_1, user_3)
+      end
     end
   end
 end

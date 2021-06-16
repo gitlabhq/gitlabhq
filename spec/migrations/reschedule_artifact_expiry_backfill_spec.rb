@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'post_migrate', '20210224150506_reschedule_artifact_expiry_backfill.rb')
+require_migration!
 
 RSpec.describe RescheduleArtifactExpiryBackfill, :migration do
   let(:migration_class) { Gitlab::BackgroundMigration::BackfillArtifactExpiryDate }

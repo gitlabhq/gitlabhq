@@ -16,7 +16,7 @@ namespace :gitlab do
     # category to object storage
     desc 'GitLab | Uploads | Migrate the uploaded files of specified type to object storage'
     task :migrate, [:uploader_class, :model_class, :mounted_as] => :environment do |_t, args|
-      Gitlab::Uploads::MigrationHelper.new(args, Logger.new(STDOUT)).migrate_to_remote_storage
+      Gitlab::Uploads::MigrationHelper.new(args, Logger.new($stdout)).migrate_to_remote_storage
     end
 
     namespace :migrate_to_local do
@@ -31,7 +31,7 @@ namespace :gitlab do
 
     desc 'GitLab | Uploads | Migrate the uploaded files of specified type to local storage'
     task :migrate_to_local, [:uploader_class, :model_class, :mounted_as] => :environment do |_t, args|
-      Gitlab::Uploads::MigrationHelper.new(args, Logger.new(STDOUT)).migrate_to_local_storage
+      Gitlab::Uploads::MigrationHelper.new(args, Logger.new($stdout)).migrate_to_local_storage
     end
   end
 end

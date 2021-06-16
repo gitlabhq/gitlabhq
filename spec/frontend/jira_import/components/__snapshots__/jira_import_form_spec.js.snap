@@ -73,6 +73,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
           aria-label="Will be mapped to"
           class="gl-icon s16"
           data-testid="arrow-right-icon"
+          role="img"
         >
           <use
             href="#arrow-right"
@@ -109,6 +110,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
               aria-hidden="true"
               class="gl-button-icon dropdown-chevron gl-icon s16"
               data-testid="chevron-down-icon"
+              role="img"
             >
               <use
                 href="#chevron-down"
@@ -135,6 +137,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                     aria-hidden="true"
                     class="gl-search-box-by-type-search-icon gl-icon s16"
                     data-testid="search-icon"
+                    role="img"
                   >
                     <use
                       href="#search"
@@ -198,6 +201,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
           aria-label="Will be mapped to"
           class="gl-icon s16"
           data-testid="arrow-right-icon"
+          role="img"
         >
           <use
             href="#arrow-right"
@@ -234,6 +238,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
               aria-hidden="true"
               class="gl-button-icon dropdown-chevron gl-icon s16"
               data-testid="chevron-down-icon"
+              role="img"
             >
               <use
                 href="#chevron-down"
@@ -260,6 +265,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                     aria-hidden="true"
                     class="gl-search-box-by-type-search-icon gl-icon s16"
                     data-testid="search-icon"
+                    role="img"
                   >
                     <use
                       href="#search"

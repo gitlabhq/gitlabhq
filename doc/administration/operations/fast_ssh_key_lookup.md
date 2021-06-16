@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Fast lookup of authorized SSH keys in the database
+# Fast lookup of authorized SSH keys in the database **(FREE SELF)**
 
 NOTE:
 This document describes a drop-in replacement for the
@@ -34,8 +34,15 @@ feature for CentOS 6, follow [the instructions on how to build and install a cus
 
 ## Fast lookup is required for Geo **(PREMIUM)**
 
-By default, GitLab manages an `authorized_keys` file, which contains all the
-public SSH keys for users allowed to access GitLab. However, to maintain a
+By default, GitLab manages an `authorized_keys` file that is located in the
+`git` user's home directory. For most installations, this will be located under
+`/var/opt/gitlab/.ssh/authorized_keys`, but you can use the following command to locate the `authorized_keys` on your system.:
+
+```shell
+getent passwd git | cut -d: -f6 | awk '{print $1"/.ssh/authorized_keys"}'
+```
+
+The `authorized_keys` file contains all the public SSH keys for users allowed to access GitLab. However, to maintain a
 single source of truth, [Geo](../geo/index.md) needs to be configured to perform SSH fingerprint
 lookups via database lookup.
 
@@ -73,7 +80,7 @@ sudo service sshd reload
 ```
 
 Confirm that SSH is working by commenting out your user's key in the `authorized_keys`
-(start the line with a `#` to comment it), and attempting to pull a repository.
+file (start the line with a `#` to comment it), and attempting to pull a repository.
 
 A successful pull would mean that GitLab was able to find the key in the database,
 since it is not present in the file anymore.
@@ -219,5 +226,5 @@ the database. The following instructions can be used to build OpenSSH 7.5:
 GitLab supports `authorized_keys` database lookups with [SELinux](https://en.wikipedia.org/wiki/Security-Enhanced_Linux).
 
 Because the SELinux policy is static, GitLab doesn't support the ability to change
-internal Unicorn ports at the moment. Administrators would have to create a special `.te`
+internal webserver ports at the moment. Administrators would have to create a special `.te`
 file for the environment, since it isn't generated dynamically.

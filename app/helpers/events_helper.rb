@@ -157,7 +157,7 @@ module EventsHelper
         project_commit_url(event.project,
                                      id: event.commit_to)
       end
-    else
+    elsif event.ref_name
       project_commits_url(event.project,
                                     event.ref_name)
     end

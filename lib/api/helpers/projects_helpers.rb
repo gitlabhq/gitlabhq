@@ -16,6 +16,7 @@ module API
         optional :build_coverage_regex, type: String, desc: 'Test coverage parsing'
         optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
         optional :service_desk_enabled, type: Boolean, desc: 'Disable or enable the service desk'
+        optional :keep_latest_artifact, type: Boolean, desc: 'Indicates if the latest artifact should be kept for this project.'
 
         # TODO: remove in API v5, replaced by *_access_level
         optional :issues_enabled, type: Boolean, desc: 'Flag indication if the issue tracker is enabled'
@@ -51,7 +52,8 @@ module API
         optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :allow_merge_on_skipped_pipeline, type: Boolean, desc: 'Allow to merge if pipeline is skipped'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
-        optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The list of tags for a project'
+        optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Deprecated: Use :topics instead'
+        optional :topics, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The list of topics for a project'
         # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
         optional :avatar, type: File, desc: 'Avatar image for project' # rubocop:disable Scalability/FileUploads
         optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'
@@ -146,6 +148,7 @@ module API
           :shared_runners_enabled,
           :snippets_access_level,
           :tag_list,
+          :topics,
           :visibility,
           :wiki_access_level,
           :avatar,
@@ -154,6 +157,7 @@ module API
           :compliance_framework_setting,
           :packages_enabled,
           :service_desk_enabled,
+          :keep_latest_artifact,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

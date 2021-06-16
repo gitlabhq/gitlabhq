@@ -94,7 +94,7 @@ project.actual_limits.exceeded?(:project_hooks, 10)
 
 #### `Limitable` concern
 
-The [`Limitable` concern](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/limitable.rb)
+The [`Limitable` concern](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/limitable.rb)
 can be used to validate that a model does not exceed the limits. It ensures
 that the count of the records for the current model does not exceed the defined
 limit.

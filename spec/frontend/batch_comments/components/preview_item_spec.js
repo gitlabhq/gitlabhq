@@ -104,7 +104,7 @@ describe('Batch comments draft preview item component', () => {
           notes: [
             {
               author: {
-                name: 'Author Name',
+                name: "Author 'Nick' Name",
               },
             },
           ],
@@ -114,7 +114,7 @@ describe('Batch comments draft preview item component', () => {
 
     it('renders title', () => {
       expect(vm.$el.querySelector('.review-preview-item-header-text').textContent).toContain(
-        "Author Name's thread",
+        "Author 'Nick' Name's thread",
       );
     });
 

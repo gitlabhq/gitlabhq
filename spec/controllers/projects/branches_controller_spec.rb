@@ -655,21 +655,6 @@ RSpec.describe Projects::BranchesController do
           ["feature", "improve/awesome", "merge-test", "markdown", "feature_conflict", "'test'"]
         )
       end
-
-      context 'branch_list_keyset_pagination is disabled' do
-        before do
-          stub_feature_flags(branch_list_keyset_pagination: false)
-        end
-
-        it 'sets active and stale branches' do
-          expect(assigns[:active_branches].map(&:name)).not_to include(
-            "feature", "improve/awesome", "merge-test", "markdown", "feature_conflict", "'test'"
-          )
-          expect(assigns[:stale_branches].map(&:name)).to eq(
-            ["feature", "improve/awesome", "merge-test", "markdown", "feature_conflict", "'test'"]
-          )
-        end
-      end
     end
   end
 

@@ -16,6 +16,7 @@ module Members
     end
 
     def execute
+      validate_invite_source!
       validate_invites!
 
       add_members
@@ -31,6 +32,10 @@ module Members
 
     def invites_from_params
       params[:user_ids]
+    end
+
+    def validate_invite_source!
+      raise ArgumentError, s_('AddMember|No invite source provided.') unless invite_source.present?
     end
 
     def validate_invites!
@@ -70,6 +75,23 @@ module Members
       prefix = "#{member.user.username}: " if member.user.present?
 
       errors << "#{prefix}#{member.errors.full_messages.to_sentence}"
+    end
+
+    def after_execute(member:)
+      super
+
+      Gitlab::Tracking.event(self.class.name, 'create_member', label: invite_source, property: tracking_property(member), user: current_user)
+    end
+
+    def invite_source
+      params[:invite_source]
+    end
+
+    def tracking_property(member)
+      # ideally invites go down the invite service class instead, but there is nothing that limits an invite
+      # from being used in this class and if you send emails as a comma separated list to the api/members
+      # endpoint, it will support invites
+      member.invite? ? 'net_new_user' : 'existing_user'
     end
 
     def user_limit

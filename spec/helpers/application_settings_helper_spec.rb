@@ -37,8 +37,24 @@ RSpec.describe ApplicationSettingsHelper do
   it_behaves_like 'when HTTP protocol is in use', 'https'
   it_behaves_like 'when HTTP protocol is in use', 'http'
 
-  context 'with tracking parameters' do
-    it { expect(visible_attributes).to include(*%i(snowplow_collector_hostname snowplow_cookie_domain snowplow_enabled snowplow_app_id)) }
+  describe '.visible_attributes' do
+    it 'contains tracking parameters' do
+      expect(helper.visible_attributes).to include(*%i(snowplow_collector_hostname snowplow_cookie_domain snowplow_enabled snowplow_app_id))
+    end
+
+    it 'contains :deactivate_dormant_users' do
+      expect(helper.visible_attributes).to include(:deactivate_dormant_users)
+    end
+
+    context 'when GitLab.com' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return(true)
+      end
+
+      it 'does not contain :deactivate_dormant_users' do
+        expect(helper.visible_attributes).not_to include(:deactivate_dormant_users)
+      end
+    end
   end
 
   describe '.integration_expanded?' do

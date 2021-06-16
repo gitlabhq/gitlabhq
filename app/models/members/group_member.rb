@@ -8,7 +8,7 @@ class GroupMember < Member
 
   belongs_to :group, foreign_key: 'source_id'
   alias_attribute :namespace_id, :source_id
-  delegate :update_two_factor_requirement, to: :user
+  delegate :update_two_factor_requirement, to: :user, allow_nil: true
 
   # Make sure group member points only to group as it source
   default_value_for :source_type, SOURCE_TYPE
@@ -34,6 +34,10 @@ class GroupMember < Member
 
   def self.access_levels
     Gitlab::Access.sym_options_with_owner
+  end
+
+  def self.pluck_user_ids
+    pluck(:user_id)
   end
 
   def group

@@ -64,5 +64,6 @@ export default {
     :loading="isLoading"
     :participants="participants"
     :number-of-less-participants="7"
+    class="block participants"
   />
 </template>

@@ -27,7 +27,6 @@ RSpec.describe Sidebars::Projects::Menus::LearnGitlabMenu do
       {
         class: 'home',
         data: {
-          track_action: 'click_menu',
           track_property: tracking_category,
           track_label: 'learn_gitlab'
         }

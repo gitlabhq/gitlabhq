@@ -187,15 +187,6 @@ RSpec.describe Ci::BuildDependencies do
             it { expect(cross_pipeline_deps).to contain_exactly(upstream_job) }
             it { is_expected.to be_valid }
           end
-
-          context 'when feature flag `ci_cross_pipeline_artifacts_download` is disabled' do
-            before do
-              stub_feature_flags(ci_cross_pipeline_artifacts_download: false)
-            end
-
-            it { expect(cross_pipeline_deps).to be_empty }
-            it { is_expected.to be_valid }
-          end
         end
 
         context 'when same job names exist in other pipelines in the hierarchy' do

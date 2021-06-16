@@ -274,33 +274,33 @@ describe('WebIDE utils', () => {
    *  hello.md -> hello-1.md
    *  hello_2.md -> hello_3.md
    *  hello_ -> hello_1
-   *  master-patch-22432 -> master-patch-22433
+   *  main-patch-22432 -> main-patch-22433
    *  patch_332 -> patch_333
    */
 
   describe('addNumericSuffix', () => {
     it.each`
-      input                   | output
-      ${'hello'}              | ${'hello-1'}
-      ${'hello2'}             | ${'hello-3'}
-      ${'hello.md'}           | ${'hello-1.md'}
-      ${'hello_2.md'}         | ${'hello_3.md'}
-      ${'hello_'}             | ${'hello_1'}
-      ${'master-patch-22432'} | ${'master-patch-22433'}
-      ${'patch_332'}          | ${'patch_333'}
+      input                 | output
+      ${'hello'}            | ${'hello-1'}
+      ${'hello2'}           | ${'hello-3'}
+      ${'hello.md'}         | ${'hello-1.md'}
+      ${'hello_2.md'}       | ${'hello_3.md'}
+      ${'hello_'}           | ${'hello_1'}
+      ${'main-patch-22432'} | ${'main-patch-22433'}
+      ${'patch_332'}        | ${'patch_333'}
     `('adds a numeric suffix to a given filename/branch name: $input', ({ input, output }) => {
       expect(addNumericSuffix(input)).toBe(output);
     });
 
     it.each`
-      input                   | output
-      ${'hello'}              | ${'hello-39135'}
-      ${'hello2'}             | ${'hello-39135'}
-      ${'hello.md'}           | ${'hello-39135.md'}
-      ${'hello_2.md'}         | ${'hello_39135.md'}
-      ${'hello_'}             | ${'hello_39135'}
-      ${'master-patch-22432'} | ${'master-patch-39135'}
-      ${'patch_332'}          | ${'patch_39135'}
+      input                 | output
+      ${'hello'}            | ${'hello-39135'}
+      ${'hello2'}           | ${'hello-39135'}
+      ${'hello.md'}         | ${'hello-39135.md'}
+      ${'hello_2.md'}       | ${'hello_39135.md'}
+      ${'hello_'}           | ${'hello_39135'}
+      ${'main-patch-22432'} | ${'main-patch-39135'}
+      ${'patch_332'}        | ${'patch_39135'}
     `('adds a random suffix if randomize=true is passed for name: $input', ({ input, output }) => {
       jest.spyOn(Math, 'random').mockReturnValue(0.391352525);
 

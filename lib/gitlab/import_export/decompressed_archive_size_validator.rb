@@ -32,7 +32,16 @@ module Gitlab
         Timeout.timeout(TIMEOUT_LIMIT) do
           stdin, stdout, stderr, wait_thr = Open3.popen3(command, pgroup: true)
           stdin.close
-          pgrp = Process.getpgid(wait_thr[:pid])
+
+          # When validation is performed on a small archive (e.g. 100 bytes)
+          # `wait_thr` finishes before we can get process group id. Do not
+          # raise exception in this scenario.
+          pgrp = begin
+            Process.getpgid(wait_thr[:pid])
+          rescue Errno::ESRCH
+            nil
+          end
+
           status = wait_thr.value
 
           if status.success?

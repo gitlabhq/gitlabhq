@@ -41,6 +41,8 @@ RSpec.describe 'OpenID Connect requests' do
     }
   end
 
+  let(:cors_request_headers) { { 'Origin' => 'http://notgitlab.com' } }
+
   def request_access_token!
     login_as user
 
@@ -78,6 +80,24 @@ RSpec.describe 'OpenID Connect requests' do
 
       expect(response).to have_gitlab_http_status(:forbidden)
       expect(response.body).to be_blank
+    end
+  end
+
+  shared_examples 'cross-origin GET request' do
+    it 'allows cross-origin request' do
+      expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
+      expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, HEAD'
+      expect(response.headers['Access-Control-Allow-Headers']).to be_nil
+      expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
+    end
+  end
+
+  shared_examples 'cross-origin GET and POST request' do
+    it 'allows cross-origin request' do
+      expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
+      expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, HEAD, POST'
+      expect(response.headers['Access-Control-Allow-Headers']).to be_nil
+      expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
     end
   end
 
@@ -180,6 +200,51 @@ RSpec.describe 'OpenID Connect requests' do
         expect(response).to redirect_to('/users/sign_in')
       end
     end
+
+    context 'OpenID Discovery keys' do
+      context 'with a cross-origin request' do
+        before do
+          get '/oauth/discovery/keys', headers: cors_request_headers
+        end
+
+        it 'returns data' do
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it_behaves_like 'cross-origin GET request'
+      end
+
+      context 'with a cross-origin preflight OPTIONS request' do
+        before do
+          options '/oauth/discovery/keys', headers: cors_request_headers
+        end
+
+        it_behaves_like 'cross-origin GET request'
+      end
+    end
+
+    context 'OpenID WebFinger endpoint' do
+      context 'with a cross-origin request' do
+        before do
+          get '/.well-known/webfinger', headers: cors_request_headers, params: { resource: 'user@example.com' }
+        end
+
+        it 'returns data' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['subject']).to eq('user@example.com')
+        end
+
+        it_behaves_like 'cross-origin GET request'
+      end
+    end
+
+    context 'with a cross-origin preflight OPTIONS request' do
+      before do
+        options '/.well-known/webfinger', headers: cors_request_headers, params: { resource: 'user@example.com' }
+      end
+
+      it_behaves_like 'cross-origin GET request'
+    end
   end
 
   context 'OpenID configuration information' do
@@ -190,6 +255,27 @@ RSpec.describe 'OpenID Connect requests' do
       expect(json_response['issuer']).to eq('http://localhost')
       expect(json_response['jwks_uri']).to eq('http://www.example.com/oauth/discovery/keys')
       expect(json_response['scopes_supported']).to eq(%w[api read_user read_api read_repository write_repository sudo openid profile email])
+    end
+
+    context 'with a cross-origin request' do
+      before do
+        get '/.well-known/openid-configuration', headers: cors_request_headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['issuer']).to eq('http://localhost')
+        expect(json_response['jwks_uri']).to eq('http://www.example.com/oauth/discovery/keys')
+        expect(json_response['scopes_supported']).to eq(%w[api read_user read_api read_repository write_repository sudo openid profile email])
+      end
+
+      it_behaves_like 'cross-origin GET request'
+    end
+
+    context 'with a cross-origin preflight OPTIONS request' do
+      before do
+        options '/.well-known/openid-configuration', headers: cors_request_headers
+      end
+
+      it_behaves_like 'cross-origin GET request'
     end
   end
 
@@ -217,6 +303,30 @@ RSpec.describe 'OpenID Connect requests' do
 
       it 'has true in email_verified claim' do
         expect(json_response['email_verified']).to eq(true)
+      end
+
+      context 'with a cross-origin request' do
+        before do
+          get '/oauth/userinfo', headers: cors_request_headers
+        end
+
+        it_behaves_like 'cross-origin GET and POST request'
+      end
+
+      context 'with a cross-origin POST request' do
+        before do
+          post '/oauth/userinfo', headers: cors_request_headers
+        end
+
+        it_behaves_like 'cross-origin GET and POST request'
+      end
+
+      context 'with a cross-origin preflight OPTIONS request' do
+        before do
+          options '/oauth/userinfo', headers: cors_request_headers
+        end
+
+        it_behaves_like 'cross-origin GET and POST request'
       end
     end
 

@@ -1,4 +1,5 @@
 #import "~/graphql_shared/fragments/alert.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
 
 query getAlerts(
   $projectPath: ID!
@@ -26,6 +27,11 @@ query getAlerts(
     ) {
       nodes {
         ...AlertListItem
+        assignees {
+          nodes {
+            ...User
+          }
+        }
       }
       pageInfo {
         hasNextPage

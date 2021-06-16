@@ -30,4 +30,4 @@ for a notification email to be sent.
 
 ## Example email
 
-![Unknown sign in email](img/unknown_sign_in_email_v13_1.png)
+![Unknown sign in email](img/unknown_sign_in_email_v14_0.png)

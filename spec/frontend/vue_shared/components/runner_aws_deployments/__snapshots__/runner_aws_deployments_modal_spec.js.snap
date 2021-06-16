@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RunnerAwsDeploymentsModal renders the modal 1`] = `
+<gl-modal-stub
+  actionsecondary="[object Object]"
+  dismisslabel="Close"
+  modalclass=""
+  modalid="runner-aws-deployments-modal"
+  size="sm"
+  title="Deploy GitLab Runner in AWS"
+  titletag="h4"
+>
+  <p>
+    For each solution, you will choose a capacity. 1 enables warm HA through Auto Scaling group re-spawn. 2 enables hot HA because the service is available even when a node is lost. 3 or more enables hot HA and manual scaling of runner fleet.
+  </p>
+   
+  <ul
+    class="gl-list-style-none gl-p-0 gl-mb-0"
+  >
+    <li>
+      <gl-link-stub
+        class="gl-display-flex gl-font-weight-bold"
+        href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/review?templateURL=https%3A%2F%2Fgl-public-templates.s3.amazonaws.com%2Fcfn%2Fexperimental%2Feasybutton-amazon-linux-2-docker-manual-scaling-with-schedule-ondemandonly.cf.yml&stackName=linux-docker-nonspot&param_3GITLABRunnerInstanceURL=http%3A%2F%2Ftest.host"
+        target="_blank"
+      >
+        <img
+          alt="linux-docker-nonspot"
+          class="gl-mt-2 gl-mr-5 gl-mb-6"
+          height="46"
+          src="/assets/aws-cloud-formation.png"
+          title="linux-docker-nonspot"
+          width="46"
+        />
+        
+        Amazon Linux 2 Docker HA with manual scaling and optional scheduling. Non-spot. Default choice for Linux Docker executor.
+      
+      </gl-link-stub>
+    </li>
+    <li>
+      <gl-link-stub
+        class="gl-display-flex gl-font-weight-bold"
+        href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/review?templateURL=https%3A%2F%2Fgl-public-templates.s3.amazonaws.com%2Fcfn%2Fexperimental%2Feasybutton-amazon-linux-2-docker-manual-scaling-with-schedule-spotonly.cf.yml&stackName=linux-docker-spotonly&param_3GITLABRunnerInstanceURL=http%3A%2F%2Ftest.host"
+        target="_blank"
+      >
+        <img
+          alt="linux-docker-spotonly"
+          class="gl-mt-2 gl-mr-5 gl-mb-6"
+          height="46"
+          src="/assets/aws-cloud-formation.png"
+          title="linux-docker-spotonly"
+          width="46"
+        />
+        
+        Amazon Linux 2 Docker HA with manual scaling and optional scheduling. 100% spot.
+      
+      </gl-link-stub>
+    </li>
+    <li>
+      <gl-link-stub
+        class="gl-display-flex gl-font-weight-bold"
+        href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/review?templateURL=https%3A%2F%2Fgl-public-templates.s3.amazonaws.com%2Fcfn%2Fexperimental%2Feasybutton-windows2019-shell-manual-scaling-with-scheduling-ondemandonly.cf.yml&stackName=win2019-shell-non-spot&param_3GITLABRunnerInstanceURL=http%3A%2F%2Ftest.host"
+        target="_blank"
+      >
+        <img
+          alt="win2019-shell-non-spot"
+          class="gl-mt-2 gl-mr-5 gl-mb-6"
+          height="46"
+          src="/assets/aws-cloud-formation.png"
+          title="win2019-shell-non-spot"
+          width="46"
+        />
+        
+        Windows 2019 Shell with manual scaling and optional scheduling. Non-spot. Default choice for Windows Shell executor.
+      
+      </gl-link-stub>
+    </li>
+    <li>
+      <gl-link-stub
+        class="gl-display-flex gl-font-weight-bold"
+        href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create/review?templateURL=https%3A%2F%2Fgl-public-templates.s3.amazonaws.com%2Fcfn%2Fexperimental%2Feasybutton-windows2019-shell-manual-scaling-with-scheduling-spotonly.cf.yml&stackName=win2019-shell-spot&param_3GITLABRunnerInstanceURL=http%3A%2F%2Ftest.host"
+        target="_blank"
+      >
+        <img
+          alt="win2019-shell-spot"
+          class="gl-mt-2 gl-mr-5 gl-mb-6"
+          height="46"
+          src="/assets/aws-cloud-formation.png"
+          title="win2019-shell-spot"
+          width="46"
+        />
+        
+        Windows 2019 Shell with manual scaling and optional scheduling. 100% spot.
+      
+      </gl-link-stub>
+    </li>
+  </ul>
+   
+  <p>
+    <gl-sprintf-stub
+      message="Don't see what you are looking for? See the full list of options, including a fully customizable option, %{linkStart}here%{linkEnd}."
+    />
+  </p>
+   
+  <p
+    class="gl-font-sm gl-mb-0"
+  >
+    If you do not select an AWS VPC, the runner will deploy to the Default VPC in the AWS Region you select. Please consult with your AWS administrator to understand if there are any security risks to deploying into the Default VPC in any given region in your AWS account.
+  </p>
+</gl-modal-stub>
+`;

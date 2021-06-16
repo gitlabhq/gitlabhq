@@ -64,7 +64,7 @@ In GitLab 12.10, we added a comparison mode, which
 shows a diff calculated by simulating how it would look like once merged - a more accurate
 representation of the changes rather than using the base of the two
 branches. The new mode is available from the comparison target drop down
-by selecting **master (HEAD)**. In GitLab 13.9, it
+by selecting **main (HEAD)**. In GitLab 13.9, it
 [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/198458) the
 old default comparison. For technical details, additional information is available in the
 [developer documentation](../../../development/diffs.md#merge-request-diffs-against-the-head-of-the-target-branch).

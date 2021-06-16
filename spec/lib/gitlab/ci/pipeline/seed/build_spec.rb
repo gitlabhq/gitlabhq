@@ -1101,17 +1101,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         it "does not return an error" do
           expect(subject.errors).to be_empty
         end
-
-        context 'when the FF ci_needs_optional is disabled' do
-          before do
-            stub_feature_flags(ci_needs_optional: false)
-          end
-
-          it "returns an error" do
-            expect(subject.errors).to contain_exactly(
-              "'rspec' job needs 'build' job, but it was not added to the pipeline")
-          end
-        end
       end
     end
 

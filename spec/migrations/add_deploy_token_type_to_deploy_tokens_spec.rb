@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200122161638_add_deploy_token_type_to_deploy_tokens.rb')
+require_migration!
 
 RSpec.describe AddDeployTokenTypeToDeployTokens do
   let(:deploy_tokens) { table(:deploy_tokens) }

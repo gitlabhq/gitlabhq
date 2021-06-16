@@ -1,5 +1,6 @@
 ---
 redirect_to: '../fe_guide/dependencies.md'
+remove_date: '2021-05-14'
 ---
 
 This document was moved to [another location](../fe_guide/dependencies.md).

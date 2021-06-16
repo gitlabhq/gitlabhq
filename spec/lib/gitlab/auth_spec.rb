@@ -196,8 +196,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     end
 
     it 'recognizes other ci services' do
-      project.create_drone_ci_service(active: true)
-      project.drone_ci_service.update(token: 'token')
+      project.create_drone_ci_integration(active: true)
+      project.drone_ci_integration.update(token: 'token')
 
       expect(gl_auth.find_for_git_client('drone-ci-token', 'token', project: project, ip: 'ip')).to eq(Gitlab::Auth::Result.new(nil, project, :ci, described_class.build_authentication_abilities))
     end
@@ -679,6 +679,28 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         end
 
         it_behaves_like 'deploy token with disabled feature'
+      end
+    end
+  end
+
+  describe '#build_access_token_check' do
+    subject { gl_auth.find_for_git_client('gitlab-ci-token', build.token, project: build.project, ip: '1.2.3.4') }
+
+    let_it_be(:user) { create(:user) }
+
+    context 'for running build' do
+      let!(:build) { create(:ci_build, :running, user: user) }
+
+      it 'executes query using primary database' do
+        expect(Ci::Build).to receive(:find_by_token).with(build.token).and_wrap_original do |m, *args|
+          expect(::Gitlab::Database::LoadBalancing::Session.current.use_primary?).to eq(true)
+          m.call(*args)
+        end
+
+        expect(subject).to be_a(Gitlab::Auth::Result)
+        expect(subject.actor).to eq(user)
+        expect(subject.project).to eq(build.project)
+        expect(subject.type).to eq(:build)
       end
     end
   end

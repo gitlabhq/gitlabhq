@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20191213184609_backfill_operations_feature_flags_active.rb')
+require_migration!
 
 RSpec.describe BackfillOperationsFeatureFlagsActive do
   let(:namespaces)   { table(:namespaces) }

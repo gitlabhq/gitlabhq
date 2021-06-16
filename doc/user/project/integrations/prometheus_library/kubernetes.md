@@ -33,7 +33,7 @@ integration services must be enabled.
 
 Prometheus needs to be deployed into the cluster and configured properly in order to gather Kubernetes metrics. GitLab supports two methods for doing so:
 
-- GitLab [integrates with Kubernetes](../../clusters/index.md), and can [deploy Prometheus into a connected cluster](../prometheus.md#managed-prometheus-on-kubernetes). It is automatically configured to collect Kubernetes metrics.
+- GitLab [integrates with Kubernetes](../../clusters/index.md), and can [query a Prometheus in a connected cluster](../../../clusters/integrations.md#prometheus-cluster-integration). The in-cluster Prometheus can be configured to automatically collect application metrics from your cluster.
 - To configure your own Prometheus server, you can follow the [Prometheus documentation](https://prometheus.io/docs/introduction/overview/).
 
 ## Specifying the Environment

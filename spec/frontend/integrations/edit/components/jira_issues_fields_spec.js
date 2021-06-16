@@ -1,10 +1,13 @@
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
 import JiraUpgradeCta from '~/integrations/edit/components/jira_upgrade_cta.vue';
 import eventHub from '~/integrations/edit/event_hub';
+import { createStore } from '~/integrations/edit/store';
 
 describe('JiraIssuesFields', () => {
+  let store;
   let wrapper;
 
   const defaultProps = {
@@ -13,25 +16,29 @@ describe('JiraIssuesFields', () => {
     showJiraVulnerabilitiesIntegration: true,
   };
 
-  const createComponent = ({ props, ...options } = {}) => {
-    wrapper = mount(JiraIssuesFields, {
+  const createComponent = ({ isInheriting = false, props, ...options } = {}) => {
+    store = createStore({
+      defaultState: isInheriting ? {} : undefined,
+    });
+
+    wrapper = mountExtended(JiraIssuesFields, {
       propsData: { ...defaultProps, ...props },
+      store,
       stubs: ['jira-issue-creation-vulnerabilities'],
       ...options,
     });
   };
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
   });
 
   const findEnableCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findEnableCheckboxDisabled = () =>
+    findEnableCheckbox().find('[type=checkbox]').attributes('disabled');
   const findProjectKey = () => wrapper.findComponent(GlFormInput);
   const findJiraUpgradeCta = () => wrapper.findComponent(JiraUpgradeCta);
-  const findJiraForVulnerabilities = () => wrapper.find('[data-testid="jira-for-vulnerabilities"]');
+  const findJiraForVulnerabilities = () => wrapper.findByTestId('jira-for-vulnerabilities');
   const setEnableCheckbox = async (isEnabled = true) =>
     findEnableCheckbox().vm.$emit('input', isEnabled);
 
@@ -79,6 +86,19 @@ describe('JiraIssuesFields', () => {
         createComponent({ props: { initialProjectKey: '' } });
       });
 
+      it('renders enabled checkbox', () => {
+        expect(findEnableCheckbox().exists()).toBe(true);
+        expect(findEnableCheckboxDisabled()).toBeUndefined();
+      });
+
+      it('renders disabled project_key input', () => {
+        const projectKey = findProjectKey();
+
+        expect(projectKey.exists()).toBe(true);
+        expect(projectKey.attributes('disabled')).toBe('disabled');
+        expect(projectKey.attributes('required')).toBeUndefined();
+      });
+
       it('does not show upgrade banner', () => {
         expect(findJiraUpgradeCta().exists()).toBe(false);
       });
@@ -89,24 +109,20 @@ describe('JiraIssuesFields', () => {
         expect(wrapper.find('input[name="service[issues_enabled]"]').exists()).toBe(true);
       });
 
-      it('disables project_key input', () => {
-        expect(findProjectKey().attributes('disabled')).toBe('disabled');
-      });
+      describe('when isInheriting = true', () => {
+        it('disables checkbox and sets input as readonly', () => {
+          createComponent({ isInheriting: true });
 
-      it('does not require project_key', () => {
-        expect(findProjectKey().attributes('required')).toBeUndefined();
+          expect(findEnableCheckboxDisabled()).toBe('disabled');
+          expect(findProjectKey().attributes('readonly')).toBe('readonly');
+        });
       });
 
       describe('on enable issues', () => {
-        it('enables project_key input', async () => {
+        it('enables project_key input as required', async () => {
           await setEnableCheckbox(true);
 
           expect(findProjectKey().attributes('disabled')).toBeUndefined();
-        });
-
-        it('requires project_key input', async () => {
-          await setEnableCheckbox(true);
-
           expect(findProjectKey().attributes('required')).toBe('required');
         });
       });

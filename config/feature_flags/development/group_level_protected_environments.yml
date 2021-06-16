@@ -1,0 +1,8 @@
+---
+name: group_level_protected_environments
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61575
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331085
+milestone: '14.0'
+type: development
+group: group::release
+default_enabled: false

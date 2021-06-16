@@ -23,7 +23,7 @@
             - checkbox_id = 'check-all-issues'
             %label.gl-sr-only{ for: checkbox_id }= _('Select all')
             = check_box_tag checkbox_id, nil, false, class: "check-all-issues left"
-        - if Feature.enabled?(:boards_filtered_search, @group) && is_epic_board
+        - if is_epic_board
           #js-board-filtered-search{ data: { full_path: @group&.full_path } }
         - else
           .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row

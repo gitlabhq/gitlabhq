@@ -46,8 +46,8 @@ module Packages
           size: package_file.size,
           file_md5: package_file.file_md5,
           file_sha1: package_file.file_sha1,
-          file_sha256: package_file.file_sha256
-
+          file_sha256: package_file.file_sha256,
+          id: package_file.id
         }
 
         file_view[:pipelines] = build_pipeline_infos(package_file.pipelines) if package_file.pipelines.present?

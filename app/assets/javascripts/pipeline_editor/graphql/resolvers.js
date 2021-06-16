@@ -1,5 +1,8 @@
+import produce from 'immer';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import getCurrentBranchQuery from './queries/client/current_branch.graphql';
+import getLastCommitBranchQuery from './queries/client/last_commit_branch.query.graphql';
 
 export const resolvers = {
   Query: {
@@ -38,6 +41,22 @@ export const resolvers = {
         }),
         __typename: 'CiLintContent',
       }));
+    },
+    updateCurrentBranch: (_, { currentBranch = undefined }, { cache }) => {
+      cache.writeQuery({
+        query: getCurrentBranchQuery,
+        data: produce(cache.readQuery({ query: getCurrentBranchQuery }), (draftData) => {
+          draftData.currentBranch = currentBranch;
+        }),
+      });
+    },
+    updateLastCommitBranch: (_, { lastCommitBranch = undefined }, { cache }) => {
+      cache.writeQuery({
+        query: getLastCommitBranchQuery,
+        data: produce(cache.readQuery({ query: getLastCommitBranchQuery }), (draftData) => {
+          draftData.lastCommitBranch = lastCommitBranch;
+        }),
+      });
     },
   },
 };

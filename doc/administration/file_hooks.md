@@ -33,7 +33,7 @@ see the [system hooks](../system_hooks/system_hooks.md) documentation.
 
 The file hooks must be placed directly into the `file_hooks` directory, subdirectories
 are ignored. There is an
-[`example` directory inside `file_hooks`](https://gitlab.com/gitlab-org/gitlab/tree/master/file_hooks/examples)
+[`example` directory inside `file_hooks`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/file_hooks/examples)
 where you can find some basic examples.
 
 Follow the steps below to set up a custom hook:
@@ -63,8 +63,11 @@ need to restart GitLab to apply a new file hook.
 If a file hook executes with non-zero exit code or GitLab fails to execute it, a
 message is logged to:
 
-- `gitlab-rails/plugin.log` in an Omnibus installation.
-- `log/plugin.log` in a source installation.
+- `gitlab-rails/file_hook.log` in an Omnibus installation.
+- `log/file_hook.log` in a source installation.
+
+NOTE:
+Before 14.0 release, the file name was `plugin.log`
 
 ## Creating file hooks
 
@@ -79,7 +82,7 @@ require 'json'
 require 'mail'
 
 # The incoming variables are in JSON format so we need to parse it first.
-ARGS = JSON.parse(STDIN.read)
+ARGS = JSON.parse($stdin.read)
 
 # We only want to trigger this file hook on the event project_create
 return unless ARGS['event_name'] == 'project_create'

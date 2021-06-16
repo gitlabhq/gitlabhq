@@ -33,11 +33,11 @@ module TimeTrackable
 
     return if @time_spent == 0
 
-    if @time_spent == :reset
-      reset_spent_time
-    else
-      add_or_subtract_spent_time
-    end
+    @timelog = if @time_spent == :reset
+                 reset_spent_time
+               else
+                 add_or_subtract_spent_time
+               end
   end
   alias_method :spend_time=, :spend_time
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -48,6 +48,14 @@ module TimeTrackable
 
   def human_total_time_spent
     Gitlab::TimeTrackingFormatter.output(total_time_spent)
+  end
+
+  def time_change
+    @timelog&.time_spent.to_i # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+
+  def human_time_change
+    Gitlab::TimeTrackingFormatter.output(time_change)
   end
 
   def human_time_estimate

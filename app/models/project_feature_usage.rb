@@ -20,14 +20,16 @@ class ProjectFeatureUsage < ApplicationRecord
   end
 
   def log_jira_dvcs_integration_usage(cloud: true)
-    integration_field = self.class.jira_dvcs_integration_field(cloud: cloud)
+    ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
+      integration_field = self.class.jira_dvcs_integration_field(cloud: cloud)
 
-    # The feature usage is used only once later to query the feature usage in a
-    # long date range. Therefore, we just need to update the timestamp once per
-    # day
-    return if persisted? && updated_today?(integration_field)
+      # The feature usage is used only once later to query the feature usage in a
+      # long date range. Therefore, we just need to update the timestamp once per
+      # day
+      break if persisted? && updated_today?(integration_field)
 
-    persist_jira_dvcs_usage(integration_field)
+      persist_jira_dvcs_usage(integration_field)
+    end
   end
 
   private

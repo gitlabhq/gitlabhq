@@ -20,7 +20,7 @@ Time Tracking allows you to:
 - Record the time spent working on an issue or a merge request.
 - Add an estimate of the amount of time needed to complete an issue or a merge
   request.
-- View a breakdown of time spent working on an issue or a merge request. 
+- View a breakdown of time spent working on an issue or a merge request.
 
 You don't have to indicate an estimate to enter the time spent, and vice versa.
 
@@ -81,6 +81,10 @@ To remove all the time spent at once, use `/remove_time_spent`.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271409) in GitLab 13.12.
 
 You can view a breakdown of time spent on an issue or merge request.
+
+Prerequisites:
+
+- You must have at least the [Reporter role](../permissions.md#project-members-permissions) for a project.
 
 To view a time tracking report, go to an issue or a merge request and select **Time tracking report**
 in the right sidebar.

@@ -1,5 +1,6 @@
 ---
 redirect_to: 'drafts.md'
+remove_date: '2021-05-19'
 ---
 
 This document was moved to [another location](drafts.md).

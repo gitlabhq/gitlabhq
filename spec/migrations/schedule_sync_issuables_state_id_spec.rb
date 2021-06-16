@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20190214112022_schedule_sync_issuables_state_id.rb')
+require_migration!
 
 RSpec.describe ScheduleSyncIssuablesStateId do
   let(:namespaces) { table(:namespaces) }

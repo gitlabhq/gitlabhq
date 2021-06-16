@@ -77,7 +77,7 @@ RSpec.describe Gitlab::ImportExport::Project::Sample::RelationTreeRestorer do
     let(:relation_factory) { Gitlab::ImportExport::Project::Sample::RelationFactory }
     let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
     let(:path) { 'spec/fixtures/lib/gitlab/import_export/sample_data/tree' }
-    let(:relation_reader) { Gitlab::ImportExport::JSON::NdjsonReader.new(path) }
+    let(:relation_reader) { Gitlab::ImportExport::Json::NdjsonReader.new(path) }
 
     it 'initializes relation_factory with date_calculator as parameter' do
       expect(Gitlab::ImportExport::Project::Sample::RelationFactory).to receive(:create).with(hash_including(:date_calculator)).at_least(:once).times

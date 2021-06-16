@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20191213120427_fix_max_pages_size.rb')
+require_migration!
 
 RSpec.describe FixMaxPagesSize do
   let(:application_settings) { table(:application_settings) }

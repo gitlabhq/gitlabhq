@@ -513,6 +513,12 @@ That's all of the required database changes.
         last_synced_at { 1.day.ago }
         retry_count { 0 }
       end
+
+      trait :verification_succeeded do
+        verification_checksum { 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef' }
+        verification_state { Geo::CoolWidgetRegistry.verification_state_value(:verification_succeeded) }
+        verified_at { 5.days.ago }
+      end
     end
   end
   ```

@@ -1,6 +1,5 @@
-import { GlDropdown, GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
-import updateAlertStatusMutation from '~/graphql_shared/mutations/alert_status_update.mutation.graphql';
+import { GlDropdown, GlLoadingIcon } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AlertStatus from '~/vue_shared/alert_details/components/alert_status.vue';
 import AlertSidebarStatus from '~/vue_shared/alert_details/components/sidebar/sidebar_status.vue';
 import { PAGE_CONFIG } from '~/vue_shared/alert_details/constants';
@@ -11,9 +10,7 @@ const mockAlert = mockAlerts[0];
 describe('Alert Details Sidebar Status', () => {
   let wrapper;
   const findStatusDropdown = () => wrapper.findComponent(GlDropdown);
-  const findStatusDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findStatusLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findStatusDropdownHeader = () => wrapper.findByTestId('dropdown-header');
   const findAlertStatus = () => wrapper.findComponent(AlertStatus);
   const findStatus = () => wrapper.findByTestId('status');
   const findSidebarIcon = () => wrapper.findByTestId('status-icon');
@@ -25,7 +22,7 @@ describe('Alert Details Sidebar Status', () => {
     stubs = {},
     provide = {},
   } = {}) {
-    wrapper = mountExtended(AlertSidebarStatus, {
+    wrapper = shallowMountExtended(AlertSidebarStatus, {
       propsData: {
         alert: { ...mockAlert },
         ...data,
@@ -63,11 +60,7 @@ describe('Alert Details Sidebar Status', () => {
     });
 
     it('displays status dropdown', () => {
-      expect(findStatusDropdown().exists()).toBe(true);
-    });
-
-    it('displays the dropdown status header', () => {
-      expect(findStatusDropdownHeader().exists()).toBe(true);
+      expect(findAlertStatus().exists()).toBe(true);
     });
 
     it('does not display the collapsed sidebar icon', () => {
@@ -75,42 +68,24 @@ describe('Alert Details Sidebar Status', () => {
     });
 
     describe('updating the alert status', () => {
-      const mockUpdatedMutationResult = {
-        data: {
-          updateAlertStatus: {
-            errors: [],
-            alert: {
-              status: 'acknowledged',
-            },
-          },
-        },
-      };
-
-      beforeEach(() => {
+      it('ensures dropdown is hidden when loading', async () => {
         mountComponent({
           data: { alert: mockAlert },
           sidebarCollapsed: false,
           loading: false,
         });
-      });
-
-      it('calls `$apollo.mutate` with `updateAlertStatus` mutation and variables containing `iid`, `status`, & `projectPath`', () => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationResult);
-        findStatusDropdownItem().vm.$emit('click');
-
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-          mutation: updateAlertStatusMutation,
-          variables: {
-            iid: '1527542',
-            status: 'TRIGGERED',
-            projectPath: 'projectPath',
-          },
-        });
+        findAlertStatus().vm.$emit('handle-updating', true);
+        await wrapper.vm.$nextTick();
+        expect(findStatusLoadingIcon().exists()).toBe(true);
       });
 
       it('stops updating when the request fails', () => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockReturnValue(Promise.reject(new Error()));
-        findStatusDropdownItem().vm.$emit('click');
+        mountComponent({
+          data: { alert: mockAlert },
+          sidebarCollapsed: false,
+          loading: false,
+        });
+        findAlertStatus().vm.$emit('handle-updating', false);
         expect(findStatusLoadingIcon().exists()).toBe(false);
         expect(findStatus().text()).toBe('Triggered');
       });

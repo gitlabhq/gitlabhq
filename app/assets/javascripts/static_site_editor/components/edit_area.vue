@@ -1,7 +1,7 @@
 <script>
+import { EDITOR_TYPES } from '~/static_site_editor/rich_content_editor/constants';
+import RichContentEditor from '~/static_site_editor/rich_content_editor/rich_content_editor.vue';
 import parseSourceFile from '~/static_site_editor/services/parse_source_file';
-import { EDITOR_TYPES } from '~/vue_shared/components/rich_content_editor/constants';
-import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
 import imageRepository from '../image_repository';
 import formatter from '../services/formatter';
 import renderImage from '../services/renderers/render_image';

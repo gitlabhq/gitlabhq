@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20191204114127_delete_legacy_triggers.rb')
+require_migration!('delete_legacy_triggers')
 
 RSpec.describe DeleteLegacyTriggers, schema: 2019_11_25_140458 do
   let(:ci_trigger_table) { table(:ci_triggers) }

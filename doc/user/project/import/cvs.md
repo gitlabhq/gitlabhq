@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Migrating from CVS
+# Migrating from CVS **(FREE)**
 
 [CVS](https://savannah.nongnu.org/projects/cvs) is an old centralized version
 control system similar to [SVN](svn.md).

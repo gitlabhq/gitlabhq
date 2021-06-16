@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200107172020_add_timestamp_softwarelicensespolicy.rb')
+require_migration!('add_timestamp_softwarelicensespolicy')
 
 RSpec.describe AddTimestampSoftwarelicensespolicy do
   let(:software_licenses_policy) { table(:software_license_policies) }

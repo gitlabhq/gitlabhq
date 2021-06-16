@@ -34,7 +34,7 @@ module Flowdock
     # Send git push notification to Flowdock
     def post
       messages.each do |message|
-        Flowdock::Client.new(flow_token: @token).post_to_thread(message)
+        ::Flowdock::Client.new(flow_token: @token).post_to_thread(message)
       end
     end
 

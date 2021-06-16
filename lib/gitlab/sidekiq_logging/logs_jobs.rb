@@ -14,6 +14,9 @@ module Gitlab
         job = job.except('error_backtrace', 'error_class', 'error_message')
         job['class'] = job.delete('wrapped') if job['wrapped'].present?
 
+        job['job_size_bytes'] = Sidekiq.dump_json(job['args']).bytesize
+        job['args'] = ['[COMPRESSED]'] if ::Gitlab::SidekiqMiddleware::SizeLimiter::Compressor.compressed?(job)
+
         # Add process id params
         job['pid'] = ::Process.pid
 

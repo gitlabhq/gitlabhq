@@ -1,11 +1,12 @@
 <script>
-import { GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { reduce } from 'lodash';
 import {
   capitalizeFirstCharacter,
   convertToSentenceCase,
   splitCamelCase,
 } from '~/lib/utils/text_utility';
+import { isSafeURL } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { PAGE_CONFIG } from '~/vue_shared/alert_details/constants';
 
@@ -30,6 +31,7 @@ const allowedFields = [
 
 export default {
   components: {
+    GlLink,
     GlLoadingIcon,
     GlTable,
   },
@@ -94,6 +96,9 @@ export default {
     isAllowed(fieldName) {
       return allowedFields.includes(fieldName);
     },
+    isValidLink(value) {
+      return typeof value === 'string' && isSafeURL(value);
+    },
   },
 };
 </script>
@@ -108,6 +113,12 @@ export default {
   >
     <template #table-busy>
       <gl-loading-icon size="lg" color="dark" class="gl-mt-5" />
+    </template>
+    <template #cell(value)="{ item: { value } }">
+      <span v-if="!isValidLink(value)">{{ value }}</span>
+      <gl-link v-else :href="value" target="_blank">
+        {{ value }}
+      </gl-link>
     </template>
   </gl-table>
 </template>

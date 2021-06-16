@@ -5,7 +5,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Create a Pages website from a template
+# Create a Pages website from a template **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47857) in GitLab 11.8.
 
@@ -26,7 +26,6 @@ configured to generate a Pages site.
    and click **Run pipeline** to trigger GitLab CI/CD to build and deploy your
    site.
 
-The site can take approximately 30 minutes to deploy.
 When the pipeline is finished, go to **Settings > Pages** to find the link to
 your Pages website.
 

@@ -8,6 +8,7 @@ module Gitlab
 
         DEFAULT_MAX_TESTS = 100
         DEFAULT_MIN_TESTS = 10
+        TestSummary = Struct.new(:new_failures, :existing_failures, :resolved_failures, :new_errors, :existing_errors, :resolved_errors, keyword_init: true)
 
         attr_reader :name, :base_suite, :head_suite
 
@@ -90,7 +91,7 @@ module Gitlab
         def limited_tests
           strong_memoize(:limited_tests) do
             # rubocop: disable CodeReuse/ActiveRecord
-            OpenStruct.new(
+            TestSummary.new(
               new_failures: new_failures.take(max_tests),
               existing_failures: existing_failures.take(max_tests(new_failures)),
               resolved_failures: resolved_failures.take(max_tests(new_failures, existing_failures)),

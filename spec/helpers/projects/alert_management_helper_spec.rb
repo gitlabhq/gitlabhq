@@ -61,7 +61,7 @@ RSpec.describe Projects::AlertManagementHelper do
         let(:cluster) { create(:cluster, projects: [project]) }
 
         it 'has managed prometheus' do
-          create(:clusters_applications_prometheus, :installed, cluster: cluster)
+          create(:clusters_integrations_prometheus, cluster: cluster)
 
           expect(data).to include(
             'has-managed-prometheus' => 'true'

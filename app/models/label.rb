@@ -9,6 +9,10 @@ class Label < ApplicationRecord
   include Sortable
   include FromUnion
   include Presentable
+  include IgnorableColumns
+
+  # TODO: Project#create_labels can remove column exception when this column is dropped from all envs
+  ignore_column :remove_on_close, remove_with: '14.1', remove_after: '2021-06-22'
 
   cache_markdown_field :description, pipeline: :single_line
 

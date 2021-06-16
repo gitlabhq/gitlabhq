@@ -15,8 +15,8 @@ RSpec.describe Integrations::Assembla do
     let(:project) { create(:project, :repository) }
 
     before do
-      @assembla_service = described_class.new
-      allow(@assembla_service).to receive_messages(
+      @assembla_integration = described_class.new
+      allow(@assembla_integration).to receive_messages(
         project_id: project.id,
         project: project,
         service_hook: true,
@@ -29,7 +29,7 @@ RSpec.describe Integrations::Assembla do
     end
 
     it "calls Assembla API" do
-      @assembla_service.execute(@sample_data)
+      @assembla_integration.execute(@sample_data)
       expect(WebMock).to have_requested(:post, stubbed_hostname(@api_url)).with(
         body: /#{@sample_data[:before]}.*#{@sample_data[:after]}.*#{project.path}/
       ).once

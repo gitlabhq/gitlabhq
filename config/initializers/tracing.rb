@@ -15,7 +15,7 @@ if Labkit::Tracing.enabled?
   Labkit::Tracing::Rails::ActionViewSubscriber.instrument
   Labkit::Tracing::Rails::ActiveSupportSubscriber.instrument
 
-  # In multi-processed clustered architectures (puma, unicorn) don't
+  # In multi-processed clustered architectures (e.g. Puma cluster) don't
   # start tracing until the worker processes are spawned. This works
   # around issues when the opentracing implementation spawns threads
   Gitlab::Cluster::LifecycleEvents.on_worker_start do

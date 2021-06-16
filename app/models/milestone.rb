@@ -36,6 +36,7 @@ class Milestone < ApplicationRecord
   scope :order_by_dates_and_title, -> { order(due_date: :asc, start_date: :asc, title: :asc) }
 
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
+  validate :uniqueness_of_title, if: :title_changed?
 
   state_machine :state, initial: :active do
     event :close do
@@ -171,5 +172,17 @@ class Milestone < ApplicationRecord
 
   def issues_finder_params
     { project_id: project_id, group_id: group_id, include_subgroups: group_id.present? }.compact
+  end
+
+  # milestone titles must be unique across project and group milestones
+  def uniqueness_of_title
+    if project
+      relation = self.class.for_projects_and_groups([project_id], [project.group&.id])
+    elsif group
+      relation = self.class.for_projects_and_groups(group.projects.select(:id), [group.id])
+    end
+
+    title_exists = relation.find_by_title(title)
+    errors.add(:title, _("already being used for another group or project %{timebox_name}.") % { timebox_name: timebox_name }) if title_exists
   end
 end

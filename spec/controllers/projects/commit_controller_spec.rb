@@ -380,18 +380,6 @@ RSpec.describe Projects::CommitController do
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
-
-      context 'disable pick_into_project feature flag' do
-        before do
-          stub_feature_flags(pick_into_project: false)
-        end
-
-        it 'does not cherry pick a commit from fork to upstream' do
-          send_request
-
-          expect(project.commit('feature').message).not_to include(forked_project.commit.id)
-        end
-      end
     end
   end
 

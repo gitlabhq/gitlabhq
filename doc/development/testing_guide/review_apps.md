@@ -81,6 +81,8 @@ subgraph "CNG-mirror pipeline"
    - Since we're using [the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/), this means
      you get a dedicated environment for your branch that's very close to what
      it would look in production.
+   - Each review app is deployed to its own Kubernetes namespace. The namespace is based on the Review App slug that is
+     unique to each branch.
 1. Once the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job succeeds, you should be able to
    use your Review App thanks to the direct link to it from the MR widget. To log
    into the Review App, see "Log into my Review App?" below.
@@ -132,6 +134,9 @@ the QA smoke suite.
 
 You can also manually start the `review-qa-all`: it runs the full QA suite.
 
+After the end-to-end test runs have finished, [Allure reports](https://github.com/allure-framework/allure2) are generated and published by
+the `allure-report-qa-smoke` and `allure-report-qa-all` jobs. A comment with links to the reports are added to the merge request.
+
 ## Performance Metrics
 
 On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage, the
@@ -141,12 +146,7 @@ browser performance testing using a
 
 ## Cluster configuration
 
-### Node pools
-
-The `review-apps` cluster is currently set up with
-the following node pools:
-
-- `e2-highcpu-16` (16 vCPU, 16 GB memory) pre-emptible nodes with autoscaling
+The cluster is configured via Terraform in the [`engineering-productivity-infrastructure`](https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure) project.
 
 Node pool image type must be `Container-Optimized OS (cos)`, not `Container-Optimized OS with Containerd (cos_containerd)`,
 due to this [known issue on GitLab Runner Kubernetes executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4755)
@@ -200,7 +200,7 @@ the GitLab handbook information for the [shared 1Password account](https://about
 1. Click on the `KUBECTL` dropdown, then `Exec` -> `task-runner`.
 1. Replace `-c task-runner -- ls` with `-it -- gitlab-rails console` from the
    default command or
-   - Run `kubectl exec --namespace review-apps review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
+   - Run `kubectl exec --namespace review-qa-raise-e-12chm0 review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
      - Replace `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`
        with your Pod's name.
 
@@ -218,7 +218,7 @@ the GitLab handbook information for the [shared 1Password account](https://about
 ## Diagnosing unhealthy Review App releases
 
 If [Review App Stability](https://app.periscopedata.com/app/gitlab/496118/Engineering-Productivity-Sandbox?widget=6690556&udv=785399)
-dips this may be a signal that the `review-apps-ce/ee` cluster is unhealthy.
+dips this may be a signal that the `review-apps` cluster is unhealthy.
 Leading indicators may be health check failures leading to restarts or majority failure for Review App deployments.
 
 The [Review Apps Overview dashboard](https://console.cloud.google.com/monitoring/classic/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)

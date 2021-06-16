@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# User lookup via OpenSSH's AuthorizedPrincipalsCommand
+# User lookup via OpenSSH's AuthorizedPrincipalsCommand **(FREE SELF)**
 
 > [Available in](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19911) GitLab
 > Community Edition 11.2.

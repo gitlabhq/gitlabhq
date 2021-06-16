@@ -4,7 +4,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Create a GitLab Pages website from scratch
+# Create a GitLab Pages website from scratch **(FREE)**
 
 This tutorial shows you how to create a Pages site from scratch. You start with
 a blank project and create your own CI file, which gives instruction to

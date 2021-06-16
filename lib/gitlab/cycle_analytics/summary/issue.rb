@@ -4,10 +4,9 @@ module Gitlab
   module CycleAnalytics
     module Summary
       class Issue < Base
-        def initialize(project:, from:, to: nil, current_user:)
+        def initialize(project:, options:, current_user:)
           @project = project
-          @from = from
-          @to = to
+          @options = options
           @current_user = current_user
         end
 
@@ -23,9 +22,17 @@ module Gitlab
 
         def issues_count
           IssuesFinder
-            .new(@current_user, project_id: @project.id, created_after: @from, created_before: @to)
+            .new(@current_user, finder_params)
             .execute
             .count
+        end
+
+        def finder_params
+          @options.dup.tap do |hash|
+            hash[:created_after] = hash.delete(:from)
+            hash[:created_before] = hash.delete(:to)
+            hash[:project_id] = @project.id
+          end
         end
       end
     end

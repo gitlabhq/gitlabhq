@@ -48,7 +48,8 @@ GET /groups/:id/export_relations/status
 | `id`      | integer/string | yes      | ID of the group owned by the authenticated user. |
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/export_relations/status"
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/groups/1/export_relations/status"
 ```
 
 The status can be one of the following:
@@ -92,7 +93,8 @@ GET /groups/:id/export_relations/download
 | `relation`      | string         | yes      | Name of the group top-level relation to download. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name --remote-name "https://gitlab.example.com/api/v4/groups/1/export_relations/download?relation=labels"
+curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name \
+     --remote-name "https://gitlab.example.com/api/v4/groups/1/export_relations/download?relation=labels"
 ```
 
 ```shell

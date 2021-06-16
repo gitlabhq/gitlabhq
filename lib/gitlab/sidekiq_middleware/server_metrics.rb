@@ -13,6 +13,10 @@ module Gitlab
         @metrics = init_metrics
 
         @metrics[:sidekiq_concurrency].set({}, Sidekiq.options[:concurrency].to_i)
+
+        if ::Gitlab::Database::LoadBalancing.enable?
+          @metrics[:sidekiq_load_balancing_count] = ::Gitlab::Metrics.counter(:sidekiq_load_balancing_count, 'Sidekiq jobs with load balancing')
+        end
       end
 
       def call(worker, job, queue)
@@ -69,6 +73,15 @@ module Gitlab
           @metrics[:sidekiq_redis_requests_duration_seconds].observe(labels, get_redis_time(instrumentation))
           @metrics[:sidekiq_elasticsearch_requests_total].increment(labels, get_elasticsearch_calls(instrumentation))
           @metrics[:sidekiq_elasticsearch_requests_duration_seconds].observe(labels, get_elasticsearch_time(instrumentation))
+
+          if ::Gitlab::Database::LoadBalancing.enable? && job[:database_chosen]
+            load_balancing_labels = {
+              database_chosen: job[:database_chosen],
+              data_consistency: job[:data_consistency]
+            }
+
+            @metrics[:sidekiq_load_balancing_count].increment(labels.merge(load_balancing_labels), 1)
+          end
         end
       end
 

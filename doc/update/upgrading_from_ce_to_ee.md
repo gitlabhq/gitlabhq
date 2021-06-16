@@ -11,7 +11,7 @@ NOTE:
 In the past we used separate documents for upgrading from
 Community Edition to Enterprise Edition. These documents can be found in the
 [`doc/update` directory of Enterprise Edition's source
-code](https://gitlab.com/gitlab-org/gitlab/tree/11-8-stable-ee/doc/update).
+code](https://gitlab.com/gitlab-org/gitlab/-/tree/11-8-stable-ee/doc/update).
 
 If you want to upgrade the version only, for example 11.8 to 11.9, *without* changing the
 GitLab edition you are using (Community or Enterprise), see the

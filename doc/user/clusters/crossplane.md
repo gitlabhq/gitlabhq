@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Crossplane configuration **(FREE)**
 
-After [installing](applications.md#crossplane) Crossplane, you must configure it for use.
+After [installing](applications.md#install-crossplane-using-gitlab-cicd) Crossplane, you must configure it for use.
 The process of configuring Crossplane includes:
 
 1. [Configure RBAC permissions](#configure-rbac-permissions).

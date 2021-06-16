@@ -9,7 +9,8 @@ module SearchHelper
     :repository_ref,
     :snippets,
     :sort,
-    :force_search_results
+    :force_search_results,
+    :project_ids
   ].freeze
 
   def search_autocomplete_opts(term)

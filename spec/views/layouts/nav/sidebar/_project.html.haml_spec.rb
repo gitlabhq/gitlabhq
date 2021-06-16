@@ -19,21 +19,32 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
 
   it_behaves_like 'has nav sidebar'
 
-  describe 'Project information' do
+  describe 'Project context' do
     it 'has a link to the project path' do
       render
 
-      expect(rendered).to have_link('Project information', href: project_path(project), class: %w(shortcuts-project rspec-project-link))
+      expect(rendered).to have_link(project.name, href: project_path(project), class: %w(shortcuts-project rspec-project-link))
+      expect(rendered).to have_selector("[aria-label=\"#{project.name}\"]")
+    end
+  end
+
+  describe 'Project information' do
+    it 'has a link to the project activity path' do
+      render
+
+      expect(rendered).to have_link('Project information', href: activity_project_path(project), class: %w(shortcuts-project-information))
       expect(rendered).to have_selector('[aria-label="Project information"]')
     end
 
     context 'when feature flag :sidebar_refactor is disabled' do
-      it 'has a link to the project path' do
+      before do
         stub_feature_flags(sidebar_refactor: false)
+      end
 
+      it 'has a link to the project path' do
         render
 
-        expect(rendered).to have_link('Project overview', href: project_path(project), class: %w(shortcuts-project rspec-project-link))
+        expect(rendered).to have_link('Project overview', href: project_path(project), class: %w(shortcuts-project))
         expect(rendered).to have_selector('[aria-label="Project overview"]')
       end
     end
@@ -89,7 +100,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       it 'has a link to the labels path' do
         render
 
-        expect(page.at_css('.shortcuts-project').parent.css('[aria-label="Labels"]')).not_to be_empty
+        expect(page.at_css('.shortcuts-project-information').parent.css('[aria-label="Labels"]')).not_to be_empty
         expect(rendered).to have_link('Labels', href: project_labels_path(project))
       end
 
@@ -110,7 +121,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       it 'has a link to the members page' do
         render
 
-        expect(page.at_css('.shortcuts-project').parent.css('[aria-label="Members"]')).not_to be_empty
+        expect(page.at_css('.shortcuts-project-information').parent.css('[aria-label="Members"]')).not_to be_empty
         expect(rendered).to have_link('Members', href: project_project_members_path(project))
       end
 
@@ -277,7 +288,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       let(:external_issue_tracker_url) { 'http://test.com' }
 
       let!(:external_issue_tracker) do
-        create(:custom_issue_tracker_service, active: external_issue_tracker_active, project: project, project_url: external_issue_tracker_url)
+        create(:custom_issue_tracker_integration, active: external_issue_tracker_active, project: project, project_url: external_issue_tracker_url)
       end
 
       context 'when external issue tracker is configured and active' do
@@ -994,7 +1005,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
   end
 
   describe 'Confluence' do
-    let!(:service) { create(:confluence_service, project: project, active: active) }
+    let!(:service) { create(:confluence_integration, project: project, active: active) }
 
     before do
       render
@@ -1327,4 +1338,22 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
   end
 
   it_behaves_like 'sidebar includes snowplow attributes', 'render', 'projects_side_navigation', 'projects_side_navigation'
+
+  describe 'Collapsed menu items' do
+    it 'does not render the collapsed top menu as a link' do
+      render
+
+      expect(rendered).not_to have_selector('.sidebar-sub-level-items > li.fly-out-top-item > a')
+    end
+
+    context 'when feature flag :sidebar_refactor is disabled' do
+      it 'renders the collapsed top menu as a link' do
+        stub_feature_flags(sidebar_refactor: false)
+
+        render
+
+        expect(rendered).to have_selector('.sidebar-sub-level-items > li.fly-out-top-item > a')
+      end
+    end
+  end
 end

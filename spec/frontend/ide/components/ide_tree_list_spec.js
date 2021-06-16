@@ -14,9 +14,9 @@ describe('IDE tree list', () => {
 
   const bootstrapWithTree = (tree = normalBranchTree) => {
     store.state.currentProjectId = 'abcproject';
-    store.state.currentBranchId = 'master';
+    store.state.currentBranchId = 'main';
     store.state.projects.abcproject = { ...projectData };
-    Vue.set(store.state.trees, 'abcproject/master', {
+    Vue.set(store.state.trees, 'abcproject/main', {
       tree,
       loading: false,
     });
@@ -42,7 +42,7 @@ describe('IDE tree list', () => {
     });
 
     it('renders loading indicator', (done) => {
-      store.state.trees['abcproject/master'].loading = true;
+      store.state.trees['abcproject/main'].loading = true;
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelector('.multi-file-loading-container')).not.toBeNull();

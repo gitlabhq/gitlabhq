@@ -22,6 +22,16 @@ RSpec.describe BulkImportWorker do
       end
     end
 
+    context 'when bulk import is failed' do
+      it 'does nothing' do
+        bulk_import = create(:bulk_import, :failed)
+
+        expect(described_class).not_to receive(:perform_in)
+
+        subject.perform(bulk_import.id)
+      end
+    end
+
     context 'when all entities are processed' do
       it 'marks bulk import as finished' do
         bulk_import = create(:bulk_import, :started)
@@ -31,6 +41,18 @@ RSpec.describe BulkImportWorker do
         subject.perform(bulk_import.id)
 
         expect(bulk_import.reload.finished?).to eq(true)
+      end
+    end
+
+    context 'when all entities are failed' do
+      it 'marks bulk import as failed' do
+        bulk_import = create(:bulk_import, :started)
+        create(:bulk_import_entity, :failed, bulk_import: bulk_import)
+        create(:bulk_import_entity, :failed, bulk_import: bulk_import)
+
+        subject.perform(bulk_import.id)
+
+        expect(bulk_import.reload.failed?).to eq(true)
       end
     end
 

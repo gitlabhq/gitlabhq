@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
   CREATED,
@@ -203,9 +203,9 @@ describe('DeploymentAction component', () => {
 
                 it('should call createFlash with error message', () => {
                   expect(createFlash).toHaveBeenCalled();
-                  expect(createFlash).toHaveBeenCalledWith(
-                    actionButtonMocks[configConst].errorMessage,
-                  );
+                  expect(createFlash).toHaveBeenCalledWith({
+                    message: actionButtonMocks[configConst].errorMessage,
+                  });
                 });
               });
             });

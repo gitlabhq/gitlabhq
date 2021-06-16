@@ -4,8 +4,6 @@ import loadAwardsHandler from '~/awards_handler';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import initPipelines from '~/commit/pipelines/pipelines_bundle';
 import initIssuableSidebar from '~/init_issuable_sidebar';
-import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
-import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import StatusBox from '~/issuable/components/status_box.vue';
 import createDefaultClient from '~/lib/graphql';
 import { handleLocationHash } from '~/lib/utils/common_utils';
@@ -29,8 +27,6 @@ export default function initMergeRequestShow() {
   } else {
     loadAwardsHandler();
   }
-  initInviteMembersModal();
-  initInviteMembersTrigger();
 
   const el = document.querySelector('.js-mr-status-box');
   const apolloProvider = new VueApollo({ defaultClient: createDefaultClient() });

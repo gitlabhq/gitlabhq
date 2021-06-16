@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`BoardBlockedIcon on mouseenter on blocked icon with more than three blocking issues matches the snapshot 1`] = `
-"<div class=\\"gl-display-inline\\"><svg data-testid=\\"issue-blocked-icon\\" aria-hidden=\\"true\\" class=\\"issue-blocked-icon gl-mr-2 gl-cursor-pointer gl-icon s16\\" id=\\"blocked-icon-uniqueId\\">
+"<div class=\\"gl-display-inline\\"><svg data-testid=\\"issue-blocked-icon\\" role=\\"img\\" aria-hidden=\\"true\\" class=\\"issue-blocked-icon gl-mr-2 gl-cursor-pointer gl-icon s16\\" id=\\"blocked-icon-uniqueId\\">
     <use href=\\"#issue-block\\"></use>
   </svg>
   <div class=\\"gl-popover\\">

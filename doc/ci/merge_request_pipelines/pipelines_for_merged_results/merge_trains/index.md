@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 last_update: 2019-07-03
@@ -59,8 +59,7 @@ to run. If more merge requests are added to the train, they now include the `A`
 changes that are included in the target branch, and the `C` changes that are from
 the merge request already in the train.
 
-Read more about
-[how merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
+Read more about [how merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch this video for a demonstration on [how parallel execution
@@ -71,7 +70,7 @@ branch](https://www.youtube.com/watch?v=D4qCqXgZkHQ).
 
 To enable merge trains:
 
-- You must have maintainer [permissions](../../../../user/permissions.md).
+- You must have the [Maintainer role](../../../../user/permissions.md).
 - You must be using [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or later.
 - In GitLab 13.0 and later, you need [Redis](https://redis.io/) 5.0 or later.
 - Your repository must be a GitLab repository, not an

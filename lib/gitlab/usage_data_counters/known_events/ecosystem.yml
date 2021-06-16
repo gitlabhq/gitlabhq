@@ -4,22 +4,18 @@
   category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
-  feature_flag: usage_data_track_ecosystem_jira_service
 - name: i_ecosystem_jira_service_cross_reference
   category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
-  feature_flag: usage_data_track_ecosystem_jira_service
 - name: i_ecosystem_jira_service_list_issues
   category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
-  feature_flag: usage_data_track_ecosystem_jira_service
 - name: i_ecosystem_jira_service_create_issue
   category: ecosystem
   redis_slot: ecosystem
   aggregation: weekly
-  feature_flag: usage_data_track_ecosystem_jira_service
 - name: i_ecosystem_slack_service_issue_notification
   category: ecosystem
   redis_slot: ecosystem

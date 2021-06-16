@@ -7,9 +7,9 @@ module Packages
     class PackagePresenter
       include API::Helpers::RelatedResourcesHelpers
 
-      def initialize(packages, project)
+      def initialize(packages, project_or_group)
         @packages = packages
-        @project = project
+        @project_or_group = project_or_group
       end
 
       # Returns the HTML body for PyPI simple API.
@@ -51,16 +51,27 @@ module Packages
       end
 
       def build_pypi_package_path(file)
-        expose_url(
-          api_v4_projects_packages_pypi_files_file_identifier_path(
-            {
-              id: @project.id,
-              sha256: file.file_sha256,
-              file_identifier: file.file_name
-            },
-            true
-          )
-        ) + "#sha256=#{file.file_sha256}"
+        params = {
+          id: @project_or_group.id,
+          sha256: file.file_sha256,
+          file_identifier: file.file_name
+        }
+
+        if project?
+          expose_url(
+            api_v4_projects_packages_pypi_files_file_identifier_path(
+              params, true
+            )
+          ) + "#sha256=#{file.file_sha256}"
+        elsif group?
+          expose_url(
+            api_v4_groups___packages_pypi_files_file_identifier_path(
+              params, true
+            )
+          ) + "#sha256=#{file.file_sha256}"
+        else
+          ''
+        end
       end
 
       def name
@@ -69,6 +80,14 @@ module Packages
 
       def escape(str)
         ERB::Util.html_escape(str)
+      end
+
+      def project?
+        @project_or_group.is_a?(::Project)
+      end
+
+      def group?
+        @project_or_group.is_a?(::Group)
       end
     end
   end

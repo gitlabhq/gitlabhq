@@ -1,0 +1,1 @@
+{"__schema":{"types":[{"kind":"UNION","name":"AlertManagementIntegration","possibleTypes":[{"name":"AlertManagementHttpIntegration"},{"name":"AlertManagementPrometheusIntegration"}]}]}}

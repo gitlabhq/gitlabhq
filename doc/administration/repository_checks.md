@@ -41,9 +41,12 @@ in the [`repocheck.log` file](logs.md#repochecklog) on disk:
 - `/var/log/gitlab/gitlab-rails` for Omnibus GitLab installations
 - `/home/git/gitlab/log` for installations from source
 
-If the periodic repository check causes false alarms, you can clear all repository check states by
-going to **Admin Area > Settings > Repository**
-(`/admin/application_settings/repository`) and clicking **Clear all repository checks**.
+If the periodic repository check causes false alarms, you can clear all repository check states by:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Repository** (`/admin/application_settings/repository`).
+1. Expand the **Repository maintenance** section.
+1. Select **Clear all repository checks**.
 
 ## Run a check manually
 

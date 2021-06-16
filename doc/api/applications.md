@@ -40,7 +40,9 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=MyApplication&redirect_uri=http://redirect.uri&scopes=" "https://gitlab.example.com/api/v4/applications"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "name=MyApplication&redirect_uri=http://redirect.uri&scopes=" \
+     "https://gitlab.example.com/api/v4/applications"
 ```
 
 Example response:

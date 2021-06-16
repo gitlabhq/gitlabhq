@@ -29,7 +29,7 @@ module Packages
     end
 
     def projects_visible_to_reporters(user, within_group:)
-      if user.is_a?(DeployToken) && Feature.enabled?(:packages_finder_helper_deploy_token, default_enabled: :yaml)
+      if user.is_a?(DeployToken)
         user.accessible_projects
       else
         within_group.all_projects

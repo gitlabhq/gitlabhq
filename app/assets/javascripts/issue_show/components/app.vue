@@ -1,12 +1,20 @@
 <script>
 import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
-import { IssuableStatus, IssuableStatusText, IssuableType } from '../constants';
+import {
+  IssuableStatus,
+  IssuableStatusText,
+  IssuableType,
+  IssueTypePath,
+  IncidentTypePath,
+  IncidentType,
+} from '../constants';
 import eventHub from '../event_hub';
+import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
 import Service from '../services/index';
 import Store from '../stores';
 import descriptionComponent from './description.vue';
@@ -195,7 +203,13 @@ export default {
       showForm: false,
       templatesRequested: false,
       isStickyHeaderShowing: false,
+      issueState: {},
     };
+  },
+  apollo: {
+    issueState: {
+      query: getIssueStateQuery,
+    },
   },
   computed: {
     issuableTemplates() {
@@ -288,7 +302,7 @@ export default {
   methods: {
     handleBeforeUnloadEvent(e) {
       const event = e;
-      if (this.showForm && this.issueChanged) {
+      if (this.showForm && this.issueChanged && !this.issueState.isDirty) {
         event.returnValue = __('Are you sure you want to lose your issue information?');
       }
       return undefined;
@@ -302,7 +316,9 @@ export default {
           this.store.updateState(data);
         })
         .catch(() => {
-          createFlash(this.defaultErrorMessage);
+          createFlash({
+            message: this.defaultErrorMessage,
+          });
         });
     },
 
@@ -327,7 +343,9 @@ export default {
           this.updateAndShowForm(res.data);
         })
         .catch(() => {
-          createFlash(this.defaultErrorMessage);
+          createFlash({
+            message: this.defaultErrorMessage,
+          });
           this.updateAndShowForm();
         });
     },
@@ -346,13 +364,31 @@ export default {
     },
 
     updateIssuable() {
+      const {
+        store: { formState },
+        issueState,
+      } = this;
+      const issuablePayload = issueState.isDirty
+        ? { ...formState, issue_type: issueState.issueType }
+        : formState;
       this.clearFlash();
       return this.service
-        .updateIssuable(this.store.formState)
+        .updateIssuable(issuablePayload)
         .then((res) => res.data)
         .then((data) => {
-          if (!window.location.pathname.includes(data.web_url)) {
+          if (
+            !window.location.pathname.includes(data.web_url) &&
+            issueState.issueType !== IncidentType
+          ) {
             visitUrl(data.web_url);
+          }
+
+          if (issueState.isDirty) {
+            const URI =
+              issueState.issueType === IncidentType
+                ? data.web_url.replace(IssueTypePath, IncidentTypePath)
+                : data.web_url;
+            visitUrl(URI);
           }
         })
         .then(this.updateStoreState)
@@ -374,7 +410,9 @@ export default {
             errMsg += `. ${message}`;
           }
 
-          this.flashContainer = createFlash(errMsg);
+          this.flashContainer = createFlash({
+            message: errMsg,
+          });
         });
     },
 
@@ -389,9 +427,11 @@ export default {
           visitUrl(data.web_url);
         })
         .catch(() => {
-          createFlash(
-            sprintf(s__('Error deleting %{issuableType}'), { issuableType: this.issuableType }),
-          );
+          createFlash({
+            message: sprintf(s__('Error deleting %{issuableType}'), {
+              issuableType: this.issuableType,
+            }),
+          });
         });
     },
 

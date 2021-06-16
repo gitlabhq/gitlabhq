@@ -1,0 +1,12 @@
+= render 'devise/shared/tab_single', tab_title: _('Sign in preview')
+.login-box
+  %form.gl-show-field-errors
+    .form-group
+      = label_tag :login
+      = text_field_tag :login, nil, class: "form-control gl-form-input top", title: _('Please provide your username or email address.')
+    .form-group
+      = label_tag :password
+      = password_field_tag :password, nil, class: "form-control gl-form-input bottom", title: _('This field is required.')
+    .form-group
+      = button_tag _("Sign in"), class: "btn gl-button btn-confirm", type: "button"
+

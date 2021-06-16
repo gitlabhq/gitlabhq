@@ -27,14 +27,6 @@ class IssuableFinder
       params.present?
     end
 
-    def filter_by_no_assignee?
-      params[:assignee_id].to_s.downcase == FILTER_NONE
-    end
-
-    def filter_by_any_assignee?
-      params[:assignee_id].to_s.downcase == FILTER_ANY
-    end
-
     def filter_by_no_label?
       downcased = label_names.map(&:downcase)
 
@@ -154,24 +146,6 @@ class IssuableFinder
 
         projects.with_feature_available_for_user(klass, current_user).reorder(nil) # rubocop: disable CodeReuse/ActiveRecord
       end
-    end
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def assignees
-      strong_memoize(:assignees) do
-        if assignee_id?
-          User.where(id: params[:assignee_id])
-        elsif assignee_username?
-          User.where(username: params[:assignee_username])
-        else
-          User.none
-        end
-      end
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
-
-    def assignee
-      assignees.first
     end
 
     def label_names

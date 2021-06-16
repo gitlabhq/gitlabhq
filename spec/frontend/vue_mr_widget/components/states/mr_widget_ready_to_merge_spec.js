@@ -59,11 +59,16 @@ const createTestService = () => ({
 });
 
 let wrapper;
-const createComponent = (customConfig = {}) => {
+const createComponent = (customConfig = {}, mergeRequestWidgetGraphql = false) => {
   wrapper = shallowMount(ReadyToMerge, {
     propsData: {
       mr: createTestMr(customConfig),
       service: createTestService(),
+    },
+    provide: {
+      glFeatures: {
+        mergeRequestWidgetGraphql,
+      },
     },
   });
 };
@@ -123,26 +128,26 @@ describe('ReadyToMerge', () => {
     });
 
     describe('mergeButtonVariant', () => {
-      it('defaults to success class', () => {
+      it('defaults to confirm class', () => {
         createComponent({
           mr: { availableAutoMergeStrategies: [] },
         });
 
-        expect(wrapper.vm.mergeButtonVariant).toEqual('success');
+        expect(wrapper.vm.mergeButtonVariant).toEqual('confirm');
       });
 
-      it('returns success class for success status', () => {
+      it('returns confirm class for success status', () => {
         createComponent({
           mr: { availableAutoMergeStrategies: [], pipeline: true },
         });
 
-        expect(wrapper.vm.mergeButtonVariant).toEqual('success');
+        expect(wrapper.vm.mergeButtonVariant).toEqual('confirm');
       });
 
-      it('returns info class for pending status', () => {
+      it('returns confirm class for pending status', () => {
         createComponent();
 
-        expect(wrapper.vm.mergeButtonVariant).toEqual('info');
+        expect(wrapper.vm.mergeButtonVariant).toEqual('confirm');
       });
 
       it('returns danger class for failed status', () => {
@@ -669,6 +674,34 @@ describe('ReadyToMerge', () => {
             enableSquashBeforeMerge: true,
           },
         });
+
+        expect(findCommitEditElements().length).toBe(2);
+      });
+
+      it('should have two edit components when squash is enabled and there is more than 1 commit and mergeRequestWidgetGraphql is enabled', async () => {
+        createComponent(
+          {
+            mr: {
+              commitsCount: 2,
+              squashIsSelected: true,
+              enableSquashBeforeMerge: true,
+            },
+          },
+          true,
+        );
+
+        wrapper.setData({
+          loading: false,
+          state: {
+            ...createTestMr({}),
+            userPermissions: {},
+            squash: true,
+            mergeable: true,
+            commitCount: 2,
+            commitsWithoutMergeCommits: {},
+          },
+        });
+        await wrapper.vm.$nextTick();
 
         expect(findCommitEditElements().length).toBe(2);
       });

@@ -7,13 +7,11 @@ type: reference, howto
 
 # Repository storage **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4578) in GitLab 8.10.
-
 GitLab stores [repositories](../user/project/repository/index.md) on repository storage. Repository
 storage is either:
 
 - A `gitaly_address`, which points to a [Gitaly node](gitaly/index.md).
-- A `path`, which points directly a directory where the repositories are stored. This method is
+- A `path`, which points directly to the directory where the repositories are stored. This method is
   deprecated and [scheduled to be removed](https://gitlab.com/gitlab-org/gitaly/-/issues/1690) in
   GitLab 14.0.
 
@@ -142,8 +140,9 @@ Omnibus stores the repositories in a `repositories` subdirectory of the `git-dat
 After you [configure](#configure-repository-storage-paths) multiple repository storage paths, you
 can choose where new repositories are stored:
 
-1. Go to the Admin Area (**{admin}**).
-1. Go to **Settings > Repository** and expand the **Repository storage** section.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Repository** and expand the **Repository storage**
+   section.
 1. Enter values in the **Storage nodes for new repositories** fields.
 1. Select **Save changes**.
 
@@ -156,5 +155,5 @@ often it is chosen. That is, `(storage weight) / (sum of all weights) * 100 = ch
 
 ## Move repositories
 
-To move a repository to a different repository path, use the same process as
-[migrating to Gitaly Cluster](gitaly/praefect.md#migrate-to-gitaly-cluster).
+To move a repository to a different repository storage (for example, from `default` to `storage2`), use the 
+same process as [migrating to Gitaly Cluster](gitaly/praefect.md#migrate-to-gitaly-cluster).

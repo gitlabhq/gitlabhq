@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`content_editor/components/toolbar_link_button renders dropdown component 1`] = `
+"<div class=\\"dropdown b-dropdown gl-new-dropdown btn-group\\" aria-label=\\"Insert link\\" title=\\"Insert link\\">
+  <!----><button aria-haspopup=\\"true\\" aria-expanded=\\"false\\" type=\\"button\\" class=\\"btn dropdown-toggle btn-default btn-sm gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only\\">
+    <!----> <svg data-testid=\\"link-icon\\" role=\\"img\\" aria-hidden=\\"true\\" class=\\"dropdown-icon gl-icon s16\\">
+      <use href=\\"#link\\"></use>
+    </svg> <span class=\\"gl-new-dropdown-button-text\\"></span> <svg data-testid=\\"chevron-down-icon\\" role=\\"img\\" aria-hidden=\\"true\\" class=\\"gl-button-icon dropdown-chevron gl-icon s16\\">
+      <use href=\\"#chevron-down\\"></use>
+    </svg></button>
+  <ul role=\\"menu\\" tabindex=\\"-1\\" class=\\"dropdown-menu\\">
+    <div class=\\"gl-new-dropdown-inner\\">
+      <!---->
+      <div class=\\"gl-new-dropdown-contents\\">
+        <li role=\\"presentation\\" class=\\"gl-px-3!\\">
+          <form tabindex=\\"-1\\" class=\\"b-dropdown-form gl-p-0\\">
+            <div placeholder=\\"Link URL\\">
+              <div role=\\"group\\" class=\\"input-group\\">
+                <!---->
+                <!----> <input type=\\"text\\" placeholder=\\"Link URL\\" class=\\"gl-form-input form-control\\">
+                <div class=\\"input-group-append\\"><button type=\\"button\\" class=\\"btn btn-confirm btn-md gl-button\\">
+                    <!---->
+                    <!----> <span class=\\"gl-button-text\\">Apply</span></button></div>
+                <!---->
+              </div>
+            </div>
+          </form>
+        </li>
+        <!---->
+        <!---->
+      </div>
+      <!---->
+    </div>
+  </ul>
+</div>"
+`;

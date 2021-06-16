@@ -2,7 +2,7 @@
 
 module Gitlab
   module Checks
-    class DiffCheck < BaseChecker
+    class DiffCheck < BaseSingleChecker
       include Gitlab::Utils::StrongMemoize
 
       LOG_MESSAGES = {

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20191118211629_migrate_ops_feature_flags_scopes_target_user_ids.rb')
+require_migration!
 
 RSpec.describe MigrateOpsFeatureFlagsScopesTargetUserIds do
   let(:namespaces) { table(:namespaces) }

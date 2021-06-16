@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20190715043954_set_issue_id_for_all_versions.rb')
+require_migration!
 
 RSpec.describe SetIssueIdForAllVersions do
   let(:projects) { table(:projects) }

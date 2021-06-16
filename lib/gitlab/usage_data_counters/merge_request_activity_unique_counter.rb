@@ -44,6 +44,8 @@ module Gitlab
       MR_INCLUDING_CI_CONFIG_ACTION = 'o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile'
       MR_MILESTONE_CHANGED_ACTION = 'i_code_review_user_milestone_changed'
       MR_LABELS_CHANGED_ACTION = 'i_code_review_user_labels_changed'
+      MR_LOAD_CONFLICT_UI_ACTION = 'i_code_review_user_load_conflict_ui'
+      MR_RESOLVE_CONFLICT_ACTION = 'i_code_review_user_resolve_conflict'
 
       class << self
         def track_mr_diffs_action(merge_request:)
@@ -187,7 +189,6 @@ module Gitlab
         end
 
         def track_mr_including_ci_config(user:, merge_request:)
-          return unless Feature.enabled?(:usage_data_o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile, user, default_enabled: :yaml)
           return unless merge_request.includes_ci_config?
 
           track_unique_action_by_user(MR_INCLUDING_CI_CONFIG_ACTION, user)
@@ -199,6 +200,14 @@ module Gitlab
 
         def track_labels_changed_action(user:)
           track_unique_action_by_user(MR_LABELS_CHANGED_ACTION, user)
+        end
+
+        def track_loading_conflict_ui_action(user:)
+          track_unique_action_by_user(MR_LOAD_CONFLICT_UI_ACTION, user)
+        end
+
+        def track_resolve_conflict_action(user:)
+          track_unique_action_by_user(MR_RESOLVE_CONFLICT_ACTION, user)
         end
 
         private

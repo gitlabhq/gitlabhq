@@ -10,11 +10,6 @@ module RakeHelpers
     allow(main_object).to receive(:warn_user_is_not_gitlab)
   end
 
-  def silence_output
-    allow(main_object).to receive(:puts)
-    allow(main_object).to receive(:print)
-  end
-
   def silence_progress_bar
     allow_any_instance_of(ProgressBar::Output).to receive(:stream).and_return(double.as_null_object)
   end

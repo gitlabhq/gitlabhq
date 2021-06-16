@@ -209,6 +209,9 @@ class Admin::UsersController < Admin::ApplicationController
       user_params_with_pass.merge!(password_params)
     end
 
+    cc_validation_params = process_credit_card_validation_params(user_params_with_pass.delete(:credit_card_validation_attributes))
+    user_params_with_pass.merge!(cc_validation_params)
+
     respond_to do |format|
       result = Users::UpdateService.new(current_user, user_params_with_pass.merge(user: user)).execute do |user|
         user.skip_reconfirmation!
@@ -252,6 +255,27 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   protected
+
+  def process_credit_card_validation_params(cc_validation_params)
+    return unless cc_validation_params && cc_validation_params[:credit_card_validated_at]
+
+    cc_validation = cc_validation_params[:credit_card_validated_at]
+
+    if cc_validation == "1" && !user.credit_card_validated_at
+      {
+        credit_card_validation_attributes: {
+          credit_card_validated_at: Time.zone.now
+        }
+      }
+
+    elsif cc_validation == "0" && user.credit_card_validated_at
+      {
+        credit_card_validation_attributes: {
+          _destroy: true
+        }
+      }
+    end
+  end
 
   def paginate_without_count?
     counts = Gitlab::Database::Count.approximate_counts([User])
@@ -330,7 +354,8 @@ class Admin::UsersController < Admin::ApplicationController
       :twitter,
       :username,
       :website_url,
-      :note
+      :note,
+      credit_card_validation_attributes: [:credit_card_validated_at]
     ]
   end
 

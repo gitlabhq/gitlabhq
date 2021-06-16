@@ -9,7 +9,7 @@ module Gitlab
         attr_writer :logger
 
         def logger
-          @logger ||= Logger.new(STDOUT)
+          @logger ||= Logger.new($stdout)
         end
       end
 
@@ -67,7 +67,7 @@ module Gitlab
 
       def log_info(details)
         details = base_log_data.merge(details)
-        details = details.to_yaml if ActiveSupport::Logger.logger_outputs_to?(Measuring.logger, STDOUT)
+        details = details.to_yaml if ActiveSupport::Logger.logger_outputs_to?(Measuring.logger, $stdout)
         Measuring.logger.info(details)
       end
     end

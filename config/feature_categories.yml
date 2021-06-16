@@ -15,10 +15,8 @@
 - audit_reports
 - authentication_and_authorization
 - auto_devops
-- auto_portfolio_mgmt
 - backup_restore
 - boards
-- browser_performance
 - chatops
 - cloud_native_installation
 - cluster_cost_management
@@ -78,7 +76,6 @@
 - license
 - license_compliance
 - live_preview
-- load_testing
 - logging
 - memory
 - merge_trains
@@ -87,9 +84,11 @@
 - mobile_signing_deployment
 - navigation
 - omnibus_package
+- on_call_schedule_management
 - onboarding
 - package_registry
 - pages
+- performance_testing
 - pipeline_authoring
 - planning_analytics
 - privacy_control_center
@@ -111,6 +110,7 @@
 - self_monitoring
 - serverless
 - service_desk
+- sharding
 - snippets
 - source_code_management
 - static_application_security_testing
@@ -130,3 +130,4 @@
 - web_firewall
 - web_ide
 - wiki
+- workflow_automation

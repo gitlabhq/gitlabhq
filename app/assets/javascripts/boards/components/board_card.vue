@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapState } from 'vuex';
+import Tracking from '~/tracking';
 import BoardCardInner from './board_card_inner.vue';
 
 export default {
@@ -7,6 +8,7 @@ export default {
   components: {
     BoardCardInner,
   },
+  mixins: [Tracking.mixin()],
   props: {
     list: {
       type: Object,
@@ -40,6 +42,12 @@ export default {
         this.selectedBoardItems.findIndex((boardItem) => boardItem.id === this.item.id) > -1
       );
     },
+    isDisabled() {
+      return this.disabled || !this.item.id || this.item.isLoading;
+    },
+    isDraggable() {
+      return !this.disabled && this.item.id && !this.item.isLoading;
+    },
   },
   methods: {
     ...mapActions(['toggleBoardItemMultiSelection', 'toggleBoardItem']),
@@ -48,10 +56,11 @@ export default {
       if (e.target.closest('.js-no-trigger')) return;
 
       const isMultiSelect = e.ctrlKey || e.metaKey;
-      if (isMultiSelect) {
+      if (isMultiSelect && gon?.features?.boardMultiSelect) {
         this.toggleBoardItemMultiSelection(this.item);
       } else {
         this.toggleBoardItem({ boardItem: this.item });
+        this.track('click_card', { label: 'right_sidebar' });
       }
     },
   },
@@ -63,9 +72,10 @@ export default {
     data-qa-selector="board_card"
     :class="{
       'multi-select': multiSelectVisible,
-      'user-can-drag': !disabled && item.id,
-      'is-disabled': disabled || !item.id,
+      'user-can-drag': isDraggable,
+      'is-disabled': isDisabled,
       'is-active': isActive,
+      'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
     }"
     :index="index"
     :data-item-id="item.id"

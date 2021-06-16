@@ -56,7 +56,10 @@
 
     .line-coverage {
       @include line-coverage-border-color($green-500, $orange-500);
+    }
 
+    .line-coverage,
+    .line-codequality {
       &.old,
       &.new {
         background-color: $white-normal;

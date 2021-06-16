@@ -16,7 +16,7 @@ RSpec.describe Sidebars::Projects::Panel do
     subject { described_class.new(context).instance_variable_get(:@menus) }
 
     context 'when integration is present and active' do
-      let_it_be(:confluence) { create(:confluence_service, active: true) }
+      let_it_be(:confluence) { create(:confluence_integration, active: true) }
 
       let(:project) { confluence.project }
 

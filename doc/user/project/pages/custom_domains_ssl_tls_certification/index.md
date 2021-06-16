@@ -5,7 +5,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Custom domains and SSL/TLS Certificates
+# Custom domains and SSL/TLS certificates **(FREE)**
 
 Setting up GitLab Pages with custom domains, and adding SSL/TLS certificates to them, are optional features of GitLab Pages.
 
@@ -114,7 +114,7 @@ without any `/project-name`.
 
 ##### For both root and subdomains
 
-There are a few cases where you need point both subdomain and root
+There are a few cases where you need to point both the subdomain and root
 domain to the same website, for instance, `example.com` and `www.example.com`.
 
 They require:

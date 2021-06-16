@@ -14,4 +14,4 @@
   "can-user-admin-feature-flag" => can?(current_user, :admin_feature_flag, @project),
   "new-feature-flag-path" => can?(current_user, :create_feature_flag, @project) ? new_project_feature_flag_path(@project): nil,
   "rotate-instance-id-path" => can?(current_user, :admin_feature_flags_client, @project) ? reset_token_project_feature_flags_client_path(@project, format: :json) : nil,
-  "new-user-list-path" => can?(current_user, :admin_feature_flags_user_lists, @project) ? new_project_feature_flags_user_list_path(@project) : nil } }
+  "user-list-path" => can?(current_user, :admin_feature_flags_user_lists, @project) ? project_feature_flags_user_lists_path(@project) : nil } }

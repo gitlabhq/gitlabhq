@@ -60,6 +60,7 @@ export default function initFrequentItemDropdowns() {
                     namespace,
                     currentUserName: this.currentUserName,
                     currentItem: this.currentItem,
+                    searchClass: 'gl-display-none gl-sm-display-block',
                   },
                 }),
               ],

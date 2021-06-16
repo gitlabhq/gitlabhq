@@ -24,7 +24,7 @@ RSpec.describe Commits::CherryPickService do
     repository.add_branch(user, branch_name, merge_base_sha)
   end
 
-  def cherry_pick(sha, branch_name)
+  def cherry_pick(sha, branch_name, message: nil)
     commit = project.commit(sha)
 
     described_class.new(
@@ -32,7 +32,8 @@ RSpec.describe Commits::CherryPickService do
       user,
       commit: commit,
       start_branch: branch_name,
-      branch_name: branch_name
+      branch_name: branch_name,
+      message: message
     ).execute
   end
 
@@ -44,6 +45,14 @@ RSpec.describe Commits::CherryPickService do
 
         head = repository.find_branch(branch_name).target
         expect(head).not_to eq(merge_base_sha)
+      end
+
+      it 'supports a custom commit message' do
+        result = cherry_pick(merge_commit_sha, branch_name, message: 'foo')
+        branch = repository.find_branch(branch_name)
+
+        expect(result[:status]).to eq(:success)
+        expect(branch.dereferenced_target.message).to eq('foo')
       end
     end
 

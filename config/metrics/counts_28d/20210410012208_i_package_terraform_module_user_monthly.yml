@@ -6,7 +6,7 @@ product_stage: configure
 product_group: group::configure
 product_category: infrastructure_as_code
 value_type: number
-status: implemented
+status: data_available
 milestone: '13.11'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55018
 time_frame: 28d

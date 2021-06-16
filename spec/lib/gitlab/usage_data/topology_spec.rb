@@ -95,7 +95,7 @@ RSpec.describe Gitlab::UsageData::Topology do
                   },
                   {
                     name: 'web',
-                    server: 'unicorn'
+                    server: 'puma'
                   }
                 ]
               }
@@ -724,7 +724,7 @@ RSpec.describe Gitlab::UsageData::Topology do
         },
         # instance 2
         {
-          'metric' => { 'instance' => 'instance2:8080', 'job' => 'gitlab-rails', 'server' => 'unicorn' },
+          'metric' => { 'instance' => 'instance2:8080', 'job' => 'gitlab-rails', 'server' => 'puma' },
           'value' => [1000, '1']
         }
       ])

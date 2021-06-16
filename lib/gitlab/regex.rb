@@ -138,7 +138,8 @@ module Gitlab
       end
 
       def helm_version_regex
-        @helm_version_regex ||= %r{#{prefixed_semver_regex}}.freeze
+        # identical to semver_regex, with optional preceding 'v'
+        @helm_version_regex ||= Regexp.new("\\Av?#{::Gitlab::Regex.unbounded_semver_regex.source}\\z", ::Gitlab::Regex.unbounded_semver_regex.options)
       end
 
       def unbounded_semver_regex

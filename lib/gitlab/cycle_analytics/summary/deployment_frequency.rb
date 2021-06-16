@@ -6,10 +6,10 @@ module Gitlab
       class DeploymentFrequency < Base
         include SummaryHelper
 
-        def initialize(deployments:, from:, to: nil, project: nil)
+        def initialize(deployments:, options:, project: nil)
           @deployments = deployments
 
-          super(project: project, from: from, to: to)
+          super(project: project, options: options)
         end
 
         def title
@@ -17,7 +17,7 @@ module Gitlab
         end
 
         def value
-          @value ||= frequency(@deployments, @from, @to || Time.now)
+          @value ||= frequency(@deployments, @options[:from], @options[:to] || Time.current)
         end
 
         def unit

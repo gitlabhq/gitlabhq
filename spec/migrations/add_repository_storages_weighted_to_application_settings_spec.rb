@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200508203901_add_repository_storages_weighted_to_application_settings.rb')
+require_migration!
 
 RSpec.describe AddRepositoryStoragesWeightedToApplicationSettings, :migration do
   let(:storages) { { "foo" => {}, "baz" => {} } }

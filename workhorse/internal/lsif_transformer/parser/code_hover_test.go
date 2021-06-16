@@ -64,21 +64,33 @@ func TestHighlight(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			raw := []byte(fmt.Sprintf(`{"language":"%s","value":"%s"}`, tt.language, tt.value))
-			c, err := newCodeHover(json.RawMessage(raw))
+			raw := []byte(fmt.Sprintf(`[{"language":"%s","value":"%s"}]`, tt.language, tt.value))
+			c, err := newCodeHovers(json.RawMessage(raw))
 
 			require.NoError(t, err)
-			require.Equal(t, tt.want, c.Tokens)
+			require.Len(t, c, 1)
+			require.Equal(t, tt.want, c[0].Tokens)
 		})
 	}
 }
 
 func TestMarkdown(t *testing.T) {
-	value := `"This method reverses a string \n\n"`
-	c, err := newCodeHover(json.RawMessage(value))
+	value := `["This method reverses a string \n\n"]`
+	c, err := newCodeHovers(json.RawMessage(value))
 
 	require.NoError(t, err)
-	require.Equal(t, "This method reverses a string \n\n", c.TruncatedValue.Value)
+	require.Len(t, c, 1)
+	require.Equal(t, "This method reverses a string \n\n", c[0].TruncatedValue.Value)
+}
+
+func TestMarkdownContentsFormat(t *testing.T) {
+	value := `{"kind":"markdown","value":"some _markdown_ **text**"}`
+	c, err := newCodeHovers(json.RawMessage(value))
+
+	require.NoError(t, err)
+	require.Len(t, c, 1)
+	require.Equal(t, [][]token(nil), c[0].Tokens)
+	require.Equal(t, "some _markdown_ **text**", c[0].TruncatedValue.Value)
 }
 
 func TestTruncatedValue(t *testing.T) {

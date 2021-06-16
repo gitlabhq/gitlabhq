@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 require_migration!
-require Rails.root.join('db', 'migrate', '20201119125730_add_web_hooks_service_foreign_key.rb')
+require_migration!('add_web_hooks_service_foreign_key')
 
 RSpec.describe RemoveOrphanServiceHooks, schema: 20201203123201 do
   let(:web_hooks) { table(:web_hooks) }

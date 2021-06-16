@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'post_migrate', '20210215095328_migrate_delayed_project_removal_from_namespaces_to_namespace_settings.rb')
+require_migration!
 
 RSpec.describe MigrateDelayedProjectRemovalFromNamespacesToNamespaceSettings, :migration do
   let(:namespaces) { table(:namespaces) }

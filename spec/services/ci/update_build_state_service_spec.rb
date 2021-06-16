@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::UpdateBuildStateService do
-  let(:project) { create(:project) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
   let(:build) { create(:ci_build, :running, pipeline: pipeline) }
   let(:metrics) { spy('metrics') }
 
@@ -12,6 +13,24 @@ RSpec.describe Ci::UpdateBuildStateService do
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)
+  end
+
+  context 'when build has unknown failure reason' do
+    let(:params) do
+      {
+        output: { checksum: 'crc32:12345678', bytesize: 123 },
+        state: 'failed',
+        failure_reason: 'no idea here',
+        exit_code: 42
+      }
+    end
+
+    it 'updates a build status' do
+      result = subject.execute
+
+      expect(build).to be_failed
+      expect(result.status).to eq 200
+    end
   end
 
   context 'when build does not have checksum' do
@@ -44,25 +63,6 @@ RSpec.describe Ci::UpdateBuildStateService do
 
       it 'updates a build timestamp' do
         expect { subject.execute }.to change { build.updated_at }
-      end
-    end
-
-    context 'when request payload carries a trace' do
-      let(:params) { { state: 'success', trace: 'overwritten' } }
-
-      it 'overwrites a trace' do
-        result = subject.execute
-
-        expect(build.trace.raw).to eq 'overwritten'
-        expect(result.status).to eq 200
-      end
-
-      it 'updates overwrite operation metric' do
-        execute_with_stubbed_metrics!
-
-        expect(metrics)
-          .to have_received(:increment_trace_operation)
-          .with(operation: :overwrite)
       end
     end
 

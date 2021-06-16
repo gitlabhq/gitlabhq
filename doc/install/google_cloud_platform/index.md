@@ -52,13 +52,13 @@ After a few seconds, the instance is created and available to log in. The next s
 
 ![Deploy settings](img/vm_created.png)
 
-1. Make a note of the IP address of the instance, as you will need that in a later step. <!-- using future tense is okay here -->
+1. Make a note of the external IP address of the instance, as you will need that in a later step. <!-- using future tense is okay here -->
 1. Click on the SSH button to connect to the instance.
 1. A new window appears, with you logged into the instance.
 
    ![GitLab first sign in](img/ssh_terminal.png)
 
-1. Next, follow the instructions for installing GitLab for the operating system you choose, at <https://about.gitlab.com/install/>. You can use the IP address from the step above, as the hostname.
+1. Next, follow the instructions for installing GitLab for the operating system you choose, at <https://about.gitlab.com/install/>. You can use the external IP address you noted before as the hostname.
 
 1. Congratulations! GitLab is now installed and you can access it via your browser. To finish installation, open the URL in your browser and provide the initial administrator password. The username for this account is `root`.
 

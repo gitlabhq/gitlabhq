@@ -19,8 +19,6 @@ module Ci
     end
 
     def execute
-      overwrite_trace! if has_trace?
-
       unless accept_available?
         return update_build_state!
       end
@@ -33,12 +31,6 @@ module Ci
     end
 
     private
-
-    def overwrite_trace!
-      metrics.increment_trace_operation(operation: :overwrite)
-
-      build.trace.set(params[:trace]) if Gitlab::Ci::Features.trace_overwrite?
-    end
 
     def ensure_pending_state!
       pending_state.created_at
@@ -151,10 +143,6 @@ module Ci
       params.dig(:state).to_s
     end
 
-    def has_trace?
-      params.dig(:trace).present?
-    end
-
     def has_checksum?
       trace_checksum.present?
     end
@@ -181,7 +169,7 @@ module Ci
         state: params.fetch(:state),
         trace_checksum: trace_checksum,
         trace_bytesize: trace_bytesize,
-        failure_reason: params.dig(:failure_reason)
+        failure_reason: failure_reason
       )
 
       unless build_state.present?
@@ -189,6 +177,14 @@ module Ci
       end
 
       build_state || build.pending_state
+    end
+
+    def failure_reason
+      reason = params.dig(:failure_reason)
+
+      return unless reason
+
+      Ci::BuildPendingState.failure_reasons.fetch(reason.to_s, 'unknown_failure')
     end
 
     ##

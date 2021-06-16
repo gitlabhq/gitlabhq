@@ -28,9 +28,7 @@ module Gitlab
         copy_archive
 
         wait_for_archived_file do
-          # Disable archive validation by default
-          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/235949
-          validate_decompressed_archive_size if Feature.enabled?(:validate_import_decompressed_archive_size)
+          validate_decompressed_archive_size if Feature.enabled?(:validate_import_decompressed_archive_size, default_enabled: :yaml)
           decompress_archive
         end
       rescue StandardError => e

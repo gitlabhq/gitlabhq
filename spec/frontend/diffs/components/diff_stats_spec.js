@@ -1,6 +1,9 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+
 import DiffStats from '~/diffs/components/diff_stats.vue';
+import mockDiffFile from '../mock_data/diff_file';
 
 const TEST_ADDED_LINES = 100;
 const TEST_REMOVED_LINES = 200;
@@ -11,13 +14,15 @@ describe('diff_stats', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(DiffStats, {
-      propsData: {
-        addedLines: TEST_ADDED_LINES,
-        removedLines: TEST_REMOVED_LINES,
-        ...props,
-      },
-    });
+    wrapper = extendedWrapper(
+      shallowMount(DiffStats, {
+        propsData: {
+          addedLines: TEST_ADDED_LINES,
+          removedLines: TEST_REMOVED_LINES,
+          ...props,
+        },
+      }),
+    );
   };
 
   describe('diff stats group', () => {
@@ -38,15 +43,43 @@ describe('diff_stats', () => {
     });
   });
 
+  describe('bytes changes', () => {
+    let file;
+    const getBytesContainer = () => wrapper.find('.diff-stats > div:first-child');
+
+    beforeEach(() => {
+      file = {
+        ...mockDiffFile,
+        viewer: {
+          ...mockDiffFile.viewer,
+          name: 'not_diffable',
+        },
+      };
+
+      createComponent({ diffFile: file });
+    });
+
+    it("renders the bytes changes instead of line changes when the file isn't diffable", () => {
+      const content = getBytesContainer();
+
+      expect(content.classes('gl-text-green-600')).toBe(true);
+      expect(content.text()).toBe('+1.00 KiB (+100%)');
+    });
+  });
+
   describe('line changes', () => {
-    const findFileLine = (name) => wrapper.find(name);
+    const findFileLine = (name) => wrapper.findByTestId(name);
+
+    beforeEach(() => {
+      createComponent();
+    });
 
     it('shows the amount of lines added', () => {
-      expect(findFileLine('.js-file-addition-line').text()).toBe(TEST_ADDED_LINES.toString());
+      expect(findFileLine('js-file-addition-line').text()).toBe(TEST_ADDED_LINES.toString());
     });
 
     it('shows the amount of lines removed', () => {
-      expect(findFileLine('.js-file-deletion-line').text()).toBe(TEST_REMOVED_LINES.toString());
+      expect(findFileLine('js-file-deletion-line').text()).toBe(TEST_REMOVED_LINES.toString());
     });
   });
 

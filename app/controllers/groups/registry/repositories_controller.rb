@@ -17,7 +17,7 @@ module Groups
                                                  .execute
                                                  .with_api_entity_associations
 
-            track_package_event(:list_repositories, :container)
+            track_package_event(:list_repositories, :container, user: current_user, namespace: group)
 
             serializer = ContainerRepositoriesSerializer
               .new(current_user: current_user)

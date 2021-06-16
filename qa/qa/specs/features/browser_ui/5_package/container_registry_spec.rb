@@ -30,6 +30,14 @@ module QA
               DOCKER_TLS_CERTDIR: "/certs"
               DOCKER_TLS_VERIFY: 1
               DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+            before_script:
+              - |
+                echo "Waiting for docker to start..."
+                for i in $(seq 1 30)
+                do
+                    docker info && break
+                    sleep 1s
+                done       
             script:
               - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
               - docker build -t $IMAGE_TAG .

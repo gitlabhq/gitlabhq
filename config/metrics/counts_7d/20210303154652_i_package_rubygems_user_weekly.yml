@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.user_packages.i_package_rubygems_user_weekly
-description: Distinct user count events for RubyGems packages in recent 7 days
+description: A weekly count of distinct RubyGems packages published by a user
 product_section: ops
 product_stage: package
 product_group: group::package
@@ -18,4 +18,3 @@ tier:
 - free
 - premium
 - ultimate
-

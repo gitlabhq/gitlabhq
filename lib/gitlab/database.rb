@@ -9,12 +9,12 @@ module Gitlab
     #   'old_name' => 'new_name'
     # }.freeze
     TABLES_TO_BE_RENAMED = {
-      'analytics_instance_statistics_measurements' => 'analytics_usage_trends_measurements'
+      'services' => 'integrations'
     }.freeze
 
     # Minimum PostgreSQL version requirement per documentation:
     # https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements
-    MINIMUM_POSTGRES_VERSION = 11
+    MINIMUM_POSTGRES_VERSION = 12
 
     # https://www.postgresql.org/docs/9.2/static/datatype-numeric.html
     MAX_INT_VALUE = 2147483647
@@ -60,7 +60,7 @@ module Gitlab
     end
 
     def self.config
-      default_config_hash = ActiveRecord::Base.configurations.find_db_config(Rails.env)&.config || {}
+      default_config_hash = ActiveRecord::Base.configurations.find_db_config(Rails.env)&.configuration_hash || {}
 
       default_config_hash.with_indifferent_access.tap do |hash|
         # Match config/initializers/database_config.rb
@@ -86,6 +86,11 @@ module Gitlab
       else
         'Unknown'
       end
+    end
+
+    # Disables prepared statements for the current database connection.
+    def self.disable_prepared_statements
+      ActiveRecord::Base.establish_connection(config.merge(prepared_statements: false))
     end
 
     # @deprecated
@@ -142,7 +147,7 @@ module Gitlab
           is required for this version of GitLab.
           <% if Rails.env.development? || Rails.env.test? %>
           If using gitlab-development-kit, please find the relevant steps here:
-            https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/postgresql.md#upgrade-postgresql
+            https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md#upgrade-postgresql
           <% end %>
           Please upgrade your environment to a supported PostgreSQL version, see
           https://docs.gitlab.com/ee/install/requirements.html#database for details.
@@ -288,7 +293,7 @@ module Gitlab
     # @param [ActiveRecord::Connection] ar_connection
     # @return [String]
     def self.get_write_location(ar_connection)
-      use_new_load_balancer_query = Gitlab::Utils.to_boolean(ENV['USE_NEW_LOAD_BALANCER_QUERY'], default: false)
+      use_new_load_balancer_query = Gitlab::Utils.to_boolean(ENV['USE_NEW_LOAD_BALANCER_QUERY'], default: true)
 
       sql = if use_new_load_balancer_query
               <<~NEWSQL

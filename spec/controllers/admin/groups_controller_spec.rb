@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Admin::GroupsController do
-  let(:group) { create(:group) }
-  let(:project) { create(:project, namespace: group) }
-  let(:admin) { create(:admin) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, namespace: group) }
+  let_it_be(:admin) { create(:admin) }
 
   before do
     sign_in(admin)
@@ -46,9 +46,9 @@ RSpec.describe Admin::GroupsController do
   end
 
   describe 'PUT #members_update' do
-    let(:group_user) { create(:user) }
+    let_it_be(:group_user) { create(:user) }
 
-    it 'adds user to members' do
+    it 'adds user to members', :aggregate_failures, :snowplow do
       put :members_update, params: {
                              id: group,
                              user_ids: group_user.id,
@@ -58,9 +58,16 @@ RSpec.describe Admin::GroupsController do
       expect(controller).to set_flash.to 'Users were successfully added.'
       expect(response).to redirect_to(admin_group_path(group))
       expect(group.users).to include group_user
+      expect_snowplow_event(
+        category: 'Members::CreateService',
+        action: 'create_member',
+        label: 'admin-group-page',
+        property: 'existing_user',
+        user: admin
+      )
     end
 
-    it 'can add unlimited members' do
+    it 'can add unlimited members', :aggregate_failures do
       put :members_update, params: {
                              id: group,
                              user_ids: 1.upto(1000).to_a.join(','),
@@ -71,7 +78,7 @@ RSpec.describe Admin::GroupsController do
       expect(response).to redirect_to(admin_group_path(group))
     end
 
-    it 'adds no user to members' do
+    it 'adds no user to members', :aggregate_failures do
       put :members_update, params: {
                              id: group,
                              user_ids: '',

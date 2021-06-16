@@ -2,7 +2,7 @@
 
 # Concern handling functionality around deciding whether to send notification
 # for activities on a specified branch or not. Will be included in
-# ChatNotificationService and PipelinesEmailService classes.
+# Integrations::BaseChatNotification and PipelinesEmailService classes.
 module NotificationBranchSelection
   extend ActiveSupport::Concern
 

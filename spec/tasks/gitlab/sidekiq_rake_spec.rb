@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'sidekiq.rake', :aggregate_failures do
+RSpec.describe 'sidekiq.rake', :aggregate_failures, :silence_stdout do
   before do
     Rake.application.rake_require 'tasks/gitlab/sidekiq'
 

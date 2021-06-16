@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20200509203901_reseed_repository_storages_weighted.rb')
+require_migration!
 
 RSpec.describe ReseedRepositoryStoragesWeighted do
   let(:storages) { { "foo" => {}, "baz" => {} } }

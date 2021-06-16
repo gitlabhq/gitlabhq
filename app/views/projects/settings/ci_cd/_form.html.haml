@@ -18,7 +18,7 @@
             = f.label :auto_cancel_pending_pipelines, class: 'form-check-label' do
               %strong= _("Auto-cancel redundant pipelines")
             .form-text.text-muted
-              = _("New pipelines cause older pending pipelines on the same branch to be cancelled.")
+              = _("New pipelines cause older pending or running pipelines on the same branch to be cancelled.")
               = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'auto-cancel-redundant-pipelines'), target: '_blank'
 
         .form-group
@@ -36,7 +36,7 @@
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.form-text.text-muted
             = html_escape(_("The name of the CI/CD configuration file. A path relative to the root directory is optional (for example %{code_open}my/path/.myfile.yml%{code_close}).")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'custom-cicd-configuration-path'), target: '_blank'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'custom-cicd-configuration-file'), target: '_blank'
 
         %hr
         .form-group

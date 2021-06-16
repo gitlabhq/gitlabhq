@@ -9,7 +9,7 @@ RSpec.describe 'devise/shared/_signup_box' do
     allow(view).to receive(:url).and_return('_url_')
     allow(view).to receive(:terms_path).and_return('_terms_path_')
     allow(view).to receive(:button_text).and_return('_button_text_')
-    allow(view).to receive(:suggestion_path).and_return('_suggestion_path_')
+    allow(view).to receive(:signup_username_data_attributes).and_return({})
     stub_template 'devise/shared/_error_messages.html.haml' => ''
   end
 

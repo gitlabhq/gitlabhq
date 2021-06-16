@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'migrate', '20201008013434_generate_ci_jwt_signing_key.rb')
+require_migration!
 
 RSpec.describe GenerateCiJwtSigningKey do
   let(:application_settings) do

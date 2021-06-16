@@ -10,8 +10,8 @@
     # because some repos are private and CI_JOB_TOKEN cannot access files.
     # See https://gitlab.com/gitlab-org/gitlab/issues/191273
     GIT_DEPTH: 1
-    # By default, deploy the Review App using the `master` branch of the `gitlab-org/gitlab-docs` project
-    DOCS_BRANCH: master
+    # By default, deploy the Review App using the `main` branch of the `gitlab-org/gitlab-docs` project
+    DOCS_BRANCH: main
   environment:
     name: review-docs/mr-${CI_MERGE_REQUEST_IID}
     # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are CI variables
@@ -54,8 +54,6 @@ docs-lint links:
   extends:
     - .docs:rules:docs-lint
   image: registry.gitlab.com/gitlab-org/gitlab-docs/lint-html:alpine-3.13-ruby-2.7.2
-  # TODO: revert to .default-retry when https://gitlab.com/gitlab-org/gitlab/-/issues/331002 is fixed.
-  retry: 2
   stage: test
   needs: []
   script:

@@ -58,8 +58,10 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
       it 'has runner attributes', :aggregate_failures do
         expect(runner_data[:id]).to eq(ci_runner.id)
         expect(runner_data[:description]).to eq(ci_runner.description)
+        expect(runner_data[:runner_type]).to eq(ci_runner.runner_type)
         expect(runner_data[:active]).to eq(ci_runner.active)
         expect(runner_data[:tags]).to match_array(tag_names)
+        expect(runner_data[:is_shared]).to eq(ci_runner.instance_type?)
       end
     end
 

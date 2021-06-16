@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:packages:events namespace rake task' do
+RSpec.describe 'gitlab:packages:events namespace rake task', :silence_stdout do
   before :all do
     Rake.application.rake_require 'tasks/gitlab/packages/events'
   end

@@ -1,5 +1,5 @@
 %section.settings.no-animate.expanded.cluster-health-graphs.qa-cluster-health-section#cluster-health
-  - if @cluster&.application_prometheus_available?
+  - if @cluster&.integration_prometheus_available?
     #prometheus-graphs{ data: @cluster.health_data(clusterable) }
 
   - else

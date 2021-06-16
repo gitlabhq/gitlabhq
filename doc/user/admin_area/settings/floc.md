@@ -22,7 +22,8 @@ Permissions-Policy: interest-cohort=()
 
 To enable it:
 
-1. Go to the Admin Area (**{admin}**) and select **Settings > General**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand **Federated Learning of Cohorts**.
 1. Check the box.
 1. Click **Save changes**.

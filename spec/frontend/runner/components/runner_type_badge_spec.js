@@ -32,8 +32,14 @@ describe('RunnerTypeBadge', () => {
     expect(findBadge().props('variant')).toBe(variant);
   });
 
-  it('does not display a badge when type is unknown', () => {
-    createComponent({ props: { type: 'AN_UNKNOWN_VALUE' } });
+  it('validation fails for an incorrect type', () => {
+    expect(() => {
+      createComponent({ props: { type: 'AN_UNKNOWN_VALUE' } });
+    }).toThrow();
+  });
+
+  it('does not render content when type is missing', () => {
+    createComponent({ props: { type: undefined } });
 
     expect(findBadge().exists()).toBe(false);
   });

@@ -27,28 +27,6 @@ NGINX Ingress versions prior to 0.16.0 offer an included [VTS Prometheus metrics
 
 ## Configuring NGINX Ingress monitoring
 
-If you have deployed NGINX Ingress using the GitLab [Kubernetes cluster integration](../../clusters/index.md#installing-applications), Prometheus [automatically monitors it](#about-managed-nginx-ingress-deployments).
-
-For other deployments, there is [some configuration](#manually-setting-up-nginx-ingress-for-prometheus-monitoring) required depending on your installation:
-
-- NGINX Ingress should be version 0.16.0 or above, with metrics enabled.
-- NGINX Ingress should be annotated for Prometheus monitoring.
-- Prometheus should be configured to monitor annotated pods.
-
-### About managed NGINX Ingress deployments
-
-NGINX Ingress is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress). NGINX Ingress is [externally reachable via the Load Balancer's Endpoint](../../../clusters/applications.md#ingress).
-
-NGINX is configured for Prometheus monitoring, by setting:
-
-- `enable-vts-status: "true"`, to export Prometheus metrics.
-- `prometheus.io/scrape: "true"`, to enable automatic discovery.
-- `prometheus.io/port: "10254"`, to specify the metrics port.
-
-When used in conjunction with the GitLab deployed Prometheus service, response metrics are automatically collected.
-
-### Manually setting up NGINX Ingress for Prometheus monitoring
-
 Version 0.9.0 and above of [NGINX Ingress](https://github.com/kubernetes/ingress-nginx) have built-in support for exporting Prometheus metrics. To enable, a ConfigMap setting must be passed: `enable-vts-status: "true"`. Once enabled, a Prometheus metrics endpoint starts running on port 10254.
 
 Next, the Ingress needs to be annotated for Prometheus monitoring. Two new annotations need to be added:

@@ -28,7 +28,7 @@ RSpec.describe Gitlab::ImportExport::LegacyRelationTreeSaver do
         stub_feature_flags(export_reduce_relation_batch_size: true)
       end
 
-      include_examples 'FastHashSerializer with batch size', Gitlab::ImportExport::JSON::StreamingSerializer::SMALLER_BATCH_SIZE
+      include_examples 'FastHashSerializer with batch size', Gitlab::ImportExport::Json::StreamingSerializer::SMALLER_BATCH_SIZE
     end
 
     context 'when export_reduce_relation_batch_size feature flag is disabled' do
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::ImportExport::LegacyRelationTreeSaver do
         stub_feature_flags(export_reduce_relation_batch_size: false)
       end
 
-      include_examples 'FastHashSerializer with batch size', Gitlab::ImportExport::JSON::StreamingSerializer::BATCH_SIZE
+      include_examples 'FastHashSerializer with batch size', Gitlab::ImportExport::Json::StreamingSerializer::BATCH_SIZE
     end
   end
 end

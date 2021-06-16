@@ -2,7 +2,7 @@
 
 module Gitlab
   module ImportExport
-    module JSON
+    module Json
       class LegacyWriter
         include Gitlab::ImportExport::CommandLineUtil
 

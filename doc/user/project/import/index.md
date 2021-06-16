@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Migrate projects to a GitLab instance
+# Migrate projects to a GitLab instance **(FREE)**
 
 See these documents to migrate to GitLab:
 

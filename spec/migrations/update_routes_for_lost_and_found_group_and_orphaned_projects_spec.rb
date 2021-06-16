@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'post_migrate', '20200602143020_update_routes_for_lost_and_found_group_and_orphaned_projects.rb')
+require_migration!
 
 RSpec.describe UpdateRoutesForLostAndFoundGroupAndOrphanedProjects, :migration do
   let(:users) { table(:users) }

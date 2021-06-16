@@ -15,6 +15,7 @@ module MergeRequests
     end
 
     def handle_changes(merge_request, options)
+      super
       old_associations = options.fetch(:old_associations, {})
       old_labels = old_associations.fetch(:labels, [])
       old_mentioned_users = old_associations.fetch(:mentioned_users, [])
@@ -31,8 +32,6 @@ module MergeRequests
       end
 
       handle_target_branch_change(merge_request)
-      handle_assignees_change(merge_request, old_assignees) if merge_request.assignees != old_assignees
-      handle_reviewers_change(merge_request, old_reviewers) if merge_request.reviewers != old_reviewers
       handle_milestone_change(merge_request)
       handle_draft_status_change(merge_request, changed_fields)
 
@@ -50,7 +49,7 @@ module MergeRequests
       #
       if merge_request.previous_changes.include?('target_branch') ||
           merge_request.previous_changes.include?('source_branch')
-        merge_request.mark_as_unchecked
+        merge_request.mark_as_unchecked unless merge_request.unchecked?
       end
     end
 
@@ -220,24 +219,6 @@ module MergeRequests
       end
     end
 
-    def handle_assignees_change(merge_request, old_assignees)
-      MergeRequests::HandleAssigneesChangeService
-        .new(project: project, current_user: current_user)
-        .async_execute(merge_request, old_assignees)
-    end
-
-    def handle_reviewers_change(merge_request, old_reviewers)
-      affected_reviewers = (old_reviewers + merge_request.reviewers) - (old_reviewers & merge_request.reviewers)
-      create_reviewer_note(merge_request, old_reviewers)
-      notification_service.async.changed_reviewer_of_merge_request(merge_request, current_user, old_reviewers)
-      todo_service.reassigned_reviewable(merge_request, current_user, old_reviewers)
-      invalidate_cache_counts(merge_request, users: affected_reviewers.compact)
-
-      new_reviewers = merge_request.reviewers - old_reviewers
-      merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
-      merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
-    end
-
     def create_branch_change_note(issuable, branch_type, event_type, old_branch, new_branch)
       SystemNoteService.change_branch(
         issuable, issuable.project, current_user, branch_type, event_type,
@@ -293,7 +274,7 @@ module MergeRequests
 
     def attempt_specialized_update_services(merge_request, attribute)
       case attribute
-      when :assignee_ids
+      when :assignee_ids, :assignee_id
         assignees_service.execute(merge_request)
       when :spend_time
         add_time_spent_service.execute(merge_request)

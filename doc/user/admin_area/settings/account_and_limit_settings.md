@@ -9,18 +9,22 @@ type: reference
 
 ## Default projects limit
 
-You can change the default maximum number of projects that users can create in their personal namespace.
-Navigate to **Admin Area > Settings > General**, then expand **Account and Limit**.
-You can increase or decrease that `Default projects limit` value.
+You can change the default maximum number of projects that users can create in their personal namespace:
 
-- If you set `Default projects limit` to 0, users are not allowed to create projects
-  in their users personal namespace. However, projects can still be created in a group.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. Increase or decrease that **Default projects limit** value.
+
+If you set **Default projects limit** to 0, users are not allowed to create projects
+in their users personal namespace. However, projects can still be created in a group.
 
 ## Max attachment size
 
-You can change the maximum file size for attachments in comments and replies in GitLab.
-Navigate to **Admin Area > Settings > General**, then expand **Account and Limit**.
-From here, you can increase or decrease by changing the value in `Maximum attachment size (MB)`.
+You can change the maximum file size for attachments in comments and replies in GitLab:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. Increase or decrease by changing the value in **Maximum attachment size (MB)**.
 
 NOTE:
 If you choose a size larger than the configured value for the web server,
@@ -29,15 +33,26 @@ details.
 
 ## Max push size
 
-You can change the maximum push size for your repository.
-Navigate to **Admin Area > Settings > General**, then expand **Account and Limit**.
-From here, you can increase or decrease by changing the value in `Maximum push size (MB)`.
+You can change the maximum push size for your repository:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. Increase or decrease by changing the value in **Maximum push size (MB)**.
+
+NOTE:
+When you [add files to a repository](../../project/repository/web_editor.md#create-a-file)
+through the web UI, the maximum **attachment** size is the limiting factor,
+because the [web server](../../../development/architecture.md#components)
+must receive the file before GitLab can generate the commit.
+Use [Git LFS](../../../topics/git/lfs/index.md) to add large files to a repository.
 
 ## Max import size
 
-You can change the maximum file size for imports in GitLab.
-Navigate to **Admin Area > Settings > General**, then expand **Account and Limit**.
-From here, you can increase or decrease by changing the value in `Maximum import size (MB)`.
+You can change the maximum file size for imports in GitLab:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. Increase or decrease by changing the value in **Maximum import size (MB)**.
 
 NOTE:
 If you choose a size larger than the configured value for the web server,
@@ -55,7 +70,8 @@ A prefix can help you identify PATs visually, as well as with automation tools.
 Only a GitLab administrator can set the prefix, which is a global setting applied
 to any PAT generated in the system by any user:
 
-1. Navigate to **Admin Area > Settings > General**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Personal Access Token prefix** field.
 1. Click **Save changes**.
@@ -97,7 +113,8 @@ These settings can be found in:
   1. Fill in the **Repository size limit (MB)** field in the **Naming, visibility** section.
   1. Click **Save changes**.
 - GitLab global settings:
-  1. From the Dashboard, navigate to **Admin Area > Settings > General**.
+  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. In the left sidebar, select **Settings > General**.
   1. Expand the **Account and limit** section.
   1. Fill in the **Size limit per repository (MB)** field.
   1. Click **Save changes**.
@@ -143,7 +160,8 @@ GitLab administrators can choose to customize the session duration (in minutes) 
 
 To set a limit on how long these sessions are valid:
 
-1. Navigate to **Admin Area > Settings > General**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Session duration for Git operations when 2FA is enabled (minutes)** field.
 1. Click **Save changes**.
@@ -167,7 +185,8 @@ there are no restrictions.
 
 To set a lifetime on how long personal access tokens are valid:
 
-1. Navigate to **Admin Area > Settings > General**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Maximum allowable lifetime for personal access tokens (days)** field.
 1. Click **Save changes**.
@@ -182,22 +201,19 @@ Once a lifetime for personal access tokens is set, GitLab:
 
 ## Enforce SSH key expiration **(ULTIMATE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250480) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250480) in GitLab 13.9.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/320970) in GitLab 14.0.
 
-By default, expired SSH keys **can still be used**.
+By default, expired SSH keys **are not usable**.
 
-WARNING:
-Allowing use of expired SSH keys by default is deprecated and scheduled to change in GitLab 14.0.
+To allow the use of expired SSH keys:
 
-To prevent the use of expired SSH keys:
-
-1. Navigate to **Admin Area > Settings > General**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
-1. Select the **Enforce SSH key expiration** checkbox.
+1. Uncheck the **Enforce SSH key expiration** checkbox.
 
-Enforcing SSH key expiration immediately disables all expired SSH keys.
-
-For more information, see the following issue on [SSH key expiration](https://gitlab.com/gitlab-org/gitlab/-/issues/320970).
+Disabling SSH key expiration immediately enables all expired SSH keys.
 
 ## Do not enforce Personal Access Token expiration **(ULTIMATE SELF)**
 
@@ -209,7 +225,8 @@ You can allow the use of expired PATs with the following steps:
 
 To do this:
 
-1. Navigate to **Admin Area > Settings > General**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Uncheck the **Enforce personal access token expiration** checkbox.
 
@@ -221,8 +238,9 @@ To maintain integrity of user details in [Audit Events](../../../administration/
 
 To do this:
 
-1. Navigate to **Admin Area > Settings > General**, then expand **Account and Limit**.
-1. Check the **Prevent users from changing their profile name** checkbox.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. Select the **Prevent users from changing their profile name** checkbox.
 
 NOTE:
 When this ability is disabled, GitLab administrators can still use the

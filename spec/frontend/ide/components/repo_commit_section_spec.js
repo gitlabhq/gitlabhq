@@ -22,11 +22,11 @@ describe('RepoCommitSection', () => {
     store.state.noChangesStateSvgPath = 'svg';
     store.state.committedStateSvgPath = 'commitsvg';
     store.state.currentProjectId = 'abcproject';
-    store.state.currentBranchId = 'master';
+    store.state.currentBranchId = 'main';
     store.state.projects.abcproject = {
       web_url: '',
       branches: {
-        master: {
+        main: {
           workingReference: '1',
         },
       },
@@ -39,7 +39,7 @@ describe('RepoCommitSection', () => {
       }),
     );
 
-    store.state.currentBranch = 'master';
+    store.state.currentBranch = 'main';
     store.state.changedFiles = [];
     store.state.stagedFiles = [{ ...files[0] }, { ...files[1] }];
     store.state.stagedFiles.forEach((f) =>

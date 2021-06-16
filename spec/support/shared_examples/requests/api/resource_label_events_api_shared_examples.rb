@@ -48,7 +48,7 @@ RSpec.shared_examples 'resource_label_events API' do |parent_type, eventable_typ
         get api("/#{parent_type}/#{parent.id}/#{eventable_type}/#{eventable[id_name]}/resource_label_events", user)
 
         expect(json_response).to be_an Array
-        expect(json_response).to eq []
+        expect(json_response).to be_empty
       end
     end
   end

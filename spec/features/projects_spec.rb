@@ -128,23 +128,23 @@ RSpec.describe 'Project' do
     end
 
     it 'shows project topics' do
-      project.update_attribute(:tag_list, 'topic1')
+      project.update_attribute(:topic_list, 'topic1')
 
       visit path
 
       expect(page).to have_css('.home-panel-topic-list')
-      expect(page).to have_link('Topic1', href: explore_projects_path(tag: 'topic1'))
+      expect(page).to have_link('Topic1', href: explore_projects_path(topic: 'topic1'))
     end
 
-    it 'shows up to 3 project tags' do
-      project.update_attribute(:tag_list, 'topic1, topic2, topic3, topic4')
+    it 'shows up to 3 project topics' do
+      project.update_attribute(:topic_list, 'topic1, topic2, topic3, topic4')
 
       visit path
 
       expect(page).to have_css('.home-panel-topic-list')
-      expect(page).to have_link('Topic1', href: explore_projects_path(tag: 'topic1'))
-      expect(page).to have_link('Topic2', href: explore_projects_path(tag: 'topic2'))
-      expect(page).to have_link('Topic3', href: explore_projects_path(tag: 'topic3'))
+      expect(page).to have_link('Topic1', href: explore_projects_path(topic: 'topic1'))
+      expect(page).to have_link('Topic2', href: explore_projects_path(topic: 'topic2'))
+      expect(page).to have_link('Topic3', href: explore_projects_path(topic: 'topic3'))
       expect(page).to have_content('+ 1 more')
     end
   end

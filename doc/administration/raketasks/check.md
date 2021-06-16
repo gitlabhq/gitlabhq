@@ -34,10 +34,11 @@ exactly which repositories are causing the trouble.
 - Receiving an error when trying to push code - `remote: error: cannot lock ref`
 - A 500 error when viewing the GitLab dashboard or when accessing a specific project.
 
-### Check all GitLab repositories
+### Check project code repositories
 
-This task loops through all repositories on the GitLab server and runs the
-integrity check described previously.
+This task loops through the project code repositories and runs the integrity check
+described previously. If a project uses a pool repository, that will also be checked.
+Other types of Git repositories [are not checked](https://gitlab.com/gitlab-org/gitaly/-/issues/3643).
 
 **Omnibus Installation**
 
@@ -245,6 +246,41 @@ Upload.find_each do |upload|
 end
 p "#{uploads_deleted} remote objects were destroyed."
 ```
+
+### Delete references to missing artifacts
+
+`gitlab-rake gitlab:artifacts:check VERBOSE=1` detects when artifacts (or `job.log` files):
+
+- Are deleted outside of GitLab.
+- Have references still in the GitLab database.
+
+When this scenario is detected, the Rake task displays an error message. For example:
+
+```shell
+Checking integrity of Job artifacts
+- 3..8: Failures: 2
+  - Job artifact: 3: #<Errno::ENOENT: No such file or directory @ rb_sysopen - /var/opt/gitlab/gitlab-rails/shared/artifacts/4e/07/4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce/2021_05_26/5/3/job.log>
+  - Job artifact: 8: #<Errno::ENOENT: No such file or directory @ rb_sysopen - /var/opt/gitlab/gitlab-rails/shared/artifacts/4e/07/4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce/2021_05_26/6/8/job.log>
+Done!
+
+```
+
+To delete these references to missing local artifacts (`job.log` files):
+
+1. Open the [GitLab Rails Console](../operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following Ruby code:
+
+   ```ruby
+   artifacts_deleted = 0
+   ::Ci::JobArtifact.all.each do |artifact|                       ### Iterate artifacts
+   #  next if artifact.file.filename != "job.log"                 ### Uncomment if only `job.log` files' references are to be processed
+     next if artifact.file.exists?                                ### Skip if the file reference is valid
+     artifacts_deleted += 1
+     puts "#{artifact.id}  #{artifact.file.path} is missing."     ### Allow verification before destroy
+   #  artifact.destroy!                                           ### Uncomment to actually destroy
+   end
+   puts "Count of identified/destroyed invalid references: #{artifacts_deleted}" 
+   ```
 
 ### Delete references to missing LFS objects
 

@@ -144,7 +144,7 @@ This dropdown contains the options **Create merge request and branch** and **Cre
 ![New Branch Button](img/web_editor_new_branch_from_issue_v_12_6.png)
 
 After selecting one of these options, a new branch or branch and merge request
-is created based on your project's default branch. By default, this branch is `master`.
+is created based on your project's [default branch](branches/default.md).
 The branch name is based on an internal ID, and the issue title. The example
 screenshot above creates a branch named
 `2-make-static-site-auto-deploy-and-serve`.
@@ -152,7 +152,7 @@ screenshot above creates a branch named
 When you click the **Create branch** button in an empty
 repository project, GitLab performs these actions:
 
-- Creates a `master` branch.
+- Creates a default branch.
 - Commits a blank `README.md` file to it.
 - Creates and redirects you to a new branch based on the issue title.
 - _If your project is [configured with a deployment service](../integrations/overview.md) like Kubernetes,_
@@ -183,7 +183,7 @@ request, you can create a new branch upfront.
    ![New branch page](img/web_editor_new_branch_page.png)
 
 You can now make changes to any files, as needed. When you're ready to merge
-the changes back to `master`, you can use the widget at the top of the screen.
+the changes back to your [default branch](branches/default.md), you can use the widget at the top of the screen.
 This widget only appears for a period of time after you create the branch or
 modify files.
 
@@ -211,7 +211,7 @@ SHA:
 ## Tips
 
 When creating or uploading a new file or creating a new directory, you can
-trigger a new merge request rather than committing directly to `master`:
+trigger a new merge request rather than committing directly to your default branch:
 
 1. Enter a new branch name in the **Target branch** field.
 1. GitLab displays the **Start a new merge request with these changes** check box.

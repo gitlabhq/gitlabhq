@@ -200,4 +200,84 @@ describe('UploadBlobModal', () => {
       });
     },
   );
+
+  describe('blob file submission type', () => {
+    const submitForm = async () => {
+      wrapper.vm.uploadFile = jest.fn();
+      wrapper.vm.replaceFile = jest.fn();
+      wrapper.vm.submitForm();
+      await wrapper.vm.$nextTick();
+    };
+
+    const submitRequest = async () => {
+      mock = new MockAdapter(axios);
+      findModal().vm.$emit('primary', mockEvent);
+      await waitForPromises();
+    };
+
+    describe('upload blob file', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('displays the default "Upload New File" modal title  ', () => {
+        expect(findModal().props('title')).toBe('Upload New File');
+      });
+
+      it('display the defaul primary button text', () => {
+        expect(findModal().props('actionPrimary').text).toBe('Upload file');
+      });
+
+      it('calls the default uploadFile when the form submit', async () => {
+        await submitForm();
+
+        expect(wrapper.vm.uploadFile).toHaveBeenCalled();
+        expect(wrapper.vm.replaceFile).not.toHaveBeenCalled();
+      });
+
+      it('makes a POST request', async () => {
+        await submitRequest();
+
+        expect(mock.history.put).toHaveLength(0);
+        expect(mock.history.post).toHaveLength(1);
+      });
+    });
+
+    describe('replace blob file', () => {
+      const modalTitle = 'Replace foo.js';
+      const replacePath = 'replace-path';
+      const primaryBtnText = 'Replace file';
+
+      beforeEach(() => {
+        createComponent({
+          modalTitle,
+          replacePath,
+          primaryBtnText,
+        });
+      });
+
+      it('displays the passed modal title', () => {
+        expect(findModal().props('title')).toBe(modalTitle);
+      });
+
+      it('display the passed primary button text', () => {
+        expect(findModal().props('actionPrimary').text).toBe(primaryBtnText);
+      });
+
+      it('calls the replaceFile when the form submit', async () => {
+        await submitForm();
+
+        expect(wrapper.vm.replaceFile).toHaveBeenCalled();
+        expect(wrapper.vm.uploadFile).not.toHaveBeenCalled();
+      });
+
+      it('makes a PUT request', async () => {
+        await submitRequest();
+
+        expect(mock.history.put).toHaveLength(1);
+        expect(mock.history.post).toHaveLength(0);
+        expect(mock.history.put[0].url).toBe(replacePath);
+      });
+    });
+  });
 });

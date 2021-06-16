@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
@@ -26,7 +26,7 @@ Array with `include` method implied:
 
 ```yaml
 include:
-  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
   - '/templates/.after-script-template.yml'
 ```
 
@@ -34,21 +34,21 @@ Single string with `include` method specified explicitly:
 
 ```yaml
 include:
-  remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
 ```
 
 Array with `include:remote` being the single item:
 
 ```yaml
 include:
-  - remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
 ```
 
 Array with multiple `include` methods specified explicitly:
 
 ```yaml
 include:
-  - remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
   - local: '/templates/.after-script-template.yml'
   - template: Auto-DevOps.gitlab-ci.yml
 ```
@@ -57,11 +57,11 @@ Array mixed syntax:
 
 ```yaml
 include:
-  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
   - '/templates/.after-script-template.yml'
   - template: Auto-DevOps.gitlab-ci.yml
   - project: 'my-group/my-project'
-    ref: master
+    ref: main
     file: '/templates/.gitlab-ci-template.yml'
 ```
 
@@ -70,7 +70,7 @@ include:
 In the following example, the content of `.before-script-template.yml` is
 automatically fetched and evaluated along with the content of `.gitlab-ci.yml`.
 
-Content of `https://gitlab.com/awesome-project/raw/master/.before-script-template.yml`:
+Content of `https://gitlab.com/awesome-project/raw/main/.before-script-template.yml`:
 
 ```yaml
 default:
@@ -83,7 +83,7 @@ default:
 Content of `.gitlab-ci.yml`:
 
 ```yaml
-include: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+include: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
 
 rspec:
   script:
@@ -111,8 +111,8 @@ production:
   environment:
     name: production
     url: https://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
 Content of `.gitlab-ci.yml`:

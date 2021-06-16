@@ -47,7 +47,7 @@ describe('IDE commit module actions', () => {
     jest.spyOn(router, 'push').mockImplementation();
 
     mock
-      .onGet('/api/v1/projects/abcproject/repository/branches/master')
+      .onGet('/api/v1/projects/abcproject/repository/branches/main')
       .reply(200, { commit: COMMIT_RESPONSE });
   });
 
@@ -101,7 +101,7 @@ describe('IDE commit module actions', () => {
       originalGon = window.gon;
       window.gon = { current_username: 'johndoe' };
 
-      store.state.currentBranchId = 'master';
+      store.state.currentBranchId = 'main';
     });
 
     afterEach(() => {
@@ -177,7 +177,7 @@ describe('IDE commit module actions', () => {
       committed_date: '123',
       committer_name: 'root',
     };
-    const branch = 'master';
+    const branch = 'main';
     let f;
 
     beforeEach(() => {
@@ -192,12 +192,12 @@ describe('IDE commit module actions', () => {
 
       Object.assign(store.state, {
         currentProjectId: 'abcproject',
-        currentBranchId: 'master',
+        currentBranchId: 'main',
         projects: {
           abcproject: {
             web_url: 'web_url',
             branches: {
-              master: {
+              main: {
                 workingReference: '',
                 commit: {
                   short_id: TEST_COMMIT_SHA,
@@ -228,7 +228,7 @@ describe('IDE commit module actions', () => {
           branch,
         })
         .then(() => {
-          expect(store.state.projects.abcproject.branches.master.workingReference).toBe(data.id);
+          expect(store.state.projects.abcproject.branches.main.workingReference).toBe(data.id);
         })
         .then(done)
         .catch(done.fail);
@@ -310,14 +310,14 @@ describe('IDE commit module actions', () => {
         changedFiles: [f],
         openFiles: [f],
         currentProjectId: 'abcproject',
-        currentBranchId: 'master',
+        currentBranchId: 'main',
         projects: {
           abcproject: {
-            default_branch: 'master',
+            default_branch: 'main',
             web_url: 'webUrl',
             branches: {
-              master: {
-                name: 'master',
+              main: {
+                name: 'main',
                 workingReference: '1',
                 commit: {
                   id: TEST_COMMIT_SHA,
@@ -460,7 +460,7 @@ describe('IDE commit module actions', () => {
             .dispatch('commit/commitChanges')
             .then(() => {
               expect(visitUrl).toHaveBeenCalledWith(
-                `webUrl/-/merge_requests/new?merge_request[source_branch]=${store.getters['commit/placeholderBranchName']}&merge_request[target_branch]=master&nav_source=webide`,
+                `webUrl/-/merge_requests/new?merge_request[source_branch]=${store.getters['commit/placeholderBranchName']}&merge_request[target_branch]=main&nav_source=webide`,
               );
 
               done();

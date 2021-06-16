@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20201106134950_deduplicate_epic_iids.rb')
+require_migration!
 
 RSpec.describe DeduplicateEpicIids, :migration, schema: 20201106082723 do
   let(:routes) { table(:routes) }

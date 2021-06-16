@@ -11,6 +11,11 @@ RSpec.describe UserDetail do
       it { is_expected.to validate_length_of(:job_title).is_at_most(200) }
     end
 
+    describe '#pronouns' do
+      it { is_expected.not_to validate_presence_of(:pronouns) }
+      it { is_expected.to validate_length_of(:pronouns).is_at_most(50) }
+    end
+
     describe '#bio' do
       it { is_expected.to validate_length_of(:bio).is_at_most(255) }
     end

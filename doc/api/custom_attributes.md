@@ -90,7 +90,8 @@ PUT /projects/:id/custom_attributes/:key
 | `value` | string | yes | The value of the custom attribute |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "value=Greenland" "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "value=Greenland" "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
 ```
 
 Example response:

@@ -7,7 +7,7 @@ import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import { projectData } from '../../mock_data';
 
 const TEST_BRANCH = {
-  name: 'master',
+  name: 'main',
   committedDate: '2018-01-05T05:50Z',
 };
 const TEST_PROJECT_ID = projectData.name_with_namespace;

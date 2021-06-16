@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20190524073827_schedule_fill_valid_time_for_pages_domain_certificates.rb')
+require_migration!
 
 RSpec.describe ScheduleFillValidTimeForPagesDomainCertificates do
   let(:migration_class) { described_class::MIGRATION }

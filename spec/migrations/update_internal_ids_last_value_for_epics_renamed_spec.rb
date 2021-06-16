@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20201208081429_update_internal_ids_last_value_for_epics_renamed.rb')
+require_migration!
 
 RSpec.describe UpdateInternalIdsLastValueForEpicsRenamed, :migration, schema: 20201124185639 do
   let(:namespaces) { table(:namespaces) }

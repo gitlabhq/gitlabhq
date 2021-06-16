@@ -32,8 +32,6 @@
   - 1
 - - analytics_devops_adoption_create_snapshot
   - 1
-- - analytics_instance_statistics_counter_job
-  - 1
 - - analytics_usage_trends_counter_job
   - 1
 - - approval_rules_external_approval_rule_payload
@@ -118,8 +116,6 @@
   - 1
 - - elastic_full_index
   - 1
-- - elastic_indexer
-  - 1
 - - elastic_indexing_control
   - 1
 - - elastic_namespace_indexer
@@ -151,8 +147,6 @@
 - - gcp_cluster
   - 1
 - - geo
-  - 1
-- - git_garbage_collect
   - 1
 - - github_import_advance_stage
   - 1
@@ -219,8 +213,6 @@
 - - merge_request_mergeability_check
   - 1
 - - merge_request_reset_approvals
-  - 1
-- - merge_requests_assignees_change
   - 1
 - - merge_requests_delete_source_branch
   - 1
@@ -304,13 +296,9 @@
   - 1
 - - project_import_schedule
   - 1
-- - project_schedule_bulk_repository_shard_moves
-  - 1
 - - project_service
   - 1
 - - project_template_export
-  - 1
-- - project_update_repository_storage
   - 1
 - - projects_git_garbage_collect
   - 1
@@ -376,10 +364,6 @@
   - 1
 - - set_user_status_based_on_user_cap_setting
   - 1
-- - snippet_schedule_bulk_repository_shard_moves
-  - 1
-- - snippet_update_repository_storage
-  - 1
 - - snippets_schedule_bulk_repository_shard_moves
   - 1
 - - snippets_update_repository_storage
@@ -406,8 +390,6 @@
   - 1
 - - upload_checksum
   - 1
-- - users_update_open_issue_count
-  - 1
 - - vulnerabilities_statistics_adjustment
   - 1
 - - vulnerability_exports_export
@@ -417,6 +399,8 @@
 - - web_hook
   - 1
 - - web_hooks_destroy
+  - 1
+- - web_hooks_log_execution
   - 1
 - - wikis_git_garbage_collect
   - 1

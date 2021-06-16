@@ -22,7 +22,7 @@ module Gitlab
       private
 
       def batch_size(exportable)
-        Gitlab::ImportExport::JSON::StreamingSerializer.batch_size(exportable)
+        Gitlab::ImportExport::Json::StreamingSerializer.batch_size(exportable)
       end
     end
   end

@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import Vue from 'vue';
 import api from '~/api';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
@@ -26,9 +26,6 @@ import {
   START_RENDERING_INDEX,
   INLINE_DIFF_LINES_KEY,
   DIFFS_PER_PAGE,
-  DIFF_WHITESPACE_COOKIE_NAME,
-  SHOW_WHITESPACE,
-  NO_SHOW_WHITESPACE,
   DIFF_FILE_MANUAL_COLLAPSE,
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   EVT_PERF_MARK_FILE_TREE_START,
@@ -240,7 +237,10 @@ export const fetchCoverageFiles = ({ commit, state }) => {
         coveragePoll.stop();
       }
     },
-    errorCallback: () => createFlash(__('Something went wrong on our end. Please try again!')),
+    errorCallback: () =>
+      createFlash({
+        message: __('Something went wrong on our end. Please try again!'),
+      }),
   });
 
   coveragePoll.makeRequest();
@@ -504,7 +504,11 @@ export const saveDiffDiscussion = ({ state, dispatch }, { note, formData }) => {
     .then((discussion) => dispatch('assignDiscussionsToDiff', [discussion]))
     .then(() => dispatch('updateResolvableDiscussionsCounts', null, { root: true }))
     .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.file_hash))
-    .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
+    .catch(() =>
+      createFlash({
+        message: s__('MergeRequests|Saving the comment failed'),
+      }),
+    );
 };
 
 export const toggleTreeOpen = ({ commit }, path) => {
@@ -562,16 +566,15 @@ export const setRenderTreeList = ({ commit }, renderTreeList) => {
   }
 };
 
-export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = false }) => {
-  commit(types.SET_SHOW_WHITESPACE, showWhitespace);
-  const w = showWhitespace ? SHOW_WHITESPACE : NO_SHOW_WHITESPACE;
-
-  Cookies.set(DIFF_WHITESPACE_COOKIE_NAME, w);
-
-  if (pushState) {
-    historyPushState(mergeUrlParams({ w }, window.location.href));
+export const setShowWhitespace = async (
+  { state, commit },
+  { url, showWhitespace, updateDatabase = true },
+) => {
+  if (updateDatabase) {
+    await axios.put(url || state.endpointUpdateUser, { show_whitespace_in_diffs: showWhitespace });
   }
 
+  commit(types.SET_SHOW_WHITESPACE, showWhitespace);
   notesEventHub.$emit('refetchDiffData');
 
   if (window.gon?.features?.diffSettingsUsageData) {
@@ -595,7 +598,9 @@ export const cacheTreeListWidth = (_, size) => {
 
 export const receiveFullDiffError = ({ commit }, filePath) => {
   commit(types.RECEIVE_FULL_DIFF_ERROR, filePath);
-  createFlash(s__('MergeRequest|Error loading full diff. Please try again.'));
+  createFlash({
+    message: s__('MergeRequest|Error loading full diff. Please try again.'),
+  });
 };
 
 export const setExpandedDiffLines = ({ commit }, { file, data }) => {
@@ -727,7 +732,9 @@ export const setSuggestPopoverDismissed = ({ commit, state }) =>
       commit(types.SET_SHOW_SUGGEST_POPOVER);
     })
     .catch(() => {
-      createFlash(s__('MergeRequest|Error dismissing suggestion popover. Please try again.'));
+      createFlash({
+        message: s__('MergeRequest|Error dismissing suggestion popover. Please try again.'),
+      });
     });
 
 export function changeCurrentCommit({ dispatch, commit, state }, { commitId }) {

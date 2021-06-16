@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Audit Events **(PREMIUM)**
 
-GitLab offers a way to view the changes made within the GitLab server for owners and administrators on a [paid plan](https://about.gitlab.com/pricing/).
+GitLab offers a way to view the changes made within the GitLab server for owners and administrators
+on a [paid plan](https://about.gitlab.com/pricing/).
 
 GitLab system administrators can also take advantage of the logs located on the
 file system. See [the logs system documentation](logs.md#audit_jsonlog) for more details.
@@ -49,10 +50,18 @@ When a user is being [impersonated](../user/admin_area/index.md#user-impersonati
 
 ### Group events **(PREMIUM)**
 
-A user with a Owner role (or above) can retrieve group audit events of all users.
-A user with a Developer or Maintainer role is limited to group audit events based on their individual actions.
+A user with:
 
-To view a group's audit events, navigate to **Group > Security & Compliance > Audit Events**.
+- Owner role (or above) can retrieve group audit events of all users.
+- Developer or Maintainer role is limited to group audit events based on their individual actions.
+
+Group events do not include project audit events.
+
+To view a group's audit events:
+
+1. Go to the group.
+1. On the left sidebar, select **Security & Compliance > Audit Events**.
+
 From there, you can see the following actions:
 
 - Group name or path changed.
@@ -82,7 +91,11 @@ Group events can also be accessed via the [Group Audit Events API](../api/audit_
 A user with a Maintainer role (or above) can retrieve project audit events of all users.
 A user with a Developer role is limited to project audit events based on their individual actions.
 
-To view a project's audit events, navigate to **Project > Security & Compliance > Audit Events**.
+To view a project's audit events:
+
+1. Go to the project.
+1. On the left sidebar, select **Security & Compliance > Audit Events**.
+
 From there, you can see the following actions:
 
 - Added or removed deploy keys
@@ -120,10 +133,14 @@ Server-wide audit events introduce the ability to observe user actions across
 the entire instance of your GitLab server, making it easy to understand who
 changed what and when for audit purposes.
 
-To view the server-wide administrator log, visit **Admin Area > Monitoring > Audit Events**.
+Instance events do not include group or project audit events.
 
-In addition to the group and project events, the following user actions are also
-recorded:
+To view the server-wide audit events:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Monitoring > Audit Events**.
+
+The following user actions are recorded:
 
 - Sign-in events and the authentication type (such as standard, LDAP, or OmniAuth)
 - Failed sign-ins
@@ -146,6 +163,17 @@ recorded:
 - A failed attempt to create or revoke a user's personal access token ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276921) in GitLab 13.6)
 
 Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
+
+### Sign-in events **(FREE)**
+
+Successful sign-in events are the only Audit Events available at all tiers. To see
+successful sign-in events:
+
+1. Select your avatar.
+1. Select **Edit profile > Authentication log**.
+
+After upgrading from GitLab Free to a paid tier, successful sign-in events are the only Audit
+Events visible in Audit Events views until more events are logged.
 
 ### Missing events
 
@@ -171,7 +199,7 @@ It may make the user interface for your project or audit events very busy, and t
 `audit_events` PostgreSQL table may increase considerably. It's disabled by default
 to prevent performance degradations on GitLab instances with very high Git write traffic.
 
-In an upcoming release, Audit Events for Git push events will be enabled
+In an upcoming release, Audit Events for Git push events are planned to be enabled
 by default. Follow our [Partitioning strategy for Audit Events epic](https://gitlab.com/groups/gitlab-org/-/epics/3206) for updates.
 
 If you still wish to enable **Repository push** events in your instance, follow
@@ -213,11 +241,12 @@ Export to CSV allows customers to export the current filter view of your audit e
 CSV file, which stores tabular data in plain text. The data provides a comprehensive view with respect to
 audit events.
 
-To export the Audit Events to CSV, navigate to
-**{monitor}** **Admin Area > Monitoring > Audit Events**
+To export the Audit Events to CSV:
 
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Monitoring > Audit Events**.
 1. Select the available search [filters](#search).
-1. Click **Export as CSV**.
+1. Select **Export as CSV**.
 
 ### Sort
 

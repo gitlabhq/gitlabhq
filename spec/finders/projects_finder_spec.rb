@@ -137,15 +137,46 @@ RSpec.describe ProjectsFinder do
         end
       end
 
-      describe 'filter by tags' do
+      describe 'filter by tags (deprecated)' do
         before do
-          public_project.tag_list = 'foo'
+          public_project.topic_list = 'foo'
           public_project.save!
         end
 
         let(:params) { { tag: 'foo' } }
 
         it { is_expected.to eq([public_project]) }
+      end
+
+      describe 'filter by topics' do
+        before do
+          public_project.topic_list = 'foo, bar'
+          public_project.save!
+        end
+
+        context 'single topic' do
+          let(:params) { { topic: 'foo' } }
+
+          it { is_expected.to eq([public_project]) }
+        end
+
+        context 'multiple topics' do
+          let(:params) { { topic: 'bar, foo' } }
+
+          it { is_expected.to eq([public_project]) }
+        end
+
+        context 'one topic matches, other one does not' do
+          let(:params) { { topic: 'foo, xyz' } }
+
+          it { is_expected.to eq([]) }
+        end
+
+        context 'no matching topic' do
+          let(:params) { { topic: 'xyz' } }
+
+          it { is_expected.to eq([]) }
+        end
       end
 
       describe 'filter by personal' do

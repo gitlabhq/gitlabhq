@@ -1,3 +1,3 @@
 #!/usr/bin/env ruby
-x = STDIN.read
+x = $stdin.read
 File.write('/tmp/rb-data.txt', x)

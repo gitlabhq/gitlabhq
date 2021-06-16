@@ -221,7 +221,7 @@ merge request is also listed here.
 
 You can award emojis to issues. You can select the "thumbs up" and "thumbs down",
 or the gray "smiley-face" to choose from the list of available
-[GitLab Flavored Markdown Emoji](../../markdown.md#emoji).
+[GitLab Flavored Markdown Emoji](../../markdown.md#emojis).
 
 NOTE:
 Posting "+1" as a comment in a thread spams all subscribed participants of that issue,

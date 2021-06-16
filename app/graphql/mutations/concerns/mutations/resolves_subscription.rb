@@ -3,6 +3,7 @@
 module Mutations
   module ResolvesSubscription
     extend ActiveSupport::Concern
+
     included do
       argument :subscribed_state,
                GraphQL::BOOLEAN_TYPE,

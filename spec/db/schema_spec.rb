@@ -54,7 +54,6 @@ RSpec.describe 'Database schema' do
     keys: %w[user_id],
     label_links: %w[target_id],
     ldap_group_links: %w[group_id],
-    lfs_objects_projects: %w[lfs_object_id project_id],
     members: %w[source_id created_by_id],
     merge_requests: %w[last_edited_by_id state_id],
     namespaces: %w[owner_id parent_id],
@@ -75,6 +74,7 @@ RSpec.describe 'Database schema' do
     slack_integrations: %w[team_id user_id],
     snippets: %w[author_id],
     spam_logs: %w[user_id],
+    status_check_responses: %w[external_approval_rule_id],
     subscriptions: %w[user_id subscribable_id],
     suggestions: %w[commit_id],
     taggings: %w[tag_id taggable_id tagger_id],
@@ -270,7 +270,7 @@ RSpec.describe 'Database schema' do
     sql = <<~SQL
         SELECT table_name, column_name, data_type
           FROM information_schema.columns
-        WHERE table_catalog = '#{ApplicationRecord.connection_config[:database]}'
+        WHERE table_catalog = '#{ApplicationRecord.connection_db_config.database}'
           AND table_schema = 'public'
           AND table_name NOT LIKE 'pg_%'
           AND data_type = 'jsonb'

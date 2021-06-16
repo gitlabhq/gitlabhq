@@ -8,8 +8,8 @@ export const projectData = {
   path: '',
   name_with_namespace: 'namespace/abcproject',
   branches: {
-    master: {
-      treeId: 'abcproject/master',
+    main: {
+      treeId: 'abcproject/main',
       can_push: true,
       commit: {
         id: '123',
@@ -19,13 +19,13 @@ export const projectData = {
   mergeRequests: {},
   merge_requests_enabled: true,
   userPermissions: {},
-  default_branch: 'master',
+  default_branch: 'main',
 };
 
 export const pipelines = [
   {
     id: 1,
-    ref: 'master',
+    ref: 'main',
     sha: '123',
     details: {
       status: {
@@ -38,7 +38,7 @@ export const pipelines = [
   },
   {
     id: 2,
-    ref: 'master',
+    ref: 'main',
     sha: '213',
     details: {
       status: {
@@ -178,9 +178,9 @@ export const mergeRequests = [
 export const branches = [
   {
     id: 1,
-    name: 'master',
+    name: 'main',
     commit: {
-      message: 'Update master branch',
+      message: 'Update main branch',
       committed_date: '2018-08-01T00:20:05Z',
     },
     can_push: true,

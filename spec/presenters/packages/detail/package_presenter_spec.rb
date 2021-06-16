@@ -19,7 +19,8 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
         size: file.size,
         file_md5: file.file_md5,
         file_sha1: file.file_sha1,
-        file_sha256: file.file_sha256
+        file_sha256: file.file_sha256,
+        id: file.id
       }
     end
   end

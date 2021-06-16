@@ -1,5 +1,6 @@
 ---
 redirect_to: 'https://docs.gitlab.com/runner/install/kubernetes-agent.html'
+remove_date: '2022-02-01'
 ---
 
 This document was moved to [another location](https://docs.gitlab.com/runner/install/kubernetes-agent.html).

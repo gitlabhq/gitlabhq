@@ -14,7 +14,7 @@ namespace :gitlab do
       end
 
       task generate_counts: :environment do
-        logger = Logger.new(STDOUT)
+        logger = Logger.new($stdout)
         logger.info('Building list of package events...')
 
         path = Gitlab::UsageDataCounters::PackageEventCounter::KNOWN_EVENTS_PATH
@@ -26,7 +26,7 @@ namespace :gitlab do
       end
 
       task generate_unique: :environment do
-        logger = Logger.new(STDOUT)
+        logger = Logger.new($stdout)
         logger.info('Building list of package events...')
 
         path = File.join(File.dirname(Gitlab::UsageDataCounters::HLLRedisCounter::KNOWN_EVENTS_PATH), 'package_events.yml')

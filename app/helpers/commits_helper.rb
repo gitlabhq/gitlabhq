@@ -137,8 +137,6 @@ module CommitsHelper
   end
 
   def cherry_pick_projects_data(project)
-    return [] unless Feature.enabled?(:pick_into_project, project, default_enabled: :yaml)
-
     [project, project.forked_from_project].compact.map do |project|
       {
         id: project.id.to_s,
@@ -160,8 +158,8 @@ module CommitsHelper
       commit.author,
       ref,
       {
-        merge_request: merge_request,
-        pipeline_status: commit.status_for(ref),
+        merge_request: merge_request&.cache_key,
+        pipeline_status: commit.status_for(ref)&.cache_key,
         xhr: request.xhr?,
         controller: controller.controller_path,
         path: @path # referred to in #link_to_browse_code

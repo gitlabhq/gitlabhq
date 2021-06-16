@@ -471,6 +471,7 @@ describe('URL utility', () => {
       ${'notaurl'}                              | ${false}
       ${'../relative_url'}                      | ${false}
       ${'<a></a>'}                              | ${false}
+      ${'//other-host.test'}                    | ${false}
     `('returns $valid for $url', ({ url, valid }) => {
       expect(urlUtils.isRootRelative(url)).toBe(valid);
     });
@@ -650,45 +651,24 @@ describe('URL utility', () => {
   });
 
   describe('queryToObject', () => {
-    it('converts search query into an object', () => {
-      const searchQuery = '?one=1&two=2';
-
-      expect(urlUtils.queryToObject(searchQuery)).toEqual({ one: '1', two: '2' });
-    });
-
-    it('removes undefined values from the search query', () => {
-      const searchQuery = '?one=1&two=2&three';
-
-      expect(urlUtils.queryToObject(searchQuery)).toEqual({ one: '1', two: '2' });
-    });
-
-    describe('with gatherArrays=false', () => {
-      it('overwrites values with the same array-key and does not change the key', () => {
-        const searchQuery = '?one[]=1&one[]=2&two=2&two=3';
-
-        expect(urlUtils.queryToObject(searchQuery)).toEqual({ 'one[]': '2', two: '3' });
-      });
-    });
-
-    describe('with gatherArrays=true', () => {
-      const options = { gatherArrays: true };
-      it('gathers only values with the same array-key and strips `[]` from the key', () => {
-        const searchQuery = '?one[]=1&one[]=2&two=2&two=3';
-
-        expect(urlUtils.queryToObject(searchQuery, options)).toEqual({ one: ['1', '2'], two: '3' });
-      });
-
-      it('overwrites values with the same array-key name', () => {
-        const searchQuery = '?one=1&one[]=2&two=2&two=3';
-
-        expect(urlUtils.queryToObject(searchQuery, options)).toEqual({ one: ['2'], two: '3' });
-      });
-
-      it('overwrites values with the same key name', () => {
-        const searchQuery = '?one[]=1&one=2&two=2&two=3';
-
-        expect(urlUtils.queryToObject(searchQuery, options)).toEqual({ one: '2', two: '3' });
-      });
+    it.each`
+      case                                                                      | query                             | options                                             | result
+      ${'converts query'}                                                       | ${'?one=1&two=2'}                 | ${undefined}                                        | ${{ one: '1', two: '2' }}
+      ${'converts query without ?'}                                             | ${'one=1&two=2'}                  | ${undefined}                                        | ${{ one: '1', two: '2' }}
+      ${'removes undefined values'}                                             | ${'?one=1&two=2&three'}           | ${undefined}                                        | ${{ one: '1', two: '2' }}
+      ${'overwrites values with same key and does not change key'}              | ${'?one[]=1&one[]=2&two=2&two=3'} | ${undefined}                                        | ${{ 'one[]': '2', two: '3' }}
+      ${'gathers values with the same array-key, strips `[]` from key'}         | ${'?one[]=1&one[]=2&two=2&two=3'} | ${{ gatherArrays: true }}                           | ${{ one: ['1', '2'], two: '3' }}
+      ${'overwrites values with the same array-key name'}                       | ${'?one=1&one[]=2&two=2&two=3'}   | ${{ gatherArrays: true }}                           | ${{ one: ['2'], two: '3' }}
+      ${'overwrites values with the same key name'}                             | ${'?one[]=1&one=2&two=2&two=3'}   | ${{ gatherArrays: true }}                           | ${{ one: '2', two: '3' }}
+      ${'ignores plus symbols'}                                                 | ${'?search=a+b'}                  | ${{ legacySpacesDecode: true }}                     | ${{ search: 'a+b' }}
+      ${'ignores plus symbols in keys'}                                         | ${'?search+term=a'}               | ${{ legacySpacesDecode: true }}                     | ${{ 'search+term': 'a' }}
+      ${'ignores plus symbols when gathering arrays'}                           | ${'?search[]=a+b'}                | ${{ gatherArrays: true, legacySpacesDecode: true }} | ${{ search: ['a+b'] }}
+      ${'replaces plus symbols with spaces'}                                    | ${'?search=a+b'}                  | ${undefined}                                        | ${{ search: 'a b' }}
+      ${'replaces plus symbols in keys with spaces'}                            | ${'?search+term=a'}               | ${undefined}                                        | ${{ 'search term': 'a' }}
+      ${'replaces plus symbols when gathering arrays'}                          | ${'?search[]=a+b'}                | ${{ gatherArrays: true }}                           | ${{ search: ['a b'] }}
+      ${'replaces plus symbols when gathering arrays for values with same key'} | ${'?search[]=a+b&search[]=c+d'}   | ${{ gatherArrays: true }}                           | ${{ search: ['a b', 'c d'] }}
+    `('$case', ({ query, options, result }) => {
+      expect(urlUtils.queryToObject(query, options)).toEqual(result);
     });
   });
 
@@ -798,19 +778,41 @@ describe('URL utility', () => {
       );
     });
 
-    it('handles arrays properly', () => {
+    it('adds parameters from arrays', () => {
       const url = 'https://gitlab.com/test';
 
-      expect(urlUtils.setUrlParams({ label_name: ['foo', 'bar'] }, url)).toEqual(
-        'https://gitlab.com/test?label_name=foo&label_name=bar',
+      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url)).toEqual(
+        'https://gitlab.com/test?labels=foo&labels=bar',
       );
     });
 
-    it('handles arrays properly when railsArraySyntax=true', () => {
+    it('removes parameters from empty arrays', () => {
+      const url = 'https://gitlab.com/test?labels=foo&labels=bar';
+
+      expect(urlUtils.setUrlParams({ labels: [] }, url)).toEqual('https://gitlab.com/test');
+    });
+
+    it('removes parameters from empty arrays while keeping other parameters', () => {
+      const url = 'https://gitlab.com/test?labels=foo&labels=bar&unrelated=unrelated';
+
+      expect(urlUtils.setUrlParams({ labels: [] }, url)).toEqual(
+        'https://gitlab.com/test?unrelated=unrelated',
+      );
+    });
+
+    it('adds parameters from arrays when railsArraySyntax=true', () => {
       const url = 'https://gitlab.com/test';
 
       expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url, false, true)).toEqual(
         'https://gitlab.com/test?labels%5B%5D=foo&labels%5B%5D=bar',
+      );
+    });
+
+    it('removes parameters from empty arrays when railsArraySyntax=true', () => {
+      const url = 'https://gitlab.com/test?labels%5B%5D=foo&labels%5B%5D=bar';
+
+      expect(urlUtils.setUrlParams({ labels: [] }, url, false, true)).toEqual(
+        'https://gitlab.com/test',
       );
     });
 

@@ -6,8 +6,10 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService do
     let_it_be(:distribution) { create(:debian_project_distribution, codename: 'unstable') }
     let_it_be(:incoming) { create(:debian_incoming, project: distribution.project) }
 
-    let(:package_file) { incoming.package_files.last }
-    let(:service) { described_class.new(package_file) }
+    let(:source_file) { incoming.package_files.first }
+    let(:dsc_file) { incoming.package_files.second }
+    let(:changes_file) { incoming.package_files.last }
+    let(:service) { described_class.new(changes_file) }
 
     subject { service.execute }
 
@@ -23,7 +25,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService do
     end
 
     context 'with invalid package file' do
-      let(:package_file) { incoming.package_files.first }
+      let(:changes_file) { incoming.package_files.first }
 
       it 'raise ArgumentError', :aggregate_failures do
         expect { subject }.to raise_error(described_class::ExtractionError, "is not a changes file")
@@ -31,14 +33,14 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService do
     end
 
     context 'with invalid metadata' do
-      let(:md5_dsc) { '3b0817804f669e16cdefac583ad88f0e 671 libs optional sample_1.2.3~alpha2.dsc' }
-      let(:md5_source) { 'd79b34f58f61ff4ad696d9bd0b8daa68 864 libs optional sample_1.2.3~alpha2.tar.xz' }
+      let(:md5_dsc) { "#{dsc_file.file_md5} 671 libs optional sample_1.2.3~alpha2.dsc" }
+      let(:md5_source) { "#{source_file.file_md5} 864 libs optional sample_1.2.3~alpha2.tar.xz" }
       let(:md5s) { "#{md5_dsc}\n#{md5_source}" }
-      let(:sha1_dsc) { '32ecbd674f0bfd310df68484d87752490685a8d6 671 sample_1.2.3~alpha2.dsc' }
-      let(:sha1_source) { '5f8bba5574eb01ac3b1f5e2988e8c29307788236 864 sample_1.2.3~alpha2.tar.xz' }
+      let(:sha1_dsc) { "#{dsc_file.file_sha1} 671 sample_1.2.3~alpha2.dsc" }
+      let(:sha1_source) { "#{source_file.file_sha1} 864 sample_1.2.3~alpha2.tar.xz" }
       let(:sha1s) { "#{sha1_dsc}\n#{sha1_source}" }
-      let(:sha256_dsc) { '844f79825b7e8aaa191e514b58a81f9ac1e58e2180134b0c9512fa66d896d7ba 671 sample_1.2.3~alpha2.dsc' }
-      let(:sha256_source) { 'b5a599e88e7cbdda3bde808160a21ba1dd1ec76b2ec8d4912aae769648d68362 864 sample_1.2.3~alpha2.tar.xz' }
+      let(:sha256_dsc) { "#{dsc_file.file_sha256} 671 sample_1.2.3~alpha2.dsc" }
+      let(:sha256_source) { "#{source_file.file_sha256} 864 sample_1.2.3~alpha2.tar.xz" }
       let(:sha256s) { "#{sha256_dsc}\n#{sha256_source}" }
       let(:fields) { { 'Files' => md5s, 'Checksums-Sha1' => sha1s, 'Checksums-Sha256' => sha256s } }
       let(:metadata) { { file_type: :changes, architecture: 'amd64', fields: fields } }
@@ -82,7 +84,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService do
       end
 
       context 'with different size in Checksums-Sha1' do
-        let(:sha1_dsc) { '32ecbd674f0bfd310df68484d87752490685a8d6 42 sample_1.2.3~alpha2.dsc' }
+        let(:sha1_dsc) { "#{dsc_file.file_sha1} 42 sample_1.2.3~alpha2.dsc" }
 
         it 'raise ArgumentError', :aggregate_failures do
           expect { subject }.to raise_error(described_class::ExtractionError, "Size for sample_1.2.3~alpha2.dsc in Files and Checksums-Sha1 differ")
@@ -99,7 +101,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService do
       end
 
       context 'with different size in Checksums-Sha256' do
-        let(:sha256_dsc) { '844f79825b7e8aaa191e514b58a81f9ac1e58e2180134b0c9512fa66d896d7ba 42 sample_1.2.3~alpha2.dsc' }
+        let(:sha256_dsc) { "#{dsc_file.file_sha256} 42 sample_1.2.3~alpha2.dsc" }
 
         it 'raise ArgumentError', :aggregate_failures do
           expect { subject }.to raise_error(described_class::ExtractionError, "Size for sample_1.2.3~alpha2.dsc in Files and Checksums-Sha256 differ")
@@ -126,7 +128,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService do
         let(:md5_dsc) { '1234567890123456789012345678012 671 libs optional sample_1.2.3~alpha2.dsc' }
 
         it 'raise ArgumentError', :aggregate_failures do
-          expect { subject }.to raise_error(described_class::ExtractionError, "Validation failed: Md5sum mismatch for sample_1.2.3~alpha2.dsc: 3b0817804f669e16cdefac583ad88f0e != 1234567890123456789012345678012")
+          expect { subject }.to raise_error(described_class::ExtractionError, "Validation failed: Md5sum mismatch for sample_1.2.3~alpha2.dsc: #{dsc_file.file_md5} != 1234567890123456789012345678012")
         end
       end
 
@@ -134,7 +136,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService do
         let(:sha1_dsc) { '1234567890123456789012345678901234567890 671 sample_1.2.3~alpha2.dsc' }
 
         it 'raise ArgumentError', :aggregate_failures do
-          expect { subject }.to raise_error(described_class::ExtractionError, "Validation failed: Sha1sum mismatch for sample_1.2.3~alpha2.dsc: 32ecbd674f0bfd310df68484d87752490685a8d6 != 1234567890123456789012345678901234567890")
+          expect { subject }.to raise_error(described_class::ExtractionError, "Validation failed: Sha1sum mismatch for sample_1.2.3~alpha2.dsc: #{dsc_file.file_sha1} != 1234567890123456789012345678901234567890")
         end
       end
 
@@ -142,7 +144,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService do
         let(:sha256_dsc) { '1234567890123456789012345678901234567890123456789012345678901234 671 sample_1.2.3~alpha2.dsc' }
 
         it 'raise ArgumentError', :aggregate_failures do
-          expect { subject }.to raise_error(described_class::ExtractionError, "Validation failed: Sha256sum mismatch for sample_1.2.3~alpha2.dsc: 844f79825b7e8aaa191e514b58a81f9ac1e58e2180134b0c9512fa66d896d7ba != 1234567890123456789012345678901234567890123456789012345678901234")
+          expect { subject }.to raise_error(described_class::ExtractionError, "Validation failed: Sha256sum mismatch for sample_1.2.3~alpha2.dsc: #{dsc_file.file_sha256} != 1234567890123456789012345678901234567890123456789012345678901234")
         end
       end
     end

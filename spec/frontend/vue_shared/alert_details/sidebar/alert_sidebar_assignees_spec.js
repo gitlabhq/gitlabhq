@@ -21,6 +21,7 @@ describe('Alert Details Sidebar Assignees', () => {
       id: 1,
       name: 'User 1',
       username: 'root',
+      webUrl: 'https://gitlab:3443/root',
     },
     {
       avatar_url:
@@ -28,6 +29,7 @@ describe('Alert Details Sidebar Assignees', () => {
       id: 2,
       name: 'User 2',
       username: 'not-root',
+      webUrl: 'https://gitlab:3443/non-root',
     },
   ];
 
@@ -128,7 +130,7 @@ describe('Alert Details Sidebar Assignees', () => {
         variables: {
           iid: '1527542',
           assigneeUsernames: ['root'],
-          projectPath: 'projectPath',
+          fullPath: 'projectPath',
         },
       });
     });
@@ -137,7 +139,7 @@ describe('Alert Details Sidebar Assignees', () => {
       wrapper.setData({ isDropdownSearching: false });
       const errorMutationResult = {
         data: {
-          alertSetAssignees: {
+          issuableSetAssignees: {
             errors: ['There was a problem for sure.'],
             alert: {},
           },

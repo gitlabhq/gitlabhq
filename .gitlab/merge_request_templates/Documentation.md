@@ -52,8 +52,8 @@ All reviewers can help ensure accuracy, clarity, completeness, and adherence to 
 - [ ] Technical writer review. If not requested for this MR, must be scheduled post-merge. To request for this MR, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
   - [ ] Ensure docs metadata are present and up-to-date.
   - [ ] Ensure ~"Technical Writing" and ~"documentation" are added.
-  - [ ] Add the corresponding `docs::` [scoped label](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=docs%3A%3A).
-  - [ ] If working on UI text, add the corresponding `UI Text` [scoped label](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=ui+text).
+  - [ ] Add the corresponding `docs::` [scoped label](https://gitlab.com/groups/gitlab-org/-/labels?subscribed=&search=docs%3A%3A).
+  - [ ] If working on UI text, add the corresponding `UI Text` [scoped label](https://gitlab.com/groups/gitlab-org/-/labels?subscribed=&search=ui+text).
   - [ ] Add ~"tw::doing" when starting work on the MR.
   - [ ] Add ~"tw::finished" if Technical Writing team work on the MR is complete but it remains open.
 

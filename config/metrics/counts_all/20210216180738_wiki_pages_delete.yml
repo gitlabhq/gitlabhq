@@ -1,16 +1,18 @@
 ---
 key_path: counts.wiki_pages_delete
-description:
+description: Count of all Wiki pages deleted
 product_section: dev
 product_stage: create
-product_group: group::knowledge
+product_group: group::editor
 product_category: wiki
 value_type: number
 status: data_available
 time_frame: all
-data_source: database
+data_source: redis
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

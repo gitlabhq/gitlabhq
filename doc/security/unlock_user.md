@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# How to unlock a locked user from the command line
+# How to unlock a locked user from the command line **(FREE SELF)**
 
 After ten failed login attempts a user gets in a locked state.
 

@@ -376,6 +376,18 @@ RSpec.describe Todo do
     end
   end
 
+  describe '.for_note' do
+    it 'returns todos that belongs to notes' do
+      note_1 = create(:note, noteable: issue, project: issue.project)
+      note_2 = create(:note, noteable: issue, project: issue.project)
+      todo_1 = create(:todo, note: note_1)
+      todo_2 = create(:todo, note: note_2)
+      create(:todo, note: create(:note))
+
+      expect(described_class.for_note([note_1, note_2])).to contain_exactly(todo_1, todo_2)
+    end
+  end
+
   describe '.group_by_user_id_and_state' do
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }

@@ -131,7 +131,6 @@ class GroupPolicy < BasePolicy
     enable :read_prometheus
     enable :read_package
     enable :read_package_settings
-    enable :read_group_timelogs
   end
 
   rule { maintainer }.policy do
@@ -145,6 +144,7 @@ class GroupPolicy < BasePolicy
     enable :admin_cluster
     enable :read_deploy_token
     enable :create_jira_connect_subscription
+    enable :update_runners_registration_token
   end
 
   rule { owner }.policy do
@@ -155,6 +155,7 @@ class GroupPolicy < BasePolicy
 
     enable :set_note_created_at
     enable :set_emails_disabled
+    enable :change_prevent_sharing_groups_outside_hierarchy
     enable :update_default_branch_protection
     enable :create_deploy_token
     enable :destroy_deploy_token

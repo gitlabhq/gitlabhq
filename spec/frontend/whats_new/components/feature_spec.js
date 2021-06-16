@@ -8,7 +8,7 @@ describe("What's new single feature", () => {
   const exampleFeature = {
     title: 'Compliance pipeline configurations',
     body:
-      '<p>We are thrilled to announce that it is now possible to define enforceable pipelines that will run for any project assigned a corresponding compliance framework.</p>',
+      '<p data-testid="body-content">We are thrilled to announce that it is now possible to define enforceable pipelines that will run for any project assigned a corresponding <a href="https://en.wikipedia.org/wiki/Compliance_(psychology)" target="_blank" rel="noopener noreferrer" onload="alert(xss)">compliance</a> framework.</p>',
     stage: 'Manage',
     'self-managed': true,
     'gitlab-com': true,
@@ -20,6 +20,7 @@ describe("What's new single feature", () => {
   };
 
   const findReleaseDate = () => wrapper.find('[data-testid="release-date"]');
+  const findBodyAnchor = () => wrapper.find('[data-testid="body-content"] a');
 
   const createWrapper = ({ feature } = {}) => {
     wrapper = shallowMount(Feature, {
@@ -41,6 +42,15 @@ describe("What's new single feature", () => {
     it("doesn't render the date", () => {
       createWrapper({ feature: { ...exampleFeature, published_at: null } });
       expect(findReleaseDate().exists()).toBe(false);
+    });
+  });
+
+  it('safe-html config allows target attribute on elements', () => {
+    createWrapper({ feature: exampleFeature });
+    expect(findBodyAnchor().attributes()).toEqual({
+      href: expect.any(String),
+      rel: 'noopener noreferrer',
+      target: '_blank',
     });
   });
 });

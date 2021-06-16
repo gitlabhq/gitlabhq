@@ -8,21 +8,23 @@
   = render "projects/merge_requests/mr_box"
 
   .gl-alert.gl-alert-danger
-    = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    %p
-      We cannot render this merge request properly because
-      - if @merge_request.for_fork? && !@merge_request.source_project
-        fork project was removed
-      - elsif !@merge_request.source_branch_exists?
-        %span{ class: badge_inverse_css_classes }= @merge_request.source_branch
-        does not exist in
-        %span{ class: badge_info_css_classes }= @merge_request.source_project_path
-      - elsif !@merge_request.target_branch_exists?
-        %span{ class: badge_inverse_css_classes }= @merge_request.target_branch
-        does not exist in
-        %span{ class: badge_info_css_classes }= @merge_request.target_project_path
-      - else
-        of internal error
+    .gl-alert-container
+      = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-content{ role: 'alert' }
+        %p
+          We cannot render this merge request properly because
+          - if @merge_request.for_fork? && !@merge_request.source_project
+            fork project was removed
+          - elsif !@merge_request.source_branch_exists?
+            %span{ class: badge_inverse_css_classes }= @merge_request.source_branch
+            does not exist in
+            %span{ class: badge_info_css_classes }= @merge_request.source_project_path
+          - elsif !@merge_request.target_branch_exists?
+            %span{ class: badge_inverse_css_classes }= @merge_request.target_branch
+            does not exist in
+            %span{ class: badge_info_css_classes }= @merge_request.target_project_path
+          - else
+            of internal error
 
-    %strong
-      Please close merge request or change branches with existing one
+        %strong
+          Please close merge request or change branches with existing one

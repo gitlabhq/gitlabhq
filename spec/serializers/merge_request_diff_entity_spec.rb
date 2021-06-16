@@ -10,8 +10,16 @@ RSpec.describe MergeRequestDiffEntity do
   let(:merge_request_diffs) { merge_request.merge_request_diffs }
   let(:merge_request_diff) { merge_request_diffs.first }
 
-  let(:entity) do
-    described_class.new(merge_request_diff, request: request, merge_request: merge_request, merge_request_diffs: merge_request_diffs)
+  let(:entity) { initialize_entity(merge_request, merge_request_diff) }
+
+  def initialize_entity(merge_request, merge_request_diff)
+    described_class.new(
+      merge_request_diff,
+      request: request,
+      merge_request: merge_request,
+      merge_request_diff: merge_request_diff,
+      merge_request_diffs: merge_request_diffs
+    )
   end
 
   subject { entity.as_json }
@@ -23,6 +31,62 @@ RSpec.describe MergeRequestDiffEntity do
         :latest, :short_commit_sha, :version_path,
         :compare_path
       )
+    end
+  end
+
+  describe '#version_index' do
+    shared_examples 'version_index is nil' do
+      it 'returns nil' do
+        expect(subject[:version_index]).to be_nil
+      end
+    end
+
+    context 'when diff is not present' do
+      let(:entity) do
+        described_class.new(
+          merge_request_diff,
+          request: request,
+          merge_request: merge_request,
+          merge_request_diffs: merge_request_diffs
+        )
+      end
+
+      it_behaves_like 'version_index is nil'
+    end
+
+    context 'when diff is not included in @merge_request_diffs' do
+      let(:merge_request_diff) { create(:merge_request_diff) }
+      let(:merge_request_diff_2) { create(:merge_request_diff) }
+
+      before do
+        merge_request_diffs << merge_request_diff_2
+      end
+
+      it_behaves_like 'version_index is nil'
+    end
+
+    context 'when @merge_request_diffs.size <= 1' do
+      before do
+        expect(merge_request_diffs.size).to eq(1)
+      end
+
+      it_behaves_like 'version_index is nil'
+    end
+
+    context 'when @merge_request_diffs.size > 1' do
+      let(:merge_request) { create(:merge_request_with_multiple_diffs) }
+
+      it 'returns difference between size and diff index' do
+        expect(merge_request_diffs.size).to eq(2)
+
+        # diff index: 0
+        subject = initialize_entity(merge_request, merge_request_diffs.first)
+        expect(subject.as_json[:version_index]).to eq(2)
+
+        # diff index: 1
+        subject = initialize_entity(merge_request, merge_request_diffs.last)
+        expect(subject.as_json[:version_index]).to eq(1)
+      end
     end
   end
 

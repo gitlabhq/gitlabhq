@@ -46,6 +46,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:usage_data_design_action, project, default_enabled: true)
     push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
     push_frontend_feature_flag(:vue_issues_list, project)
+    push_frontend_feature_flag(:iteration_cadences, project&.group, default_enabled: :yaml)
   end
 
   before_action only: :show do
@@ -55,6 +56,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_to_gon_attributes(:features, real_time_feature_flag, real_time_enabled)
     push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:labels_widget, @project, default_enabled: :yaml)
 
     experiment(:invite_members_in_comment, namespace: @project.root_ancestor) do |experiment_instance|
       experiment_instance.exclude! unless helpers.can_import_members?
@@ -160,7 +162,7 @@ class Projects::IssuesController < Projects::ApplicationController
       new_project = Project.find(params[:move_to_project_id])
       return render_404 unless issue.can_move?(current_user, new_project)
 
-      @issue = ::Issues::UpdateService.new(project: project, current_user: current_user, params: { target_project: new_project }).execute(issue)
+      @issue = ::Issues::MoveService.new(project: project, current_user: current_user).execute(issue, new_project)
     end
 
     respond_to do |format|

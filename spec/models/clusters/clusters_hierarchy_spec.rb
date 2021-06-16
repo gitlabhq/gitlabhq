@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Clusters::ClustersHierarchy do
   describe '#base_and_ancestors' do
-    def base_and_ancestors(clusterable, include_management_project: true)
-      described_class.new(clusterable, include_management_project: include_management_project).base_and_ancestors
+    def base_and_ancestors(clusterable)
+      described_class.new(clusterable).base_and_ancestors
     end
 
     context 'project in nested group with clusters at every level' do
@@ -99,10 +99,6 @@ RSpec.describe Clusters::ClustersHierarchy do
 
       it 'returns clusters for management_project' do
         expect(base_and_ancestors(management_project)).to eq([ancestor, child])
-      end
-
-      it 'returns clusters for management_project' do
-        expect(base_and_ancestors(management_project, include_management_project: false)).to eq([child, ancestor])
       end
 
       it 'returns clusters for project' do

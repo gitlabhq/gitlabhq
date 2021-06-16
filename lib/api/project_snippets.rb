@@ -75,7 +75,7 @@ module API
 
         snippet_params = process_create_params(declared_params(include_missing: false))
 
-        service_response = ::Snippets::CreateService.new(user_project, current_user, snippet_params).execute
+        service_response = ::Snippets::CreateService.new(project: user_project, current_user: current_user, params: snippet_params).execute
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
@@ -116,7 +116,7 @@ module API
 
         snippet_params = process_update_params(declared_params(include_missing: false))
 
-        service_response = ::Snippets::UpdateService.new(user_project, current_user, snippet_params).execute(snippet)
+        service_response = ::Snippets::UpdateService.new(project: user_project, current_user: current_user, params: snippet_params).execute(snippet)
         snippet = service_response.payload[:snippet]
 
         if service_response.success?

@@ -1,6 +1,7 @@
+#import "~/runner/graphql/runner_details.fragment.graphql"
+
 query getRunner($id: CiRunnerID!) {
   runner(id: $id) {
-    id
-    runnerType
+    ...RunnerDetails
   }
 }

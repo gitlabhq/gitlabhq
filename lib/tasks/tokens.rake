@@ -19,7 +19,7 @@ namespace :tokens do
   def reset_all_users_token(reset_token_method)
     TmpUser.find_in_batches do |batch|
       puts "Processing batch starting with user ID: #{batch.first.id}"
-      STDOUT.flush
+      $stdout.flush
 
       batch.each(&reset_token_method)
     end

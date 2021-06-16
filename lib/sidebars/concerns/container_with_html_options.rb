@@ -38,6 +38,16 @@ module Sidebars
       # in the helper method that sets the active class
       # on each element.
       def nav_link_html_options
+        {
+          data: {
+            track_label: self.class.name.demodulize.underscore
+          }
+        }.deep_merge(extra_nav_link_html_options)
+      end
+
+      # Classes should mostly override this method
+      # and not `nav_link_html_options`.
+      def extra_nav_link_html_options
         {}
       end
 

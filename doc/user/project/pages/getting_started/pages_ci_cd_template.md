@@ -5,7 +5,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Create a Pages website by using a CI/CD template
+# Create a Pages website by using a CI/CD template **(FREE)**
 
 GitLab provides `.gitlab-ci.yml` templates for the most popular Static Site Generators (SSGs).
 You can create your own `.gitlab-ci.yml` file from one of these templates, and run
@@ -17,7 +17,7 @@ Your GitLab repository should contain files specific to an SSG, or plain HTML.
 After you complete these steps, you may need to do additional
 configuration for the Pages site to generate properly.
 
-1. In the left sidebar, click **Project overview**.
+1. On the left sidebar, select **Project information**.
 1. Click **Set up CI/CD**.
 
    ![setup GitLab CI/CD](../img/setup_ci_v13_1.png)

@@ -75,5 +75,37 @@ RSpec.describe NamespaceSettings::UpdateService do
         end
       end
     end
+
+    context "updating :prevent_sharing_groups_outside_hierarchy" do
+      let(:settings) { { prevent_sharing_groups_outside_hierarchy: true } }
+
+      context 'when user is a group owner' do
+        before do
+          group.add_owner(user)
+        end
+
+        it 'changes settings' do
+          expect { service.execute }
+            .to change { group.namespace_settings.prevent_sharing_groups_outside_hierarchy }
+            .from(false).to(true)
+        end
+      end
+
+      context 'when user is not a group owner' do
+        before do
+          group.add_maintainer(user)
+        end
+
+        it 'does not change settings' do
+          expect { service.execute }.not_to change { group.namespace_settings.prevent_sharing_groups_outside_hierarchy }
+        end
+
+        it 'returns the group owner error' do
+          service.execute
+
+          expect(group.namespace_settings.errors.messages[:prevent_sharing_groups_outside_hierarchy]).to include('can only be changed by a group admin.')
+        end
+      end
+    end
   end
 end

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Linux Cheat Sheet
+# Linux cheat sheet **(FREE SELF)**
 
 This is the GitLab Support Team's collection of information regarding Linux, that they
 sometimes use while troubleshooting. It is listed here for transparency,
@@ -177,8 +177,8 @@ strace -tt -T -f -y -yy -s 1024 -p <pid>
 
 # -o    output file
 
-# run strace on all unicorn processes
-ps auwx | grep unicorn | awk '{ print " -p " $2}' | xargs strace -tt -T -f -y -yy -s 1024 -o /tmp/unicorn.txt
+# run strace on all puma processes
+ps auwx | grep puma | awk '{ print " -p " $2}' | xargs strace -tt -T -f -y -yy -s 1024 -o /tmp/puma.txt
 ```
 
 Be aware that strace can have major impacts to system performance when it is running.

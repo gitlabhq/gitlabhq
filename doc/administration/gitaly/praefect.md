@@ -9,12 +9,20 @@ type: reference
 
 Configure Gitaly Cluster using either:
 
-- The Gitaly Cluster configuration instructions available as part of
-  [reference architectures](../reference_architectures/index.md) for installations for more than
-  2000 users.
-- The advanced configuration instructions that follow on this page.
+- Gitaly Cluster configuration instructions available as part of
+  [reference architectures](../reference_architectures/index.md) for installations of up to:
+  - [3000 users](../reference_architectures/3k_users.md#configure-gitaly-cluster).
+  - [5000 users](../reference_architectures/5k_users.md#configure-gitaly-cluster).
+  - [10,000 users](../reference_architectures/10k_users.md#configure-gitaly-cluster).
+  - [25,000 users](../reference_architectures/25k_users.md#configure-gitaly-cluster).
+  - [50,000 users](../reference_architectures/50k_users.md#configure-gitaly-cluster).
+- The custom configuration instructions that follow on this page.
 
 Smaller GitLab installations may need only [Gitaly itself](index.md).
+
+NOTE:
+Upgrade instructions for Omnibus GitLab installations
+[are available](https://docs.gitlab.com/omnibus/update/#gitaly-cluster).
 
 ## Requirements for configuring a Gitaly Cluster
 
@@ -161,6 +169,9 @@ node, using `psql` which is installed by Omnibus GitLab.
 
 The database used by Praefect is now configured.
 
+If you see Praefect database errors after configuring PostgreSQL, see
+[troubleshooting steps](index.md#relation-does-not-exist-errors).
+
 #### PgBouncer
 
 To reduce PostgreSQL resource consumption, we recommend setting up and configuring
@@ -223,8 +234,10 @@ PostgreSQL instances. Otherwise you should change the configuration parameter
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 13.4, Praefect nodes can no longer be designated as `primary`.
 
-NOTE:
-If there are multiple Praefect nodes, complete these steps for **each** node.
+If there are multiple Praefect nodes:
+
+- Complete the following steps for **each** node.
+- Designate one node as the "deploy node", and configure it first.
 
 To complete this section you need a [configured PostgreSQL server](#postgresql), including:
 
@@ -259,8 +272,8 @@ application server, or a Gitaly node.
    praefect['enable'] = true
 
    # Prevent database connections during 'gitlab-ctl reconfigure'
-   gitlab_rails['rake_cache_clear'] = false
    gitlab_rails['auto_migrate'] = false
+   praefect['auto_migrate'] = false
    ```
 
 1. Configure **Praefect** to listen on network interfaces by editing
@@ -373,6 +386,30 @@ application server, or a Gitaly node.
    Gitaly nodes were configured directly under the virtual storage, and not under the `nodes` key.
 
 1. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2013) in GitLab 13.1 and later, enable [distribution of reads](#distributed-reads).
+
+1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
+   Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
+1. For:
+
+   - The "deploy node":
+     1. Enable Praefect auto-migration again by setting `praefect['auto_migrate'] = true` in
+        `/etc/gitlab/gitlab.rb`.
+     1. To ensure database migrations are only run during reconfigure and not automatically on
+        upgrade, run:
+
+        ```shell
+        sudo touch /etc/gitlab/skip-auto-reconfigure
+        ```
+
+   - The other nodes, you can leave the settings as they are. Though
+     `/etc/gitlab/skip-auto-reconfigure` isn't required, you may want to set it to prevent GitLab
+     running reconfigure automatically when running commands such as `apt-get update`. This way any
+     additional configuration changes can be done and then reconfigure can be run manually.
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
    Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
@@ -599,7 +636,6 @@ documentation](configure_gitaly.md#configure-gitaly-servers).
    prometheus['enable'] = true
 
    # Prevent database connections during 'gitlab-ctl reconfigure'
-   gitlab_rails['rake_cache_clear'] = false
    gitlab_rails['auto_migrate'] = false
    ```
 
@@ -696,7 +732,7 @@ documentation](configure_gitaly.md#configure-gitaly-servers).
 
 **The steps above must be completed for each Gitaly node!**
 
-After all Gitaly nodes are configured, you can run the Praefect connection
+After all Gitaly nodes are configured, run the Praefect connection
 checker to verify Praefect can connect to all Gitaly servers in the Praefect
 configuration.
 
@@ -865,9 +901,13 @@ Particular attention should be shown to:
    gitlab-rake gitlab:gitaly:check
    ```
 
-1. Check in **Admin Area > Settings > Repository > Repository storage** that the Praefect storage
-   is configured to store new repositories. Following this guide, the `default` storage should have
-   weight 100 to store all new repositories.
+1. Check that the Praefect storage is configured to store new repositories:
+
+   1. On the top bar, select **Menu >** **{admin}** **Admin**.
+   1. On the left sidebar, select **Settings > Repository**.
+   1. Expand the **Repository storage** section.
+
+   Following this guide, the `default` storage should have weight 100 to store all new repositories.
 
 1. Verify everything is working by creating a new project. Check the
    "Initialize repository with a README" box so that there is content in the
@@ -878,7 +918,7 @@ Particular attention should be shown to:
 
 When adding Gitaly Cluster to an existing Gitaly instance, the existing Gitaly storage
 must use a TCP address. If `gitaly_address` is not specified, then a Unix socket is used,
-which will prevent the communication with the cluster.
+which prevents the communication with the cluster.
 
 For example:
 
@@ -1160,15 +1200,36 @@ To migrate existing clusters:
    a Praefect node to reattempt it. The migration only runs with `sql` election strategy configured.
 
 1. Running two different election strategies side by side can cause a split brain, where different
-   Praefect nodes consider repositories to have different primaries. To avoid this, shut down
-   all Praefect nodes before changing the election strategy.
+   Praefect nodes consider repositories to have different primaries. This can be avoided either:
 
-   Do this by running `gitlab-ctl stop praefect` on the Praefect nodes.
+   - If a short downtime is acceptable:
 
-1. On the Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with
-   `praefect['failover_election_strategy'] = 'per_repository'`.
+      1. Shut down all Praefect nodes before changing the election strategy. Do this by running `gitlab-ctl stop praefect` on the Praefect nodes.
 
-1. Finally, run `gitlab-ctl reconfigure` to reconfigure and restart the Praefect nodes.
+      1. On the Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with `praefect['failover_election_strategy'] = 'per_repository'`.
+
+      1. Run `gitlab-ctl reconfigure && gitlab-ctl start` to reconfigure and start the Praefects.
+
+   - If downtime is unacceptable:
+
+      1. Determine which Gitaly node is [the current primary](index.md#determine-primary-gitaly-node).
+
+      1. Comment out the secondary Gitaly nodes from the virtual storage's configuration in `/etc/gitlab/gitlab.rb`
+      on all Praefect nodes. This ensures there's only one Gitaly node configured, causing both of the election
+      strategies to elect the same Gitaly node as the primary.
+
+      1. Run `gitlab-ctl reconfigure` on all Praefect nodes. Wait until all Praefect processes have restarted and
+      the old processes have exited. This can take up to one minute.
+
+      1. On all Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with
+      `praefect['failover_election_strategy'] = 'per_repository'`.
+
+      1. Run `gitlab-ctl reconfigure` on all Praefect nodes. Wait until all of the Praefect processes have restarted and
+      the old processes have exited. This can take up to one minute.
+
+      1. Uncomment the secondary Gitaly node configuration commented out in the earlier step on all Praefect nodes.
+
+      1. Run `gitlab-ctl reconfigure` on all Praefect nodes to reconfigure and restart the Praefect processes.
 
 ### Deprecated election strategies
 
@@ -1428,15 +1489,8 @@ or to move from single Gitaly nodes, the basic process involves:
 1. Create and configure Gitaly Cluster.
 1. [Move the repositories](#move-repositories).
 
-The size of the required storage can vary between instances and depends on the set
-[replication factor](#replication-factor). The migration to Gitaly Cluster might include
-implementing repository storage redundancy.
-
-For a replication factor:
-
-- Of `1`: NFS, Gitaly, and Gitaly Cluster have roughly the same storage requirements.
-- More than `1`: The amount of required storage is `used space * replication factor`. `used space`
-  should include any planned future growth.
+When creating the storage, see some
+[repository storage recommendations](faq.md#what-are-some-repository-storage-recommendations).
 
 ### Move Repositories
 
@@ -1467,8 +1521,10 @@ After creating and configuring Gitaly Cluster:
 1. [Schedule repository storage moves for all projects on a storage shard](../../api/project_repository_storage_moves.md#schedule-repository-storage-moves-for-all-projects-on-a-storage-shard) using the API. For example:
 
    ```shell
-   curl --request POST --header "Private-Token: <your_access_token>" --header "Content-Type: application/json" \
-   --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' "https://gitlab.example.com/api/v4/project_repository_storage_moves"
+   curl --request POST --header "Private-Token: <your_access_token>" \
+        --header "Content-Type: application/json" \
+        --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
+        "https://gitlab.example.com/api/v4/project_repository_storage_moves"
    ```
 
 1. [Query the most recent repository moves](../../api/project_repository_storage_moves.md#retrieve-all-project-repository-storage-moves)
@@ -1500,8 +1556,10 @@ After creating and configuring Gitaly Cluster:
 1. [Schedule repository storage moves for all snippets on a storage shard](../../api/snippet_repository_storage_moves.md#schedule-repository-storage-moves-for-all-snippets-on-a-storage-shard) using the API. For example:
 
    ```shell
-   curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-   --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' "https://gitlab.example.com/api/v4/snippet_repository_storage_moves"
+   curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+        --header "Content-Type: application/json" \
+        --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
+        "https://gitlab.example.com/api/v4/snippet_repository_storage_moves"
    ```
 
 1. [Query the most recent repository moves](../../api/snippet_repository_storage_moves.md#retrieve-all-snippet-repository-storage-moves)
@@ -1525,8 +1583,10 @@ After creating and configuring Gitaly Cluster:
 1. [Schedule repository storage moves for all groups on a storage shard](../../api/group_repository_storage_moves.md#schedule-repository-storage-moves-for-all-groups-on-a-storage-shard) using the API.
 
     ```shell
-    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-    --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' "https://gitlab.example.com/api/v4/group_repository_storage_moves"
+    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+         --header "Content-Type: application/json" \
+         --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
+         "https://gitlab.example.com/api/v4/group_repository_storage_moves"
     ```
 
 1. [Query the most recent repository moves](../../api/group_repository_storage_moves.md#retrieve-all-group-repository-storage-moves)
@@ -1544,35 +1604,3 @@ After creating and configuring Gitaly Cluster:
    ```
 
 1. Repeat for each storage as required.
-
-## Debugging Praefect
-
-If you receive an error, check `/var/log/gitlab/gitlab-rails/production.log`.
-
-Here are common errors and potential causes:
-
-- 500 response code
-  - **ActionView::Template::Error (7:permission denied)**
-    - `praefect['auth_token']` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
-  - **Unable to save project. Error: 7:permission denied**
-    - Secret token in `praefect['storage_nodes']` on GitLab server does not match the
-      value in `gitaly['auth_token']` on one or more Gitaly servers.
-- 503 response code
-  - **GRPC::Unavailable (14:failed to connect to all addresses)**
-    - GitLab was unable to reach Praefect.
-  - **GRPC::Unavailable (14:all SubCons are in TransientFailure...)**
-    - Praefect cannot reach one or more of its child Gitaly nodes. Try running
-      the Praefect connection checker to diagnose.
-
-### Determine primary Gitaly node
-
-To determine the current primary Gitaly node for a specific Praefect node:
-
-- Use the `Shard Primary Election` [Grafana chart](#grafana) on the [`Gitlab Omnibus - Praefect` dashboard](https://gitlab.com/gitlab-org/grafana-dashboards/-/blob/master/omnibus/praefect.json).
-  This is recommended.
-- If you do not have Grafana set up, use the following command on each host of each
-  Praefect node:
-
-  ```shell
-  curl localhost:9652/metrics | grep gitaly_praefect_primaries`
-  ```

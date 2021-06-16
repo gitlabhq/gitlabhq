@@ -19,7 +19,7 @@ RSpec.describe BulkImports::ExportRequestWorker do
       it 'requests relations export' do
         expected = "/groups/foo%2Fbar/export_relations"
 
-        expect_next_instance_of(BulkImports::Clients::Http) do |client|
+        expect_next_instance_of(BulkImports::Clients::HTTP) do |client|
           expect(client).to receive(:post).with(expected).twice
         end
 

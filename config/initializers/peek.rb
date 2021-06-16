@@ -15,8 +15,14 @@ Peek.into Peek::Views::Elasticsearch
 Peek.into Peek::Views::Rugged
 Peek.into Peek::Views::ExternalHttp
 Peek.into Peek::Views::BulletDetailed if defined?(Bullet)
+Peek.into Peek::Views::Memory
 
 Peek.into Peek::Views::Tracing if Labkit::Tracing.tracing_url_enabled?
+
+# Trigger view creation here, since views might be subscribing to Rails notifications
+# via setup_subscribers, which is called in the initializer.
+# See https://github.com/peek/peek/blob/master/lib/peek/views/view.rb
+Peek.views
 
 ActiveSupport::Notifications.subscribe('endpoint_run.grape') do |_name, _start, _finish, _id, payload|
   if request_id = payload[:env]['action_dispatch.request_id']

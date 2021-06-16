@@ -57,7 +57,7 @@
   .form-group
     = label_tag :request_url, s_('MattermostService|Request URL'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
-      = text_field_tag :request_url, service_trigger_url(subject), class: 'form-control form-control-sm', readonly: 'readonly'
+      = text_field_tag :request_url, service_trigger_url(integration), class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#request_url', class: 'input-group-text')
 

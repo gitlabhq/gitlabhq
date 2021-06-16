@@ -1,4 +1,5 @@
-import { GlFormInputGroup, GlFormInput, GlForm } from '@gitlab/ui';
+import { GlFormInputGroup, GlFormInput, GlForm, GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
+import { getByRole, getAllByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -14,6 +15,13 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 describe('ForkForm component', () => {
   let wrapper;
   let axiosMock;
+
+  const PROJECT_VISIBILITY_TYPE = {
+    private:
+      'Private Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.',
+    internal: 'Internal The project can be accessed by any logged in user.',
+    public: 'Public The project can be accessed without any authentication.',
+  };
 
   const GON_GITLAB_URL = 'https://gitlab.com';
   const GON_API_VERSION = 'v7';
@@ -37,6 +45,7 @@ describe('ForkForm component', () => {
     projectPath: 'project-name',
     projectDescription: 'some project description',
     projectVisibility: 'private',
+    restrictedVisibilityLevels: [],
   };
 
   const mockGetRequest = (data = {}, statusCode = httpStatus.OK) => {
@@ -61,6 +70,8 @@ describe('ForkForm component', () => {
       stubs: {
         GlFormInputGroup,
         GlFormInput,
+        GlFormRadioGroup,
+        GlFormRadio,
       },
     });
   };
@@ -81,6 +92,7 @@ describe('ForkForm component', () => {
     axiosMock.restore();
   });
 
+  const findFormSelectOptions = () => wrapper.find('select[name="namespace"]').findAll('option');
   const findPrivateRadio = () => wrapper.find('[data-testid="radio-private"]');
   const findInternalRadio = () => wrapper.find('[data-testid="radio-internal"]');
   const findPublicRadio = () => wrapper.find('[data-testid="radio-public"]');
@@ -203,24 +215,145 @@ describe('ForkForm component', () => {
   });
 
   describe('visibility level', () => {
+    it('displays the correct description', () => {
+      mockGetRequest();
+      createComponent();
+
+      const formRadios = wrapper.findAll(GlFormRadio);
+
+      Object.keys(PROJECT_VISIBILITY_TYPE).forEach((visibilityType, index) => {
+        expect(formRadios.at(index).text()).toBe(PROJECT_VISIBILITY_TYPE[visibilityType]);
+      });
+    });
+
+    it('displays all 3 visibility levels', () => {
+      mockGetRequest();
+      createComponent();
+
+      expect(wrapper.findAll(GlFormRadio)).toHaveLength(3);
+    });
+
+    describe('when the namespace is changed', () => {
+      const namespaces = [
+        {
+          visibility: 'private',
+        },
+        {
+          visibility: 'internal',
+        },
+        {
+          visibility: 'public',
+        },
+      ];
+
+      beforeEach(() => {
+        mockGetRequest();
+      });
+
+      it('resets the visibility to default "private"', async () => {
+        createFullComponent({ projectVisibility: 'public' }, { namespaces });
+
+        expect(wrapper.vm.form.fields.visibility.value).toBe('public');
+        await findFormSelectOptions().at(1).setSelected();
+
+        await wrapper.vm.$nextTick();
+
+        expect(getByRole(wrapper.element, 'radio', { name: /private/i }).checked).toBe(true);
+      });
+
+      it('sets the visibility to be null when restrictedVisibilityLevels is set', async () => {
+        createFullComponent({ restrictedVisibilityLevels: [10] }, { namespaces });
+
+        await findFormSelectOptions().at(1).setSelected();
+
+        await wrapper.vm.$nextTick();
+
+        const container = getByRole(wrapper.element, 'radiogroup', { name: /visibility/i });
+        const visibilityRadios = getAllByRole(container, 'radio');
+        expect(visibilityRadios.filter((e) => e.checked)).toHaveLength(0);
+      });
+    });
+
     it.each`
-      project       | namespace     | privateIsDisabled | internalIsDisabled | publicIsDisabled
-      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}
-      ${'private'}  | ${'internal'} | ${undefined}      | ${'true'}          | ${'true'}
-      ${'private'}  | ${'public'}   | ${undefined}      | ${'true'}          | ${'true'}
-      ${'internal'} | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}
-      ${'internal'} | ${'internal'} | ${undefined}      | ${undefined}       | ${'true'}
-      ${'internal'} | ${'public'}   | ${undefined}      | ${undefined}       | ${'true'}
-      ${'public'}   | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}
-      ${'public'}   | ${'internal'} | ${undefined}      | ${undefined}       | ${'true'}
-      ${'public'}   | ${'public'}   | ${undefined}      | ${undefined}       | ${undefined}
+      project       | restrictedVisibilityLevels
+      ${'private'}  | ${[]}
+      ${'internal'} | ${[]}
+      ${'public'}   | ${[]}
+      ${'private'}  | ${[0]}
+      ${'private'}  | ${[10]}
+      ${'private'}  | ${[20]}
+      ${'private'}  | ${[0, 10]}
+      ${'private'}  | ${[0, 20]}
+      ${'private'}  | ${[10, 20]}
+      ${'private'}  | ${[0, 10, 20]}
+      ${'internal'} | ${[0]}
+      ${'internal'} | ${[10]}
+      ${'internal'} | ${[20]}
+      ${'internal'} | ${[0, 10]}
+      ${'internal'} | ${[0, 20]}
+      ${'internal'} | ${[10, 20]}
+      ${'internal'} | ${[0, 10, 20]}
+      ${'public'}   | ${[0]}
+      ${'public'}   | ${[10]}
+      ${'public'}   | ${[0, 10]}
+      ${'public'}   | ${[0, 20]}
+      ${'public'}   | ${[10, 20]}
+      ${'public'}   | ${[0, 10, 20]}
+    `('checks the correct radio button', async ({ project, restrictedVisibilityLevels }) => {
+      mockGetRequest();
+      createFullComponent({
+        projectVisibility: project,
+        restrictedVisibilityLevels,
+      });
+
+      if (restrictedVisibilityLevels.length === 0) {
+        expect(wrapper.find('[name="visibility"]:checked').attributes('value')).toBe(project);
+      } else {
+        expect(wrapper.find('[name="visibility"]:checked').exists()).toBe(false);
+      }
+    });
+
+    it.each`
+      project       | namespace     | privateIsDisabled | internalIsDisabled | publicIsDisabled | restrictedVisibilityLevels
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[]}
+      ${'private'}  | ${'internal'} | ${undefined}      | ${'true'}          | ${'true'}        | ${[]}
+      ${'private'}  | ${'public'}   | ${undefined}      | ${'true'}          | ${'true'}        | ${[]}
+      ${'internal'} | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[]}
+      ${'internal'} | ${'internal'} | ${undefined}      | ${undefined}       | ${'true'}        | ${[]}
+      ${'internal'} | ${'public'}   | ${undefined}      | ${undefined}       | ${'true'}        | ${[]}
+      ${'public'}   | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[]}
+      ${'public'}   | ${'internal'} | ${undefined}      | ${undefined}       | ${'true'}        | ${[]}
+      ${'public'}   | ${'public'}   | ${undefined}      | ${undefined}       | ${undefined}     | ${[]}
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[0]}
+      ${'internal'} | ${'internal'} | ${'true'}         | ${undefined}       | ${'true'}        | ${[0]}
+      ${'public'}   | ${'public'}   | ${'true'}         | ${undefined}       | ${undefined}     | ${[0]}
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[10]}
+      ${'internal'} | ${'internal'} | ${undefined}      | ${'true'}          | ${'true'}        | ${[10]}
+      ${'public'}   | ${'public'}   | ${undefined}      | ${'true'}          | ${undefined}     | ${[10]}
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[20]}
+      ${'internal'} | ${'internal'} | ${undefined}      | ${undefined}       | ${'true'}        | ${[20]}
+      ${'public'}   | ${'public'}   | ${undefined}      | ${undefined}       | ${'true'}        | ${[20]}
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[10, 20]}
+      ${'internal'} | ${'internal'} | ${undefined}      | ${'true'}          | ${'true'}        | ${[10, 20]}
+      ${'public'}   | ${'public'}   | ${undefined}      | ${'true'}          | ${'true'}        | ${[10, 20]}
+      ${'private'}  | ${'private'}  | ${undefined}      | ${'true'}          | ${'true'}        | ${[0, 10, 20]}
+      ${'internal'} | ${'internal'} | ${undefined}      | ${'true'}          | ${'true'}        | ${[0, 10, 20]}
+      ${'public'}   | ${'public'}   | ${undefined}      | ${'true'}          | ${'true'}        | ${[0, 10, 20]}
     `(
       'sets appropriate radio button disabled state',
-      async ({ project, namespace, privateIsDisabled, internalIsDisabled, publicIsDisabled }) => {
+      async ({
+        project,
+        namespace,
+        privateIsDisabled,
+        internalIsDisabled,
+        publicIsDisabled,
+        restrictedVisibilityLevels,
+      }) => {
         mockGetRequest();
         createComponent(
           {
             projectVisibility: project,
+            restrictedVisibilityLevels,
           },
           {
             form: { fields: { namespace: { value: { visibility: namespace } } } },
@@ -235,7 +368,7 @@ describe('ForkForm component', () => {
   });
 
   describe('onSubmit', () => {
-    beforeEach(() => {
+    const setupComponent = (fields = {}) => {
       jest.spyOn(urlUtility, 'redirectTo').mockImplementation();
 
       mockGetRequest();
@@ -245,9 +378,14 @@ describe('ForkForm component', () => {
           namespaces: MOCK_NAMESPACES_RESPONSE,
           form: {
             state: true,
+            ...fields,
           },
         },
       );
+    };
+
+    beforeEach(() => {
+      setupComponent();
     });
 
     const selectedMockNamespaceIndex = 1;
@@ -278,6 +416,22 @@ describe('ForkForm component', () => {
         await submitForm();
 
         expect(urlUtility.redirectTo).not.toHaveBeenCalled();
+      });
+
+      it('does not make POST request if no visbility is checked', async () => {
+        jest.spyOn(axios, 'post');
+
+        setupComponent({
+          fields: {
+            visibility: {
+              value: null,
+            },
+          },
+        });
+
+        await submitForm();
+
+        expect(axios.post).not.toHaveBeenCalled();
       });
     });
 
@@ -330,7 +484,7 @@ describe('ForkForm component', () => {
 
         expect(urlUtility.redirectTo).not.toHaveBeenCalled();
         expect(createFlash).toHaveBeenCalledWith({
-          message: dummyError,
+          message: 'An error occurred while forking the project. Please try again.',
         });
       });
     });

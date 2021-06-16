@@ -329,16 +329,34 @@ RSpec.describe 'Environment' do
       expect(page).to have_button('Stop')
     end
 
-    it 'user deletes the branch with running environment' do
+    it 'user deletes the branch with running environment', :js do
       visit project_branches_filtered_path(project, state: 'all', search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do
-        page.within('.js-branch-feature') { find('a.btn-danger').click }
+        page.within('.js-branch-feature') { find('.js-delete-branch-button').click }
       end
 
       visit_environment(environment)
 
       expect(page).not_to have_button('Stop')
+    end
+
+    context 'when the feature flag :delete_branch_confirmation_modals is disabled' do
+      before do
+        stub_feature_flags(delete_branch_confirmation_modals: false)
+      end
+
+      it 'user deletes the branch with running environment' do
+        visit project_branches_filtered_path(project, state: 'all', search: 'feature')
+
+        remove_branch_with_hooks(project, user, 'feature') do
+          within('.js-branch-feature') { click_link(title: 'Delete branch') }
+        end
+
+        visit_environment(environment)
+
+        expect(page).not_to have_button('Stop')
+      end
     end
 
     ##

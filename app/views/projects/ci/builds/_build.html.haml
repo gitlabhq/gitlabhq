@@ -97,7 +97,7 @@
       #{job.coverage}%
 
   %td
-    .gl-display-flex
+    .gl-text-right
       .btn-group
         - if can?(current_user, :read_job_artifacts, job) && job.artifacts?
           = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: _('Download artifacts'), class: 'gl-button btn btn-default btn-icon' do

@@ -3,7 +3,6 @@ import { GlLabel } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import Api from '~/api';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -50,10 +49,10 @@ export default {
       /*
        Labels fetched in epic boards are always group-level labels
        and the correct path are passed from the backend (injected through labelsFetchPath)
-    
+
        For issue boards, we should always include project-level labels and use a different endpoint.
        (it requires knowing the project path of a selected issue.)
-    
+
        Note 1. that we will be using GraphQL to fetch labels when we create a labels select widget.
        And this component will be removed _wholesale_ https://gitlab.com/gitlab-org/gitlab/-/issues/300653.
 
@@ -74,7 +73,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setActiveBoardItemLabels']),
+    ...mapActions(['setActiveBoardItemLabels', 'setError']),
     async setLabels(payload) {
       this.loading = true;
       this.$refs.sidebarItem.collapse();
@@ -88,7 +87,7 @@ export default {
         const input = { addLabelIds, removeLabelIds, projectPath: this.projectPathForActiveIssue };
         await this.setActiveBoardItemLabels(input);
       } catch (e) {
-        createFlash({ message: __('An error occurred while updating labels.') });
+        this.setError({ error: e, message: __('An error occurred while updating labels.') });
       } finally {
         this.loading = false;
       }
@@ -101,7 +100,7 @@ export default {
         const input = { removeLabelIds, projectPath: this.projectPathForActiveIssue };
         await this.setActiveBoardItemLabels(input);
       } catch (e) {
-        createFlash({ message: __('An error occurred when removing the label.') });
+        this.setError({ error: e, message: __('An error occurred when removing the label.') });
       } finally {
         this.loading = false;
       }

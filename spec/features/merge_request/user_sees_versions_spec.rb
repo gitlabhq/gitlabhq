@@ -129,8 +129,8 @@ RSpec.describe 'Merge request > User sees versions', :js do
       )
       expect(page).to have_content '4 files'
 
-      additions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group .js-file-addition-line').text
-      deletions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group .js-file-deletion-line').text
+      additions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group [data-testid="js-file-addition-line"]').text
+      deletions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group [data-testid="js-file-deletion-line"]').text
 
       expect(additions_content).to eq '15'
       expect(deletions_content).to eq '6'
@@ -152,8 +152,8 @@ RSpec.describe 'Merge request > User sees versions', :js do
     end
 
     it 'show diff between new and old version' do
-      additions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group .js-file-addition-line').text
-      deletions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group .js-file-deletion-line').text
+      additions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group [data-testid="js-file-addition-line"]').text
+      deletions_content = page.find('.diff-stats.is-compare-versions-header .diff-stats-group [data-testid="js-file-deletion-line"]').text
 
       expect(page).to have_content '4 files'
       expect(additions_content).to eq '15'

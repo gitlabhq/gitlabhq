@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User views branches" do
+RSpec.describe "User views branches", :js do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.owner }
 
@@ -10,15 +10,22 @@ RSpec.describe "User views branches" do
     sign_in(user)
   end
 
-  context "all branches" do
+  context "all branches", :js do
     before do
       visit(project_branches_path(project))
+      branch_search = find('input[data-testid="branch-search"]')
+      branch_search.set('master')
+      branch_search.native.send_keys(:enter)
     end
 
     it "shows branches" do
       expect(page).to have_content("Branches").and have_content("master")
 
       expect(page.all(".graph-side")).to all( have_content(/\d+/) )
+    end
+
+    it "displays a disabled button with a tooltip for the default branch that cannot be deleted", :js do
+      expect(page).to have_button('The default branch cannot be deleted', disabled: true)
     end
   end
 

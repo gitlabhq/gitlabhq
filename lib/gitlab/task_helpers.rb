@@ -61,7 +61,7 @@ module Gitlab
     def prompt(message, choices = nil)
       begin
         print(message)
-        answer = STDIN.gets.chomp
+        answer = $stdin.gets.chomp
       end while choices.present? && !choices.include?(answer)
       answer
     end
@@ -70,12 +70,12 @@ module Gitlab
     #
     # message - custom message to display before input
     def prompt_for_password(message = 'Enter password: ')
-      unless STDIN.tty?
+      unless $stdin.tty?
         print(message)
-        return STDIN.gets.chomp
+        return $stdin.gets.chomp
       end
 
-      STDIN.getpass(message)
+      $stdin.getpass(message)
     end
 
     # Runs the given command and matches the output against the given pattern

@@ -12,7 +12,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when no head pipeline' do
       it 'return status using CiService' do
-        ci_service = double(MockCiService)
+        ci_service = double(Integrations::MockCi)
         ci_status = double
 
         allow(resource.source_project)

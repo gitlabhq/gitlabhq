@@ -181,7 +181,7 @@ RSpec.describe Operations::FeatureFlag do
     end
 
     context 'when the feature flag is active and all scopes are inactive' do
-      let!(:feature_flag) { create(:operations_feature_flag, active: true) }
+      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, active: true) }
 
       it 'returns the flag' do
         feature_flag.default_scope.update!(active: false)
@@ -199,7 +199,7 @@ RSpec.describe Operations::FeatureFlag do
     end
 
     context 'when the feature flag is inactive and all scopes are active' do
-      let!(:feature_flag) { create(:operations_feature_flag, active: false) }
+      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, active: false) }
 
       it 'does not return the flag' do
         feature_flag.default_scope.update!(active: true)
@@ -221,7 +221,7 @@ RSpec.describe Operations::FeatureFlag do
     end
 
     context 'when the feature flag is active and all scopes are inactive' do
-      let!(:feature_flag) { create(:operations_feature_flag, active: true) }
+      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, active: true) }
 
       it 'does not return the flag' do
         feature_flag.default_scope.update!(active: false)
@@ -239,7 +239,7 @@ RSpec.describe Operations::FeatureFlag do
     end
 
     context 'when the feature flag is inactive and all scopes are active' do
-      let!(:feature_flag) { create(:operations_feature_flag, active: false) }
+      let!(:feature_flag) { create(:operations_feature_flag, :legacy_flag, active: false) }
 
       it 'returns the flag' do
         feature_flag.default_scope.update!(active: true)

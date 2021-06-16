@@ -131,11 +131,50 @@ module Gitlab
           final_delay
         end
 
+        # Requeue pending jobs previously queued with #queue_background_migration_jobs_by_range_at_intervals
+        #
+        # This method is useful to schedule jobs that had previously failed.
+        #
+        # job_class_name - The background migration job class as a string
+        # delay_interval - The duration between each job's scheduled time
+        # batch_size - The maximum number of jobs to fetch to memory from the database.
+        def requeue_background_migration_jobs_by_range_at_intervals(job_class_name, delay_interval, batch_size: BATCH_SIZE, initial_delay: 0)
+          # To not overload the worker too much we enforce a minimum interval both
+          # when scheduling and performing jobs.
+          delay_interval = [delay_interval, BackgroundMigrationWorker.minimum_interval].max
+
+          final_delay = 0
+          job_counter = 0
+
+          jobs = Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: job_class_name)
+          jobs.each_batch(of: batch_size) do |job_batch|
+            job_batch.each do |job|
+              final_delay = initial_delay + delay_interval * job_counter
+
+              migrate_in(final_delay, job_class_name, job.arguments)
+
+              job_counter += 1
+            end
+          end
+
+          duration = initial_delay + delay_interval * job_counter
+          say <<~SAY
+            Scheduled #{job_counter} #{job_class_name} jobs with an interval of #{delay_interval} seconds.
+
+            The migration is expected to take at least #{duration} seconds. Expect all jobs to have completed after #{Time.zone.now + duration}."
+          SAY
+
+          duration
+        end
+
         # Creates a batched background migration for the given table. A batched migration runs one job
         # at a time, computing the bounds of the next batch based on the current migration settings and the previous
         # batch bounds. Each job's execution status is tracked in the database as the migration runs. The given job
         # class must be present in the Gitlab::BackgroundMigration module, and the batch class (if specified) must be
         # present in the Gitlab::BackgroundMigration::BatchingStrategies module.
+        #
+        # If migration with same job_class_name, table_name, column_name, and job_aruments already exists, this helper
+        # will log an warning and not create a new one.
         #
         # job_class_name - The background migration job class as a string
         # batch_table_name - The name of the table the migration will batch over
@@ -180,6 +219,13 @@ module Gitlab
           sub_batch_size: SUB_BATCH_SIZE
         )
 
+          if Gitlab::Database::BackgroundMigration::BatchedMigration.for_configuration(job_class_name, batch_table_name, batch_column_name, job_arguments).exists?
+            Gitlab::AppLogger.warn "Batched background migration not enqueued because it already exists: " \
+              "job_class_name: #{job_class_name}, table_name: #{batch_table_name}, column_name: #{batch_column_name}, " \
+              "job_arguments: #{job_arguments.inspect}"
+            return
+          end
+
           job_interval = BATCH_MIN_DELAY if job_interval < BATCH_MIN_DELAY
 
           batch_max_value ||= connection.select_value(<<~SQL)
@@ -194,13 +240,13 @@ module Gitlab
             job_class_name: job_class_name,
             table_name: batch_table_name,
             column_name: batch_column_name,
+            job_arguments: job_arguments,
             interval: job_interval,
             min_value: batch_min_value,
             max_value: batch_max_value,
             batch_class_name: batch_class_name,
             batch_size: batch_size,
             sub_batch_size: sub_batch_size,
-            job_arguments: job_arguments,
             status: migration_status)
 
           # This guard is necessary since #total_tuple_count was only introduced schema-wise,

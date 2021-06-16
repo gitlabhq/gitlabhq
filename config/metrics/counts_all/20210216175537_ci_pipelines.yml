@@ -3,7 +3,7 @@ key_path: usage_activity_by_stage.verify.ci_pipelines
 description: Distinct Users triggering Total pipelines
 product_section: ops
 product_stage: verify
-product_group: group::continuous integration
+product_group: group::pipeline execution
 product_category: continuous_integration
 value_type: number
 status: data_available

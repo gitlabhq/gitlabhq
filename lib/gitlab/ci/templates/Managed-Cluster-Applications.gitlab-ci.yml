@@ -1,6 +1,21 @@
+################################################################################
+# WARNING
+################################################################################
+#
+# This template is DEPRECATED and scheduled for removal in GitLab 15.0
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/333610 for more context.
+#
+# To get started with a Cluster Management Project, we instead recommend
+# using the updated project template:
+#
+# - Documentation: https://docs.gitlab.com/ee/user/clusters/management_project_template.html
+# - Source code: https://gitlab.com/gitlab-org/project-templates/cluster-management/
+#
+################################################################################
+
 apply:
   stage: deploy
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.40.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.43.1"
   environment:
     name: production
   variables:
@@ -9,11 +24,9 @@ apply:
   script:
     - gitlab-managed-apps /usr/local/share/gitlab-managed-apps/helmfile.yaml
   only:
-    refs:
-      - master
+    variables:
+      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   artifacts:
-    reports:
-      cluster_applications: gl-cluster-applications.json
     when: on_failure
     paths:
       - tiller.log

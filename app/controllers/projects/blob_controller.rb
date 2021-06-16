@@ -39,6 +39,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:consolidated_edit_button, @project, default_enabled: :yaml)
   end
 
   def new
@@ -92,7 +93,7 @@ class Projects::BlobController < Projects::ApplicationController
     @blob.load_all_data!
     diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3', include_diff_info: true)
     diff_lines = diffy.diff.scan(/.*\n/)[2..-1]
-    diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines)
+    diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines).to_a
     @diff_lines = Gitlab::Diff::Highlight.new(diff_lines, repository: @repository).highlight
 
     render layout: false

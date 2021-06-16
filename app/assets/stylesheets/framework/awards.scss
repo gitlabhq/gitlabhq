@@ -255,27 +255,9 @@
   // This forces the height and width of the inner content to match
   // other gl-buttons despite all child elements being set to
   // `position:absolute`
-  &::after {
-    content: '\a0';
-    display: block !important;
-    width: 1em;
-    color: transparent;
-  }
+
 
   .reaction-control-icon {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-
-    // center the icon vertically and horizontally within the button
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    @include transition(opacity, transform);
-
     .gl-icon {
       height: $default-icon-size;
       width: $default-icon-size;
@@ -283,32 +265,26 @@
   }
 
   .reaction-control-icon-neutral {
-    opacity: 1;
+    display: flex;
   }
 
   .reaction-control-icon-positive,
   .reaction-control-icon-super-positive {
-    opacity: 0;
+    display: none;
   }
 
   &:hover,
   &.active,
   &:active,
   &.is-active {
-    // extra specificty added to override another selector
-    .reaction-control-icon .gl-icon {
-      color: $blue-500;
-      transform: scale(1.15);
-    }
-
     .reaction-control-icon-neutral {
-      opacity: 0;
+      display: none;
     }
   }
 
   &:hover {
     .reaction-control-icon-positive {
-      opacity: 1;
+      display: flex;
     }
   }
 
@@ -316,11 +292,11 @@
   &:active,
   &.is-active {
     .reaction-control-icon-positive {
-      opacity: 0;
+      display: none;
     }
 
     .reaction-control-icon-super-positive {
-      opacity: 1;
+      display: flex;
     }
   }
 
@@ -336,17 +312,13 @@
       }
 
       .reaction-control-icon-neutral {
-        opacity: 1;
+        display: flex;
       }
 
       .reaction-control-icon-positive,
       .reaction-control-icon-super-positive {
-        opacity: 0;
+        display: none;
       }
     }
   }
-}
-
-.awards .is-active {
-  box-shadow: inset 0 0 0 1px $blue-200;
 }

@@ -70,20 +70,21 @@ RSpec.describe Gitlab do
   end
 
   describe '.com?' do
-    it 'is true when on GitLab.com' do
-      stub_config_setting(url: 'https://gitlab.com')
+    it "is true when on #{Gitlab::Saas.com_url}" do
+      stub_config_setting(url: Gitlab::Saas.com_url)
 
       expect(described_class.com?).to eq true
     end
 
-    it 'is true when on staging' do
-      stub_config_setting(url: 'https://staging.gitlab.com')
+    it "is true when on #{Gitlab::Saas.staging_com_url}" do
+      stub_config_setting(url: Gitlab::Saas.staging_com_url)
 
       expect(described_class.com?).to eq true
     end
 
     it 'is true when on other gitlab subdomain' do
-      stub_config_setting(url: 'https://example.gitlab.com')
+      url_with_subdomain = Gitlab::Saas.com_url.gsub('https://', 'https://example.')
+      stub_config_setting(url: url_with_subdomain)
 
       expect(described_class.com?).to eq true
     end
@@ -118,14 +119,14 @@ RSpec.describe Gitlab do
   describe '.staging?' do
     subject { described_class.staging? }
 
-    it 'is false when on GitLab.com' do
-      stub_config_setting(url: 'https://gitlab.com')
+    it "is false when on #{Gitlab::Saas.com_url}" do
+      stub_config_setting(url: Gitlab::Saas.com_url)
 
       expect(subject).to eq false
     end
 
-    it 'is true when on staging' do
-      stub_config_setting(url: 'https://staging.gitlab.com')
+    it "is true when on #{Gitlab::Saas.staging_com_url}" do
+      stub_config_setting(url: Gitlab::Saas.staging_com_url)
 
       expect(subject).to eq true
     end

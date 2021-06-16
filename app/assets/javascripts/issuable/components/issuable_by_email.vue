@@ -91,7 +91,7 @@ export default {
 
 <template>
   <div>
-    <gl-button v-gl-modal="$options.modalId" variant="link" data-testid="issuable-email-modal-btn"
+    <gl-button v-gl-modal="$options.modalId" variant="link"
       ><gl-sprintf :message="__('Email a new %{name} to this project')"
         ><template #name>{{ issuableName }}</template></gl-sprintf
       ></gl-button
@@ -122,7 +122,6 @@ export default {
             :title="$options.i18n.sendEmail"
             :aria-label="$options.i18n.sendEmail"
             icon="mail"
-            data-testid="mail-to-btn"
           />
         </template>
       </gl-form-input-group>
@@ -146,22 +145,23 @@ export default {
         <gl-sprintf
           :message="
             __(
-              'This is a private email address %{helpIcon} generated just for you. Anyone who gets ahold of it can create issues or merge requests as if they were you. You should %{resetLinkStart}reset it%{resetLinkEnd} if that ever happens.',
+              'This is a private email address %{helpIcon} generated just for you. Anyone who has it can create issues or merge requests as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}.',
             )
           "
         >
           <template #helpIcon>
-            <gl-link :href="emailsHelpPagePath" target="_blank"
-              ><gl-icon class="gl-text-blue-600" name="question-o"
-            /></gl-link>
+            <gl-link :href="emailsHelpPagePath" target="_blank">
+              <gl-icon class="gl-text-blue-600" name="question-o" />
+            </gl-link>
           </template>
           <template #resetLink="{ content }">
             <gl-button
               variant="link"
-              data-testid="incoming-email-token-reset"
+              data-testid="reset_email_token_link"
               @click="resetIncomingEmailToken"
-              >{{ content }}</gl-button
             >
+              {{ content }}
+            </gl-button>
           </template>
         </gl-sprintf>
       </p>

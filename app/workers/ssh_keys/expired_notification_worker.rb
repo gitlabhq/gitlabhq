@@ -11,20 +11,37 @@ module SshKeys
     tags :exclude_from_kubernetes
     idempotent!
 
+    BATCH_SIZE = 500
+
+    # rubocop: disable CodeReuse/ActiveRecord
     def perform
-      return unless ::Feature.enabled?(:ssh_key_expiration_email_notification, default_enabled: :yaml)
+      order = Gitlab::Pagination::Keyset::Order.build([
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'expires_at_utc',
+          order_expression: Arel.sql("date(expires_at AT TIME ZONE 'UTC')").asc,
+          nullable: :not_nullable,
+          distinct: false,
+          add_to_projections: true
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: Key.arel_table[:id].asc
+        )
+      ])
 
-      # rubocop:disable CodeReuse/ActiveRecord
-      User.with_ssh_key_expired_today.find_each(batch_size: 10_000) do |user|
-        with_context(user: user) do
-          Gitlab::AppLogger.info "#{self.class}: Notifying User #{user.id} about expired ssh key(s)"
+      scope = Key.expired_and_not_notified.order(order)
 
-          keys = user.expired_today_and_unnotified_keys
+      iterator = Gitlab::Pagination::Keyset::Iterator.new(scope: scope, use_union_optimization: true)
+      iterator.each_batch(of: BATCH_SIZE) do |relation|
+        users = User.where(id: relation.map(&:user_id)) # Keyset pagination will load the rows
 
-          Keys::ExpiryNotificationService.new(user, { keys: keys, expiring_soon: false }).execute
+        users.each do |user|
+          with_context(user: user) do
+            Keys::ExpiryNotificationService.new(user, { keys: user.expired_and_unnotified_keys, expiring_soon: false }).execute
+          end
         end
-        # rubocop:enable CodeReuse/ActiveRecord
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

@@ -33,7 +33,7 @@ cd <destination folder>
 to the default branch should be avoided unless your project is very small and you're the
 only person working on it.
 
-You can also [switch to an existing branch](start-using-git.md#work-on-an-existing-branch)
+You can also [switch to an existing branch](start-using-git.md#switch-to-a-branch)
 if you have one already.
 
 Using your standard tool for copying files (for example, Finder in macOS, or File Explorer

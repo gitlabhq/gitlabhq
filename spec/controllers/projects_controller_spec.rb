@@ -7,7 +7,7 @@ RSpec.describe ProjectsController do
   include ProjectForksHelper
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project, reload: true) { create(:project, service_desk_enabled: false) }
+  let_it_be(:project, reload: true) { create(:project, :with_export, service_desk_enabled: false) }
   let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
 
@@ -243,9 +243,8 @@ RSpec.describe ProjectsController do
             get :show, params: { namespace_id: empty_project.namespace, id: empty_project }
           end
 
-          it "renders the empty project view and records the experiment user", :aggregate_failures do
+          it "renders the empty project view" do
             expect(response).to render_template('empty')
-            expect(controller).to have_received(:record_experiment_user).with(:invite_members_empty_project_version_a)
           end
         end
       end
@@ -1350,7 +1349,7 @@ RSpec.describe ProjectsController do
       end
     end
 
-    describe '#download_export' do
+    describe '#download_export', :clean_gitlab_redis_cache do
       let(:action) { :download_export }
 
       context 'object storage enabled' do
@@ -1358,6 +1357,17 @@ RSpec.describe ProjectsController do
           it 'returns 302' do
             get action, params: { namespace_id: project.namespace, id: project }
 
+            expect(response).to have_gitlab_http_status(:found)
+          end
+        end
+
+        context 'when project export file is absent' do
+          it 'alerts the user and returns 302' do
+            project.export_file.file.delete
+
+            get action, params: { namespace_id: project.namespace, id: project }
+
+            expect(flash[:alert]).to include('file containing the export is not available yet')
             expect(response).to have_gitlab_http_status(:found)
           end
         end

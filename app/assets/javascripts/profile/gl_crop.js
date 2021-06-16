@@ -114,7 +114,9 @@ import { loadCSSFile } from '../lib/utils/css_utils';
     }
 
     onModalHide() {
-      return this.modalCropImg.attr('src', '').cropper('destroy');
+      this.modalCropImg.attr('src', '').cropper('destroy');
+      const modalElement = document.querySelector('.modal-profile-crop');
+      if (modalElement) modalElement.remove();
     }
 
     onUploadImageBtnClick(e) {

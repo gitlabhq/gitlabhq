@@ -328,34 +328,8 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
-  describe 'validates if file format is supported' do
-    subject { artifact }
-
-    let(:artifact) { build(:ci_job_artifact, file_type: :license_management, file_format: :raw) }
-
-    context 'when license_management is supported' do
-      before do
-        stub_feature_flags(drop_license_management_artifact: false)
-      end
-
-      it { is_expected.to be_valid }
-    end
-
-    context 'when license_management is not supported' do
-      before do
-        stub_feature_flags(drop_license_management_artifact: true)
-      end
-
-      it { is_expected.not_to be_valid }
-    end
-  end
-
   describe 'validates file format' do
     subject { artifact }
-
-    before do
-      stub_feature_flags(drop_license_management_artifact: false)
-    end
 
     described_class::TYPE_AND_FORMAT_PAIRS.except(:trace).each do |file_type, file_format|
       context "when #{file_type} type with #{file_format} format" do

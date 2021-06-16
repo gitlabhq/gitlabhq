@@ -49,6 +49,8 @@ module Types
           object.maven_metadatum
         when 'nuget'
           object.nuget_metadatum
+        when 'pypi'
+          object.pypi_metadatum
         else
           nil
         end

@@ -9,25 +9,28 @@ type: index
 
 As an administrator of a GitLab self-managed instance, you can manage the behavior of your deployment. To do so, select **Admin Area > Settings**.
 
-The admin area is not accessible on GitLab.com, and settings can only be changed by the
+The Admin Area is not accessible on GitLab.com, and settings can only be changed by the
 GitLab.com administrators. See the [GitLab.com settings](../../gitlab_com/index.md)
 documentation for all current settings and limits on the GitLab.com instance.
 
 ## General
 
-Access the default page for admin area settings by navigating to **Admin Area > Settings > General**:
+To access the default page for Admin Area settings:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
 
 | Option | Description |
 | ------ | ----------- |
 | [Visibility and access controls](visibility_and_access_controls.md) | Set default and restrict visibility levels. Configure import sources and Git access protocol. |
-| [Account and limit](account_and_limit_settings.md) **(STARTER)** | Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan. |
+| [Account and limit](account_and_limit_settings.md) | Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan. |
 | [Diff limits](../diff_limits.md) | Diff content limits. |
 | [Sign-up restrictions](sign_up_restrictions.md) | Configure the way a user creates a new account. |
 | [Sign in restrictions](sign_in_restrictions.md) | Set requirements for a user to sign in. Enable mandatory two-factor authentication. |
 | [Terms of Service and Privacy Policy](terms.md) | Include a Terms of Service agreement and Privacy Policy that all users must accept. |
 | [External Authentication](external_authorization.md#configuration) | External Classification Policy Authorization |
 | [Web terminal](../../../administration/integration/terminal.md#limiting-websocket-connection-time) | Set max session time for web terminal. |
-| [Web IDE](../../project/web_ide/index.md#enabling-live-preview) | Manage Web IDE Features. |
+| [Web IDE](../../project/web_ide/index.md#enable-live-preview) | Manage Web IDE features. |
 | [FLoC](floc.md) | Enable or disable [Federated Learning of Cohorts (FLoC)](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) tracking. |
 
 ## Integrations
@@ -116,6 +119,11 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | [Gitaly timeouts](gitaly_timeouts.md) | Configure Gitaly timeouts. |
 | Localization | [Default first day of the week](../../profile/preferences.md) and [Time tracking](../../project/time_tracking.md#limit-displayed-units-to-hours). |
 
-NOTE:
-You can change the [Default first day of the week](../../profile/preferences.md) for the entire GitLab instance
-in the **Localization** section of **Admin Area > Settings > Preferences**.
+### Default first day of the week
+
+You can change the [Default first day of the week](../../profile/preferences.md)
+for the entire GitLab instance:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Preferences**.
+1. Scroll to the **Localization** section, and select your desired first day of the week.

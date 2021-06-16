@@ -1,0 +1,17 @@
+#import "~/graphql_shared/fragments/alert_detail_item.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+query alertDetails($fullPath: ID!, $alertId: String) {
+  project(fullPath: $fullPath) {
+    alertManagementAlerts(iid: $alertId) {
+      nodes {
+        ...AlertDetailItem
+        assignees {
+          nodes {
+            ...User
+          }
+        }
+      }
+    }
+  }
+}

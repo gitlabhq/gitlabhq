@@ -10,10 +10,11 @@ RSpec.describe API::RubygemPackages do
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:user) { personal_access_token.user }
-  let_it_be(:job) { create(:ci_build, :running, user: user) }
+  let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
   let_it_be(:headers) { {} }
+  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
 
   let(:tokens) do
     {
@@ -162,6 +163,7 @@ RSpec.describe API::RubygemPackages do
       with_them do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:headers) { user_role == :anonymous ? {} : { 'HTTP_AUTHORIZATION' => token } }
+        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
 
         before do
           project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
@@ -304,6 +306,16 @@ RSpec.describe API::RubygemPackages do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:user_headers) { user_role == :anonymous ? {} : { 'HTTP_AUTHORIZATION' => token } }
         let(:headers) { user_headers.merge(workhorse_headers) }
+        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: snowplow_user } }
+        let(:snowplow_user) do
+          if token_type == :deploy_token
+            deploy_token
+          elsif token_type == :job_token
+            job.user
+          else
+            user
+          end
+        end
 
         before do
           project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))

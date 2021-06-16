@@ -8,6 +8,5 @@
   = render 'devise/shared/signup_box',
     url: registration_path(resource_name),
     button_text: _('Register'),
-    show_omniauth_providers: omniauth_enabled? && button_based_providers_enabled?,
-    suggestion_path: nil
+    show_omniauth_providers: omniauth_enabled? && button_based_providers_enabled?
   = render 'devise/shared/sign_in_link'

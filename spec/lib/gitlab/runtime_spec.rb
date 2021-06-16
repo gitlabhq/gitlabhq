@@ -99,25 +99,6 @@ RSpec.describe Gitlab::Runtime do
     end
   end
 
-  context "unicorn" do
-    before do
-      stub_const('::Unicorn', Module.new)
-      stub_const('::Unicorn::HttpServer', Class.new)
-      stub_env('ACTION_CABLE_IN_APP', 'false')
-    end
-
-    it_behaves_like "valid runtime", :unicorn, 1
-
-    context "when ActionCable in-app mode is enabled" do
-      before do
-        stub_env('ACTION_CABLE_IN_APP', 'true')
-        stub_env('ACTION_CABLE_WORKER_POOL_SIZE', '3')
-      end
-
-      it_behaves_like "valid runtime", :unicorn, 4
-    end
-  end
-
   context "sidekiq" do
     let(:sidekiq_type) { double('::Sidekiq') }
 

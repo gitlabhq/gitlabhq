@@ -5,7 +5,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import ProjectSelect from '~/boards/components/project_select_deprecated.vue';
 import { ListType } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import httpStatus from '~/lib/utils/http_status';
 import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
 
@@ -237,8 +237,10 @@ describe('ProjectSelect component', () => {
 
         await searchForProject('foobar');
 
-        expect(flash).toHaveBeenCalledTimes(1);
-        expect(flash).toHaveBeenCalledWith('Something went wrong while fetching projects');
+        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createFlash).toHaveBeenCalledWith({
+          message: 'Something went wrong while fetching projects',
+        });
       });
 
       describe('with non-empty search result', () => {

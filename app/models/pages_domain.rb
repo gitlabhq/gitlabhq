@@ -50,6 +50,8 @@ class PagesDomain < ApplicationRecord
   after_update :update_daemon, if: :saved_change_to_pages_config?
   after_destroy :update_daemon
 
+  scope :for_project, ->(project) { where(project: project) }
+
   scope :enabled, -> { where('enabled_until >= ?', Time.current ) }
   scope :needs_verification, -> do
     verified_at = arel_table[:verified_at]
@@ -224,16 +226,6 @@ class PagesDomain < ApplicationRecord
 
   def pages_deployed?
     return false unless project
-
-    # TODO: remove once `pages_metadatum` is migrated
-    # https://gitlab.com/gitlab-org/gitlab/issues/33106
-    unless project.pages_metadatum
-      Gitlab::BackgroundMigration::MigratePagesMetadata
-        .new
-        .perform_on_relation(Project.where(id: project_id))
-
-      project.reset
-    end
 
     project.pages_metadatum&.deployed?
   end

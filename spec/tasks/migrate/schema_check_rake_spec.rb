@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rake'
 
-RSpec.describe 'schema_version_check rake task' do
+RSpec.describe 'schema_version_check rake task', :silence_stdout do
   include StubENV
 
   before :all do

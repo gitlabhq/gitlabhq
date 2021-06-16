@@ -1,4 +1,4 @@
-.tree-ref-container
+.tree-ref-container.gl-display-flex.mb-2.mb-md-0
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'tree', path: @path, show_create: true
 
@@ -16,5 +16,5 @@
     .project-clone-holder.d-none.d-md-inline-block>
       = render "projects/buttons/clone", dropdown_class: 'dropdown-menu-right'
 
-  .project-clone-holder.d-block.d-md-none.mt-sm-2.mt-md-0.ml-sm-2>
+  .project-clone-holder.d-block.d-md-none.mt-sm-2.mt-md-0.ml-md-2>
     = render "shared/mobile_clone_panel"

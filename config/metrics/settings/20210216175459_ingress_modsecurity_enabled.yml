@@ -6,7 +6,8 @@ product_stage: protect
 product_group: group::container security
 product_category: web_firewall
 value_type: boolean
-status: deprecated
+status: removed
+milestone_removed: 14.0
 time_frame: none
 data_source: system
 distribution:

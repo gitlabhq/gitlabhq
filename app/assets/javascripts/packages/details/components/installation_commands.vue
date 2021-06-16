@@ -1,5 +1,6 @@
 <script>
-import { PackageType } from '../../shared/constants';
+import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/components/terraform_installation.vue';
+import { PackageType, TERRAFORM_PACKAGE_TYPE } from '../../shared/constants';
 import ComposerInstallation from './composer_installation.vue';
 import ConanInstallation from './conan_installation.vue';
 import MavenInstallation from './maven_installation.vue';
@@ -16,6 +17,7 @@ export default {
     [PackageType.NUGET]: NugetInstallation,
     [PackageType.PYPI]: PypiInstallation,
     [PackageType.COMPOSER]: ComposerInstallation,
+    [TERRAFORM_PACKAGE_TYPE]: TerraformInstallation,
   },
   props: {
     packageEntity: {

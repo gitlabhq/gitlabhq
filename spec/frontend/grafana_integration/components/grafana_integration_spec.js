@@ -1,7 +1,8 @@
 import { GlButton } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import createFlash from '~/flash';
 import GrafanaIntegration from '~/grafana_integration/components/grafana_integration.vue';
 import { createStore } from '~/grafana_integration/store';
 import axios from '~/lib/utils/axios_utils';
@@ -51,8 +52,7 @@ describe('grafana integration component', () => {
     it('renders as an expand button by default', () => {
       wrapper = shallowMount(GrafanaIntegration, { store });
 
-      const button = wrapper.find(GlButton);
-
+      const button = wrapper.findComponent(GlButton);
       expect(button.text()).toBe('Expand');
     });
   });
@@ -70,6 +70,7 @@ describe('grafana integration component', () => {
   describe('form', () => {
     beforeEach(() => {
       jest.spyOn(axios, 'patch').mockImplementation();
+      wrapper = mountExtended(GrafanaIntegration, { store });
     });
 
     afterEach(() => {
@@ -77,7 +78,7 @@ describe('grafana integration component', () => {
     });
 
     describe('submit button', () => {
-      const findSubmitButton = () => wrapper.find('.settings-content form').find(GlButton);
+      const findSubmitButton = () => wrapper.findByTestId('save-grafana-settings-button');
 
       const endpointRequest = [
         operationsSettingsEndpoint,
@@ -93,9 +94,7 @@ describe('grafana integration component', () => {
       ];
 
       it('submits form on click', () => {
-        wrapper = mount(GrafanaIntegration, { store });
         axios.patch.mockResolvedValue();
-
         findSubmitButton(wrapper).trigger('click');
 
         expect(axios.patch).toHaveBeenCalledWith(...endpointRequest);
@@ -104,7 +103,6 @@ describe('grafana integration component', () => {
 
       it('creates flash banner on error', () => {
         const message = 'mockErrorMessage';
-        wrapper = mount(GrafanaIntegration, { store });
         axios.patch.mockRejectedValue({ response: { data: { message } } });
 
         findSubmitButton().trigger('click');
@@ -114,10 +112,10 @@ describe('grafana integration component', () => {
           .$nextTick()
           .then(jest.runAllTicks)
           .then(() =>
-            expect(createFlash).toHaveBeenCalledWith(
-              `There was an error saving your changes. ${message}`,
-              'alert',
-            ),
+            expect(createFlash).toHaveBeenCalledWith({
+              message: `There was an error saving your changes. ${message}`,
+              type: 'alert',
+            }),
           );
       });
     });

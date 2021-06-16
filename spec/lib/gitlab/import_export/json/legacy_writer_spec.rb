@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::JSON::LegacyWriter do
+RSpec.describe Gitlab::ImportExport::Json::LegacyWriter do
   let(:path) { "#{Dir.tmpdir}/legacy_writer_spec/test.json" }
 
   subject do

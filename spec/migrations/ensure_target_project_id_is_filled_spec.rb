@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200831065705_ensure_target_project_id_is_filled.rb')
+require_migration!
 
 RSpec.describe EnsureTargetProjectIdIsFilled, schema: 20200827085101 do
   let_it_be(:namespaces) { table(:namespaces) }

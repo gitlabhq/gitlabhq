@@ -10,6 +10,8 @@ import {
   UNAVAILABLE_USER_FEATURE_TEXT,
 } from '~/packages_and_registries/settings/project/constants';
 import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
+import CleanupPolicyEnabledAlert from '~/packages_and_registries/shared/components/cleanup_policy_enabled_alert.vue';
+import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 
 import {
   expirationPolicyPayload,
@@ -28,15 +30,19 @@ describe('Registry Settings App', () => {
     isAdmin: false,
     adminSettingsPath: 'settingsPath',
     enableHistoricEntries: false,
+    helpPagePath: 'helpPagePath',
+    showCleanupPolicyOnAlert: false,
   };
 
   const findSettingsComponent = () => wrapper.find(SettingsForm);
   const findAlert = () => wrapper.find(GlAlert);
+  const findCleanupAlert = () => wrapper.findComponent(CleanupPolicyEnabledAlert);
 
   const mountComponent = (provide = defaultProvidedValues, config) => {
     wrapper = shallowMount(component, {
       stubs: {
         GlSprintf,
+        SettingsBlock,
       },
       mocks: {
         $toast: {
@@ -64,6 +70,26 @@ describe('Registry Settings App', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('cleanup is on alert', () => {
+    it('exist when showCleanupPolicyOnAlert is true and has the correct props', () => {
+      mountComponent({
+        ...defaultProvidedValues,
+        showCleanupPolicyOnAlert: true,
+      });
+
+      expect(findCleanupAlert().exists()).toBe(true);
+      expect(findCleanupAlert().props()).toMatchObject({
+        projectPath: 'path',
+      });
+    });
+
+    it('is hidden when showCleanupPolicyOnAlert is false', async () => {
+      mountComponent();
+
+      expect(findCleanupAlert().exists()).toBe(false);
+    });
   });
 
   describe('isEdited status', () => {

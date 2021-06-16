@@ -72,9 +72,6 @@ export default {
     importModalId() {
       return `${this.issuableType}-import-modal`;
     },
-    importButtonText() {
-      return this.showLabel ? this.$options.i18n.importIssuesText : null;
-    },
     importButtonTooltipText() {
       return this.showLabel ? null : this.$options.i18n.importIssuesText;
     },
@@ -87,32 +84,28 @@ export default {
 
 <template>
   <div :class="containerClass">
-    <gl-button-group>
+    <gl-button-group class="gl-w-full">
       <gl-button
         v-if="showExportButton"
-        v-gl-tooltip.hover="$options.i18n.exportAsCsvButtonText"
+        v-gl-tooltip="$options.i18n.exportAsCsvButtonText"
         v-gl-modal="exportModalId"
         icon="export"
         :aria-label="$options.i18n.exportAsCsvButtonText"
         data-qa-selector="export_as_csv_button"
-        data-testid="export-csv-button"
       />
       <gl-dropdown
         v-if="showImportButton"
-        v-gl-tooltip.hover="importButtonTooltipText"
+        v-gl-tooltip="importButtonTooltipText"
         data-qa-selector="import_issues_dropdown"
-        data-testid="import-csv-dropdown"
-        :text="importButtonText"
+        :text="$options.i18n.importIssuesText"
+        :text-sr-only="!showLabel"
         :icon="importButtonIcon"
       >
-        <gl-dropdown-item v-gl-modal="importModalId" data-testid="import-csv-link">{{
-          __('Import CSV')
-        }}</gl-dropdown-item>
+        <gl-dropdown-item v-gl-modal="importModalId">{{ __('Import CSV') }}</gl-dropdown-item>
         <gl-dropdown-item
           v-if="canEdit"
           :href="projectImportJiraPath"
           data-qa-selector="import_from_jira_link"
-          data-testid="import-from-jira-link"
           >{{ __('Import from Jira') }}</gl-dropdown-item
         >
       </gl-dropdown>

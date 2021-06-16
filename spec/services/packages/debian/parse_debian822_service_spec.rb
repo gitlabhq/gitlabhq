@@ -68,7 +68,7 @@ RSpec.describe Packages::Debian::ParseDebian822Service do
           'Architecture' => 'any',
           'Multi-Arch' => 'same',
           'Depends' => 'libsample0 (= ${binary:Version}), ${misc:Depends}',
-          'Description' => "Some mostly empty developpement files\nUsed in GitLab tests.\n\nTesting another paragraph."
+          'Description' => "Some mostly empty development files\nUsed in GitLab tests.\n\nTesting another paragraph."
         },
         'Package: libsample0' => {
           'Package' => 'libsample0',

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200128134110_migrate_commit_notes_mentions_to_db')
+require_migration!
 
 RSpec.describe MigrateCommitNotesMentionsToDb, :migration, :sidekiq do
   let(:users) { table(:users) }

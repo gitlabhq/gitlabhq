@@ -37,10 +37,10 @@ describe('MRWidgetMerged', () => {
           avatarUrl:
             'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
         },
-        mergedAt: 'Jan 24, 2018 1:02pm GMT+0000',
+        mergedAt: 'Jan 24, 2018 1:02pm UTC',
         readableMergedAt: '',
         closedBy: {},
-        closedAt: 'Jan 24, 2018 1:02pm GMT+0000',
+        closedAt: 'Jan 24, 2018 1:02pm UTC',
         readableClosedAt: '',
       },
       updatedAt: 'mergedUpdatedAt',
@@ -236,6 +236,6 @@ describe('MRWidgetMerged', () => {
   });
 
   it('should use mergedEvent mergedAt as tooltip title', () => {
-    expect(vm.$el.querySelector('time').getAttribute('title')).toBe('Jan 24, 2018 1:02pm GMT+0000');
+    expect(vm.$el.querySelector('time').getAttribute('title')).toBe('Jan 24, 2018 1:02pm UTC');
   });
 });

@@ -1,10 +1,10 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Jobs API
+# Jobs API **(FREE)**
 
 ## List project jobs
 
@@ -63,11 +63,11 @@ Example of response
     "pipeline": {
       "id": 6,
       "project_id": 1,
-      "ref": "master",
+      "ref": "main",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
     },
-    "ref": "master",
+    "ref": "main",
     "runner": null,
     "stage": "test",
     "status": "failed",
@@ -117,11 +117,11 @@ Example of response
     "pipeline": {
       "id": 6,
       "project_id": 1,
-      "ref": "master",
+      "ref": "main",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
     },
-    "ref": "master",
+    "ref": "main",
     "artifacts": [],
     "runner": null,
     "stage": "test",
@@ -198,11 +198,11 @@ Example of response
     "pipeline": {
       "id": 6,
       "project_id": 1,
-      "ref": "master",
+      "ref": "main",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
     },
-    "ref": "master",
+    "ref": "main",
     "artifacts": [],
     "runner": null,
     "stage": "test",
@@ -263,11 +263,11 @@ Example of response
     "pipeline": {
       "id": 6,
       "project_id": 1,
-      "ref": "master",
+      "ref": "main",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending"
     },
-    "ref": "master",
+    "ref": "main",
     "runner": null,
     "stage": "test",
     "status": "failed",
@@ -348,14 +348,14 @@ Example of response
     "pipeline": {
       "id": 6,
       "project_id": 1,
-      "ref": "master",
+      "ref": "main",
       "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
       "status": "pending",
       "created_at": "2015-12-24T15:50:16.123Z",
       "updated_at": "2015-12-24T18:00:44.432Z",
       "web_url": "https://example.com/foo/bar/pipelines/6"
     },
-    "ref": "master",
+    "ref": "main",
     "stage": "test",
     "status": "pending",
     "tag": false,
@@ -380,7 +380,7 @@ Example of response
     "downstream_pipeline": {
       "id": 5,
       "sha": "f62a4b2fb89754372a346f24659212eb8da13601",
-      "ref": "master",
+      "ref": "main",
       "status": "pending",
       "created_at": "2015-12-24T17:54:27.722Z",
       "updated_at": "2015-12-24T17:58:27.896Z",
@@ -433,11 +433,11 @@ Example of response
   "pipeline": {
     "id": 6,
     "project_id": 1,
-    "ref": "master",
+    "ref": "main",
     "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
     "status": "pending"
   },
-  "ref": "master",
+  "ref": "main",
   "artifacts": [],
   "runner": null,
   "stage": "test",
@@ -518,7 +518,7 @@ Example response:
     "id": 1,
     "project_id": 1,
     "sha": "b83d6e391c22777fca1ed3012fce84f633d7fed0",
-    "ref": "master",
+    "ref": "main",
     "status": "pending",
     "created_at": "2021-03-26T14:51:51.107Z",
     "updated_at": "2021-03-26T14:51:51.107Z",
@@ -590,11 +590,11 @@ Example of response
   "pipeline": {
     "id": 6,
     "project_id": 1,
-    "ref": "master",
+    "ref": "main",
     "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
     "status": "pending"
   },
-  "ref": "master",
+  "ref": "main",
   "artifacts": [],
   "runner": null,
   "stage": "test",
@@ -684,7 +684,7 @@ Example of response
   "queued_duration": 0.010,
   "id": 42,
   "name": "rubocop",
-  "ref": "master",
+  "ref": "main",
   "artifacts": [],
   "runner": null,
   "stage": "test",
@@ -734,7 +734,7 @@ Example of response
   "queued_duration": 0.010,
   "id": 42,
   "name": "rubocop",
-  "ref": "master",
+  "ref": "main",
   "artifacts": [],
   "runner": null,
   "stage": "test",
@@ -784,7 +784,7 @@ Example of response
   "download_url": null,
   "id": 42,
   "name": "rubocop",
-  "ref": "master",
+  "ref": "main",
   "artifacts": [],
   "runner": null,
   "stage": "test",
@@ -839,7 +839,7 @@ Example of response
   "queued_duration": 0.010,
   "id": 42,
   "name": "rubocop",
-  "ref": "master",
+  "ref": "main",
   "artifacts": [],
   "runner": null,
   "stage": "test",

@@ -15,7 +15,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
 
     visit new_group_path
 
-    find('#import-group-tab').click
+    click_link 'Import group'
   end
 
   context 'when the user provides valid credentials' do
@@ -24,7 +24,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
       pat = 'demo-pat'
       stub_path = 'stub-group'
       total = 37
-      stub_request(:get, "%{url}/api/v4/groups?page=1&per_page=20&top_level_only=true&min_access_level=40&search=" % { url: source_url }).to_return(
+      stub_request(:get, "%{url}/api/v4/groups?page=1&per_page=20&top_level_only=true&min_access_level=50&search=" % { url: source_url }).to_return(
         body: [{
           id: 2595438,
           web_url: 'https://gitlab.com/groups/auto-breakfast',

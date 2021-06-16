@@ -78,7 +78,7 @@ You should include a link for your new document in the global navigation (the li
 left side of the documentation website). To do so, open a second MR, against the
 [GitLab documentation repository](https://gitlab.com/gitlab-org/gitlab-docs/).
 
-We store our global navigation in the [`default-nav.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/content/_data/default-nav.yaml) file, in the
+We store our global navigation in the [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/navigation.yaml) file, in the
 `content/_data` subdirectory. You can find the GraphQL section under the
 following line:
 

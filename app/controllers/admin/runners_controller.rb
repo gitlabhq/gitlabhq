@@ -4,6 +4,9 @@ class Admin::RunnersController < Admin::ApplicationController
   include RunnerSetupScripts
 
   before_action :runner, except: [:index, :tag_list, :runner_setup_scripts]
+  before_action only: [:index] do
+    push_frontend_feature_flag(:runner_list_view_vue_ui, current_user, default_enabled: :yaml)
+  end
 
   feature_category :continuous_integration
 

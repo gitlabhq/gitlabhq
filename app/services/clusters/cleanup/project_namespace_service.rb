@@ -2,7 +2,7 @@
 
 module Clusters
   module Cleanup
-    class ProjectNamespaceService < BaseService
+    class ProjectNamespaceService < ::Clusters::Cleanup::BaseService
       KUBERNETES_NAMESPACE_BATCH_SIZE = 100
 
       def execute

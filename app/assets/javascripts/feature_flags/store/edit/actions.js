@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -55,7 +55,9 @@ export const receiveFeatureFlagSuccess = ({ commit }, response) =>
   commit(types.RECEIVE_FEATURE_FLAG_SUCCESS, response);
 export const receiveFeatureFlagError = ({ commit }) => {
   commit(types.RECEIVE_FEATURE_FLAG_ERROR);
-  createFlash(__('Something went wrong on our end. Please try again!'));
+  createFlash({
+    message: __('Something went wrong on our end. Please try again!'),
+  });
 };
 
 export const toggleActive = ({ commit }, active) => commit(types.TOGGLE_ACTIVE, active);

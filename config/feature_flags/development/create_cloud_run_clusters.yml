@@ -1,8 +1,0 @@
----
-name: create_cloud_run_clusters
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19063
-rollout_issue_url: 
-milestone: '12.5'
-type: development
-group: group::configure
-default_enabled: true

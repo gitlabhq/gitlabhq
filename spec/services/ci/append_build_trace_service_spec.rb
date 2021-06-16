@@ -44,7 +44,7 @@ RSpec.describe Ci::AppendBuildTraceService do
 
       expect(::Gitlab::ErrorTracking)
         .to receive(:log_exception)
-        .with(anything, hash_including(chunk_index: 0, chunk_store: 'redis'))
+        .with(anything, hash_including(chunk_index: 0, chunk_store: 'redis_trace_chunks'))
 
       result = described_class
         .new(build, content_range: '0-128')

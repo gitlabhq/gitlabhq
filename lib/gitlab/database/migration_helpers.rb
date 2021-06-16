@@ -5,7 +5,7 @@ module Gitlab
     module MigrationHelpers
       include Migrations::BackgroundMigrationHelpers
       include DynamicModelHelpers
-      include Migrations::RenameTableHelpers
+      include RenameTableHelpers
 
       # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
       MAX_IDENTIFIER_NAME_LENGTH = 63
@@ -1089,6 +1089,25 @@ module Gitlab
         ])
 
         execute("DELETE FROM batched_background_migrations WHERE #{conditions}")
+      end
+
+      def ensure_batched_background_migration_is_finished(job_class_name:, table_name:, column_name:, job_arguments:)
+        migration = Gitlab::Database::BackgroundMigration::BatchedMigration
+          .for_configuration(job_class_name, table_name, column_name, job_arguments).first
+
+        configuration = {
+          job_class_name: job_class_name,
+          table_name: table_name,
+          column_name: column_name,
+          job_arguments: job_arguments
+        }
+
+        if migration.nil?
+          Gitlab::AppLogger.warn "Could not find batched background migration for the given configuration: #{configuration}"
+        elsif !migration.finished?
+          raise "Expected batched background migration for the given configuration to be marked as 'finished', " \
+            "but it is '#{migration.status}': #{configuration}"
+        end
       end
 
       # Returns an Array containing the indexes for the given column

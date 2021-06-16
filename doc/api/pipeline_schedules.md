@@ -1,10 +1,10 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Pipeline schedules API
+# Pipeline schedules API **(FREE)**
 
 You can read more about [pipeline schedules](../ci/pipelines/schedules.md).
 
@@ -30,7 +30,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     {
         "id": 13,
         "description": "Test schedule pipeline",
-        "ref": "master",
+        "ref": "main",
         "cron": "* * * * *",
         "cron_timezone": "Asia/Tokyo",
         "next_run_at": "2017-05-19T13:41:00.000Z",
@@ -70,7 +70,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 {
     "id": 13,
     "description": "Test schedule pipeline",
-    "ref": "master",
+    "ref": "main",
     "cron": "* * * * *",
     "cron_timezone": "Asia/Tokyo",
     "next_run_at": "2017-05-19T13:41:00.000Z",
@@ -80,7 +80,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "last_pipeline": {
         "id": 332,
         "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
-        "ref": "master",
+        "ref": "main",
         "status": "pending"
     },
     "owner": {
@@ -119,14 +119,16 @@ POST /projects/:id/pipeline_schedules
 | `active`        | boolean        | no       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`). |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form description="Build packages" --form ref="master" --form cron="0 1 * * 5" --form cron_timezone="UTC" --form active="true" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form description="Build packages" --form ref="main" --form cron="0 1 * * 5" --form cron_timezone="UTC" \
+     --form active="true" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
 ```
 
 ```json
 {
     "id": 14,
     "description": "Build packages",
-    "ref": "master",
+    "ref": "main",
     "cron": "0 1 * * 5",
     "cron_timezone": "UTC",
     "next_run_at": "2017-05-26T01:00:00.000Z",
@@ -164,14 +166,15 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `active`               | boolean        | no       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated.            |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form cron="0 2 * * *" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form cron="0 2 * * *" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ```json
 {
     "id": 13,
     "description": "Test schedule pipeline",
-    "ref": "master",
+    "ref": "main",
     "cron": "0 2 * * *",
     "cron_timezone": "Asia/Tokyo",
     "next_run_at": "2017-05-19T17:00:00.000Z",
@@ -181,7 +184,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form cron="0 
     "last_pipeline": {
         "id": 332,
         "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
-        "ref": "master",
+        "ref": "main",
         "status": "pending"
     },
     "owner": {
@@ -216,7 +219,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 {
     "id": 13,
     "description": "Test schedule pipeline",
-    "ref": "master",
+    "ref": "main",
     "cron": "0 2 * * *",
     "cron_timezone": "Asia/Tokyo",
     "next_run_at": "2017-05-19T17:00:00.000Z",
@@ -226,7 +229,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
     "last_pipeline": {
         "id": 332,
         "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
-        "ref": "master",
+        "ref": "main",
         "status": "pending"
     },
     "owner": {
@@ -261,7 +264,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 {
     "id": 13,
     "description": "Test schedule pipeline",
-    "ref": "master",
+    "ref": "main",
     "cron": "0 2 * * *",
     "cron_timezone": "Asia/Tokyo",
     "next_run_at": "2017-05-19T17:00:00.000Z",
@@ -271,7 +274,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
     "last_pipeline": {
         "id": 332,
         "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
-        "ref": "master",
+        "ref": "main",
         "status": "pending"
     },
     "owner": {
@@ -317,8 +320,6 @@ Example response:
 
 ## Pipeline schedule variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34518) in GitLab 10.0.
-
 ## Create a new pipeline schedule variable
 
 Create a new variable of a pipeline schedule.
@@ -336,7 +337,8 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
 | `variable_type`        | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "key=NEW_VARIABLE" --form "value=new value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "key=NEW_VARIABLE" \
+     --form "value=new value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables"
 ```
 
 ```json
@@ -364,7 +366,9 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 | `variable_type`        | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "value=updated value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "value=updated value" \
+     "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
 ```
 
 ```json

@@ -464,6 +464,10 @@ class Issue < ApplicationRecord
     issue_type_supports?(:assignee)
   end
 
+  def supports_time_tracking?
+    issue_type_supports?(:time_tracking)
+  end
+
   def email_participants_emails
     issue_email_participants.pluck(:email)
   end
@@ -524,7 +528,7 @@ class Issue < ApplicationRecord
 
   def could_not_move(exception)
     # Symptom of running out of space - schedule rebalancing
-    IssueRebalancingWorker.perform_async(nil, project_id)
+    IssueRebalancingWorker.perform_async(nil, *project.self_or_root_group_ids)
   end
 end
 

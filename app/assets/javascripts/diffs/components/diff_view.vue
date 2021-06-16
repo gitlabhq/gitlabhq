@@ -3,6 +3,7 @@ import { mapGetters, mapState, mapActions } from 'vuex';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DiffCommentCell from './diff_comment_cell.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
 import DiffRow from './diff_row.vue';
@@ -14,7 +15,7 @@ export default {
     DiffCommentCell,
     DraftNote,
   },
-  mixins: [draftCommentsMixin],
+  mixins: [draftCommentsMixin, glFeatureFlagsMixin()],
   props: {
     diffFile: {
       type: Object,
@@ -43,6 +44,7 @@ export default {
   },
   computed: {
     ...mapGetters('diffs', ['commitId']),
+    ...mapState('diffs', ['codequalityDiff']),
     ...mapState({
       selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
       selectedCommentPositionHover: ({ notes }) => notes.selectedCommentPositionHover,
@@ -54,6 +56,12 @@ export default {
       return getCommentedLines(
         this.selectedCommentPosition || this.selectedCommentPositionHover,
         this.diffLines,
+      );
+    },
+    hasCodequalityChanges() {
+      return (
+        this.glFeatures.codequalityMrDiffAnnotations &&
+        this.codequalityDiff?.files?.[this.diffFile.file_path]?.length > 0
       );
     },
   },
@@ -98,7 +106,7 @@ export default {
 
 <template>
   <div
-    :class="[$options.userColorScheme, { inline }]"
+    :class="[$options.userColorScheme, { inline, 'with-codequality': hasCodequalityChanges }]"
     :data-commit-id="commitId"
     class="diff-grid diff-table code diff-wrap-lines js-syntax-highlight text-file"
   >

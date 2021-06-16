@@ -10,6 +10,8 @@ import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_req
 import { toLabelGid } from '~/sidebar/utils';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
 import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
+import LabelsSelectWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const mutationMap = {
   [IssuableType.Issue]: {
@@ -25,8 +27,10 @@ const mutationMap = {
 export default {
   components: {
     LabelsSelect,
+    LabelsSelectWidget,
   },
   variant: DropdownVariant.Sidebar,
+  mixins: [glFeatureFlagMixin()],
   inject: [
     'allowLabelCreate',
     'allowLabelEdit',
@@ -135,7 +139,32 @@ export default {
 </script>
 
 <template>
+  <labels-select-widget
+    v-if="glFeatures.labelsWidget"
+    class="block labels js-labels-block"
+    :allow-label-remove="allowLabelEdit"
+    :allow-label-create="allowLabelCreate"
+    :allow-label-edit="allowLabelEdit"
+    :allow-multiselect="true"
+    :allow-scoped-labels="allowScopedLabels"
+    :footer-create-label-title="__('Create project label')"
+    :footer-manage-label-title="__('Manage project labels')"
+    :labels-create-title="__('Create project label')"
+    :labels-fetch-path="labelsFetchPath"
+    :labels-filter-base-path="projectIssuesPath"
+    :labels-manage-path="labelsManagePath"
+    :labels-select-in-progress="isLabelsSelectInProgress"
+    :selected-labels="selectedLabels"
+    :variant="$options.sidebar"
+    data-qa-selector="labels_block"
+    @onDropdownClose="handleDropdownClose"
+    @onLabelRemove="handleLabelRemove"
+    @updateSelectedLabels="handleUpdateSelectedLabels"
+  >
+    {{ __('None') }}
+  </labels-select-widget>
   <labels-select
+    v-else
     class="block labels js-labels-block"
     :allow-label-remove="allowLabelEdit"
     :allow-label-create="allowLabelCreate"

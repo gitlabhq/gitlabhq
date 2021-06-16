@@ -253,7 +253,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def perform_update
-    successful = ApplicationSettings::UpdateService
+    successful = ::ApplicationSettings::UpdateService
       .new(@application_setting, current_user, application_setting_params)
       .execute
 

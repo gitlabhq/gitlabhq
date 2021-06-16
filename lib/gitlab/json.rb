@@ -242,7 +242,7 @@ module Gitlab
       def self.encode(object, limit: 25.megabytes)
         return ::Gitlab::Json.dump(object) unless Feature.enabled?(:json_limited_encoder)
 
-        buffer = []
+        buffer = StringIO.new
         buffer_size = 0
 
         ::Yajl::Encoder.encode(object) do |data_chunk|
@@ -254,7 +254,7 @@ module Gitlab
           buffer_size += chunk_size
         end
 
-        buffer.join('')
+        buffer.string
       end
     end
   end

@@ -77,17 +77,5 @@ RSpec.describe ClusterApplicationEntity do
         expect(subject[:pages_domain]).to eq(id: pages_domain.id, domain: pages_domain.domain)
       end
     end
-
-    context 'for fluentd application' do
-      let(:application) { build(:clusters_applications_fluentd, :installed) }
-
-      it 'includes host, port, protocol and log fields' do
-        expect(subject[:port]).to eq(514)
-        expect(subject[:host]).to eq("example.com")
-        expect(subject[:protocol]).to eq("tcp")
-        expect(subject[:waf_log_enabled]).to be true
-        expect(subject[:cilium_log_enabled]).to be true
-      end
-    end
   end
 end

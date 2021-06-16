@@ -512,6 +512,17 @@ On GitLab.com, the execution time for the cleanup policy is limited, and some of
 the Container Registry after the policy runs. The next time the policy runs, the remaining tags are included,
 so it may take multiple runs for all tags to be deleted.
 
+WARNING:
+GitLab self-managed installs support for third-party container registries that comply with the
+[Docker Registry HTTP API V2](https://docs.docker.com/registry/spec/api/)
+specification. However, this specification does not include a tag delete operation. Therefore, when
+interacting with third-party container registries, GitLab uses a workaround to delete tags. See the
+[related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
+for more information. Due to possible implementation variations, this workaround is not guaranteed
+to work with all third-party registries in the same predictable way. If you use the GitLab Container
+Registry, this workaround is not required because we implemented a special tag delete operation. In
+this case, you can expect cleanup policies to be consistent and predictable.
+
 ### Create a cleanup policy
 
 You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the UI.
@@ -633,7 +644,9 @@ Examples:
 - Select all tags, keep at least 1 tag per image, clean up any tag older than 14 days, run once a month, preserve any images with the name `master` and the policy is enabled:
 
   ```shell
-  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":"","name_regex_delete":".*","name_regex_keep":".*-master"}}' "https://gitlab.example.com/api/v4/projects/2"
+  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" \
+       --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":"","name_regex_delete":".*","name_regex_keep":".*-master"}}' \
+       "https://gitlab.example.com/api/v4/projects/2"
   ```
 
 Valid values for `cadence` when using the API are:

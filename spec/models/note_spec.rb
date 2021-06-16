@@ -1522,4 +1522,16 @@ RSpec.describe Note do
       it { is_expected.to be_truthy }
     end
   end
+
+  describe '#attachment' do
+    it 'is cleaned up correctly when project is destroyed' do
+      note = create(:note_on_issue, :with_attachment)
+
+      attachment = note.attachment
+
+      note.project.destroy!
+
+      expect(attachment).not_to be_exist
+    end
+  end
 end

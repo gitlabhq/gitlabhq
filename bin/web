@@ -3,18 +3,61 @@
 set -e
 
 cd $(dirname $0)/..
+app_root=$(pwd)
 
-case "$USE_WEB_SERVER" in
-  puma|"") # and the "" defines default
-    exec bin/web_puma "$@"
-    ;;
+puma_pidfile="$app_root/tmp/pids/puma.pid"
+puma_config="$app_root/config/puma.rb"
 
-  unicorn)
-    exec bin/web_unicorn "$@"
-    ;;
+spawn_puma()
+{
+  exec bundle exec puma --config "${puma_config}" --environment "$RAILS_ENV" "$@"
+}
 
-  *)
-    echo "Unkown web server used by USE_WEB_SERVER: $USE_WEB_SERVER."
+get_puma_pid()
+{
+  pid=$(cat "${puma_pidfile}")
+  if [ -z "$pid" ] ; then
+    echo "Could not find a PID in $puma_pidfile"
     exit 1
+  fi
+  echo "${pid}"
+}
+
+start()
+{
+  spawn_puma &
+}
+
+start_foreground()
+{
+  spawn_puma
+}
+
+stop()
+{
+  get_puma_pid
+  kill -INT "$(get_puma_pid)"
+}
+
+reload()
+{
+  kill -USR2 "$(get_puma_pid)"
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  start_foreground)
+    start_foreground
+    ;;
+  stop)
+    stop
+    ;;
+  reload)
+    reload
+    ;;
+  *)
+    echo "Usage: RAILS_ENV=your_env $0 {start|stop|reload}"
     ;;
 esac

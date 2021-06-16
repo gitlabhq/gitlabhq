@@ -168,10 +168,12 @@ export default {
         })
         .then(({ data }) => {
           this.users =
-            data?.project?.projectMembers?.nodes?.map(({ user }) => ({
-              ...user,
-              id: getIdFromGraphQLId(user.id),
-            })) || [];
+            data?.project?.projectMembers?.nodes
+              .filter((x) => x?.user)
+              .map(({ user }) => ({
+                ...user,
+                id: getIdFromGraphQLId(user.id),
+              })) || [];
           return this.users;
         })
         .finally(() => {

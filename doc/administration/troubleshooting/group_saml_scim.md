@@ -42,6 +42,10 @@ SCIM mapping:
 
 ![Azure AD SCIM](img/AzureAD-scim_attribute_mapping.png)
 
+Group Sync:
+
+![Azure Group Claims](img/azure_configure_group_claim.png)
+
 ## Okta
 
 Basic SAML app configuration:

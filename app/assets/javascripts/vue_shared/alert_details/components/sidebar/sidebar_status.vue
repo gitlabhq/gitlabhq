@@ -1,11 +1,12 @@
 <script>
-import { GlIcon, GlLoadingIcon, GlTooltip, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlIcon, GlLoadingIcon, GlTooltip, GlSprintf } from '@gitlab/ui';
 import { PAGE_CONFIG } from '../../constants';
 import AlertStatus from '../alert_status.vue';
 
 export default {
   components: {
     GlIcon,
+    GlButton,
     GlLoadingIcon,
     GlTooltip,
     GlSprintf,
@@ -96,16 +97,15 @@ export default {
         class="gl-text-gray-900 gl-mb-2 gl-line-height-20 gl-display-flex gl-justify-content-space-between"
       >
         {{ s__('AlertManagement|Status') }}
-        <a
+        <gl-button
           v-if="isEditable"
-          ref="editButton"
-          class="btn-link"
-          href="#"
+          class="gl-text-black-normal!"
+          variant="link"
           @click="toggleFormDropdown"
           @keydown.esc="hideDropdown"
         >
           {{ s__('AlertManagement|Edit') }}
-        </a>
+        </gl-button>
       </p>
 
       <alert-status

@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/articles/laravel_with_gitlab_and_envoy/index.html'
 author: Mehran Rasulian
@@ -78,7 +78,7 @@ git init
 git remote add origin git@gitlab.example.com:<USERNAME>/laravel-sample.git
 git add .
 git commit -m 'Initial Commit'
-git push -u origin master
+git push -u origin main
 ```
 
 ## Configure the production server
@@ -260,7 +260,7 @@ Let's create these three tasks one by one.
 
 #### Clone the repository
 
-The first task will create the `releases` directory (if it doesn't exist), and then clone the `master` branch of the repository (by default) into the new release directory, given by the `$new_release_dir` variable.
+The first task will create the `releases` directory (if it doesn't exist), and then clone the `main` branch of the repository (by default) into the new release directory, given by the `$new_release_dir` variable.
 The `releases` directory will hold all our deployments:
 
 ```php
@@ -378,14 +378,14 @@ These are persistent data and will be shared to every new release.
 
 Now, we would need to deploy our app by running `envoy run deploy`, but it won't be necessary since GitLab can handle that for us with CI's [environments](../../environments/index.md), which will be described [later](#setting-up-gitlab-cicd) in this tutorial.
 
-Now it's time to commit [Envoy.blade.php](https://gitlab.com/mehranrasulian/laravel-sample/blob/master/Envoy.blade.php) and push it to the `master` branch.
-To keep things simple, we commit directly to `master`, without using [feature-branches](../../../topics/gitlab_flow.md#github-flow-as-a-simpler-alternative) since collaboration is beyond the scope of this tutorial.
+Now it's time to commit [Envoy.blade.php](https://gitlab.com/mehranrasulian/laravel-sample/blob/master/Envoy.blade.php) and push it to the `main` branch.
+To keep things simple, we commit directly to `main`, without using [feature-branches](../../../topics/gitlab_flow.md#github-flow-as-a-simpler-alternative) since collaboration is beyond the scope of this tutorial.
 In a real world project, teams may use [Issue Tracker](../../../user/project/issues/index.md) and [Merge Requests](../../../user/project/merge_requests/index.md) to move their code across branches:
 
 ```shell
 git add Envoy.blade.php
 git commit -m 'Add Envoy'
-git push origin master
+git push origin main
 ```
 
 ## Continuous Integration with GitLab
@@ -474,7 +474,7 @@ Let's commit the `Dockerfile` file.
 ```shell
 git add Dockerfile
 git commit -m 'Add Dockerfile'
-git push origin master
+git push origin main
 ```
 
 ### Setting up GitLab CI/CD
@@ -523,7 +523,7 @@ deploy_production:
     url: http://192.168.1.1
   when: manual
   only:
-    - master
+    - main
 ```
 
 That's a lot to take in, isn't it? Let's run through it step by step.
@@ -595,7 +595,7 @@ If the SSH keys have added successfully, we can run Envoy.
 As mentioned before, GitLab supports [Continuous Delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-delivery) methods as well.
 The [environment](../../yaml/README.md#environment) keyword tells GitLab that this job deploys to the `production` environment.
 The `url` keyword is used to generate a link to our application on the GitLab Environments page.
-The `only` keyword tells GitLab CI/CD that the job should be executed only when the pipeline is building the `master` branch.
+The `only` keyword tells GitLab CI/CD that the job should be executed only when the pipeline is building the `main` branch.
 Lastly, `when: manual` is used to turn the job from running automatically to a manual action.
 
 ```yaml
@@ -616,7 +616,7 @@ deploy_production:
     url: http://192.168.1.1
   when: manual
   only:
-    - master
+    - main
 ```
 
 You may also want to add another job for [staging environment](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/), to final test your application before deploying to production.
@@ -624,7 +624,7 @@ You may also want to add another job for [staging environment](https://about.git
 ### Turn on GitLab CI/CD
 
 We have prepared everything we need to test and deploy our app with GitLab CI/CD.
-To do that, commit and push `.gitlab-ci.yml` to the `master` branch. It will trigger a pipeline, which you can watch live under your project's **Pipelines**.
+To do that, commit and push `.gitlab-ci.yml` to the `main` branch. It will trigger a pipeline, which you can watch live under your project's **Pipelines**.
 
 ![pipelines page](img/pipelines_page.png)
 

@@ -26,6 +26,8 @@ module Gitlab
         def build
           order = if order_values.empty?
                     primary_key_descending_order
+                  elsif Gitlab::Pagination::Keyset::Order.keyset_aware?(scope)
+                    Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(scope)
                   elsif ordered_by_primary_key?
                     primary_key_order
                   elsif ordered_by_other_column?

@@ -5,6 +5,7 @@ export const mockProjectNamespace = 'user1';
 export const mockProjectPath = 'project1';
 export const mockProjectFullPath = `${mockProjectNamespace}/${mockProjectPath}`;
 export const mockDefaultBranch = 'main';
+export const mockNewBranch = 'new-branch';
 export const mockNewMergeRequestPath = '/-/merge_requests/new';
 export const mockCommitSha = 'aabbccdd';
 export const mockCommitNextSha = 'eeffgghh';

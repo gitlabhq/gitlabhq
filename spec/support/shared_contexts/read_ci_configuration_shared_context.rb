@@ -5,10 +5,6 @@ RSpec.shared_context 'read ci configuration for sast enabled project' do
     File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci_for_sast.yml'))
   end
 
-  let_it_be(:gitlab_ci_yml_default_analyzers_content) do
-    File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci_for_sast_default_analyzers.yml'))
-  end
-
   let_it_be(:gitlab_ci_yml_excluded_analyzers_content) do
     File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci_for_sast_excluded_analyzers.yml'))
   end

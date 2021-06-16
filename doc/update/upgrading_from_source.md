@@ -82,7 +82,7 @@ sudo make install
 
 ### 4. Update Node.js
 
-To check the minimum required Node.js version, see [Node.js versions](../install/requirements.md#nodejs-versions).
+To check the minimum required Node.js version, see [Node.js versions](../install/installation.md#software-requirements).
 
 GitLab also requires the use of Yarn `>= v1.10.0` to manage JavaScript
 dependencies.
@@ -99,7 +99,7 @@ More information can be found on the [Yarn website](https://classic.yarnpkg.com/
 
 ### 5. Update Go
 
-To check the minimum required Go version, see [Go versions](../install/requirements.md#go-versions).
+To check the minimum required Go version, see [Go versions](../install/installation.md#software-requirements).
 
 You can check which version you are running with `go version`.
 
@@ -119,12 +119,8 @@ rm go1.13.5.linux-amd64.tar.gz
 
 ### 6. Update Git
 
-WARNING:
-From GitLab 13.1, you must use at least Git v2.24 (previous minimum version was v2.22).
-Git v2.28 is recommended.
-
 To check you are running the minimum required Git version, see
-[Git versions](../install/requirements.md#git-versions).
+[Git versions](../install/installation.md#software-requirements).
 
 From GitLab 13.6, we recommend you use the [Git version provided by
 Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
@@ -153,7 +149,7 @@ Remember to set `git -> bin_path` to `/usr/local/bin/git` in `config/gitlab.yml`
 ### 7. Update PostgreSQL
 
 WARNING:
-From GitLab 13.0, you must use at least PostgreSQL 11.
+From GitLab 14.0, you must use at least PostgreSQL 12.
 
 The latest version of GitLab might depend on a more recent PostgreSQL version
 than what you're currently running. You may also need to enable some
@@ -193,7 +189,7 @@ sudo -u git -H git checkout BRANCH-ee
 
 #### New configuration options for `gitlab.yml`
 
-There might be configuration options available for [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)).
+There might be configuration options available for [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)).
 View them with the command below and apply them manually to your current `gitlab.yml`:
 
 ```shell
@@ -223,7 +219,7 @@ longer handles setting it.
 If you are using Apache instead of NGINX see the updated [Apache templates](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
 Also note that because Apache does not support upstreams behind Unix sockets you
 must let GitLab Workhorse listen on a TCP port. You can do this
-via [`/etc/default/gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab.default.example#L38).
+via [`/etc/default/gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/support/init.d/gitlab.default.example#L38).
 
 #### SMTP configuration
 
@@ -234,12 +230,12 @@ add the following line to `config/initializers/smtp_settings.rb`:
 ActionMailer::Base.delivery_method = :smtp
 ```
 
-See [`smtp_settings.rb.sample`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/initializers/smtp_settings.rb.sample#L13) as an example.
+See [`smtp_settings.rb.sample`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/smtp_settings.rb.sample#L13) as an example.
 
 #### Init script
 
 There might be new configuration options available for
-[`gitlab.default.example`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab.default.example).
+[`gitlab.default.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/support/init.d/gitlab.default.example).
 View them with the command below and apply them manually to your current `/etc/default/gitlab`:
 
 ```shell

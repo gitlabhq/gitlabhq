@@ -203,53 +203,6 @@ RSpec.describe Ci::JobArtifacts::CreateService do
       end
     end
 
-    context 'when artifact type is cluster_applications' do
-      let(:artifacts_file) do
-        file_to_upload('spec/fixtures/helm/helm_list_v2_prometheus_missing.json.gz', sha256: artifacts_sha256)
-      end
-
-      let(:params) do
-        {
-          'artifact_type' => 'cluster_applications',
-          'artifact_format' => 'gzip'
-        }.with_indifferent_access
-      end
-
-      it 'calls cluster applications parse service' do
-        expect_next_instance_of(Clusters::ParseClusterApplicationsArtifactService) do |service|
-          expect(service).to receive(:execute).once.and_call_original
-        end
-
-        subject
-      end
-
-      context 'when there is a deployment cluster' do
-        let(:user) { project.owner }
-
-        before do
-          job.update!(user: user)
-        end
-
-        it 'calls cluster applications parse service with job and job user', :aggregate_failures do
-          expect(Clusters::ParseClusterApplicationsArtifactService).to receive(:new).with(job, user).and_call_original
-
-          subject
-        end
-      end
-
-      context 'when ci_synchronous_artifact_parsing feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_synchronous_artifact_parsing: false)
-        end
-
-        it 'does not call parse service' do
-          expect(Clusters::ParseClusterApplicationsArtifactService).not_to receive(:new)
-
-          expect(subject[:status]).to eq(:success)
-        end
-      end
-    end
-
     shared_examples 'rescues object storage error' do |klass, message, expected_message|
       it "handles #{klass}" do
         allow_next_instance_of(JobArtifactUploader) do |uploader|

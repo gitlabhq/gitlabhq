@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200220115023_fix_projects_without_prometheus_service.rb')
+require_migration!('fix_projects_without_prometheus_service')
 
 RSpec.describe FixProjectsWithoutPrometheusService, :migration do
   let(:namespace) { table(:namespaces).create!(name: 'gitlab', path: 'gitlab-org') }

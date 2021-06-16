@@ -113,7 +113,7 @@ RSpec.describe Gitlab::PathRegex do
 
   let(:deprecated_routes) do
     # profile was deprecated in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51646
-    %w(profile)
+    %w(profile s)
   end
 
   let(:ee_top_level_words) do
@@ -183,7 +183,7 @@ RSpec.describe Gitlab::PathRegex do
 
     # We ban new items in this list, see https://gitlab.com/gitlab-org/gitlab/-/issues/215362
     it 'does not allow expansion' do
-      expect(described_class::TOP_LEVEL_ROUTES.size).to eq(44)
+      expect(described_class::TOP_LEVEL_ROUTES.size).to eq(40)
     end
   end
 

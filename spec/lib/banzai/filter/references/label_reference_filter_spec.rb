@@ -702,4 +702,72 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter do
       expect(result.css('a').first.text).to eq "#{label.name} in #{project.full_name}"
     end
   end
+
+  context 'checking N+1' do
+    let_it_be(:group)              { create(:group) }
+    let_it_be(:group2)             { create(:group) }
+    let_it_be(:project)            { create(:project, :public, namespace: group) }
+    let_it_be(:project2)           { create(:project, :public, namespace: group2) }
+    let_it_be(:project3)           { create(:project, :public) }
+    let_it_be(:project_label)      { create(:label, project: project) }
+    let_it_be(:project_label2)     { create(:label, project: project) }
+    let_it_be(:project2_label)     { create(:label, project: project2) }
+    let_it_be(:group2_label)       { create(:group_label, group: group2, color: '#00ff00') }
+    let_it_be(:project_reference)  { "#{project_label.to_reference}" }
+    let_it_be(:project_reference2) { "#{project_label2.to_reference}" }
+    let_it_be(:project2_reference) { "#{project2_label.to_reference}" }
+    let_it_be(:group2_reference)   { "#{project2.full_path}~#{group2_label.name}" }
+
+    it 'does not have N+1 per multiple references per project', :use_sql_query_cache do
+      markdown = "#{project_reference}"
+      control_count = 1
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(control_count)
+
+      markdown = "#{project_reference} ~qwert ~werty ~ertyu ~rtyui #{project_reference2}"
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(control_count)
+    end
+
+    it 'has N+1 for multiple unique project/group references', :use_sql_query_cache do
+      # reference to already loaded project, only one query
+      markdown = "#{project_reference}"
+      control_count = 1
+
+      expect do
+        reference_filter(markdown, project: project)
+      end.not_to exceed_all_query_limit(control_count)
+
+      # Since we're not batching label queries across projects/groups,
+      # queries increase when a new project/group is added.
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/330359
+      # first reference to already loaded project (1),
+      # second reference requires project and namespace (2), and label (1)
+      markdown = "#{project_reference} #{group2_reference}"
+      max_count = control_count + 3
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(max_count)
+
+      # third reference to already queried project/namespace, nothing extra (no N+1 here)
+      markdown = "#{project_reference} #{group2_reference} #{project2_reference}"
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(max_count)
+
+      # last reference needs another namespace and label query (2)
+      markdown = "#{project_reference} #{group2_reference} #{project2_reference} #{project3.full_path}~test_label"
+      max_count += 2
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(max_count)
+    end
+  end
 end

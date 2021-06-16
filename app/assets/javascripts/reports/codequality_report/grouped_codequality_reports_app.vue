@@ -12,7 +12,20 @@ export default {
     ReportSection,
   },
   props: {
+    headPath: {
+      type: String,
+      required: true,
+    },
+    headBlobPath: {
+      type: String,
+      required: true,
+    },
     basePath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    baseBlobPath: {
       type: String,
       required: false,
       default: null,
@@ -40,6 +53,9 @@ export default {
   created() {
     this.setPaths({
       basePath: this.basePath,
+      headPath: this.headPath,
+      baseBlobPath: this.baseBlobPath,
+      headBlobPath: this.headBlobPath,
       reportsPath: this.codequalityReportsPath,
       helpPath: this.codequalityHelpPath,
     });

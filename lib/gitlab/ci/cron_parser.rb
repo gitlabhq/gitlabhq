@@ -6,6 +6,10 @@ module Gitlab
       VALID_SYNTAX_SAMPLE_TIME_ZONE = 'UTC'
       VALID_SYNTAX_SAMPLE_CRON = '* * * * *'
 
+      def self.parse_natural(expression, cron_timezone = 'UTC')
+        new(Fugit::Nat.parse(expression)&.original, cron_timezone)
+      end
+
       def initialize(cron, cron_timezone = 'UTC')
         @cron = cron
         @cron_timezone = timezone_name(cron_timezone)
@@ -25,6 +29,10 @@ module Gitlab
 
       def cron_timezone_valid?
         try_parse_cron(VALID_SYNTAX_SAMPLE_CRON, @cron_timezone).present?
+      end
+
+      def match?(time)
+        cron_line.match?(time)
       end
 
       private

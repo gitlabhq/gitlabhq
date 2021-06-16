@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import Approvals from '~/vue_merge_request_widget/components/approvals/approvals.vue';
 import ApprovalsSummary from '~/vue_merge_request_widget/components/approvals/approvals_summary.vue';
 import ApprovalsSummaryOptional from '~/vue_merge_request_widget/components/approvals/approvals_summary_optional.vue';
@@ -125,7 +125,7 @@ describe('MRWidget approvals', () => {
     });
 
     it('flashes error', () => {
-      expect(createFlash).toHaveBeenCalledWith(FETCH_ERROR);
+      expect(createFlash).toHaveBeenCalledWith({ message: FETCH_ERROR });
     });
   });
 
@@ -264,7 +264,7 @@ describe('MRWidget approvals', () => {
           });
 
           it('flashes error message', () => {
-            expect(createFlash).toHaveBeenCalledWith(APPROVE_ERROR);
+            expect(createFlash).toHaveBeenCalledWith({ message: APPROVE_ERROR });
           });
         });
       });
@@ -315,7 +315,7 @@ describe('MRWidget approvals', () => {
           });
 
           it('flashes error message', () => {
-            expect(createFlash).toHaveBeenCalledWith(UNAPPROVE_ERROR);
+            expect(createFlash).toHaveBeenCalledWith({ message: UNAPPROVE_ERROR });
           });
         });
       });

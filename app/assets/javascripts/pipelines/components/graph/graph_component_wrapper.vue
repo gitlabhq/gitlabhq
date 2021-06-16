@@ -1,12 +1,12 @@
 <script>
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
+import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
 import { __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import DismissPipelineGraphCallout from '../../graphql/mutations/dismiss_pipeline_notification.graphql';
-import getUserCallouts from '../../graphql/queries/get_user_callouts.query.graphql';
 import { reportToSentry, reportMessageToSentry } from '../../utils';
 import { listByLayers } from '../parsing_utils';
 import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW, VIEW_TYPE_KEY } from './constants';

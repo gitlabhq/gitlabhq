@@ -61,6 +61,7 @@ class Todo < ApplicationRecord
   scope :for_author, -> (author) { where(author: author) }
   scope :for_user, -> (user) { where(user: user) }
   scope :for_project, -> (projects) { where(project: projects) }
+  scope :for_note, -> (notes) { where(note: notes) }
   scope :for_undeleted_projects, -> { joins(:project).merge(Project.without_deleted) }
   scope :for_group, -> (group) { where(group: group) }
   scope :for_type, -> (type) { where(target_type: type) }

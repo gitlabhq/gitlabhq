@@ -7,6 +7,8 @@ type: reference, api
 
 # Suggest Changes API **(FREE)**
 
+This page describes the API for [suggesting changes](../user/project/merge_requests/reviews/suggestions.md).
+
 Every API call to suggestions must be authenticated.
 
 ## Applying suggestions

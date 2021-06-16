@@ -5,7 +5,6 @@ module Tooling
     module ProjectHelper
       LOCAL_RULES ||= %w[
         changelog
-        commit_messages
         database
         datateam
         documentation
@@ -37,8 +36,6 @@ module Tooling
         [%r{usage_data\.rb}, %r{^(\+|-).*\s+(count|distinct_count|estimate_batch_distinct_count)\(.*\)(.*)$}] => [:database, :backend, :product_intelligence],
 
         %r{\A(ee/)?config/feature_flags/} => :feature_flag,
-
-        %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} => :changelog,
 
         %r{\Adoc/development/usage_ping/dictionary\.md\z} => [:docs, :product_intelligence],
         %r{\Adoc/.*(\.(md|png|gif|jpg))\z} => :docs,
@@ -76,11 +73,11 @@ module Tooling
         )\z}x => %i[frontend engineering_productivity],
 
         %r{\A(ee/)?db/(geo/)?(migrate|post_migrate)/} => [:database, :migration],
-        %r{\A(ee/)?db/(?!fixtures)[^/]+} => :database,
-        %r{\A(ee/)?lib/gitlab/(database|background_migration|sql|github_import)(/|\.rb)} => :database,
-        %r{\A(app/services/authorized_project_update/find_records_due_for_refresh_service)(/|\.rb)} => :database,
-        %r{\A(app/models/project_authorization|app/services/users/refresh_authorized_projects_service)(/|\.rb)} => :database,
-        %r{\A(ee/)?app/finders/} => :database,
+        %r{\A(ee/)?db/(?!fixtures)[^/]+} => [:database],
+        %r{\A(ee/)?lib/gitlab/(database|background_migration|sql|github_import)(/|\.rb)} => [:database, :backend],
+        %r{\A(app/services/authorized_project_update/find_records_due_for_refresh_service)(/|\.rb)} => [:database, :backend],
+        %r{\A(app/models/project_authorization|app/services/users/refresh_authorized_projects_service)(/|\.rb)} => [:database, :backend],
+        %r{\A(ee/)?app/finders/} => [:database, :backend],
         %r{\Arubocop/cop/migration(/|\.rb)} => :database,
 
         %r{\A(\.gitlab-ci\.yml\z|\.gitlab\/ci)} => :engineering_productivity,

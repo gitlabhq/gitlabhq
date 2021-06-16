@@ -40,7 +40,7 @@ RSpec.describe Ci::RetryBuildService do
        job_artifacts_metadata job_artifacts_trace job_artifacts_junit
        job_artifacts_sast job_artifacts_secret_detection job_artifacts_dependency_scanning
        job_artifacts_container_scanning job_artifacts_dast
-       job_artifacts_license_management job_artifacts_license_scanning
+       job_artifacts_license_scanning
        job_artifacts_performance job_artifacts_browser_performance job_artifacts_load_performance
        job_artifacts_lsif job_artifacts_terraform job_artifacts_cluster_applications
        job_artifacts_codequality job_artifacts_metrics scheduled_at
@@ -59,13 +59,14 @@ RSpec.describe Ci::RetryBuildService do
        metadata runner_session trace_chunks upstream_pipeline_id
        artifacts_file artifacts_metadata artifacts_size commands
        resource resource_group_id processed security_scans author
-       pipeline_id report_results pending_state pages_deployments].freeze
+       pipeline_id report_results pending_state pages_deployments
+       queuing_entry runtime_metadata].freeze
 
   shared_examples 'build duplication' do
     let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
     let_it_be(:build) do
-      create(:ci_build, :failed, :expired, :erased, :queued, :coverage, :tags,
+      create(:ci_build, :failed, :picked, :expired, :erased, :queued, :coverage, :tags,
              :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
              description: 'my-job', stage: 'test', stage_id: stage.id,
              pipeline: pipeline, auto_canceled_by: another_pipeline,
@@ -73,9 +74,6 @@ RSpec.describe Ci::RetryBuildService do
     end
 
     before_all do
-      # Test correctly behaviour of deprecated artifact because it can be still in use
-      stub_feature_flags(drop_license_management_artifact: false)
-
       # Make sure that build has both `stage_id` and `stage` because FactoryBot
       # can reset one of the fields when assigning another. We plan to deprecate
       # and remove legacy `stage` column in the future.

@@ -1,8 +1,8 @@
 ---
 name: devops_adoption_feature
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46005
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/271568
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/325795
 milestone: '13.6'
 type: development
 group: group::optimize
-default_enabled: false
+default_enabled: true

@@ -25,7 +25,7 @@ For managed Prometheus instances using auto configuration, you can
 [configure alerts for metrics](index.md#adding-custom-metrics) directly in the
 [metrics dashboard](index.md). To set an alert:
 
-1. In your project, navigate to **Operations > Metrics**,
+1. In your project, navigate to **Monitor > Metrics**,
 1. Identify the metric you want to create the alert for, and click the
    **ellipsis** **{ellipsis_v}** icon in the top right corner of the metric.
 1. Choose **Alerts**.
@@ -39,7 +39,15 @@ To remove the alert, click back on the alert icon for the desired metric, and cl
 
 ### Link runbooks to alerts
 
-> Runbook URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39315) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39315) in GitLab 13.3.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/5877) in GitLab 13.11.
+> - [Removed](https://gitlab.com/groups/gitlab-org/-/epics/4280) in GitLab 14.0.
+
+WARNING:
+Linking runbooks to alerts through the alerts UI is [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/5877)
+and scheduled for [removal in GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
+However, you can still add runbooks to your alert payload. They show up in the alert UI when the
+alert is triggered.
 
 When creating alerts from the metrics dashboard for [managed Prometheus instances](#managed-prometheus-instances),
 you can also link a runbook. When the alert triggers, the
@@ -72,14 +80,16 @@ section of your Prometheus Alertmanager configuration:
 
 ```yaml
 receivers:
-  name: gitlab
-  webhook_configs:
-    - http_config:
-        bearer_token: 9e1cbfcd546896a9ea8be557caf13a76
-      send_resolved: true
-      url: http://192.168.178.31:3001/root/manual_prometheus/prometheus/alerts/notify.json
-      # Rest of configuration omitted
-      # ...
+  - name: gitlab
+    webhook_configs:
+      - http_config:
+          authorization:
+            type: Bearer
+            credentials: 9e1cbfcd546896a9ea8be557caf13a76
+        send_resolved: true
+        url: http://192.168.178.31:3001/root/manual_prometheus/prometheus/alerts/notify.json
+        # Rest of configuration omitted
+        # ...
 ```
 
 For GitLab to associate your alerts with an [environment](../../ci/environments/index.md),
@@ -100,7 +110,7 @@ Prometheus server to use the
 Alerts can be used to trigger actions, like opening an issue automatically
 (disabled by default since `13.1`). To configure the actions:
 
-1. Navigate to your project's **Settings > Operations > Incidents**.
+1. Navigate to your project's **Settings > Monitor > Alerts**.
 1. Enable the option to create issues.
 1. Choose the [issue template](../../user/project/description_templates.md) to create the issue from.
 1. Optionally, select whether to send an email notification to the developers of the project.

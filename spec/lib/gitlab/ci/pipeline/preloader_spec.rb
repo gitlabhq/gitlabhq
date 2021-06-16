@@ -5,9 +5,11 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Pipeline::Preloader do
   let(:stage) { double(:stage) }
   let(:commit) { double(:commit) }
+  let(:scheduled_action) { double(:scheduled_action) }
+  let(:manual_action) { double(:manual_action) }
 
   let(:pipeline) do
-    double(:pipeline, commit: commit, stages: [stage])
+    double(:pipeline, commit: commit, stages: [stage], scheduled_actions: [scheduled_action], manual_actions: [manual_action])
   end
 
   describe '.preload!' do
@@ -33,6 +35,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Preloader do
       expect(pipeline).to receive(:lazy_ref_commit)
       expect(pipeline).to receive(:number_of_warnings)
       expect(stage).to receive(:number_of_warnings)
+      expect(scheduled_action).to receive(:persisted_environment)
+      expect(manual_action).to receive(:persisted_environment)
 
       described_class.preload!([pipeline])
     end
@@ -42,6 +46,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Preloader do
       allow(pipeline).to receive(:lazy_ref_commit)
       allow(pipeline).to receive(:number_of_warnings)
       allow(stage).to receive(:number_of_warnings)
+      allow(scheduled_action).to receive(:persisted_environment)
+      allow(manual_action).to receive(:persisted_environment)
 
       pipelines = [pipeline, pipeline]
 

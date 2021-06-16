@@ -28,10 +28,10 @@ before using this feature.
 
 ## Permissions for using Terraform
 
-In GitLab version 13.1, [Maintainer access](../permissions.md) was required to use a
-GitLab managed Terraform state backend. In GitLab versions 13.2 and greater,
-[Maintainer access](../permissions.md) is required to lock, unlock and write to the state
-(using `terraform apply`), while [Developer access](../permissions.md) is required to read
+In GitLab version 13.1, the [Maintainer role](../permissions.md) was required to use a
+GitLab managed Terraform state backend. In GitLab versions 13.2 and greater, the
+[Maintainer role](../permissions.md) is required to lock, unlock, and write to the state
+(using `terraform apply`), while the [Developer role](../permissions.md) is required to read
 the state (using `terraform plan -lock=false`).
 
 ## Set up GitLab-managed Terraform state
@@ -41,7 +41,8 @@ To get started with a GitLab-managed Terraform state, there are two different op
 - [Use a local machine](#get-started-using-local-development).
 - [Use GitLab CI](#get-started-using-gitlab-ci).
 
-Terraform States can be found by navigating to a Project's **{cloud-gear}** **Operations > Terraform** page.
+Terraform States can be found by navigating to a Project's
+**{cloud-gear}** **Infrastructure > Terraform** page.
 
 ### Get started using local development
 
@@ -351,8 +352,8 @@ location. You can then go back to running it in GitLab CI/CD.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/273592) in GitLab 13.8.
 
 Users with Developer and greater [permissions](../permissions.md) can view the
-state files attached to a project at **Operations > Terraform**. Users with
-Maintainer permissions can perform commands on the state files. The user interface
+state files attached to a project at **Infrastructure > Terraform**. Users with the
+Maintainer role can perform commands on the state files. The user interface
 contains these fields:
 
 ![Terraform state list](img/terraform_list_view_v13_8.png)
@@ -376,7 +377,7 @@ are planned.
 Users with Maintainer and greater [permissions](../permissions.md) can use the
 following options to remove a state file:
 
-- **GitLab UI**: Go to **Operations > Terraform**. In the **Actions** column,
+- **GitLab UI**: Go to **Infrastructure > Terraform**. In the **Actions** column,
   click the vertical ellipsis (**{ellipsis_v}**) button and select
   **Remove state file and versions**.
 - **GitLab REST API**: You can remove a state file by making a request to the

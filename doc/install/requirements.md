@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Requirements **(FREE SELF)**
+# Installation requirements **(FREE SELF)**
 
 This page includes useful information on the supported Operating Systems as well
 as the hardware requirements that are needed to install and use GitLab.
@@ -17,7 +17,7 @@ as the hardware requirements that are needed to install and use GitLab.
 - Ubuntu (16.04/18.04/20.04)
 - Debian (9/10)
 - CentOS (7/8)
-- openSUSE Leap (15.1/15.2)
+- openSUSE Leap (15.2)
 - SUSE Linux Enterprise Server (12 SP2/12 SP5)
 - Red Hat Enterprise Linux (please use the CentOS packages and instructions)
 - Scientific Linux (please use the CentOS packages and instructions)
@@ -46,55 +46,6 @@ It does **not** run on Microsoft Windows, and we have no plans to support it in 
 Please consider using a virtual machine to run GitLab.
 
 ## Software requirements
-
-### Ruby versions
-
-From GitLab 13.6:
-
-- Ruby 2.7 and later is required.
-
-From GitLab 12.2:
-
-- Ruby 2.6 and later is required.
-
-You must use the standard MRI implementation of Ruby.
-We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab
-needs several Gems that have native extensions.
-
-### Go versions
-
-The minimum required Go version is 1.13.
-
-### Git versions
-
-From GitLab 13.11:
-
-- Git 2.31.x and later is required. We recommend you use the
-  [Git version provided by Gitaly](installation.md#git).
-
-From GitLab 13.6:
-
-- Git 2.29.x and later is required.
-
-From GitLab 13.1:
-
-- Git 2.24.x and later is required.
-- Git 2.28.x and later [is recommended](https://gitlab.com/gitlab-org/gitaly/-/issues/2959).
-
-### Node.js versions
-
-Beginning in GitLab 12.9, we only support Node.js 10.13.0 or higher, and we have dropped
-support for Node.js 8. (Node.js 6 support was dropped in GitLab 11.8)
-
-We recommend Node 14.x, as it's faster.
-
-GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets, which requires a minimum
-version of Node.js 10.13.0.
-
-You can check which version you're running with `node -v`. If you're running
-a version older than `v10.13.0`, you need to update it to a newer version. You
-can find instructions to install from community maintained packages or compile
-from source at the [Node.js website](https://nodejs.org/en/download/).
 
 ### Redis versions
 
@@ -165,14 +116,16 @@ the following table) as these were used for development and testing:
 |----------------|----------------------------|
 | 10.0           | 9.6                        |
 | 13.0           | 11                         |
+| 14.0           | 12                         |
 
-You must also ensure the following extensions are [loaded into every
-GitLab database](postgresql_extensions.html):
+You must also ensure the following extensions are loaded into every
+GitLab database. [Read more about this requirement, and troubleshooting](postgresql_extensions.md).
 
 | Extension    | Minimum GitLab version |
 | ------------ | ---------------------- |
 | `pg_trgm`    | 8.6                    |
 | `btree_gist` | 13.1                   |
+| `plpgsql`    | 11.7                   |
 
 NOTE:
 Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning. For the schedule of transitioning to PostgreSQL 12, see [the related epic](https://gitlab.com/groups/gitlab-org/-/epics/2184).
@@ -184,6 +137,35 @@ recommend running Omnibus GitLab-managed instances, as we actively develop and
 test based on those. We try to be compatible with most external (not managed by
 Omnibus GitLab) databases (for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)),
 but we can't guarantee compatibility.
+
+#### Gitaly Cluster database requirements
+
+[Read more in the Gitaly Cluster documentation](../administration/gitaly/praefect.md).
+
+#### Exclusive use of GitLab databases
+
+Databases created or used for GitLab, Geo, Gitaly Cluster, or other components should be for the
+exclusive use of GitLab. Do not make direct changes to the database, schemas, users, or other
+properties except when following procedures in the GitLab documentation or following the directions
+of GitLab Support or other GitLab engineers.
+
+- The main GitLab application currently uses three schemas:
+
+  - The default `public` schema
+  - `gitlab_partitions_static` (automatically created)
+  - `gitlab_partitions_dynamic` (automatically created)
+
+  No other schemas should be manually created.
+
+- GitLab may create new schemas as part of Rails database migrations. This happens when performing
+  a GitLab upgrade. The GitLab database account requires access to do this.
+
+- GitLab creates and modifies tables during the upgrade process, and also as part of normal
+  operations to manage partitioned tables.
+
+- You should not modify the GitLab schema (for example, adding triggers or modifying tables).
+  Database migrations are tested against the schema definition in the GitLab code base. GitLab
+  version upgrades may fail if the schema is modified.
 
 ## Puma settings
 
@@ -219,22 +201,6 @@ of [legacy Rugged code](../administration/gitaly/index.md#direct-access-to-git-i
 - In all other cases, the recommended number of threads is `4`. We don't recommend setting this
 higher, due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock)
 works.
-
-## Unicorn Workers
-
-For most instances we recommend using: (CPU cores * 1.5) + 1 = Unicorn workers.
-For example a node with 4 cores would have 7 Unicorn workers.
-
-For all machines that have 2GB and up we recommend a minimum of three Unicorn workers.
-If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive
-swapping.
-
-As long as you have enough available CPU and memory capacity, it's okay to increase the number of
-Unicorn workers and this usually helps to reduce the response time of the applications and
-increase the ability to handle parallel requests.
-
-To change the Unicorn workers when you have the Omnibus package (which defaults to the
-recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
 
 ## Redis and Sidekiq
 

@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
   end
 
   shared_examples 'find user from job token' do |without_job_token_allowed|
-    context 'when route is allowed to be authenticated' do
+    context 'when route is allowed to be authenticated', :request_store do
       let(:route_authentication_setting) { { job_token_allowed: true } }
 
       context 'for an invalid token' do
@@ -68,6 +68,8 @@ RSpec.describe Gitlab::Auth::AuthFinders do
         it 'return user' do
           expect(subject).to eq(user)
           expect(@current_authenticated_job).to eq job
+          expect(subject).to be_from_ci_job_token
+          expect(subject.ci_job_token_scope.source_project).to eq(job.project)
         end
       end
 
@@ -81,7 +83,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       end
     end
 
-    context 'when route is not allowed to be authenticated' do
+    context 'when route is not allowed to be authenticated', :request_store do
       let(:route_authentication_setting) { { job_token_allowed: false } }
 
       context 'with a running job' do
@@ -96,6 +98,8 @@ RSpec.describe Gitlab::Auth::AuthFinders do
           it 'returns the user' do
             expect(subject).to eq(user)
             expect(@current_authenticated_job).to eq job
+            expect(subject).to be_from_ci_job_token
+            expect(subject.ci_job_token_scope.source_project).to eq(job.project)
           end
         else
           it 'returns nil' do

@@ -30,7 +30,7 @@
     },
     "status": {
       "type": ["string"],
-      "enum": ["data_available", "implemented", "not_used", "deprecated", "removed"]
+      "enum": ["data_available", "implemented", "not_used", "deprecated", "removed", "broken"]
     },
     "milestone": {
       "type": ["string", "null"],
@@ -43,7 +43,10 @@
     "introduced_by_url": {
       "type": ["string", "null"]
     },
-    "extra": {
+    "repair_issue_url": {
+      "type": ["string"]
+    },
+    "options": {
       "type": "object"
     },
     "time_frame": {
@@ -52,11 +55,15 @@
     },
     "data_source": {
       "type": "string",
-      "enum": ["database", "redis", "redis_hll", "prometheus", "system"]
+      "enum": ["database", "redis", "redis_hll", "prometheus", "system", "license"]
+    },
+    "data_category": {
+      "type": "string",
+      "enum": ["Operational", "Optional", "Subscription", "Standard"]
     },
     "instrumentation_class": {
       "type": "string",
-      "pattern": "^(([A-Z][a-z]+)+::)*(([A-Z][a-z]+)+)$"
+      "pattern": "^(([A-Z][a-z]+)+::)*(([A-Z]+[a-z]+)+)$"
     },
     "distribution": {
       "type": "array",
@@ -78,5 +85,17 @@
     "value_json_schema": {
       "type": "string"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "broken" }
+        }
+      },
+      "then": {
+        "required": ["repair_issue_url"]
+      }
+    }
+  ]
 }

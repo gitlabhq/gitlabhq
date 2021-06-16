@@ -77,7 +77,7 @@ the **Enable Review Apps** button and GitLab prompts you with a template code bl
 you can copy and paste into `.gitlab-ci.yml` as a starting point. To do so:
 
 1. Go to the project your want to create a Review App job for.
-1. From the left nav, go to **Operations** > **Environments**.
+1. From the left nav, go to **Deployments > Environments**.
 1. Click on the **Enable Review Apps** button. It is available to you
    if you have Developer or higher [permissions](../../user/permissions.md) to that project.
 1. Copy the provided code snippet and paste it into your

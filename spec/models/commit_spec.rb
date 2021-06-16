@@ -471,16 +471,25 @@ eos
   end
 
   it_behaves_like 'a mentionable' do
-    subject { create(:project, :repository).commit }
+    subject(:commit) { create(:project, :repository).commit }
 
     let(:author) { create(:user, email: subject.author_email) }
     let(:backref_text) { "commit #{subject.id}" }
     let(:set_mentionable_text) do
-      ->(txt) { allow(subject).to receive(:safe_message).and_return(txt) }
+      ->(txt) { allow(commit).to receive(:safe_message).and_return(txt) }
     end
 
     # Include the subject in the repository stub.
-    let(:extra_commits) { [subject] }
+    let(:extra_commits) { [commit] }
+
+    it 'uses the CachedMarkdownField cache instead of the Mentionable cache', :use_clean_rails_redis_caching do
+      expect(commit.title_html).not_to be_present
+
+      commit.all_references(project.owner).all
+
+      expect(commit.title_html).to be_present
+      expect(Rails.cache.read("banzai/commit:#{commit.id}/safe_message/single_line")).to be_nil
+    end
   end
 
   describe '#hook_attrs' do
@@ -661,6 +670,92 @@ eos
     end
 
     it_behaves_like '#uri_type'
+  end
+
+  describe '.diff_max_files' do
+    subject(:diff_max_files) { described_class.diff_max_files }
+
+    let(:increased_diff_limits) { false }
+    let(:configurable_diff_limits) { false }
+
+    before do
+      stub_feature_flags(increased_diff_limits: increased_diff_limits, configurable_diff_limits: configurable_diff_limits)
+    end
+
+    context 'when increased_diff_limits is enabled' do
+      let(:increased_diff_limits) { true }
+
+      it 'returns 3000' do
+        expect(diff_max_files).to eq(3000)
+      end
+    end
+
+    context 'when configurable_diff_limits is enabled' do
+      let(:configurable_diff_limits) { true }
+
+      it 'returns the current settings' do
+        Gitlab::CurrentSettings.update!(diff_max_files: 1234)
+        expect(diff_max_files).to eq(1234)
+      end
+    end
+
+    context 'when neither feature flag is enabled' do
+      it 'returns 1000' do
+        expect(diff_max_files).to eq(1000)
+      end
+    end
+  end
+
+  describe '.diff_max_lines' do
+    subject(:diff_max_lines) { described_class.diff_max_lines }
+
+    let(:increased_diff_limits) { false }
+    let(:configurable_diff_limits) { false }
+
+    before do
+      stub_feature_flags(increased_diff_limits: increased_diff_limits, configurable_diff_limits: configurable_diff_limits)
+    end
+
+    context 'when increased_diff_limits is enabled' do
+      let(:increased_diff_limits) { true }
+
+      it 'returns 100000' do
+        expect(diff_max_lines).to eq(100000)
+      end
+    end
+
+    context 'when configurable_diff_limits is enabled' do
+      let(:configurable_diff_limits) { true }
+
+      it 'returns the current settings' do
+        Gitlab::CurrentSettings.update!(diff_max_lines: 65321)
+        expect(diff_max_lines).to eq(65321)
+      end
+    end
+
+    context 'when neither feature flag is enabled' do
+      it 'returns 50000' do
+        expect(diff_max_lines).to eq(50000)
+      end
+    end
+  end
+
+  describe '.diff_safe_max_files' do
+    subject(:diff_safe_max_files) { described_class.diff_safe_max_files }
+
+    it 'returns the commit diff max divided by the limit factor of 10' do
+      expect(::Commit).to receive(:diff_max_files).and_return(10)
+      expect(diff_safe_max_files).to eq(1)
+    end
+  end
+
+  describe '.diff_safe_max_lines' do
+    subject(:diff_safe_max_lines) { described_class.diff_safe_max_lines }
+
+    it 'returns the commit diff max divided by the limit factor of 10' do
+      expect(::Commit).to receive(:diff_max_lines).and_return(100)
+      expect(diff_safe_max_lines).to eq(10)
+    end
   end
 
   describe '.from_hash' do

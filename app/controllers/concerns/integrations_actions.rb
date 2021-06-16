@@ -48,12 +48,11 @@ module IntegrationsActions
 
   private
 
-  # rubocop: disable Gitlab/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def integration
     @integration ||= find_or_initialize_non_project_specific_integration(params[:id])
-    @service ||= @integration # TODO: remove references to @service https://gitlab.com/gitlab-org/gitlab/-/issues/329759
   end
-  # rubocop: enable Gitlab/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def success_message
     if integration.active?

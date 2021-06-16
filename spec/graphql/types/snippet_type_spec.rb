@@ -13,7 +13,7 @@ RSpec.describe GitlabSchema.types['Snippet'] do
                        :visibility_level, :created_at, :updated_at,
                        :web_url, :raw_url, :ssh_url_to_repo, :http_url_to_repo,
                        :notes, :discussions, :user_permissions,
-                       :description_html, :blob, :blobs]
+                       :description_html, :blobs]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
@@ -130,32 +130,6 @@ RSpec.describe GitlabSchema.types['Snippet'] do
     context 'when RequestStore is enabled', :request_store do
       it_behaves_like 'snippets with repositories'
       it_behaves_like 'snippets without repositories'
-    end
-  end
-
-  describe '#blob' do
-    let(:query_blob) { subject.dig('data', 'snippets', 'nodes')[0]['blob'] }
-
-    subject { GitlabSchema.execute(snippet_query_for(field: 'blob'), context: { current_user: user }).as_json }
-
-    context 'when snippet has repository' do
-      let!(:snippet) { create(:personal_snippet, :repository, :public, author: user) }
-      let(:blob) { snippet.blobs.first }
-
-      it 'returns the first blob from the repository' do
-        expect(query_blob['name']).to eq blob.name
-        expect(query_blob['path']).to eq blob.path
-      end
-    end
-
-    context 'when snippet does not have a repository' do
-      let!(:snippet) { create(:personal_snippet, :public, author: user) }
-      let(:blob) { snippet.blob }
-
-      it 'returns SnippetBlob type' do
-        expect(query_blob['name']).to eq blob.name
-        expect(query_blob['path']).to eq blob.path
-      end
     end
   end
 

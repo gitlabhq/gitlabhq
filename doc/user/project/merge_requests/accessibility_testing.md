@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Accessibility Testing
+# Accessibility testing **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25144) in GitLab 12.8.
 
@@ -17,11 +17,11 @@ impact of pending code changes.
 
 GitLab uses [pa11y](https://pa11y.org/), a free and open source tool for
 measuring the accessibility of web sites, and has built a simple
-[CI job template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml).
+[CI job template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml).
 This job outputs accessibility violations, warnings, and notices for each page
 analyzed to a file called `accessibility`.
 
-## Accessibility Merge Request widget
+## Accessibility merge request widget
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39425) in GitLab 13.0 behind the disabled [feature flag](../../../administration/feature_flags.md) `:accessibility_report_view`.
 > - [Feature Flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/217372) in GitLab 13.1.
@@ -29,7 +29,7 @@ analyzed to a file called `accessibility`.
 In addition to the report artifact that is created, GitLab will also show the
 Accessibility Report in the merge request widget area:
 
-![Accessibility Merge Request Widget](img/accessibility_mr_widget_v13_0.png)
+![Accessibility merge request widget](img/accessibility_mr_widget_v13_0.png)
 
 ## Configure Accessibility Testing
 
@@ -38,7 +38,7 @@ on your code with GitLab CI/CD using the [GitLab Accessibility Docker image](htt
 
 For GitLab 12.9 and later, to define the `a11y` job, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`Accessibility.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
+[`Accessibility.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
 included with your GitLab installation, as shown below.
 
 Add the following to your `.gitlab-ci.yml` file:
@@ -67,7 +67,7 @@ For GitLab 12.10 and earlier, the [artifact generated is named `accessibility.js
 
 NOTE:
 For GitLab versions earlier than 12.9, you can use `include:remote` and use a
-link to the [current template in `master`](https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
+link to the [current template in the default branch](https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
 
 NOTE:
 The job definition provided by the template does not support Kubernetes yet.

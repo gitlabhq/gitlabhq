@@ -22,5 +22,13 @@ module Sidebars
     def render?
       true
     end
+
+    def nav_link_html_options
+      {
+        data: {
+          track_label: item_id
+        }
+      }
+    end
   end
 end

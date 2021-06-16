@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To enable the GitLab Prometheus metrics:
 
 1. Log into GitLab as a user with [administrator permissions](../../../user/permissions.md).
-1. Go to **Admin Area > Settings > Metrics and profiling**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and click **Enable Prometheus Metrics**.
 1. [Restart GitLab](../../restart_gitlab.md#omnibus-gitlab-restart) for the changes to take effect.
 
@@ -58,7 +59,7 @@ The following metrics are available:
 | `gitlab_transaction_cache_duration_total`                        | Counter     | 10.2    | Counter for total time (seconds) spent in Rails cache calls (aggregate)                                               |                                                           |
 | `gitlab_transaction_cache_read_hit_count_total`                  | Counter     | 10.2    | Counter for cache hits for Rails cache calls                                                                          | `controller`, `action`                                    |
 | `gitlab_transaction_cache_read_miss_count_total`                 | Counter     | 10.2    | Counter for cache misses for Rails cache calls                                                                        | `controller`, `action`                                    |
-| `gitlab_transaction_duration_seconds`                            | Histogram   | 10.2    | Duration for all transactions (`gitlab_transaction_*` metrics)                                                        | `controller`, `action`                                    |
+| `gitlab_transaction_duration_seconds`                            | Histogram   | 10.2    | Duration for successful requests (`gitlab_transaction_*` metrics)                                                     | `controller`, `action`                                    |
 | `gitlab_transaction_event_build_found_total`                     | Counter     | 9.4     | Counter for build found for API /jobs/request                                                                         |                                                           |
 | `gitlab_transaction_event_build_invalid_total`                   | Counter     | 9.4     | Counter for build invalid due to concurrency conflict for API /jobs/request                                           |                                                           |
 | `gitlab_transaction_event_build_not_found_cached_total`          | Counter     | 9.4     | Counter for cached response of build not found for API /jobs/request                                                  |                                                           |
@@ -91,7 +92,7 @@ The following metrics are available:
 | `gitlab_transaction_view_duration_total`                         | Counter     | 9.4     | Duration for views                                                                                                    | `controller`, `action`, `view`                            |
 | `gitlab_view_rendering_duration_seconds`                         | Histogram   | 10.2    | Duration for views (histogram)                                                                                        | `controller`, `action`, `view`                            |
 | `http_requests_total`                                            | Counter     | 9.4     | Rack request count                                                                                                    | `method`, `status`                                        |
-| `http_request_duration_seconds`                                  | Histogram   | 9.4     | HTTP response time from rack middleware                                                                               | `method`                                                  |
+| `http_request_duration_seconds`                                  | Histogram   | 9.4     | HTTP response time from rack middleware for successful requests                                                       | `method`                                                  |
 | `gitlab_transaction_db_count_total`                              | Counter     | 13.1    | Counter for total number of SQL calls                                                                                 | `controller`, `action`                                    |
 | `gitlab_transaction_db_<role>_count_total`                       | Counter     | 13.10   | Counter for total number of SQL calls, grouped by database roles (primary/replica)                                    | `controller`, `action`                                    |
 | `gitlab_transaction_db_write_count_total`                        | Counter     | 13.1    | Counter for total number of write SQL calls                                                                           | `controller`, `action`                                    |
@@ -130,6 +131,8 @@ The following metrics are available:
 | `gitlab_ci_pipeline_security_orchestration_policy_processing_duration_seconds` | Histogram   | 13.12    | Time in seconds it takes to process Security Policies in CI/CD pipeline                                                                    |                                                           |
 | `gitlab_ci_difference_live_vs_actual_minutes`                    | Histogram   | 13.12    | Difference between CI minute consumption counted while jobs were running (live) vs when jobs are complete (actual). Used to enforce CI minute consumption limits on long running jobs. | `plan` |
 | `gitlab_spamcheck_request_duration_seconds`                      | Histogram   | 13.12   | The duration for requests between Rails and the anti-spam engine                                                        |                                                           |
+| `service_desk_thank_you_email`                                   | Counter     | 14.0    | Total number of email responses to new service desk emails                                                            |                                                           |
+| `service_desk_new_note_email`                                    | Counter     | 14.0    | Total number of email notifications on new service desk comment                                                       |                                                           |
 
 ## Metrics controlled by a feature flag
 
@@ -227,11 +230,15 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `global_search_bulk_cron_queue_size`           | Gauge   | 12.10 | Number of database records waiting to be synchronized to Elasticsearch | |
 | `global_search_awaiting_indexing_queue_size`   | Gauge   | 13.2  | Number of database updates waiting to be synchronized to Elasticsearch while indexing is paused | |
 | `geo_merge_request_diffs`                      | Gauge   | 13.4  | Number of merge request diffs on primary | `url` |
-| `geo_merge_request_diffs_checksummed`          | Gauge   | 13.4  | Number of merge request diffs checksummed on primary | `url` |
+| `geo_merge_request_diffs_checksum_total`       | Gauge   | 13.12 | Number of merge request diffs tried to checksum on primary | `url` |
+| `geo_merge_request_diffs_checksummed`          | Gauge   | 13.4  | Number of merge request diffs successfully checksummed on primary | `url` |
 | `geo_merge_request_diffs_checksum_failed`      | Gauge   | 13.4  | Number of merge request diffs failed to calculate the checksum on primary | `url` |
 | `geo_merge_request_diffs_synced`               | Gauge   | 13.4  | Number of syncable merge request diffs synced on secondary | `url` |
 | `geo_merge_request_diffs_failed`               | Gauge   | 13.4  | Number of syncable merge request diffs failed to sync on secondary | `url` |
 | `geo_merge_request_diffs_registry`             | Gauge   | 13.4  | Number of merge request diffs in the registry | `url` |
+| `geo_merge_request_diffs_verification_total`   | Gauge   | 13.12 | Number of merge request diffs verifications tried on secondary | `url` |
+| `geo_merge_request_diffs_verified`             | Gauge   | 13.12 | Number of merge request diffs verified on secondary | `url` |
+| `geo_merge_request_diffs_verification_failed`  | Gauge   | 13.12 | Number of merge request diffs verifications failed on secondary | `url` |
 | `geo_snippet_repositories`                     | Gauge   | 13.4  | Number of snippets on primary | `url` |
 | `geo_snippet_repositories_checksummed`         | Gauge   | 13.4  | Number of snippets checksummed on primary | `url` |
 | `geo_snippet_repositories_checksum_failed`     | Gauge   | 13.4  | Number of snippets failed to calculate the checksum on primary | `url` |
@@ -308,19 +315,7 @@ Some basic Ruby runtime metrics are available:
 | `ruby_process_proportional_memory_bytes` | Gauge     | 13.0  | Memory usage by process (PSS/Proportional Set Size) |
 | `ruby_process_start_time_seconds`        | Gauge     | 12.0  | UNIX timestamp of process start time |
 
-## Unicorn Metrics
-
-Unicorn specific metrics, when Unicorn is used.
-
-| Metric                       | Type  | Since | Description                                        |
-|:-----------------------------|:------|:------|:---------------------------------------------------|
-| `unicorn_active_connections` | Gauge | 11.0  | The number of active Unicorn connections (workers) |
-| `unicorn_queued_connections` | Gauge | 11.0  | The number of queued Unicorn connections           |
-| `unicorn_workers`            | Gauge | 12.0  | The number of Unicorn workers                      |
-
 ## Puma Metrics
-
-When Puma is used instead of Unicorn, the following metrics are available:
 
 | Metric                            | Type    | Since | Description |
 |:--------------------------------- |:------- |:----- |:----------- |
@@ -352,8 +347,8 @@ instance (`cache`, `shared_state` etc.).
 ## Metrics shared directory
 
 The GitLab Prometheus client requires a directory to store metrics data shared between multi-process services.
-Those files are shared among all instances running under Unicorn server.
-The directory must be accessible to all running Unicorn's processes, or
+Those files are shared among all instances running under Puma server.
+The directory must be accessible to all running Puma's processes, or
 metrics can't function correctly.
 
 This directory's location is configured using environment variable `prometheus_multiproc_dir`.

@@ -34,7 +34,6 @@ RSpec.describe EnvironmentsHelper do
         'project_path' => project_path(project),
         'tags_path' => project_tags_path(project),
         'has_metrics' => "#{environment.has_metrics?}",
-        'prometheus_status' => "#{environment.prometheus_status}",
         'external_dashboard_url' => nil,
         'environment_state' => environment.state,
         'custom_metrics_path' => project_prometheus_metrics_path(project),
@@ -158,7 +157,7 @@ RSpec.describe EnvironmentsHelper do
           let(:cluster) { create(:cluster, projects: [project]) }
 
           it 'has managed prometheus' do
-            create(:clusters_applications_prometheus, :installed, cluster: cluster)
+            create(:clusters_integrations_prometheus, cluster: cluster)
 
             expect(metrics_data).to include(
               'has_managed_prometheus' => 'true'
@@ -193,7 +192,7 @@ RSpec.describe EnvironmentsHelper do
         "environment_name": environment.name,
         "environments_path": api_v4_projects_environments_path(id: project.id),
         "environment_id": environment.id,
-        "cluster_applications_documentation_path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack'),
+        "cluster_applications_documentation_path" => help_page_path('user/clusters/integrations.md', anchor: 'elastic-stack-cluster-integration'),
         "clusters_path": project_clusters_path(project, format: :json)
       }
 

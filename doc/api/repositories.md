@@ -311,6 +311,11 @@ Supported attributes:
 | `file`    | string   | no | The file to commit the changes to, defaults to `CHANGELOG.md`. |
 | `message` | string   | no | The commit message to produce when committing the changes, defaults to `Add changelog for version X` where X is the value of the `version` argument. |
 
+WARNING:
+GitLab treats trailers case-sensitively. If you set the `trailer` field to
+`Example`, GitLab _won't_ include commits that use the trailer `example`, 
+`eXaMpLE`, or anything else that isn't _exactly_ `Example`.
+
 If the `from` attribute is unspecified, GitLab uses the Git tag of the last
 stable version that came before the version specified in the `version`
 attribute. This requires that Git tag names follow a specific format, allowing

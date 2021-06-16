@@ -9,6 +9,7 @@ RSpec.describe API::ComposerPackages do
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:package_name) { 'package-name' }
   let_it_be(:project, reload: true) { create(:project, :custom_repo, files: { 'composer.json' => { name: package_name }.to_json }, group: group) }
+  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
   let(:headers) { {} }
 
   using RSpec::Parameterized::TableSyntax
@@ -428,6 +429,7 @@ RSpec.describe API::ComposerPackages do
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
           let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+          let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
 
           before do
             project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))

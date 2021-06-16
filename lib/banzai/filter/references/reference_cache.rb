@@ -29,15 +29,15 @@ module Banzai
             refs = Hash.new { |hash, key| hash[key] = Set.new }
 
             nodes.each do |node|
-              node.to_html.scan(regex) do
-                path = if parent_type == :project
-                         full_project_path($~[:namespace], $~[:project])
-                       else
-                         full_group_path($~[:group])
-                       end
+              prepare_node_for_scan(node).scan(regex) do
+                parent_path = if parent_type == :project
+                                full_project_path($~[:namespace], $~[:project])
+                              else
+                                full_group_path($~[:group])
+                              end
 
                 ident = filter.identifier($~)
-                refs[path] << ident if ident
+                refs[parent_path] << ident if ident
               end
             end
 
@@ -55,9 +55,23 @@ module Banzai
           @per_reference ||= {}
 
           @per_reference[parent_type] ||= begin
-            refs = references_per_parent.keys.to_set
+            refs = references_per_parent.keys
+            parent_ref = {}
 
-            find_for_paths(refs.to_a).index_by(&:full_path)
+            # if we already have a parent, no need to query it again
+            refs.each do |ref|
+              next unless ref
+
+              if context[:project]&.full_path == ref
+                parent_ref[ref] = context[:project]
+              elsif context[:group]&.full_path == ref
+                parent_ref[ref] = context[:group]
+              end
+
+              refs -= [ref] if parent_ref[ref]
+            end
+
+            find_for_paths(refs).index_by(&:full_path).merge(parent_ref)
           end
         end
 
@@ -87,7 +101,7 @@ module Banzai
           @_records_per_project[filter.object_class.to_s.underscore]
         end
 
-        def relation_for_paths(paths)
+        def objects_for_paths(paths)
           klass = parent_type.to_s.camelize.constantize
           result = klass.where_full_path_in(paths)
           return result if parent_type == :group
@@ -102,7 +116,7 @@ module Banzai
             to_query = paths - cache.keys
 
             unless to_query.empty?
-              records = relation_for_paths(to_query)
+              records = objects_for_paths(to_query)
 
               found = []
               records.each do |record|
@@ -119,7 +133,7 @@ module Banzai
 
             cache.slice(*paths).values.compact
           else
-            relation_for_paths(paths)
+            objects_for_paths(paths)
           end
         end
 
@@ -169,6 +183,16 @@ module Banzai
 
         def refs_cache
           Gitlab::SafeRequestStore["banzai_#{parent_type}_refs".to_sym] ||= {}
+        end
+
+        def prepare_node_for_scan(node)
+          html = node.to_html
+
+          filter.requires_unescaping? ? unescape_html_entities(html) : html
+        end
+
+        def unescape_html_entities(text)
+          CGI.unescapeHTML(text.to_s)
         end
       end
     end

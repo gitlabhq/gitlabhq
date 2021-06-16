@@ -25,7 +25,7 @@ tests access to the GitLab API.
    ```
 
 1. To set values for the `GITLAB_HTTPS` and `GITLAB_ROOT_PASSWORD`,
-   [assign them to a variable in the user interface](../variables/README.md#project-cicd-variables).
+   [assign them to a variable in the user interface](../variables/README.md#add-a-cicd-variable-to-a-project).
    Then assign that variable to the corresponding variable in your
    `.gitlab-ci.yml` file.
 

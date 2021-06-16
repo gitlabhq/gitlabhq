@@ -4,7 +4,7 @@
       .modal-header
         %h3.page-title Delete #{@blob.name}
         %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
-          %span{ "aria-hidden": true } &times;
+          %span{ "aria-hidden": "true" } &times;
 
       .modal-body
         = form_tag project_blob_path(@project, @id), method: :delete, class: 'js-delete-blob-form js-quick-submit js-requires-input' do

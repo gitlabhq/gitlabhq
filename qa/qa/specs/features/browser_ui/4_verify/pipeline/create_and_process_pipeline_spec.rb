@@ -24,7 +24,8 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'users creates a pipeline which gets processed', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1279' do
+      it 'users creates a pipeline which gets processed', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1849' do
+        # TODO: Convert back to :smoke once proved to be stable. Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300909
         Flow::Login.sign_in
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|
@@ -47,7 +48,7 @@ module QA
                       - echo 'FAILURE'
                       - exit 1
 
-                  test-tags:
+                  test-tags-mismatch:
                     tags:
                      - invalid
                     script: echo 'NOOP'
@@ -70,7 +71,7 @@ module QA
         {
           'test-success': :passed,
           'test-failure': :failed,
-          'test-tags': :pending,
+          'test-tags-mismatch': :pending,
           'test-artifacts': :passed
         }.each do |job, status|
           Page::Project::Pipeline::Show.perform do |pipeline|

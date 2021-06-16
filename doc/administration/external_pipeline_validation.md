@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto
 ---
@@ -17,7 +17,7 @@ data as payload. The response code from the external service determines if GitLa
 should accept or reject the pipeline. If the response is:
 
 - `200`, the pipeline is accepted.
-- `4XX`, the pipeline is rejected.
+- `406`, the pipeline is rejected.
 - Other codes, the pipeline is accepted and logged.
 
 If there's an error or the request times out, the pipeline is accepted.
@@ -74,7 +74,9 @@ required number of seconds.
         "id": { "type": "integer" },
         "username": { "type": "string" },
         "email": { "type": "string" },
-        "created_at": { "type": ["string", "null"], "format": "date-time" }
+        "created_at": { "type": ["string", "null"], "format": "date-time" },
+        "current_sign_in_ip": { "type": ["string", "null"] },
+        "last_sign_in_ip": { "type": ["string", "null"] }
       }
     },
     "pipeline": {
@@ -117,6 +119,17 @@ required number of seconds.
       }
     },
     "namespace": {
+      "type": "object",
+      "required": [
+        "plan",
+        "trial"
+      ],
+      "properties": {
+        "plan": { "type": "string" },
+        "trial": { "type": "boolean" }
+      }
+    },
+    "provisioning_group": {
       "type": "object",
       "required": [
         "plan",

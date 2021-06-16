@@ -30,8 +30,6 @@ module Banzai
       LITERAL_KEYWORD      = 'cmliteral'
 
       def call
-        return @text unless Feature.enabled?(:honor_escaped_markdown, context[:group] || context[:project]&.group)
-
         @text.gsub(ASCII_PUNCTUATION) do |match|
           # The majority of markdown does not have literals.  If none
           # are found, we can bypass the post filter

@@ -145,6 +145,27 @@ table.content {
     padding: 15px 5px;
     text-align: center;
   }
+
+  td.mailer-align-left {
+    vertical-align: top;
+    padding: 16px 32px;
+    text-align: left;
+
+    h4 {
+      margin: 0;
+    }
+
+    ul {
+      list-style: none;
+      line-height: 1.6;
+      padding-left: 0;
+      margin: 8px 0 16px;
+    }
+
+    .mailer-icon {
+      margin-bottom: -1px;
+    }
+  }
 }
 
 tr.footer td {

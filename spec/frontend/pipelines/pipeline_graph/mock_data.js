@@ -162,6 +162,38 @@ export const parallelNeedData = {
   ],
 };
 
+export const sameStageNeeds = {
+  stages: [
+    {
+      name: 'build',
+      groups: [
+        {
+          name: 'build_1',
+          jobs: [{ script: 'echo hello', stage: 'build', name: 'build_1' }],
+        },
+      ],
+    },
+    {
+      name: 'build',
+      groups: [
+        {
+          name: 'build_2',
+          jobs: [{ script: 'yarn test', stage: 'build', needs: ['build_1'] }],
+        },
+      ],
+    },
+    {
+      name: 'build',
+      groups: [
+        {
+          name: 'build_3',
+          jobs: [{ script: 'yarn test', stage: 'build', needs: ['build_2'] }],
+        },
+      ],
+    },
+  ],
+};
+
 export const largePipelineData = {
   stages: [
     {

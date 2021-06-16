@@ -43,7 +43,7 @@ RSpec.describe 'Edit Project Settings' do
     context 'When external issue tracker is enabled and issues enabled on project settings' do
       it 'does not hide issues tab and hides labels tab' do
         allow_next_instance_of(Project) do |instance|
-          allow(instance).to receive(:external_issue_tracker).and_return(JiraService.new)
+          allow(instance).to receive(:external_issue_tracker).and_return(Integrations::Jira.new)
         end
 
         visit project_path(project)
@@ -58,7 +58,7 @@ RSpec.describe 'Edit Project Settings' do
         project.issues_enabled = false
         project.save!
         allow_next_instance_of(Project) do |instance|
-          allow(instance).to receive(:external_issue_tracker).and_return(JiraService.new)
+          allow(instance).to receive(:external_issue_tracker).and_return(Integrations::Jira.new)
         end
       end
 

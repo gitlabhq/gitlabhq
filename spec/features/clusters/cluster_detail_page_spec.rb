@@ -31,30 +31,6 @@ RSpec.describe 'Clusterable > Show page' do
       expect(page).to have_content('Kubernetes cluster was successfully updated.')
     end
 
-    context 'when there is a cluster with ingress and external ip', :js do
-      before do
-        cluster.create_application_ingress!(external_ip: '192.168.1.100')
-
-        visit cluster_path
-      end
-
-      it 'shows help text with the domain as an alternative to custom domain', :js do
-        within '.js-cluster-details-form' do
-          expect(find(cluster_ingress_help_text_selector).text).to include('192.168.1.100')
-        end
-      end
-    end
-
-    context 'when there is no ingress' do
-      it 'alternative to custom domain is not shown' do
-        visit cluster_path
-
-        within '.js-cluster-details-form' do
-          expect(page).not_to have_selector(cluster_ingress_help_text_selector)
-        end
-      end
-    end
-
     it 'does not show the environments tab' do
       visit cluster_path
 

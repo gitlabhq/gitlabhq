@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Changing your time zone
+# Changing your time zone **(FREE SELF)**
 
 The global time zone configuration parameter can be changed in `config/gitlab.yml`:
 

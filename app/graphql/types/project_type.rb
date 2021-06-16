@@ -387,6 +387,10 @@ module Types
       ::Security::CiConfiguration::SastParserService.new(object).configuration
     end
 
+    def tag_list
+      object.topic_list
+    end
+
     private
 
     def project

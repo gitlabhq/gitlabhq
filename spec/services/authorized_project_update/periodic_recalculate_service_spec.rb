@@ -17,7 +17,7 @@ RSpec.describe AuthorizedProjectUpdate::PeriodicRecalculateService do
     end
 
     it 'calls AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker' do
-      (1..User.maximum(:id)).each_slice(batch_size).with_index do |batch, index|
+      (1..User.maximum(:id)).each_slice(batch_size).with_index(1) do |batch, index|
         delay = AuthorizedProjectUpdate::PeriodicRecalculateService::DELAY_INTERVAL * index
 
         expect(AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker).to(

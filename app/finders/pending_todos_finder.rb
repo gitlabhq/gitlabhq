@@ -26,6 +26,7 @@ class PendingTodosFinder
     todos = by_project(todos)
     todos = by_target_id(todos)
     todos = by_target_type(todos)
+    todos = by_discussion(todos)
     by_commit_id(todos)
   end
 
@@ -56,6 +57,14 @@ class PendingTodosFinder
   def by_commit_id(todos)
     if (id = params[:commit_id])
       todos.for_commit(id)
+    else
+      todos
+    end
+  end
+
+  def by_discussion(todos)
+    if (discussion = params[:discussion])
+      todos.for_note(discussion.notes)
     else
       todos
     end

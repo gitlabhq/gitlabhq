@@ -73,20 +73,9 @@
               = link_to admin_users_path(sort: value, filter: params[:filter], search_query: params[:search_query]) do
                 = title
 
-- if Feature.enabled?(:vue_admin_users, default_enabled: :yaml)
-  #js-admin-users-app{ data: admin_users_data_attributes(@users) }
-    .gl-spinner-container.gl-my-7
-      %span.gl-vertical-align-bottom.gl-spinner.gl-spinner-dark.gl-spinner-lg{ aria: { label: _('Loading') } }
-- elsif @users.empty?
-  .nothing-here-block.border-top-0
-    = s_('AdminUsers|No users found')
-- else
-  .table-holder
-    .thead-white.text-nowrap.gl-responsive-table-row.table-row-header{ role: 'row' }
-      - user_table_headers.each do |header|
-        .table-section{ class: header[:section_class_name], role: 'rowheader' }= header[:header_text]
-
-    = render partial: 'admin/users/user', collection: @users
+#js-admin-users-app{ data: admin_users_data_attributes(@users) }
+  .gl-spinner-container.gl-my-7
+    %span.gl-vertical-align-bottom.gl-spinner.gl-spinner-dark.gl-spinner-lg{ aria: { label: _('Loading') } }
 
 = paginate_collection @users
 

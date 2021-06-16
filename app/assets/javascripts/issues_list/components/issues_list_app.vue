@@ -27,6 +27,15 @@ import {
   PARAM_SORT,
   PARAM_STATE,
   RELATIVE_POSITION_DESC,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_EPIC,
+  TOKEN_TYPE_ITERATION,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_WEIGHT,
   UPDATED_DESC,
   URL_PARAM,
   urlSortParams,
@@ -110,13 +119,13 @@ export default {
     hasBlockedIssuesFeature: {
       default: false,
     },
-    hasIssues: {
-      default: false,
-    },
     hasIssueWeightsFeature: {
       default: false,
     },
     hasMultipleIssueAssigneesFeature: {
+      default: false,
+    },
+    hasProjectIssues: {
       default: false,
     },
     initialEmail: {
@@ -174,6 +183,9 @@ export default {
     };
   },
   computed: {
+    hasSearch() {
+      return this.searchQuery || Object.keys(this.urlFilterParams).length;
+    },
     isBulkEditButtonDisabled() {
       return this.showBulkEditSidebar || !this.issues.length;
     },
@@ -193,9 +205,22 @@ export default {
       return convertToSearchQuery(this.filterTokens) || undefined;
     },
     searchTokens() {
+      let preloadedAuthors = [];
+
+      if (gon.current_user_id) {
+        preloadedAuthors = [
+          {
+            id: gon.current_user_id,
+            name: gon.current_user_fullname,
+            username: gon.current_username,
+            avatar_url: gon.current_user_avatar_url,
+          },
+        ];
+      }
+
       const tokens = [
         {
-          type: 'author_username',
+          type: TOKEN_TYPE_AUTHOR,
           title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
           token: AuthorToken,
@@ -203,9 +228,10 @@ export default {
           unique: true,
           defaultAuthors: [],
           fetchAuthors: this.fetchUsers,
+          preloadedAuthors,
         },
         {
-          type: 'assignee_username',
+          type: TOKEN_TYPE_ASSIGNEE,
           title: TOKEN_TITLE_ASSIGNEE,
           icon: 'user',
           token: AuthorToken,
@@ -213,9 +239,10 @@ export default {
           unique: !this.hasMultipleIssueAssigneesFeature,
           defaultAuthors: DEFAULT_NONE_ANY,
           fetchAuthors: this.fetchUsers,
+          preloadedAuthors,
         },
         {
-          type: 'milestone',
+          type: TOKEN_TYPE_MILESTONE,
           title: TOKEN_TITLE_MILESTONE,
           icon: 'clock',
           token: MilestoneToken,
@@ -224,24 +251,28 @@ export default {
           fetchMilestones: this.fetchMilestones,
         },
         {
-          type: 'labels',
+          type: TOKEN_TYPE_LABEL,
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
           token: LabelToken,
           defaultLabels: [],
           fetchLabels: this.fetchLabels,
         },
-        {
-          type: 'my_reaction_emoji',
+      ];
+
+      if (this.isSignedIn) {
+        tokens.push({
+          type: TOKEN_TYPE_MY_REACTION,
           title: TOKEN_TITLE_MY_REACTION,
           icon: 'thumb-up',
           token: EmojiToken,
           unique: true,
           operators: OPERATOR_IS_ONLY,
           fetchEmojis: this.fetchEmojis,
-        },
-        {
-          type: 'confidential',
+        });
+
+        tokens.push({
+          type: TOKEN_TYPE_CONFIDENTIAL,
           title: TOKEN_TITLE_CONFIDENTIAL,
           icon: 'eye-slash',
           token: GlFilteredSearchToken,
@@ -251,12 +282,12 @@ export default {
             { icon: 'eye-slash', value: 'yes', title: this.$options.i18n.confidentialYes },
             { icon: 'eye', value: 'no', title: this.$options.i18n.confidentialNo },
           ],
-        },
-      ];
+        });
+      }
 
       if (this.projectIterationsPath) {
         tokens.push({
-          type: 'iteration',
+          type: TOKEN_TYPE_ITERATION,
           title: TOKEN_TITLE_ITERATION,
           icon: 'iteration',
           token: IterationToken,
@@ -267,18 +298,19 @@ export default {
 
       if (this.groupEpicsPath) {
         tokens.push({
-          type: 'epic_id',
+          type: TOKEN_TYPE_EPIC,
           title: TOKEN_TITLE_EPIC,
           icon: 'epic',
           token: EpicToken,
           unique: true,
+          idProperty: 'id',
           fetchEpics: this.fetchEpics,
         });
       }
 
       if (this.hasIssueWeightsFeature) {
         tokens.push({
-          type: 'weight',
+          type: TOKEN_TYPE_WEIGHT,
           title: TOKEN_TITLE_WEIGHT,
           icon: 'weight',
           token: WeightToken,
@@ -304,13 +336,23 @@ export default {
       );
     },
     urlParams() {
+      const filterParams = {
+        ...this.urlFilterParams,
+      };
+
+      if (filterParams.epic_id) {
+        filterParams.epic_id = encodeURIComponent(filterParams.epic_id);
+      } else if (filterParams['not[epic_id]']) {
+        filterParams['not[epic_id]'] = encodeURIComponent(filterParams['not[epic_id]']);
+      }
+
       return {
         due_date: this.dueDateFilter,
         page: this.page,
         search: this.searchQuery,
         state: this.state,
         ...urlSortParams[this.sortKey],
-        ...this.urlFilterParams,
+        ...filterParams,
       };
     },
   },
@@ -342,7 +384,7 @@ export default {
     fetchEmojis(search) {
       return this.fetchWithCache(this.autocompleteAwardEmojisPath, 'emojis', 'name', search);
     },
-    async fetchEpics(search) {
+    async fetchEpics({ search }) {
       const epics = await this.fetchWithCache(this.groupEpicsPath, 'epics');
       if (!search) {
         return epics.slice(0, MAX_LIST_SIZE);
@@ -365,11 +407,21 @@ export default {
       return axios.get(this.autocompleteUsersPath, { params: { search } });
     },
     fetchIssues() {
-      if (!this.hasIssues) {
+      if (!this.hasProjectIssues) {
         return undefined;
       }
 
       this.isLoading = true;
+
+      const filterParams = {
+        ...this.apiFilterParams,
+      };
+
+      if (filterParams.epic_id) {
+        filterParams.epic_id = filterParams.epic_id.split('::&').pop();
+      } else if (filterParams['not[epic_id]']) {
+        filterParams['not[epic_id]'] = filterParams['not[epic_id]'].split('::&').pop();
+      }
 
       return axios
         .get(this.endpoint, {
@@ -381,7 +433,7 @@ export default {
             state: this.state,
             with_labels_details: true,
             ...apiSortParams[this.sortKey],
-            ...this.apiFilterParams,
+            ...filterParams,
           },
         })
         .then(({ data, headers }) => {
@@ -490,7 +542,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="hasIssues">
+  <div v-if="hasProjectIssues">
     <issuable-list
       :namespace="projectPath"
       recent-searches-storage-key="issues"
@@ -500,6 +552,7 @@ export default {
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
       :issuables="issues"
+      label-filter-param="label_name"
       :tabs="$options.IssuableListTabs"
       :current-tab="state"
       :tab-counts="tabCounts"
@@ -536,7 +589,7 @@ export default {
         />
         <csv-import-export-buttons
           v-if="isSignedIn"
-          class="gl-mr-3"
+          class="gl-md-mr-3"
           :export-csv-path="exportCsvPathWithQuery"
           :issuable-count="totalIssues"
         />
@@ -600,7 +653,7 @@ export default {
 
       <template #empty-state>
         <gl-empty-state
-          v-if="searchQuery"
+          v-if="hasSearch"
           :description="$options.i18n.noSearchResultsDescription"
           :title="$options.i18n.noSearchResultsTitle"
           :svg-path="emptyStateSvgPath"

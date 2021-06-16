@@ -1,5 +1,6 @@
 ---
 redirect_to: '../../../integration/jira/index.md'
+remove_date: '2021-07-13'
 ---
 
 This document was moved to [another location](../../../integration/jira/index.md).

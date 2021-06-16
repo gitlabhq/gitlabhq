@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'admin mode on tasks' do
+RSpec.describe 'admin mode on tasks', :silence_stdout do
   before do
     allow(::Gitlab::Runtime).to receive(:test_suite?).and_return(false)
     allow(::Gitlab::Runtime).to receive(:rake?).and_return(true)

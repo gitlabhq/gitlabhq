@@ -24,11 +24,6 @@ module Users
       @source = source
       @incorrect_auth_found_callback = incorrect_auth_found_callback
       @missing_auth_found_callback = missing_auth_found_callback
-
-      # We need an up to date User object that has access to all relations that
-      # may have been created earlier. The only way to ensure this is to reload
-      # the User object.
-      user.reset
     end
 
     def execute
@@ -43,6 +38,10 @@ module Users
       end
 
       begin
+        # We need an up to date User object that has access to all relations that
+        # may have been created earlier. The only way to ensure this is to reload
+        # the User object.
+        user.reset
         execute_without_lease
       ensure
         Gitlab::ExclusiveLease.cancel(lease_key, uuid)

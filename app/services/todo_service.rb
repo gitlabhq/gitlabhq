@@ -316,6 +316,8 @@ class TodoService
       attributes.merge!(target_id: nil, commit_id: target.id)
     elsif target.is_a?(Issue)
       attributes[:issue_type] = target.issue_type
+    elsif target.is_a?(Discussion)
+      attributes.merge!(target_type: nil, target_id: nil, discussion: target)
     end
 
     attributes

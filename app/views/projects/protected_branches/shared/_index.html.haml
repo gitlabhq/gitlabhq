@@ -14,7 +14,7 @@
       %ul
         %li Allow only users with Maintainer #{link_to "permissions", help_page_path("user/permissions")} to create new protected branches.
         %li Allow only users with Maintainer permissions to push code.
-        %li Prevent <strong>anyone</strong> from force-pushing to the branch.
+        %li Prevent <strong>anyone</strong> from #{link_to "force-pushing", help_page_path('topics/git/git_rebase', anchor: 'force-push')} to the branch.
         %li Prevent <strong>anyone</strong> from deleting the branch.
 
     - if can? current_user, :admin_project, @project

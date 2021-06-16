@@ -45,7 +45,7 @@ To disable highlighting entirely, use `gitlab-language=text`. Lots more fun shen
 ```
 
 Please note that these configurations only take effect when the `.gitattributes`
-file is in your default branch (usually `master`).
+file is in your [default branch](repository/branches/default.md).
 
 NOTE:
 The Web IDE does not support `.gitattribute` files, but it's [planned for a future release](https://gitlab.com/gitlab-org/gitlab/-/issues/22014).

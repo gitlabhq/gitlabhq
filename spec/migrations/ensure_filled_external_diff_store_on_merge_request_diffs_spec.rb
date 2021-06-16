@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200910170908_ensure_filled_external_diff_store_on_merge_request_diffs.rb')
+require_migration!
 
 RSpec.describe EnsureFilledExternalDiffStoreOnMergeRequestDiffs, schema: 20200908095446 do
   let!(:merge_request_diffs) { table(:merge_request_diffs) }

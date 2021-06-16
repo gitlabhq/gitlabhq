@@ -12,6 +12,8 @@ module QA
           element :group_members_item
           element :group_milestones_link
           element :group_settings
+          element :group_information_link
+          element :group_information_submenu
         end
 
         view 'app/views/groups/sidebar/_packages_settings.html.haml' do
@@ -24,8 +26,10 @@ module QA
         end
 
         def click_group_members_item
-          within_sidebar do
-            click_element(:group_members_item)
+          hover_element(:group_information_link) do
+            within_submenu(:group_information_submenu) do
+              click_element(:group_members_item)
+            end
           end
         end
 

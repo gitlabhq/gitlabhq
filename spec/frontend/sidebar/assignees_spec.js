@@ -19,7 +19,7 @@ describe('Assignee component', () => {
     });
   };
 
-  const findComponentTextNoUsers = () => wrapper.find('.assign-yourself');
+  const findComponentTextNoUsers = () => wrapper.find('[data-testid="no-value"]');
   const findCollapsedChildren = () => wrapper.findAll('.sidebar-collapsed-icon > *');
 
   afterEach(() => {
@@ -64,7 +64,7 @@ describe('Assignee component', () => {
       });
 
       jest.spyOn(wrapper.vm, '$emit');
-      wrapper.find('.assign-yourself .btn-link').trigger('click');
+      wrapper.find('[data-testid="assign-yourself"]').trigger('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.emitted('assign-self')).toBeTruthy();

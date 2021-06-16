@@ -271,7 +271,7 @@ trigger_job:
 ### Mirroring status from upstream pipeline
 
 You can mirror the pipeline status from an upstream pipeline to a bridge job by
-using the `needs:pipeline` keyword. The latest pipeline status from master is
+using the `needs:pipeline` keyword. The latest pipeline status from the default branch is
 replicated to the bridge job.
 
 Example:

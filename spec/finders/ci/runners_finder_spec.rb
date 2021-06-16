@@ -51,23 +51,55 @@ RSpec.describe Ci::RunnersFinder do
       end
 
       context 'sort' do
-        context 'without sort param' do
-          it 'sorts by created_at' do
-            runner1 = create :ci_runner, created_at: '2018-07-12 07:00'
-            runner2 = create :ci_runner, created_at: '2018-07-12 08:00'
-            runner3 = create :ci_runner, created_at: '2018-07-12 09:00'
+        let_it_be(:runner1) { create :ci_runner, created_at: '2018-07-12 07:00', contacted_at: 1.minute.ago }
+        let_it_be(:runner2) { create :ci_runner, created_at: '2018-07-12 08:00', contacted_at: 3.minutes.ago }
+        let_it_be(:runner3) { create :ci_runner, created_at: '2018-07-12 09:00', contacted_at: 2.minutes.ago }
 
-            expect(described_class.new(current_user: admin, params: {}).execute).to eq [runner3, runner2, runner1]
+        subject do
+          described_class.new(current_user: admin, params: params).execute
+        end
+
+        shared_examples 'sorts by created_at descending' do
+          it 'sorts by created_at descending' do
+            is_expected.to eq [runner3, runner2, runner1]
           end
         end
 
-        context 'with sort param' do
-          it 'sorts by specified attribute' do
-            runner1 = create :ci_runner, contacted_at: 1.minute.ago
-            runner2 = create :ci_runner, contacted_at: 3.minutes.ago
-            runner3 = create :ci_runner, contacted_at: 2.minutes.ago
+        context 'without sort param' do
+          let(:params) { {} }
 
-            expect(described_class.new(current_user: admin, params: { sort: 'contacted_asc' }).execute).to eq [runner2, runner3, runner1]
+          it_behaves_like 'sorts by created_at descending'
+        end
+
+        %w(created_date created_at_desc).each do |sort|
+          context "with sort param equal to #{sort}" do
+            let(:params) { { sort: sort } }
+
+            it_behaves_like 'sorts by created_at descending'
+          end
+        end
+
+        context 'with sort param equal to created_at_asc' do
+          let(:params) { { sort: 'created_at_asc' } }
+
+          it 'sorts by created_at ascending' do
+            is_expected.to eq [runner1, runner2, runner3]
+          end
+        end
+
+        context 'with sort param equal to contacted_asc' do
+          let(:params) { { sort: 'contacted_asc' } }
+
+          it 'sorts by contacted_at ascending' do
+            is_expected.to eq [runner2, runner3, runner1]
+          end
+        end
+
+        context 'with sort param equal to contacted_desc' do
+          let(:params) { { sort: 'contacted_desc' } }
+
+          it 'sorts by contacted_at descending' do
+            is_expected.to eq [runner1, runner3, runner2]
           end
         end
       end
@@ -246,8 +278,8 @@ RSpec.describe Ci::RunnersFinder do
       subject { described_class.new(current_user: user, group: group, params: params).sort_key }
 
       context 'no params' do
-        it 'returns created_date' do
-          expect(subject).to eq('created_date')
+        it 'returns created_at_desc' do
+          expect(subject).to eq('created_at_desc')
         end
       end
 

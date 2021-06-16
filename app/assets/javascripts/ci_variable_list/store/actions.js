@@ -1,5 +1,5 @@
 import Api from '~/api';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import * as types from './mutation_types';
@@ -48,7 +48,9 @@ export const addVariable = ({ state, dispatch }) => {
       dispatch('fetchVariables');
     })
     .catch((error) => {
-      createFlash(error.response.data[0]);
+      createFlash({
+        message: error.response.data[0],
+      });
       dispatch('receiveAddVariableError', error);
     });
 };
@@ -78,7 +80,9 @@ export const updateVariable = ({ state, dispatch }) => {
       dispatch('fetchVariables');
     })
     .catch((error) => {
-      createFlash(error.response.data[0]);
+      createFlash({
+        message: error.response.data[0],
+      });
       dispatch('receiveUpdateVariableError', error);
     });
 };
@@ -105,7 +109,9 @@ export const fetchVariables = ({ dispatch, state }) => {
       dispatch('receiveVariablesSuccess', prepareDataForDisplay(data.variables));
     })
     .catch(() => {
-      createFlash(__('There was an error fetching the variables.'));
+      createFlash({
+        message: __('There was an error fetching the variables.'),
+      });
     });
 };
 
@@ -133,7 +139,9 @@ export const deleteVariable = ({ dispatch, state }) => {
       dispatch('fetchVariables');
     })
     .catch((error) => {
-      createFlash(error.response.data[0]);
+      createFlash({
+        message: error.response.data[0],
+      });
       dispatch('receiveDeleteVariableError', error);
     });
 };
@@ -154,7 +162,9 @@ export const fetchEnvironments = ({ dispatch, state }) => {
       dispatch('receiveEnvironmentsSuccess', prepareEnvironments(res.data));
     })
     .catch(() => {
-      createFlash(__('There was an error fetching the environments information.'));
+      createFlash({
+        message: __('There was an error fetching the environments information.'),
+      });
     });
 };
 

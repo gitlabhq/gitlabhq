@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :with_sign_ins) }
 
   let(:pipeline) { build(:ci_empty_pipeline, user: user, project: project) }
   let!(:step) { described_class.new(pipeline, command) }
@@ -43,7 +43,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
   end
 
   let(:save_incompleted) { true }
-  let(:dot_com) { true }
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project, current_user: user, yaml_processor_result: yaml_processor_result, save_incompleted: save_incompleted
@@ -57,7 +56,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
 
     before do
       stub_env('EXTERNAL_VALIDATION_SERVICE_URL', validation_service_url)
-      allow(Gitlab).to receive(:com?).and_return(dot_com)
       allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('correlation-id')
     end
 
@@ -194,61 +192,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
       it 'logs exceptions' do
         expect(Gitlab::ErrorTracking).to receive(:track_exception)
           .with(instance_of(Net::OpenTimeout), { project_id: project.id })
-
-        perform!
-      end
-    end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_external_validation_service: false)
-        stub_request(:post, validation_service_url)
-      end
-
-      it 'does not drop the pipeline' do
-        perform!
-
-        expect(pipeline.status).not_to eq('failed')
-        expect(pipeline.errors).to be_empty
-      end
-
-      it 'does not break the chain' do
-        perform!
-
-        expect(step.break?).to be false
-      end
-
-      it 'does not make requests' do
-        perform!
-
-        expect(WebMock).not_to have_requested(:post, validation_service_url)
-      end
-    end
-
-    context 'when not on .com' do
-      let(:dot_com) { false }
-
-      before do
-        stub_feature_flags(ci_external_validation_service: false)
-        stub_request(:post, validation_service_url).to_return(status: 404, body: "{}")
-      end
-
-      it 'drops the pipeline' do
-        perform!
-
-        expect(pipeline.status).to eq('failed')
-        expect(pipeline).to be_persisted
-        expect(pipeline.errors.to_a).to include('External validation failed')
-      end
-
-      it 'breaks the chain' do
-        perform!
-
-        expect(step.break?).to be true
-      end
-
-      it 'logs the authorization' do
-        expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline not authorized', project_id: project.id, user_id: user.id)
 
         perform!
       end

@@ -14,7 +14,10 @@ instance-level Kubernetes clusters allow you to connect a Kubernetes cluster to
 the GitLab instance, which enables you to use the same cluster across multiple
 projects.
 
-The instance level Kubernetes clusters can be found in the top menu by navigating to your instance's **{admin}** **Admin Area > Kubernetes**.
+To view the instance level Kubernetes clusters:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Kubernetes**.
 
 ## Cluster precedence
 

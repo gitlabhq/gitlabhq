@@ -49,6 +49,11 @@ RSpec.describe IssuesFinder do
           let(:expected_issuables) { [issue3, issue4] }
         end
 
+        it_behaves_like 'assignee OR filter' do
+          let(:params) { { or: { assignee_id: [user.id, user2.id] } } }
+          let(:expected_issuables) { [issue1, issue2, issue3, issue5] }
+        end
+
         context 'when assignee_id does not exist' do
           it_behaves_like 'assignee NOT ID filter' do
             let(:params) { { not: { assignee_id: -100 } } }
@@ -77,6 +82,11 @@ RSpec.describe IssuesFinder do
 
             let(:params) { { not: { assignee_username: [user.username, user2.username] } } }
             let(:expected_issuables) { [issue3, issue4] }
+          end
+
+          it_behaves_like 'assignee OR filter' do
+            let(:params) { { or: { assignee_username: [user2.username, user3.username] } } }
+            let(:expected_issuables) { [issue2, issue3] }
           end
 
           context 'when assignee_username does not exist' do

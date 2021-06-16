@@ -96,7 +96,10 @@ POST /projects/:id/protected_environments
 ```
 
 ```shell
-curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_environments"
+curl --header 'Content-Type: application/json' --request POST \
+     --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/22034114/protected_environments"
 ```
 
 | Attribute | Type | Required | Description |

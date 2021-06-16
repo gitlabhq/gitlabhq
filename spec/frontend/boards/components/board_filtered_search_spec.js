@@ -105,9 +105,9 @@ describe('BoardFilteredSearch', () => {
     beforeEach(() => {
       store = createStore();
 
-      jest.spyOn(store, 'dispatch');
-
       createComponent();
+
+      jest.spyOn(wrapper.vm, 'performSearch').mockImplementation();
     });
 
     it('sets the url params to the correct results', async () => {

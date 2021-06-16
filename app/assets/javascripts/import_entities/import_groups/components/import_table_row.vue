@@ -15,7 +15,7 @@ import ImportStatus from '../../components/import_status.vue';
 import { STATUSES } from '../../constants';
 import addValidationErrorMutation from '../graphql/mutations/add_validation_error.mutation.graphql';
 import removeValidationErrorMutation from '../graphql/mutations/remove_validation_error.mutation.graphql';
-import groupQuery from '../graphql/queries/group.query.graphql';
+import groupAndProjectQuery from '../graphql/queries/groupAndProject.query.graphql';
 
 const DEBOUNCE_INTERVAL = 300;
 
@@ -47,21 +47,21 @@ export default {
   },
 
   apollo: {
-    existingGroup: {
-      query: groupQuery,
+    existingGroupAndProject: {
+      query: groupAndProjectQuery,
       debounce: DEBOUNCE_INTERVAL,
       variables() {
         return {
           fullPath: this.fullPath,
         };
       },
-      update({ existingGroup }) {
+      update({ existingGroup, existingProject }) {
         const variables = {
           field: 'new_name',
           sourceGroupId: this.group.id,
         };
 
-        if (!existingGroup) {
+        if (!existingGroup && !existingProject) {
           this.$apollo.mutate({
             mutation: removeValidationErrorMutation,
             variables,
@@ -71,7 +71,7 @@ export default {
             mutation: addValidationErrorMutation,
             variables: {
               ...variables,
-              message: s__('BulkImport|Name already exists.'),
+              message: this.$options.i18n.NAME_ALREADY_EXISTS,
             },
           });
         }
@@ -115,6 +115,10 @@ export default {
       return joinPaths(gon.relative_url_root || '/', this.fullPath);
     },
   },
+
+  i18n: {
+    NAME_ALREADY_EXISTS: s__('BulkImport|Name already exists.'),
+  },
 };
 </script>
 
@@ -153,7 +157,7 @@ export default {
           :text="importTarget.target_namespace"
           :disabled="isAlreadyImported"
           toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
-          class="import-entities-namespace-dropdown gl-h-7 gl-flex-fill-1"
+          class="import-entities-namespace-dropdown gl-h-7 gl-flex-grow-1"
           data-qa-selector="target_namespace_selector_dropdown"
         >
           <gl-dropdown-item @click="$emit('update-target-namespace', '')">{{
@@ -180,7 +184,7 @@ export default {
         >
           /
         </div>
-        <div class="gl-flex-fill-1">
+        <div class="gl-flex-grow-1">
           <gl-form-input
             class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
             :class="{ 'is-invalid': isInvalid && !isAlreadyImported }"

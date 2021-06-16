@@ -4,7 +4,7 @@ group: Container Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Container Network Security
+# Container Network Security **(FREE)**
 
 Container Network Security in GitLab provides basic firewall functionality by leveraging Cilium
 NetworkPolicies to filter traffic going in and out of the cluster as well as traffic between pods
@@ -20,8 +20,8 @@ disabled by default, as they must usually be customized to match application-spe
 
 See the [installation guide](quick_start_guide.md) for the recommended steps to install GitLab
 Container Network Security. This guide shows the recommended way of installing Container Network
-Security through GMAv2. However, it's also possible to install Cilium manually through our Helm
-chart.
+Security through the Cluster Management Project. However, it's also possible to install Cilium
+manually through our Helm chart.
 
 ## Features
 

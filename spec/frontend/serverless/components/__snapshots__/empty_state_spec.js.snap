@@ -11,7 +11,7 @@ exports[`EmptyStateComponent should render content 1`] = `
       <p>In order to start using functions as a service, you must first install Knative on your Kubernetes cluster. <gl-link-stub href=\\"/help\\">More information</gl-link-stub>
       </p>
       <div class=\\"gl-display-flex gl-flex-wrap gl-justify-content-center\\">
-        <gl-button-stub category=\\"primary\\" variant=\\"confirm\\" size=\\"medium\\" icon=\\"\\" buttontextclasses=\\"\\" href=\\"/clusters\\" class=\\"gl-mb-3 gl-mx-2\\">Install Knative</gl-button-stub>
+        <!---->
         <!---->
       </div>
     </div>

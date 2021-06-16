@@ -26,17 +26,6 @@
 ### Environment variables
 RAILS_ENV=${RAILS_ENV:-'production'}
 SIDEKIQ_WORKERS=${SIDEKIQ_WORKERS:-1}
-USE_WEB_SERVER=${USE_WEB_SERVER:-'puma'}
-
-case "${USE_WEB_SERVER}" in
-  puma|unicorn)
-    use_web_server="$USE_WEB_SERVER"
-    ;;
-  *)
-    echo "Unsupported web server '${USE_WEB_SERVER}' (Allowed: 'puma', 'unicorn')" 1>&2
-    exit 1
-    ;;
-esac
 
 # Script variable names should be lower-case not to conflict with
 # internal /bin/sh variables such as PATH, EDITOR or SHELL.
@@ -45,7 +34,7 @@ app_root="/home/$app_user/gitlab"
 pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
 rails_socket="$socket_path/gitlab.socket"
-web_server_pid_path="$pid_path/$use_web_server.pid"
+web_server_pid_path="$pid_path/puma.pid"
 mail_room_enabled=false
 mail_room_pid_path="$pid_path/mail_room.pid"
 gitlab_workhorse_dir=$(cd $app_root/../gitlab-workhorse 2> /dev/null && pwd)
@@ -270,7 +259,7 @@ start_gitlab() {
   check_stale_pids
 
   if [ "$web_status" != "0" ]; then
-    echo "Starting GitLab web server ($use_web_server)"
+    echo "Starting GitLab web server"
   fi
   if [ "$sidekiq_status" != "0" ]; then
     echo "Starting GitLab Sidekiq"
@@ -295,7 +284,7 @@ start_gitlab() {
     # Remove old socket if it exists
     rm -f "$rails_socket" 2>/dev/null
     # Start the web server
-    RAILS_ENV=$RAILS_ENV USE_WEB_SERVER=$use_web_server bin/web start
+    RAILS_ENV=$RAILS_ENV bin/web start
   fi
 
   # If sidekiq is already running, don't start it again.
@@ -357,7 +346,7 @@ stop_gitlab() {
 
   if [ "$web_status" = "0" ]; then
     echo "Shutting down GitLab web server"
-    RAILS_ENV=$RAILS_ENV USE_WEB_SERVER=$use_web_server bin/web stop
+    RAILS_ENV=$RAILS_ENV bin/web stop
   fi
   if [ "$sidekiq_status" = "0" ]; then
     echo "Shutting down GitLab Sidekiq"
@@ -461,7 +450,7 @@ reload_gitlab(){
     exit 1
   fi
   printf "Reloading GitLab web server configuration... "
-  RAILS_ENV=$RAILS_ENV USE_WEB_SERVER=$use_web_server bin/web reload
+  RAILS_ENV=$RAILS_ENV bin/web reload
   echo "Done."
 
   echo "Restarting GitLab Sidekiq since it isn't capable of reloading its config..."

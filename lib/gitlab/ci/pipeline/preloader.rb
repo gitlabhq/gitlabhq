@@ -20,6 +20,7 @@ module Gitlab
               preloader.preload_ref_commits
               preloader.preload_pipeline_warnings
               preloader.preload_stages_warnings
+              preloader.preload_persisted_environments
             end
           end
         end
@@ -53,6 +54,13 @@ module Gitlab
         # queries.
         def preload_stages_warnings
           @pipeline.stages.each { |stage| stage.number_of_warnings }
+        end
+
+        # This batch loads the associated environments of multiple actions (builds)
+        # that can't use `preload` due to the indirect relationship.
+        def preload_persisted_environments
+          @pipeline.scheduled_actions.each { |action| action.persisted_environment }
+          @pipeline.manual_actions.each { |action| action.persisted_environment }
         end
       end
     end

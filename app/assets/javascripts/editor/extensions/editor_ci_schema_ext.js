@@ -14,9 +14,9 @@ export class CiSchemaExtension extends EditorLiteExtension {
    * @param {Object} opts
    * @param {String} opts.projectNamespace
    * @param {String} opts.projectPath
-   * @param {String?} opts.ref - Current ref. Defaults to master
+   * @param {String?} opts.ref - Current ref. Defaults to main
    */
-  registerCiSchema({ projectNamespace, projectPath, ref = 'master' } = {}) {
+  registerCiSchema({ projectNamespace, projectPath, ref } = {}) {
     const ciSchemaPath = Api.buildUrl(Api.projectFileSchemaPath)
       .replace(':namespace_path', projectNamespace)
       .replace(':project_path', projectPath)

@@ -5,7 +5,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# DNS records overview
+# DNS records overview **(FREE)**
 
 _Read this document for a brief overview of DNS records in the scope
 of GitLab Pages, for beginners in web development._

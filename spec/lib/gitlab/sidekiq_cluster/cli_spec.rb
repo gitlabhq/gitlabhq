@@ -108,114 +108,101 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do
         end
       end
 
-      # Remove with https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/646
-      context 'with --queue-selector and --experimental-queue-selector' do
-        it 'errors' do
+      context "with --queue-selector" do
+        where do
+          {
+            'memory-bound queues' => {
+              query: 'resource_boundary=memory',
+              included_queues: %w(project_export),
+              excluded_queues: %w(merge)
+            },
+            'memory- or CPU-bound queues' => {
+              query: 'resource_boundary=memory,cpu',
+              included_queues: %w(auto_merge:auto_merge_process project_export),
+              excluded_queues: %w(merge)
+            },
+            'high urgency CI queues' => {
+              query: 'feature_category=continuous_integration&urgency=high',
+              included_queues: %w(pipeline_cache:expire_job_cache pipeline_cache:expire_pipeline_cache),
+              excluded_queues: %w(merge)
+            },
+            'CPU-bound high urgency CI queues' => {
+              query: 'feature_category=continuous_integration&urgency=high&resource_boundary=cpu',
+              included_queues: %w(pipeline_cache:expire_pipeline_cache),
+              excluded_queues: %w(pipeline_cache:expire_job_cache merge)
+            },
+            'CPU-bound high urgency non-CI queues' => {
+              query: 'feature_category!=continuous_integration&urgency=high&resource_boundary=cpu',
+              included_queues: %w(new_issue),
+              excluded_queues: %w(pipeline_cache:expire_pipeline_cache)
+            },
+            'CI and SCM queues' => {
+              query: 'feature_category=continuous_integration|feature_category=source_code_management',
+              included_queues: %w(pipeline_cache:expire_job_cache merge),
+              excluded_queues: %w(mailers)
+            }
+          }
+        end
+
+        with_them do
+          it 'expands queues by attributes' do
+            expect(Gitlab::SidekiqCluster).to receive(:start) do |queues, opts|
+              expect(opts).to eq(default_options)
+              expect(queues.first).to include(*included_queues)
+              expect(queues.first).not_to include(*excluded_queues)
+
+              []
+            end
+
+            cli.run(%W(--queue-selector #{query}))
+          end
+
+          it 'works when negated' do
+            expect(Gitlab::SidekiqCluster).to receive(:start) do |queues, opts|
+              expect(opts).to eq(default_options)
+              expect(queues.first).not_to include(*included_queues)
+              expect(queues.first).to include(*excluded_queues)
+
+              []
+            end
+
+            cli.run(%W(--negate --queue-selector #{query}))
+          end
+        end
+
+        it 'expands multiple queue groups correctly' do
+          expect(Gitlab::SidekiqCluster)
+            .to receive(:start)
+                  .with([['chat_notification'], ['project_export']], default_options)
+                  .and_return([])
+
+          cli.run(%w(--queue-selector feature_category=chatops&has_external_dependencies=true resource_boundary=memory&feature_category=importers))
+        end
+
+        it 'allows the special * selector' do
+          worker_queues = %w(foo bar baz)
+
+          expect(Gitlab::SidekiqConfig::CliMethods)
+            .to receive(:worker_queues).and_return(worker_queues)
+
+          expect(Gitlab::SidekiqCluster)
+            .to receive(:start).with([worker_queues], default_options)
+
+          cli.run(%w(--queue-selector *))
+        end
+
+        it 'errors when the selector matches no queues' do
           expect(Gitlab::SidekiqCluster).not_to receive(:start)
 
-          expect { cli.run(%w(--queue-selector name=foo --experimental-queue-selector name=bar)) }
+          expect { cli.run(%w(--queue-selector has_external_dependencies=true&has_external_dependencies=false)) }
             .to raise_error(described_class::CommandError)
         end
-      end
 
-      # Simplify with https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/646
-      ['--queue-selector', '--experimental-queue-selector'].each do |flag|
-        context "with #{flag}" do
-          where do
-            {
-              'memory-bound queues' => {
-                query: 'resource_boundary=memory',
-                included_queues: %w(project_export),
-                excluded_queues: %w(merge)
-              },
-              'memory- or CPU-bound queues' => {
-                query: 'resource_boundary=memory,cpu',
-                included_queues: %w(auto_merge:auto_merge_process project_export),
-                excluded_queues: %w(merge)
-              },
-              'high urgency CI queues' => {
-                query: 'feature_category=continuous_integration&urgency=high',
-                included_queues: %w(pipeline_cache:expire_job_cache pipeline_cache:expire_pipeline_cache),
-                excluded_queues: %w(merge)
-              },
-              'CPU-bound high urgency CI queues' => {
-                query: 'feature_category=continuous_integration&urgency=high&resource_boundary=cpu',
-                included_queues: %w(pipeline_cache:expire_pipeline_cache),
-                excluded_queues: %w(pipeline_cache:expire_job_cache merge)
-              },
-              'CPU-bound high urgency non-CI queues' => {
-                query: 'feature_category!=continuous_integration&urgency=high&resource_boundary=cpu',
-                included_queues: %w(new_issue),
-                excluded_queues: %w(pipeline_cache:expire_pipeline_cache)
-              },
-              'CI and SCM queues' => {
-                query: 'feature_category=continuous_integration|feature_category=source_code_management',
-                included_queues: %w(pipeline_cache:expire_job_cache merge),
-                excluded_queues: %w(mailers)
-              }
-            }
-          end
+        it 'errors on an invalid query multiple queue groups correctly' do
+          expect(Gitlab::SidekiqCluster).not_to receive(:start)
 
-          with_them do
-            it 'expands queues by attributes' do
-              expect(Gitlab::SidekiqCluster).to receive(:start) do |queues, opts|
-                expect(opts).to eq(default_options)
-                expect(queues.first).to include(*included_queues)
-                expect(queues.first).not_to include(*excluded_queues)
-
-                []
-              end
-
-              cli.run(%W(#{flag} #{query}))
-            end
-
-            it 'works when negated' do
-              expect(Gitlab::SidekiqCluster).to receive(:start) do |queues, opts|
-                expect(opts).to eq(default_options)
-                expect(queues.first).not_to include(*included_queues)
-                expect(queues.first).to include(*excluded_queues)
-
-                []
-              end
-
-              cli.run(%W(--negate #{flag} #{query}))
-            end
-          end
-
-          it 'expands multiple queue groups correctly' do
-            expect(Gitlab::SidekiqCluster)
-              .to receive(:start)
-                    .with([['chat_notification'], ['project_export']], default_options)
-                    .and_return([])
-
-            cli.run(%W(#{flag} feature_category=chatops&has_external_dependencies=true resource_boundary=memory&feature_category=importers))
-          end
-
-          it 'allows the special * selector' do
-            worker_queues = %w(foo bar baz)
-
-            expect(Gitlab::SidekiqConfig::CliMethods)
-              .to receive(:worker_queues).and_return(worker_queues)
-
-            expect(Gitlab::SidekiqCluster)
-              .to receive(:start).with([worker_queues], default_options)
-
-            cli.run(%W(#{flag} *))
-          end
-
-          it 'errors when the selector matches no queues' do
-            expect(Gitlab::SidekiqCluster).not_to receive(:start)
-
-            expect { cli.run(%W(#{flag} has_external_dependencies=true&has_external_dependencies=false)) }
-              .to raise_error(described_class::CommandError)
-          end
-
-          it 'errors on an invalid query multiple queue groups correctly' do
-            expect(Gitlab::SidekiqCluster).not_to receive(:start)
-
-            expect { cli.run(%W(#{flag} unknown_field=chatops)) }
-              .to raise_error(Gitlab::SidekiqConfig::WorkerMatcher::QueryError)
-          end
+          expect { cli.run(%w(--queue-selector unknown_field=chatops)) }
+            .to raise_error(Gitlab::SidekiqConfig::WorkerMatcher::QueryError)
         end
       end
     end

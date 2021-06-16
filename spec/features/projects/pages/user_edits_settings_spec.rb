@@ -39,12 +39,6 @@ RSpec.describe 'Pages edits pages settings', :js do
         end
       end
 
-      it 'renders first deployment warning' do
-        visit project_pages_path(project)
-
-        expect(page).to have_content('It may take up to 30 minutes before the site is available after the first deployment.')
-      end
-
       shared_examples 'does not render access control warning' do
         it 'does not render access control warning' do
           visit project_pages_path(project)

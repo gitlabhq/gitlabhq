@@ -1,0 +1,21 @@
+- options = local_assigns.fetch(:options)
+- data = options[:data]
+
+- if directly_invite_members?
+  - options[:dropdown_class] += ' dropdown-extended-height'
+  - options[:footer_content] = true
+  - options[:wrapper_class] = local_assigns.fetch(:wrapper_class)
+  - options[:toggle_class] += ' js-invite-members-track'
+  - data['track-event'] = 'show_invite_members'
+  - data['track-label'] = local_assigns.fetch(:track_label)
+
+  = dropdown_tag(data['dropdown-title'], options: options) do
+    %ul.dropdown-footer-list
+      %li
+        .js-invite-members-trigger{ data: { trigger_element: 'anchor',
+          display_text: _('Invite Members'),
+          event: 'click_invite_members',
+          trigger_source: local_assigns.fetch(:trigger_source),
+          label: data['track-label'] } }
+- else
+  = dropdown_tag(data['dropdown-title'], options: options)

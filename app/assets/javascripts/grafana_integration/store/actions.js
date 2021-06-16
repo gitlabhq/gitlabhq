@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -38,5 +38,8 @@ export const receiveGrafanaIntegrationUpdateError = (_, error) => {
   const { response } = error;
   const message = response.data && response.data.message ? response.data.message : '';
 
-  createFlash(`${__('There was an error saving your changes.')} ${message}`, 'alert');
+  createFlash({
+    message: `${__('There was an error saving your changes.')} ${message}`,
+    type: 'alert',
+  });
 };

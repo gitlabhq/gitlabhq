@@ -16,6 +16,10 @@ module Gitlab
       @error
     end
 
+    def self.record_duration_for_status?(status)
+      status.to_i.between?(200, 499)
+    end
+
     # Tracks an event.
     #
     # See `Gitlab::Metrics::Transaction#add_event` for more details.

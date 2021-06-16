@@ -18,7 +18,8 @@
       "type": "object",
       "properties": {
         "id": { "type": "integer" },
-        "path": { "type": "string" }
+        "path": { "type": "string" },
+        "path_with_namespace": { "type": "string" }
       }
     },
     "milestone": {

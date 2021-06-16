@@ -118,7 +118,8 @@ describe('Pipeline Editor | Commit section', () => {
     });
 
     it('calls the mutation with the CREATE action', () => {
-      expect(mockMutate).toHaveBeenCalledTimes(1);
+      // the extra calls are for updating client queries (currentBranch and lastCommitBranch)
+      expect(mockMutate).toHaveBeenCalledTimes(3);
       expect(mockMutate).toHaveBeenCalledWith({
         mutation: commitCreate,
         update: expect.any(Function),
@@ -138,7 +139,7 @@ describe('Pipeline Editor | Commit section', () => {
     });
 
     it('calls the mutation with the UPDATE action', () => {
-      expect(mockMutate).toHaveBeenCalledTimes(1);
+      expect(mockMutate).toHaveBeenCalledTimes(3);
       expect(mockMutate).toHaveBeenCalledWith({
         mutation: commitCreate,
         update: expect.any(Function),
@@ -158,7 +159,7 @@ describe('Pipeline Editor | Commit section', () => {
     });
 
     it('calls the mutation with the current branch', () => {
-      expect(mockMutate).toHaveBeenCalledTimes(1);
+      expect(mockMutate).toHaveBeenCalledTimes(3);
       expect(mockMutate).toHaveBeenCalledWith({
         mutation: commitCreate,
         update: expect.any(Function),
@@ -181,7 +182,7 @@ describe('Pipeline Editor | Commit section', () => {
     it('a second commit submits the latest sha, keeping the form updated', async () => {
       await submitCommit();
 
-      expect(mockMutate).toHaveBeenCalledTimes(2);
+      expect(mockMutate).toHaveBeenCalledTimes(6);
       expect(mockMutate).toHaveBeenCalledWith({
         mutation: commitCreate,
         update: expect.any(Function),

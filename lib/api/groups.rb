@@ -372,7 +372,7 @@ module API
           expires_at: params[:expires_at]
         }
 
-        result = ::Groups::GroupLinks::CreateService.new(shared_with_group, current_user, group_link_create_params).execute(shared_group)
+        result = ::Groups::GroupLinks::CreateService.new(shared_group, shared_with_group, current_user, group_link_create_params).execute
         shared_group.preload_shared_group_links
 
         if result[:status] == :success

@@ -61,7 +61,7 @@ export default {
       required: false,
       default: IssuableType.Issue,
       validator(value) {
-        return [IssuableType.Issue, IssuableType.MergeRequest].includes(value);
+        return [IssuableType.Issue, IssuableType.MergeRequest, IssuableType.Alert].includes(value);
       },
     },
     issuableId: {
@@ -229,7 +229,7 @@ export default {
           @expand-widget="expandWidget"
         />
       </template>
-      <template #default>
+      <template #default="{ edit }">
         <user-select
           ref="userSelect"
           v-model="selected"
@@ -240,6 +240,7 @@ export default {
           :allow-multiple-assignees="allowMultipleAssignees"
           :current-user="currentUser"
           :issuable-type="issuableType"
+          :is-editing="edit"
           class="gl-w-full dropdown-menu-user"
           @toggle="collapseWidget"
           @error="showError"
@@ -247,7 +248,7 @@ export default {
         >
           <template #footer>
             <gl-dropdown-item v-if="directlyInviteMembers">
-              <sidebar-invite-members />
+              <sidebar-invite-members :issuable-type="issuableType" />
             </gl-dropdown-item> </template
         ></user-select>
       </template>

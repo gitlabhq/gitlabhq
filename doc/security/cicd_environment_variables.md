@@ -1,5 +1,6 @@
 ---
 redirect_to: 'cicd_variables.md'
+remove_date: '2021-05-15'
 ---
 
 This document was moved to [another location](cicd_variables.md).

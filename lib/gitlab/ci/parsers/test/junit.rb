@@ -69,6 +69,7 @@ module Gitlab
             elsif data.key?('error')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR
               system_output = data['error']
+              attachment = attachment_path(data['system_out'])
             elsif data.key?('skipped')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_SKIPPED
               system_output = data['skipped']

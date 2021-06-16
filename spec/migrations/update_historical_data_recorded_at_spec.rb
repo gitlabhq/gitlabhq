@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require Rails.root.join('db', 'migrate', '20201022094846_update_historical_data_recorded_at.rb')
+require_migration!
 
 RSpec.describe UpdateHistoricalDataRecordedAt do
   let(:historical_data_table) { table(:historical_data) }

@@ -14,35 +14,10 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
     context 'mattermost service is enabled' do
       let(:mattermost_enabled) { true }
 
-      it 'shows a help message' do
-        expect(page).to have_content("Use this service to perform common")
-      end
+      describe 'activation' do
+        let(:edit_path) { edit_project_service_path(project, :mattermost_slash_commands) }
 
-      it 'shows a token placeholder' do
-        token_placeholder = find_field('service_token')['placeholder']
-
-        expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
-      end
-
-      it 'redirects to the integrations page after saving but not activating' do
-        token = ('a'..'z').to_a.join
-
-        fill_in 'service_token', with: token
-        click_active_checkbox
-        click_save_integration
-
-        expect(current_path).to eq(edit_project_service_path(project, :mattermost_slash_commands))
-        expect(page).to have_content('Mattermost slash commands settings saved, but not active.')
-      end
-
-      it 'redirects to the integrations page after activating' do
-        token = ('a'..'z').to_a.join
-
-        fill_in 'service_token', with: token
-        click_save_integration
-
-        expect(current_path).to eq(edit_project_service_path(project, :mattermost_slash_commands))
-        expect(page).to have_content('Mattermost slash commands settings saved and active.')
+        include_examples 'user activates the Mattermost Slash Command integration'
       end
 
       it 'shows the add to mattermost button' do
@@ -109,7 +84,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
       end
 
       it 'shows an error alert with the error message if there is an error requesting teams' do
-        allow_any_instance_of(MattermostSlashCommandsService).to receive(:list_teams) { [[], 'test mattermost error message'] }
+        allow_any_instance_of(Integrations::MattermostSlashCommands).to receive(:list_teams) { [[], 'test mattermost error message'] }
 
         click_link 'Add to Mattermost'
 
@@ -138,7 +113,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
       def stub_teams(count: 0)
         teams = create_teams(count)
 
-        allow_any_instance_of(MattermostSlashCommandsService).to receive(:list_teams) { [teams, nil] }
+        allow_any_instance_of(Integrations::MattermostSlashCommands).to receive(:list_teams) { [teams, nil] }
 
         teams
       end

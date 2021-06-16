@@ -105,5 +105,17 @@ RSpec.describe CsvBuilder do
       expect(csv_data).not_to include "'*safe_desc"
       expect(csv_data).not_to include "'*safe_title"
     end
+
+    context 'when dangerous characters are after a line break' do
+      it 'does not append single quote to description' do
+        fake_object = double(title: "Safe title", description: "With task list\n-[x] todo 1")
+        fake_relation = FakeRelation.new([fake_object])
+        builder = described_class.new(fake_relation, 'Title' => 'title', 'Description' => 'description')
+
+        csv_data = builder.render
+
+        expect(csv_data).to eq("Title,Description\nSafe title,\"With task list\n-[x] todo 1\"\n")
+      end
+    end
   end
 end

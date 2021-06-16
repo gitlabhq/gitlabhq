@@ -178,10 +178,12 @@ RSpec.describe API::Repositories do
         expect(headers['Content-Disposition']).to eq 'inline'
       end
 
-      it_behaves_like 'uncached response' do
-        before do
-          get api(route, current_user)
-        end
+      it 'defines an uncached header response' do
+        get api(route, current_user)
+
+        expect(response.headers["Cache-Control"]).to eq("max-age=0, private, must-revalidate, no-store, no-cache")
+        expect(response.headers["Pragma"]).to eq("no-cache")
+        expect(response.headers["Expires"]).to eq("Fri, 01 Jan 1990 00:00:00 GMT")
       end
 
       context 'when sha does not exist' do

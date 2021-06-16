@@ -56,7 +56,13 @@ class Projects::ForksController < Projects::ApplicationController
           can_fork_to?(current_user.namespace)
 
         render json: {
-          namespaces: ForkNamespaceSerializer.new.represent(namespaces, project: project, current_user: current_user, memberships: memberships_hash)
+          namespaces: ForkNamespaceSerializer.new.represent(
+            namespaces,
+            project: project,
+            current_user: current_user,
+            memberships: memberships_hash,
+            forked_projects: forked_projects_by_namespace(namespaces)
+          )
         }
       end
     end
@@ -128,6 +134,10 @@ class Projects::ForksController < Projects::ApplicationController
 
   def memberships_hash
     current_user.members.where(source: load_namespaces_with_associations).index_by(&:source_id)
+  end
+
+  def forked_projects_by_namespace(namespaces)
+    project.forks.where(namespace: namespaces).includes(:namespace).index_by(&:namespace_id)
   end
 end
 

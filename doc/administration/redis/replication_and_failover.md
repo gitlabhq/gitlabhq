@@ -42,7 +42,7 @@ There should be no more than one Sentinel on the same machine though.
 
 You also need to take into consideration the underlying network topology,
 making sure you have redundant connectivity between Redis / Sentinel and
-GitLab instances, otherwise the networks will become a single point of
+GitLab instances, otherwise the networks become a single point of
 failure.
 
 Running Redis in a scaled environment requires a few things:
@@ -73,7 +73,7 @@ whole cluster down, invalidating the failover effort.
 
 ## Recommended setup
 
-For a minimal setup, you will install the Omnibus GitLab package in `3`
+For a minimal setup, you need to install the Omnibus GitLab package in `3`
 **independent** machines, both with **Redis** and **Sentinel**:
 
 - Redis Primary + Sentinel
@@ -84,7 +84,7 @@ If you are not sure or don't understand why and where the amount of nodes come
 from, read [Redis setup overview](#redis-setup-overview) and
 [Sentinel setup overview](#sentinel-setup-overview).
 
-For a recommended setup that can resist more failures, you will install
+For a recommended setup that can resist more failures, you need to install
 the Omnibus GitLab package in `5` **independent** machines, both with
 **Redis** and **Sentinel**:
 
@@ -99,9 +99,9 @@ the Omnibus GitLab package in `5` **independent** machines, both with
 You must have at least `3` Redis servers: `1` primary, `2` Replicas, and they
 need to each be on independent machines (see explanation above).
 
-You can have additional Redis nodes, that will help survive a situation
+You can have additional Redis nodes, that helps to survive a situation
 where more nodes goes down. Whenever there is only `2` nodes online, a failover
-will not be initiated.
+is not initiated.
 
 As an example, if you have `6` Redis nodes, a maximum of `3` can be
 simultaneously down.
@@ -117,7 +117,7 @@ in a failover situation, any **Replica** can be promoted as the new **Primary** 
 the Sentinel servers.
 
 The replication requires authentication, so you need to define a password to
-protect all Redis nodes and the Sentinels. They will all share the same
+protect all Redis nodes and the Sentinels. All of them share the same
 password, and all instances must be able to talk to
 each other over the network.
 
@@ -130,7 +130,7 @@ of Sentinels agreeing a node is down) to be able to start a failover.
 
 Whenever the **quorum** is met, the **majority** of all known Sentinel nodes
 need to be available and reachable, so that they can elect the Sentinel **leader**
-who will take all the decisions to restore the service availability by:
+who takes all the decisions to restore the service availability by:
 
 - Promoting a new **Primary**
 - Reconfiguring the other **Replicas** and make them point to the new **Primary**
@@ -150,7 +150,7 @@ consensus algorithm to be effective in the case of a failure.
 
 In a `3` nodes topology, you can only afford `1` Sentinel node going down.
 Whenever the **majority** of the Sentinels goes down, the network partition
-protection prevents destructive actions and a failover **will not be started**.
+protection prevents destructive actions and a failover **is not started**.
 
 Here are some examples:
 
@@ -159,11 +159,11 @@ Here are some examples:
 
 The **Leader** election can sometimes fail the voting round when **consensus**
 is not achieved (see the odd number of nodes requirement above). In that case,
-a new attempt will be made after the amount of time defined in
+a new attempt is made after the amount of time defined in
 `sentinel['failover_timeout']` (in milliseconds).
 
 NOTE:
-We will see where `sentinel['failover_timeout']` is defined later.
+We can see where `sentinel['failover_timeout']` is defined later.
 
 The `failover_timeout` variable has a lot of different use cases. According to
 the official documentation:
@@ -183,7 +183,7 @@ the official documentation:
 
 - The maximum time a failover in progress waits for all the replicas to be
   reconfigured as replicas of the new primary. However even after this time
-  the replicas will be reconfigured by the Sentinels anyway, but not with
+  the replicas are reconfigured by the Sentinels anyway, but not with
   the exact parallel-syncs progression as specified.
 
 ## Configuring Redis
@@ -195,7 +195,7 @@ If you already have Redis installed and running, read how to
 [switch from a single-machine installation](#switching-from-an-existing-single-machine-installation).
 
 NOTE:
-Redis nodes (both primary and replica) will need the same password defined in
+Redis nodes (both primary and replica) need the same password defined in
 `redis['password']`. At any time during a failover the Sentinels can
 reconfigure a node and change its status from primary to replica and vice versa.
 
@@ -218,14 +218,14 @@ The requirements for a Redis setup are the following:
 
 ### Switching from an existing single-machine installation
 
-If you already have a single-machine GitLab install running, you will need to
+If you already have a single-machine GitLab install running, you need to
 replicate from this machine first, before de-activating the Redis instance
 inside it.
 
-Your single-machine install will be the initial **Primary**, and the `3` others
+Your single-machine install is the initial **Primary**, and the `3` others
 should be configured as **Replica** pointing to this machine.
 
-After replication catches up, you will need to stop services in the
+After replication catches up, you need to stop services in the
 single-machine install, to rotate the **Primary** to one of the new nodes.
 
 Make the required changes in configuration and restart the new nodes again.
@@ -259,7 +259,7 @@ If you fail to replicate first, you may loose data (unprocessed background jobs)
    # sure you add extra firewall rules to prevent unauthorized access.
    redis['bind'] = '10.0.0.1'
 
-   # Define a port so Redis can listen for TCP requests which will allow other
+   # Define a port so Redis can listen for TCP requests which allows other
    # machines to connect to it.
    redis['port'] = 6379
 
@@ -303,7 +303,7 @@ Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
    # sure you add extra firewall rules to prevent unauthorized access.
    redis['bind'] = '10.0.0.2'
 
-   # Define a port so Redis can listen for TCP requests which will allow other
+   # Define a port so Redis can listen for TCP requests which allows other
    # machines to connect to it.
    redis['port'] = 6379
 
@@ -333,8 +333,8 @@ You can specify multiple roles like sentinel and Redis as:
 Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
 
 These values don't have to be changed again in `/etc/gitlab/gitlab.rb` after
-a failover, as the nodes will be managed by the Sentinels, and even after a
-`gitlab-ctl reconfigure`, they will get their configuration restored by
+a failover, as the nodes are managed by the Sentinels, and even after a
+`gitlab-ctl reconfigure`, they get their configuration restored by
 the same Sentinels.
 
 ### Step 3. Configuring the Redis Sentinel instances
@@ -342,7 +342,7 @@ the same Sentinels.
 NOTE:
 If you are using an external Redis Sentinel instance, be sure
 to exclude the `requirepass` parameter from the Sentinel
-configuration. This parameter will cause clients to report `NOAUTH
+configuration. This parameter causes clients to report `NOAUTH
 Authentication required.`. [Redis Sentinel 3.2.x does not support
 password authentication](https://github.com/antirez/redis/issues/3279).
 
@@ -362,8 +362,8 @@ multiple machines with the Sentinel daemon.
 
 ---
 
-1. SSH into the server that will host Redis Sentinel.
-1. **You can omit this step if the Sentinels will be hosted in the same node as
+1. SSH into the server that hosts Redis Sentinel.
+1. **You can omit this step if the Sentinels is hosted in the same node as
    the other Redis instances.**
 
    [Download/install](https://about.gitlab.com/install/) the
@@ -389,7 +389,7 @@ multiple machines with the Sentinel daemon.
    # The IP of the primary Redis node.
    redis['master_ip'] = '10.0.0.1'
 
-   # Define a port so Redis can listen for TCP requests which will allow other
+   # Define a port so Redis can listen for TCP requests which allows other
    # machines to connect to it.
    redis['port'] = 6379
 
@@ -437,7 +437,7 @@ multiple machines with the Sentinel daemon.
    ##
    ## - The maximum time a failover in progress waits for all the replica to be
    ##   reconfigured as replicas of the new primary. However even after this time
-   ##   the replicas will be reconfigured by the Sentinels anyway, but not with
+   ##   the replicas are reconfigured by the Sentinels anyway, but not with
    ##   the exact parallel-syncs progression as specified.
    # sentinel['failover_timeout'] = 60000
    ```
@@ -511,7 +511,7 @@ If you enable Monitoring, it must be enabled on **all** Redis servers.
       retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z),
    }
 
-   # Set the network addresses that the exporters will listen on
+   # Set the network addresses that the exporters listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
    redis_exporter['listen_address'] = '0.0.0.0:9121'
    ```
@@ -528,7 +528,7 @@ In a real world usage, you would also set up firewall rules to prevent
 unauthorized access from other machines and block traffic from the
 outside (Internet).
 
-We will use the same `3` nodes with **Redis** + **Sentinel** topology
+We use the same `3` nodes with **Redis** + **Sentinel** topology
 discussed in [Redis setup overview](#redis-setup-overview) and
 [Sentinel setup overview](#sentinel-setup-overview) documentation.
 
@@ -540,11 +540,11 @@ Here is a list and description of each **machine** and the assigned **IP**:
 - `10.0.0.4`: GitLab application
 
 Please note that after the initial configuration, if a failover is initiated
-by the Sentinel nodes, the Redis nodes will be reconfigured and the **Primary**
-will change permanently (including in `redis.conf`) from one node to the other,
+by the Sentinel nodes, the Redis nodes are reconfigured and the **Primary**
+changes permanently (including in `redis.conf`) from one node to the other,
 until a new failover is initiated again.
 
-The same thing will happen with `sentinel.conf` that will be overridden after the
+The same thing happens with `sentinel.conf` that is overridden after the
 initial execution, after any new sentinel node starts watching the **Primary**,
 or a failover promotes a different **Primary** node.
 
@@ -691,7 +691,7 @@ To make this work with Sentinel:
    ```
 
 NOTE:
-For each persistence class, GitLab will default to using the
+For each persistence class, GitLab defaults to using the
 configuration specified in `gitlab_rails['redis_sentinels']` unless
 overridden by the previously described settings.
 
@@ -726,7 +726,7 @@ redis_replica_role['enable'] = true # enable only one of them
 
 # When Redis primary or Replica role are enabled, the following services are
 # enabled/disabled. Note that if Redis and Sentinel roles are combined, both
-# services will be enabled.
+# services are enabled.
 
 # The following services are disabled
 sentinel['enable'] = false

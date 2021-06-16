@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon, GlSegmentedControl, GlToggle } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { STAGE_VIEW, LAYER_VIEW } from './constants';
 
 export default {
@@ -36,20 +36,20 @@ export default {
   },
   i18n: {
     hoverTipText: __('Tip: Hover over a job to see the jobs it depends on to run.'),
-    linksLabelText: __('Show dependencies'),
+    linksLabelText: s__('GraphViewType|Show dependencies'),
     viewLabelText: __('Group jobs by'),
   },
   views: {
     [STAGE_VIEW]: {
       type: STAGE_VIEW,
       text: {
-        primary: __('Stage'),
+        primary: s__('GraphViewType|Stage'),
       },
     },
     [LAYER_VIEW]: {
       type: LAYER_VIEW,
       text: {
-        primary: __('Job dependencies'),
+        primary: s__('GraphViewType|Job dependencies'),
       },
     },
   },

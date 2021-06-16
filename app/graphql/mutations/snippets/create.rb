@@ -49,7 +49,7 @@ module Mutations
 
         process_args_for_params!(args)
 
-        service_response = ::Snippets::CreateService.new(project, current_user, args).execute
+        service_response = ::Snippets::CreateService.new(project: project, current_user: current_user, params: args).execute
 
         # Only when the user is not an api user and the operation was successful
         if !api_user? && service_response.success?

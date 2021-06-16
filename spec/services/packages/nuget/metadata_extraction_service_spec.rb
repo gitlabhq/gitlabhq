@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::MetadataExtractionService do
-  let(:package_file) { create(:nuget_package).package_files.first }
+  let_it_be(:package_file) { create(:nuget_package).package_files.first }
+
   let(:service) { described_class.new(package_file.id) }
 
   describe '#execute' do
@@ -28,7 +29,7 @@ RSpec.describe Packages::Nuget::MetadataExtractionService do
 
     context 'with nuspec file' do
       before do
-        allow(service).to receive(:nuspec_file).and_return(fixture_file(nuspec_filepath))
+        allow(service).to receive(:nuspec_file_content).and_return(fixture_file(nuspec_filepath))
       end
 
       context 'with dependencies' do
@@ -57,7 +58,7 @@ RSpec.describe Packages::Nuget::MetadataExtractionService do
       let_it_be(:nuspec_filepath) { 'packages/nuget/with_metadata.nuspec' }
 
       before do
-        allow(service).to receive(:nuspec_file).and_return(fixture_file(nuspec_filepath))
+        allow(service).to receive(:nuspec_file_content).and_return(fixture_file(nuspec_filepath))
       end
 
       it { expect(subject[:license_url]).to eq('https://opensource.org/licenses/MIT') }

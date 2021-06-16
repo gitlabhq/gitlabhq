@@ -36,7 +36,7 @@
 
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
-  = render 'layouts/startup_css'
+  = render 'layouts/startup_css', { startup_filename: local_assigns.fetch(:startup_filename, nil) }
   - if user_application_theme == 'gl-dark'
     = stylesheet_link_tag_defer "application_dark"
     = yield :page_specific_styles
@@ -54,8 +54,6 @@
 
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 
-  -# Rendering this above Gon, to use in JS later
-  = render 'layouts/header/new_repo_experiment'
   = Gon::Base.render_data(nonce: content_security_policy_nonce)
 
   = javascript_include_tag locale_path unless I18n.locale == :en
@@ -73,7 +71,7 @@
   = action_cable_meta_tag
 
   %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }
-  %meta{ name: 'theme-color', content: '#474D57' }
+  %meta{ name: 'theme-color', content: user_theme_primary_color }
 
   -# Apple Safari/iOS home screen icons
   = favicon_link_tag 'touch-icon-iphone.png', rel: 'apple-touch-icon'

@@ -14,6 +14,7 @@ describe('Linked pipeline', () => {
   let wrapper;
 
   const findButton = () => wrapper.find(GlButton);
+  const findDownstreamPipelineTitle = () => wrapper.find('[data-testid="downstream-title"]');
   const findPipelineLabel = () => wrapper.find('[data-testid="downstream-pipeline-label"]');
   const findLinkedPipeline = () => wrapper.find({ ref: 'linkedPipeline' });
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
@@ -117,6 +118,11 @@ describe('Linked pipeline', () => {
     it('should display child label when pipeline project id is the same as triggered pipeline project id', () => {
       createWrapper(downstreamProps);
       expect(findPipelineLabel().exists()).toBe(true);
+    });
+
+    it('should have the name of the trigger job on the card when it is a child pipeline', () => {
+      createWrapper(downstreamProps);
+      expect(findDownstreamPipelineTitle().text()).toBe(mockPipeline.source_job.name);
     });
 
     it('should display parent label when pipeline project id is the same as triggered_by pipeline project id', () => {

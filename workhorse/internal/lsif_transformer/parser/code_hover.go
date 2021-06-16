@@ -50,9 +50,29 @@ func (ts *truncatableString) MarshalJSON() ([]byte, error) {
 	return json.Marshal(ts.Value)
 }
 
+func newCodeHovers(contents json.RawMessage) ([]*codeHover, error) {
+	var rawContents []json.RawMessage
+	if err := json.Unmarshal(contents, &rawContents); err != nil {
+		rawContents = []json.RawMessage{contents}
+	}
+
+	codeHovers := []*codeHover{}
+	for _, rawContent := range rawContents {
+		c, err := newCodeHover(rawContent)
+		if err != nil {
+			return nil, err
+		}
+
+		codeHovers = append(codeHovers, c)
+	}
+
+	return codeHovers, nil
+}
+
 func newCodeHover(content json.RawMessage) (*codeHover, error) {
 	// Hover value can be either an object: { "value": "func main()", "language": "go" }
 	// Or a string with documentation
+	// Or a markdown object: { "value": "```go\nfunc main()\n```", "kind": "markdown" }
 	// We try to unmarshal the content into a string and if we fail, we unmarshal it into an object
 	var c codeHover
 	if err := json.Unmarshal(content, &c.TruncatedValue); err != nil {

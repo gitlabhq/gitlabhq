@@ -29,11 +29,7 @@ module API
       end
 
       def projects_limit
-        if ::Feature.enabled?(:limit_projects_in_groups_api, default_enabled: true)
-          GroupProjectsFinder::DEFAULT_PROJECTS_LIMIT
-        else
-          nil
-        end
+        GroupProjectsFinder::DEFAULT_PROJECTS_LIMIT
       end
     end
   end

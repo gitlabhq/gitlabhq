@@ -148,7 +148,9 @@ You have to specify at least one of `name` or `url`
 Example request:
 
 ```shell
-curl --request PUT --data name="new name" --data link_type="runbook" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
+curl --request PUT --data name="new name" --data link_type="runbook" \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
 Example response:

@@ -23,7 +23,7 @@ Use [external object storage](https://docs.gitlab.com/charts/advanced/external-o
 ## Disabling Terraform state
 
 To disable terraform state site-wide, follow the steps below.
-A GitLab administrator may want to disable Terraform state to reduce diskspace or if Terraform is not used in your instance.
+A GitLab administrator may want to disable Terraform state to reduce disk space or if Terraform is not used in your instance.
 To do so, follow the steps below according to your installation's type.
 
 **In Omnibus installations:**

@@ -268,10 +268,57 @@ RSpec.describe WebHook do
   end
 
   describe '#enable!' do
-    it 'makes a hook executable' do
+    it 'makes a hook executable if it was marked as failed' do
       hook.recent_failures = 1000
 
       expect { hook.enable! }.to change(hook, :executable?).from(false).to(true)
+    end
+
+    it 'makes a hook executable if it is currently backed off' do
+      hook.disabled_until = 1.hour.from_now
+
+      expect { hook.enable! }.to change(hook, :executable?).from(false).to(true)
+    end
+
+    it 'does not update hooks unless necessary' do
+      expect(hook).not_to receive(:update!)
+
+      hook.enable!
+    end
+
+    it 'is idempotent on executable hooks' do
+      expect(hook).not_to receive(:update!)
+
+      expect { hook.enable! }.not_to change(hook, :executable?)
+    end
+  end
+
+  describe 'backoff!' do
+    it 'sets disabled_until to the next backoff' do
+      expect { hook.backoff! }.to change(hook, :disabled_until).to(hook.next_backoff.from_now)
+    end
+
+    it 'increments the backoff count' do
+      expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
+    end
+
+    it 'does not let the backoff count exceed the maximum failure count' do
+      hook.backoff_count = described_class::MAX_FAILURES
+
+      expect { hook.backoff! }.not_to change(hook, :backoff_count)
+    end
+  end
+
+  describe 'failed!' do
+    it 'increments the failure count' do
+      expect { hook.failed! }.to change(hook, :recent_failures).by(1)
+    end
+
+    it 'does not allow the failure count to exceed the maximum value' do
+      hook.recent_failures = described_class::MAX_FAILURES
+      expect(hook).not_to receive(:update!)
+
+      expect { hook.failed! }.not_to change(hook, :recent_failures)
     end
   end
 

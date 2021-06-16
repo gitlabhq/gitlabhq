@@ -58,7 +58,7 @@ export default {
   },
   computed: {
     tooltipText() {
-      return `${this.downstreamTitle} #${this.pipeline.id} - ${this.pipelineStatus.label}
+      return `${this.downstreamTitle} #${this.pipeline.id} - ${this.pipelineStatus.label} -
       ${this.sourceJobInfo}`;
     },
     buttonId() {
@@ -71,7 +71,7 @@ export default {
       return this.pipeline.project.name;
     },
     downstreamTitle() {
-      return this.childPipeline ? __('child-pipeline') : this.pipeline.project.name;
+      return this.childPipeline ? this.sourceJobName : this.pipeline.project.name;
     },
     parentPipeline() {
       return this.isUpstream && this.isSameProject;
@@ -163,7 +163,7 @@ export default {
         />
         <div v-else class="gl-pr-2"><gl-loading-icon inline /></div>
         <div class="gl-display-flex gl-flex-direction-column gl-w-13">
-          <span class="gl-text-truncate">
+          <span class="gl-text-truncate" data-testid="downstream-title">
             {{ downstreamTitle }}
           </span>
           <div class="gl-text-truncate">

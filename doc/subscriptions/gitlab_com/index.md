@@ -291,7 +291,7 @@ Quotas apply to:
 
   1. In the top-right corner, select your avatar.
   1. Select **Edit profile**.
-  1. In the left sidebar, select **[Usage Quotas](https://gitlab.com/profile/usage_quotas#pipelines-quota-tab)**.
+  1. In the left sidebar, select **[Usage Quotas](https://gitlab.com/-/profile/usage_quotas#pipelines-quota-tab)**.
 
 Only pipeline minutes for GitLab shared runners are restricted. If you have a
 specific runner set up for your projects, there is no limit to your build time on GitLab SaaS.

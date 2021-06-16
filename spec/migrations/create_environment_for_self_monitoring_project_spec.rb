@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200214214934_create_environment_for_self_monitoring_project')
+require_migration!
 
 RSpec.describe CreateEnvironmentForSelfMonitoringProject do
   let(:application_settings_table) { table(:application_settings) }

@@ -1,14 +1,7 @@
 import { trace, showAdvancedFilters } from '~/logs/stores/getters';
 import logsPageState from '~/logs/stores/state';
 
-import {
-  mockLogsResult,
-  mockTrace,
-  mockEnvName,
-  mockEnvironments,
-  mockManagedApps,
-  mockManagedAppName,
-} from '../mock_data';
+import { mockLogsResult, mockTrace, mockEnvName, mockEnvironments } from '../mock_data';
 
 describe('Logs Store getters', () => {
   let state;
@@ -77,45 +70,6 @@ describe('Logs Store getters', () => {
       it('returns true', () => {
         expect(showAdvancedFilters(state)).toBe(false);
       });
-    });
-  });
-
-  describe('when no managedApps are set', () => {
-    beforeEach(() => {
-      state.environments.current = null;
-      state.environments.options = [];
-      state.managedApps.current = mockManagedAppName;
-      state.managedApps.options = [];
-    });
-
-    it('returns false', () => {
-      expect(showAdvancedFilters(state)).toBe(false);
-    });
-  });
-
-  describe('when the managedApp supports filters', () => {
-    beforeEach(() => {
-      state.environments.current = null;
-      state.environments.options = mockEnvironments;
-      state.managedApps.current = mockManagedAppName;
-      state.managedApps.options = mockManagedApps;
-    });
-
-    it('returns true', () => {
-      expect(showAdvancedFilters(state)).toBe(true);
-    });
-  });
-
-  describe('when the managedApp does not support filters', () => {
-    beforeEach(() => {
-      state.environments.current = null;
-      state.environments.options = mockEnvironments;
-      state.managedApps.options = mockManagedApps;
-      state.managedApps.current = mockManagedApps[1].name;
-    });
-
-    it('returns false', () => {
-      expect(showAdvancedFilters(state)).toBe(false);
     });
   });
 });

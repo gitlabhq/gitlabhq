@@ -1,0 +1,8 @@
+---
+name: prevent_retry_of_retried_jobs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62349
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331695
+milestone: '14.0'
+type: development
+group: group::pipeline execution
+default_enabled: true

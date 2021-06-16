@@ -1,8 +1,0 @@
----
-name: ci_dynamic_child_pipeline
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23790
-rollout_issue_url: 
-milestone: '12.9'
-type: development
-group: group::continuous integration
-default_enabled: true

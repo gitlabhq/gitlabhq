@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'tokens rake tasks' do
+RSpec.describe 'tokens rake tasks', :silence_stdout do
   let!(:user) { create(:user) }
 
   before do

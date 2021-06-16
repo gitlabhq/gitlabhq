@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4752) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26383) to [GitLab Free](https://about.gitlab.com/pricing/) 12.9.
 
-GitLab makes it easy to view the logs of running pods or managed applications in
+GitLab makes it easy to view the logs of running pods in
 [connected Kubernetes clusters](index.md). By displaying the logs directly in GitLab
 in the **Log Explorer**, developers can avoid managing console tools or jumping
 to a different interface. The **Log Explorer** interface provides a set of filters
@@ -18,10 +18,11 @@ above the log file data, depending on your configuration:
 ![Pod logs](img/kubernetes_pod_logs_v12_10.png)
 
 - **Namespace** - Select the environment to display. Users with Maintainer or
-  greater [permissions](../../permissions.md) can also select Managed Apps.
-- **Search** - Only available if the Elastic Stack managed application is installed.
-- **Select time range** - Select the range of time to display. Only available if the
-  Elastic Stack managed application is installed.
+  greater [permissions](../../permissions.md) can also see pods in the
+  `gitlab-managed-apps` namespace.
+- **Search** - Only available if the [Elastic Stack integration](../../clusters/integrations.md#elastic-stack-cluster-integration) is enabled.
+- **Select time range** - Select the range of time to display.
+  Only available if the [Elastic Stack integration](../../clusters/integrations.md#elastic-stack-cluster-integration) is enabled.
 - **Scroll to bottom** **{scroll_down}** - Scroll to the end of the displayed logs.
 - **Refresh** **{retry}** - Reload the displayed logs.
 
@@ -43,12 +44,11 @@ a [metrics dashboard](../../../operations/metrics/index.md) and select **View lo
 
 1. Sign in as a user with the _View pod logs_
    [permissions](../../permissions.md#project-members-permissions) in the project.
-1. *To navigate to the **Log Explorer** from the sidebar menu,* go to
-   **{cloud-gear}** **Operations > Pod logs**.
-   ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 12.5.)
-1. *To navigate to the **Log Explorer** from a specific pod on a [Deploy Board](../deploy_boards.md):*
+1. To navigate to the **Log Explorer** from the sidebar menu, go to **Monitor > Logs**
+   ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 12.5.).
+1. To navigate to the **Log Explorer** from a specific pod on a [Deploy Board](../deploy_boards.md):
 
-   1. Go to **{cloud-gear}** **Operations > Environments** and find the environment
+   1. Go to **Deployments > Environments** and find the environment
       which contains the desired pod, like `production`.
    1. On the **Environments** page, you should see the status of the environment's
       pods with [Deploy Boards](../deploy_boards.md).
@@ -81,7 +81,7 @@ Support for historical data is coming
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197879) in GitLab 12.8.
 
-When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack)
+When you enable [Elastic Stack](../../clusters/integrations.md#elastic-stack-cluster-integration)
 on your cluster, you can filter logs displayed in the **Log Explorer** by date.
 
 Click **Show last** in the **Log Explorer** to see the available options.
@@ -90,7 +90,7 @@ Click **Show last** in the **Log Explorer** to see the available options.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656) in GitLab 12.7.
 
-When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster,
+When you enable [Elastic Stack](../../clusters/integrations.md#elastic-stack-cluster-integration) on your cluster,
 you can search the content of your logs through a search bar. The search is passed
 to Elasticsearch using the
 [simple_query_string](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html)

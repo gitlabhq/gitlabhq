@@ -98,6 +98,9 @@ module API
             optional :architecture, type: String, desc: %q(Runner's architecture)
             optional :executor, type: String, desc: %q(Runner's executor)
             optional :features, type: Hash, desc: %q(Runner's features)
+            optional :config, type: Hash, desc: %q(Runner's config) do
+              optional :gpus, type: String, desc: %q(GPUs enabled)
+            end
           end
           optional :session, type: Hash, desc: %q(Runner's session data) do
             optional :url, type: String, desc: %q(Session's url)
@@ -165,7 +168,6 @@ module API
         params do
           requires :token, type: String, desc: %q(Runners's authentication token)
           requires :id, type: Integer, desc: %q(Job's ID)
-          optional :trace, type: String, desc: %q(Job's full trace)
           optional :state, type: String, desc: %q(Job's status: success, failed)
           optional :checksum, type: String, desc: %q(Job's trace CRC32 checksum)
           optional :failure_reason, type: String, desc: %q(Job's failure_reason)

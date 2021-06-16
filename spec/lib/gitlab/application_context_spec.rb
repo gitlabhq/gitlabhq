@@ -68,6 +68,24 @@ RSpec.describe Gitlab::ApplicationContext do
     end
   end
 
+  describe '.current_context_attribute' do
+    it 'returns the raw attribute value' do
+      described_class.with_context(caller_id: "Hello") do
+        expect(described_class.current_context_attribute(:caller_id)).to be('Hello')
+      end
+    end
+
+    it 'returns the attribute value with meta prefix' do
+      described_class.with_context(feature_category: "secure") do
+        expect(described_class.current_context_attribute('meta.feature_category')).to be('secure')
+      end
+    end
+
+    it 'returns nil if the key was not present in the current context' do
+      expect(described_class.current_context_attribute(:caller_id)).to be(nil)
+    end
+  end
+
   describe '#to_lazy_hash' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }

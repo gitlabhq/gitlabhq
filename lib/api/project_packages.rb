@@ -41,7 +41,7 @@ module API
           declared_params.slice(:order_by, :sort, :package_type, :package_name, :include_versionless, :status)
         ).execute
 
-        present paginate(packages), with: ::API::Entities::Package, user: current_user
+        present paginate(packages), with: ::API::Entities::Package, user: current_user, namespace: user_project.root_ancestor
       end
 
       desc 'Get a single project package' do
@@ -55,7 +55,7 @@ module API
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute
 
-        present package, with: ::API::Entities::Package, user: current_user
+        present package, with: ::API::Entities::Package, user: current_user, namespace: user_project.root_ancestor
       end
 
       desc 'Remove a package' do

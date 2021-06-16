@@ -118,7 +118,9 @@ POST /groups/:id/labels
 | `description` | string  | no       | The description of the label, |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"name": "Feature Proposal", "color": "#FFA500", "description": "Describes new ideas" }' "https://gitlab.example.com/api/v4/groups/5/labels"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+     --data '{"name": "Feature Proposal", "color": "#FFA500", "description": "Describes new ideas" }' \
+     "https://gitlab.example.com/api/v4/groups/5/labels"
 ```
 
 Example response:
@@ -155,7 +157,8 @@ PUT /groups/:id/labels/:label_id
 | `description` | string  | no       | The description of the label. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"new_name": "Feature Idea" }' "https://gitlab.example.com/api/v4/groups/5/labels/Feature%20Proposal"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+     --data '{"new_name": "Feature Idea" }' "https://gitlab.example.com/api/v4/groups/5/labels/Feature%20Proposal"
 ```
 
 Example response:

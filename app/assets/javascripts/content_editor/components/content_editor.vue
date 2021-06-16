@@ -17,8 +17,12 @@ export default {
 };
 </script>
 <template>
-  <div class="md md-area" :class="{ 'is-focused': contentEditor.tiptapEditor.isFocused }">
+  <div
+    data-testid="content-editor"
+    class="md-area"
+    :class="{ 'is-focused': contentEditor.tiptapEditor.isFocused }"
+  >
     <top-toolbar class="gl-mb-4" :content-editor="contentEditor" />
-    <tiptap-editor-content :editor="contentEditor.tiptapEditor" />
+    <tiptap-editor-content class="md" :editor="contentEditor.tiptapEditor" />
   </div>
 </template>

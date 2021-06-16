@@ -74,6 +74,11 @@ export default {
       keys: ['label', 'code', 'proxy', 'error'],
     },
     {
+      metric: 'memory',
+      header: s__('PerformanceBar|Memory'),
+      keys: ['item_header', 'item_content'],
+    },
+    {
       metric: 'total',
       header: s__('PerformanceBar|Frontend resources'),
       keys: ['name', 'size'],
@@ -136,7 +141,7 @@ export default {
       <div id="peek-view-host" class="view">
         <span
           v-if="hasHost"
-          class="current-host gl-text-white"
+          class="current-host"
           :class="{ canary: currentRequest.details.host.canary }"
         >
           <span v-html="birdEmoji"></span>

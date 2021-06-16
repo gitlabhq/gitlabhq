@@ -131,6 +131,7 @@ $dark-il: #de935f;
 
     .diff-td.diff-line-num.hll:not(.empty-cell),
     .diff-td.line-coverage.hll:not(.empty-cell),
+    .diff-td.line-codequality.hll:not(.empty-cell),
     .diff-td.line_content.hll:not(.empty-cell),
     td.diff-line-num.hll:not(.empty-cell),
     td.line-coverage.hll:not(.empty-cell),
@@ -145,6 +146,7 @@ $dark-il: #de935f;
 
     .diff-line-num.new,
     .line-coverage.new,
+    .line-codequality.new,
     .line_content.new {
       @include diff-background($dark-new-bg, $dark-new-idiff, $dark-border);
 
@@ -156,6 +158,7 @@ $dark-il: #de935f;
 
     .diff-line-num.old,
     .line-coverage.old,
+    .line-codequality.old,
     .line_content.old {
       @include diff-background($dark-old-bg, $dark-old-idiff, $dark-border);
 

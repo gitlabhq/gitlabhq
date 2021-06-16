@@ -38,16 +38,31 @@ module QA
           fill_element(:import_gitlab_token, token)
         end
 
+        def click_import_group
+          click_on 'Import group'
+        end
+
+        def click_create_group
+          click_on 'Create group'
+        end
+
         # Connect gitlab instance
         #
         # @param [String] gitlab_url
         # @param [String] gitlab_token
         # @return [void]
         def connect_gitlab_instance(gitlab_url, gitlab_token)
+          # Wait until element is present and refresh if not in case feature flag did not kick in
+          wait_until(max_duration: 10) { has_element?(:import_gitlab_url, wait: 1) }
+
           set_gitlab_url(gitlab_url)
           set_gitlab_token(gitlab_token)
 
           click_element(:connect_instance_button)
+        end
+
+        def switch_to_import_tab
+          click_element("import-group-pane_link")
         end
       end
     end

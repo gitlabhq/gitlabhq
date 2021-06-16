@@ -14,7 +14,7 @@ module Snippets
 
       return invalid_params_error(snippet) unless valid_params?
 
-      if visibility_changed?(snippet) && !visibility_allowed?(snippet, visibility_level)
+      if visibility_changed?(snippet) && !visibility_allowed?(visibility_level)
         return forbidden_visibility_error(snippet)
       end
 

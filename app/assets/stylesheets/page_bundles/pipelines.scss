@@ -116,7 +116,7 @@
         position: absolute;
         right: -7px;
         top: 11px;
-        border-bottom: 2px solid $border-color;
+        border-bottom: 2px solid var(--border-color, $border-color);
       }
     }
 

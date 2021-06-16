@@ -1,5 +1,4 @@
 import {
-  GlFilteredSearchToken,
   GlFilteredSearchSuggestion,
   GlFilteredSearchTokenSegment,
   GlDropdownDivider,
@@ -11,13 +10,14 @@ import {
   mockRegularLabel,
   mockLabels,
 } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import {
   DEFAULT_LABELS,
   DEFAULT_NONE_ANY,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 
 import { mockLabelToken } from '../mock_data';
@@ -25,6 +25,7 @@ import { mockLabelToken } from '../mock_data';
 jest.mock('~/flash');
 const defaultStubs = {
   Portal: true,
+  BaseToken,
   GlFilteredSearchSuggestionList: {
     template: '<div></div>',
     methods: {
@@ -68,53 +69,15 @@ describe('LabelToken', () => {
     wrapper.destroy();
   });
 
-  describe('computed', () => {
-    beforeEach(async () => {
-      // Label title with spaces is always enclosed in quotations by component.
-      wrapper = createComponent({ value: { data: `"${mockRegularLabel.title}"` } });
-
-      wrapper.setData({
-        labels: mockLabels,
-      });
-
-      await wrapper.vm.$nextTick();
-    });
-
-    describe('currentValue', () => {
-      it('returns lowercase string for `value.data`', () => {
-        expect(wrapper.vm.currentValue).toBe('"foo label"');
-      });
-    });
-
-    describe('activeLabel', () => {
-      it('returns object for currently present `value.data`', () => {
-        expect(wrapper.vm.activeLabel).toEqual(mockRegularLabel);
-      });
-    });
-
-    describe('containerStyle', () => {
-      it('returns object containing `backgroundColor` and `color` properties based on `activeLabel` value', () => {
-        expect(wrapper.vm.containerStyle).toEqual({
-          backgroundColor: mockRegularLabel.color,
-          color: mockRegularLabel.textColor,
-        });
-      });
-
-      it('returns empty object when `activeLabel` is not set', async () => {
-        wrapper.setData({
-          labels: [],
-        });
-
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.vm.containerStyle).toEqual({});
-      });
-    });
-  });
-
   describe('methods', () => {
     beforeEach(() => {
       wrapper = createComponent();
+    });
+
+    describe('getActiveLabel', () => {
+      it('returns label object from labels array based on provided `currentValue` param', () => {
+        expect(wrapper.vm.getActiveLabel(mockLabels, 'foo label')).toEqual(mockRegularLabel);
+      });
     });
 
     describe('getLabelName', () => {
@@ -158,7 +121,9 @@ describe('LabelToken', () => {
         wrapper.vm.fetchLabelBySearchTerm('foo');
 
         return waitForPromises().then(() => {
-          expect(createFlash).toHaveBeenCalledWith('There was a problem fetching labels.');
+          expect(createFlash).toHaveBeenCalledWith({
+            message: 'There was a problem fetching labels.',
+          });
         });
       });
 
@@ -187,8 +152,14 @@ describe('LabelToken', () => {
       await wrapper.vm.$nextTick();
     });
 
-    it('renders gl-filtered-search-token component', () => {
-      expect(wrapper.find(GlFilteredSearchToken).exists()).toBe(true);
+    it('renders base-token component', () => {
+      const baseTokenEl = wrapper.find(BaseToken);
+
+      expect(baseTokenEl.exists()).toBe(true);
+      expect(baseTokenEl.props()).toMatchObject({
+        tokenValues: mockLabels,
+        fnActiveTokenValue: wrapper.vm.getActiveLabel,
+      });
     });
 
     it('renders token item when value is selected', () => {

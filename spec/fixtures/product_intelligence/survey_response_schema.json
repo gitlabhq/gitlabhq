@@ -3,7 +3,7 @@
   "self": {
     "vendor": "com.gitlab",
     "name": "survey_response",
-    "version": "1-0-0",
+    "version": "1-0-1",
     "format": "jsonschema"
   },
   "type": "object",
@@ -47,6 +47,12 @@
       "description": "Username",
       "type": ["string", "null"],
       "maxLength": 255
+    },
+    "onboarding_progress": {
+      "description": "Onboarding progress",
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 2147483647
     }
   }
 }

@@ -675,9 +675,20 @@ RSpec.describe Gitlab::Regex do
   describe '.helm_version_regex' do
     subject { described_class.helm_version_regex }
 
+    it { is_expected.to match('1.2.3') }
+    it { is_expected.to match('1.2.3-beta') }
+    it { is_expected.to match('1.2.3-alpha.3') }
+
     it { is_expected.to match('v1.2.3') }
     it { is_expected.to match('v1.2.3-beta') }
     it { is_expected.to match('v1.2.3-alpha.3') }
+
+    it { is_expected.not_to match('1') }
+    it { is_expected.not_to match('1.2') }
+    it { is_expected.not_to match('1./2.3') }
+    it { is_expected.not_to match('../../../../../1.2.3') }
+    it { is_expected.not_to match('%2e%2e%2f1.2.3') }
+
     it { is_expected.not_to match('v1') }
     it { is_expected.not_to match('v1.2') }
     it { is_expected.not_to match('v1./2.3') }

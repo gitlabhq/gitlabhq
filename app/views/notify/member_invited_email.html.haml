@@ -13,28 +13,48 @@
             = html_escape(s_("InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders
         %p.invite-actions
           = link_to s_('InviteEmail|Join now'), invite_url(@token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE), class: 'invite-btn-join'
-  - experiment_instance.try(:avatar) do
+  - experiment_instance.try(:activity) do
     %tr
-      %td.text-content
+      %td.text-content{ colspan: 2 }
         %img.mail-avatar{ height: "60", src: avatar_icon_for_user(member.created_by, 60, only_path: false), width: "60", alt: "" }
         %p
           = html_escape(s_("InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders.merge({ inviter: (link_to member.created_by.name, user_url(member.created_by)).html_safe })
         %p.invite-actions
           = link_to s_('InviteEmail|Join now'), invite_url(@token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE), class: 'invite-btn-join'
-  - experiment_instance.try(:permission_info) do
-    %tr
-      %td.text-content{ colspan: 2 }
-        %img.mail-avatar{ height: "60", src: avatar_icon_for_user(member.created_by, 60, only_path: false), width: "60", alt: "" }
-        %p
-          = html_escape(s_("InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} with the %{role} permission level.")) % placeholders.merge({ inviter: (link_to member.created_by.name, user_url(member.created_by)).html_safe })
-        %p.invite-actions
-          = link_to s_('InviteEmail|Join now'), invite_url(@token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE), class: 'invite-btn-join'
     %tr.border-top
-      %td.text-content.half-width
+      %td.text-content.mailer-align-left.half-width
         %h4
-          = s_('InviteEmail|What is a GitLab %{project_or_group}?') % { project_or_group: member_source.model_name.singular }
-        %p= invited_to_description(member_source.model_name.singular)
-      %td.text-content.half-width
+          = s_('InviteEmail|%{project_or_group} details') % { project_or_group: member_source.model_name.singular.capitalize }
+        %ul
+          %li
+            %div
+              %img.mailer-icon{ alt: '', src: image_url("mailers/members/users.png") }
+              %span
+                - member_count = member_source.members.size
+                = n_('%{bold_start}%{count}%{bold_end} member', '%{bold_start}%{count}%{bold_end} members',
+                  member_count).html_safe % { count: number_with_delimiter(member_count),
+                  bold_start: '<b>'.html_safe,
+                  bold_end: '</b>'.html_safe }
+          %li
+            %div
+              %img.mailer-icon{ alt: '', src: image_url("mailers/members/issues.png") }
+              %span
+                - issue_count = member_source.open_issues_count(member.created_by)
+                = n_('%{bold_start}%{count}%{bold_end} issue', '%{bold_start}%{count}%{bold_end} issues',
+                  issue_count).html_safe % { count: number_with_delimiter(issue_count),
+                  bold_start: '<b>'.html_safe,
+                  bold_end: '</b>'.html_safe }
+          %li
+            %div
+              %img.mailer-icon{ alt: '', src: image_url("mailers/members/merge-request-open.png") }
+              %span
+                - mr_count = member_source.open_merge_requests_count(member.created_by)
+                = n_('%{bold_start}%{count}%{bold_end} opened merge request', '%{bold_start}%{count}%{bold_end} opened merge requests',
+                  mr_count).html_safe % { count: number_with_delimiter(mr_count),
+                  bold_start: '<b>'.html_safe,
+                  bold_end: '</b>'.html_safe }
+      %td.text-content.mailer-align-left.half-width
         %h4
-          = s_('InviteEmail|What can I do with the %{role} permission level?') % { role: member.human_access.downcase }
-        %p= invited_role_description(member.human_access)
+          = s_("InviteEmail|What's it about?")
+        %p
+          = invited_to_description(member_source)

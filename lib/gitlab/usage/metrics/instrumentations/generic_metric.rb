@@ -13,6 +13,9 @@ module Gitlab
           #   end
           # end
           class << self
+            attr_reader :metric_operation
+            @metric_operation = :alt
+
             def value(&block)
               @metric_value = block
             end
@@ -24,6 +27,12 @@ module Gitlab
             alt_usage_data do
               self.class.metric_value.call
             end
+          end
+
+          def suggested_name
+            Gitlab::Usage::Metrics::NameSuggestion.for(
+              self.class.metric_operation
+            )
           end
         end
       end

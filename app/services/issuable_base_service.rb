@@ -27,8 +27,14 @@ class IssuableBaseService < ::BaseProjectService
     can?(current_user, ability_name, issuable)
   end
 
+  def can_set_issuable_metadata?(issuable)
+    ability_name = :"set_#{issuable.to_ability_name}_metadata"
+
+    can?(current_user, ability_name, issuable)
+  end
+
   def filter_params(issuable)
-    unless can_admin_issuable?(issuable)
+    unless can_set_issuable_metadata?(issuable)
       params.delete(:milestone)
       params.delete(:milestone_id)
       params.delete(:labels)
@@ -45,6 +51,7 @@ class IssuableBaseService < ::BaseProjectService
       params.delete(:canonical_issue_id)
       params.delete(:project)
       params.delete(:discussion_locked)
+      params.delete(:confidential)
     end
 
     filter_assignees(issuable)
@@ -184,7 +191,7 @@ class IssuableBaseService < ::BaseProjectService
       params[:assignee_ids] = process_assignee_ids(params, extra_assignee_ids: issuable.assignee_ids.to_a)
     end
 
-    issuable.assign_attributes(params)
+    issuable.assign_attributes(allowed_create_params(params))
 
     before_create(issuable)
 
@@ -194,6 +201,7 @@ class IssuableBaseService < ::BaseProjectService
 
     if issuable_saved
       create_system_notes(issuable, is_update: false) unless skip_system_notes
+      handle_changes(issuable, { params: params })
 
       after_create(issuable)
       execute_hooks(issuable)
@@ -233,7 +241,7 @@ class IssuableBaseService < ::BaseProjectService
     assign_requested_assignees(issuable)
 
     if issuable.changed? || params.present?
-      issuable.assign_attributes(params)
+      issuable.assign_attributes(allowed_update_params(params))
 
       if has_title_or_description_changed?(issuable)
         issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: current_user)
@@ -260,7 +268,7 @@ class IssuableBaseService < ::BaseProjectService
           issuable, old_labels: old_associations[:labels], old_milestone: old_associations[:milestone]
         )
 
-        handle_changes(issuable, old_associations: old_associations)
+        handle_changes(issuable, old_associations: old_associations, params: params)
 
         new_assignees = issuable.assignees.to_a
         affected_assignees = (old_associations[:assignees] + new_assignees) - (old_associations[:assignees] & new_assignees)
@@ -432,6 +440,7 @@ class IssuableBaseService < ::BaseProjectService
         milestone: issuable.try(:milestone)
       }
     associations[:total_time_spent] = issuable.total_time_spent if issuable.respond_to?(:total_time_spent)
+    associations[:time_change] = issuable.time_change if issuable.respond_to?(:time_change)
     associations[:description] = issuable.description
     associations[:reviewers] = issuable.reviewers.to_a if issuable.allows_reviewers?
 
@@ -504,6 +513,14 @@ class IssuableBaseService < ::BaseProjectService
 
   def update_timestamp?(issuable)
     issuable.changes.keys != ["relative_position"]
+  end
+
+  def allowed_create_params(params)
+    params
+  end
+
+  def allowed_update_params(params)
+    params
   end
 end
 

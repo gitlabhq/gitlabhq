@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Signing outgoing email with S/MIME
+# Signing outgoing email with S/MIME **(FREE SELF)**
 
 Notification emails sent by GitLab can be signed with S/MIME for improved
 security.

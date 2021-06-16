@@ -16,7 +16,7 @@ import GroupSelect from '~/invite_members/components/group_select.vue';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__, sprintf } from '~/locale';
-import { INVITE_MEMBERS_IN_COMMENT } from '../constants';
+import { INVITE_MEMBERS_IN_COMMENT, GROUP_FILTERS } from '../constants';
 import eventHub from '../event_hub';
 
 export default {
@@ -54,6 +54,16 @@ export default {
       type: Number,
       required: true,
     },
+    groupSelectFilter: {
+      type: String,
+      required: false,
+      default: GROUP_FILTERS.ALL,
+    },
+    groupSelectParentId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     helpLink: {
       type: String,
       required: true,
@@ -68,6 +78,7 @@ export default {
       newUsersToInvite: [],
       selectedDate: undefined,
       groupToBeSharedWith: {},
+      source: 'unknown',
     };
   },
   computed: {
@@ -195,6 +206,7 @@ export default {
         ...this.basePostData,
         email: usersToInviteByEmail,
         access_level: this.selectedAccessLevel,
+        invite_source: this.source,
       };
     },
     addByUserIdPostData(usersToAddById) {
@@ -202,6 +214,7 @@ export default {
         ...this.basePostData,
         user_id: usersToAddById,
         access_level: this.selectedAccessLevel,
+        invite_source: this.source,
       };
     },
     shareWithGroupPostData(groupToBeSharedWith) {
@@ -251,11 +264,11 @@ export default {
         ),
       },
     },
-    accessLevel: s__('InviteMembersModal|Choose a role permission'),
+    accessLevel: s__('InviteMembersModal|Select a role'),
     accessExpireDate: s__('InviteMembersModal|Access expiration date (optional)'),
     toastMessageSuccessful: s__('InviteMembersModal|Members were successfully added'),
     toastMessageUnsuccessful: s__('InviteMembersModal|Some of the members could not be added'),
-    readMoreText: s__(`InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions`),
+    readMoreText: s__(`InviteMembersModal|%{linkStart}Learn more%{linkEnd} about roles.`),
     inviteButtonText: s__('InviteMembersModal|Invite'),
     cancelButtonText: s__('InviteMembersModal|Cancel'),
     headerCloseLabel: s__('InviteMembersModal|Close invite team members'),
@@ -290,7 +303,12 @@ export default {
           :aria-labelledby="$options.membersTokenSelectLabelId"
           :placeholder="$options.labels[inviteeType].placeHolder"
         />
-        <group-select v-if="isInviteGroup" v-model="groupToBeSharedWith" />
+        <group-select
+          v-if="isInviteGroup"
+          v-model="groupToBeSharedWith"
+          :groups-filter="groupSelectFilter"
+          :parent-group-id="groupSelectParentId"
+        />
       </div>
 
       <label class="gl-font-weight-bold gl-mt-3">{{ $options.labels.accessLevel }}</label>

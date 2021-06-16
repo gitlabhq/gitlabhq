@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Release', :smoke, :runner do
+  RSpec.describe 'Release', :runner do
+    # TODO: Convert back to :smoke once proved to be stable. Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300906
     describe 'Pages' do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|

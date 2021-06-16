@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+
 import JiraUpgradeCta from '~/integrations/edit/components/jira_upgrade_cta.vue';
 
 describe('JiraUpgradeCta', () => {
@@ -18,13 +19,13 @@ describe('JiraUpgradeCta', () => {
 
   it('displays the correct message for premium and lower users', () => {
     createComponent({ showPremiumMessage: true });
-    expect(wrapper.html()).toContain('This is a Premium feature');
-    expect(wrapper.html()).toContain(contentMessage);
+    expect(wrapper.text()).toContain('This is a Premium feature');
+    expect(wrapper.text()).toContain(contentMessage);
   });
 
   it('displays the correct message for ultimate and lower users', () => {
     createComponent({ showUltimateMessage: true });
-    expect(wrapper.html()).toContain('This is an Ultimate feature');
-    expect(wrapper.html()).toContain(contentMessage);
+    expect(wrapper.text()).toContain('This is an Ultimate feature');
+    expect(wrapper.text()).toContain(contentMessage);
   });
 });

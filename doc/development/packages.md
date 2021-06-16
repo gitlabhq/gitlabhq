@@ -183,7 +183,7 @@ supports this case.
 
 There are project and group level permissions for `read_package`, `create_package`, and `destroy_package`. Each
 endpoint should
-[authorize the requesting user](https://gitlab.com/gitlab-org/gitlab/blob/398fef1ca26ae2b2c3dc89750f6b20455a1e5507/ee/lib/api/conan_packages.rb)
+[authorize the requesting user](https://gitlab.com/gitlab-org/gitlab/-/blob/398fef1ca26ae2b2c3dc89750f6b20455a1e5507/ee/lib/api/conan_packages.rb)
 against the project or group before continuing.
 
 #### Database and handling metadata
@@ -219,7 +219,7 @@ demonstrates adding an instance-level endpoint for Conan to workhorse. You can a
 implemented in the same file.
 
 Once the route has been added, you must add an additional `/authorize` version of the upload endpoint to your API file.
-[This example](https://gitlab.com/gitlab-org/gitlab/blob/398fef1ca26ae2b2c3dc89750f6b20455a1e5507/ee/lib/api/maven_packages.rb#L164)
+[This example](https://gitlab.com/gitlab-org/gitlab/-/blob/398fef1ca26ae2b2c3dc89750f6b20455a1e5507/ee/lib/api/maven_packages.rb#L164)
 shows the additional endpoint added for Maven. The `/authorize` endpoint verifies and authorizes the request from workhorse,
 then the normal upload endpoint is implemented below, consuming the metadata that workhorse provides in order to
 create the package record. Workhorse provides a variety of file metadata such as type, size, and different checksum formats.
@@ -276,7 +276,7 @@ features must be implemented when the feature flag is removed.
 - Background workers for extracting package metadata (if applicable)
 - Documentation (how to use the feature)
 - API Documentation (individual endpoints with curl examples)
-- Seeding in [`db/fixtures/development/26_packages.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/db/fixtures/development/26_packages.rb)
+- Seeding in [`db/fixtures/development/26_packages.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/fixtures/development/26_packages.rb)
 - Update the [runbook](https://gitlab.com/gitlab-com/runbooks/-/blob/31fb4959e89db25fddf865bc81734c222daf32dd/dashboards/stage-groups/package.dashboard.jsonnet#L74) for the Grafana charts
 - End-to-end feature tests for (at the minimum) publishing and installing a package
 

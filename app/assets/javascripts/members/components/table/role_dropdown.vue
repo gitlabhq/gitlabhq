@@ -78,7 +78,7 @@ export default {
     ref="glDropdown"
     :right="!isDesktop"
     :text="member.accessLevel.stringValue"
-    :header-text="__('Change permissions')"
+    :header-text="__('Change role')"
     :disabled="disabled"
   >
     <gl-dropdown-item

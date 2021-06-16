@@ -14,12 +14,14 @@ import {
   EDITOR_APP_STATUS_ERROR,
   EDITOR_APP_STATUS_LOADING,
   LOAD_FAILURE_UNKNOWN,
+  STARTER_TEMPLATE_NAME,
 } from './constants';
 import getBlobContent from './graphql/queries/blob_content.graphql';
 import getCiConfigData from './graphql/queries/ci_config.graphql';
 import getAppStatus from './graphql/queries/client/app_status.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
 import getIsNewCiConfigFile from './graphql/queries/client/is_new_ci_config_file.graphql';
+import getTemplate from './graphql/queries/get_starter_template.query.graphql';
 import PipelineEditorHome from './pipeline_editor_home.vue';
 
 export default {
@@ -51,12 +53,13 @@ export default {
       showStartScreen: false,
       showSuccess: false,
       showFailure: false,
+      starterTemplate: '',
     };
   },
 
   apollo: {
     initialCiFileContent: {
-      fetchPolicy: fetchPolicies.NETWORK,
+      fetchPolicy: fetchPolicies.NETWORK_ONLY,
       query: getBlobContent,
       // If it's a brand new file, we don't want to fetch the content.
       // Then when the user commits the first time, the query would run
@@ -135,6 +138,27 @@ export default {
     isNewCiConfigFile: {
       query: getIsNewCiConfigFile,
     },
+    starterTemplate: {
+      query: getTemplate,
+      variables() {
+        return {
+          projectPath: this.projectFullPath,
+          templateName: STARTER_TEMPLATE_NAME,
+        };
+      },
+      skip({ isNewCiConfigFile }) {
+        return !isNewCiConfigFile;
+      },
+      update(data) {
+        return data.project?.ciTemplate?.content || '';
+      },
+      result({ data }) {
+        this.updateCiConfig(data.project?.ciTemplate?.content || '');
+      },
+      error() {
+        this.reportFailure(LOAD_FAILURE_UNKNOWN);
+      },
+    },
   },
   computed: {
     hasUnsavedChanges() {
@@ -151,7 +175,7 @@ export default {
     },
   },
   i18n: {
-    tabEdit: s__('Pipelines|Write pipeline configuration'),
+    tabEdit: s__('Pipelines|Edit'),
     tabGraph: s__('Pipelines|Visualize'),
     tabLint: s__('Pipelines|Lint'),
   },
@@ -228,7 +252,8 @@ export default {
           .getClient()
           .writeQuery({ query: getIsNewCiConfigFile, data: { isNewCiConfigFile: false } });
       }
-      // Keep track of the latest commited content to know
+
+      // Keep track of the latest committed content to know
       // if the user has made changes to the file that are unsaved.
       this.lastCommittedContent = this.currentCiFileContent;
     },

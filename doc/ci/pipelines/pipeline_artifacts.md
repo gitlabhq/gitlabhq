@@ -1,11 +1,11 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Testing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto
 ---
 
-# Pipeline artifacts
+# Pipeline artifacts **(FREE)**
 
 Pipeline artifacts are files created by GitLab after a pipeline finishes. These are different than [job artifacts](job_artifacts.md) because they are not explicitly managed by the `.gitlab-ci.yml` definitions.
 
@@ -17,5 +17,10 @@ Pipeline artifacts are saved to disk or object storage. They count towards a pro
 
 ## When pipeline artifacts are deleted
 
-See the [`expire_in`](../yaml/README.md#artifactsexpire_in) documentation for information on when
-pipeline artifacts are deleted.
+Pipeline artifacts are deleted either:
+
+- Seven days after creation.
+- After another pipeline runs successfully, if they are from the most recent successful
+  pipeline.
+
+This deletion may take up to two days.

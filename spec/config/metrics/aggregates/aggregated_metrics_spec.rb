@@ -25,9 +25,9 @@ RSpec.describe 'aggregated metrics' do
 
   RSpec::Matchers.define :have_known_time_frame do
     allowed_time_frames = [
-      Gitlab::Utils::UsageData::ALL_TIME_TIME_FRAME_NAME,
-      Gitlab::Utils::UsageData::TWENTY_EIGHT_DAYS_TIME_FRAME_NAME,
-      Gitlab::Utils::UsageData::SEVEN_DAYS_TIME_FRAME_NAME
+      Gitlab::Usage::TimeFrame::ALL_TIME_TIME_FRAME_NAME,
+      Gitlab::Usage::TimeFrame::TWENTY_EIGHT_DAYS_TIME_FRAME_NAME,
+      Gitlab::Usage::TimeFrame::SEVEN_DAYS_TIME_FRAME_NAME
     ]
 
     match do |aggregate|
@@ -63,7 +63,7 @@ RSpec.describe 'aggregated metrics' do
         let_it_be(:events_records) { known_events.select { |event| aggregate[:events].include?(event[:name]) } }
 
         it "does not include 'all' time frame for Redis sourced aggregate" do
-          expect(aggregate[:time_frame]).not_to include(Gitlab::Utils::UsageData::ALL_TIME_TIME_FRAME_NAME)
+          expect(aggregate[:time_frame]).not_to include(Gitlab::Usage::TimeFrame::ALL_TIME_TIME_FRAME_NAME)
         end
 
         it "only refers to known events" do

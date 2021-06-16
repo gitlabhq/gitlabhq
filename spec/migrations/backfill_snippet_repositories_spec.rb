@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200420094444_backfill_snippet_repositories.rb')
+require_migration!
 
 RSpec.describe BackfillSnippetRepositories do
   let(:users) { table(:users) }

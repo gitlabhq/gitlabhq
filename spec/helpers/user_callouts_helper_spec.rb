@@ -61,26 +61,6 @@ RSpec.describe UserCalloutsHelper do
     end
   end
 
-  describe '.show_admin_integrations_moved?' do
-    subject { helper.show_admin_integrations_moved? }
-
-    context 'when user has not dismissed' do
-      before do
-        allow(helper).to receive(:user_dismissed?).with(described_class::ADMIN_INTEGRATIONS_MOVED) { false }
-      end
-
-      it { is_expected.to be true }
-    end
-
-    context 'when user dismissed' do
-      before do
-        allow(helper).to receive(:user_dismissed?).with(described_class::ADMIN_INTEGRATIONS_MOVED) { true }
-      end
-
-      it { is_expected.to be false }
-    end
-  end
-
   describe '.show_service_templates_deprecated_callout?' do
     using RSpec::Parameterized::TableSyntax
 

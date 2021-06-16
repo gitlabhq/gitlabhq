@@ -1,8 +1,0 @@
----
-name: database_sourced_aggregated_metrics
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52784
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/300411
-milestone: '13.9'
-type: development
-group: group::product intelligence
-default_enabled: false

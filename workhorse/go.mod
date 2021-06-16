@@ -28,7 +28,7 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/stretchr/testify v1.7.0
-	gitlab.com/gitlab-org/gitaly v1.74.0
+	gitlab.com/gitlab-org/gitaly/v14 v14.0.0-rc1
 	gitlab.com/gitlab-org/labkit v1.4.0
 	gocloud.dev v0.21.1-0.20201223184910-5094f54ed8bb
 	golang.org/x/exp v0.0.0-20200331195152-e8c3332aa8e5 // indirect
@@ -39,8 +39,3 @@ require (
 	google.golang.org/grpc v1.37.0
 	honnef.co/go/tools v0.1.3
 )
-
-// go get tries to enforce semantic version compatibility via module paths.
-// We can't upgrade to Gitaly v13.x.x from v1.x.x without using a manual override.
-// See https://gitlab.com/gitlab-org/gitaly/-/issues/3177 for more details.
-replace gitlab.com/gitlab-org/gitaly => gitlab.com/gitlab-org/gitaly v1.87.1-0.20201001041716-3f5e218def93

@@ -233,13 +233,15 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter do
         reference_filter(markdown)
       end.count
 
+      expect(control_count).to eq 1
+
       markdown = "#{reference} $9999990 $9999991 $9999992 $9999993 #{reference2} something/cool$12"
 
       # Since we're not batching snippet queries across projects,
       # we have to account for that.
       # 1 for both projects, 1 for snippets in each project == 3
       # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/330359
-      max_count = control_count + 1
+      max_count = control_count + 2
 
       expect do
         reference_filter(markdown)

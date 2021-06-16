@@ -7,7 +7,9 @@ import retryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.
 import {
   mockCancelledPipelineHeader,
   mockFailedPipelineHeader,
+  mockFailedPipelineNoPermissions,
   mockRunningPipelineHeader,
+  mockRunningPipelineNoPermissions,
   mockSuccessfulPipelineHeader,
 } from './mock_data';
 
@@ -166,6 +168,20 @@ describe('Pipeline details header', () => {
           mutation: deletePipelineMutation,
           variables: { id: mockFailedPipelineHeader.id },
         });
+      });
+    });
+
+    describe('Permissions', () => {
+      it('should not display the cancel action if user does not have permission', () => {
+        wrapper = createComponent(mockRunningPipelineNoPermissions);
+
+        expect(findCancelButton().exists()).toBe(false);
+      });
+
+      it('should not display the retry action if user does not have permission', () => {
+        wrapper = createComponent(mockFailedPipelineNoPermissions);
+
+        expect(findRetryButton().exists()).toBe(false);
       });
     });
   });

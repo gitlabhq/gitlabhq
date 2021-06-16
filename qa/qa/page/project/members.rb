@@ -6,7 +6,7 @@ module QA
       class Members < Page::Base
         include QA::Page::Component::InviteMembersModal
 
-        view 'app/views/projects/project_members/index.html.haml' do
+        view 'app/assets/javascripts/members/components/members_tabs.vue' do
           element :groups_list_tab
         end
 

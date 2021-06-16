@@ -8,7 +8,9 @@ module QA
         include SubMenus::Project
         include SubMenus::CiCd
         include SubMenus::Issues
-        include SubMenus::Operations
+        include SubMenus::Deployments
+        include SubMenus::Monitor
+        include SubMenus::Infrastructure
         include SubMenus::Repository
         include SubMenus::Settings
         include SubMenus::Packages
@@ -26,8 +28,10 @@ module QA
         end
 
         def click_activity
-          within_sidebar do
-            click_element(:sidebar_menu_item_link, menu_item: 'Activity')
+          hover_project_information do
+            within_submenu do
+              click_element(:sidebar_menu_item_link, menu_item: 'Activity')
+            end
           end
         end
 
@@ -38,8 +42,21 @@ module QA
         end
 
         def click_members
+          hover_project_information do
+            within_submenu do
+              click_element(:sidebar_menu_item_link, menu_item: 'Members')
+            end
+          end
+        end
+
+        private
+
+        def hover_project_information
           within_sidebar do
-            click_element(:sidebar_menu_link, menu_item: 'Members')
+            scroll_to_element(:sidebar_menu_link, menu_item: 'Project information')
+            find_element(:sidebar_menu_link, menu_item: 'Project information').hover
+
+            yield
           end
         end
       end

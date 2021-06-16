@@ -2,25 +2,10 @@
 
 # This file is used by Rack-based servers to start the application.
 
-if defined?(Unicorn)
-  require 'unicorn'
-
-  if ENV['RAILS_ENV'] == 'production' || ENV['RAILS_ENV'] == 'staging'
-    # Unicorn self-process killer
-    require 'unicorn/worker_killer'
-
-    min = (ENV['GITLAB_UNICORN_MEMORY_MIN'] || 400 * 1 << 20).to_i
-    max = (ENV['GITLAB_UNICORN_MEMORY_MAX'] || 650 * 1 << 20).to_i
-
-    # Max memory size (RSS) per worker
-    use Unicorn::WorkerKiller::Oom, min, max
-  end
-end
-
 require ::File.expand_path('../config/environment', __FILE__)
 
 def master_process?
-  Prometheus::PidProvider.worker_id.in? %w(unicorn_master puma_master)
+  Prometheus::PidProvider.worker_id == 'puma_master'
 end
 
 warmup do |app|

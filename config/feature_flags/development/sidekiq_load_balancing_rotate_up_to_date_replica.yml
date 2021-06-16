@@ -1,0 +1,8 @@
+---
+name: sidekiq_load_balancing_rotate_up_to_date_replica
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63413/
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333153
+milestone: '14.0'
+type: development
+group: group::memory
+default_enabled: false

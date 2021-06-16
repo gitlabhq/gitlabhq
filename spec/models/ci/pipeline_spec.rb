@@ -744,6 +744,42 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '#update_builds_coverage' do
+    let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+
+    context 'builds with coverage_regex defined' do
+      let!(:build_1) { create(:ci_build, :success, :trace_with_coverage, trace_coverage: 60.0, pipeline: pipeline) }
+      let!(:build_2) { create(:ci_build, :success, :trace_with_coverage, trace_coverage: 80.0, pipeline: pipeline) }
+
+      it 'updates the coverage value of each build from the trace' do
+        pipeline.update_builds_coverage
+
+        expect(build_1.reload.coverage).to eq(60.0)
+        expect(build_2.reload.coverage).to eq(80.0)
+      end
+    end
+
+    context 'builds without coverage_regex defined' do
+      let!(:build) { create(:ci_build, :success, :trace_with_coverage, coverage_regex: nil, trace_coverage: 60.0, pipeline: pipeline) }
+
+      it 'does not update the coverage value of each build from the trace' do
+        pipeline.update_builds_coverage
+
+        expect(build.reload.coverage).to eq(nil)
+      end
+    end
+
+    context 'builds with coverage values already present' do
+      let!(:build) { create(:ci_build, :success, :trace_with_coverage, trace_coverage: 60.0, coverage: 10.0, pipeline: pipeline) }
+
+      it 'does not update the coverage value of each build from the trace' do
+        pipeline.update_builds_coverage
+
+        expect(build.reload.coverage).to eq(10.0)
+      end
+    end
+  end
+
   describe '#retryable?' do
     subject { pipeline.retryable? }
 
@@ -2726,7 +2762,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           pipeline2.cancel_running
         end
 
-        extra_update_queries = 3 # transition ... => :canceled
+        extra_update_queries = 4 # transition ... => :canceled, queue pop
         extra_generic_commit_status_validation_queries = 2 # name_uniqueness_across_types
 
         expect(control2.count).to eq(control1.count + extra_update_queries + extra_generic_commit_status_validation_queries)
@@ -3158,6 +3194,81 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       it 'returns self id' do
         expect(subject).to contain_exactly(pipeline.id)
+      end
+    end
+  end
+
+  describe '#environments_in_self_and_descendants' do
+    subject { pipeline.environments_in_self_and_descendants }
+
+    context 'when pipeline is not child nor parent' do
+      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+      let_it_be(:build) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+
+      it 'returns just the pipeline environment' do
+        expect(subject).to contain_exactly(build.deployment.environment)
+      end
+    end
+
+    context 'when pipeline is in extended family' do
+      let_it_be(:parent) { create(:ci_pipeline) }
+      let_it_be(:parent_build) { create(:ci_build, :with_deployment, environment: 'staging', pipeline: parent) }
+
+      let_it_be(:pipeline) { create(:ci_pipeline, child_of: parent) }
+      let_it_be(:build) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+
+      let_it_be(:child) { create(:ci_pipeline, child_of: pipeline) }
+      let_it_be(:child_build) { create(:ci_build, :with_deployment, environment: 'canary', pipeline: child) }
+
+      let_it_be(:grandchild) { create(:ci_pipeline, child_of: child) }
+      let_it_be(:grandchild_build) { create(:ci_build, :with_deployment, environment: 'test', pipeline: grandchild) }
+
+      let_it_be(:sibling) { create(:ci_pipeline, child_of: parent) }
+      let_it_be(:sibling_build) { create(:ci_build, :with_deployment, environment: 'review', pipeline: sibling) }
+
+      it 'returns its own environment and from all descendants' do
+        expected_environments = [
+          build.deployment.environment,
+          child_build.deployment.environment,
+          grandchild_build.deployment.environment
+        ]
+        expect(subject).to match_array(expected_environments)
+      end
+
+      it 'does not return parent environment' do
+        expect(subject).not_to include(parent_build.deployment.environment)
+      end
+
+      it 'does not return sibling environment' do
+        expect(subject).not_to include(sibling_build.deployment.environment)
+      end
+    end
+
+    context 'when each pipeline has multiple environments' do
+      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+      let_it_be(:build1) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+      let_it_be(:build2) { create(:ci_build, :with_deployment, environment: 'staging', pipeline: pipeline) }
+
+      let_it_be(:child) { create(:ci_pipeline, child_of: pipeline) }
+      let_it_be(:child_build1) { create(:ci_build, :with_deployment, environment: 'canary', pipeline: child) }
+      let_it_be(:child_build2) { create(:ci_build, :with_deployment, environment: 'test', pipeline: child) }
+
+      it 'returns all related environments' do
+        expected_environments = [
+          build1.deployment.environment,
+          build2.deployment.environment,
+          child_build1.deployment.environment,
+          child_build2.deployment.environment
+        ]
+        expect(subject).to match_array(expected_environments)
+      end
+    end
+
+    context 'when pipeline has no environment' do
+      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+
+      it 'returns empty' do
+        expect(subject).to be_empty
       end
     end
   end
@@ -4510,6 +4621,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       expect { multi_build_pipeline.builds_with_failed_tests.map(&:project).map(&:full_path) }
         .not_to exceed_query_limit(control_count)
+    end
+  end
+
+  describe '#build_matchers' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:builds) { create_list(:ci_build, 2, pipeline: pipeline, project: pipeline.project) }
+
+    subject(:matchers) { pipeline.build_matchers }
+
+    it 'returns build matchers' do
+      expect(matchers.size).to eq(1)
+      expect(matchers).to all be_a(Gitlab::Ci::Matching::BuildMatcher)
+      expect(matchers.first.build_ids).to match_array(builds.map(&:id))
     end
   end
 end

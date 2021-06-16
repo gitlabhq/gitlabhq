@@ -58,6 +58,16 @@ RSpec.describe ProjectMember do
       maintainer.destroy!
       expect(Event.recent.first).to be_left_action
     end
+
+    context 'for an orphaned member' do
+      let!(:orphaned_project_member) do
+        owner.tap { |member| member.update_column(:user_id, nil) }
+      end
+
+      it 'does not raise an error' do
+        expect { orphaned_project_member.destroy! }.not_to raise_error
+      end
+    end
   end
 
   describe '.import_team' do

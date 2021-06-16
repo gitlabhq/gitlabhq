@@ -28,9 +28,9 @@ RSpec.describe 'Import/Export - Group Import', :js do
         group_name = 'Test Group Import'
 
         visit new_group_path
+        click_link 'Import group'
 
-        fill_in :group_name, with: group_name
-        find('#import-group-tab').click
+        fill_in :import_group_name, with: group_name
 
         expect(page).to have_content 'Import group from file'
         attach_file(file) do
@@ -51,9 +51,9 @@ RSpec.describe 'Import/Export - Group Import', :js do
     context 'when modifying the pre-filled path' do
       it 'successfully imports the group' do
         visit new_group_path
+        click_link 'Import group'
 
-        fill_in :group_name, with: 'Test Group Import'
-        find('#import-group-tab').click
+        fill_in :import_group_name, with: 'Test Group Import'
 
         fill_in :import_group_path, with: 'custom-path'
         attach_file(file) do
@@ -74,7 +74,7 @@ RSpec.describe 'Import/Export - Group Import', :js do
 
       it 'suggests a unique path' do
         visit new_group_path
-        find('#import-group-tab').click
+        click_link 'Import group'
 
         fill_in :import_group_path, with: 'test-group-import'
         expect(page).to have_content 'Group path is already taken. Suggestions: test-group-import1'
@@ -87,9 +87,9 @@ RSpec.describe 'Import/Export - Group Import', :js do
 
     it 'displays an error' do
       visit new_group_path
+      click_link 'Import group'
 
-      fill_in :group_name, with: 'Test Group Import'
-      find('#import-group-tab').click
+      fill_in :import_group_name, with: 'Test Group Import'
       attach_file(file) do
         find('.js-filepicker-button').click
       end

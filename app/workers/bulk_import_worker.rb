@@ -15,7 +15,8 @@ class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
     @bulk_import = BulkImport.find_by_id(bulk_import_id)
 
     return unless @bulk_import
-    return if @bulk_import.finished?
+    return if @bulk_import.finished? || @bulk_import.failed?
+    return @bulk_import.fail_op! if all_entities_failed?
     return @bulk_import.finish! if all_entities_processed? && @bulk_import.started?
     return re_enqueue if max_batch_size_exceeded? # Do not start more jobs if max allowed are already running
 
@@ -53,6 +54,10 @@ class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
 
   def all_entities_processed?
     entities.all? { |entity| entity.finished? || entity.failed? }
+  end
+
+  def all_entities_failed?
+    entities.all? { |entity| entity.failed? }
   end
 
   def max_batch_size_exceeded?

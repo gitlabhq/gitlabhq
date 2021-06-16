@@ -12,7 +12,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
   let(:package_version) { '1.0.0' }
   let(:package_file_name) { 'dummyproject.dummypackage.1.0.0.nupkg' }
 
-  RSpec.shared_examples 'raising an' do |error_class|
+  shared_examples 'raising an' do |error_class|
     it "raises an #{error_class}" do
       expect { subject }.to raise_error(error_class)
     end
@@ -21,11 +21,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
   describe '#execute' do
     subject { service.execute }
 
-    before do
-      stub_package_file_object_storage(enabled: true, direct_upload: true)
-    end
-
-    RSpec.shared_examples 'taking the lease' do
+    shared_examples 'taking the lease' do
       before do
         allow(service).to receive(:lease_release?).and_return(false)
       end
@@ -39,7 +35,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       end
     end
 
-    RSpec.shared_examples 'not updating the package if the lease is taken' do
+    shared_examples 'not updating the package if the lease is taken' do
       context 'without obtaining the exclusive lease' do
         let(:lease_key) { "packages:nuget:update_package_from_metadata_service:package:#{package_id}" }
         let(:metadata) { { package_name: package_name, package_version: package_version } }
@@ -117,9 +113,10 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       let(:expected_tags) { %w(foo bar test tag1 tag2 tag3 tag4 tag5) }
 
       before do
-        allow_any_instance_of(Packages::Nuget::MetadataExtractionService)
-          .to receive(:nuspec_file)
-          .and_return(fixture_file(nuspec_filepath))
+        allow_next_instance_of(Packages::Nuget::MetadataExtractionService) do |service|
+          allow(service)
+            .to receive(:nuspec_file_content).and_return(fixture_file(nuspec_filepath))
+        end
       end
 
       it 'creates tags' do
@@ -172,9 +169,10 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       let(:package_file_name) { 'test.package.3.5.2.nupkg' }
 
       before do
-        allow_any_instance_of(Packages::Nuget::MetadataExtractionService)
-          .to receive(:nuspec_file)
-          .and_return(fixture_file(nuspec_filepath))
+        allow_next_instance_of(Packages::Nuget::MetadataExtractionService) do |service|
+          allow(service)
+            .to receive(:nuspec_file_content).and_return(fixture_file(nuspec_filepath))
+        end
       end
 
       it 'updates package and package file' do
@@ -195,7 +193,9 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
     context 'with package file not containing a nuspec file' do
       before do
-        allow_any_instance_of(Zip::File).to receive(:glob).and_return([])
+        allow_next_instance_of(Zip::File) do |file|
+          allow(file).to receive(:glob).and_return([])
+        end
       end
 
       it_behaves_like 'raising an', ::Packages::Nuget::MetadataExtractionService::ExtractionError

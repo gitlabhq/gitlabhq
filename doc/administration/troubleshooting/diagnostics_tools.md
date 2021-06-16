@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Diagnostics tools
+# Diagnostics tools **(FREE SELF)**
 
 These are some of the diagnostics tools the GitLab Support team uses during troubleshooting.
 They are listed here for transparency, and they may be useful for users with experience

@@ -7,7 +7,7 @@ desc 'GitLab | Artifacts | Migrate files for artifacts to comply with new storag
 namespace :gitlab do
   namespace :artifacts do
     task migrate: :environment do
-      logger = Logger.new(STDOUT)
+      logger = Logger.new($stdout)
 
       helper = Gitlab::LocalAndRemoteStorageMigration::ArtifactMigrater.new(logger)
 
@@ -19,7 +19,7 @@ namespace :gitlab do
     end
 
     task migrate_to_local: :environment do
-      logger = Logger.new(STDOUT)
+      logger = Logger.new($stdout)
 
       helper = Gitlab::LocalAndRemoteStorageMigration::ArtifactMigrater.new(logger)
 

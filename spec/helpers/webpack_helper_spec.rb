@@ -15,6 +15,7 @@ RSpec.describe WebpackHelper do
   describe '#webpack_preload_asset_tag' do
     before do
       allow(Gitlab::Webpack::Manifest).to receive(:asset_paths).and_return([asset_path])
+      allow(helper).to receive(:content_security_policy_nonce).and_return('noncevalue')
     end
 
     it 'preloads the resource by default' do
@@ -22,7 +23,7 @@ RSpec.describe WebpackHelper do
 
       output = helper.webpack_preload_asset_tag(source)
 
-      expect(output).to eq("<link rel=\"preload\" href=\"#{asset_path}\" as=\"script\" type=\"text/javascript\">")
+      expect(output).to eq("<link rel=\"preload\" href=\"#{asset_path}\" as=\"script\" type=\"text/javascript\" nonce=\"noncevalue\">")
     end
 
     it 'prefetches the resource if explicitly asked' do

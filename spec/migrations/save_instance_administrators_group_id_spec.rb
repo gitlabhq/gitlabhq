@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20200210092405_save_instance_administrators_group_id')
+require_migration!
 
 RSpec.describe SaveInstanceAdministratorsGroupId do
   let(:application_settings_table) { table(:application_settings) }

@@ -33,9 +33,9 @@ permissions in a project or group.
 1. Connect GitLab with Prometheus, depending on your configuration:
    - *If Prometheus is already configured,* navigate to **Settings > Integrations > Prometheus**
      to provide the API endpoint of your Prometheus server.
-   - *For GitLab-managed Prometheus,* navigate to your cluster's **Details** page,
-     select the **Applications** tab, and install Prometheus. The integration is
-     auto-configured for you.
+   - *To use the Prometheus cluster integration,* navigate to your cluster's **Details** page,
+     select the **Integrations** tab, and follow the instructions to enable the Prometheus
+     cluster integration.
 1. Set up the Prometheus integration on the cloned example project.
 1. Add the Kubecost `cost-model` to your cluster:
    - *For non-managed clusters*, deploy it with GitLab CI/CD.
@@ -46,7 +46,7 @@ permissions in a project or group.
      kubectl apply -f kubernetes/ --namespace cost-model
      ```
 
-To access the cost insights, navigate to **Operations > Metrics** and select
+To access the cost insights, navigate to **Monitor > Metrics** and select
 the `default_costs.yml` dashboard. You can [customize](#customize-the-cost-dashboard)
 this dashboard.
 

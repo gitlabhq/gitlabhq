@@ -13,14 +13,9 @@ export default () => {
   const {
     dataset: {
       operationsSettingsEndpoint,
-      templates,
-      createIssue,
-      issueTemplateKey,
-      sendEmail,
       pagerdutyActive,
       pagerdutyWebhookUrl,
       pagerdutyResetKeyPath,
-      autoCloseIncident,
       slaActive,
       slaMinutes,
       slaFeatureAvailable,
@@ -32,13 +27,6 @@ export default () => {
     el,
     provide: {
       service,
-      alertSettings: {
-        templates: JSON.parse(templates),
-        createIssue: parseBoolean(createIssue),
-        issueTemplateKey,
-        sendEmail: parseBoolean(sendEmail),
-        autoCloseIncident: parseBoolean(autoCloseIncident),
-      },
       pagerDutySettings: {
         active: parseBoolean(pagerdutyActive),
         webhookUrl: pagerdutyWebhookUrl,

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, reference, howto
 ---
 
-# Webhooks and insecure internal web services
+# Webhooks and insecure internal web services **(FREE SELF)**
 
 NOTE:
 On GitLab.com, the [maximum number of webhooks and their size](../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
@@ -44,11 +44,13 @@ private network are forbidden by default. That means that all requests made
 to `127.0.0.1`, `::1` and `0.0.0.0`, as well as IPv4 `10.0.0.0/8`, `172.16.0.0/12`,
 `192.168.0.0/16` and IPv6 site-local (`ffc0::/10`) addresses aren't allowed.
 
-This behavior can be overridden by enabling the option *"Allow requests to the
-local network from web hooks and services"* in the *"Outbound requests"* section
-inside the **Admin Area > Settings** (`/admin/application_settings/network`):
+This behavior can be overridden:
 
-![Outbound requests admin settings](img/outbound_requests_section_v12_2.png)
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Network**.
+1. Expand the **Outbound requests** section:
+   ![Outbound requests admin settings](img/outbound_requests_section_v12_2.png)
+1. Select **Allow requests to the local network from web hooks and services**.
 
 NOTE:
 *System hooks* are enabled to make requests to local network by default since they are
@@ -61,10 +63,13 @@ set up by administrators. However, you can turn this off by disabling the
 
 You can allow certain domains and IP addresses to be accessible to both *system hooks*
 and *webhooks* even when local requests are not allowed by adding them to the
-allowlist. Navigate to **Admin Area > Settings > Network** (`/admin/application_settings/network`)
-and expand **Outbound requests**:
+allowlist:
 
-![Outbound local requests allowlist](img/allowlist_v13_0.png)
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Network** (`/admin/application_settings/network`)
+   and expand **Outbound requests**:
+
+   ![Outbound local requests allowlist](img/allowlist_v13_0.png)
 
 The allowed entries can be separated by semicolons, commas or whitespaces
 (including newlines) and be in different formats like hostnames, IP addresses and/or

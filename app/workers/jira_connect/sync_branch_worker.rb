@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module JiraConnect
-  class SyncBranchWorker # rubocop:disable Scalability/IdempotentWorker
+  class SyncBranchWorker
     include ApplicationWorker
 
     sidekiq_options retry: 3

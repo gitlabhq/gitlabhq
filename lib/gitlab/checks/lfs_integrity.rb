@@ -3,16 +3,19 @@
 module Gitlab
   module Checks
     class LfsIntegrity
-      def initialize(project, newrev, time_left)
+      def initialize(project, newrevs, time_left)
         @project = project
-        @newrev = newrev
+        @newrevs = newrevs
         @time_left = time_left
       end
 
       def objects_missing?
-        return false unless @newrev && @project.lfs_enabled?
+        return false unless @project.lfs_enabled?
 
-        new_lfs_pointers = Gitlab::Git::LfsChanges.new(@project.repository, @newrev)
+        newrevs = @newrevs.reject { |rev| rev.blank? || Gitlab::Git.blank_ref?(rev) }
+        return if newrevs.blank?
+
+        new_lfs_pointers = Gitlab::Git::LfsChanges.new(@project.repository, newrevs)
                                                   .new_pointers(object_limit: ::Gitlab::Git::Repository::REV_LIST_COMMIT_LIMIT, dynamic_timeout: @time_left)
 
         return false unless new_lfs_pointers.present?

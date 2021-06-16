@@ -33,7 +33,8 @@ In the Markdown doc for a resource (AKA endpoint):
 
 ## API topic template
 
-The following can be used as a template to get started:
+Use the following template to help you get started. Be sure to list any
+required attributes first in the table.
 
 ````markdown
 ## Descriptive title
@@ -50,8 +51,10 @@ Supported attributes:
 
 | Attribute   | Type     | Required | Description           |
 |:------------|:---------|:---------|:----------------------|
-| `attribute` | datatype | yes/no   | Detailed description. |
-| `attribute` | datatype | yes/no   | Detailed description. |
+| `attribute` | datatype | **{check-circle}** Yes | Detailed description. |
+| `attribute` | datatype | **{dotted-circle}** No | Detailed description. |
+| `attribute` | datatype | **{dotted-circle}** No | Detailed description. |
+| `attribute` | datatype | **{dotted-circle}** No | Detailed description. |
 
 Example request:
 
@@ -147,7 +150,8 @@ This example creates a new group. Be aware of the use of single (`'`) and double
 (`"`) quotes.
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' "https://gitlab.example.com/api/v4/groups"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+     --data '{"path": "my-group", "name": "My group"}' "https://gitlab.example.com/api/v4/groups"
 ```
 
 For readability, you can also set up the `--data` by using the following format:
@@ -169,7 +173,8 @@ Instead of using JSON or URL-encoding data, you can use `multipart/form-data` wh
 properly handles data encoding:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "title=ssh-key" --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." "https://gitlab.example.com/api/v4/users/25/keys"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "title=ssh-key" \
+     --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." "https://gitlab.example.com/api/v4/users/25/keys"
 ```
 
 The above example is run by and administrator and will add an SSH public key
@@ -195,5 +200,6 @@ exclude specific users when requesting a list of users for a project, you would
 do something like this:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "skip_users[]=<user_id>" --data "skip_users[]=<user_id>" "https://gitlab.example.com/api/v4/projects/<project_id>/users"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "skip_users[]=<user_id>" \
+     --data "skip_users[]=<user_id>" "https://gitlab.example.com/api/v4/projects/<project_id>/users"
 ```

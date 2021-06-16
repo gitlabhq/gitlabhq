@@ -1,4 +1,4 @@
-import { mapValues, omit } from 'lodash';
+import { mapValues } from 'lodash';
 import { InputRule } from 'prosemirror-inputrules';
 import { ENTER_KEY, BACKSPACE_KEY } from '~/lib/utils/keys';
 import Tracking from '~/tracking';
@@ -36,15 +36,16 @@ const trackInputRulesAndShortcuts = (tiptapExtension) => {
     addKeyboardShortcuts() {
       const shortcuts = this.parent?.() || {};
       const { name } = this;
-
       /**
        * We don’t want to track keyboard shortcuts
        * that are not deliberately executed to create
        * new types of content
        */
-      const withoutEnterShortcut = omit(shortcuts, [ENTER_KEY, BACKSPACE_KEY]);
-      const decorated = mapValues(withoutEnterShortcut, (commandFn, shortcut) =>
-        trackKeyboardShortcut(name, commandFn, shortcut),
+      const dotNotTrackKeys = [ENTER_KEY, BACKSPACE_KEY];
+      const decorated = mapValues(shortcuts, (commandFn, shortcut) =>
+        dotNotTrackKeys.includes(shortcut)
+          ? commandFn
+          : trackKeyboardShortcut(name, commandFn, shortcut),
       );
 
       return decorated;

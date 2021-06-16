@@ -4,14 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::CycleAnalytics::StageSummary do
   let(:project) { create(:project, :repository) }
-  let(:options) { { from: 1.day.ago, current_user: user } }
+  let(:options) { { from: 1.day.ago } }
+  let(:args) { { options: options, current_user: user } }
   let(:user) { create(:user, :admin) }
 
   before do
     project.add_maintainer(user)
   end
 
-  let(:stage_summary) { described_class.new(project, **options).data }
+  let(:stage_summary) { described_class.new(project, **args).data }
 
   describe "#new_issues" do
     subject { stage_summary.first }
@@ -117,11 +118,11 @@ RSpec.describe Gitlab::CycleAnalytics::StageSummary do
 
       before do
         project.add_guest(guest_user)
-        options.merge!({ current_user: guest_user })
+        args.merge!({ current_user: guest_user })
       end
 
       it 'does not include commit stats' do
-        data = described_class.new(project, **options).data
+        data = described_class.new(project, **args).data
         expect(includes_commits?(data)).to be_falsy
       end
 
