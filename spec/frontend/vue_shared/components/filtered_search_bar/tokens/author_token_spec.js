@@ -290,6 +290,14 @@ describe('AuthorToken', () => {
         expect(firstSuggestion).toContain('Administrator');
         expect(firstSuggestion).toContain('@root');
       });
+
+      it('does not show current user while searching', async () => {
+        wrapper.findComponent(BaseToken).vm.handleInput({ data: 'foo' });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
+      });
     });
   });
 });

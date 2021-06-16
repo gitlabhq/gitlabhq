@@ -2,9 +2,8 @@
 
 class Admin::UsersController < Admin::ApplicationController
   include RoutableActions
-  include Analytics::UniqueVisitsHelper
 
-  before_action :user, except: [:index, :cohorts, :new, :create]
+  before_action :user, except: [:index, :new, :create]
   before_action :check_impersonation_availability, only: :impersonate
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
   before_action :check_ban_user_feature_flag, only: [:ban]
@@ -14,7 +13,7 @@ class Admin::UsersController < Admin::ApplicationController
   PAGINATION_WITH_COUNT_LIMIT = 1000
 
   def index
-    return redirect_to cohorts_admin_users_path if params[:tab] == 'cohorts'
+    return redirect_to admin_cohorts_path if params[:tab] == 'cohorts'
 
     @users = User.filter_items(params[:filter]).order_name_asc
     @users = @users.search_with_secondary_emails(params[:search_query]) if params[:search_query].present?
@@ -22,11 +21,6 @@ class Admin::UsersController < Admin::ApplicationController
     @users = @users.sort_by_attribute(@sort = params[:sort])
     @users = @users.page(params[:page])
     @users = @users.without_count if paginate_without_count?
-  end
-
-  def cohorts
-    @cohorts = load_cohorts
-    track_cohorts_visit
   end
 
   def show
@@ -375,20 +369,6 @@ class Admin::UsersController < Admin::ApplicationController
 
   def log_impersonation_event
     Gitlab::AppLogger.info(_("User %{current_user_username} has started impersonating %{username}") % { current_user_username: current_user.username, username: user.username })
-  end
-
-  def load_cohorts
-    cohorts_results = Rails.cache.fetch('cohorts', expires_in: 1.day) do
-      CohortsService.new.execute
-    end
-
-    CohortsSerializer.new.represent(cohorts_results)
-  end
-
-  def track_cohorts_visit
-    if request.format.html? && request.headers['DNT'] != '1'
-      track_visit('i_analytics_cohorts')
-    end
   end
 end
 

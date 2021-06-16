@@ -10,12 +10,6 @@ namespace :admin do
       end
     end
 
-    collection do
-      scope '/-/' do
-        get :cohorts
-      end
-    end
-
     member do
       get :projects
       get :keys

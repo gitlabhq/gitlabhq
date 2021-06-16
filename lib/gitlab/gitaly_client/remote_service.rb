@@ -55,12 +55,17 @@ module Gitlab
         encode_utf8(response.ref)
       end
 
-      def update_remote_mirror(ref_name, only_branches_matching, ssh_key: nil, known_hosts: nil, keep_divergent_refs: false)
+      def update_remote_mirror(ref_name, remote_url, only_branches_matching, ssh_key: nil, known_hosts: nil, keep_divergent_refs: false)
         req_enum = Enumerator.new do |y|
           first_request = Gitaly::UpdateRemoteMirrorRequest.new(
-            repository: @gitaly_repo,
-            ref_name: ref_name
+            repository: @gitaly_repo
           )
+
+          if remote_url
+            first_request.remote = Gitaly::UpdateRemoteMirrorRequest::Remote.new(url: remote_url)
+          else
+            first_request.ref_name = ref_name
+          end
 
           first_request.ssh_key = ssh_key if ssh_key.present?
           first_request.known_hosts = known_hosts if known_hosts.present?

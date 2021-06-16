@@ -17498,10 +17498,12 @@ ALTER SEQUENCE requirements_id_seq OWNED BY requirements.id;
 CREATE TABLE requirements_management_test_reports (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    requirement_id bigint NOT NULL,
+    requirement_id bigint,
     author_id bigint,
     state smallint NOT NULL,
-    build_id bigint
+    build_id bigint,
+    issue_id bigint,
+    CONSTRAINT requirements_test_reports_requirement_id_xor_issue_id CHECK ((num_nonnulls(requirement_id, issue_id) = 1))
 );
 
 CREATE SEQUENCE requirements_management_test_reports_id_seq
@@ -24489,6 +24491,8 @@ CREATE INDEX index_requirements_management_test_reports_on_author_id ON requirem
 
 CREATE INDEX index_requirements_management_test_reports_on_build_id ON requirements_management_test_reports USING btree (build_id);
 
+CREATE INDEX index_requirements_management_test_reports_on_issue_id ON requirements_management_test_reports USING btree (issue_id);
+
 CREATE INDEX index_requirements_management_test_reports_on_requirement_id ON requirements_management_test_reports USING btree (requirement_id);
 
 CREATE INDEX index_requirements_on_author_id ON requirements USING btree (author_id);
@@ -25825,6 +25829,9 @@ ALTER TABLE ONLY vulnerabilities
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_88c725229f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY requirements_management_test_reports
+    ADD CONSTRAINT fk_88f30752fc FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_899c8f3231 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

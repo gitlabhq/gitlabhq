@@ -10,7 +10,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28129) in GitLab 12.10.
 
 This setting allows you to rate limit the requests to the issue creation endpoint.
-You can change its value in **Admin Area > Settings > Network > Issues Rate Limits**.
+To can change its value:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Network**.
+1. Expand **Issues Rate Limits**.
+1. Under **Max requests per minute per user**, enter the new value.
+1. Select **Save changes**.
 
 For example, if you set a limit of 300, requests using the
 [Projects::IssuesController#create](https://gitlab.com/gitlab-org/gitlab/raw/master/app/controllers/projects/issues_controller.rb)

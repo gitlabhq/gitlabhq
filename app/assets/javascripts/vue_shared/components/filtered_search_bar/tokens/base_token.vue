@@ -184,7 +184,7 @@ export default {
         <gl-dropdown-divider />
       </template>
       <slot
-        v-if="preloadedTokenValues.length"
+        v-if="preloadedTokenValues.length && !searchKey"
         name="token-values-list"
         :token-values="preloadedTokenValues"
       ></slot>
