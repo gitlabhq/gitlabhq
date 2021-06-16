@@ -1,20 +1,13 @@
 import Cookies from 'js-cookie';
 import { getParameterValues } from '~/lib/utils/url_utility';
-import {
-  INLINE_DIFF_VIEW_TYPE,
-  DIFF_VIEW_COOKIE_NAME,
-  DIFF_WHITESPACE_COOKIE_NAME,
-} from '../../constants';
+import { INLINE_DIFF_VIEW_TYPE, DIFF_VIEW_COOKIE_NAME } from '../../constants';
 
 import { fileByFile } from '../../utils/preferences';
-import { getDefaultWhitespace } from '../utils';
 
 const getViewTypeFromQueryString = () => getParameterValues('view')[0];
 
 const viewTypeFromCookie = Cookies.get(DIFF_VIEW_COOKIE_NAME);
 const defaultViewType = INLINE_DIFF_VIEW_TYPE;
-const whiteSpaceFromQueryString = getParameterValues('w')[0];
-const whiteSpaceFromCookie = Cookies.get(DIFF_WHITESPACE_COOKIE_NAME);
 
 export default () => ({
   isLoading: true,
@@ -42,7 +35,7 @@ export default () => ({
   commentForms: [],
   highlightedRow: null,
   renderTreeList: true,
-  showWhitespace: getDefaultWhitespace(whiteSpaceFromQueryString, whiteSpaceFromCookie),
+  showWhitespace: true,
   viewDiffsFileByFile: fileByFile(),
   fileFinderVisible: false,
   dismissEndpoint: '',

@@ -11,8 +11,6 @@ import {
   MATCH_LINE_TYPE,
   LINES_TO_BE_RENDERED_DIRECTLY,
   INLINE_DIFF_LINES_KEY,
-  SHOW_WHITESPACE,
-  NO_SHOW_WHITESPACE,
   CONFLICT_OUR,
   CONFLICT_THEIR,
   CONFLICT_MARKER,
@@ -558,11 +556,4 @@ export const allDiscussionWrappersExpanded = (diff) => {
   });
 
   return discussionsExpanded;
-};
-
-export const getDefaultWhitespace = (queryString, cookie) => {
-  // Querystring should override stored cookie value
-  if (queryString) return queryString === SHOW_WHITESPACE;
-  if (cookie === NO_SHOW_WHITESPACE) return false;
-  return true;
 };

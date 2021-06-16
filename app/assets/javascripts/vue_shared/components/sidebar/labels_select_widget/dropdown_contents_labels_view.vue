@@ -1,11 +1,5 @@
 <script>
-import {
-  GlIntersectionObserver,
-  GlLoadingIcon,
-  GlButton,
-  GlSearchBoxByType,
-  GlLink,
-} from '@gitlab/ui';
+import { GlIntersectionObserver, GlLoadingIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { mapState, mapGetters, mapActions } from 'vuex';
 
@@ -17,7 +11,6 @@ export default {
   components: {
     GlIntersectionObserver,
     GlLoadingIcon,
-    GlButton,
     GlSearchBoxByType,
     GlLink,
     LabelItem,
@@ -149,21 +142,6 @@ export default {
 <template>
   <gl-intersection-observer @appear="handleComponentAppear" @disappear="handleComponentDisappear">
     <div class="labels-select-contents-list js-labels-list" @keydown="handleKeyDown">
-      <div
-        v-if="isDropdownVariantSidebar || isDropdownVariantEmbedded"
-        class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!"
-        data-testid="dropdown-title"
-      >
-        <span class="flex-grow-1">{{ labelsListTitle }}</span>
-        <gl-button
-          :aria-label="__('Close')"
-          variant="link"
-          size="small"
-          class="dropdown-header-button gl-p-0!"
-          icon="close"
-          @click="toggleDropdownContents"
-        />
-      </div>
       <div class="dropdown-input" @click.stop="() => {}">
         <gl-search-box-by-type
           ref="searchInput"

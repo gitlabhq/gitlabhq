@@ -1,7 +1,3 @@
-// The backend actually uses "hide_whitespace" while the frontend
-// uses "show whitspace" so these values are opposite what you might expect
-export const NO_SHOW_WHITESPACE = '1';
-export const SHOW_WHITESPACE = '0';
 export const INLINE_DIFF_VIEW_TYPE = 'inline';
 export const PARALLEL_DIFF_VIEW_TYPE = 'parallel';
 export const MATCH_LINE_TYPE = 'match';

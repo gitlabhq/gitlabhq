@@ -26,9 +26,6 @@ import {
   START_RENDERING_INDEX,
   INLINE_DIFF_LINES_KEY,
   DIFFS_PER_PAGE,
-  DIFF_WHITESPACE_COOKIE_NAME,
-  SHOW_WHITESPACE,
-  NO_SHOW_WHITESPACE,
   DIFF_FILE_MANUAL_COLLAPSE,
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   EVT_PERF_MARK_FILE_TREE_START,
@@ -569,16 +566,15 @@ export const setRenderTreeList = ({ commit }, renderTreeList) => {
   }
 };
 
-export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = false }) => {
-  commit(types.SET_SHOW_WHITESPACE, showWhitespace);
-  const w = showWhitespace ? SHOW_WHITESPACE : NO_SHOW_WHITESPACE;
-
-  Cookies.set(DIFF_WHITESPACE_COOKIE_NAME, w);
-
-  if (pushState) {
-    historyPushState(mergeUrlParams({ w }, window.location.href));
+export const setShowWhitespace = async (
+  { state, commit },
+  { url, showWhitespace, updateDatabase = true },
+) => {
+  if (updateDatabase) {
+    await axios.put(url || state.endpointUpdateUser, { show_whitespace_in_diffs: showWhitespace });
   }
 
+  commit(types.SET_SHOW_WHITESPACE, showWhitespace);
   notesEventHub.$emit('refetchDiffData');
 
   if (window.gon?.features?.diffSettingsUsageData) {

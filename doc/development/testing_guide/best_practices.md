@@ -871,7 +871,8 @@ at the start and end of each context only. The [Elasticsearch DeleteByQuery API]
 is used to delete data in all indices in between examples to ensure a clean index.
 
 Note that Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../../../ee/development/redis.md#gitlabrediscachesharedstatequeues).
-Therefore, it is recommended to use `:clean_gitlab_redis_shared_state` in conjunction with the Elasticsearch traits.
+Therefore, the Elasticsearch traits dynamically use the `:clean_gitlab_redis_shared_state` trait.
+You do NOT need to add `:clean_gitlab_redis_shared_state` manually.
 
 Specs using Elasticsearch require that you:
 

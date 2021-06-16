@@ -46,17 +46,6 @@ export default {
   [types.RECEIVE_SET_LABELS_FAILURE](state) {
     state.labelsFetchInProgress = false;
   },
-
-  [types.REQUEST_CREATE_LABEL](state) {
-    state.labelCreateInProgress = true;
-  },
-  [types.RECEIVE_CREATE_LABEL_SUCCESS](state) {
-    state.labelCreateInProgress = false;
-  },
-  [types.RECEIVE_CREATE_LABEL_FAILURE](state) {
-    state.labelCreateInProgress = false;
-  },
-
   [types.UPDATE_SELECTED_LABELS](state, { labels }) {
     // Find the label to update from all the labels
     // and change `set` prop value to represent their current state.

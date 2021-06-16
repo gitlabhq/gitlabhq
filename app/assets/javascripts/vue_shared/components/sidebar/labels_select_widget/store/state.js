@@ -3,7 +3,6 @@ export default () => ({
   labels: [],
   selectedLabels: [],
   labelsListTitle: '',
-  labelsCreateTitle: '',
   footerCreateLabelTitle: '',
   footerManageLabelTitle: '',
   dropdownButtonText: '',

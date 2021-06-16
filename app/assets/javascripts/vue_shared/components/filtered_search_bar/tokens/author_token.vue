@@ -71,9 +71,9 @@ export default {
 
 <template>
   <base-token
-    :token-config="config"
-    :token-value="value"
-    :token-active="active"
+    :config="config"
+    :value="value"
+    :active="active"
     :tokens-list-loading="loading"
     :token-values="authors"
     :fn-active-token-value="getActiveAuthor"
@@ -81,6 +81,7 @@ export default {
     :preloaded-token-values="preloadedAuthors"
     :recent-token-values-storage-key="config.recentTokenValuesStorageKey"
     @fetch-token-values="fetchAuthorBySearchTerm"
+    v-on="$listeners"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
       <gl-avatar

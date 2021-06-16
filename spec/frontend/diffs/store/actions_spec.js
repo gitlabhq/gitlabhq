@@ -9,8 +9,6 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
   DIFFS_PER_PAGE,
-  DIFF_WHITESPACE_COOKIE_NAME,
-  SHOW_WHITESPACE,
 } from '~/diffs/constants';
 import {
   setBaseConfig,
@@ -1019,14 +1017,26 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('setShowWhitespace', () => {
+    const endpointUpdateUser = 'user/prefs';
+    let putSpy;
+    let mock;
+
     beforeEach(() => {
+      mock = new MockAdapter(axios);
+      putSpy = jest.spyOn(axios, 'put');
+
+      mock.onPut(endpointUpdateUser).reply(200, {});
       jest.spyOn(eventHub, '$emit').mockImplementation();
+    });
+
+    afterEach(() => {
+      mock.restore();
     });
 
     it('commits SET_SHOW_WHITESPACE', (done) => {
       testAction(
         setShowWhitespace,
-        { showWhitespace: true },
+        { showWhitespace: true, updateDatabase: false },
         {},
         [{ type: types.SET_SHOW_WHITESPACE, payload: true }],
         [],
@@ -1034,32 +1044,20 @@ describe('DiffsStoreActions', () => {
       );
     });
 
-    it('sets cookie', () => {
-      setShowWhitespace({ commit() {} }, { showWhitespace: true });
+    it('saves to the database', async () => {
+      await setShowWhitespace(
+        { state: { endpointUpdateUser }, commit() {} },
+        { showWhitespace: true, updateDatabase: true },
+      );
 
-      expect(Cookies.get(DIFF_WHITESPACE_COOKIE_NAME)).toEqual(SHOW_WHITESPACE);
+      expect(putSpy).toHaveBeenCalledWith(endpointUpdateUser, { show_whitespace_in_diffs: true });
     });
 
-    it('calls history pushState', () => {
-      setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
-
-      expect(window.history.pushState).toHaveBeenCalled();
-    });
-
-    it('calls history pushState with merged params', () => {
-      window.history.pushState({}, '', '?test=1');
-
-      setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
-
-      expect(
-        window.history.pushState.mock.calls[window.history.pushState.mock.calls.length - 1][2],
-      ).toMatch(/(.*)\?test=1&w=0/);
-
-      window.history.pushState({}, '', '?');
-    });
-
-    it('emits eventHub event', () => {
-      setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
+    it('emits eventHub event', async () => {
+      await setShowWhitespace(
+        { state: {}, commit() {} },
+        { showWhitespace: true, updateDatabase: false },
+      );
 
       expect(eventHub.$emit).toHaveBeenCalledWith('refetchDiffData');
     });

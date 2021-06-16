@@ -36,7 +36,7 @@ export default {
       this.setFileByFile({ fileByFile: !this.viewDiffsFileByFile });
     },
     toggleWhitespace(updatedSetting) {
-      this.setShowWhitespace({ showWhitespace: updatedSetting, pushState: true });
+      this.setShowWhitespace({ showWhitespace: updatedSetting });
     },
   },
 };

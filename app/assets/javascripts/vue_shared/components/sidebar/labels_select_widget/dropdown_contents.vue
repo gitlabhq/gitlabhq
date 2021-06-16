@@ -1,5 +1,6 @@
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { GlButton } from '@gitlab/ui';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from './dropdown_contents_labels_view.vue';
@@ -8,6 +9,7 @@ export default {
   components: {
     DropdownContentsLabelsView,
     DropdownContentsCreateView,
+    GlButton,
   },
   props: {
     renderOnTop: {
@@ -15,10 +17,14 @@ export default {
       required: false,
       default: false,
     },
+    labelsCreateTitle: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
-    ...mapState(['showDropdownContentsCreateView']),
-    ...mapGetters(['isDropdownVariantSidebar']),
+    ...mapState(['showDropdownContentsCreateView', 'labelsListTitle']),
+    ...mapGetters(['isDropdownVariantSidebar', 'isDropdownVariantEmbedded']),
     dropdownContentsView() {
       if (this.showDropdownContentsCreateView) {
         return 'dropdown-contents-create-view';
@@ -29,6 +35,12 @@ export default {
       const bottom = this.isDropdownVariantSidebar ? '3rem' : '2rem';
       return this.renderOnTop ? { bottom } : {};
     },
+    dropdownTitle() {
+      return this.showDropdownContentsCreateView ? this.labelsCreateTitle : this.labelsListTitle;
+    },
+  },
+  methods: {
+    ...mapActions(['toggleDropdownContentsCreateView', 'toggleDropdownContents']),
   },
 };
 </script>
@@ -39,6 +51,30 @@ export default {
     data-qa-selector="labels_dropdown_content"
     :style="directionStyle"
   >
-    <component :is="dropdownContentsView" />
+    <div
+      v-if="isDropdownVariantSidebar || isDropdownVariantEmbedded"
+      class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!"
+      data-testid="dropdown-title"
+    >
+      <gl-button
+        v-if="showDropdownContentsCreateView"
+        :aria-label="__('Go back')"
+        variant="link"
+        size="small"
+        class="js-btn-back dropdown-header-button p-0"
+        icon="arrow-left"
+        @click="toggleDropdownContentsCreateView"
+      />
+      <span class="flex-grow-1">{{ dropdownTitle }}</span>
+      <gl-button
+        :aria-label="__('Close')"
+        variant="link"
+        size="small"
+        class="dropdown-header-button gl-p-0!"
+        icon="close"
+        @click="toggleDropdownContents"
+      />
+    </div>
+    <component :is="dropdownContentsView" @hideCreateView="toggleDropdownContentsCreateView" />
   </div>
 </template>

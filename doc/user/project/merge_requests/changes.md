@@ -91,10 +91,6 @@ specific commit page.
 
 ![MR diff](img/merge_request_diff.png)
 
-NOTE:
-You can append `?w=1` while on the diffs page of a merge request to ignore any
-whitespace changes.
-
 ## Mark files as viewed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51513) in GitLab 13.9.

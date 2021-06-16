@@ -752,28 +752,6 @@ describe('DiffsStoreUtils', () => {
     });
   });
 
-  describe('getDefaultWhitespace', () => {
-    it('defaults to true if querystring and cookie are undefined', () => {
-      expect(utils.getDefaultWhitespace()).toBe(true);
-    });
-
-    it('returns false if querystring is `1`', () => {
-      expect(utils.getDefaultWhitespace('1', '0')).toBe(false);
-    });
-
-    it('returns true if querystring is `0`', () => {
-      expect(utils.getDefaultWhitespace('0', undefined)).toBe(true);
-    });
-
-    it('returns false if cookie is `1`', () => {
-      expect(utils.getDefaultWhitespace(undefined, '1')).toBe(false);
-    });
-
-    it('returns true if cookie is `0`', () => {
-      expect(utils.getDefaultWhitespace(undefined, '0')).toBe(true);
-    });
-  });
-
   describe('isAdded', () => {
     it.each`
       type               | expected

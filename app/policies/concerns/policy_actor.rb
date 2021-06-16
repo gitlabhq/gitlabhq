@@ -53,6 +53,10 @@ module PolicyActor
     false
   end
 
+  def automation_bot?
+    false
+  end
+
   def deactivated?
     false
   end
