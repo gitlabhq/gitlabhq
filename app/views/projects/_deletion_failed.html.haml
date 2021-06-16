@@ -2,7 +2,9 @@
 - return unless project.delete_error.present?
 
 .project-deletion-failed-message.gl-alert.gl-alert-warning
-  = sprite_icon('warning', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-  .gl-alert-body
-    This project was scheduled for deletion, but failed with the following message:
-    = project.delete_error
+  .gl-alert-container
+    = sprite_icon('warning', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    .gl-alert-content
+      .gl-alert-body
+        This project was scheduled for deletion, but failed with the following message:
+        = project.delete_error

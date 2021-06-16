@@ -265,12 +265,16 @@ If you don’t want scans running in your normal DevOps process you can use on-d
 
 ## Security report validation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321918) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321918) in GitLab 13.11.
+> - Schema validation message [added](https://gitlab.com/gitlab-org/gitlab/-/issues/321730) in GitLab 14.0.
 
 You can optionally enable validation of the security report artifacts based on the
 [report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/tree/master/dist).
 If you enable validation, GitLab validates the report artifacts before ingesting the vulnerabilities.
 This prevents ingestion of broken vulnerability data into the database.
+
+In GitLab 14.0 and later, the pipeline's **Security** tab lists any report artifacts
+that failed validation. Security report validation must first be enabled.
 
 ### Enable security report validation
 

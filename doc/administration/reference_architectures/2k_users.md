@@ -269,10 +269,8 @@ further configuration steps.
      database. Example: `%w(123.123.123.123/32 123.123.123.234/32)`
 
    ```ruby
-   # Disable all components except PostgreSQL
-   roles ['postgres_role']
-   patroni['enable'] = false
-   consul['enable'] = false
+   # Disable all components except PostgreSQL related ones
+   roles(['postgres_role'])
    prometheus['enable'] = false
    alertmanager['enable'] = false
    pgbouncer_exporter['enable'] = false
@@ -353,7 +351,7 @@ Omnibus:
    ```ruby
    ## Enable Redis
    redis['enable'] = true
-
+   
    # Avoid running unnecessary services on the Redis server
    gitaly['enable'] = false
    postgresql['enable'] = false
@@ -642,7 +640,7 @@ On each node perform the following:
    })
 
    ## Disable components that will not be on the GitLab application server
-   roles ['application_role']
+   roles(['application_role'])
    gitaly['enable'] = false
    nginx['enable'] = true
 
@@ -790,7 +788,7 @@ running [Prometheus](../monitoring/prometheus/index.md) and
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   roles ['monitoring_role']
+   roles(['monitoring_role'])
 
    external_url 'http://gitlab.example.com'
 

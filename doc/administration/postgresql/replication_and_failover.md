@@ -127,15 +127,18 @@ Few notes on the service itself:
 
 #### PostgreSQL information
 
-When configuring PostgreSQL, we will set `max_wal_senders` to one more than
-the number of database nodes in the cluster.
-This is used to prevent replication from using up all of the
-available database connections.
+When configuring PostgreSQL, we do the following:
+
+- Set `max_replication_slots` to double the number of database nodes.
+  Patroni uses one extra slot per node when initiating the replication.
+- Set `max_wal_senders` to one more than the allocated number of replication slots in the cluster.
+  This prevents replication from using up all of the available database connections.
 
 In this document we are assuming 3 database nodes, which makes this configuration:
 
 ```ruby
-patroni['postgresql']['max_wal_senders'] = 4
+patroni['postgresql']['max_replication_slots'] = 6
+patroni['postgresql']['max_wal_senders'] = 7
 ```
 
 As previously mentioned, you'll have to prepare the network subnets that will
@@ -211,11 +214,8 @@ repmgr-specific configuration as well. Especially, make sure that you remove `po
 Here is an example:
 
 ```ruby
-# Disable all components except PostgreSQL, Patroni, and Consul
-roles['postgres_role']
-
-# Enable Patroni
-patroni['enable'] = true
+# Disable all components except Patroni and Consul
+roles(['patroni_role'])
 
 # PostgreSQL configuration
 postgresql['listen_address'] = '0.0.0.0'
@@ -231,12 +231,19 @@ consul['services'] = %w(postgresql)
 #
 # Replace PGBOUNCER_PASSWORD_HASH with a generated md5 value
 postgresql['pgbouncer_user_password'] = 'PGBOUNCER_PASSWORD_HASH'
+# Replace POSTGRESQL_REPLICATION_PASSWORD_HASH with a generated md5 value
+postgresql['sql_replication_password'] = 'POSTGRESQL_REPLICATION_PASSWORD_HASH'
 # Replace POSTGRESQL_PASSWORD_HASH with a generated md5 value
 postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
 
-# Replace X with value of number of db nodes + 1 (OPTIONAL the default value is 5)
-patroni['postgresql']['max_wal_senders'] = X
+# Sets `max_replication_slots` to double the number of database nodes.
+# Patroni uses one extra slot per node when initiating the replication.
 patroni['postgresql']['max_replication_slots'] = X
+
+# Set `max_wal_senders` to one more than the number of replication slots in the cluster.
+# This is used to prevent replication from using up all of the
+# available database connections.
+patroni['postgresql']['max_wal_senders'] = X+1
 
 # Replace XXX.XXX.XXX.XXX/YY with Network Address
 postgresql['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY)
@@ -289,7 +296,7 @@ If you enable Monitoring, it must be enabled on **all** database servers.
 
    ```ruby
    # Disable all components except PgBouncer and Consul agent
-   roles ['pgbouncer_role']
+   roles(['pgbouncer_role'])
 
    # Configure PgBouncer
    pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
@@ -486,7 +493,7 @@ On each server edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 # Disable all components except Consul
-roles ['consul_role']
+roles(['consul_role'])
 
 consul['configuration'] = {
   server: true,
@@ -503,7 +510,7 @@ On each server edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 # Disable all components except Pgbouncer and Consul agent
-roles ['pgbouncer_role']
+roles(['pgbouncer_role'])
 
 # Configure PgBouncer
 pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
@@ -518,7 +525,6 @@ pgbouncer['users'] = {
 }
 
 consul['watchers'] = %w(postgresql)
-consul['enable'] = true
 consul['configuration'] = {
   retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
 }
@@ -536,29 +542,26 @@ An internal load balancer (TCP) is then required to be setup to serve each PgBou
 On database nodes edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-# Disable all components except PostgreSQL, Patroni (or Repmgr), and Consul
-roles ['postgres_role']
+# Disable all components except Patroni and Consul
+roles(['patroni_role'])
 
 # PostgreSQL configuration
 postgresql['listen_address'] = '0.0.0.0'
 postgresql['hot_standby'] = 'on'
 postgresql['wal_level'] = 'replica'
 
-# Enable Patroni (which automatically disables Repmgr).
-patroni['enable'] = true
-
 # Disable automatic database migrations
 gitlab_rails['auto_migrate'] = false
 
 postgresql['pgbouncer_user_password'] = '771a8625958a529132abe6f1a4acb19c'
 postgresql['sql_user_password'] = '450409b85a0223a214b5fb1484f34d0f'
-patroni['postgresql']['max_wal_senders'] = 4
+patroni['postgresql']['max_replication_slots'] = 6
+patroni['postgresql']['max_wal_senders'] = 7
 
 postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/16)
 
 # Configure the Consul agent
 consul['services'] = %w(postgresql)
-consul['enable'] = true
 consul['configuration'] = {
   retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
 }
@@ -575,19 +578,6 @@ After deploying the configuration follow these steps:
 
    ```shell
    gitlab-ctl get-postgresql-primary
-   ```
-
-1. On the primary database node:
-
-   Enable the `pg_trgm` and `btree_gist` extensions:
-
-   ```shell
-   gitlab-psql -d gitlabhq_production
-   ```
-
-   ```shell
-   CREATE EXTENSION pg_trgm;
-   CREATE EXTENSION btree_gist;
    ```
 
 1. On `10.6.0.41`, our application server:
@@ -631,16 +621,13 @@ Please note that after the initial configuration, if a failover occurs, the Post
 On database nodes edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-# Disable all components except PostgreSQL, Repmgr, and Consul
-roles ['postgres_role']
+# Disable all components except Patroni and Consul
+roles(['patroni_role'])
 
 # PostgreSQL configuration
 postgresql['listen_address'] = '0.0.0.0'
 postgresql['hot_standby'] = 'on'
 postgresql['wal_level'] = 'replica'
-
-# Enable Patroni (which automatically disables Repmgr).
-patroni['enable'] = true
 
 # Disable automatic database migrations
 gitlab_rails['auto_migrate'] = false
@@ -650,7 +637,15 @@ consul['services'] = %w(postgresql)
 
 postgresql['pgbouncer_user_password'] = '771a8625958a529132abe6f1a4acb19c'
 postgresql['sql_user_password'] = '450409b85a0223a214b5fb1484f34d0f'
-patroni['postgresql']['max_wal_senders'] = 4
+
+# Sets `max_replication_slots` to double the number of database nodes.
+# Patroni uses one extra slot per node when initiating the replication.
+patroni['postgresql']['max_replication_slots'] = 6
+
+# Set `max_wal_senders` to one more than the number of replication slots in the cluster.
+# This is used to prevent replication from using up all of the
+# available database connections.
+patroni['postgresql']['max_wal_senders'] = 7
 
 postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/16)
 

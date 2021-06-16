@@ -209,7 +209,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ## Geo Primary role
    ## - configure dependent flags automatically to enable Geo
    ##
-   roles ['geo_primary_role']
+   roles(['geo_primary_role'])
 
    ##
    ## Primary address
@@ -382,7 +382,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ## Geo Secondary role
    ## - configure dependent flags automatically to enable Geo
    ##
-   roles ['geo_secondary_role']
+   roles(['geo_secondary_role'])
 
    ##
    ## Secondary address
@@ -401,7 +401,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ```
 
    For external PostgreSQL instances, see [additional instructions](external_database.md).
-   If you bring a former **primary** node back online to serve as a **secondary** node, then you also need to remove `roles ['geo_primary_role']` or `geo_primary_role['enable'] = true`.
+   If you bring a former **primary** node back online to serve as a **secondary** node, then you also need to remove `roles(['geo_primary_role'])` or `geo_primary_role['enable'] = true`.
 
 1. Reconfigure GitLab for the changes to take effect:
 
@@ -541,12 +541,12 @@ Leader instance**:
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
    ```ruby
-   consul['enable'] = true
+   roles(['patroni_role'])
+   
+   consul['services'] = %w(postgresql)
    consul['configuration'] = {
      retry_join: %w[CONSUL_PRIMARY1_IP CONSUL_PRIMARY2_IP CONSUL_PRIMARY3_IP]
    }
-
-   roles ['patroni_role']
    
    # You need one entry for each secondary, with a unique name following PostgreSQL slot_name constraints:
    #
@@ -644,7 +644,7 @@ Follow the minimal configuration for the PgBouncer node:
 
    ```ruby
    # Disable all components except Pgbouncer and Consul agent
-   roles ['pgbouncer_role']
+   roles(['pgbouncer_role'])
 
    # PgBouncer configuration
    pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
@@ -703,7 +703,7 @@ For each Patroni instance on the secondary site:
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
    ```ruby
-   roles ['consul_role', 'patroni_role']
+   roles(['consul_role', 'patroni_role'])
 
    consul['enable'] = true
    consul['configuration'] = {
@@ -768,7 +768,7 @@ by following the same instructions above.
 
 Secondary sites use a separate PostgreSQL installation as a tracking database to
 keep track of replication status and automatically recover from potential replication issues.
-Omnibus automatically configures a tracking database when `roles ['geo_secondary_role']` is set.
+Omnibus automatically configures a tracking database when `roles(['geo_secondary_role'])` is set.
 If you want to run this database in a highly available configuration, follow the instructions below.
 
 A production-ready and secure setup requires at least three Consul nodes, three
@@ -793,7 +793,7 @@ Follow the minimal configuration for the PgBouncer node for the tracking databas
 
    ```ruby
    # Disable all components except Pgbouncer and Consul agent
-   roles ['pgbouncer_role']
+   roles(['pgbouncer_role'])
 
    # PgBouncer configuration
    pgbouncer['users'] = {
@@ -855,7 +855,7 @@ For each Patroni instance on the secondary site for the tracking database:
 
    ```ruby
    # Disable all components except PostgreSQL, Patroni, and Consul
-   roles ['patroni_role']
+   roles(['patroni_role'])
 
    # Consul configuration
    consul['services'] = %w(postgresql)

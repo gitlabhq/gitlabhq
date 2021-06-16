@@ -1,0 +1,16 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+query ProjectBoardMembers($fullPath: ID!, $search: String) {
+  workspace: project(fullPath: $fullPath) {
+    __typename
+    assignees: projectMembers(search: $search) {
+      __typename
+      nodes {
+        id
+        user {
+          ...User
+        }
+      }
+    }
+  }
+}

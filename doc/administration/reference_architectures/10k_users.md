@@ -426,10 +426,9 @@ To configure Consul:
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   roles ['consul_role']
+   roles(['consul_role'])
 
    ## Enable service discovery for Prometheus
-   consul['enable'] = true
    consul['monitoring_service_discovery'] =  true
 
    ## The IPs of the Consul server nodes
@@ -542,6 +541,15 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    sudo gitlab-ctl pg-password-md5 pgbouncer
    ```
 
+1. Generate a password hash for the PostgreSQL replication username/password pair. This assumes you will use the default
+   username of `gitlab_replicator` (recommended). The command will request a password
+   and a confirmation. Use the value that is output by this command in the next step
+   as the value of `<postgresql_replication_password_hash>`:
+
+   ```shell
+   sudo gitlab-ctl pg-password-md5 gitlab_replicator
+   ```
+
 1. Generate a password hash for the Consul database username/password pair. This assumes you will use the default
    username of `gitlab-consul` (recommended). The command will request a password
    and confirmation. Use the value that is output by this command in the next
@@ -554,19 +562,21 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 1. On every database node, edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
    ```ruby
-   # Disable all components except PostgreSQL, Patroni, and Consul
-   roles ['postgres_role']
+   # Disable all components except Patroni and Consul
+   roles(['patroni_role'])
 
    # PostgreSQL configuration
    postgresql['listen_address'] = '0.0.0.0'
 
-   # Enable Patroni
-   patroni['enable'] = true
-   # Set `max_wal_senders` to one more than the number of database nodes in the cluster.
+   # Sets `max_replication_slots` to double the number of database nodes.
+   # Patroni uses one extra slot per node when initiating the replication.
+   patroni['postgresql']['max_replication_slots'] = 8
+
+   # Set `max_wal_senders` to one more than the number of replication slots in the cluster.
    # This is used to prevent replication from using up all of the
    # available database connections.
-   patroni['postgresql']['max_wal_senders'] = 4
-   patroni['postgresql']['max_replication_slots'] = 4
+   patroni['postgresql']['max_wal_senders'] = 9
+
    # Incoming recommended value for max connections is 500. See https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5691.
    patroni['postgresql']['max_connections'] = 500
 
@@ -574,7 +584,6 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    gitlab_rails['auto_migrate'] = false
 
    # Configure the Consul agent
-   consul['enable'] = true
    consul['services'] = %w(postgresql)
    ## Enable service discovery for Prometheus
    consul['monitoring_service_discovery'] =  true
@@ -584,6 +593,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    #
    # Replace PGBOUNCER_PASSWORD_HASH with a generated md5 value
    postgresql['pgbouncer_user_password'] = '<pgbouncer_password_hash>'
+   # Replace POSTGRESQL_REPLICATION_PASSWORD_HASH with a generated md5 value
+   postgresql['sql_replication_password'] = '<postgresql_replication_password_hash>'
    # Replace POSTGRESQL_PASSWORD_HASH with a generated md5 value
    postgresql['sql_user_password'] = '<postgresql_password_hash>'
 
@@ -623,21 +634,7 @@ are supported and can be added if needed.
 
 #### PostgreSQL post-configuration
 
-SSH in to the **primary node**:
-
-1. Open a database prompt:
-
-   ```shell
-   gitlab-psql -d gitlabhq_production
-   ```
-
-1. Make sure the `pg_trgm` extension is enabled (it might already be):
-
-   ```shell
-   CREATE EXTENSION pg_trgm;
-   ```
-
-1. Exit the database prompt by typing `\q` and Enter.
+SSH in to any of the Patroni nodes on the **primary site**:
 
 1. Check the status of the leader and cluster:
 
@@ -679,7 +676,7 @@ The following IPs will be used as an example:
 
    ```ruby
    # Disable all components except Pgbouncer and Consul agent
-   roles ['pgbouncer_role']
+   roles(['pgbouncer_role'])
 
    # Configure PgBouncer
    pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
@@ -696,7 +693,6 @@ The following IPs will be used as an example:
 
    # Configure Consul agent
    consul['watchers'] = %w(postgresql)
-   consul['enable'] = true
    consul['configuration'] = {
    retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
    }
@@ -828,8 +824,8 @@ a node and change its status from primary to replica (and vice versa).
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   # Specify server role as 'redis_master_role'
-   roles ['redis_master_role']
+   # Specify server role as 'redis_master_role' and enable Consul agent
+   roles(['redis_master_role', 'consul_role'])
 
    # IP address pointing to a local IP that the other machines can reach to.
    # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -851,7 +847,6 @@ a node and change its status from primary to replica (and vice versa).
    redis['maxmemory_samples'] = 5
 
    ## Enable service discovery for Prometheus
-   consul['enable'] = true
    consul['monitoring_service_discovery'] =  true
 
    ## The IPs of the Consul server nodes
@@ -863,6 +858,10 @@ a node and change its status from primary to replica (and vice versa).
    # Set the network addresses that the exporters will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
    redis_exporter['listen_address'] = '0.0.0.0:9121'
+   redis_exporter['flags'] = {
+        'redis.addr' => 'redis://10.6.0.51:6379',
+        'redis.password' => 'redis-password-goes-here',
+   }
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -874,7 +873,7 @@ a node and change its status from primary to replica (and vice versa).
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 You can specify multiple roles, like sentinel and Redis, as:
-`roles ['redis_sentinel_role', 'redis_master_role']`. Read more about
+`roles(['redis_sentinel_role', 'redis_master_role'])`. Read more about
 [roles](https://docs.gitlab.com/omnibus/roles/).
 
 #### Configure the replica Redis Cache nodes
@@ -887,8 +886,8 @@ You can specify multiple roles, like sentinel and Redis, as:
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   # Specify server role as 'redis_replica_role'
-   roles ['redis_replica_role']
+   # Specify server role as 'redis_replica_role' and enable Consul agent
+   roles(['redis_replica_role', 'consul_role'])
 
    # IP address pointing to a local IP that the other machines can reach to.
    # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -917,7 +916,6 @@ You can specify multiple roles, like sentinel and Redis, as:
    redis['maxmemory_samples'] = 5
 
    ## Enable service discovery for Prometheus
-   consul['enable'] = true
    consul['monitoring_service_discovery'] =  true
 
    ## The IPs of the Consul server nodes
@@ -929,6 +927,10 @@ You can specify multiple roles, like sentinel and Redis, as:
    # Set the network addresses that the exporters will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
    redis_exporter['listen_address'] = '0.0.0.0:9121'
+   redis_exporter['flags'] = {
+        'redis.addr' => 'redis://10.6.0.52:6379',
+        'redis.password' => 'redis-password-goes-here',
+   }
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -942,7 +944,7 @@ You can specify multiple roles, like sentinel and Redis, as:
    make sure to set up the IPs correctly.
 
 You can specify multiple roles, like sentinel and Redis, as:
-`roles ['redis_sentinel_role', 'redis_master_role']`. Read more about
+`roles(['redis_sentinel_role', 'redis_master_role'])`. Read more about
 [roles](https://docs.gitlab.com/omnibus/roles/).
 
 These values don't have to be changed again in `/etc/gitlab/gitlab.rb` after
@@ -984,7 +986,7 @@ To configure the Sentinel Cache server:
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   roles ['redis_sentinel_role']
+   roles(['redis_sentinel_role', 'consul_role'])
 
    ## Must be the same in every sentinel node
    redis['master_name'] = 'gitlab-redis-cache'
@@ -1048,7 +1050,6 @@ To configure the Sentinel Cache server:
    #sentinel['failover_timeout'] = 60000
 
    ## Enable service discovery for Prometheus
-   consul['enable'] = true
    consul['monitoring_service_discovery'] =  true
 
    ## The IPs of the Consul server nodes
@@ -1096,8 +1097,8 @@ a node and change its status from primary to replica (and vice versa).
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   # Specify server role as 'redis_master_role'
-   roles ['redis_master_role']
+   # Specify server role as 'redis_master_role' and enable Consul agent
+   roles(['redis_master_role', 'consul_role'])
 
    # IP address pointing to a local IP that the other machines can reach to.
    # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -1113,7 +1114,6 @@ a node and change its status from primary to replica (and vice versa).
    redis['password'] = 'REDIS_PRIMARY_PASSWORD_OF_SECOND_CLUSTER'
 
    ## Enable service discovery for Prometheus
-   consul['enable'] = true
    consul['monitoring_service_discovery'] =  true
 
    ## The IPs of the Consul server nodes
@@ -1136,7 +1136,7 @@ a node and change its status from primary to replica (and vice versa).
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 You can specify multiple roles, like sentinel and Redis, as:
-`roles ['redis_sentinel_role', 'redis_master_role']`. Read more about
+`roles(['redis_sentinel_role', 'redis_master_role'])`. Read more about
 [roles](https://docs.gitlab.com/omnibus/roles/).
 
 #### Configure the replica Redis Queues nodes
@@ -1149,8 +1149,8 @@ You can specify multiple roles, like sentinel and Redis, as:
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   # Specify server role as 'redis_replica_role'
-   roles ['redis_replica_role']
+   # Specify server role as 'redis_replica_role' and enable Consul agent
+   roles(['redis_replica_role', 'consul_role'])
 
    # IP address pointing to a local IP that the other machines can reach to.
    # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -1173,7 +1173,6 @@ You can specify multiple roles, like sentinel and Redis, as:
    #redis['master_port'] = 6379
 
    ## Enable service discovery for Prometheus
-   consul['enable'] = true
    consul['monitoring_service_discovery'] =  true
 
    ## The IPs of the Consul server nodes
@@ -1198,7 +1197,7 @@ You can specify multiple roles, like sentinel and Redis, as:
    make sure to set up the IPs correctly.
 
 You can specify multiple roles, like sentinel and Redis, as:
-`roles ['redis_sentinel_role', 'redis_master_role']`. Read more about
+`roles(['redis_sentinel_role', 'redis_master_role'])`. Read more about
 [roles](https://docs.gitlab.com/omnibus/roles/).
 
 These values don't have to be changed again in `/etc/gitlab/gitlab.rb` after
@@ -1240,7 +1239,7 @@ To configure the Sentinel Queues server:
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   roles ['redis_sentinel_role']
+   roles(['redis_sentinel_role', 'consul_role'])
 
    ## Must be the same in every sentinel node
    redis['master_name'] = 'gitlab-redis-persistent'
@@ -1304,7 +1303,6 @@ To configure the Sentinel Queues server:
    #sentinel['failover_timeout'] = 60000
 
    ## Enable service discovery for Prometheus
-   consul['enable'] = true
    consul['monitoring_service_discovery'] =  true
 
    ## The IPs of the Consul server nodes
@@ -1385,9 +1383,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
    ```ruby
    # Disable all components except PostgreSQL and Consul
-   roles ['postgres_role']
-   repmgr['enable'] = false
-   patroni['enable'] = false
+   roles(['postgres_role', 'consul_role'])
 
    # PostgreSQL configuration
    postgresql['listen_address'] = '0.0.0.0'
@@ -1397,7 +1393,6 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    gitlab_rails['auto_migrate'] = false
 
    # Configure the Consul agent
-   consul['enable'] = true
    ## Enable service discovery for Prometheus
    consul['monitoring_service_discovery'] =  true
 
@@ -2012,7 +2007,7 @@ On each node perform the following:
    })
 
    ## Disable components that will not be on the GitLab application server
-   roles ['application_role']
+   roles(['application_role'])
    gitaly['enable'] = false
    nginx['enable'] = true
    sidekiq['enable'] = false
@@ -2234,7 +2229,7 @@ To configure the Monitoring node:
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   roles ['monitoring_role']
+   roles(['monitoring_role', 'consul_role'])
 
    external_url 'http://gitlab.example.com'
 
@@ -2247,7 +2242,6 @@ To configure the Monitoring node:
    grafana['disable_login_form'] = false
 
    # Enable service discovery for Prometheus
-   consul['enable'] = true
    consul['monitoring_service_discovery'] =  true
    consul['configuration'] = {
       retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
