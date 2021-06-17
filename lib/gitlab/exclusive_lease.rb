@@ -36,6 +36,28 @@ module Gitlab
       end
     end
 
+    # yield to the {block} at most {count} times per {period}
+    #
+    # Defaults to once per hour.
+    #
+    # For example:
+    #
+    #   # toot the train horn at most every 20min:
+    #   throttle(locomotive.id, count: 3, period: 1.hour) { toot_train_horn }
+    #   # Brake suddenly at most once every minute:
+    #   throttle(locomotive.id, period: 1.minute) { brake_suddenly }
+    #   # Specify a uniqueness group:
+    #   throttle(locomotive.id, group: :locomotive_brake) { brake_suddenly }
+    #
+    # If a group is not specified, each block will get a separate group to itself.
+    def self.throttle(key, group: nil, period: 1.hour, count: 1, &block)
+      group ||= block.source_location.join(':')
+
+      return if new("el:throttle:#{group}:#{key}", timeout: period.to_i / count).waiting?
+
+      yield
+    end
+
     def self.cancel(key, uuid)
       return unless key.present?
 
@@ -77,6 +99,11 @@ module Gitlab
       Gitlab::Redis::SharedState.with do |redis|
         redis.set(@redis_shared_state_key, @uuid, nx: true, ex: @timeout) && @uuid
       end
+    end
+
+    # This lease is waiting to obtain
+    def waiting?
+      !try_obtain
     end
 
     # Try to renew an existing lease. Return lease UUID on success,

@@ -38,9 +38,7 @@ RSpec.describe Packages::Helm::ExtractFileMetadataService do
   context 'with Chart.yaml at root' do
     before do
       expect_next_instances_of(Gem::Package::TarReader::Entry, 14) do |entry|
-        expect(entry).to receive(:full_name).exactly(:once) do
-          'Chart.yaml'
-        end
+        expect(entry).to receive(:full_name).exactly(:once).and_return('Chart.yaml')
       end
     end
 

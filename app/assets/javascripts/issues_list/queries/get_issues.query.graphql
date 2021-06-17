@@ -1,0 +1,45 @@
+#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "./issue.fragment.graphql"
+
+query getProjectIssues(
+  $projectPath: ID!
+  $search: String
+  $sort: IssueSort
+  $state: IssuableState
+  $assigneeId: String
+  $assigneeUsernames: [String!]
+  $authorUsername: String
+  $labelName: [String]
+  $milestoneTitle: [String]
+  $not: NegatedIssueFilterInput
+  $beforeCursor: String
+  $afterCursor: String
+  $firstPageSize: Int
+  $lastPageSize: Int
+) {
+  project(fullPath: $projectPath) {
+    issues(
+      search: $search
+      sort: $sort
+      state: $state
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      not: $not
+      before: $beforeCursor
+      after: $afterCursor
+      first: $firstPageSize
+      last: $lastPageSize
+    ) {
+      count
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        ...IssueFragment
+      }
+    }
+  }
+}

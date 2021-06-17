@@ -12,7 +12,6 @@ describe('Deploy Board', () => {
 
   const createComponent = (props = {}) =>
     mount(Vue.extend(DeployBoard), {
-      provide: { glFeatures: { canaryIngressWeightControl: true } },
       propsData: {
         deployBoardData: deployBoardMockData,
         isLoading: false,

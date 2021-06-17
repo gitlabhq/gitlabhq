@@ -53,6 +53,10 @@ module PolicyActor
     false
   end
 
+  def automation_bot?
+    false
+  end
+
   def deactivated?
     false
   end
@@ -81,7 +85,7 @@ module PolicyActor
     false
   end
 
-  def password_expired?
+  def password_expired_if_applicable?
     false
   end
 

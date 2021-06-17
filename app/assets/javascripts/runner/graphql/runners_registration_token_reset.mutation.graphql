@@ -1,0 +1,6 @@
+mutation runnersRegistrationTokenReset($input: RunnersRegistrationTokenResetInput!) {
+  runnersRegistrationTokenReset(input: $input) {
+    token
+    errors
+  }
+}

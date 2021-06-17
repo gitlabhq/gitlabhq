@@ -34,7 +34,7 @@ on merge requests, you can disable this setting:
 1. Select the **Prevent users from modifying MR approval rules in merge requests** checkbox.
 1. Select **Save changes**.
 
-TODO This change affects all open merge requests.
+This change affects all open merge requests.
 
 ## Reset approvals on push
 

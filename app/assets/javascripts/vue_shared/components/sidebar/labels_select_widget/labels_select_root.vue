@@ -5,13 +5,12 @@ import Vuex, { mapState, mapActions, mapGetters } from 'vuex';
 import { isInViewport } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 
-import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_value_collapsed.vue';
-
 import { DropdownVariant } from './constants';
 import DropdownButton from './dropdown_button.vue';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownTitle from './dropdown_title.vue';
 import DropdownValue from './dropdown_value.vue';
+import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
 import labelsSelectModule from './store';
 
 Vue.use(Vuex);
@@ -163,7 +162,6 @@ export default {
       labelsFilterBasePath: this.labelsFilterBasePath,
       labelsFilterParam: this.labelsFilterParam,
       labelsListTitle: this.labelsListTitle,
-      labelsCreateTitle: this.labelsCreateTitle,
       footerCreateLabelTitle: this.footerCreateLabelTitle,
       footerManageLabelTitle: this.footerManageLabelTitle,
     });
@@ -313,6 +311,7 @@ export default {
         v-show="dropdownButtonVisible && showDropdownContents"
         ref="dropdownContents"
         :render-on-top="!contentIsOnViewport"
+        :labels-create-title="labelsCreateTitle"
       />
     </template>
     <template v-if="isDropdownVariantStandalone || isDropdownVariantEmbedded">

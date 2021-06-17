@@ -166,12 +166,12 @@ class Project < ApplicationRecord
   has_one :datadog_integration, class_name: 'Integrations::Datadog'
   has_one :discord_integration, class_name: 'Integrations::Discord'
   has_one :drone_ci_integration, class_name: 'Integrations::DroneCi'
-  has_one :emails_on_push_service, class_name: 'Integrations::EmailsOnPush'
-  has_one :ewm_service, class_name: 'Integrations::Ewm'
-  has_one :external_wiki_service, class_name: 'Integrations::ExternalWiki'
-  has_one :flowdock_service, class_name: 'Integrations::Flowdock'
-  has_one :hangouts_chat_service, class_name: 'Integrations::HangoutsChat'
-  has_one :irker_service, class_name: 'Integrations::Irker'
+  has_one :emails_on_push_integration, class_name: 'Integrations::EmailsOnPush'
+  has_one :ewm_integration, class_name: 'Integrations::Ewm'
+  has_one :external_wiki_integration, class_name: 'Integrations::ExternalWiki'
+  has_one :flowdock_integration, class_name: 'Integrations::Flowdock'
+  has_one :hangouts_chat_integration, class_name: 'Integrations::HangoutsChat'
+  has_one :irker_integration, class_name: 'Integrations::Irker'
   has_one :jenkins_service, class_name: 'Integrations::Jenkins'
   has_one :jira_service, class_name: 'Integrations::Jira'
   has_one :mattermost_service, class_name: 'Integrations::Mattermost'
@@ -824,6 +824,21 @@ class Project < ApplicationRecord
       with_merge_requests_enabled = with_merge_requests_available_for_user(user).select(:id)
 
       from_union([with_issues_enabled, with_merge_requests_enabled]).select(:id)
+    end
+
+    def find_by_url(url)
+      uri = URI(url)
+
+      return unless uri.host == Gitlab.config.gitlab.host
+
+      match = Rails.application.routes.recognize_path(url)
+
+      return if match[:unmatched_route].present?
+      return if match[:namespace_id].blank? || match[:id].blank?
+
+      find_by_full_path(match.values_at(:namespace_id, :id).join("/"))
+    rescue ActionController::RoutingError, URI::InvalidURIError
+      nil
     end
   end
 

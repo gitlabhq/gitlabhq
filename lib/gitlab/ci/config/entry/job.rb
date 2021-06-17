@@ -14,7 +14,7 @@ module Gitlab
           ALLOWED_KEYS = %i[tags script type image services start_in artifacts
                             cache dependencies before_script after_script
                             environment coverage retry parallel interruptible timeout
-                            release secrets].freeze
+                            release dast_configuration secrets].freeze
 
           REQUIRED_BY_NEEDS = %i[stage].freeze
 

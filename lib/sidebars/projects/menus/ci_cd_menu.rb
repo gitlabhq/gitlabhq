@@ -61,6 +61,10 @@ module Sidebars
             pipelines#index
             pipelines#show
             pipelines#new
+            pipelines#dag
+            pipelines#failures
+            pipelines#builds
+            pipelines#test_report
           ]
         end
 

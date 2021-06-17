@@ -148,3 +148,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::YamlProcessor::Result.prepend_mod_with('Gitlab::Ci::YamlProcessor::Result')

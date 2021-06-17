@@ -439,16 +439,6 @@ RSpec.describe Clusters::Platforms::Kubernetes do
 
         include_examples 'successful deployment request'
       end
-
-      context 'when canary_ingress_weight_control feature flag is disabled' do
-        before do
-          stub_feature_flags(canary_ingress_weight_control: false)
-        end
-
-        it 'does not fetch ingress data from kubernetes' do
-          expect(subject[:ingresses]).to be_empty
-        end
-      end
     end
 
     context 'when the kubernetes integration is disabled' do

@@ -71,7 +71,7 @@ export default {
       :aria-label="buttonTitle"
       :loading="isLoading"
       :disabled="isActionInProgress"
-      :class="`inline gl-ml-2 ${containerClasses}`"
+      :class="`inline gl-ml-3 ${containerClasses}`"
       :icon="icon"
       @click="$emit('click')"
     >

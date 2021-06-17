@@ -46,6 +46,7 @@ function createComponent(options = {}) {
     active = false,
     stubs = defaultStubs,
     data = {},
+    listeners = {},
   } = options;
   return mount(AuthorToken, {
     propsData: {
@@ -62,6 +63,7 @@ function createComponent(options = {}) {
       return { ...data };
     },
     stubs,
+    listeners,
   });
 }
 
@@ -258,6 +260,18 @@ describe('AuthorToken', () => {
       expect(suggestions.at(0).text()).toBe(DEFAULT_LABEL_ANY.text);
     });
 
+    it('emits listeners in the base-token', () => {
+      const mockInput = jest.fn();
+      wrapper = createComponent({
+        listeners: {
+          input: mockInput,
+        },
+      });
+      wrapper.findComponent(BaseToken).vm.$emit('input', [{ data: 'mockData', operator: '=' }]);
+
+      expect(mockInput).toHaveBeenLastCalledWith([{ data: 'mockData', operator: '=' }]);
+    });
+
     describe('when loading', () => {
       beforeEach(() => {
         wrapper = createComponent({
@@ -275,6 +289,14 @@ describe('AuthorToken', () => {
         const firstSuggestion = wrapper.findComponent(GlFilteredSearchSuggestion).text();
         expect(firstSuggestion).toContain('Administrator');
         expect(firstSuggestion).toContain('@root');
+      });
+
+      it('does not show current user while searching', async () => {
+        wrapper.findComponent(BaseToken).vm.handleInput({ data: 'foo' });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
       });
     });
   });

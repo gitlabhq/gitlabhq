@@ -9,9 +9,9 @@ RSpec.describe Admin::CohortsController do
     sign_in(user)
   end
 
-  it 'redirects to Overview->Users' do
-    get :index
-
-    expect(response).to redirect_to(cohorts_admin_users_path)
+  describe 'GET #index' do
+    it_behaves_like 'tracking unique visits', :index do
+      let(:target_id) { 'i_analytics_cohorts' }
+    end
   end
 end

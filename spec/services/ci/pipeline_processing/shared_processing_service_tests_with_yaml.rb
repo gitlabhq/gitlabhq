@@ -3,7 +3,6 @@
 RSpec.shared_context 'Pipeline Processing Service Tests With Yaml' do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user)    { project.owner }
-  let_it_be(:runner)  { create(:ci_runner, :online) }
 
   where(:test_file_path) do
     Dir.glob(Rails.root.join('spec/services/ci/pipeline_processing/test_cases/*.yml'))

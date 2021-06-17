@@ -13,21 +13,36 @@ RSpec.describe Projects::UpdateRemoteMirrorService do
 
   describe '#execute' do
     let(:retries) { 0 }
+    let(:inmemory) { true }
 
     subject(:execute!) { service.execute(remote_mirror, retries) }
 
     before do
+      stub_feature_flags(update_remote_mirror_inmemory: inmemory)
       project.repository.add_branch(project.owner, 'existing-branch', 'master')
 
       allow(remote_mirror)
         .to receive(:update_repository)
+        .with(inmemory_remote: inmemory)
         .and_return(double(divergent_refs: []))
     end
 
-    it 'ensures the remote exists' do
-      expect(remote_mirror).to receive(:ensure_remote!)
+    context 'with in-memory remote disabled' do
+      let(:inmemory) { false }
 
-      execute!
+      it 'ensures the remote exists' do
+        expect(remote_mirror).to receive(:ensure_remote!)
+
+        execute!
+      end
+    end
+
+    context 'with in-memory remote enabled' do
+      it 'does not ensure the remote exists' do
+        expect(remote_mirror).not_to receive(:ensure_remote!)
+
+        execute!
+      end
     end
 
     it 'does not fetch the remote repository' do

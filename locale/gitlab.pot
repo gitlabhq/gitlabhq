@@ -13731,9 +13731,6 @@ msgstr ""
 msgid "Feature Flags"
 msgstr ""
 
-msgid "Feature flag is not enabled on the environment's project."
-msgstr ""
-
 msgid "Feature flag status"
 msgstr ""
 
@@ -28273,6 +28270,9 @@ msgstr ""
 msgid "Runners|Name"
 msgstr ""
 
+msgid "Runners|New registration token generated!"
+msgstr ""
+
 msgid "Runners|New runner, has not connected yet"
 msgstr ""
 
@@ -31225,6 +31225,9 @@ msgid "Storage:"
 msgstr ""
 
 msgid "StorageSize|Unknown"
+msgstr ""
+
+msgid "Strikethrough"
 msgstr ""
 
 msgid "Subgroup information"
@@ -39181,6 +39184,9 @@ msgid "must be after start"
 msgstr ""
 
 msgid "must be greater than start date"
+msgstr ""
+
+msgid "must be inside the fork network"
 msgstr ""
 
 msgid "must have a unique schedule, status, and elapsed time"

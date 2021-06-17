@@ -44,6 +44,10 @@ class Integration < ApplicationRecord
     bamboo bugzilla buildkite
     campfire confluence custom_issue_tracker
     datadog discord drone_ci
+    emails_on_push ewm emails_on_push external_wiki
+    flowdock
+    hangouts_chat
+    irker
   ].to_set.freeze
 
   def self.renamed?(name)

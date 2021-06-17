@@ -23,7 +23,7 @@ To select a project to serve as the custom template repository:
 1. In the left sidebar, select **Settings > Templates**.
 1. Select the project:
 
-   ![File templates in the Admin Area](img/file_template_admin_area.png)
+   ![File templates in the Admin Area](img/file_template_admin_area_v14_0.png)
 
 1. Add custom templates to the selected repository.
 

@@ -1,0 +1,15 @@
+mutation createLabel($title: String!, $color: String, $projectPath: ID, $groupPath: ID) {
+  labelCreate(
+    input: { title: $title, color: $color, projectPath: $projectPath, groupPath: $groupPath }
+  ) {
+    label {
+      id
+      color
+      description
+      descriptionHtml
+      title
+      textColor
+    }
+    errors
+  }
+}

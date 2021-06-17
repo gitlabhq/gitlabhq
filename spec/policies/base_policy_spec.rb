@@ -22,31 +22,45 @@ RSpec.describe BasePolicy do
     end
   end
 
-  shared_examples 'admin only access' do |policy|
+  shared_examples 'admin only access' do |ability|
+    def policy
+      # method, because we want a fresh cache each time.
+      described_class.new(current_user, nil)
+    end
+
     let(:current_user) { build_stubbed(:user) }
 
-    subject { described_class.new(current_user, nil) }
+    subject { policy }
 
-    it { is_expected.not_to be_allowed(policy) }
+    it { is_expected.not_to be_allowed(ability) }
 
-    context 'for admins' do
+    context 'with an admin' do
       let(:current_user) { build_stubbed(:admin) }
 
       it 'allowed when in admin mode' do
         enable_admin_mode!(current_user)
 
-        is_expected.to be_allowed(policy)
+        is_expected.to be_allowed(ability)
       end
 
       it 'prevented when not in admin mode' do
-        is_expected.not_to be_allowed(policy)
+        is_expected.not_to be_allowed(ability)
       end
     end
 
-    context 'for anonymous' do
+    context 'with anonymous' do
       let(:current_user) { nil }
 
-      it { is_expected.not_to be_allowed(policy) }
+      it { is_expected.not_to be_allowed(ability) }
+    end
+
+    describe 'bypassing the session for sessionless login', :request_store do
+      let(:current_user) { build_stubbed(:admin) }
+
+      it 'changes from prevented to allowed' do
+        expect { Gitlab::Auth::CurrentUserMode.bypass_session!(current_user.id) }
+          .to change { policy.allowed?(ability) }.from(false).to(true)
+      end
     end
   end
 

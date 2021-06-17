@@ -24,11 +24,32 @@ More links:
 
 ## What is Usage Ping?
 
-- GitLab sends a weekly payload containing usage data to GitLab Inc. Usage Ping provides high-level data to help our product, support, and sales teams. It does not send any project names, usernames, or any other specific data. The information from the usage ping is not anonymous, it is linked to the hostname of the instance. Sending usage ping is optional, and any instance can disable analytics.
-- The usage data is primarily composed of row counts for different tables in the instance's database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features in the product. In addition to counts, other facts
-    that help us classify and understand GitLab installations are collected.
-- Usage ping is important to GitLab as we use it to calculate our Stage Monthly Active Users (SMAU) which helps us measure the success of our stages and features.
-- While usage ping is enabled, GitLab gathers data from the other instances and can show usage statistics of your instance to your users.
+Usage Ping is a process in GitLab that collects and sends a weekly payload to GitLab Inc.
+The payload provides important high-level data that helps our product, support,
+and sales teams understand how GitLab is used. For example, the data helps to:
+
+- Compare counts month over month (or week over week) to get a rough sense for how an instance uses
+  different product features.
+- Collect other facts that help us classify and understand GitLab installations.
+- Calculate our Stage Monthly Active Users (SMAU), which helps to measure the success of our stages
+  and features.
+
+Usage Ping information is not anonymous. It's linked to the instance's hostname. However, it does
+not contain project names, usernames, or any other specific data.
+
+Sending a Usage Ping payload is optional and can be [disabled](#disable-usage-ping) on any instance.
+When Usage Ping is enabled, GitLab gathers data from the other instances
+and can show your instance's usage statistics to your users.
+
+### Terminology
+
+We use the following terminology to describe the Usage Ping components:
+
+- **Usage Ping**: the process that collects and generates a JSON payload.
+- **Usage data**: the contents of the Usage Ping JSON payload. This includes metrics.
+- **Metrics**: primarily made up of row counts for different tables in an instance's database. Each
+  metric has a corresponding [metric definition](metrics_dictionary.md#metrics-definition-and-validation)
+  in a YAML file.
 
 ### Why should we enable Usage Ping?
 

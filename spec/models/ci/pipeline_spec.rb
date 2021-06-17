@@ -4625,8 +4625,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe '#build_matchers' do
-    let_it_be(:pipeline) { create(:ci_pipeline) }
-    let_it_be(:builds) { create_list(:ci_build, 2, pipeline: pipeline, project: pipeline.project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
+    let_it_be(:builds) { create_list(:ci_build, 2, pipeline: pipeline, project: pipeline.project, user: user) }
+
+    let(:project) { pipeline.project }
 
     subject(:matchers) { pipeline.build_matchers }
 
@@ -4634,6 +4637,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       expect(matchers.size).to eq(1)
       expect(matchers).to all be_a(Gitlab::Ci::Matching::BuildMatcher)
       expect(matchers.first.build_ids).to match_array(builds.map(&:id))
+    end
+
+    context 'with retried builds' do
+      let(:retried_build) { builds.first }
+
+      before do
+        stub_not_protect_default_branch
+        project.add_developer(user)
+
+        retried_build.cancel!
+        ::Ci::Build.retry(retried_build, user)
+      end
+
+      it 'does not include retried builds' do
+        expect(matchers.size).to eq(1)
+        expect(matchers.first.build_ids).not_to include(retried_build.id)
+      end
     end
   end
 end

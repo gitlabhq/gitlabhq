@@ -26,7 +26,7 @@ module Gitlab
         # per_page               - Number of items per page.
         # cursor_converter       - Object that serializes and de-serializes the cursor attributes. Implements dump and parse methods.
         # direction_key          - Symbol that will be the hash key of the direction within the cursor. (default: _kd => keyset direction)
-        def initialize(scope:, cursor: nil, per_page: 20, cursor_converter: Base64CursorConverter, direction_key: :_kd)
+        def initialize(scope:, cursor: nil, per_page: 20, cursor_converter: Base64CursorConverter, direction_key: :_kd, keyset_order_options: {})
           @keyset_scope = build_scope(scope)
           @order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(@keyset_scope)
           @per_page = per_page
@@ -36,6 +36,7 @@ module Gitlab
           @at_last_page = false
           @at_first_page = false
           @cursor_attributes = decode_cursor_attributes(cursor)
+          @keyset_order_options = keyset_order_options
 
           set_pagination_helper_flags!
         end
@@ -45,13 +46,13 @@ module Gitlab
           @records ||= begin
             items = if paginate_backward?
                       reversed_order
-                        .apply_cursor_conditions(keyset_scope, cursor_attributes)
+                        .apply_cursor_conditions(keyset_scope, cursor_attributes, keyset_order_options)
                         .reorder(reversed_order)
                         .limit(per_page_plus_one)
                         .to_a
                     else
                       order
-                        .apply_cursor_conditions(keyset_scope, cursor_attributes)
+                        .apply_cursor_conditions(keyset_scope, cursor_attributes, keyset_order_options)
                         .limit(per_page_plus_one)
                         .to_a
                     end
@@ -120,7 +121,7 @@ module Gitlab
 
         private
 
-        attr_reader :keyset_scope, :order, :per_page, :cursor_converter, :direction_key, :cursor_attributes
+        attr_reader :keyset_scope, :order, :per_page, :cursor_converter, :direction_key, :cursor_attributes, :keyset_order_options
 
         delegate :reversed_order, to: :order
 

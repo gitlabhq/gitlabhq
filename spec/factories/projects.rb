@@ -426,7 +426,7 @@ FactoryBot.define do
   factory :ewm_project, parent: :project do
     has_external_issue_tracker { true }
 
-    ewm_service
+    ewm_integration
   end
 
   factory :project_with_design, parent: :project do

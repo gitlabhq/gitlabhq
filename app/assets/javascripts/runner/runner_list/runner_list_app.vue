@@ -7,6 +7,7 @@ import RunnerList from '../components/runner_list.vue';
 import RunnerManualSetupHelp from '../components/runner_manual_setup_help.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeHelp from '../components/runner_type_help.vue';
+import { INSTANCE_TYPE } from '../constants';
 import getRunnersQuery from '../graphql/get_runners.query.graphql';
 import {
   fromUrlQueryToSearch,
@@ -97,6 +98,7 @@ export default {
       });
     },
   },
+  INSTANCE_TYPE,
 };
 </script>
 <template>
@@ -106,7 +108,10 @@ export default {
         <runner-type-help />
       </div>
       <div class="col-sm-6">
-        <runner-manual-setup-help :registration-token="registrationToken" />
+        <runner-manual-setup-help
+          :registration-token="registrationToken"
+          :type="$options.INSTANCE_TYPE"
+        />
       </div>
     </div>
 

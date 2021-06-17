@@ -294,14 +294,14 @@ module MergeRequests
       @source_merge_requests ||= merge_requests_for(@push.branch_name)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def merge_requests_for_forks
       @merge_requests_for_forks ||=
-        MergeRequest.opened
-          .where(source_branch: @push.branch_name, source_project: @project)
-          .where.not(target_project: @project)
+        MergeRequest
+          .opened
+          .from_project(project)
+          .from_source_branches(@push.branch_name)
+          .from_fork
     end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end
 

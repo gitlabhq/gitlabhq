@@ -57,17 +57,6 @@ RSpec.describe Projects::MergeRequests::ContentController do
         expect(response.headers['Poll-Interval']).to eq('10000')
       end
 
-      context 'when async_mergeability_check param is passed' do
-        it 'checks mergeability asynchronously' do
-          expect_next_instance_of(MergeRequests::MergeabilityCheckService) do |service|
-            expect(service).not_to receive(:execute)
-            expect(service).to receive(:async_execute).and_call_original
-          end
-
-          do_request(:widget, { async_mergeability_check: true })
-        end
-      end
-
       context 'merged merge request' do
         let(:merge_request) do
           create(:merged_merge_request, :with_test_reports, target_project: project, source_project: project)

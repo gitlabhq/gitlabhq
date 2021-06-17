@@ -62,7 +62,7 @@
                   - add_page_startup_api_call notes_url
                 - else
                   - add_page_startup_api_call discussions_path(@merge_request)
-                - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, async_mergeability_check: true, format: :json)
+                - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, format: :json)
                 - add_page_startup_api_call cached_widget_project_json_merge_request_path(@project, @merge_request, format: :json)
               #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request, Feature.enabled?(:paginated_notes, @project)).to_json,
                 endpoint_metadata: @endpoint_metadata_url,

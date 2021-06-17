@@ -1,7 +1,7 @@
 <script>
-import { GlSkeletonLoading, GlPagination } from '@gitlab/ui';
+import { GlKeysetPagination, GlSkeletonLoading, GlPagination } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
-
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
@@ -19,6 +19,7 @@ export default {
     tag: 'ul',
   },
   components: {
+    GlKeysetPagination,
     GlSkeletonLoading,
     IssuableTabs,
     FilteredSearchBar,
@@ -140,6 +141,21 @@ export default {
       required: false,
       default: false,
     },
+    useKeysetPagination: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hasNextPage: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hasPreviousPage: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -211,7 +227,7 @@ export default {
   },
   methods: {
     issuableId(issuable) {
-      return issuable.id || issuable.iid || uniqueId();
+      return getIdFromGraphQLId(issuable.id) || issuable.iid || uniqueId();
     },
     issuableChecked(issuable) {
       return this.checkedIssuables[this.issuableId(issuable)]?.checked;
@@ -315,8 +331,16 @@ export default {
         <slot v-else name="empty-state"></slot>
       </template>
 
+      <div v-if="showPaginationControls && useKeysetPagination" class="gl-text-center gl-mt-3">
+        <gl-keyset-pagination
+          :has-next-page="hasNextPage"
+          :has-previous-page="hasPreviousPage"
+          @next="$emit('next-page')"
+          @prev="$emit('previous-page')"
+        />
+      </div>
       <gl-pagination
-        v-if="showPaginationControls"
+        v-else-if="showPaginationControls"
         :per-page="defaultPageSize"
         :total-items="totalItems"
         :value="currentPage"

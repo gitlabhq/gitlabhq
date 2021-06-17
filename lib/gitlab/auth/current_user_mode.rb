@@ -27,22 +27,27 @@ module Gitlab
         # will bypass the session check for a user that was already in admin mode
         #
         # If passed a block, it will surround the block execution and reset the session
-        # bypass at the end; otherwise use manually '.reset_bypass_session!'
+        # bypass at the end; otherwise you must remember to call '.reset_bypass_session!'
         def bypass_session!(admin_id)
           Gitlab::SafeRequestStore[CURRENT_REQUEST_BYPASS_SESSION_ADMIN_ID_RS_KEY] = admin_id
+          # Bypassing the session invalidates the cached value of admin_mode?
+          # Any new calls need to be re-computed.
+          uncache_admin_mode_state(admin_id)
 
           Gitlab::AppLogger.debug("Bypassing session in admin mode for: #{admin_id}")
 
-          if block_given?
-            begin
-              yield
-            ensure
-              reset_bypass_session!
-            end
+          return unless block_given?
+
+          begin
+            yield
+          ensure
+            reset_bypass_session!(admin_id)
           end
         end
 
-        def reset_bypass_session!
+        def reset_bypass_session!(admin_id = nil)
+          # Restoring the session bypass invalidates the cached value of admin_mode?
+          uncache_admin_mode_state(admin_id)
           Gitlab::SafeRequestStore.delete(CURRENT_REQUEST_BYPASS_SESSION_ADMIN_ID_RS_KEY)
         end
 
@@ -50,10 +55,21 @@ module Gitlab
           Gitlab::SafeRequestStore[CURRENT_REQUEST_BYPASS_SESSION_ADMIN_ID_RS_KEY]
         end
 
+        def uncache_admin_mode_state(admin_id = nil)
+          if admin_id
+            key = { res: :current_user_mode, user: admin_id, method: :admin_mode? }
+            Gitlab::SafeRequestStore.delete(key)
+          else
+            Gitlab::SafeRequestStore.delete_if do |key|
+              key.is_a?(Hash) && key[:res] == :current_user_mode && key[:method] == :admin_mode?
+            end
+          end
+        end
+
         # Store in the current request the provided user model (only if in admin mode)
         # and yield
         def with_current_admin(admin)
-          return yield unless self.new(admin).admin_mode?
+          return yield unless new(admin).admin_mode?
 
           Gitlab::SafeRequestStore[CURRENT_REQUEST_ADMIN_MODE_USER_RS_KEY] = admin
 

@@ -42,7 +42,7 @@ RSpec.describe Projects::ProtectedBranchesController do
 
     context 'when a policy restricts rule deletion' do
       before do
-        policy = instance_double(ProtectedBranchPolicy, can?: false)
+        policy = instance_double(ProtectedBranchPolicy, allowed?: false)
         allow(ProtectedBranchPolicy).to receive(:new).and_return(policy)
       end
 
@@ -70,7 +70,7 @@ RSpec.describe Projects::ProtectedBranchesController do
 
     context 'when a policy restricts rule deletion' do
       before do
-        policy = instance_double(ProtectedBranchPolicy, can?: false)
+        policy = instance_double(ProtectedBranchPolicy, allowed?: false)
         allow(ProtectedBranchPolicy).to receive(:new).and_return(policy)
       end
 
@@ -97,7 +97,7 @@ RSpec.describe Projects::ProtectedBranchesController do
 
     context 'when a policy restricts rule deletion' do
       before do
-        policy = instance_double(ProtectedBranchPolicy, can?: false)
+        policy = instance_double(ProtectedBranchPolicy, allowed?: false)
         allow(ProtectedBranchPolicy).to receive(:new).and_return(policy)
       end
 

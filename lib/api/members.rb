@@ -97,6 +97,8 @@ module API
         end
         # rubocop: disable CodeReuse/ActiveRecord
         post ":id/members" do
+          ::Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/333434')
+
           source = find_source(source_type, params[:id])
           authorize_admin_source!(source_type, source)
 

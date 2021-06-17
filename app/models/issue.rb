@@ -23,6 +23,7 @@ class Issue < ApplicationRecord
   include IssueAvailableFeatures
   include Todoable
   include FromUnion
+  include EachBatch
 
   extend ::Gitlab::Utils::Override
 

@@ -859,8 +859,6 @@ RSpec.shared_examples 'Pipeline Processing Service' do
   end
 
   context 'when a bridge job has parallel:matrix config', :sidekiq_inline do
-    let_it_be(:runner) { create(:ci_runner, :online) }
-
     let(:parent_config) do
       <<-EOY
       test:

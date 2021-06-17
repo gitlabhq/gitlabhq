@@ -13,13 +13,49 @@ $top-level-item-color: $purple-900;
   box-shadow: none;
 }
 
+&.gl-dark .nav-sidebar .sidebar-sub-level-items {
+  box-shadow: none;
+  border: 1px solid $border-color;
+}
+
+&.gl-dark .sidebar-top-level-items .context-header a .avatar-container.rect-avatar .avatar.s32 {
+  color: $white;
+}
+
 &.gl-dark .nav-sidebar li a,
 &.gl-dark .toggle-sidebar-button .collapse-text,
 &.gl-dark .toggle-sidebar-button .icon-chevron-double-lg-left,
 &.gl-dark .toggle-sidebar-button .icon-chevron-double-lg-right,
 &.gl-dark .sidebar-top-level-items .context-header a .sidebar-context-title,
-&.gl-dark .nav-sidebar-inner-scroll > div.context-header a .sidebar-context-title {
+&.gl-dark .nav-sidebar-inner-scroll > div.context-header a .sidebar-context-title,
+&.gl-dark .nav-sidebar a.has-sub-items + .sidebar-sub-level-items .fly-out-top-item a,
+&.gl-dark .nav-sidebar a.has-sub-items + .sidebar-sub-level-items .fly-out-top-item a:hover,
+&.gl-dark .nav-sidebar a.has-sub-items + .sidebar-sub-level-items .fly-out-top-item.active a,
+&.gl-dark .nav-sidebar a.has-sub-items + .sidebar-sub-level-items .fly-out-top-item .fly-out-top-item-container {
   color: $gray-darkest;
+}
+
+&.gl-dark .nav-sidebar a.has-sub-items + .sidebar-sub-level-items .fly-out-top-item a,
+&.gl-dark .nav-sidebar a.has-sub-items + .sidebar-sub-level-items .fly-out-top-item a:hover,
+&.gl-dark .nav-sidebar a.has-sub-items + .sidebar-sub-level-items .fly-out-top-item.active a,
+&.gl-dark .nav-sidebar a.has-sub-items + .sidebar-sub-level-items .fly-out-top-item .fly-out-top-item-container {
+  @include gl-mt-0;
+}
+
+&.gl-dark .nav-sidebar a:not(.has-sub-items) + .sidebar-sub-level-items .fly-out-top-item a,
+&.gl-dark .nav-sidebar a:not(.has-sub-items) + .sidebar-sub-level-items .fly-out-top-item a:hover,
+&.gl-dark .nav-sidebar a:not(.has-sub-items) + .sidebar-sub-level-items .fly-out-top-item.active a,
+&.gl-dark .nav-sidebar a:not(.has-sub-items) + .sidebar-sub-level-items .fly-out-top-item .fly-out-top-item-container {
+  background: $white;
+  color: $gray-darkest;
+
+  &::before {
+    border-right-color: $white;
+  }
+}
+
+&.gl-dark .nav-sidebar .sidebar-sub-level-items {
+  background-color: $white;
 }
 
 &.ui-indigo .nav-sidebar li.active:not(.fly-out-top-item) > a {
@@ -183,7 +219,7 @@ $top-level-item-color: $purple-900;
 
       .avatar.s32 {
         @extend .rect-avatar.s32;
-        color: $gray-900;
+        //color: $gray-900;
         box-shadow: $avatar-box-shadow;
       }
     }
@@ -226,7 +262,7 @@ $top-level-item-color: $purple-900;
     color: $white;
 
     @if $has-sub-items {
-      @include gl-mt-n2;
+      @include gl-mt-0;
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     } @else {
@@ -244,13 +280,13 @@ $top-level-item-color: $purple-900;
         content: '';
         display: block;
         top: 50%;
-        left: $gl-spacing-scale-3/-2;
-        margin-top: -$gl-spacing-scale-3;
+        left: -$gl-spacing-scale-2;
+        margin-top: -$gl-spacing-scale-2;
         width: 0;
         height: 0;
-        border-top: $gl-spacing-scale-3 solid transparent;
-        border-bottom: $gl-spacing-scale-3 solid transparent;
-        border-right: $gl-spacing-scale-3 solid $black;
+        border-top: $gl-spacing-scale-2 solid transparent;
+        border-bottom: $gl-spacing-scale-2 solid transparent;
+        border-right: $gl-spacing-scale-2 solid $black;
       }
     }
   }
@@ -356,6 +392,8 @@ $top-level-item-color: $purple-900;
   }
 
   a.has-sub-items + .sidebar-sub-level-items {
+    @include gl-mt-n2;
+
     .fly-out-top-item {
       @include fly-out-top-item($has-sub-items: true);
     }

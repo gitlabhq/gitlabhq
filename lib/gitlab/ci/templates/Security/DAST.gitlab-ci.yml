@@ -1,13 +1,20 @@
+# To use this template, add the following to your .gitlab-ci.yml file:
+#
+# include:
+#   template: DAST.gitlab-ci.yml
+#
+# You also need to add a `dast` stage to your `stages:` configuration. A sample configuration for DAST:
+#
+# stages:
+#   - build
+#   - test
+#   - deploy
+#   - dast
+
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast/
 
 # Configure DAST with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html).
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/dast/#available-variables
-
-stages:
-  - build
-  - test
-  - deploy
-  - dast
 
 variables:
   DAST_VERSION: 2

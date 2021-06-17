@@ -27,6 +27,10 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:security_bot) { @user&.security_bot? }
 
+  desc "User is automation bot"
+  with_options scope: :user, score: 0
+  condition(:automation_bot) { @user&.automation_bot? }
+
   desc "User email is unconfirmed or user account is locked"
   with_options scope: :user, score: 0
   condition(:inactive) { @user&.confirmation_required_on_sign_in? || @user&.access_locked? }
@@ -63,7 +67,7 @@ class BasePolicy < DeclarativePolicy::Base
 
   rule { default }.enable :read_cross_project
 
-  condition(:is_gitlab_com) { ::Gitlab.dev_env_or_com? }
+  condition(:is_gitlab_com, score: 0, scope: :global) { ::Gitlab.dev_env_or_com? }
 end
 
 BasePolicy.prepend_mod_with('BasePolicy')

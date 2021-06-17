@@ -54,12 +54,6 @@ RSpec.describe Admin::UsersController do
     end
   end
 
-  describe 'GET #cohorts' do
-    it_behaves_like 'tracking unique visits', :cohorts do
-      let(:target_id) { 'i_analytics_cohorts' }
-    end
-  end
-
   describe 'GET :id' do
     it 'finds a user case-insensitively' do
       user = create(:user, username: 'CaseSensitive')

@@ -15,7 +15,7 @@ RSpec.describe "Admin::Users" do
     let(:active_tab_selector) { '.nav-link.active' }
 
     it 'links to the Users tab' do
-      visit cohorts_admin_users_path
+      visit admin_cohorts_path
 
       within tabs_selector do
         click_link 'Users'
@@ -35,14 +35,14 @@ RSpec.describe "Admin::Users" do
         expect(page).to have_selector active_tab_selector, text: 'Cohorts'
       end
 
-      expect(page).to have_current_path(cohorts_admin_users_path)
+      expect(page).to have_current_path(admin_cohorts_path)
       expect(page).to have_selector active_tab_selector, text: 'Cohorts'
     end
 
     it 'redirects legacy route' do
       visit admin_users_path(tab: 'cohorts')
 
-      expect(page).to have_current_path(cohorts_admin_users_path)
+      expect(page).to have_current_path(admin_cohorts_path)
     end
   end
 

@@ -88,7 +88,7 @@ RSpec.describe Integrations::EmailsOnPush do
   describe '#execute' do
     let(:push_data) { { object_kind: 'push' } }
     let(:project)   { create(:project, :repository) }
-    let(:service)   { create(:emails_on_push_service, project: project) }
+    let(:integration) { create(:emails_on_push_integration, project: project) }
     let(:recipients) { 'test@gitlab.com' }
 
     before do
@@ -105,7 +105,7 @@ RSpec.describe Integrations::EmailsOnPush do
       it 'sends email' do
         expect(EmailsOnPushWorker).not_to receive(:perform_async)
 
-        service.execute(push_data)
+        integration.execute(push_data)
       end
     end
 
@@ -119,7 +119,7 @@ RSpec.describe Integrations::EmailsOnPush do
       it 'does not send email' do
         expect(EmailsOnPushWorker).not_to receive(:perform_async)
 
-        service.execute(push_data)
+        integration.execute(push_data)
       end
     end
 
@@ -128,7 +128,7 @@ RSpec.describe Integrations::EmailsOnPush do
         expect(project).to receive(:emails_disabled?).and_return(true)
         expect(EmailsOnPushWorker).not_to receive(:perform_async)
 
-        service.execute(push_data)
+        integration.execute(push_data)
       end
     end
 

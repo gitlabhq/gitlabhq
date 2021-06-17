@@ -155,7 +155,7 @@ A job scheduled for an idempotent worker is [deduplicated](#deduplication) when
 an unstarted job with the same arguments is already in the queue.
 
 WARNING:
-For [data consistency jobs](#job-data-consistency), the deduplication is not compatible with the
+For [data consistency jobs](#job-data-consistency-strategies), the deduplication is not compatible with the
 `data_consistency` attribute set to `:sticky` or `:delayed`.
 The reason for this is that deduplication always takes into account the latest binary replication pointer into account, not the first one.
 There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/325291) to improve this.
@@ -462,18 +462,56 @@ If we expect an increase of **less than 5%**, then no further action is needed.
 Otherwise, please ping `@gitlab-org/scalability` on the merge request and ask
 for a review.
 
-## Job data consistency
+## Job data consistency strategies
 
-In order to utilize [Sidekiq read-only database replicas capabilities](../administration/database_load_balancing.md#enable-the-load-balancer-for-sidekiq), 
-set the `data_consistency` attribute of the job to `:always`, `:sticky`, or `:delayed`. 
+In GitLab 13.11 and earlier, Sidekiq workers would always send database queries to the primary
+database node,
+both for reads and writes. This ensured that data integrity
+is both guaranteed and immediate, since in a single-node scenario it is impossible to encounter
+stale reads even for workers that read their own writes.
+If a worker writes to the primary, but reads from a replica, however, the possibility
+of reading a stale record is non-zero due to replicas potentially lagging behind the primary.
+
+When the number of jobs that rely on the database increases, ensuring immediate data consistency
+can put unsustainable load on the primary database server. We therefore added the ability to use
+[database load-balancing in Sidekiq workers](../administration/database_load_balancing.md#enable-the-load-balancer-for-sidekiq).
+By configuring a worker's `data_consistency` field, we can then allow the scheduler to target read replicas
+under several strategies outlined below.
+
+## Trading immediacy for reduced primary load
+
+Not requiring immediate data consistency allows developers to decide to either:
+
+- Ensure immediately consistent reads, but increase load on the primary database.
+- Prefer read replicas to add relief to the primary, but increase the likelihood of stale reads that have to be retried.
+
+By default, any worker has a data consistency requirement of `:always`, so, as before, all
+database operations target the primary. To allow for reads to be served from replicas instead, we
+added two additional consistency modes: `:sticky` and `:delayed`.
+
+When you declare either `:sticky` or `:delayed` consistency, workers become eligible for database
+load-balancing. In both cases, jobs are enqueued with a short delay.
+This minimizes the likelihood of replication lag after a write.
+
+The difference is in what happens when there is replication lag after the delay: `sticky` workers
+switch over to the primary right away, whereas `delayed` workers fail fast and are retried once.
+If they still encounter replication lag, they also switch to the primary instead.
+**If your worker never performs any writes, it is strongly advised to apply one of these consistency settings,
+since it will never need to rely on the primary database node.**
+
+The table below shows the `data_consistency` attribute and its values, ordered by the degree to which
+they prefer read replicas and will wait for replicas to catch up:
 
 | **Data Consistency**  | **Description**  |
 |--------------|-----------------------------|
-| `:always`    | The job is required to use the primary database (default). |
-| `:sticky`    | The job uses a replica as long as possible. It switches to primary either on write or long replication lag. It should be used on jobs that require to be executed as fast as possible.  |
-| `:delayed`   | The job always uses replica, but switches to primary on write. The job is delayed if there's a long replication lag. If the replica is not up-to-date with the next retry, it switches to the primary. It should be used on jobs where we are fine to delay the execution of a given job due to their importance such as expire caches, execute hooks, etc. |
+| `:always`    | The job is required to use the primary database (default). It should be used for workers that primarily perform writes or that have very strict requirements around reading their writes without suffering any form of delay. |
+| `:sticky`    | The job prefers replicas, but switches to the primary for writes or when encountering replication lag. It should be used for jobs that require to be executed as fast as possible but can sustain a small initial queuing delay.  |
+| `:delayed`   | The job prefers replicas, but switches to the primary for writes. When encountering replication lag before the job starts, the job is retried once. If the replica is still not up to date on the next retry, it switches to the primary. It should be used for jobs where delaying execution further typically does not matter, such as cache expiration or web hooks execution. |
 
-To set a data consistency for a job, use the `data_consistency` class method:
+In all cases workers read either from a replica that is fully caught up,
+or from the primary node, so data consistency is always ensured.
+
+To set a data consistency for a worker, use the `data_consistency` class method:
 
 ```ruby
 class DelayedWorker
@@ -499,8 +537,8 @@ When `feature_flag` is disabled, the job defaults to `:always`, which means that
 The `feature_flag` property does not allow the use of
 [feature gates based on actors](../development/feature_flags/index.md).
 This means that the feature flag cannot be toggled only for particular
-projects, groups, or users, but instead, you can safely use [percentage of time rollout](../development/feature_flags/index.md). 
-Note that since we check the feature flag on both Sidekiq client and server, rolling out a 10% of the time, 
+projects, groups, or users, but instead, you can safely use [percentage of time rollout](../development/feature_flags/index.md).
+Note that since we check the feature flag on both Sidekiq client and server, rolling out a 10% of the time,
 will likely results in 1% (0.1 [from client]*0.1 [from server]) of effective jobs using replicas.
 
 Example:
@@ -514,15 +552,6 @@ class DelayedWorker
   # ...
 end
 ```
-
-### Delayed job execution
-
-Scheduling workers that utilize [Sidekiq read-only database replicas capabilities](#job-data-consistency),
-(workers with `data_consistency` attribute set to `:sticky` or `:delayed`), 
-by calling `SomeWorker.perform_async` results in a worker performing in the future (1 second in the future).
-
-This way, the replica has a chance to catch up, and the job will likely use the replica.
-For workers with `data_consistency` set to `:delayed`, it can also reduce the number of retried jobs.
 
 ## Jobs with External Dependencies
 

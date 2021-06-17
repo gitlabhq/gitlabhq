@@ -1,6 +1,6 @@
 # This data file drives the specs in
 # spec/frontend/fixtures/api_markdown.rb and
-# spec/frontend/rich_text_editor/extensions/markdown_processing_spec.js
+# spec/frontend/content_editor/extensions/markdown_processing_spec.js
 ---
 - name: bold
   markdown: '**bold**'
@@ -8,6 +8,8 @@
   markdown: '_emphasized text_'
 - name: inline_code
   markdown: '`code`'
+- name: strike
+  markdown: '~~del~~'
 - name: link
   markdown: '[GitLab](https://gitlab.com)'
 - name: code_block

@@ -93,15 +93,16 @@ export default {
 
 <template>
   <base-token
-    :token-config="config"
-    :token-value="value"
-    :token-active="active"
+    :config="config"
+    :value="value"
+    :active="active"
     :tokens-list-loading="loading"
     :token-values="labels"
     :fn-active-token-value="getActiveLabel"
     :default-token-values="defaultLabels"
     :recent-token-values-storage-key="config.recentTokenValuesStorageKey"
     @fetch-token-values="fetchLabelBySearchTerm"
+    v-on="$listeners"
   >
     <template
       #view-token="{ viewTokenProps: { inputValue, cssClasses, listeners, activeTokenValue } }"

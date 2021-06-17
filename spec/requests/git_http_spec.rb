@@ -36,16 +36,6 @@ RSpec.describe 'Git HTTP requests' do
           end
         end
 
-        context "when password is expired" do
-          it "responds to downloads with status 401 Unauthorized" do
-            user.update!(password_expires_at: 2.days.ago)
-
-            download(path, user: user.username, password: user.password) do |response|
-              expect(response).to have_gitlab_http_status(:unauthorized)
-            end
-          end
-        end
-
         context "when user is blocked" do
           let(:user) { create(:user, :blocked) }
 
@@ -63,6 +53,26 @@ RSpec.describe 'Git HTTP requests' do
             expect(response).not_to have_gitlab_http_status(:unauthorized)
             expect(response.header['WWW-Authenticate']).to be_nil
           end
+        end
+      end
+    end
+  end
+
+  shared_examples 'operations are not allowed with expired password' do
+    context "when password is expired" do
+      it "responds to downloads with status 401 Unauthorized" do
+        user.update!(password_expires_at: 2.days.ago)
+
+        download(path, user: user.username, password: user.password) do |response|
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      it "responds to uploads with status 401 Unauthorized" do
+        user.update!(password_expires_at: 2.days.ago)
+
+        upload(path, user: user.username, password: user.password) do |response|
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
       end
     end
@@ -93,15 +103,6 @@ RSpec.describe 'Git HTTP requests' do
           upload(path, user: user.username, password: "wrong-password") do |response|
             expect(response).to have_gitlab_http_status(:unauthorized)
             expect(response.header['WWW-Authenticate']).to start_with('Basic ')
-          end
-        end
-
-        context "when password is expired" do
-          it "responds to uploads with status 401 Unauthorized" do
-            user.update!(password_expires_at: 2.days.ago)
-            upload(path, user: user.username, password: user.password) do |response|
-              expect(response).to have_gitlab_http_status(:unauthorized)
-            end
           end
         end
       end
@@ -212,6 +213,7 @@ RSpec.describe 'Git HTTP requests' do
 
         it_behaves_like 'pulls require Basic HTTP Authentication'
         it_behaves_like 'pushes require Basic HTTP Authentication'
+        it_behaves_like 'operations are not allowed with expired password'
 
         context 'when authenticated' do
           it 'rejects downloads and uploads with 404 Not Found' do
@@ -306,6 +308,7 @@ RSpec.describe 'Git HTTP requests' do
 
         it_behaves_like 'pulls require Basic HTTP Authentication'
         it_behaves_like 'pushes require Basic HTTP Authentication'
+        it_behaves_like 'operations are not allowed with expired password'
 
         context 'when authenticated' do
           context 'and as a developer on the team' do
@@ -473,6 +476,7 @@ RSpec.describe 'Git HTTP requests' do
 
             it_behaves_like 'pulls require Basic HTTP Authentication'
             it_behaves_like 'pushes require Basic HTTP Authentication'
+            it_behaves_like 'operations are not allowed with expired password'
           end
 
           context 'but the repo is enabled' do
@@ -488,6 +492,7 @@ RSpec.describe 'Git HTTP requests' do
 
             it_behaves_like 'pulls require Basic HTTP Authentication'
             it_behaves_like 'pushes require Basic HTTP Authentication'
+            it_behaves_like 'operations are not allowed with expired password'
           end
         end
 
@@ -508,6 +513,7 @@ RSpec.describe 'Git HTTP requests' do
 
         it_behaves_like 'pulls require Basic HTTP Authentication'
         it_behaves_like 'pushes require Basic HTTP Authentication'
+        it_behaves_like 'operations are not allowed with expired password'
 
         context "when username and password are provided" do
           let(:env) { { user: user.username, password: 'nope' } }
@@ -1003,6 +1009,24 @@ RSpec.describe 'Git HTTP requests' do
 
           it_behaves_like 'pulls are allowed'
           it_behaves_like 'pushes are allowed'
+
+          context "when password is expired" do
+            it "responds to downloads with status 200" do
+              user.update!(password_expires_at: 2.days.ago)
+
+              download(path, user: user.username, password: user.password) do |response|
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+
+            it "responds to uploads with status 200" do
+              user.update!(password_expires_at: 2.days.ago)
+
+              upload(path, user: user.username, password: user.password) do |response|
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+          end
         end
       end
     end

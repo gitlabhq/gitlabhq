@@ -1257,7 +1257,7 @@ module Ci
     end
 
     def build_matchers
-      self.builds.build_matchers(project)
+      self.builds.latest.build_matchers(project)
     end
 
     private

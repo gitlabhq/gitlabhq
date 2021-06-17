@@ -39,12 +39,16 @@ module Projects
 
     def update_mirror(remote_mirror)
       remote_mirror.update_start!
-      remote_mirror.ensure_remote!
 
       # LFS objects must be sent first, or the push has dangling pointers
       send_lfs_objects!(remote_mirror)
 
-      response = remote_mirror.update_repository
+      response = if Feature.enabled?(:update_remote_mirror_inmemory, project, default_enabled: :yaml)
+                   remote_mirror.update_repository(inmemory_remote: true)
+                 else
+                   remote_mirror.ensure_remote!
+                   remote_mirror.update_repository(inmemory_remote: false)
+                 end
 
       if response.divergent_refs.any?
         message = "Some refs have diverged and have not been updated on the remote:"

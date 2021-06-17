@@ -1,3 +1,5 @@
+import '../webpack';
+
 import SentryConfig from './sentry_config';
 
 const index = function index() {

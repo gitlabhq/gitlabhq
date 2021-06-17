@@ -38,6 +38,16 @@ class ContainerExpirationPolicy < ApplicationRecord
     )
   end
 
+  def self.without_container_repositories
+    where.not(
+      'EXISTS(?)',
+      ContainerRepository.select(1)
+                         .where(
+                           'container_repositories.project_id = container_expiration_policies.project_id'
+                         )
+    )
+  end
+
   def self.keep_n_options
     {
       1 => _('%{tags} tag per image name') % { tags: 1 },

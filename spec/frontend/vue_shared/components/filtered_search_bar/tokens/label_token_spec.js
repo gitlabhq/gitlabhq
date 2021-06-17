@@ -40,6 +40,7 @@ function createComponent(options = {}) {
     value = { data: '' },
     active = false,
     stubs = defaultStubs,
+    listeners = {},
   } = options;
   return mount(LabelToken, {
     propsData: {
@@ -53,6 +54,7 @@ function createComponent(options = {}) {
       suggestionsListClass: 'custom-class',
     },
     stubs,
+    listeners,
   });
 }
 
@@ -206,7 +208,7 @@ describe('LabelToken', () => {
       expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
     });
 
-    it('renders `DEFAULT_LABELS` as default suggestions', async () => {
+    it('renders `DEFAULT_LABELS` as default suggestions', () => {
       wrapper = createComponent({
         active: true,
         config: { ...mockLabelToken },
@@ -215,7 +217,6 @@ describe('LabelToken', () => {
       const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
-      await wrapper.vm.$nextTick();
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
@@ -223,6 +224,18 @@ describe('LabelToken', () => {
       DEFAULT_LABELS.forEach((label, index) => {
         expect(suggestions.at(index).text()).toBe(label.text);
       });
+    });
+
+    it('emits listeners in the base-token', () => {
+      const mockInput = jest.fn();
+      wrapper = createComponent({
+        listeners: {
+          input: mockInput,
+        },
+      });
+      wrapper.findComponent(BaseToken).vm.$emit('input', [{ data: 'mockData', operator: '=' }]);
+
+      expect(mockInput).toHaveBeenLastCalledWith([{ data: 'mockData', operator: '=' }]);
     });
   });
 });

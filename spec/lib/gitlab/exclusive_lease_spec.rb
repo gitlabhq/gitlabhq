@@ -166,4 +166,82 @@ RSpec.describe Gitlab::ExclusiveLease, :clean_gitlab_redis_shared_state do
       expect(described_class.get_uuid(unique_key)).to be_falsey
     end
   end
+
+  describe '.throttle' do
+    it 'prevents repeated execution of the block' do
+      number = 0
+
+      action = -> { described_class.throttle(1) { number += 1 } }
+
+      action.call
+      action.call
+
+      expect(number).to eq 1
+    end
+
+    it 'is distinct by block' do
+      number = 0
+
+      described_class.throttle(1) { number += 1 }
+      described_class.throttle(1) { number += 1 }
+
+      expect(number).to eq 2
+    end
+
+    it 'is distinct by key' do
+      number = 0
+
+      action = ->(k) { described_class.throttle(k) { number += 1 } }
+
+      action.call(:a)
+      action.call(:b)
+      action.call(:a)
+
+      expect(number).to eq 2
+    end
+
+    it 'allows a group to be passed' do
+      number = 0
+
+      described_class.throttle(1, group: :a) { number += 1 }
+      described_class.throttle(1, group: :b) { number += 1 }
+      described_class.throttle(1, group: :a) { number += 1 }
+      described_class.throttle(1, group: :b) { number += 1 }
+
+      expect(number).to eq 2
+    end
+
+    it 'defaults to a 60min timeout' do
+      expect(described_class).to receive(:new).with(anything, hash_including(timeout: 1.hour.to_i)).and_call_original
+
+      described_class.throttle(1) {}
+    end
+
+    it 'allows count to be specified' do
+      expect(described_class)
+        .to receive(:new)
+        .with(anything, hash_including(timeout: 15.minutes.to_i))
+        .and_call_original
+
+      described_class.throttle(1, count: 4) {}
+    end
+
+    it 'allows period to be specified' do
+      expect(described_class)
+        .to receive(:new)
+        .with(anything, hash_including(timeout: 1.day.to_i))
+        .and_call_original
+
+      described_class.throttle(1, period: 1.day) {}
+    end
+
+    it 'allows period and count to be specified' do
+      expect(described_class)
+        .to receive(:new)
+        .with(anything, hash_including(timeout: 30.minutes.to_i))
+        .and_call_original
+
+      described_class.throttle(1, count: 48, period: 1.day) {}
+    end
+  end
 end

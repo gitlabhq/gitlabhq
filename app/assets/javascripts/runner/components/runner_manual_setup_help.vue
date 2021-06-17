@@ -1,8 +1,10 @@
 <script>
 import { GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
+import RunnerRegistrationTokenReset from '~/runner/components/runner_registration_token_reset.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import RunnerInstructions from '~/vue_shared/components/runner_instructions/runner_instructions.vue';
+import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../constants';
 
 export default {
   components: {
@@ -10,6 +12,7 @@ export default {
     GlSprintf,
     ClipboardButton,
     RunnerInstructions,
+    RunnerRegistrationTokenReset,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -24,15 +27,39 @@ export default {
       type: String,
       required: true,
     },
-    typeName: {
+    type: {
       type: String,
-      required: false,
-      default: __('shared'),
+      required: true,
+      validator(type) {
+        return [INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE].includes(type);
+      },
     },
+  },
+  data() {
+    return {
+      currentRegistrationToken: this.registrationToken,
+    };
   },
   computed: {
     rootUrl() {
       return gon.gitlab_url || '';
+    },
+    typeName() {
+      switch (this.type) {
+        case INSTANCE_TYPE:
+          return s__('Runners|shared');
+        case GROUP_TYPE:
+          return s__('Runners|group');
+        case PROJECT_TYPE:
+          return s__('Runners|specific');
+        default:
+          return '';
+      }
+    },
+  },
+  methods: {
+    onTokenReset(token) {
+      this.currentRegistrationToken = token;
     },
   },
 };
@@ -65,12 +92,13 @@ export default {
         {{ __('And this registration token:') }}
         <br />
 
-        <code data-testid="registration-token">{{ registrationToken }}</code>
-        <clipboard-button :title="__('Copy token')" :text="registrationToken" />
+        <code data-testid="registration-token">{{ currentRegistrationToken }}</code>
+        <clipboard-button :title="__('Copy token')" :text="currentRegistrationToken" />
       </li>
     </ol>
 
-    <!-- TODO Implement reset token functionality -->
+    <runner-registration-token-reset :type="type" @tokenReset="onTokenReset" />
+
     <runner-instructions />
   </div>
 </template>

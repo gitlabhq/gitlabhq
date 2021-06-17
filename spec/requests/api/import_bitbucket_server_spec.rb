@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::ImportBitbucketServer do
   let(:base_uri) { "https://test:7990" }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, bio: 'test') }
   let(:token) { "asdasd12345" }
   let(:secret) { "sekrettt" }
   let(:project_key) { 'TES' }

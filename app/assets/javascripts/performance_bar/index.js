@@ -1,3 +1,5 @@
+import '../webpack';
+
 import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';

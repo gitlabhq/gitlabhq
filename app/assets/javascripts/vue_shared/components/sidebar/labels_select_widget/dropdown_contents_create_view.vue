@@ -1,6 +1,10 @@
 <script>
 import { GlTooltipDirective, GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
-import { mapState, mapActions } from 'vuex';
+import createFlash from '~/flash';
+import { __ } from '~/locale';
+import createLabelMutation from './graphql/create_label.mutation.graphql';
+
+const errorMessage = __('Error creating label.');
 
 export default {
   components: {
@@ -12,14 +16,19 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: {
+    projectPath: {
+      default: '',
+    },
+  },
   data() {
     return {
       labelTitle: '',
       selectedColor: '',
+      labelCreateInProgress: false,
     };
   },
   computed: {
-    ...mapState(['labelsCreateTitle', 'labelCreateInProgress']),
     disableCreate() {
       return !this.labelTitle.length || !this.selectedColor.length || this.labelCreateInProgress;
     },
@@ -29,7 +38,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleDropdownContents', 'toggleDropdownContentsCreateView', 'createLabel']),
     getColorCode(color) {
       return Object.keys(color).pop();
     },
@@ -39,11 +47,27 @@ export default {
     handleColorClick(color) {
       this.selectedColor = this.getColorCode(color);
     },
-    handleCreateClick() {
-      this.createLabel({
-        title: this.labelTitle,
-        color: this.selectedColor,
-      });
+    async createLabel() {
+      this.labelCreateInProgress = true;
+      try {
+        const {
+          data: { labelCreate },
+        } = await this.$apollo.mutate({
+          mutation: createLabelMutation,
+          variables: {
+            title: this.labelTitle,
+            color: this.selectedColor,
+            projectPath: this.projectPath,
+          },
+        });
+        if (labelCreate.errors.length) {
+          createFlash({ message: errorMessage });
+        }
+      } catch {
+        createFlash({ message: errorMessage });
+      }
+      this.labelCreateInProgress = false;
+      this.$emit('hideCreateView');
     },
   },
 };
@@ -51,34 +75,16 @@ export default {
 
 <template>
   <div class="labels-select-contents-create js-labels-create">
-    <div class="dropdown-title d-flex align-items-center pt-0 pb-2">
-      <gl-button
-        :aria-label="__('Go back')"
-        variant="link"
-        size="small"
-        class="js-btn-back dropdown-header-button p-0"
-        icon="arrow-left"
-        @click="toggleDropdownContentsCreateView"
-      />
-      <span class="flex-grow-1">{{ labelsCreateTitle }}</span>
-      <gl-button
-        :aria-label="__('Close')"
-        variant="link"
-        size="small"
-        class="dropdown-header-button p-0"
-        icon="close"
-        @click="toggleDropdownContents"
-      />
-    </div>
     <div class="dropdown-input">
       <gl-form-input
         v-model.trim="labelTitle"
         :placeholder="__('Name new label')"
         :autofocus="true"
+        data-testid="label-title-input"
       />
     </div>
-    <div class="dropdown-content px-2">
-      <div class="suggest-colors suggest-colors-dropdown mt-0 mb-2">
+    <div class="dropdown-content gl-px-3">
+      <div class="suggest-colors suggest-colors-dropdown gl-mt-0! gl-mb-3!">
         <gl-link
           v-for="(color, index) in suggestedColors"
           :key="index"
@@ -90,28 +96,35 @@ export default {
       </div>
       <div class="color-input-container gl-display-flex">
         <span
-          class="dropdown-label-color-preview position-relative position-relative d-inline-block"
+          class="dropdown-label-color-preview gl-relative gl-display-inline-block"
+          data-testid="selected-color"
           :style="{ backgroundColor: selectedColor }"
         ></span>
         <gl-form-input
           v-model.trim="selectedColor"
           class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
           :placeholder="__('Use custom color #FF0000')"
+          data-testid="selected-color-text"
         />
       </div>
     </div>
-    <div class="dropdown-actions clearfix pt-2 px-2">
+    <div class="dropdown-actions gl-display-flex gl-justify-content-space-between gl-pt-3 gl-px-3">
       <gl-button
         :disabled="disableCreate"
         category="primary"
         variant="success"
-        class="float-left d-flex align-items-center"
-        @click="handleCreateClick"
+        class="gl-display-flex gl-align-items-center"
+        data-testid="create-button"
+        @click="createLabel"
       >
-        <gl-loading-icon v-show="labelCreateInProgress" :inline="true" class="mr-1" />
+        <gl-loading-icon v-if="labelCreateInProgress" :inline="true" class="mr-1" />
         {{ __('Create') }}
       </gl-button>
-      <gl-button class="float-right js-btn-cancel-create" @click="toggleDropdownContentsCreateView">
+      <gl-button
+        class="js-btn-cancel-create"
+        data-testid="cancel-button"
+        @click="$emit('hideCreateView')"
+      >
         {{ __('Cancel') }}
       </gl-button>
     </div>

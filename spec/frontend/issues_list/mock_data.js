@@ -3,6 +3,73 @@ import {
   OPERATOR_IS_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
+export const getIssuesQueryResponse = {
+  data: {
+    project: {
+      issues: {
+        count: 1,
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: 'startcursor',
+          endCursor: 'endcursor',
+        },
+        nodes: [
+          {
+            id: 'gid://gitlab/Issue/123456',
+            iid: '789',
+            closedAt: null,
+            confidential: false,
+            createdAt: '2021-05-22T04:08:01Z',
+            downvotes: 2,
+            dueDate: '2021-05-29',
+            humanTimeEstimate: null,
+            moved: false,
+            title: 'Issue title',
+            updatedAt: '2021-05-22T04:08:01Z',
+            upvotes: 3,
+            userDiscussionsCount: 4,
+            webUrl: 'project/-/issues/789',
+            assignees: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/User/234',
+                  avatarUrl: 'avatar/url',
+                  name: 'Marge Simpson',
+                  username: 'msimpson',
+                  webUrl: 'url/msimpson',
+                },
+              ],
+            },
+            author: {
+              id: 'gid://gitlab/User/456',
+              avatarUrl: 'avatar/url',
+              name: 'Homer Simpson',
+              username: 'hsimpson',
+              webUrl: 'url/hsimpson',
+            },
+            labels: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/ProjectLabel/456',
+                  color: '#333',
+                  title: 'Label title',
+                  description: 'Label description',
+                },
+              ],
+            },
+            milestone: null,
+            taskCompletionStatus: {
+              completedCount: 1,
+              count: 2,
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const locationSearch = [
   '?search=find+issues',
   'author_username=homer',
