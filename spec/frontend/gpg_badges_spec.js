@@ -17,19 +17,23 @@ describe('GpgBadges', () => {
   };
   const dummyUrl = `${TEST_HOST}/dummy/signatures`;
 
-  beforeEach(() => {
-    mock = new MockAdapter(axios);
+  const setForm = ({ utf8 = '✓', search = '' } = {}) => {
     setFixtures(`
       <form
         class="commits-search-form js-signature-container" data-signatures-path="${dummyUrl}" action="${dummyUrl}"
         method="get">
-        <input name="utf8" type="hidden" value="✓">
-        <input type="search" name="search" id="commits-search"class="form-control search-text-input input-short">
+        <input name="utf8" type="hidden" value="${utf8}">
+        <input type="search" name="search" value="${search}" id="commits-search"class="form-control search-text-input input-short">
       </form>
       <div class="parent-container">
         <div class="js-loading-gpg-badge" data-commit-sha="${dummyCommitSha}"></div>
       </div>
     `);
+  };
+
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+    setForm();
   });
 
   afterEach(() => {
@@ -60,6 +64,44 @@ describe('GpgBadges', () => {
       })
       .then(done)
       .catch(done.fail);
+  });
+
+  it('fetches commit signatures', async () => {
+    mock.onGet(dummyUrl).replyOnce(200);
+
+    await GpgBadges.fetch();
+
+    expect(mock.history.get).toHaveLength(1);
+    expect(mock.history.get[0]).toMatchObject({
+      params: { search: '', utf8: '✓' },
+      url: dummyUrl,
+    });
+  });
+
+  it('fetches commit signatures with search parameters with spaces', async () => {
+    mock.onGet(dummyUrl).replyOnce(200);
+    setForm({ search: 'my search' });
+
+    await GpgBadges.fetch();
+
+    expect(mock.history.get).toHaveLength(1);
+    expect(mock.history.get[0]).toMatchObject({
+      params: { search: 'my search', utf8: '✓' },
+      url: dummyUrl,
+    });
+  });
+
+  it('fetches commit signatures with search parameters with plus symbols', async () => {
+    mock.onGet(dummyUrl).replyOnce(200);
+    setForm({ search: 'my+search' });
+
+    await GpgBadges.fetch();
+
+    expect(mock.history.get).toHaveLength(1);
+    expect(mock.history.get[0]).toMatchObject({
+      params: { search: 'my+search', utf8: '✓' },
+      url: dummyUrl,
+    });
   });
 
   it('displays a loading spinner', (done) => {

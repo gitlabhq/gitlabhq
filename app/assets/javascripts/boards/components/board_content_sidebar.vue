@@ -117,7 +117,6 @@ export default {
             :issuable-type="issuableType"
             class="gl-mt-5"
             data-testid="iteration-edit"
-            data-qa-selector="iteration_container"
           />
         </template>
         <template v-else>
@@ -129,7 +128,6 @@ export default {
             :issuable-type="issuableType"
             class="gl-mt-5"
             data-testid="iteration-edit"
-            data-qa-selector="iteration_container"
           />
         </template>
       </div>

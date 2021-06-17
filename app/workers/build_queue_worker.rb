@@ -10,7 +10,7 @@ class BuildQueueWorker # rubocop:disable Scalability/IdempotentWorker
   feature_category :continuous_integration
   urgency :high
   worker_resource_boundary :cpu
-  data_consistency :sticky, feature_flag: :load_balancing_for_build_queue_worker
+  data_consistency :sticky
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)

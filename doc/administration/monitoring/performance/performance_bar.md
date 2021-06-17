@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can display the GitLab Performance Bar to see statistics for the performance
 of a page. When activated, it looks as follows:
 
-![Performance Bar](img/performance_bar.png)
+![Performance Bar](img/performance_bar_v14_0.png)
 
 From left to right, it displays:
 

@@ -419,28 +419,6 @@ export const parseIntPagination = (paginationInformation) => ({
 });
 
 /**
- * Given a string of query parameters creates an object.
- *
- * @example
- * `scope=all&page=2` -> { scope: 'all', page: '2'}
- * `scope=all` -> { scope: 'all' }
- * ``-> {}
- * @param {String} query
- * @returns {Object}
- */
-export const parseQueryStringIntoObject = (query = '') => {
-  if (query === '') return {};
-
-  return query.split('&').reduce((acc, element) => {
-    const val = element.split('=');
-    Object.assign(acc, {
-      [val[0]]: decodeURIComponent(val[1]),
-    });
-    return acc;
-  }, {});
-};
-
-/**
  * Converts object with key-value pairs
  * into query-param string
  *

@@ -300,7 +300,11 @@ export default {
           :attributeUrl="attributeUrl"
           :currentAttribute="currentAttribute"
         >
-          <gl-link class="gl-text-gray-900! gl-font-weight-bold" :href="attributeUrl">
+          <gl-link
+            class="gl-text-gray-900! gl-font-weight-bold"
+            :href="attributeUrl"
+            :data-qa-selector="`${issuableAttribute}_link`"
+          >
             {{ attributeTitle }}
           </gl-link>
         </slot>

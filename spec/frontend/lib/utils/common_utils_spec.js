@@ -175,18 +175,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('parseQueryStringIntoObject', () => {
-    it('should return object with query parameters', () => {
-      expect(commonUtils.parseQueryStringIntoObject('scope=all&page=2')).toEqual({
-        scope: 'all',
-        page: '2',
-      });
-
-      expect(commonUtils.parseQueryStringIntoObject('scope=all')).toEqual({ scope: 'all' });
-      expect(commonUtils.parseQueryStringIntoObject()).toEqual({});
-    });
-  });
-
   describe('objectToQueryString', () => {
     it('returns empty string when `param` is undefined, null or empty string', () => {
       expect(commonUtils.objectToQueryString()).toBe('');
