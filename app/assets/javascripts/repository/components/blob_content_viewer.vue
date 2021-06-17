@@ -7,13 +7,13 @@ import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constant
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
-import BlobHeaderEdit from './blob_header_edit.vue';
+import BlobEdit from './blob_edit.vue';
 import BlobReplace from './blob_replace.vue';
 
 export default {
   components: {
     BlobHeader,
-    BlobHeaderEdit,
+    BlobEdit,
     BlobReplace,
     BlobContent,
     GlLoadingIcon,
@@ -131,10 +131,7 @@ export default {
         @viewer-changed="switchViewer"
       >
         <template #actions>
-          <blob-header-edit
-            :edit-path="blobInfo.editBlobPath"
-            :web-ide-path="blobInfo.ideEditPath"
-          />
+          <blob-edit :edit-path="blobInfo.editBlobPath" :web-ide-path="blobInfo.ideEditPath" />
           <blob-replace
             v-if="isLoggedIn"
             :path="path"

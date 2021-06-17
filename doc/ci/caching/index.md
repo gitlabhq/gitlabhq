@@ -57,18 +57,120 @@ For runners to work with caches efficiently, you must do one of the following:
 - Use multiple runners that have
   [distributed caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching),
   where the cache is stored in S3 buckets. Shared runners on GitLab.com behave this way. These runners can be in autoscale mode,
-  but they don't have to be. 
+  but they don't have to be.
 - Use multiple runners with the same architecture and have these runners
   share a common network-mounted directory to store the cache. This directory should use NFS or something similar.
-  These runners must be in autoscale mode. 
+  These runners must be in autoscale mode.
+
+## Use multiple caches
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32814) in GitLab 13.10.
+> - [Feature Flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321877), in GitLab 13.12.
+
+You can have a maximum of four caches:
+
+```yaml
+test-job:
+  stage: build
+  cache:
+    - key:
+        files:
+          - Gemfile.lock
+      paths:
+        - vendor/ruby
+    - key:
+        files:
+          - yarn.lock
+      paths:
+        - .yarn-cache/
+  script:
+    - bundle install --path=vendor
+    - yarn install --cache-folder .yarn-cache
+    - echo Run tests...
+```
+
+If multiple caches are combined with a [Fallback cache key](#fallback-cache-key),
+the fallback cache is fetched every time a cache is not found.
+
+## Fallback cache key
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1534) in GitLab Runner 13.4.
+
+You can use the `$CI_COMMIT_REF_SLUG` [predefined variable](../variables/predefined_variables.md)
+to specify your [`cache:key`](../yaml/README.md#cachekey). For example, if your
+`$CI_COMMIT_REF_SLUG` is `test` you can set a job to download cache that's tagged with `test`.
+
+If a cache with this tag is not found, you can use `CACHE_FALLBACK_KEY` to
+specify a cache to use when none exists.
+
+In the following example, if the `$CI_COMMIT_REF_SLUG` is not found, the job uses the key defined
+by the `CACHE_FALLBACK_KEY` variable:
+
+```yaml
+variables:
+  CACHE_FALLBACK_KEY: fallback-key
+
+job1:
+  script:
+    - echo
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - binaries/
+```
+
+## Disable cache for specific jobs
+
+If you have defined the cache globally, it means that each job uses the
+same definition. You can override this behavior per-job, and if you want to
+disable it completely, use an empty hash:
+
+```yaml
+job:
+  cache: {}
+```
+
+## Inherit global configuration, but override specific settings per job
+
+You can override cache settings without overwriting the global cache by using
+[anchors](../yaml/README.md#anchors). For example, if you want to override the
+`policy` for one job:
+
+```yaml
+cache: &global_cache
+  key: $CI_COMMIT_REF_SLUG
+  paths:
+    - node_modules/
+    - public/
+    - vendor/
+  policy: pull-push
+
+job:
+  cache:
+    # inherit all global cache settings
+    <<: *global_cache
+    # override the policy
+    policy: pull
+```
+
+For more fine tuning, read also about the
+[`cache: policy`](../yaml/README.md#cachepolicy).
+
+## Common use cases
+
+The most common use case of caching is to avoid downloading content like dependencies
+or libraries repeatedly between subsequent runs of jobs. Node.js packages,
+PHP packages, Ruby gems, Python libraries, and others can all be cached.
+
+For more examples, check out our [GitLab CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
 ### Share caches between jobs in the same branch
 
-To have jobs for each branch use the same cache, define a cache with the `key: ${CI_COMMIT_REF_SLUG}`:
+To have jobs for each branch use the same cache, define a cache with the `key: $CI_COMMIT_REF_SLUG`:
 
 ```yaml
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: $CI_COMMIT_REF_SLUG
 ```
 
 This configuration prevents you from accidentally overwriting the cache. However, the
@@ -102,53 +204,8 @@ To share caches between branches, but have a unique cache for each job:
 
 ```yaml
 cache:
-  key: ${CI_JOB_NAME}
+  key: $CI_JOB_NAME
 ```
-
-### Disable cache for specific jobs
-
-If you have defined the cache globally, it means that each job uses the
-same definition. You can override this behavior per-job, and if you want to
-disable it completely, use an empty hash:
-
-```yaml
-job:
-  cache: {}
-```
-
-### Inherit global configuration, but override specific settings per job
-
-You can override cache settings without overwriting the global cache by using
-[anchors](../yaml/README.md#anchors). For example, if you want to override the
-`policy` for one job:
-
-```yaml
-cache: &global_cache
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - node_modules/
-    - public/
-    - vendor/
-  policy: pull-push
-
-job:
-  cache:
-    # inherit all global cache settings
-    <<: *global_cache
-    # override the policy
-    policy: pull
-```
-
-For more fine tuning, read also about the
-[`cache: policy`](../yaml/README.md#cachepolicy).
-
-## Common use cases
-
-The most common use case of caching is to avoid downloading content like dependencies
-or libraries repeatedly between subsequent runs of jobs. Node.js packages,
-PHP packages, Ruby gems, Python libraries, and others can all be cached.
-
-For more examples, check out our [GitLab CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
 ### Cache Node.js dependencies
 
@@ -166,7 +223,7 @@ image: node:latest
 
 # Cache modules in between jobs
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: $CI_COMMIT_REF_SLUG
   paths:
     - .npm/
 
@@ -193,7 +250,7 @@ image: php:7.2
 
 # Cache libraries in between jobs
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: $CI_COMMIT_REF_SLUG
   paths:
     - vendor/
 
@@ -262,7 +319,7 @@ image: ruby:2.6
 
 # Cache gems in between builds
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: $CI_COMMIT_REF_SLUG
   paths:
     - vendor/ruby
 
@@ -287,7 +344,7 @@ cache:
   key:
     files:
       - Gemfile.lock
-    prefix: ${CI_JOB_NAME}
+    prefix: $CI_JOB_NAME
   paths:
     - vendor/ruby
 

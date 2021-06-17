@@ -172,6 +172,7 @@ module API
       mount ::API::Features
       mount ::API::Files
       mount ::API::FreezePeriods
+      mount ::API::Geo
       mount ::API::GroupAvatar
       mount ::API::GroupBoards
       mount ::API::GroupClusters

@@ -10,6 +10,7 @@ module Gitlab
           :description,
           :label,
           :merge_when_pipeline_succeeds,
+          :milestone,
           :remove_source_branch,
           :target,
           :title,

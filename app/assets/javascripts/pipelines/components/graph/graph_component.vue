@@ -207,6 +207,7 @@ export default {
                 :source-job-hovered="hoveredSourceJobName"
                 :pipeline-expanded="pipelineExpanded"
                 :pipeline-id="pipeline.id"
+                :user-permissions="pipeline.userPermissions"
                 @refreshPipelineGraph="$emit('refreshPipelineGraph')"
                 @jobHover="setJob"
                 @updateMeasurements="getMeasurements"

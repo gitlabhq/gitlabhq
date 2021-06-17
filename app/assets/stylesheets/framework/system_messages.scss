@@ -60,7 +60,8 @@
   // System Header
   &.with-performance-bar {
     // main navigation
-    header.navbar-gitlab {
+    header.navbar-gitlab,
+    .fixed-top {
       top: $performance-bar-height + $system-header-height;
     }
 

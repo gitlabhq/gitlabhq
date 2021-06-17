@@ -2351,219 +2351,178 @@ as Review Apps. You can see an example that uses Review Apps at
 Use `cache` to specify a list of files and directories to
 cache between jobs. You can only use paths that are in the local working copy.
 
-If `cache` is defined outside the scope of jobs, it's set
-globally and all jobs use that configuration.
-
 Caching is shared between pipelines and jobs. Caches are restored before [artifacts](#artifacts).
 
-Read how caching works and find out some good practices in the
-[caching dependencies documentation](../caching/index.md).
+Learn more about caches in [Caching in GitLab CI/CD](../caching/index.md).
 
 #### `cache:paths`
 
-Use the `paths` directive to choose which files or directories to cache. Paths
-are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly link outside it.
-You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-patterns and:
+Use the `cache:paths` keyword to choose which files or directories to cache.
+
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**: An array of paths relative to the project directory (`$CI_PROJECT_DIR`).
+You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
+patterns:
 
 - In [GitLab Runner 13.0](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620) and later,
 [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
 - In GitLab Runner 12.10 and earlier,
 [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
 
+**Example of `cache:paths`**:
+
 Cache all files in `binaries` that end in `.apk` and the `.config` file:
 
 ```yaml
 rspec:
-  script: test
+  script:
+    - echo "This job uses a cache."
   cache:
+    key: binaries-cache
     paths:
       - binaries/*.apk
       - .config
 ```
 
-Locally defined cache overrides globally defined options. The following `rspec`
-job caches only `binaries/`:
+**Related topics**:
+
+- See the [common `cache` use cases](../caching/index.md#common-use-cases) for more
+  `cache:paths` examples.
+
+#### `cache:key`
+
+Use the `cache:key` keyword to give each cache a unique identifying key. All jobs
+that use the same cache key use the same cache, including in different pipelines.
+
+If not set, the default key is `default`. All jobs with the `cache:` keyword but
+no `cache:key` share the `default` cache.
+
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- A string.
+- A [predefined variables](../variables/README.md).
+- A combination of both.
+
+**Example of `cache:key`**:
 
 ```yaml
-cache:
-  paths:
-    - my/files
-
-rspec:
-  script: test
+cache-job:
+  script:
+    - echo "This job uses a cache."
   cache:
-    key: rspec
+    key: binaries-cache-$CI_COMMIT_REF_SLUG
     paths:
       - binaries/
 ```
 
-The cache is shared between jobs, so if you're using different
-paths for different jobs, you should also set a different `cache:key`.
-Otherwise cache content can be overwritten.
+**Additional details**:
 
-#### `cache:key`
+- If you use **Windows Batch** to run your shell scripts you need to replace
+  `$` with `%`. For example: `key: %CI_COMMIT_REF_SLUG%`
+- The `cache:key` value can't contain:
 
-The `key` keyword defines the affinity of caching between jobs.
-You can have a single cache for all jobs, cache per-job, cache per-branch,
-or any other way that fits your workflow. You can fine tune caching,
-including caching data between different jobs or even different branches.
+  - The `/` character, or the equivalent URI-encoded `%2F`.
+  - Only the `.` character (any number), or the equivalent URI-encoded `%2E`.
 
-The `cache:key` variable can use any of the
-[predefined variables](../variables/README.md). The default key, if not
-set, is just literal `default`, which means everything is shared between
-pipelines and jobs by default.
+- The cache is shared between jobs, so if you're using different
+  paths for different jobs, you should also set a different `cache:key`.
+  Otherwise cache content can be overwritten.
 
-For example, to enable per-branch caching:
+**Related topics**:
 
-```yaml
-cache:
-  key: "$CI_COMMIT_REF_SLUG"
-  paths:
-    - binaries/
-```
-
-If you use **Windows Batch** to run your shell scripts you need to replace
-`$` with `%`:
-
-```yaml
-cache:
-  key: "%CI_COMMIT_REF_SLUG%"
-  paths:
-    - binaries/
-```
-
-The `cache:key` variable can't contain the `/` character, or the equivalent
-URI-encoded `%2F`. A value made only of dots (`.`, `%2E`) is also forbidden.
-
-You can specify a [fallback cache key](#fallback-cache-key) to use if the specified `cache:key` is not found.
-
-##### Multiple caches
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32814) in GitLab 13.10.
-> - [Feature Flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321877), in GitLab 13.12.
-
-You can have a maximum of four caches:
-
-```yaml
-test-job:
-  stage: build
-  cache:
-    - key:
-        files:
-          - Gemfile.lock
-      paths:
-        - vendor/ruby
-    - key:
-        files:
-          - yarn.lock
-      paths:
-        - .yarn-cache/
-  script:
-    - bundle install --path=vendor
-    - yarn install --cache-folder .yarn-cache
-    - echo Run tests...
-```
-
-If multiple caches are combined with a [Fallback cache key](#fallback-cache-key),
-the fallback is fetched multiple times if multiple caches are not found.
-
-#### Fallback cache key
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1534) in GitLab Runner 13.4.
-
-You can use the `$CI_COMMIT_REF_SLUG` [variable](#variables) to specify your [`cache:key`](#cachekey).
-For example, if your `$CI_COMMIT_REF_SLUG` is `test` you can set a job
-to download cache that's tagged with `test`.
-
-If a cache with this tag is not found, you can use `CACHE_FALLBACK_KEY` to
-specify a cache to use when none exists.
-
-In the following example, if the `$CI_COMMIT_REF_SLUG` is not found, the job uses the key defined
-by the `CACHE_FALLBACK_KEY` variable:
-
-```yaml
-variables:
-  CACHE_FALLBACK_KEY: fallback-key
-
-cache:
-  key: "$CI_COMMIT_REF_SLUG"
-  paths:
-    - binaries/
-```
+- You can specify a [fallback cache key](../caching/index.md#fallback-cache-key)
+  to use if the specified `cache:key` is not found.
+- You can [use multiple cache keys](../caching/index.md#use-multiple-caches) in a single job.
+- See the [common `cache` use cases](../caching/index.md#common-use-cases) for more
+  `cache:key` examples.
 
 ##### `cache:key:files`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab v12.5.
 
-The `cache:key:files` keyword extends the `cache:key` functionality by making it easier
-to reuse some caches, and rebuild them less often, which speeds up subsequent pipeline
-runs.
+Use the `cache:key:files` keyword to generate a new key when one or two specific files
+change. `cache:key:files` lets you reuse some caches, and rebuild them less often,
+which speeds up subsequent pipeline runs.
 
-When you include `cache:key:files`, you must also list the project files that are used to generate the key, up to a maximum of two files.
-The cache `key` is a SHA checksum computed from the most recent commits (up to two, if two files are listed)
-that changed the given files. If neither file is changed in any commits,
-the fallback key is `default`.
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**: An array of one or two file paths.
+
+**Example of `cache:key:files`**:
 
 ```yaml
-cache:
-  key:
-    files:
-      - Gemfile.lock
-      - package.json
-  paths:
-    - vendor/ruby
-    - node_modules
+cache-job:
+  script:
+    - echo "This job uses a cache."
+  cache:
+    key:
+      files:
+        - Gemfile.lock
+        - package.json
+    paths:
+      - vendor/ruby
+      - node_modules
 ```
 
-This example creates a cache for Ruby and Node.js dependencies that
-is tied to current versions of the `Gemfile.lock` and `package.json` files. Whenever one of
+This example creates a cache for Ruby and Node.js dependencies. The cache
+is tied to the current versions of the `Gemfile.lock` and `package.json` files. When one of
 these files changes, a new cache key is computed and a new cache is created. Any future
 job runs that use the same `Gemfile.lock` and `package.json` with `cache:key:files`
 use the new cache, instead of rebuilding the dependencies.
+
+**Additional details**: The cache `key` is a SHA computed from the most recent commits
+that changed each listed file. If neither file is changed in any commits, the
+fallback key is `default`.
 
 ##### `cache:key:prefix`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab v12.5.
 
-When you want to combine a prefix with the SHA computed for `cache:key:files`,
-use the `prefix` keyword with `key:files`.
-For example, if you add a `prefix` of `test`, the resulting key is: `test-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5`.
-If neither file is changed in any commits, the prefix is added to `default`, so the
-key in the example would be `test-default`.
+Use `cache:key:prefix` to combine a prefix with the SHA computed for [`cache:key:files`](#cachekeyfiles).
 
-Like `cache:key`, `prefix` can use any of the [predefined variables](../variables/README.md),
-but cannot include:
+**Keyword type**: Job-specific. You can use it only as part of a job.
 
-- the `/` character (or the equivalent URI-encoded `%2F`)
-- a value made only of `.` (or the equivalent URI-encoded `%2E`)
+**Possible inputs**:
+
+- A string
+- A [predefined variables](../variables/README.md)
+- A combination of both.
+
+**Example of `cache:key:prefix`**:
 
 ```yaml
-cache:
-  key:
-    files:
-      - Gemfile.lock
-    prefix: ${CI_JOB_NAME}
-  paths:
-    - vendor/ruby
-
 rspec:
   script:
-    - bundle exec rspec
+    - echo "This rspec job uses a cache."
+  cache:
+    key:
+      files:
+        - Gemfile.lock
+      prefix: $CI_JOB_NAME
+    paths:
+      - vendor/ruby
 ```
 
-For example, adding a `prefix` of `$CI_JOB_NAME`
-causes the key to look like: `rspec-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5` and
-the job cache is shared across different branches. If a branch changes
-`Gemfile.lock`, that branch has a new SHA checksum for `cache:key:files`. A new cache key
-is generated, and a new cache is created for that key.
-If `Gemfile.lock` is not found, the prefix is added to
-`default`, so the key in the example would be `rspec-default`.
+For example, adding a `prefix` of `$CI_JOB_NAME` causes the key to look like `rspec-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5`.
+If a branch changes `Gemfile.lock`, that branch has a new SHA checksum for `cache:key:files`.
+A new cache key is generated, and a new cache is created for that key. If `Gemfile.lock`
+is not found, the prefix is added to `default`, so the key in the example would be `rspec-default`.
+
+**Additional details**: If no file in `cache:key:files` is changed in any commits,
+the prefix is added to the `default` key.
 
 #### `cache:untracked`
 
-Set `untracked: true` to cache all files that are untracked in your Git
-repository:
+Use `untracked: true` to cache all files that are untracked in your Git repository:
+
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**: `true` or `false` (default).
+
+**Example of `cache:untracked`**:
 
 ```yaml
 rspec:
@@ -2572,29 +2531,35 @@ rspec:
     untracked: true
 ```
 
-Cache all Git untracked files and files in `binaries`:
+**Additional details**:
 
-```yaml
-rspec:
-  script: test
-  cache:
-    untracked: true
-    paths:
-      - binaries/
-```
+- You can combine `cache:untracked` with `cache:paths` to cache all untracked files
+  as well as files in the configured paths. For example:
+
+  ```yaml
+  rspec:
+    script: test
+    cache:
+      untracked: true
+      paths:
+        - binaries/
+  ```
 
 #### `cache:when`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18969) in GitLab 13.5 and GitLab Runner v13.5.0.
 
-`cache:when` defines when to save the cache, based on the status of the job. You can
-set `cache:when` to:
+Use `cache:when` to define when to save the cache, based on the status of the job.
+
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**:
 
 - `on_success` (default): Save the cache only when the job succeeds.
 - `on_failure`: Save the cache only when the job fails.
 - `always`: Always save the cache.
 
-For example, to store a cache whether or not the job fails or succeeds:
+**Example of `cache:untracked`**:
 
 ```yaml
 rspec:
@@ -2605,32 +2570,47 @@ rspec:
     when: 'always'
 ```
 
+This example stores the cache whether or not the job fails or succeeds.
+
 #### `cache:policy`
 
-The default behavior of a caching job is to download the files at the start of
-execution, and to re-upload them at the end. Any changes made by the
-job are persisted for future runs. This behavior is known as the `pull-push` cache
-policy.
+To change the upload and download behavior of a cache, use the `cache:policy` keyword.
+By default, the job downloads the cache when the job starts, and uploads changes
+to the cache when the job ends. This is the `pull-push` policy (default).
 
-If you know the job does not alter the cached files, you can skip the upload step
-by setting `policy: pull` in the job specification. You can add an ordinary cache
-job at an earlier stage to ensure the cache is updated from time to time:
+To set a job to only download the cache when the job starts, but never upload changes
+when the job finishes, use `cache:policy:pull`.
+
+To set a job to only upload a cache when the job finishes, but never download the
+cache when the job starts, use `cache:policy:push`.
+
+Use the `pull` policy when you have many jobs executing in parallel that use the same cache.
+This policy speeds up job execution and reduces load on the cache server. You can
+use a job with the `push` policy to build the cache.
+
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `pull`
+- `push`
+- `pull-push` (default)
+
+**Example of `cache:policy`**:
 
 ```yaml
-stages:
-  - setup
-  - test
-
-prepare:
-  stage: setup
+prepare-dependencies-job:
+  stage: build
   cache:
     key: gems
     paths:
       - vendor/bundle
+    policy: push
   script:
-    - bundle install --deployment
+    - echo "This job only downloads dependencies and builds the cache."
+    - echo "Downloading dependencies..."
 
-rspec:
+faster-test-job:
   stage: test
   cache:
     key: gems
@@ -2638,15 +2618,9 @@ rspec:
       - vendor/bundle
     policy: pull
   script:
-    - bundle exec rspec ...
+    - echo "This job script uses the cache, but does not update it."
+    - echo "Running tests..."
 ```
-
-Use the `pull` policy when you have many jobs executing in parallel that use caches. This
-policy speeds up job execution and reduces load on the cache server.
-
-If you have a job that unconditionally recreates the cache without
-referring to its previous contents, you can skip the download step.
-To do so, add `policy: push` to the job.
 
 ### `artifacts`
 

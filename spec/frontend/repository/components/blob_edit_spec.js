@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import BlobHeaderEdit from '~/repository/components/blob_header_edit.vue';
+import BlobEdit from '~/repository/components/blob_edit.vue';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 
 const DEFAULT_PROPS = {
@@ -8,11 +8,11 @@ const DEFAULT_PROPS = {
   webIdePath: 'some_file.js/ide/edit',
 };
 
-describe('BlobHeaderEdit component', () => {
+describe('BlobEdit component', () => {
   let wrapper;
 
   const createComponent = (consolidatedEditButton = false, props = {}) => {
-    wrapper = shallowMount(BlobHeaderEdit, {
+    wrapper = shallowMount(BlobEdit, {
       propsData: {
         ...DEFAULT_PROPS,
         ...props,

@@ -16,6 +16,7 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
 >
   <gl-tabs-stub
     contentclass="pt-0"
+    queryparamname="tab"
     theme="indigo"
     value="0"
   >

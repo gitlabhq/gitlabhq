@@ -2007,7 +2007,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
         table_name: :events,
         column_name: :id,
-        job_arguments: [[:id], [:id_convert_to_bigint]]
+        job_arguments: [["id"], ["id_convert_to_bigint"]]
       }
     end
 
@@ -2017,7 +2017,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       create(:batched_background_migration, configuration.merge(status: :active))
 
       expect { ensure_batched_background_migration_is_finished }
-        .to raise_error "Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active': #{configuration}"
+        .to raise_error "Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active': #{configuration}" \
+            "\n\n" \
+            "Finalize it manualy by running" \
+            "\n\n" \
+            "\tgitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[[\"id\"]\\, [\"id_convert_to_bigint\"]]']"
     end
 
     it 'does not raise error when migration exists and is marked as finished' do

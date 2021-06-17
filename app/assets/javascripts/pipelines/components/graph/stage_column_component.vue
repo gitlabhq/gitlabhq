@@ -60,6 +60,10 @@ export default {
       required: false,
       default: '',
     },
+    userPermissions: {
+      type: Object,
+      required: true,
+    },
   },
   titleClasses: [
     'gl-font-weight-bold',
@@ -89,6 +93,9 @@ export default {
     },
     hasAction() {
       return !isEmpty(this.action);
+    },
+    canUpdatePipeline() {
+      return this.userPermissions.updatePipeline;
     },
   },
   errorCaptured(err, _vm, info) {
@@ -132,7 +139,7 @@ export default {
       >
         <div>{{ formattedTitle }}</div>
         <action-component
-          v-if="hasAction"
+          v-if="hasAction && canUpdatePipeline"
           :action-icon="action.icon"
           :tooltip-text="action.title"
           :link="action.path"

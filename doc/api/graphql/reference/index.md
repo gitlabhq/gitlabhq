@@ -14245,9 +14245,9 @@ State of an epic.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="epicstateall"></a>`all` |  |
-| <a id="epicstateclosed"></a>`closed` |  |
-| <a id="epicstateopened"></a>`opened` |  |
+| <a id="epicstateall"></a>`all` | All epics. |
+| <a id="epicstateclosed"></a>`closed` | Closed epics. |
+| <a id="epicstateopened"></a>`opened` | Open epics. |
 
 ### `EpicStateEvent`
 

@@ -124,11 +124,6 @@ module API
             yield
           end
         end
-
-        # Overridden in EE
-        def geo_proxy
-          {}
-        end
       end
 
       namespace 'internal' do
@@ -319,12 +314,6 @@ module API
           status 200
 
           two_factor_otp_check
-        end
-
-        # Workhorse calls this to determine if it is a Geo secondary site
-        # that should proxy requests. FOSS can quickly return empty data.
-        get '/geo_proxy', feature_category: :geo_replication do
-          geo_proxy
         end
       end
     end

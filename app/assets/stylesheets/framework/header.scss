@@ -555,7 +555,8 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
   visibility: visible;
 }
 
-.with-performance-bar .navbar-gitlab {
+.with-performance-bar .navbar-gitlab,
+.with-performance-bar .fixed-top {
   top: $performance-bar-height;
 }
 
@@ -563,7 +564,7 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
   justify-content: center;
   height: $header-height;
   background: $white;
-  border-bottom: 1px solid $white-normal;
+  border-bottom: 1px solid $gray-100;
 
   .tanuki-logo,
   .brand-header-logo {

@@ -4,7 +4,7 @@ import { nextTick } from 'vue';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
-import BlobHeaderEdit from '~/repository/components/blob_header_edit.vue';
+import BlobEdit from '~/repository/components/blob_edit.vue';
 import BlobReplace from '~/repository/components/blob_replace.vue';
 
 let wrapper;
@@ -78,7 +78,7 @@ const fullFactory = createFactory(mount);
 describe('Blob content viewer component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findBlobHeader = () => wrapper.findComponent(BlobHeader);
-  const findBlobHeaderEdit = () => wrapper.findComponent(BlobHeaderEdit);
+  const findBlobEdit = () => wrapper.findComponent(BlobEdit);
   const findBlobContent = () => wrapper.findComponent(BlobContent);
   const findBlobReplace = () => wrapper.findComponent(BlobReplace);
 
@@ -177,7 +177,7 @@ describe('Blob content viewer component', () => {
 
       await nextTick();
 
-      expect(findBlobHeaderEdit().props()).toMatchObject({
+      expect(findBlobEdit().props()).toMatchObject({
         editPath: editBlobPath,
         webIdePath: ideEditPath,
       });
@@ -194,7 +194,7 @@ describe('Blob content viewer component', () => {
 
       await nextTick();
 
-      expect(findBlobHeaderEdit().props()).toMatchObject({
+      expect(findBlobEdit().props()).toMatchObject({
         editPath: editBlobPath,
         webIdePath: ideEditPath,
       });

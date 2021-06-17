@@ -387,4 +387,22 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       expect(actual).to contain_exactly(migration)
     end
   end
+
+  describe '.find_for_configuration' do
+    it 'returns nill if such migration does not exists' do
+      expect(described_class.find_for_configuration('MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])).to be_nil
+    end
+
+    it 'returns the migration when it exists' do
+      migration = create(
+        :batched_background_migration,
+        job_class_name: 'MyJobClass',
+        table_name: :projects,
+        column_name: :id,
+        job_arguments: [[:id], [:id_convert_to_bigint]]
+      )
+
+      expect(described_class.find_for_configuration('MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])).to eq(migration)
+    end
+  end
 end

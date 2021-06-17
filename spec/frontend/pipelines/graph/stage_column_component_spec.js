@@ -31,6 +31,9 @@ const defaultProps = {
   name: 'Fish',
   groups: mockGroups,
   pipelineId: 159,
+  userPermissions: {
+    updatePipeline: true,
+  },
 };
 
 describe('stage column component', () => {
@@ -152,35 +155,51 @@ describe('stage column component', () => {
   });
 
   describe('with action', () => {
-    beforeEach(() => {
+    const defaults = {
+      groups: [
+        {
+          id: 4259,
+          name: '<img src=x onerror=alert(document.domain)>',
+          status: {
+            icon: 'status_success',
+            label: 'success',
+            tooltip: '<img src=x onerror=alert(document.domain)>',
+          },
+          jobs: [mockJob],
+        },
+      ],
+      title: 'test',
+      hasTriggeredBy: false,
+      action: {
+        icon: 'play',
+        title: 'Play all',
+        path: 'action',
+      },
+    };
+
+    it('renders action button if permissions are permitted', () => {
       createComponent({
         method: mount,
         props: {
-          groups: [
-            {
-              id: 4259,
-              name: '<img src=x onerror=alert(document.domain)>',
-              status: {
-                icon: 'status_success',
-                label: 'success',
-                tooltip: '<img src=x onerror=alert(document.domain)>',
-              },
-              jobs: [mockJob],
-            },
-          ],
-          title: 'test',
-          hasTriggeredBy: false,
-          action: {
-            icon: 'play',
-            title: 'Play all',
-            path: 'action',
+          ...defaults,
+        },
+      });
+
+      expect(findActionComponent().exists()).toBe(true);
+    });
+
+    it('does not render action button if permissions are not permitted', () => {
+      createComponent({
+        method: mount,
+        props: {
+          ...defaults,
+          userPermissions: {
+            updatePipeline: false,
           },
         },
       });
-    });
 
-    it('renders action button', () => {
-      expect(findActionComponent().exists()).toBe(true);
+      expect(findActionComponent().exists()).toBe(false);
     });
   });
 

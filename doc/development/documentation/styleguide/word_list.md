@@ -99,7 +99,7 @@ Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale
 
 ## Owner
 
-When writing about the Owner role, use a capital "M." Do not use the phrase, "if you are an owner"
+When writing about the Owner role, use a capital "O." Do not use the phrase, "if you are an owner"
 to mean someone who is assigned the Owner role. Instead, write it out. "If you are assigned the Owner role..."
 
 Do not use "Owner permissions." A user who is assigned the Owner role has a set of associated permissions.

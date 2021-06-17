@@ -2,7 +2,7 @@
 
 module Registrations
   class ExperienceLevelsController < ApplicationController
-    layout 'signup_onboarding'
+    layout 'minimal'
 
     before_action :ensure_namespace_path_param
 

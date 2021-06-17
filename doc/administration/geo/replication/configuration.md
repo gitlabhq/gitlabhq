@@ -269,7 +269,7 @@ The initial replication, or 'backfill', is probably still in progress. You
 can monitor the synchronization process on each Geo node from the **primary**
 node's **Geo Nodes** dashboard in your browser.
 
-![Geo dashboard](img/geo_node_dashboard.png)
+![Geo dashboard](img/geo_node_dashboard_v14_0.png)
 
 If your installation isn't working properly, check the
 [troubleshooting document](troubleshooting.md).

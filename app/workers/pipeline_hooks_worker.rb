@@ -8,7 +8,7 @@ class PipelineHooksWorker # rubocop:disable Scalability/IdempotentWorker
 
   queue_namespace :pipeline_hooks
   worker_resource_boundary :cpu
-  data_consistency :delayed, feature_flag: :load_balancing_for_pipeline_hooks_worker
+  data_consistency :delayed
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id)
