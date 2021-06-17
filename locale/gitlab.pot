@@ -31089,10 +31089,16 @@ msgstr ""
 msgid "Status: %{title}"
 msgstr ""
 
+msgid "StatusCheck|%{pending} pending"
+msgstr ""
+
 msgid "StatusCheck|API to check"
 msgstr ""
 
 msgid "StatusCheck|Add status check"
+msgstr ""
+
+msgid "StatusCheck|All passed"
 msgstr ""
 
 msgid "StatusCheck|An error occurred deleting the %{name} status check."
@@ -31111,6 +31117,9 @@ msgid "StatusCheck|Examples: QA, Security."
 msgstr ""
 
 msgid "StatusCheck|External API is already in use by another status check."
+msgstr ""
+
+msgid "StatusCheck|Failed to load status checks."
 msgstr ""
 
 msgid "StatusCheck|Invoke an external API as part of the pipeline process."
@@ -31138,6 +31147,9 @@ msgid "StatusCheck|Target branch"
 msgstr ""
 
 msgid "StatusCheck|Update status check"
+msgstr ""
+
+msgid "StatusCheck|When this merge request is updated, a call is sent to the following APIs to confirm their status. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "StatusCheck|You are about to remove the %{name} status check."
