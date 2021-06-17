@@ -99,7 +99,7 @@ $ GIT_TRACE_PACKET=1 git -c protocol.version=2 ls-remote https://your-gitlab-ins
 Verify Git v2 is used by the client:
 
 ```shell
-GIT_SSH_COMMAND="ssh -v" git -c protocol.version=2 ls-remote ssh://your-gitlab-instance.com:group/repo.git 2>&1 |grep GIT_PROTOCOL
+GIT_SSH_COMMAND="ssh -v" git -c protocol.version=2 ls-remote ssh://git@your-gitlab-instance.com/group/repo.git 2>&1 |grep GIT_PROTOCOL
 ```
 
 You should see that the `GIT_PROTOCOL` environment variable is sent:

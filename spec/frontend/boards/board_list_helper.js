@@ -1,34 +1,57 @@
-/* global List */
-/* global ListIssue */
-import MockAdapter from 'axios-mock-adapter';
-import Sortable from 'sortablejs';
-import Vue from 'vue';
-import BoardList from '~/boards/components/board_list_deprecated.vue';
-import '~/boards/models/issue';
-import '~/boards/models/list';
-import store from '~/boards/stores';
-import boardsStore from '~/boards/stores/boards_store';
-import axios from '~/lib/utils/axios_utils';
-import { listObj, boardsMockInterceptor } from './mock_data';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 
-window.Sortable = Sortable;
+import BoardCard from '~/boards/components/board_card.vue';
+import BoardList from '~/boards/components/board_list.vue';
+import BoardNewIssue from '~/boards/components/board_new_issue.vue';
+import defaultState from '~/boards/stores/state';
+import { mockList, mockIssuesByListId, issues } from './mock_data';
 
 export default function createComponent({
-  done,
   listIssueProps = {},
   componentProps = {},
   listProps = {},
-}) {
-  const el = document.createElement('div');
+  actions = {},
+  getters = {},
+  provide = {},
+  state = defaultState,
+  stubs = {
+    BoardNewIssue,
+    BoardCard,
+  },
+} = {}) {
+  const localVue = createLocalVue();
+  localVue.use(Vuex);
 
-  document.body.appendChild(el);
-  const mock = new MockAdapter(axios);
-  mock.onAny().reply(boardsMockInterceptor);
-  boardsStore.create();
+  const store = new Vuex.Store({
+    state: {
+      boardItemsByListId: mockIssuesByListId,
+      boardItems: issues,
+      pageInfoByListId: {
+        'gid://gitlab/List/1': { hasNextPage: true },
+        'gid://gitlab/List/2': {},
+      },
+      listsFlags: {
+        'gid://gitlab/List/1': {},
+        'gid://gitlab/List/2': {},
+      },
+      selectedBoardItems: [],
+      ...state,
+    },
+    getters: {
+      isGroupBoard: () => false,
+      isProjectBoard: () => true,
+      isEpicBoard: () => false,
+      ...getters,
+    },
+    actions,
+  });
 
-  const BoardListComp = Vue.extend(BoardList);
-  const list = new List({ ...listObj, ...listProps });
-  const issue = new ListIssue({
+  const list = {
+    ...mockList,
+    ...listProps,
+  };
+  const issue = {
     title: 'Testing',
     id: 1,
     iid: 1,
@@ -36,31 +59,31 @@ export default function createComponent({
     labels: [],
     assignees: [],
     ...listIssueProps,
-  });
-  if (!Object.prototype.hasOwnProperty.call(listProps, 'issuesSize')) {
-    list.issuesSize = 1;
+  };
+  if (!Object.prototype.hasOwnProperty.call(listProps, 'issuesCount')) {
+    list.issuesCount = 1;
   }
-  list.issues.push(issue);
 
-  const component = new BoardListComp({
-    el,
+  const component = shallowMount(BoardList, {
+    localVue,
     store,
     propsData: {
       disabled: false,
       list,
-      issues: list.issues,
-      loading: false,
+      boardItems: [issue],
+      canAdminList: true,
       ...componentProps,
     },
     provide: {
       groupId: null,
       rootPath: '/',
+      weightFeatureAvailable: false,
+      boardWeight: null,
+      canAdminList: true,
+      ...provide,
     },
-  }).$mount();
-
-  Vue.nextTick(() => {
-    done();
+    stubs,
   });
 
-  return { component, mock };
+  return component;
 }

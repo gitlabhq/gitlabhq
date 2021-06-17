@@ -156,7 +156,7 @@ RSpec.describe Namespace do
     end
   end
 
-  describe 'scopes' do
+  describe 'scopes', :aggregate_failures do
     let_it_be(:namespace1) { create(:group, name: 'Namespace 1', path: 'namespace-1') }
     let_it_be(:namespace2) { create(:group, name: 'Namespace 2', path: 'namespace-2') }
     let_it_be(:namespace1sub) { create(:group, name: 'Sub Namespace', path: 'sub-namespace', parent: namespace1) }
@@ -179,6 +179,15 @@ RSpec.describe Namespace do
 
       it 'filters case-insensitive' do
         expect(described_class.filter_by_path(namespace1.path.upcase)).to eq([namespace1])
+      end
+    end
+
+    describe '.sorted_by_similarity_and_parent_id_desc' do
+      it 'returns exact matches and top level groups first' do
+        expect(described_class.sorted_by_similarity_and_parent_id_desc(namespace1.path)).to eq([namespace1, namespace2, namespace2sub, namespace1sub, namespace])
+        expect(described_class.sorted_by_similarity_and_parent_id_desc(namespace2.path)).to eq([namespace2, namespace1, namespace2sub, namespace1sub, namespace])
+        expect(described_class.sorted_by_similarity_and_parent_id_desc(namespace2sub.name)).to eq([namespace2sub, namespace1sub, namespace2, namespace1, namespace])
+        expect(described_class.sorted_by_similarity_and_parent_id_desc('Namespace')).to eq([namespace2, namespace1, namespace2sub, namespace1sub, namespace])
       end
     end
   end

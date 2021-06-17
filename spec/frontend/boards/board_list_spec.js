@@ -1,95 +1,9 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import Vuex from 'vuex';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
+import createComponent from 'jest/boards/board_list_helper';
 import BoardCard from '~/boards/components/board_card.vue';
-import BoardList from '~/boards/components/board_list.vue';
-import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 import eventHub from '~/boards/eventhub';
-import defaultState from '~/boards/stores/state';
-import { mockList, mockIssuesByListId, issues, mockIssues } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
-const actions = {
-  fetchItemsForList: jest.fn(),
-};
-
-const createStore = (state = defaultState) => {
-  return new Vuex.Store({
-    state,
-    actions,
-    getters: {
-      isGroupBoard: () => false,
-      isProjectBoard: () => true,
-      isEpicBoard: () => false,
-    },
-  });
-};
-
-const createComponent = ({
-  listIssueProps = {},
-  componentProps = {},
-  listProps = {},
-  state = {},
-} = {}) => {
-  const store = createStore({
-    boardItemsByListId: mockIssuesByListId,
-    boardItems: issues,
-    pageInfoByListId: {
-      'gid://gitlab/List/1': { hasNextPage: true },
-      'gid://gitlab/List/2': {},
-    },
-    listsFlags: {
-      'gid://gitlab/List/1': {},
-      'gid://gitlab/List/2': {},
-    },
-    selectedBoardItems: [],
-    ...state,
-  });
-
-  const list = {
-    ...mockList,
-    ...listProps,
-  };
-  const issue = {
-    title: 'Testing',
-    id: 1,
-    iid: 1,
-    confidential: false,
-    labels: [],
-    assignees: [],
-    ...listIssueProps,
-  };
-  if (!Object.prototype.hasOwnProperty.call(listProps, 'issuesCount')) {
-    list.issuesCount = 1;
-  }
-
-  const component = shallowMount(BoardList, {
-    localVue,
-    propsData: {
-      disabled: false,
-      list,
-      boardItems: [issue],
-      canAdminList: true,
-      ...componentProps,
-    },
-    store,
-    provide: {
-      groupId: null,
-      rootPath: '/',
-      weightFeatureAvailable: false,
-      boardWeight: null,
-      canAdminList: true,
-    },
-    stubs: {
-      BoardCard,
-      BoardNewIssue,
-    },
-  });
-
-  return component;
-};
+import { mockIssues } from './mock_data';
 
 describe('Board list component', () => {
   let wrapper;
@@ -101,7 +15,6 @@ describe('Board list component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('When Expanded', () => {
@@ -176,6 +89,10 @@ describe('Board list component', () => {
   });
 
   describe('load more issues', () => {
+    const actions = {
+      fetchItemsForList: jest.fn(),
+    };
+
     beforeEach(() => {
       wrapper = createComponent({
         listProps: { issuesCount: 25 },
@@ -184,6 +101,7 @@ describe('Board list component', () => {
 
     it('does not load issues if already loading', () => {
       wrapper = createComponent({
+        actions,
         state: { listsFlags: { 'gid://gitlab/List/1': { isLoadingMore: true } } },
       });
       wrapper.vm.listRef.dispatchEvent(new Event('scroll'));

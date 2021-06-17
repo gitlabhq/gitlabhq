@@ -181,6 +181,8 @@ module Ci
     scope :with_destroy_preloads, -> { includes(project: [:route, :statistics]) }
 
     scope :scoped_project, -> { where('ci_job_artifacts.project_id = projects.id') }
+    scope :for_project, ->(project) { where(project_id: project) }
+    scope :created_in_time_range, ->(from: nil, to: nil) { where(created_at: from..to) }
 
     delegate :filename, :exists?, :open, to: :file
 

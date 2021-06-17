@@ -17,7 +17,7 @@ RSpec.describe API::Groups do
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
   let_it_be(:archived_project) { create(:project, namespace: group1, archived: true) }
 
-  before do
+  before_all do
     group1.add_owner(user1)
     group2.add_owner(user2)
   end
@@ -255,13 +255,14 @@ RSpec.describe API::Groups do
     end
 
     context "when using sorting" do
-      let(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}") }
-      let(:group4) { create(:group, name: "same-name", path: "y#{group1.path}") }
-      let(:group5) { create(:group, name: "same-name") }
+      let_it_be(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}") }
+      let_it_be(:group4) { create(:group, name: "same-name", path: "y#{group1.path}") }
+      let_it_be(:group5) { create(:group, name: "same-name") }
+
       let(:response_groups) { json_response.map { |group| group['name'] } }
       let(:response_groups_ids) { json_response.map { |group| group['id'] } }
 
-      before do
+      before_all do
         group3.add_owner(user1)
         group4.add_owner(user1)
         group5.add_owner(user1)
@@ -328,6 +329,44 @@ RSpec.describe API::Groups do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups_ids).to eq(Group.select { |group| group['name'] == 'same-name' }.map { |group| group['id'] }.sort)
+      end
+
+      context 'when searching with similarity ordering', :aggregate_failures do
+        let_it_be(:group6) { create(:group, name: 'same-name subgroup', parent: group4) }
+        let_it_be(:group7) { create(:group, name: 'same-name parent') }
+
+        let(:params) { { order_by: 'similarity', search: 'same-name' } }
+
+        before_all do
+          group6.add_owner(user1)
+          group7.add_owner(user1)
+        end
+
+        subject { get api('/groups', user1), params: params }
+
+        it 'sorts top level groups before subgroups with exact matches first' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response.length).to eq(4)
+
+          expect(response_groups).to eq(['same-name', 'same-name parent', 'same-name subgroup', 'same-name'])
+        end
+
+        context 'when `search` parameter is not given' do
+          let(:params) { { order_by: 'similarity' } }
+
+          it 'sorts items ordered by name' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(6)
+
+            expect(response_groups).to eq(groups_visible_to_user(user1).order(:name).pluck(:name))
+          end
+        end
       end
 
       def groups_visible_to_user(user)

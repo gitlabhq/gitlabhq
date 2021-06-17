@@ -1093,13 +1093,13 @@ elements:
 
 To be consistent, use this format when you write about UI navigation.
 
-1. On the top bar, select **Menu > Project** and find your project.
+1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 
 Another example:
 
-1. On the top bar, select **Menu > Group** and find your group.
+1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 

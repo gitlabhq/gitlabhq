@@ -113,7 +113,7 @@
 ############################
 # rspec job parallel configs
 .rspec-migration-parallel:
-  parallel: 7
+  parallel: 9
 
 .rspec-ee-migration-parallel:
   parallel: 3
@@ -122,7 +122,7 @@
   parallel: 20
 
 .rspec-ee-unit-parallel:
-  parallel: 10
+  parallel: 12
 
 .rspec-ee-unit-geo-parallel:
   parallel: 2

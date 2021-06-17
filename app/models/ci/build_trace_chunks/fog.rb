@@ -33,6 +33,20 @@ module Ci
 
         set_data(model, new_data)
         new_data.bytesize
+      rescue Encoding::CompatibilityError => e
+        Gitlab::ErrorTracking.track_and_raise_exception(
+          e,
+          build_id: model.build_id,
+          chunk_index: model.chunk_index,
+          chunk_start_offset: model.start_offset,
+          chunk_end_offset: model.end_offset,
+          chunk_size: model.size,
+          chunk_data_store: model.data_store,
+          offset: offset,
+          old_data_encoding: truncated_data.encoding.to_s,
+          new_data: new_data,
+          new_data_size: new_data.bytesize,
+          new_data_encoding: new_data.encoding.to_s)
       end
 
       def size(model)

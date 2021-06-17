@@ -5247,6 +5247,9 @@ msgid_plural "Boards|+ %{displayedIssuablesCount} more %{issuableType}s"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Boards|An error occurred while creating the epic. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while creating the issue. Please try again."
 msgstr ""
 
@@ -5306,6 +5309,9 @@ msgstr ""
 msgid "Boards|Failed to fetch blocking %{issuableType}s"
 msgstr ""
 
+msgid "Boards|New epic"
+msgstr ""
+
 msgid "Boards|Retrieving blocking %{issuableType}s"
 msgstr ""
 
@@ -5334,6 +5340,9 @@ msgid "Board|Edit board"
 msgstr ""
 
 msgid "Board|Enter board name"
+msgstr ""
+
+msgid "Board|Failed to create epic. Please try again."
 msgstr ""
 
 msgid "Board|Failed to delete board. Please try again."
@@ -13118,6 +13127,9 @@ msgid "EscalationPolicies|THEN %{doAction} %{schedule}"
 msgstr ""
 
 msgid "EscalationPolicies|The escalation policy could not be deleted. Please try again."
+msgstr ""
+
+msgid "EscalationPolicies|The escalation policy could not be updated. Please try again"
 msgstr ""
 
 msgid "EscalationPolicies|mins"

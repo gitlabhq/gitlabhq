@@ -102,6 +102,23 @@ RSpec.describe Ci::BuildTraceChunks::Fog do
     end
   end
 
+  describe '#append_data' do
+    let(:model) { create(:ci_build_trace_chunk, :fog_with_data, initial_data: (+'😺').force_encoding('ASCII-8BIT')) }
+    let(:data) { data_store.data(model) }
+
+    it 'appends ASCII data' do
+      data_store.append_data(model, 'hello world', 4)
+
+      expect(data.encoding).to eq(Encoding.find('ASCII-8BIT'))
+      expect(data.force_encoding('UTF-8')).to eq('😺hello world')
+    end
+
+    it 'throws an exception when appending UTF-8 data' do
+      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_exception).and_call_original
+      expect { data_store.append_data(model, 'Résumé', 4) }.to raise_exception(Encoding::CompatibilityError)
+    end
+  end
+
   describe '#delete_data' do
     subject { data_store.delete_data(model) }
 

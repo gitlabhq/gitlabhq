@@ -6,6 +6,7 @@ import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_opt
 import { sprintf, __ } from '~/locale';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import Tracking from '~/tracking';
+import { toggleFormEventPrefix } from '../constants';
 import eventHub from '../eventhub';
 import BoardCard from './board_card.vue';
 import BoardNewIssue from './board_new_issue.vue';
@@ -21,6 +22,7 @@ export default {
   components: {
     BoardCard,
     BoardNewIssue,
+    BoardNewEpic: () => import('ee_component/boards/components/board_new_epic.vue'),
     GlLoadingIcon,
     GlIntersectionObserver,
   },
@@ -49,6 +51,7 @@ export default {
       scrollOffset: 250,
       showCount: false,
       showIssueForm: false,
+      showEpicForm: false,
     };
   },
   computed: {
@@ -64,6 +67,9 @@ export default {
         issuableType: this.isEpicBoard ? 'epics' : 'issues',
       });
     },
+    toggleFormEventPrefix() {
+      return this.isEpicBoard ? toggleFormEventPrefix.epic : toggleFormEventPrefix.issue;
+    },
     boardItemsSizeExceedsMax() {
       return this.list.maxIssueCount > 0 && this.listItemsCount > this.list.maxIssueCount;
     },
@@ -75,6 +81,12 @@ export default {
     },
     loadingMore() {
       return this.listsFlags[this.list.id]?.isLoadingMore;
+    },
+    epicCreateFormVisible() {
+      return this.isEpicBoard && this.list.listType !== 'closed' && this.showEpicForm;
+    },
+    issueCreateFormVisible() {
+      return !this.isEpicBoard && this.list.listType !== 'closed' && this.showIssueForm;
     },
     listRef() {
       // When  list is draggable, the reference to the list needs to be accessed differently
@@ -116,9 +128,10 @@ export default {
     'list.id': {
       handler(id, oldVal) {
         if (id) {
-          eventHub.$on(`toggle-issue-form-${this.list.id}`, this.toggleForm);
+          eventHub.$on(`${this.toggleFormEventPrefix}${this.list.id}`, this.toggleForm);
           eventHub.$on(`scroll-board-list-${this.list.id}`, this.scrollToTop);
-          eventHub.$off(`toggle-issue-form-${oldVal}`, this.toggleForm);
+
+          eventHub.$off(`${this.toggleFormEventPrefix}${oldVal}`, this.toggleForm);
           eventHub.$off(`scroll-board-list-${oldVal}`, this.scrollToTop);
         }
       },
@@ -126,7 +139,7 @@ export default {
     },
   },
   beforeDestroy() {
-    eventHub.$off(`toggle-issue-form-${this.list.id}`, this.toggleForm);
+    eventHub.$off(`${this.toggleFormEventPrefix}${this.list.id}`, this.toggleForm);
     eventHub.$off(`scroll-board-list-${this.list.id}`, this.scrollToTop);
   },
   methods: {
@@ -147,7 +160,11 @@ export default {
       this.fetchItemsForList({ listId: this.list.id, fetchNext: true });
     },
     toggleForm() {
-      this.showIssueForm = !this.showIssueForm;
+      if (this.isEpicBoard) {
+        this.showEpicForm = !this.showEpicForm;
+      } else {
+        this.showIssueForm = !this.showIssueForm;
+      }
     },
     onReachingListBottom() {
       if (!this.loadingMore && this.hasNextPage) {
@@ -227,7 +244,8 @@ export default {
     >
       <gl-loading-icon />
     </div>
-    <board-new-issue v-if="list.listType !== 'closed' && showIssueForm" :list="list" />
+    <board-new-issue v-if="issueCreateFormVisible" :list="list" />
+    <board-new-epic v-if="epicCreateFormVisible" :list="list" />
     <component
       :is="treeRootWrapper"
       v-show="!loading"

@@ -249,6 +249,13 @@ git push -u origin update-project-templates
 
 Now create a merge request and merge that to main.
 
+To update just a single template instead of all of them, specify the template name
+between square brackets. For example, for the `cluster_management` template, run:
+
+```shell
+bundle exec rake gitlab:update_project_templates\[cluster_management\]
+```
+
 ## Generate route lists
 
 To see the full list of API routes, you can run:
