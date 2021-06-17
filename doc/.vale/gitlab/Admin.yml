@@ -8,6 +8,6 @@ extends: substitution
 message: 'Verify this use of the word "admin". Can it be updated to "administration", "administrator", "administer", or "Admin Area"?'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 level: suggestion
-ignorecase: true
+ignorecase: false
 swap:
-  'admin ?\w*': '(?:Admin (Area|Mode)|[Aa]dminist(ration|rator|rators|er|rative))'
+  '[Aa]dmin ?\w*': '(?:Admin( Area| Mode)?|[Aa]dminist(ration|rator|rators|er|rative))'

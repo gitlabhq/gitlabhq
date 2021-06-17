@@ -81,7 +81,7 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd> + <kbd>j</kbd> | Go to the CI/CD jobs list (**CI/CD > Jobs**). |
 | <kbd>g</kbd> + <kbd>l</kbd> | Go to the project metrics (**Monitor > Metrics**). |
 | <kbd>g</kbd> + <kbd>e</kbd> | Go to the project environments (**Deployments > Environments**). |
-| <kbd>g</kbd> + <kbd>k</kbd> | Go to the project Kubernetes cluster integration page (**Infrastructure > Kubernetes**). Note that you must have at least [`maintainer` permissions](permissions.md) to access this page. |
+| <kbd>g</kbd> + <kbd>k</kbd> | Go to the project Kubernetes cluster integration page (**Infrastructure > Kubernetes clusters**). Note that you must have at least [`maintainer` permissions](permissions.md) to access this page. |
 | <kbd>g</kbd> + <kbd>s</kbd> | Go to the project snippets list (**Snippets**). |
 | <kbd>g</kbd> + <kbd>w</kbd> | Go to the project wiki (**Wiki**), if enabled. |
 

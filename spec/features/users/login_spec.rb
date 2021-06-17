@@ -128,6 +128,20 @@ RSpec.describe 'Login' do
         end
       end
     end
+
+    context 'when resending the confirmation email' do
+      it 'redirects to the "almost there" page' do
+        stub_feature_flags(soft_email_confirmation: false)
+
+        user = create(:user)
+
+        visit new_user_confirmation_path
+        fill_in 'user_email', with: user.email
+        click_button 'Resend'
+
+        expect(current_path).to eq users_almost_there_path
+      end
+    end
   end
 
   describe 'with the ghost user' do

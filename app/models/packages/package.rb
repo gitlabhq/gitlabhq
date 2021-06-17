@@ -158,7 +158,7 @@ class Packages::Package < ApplicationRecord
     joins(:project).reorder(keyset_order)
   end
 
-  after_commit :update_composer_cache, on: :destroy, if: -> { composer? }
+  after_commit :update_composer_cache, on: :destroy, if: -> { composer? && Feature.disabled?(:disable_composer_callback) }
 
   def self.only_maven_packages_with_path(path, use_cte: false)
     if use_cte

@@ -1019,10 +1019,24 @@ RSpec.describe Packages::Package, type: :model do
       package.composer_metadatum.reload
     end
 
-    it 'schedule the update job' do
-      expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, package.composer_metadatum.version_cache_sha)
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(disable_composer_callback: false)
+      end
 
-      package.destroy!
+      it 'schedule the update job' do
+        expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, package.composer_metadatum.version_cache_sha)
+
+        package.destroy!
+      end
+    end
+
+    context 'with feature flag enabled' do
+      it 'does nothing' do
+        expect(::Packages::Composer::CacheUpdateWorker).not_to receive(:perform_async)
+
+        package.destroy!
+      end
     end
   end
 end

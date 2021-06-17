@@ -208,6 +208,8 @@ FactoryBot.define do
 
       transient do
         without_loaded_metadatum { false }
+        package_name { package&.name || 'foo' }
+        sequence(:package_version) { |n| package&.version || "v#{n}" }
         channel { 'stable' }
       end
 
