@@ -10,5 +10,5 @@
         %div
           = _('Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for Auto DevOps to work.')
     .gl-alert-actions
-      = link_to _('Settings'), project_settings_ci_cd_path(project), class: 'alert-link btn gl-button btn-info'
-      = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank', class: 'alert-link btn gl-button btn-default gl-ml-2'
+      = link_to _('Settings'), project_settings_ci_cd_path(project), class: 'alert-link btn gl-button btn-confirm'
+      = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank', class: 'alert-link btn gl-button btn-default gl-ml-3'

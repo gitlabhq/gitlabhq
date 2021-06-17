@@ -21752,10 +21752,7 @@ msgstr ""
 msgid "NetworkPolicies|Namespace"
 msgstr ""
 
-msgid "NetworkPolicies|Network Policy"
-msgstr ""
-
-msgid "NetworkPolicies|Network policy"
+msgid "NetworkPolicies|Network"
 msgstr ""
 
 msgid "NetworkPolicies|Network traffic"
