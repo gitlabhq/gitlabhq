@@ -35,7 +35,8 @@
           path: project_settings_access_tokens_path(@project),
           token: @project_access_token,
           scopes: @scopes,
-          prefix: :project_access_token
+          prefix: :project_access_token,
+          help_path: help_page_path('user/project/settings/project_access_tokens', anchor: 'limiting-scopes-of-a-project-access-token')
 
     = render 'shared/access_tokens/table',
         active_tokens: @active_project_access_tokens,

@@ -14,7 +14,6 @@ module Namespaces
     def perform
       return if paid_self_managed_instance?
       return if setting_disabled?
-      return if experiment_inactive?
 
       Namespaces::InProductMarketingEmailsService.send_for_all_tracks_and_intervals
     end
@@ -27,10 +26,6 @@ module Namespaces
 
     def setting_disabled?
       !Gitlab::CurrentSettings.in_product_marketing_emails_enabled
-    end
-
-    def experiment_inactive?
-      Gitlab.com? && !Gitlab::Experimentation.active?(:in_product_marketing_emails)
     end
   end
 end

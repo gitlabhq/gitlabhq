@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module Changelog
-    # A parser for the template syntax used for generating changelogs.
+  module TemplateParser
+    # A parser for a simple template syntax, used for example to generate changelogs.
     #
     # As a quick primer on the template syntax, a basic template looks like
     # this:
@@ -166,7 +166,7 @@ module Gitlab
       def parse_and_transform(input)
         AST::Transformer.new.apply(parse(input))
       rescue Parslet::ParseFailed => ex
-        # We raise a custom error so it's easier to catch different changelog
+        # We raise a custom error so it's easier to catch different parser
         # related errors. In addition, this ensures the caller of this method
         # doesn't depend on a Parslet specific error class.
         raise Error, "Failed to parse the template: #{ex.message}"

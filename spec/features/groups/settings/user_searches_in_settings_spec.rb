@@ -24,7 +24,7 @@ RSpec.describe 'User searches group settings', :js do
       visit group_settings_integrations_path(group)
     end
 
-    it_behaves_like 'can highlight results', 'Project integration management'
+    it_behaves_like 'can highlight results', 'Group-level integration management'
   end
 
   context 'in Repository page' do

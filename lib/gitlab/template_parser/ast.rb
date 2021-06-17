@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module Changelog
+  module TemplateParser
     # AST nodes to evaluate when rendering a template.
     #
     # Evaluating an AST is done by walking over the nodes and calling

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module Changelog
+  module TemplateParser
     # A class for tracking state when evaluating a template
     class EvalState
       MAX_LOOPS = 4

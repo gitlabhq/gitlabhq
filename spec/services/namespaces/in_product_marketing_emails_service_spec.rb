@@ -11,7 +11,6 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
   let(:frozen_time) { Time.zone.parse('23 Mar 2021 10:14:40 UTC') }
   let(:previous_action_completed_at) { frozen_time - 2.days }
   let(:current_action_completed_at) { nil }
-  let(:experiment_enabled) { true }
   let(:user_can_perform_current_track_action) { true }
   let(:actions_completed) { { created_at: previous_action_completed_at, git_write_at: current_action_completed_at } }
 
@@ -22,7 +21,6 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
     travel_to(frozen_time)
     create(:onboarding_progress, namespace: group, **actions_completed)
     group.add_developer(user)
-    stub_experiment_for_subject(in_product_marketing_emails: experiment_enabled)
     allow(Ability).to receive(:allowed?).with(user, anything, anything).and_return(user_can_perform_current_track_action)
     allow(Notify).to receive(:in_product_marketing_email).and_return(double(deliver_later: nil))
   end
@@ -82,50 +80,6 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
       let(:previous_action_completed_at) { frozen_time - 6.days }
 
       it { is_expected.to send_in_product_marketing_email(user.id, group.id, :create, 1) }
-    end
-  end
-
-  describe 'experimentation' do
-    context 'when on dotcom' do
-      before do
-        allow(::Gitlab).to receive(:com?).and_return(true)
-      end
-
-      context 'when the experiment is enabled' do
-        it 'adds the group as an experiment subject in the experimental group' do
-          expect(Experiment).to receive(:add_group)
-            .with(:in_product_marketing_emails, variant: :experimental, group: group)
-
-          execute_service
-        end
-      end
-
-      context 'when the experiment is disabled' do
-        let(:experiment_enabled) { false }
-
-        it 'adds the group as an experiment subject in the control group' do
-          expect(Experiment).to receive(:add_group)
-            .with(:in_product_marketing_emails, variant: :control, group: group)
-
-          execute_service
-        end
-
-        it { is_expected.not_to send_in_product_marketing_email }
-      end
-
-      context 'when not on dotcom' do
-        before do
-          allow(::Gitlab).to receive(:com?).and_return(false)
-        end
-
-        it 'does not add the group as an experiment subject' do
-          expect(Experiment).not_to receive(:add_group)
-
-          execute_service
-        end
-
-        it { is_expected.to send_in_product_marketing_email(user.id, group.id, :create, 0) }
-      end
     end
   end
 

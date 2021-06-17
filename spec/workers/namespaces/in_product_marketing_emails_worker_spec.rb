@@ -2,38 +2,31 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::InProductMarketingEmailsWorker, '#perform' do
-  using RSpec::Parameterized::TableSyntax
-
+RSpec.describe Namespaces::InProductMarketingEmailsWorker, '#perform', unless: Gitlab.ee? do
   # Running this in EE would call the overridden method, which can't be tested in CE.
   # The EE code is covered in a separate EE spec.
-  context 'not on gitlab.com', unless: Gitlab.ee? do
-    let(:is_gitlab_com) { false }
 
-    where(:in_product_marketing_emails_enabled, :experiment_active, :executes_service) do
-      true     | true     | 1
-      true     | false    | 1
-      false    | false    | 0
-      false    | true     | 0
+  context 'when the in_product_marketing_emails_enabled setting is disabled' do
+    before do
+      stub_application_setting(in_product_marketing_emails_enabled: false)
     end
 
-    with_them do
-      it_behaves_like 'in-product marketing email'
+    it 'does not execute the email service' do
+      expect(Namespaces::InProductMarketingEmailsService).not_to receive(:send_for_all_tracks_and_intervals)
+
+      subject.perform
     end
   end
 
-  context 'on gitlab.com' do
-    let(:is_gitlab_com) { true }
-
-    where(:in_product_marketing_emails_enabled, :experiment_active, :executes_service) do
-      true     | true     | 1
-      true     | false    | 0
-      false    | false    | 0
-      false    | true     | 0
+  context 'when the in_product_marketing_emails_enabled setting is enabled' do
+    before do
+      stub_application_setting(in_product_marketing_emails_enabled: true)
     end
 
-    with_them do
-      it_behaves_like 'in-product marketing email'
+    it 'executes the email service' do
+      expect(Namespaces::InProductMarketingEmailsService).to receive(:send_for_all_tracks_and_intervals)
+
+      subject.perform
     end
   end
 end

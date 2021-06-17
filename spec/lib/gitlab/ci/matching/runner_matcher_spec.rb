@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
   let(:dummy_attributes) do
     {
+      runner_ids: [1],
       runner_type: 'instance_type',
       public_projects_minutes_cost_factor: 0,
       private_projects_minutes_cost_factor: 1,
@@ -25,6 +26,8 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
 
     context 'with attributes' do
       let(:attributes) { dummy_attributes }
+
+      it { expect(matcher.runner_ids).to eq([1]) }
 
       it { expect(matcher.runner_type).to eq('instance_type') }
 

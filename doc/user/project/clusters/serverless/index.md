@@ -322,7 +322,7 @@ being executed which deploys each function as a Knative service. After the
 deploy stage has finished, additional details for the function display
 under **Infrastructure > Serverless platform**.
 
-![serverless page](img/serverless-page.png)
+![serverless page](img/serverless-page_v14_0.png)
 
 This page contains all functions available for the project, the description for
 accessing the function, and, if available, the function's runtime information.
@@ -463,7 +463,7 @@ Go to the **Infrastructure > Serverless platform** page to see the final URL of 
 On the same page as above, click on one of the function
 rows to bring up the function details page.
 
-![function_details](img/function-details-loaded.png)
+![function_details](img/function-details-loaded_v14_0.png)
 
 The pod count gives you the number of pods running the serverless function instances on a given cluster.
 

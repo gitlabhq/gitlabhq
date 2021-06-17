@@ -2,8 +2,6 @@
 
 module Namespaces
   class InProductMarketingEmailsService
-    include Gitlab::Experimentation::GroupTypes
-
     TRACKS = {
       create: {
         interval_days: [1, 5, 10],
@@ -61,12 +59,6 @@ module Namespaces
     attr_reader :track, :interval, :in_product_marketing_email_records
 
     def send_email_for_group(group)
-      if Gitlab.com?
-        experiment_enabled_for_group = experiment_enabled_for_group?(group)
-        experiment_add_group(group, experiment_enabled_for_group)
-        return unless experiment_enabled_for_group
-      end
-
       users_for_group(group).each do |user|
         if can_perform_action?(user, group)
           send_email(user, group)
@@ -75,15 +67,6 @@ module Namespaces
       end
 
       save_tracked_emails!
-    end
-
-    def experiment_enabled_for_group?(group)
-      Gitlab::Experimentation.in_experiment_group?(:in_product_marketing_emails, subject: group)
-    end
-
-    def experiment_add_group(group, experiment_enabled_for_group)
-      variant = experiment_enabled_for_group ? GROUP_EXPERIMENTAL : GROUP_CONTROL
-      Experiment.add_group(:in_product_marketing_emails, variant: variant, group: group)
     end
 
     def groups_for_track

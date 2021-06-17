@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Changelog::Config do
 
       expect(config.date_format).to eq('foo')
       expect(config.template)
-        .to be_instance_of(Gitlab::Changelog::AST::Expressions)
+        .to be_instance_of(Gitlab::TemplateParser::AST::Expressions)
 
       expect(config.categories).to eq({ 'foo' => 'bar' })
       expect(config.tag_regex).to eq('foo')
@@ -51,6 +51,16 @@ RSpec.describe Gitlab::Changelog::Config do
 
     it 'raises Error when the categories are not a Hash' do
       expect { described_class.from_hash(project, 'categories' => 10) }
+        .to raise_error(Gitlab::Changelog::Error)
+    end
+
+    it 'raises a Gitlab::Changelog::Error when the template is invalid' do
+      invalid_template = <<~TPL
+        {% each {{foo}} %}
+        {% end %}
+      TPL
+
+      expect { described_class.from_hash(project, 'template' => invalid_template) }
         .to raise_error(Gitlab::Changelog::Error)
     end
   end

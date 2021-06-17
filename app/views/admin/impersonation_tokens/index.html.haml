@@ -19,7 +19,8 @@
         path: admin_user_impersonation_tokens_path,
         impersonation: true,
         token: @impersonation_token,
-        scopes: @scopes
+        scopes: @scopes,
+        help_path: help_page_path('api/README', anchor: 'impersonation-tokens')
 
     = render 'shared/access_tokens/table',
         type: type,

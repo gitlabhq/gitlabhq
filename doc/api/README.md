@@ -6,22 +6,24 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # API Docs **(FREE)**
 
-Use the GitLab [REST](http://spec.openapis.org/oas/v3.0.3) API to automate GitLab.
+Use the GitLab APIs to automate GitLab.
 
 You can also use a partial [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/openapi/openapi.yaml),
 to test the API directly from the GitLab user interface.
 Contributions are welcome.
 
-## Available API resources
+## REST API
 
+A REST API is available in GitLab.
+Usage instructions are below.
 For a list of the available resources and their endpoints, see
-[API resources](api_resources.md).
+[REST API resources](api_resources.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an introduction and basic steps, see
 [How to make GitLab API calls](https://www.youtube.com/watch?v=0LsMC3ZiXkA).
 
-## SCIM **(PREMIUM SAAS)**
+## SCIM API **(PREMIUM SAAS)**
 
 GitLab provides an [SCIM API](scim.md) that both implements
 [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644) and provides the
@@ -29,7 +31,7 @@ GitLab provides an [SCIM API](scim.md) that both implements
 
 ## GraphQL API
 
-A [GraphQL](graphql/index.md) API is available in GitLab.
+A [GraphQL API](graphql/index.md) is available in GitLab.
 
 With GraphQL, you can make an API request for only what you need,
 and it's versioned by default.

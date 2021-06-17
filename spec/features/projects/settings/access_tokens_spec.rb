@@ -51,10 +51,10 @@ RSpec.describe 'Project > Settings > Access Tokens', :js do
       name = 'My project access token'
 
       visit project_settings_access_tokens_path(project)
-      fill_in 'Name', with: name
+      fill_in 'Token name', with: name
 
       # Set date to 1st of next month
-      find_field('Expires at').click
+      find_field('Expiration date').click
       find('.pika-next').click
       click_on '1'
 

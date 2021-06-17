@@ -159,7 +159,7 @@ become eligible approvers in the project. To enable this merge request approval 
    ![MR approvals by Code Owners](img/mr_approvals_by_code_owners_v12_7.png)
 
 You can also
-[require code owner approval](../../protected_branches.md#protected-branches-approval-by-code-owners)
+[require code owner approval](../../protected_branches.md#require-code-owner-approval-on-a-protected-branch)
 for protected branches. **(PREMIUM)**
 
 ## Merge request approval segregation of duties **(PREMIUM)**
@@ -229,4 +229,4 @@ approval rule for certain branches:
 
      ![Scoped to protected branch](img/scoped_to_protected_branch_v13_10.png)
 1. To enable this configuration, read
-   [Code Owner's approvals for protected branches](../../protected_branches.md#protected-branches-approval-by-code-owners).
+   [Code Owner's approvals for protected branches](../../protected_branches.md#require-code-owner-approval-on-a-protected-branch).

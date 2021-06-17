@@ -16,7 +16,7 @@ GitLab, and support Terraform best practices.
 ## Quick Start
 
 Use the following `.gitlab-ci.yml` to set up a basic Terraform project integration
-for GitLab versions 13.5 and later:
+for GitLab versions 14.0 and later:
 
 ```yaml
 include:

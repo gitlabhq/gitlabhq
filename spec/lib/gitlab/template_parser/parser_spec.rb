@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Changelog::Parser do
+RSpec.describe Gitlab::TemplateParser::Parser do
   let(:parser) { described_class.new }
 
   describe '#root' do
@@ -67,12 +67,12 @@ RSpec.describe Gitlab::Changelog::Parser do
     it 'parses and transforms a template' do
       node = parser.parse_and_transform('foo')
 
-      expect(node).to be_instance_of(Gitlab::Changelog::AST::Expressions)
+      expect(node).to be_instance_of(Gitlab::TemplateParser::AST::Expressions)
     end
 
     it 'raises parsing errors using a custom error class' do
       expect { parser.parse_and_transform('{% each') }
-        .to raise_error(Gitlab::Changelog::Error)
+        .to raise_error(Gitlab::TemplateParser::Error)
     end
   end
 end

@@ -1,5 +1,6 @@
 - title = local_assigns.fetch(:title, _('Add a %{type}') % { type: type })
 - prefix = local_assigns.fetch(:prefix, :personal_access_token)
+- help_path = local_assigns.fetch(:help_path)
 
 %h5.gl-mt-0
   = title
@@ -11,13 +12,16 @@
   = form_errors(token)
 
   .row
-    .form-group.col-md-6
-      = f.label :name, _('Name'), class: 'label-bold'
-      = f.text_field :name, class: 'form-control gl-form-input', required: true, data: { qa_selector: 'access_token_name_field' }
+    .form-group.col
+      .row
+        = f.label :name, _('Token name'), class: 'label-bold col-md-12'
+        .col-md-6
+          = f.text_field :name, class: 'form-control gl-form-input', required: true, data: { qa_selector: 'access_token_name_field' }, :'aria-describedby' => 'access_token_help_text'
+        %span.form-text.text-muted.col-md-12#access_token_help_text= _('For example, the application using the token or the purpose of the token.')
 
   .row
     .form-group.col-md-6
-      = f.label :expires_at, _('Expires at'), class: 'label-bold'
+      = f.label :expires_at, _('Expiration date'), class: 'label-bold'
       .input-icon-wrapper
 
         = render_if_exists 'personal_access_tokens/callout_max_personal_access_token_lifetime'
@@ -26,7 +30,11 @@
           = f.text_field :expires_at, class: 'datepicker gl-datepicker-input form-control gl-form-input', placeholder: 'YYYY-MM-DD', autocomplete: 'off', data: { js_name: 'expiresAt' }
 
   .form-group
-    = f.label :scopes, _('Scopes'), class: 'label-bold'
+    %b{ :'aria-describedby' => 'select_scope_help_text' }
+      = s_('Tokens|Select scopes')
+    %p.text-secondary#select_scope_help_text
+      = s_('Tokens|Scopes set the permission levels granted to the token.')
+      = link_to "Learn more.", help_path, target: '_blank'
     = render 'shared/tokens/scopes_form', prefix: prefix, token: token, scopes: scopes
 
   - if prefix == :personal_access_token && Feature.enabled?(:personal_access_tokens_scoped_to_projects, current_user)

@@ -21,7 +21,7 @@ need, or even add new ones that are not built-in.
 1. Create a new project, choosing "GitLab Cluster Management" from the list of [built-in project templates](../project/working_with_projects.md#built-in-templates). 
 1. Make this project a [cluster management project](management_project.md).
 1. If you used the [GitLab Managed Apps](applications.md), refer to
-   [Migrating from GitLab Manged Apps](migrating_from_gma_to_project_template.md).
+   [Migrating from GitLab Managed Apps](migrating_from_gma_to_project_template.md).
 
 ### Components
 

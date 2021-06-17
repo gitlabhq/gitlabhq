@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Changelog::AST::Identifier do
-  let(:state) { Gitlab::Changelog::EvalState.new }
+RSpec.describe Gitlab::TemplateParser::AST::Identifier do
+  let(:state) { Gitlab::TemplateParser::EvalState.new }
 
   describe '#evaluate' do
     it 'evaluates a selector' do
@@ -26,8 +26,8 @@ RSpec.describe Gitlab::Changelog::AST::Identifier do
   end
 end
 
-RSpec.describe Gitlab::Changelog::AST::Integer do
-  let(:state) { Gitlab::Changelog::EvalState.new }
+RSpec.describe Gitlab::TemplateParser::AST::Integer do
+  let(:state) { Gitlab::TemplateParser::EvalState.new }
 
   describe '#evaluate' do
     it 'evaluates a selector' do
@@ -44,33 +44,33 @@ RSpec.describe Gitlab::Changelog::AST::Integer do
   end
 end
 
-RSpec.describe Gitlab::Changelog::AST::Selector do
-  let(:state) { Gitlab::Changelog::EvalState.new }
+RSpec.describe Gitlab::TemplateParser::AST::Selector do
+  let(:state) { Gitlab::TemplateParser::EvalState.new }
   let(:data) { { 'numbers' => [10] } }
 
   describe '#evaluate' do
     it 'evaluates a selector' do
-      ident = Gitlab::Changelog::AST::Identifier.new('numbers')
-      int = Gitlab::Changelog::AST::Integer.new(0)
+      ident = Gitlab::TemplateParser::AST::Identifier.new('numbers')
+      int = Gitlab::TemplateParser::AST::Integer.new(0)
 
       expect(described_class.new([ident, int]).evaluate(state, data)).to eq(10)
     end
 
     it 'evaluates a selector that returns nil' do
-      int = Gitlab::Changelog::AST::Integer.new(0)
+      int = Gitlab::TemplateParser::AST::Integer.new(0)
 
       expect(described_class.new([int]).evaluate(state, data)).to be_nil
     end
   end
 end
 
-RSpec.describe Gitlab::Changelog::AST::Variable do
-  let(:state) { Gitlab::Changelog::EvalState.new }
+RSpec.describe Gitlab::TemplateParser::AST::Variable do
+  let(:state) { Gitlab::TemplateParser::EvalState.new }
   let(:data) { { 'numbers' => [10] } }
 
   describe '#evaluate' do
     it 'evaluates a variable' do
-      node = Gitlab::Changelog::Parser
+      node = Gitlab::TemplateParser::Parser
         .new
         .parse_and_transform('{{numbers.0}}')
         .nodes[0]
@@ -80,26 +80,26 @@ RSpec.describe Gitlab::Changelog::AST::Variable do
 
     it 'evaluates an undefined variable' do
       node =
-        Gitlab::Changelog::Parser.new.parse_and_transform('{{foobar}}').nodes[0]
+        Gitlab::TemplateParser::Parser.new.parse_and_transform('{{foobar}}').nodes[0]
 
       expect(node.evaluate(state, data)).to eq('')
     end
 
     it 'evaluates the special variable "it"' do
       node =
-        Gitlab::Changelog::Parser.new.parse_and_transform('{{it}}').nodes[0]
+        Gitlab::TemplateParser::Parser.new.parse_and_transform('{{it}}').nodes[0]
 
       expect(node.evaluate(state, data)).to eq(data.to_s)
     end
   end
 end
 
-RSpec.describe Gitlab::Changelog::AST::Expressions do
-  let(:state) { Gitlab::Changelog::EvalState.new }
+RSpec.describe Gitlab::TemplateParser::AST::Expressions do
+  let(:state) { Gitlab::TemplateParser::EvalState.new }
 
   describe '#evaluate' do
     it 'evaluates all expressions' do
-      node = Gitlab::Changelog::Parser
+      node = Gitlab::TemplateParser::Parser
         .new
         .parse_and_transform('{{number}}foo')
 
@@ -108,8 +108,8 @@ RSpec.describe Gitlab::Changelog::AST::Expressions do
   end
 end
 
-RSpec.describe Gitlab::Changelog::AST::Text do
-  let(:state) { Gitlab::Changelog::EvalState.new }
+RSpec.describe Gitlab::TemplateParser::AST::Text do
+  let(:state) { Gitlab::TemplateParser::EvalState.new }
 
   describe '#evaluate' do
     it 'returns the text' do
@@ -118,12 +118,12 @@ RSpec.describe Gitlab::Changelog::AST::Text do
   end
 end
 
-RSpec.describe Gitlab::Changelog::AST::If do
-  let(:state) { Gitlab::Changelog::EvalState.new }
+RSpec.describe Gitlab::TemplateParser::AST::If do
+  let(:state) { Gitlab::TemplateParser::EvalState.new }
 
   describe '#evaluate' do
     it 'evaluates a truthy if expression without an else clause' do
-      node = Gitlab::Changelog::Parser
+      node = Gitlab::TemplateParser::Parser
         .new
         .parse_and_transform('{% if thing %}foo{% end %}')
         .nodes[0]
@@ -132,7 +132,7 @@ RSpec.describe Gitlab::Changelog::AST::If do
     end
 
     it 'evaluates a falsy if expression without an else clause' do
-      node = Gitlab::Changelog::Parser
+      node = Gitlab::TemplateParser::Parser
         .new
         .parse_and_transform('{% if thing %}foo{% end %}')
         .nodes[0]
@@ -141,7 +141,7 @@ RSpec.describe Gitlab::Changelog::AST::If do
     end
 
     it 'evaluates a falsy if expression with an else clause' do
-      node = Gitlab::Changelog::Parser
+      node = Gitlab::TemplateParser::Parser
         .new
         .parse_and_transform('{% if thing %}foo{% else %}bar{% end %}')
         .nodes[0]
@@ -177,13 +177,13 @@ RSpec.describe Gitlab::Changelog::AST::If do
   end
 end
 
-RSpec.describe Gitlab::Changelog::AST::Each do
-  let(:state) { Gitlab::Changelog::EvalState.new }
+RSpec.describe Gitlab::TemplateParser::AST::Each do
+  let(:state) { Gitlab::TemplateParser::EvalState.new }
 
   describe '#evaluate' do
     it 'evaluates the expression' do
       data = { 'animals' => [{ 'name' => 'Cat' }, { 'name' => 'Dog' }] }
-      node = Gitlab::Changelog::Parser
+      node = Gitlab::TemplateParser::Parser
         .new
         .parse_and_transform('{% each animals %}{{name}}{% end %}')
         .nodes[0]
@@ -193,7 +193,7 @@ RSpec.describe Gitlab::Changelog::AST::Each do
 
     it 'returns an empty string when the input is not a collection' do
       data = { 'animals' => 10 }
-      node = Gitlab::Changelog::Parser
+      node = Gitlab::TemplateParser::Parser
         .new
         .parse_and_transform('{% each animals %}{{name}}{% end %}')
         .nodes[0]
@@ -237,10 +237,10 @@ RSpec.describe Gitlab::Changelog::AST::Each do
       TPL
 
       node =
-        Gitlab::Changelog::Parser.new.parse_and_transform(template).nodes[0]
+        Gitlab::TemplateParser::Parser.new.parse_and_transform(template).nodes[0]
 
       expect { node.evaluate(state, data) }
-        .to raise_error(Gitlab::Changelog::Error)
+        .to raise_error(Gitlab::TemplateParser::Error)
     end
   end
 end

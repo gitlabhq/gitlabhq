@@ -52,7 +52,12 @@ module Gitlab
         end
 
         if (template = hash['template'])
-          config.template = Parser.new.parse_and_transform(template)
+          config.template =
+            begin
+              TemplateParser::Parser.new.parse_and_transform(template)
+            rescue TemplateParser::Error => e
+              raise Error, e.message
+            end
         end
 
         if (categories = hash['categories'])
@@ -73,7 +78,12 @@ module Gitlab
       def initialize(project)
         @project = project
         @date_format = DEFAULT_DATE_FORMAT
-        @template = Parser.new.parse_and_transform(DEFAULT_TEMPLATE)
+        @template =
+          begin
+            TemplateParser::Parser.new.parse_and_transform(DEFAULT_TEMPLATE)
+          rescue TemplateParser::Error => e
+            raise Error, e.message
+          end
         @categories = {}
         @tag_regex = DEFAULT_TAG_REGEX
       end

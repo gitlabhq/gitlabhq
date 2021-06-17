@@ -77,7 +77,7 @@ After you've added Code Owners to a project, you can configure it to
 be used for merge request approvals:
 
 - As [merge request eligible approvers](merge_requests/approvals/rules.md#code-owners-as-eligible-approvers).
-- As required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners). **(PREMIUM)**
+- As required approvers for [protected branches](protected_branches.md#require-code-owner-approval-on-a-protected-branch). **(PREMIUM)**
 
 Developer or higher [permissions](../permissions.md) are required to
 approve a merge request.
@@ -93,11 +93,11 @@ without using [Approval Rules](merge_requests/approvals/rules.md):
 
 1. Create the file in one of the three locations specified above.
 1. Set the code owners as required approvers for
-   [protected branches](protected_branches.md#protected-branches-approval-by-code-owners).
+   [protected branches](protected_branches.md#require-code-owner-approval-on-a-protected-branch).
 1. Use [the syntax of Code Owners files](code_owners.md#the-syntax-of-code-owners-files)
    to specify the actual owners and granular permissions.
 
-Using Code Owners in conjunction with [protected branches](protected_branches.md#protected-branches-approval-by-code-owners)
+Using Code Owners in conjunction with [protected branches](protected_branches.md#require-code-owner-approval-on-a-protected-branch)
 prevents any user who is not specified in the `CODEOWNERS` file from pushing
 changes for the specified files/paths, except those included in the
 **Allowed to push** column. This allows for a more inclusive push strategy, as

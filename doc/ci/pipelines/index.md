@@ -301,7 +301,7 @@ A strict security model is enforced when pipelines are executed on
 [protected branches](../../user/project/protected_branches.md).
 
 The following actions are allowed on protected branches only if the user is
-[allowed to merge or push](../../user/project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings)
+[allowed to merge or push](../../user/project/protected_branches.md)
 on that specific branch:
 
 - Run manual pipelines (using the [Web UI](#run-a-pipeline-manually) or [pipelines API](#pipelines-api)).

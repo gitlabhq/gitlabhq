@@ -18,6 +18,7 @@ module Gitlab
       #
       class RunnerMatcher
         ATTRIBUTES = %i[
+          runner_ids
           runner_type
           public_projects_minutes_cost_factor
           private_projects_minutes_cost_factor

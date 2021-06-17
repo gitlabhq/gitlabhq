@@ -195,7 +195,7 @@ The following table lists project permissions available for each role:
 1. Guest users can only view the confidential issues they created themselves.
 1. If **Public pipelines** is enabled in **Project Settings > CI/CD**.
 1. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
-1. If the [branch is protected](project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings), this depends on the access Developers and Maintainers are given.
+1. If the [branch is protected](project/protected_branches.md), this depends on the access Developers and Maintainers are given.
 1. Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see repository information like tags and commits.
 1. Actions are limited only to records owned (referenced) by user.
 1. When [Share Group Lock](group/index.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing.
@@ -223,7 +223,7 @@ which visibility level you select on project settings.
 Additional restrictions can be applied on a per-branch basis with [protected branches](project/protected_branches.md).
 Additionally, you can customize permissions to allow or prevent project
 Maintainers and Developers from pushing to a protected branch. Read through the documentation on
-[Allowed to Merge and Allowed to Push settings](project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings)
+[protected branches](project/protected_branches.md)
 to learn more.
 
 ### Value Stream Analytics permissions

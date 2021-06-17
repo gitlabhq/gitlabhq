@@ -62,9 +62,6 @@ module Gitlab
       learn_gitlab_b: {
         tracking_category: 'Growth::Activation::Experiment::LearnGitLabB',
         rollout_strategy: :user
-      },
-      in_product_marketing_emails: {
-        tracking_category: 'Growth::Activation::Experiment::InProductMarketingEmails'
       }
     }.freeze
 

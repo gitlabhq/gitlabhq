@@ -4,9 +4,9 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# API resources **(FREE)**
+# REST API resources **(FREE)**
 
-Available resources for the [GitLab API](README.md) can be grouped in the following contexts:
+Available resources for the [GitLab REST API](README.md) can be grouped in the following contexts:
 
 - [Projects](#project-resources).
 - [Groups](#group-resources).
