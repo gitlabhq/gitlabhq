@@ -80,7 +80,7 @@ To enable it:
    and choose the [deployment strategy](#deployment-strategy).
 1. Click **Save changes** for the changes to take effect.
 
-After enabling the feature, an Auto DevOps pipeline is triggered on the `master` branch.
+After enabling the feature, an Auto DevOps pipeline is triggered on the default branch.
 
 ### At the group level
 
@@ -118,7 +118,7 @@ project's **Settings > CI/CD > Auto DevOps**. The following options
 are available:
 
 - **Continuous deployment to production**: Enables [Auto Deploy](stages.md#auto-deploy)
-  with `master` branch directly deployed to production.
+  with the default branch directly deployed to production.
 - **Continuous deployment to production using timed incremental rollout**: Sets the
   [`INCREMENTAL_ROLLOUT_MODE`](customize.md#timed-incremental-rollout-to-production) variable
   to `timed`. Production deployments execute with a 5 minute delay between
@@ -128,7 +128,7 @@ are available:
   [`INCREMENTAL_ROLLOUT_MODE`](customize.md#incremental-rollout-to-production) variables
   to `1` and `manual`. This means:
 
-  - `master` branch is directly deployed to staging.
+  - The default branch is directly deployed to staging.
   - Manual actions are provided for incremental rollout to production.
 
 NOTE:

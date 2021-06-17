@@ -825,6 +825,21 @@ class Project < ApplicationRecord
 
       from_union([with_issues_enabled, with_merge_requests_enabled]).select(:id)
     end
+
+    def find_by_url(url)
+      uri = URI(url)
+
+      return unless uri.host == Gitlab.config.gitlab.host
+
+      match = Rails.application.routes.recognize_path(url)
+
+      return if match[:unmatched_route].present?
+      return if match[:namespace_id].blank? || match[:id].blank?
+
+      find_by_full_path(match.values_at(:namespace_id, :id).join("/"))
+    rescue ActionController::RoutingError, URI::InvalidURIError
+      nil
+    end
   end
 
   def initialize(attributes = nil)

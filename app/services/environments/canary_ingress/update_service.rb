@@ -34,10 +34,6 @@ module Environments
       private
 
       def validate(environment)
-        unless Feature.enabled?(:canary_ingress_weight_control, environment.project, default_enabled: true)
-          return error(_("Feature flag is not enabled on the environment's project."))
-        end
-
         unless can?(current_user, :update_environment, environment)
           return error(_('You do not have permission to update the environment.'))
         end

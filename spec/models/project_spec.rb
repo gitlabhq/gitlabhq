@@ -1661,6 +1661,45 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '.find_by_url' do
+    subject { described_class.find_by_url(url) }
+
+    let_it_be(:project) { create(:project) }
+
+    before do
+      stub_config_setting(host: 'gitlab.com')
+    end
+
+    context 'url is internal' do
+      let(:url) { "https://#{Gitlab.config.gitlab.host}/#{path}" }
+
+      context 'path is recognised as a project path' do
+        let(:path) { project.full_path }
+
+        it { is_expected.to eq(project) }
+
+        it 'returns nil if the path detection throws an error' do
+          expect(Rails.application.routes).to receive(:recognize_path).with(url) { raise ActionController::RoutingError, 'test' }
+
+          expect { subject }.not_to raise_error(ActionController::RoutingError)
+          expect(subject).to be_nil
+        end
+      end
+
+      context 'path is not a project path' do
+        let(:path) { 'probably/missing.git' }
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    context 'url is external' do
+      let(:url) { "https://foo.com/bar/baz.git" }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   context 'repository storage by default' do
     let(:project) { build(:project) }
 

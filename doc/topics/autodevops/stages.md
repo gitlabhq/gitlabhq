@@ -350,8 +350,7 @@ Any load performance test result differences between the source and target branc
 
 Auto Deploy is an optional step for Auto DevOps. If the [requirements](requirements.md) are not met, the job is skipped.
 
-After a branch or merge request is merged into the project's default branch (usually
-`master`), Auto Deploy deploys the application to a `production` environment in
+After a branch or merge request is merged into the project's default branch, Auto Deploy deploys the application to a `production` environment in
 the Kubernetes cluster, with a namespace based on the project name and unique
 project ID, such as `project-4321`.
 

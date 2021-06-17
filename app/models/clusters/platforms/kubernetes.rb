@@ -98,11 +98,7 @@ module Clusters
         pods = read_pods(environment.deployment_namespace)
         deployments = read_deployments(environment.deployment_namespace)
 
-        ingresses = if ::Feature.enabled?(:canary_ingress_weight_control, environment.project, default_enabled: true)
-                      read_ingresses(environment.deployment_namespace)
-                    else
-                      []
-                    end
+        ingresses = read_ingresses(environment.deployment_namespace)
 
         # extract only the data required for display to avoid unnecessary caching
         {

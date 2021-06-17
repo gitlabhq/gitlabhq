@@ -32,16 +32,6 @@ RSpec.describe Environments::CanaryIngress::UpdateService, :clean_gitlab_redis_c
     let(:params) { { weight: 50 } }
     let(:canary_ingress) { ::Gitlab::Kubernetes::Ingress.new(kube_ingress(track: :canary)) }
 
-    context 'when canary_ingress_weight_control feature flag is disabled' do
-      before do
-        stub_feature_flags(canary_ingress_weight_control: false)
-      end
-
-      it_behaves_like 'failed request' do
-        let(:message) { "Feature flag is not enabled on the environment's project." }
-      end
-    end
-
     context 'when the actor does not have permission to update environment' do
       let(:user) { reporter }
 

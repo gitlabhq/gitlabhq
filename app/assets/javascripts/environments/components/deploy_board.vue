@@ -66,9 +66,7 @@ export default {
       return this.isEmpty;
     },
     canRenderCanaryWeight() {
-      return (
-        this.glFeatures.canaryIngressWeightControl && !isEmpty(this.deployBoardData.canary_ingress)
-      );
+      return !isEmpty(this.deployBoardData.canary_ingress);
     },
     instanceCount() {
       const { instances } = this.deployBoardData;

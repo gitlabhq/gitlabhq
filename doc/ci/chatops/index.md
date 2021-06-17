@@ -33,7 +33,7 @@ to the job:
 
 When executed, ChatOps looks up the specified job name and attempts to match it
 to a corresponding job in [`.gitlab-ci.yml`](../yaml/README.md). If a matching job
-is found on `master`, a pipeline containing only that job is scheduled. After the
+is found on the default branch, a pipeline containing only that job is scheduled. After the
 job completes:
 
 - If the job completes in *less than 30 minutes*, the ChatOps sends the job's output to Slack.

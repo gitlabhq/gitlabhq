@@ -195,7 +195,7 @@ higher*. This is the
    remove the variables, or rename the variables temporarily to
    `XDB_INITIALIZE` or the `XDB_MIGRATE` to effectively disable them.
 1. Run a new CI pipeline for the branch. In this case, we run a new CI
-   pipeline for `master`.
+   pipeline for `main`.
 1. After the pipeline is successful, your application is upgraded
    with the new PostgreSQL installed. Zero replicas exist at this time, so
    no traffic is served for your application (to prevent
@@ -250,5 +250,5 @@ steps to reinstate your application:
    removed or disabled.
 1. Restore the `PRODUCTION_REPLICAS` or `REPLICAS` variable to its original value.
 1. Run a new CI pipeline for the branch. In this case, we run a new CI
-   pipeline for `master`. After the pipeline is successful, your
+   pipeline for `main`. After the pipeline is successful, your
    application should be serving traffic as before.
