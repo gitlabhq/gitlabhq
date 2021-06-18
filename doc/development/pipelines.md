@@ -560,7 +560,7 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
    - `.yarn-cache`
    - `.assets-compile-cache` (the key includes `${NODE_ENV}` so it's actually two different caches).
 1. These cache definitions are composed of [multiple atomic caches](../ci/caching/index.md#use-multiple-caches).
-1. Only 6 specific jobs, running in 2-hourly scheduled pipelines, are pushing (i.e. updating) to the caches:
+1. Only the following jobs, running in 2-hourly scheduled pipelines, are pushing (i.e. updating) to the caches:
    - `update-setup-test-env-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-gitaly-binaries-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-static-analysis-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
@@ -568,6 +568,7 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
    - `update-assets-compile-production-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-assets-compile-test-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-yarn-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
+   - `update-storybook-yarn-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
 1. These jobs can also be forced to run in merge requests whose title include `UPDATE CACHE` (this can be useful to warm the caches in a MR that updates the cache keys).
 
 ### Artifacts strategy

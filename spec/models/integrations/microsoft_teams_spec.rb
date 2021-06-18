@@ -64,7 +64,8 @@ RSpec.describe Integrations::MicrosoftTeams do
       end
 
       it 'specifies the webhook when it is configured' do
-        expect(::MicrosoftTeams::Notifier).to receive(:new).with(webhook_url).and_return(double(:microsoft_teams_service).as_null_object)
+        integration = double(:microsoft_teams_integration).as_null_object
+        expect(::MicrosoftTeams::Notifier).to receive(:new).with(webhook_url).and_return(integration)
 
         chat_service.execute(push_sample_data)
       end

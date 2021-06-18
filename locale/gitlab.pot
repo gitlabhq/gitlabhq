@@ -35577,6 +35577,9 @@ msgstr ""
 msgid "User was successfully updated."
 msgstr ""
 
+msgid "UserAvailability|%{author} %{spanStart}(Busy)%{spanEnd}"
+msgstr ""
+
 msgid "UserAvailability|%{author} (Busy)"
 msgstr ""
 

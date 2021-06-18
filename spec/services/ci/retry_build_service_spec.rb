@@ -30,7 +30,7 @@ RSpec.describe Ci::RetryBuildService do
     project.add_reporter(reporter)
   end
 
-  clone_accessors = described_class.clone_accessors
+  clone_accessors = described_class.clone_accessors.without(described_class.extra_accessors)
 
   reject_accessors =
     %i[id status user token token_encrypted coverage trace runner
@@ -98,7 +98,7 @@ RSpec.describe Ci::RetryBuildService do
       end
 
       clone_accessors.each do |attribute|
-        it "clones #{attribute} build attribute" do
+        it "clones #{attribute} build attribute", :aggregate_failures do
           expect(attribute).not_to be_in(forbidden_associations), "association #{attribute} must be `belongs_to`"
           expect(build.send(attribute)).not_to be_nil
           expect(new_build.send(attribute)).not_to be_nil
@@ -134,7 +134,7 @@ RSpec.describe Ci::RetryBuildService do
       end
     end
 
-    it 'has correct number of known attributes' do
+    it 'has correct number of known attributes', :aggregate_failures do
       processed_accessors = clone_accessors + reject_accessors
       known_accessors = processed_accessors + ignore_accessors
 
@@ -146,9 +146,10 @@ RSpec.describe Ci::RetryBuildService do
         Ci::Build.attribute_names.map(&:to_sym) +
         Ci::Build.attribute_aliases.keys.map(&:to_sym) +
         Ci::Build.reflect_on_all_associations.map(&:name) +
-        [:tag_list, :needs_attributes]
-
-      current_accessors << :secrets if Gitlab.ee?
+        [:tag_list, :needs_attributes] -
+        # ee-specific accessors should be tested in ee/spec/services/ci/retry_build_service_spec.rb instead
+        described_class.extra_accessors -
+        [:dast_site_profiles_build, :dast_scanner_profiles_build] # join tables
 
       current_accessors.uniq!
 

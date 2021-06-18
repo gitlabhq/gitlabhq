@@ -10,6 +10,10 @@ module Ci
          resource_group scheduling_type].freeze
     end
 
+    def self.extra_accessors
+      []
+    end
+
     def execute(build)
       build.ensure_scheduling_type!
 

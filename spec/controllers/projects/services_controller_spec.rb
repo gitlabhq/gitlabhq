@@ -44,10 +44,10 @@ RSpec.describe Projects::ServicesController do
         let(:project) { create(:project) }
 
         context 'with chat notification service' do
-          let(:service) { project.create_microsoft_teams_service(webhook: 'http://webhook.com') }
+          let(:service) { project.create_microsoft_teams_integration(webhook: 'http://webhook.com') }
 
           it 'returns success' do
-            allow_any_instance_of(::MicrosoftTeams::Notifier).to receive(:ping).and_return(true)
+            allow_next(::MicrosoftTeams::Notifier).to receive(:ping).and_return(true)
 
             put :test, params: project_params
 

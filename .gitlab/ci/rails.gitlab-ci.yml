@@ -251,6 +251,22 @@ static-analysis as-if-foss:
     - .static-analysis:rules:as-if-foss
     - .as-if-foss
 
+zeitwerk-check:
+  extends:
+    - .rails-cache
+    - .default-before_script
+    - .rails:rules:ee-and-foss-unit
+  variables:
+    BUNDLE_WITHOUT: ""
+    SETUP_DB: "false"
+  needs: []
+  stage: test
+  script:
+    - sed -i -e "s/config\.autoloader = :classic/config\.autoloader = :zeitwerk/" config/application.rb
+    - RAILS_ENV=test bundle exec rake zeitwerk:check
+    - RAILS_ENV=development bundle exec rake zeitwerk:check
+    - RAILS_ENV=production bundle exec rake zeitwerk:check
+
 rspec migration pg12:
   extends:
     - .rspec-base-pg12

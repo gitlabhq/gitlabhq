@@ -326,7 +326,7 @@ makes your pipelines run for branches and tags.
 Branch pipeline status is displayed in merge requests that use the branch
 as a source. However, this pipeline type does not support any features offered by
 [merge request pipelines](../merge_request_pipelines/), like
-[pipelines for merge results](../merge_request_pipelines/#pipelines-for-merged-results)
+[pipelines for merged results](../merge_request_pipelines/pipelines_for_merged_results/index.md)
 or [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/).
 This template intentionally avoids those features.
 

@@ -30,7 +30,7 @@ export const fetchProjects = ({ commit, state }, search) => {
 
   if (groupId) {
     // TODO (https://gitlab.com/gitlab-org/gitlab/-/issues/323331): For errors `createFlash` is called twice; in `callback` and in `Api.groupProjects`
-    Api.groupProjects(groupId, search, {}, callback);
+    Api.groupProjects(groupId, search, { order_by: 'similarity' }, callback);
   } else {
     // The .catch() is due to the API method not handling a rejection properly
     Api.projects(search, { order_by: 'id' }, callback).catch(() => {

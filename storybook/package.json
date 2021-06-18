@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "start-storybook -p 9002 -c config",
+    "build": "build-storybook -c config -o public"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@storybook/addon-a11y": "^6.2.9",
+    "@storybook/addon-actions": "^6.2.9",
+    "@storybook/addon-controls": "^6.2.9",
+    "@storybook/addon-essentials": "^6.2.9",
+    "@storybook/vue": "6.2.9",
+    "node-sass": "^4.14.1",
+    "node-sass-magic-importer": "^5.3.2",
+    "postcss-loader": "3.0.0",
+    "sass-loader": "^7.1.0"
+  }
+}

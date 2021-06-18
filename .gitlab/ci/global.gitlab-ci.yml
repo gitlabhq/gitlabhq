@@ -88,6 +88,16 @@
   <<: *assets-cache
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
+.storybook-node-modules-cache: &storybook-node-modules-cache
+  key: "storybook-node-modules-${NODE_ENV}-v1"
+  paths:
+    - storybook/node_modules/
+  policy: pull
+
+.storybook-node-modules-cache-push: &storybook-node-modules-cache-push
+  <<: *storybook-node-modules-cache
+  policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
 .rubocop-cache: &rubocop-cache
   key: "rubocop-v1"
   paths:
@@ -180,6 +190,14 @@
     - *ruby-gems-cache  # We don't push this cache as it's already rebuilt by `update-setup-test-env-cache`
     - *node-modules-cache-push
     - *assets-cache-push
+
+.storybook-yarn-cache:
+  cache:
+    - *storybook-node-modules-cache
+
+.storybook-yarn-cache-push:
+  cache:
+    - *storybook-node-modules-cache-push
 
 .use-pg11:
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2.patched-golang-1.16-git-2.31-lfs-2.9-chrome-89-node-14.15-yarn-1.22-postgresql-11-graphicsmagick-1.3.36"

@@ -2,6 +2,10 @@
   - source scripts/utils.sh
   - run_timed_command "retry yarn install --frozen-lockfile"
 
+.storybook-yarn-install: &storybook-yarn-install
+  - source scripts/utils.sh
+  - run_timed_command "retry yarn run storybook:install --frozen-lockfile"
+
 .compile-assets-base:
   extends:
     - .default-retry
@@ -79,6 +83,15 @@ update-yarn-cache:
   stage: prepare
   script:
     - *yarn-install
+
+update-storybook-yarn-cache:
+  extends:
+    - .default-retry
+    - .storybook-yarn-cache-push
+    - .shared:rules:update-cache
+  stage: prepare
+  script:
+    - *storybook-yarn-install
 
 .frontend-fixtures-base:
   extends:
@@ -344,3 +357,29 @@ startup-css-check as-if-foss:
   needs:
     - job: "compile-test-assets as-if-foss"
     - job: "rspec frontend_fixture as-if-foss"
+
+.compile-storybook-base:
+  extends:
+    - .frontend-test-base
+    - .storybook-yarn-cache
+  script:
+    - *yarn-install  # storybook depends on the global webpack config, so we must install global deps.
+    - *storybook-yarn-install
+    - yarn run storybook:build
+
+compile-storybook:
+  extends:
+    - .compile-storybook-base
+    - .frontend:rules:default-frontend-jobs
+  artifacts:
+    name: storybook
+    expire_in: 31d
+    when: always
+    paths:
+      - storybook/public
+
+compile-storybook as-if-foss:
+  extends:
+    - .compile-storybook-base
+    - .as-if-foss
+    - .frontend:rules:default-frontend-jobs-as-if-foss

@@ -49,6 +49,7 @@ class Integration < ApplicationRecord
     hangouts_chat
     irker
     packagist pipelines_email pivotaltracker pushover
+    mattermost mattermost_slash_commands microsoft_teams mock_ci mock_monitoring
   ].to_set.freeze
 
   def self.renamed?(name)

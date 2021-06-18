@@ -36,8 +36,8 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:protected_branches) }
     it { is_expected.to have_many(:exported_protected_branches) }
     it { is_expected.to have_one(:slack_service) }
-    it { is_expected.to have_one(:microsoft_teams_service) }
-    it { is_expected.to have_one(:mattermost_service) }
+    it { is_expected.to have_one(:microsoft_teams_integration) }
+    it { is_expected.to have_one(:mattermost_integration) }
     it { is_expected.to have_one(:hangouts_chat_integration) }
     it { is_expected.to have_one(:unify_circuit_service) }
     it { is_expected.to have_one(:webex_teams_service) }
@@ -56,7 +56,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_one(:flowdock_integration) }
     it { is_expected.to have_one(:assembla_integration) }
     it { is_expected.to have_one(:slack_slash_commands_service) }
-    it { is_expected.to have_one(:mattermost_slash_commands_service) }
+    it { is_expected.to have_one(:mattermost_slash_commands_integration) }
     it { is_expected.to have_one(:buildkite_integration) }
     it { is_expected.to have_one(:bamboo_integration) }
     it { is_expected.to have_one(:teamcity_service) }
@@ -80,6 +80,8 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_one(:error_tracking_setting).class_name('ErrorTracking::ProjectErrorTrackingSetting') }
     it { is_expected.to have_one(:project_setting) }
     it { is_expected.to have_one(:alerting_setting).class_name('Alerting::ProjectAlertingSetting') }
+    it { is_expected.to have_one(:mock_ci_integration) }
+    it { is_expected.to have_one(:mock_monitoring_integration) }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:ci_refs) }

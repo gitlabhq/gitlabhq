@@ -6,7 +6,7 @@ type: reference
 last_update: 2019-07-03
 ---
 
-# Pipelines for Merged Results **(PREMIUM)**
+# Pipelines for merged results **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
@@ -57,7 +57,7 @@ To enable pipelines for merge results:
 
 To enable pipelines for merged results for your project:
 
-1. [Configure your CI/CD configuration file](../index.md#configuring-pipelines-for-merge-requests)
+1. [Configure your CI/CD configuration file](../index.md#configure-pipelines-for-merge-requests)
    so that the pipeline or individual jobs run for merge requests.
 1. Visit your project's **Settings > General** and expand **Merge requests**.
 1. Check **Enable merged results pipelines**.

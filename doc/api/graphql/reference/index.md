@@ -14234,6 +14234,8 @@ Roadmap sort values.
 | <a id="epicsortend_date_desc"></a>`END_DATE_DESC` | Sort by end date in descending order. |
 | <a id="epicsortstart_date_asc"></a>`START_DATE_ASC` | Sort by start date in ascending order. |
 | <a id="epicsortstart_date_desc"></a>`START_DATE_DESC` | Sort by start date in descending order. |
+| <a id="epicsorttitle_asc"></a>`TITLE_ASC` | Sort by title in ascending order. |
+| <a id="epicsorttitle_desc"></a>`TITLE_DESC` | Sort by title in descending order. |
 | <a id="epicsortend_date_asc"></a>`end_date_asc` **{warning-solid}** | **Deprecated** in 13.11. Use END_DATE_ASC. |
 | <a id="epicsortend_date_desc"></a>`end_date_desc` **{warning-solid}** | **Deprecated** in 13.11. Use END_DATE_DESC. |
 | <a id="epicsortstart_date_asc"></a>`start_date_asc` **{warning-solid}** | **Deprecated** in 13.11. Use START_DATE_ASC. |

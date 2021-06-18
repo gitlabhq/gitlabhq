@@ -67,7 +67,14 @@ describe('Global Search Store Actions', () => {
       it('calls Api.groupProjects', () => {
         actions.fetchProjects({ commit: mockCommit, state });
 
-        expect(Api.groupProjects).toHaveBeenCalled();
+        expect(Api.groupProjects).toHaveBeenCalledWith(
+          state.query.group_id,
+          state.query.search,
+          {
+            order_by: 'similarity',
+          },
+          expect.any(Function),
+        );
         expect(Api.projects).not.toHaveBeenCalled();
       });
     });
