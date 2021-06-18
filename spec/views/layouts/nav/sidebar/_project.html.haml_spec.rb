@@ -313,7 +313,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
 
     context 'with Jira issue tracker' do
-      let_it_be(:jira) { create(:jira_service, project: project, issues_enabled: false) }
+      let_it_be(:jira) { create(:jira_integration, project: project, issues_enabled: false) }
 
       it 'has a link to the Jira issue tracker' do
         render

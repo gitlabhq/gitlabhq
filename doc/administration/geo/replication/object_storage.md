@@ -21,7 +21,7 @@ To have:
 
 [Read more about using object storage with GitLab](../../object_storage.md).
 
-## Enabling GitLab managed object storage replication
+## Enabling GitLab-managed object storage replication
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10586) in GitLab 12.4.
 
@@ -31,10 +31,11 @@ This is a [**beta** feature](https://about.gitlab.com/handbook/product/#beta) an
 **Secondary** sites can replicate files stored on the **primary** site regardless of
 whether they are stored on the local file system or in object storage.
 
-To enable GitLab replication, you must:
+To enable GitLab replication:
 
-1. Go to **Admin Area > Geo**.
-1. Press **Edit** on the **secondary** site.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Geo > Nodes**.
+1. Select **Edit** on the **secondary** site.
 1. In the **Synchronization Settings** section, find the **Allow this secondary node to replicate content on Object Storage**
    checkbox to enable it.
 

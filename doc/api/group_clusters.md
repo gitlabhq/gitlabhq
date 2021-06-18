@@ -258,7 +258,7 @@ Example request:
 ```shell
 curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/groups/26/clusters/24" \
 -H "Content-Type:application/json" \
---request PUT --data '{"name":"new-cluster-name","domain":"new-domain.com","api_url":"https://new-api-url.com"}'
+--request PUT --data '{"name":"new-cluster-name","domain":"new-domain.com","platform_kubernetes_attributes":{"api_url":"https://10.10.101.1:6433"}}'
 ```
 
 Example response:

@@ -4,8 +4,8 @@ RSpec.shared_context 'Jira projects request context' do
   let(:url) { 'https://jira.example.com' }
   let(:username) { 'jira-username' }
   let(:password) { 'jira-password' }
-  let!(:jira_service) do
-    create(:jira_service,
+  let!(:jira_integration) do
+    create(:jira_integration,
       project: project,
       url: url,
       username: username,

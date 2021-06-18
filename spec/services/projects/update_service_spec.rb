@@ -503,7 +503,7 @@ RSpec.describe Projects::UpdateService do
 
           it 'creates new record' do
             expect { update_project(project, user, prometheus_service_attributes: prometheus_service_attributes) }
-              .to change { ::PrometheusService.where(project: project).count }
+              .to change { ::Integrations::Prometheus.where(project: project).count }
               .from(0)
               .to(1)
           end
@@ -519,7 +519,7 @@ RSpec.describe Projects::UpdateService do
 
           it 'does not create new record' do
             expect { update_project(project, user, prometheus_service_attributes: prometheus_service_attributes) }
-              .not_to change { ::PrometheusService.where(project: project).count }
+              .not_to change { ::Integrations::Prometheus.where(project: project).count }
           end
         end
       end

@@ -3,14 +3,13 @@
 - billable_users_url = help_page_path('subscriptions/self_managed/index', anchor: 'billable-users')
 - billable_users_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer nofollow">'.html_safe % { url: billable_users_url }
 
+= render_if_exists 'shared/qrtly_reconciliation_alert'
+
 - if @notices
   - @notices.each do |notice|
     .js-vue-alert{ 'v-cloak': true, data: { variant: notice[:type],
       dismissible: true.to_s } }
       = notice[:message].html_safe
-
-- if Gitlab.ee? && display_upcoming_reconciliation_alert?
-  #js-qrtly-reconciliation-alert{ data: upcoming_reconciliation_hash }
 
 - if @license.present?
   .license-panel.gl-mt-5

@@ -140,7 +140,7 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
         integrations = result[:project].reload.integrations
 
         expect(integrations.count).to eq(1)
-        # Ensures PrometheusService#self_monitoring_project? is true
+        # Ensures Integrations::Prometheus#self_monitoring_project? is true
         expect(integrations.first.allow_local_api_url?).to be_truthy
       end
 

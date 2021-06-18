@@ -81,7 +81,7 @@ RSpec.describe "Jira", :js do
 
     context "when both external and internal issues trackers are enabled for the actual project" do
       before do
-        create(:jira_service, project: actual_project)
+        create(:jira_integration, project: actual_project)
       end
 
       include_examples "correct references" do
@@ -94,7 +94,7 @@ RSpec.describe "Jira", :js do
       let(:actual_project) { create(:project, :public, :repository, :issues_disabled) }
 
       before do
-        create(:jira_service, project: actual_project)
+        create(:jira_integration, project: actual_project)
       end
 
       include_examples "correct references" do
@@ -125,7 +125,7 @@ RSpec.describe "Jira", :js do
 
     context "when both external and internal issues trackers are enabled for the actual project" do
       before do
-        create(:jira_service, project: actual_project)
+        create(:jira_integration, project: actual_project)
       end
 
       include_examples "correct references" do
@@ -138,7 +138,7 @@ RSpec.describe "Jira", :js do
       let(:actual_project) { create(:project, :public, :repository, :issues_disabled) }
 
       before do
-        create(:jira_service, project: actual_project)
+        create(:jira_integration, project: actual_project)
       end
 
       include_examples "correct references" do

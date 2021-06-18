@@ -51,14 +51,14 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def toggle_shared_runners
-    if !project.shared_runners_enabled && project.group && project.group.shared_runners_setting == 'disabled_and_unoverridable'
-      render json: { error: _('Cannot enable shared runners because parent group does not allow it') }, status: :unauthorized
-      return
+    update_params = { shared_runners_enabled: !project.shared_runners_enabled }
+    result = Projects::UpdateService.new(project, current_user, update_params).execute
+
+    if result[:status] == :success
+      render json: {}, status: :ok
+    else
+      render json: { error: result[:message] }, status: :unauthorized
     end
-
-    project.toggle!(:shared_runners_enabled)
-
-    render json: {}, status: :ok
   end
 
   def toggle_group_runners

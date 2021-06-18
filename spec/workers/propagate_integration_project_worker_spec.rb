@@ -8,7 +8,7 @@ RSpec.describe PropagateIntegrationProjectWorker do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project, group: group) }
     let_it_be(:project3) { create(:project, group: group) }
-    let_it_be(:integration) { create(:redmine_service, :instance) }
+    let_it_be(:integration) { create(:redmine_integration, :instance) }
 
     let(:job_args) { [integration.id, project1.id, project3.id] }
 
@@ -22,7 +22,7 @@ RSpec.describe PropagateIntegrationProjectWorker do
       end
 
       context 'with a group integration' do
-        let_it_be(:integration) { create(:redmine_service, group: group, project: nil) }
+        let_it_be(:integration) { create(:redmine_integration, group: group, project: nil) }
 
         it 'calls to BulkCreateIntegrationService' do
           expect(BulkCreateIntegrationService).to receive(:new)

@@ -2806,13 +2806,16 @@ msgstr ""
 msgid "Admin|Admin notes"
 msgstr ""
 
-msgid "Admin|Learn more about quarterly reconcilliation"
+msgid "Admin|Learn more about quarterly reconciliation"
 msgstr ""
 
 msgid "Admin|Note"
 msgstr ""
 
-msgid "Admin|Quarterly reconcilliation will occur on %{qrtlyDate}"
+msgid "Admin|Quarterly reconciliation will occur on %{qrtlyDate}"
+msgstr ""
+
+msgid "Admin|The number of max seats used for your namespace is currently exceeding the number of seats in your subscription. On %{qrtlyDate}, GitLab will process a quarterly reconciliation and automatically bill you a prorated amount for the overage. There is no action needed from you. If you have a credit card on file, it will be charged. Otherwise, you will receive an invoice."
 msgstr ""
 
 msgid "Admin|The number of maximum users for your instance is currently exceeding the number of users in license. On %{qrtlyDate}, GitLab will process a quarterly reconciliation and automatically bill you a prorated amount for the overage. There is no action needed from you. If you have a credit card on file, it will be charged. Otherwise, you will receive an invoice."
@@ -5957,9 +5960,6 @@ msgid "Cannot create the abuse report. This user has been blocked."
 msgstr ""
 
 msgid "Cannot delete %{profile_name} referenced in security policy"
-msgstr ""
-
-msgid "Cannot enable shared runners because parent group does not allow it"
 msgstr ""
 
 msgid "Cannot have multiple Jira imports running at the same time"
@@ -38172,6 +38172,9 @@ msgid "cannot be enabled because parent group has shared Runners disabled"
 msgstr ""
 
 msgid "cannot be enabled unless all domains have TLS certificates"
+msgstr ""
+
+msgid "cannot be enabled until a valid credit credit is on file"
 msgstr ""
 
 msgid "cannot be modified"

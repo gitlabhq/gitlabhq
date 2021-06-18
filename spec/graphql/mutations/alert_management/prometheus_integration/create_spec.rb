@@ -32,7 +32,7 @@ RSpec.describe Mutations::AlertManagement::PrometheusIntegration::Create do
       context 'when UpdateService responds with success' do
         it 'returns the integration with no errors' do
           expect(resolve).to eq(
-            integration: ::PrometheusService.last!,
+            integration: ::Integrations::Prometheus.last!,
             errors: []
           )
         end

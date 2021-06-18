@@ -1,11 +1,17 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'issue tracker service URL attribute' do |url_attr|
+RSpec.shared_examples 'issue tracker integration URL attribute' do |url_attr|
   it { is_expected.to allow_value('https://example.com').for(url_attr) }
 
   it { is_expected.not_to allow_value('example.com').for(url_attr) }
   it { is_expected.not_to allow_value('ftp://example.com').for(url_attr) }
   it { is_expected.not_to allow_value('herp-and-derp').for(url_attr) }
+end
+
+# TODO: clean up:
+# remove when https://gitlab.com/gitlab-org/gitlab/-/issues/330300 has been completed
+RSpec.shared_examples 'issue tracker service URL attribute' do |url_attr|
+  it_behaves_like 'issue tracker integration URL attribute', url_attr
 end
 
 RSpec.shared_examples 'allows project key on reference pattern' do |url_attr|

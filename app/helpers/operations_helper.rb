@@ -5,7 +5,7 @@ module OperationsHelper
 
   def prometheus_service
     strong_memoize(:prometheus_service) do
-      @project.find_or_initialize_service(::PrometheusService.to_param)
+      @project.find_or_initialize_service(::Integrations::Prometheus.to_param)
     end
   end
 

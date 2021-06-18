@@ -50,8 +50,13 @@ Note the following:
 
 - Importing is only possible if the version of the import and export GitLab instances are
   compatible as described in the [Version history](../../user/project/settings/import_export.md#version-history).
-- The project import option must be enabled in
-  application settings (`/admin/application_settings/general`) under **Import sources**, which is available
-  under **Admin Area > Settings > Visibility and access controls**.
+- The project import option must be enabled:
+
+  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the left sidebar, select **Settings > General**.
+  1. Expand **Visibility and access controls**.
+  1. Under **Import sources**, check the "Project export enabled" option.
+  1. Select **Save changes**.
+
 - The exports are stored in a temporary directory and are deleted every
   24 hours by a specific worker.

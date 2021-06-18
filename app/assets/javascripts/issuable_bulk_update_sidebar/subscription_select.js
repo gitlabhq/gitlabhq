@@ -1,15 +1,16 @@
 import $ from 'jquery';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import { __ } from './locale';
+import { __ } from '~/locale';
 
-export default function issueStatusSelect() {
-  $('.js-issue-status').each((i, el) => {
-    const fieldName = $(el).data('fieldName');
-    initDeprecatedJQueryDropdown($(el), {
+export default function subscriptionSelect() {
+  $('.js-subscription-event').each((i, element) => {
+    const fieldName = $(element).data('fieldName');
+
+    return initDeprecatedJQueryDropdown($(element), {
       selectable: true,
       fieldName,
-      toggleLabel(selected, element, instance) {
-        let label = __('Author');
+      toggleLabel(selected, el, instance) {
+        let label = __('Subscription');
         const $item = instance.dropdown.find('.is-active');
         if ($item.length) {
           label = $item.text();
@@ -19,8 +20,8 @@ export default function issueStatusSelect() {
       clicked(options) {
         return options.e.preventDefault();
       },
-      id(obj, element) {
-        return $(element).data('id');
+      id(obj, el) {
+        return $(el).data('id');
       },
     });
   });

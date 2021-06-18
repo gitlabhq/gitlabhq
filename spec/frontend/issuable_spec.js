@@ -1,5 +1,5 @@
+import issuableInitBulkUpdateSidebar from '~/issuable_bulk_update_sidebar/issuable_init_bulk_update_sidebar';
 import IssuableIndex from '~/issuable_index';
-import issuableInitBulkUpdateSidebar from '~/issuable_init_bulk_update_sidebar';
 
 describe('Issuable', () => {
   describe('initBulkUpdate', () => {

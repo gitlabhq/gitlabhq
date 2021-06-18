@@ -14,7 +14,7 @@ RSpec.describe Integrations::Jira do
   let(:password) { 'jira-password' }
   let(:transition_id) { 'test27' }
   let(:server_info_results) { { 'deploymentType' => 'Cloud' } }
-  let(:jira_service) do
+  let(:jira_integration) do
     described_class.new(
       project: project,
       url: url,
@@ -100,7 +100,7 @@ RSpec.describe Integrations::Jira do
   end
 
   describe '#fields' do
-    let(:service) { create(:jira_service) }
+    let(:service) { create(:jira_integration) }
 
     subject(:fields) { service.fields }
 
@@ -164,13 +164,13 @@ RSpec.describe Integrations::Jira do
     end
 
     context 'when loading serverInfo' do
-      let(:jira_service) { subject }
+      let(:jira_integration) { subject }
 
       context 'from a Cloud instance' do
         let(:server_info_results) { { 'deploymentType' => 'Cloud' } }
 
         it 'is detected' do
-          expect(jira_service.jira_tracker_data.deployment_cloud?).to be_truthy
+          expect(jira_integration.jira_tracker_data.deployment_cloud?).to be_truthy
         end
       end
 
@@ -178,7 +178,7 @@ RSpec.describe Integrations::Jira do
         let(:server_info_results) { { 'deploymentType' => 'Server' } }
 
         it 'is detected' do
-          expect(jira_service.jira_tracker_data.deployment_server?).to be_truthy
+          expect(jira_integration.jira_tracker_data.deployment_server?).to be_truthy
         end
       end
 
@@ -189,7 +189,7 @@ RSpec.describe Integrations::Jira do
           let(:api_url) { 'http://example-api.atlassian.net' }
 
           it 'deployment_type is set to cloud' do
-            expect(jira_service.jira_tracker_data.deployment_cloud?).to be_truthy
+            expect(jira_integration.jira_tracker_data.deployment_cloud?).to be_truthy
           end
         end
 
@@ -197,7 +197,7 @@ RSpec.describe Integrations::Jira do
           let(:api_url) { 'http://my-jira-api.someserver.com' }
 
           it 'deployment_type is set to server' do
-            expect(jira_service.jira_tracker_data.deployment_server?).to be_truthy
+            expect(jira_integration.jira_tracker_data.deployment_server?).to be_truthy
           end
         end
       end
@@ -210,7 +210,7 @@ RSpec.describe Integrations::Jira do
 
           it 'deployment_type is set to cloud' do
             expect(Gitlab::AppLogger).to receive(:warn).with(message: "Jira API returned no ServerInfo, setting deployment_type from URL", server_info: server_info_results, url: api_url)
-            expect(jira_service.jira_tracker_data.deployment_cloud?).to be_truthy
+            expect(jira_integration.jira_tracker_data.deployment_cloud?).to be_truthy
           end
         end
 
@@ -219,7 +219,7 @@ RSpec.describe Integrations::Jira do
 
           it 'deployment_type is set to server' do
             expect(Gitlab::AppLogger).to receive(:warn).with(message: "Jira API returned no ServerInfo, setting deployment_type from URL", server_info: server_info_results, url: api_url)
-            expect(jira_service.jira_tracker_data.deployment_server?).to be_truthy
+            expect(jira_integration.jira_tracker_data.deployment_server?).to be_truthy
           end
         end
       end
@@ -487,7 +487,7 @@ RSpec.describe Integrations::Jira do
     context 'when data are stored in properties' do
       let(:properties) { data_params }
       let!(:service) do
-        create(:jira_service, :without_properties_callback, properties: properties.merge(additional: 'something'))
+        create(:jira_integration, :without_properties_callback, properties: properties.merge(additional: 'something'))
       end
 
       it_behaves_like 'handles jira fields'
@@ -495,7 +495,7 @@ RSpec.describe Integrations::Jira do
 
     context 'when data are stored in separated fields' do
       let(:service) do
-        create(:jira_service, data_params.merge(properties: {}))
+        create(:jira_integration, data_params.merge(properties: {}))
       end
 
       it_behaves_like 'handles jira fields'
@@ -504,7 +504,7 @@ RSpec.describe Integrations::Jira do
     context 'when data are stored in both properties and separated fields' do
       let(:properties) { data_params }
       let(:service) do
-        create(:jira_service, :without_properties_callback, active: false, properties: properties).tap do |integration|
+        create(:jira_integration, :without_properties_callback, active: false, properties: properties).tap do |integration|
           create(:jira_tracker_data, data_params.merge(integration: integration))
         end
       end
@@ -522,7 +522,7 @@ RSpec.describe Integrations::Jira do
     end
 
     it 'call the Jira API to get the issue' do
-      jira_service.find_issue(issue_key)
+      jira_integration.find_issue(issue_key)
 
       expect(WebMock).to have_requested(:get, issue_url)
     end
@@ -531,7 +531,7 @@ RSpec.describe Integrations::Jira do
       let(:issue_url) { "#{url}/rest/api/2/issue/#{issue_key}?expand=renderedFields,transitions" }
 
       it 'calls the Jira API with the options to get the issue' do
-        jira_service.find_issue(issue_key, rendered_fields: true, transitions: true)
+        jira_integration.find_issue(issue_key, rendered_fields: true, transitions: true)
 
         expect(WebMock).to have_requested(:get, issue_url)
       end
@@ -558,16 +558,16 @@ RSpec.describe Integrations::Jira do
       end
 
       subject(:close_issue) do
-        jira_service.close_issue(resource, ExternalIssue.new(issue_key, project))
+        jira_integration.close_issue(resource, ExternalIssue.new(issue_key, project))
       end
 
       before do
-        jira_service.jira_issue_transition_id = '999'
+        jira_integration.jira_issue_transition_id = '999'
 
         # These stubs are needed to test Integrations::Jira#close_issue.
         # We close the issue then do another request to API to check if it got closed.
         # Here is stubbed the API return with a closed and an opened issues.
-        open_issue   = JIRA::Resource::Issue.new(jira_service.client, attrs: issue_fields.deep_stringify_keys)
+        open_issue   = JIRA::Resource::Issue.new(jira_integration.client, attrs: issue_fields.deep_stringify_keys)
         closed_issue = open_issue.dup
         allow(open_issue).to receive(:resolution).and_return(false)
         allow(closed_issue).to receive(:resolution).and_return(true)
@@ -585,7 +585,7 @@ RSpec.describe Integrations::Jira do
       let(:external_issue) { ExternalIssue.new('JIRA-123', project) }
 
       def close_issue
-        jira_service.close_issue(resource, external_issue, current_user)
+        jira_integration.close_issue(resource, external_issue, current_user)
       end
 
       it 'calls Jira API' do
@@ -636,7 +636,7 @@ RSpec.describe Integrations::Jira do
 
       context 'when "comment_on_event_enabled" is set to false' do
         it 'creates Remote Link reference but does not create comment' do
-          allow(jira_service).to receive_messages(comment_on_event_enabled: false)
+          allow(jira_integration).to receive_messages(comment_on_event_enabled: false)
           close_issue
 
           expect(WebMock).not_to have_requested(:post, comment_url)
@@ -709,12 +709,12 @@ RSpec.describe Integrations::Jira do
       end
 
       it 'logs exception when transition id is not valid' do
-        allow(jira_service).to receive(:log_error)
+        allow(jira_integration).to receive(:log_error)
         WebMock.stub_request(:post, transitions_url).with(basic_auth: %w(jira-username jira-password)).and_raise("Bad Request")
 
         close_issue
 
-        expect(jira_service).to have_received(:log_error).with(
+        expect(jira_integration).to have_received(:log_error).with(
           "Issue transition failed",
           error: hash_including(
             exception_class: 'StandardError',
@@ -734,7 +734,7 @@ RSpec.describe Integrations::Jira do
 
       context 'when custom transition IDs are blank' do
         before do
-          jira_service.jira_issue_transition_id = ''
+          jira_integration.jira_issue_transition_id = ''
         end
 
         it 'does not transition the issue' do
@@ -755,7 +755,7 @@ RSpec.describe Integrations::Jira do
         end
 
         before do
-          jira_service.jira_issue_transition_automatic = true
+          jira_integration.jira_issue_transition_automatic = true
 
           close_issue
         end
@@ -789,7 +789,7 @@ RSpec.describe Integrations::Jira do
 
       context 'when using multiple transition ids' do
         before do
-          allow(jira_service).to receive_messages(jira_issue_transition_id: '1,2,3')
+          allow(jira_integration).to receive_messages(jira_issue_transition_id: '1,2,3')
         end
 
         it 'calls the api with transition ids separated by comma' do
@@ -805,7 +805,7 @@ RSpec.describe Integrations::Jira do
         end
 
         it 'calls the api with transition ids separated by semicolon' do
-          allow(jira_service).to receive_messages(jira_issue_transition_id: '1;2;3')
+          allow(jira_integration).to receive_messages(jira_issue_transition_id: '1;2;3')
 
           close_issue
 
@@ -864,7 +864,7 @@ RSpec.describe Integrations::Jira do
 
     let(:jira_issue) { ExternalIssue.new('JIRA-123', project) }
 
-    subject { jira_service.create_cross_reference_note(jira_issue, resource, user) }
+    subject { jira_integration.create_cross_reference_note(jira_issue, resource, user) }
 
     shared_examples 'creates a comment on Jira' do
       let(:issue_url) { "#{url}/rest/api/2/issue/JIRA-123" }
@@ -936,7 +936,7 @@ RSpec.describe Integrations::Jira do
     let(:server_info_results) { { 'url' => 'http://url', 'deploymentType' => 'Cloud' } }
 
     def server_info
-      jira_service.test(nil)
+      jira_integration.test(nil)
     end
 
     context 'when the test succeeds' do
@@ -946,7 +946,7 @@ RSpec.describe Integrations::Jira do
       end
 
       it 'gets Jira project with API URL if set' do
-        jira_service.update!(api_url: 'http://jira.api.com')
+        jira_integration.update!(api_url: 'http://jira.api.com')
 
         expect(server_info).to eq(success: true, result: server_info_results)
         expect(WebMock).to have_requested(:get, /jira.api.com/)
@@ -961,13 +961,13 @@ RSpec.describe Integrations::Jira do
         WebMock.stub_request(:get, test_url).with(basic_auth: [username, password])
           .to_raise(JIRA::HTTPError.new(double(message: error_message)))
 
-        expect(jira_service).to receive(:log_error).with(
+        expect(jira_integration).to receive(:log_error).with(
           'Error sending message',
           client_url: 'http://jira.example.com',
           error: error_message
         )
 
-        expect(jira_service.test(nil)).to eq(success: false, result: error_message)
+        expect(jira_integration.test(nil)).to eq(success: false, result: error_message)
       end
     end
   end
@@ -983,17 +983,17 @@ RSpec.describe Integrations::Jira do
         }
         allow(Gitlab.config).to receive(:issues_tracker).and_return(settings)
 
-        service = project.create_jira_service(active: true)
+        integration = project.create_jira_integration(active: true)
 
-        expect(service.url).to eq('http://jira.sample/projects/project_a')
-        expect(service.api_url).to eq('http://jira.sample/api')
+        expect(integration.url).to eq('http://jira.sample/projects/project_a')
+        expect(integration.api_url).to eq('http://jira.sample/api')
       end
     end
 
     it 'removes trailing slashes from url' do
-      service = described_class.new(url: 'http://jira.test.com/path/')
+      integration = described_class.new(url: 'http://jira.test.com/path/')
 
-      expect(service.url).to eq('http://jira.test.com/path')
+      expect(integration.url).to eq('http://jira.test.com/path')
     end
   end
 
@@ -1063,19 +1063,65 @@ RSpec.describe Integrations::Jira do
 
   describe '#issue_transition_enabled?' do
     it 'returns true if automatic transitions are enabled' do
-      jira_service.jira_issue_transition_automatic = true
+      jira_integration.jira_issue_transition_automatic = true
 
-      expect(jira_service.issue_transition_enabled?).to be(true)
+      expect(jira_integration.issue_transition_enabled?).to be(true)
     end
 
     it 'returns true if custom transitions are set' do
-      jira_service.jira_issue_transition_id = '1, 2, 3'
+      jira_integration.jira_issue_transition_id = '1, 2, 3'
 
-      expect(jira_service.issue_transition_enabled?).to be(true)
+      expect(jira_integration.issue_transition_enabled?).to be(true)
     end
 
     it 'returns false if automatic and custom transitions are disabled' do
-      expect(jira_service.issue_transition_enabled?).to be(false)
+      expect(jira_integration.issue_transition_enabled?).to be(false)
+    end
+  end
+
+  describe 'valid_connection? and configured?' do
+    before do
+      allow(jira_integration).to receive(:test).with(nil).and_return(test_result)
+    end
+
+    context 'when the test fails' do
+      let(:test_result) { { success: false } }
+
+      it 'is falsey' do
+        expect(jira_integration).not_to be_valid_connection
+      end
+
+      it 'implies that configured? is also falsey' do
+        expect(jira_integration).not_to be_configured
+      end
+    end
+
+    context 'when the test succeeds' do
+      let(:test_result) { { success: true } }
+
+      it 'is truthy' do
+        expect(jira_integration).to be_valid_connection
+      end
+
+      context 'when the integration is active' do
+        before do
+          jira_integration.active = true
+        end
+
+        it 'implies that configured? is also truthy' do
+          expect(jira_integration).to be_configured
+        end
+      end
+
+      context 'when the integration is inactive' do
+        before do
+          jira_integration.active = false
+        end
+
+        it 'implies that configured? is falsey' do
+          expect(jira_integration).not_to be_configured
+        end
+      end
     end
   end
 end

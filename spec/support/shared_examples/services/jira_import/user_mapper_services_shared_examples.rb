@@ -3,7 +3,7 @@
 RSpec.shared_examples 'mapping jira users' do
   let(:client) { double }
 
-  let_it_be(:jira_service) { create(:jira_service, project: project, active: true) }
+  let_it_be(:jira_integration) { create(:jira_integration, project: project, active: true) }
 
   before do
     allow(subject).to receive(:client).and_return(client)

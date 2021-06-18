@@ -25,8 +25,12 @@ Before attempting more advanced troubleshooting:
 
 ### Check the health of the **secondary** node
 
-Visit the **primary** node's **Admin Area > Geo** (`/admin/geo/nodes`) in
-your browser. We perform the following health checks on each **secondary** node
+On the **primary** node:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Geo > Nodes**.
+
+We perform the following health checks on each **secondary** node
 to help identify if something is wrong:
 
 - Is the node running?
@@ -129,7 +133,8 @@ Geo finds the current machine's Geo node name in `/etc/gitlab/gitlab.rb` by:
 - Using the `gitlab_rails['geo_node_name']` setting.
 - If that is not defined, using the `external_url` setting.
 
-This name is used to look up the node with the same **Name** in **Admin Area > Geo**.
+This name is used to look up the node with the same **Name** in the **Geo Nodes**
+dashboard.
 
 To check if the current machine has a node name that matches a node in the
 database, run the check task:
@@ -739,8 +744,11 @@ If you are able to log in to the **primary** node, but you receive this error
 when attempting to log into a **secondary**, you should check that the Geo
 node's URL matches its external URL.
 
-1. On the primary, visit **Admin Area > Geo**.
-1. Find the affected **secondary** and click **Edit**.
+On the **primary** node:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Geo > Nodes**.
+1. Find the affected **secondary** site and select **Edit**.
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`
    in `external_url "https://gitlab.example.com"` on the frontend server(s) of
    the **secondary** node.

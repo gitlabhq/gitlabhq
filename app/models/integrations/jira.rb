@@ -272,6 +272,10 @@ module Integrations
       test(nil)[:success]
     end
 
+    def configured?
+      active? && valid_connection?
+    end
+
     def test(_)
       result = server_info
       success = result.present?

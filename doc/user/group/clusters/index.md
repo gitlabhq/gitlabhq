@@ -163,7 +163,7 @@ are deployed to the Kubernetes cluster, see the documentation for
 ## Security of runners
 
 For important information about securely configuring runners, see
-[Security of runners](../../project/clusters/add_remove_clusters.md#security-of-runners)
+[Security of runners](../../project/clusters/cluster_access.md#security-of-runners)
 documentation for project-level clusters.
 
 ## More information

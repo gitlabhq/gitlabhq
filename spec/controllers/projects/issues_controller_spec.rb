@@ -17,7 +17,7 @@ RSpec.describe Projects::IssuesController do
       before do
         sign_in(user)
         project.add_developer(user)
-        create(:jira_service, project: project)
+        create(:jira_integration, project: project)
       end
 
       context 'when GitLab issues disabled' do

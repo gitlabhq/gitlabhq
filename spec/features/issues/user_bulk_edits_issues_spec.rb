@@ -13,26 +13,26 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
   end
 
   context 'status' do
-    it 'sets to closed' do
+    it 'sets to closed', :js do
       visit project_issues_path(project)
 
       click_button 'Edit issues'
       check 'Select all'
       click_button 'Select status'
-      click_link 'Closed'
+      click_button 'Closed'
 
       click_update_issues_button
       expect(page).to have_selector('.issue', count: 0)
     end
 
-    it 'sets to open' do
+    it 'sets to open', :js do
       create_closed
       visit project_issues_path(project, state: 'closed')
 
       click_button 'Edit issues'
       check 'Select all'
       click_button 'Select status'
-      click_link 'Open'
+      click_button 'Open'
 
       click_update_issues_button
       expect(page).to have_selector('.issue', count: 0)

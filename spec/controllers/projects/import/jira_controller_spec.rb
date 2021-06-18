@@ -12,7 +12,7 @@ RSpec.describe Projects::Import::JiraController do
   def ensure_correct_config
     sign_in(user)
     project.add_maintainer(user)
-    stub_jira_service_test
+    stub_jira_integration_test
   end
 
   shared_examples 'redirect with error' do |error|
@@ -54,8 +54,8 @@ RSpec.describe Projects::Import::JiraController do
 
     context 'when loged user is a developer' do
       before do
-        create(:jira_service, project: project)
-        stub_jira_service_test
+        create(:jira_integration, project: project)
+        stub_jira_integration_test
 
         sign_in(user)
         project.add_developer(user)
@@ -72,7 +72,7 @@ RSpec.describe Projects::Import::JiraController do
 
     it_behaves_like 'users without permissions'
 
-    context 'jira service configuration' do
+    context 'jira integration configuration' do
       before do
         sign_in(user)
         project.add_maintainer(user)
@@ -80,14 +80,14 @@ RSpec.describe Projects::Import::JiraController do
 
       context 'when Jira service is not enabled for the project' do
         it 'does not query Jira service' do
-          expect(project).not_to receive(:jira_service)
+          expect(project).not_to receive(:jira_integration)
         end
 
         it_behaves_like 'template with no message'
       end
 
       context 'when Jira service is not configured correctly for the project' do
-        let_it_be(:jira_service) { create(:jira_service, project: project) }
+        let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 
         before do
           WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/serverInfo')

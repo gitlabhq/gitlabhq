@@ -355,15 +355,15 @@ RSpec.describe SystemNoteService do
     let(:issue)           { create(:issue, project: project) }
     let(:merge_request)   { create(:merge_request, :simple, target_project: project, source_project: project) }
     let(:jira_issue)      { ExternalIssue.new("JIRA-1", project)}
-    let(:jira_tracker)    { project.jira_service }
+    let(:jira_tracker)    { project.jira_integration }
     let(:commit)          { project.commit }
     let(:comment_url)     { jira_api_comment_url(jira_issue.id) }
     let(:success_message) { "SUCCESS: Successfully posted to http://jira.example.net." }
 
     before do
-      stub_jira_service_test
+      stub_jira_integration_test
       stub_jira_urls(jira_issue.id)
-      jira_service_settings
+      jira_integration_settings
     end
 
     def cross_reference(type, link_exists = false)

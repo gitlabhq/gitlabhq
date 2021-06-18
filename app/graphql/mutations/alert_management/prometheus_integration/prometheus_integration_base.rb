@@ -14,7 +14,7 @@ module Mutations
         private
 
         def find_object(id:)
-          GitlabSchema.object_from_id(id, expected_class: ::PrometheusService)
+          GitlabSchema.object_from_id(id, expected_class: ::Integrations::Prometheus)
         end
 
         def response(integration, result)

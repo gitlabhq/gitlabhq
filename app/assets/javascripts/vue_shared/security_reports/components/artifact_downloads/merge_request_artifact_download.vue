@@ -76,6 +76,7 @@ export default {
 
 <template>
   <security-report-download-dropdown
+    :title="s__('SecurityReports|Download results')"
     :artifacts="reportArtifacts"
     :loading="isLoadingReportArtifacts"
   />

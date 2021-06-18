@@ -4,7 +4,7 @@
 # The factories are used when creating integrations.
 FactoryBot.define do
   factory :jira_tracker_data, class: 'Integrations::JiraTrackerData' do
-    integration factory: :jira_service
+    integration factory: :jira_integration
   end
 
   factory :issue_tracker_data, class: 'Integrations::IssueTrackerData' do

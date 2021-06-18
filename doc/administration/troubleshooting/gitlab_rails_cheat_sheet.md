@@ -275,7 +275,7 @@ integration active:
 p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN services s ON p.id = s.project_id WHERE s.type = 'JiraService' AND s.active = true")
 
 p.each do |project|
-  project.jira_service.update_attribute(:password, '<your-new-password>')
+  project.jira_integration.update_attribute(:password, '<your-new-password>')
 end
 ```
 
@@ -286,9 +286,9 @@ To change all Jira project to use the instance-level integration settings:
 1. In a Rails console:
 
    ```ruby
-   jira_service_instance_id = JiraService.find_by(instance: true).id
-   JiraService.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |service|
-     service.update_attribute(:inherit_from_id, jira_service_instance_id)
+   jira_integration_instance_id = Integrations::Jira.find_by(instance: true).id
+   Integrations::Jira.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |integration|
+     integration.update_attribute(:inherit_from_id, jira_integration_instance_id)
    end
    ```
 

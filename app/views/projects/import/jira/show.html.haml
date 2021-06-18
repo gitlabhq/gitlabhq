@@ -1,7 +1,7 @@
 .js-jira-import-root{ data: { project_path: @project.full_path,
   issues_path: project_issues_path(@project),
   jira_integration_path: edit_project_service_path(@project, :jira),
-  is_jira_configured: @project.jira_service&.active? && @project.jira_service&.valid_connection?.to_s,
+  is_jira_configured: @project.jira_integration&.configured?.to_s,
   in_progress_illustration: image_path('illustrations/export-import.svg'),
   project_id: @project.id,
   setup_illustration: image_path('illustrations/manual_action.svg') } }

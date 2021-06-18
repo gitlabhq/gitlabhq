@@ -6,7 +6,7 @@ module Mutations
       class ResetToken < PrometheusIntegrationBase
         graphql_name 'PrometheusIntegrationResetToken'
 
-        argument :id, Types::GlobalIDType[::PrometheusService],
+        argument :id, Types::GlobalIDType[::Integrations::Prometheus],
                  required: true,
                  description: "The ID of the integration to mutate."
 

@@ -1,5 +1,5 @@
 import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable_filtered_search_token_keys';
-import issuableInitBulkUpdateSidebar from '~/issuable_init_bulk_update_sidebar';
+import issuableInitBulkUpdateSidebar from '~/issuable_bulk_update_sidebar/issuable_init_bulk_update_sidebar';
 import { mountIssuablesListApp } from '~/issues_list';
 import initManualOrdering from '~/manual_ordering';
 import { FILTERED_SEARCH } from '~/pages/constants';

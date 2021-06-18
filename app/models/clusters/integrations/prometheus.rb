@@ -47,12 +47,12 @@ module Clusters
 
       def activate_project_services
         ::Clusters::Applications::ActivateServiceWorker
-          .perform_async(cluster_id, ::PrometheusService.to_param) # rubocop:disable CodeReuse/ServiceClass
+          .perform_async(cluster_id, ::Integrations::Prometheus.to_param)
       end
 
       def deactivate_project_services
         ::Clusters::Applications::DeactivateServiceWorker
-          .perform_async(cluster_id, ::PrometheusService.to_param) # rubocop:disable CodeReuse/ServiceClass
+          .perform_async(cluster_id, ::Integrations::Prometheus.to_param)
       end
     end
   end

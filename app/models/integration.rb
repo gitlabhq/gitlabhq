@@ -48,8 +48,12 @@ class Integration < ApplicationRecord
     flowdock
     hangouts_chat
     irker
+    jenkins jira
     packagist pipelines_email pivotaltracker pushover
     mattermost mattermost_slash_commands microsoft_teams mock_ci mock_monitoring
+    redmine
+    slack slack_slash_commands
+    teamcity
   ].to_set.freeze
 
   def self.renamed?(name)

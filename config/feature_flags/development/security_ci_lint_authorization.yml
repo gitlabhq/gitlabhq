@@ -1,8 +1,0 @@
----
-name: security_ci_lint_authorization
-introduced_by_url: https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/1279
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326708
-milestone: '14.0'
-type: development
-group: group::pipeline authoring
-default_enabled: false

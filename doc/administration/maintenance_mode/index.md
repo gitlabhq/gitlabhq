@@ -21,10 +21,11 @@ Maintenance Mode allows most external actions that do not change internal state.
 There are three ways to enable Maintenance Mode as an administrator:
 
 - **Web UI**:
-  1. Go to **Admin Area > Settings > General**, expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
+  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the left sidebar, select **Settings > General**.
+  1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
-
-  1. Click **Save** for the changes to take effect.
+  1. Select **Save changes**.
 
 - **API**:
 
@@ -44,9 +45,11 @@ There are three ways to enable Maintenance Mode as an administrator:
 There are three ways to disable Maintenance Mode:
 
 - **Web UI**:
-  1. Go to **Admin Area > Settings > General**, expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
-
-  1. Click **Save** for the changes to take effect.
+  1. On the top bar, select **Menu >** **{admin}** **Admin**.
+  1. On the left sidebar, select **Settings > General**.
+  1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
+     You can optionally add a message for the banner as well.
+  1. Select **Save changes**.
 
 - **API**:
 
@@ -166,7 +169,10 @@ Background jobs (cron jobs, Sidekiq) continue running as is, because background 
 [During a planned Geo failover](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-node),
 it is recommended that you disable all cron jobs except for those related to Geo.
 
-You can monitor queues and disable jobs in **Admin Area > Monitoring > Background Jobs**.
+To monitor queues and disable jobs:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Monitoring > Background Jobs**.
 
 ### Incident management
 

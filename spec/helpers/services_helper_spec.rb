@@ -36,8 +36,8 @@ RSpec.describe ServicesHelper do
 
     subject { helper.integration_form_data(integration) }
 
-    context 'Slack service' do
-      let(:integration) { build(:slack_service) }
+    context 'with Slack integration' do
+      let(:integration) { build(:integrations_slack) }
 
       it { is_expected.to include(*fields) }
       it { is_expected.not_to include(*jira_fields) }
@@ -48,14 +48,14 @@ RSpec.describe ServicesHelper do
     end
 
     context 'Jira service' do
-      let(:integration) { build(:jira_service) }
+      let(:integration) { build(:jira_integration) }
 
       it { is_expected.to include(*fields, *jira_fields) }
     end
   end
 
   describe '#scoped_reset_integration_path' do
-    let(:integration) { build_stubbed(:jira_service) }
+    let(:integration) { build_stubbed(:jira_integration) }
     let(:group) { nil }
 
     subject { helper.scoped_reset_integration_path(integration, group: group) }
@@ -75,7 +75,7 @@ RSpec.describe ServicesHelper do
     end
 
     context 'when a new integration is not persisted' do
-      let_it_be(:integration) { build(:jira_service) }
+      let_it_be(:integration) { build(:jira_integration) }
 
       it 'returns an empty string' do
         is_expected.to eq('')

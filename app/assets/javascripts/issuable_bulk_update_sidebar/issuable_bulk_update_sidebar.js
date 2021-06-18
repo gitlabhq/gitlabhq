@@ -2,11 +2,12 @@
 
 import $ from 'jquery';
 import { property } from 'lodash';
+
+import issueableEventHub from '~/issues_list/eventhub';
+import LabelsSelect from '~/labels_select';
+import MilestoneSelect from '~/milestone_select';
+import initIssueStatusSelect from './init_issue_status_select';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
-import issueStatusSelect from './issue_status_select';
-import issueableEventHub from './issues_list/eventhub';
-import LabelsSelect from './labels_select';
-import MilestoneSelect from './milestone_select';
 import subscriptionSelect from './subscription_select';
 
 const HIDDEN_CLASS = 'hidden';
@@ -29,7 +30,7 @@ export default class IssuableBulkUpdateSidebar {
     this.$sidebar = $('.right-sidebar');
     this.$sidebarInnerContainer = this.$sidebar.find('.issuable-sidebar');
     this.$bulkEditCancelBtn = $('.js-bulk-update-menu-hide');
-    this.$bulkEditSubmitBtn = $('.update-selected-issues');
+    this.$bulkEditSubmitBtn = $('.js-update-selected-issues');
     this.$bulkUpdateEnableBtn = $('.js-bulk-update-toggle');
     this.$otherFilters = $('.issues-other-filters');
     this.$checkAllContainer = $('.check-all-holder');
@@ -56,7 +57,7 @@ export default class IssuableBulkUpdateSidebar {
   initDropdowns() {
     new LabelsSelect();
     new MilestoneSelect();
-    issueStatusSelect();
+    initIssueStatusSelect();
     subscriptionSelect();
 
     if (IS_EE) {

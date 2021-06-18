@@ -21,6 +21,16 @@ export default {
       required: false,
       default: false,
     },
+    text: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    title: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   methods: {
     artifactText({ name }) {
@@ -35,7 +45,8 @@ export default {
 <template>
   <gl-dropdown
     v-gl-tooltip
-    :text="s__('SecurityReports|Download results')"
+    :text="text"
+    :title="title"
     :loading="loading"
     icon="download"
     size="small"

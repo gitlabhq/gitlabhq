@@ -109,13 +109,16 @@ The maintenance window won't end until Geo replication and verification is
 completely finished. To keep the window as short as possible, you should
 ensure these processes are close to 100% as possible during active use.
 
-Go to the **Admin Area > Geo** dashboard on the **secondary** node to
-review status. Replicated objects (shown in green) should be close to 100%,
-and there should be no failures (shown in red). If a large proportion of
-objects aren't yet replicated (shown in gray), consider giving the node more
-time to complete
+On the **secondary** node:
 
-![Replication status](../replication/img/geo_node_dashboard_v14_0.png)
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Geo > Nodes**.
+   Replicated objects (shown in green) should be close to 100%,
+   and there should be no failures (shown in red). If a large proportion of
+   objects aren't yet replicated (shown in gray), consider giving the node more
+   time to complete
+
+   ![Replication status](../replication/img/geo_node_dashboard_v14_0.png)
 
 If any objects are failing to replicate, this should be investigated before
 scheduling the maintenance window. Following a planned failover, anything that
@@ -134,23 +137,26 @@ This [content was moved to another location](background_verification.md).
 
 ### Notify users of scheduled maintenance
 
-On the **primary** node, navigate to **Admin Area > Messages**, add a broadcast
-message. You can check under **Admin Area > Geo** to estimate how long it
-takes to finish syncing. An example message would be:
+On the **primary** node:
 
-> A scheduled maintenance takes place at XX:XX UTC. We expect it to take
-> less than 1 hour.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Messages**.
+1. Add a message notifying users on the maintenance window.
+   You can check under **Geo > Nodes** to estimate how long it
+   takes to finish syncing.
+1. Select **Add broadcast message**.
 
 ## Prevent updates to the **primary** node
 
 To ensure that all data is replicated to a secondary site, updates (write requests) need to
-be disabled on the primary site:
+be disabled on the **primary** site:
 
-1. Enable [maintenance mode](../../maintenance_mode/index.md).
-
-1. Disable non-Geo periodic background jobs on the **primary** node by navigating
-   to **Admin Area > Monitoring > Background Jobs > Cron**, pressing `Disable All`,
-   and then pressing `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
+1. Enable [maintenance mode](../../maintenance_mode/index.md) on the **primary** node.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Monitoring > Background Jobs**.
+1. On the Sidekiq dashboard, select **Cron**.
+1. Select `Disable All` to disable non-Geo periodic background jobs.
+1. Select `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
    This job re-enables several other cron jobs that are essential for planned
    failover to complete successfully.
 
@@ -158,23 +164,28 @@ be disabled on the primary site:
 
 1. If you are manually replicating any data not managed by Geo, trigger the
    final replication process now.
-1. On the **primary** node, navigate to **Admin Area > Monitoring > Background Jobs > Queues**
-   and wait for all queues except those with `geo` in the name to drop to 0.
-   These queues contain work that has been submitted by your users; failing over
-   before it is completed, causes the work to be lost.
-1. On the **primary** node, navigate to **Admin Area > Geo** and wait for the
-   following conditions to be true of the **secondary** node you are failing over to:
+1. On the **primary** node:
+   1. On the top bar, select **Menu >** **{admin}** **Admin**.
+   1. On the left sidebar, select **Monitoring > Background Jobs**.
+   1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
+      those with `geo` in the name to drop to 0.
+      These queues contain work that has been submitted by your users; failing over
+      before it is completed, causes the work to be lost.
+   1. On the left sidebar, select **Geo > Nodes** and wait for the
+      following conditions to be true of the **secondary** node you are failing over to:
 
-   - All replication meters to each 100% replicated, 0% failures.
-   - All verification meters reach 100% verified, 0% failures.
-   - Database replication lag is 0ms.
-   - The Geo log cursor is up to date (0 events behind).
+      - All replication meters reach 100% replicated, 0% failures.
+      - All verification meters reach 100% verified, 0% failures.
+      - Database replication lag is 0ms.
+      - The Geo log cursor is up to date (0 events behind).
 
-1. On the **secondary** node, navigate to **Admin Area > Monitoring > Background Jobs > Queues**
-   and wait for all the `geo` queues to drop to 0 queued and 0 running jobs.
-1. On the **secondary** node, use [these instructions](../../raketasks/check.md)
-   to verify the integrity of CI artifacts, LFS objects, and uploads in file
-   storage.
+1. On the **secondary** node:
+   1. On the top bar, select **Menu >** **{admin}** **Admin**.
+   1. On the left sidebar, select **Monitoring > Background Jobs**.
+   1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
+      queues to drop to 0 queued and 0 running jobs.
+   1. [Run an integrity check](../../raketasks/check.md) to verify the integrity
+      of CI artifacts, LFS objects, and uploads in file storage.
 
 At this point, your **secondary** node contains an up-to-date copy of everything the
 **primary** node has, meaning nothing was lost when you fail over.

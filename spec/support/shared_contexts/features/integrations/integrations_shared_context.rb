@@ -46,7 +46,7 @@ Integration.available_services_names.each do |service|
 
     before do
       enable_license_for_service(service)
-      stub_jira_service_test if service == 'jira'
+      stub_jira_integration_test if service == 'jira'
     end
 
     def initialize_service(service, attrs = {})

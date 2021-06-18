@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require 'googleauth'
 
-RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching, :snowplow do
+RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, :snowplow do
   include PrometheusHelpers
   include ReactiveCachingHelpers
 

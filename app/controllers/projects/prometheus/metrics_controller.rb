@@ -66,7 +66,7 @@ module Projects
         )
 
         if @metric.persisted?
-          redirect_to edit_project_service_path(project, ::PrometheusService),
+          redirect_to edit_project_service_path(project, ::Integrations::Prometheus),
                       notice: _('Metric was successfully added.')
         else
           render 'new'
@@ -77,7 +77,7 @@ module Projects
         @metric = update_metrics_service(prometheus_metric).execute
 
         if @metric.persisted?
-          redirect_to edit_project_service_path(project, ::PrometheusService),
+          redirect_to edit_project_service_path(project, ::Integrations::Prometheus),
                       notice: _('Metric was successfully updated.')
         else
           render 'edit'
@@ -93,7 +93,7 @@ module Projects
 
         respond_to do |format|
           format.html do
-            redirect_to edit_project_service_path(project, ::PrometheusService), status: :see_other
+            redirect_to edit_project_service_path(project, ::Integrations::Prometheus), status: :see_other
           end
           format.json do
             head :ok

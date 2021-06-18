@@ -4,7 +4,15 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Adding GKE clusters **(FREE)**
+# GKE clusters (DEPRECATED) **(FREE)**
+
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/6049) in GitLab 14.0.
+
+WARNING:
+Use [Infrastrucure as Code](../../infrastructure/index.md) to create new clusters. The method described in this document is deprecated as of GitLab 14.0.
+
+Through GitLab, you can create new clusters and add existing clusters hosted on Amazon Elastic
+Kubernetes Service (EKS).
 
 GitLab supports adding new and existing GKE clusters.
 
@@ -19,7 +27,12 @@ requirements are met:
   take up to 10 minutes after you create a project. For more information see the
   ["Before you begin" section of the Kubernetes Engine docs](https://cloud.google.com/kubernetes-engine/docs/quickstart#before-you-begin).
 
-## New GKE cluster
+## Add an existing GKE cluster
+
+If you already have a GKE cluster and want to integrate it with GitLab,
+see how to [add an existing cluster](add_existing_cluster.md).
+
+## Create new GKE cluster
 
 Starting from [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/25925), all the GKE clusters
 provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
@@ -30,13 +43,13 @@ Note the following:
   at the instance level. If that's not the case, ask your GitLab administrator to enable it. On
   GitLab.com, this is enabled.
 - Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55902), all GKE clusters
-  created by GitLab are RBAC-enabled. Take a look at the [RBAC section](add_remove_clusters.md#rbac-cluster-resources) for
+  created by GitLab are RBAC-enabled. Take a look at the [RBAC section](cluster_access.md#rbac-cluster-resources) for
   more information.
 - Starting from [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18341), the
   cluster's pod address IP range is set to `/16` instead of the regular `/14`. `/16` is a CIDR
   notation.
 - GitLab requires basic authentication enabled and a client certificate issued for the cluster to
-  set up an [initial service account](add_remove_clusters.md#access-controls). In [GitLab versions
+  set up an [initial service account](cluster_access.md). In [GitLab versions
   11.10 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/58208), the cluster creation process
   explicitly requests GKE to create clusters with basic authentication enabled and a client
   certificate.
@@ -49,7 +62,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - Project's **{cloud-gear}** **Infrastructure > Kubernetes clusters** page, for a project-level
      cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
-   - **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
+   - **Menu >** **{admin}** **Admin >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
 1. Click **Integrate with a cluster certificate**.
 1. Under the **Create new cluster** tab, click **Google GKE**.
 1. Connect your Google account if you haven't done already by clicking the
@@ -81,8 +94,3 @@ You can choose to use Cloud Run for Anthos in place of installing Knative and Is
 separately after the cluster has been created. This means that Cloud Run
 (Knative), Istio, and HTTP Load Balancing are enabled on the cluster
 from the start, and cannot be installed or uninstalled.
-
-## Existing GKE cluster
-
-For information on adding an existing GKE cluster, see
-[Existing Kubernetes cluster](add_remove_clusters.md#existing-kubernetes-cluster).

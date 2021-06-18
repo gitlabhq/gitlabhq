@@ -40,14 +40,13 @@ describe('SecurityReportDownloadDropdown component', () => {
       expect(findDropdown().props('loading')).toBe(false);
     });
 
-    it('renders a dropdown items for each artifact', () => {
+    it('renders a dropdown item for each artifact', () => {
       artifacts.forEach((artifact, i) => {
         const item = findDropdownItems().at(i);
         expect(item.text()).toContain(artifact.name);
-        expect(item.attributes()).toMatchObject({
-          href: artifact.path,
-          download: expect.any(String),
-        });
+
+        expect(item.element.getAttribute('href')).toBe(artifact.path);
+        expect(item.element.getAttribute('download')).toBeDefined();
       });
     });
   });
@@ -59,6 +58,34 @@ describe('SecurityReportDownloadDropdown component', () => {
 
     it('renders a loading dropdown', () => {
       expect(findDropdown().props('loading')).toBe(true);
+    });
+  });
+
+  describe('given title props', () => {
+    beforeEach(() => {
+      createComponent({ artifacts: [], loading: true, title: 'test title' });
+    });
+
+    it('should render title', () => {
+      expect(findDropdown().attributes('title')).toBe('test title');
+    });
+
+    it('should not render text', () => {
+      expect(findDropdown().text().trim()).toBe('');
+    });
+  });
+
+  describe('given text props', () => {
+    beforeEach(() => {
+      createComponent({ artifacts: [], loading: true, text: 'test text' });
+    });
+
+    it('should not render title', () => {
+      expect(findDropdown().props().title).not.toBeDefined();
+    });
+
+    it('should render text', () => {
+      expect(findDropdown().props().text).toContain('test text');
     });
   });
 });

@@ -16,7 +16,7 @@ module Metrics::Dashboard::PrometheusApiProxy
       return error_response(variable_substitution_result)
     end
 
-    prometheus_result = Prometheus::ProxyService.new(
+    prometheus_result = ::Prometheus::ProxyService.new(
       proxyable,
       proxy_method,
       proxy_path,

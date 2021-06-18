@@ -172,25 +172,25 @@ class Project < ApplicationRecord
   has_one :flowdock_integration, class_name: 'Integrations::Flowdock'
   has_one :hangouts_chat_integration, class_name: 'Integrations::HangoutsChat'
   has_one :irker_integration, class_name: 'Integrations::Irker'
-  has_one :jenkins_service, class_name: 'Integrations::Jenkins'
-  has_one :jira_service, class_name: 'Integrations::Jira'
+  has_one :jenkins_integration, class_name: 'Integrations::Jenkins'
+  has_one :jira_integration, class_name: 'Integrations::Jira'
   has_one :mattermost_integration, class_name: 'Integrations::Mattermost'
   has_one :mattermost_slash_commands_integration, class_name: 'Integrations::MattermostSlashCommands'
   has_one :microsoft_teams_integration, class_name: 'Integrations::MicrosoftTeams'
   has_one :mock_ci_integration, class_name: 'Integrations::MockCi'
-  has_one :mock_monitoring_integration, class_name: 'MockMonitoringService'
+  has_one :mock_monitoring_integration, class_name: 'Integrations::MockMonitoring'
   has_one :packagist_integration, class_name: 'Integrations::Packagist'
   has_one :pipelines_email_integration, class_name: 'Integrations::PipelinesEmail'
   has_one :pivotaltracker_integration, class_name: 'Integrations::Pivotaltracker'
+  has_one :prometheus_service, class_name: 'Integrations::Prometheus', inverse_of: :project
   has_one :pushover_integration, class_name: 'Integrations::Pushover'
-  has_one :redmine_service, class_name: 'Integrations::Redmine'
-  has_one :slack_service, class_name: 'Integrations::Slack'
-  has_one :slack_slash_commands_service, class_name: 'Integrations::SlackSlashCommands'
-  has_one :teamcity_service, class_name: 'Integrations::Teamcity'
+  has_one :redmine_integration, class_name: 'Integrations::Redmine'
+  has_one :slack_integration, class_name: 'Integrations::Slack'
+  has_one :slack_slash_commands_integration, class_name: 'Integrations::SlackSlashCommands'
+  has_one :teamcity_integration, class_name: 'Integrations::Teamcity'
   has_one :unify_circuit_service, class_name: 'Integrations::UnifyCircuit'
   has_one :webex_teams_service, class_name: 'Integrations::WebexTeams'
   has_one :youtrack_service, class_name: 'Integrations::Youtrack'
-  has_one :prometheus_service, inverse_of: :project
 
   has_one :root_of_fork_network,
           foreign_key: 'root_project_id',
@@ -542,7 +542,7 @@ class Project < ApplicationRecord
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
-  scope :with_active_jira_services, -> { joins(:integrations).merge(::Integrations::Jira.active) }
+  scope :with_active_jira_integrations, -> { joins(:integrations).merge(::Integrations::Jira.active) }
   scope :with_jira_dvcs_cloud, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: true)) }
   scope :with_jira_dvcs_server, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false)) }
   scope :inc_routes, -> { includes(:route, namespace: :route) }

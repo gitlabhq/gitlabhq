@@ -36,7 +36,7 @@ RSpec.describe Projects::PostCreationWorker do
             create(:clusters_integrations_prometheus, cluster: cluster)
           end
 
-          it 'creates PrometheusService record', :aggregate_failures do
+          it 'creates an Integrations::Prometheus record', :aggregate_failures do
             subject
 
             service = project.prometheus_service
@@ -53,7 +53,7 @@ RSpec.describe Projects::PostCreationWorker do
             create(:clusters_integrations_prometheus, cluster: cluster)
           end
 
-          it 'creates PrometheusService record', :aggregate_failures do
+          it 'creates an Integrations::Prometheus record', :aggregate_failures do
             subject
 
             service = project.prometheus_service
@@ -64,7 +64,7 @@ RSpec.describe Projects::PostCreationWorker do
 
           it 'cleans invalid record and logs warning', :aggregate_failures do
             invalid_service_record = build(:prometheus_service, properties: { api_url: nil, manual_configuration: true }.to_json)
-            allow(PrometheusService).to receive(:new).and_return(invalid_service_record)
+            allow(::Integrations::Prometheus).to receive(:new).and_return(invalid_service_record)
 
             expect(Gitlab::ErrorTracking).to receive(:track_exception).with(an_instance_of(ActiveRecord::RecordInvalid), include(extra: { project_id: a_kind_of(Integer) })).twice
             subject
@@ -74,7 +74,7 @@ RSpec.describe Projects::PostCreationWorker do
         end
 
         context 'shared Prometheus application is not available' do
-          it 'does not persist PrometheusService record', :aggregate_failures do
+          it 'does not persist an Integrations::Prometheus record' do
             subject
 
             expect(project.prometheus_service).to be_nil

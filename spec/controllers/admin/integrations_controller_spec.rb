@@ -37,10 +37,10 @@ RSpec.describe Admin::IntegrationsController do
   describe '#update' do
     include JiraServiceHelper
 
-    let(:integration) { create(:jira_service, :instance) }
+    let(:integration) { create(:jira_integration, :instance) }
 
     before do
-      stub_jira_service_test
+      stub_jira_integration_test
       allow(PropagateIntegrationWorker).to receive(:perform_async)
 
       put :update, params: { id: integration.class.to_param, service: { url: url } }
@@ -75,8 +75,8 @@ RSpec.describe Admin::IntegrationsController do
   end
 
   describe '#reset' do
-    let_it_be(:integration) { create(:jira_service, :instance) }
-    let_it_be(:inheriting_integration) { create(:jira_service, inherit_from_id: integration.id) }
+    let_it_be(:integration) { create(:jira_integration, :instance) }
+    let_it_be(:inheriting_integration) { create(:jira_integration, inherit_from_id: integration.id) }
 
     subject do
       post :reset, params: { id: integration.class.to_param }

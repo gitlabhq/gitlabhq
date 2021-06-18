@@ -800,7 +800,7 @@ To explicitly enable API source:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-Or if you want to use legacy confiration source you can:
+Or if you want to use legacy configuration source you can:
 
 1. Add the following to your `/etc/gitlab/gitlab.rb` file:
 

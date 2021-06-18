@@ -10,7 +10,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
   let(:teamcity_full_url) { 'http://gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,revision:123' }
   let(:project) { create(:project) }
 
-  subject(:service) do
+  subject(:integration) do
     described_class.create!(
       project: project,
       properties: {
@@ -28,14 +28,14 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
   end
 
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when integration is active' do
       before do
         subject.active = true
       end
 
       it { is_expected.to validate_presence_of(:build_type) }
       it { is_expected.to validate_presence_of(:teamcity_url) }
-      it_behaves_like 'issue tracker service URL attribute', :teamcity_url
+      it_behaves_like 'issue tracker integration URL attribute', :teamcity_url
 
       describe '#username' do
         it 'does not validate the presence of username if password is nil' do
@@ -66,7 +66,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
       end
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       before do
         subject.active = false
       end
@@ -79,71 +79,66 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
   end
 
   describe 'Callbacks' do
+    let(:teamcity_integration) { integration }
+
     describe 'before_update :reset_password' do
       context 'when a password was previously set' do
         it 'resets password if url changed' do
-          teamcity_service = service
+          teamcity_integration.teamcity_url = 'http://gitlab1.com'
+          teamcity_integration.save!
 
-          teamcity_service.teamcity_url = 'http://gitlab1.com'
-          teamcity_service.save!
-
-          expect(teamcity_service.password).to be_nil
+          expect(teamcity_integration.password).to be_nil
         end
 
         it 'does not reset password if username changed' do
-          teamcity_service = service
+          teamcity_integration.username = 'some_name'
+          teamcity_integration.save!
 
-          teamcity_service.username = 'some_name'
-          teamcity_service.save!
-
-          expect(teamcity_service.password).to eq('password')
+          expect(teamcity_integration.password).to eq('password')
         end
 
         it "does not reset password if new url is set together with password, even if it's the same password" do
-          teamcity_service = service
+          teamcity_integration.teamcity_url = 'http://gitlab_edited.com'
+          teamcity_integration.password = 'password'
+          teamcity_integration.save!
 
-          teamcity_service.teamcity_url = 'http://gitlab_edited.com'
-          teamcity_service.password = 'password'
-          teamcity_service.save!
-
-          expect(teamcity_service.password).to eq('password')
-          expect(teamcity_service.teamcity_url).to eq('http://gitlab_edited.com')
+          expect(teamcity_integration.password).to eq('password')
+          expect(teamcity_integration.teamcity_url).to eq('http://gitlab_edited.com')
         end
       end
 
       it 'saves password if new url is set together with password when no password was previously set' do
-        teamcity_service = service
-        teamcity_service.password = nil
+        teamcity_integration.password = nil
 
-        teamcity_service.teamcity_url = 'http://gitlab_edited.com'
-        teamcity_service.password = 'password'
-        teamcity_service.save!
+        teamcity_integration.teamcity_url = 'http://gitlab_edited.com'
+        teamcity_integration.password = 'password'
+        teamcity_integration.save!
 
-        expect(teamcity_service.password).to eq('password')
-        expect(teamcity_service.teamcity_url).to eq('http://gitlab_edited.com')
+        expect(teamcity_integration.password).to eq('password')
+        expect(teamcity_integration.teamcity_url).to eq('http://gitlab_edited.com')
       end
     end
   end
 
   describe '#build_page' do
     it 'returns the contents of the reactive cache' do
-      stub_reactive_cache(service, { build_page: 'foo' }, 'sha', 'ref')
+      stub_reactive_cache(integration, { build_page: 'foo' }, 'sha', 'ref')
 
-      expect(service.build_page('sha', 'ref')).to eq('foo')
+      expect(integration.build_page('sha', 'ref')).to eq('foo')
     end
   end
 
   describe '#commit_status' do
     it 'returns the contents of the reactive cache' do
-      stub_reactive_cache(service, { commit_status: 'foo' }, 'sha', 'ref')
+      stub_reactive_cache(integration, { commit_status: 'foo' }, 'sha', 'ref')
 
-      expect(service.commit_status('sha', 'ref')).to eq('foo')
+      expect(integration.commit_status('sha', 'ref')).to eq('foo')
     end
   end
 
   describe '#calculate_reactive_cache' do
     context 'build_page' do
-      subject { service.calculate_reactive_cache('123', 'unused')[:build_page] }
+      subject { integration.calculate_reactive_cache('123', 'unused')[:build_page] }
 
       it 'returns a specific URL when status is 500' do
         stub_request(status: 500)
@@ -179,7 +174,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
     end
 
     context 'commit_status' do
-      subject { service.calculate_reactive_cache('123', 'unused')[:commit_status] }
+      subject { integration.calculate_reactive_cache('123', 'unused')[:commit_status] }
 
       it 'sets commit status to :error when status is 500' do
         stub_request(status: 500)
@@ -243,25 +238,25 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
       it 'handles push request correctly' do
         stub_post_to_build_queue(branch: 'dev-123_branch')
 
-        expect(service.execute(data)).to include('Ok')
+        expect(integration.execute(data)).to include('Ok')
       end
 
       it 'returns nil when ref is blank' do
         data[:after] = Gitlab::Git::BLANK_SHA
 
-        expect(service.execute(data)).to be_nil
+        expect(integration.execute(data)).to be_nil
       end
 
       it 'returns nil when there is no content' do
         data[:total_commits_count] = 0
 
-        expect(service.execute(data)).to be_nil
+        expect(integration.execute(data)).to be_nil
       end
 
       it 'returns nil when a merge request is opened for the same ref' do
         create(:merge_request, source_project: project, source_branch: 'dev-123_branch')
 
-        expect(service.execute(data)).to be_nil
+        expect(integration.execute(data)).to be_nil
       end
     end
 
@@ -283,26 +278,26 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
       it 'handles merge request correctly' do
         stub_post_to_build_queue(branch: 'dev-123_branch')
 
-        expect(service.execute(data)).to include('Ok')
+        expect(integration.execute(data)).to include('Ok')
       end
 
       it 'returns nil when merge request is not opened' do
         data[:object_attributes][:state] = 'closed'
 
-        expect(service.execute(data)).to be_nil
+        expect(integration.execute(data)).to be_nil
       end
 
       it 'returns nil unless merge request is marked as unchecked' do
         data[:object_attributes][:merge_status] = 'can_be_merged'
 
-        expect(service.execute(data)).to be_nil
+        expect(integration.execute(data)).to be_nil
       end
     end
 
     it 'returns nil when event is not supported' do
       data = { object_kind: 'foo' }
 
-      expect(service.execute(data)).to be_nil
+      expect(integration.execute(data)).to be_nil
     end
   end
 

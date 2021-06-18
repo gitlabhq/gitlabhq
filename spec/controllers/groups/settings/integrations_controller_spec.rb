@@ -63,11 +63,11 @@ RSpec.describe Groups::Settings::IntegrationsController do
   describe '#update' do
     include JiraServiceHelper
 
-    let(:integration) { create(:jira_service, project: nil, group_id: group.id) }
+    let(:integration) { create(:jira_integration, project: nil, group_id: group.id) }
 
     before do
       group.add_owner(user)
-      stub_jira_service_test
+      stub_jira_integration_test
 
       put :update, params: { group_id: group, id: integration.class.to_param, service: { url: url } }
     end
@@ -93,8 +93,8 @@ RSpec.describe Groups::Settings::IntegrationsController do
   end
 
   describe '#reset' do
-    let_it_be(:integration) { create(:jira_service, group: group, project: nil) }
-    let_it_be(:inheriting_integration) { create(:jira_service, inherit_from_id: integration.id) }
+    let_it_be(:integration) { create(:jira_integration, group: group, project: nil) }
+    let_it_be(:inheriting_integration) { create(:jira_integration, inherit_from_id: integration.id) }
 
     subject do
       post :reset, params: { group_id: group, id: integration.class.to_param }

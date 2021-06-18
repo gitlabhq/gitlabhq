@@ -70,7 +70,7 @@ RSpec.describe ProjectPolicy do
 
       context 'when external tracker configured' do
         it 'does not include the issues permissions' do
-          create(:jira_service, project: project)
+          create(:jira_integration, project: project)
 
           expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident
         end

@@ -411,13 +411,13 @@ RSpec.describe Git::BranchPushService, services: true do
     context "for jira issue tracker" do
       include JiraServiceHelper
 
-      let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
+      let(:jira_tracker) { project.create_jira_integration if project.jira_integration.nil? }
 
       before do
-        # project.create_jira_service doesn't seem to invalidate the cache here
+        # project.create_jira_integration doesn't seem to invalidate the cache here
         project.has_external_issue_tracker = true
-        stub_jira_service_test
-        jira_service_settings
+        stub_jira_integration_test
+        jira_integration_settings
         stub_jira_urls("JIRA-1")
 
         allow(closing_commit).to receive_messages({

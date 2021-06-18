@@ -779,7 +779,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     context 'when both internal and external issue trackers are enabled' do
       before do
-        create(:jira_service, project: subject.project)
+        create(:jira_integration, project: subject.project)
         subject.project.reload
       end
 
@@ -1310,7 +1310,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
         subject.project.add_developer(subject.author)
         commit = double(:commit, safe_message: 'Fixes TEST-3')
 
-        create(:jira_service, project: subject.project)
+        create(:jira_integration, project: subject.project)
         subject.project.reload
 
         allow(subject).to receive(:commits).and_return([commit])

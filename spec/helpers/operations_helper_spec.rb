@@ -21,7 +21,7 @@ RSpec.describe OperationsHelper do
     end
 
     context 'initial service configuration' do
-      let_it_be(:prometheus_service) { PrometheusService.new(project: project) }
+      let_it_be(:prometheus_service) { ::Integrations::Prometheus.new(project: project) }
 
       before do
         allow(project).to receive(:find_or_initialize_service).and_call_original

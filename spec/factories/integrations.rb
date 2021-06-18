@@ -27,7 +27,7 @@ FactoryBot.define do
     end
   end
 
-  factory :prometheus_service do
+  factory :prometheus_service, class: 'Integrations::Prometheus' do
     project
     active { true }
     properties do
@@ -45,7 +45,7 @@ FactoryBot.define do
     token { 'test' }
   end
 
-  factory :jira_service, class: 'Integrations::Jira' do
+  factory :jira_integration, class: 'Integrations::Jira' do
     project
     active { true }
     type { 'JiraService' }
@@ -91,7 +91,7 @@ FactoryBot.define do
     issue_tracker
   end
 
-  factory :redmine_service, class: 'Integrations::Redmine' do
+  factory :redmine_integration, class: 'Integrations::Redmine' do
     project
     active { true }
     issue_tracker
@@ -160,14 +160,15 @@ FactoryBot.define do
     password { 'my-secret-password' }
   end
 
-  factory :slack_service, class: 'Integrations::Slack' do
+  # avoids conflict with slack_integration factory
+  factory :integrations_slack, class: 'Integrations::Slack' do
     project
     active { true }
     webhook { 'https://slack.service.url' }
     type { 'SlackService' }
   end
 
-  factory :slack_slash_commands_service, class: 'Integrations::SlackSlashCommands' do
+  factory :slack_slash_commands_integration, class: 'Integrations::SlackSlashCommands' do
     project
     active { true }
     type { 'SlackSlashCommandsService' }

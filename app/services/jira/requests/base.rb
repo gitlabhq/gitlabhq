@@ -7,20 +7,20 @@ module Jira
 
       JIRA_API_VERSION = 2
 
-      def initialize(jira_service, params = {})
-        @project = jira_service&.project
-        @jira_service = jira_service
+      def initialize(jira_integration, params = {})
+        @project = jira_integration&.project
+        @jira_integration = jira_integration
       end
 
       def execute
-        return ServiceResponse.error(message: _('Jira service not configured.')) unless jira_service&.active?
+        return ServiceResponse.error(message: _('Jira service not configured.')) unless jira_integration&.active?
 
         request
       end
 
       private
 
-      attr_reader :jira_service, :project
+      attr_reader :jira_integration, :project
 
       # We have to add the context_path here because the Jira client is not taking it into account
       def base_api_url
@@ -37,7 +37,7 @@ module Jira
       end
 
       def client
-        @client ||= jira_service.client
+        @client ||= jira_integration.client
       end
 
       def request

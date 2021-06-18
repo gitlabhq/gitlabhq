@@ -386,7 +386,7 @@ RSpec.describe API::Projects do
       end
 
       context 'when external issue tracker is enabled' do
-        let!(:jira_service) { create(:jira_service, project: project) }
+        let!(:jira_integration) { create(:jira_integration, project: project) }
 
         it 'includes open_issues_count' do
           get api('/projects', user)

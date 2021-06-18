@@ -22,7 +22,7 @@ This can be useful for:
 ## Permissions
 
 Only the management project receives `cluster-admin` privileges. All
-other projects continue to receive [namespace scoped `edit` level privileges](../project/clusters/add_remove_clusters.md#rbac-cluster-resources).
+other projects continue to receive [namespace scoped `edit` level privileges](../project/clusters/cluster_access.md#rbac-cluster-resources).
 
 Management projects are restricted to the following:
 

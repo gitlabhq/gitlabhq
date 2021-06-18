@@ -15,7 +15,7 @@ module Prometheus
 
       return unless project
 
-      result = Prometheus::CreateDefaultAlertsService.new(project: project).execute
+      result = ::Prometheus::CreateDefaultAlertsService.new(project: project).execute
 
       log_info(result.message) if result.error?
     end

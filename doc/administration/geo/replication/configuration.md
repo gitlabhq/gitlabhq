@@ -196,9 +196,9 @@ keys must be manually replicated to the **secondary** node.
    gitlab-ctl reconfigure
    ```
 
-1. Visit the **primary** node's **Admin Area > Geo**
-   (`/admin/geo/nodes`) in your browser.
-1. Click the **New node** button.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Geo > Nodes**.
+1. Select **New node**.
    ![Add secondary node](img/adding_a_secondary_node_v13_3.png)
 1. Fill in **Name** with the `gitlab_rails['geo_node_name']` in
    `/etc/gitlab/gitlab.rb`. These values must always match *exactly*, character
@@ -209,7 +209,7 @@ keys must be manually replicated to the **secondary** node.
 1. Optionally, choose which groups or storage shards should be replicated by the
    **secondary** node. Leave blank to replicate all. Read more in
    [selective synchronization](#selective-synchronization).
-1. Click the **Add node** button to add the **secondary** node.
+1. Select **Add node** to add the **secondary** node.
 1. SSH into your GitLab **secondary** server and restart the services:
 
    ```shell
@@ -252,18 +252,22 @@ on the **secondary** node.
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
 method to be enabled. This is enabled by default, but if converting an existing node to Geo it should be checked:
 
-1. Go to **Admin Area > Settings** (`/admin/application_settings/general`) on the **primary** node.
-1. Expand "Visibility and access controls".
+On the **primary** node:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility and access controls**.
 1. Ensure "Enabled Git access protocols" is set to either "Both SSH and HTTP(S)" or "Only HTTP(S)".
 
 ### Step 6. Verify proper functioning of the **secondary** node
 
-Your **secondary** node is now configured!
+You can sign in to the **secondary** node with the same credentials you used with
+the **primary** node. After you sign in:
 
-You can sign in to the _secondary_ node with the same credentials you used with
-the _primary_ node. Visit the _secondary_ node's **Admin Area > Geo**
-(`/admin/geo/nodes`) in your browser to determine if it's correctly identified
-as a _secondary_ Geo node, and if Geo is enabled.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Geo > Nodes**.
+1. Verify that it's correctly identified as a **secondary** Geo node, and that
+   Geo is enabled.
 
 The initial replication, or 'backfill', is probably still in progress. You
 can monitor the synchronization process on each Geo node from the **primary**

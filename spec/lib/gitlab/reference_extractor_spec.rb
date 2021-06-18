@@ -227,7 +227,7 @@ RSpec.describe Gitlab::ReferenceExtractor do
 
   context 'with an inactive external issue tracker' do
     let(:project) { create(:project) }
-    let!(:jira_service) { create(:jira_service, project: project, active: false) }
+    let!(:jira_integration) { create(:jira_integration, project: project, active: false) }
     let(:issue)   { create(:issue, project: project) }
 
     context 'when GitLab issues are enabled' do

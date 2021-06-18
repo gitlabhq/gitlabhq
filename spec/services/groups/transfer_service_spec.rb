@@ -241,7 +241,7 @@ RSpec.describe Groups::TransferService do
 
       context 'when the group is allowed to be transferred' do
         let_it_be(:new_parent_group, reload: true) { create(:group, :public) }
-        let_it_be(:new_parent_group_integration) { create(:slack_service, group: new_parent_group, project: nil, webhook: 'http://new-group.slack.com') }
+        let_it_be(:new_parent_group_integration) { create(:integrations_slack, group: new_parent_group, project: nil, webhook: 'http://new-group.slack.com') }
 
         before do
           allow(PropagateIntegrationWorker).to receive(:perform_async)
@@ -277,8 +277,8 @@ RSpec.describe Groups::TransferService do
           let(:new_created_integration) { Integration.find_by(group: group) }
 
           context 'with an inherited integration' do
-            let_it_be(:instance_integration) { create(:slack_service, :instance, webhook: 'http://project.slack.com') }
-            let_it_be(:group_integration) { create(:slack_service, group: group, project: nil, webhook: 'http://group.slack.com', inherit_from_id: instance_integration.id) }
+            let_it_be(:instance_integration) { create(:integrations_slack, :instance, webhook: 'http://project.slack.com') }
+            let_it_be(:group_integration) { create(:integrations_slack, group: group, project: nil, webhook: 'http://group.slack.com', inherit_from_id: instance_integration.id) }
 
             it 'replaces inherited integrations', :aggregate_failures do
               expect(new_created_integration.webhook).to eq(new_parent_group_integration.webhook)
@@ -288,7 +288,7 @@ RSpec.describe Groups::TransferService do
           end
 
           context 'with a custom integration' do
-            let_it_be(:group_integration) { create(:slack_service, group: group, project: nil, webhook: 'http://group.slack.com') }
+            let_it_be(:group_integration) { create(:integrations_slack, group: group, project: nil, webhook: 'http://group.slack.com') }
 
             it 'does not updates the integrations', :aggregate_failures do
               expect { transfer_service.execute(new_parent_group) }.not_to change { group_integration.webhook }

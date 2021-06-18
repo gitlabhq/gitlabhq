@@ -16,7 +16,7 @@ RSpec.describe Gitlab::JiraImport::Stage::ImportIssuesWorker do
     let_it_be(:jira_import, reload: true) { create(:jira_import_state, :scheduled, project: project) }
 
     before do
-      stub_jira_service_test
+      stub_jira_integration_test
     end
 
     context 'when import did not start' do
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::JiraImport::Stage::ImportIssuesWorker do
     end
 
     context 'when import started', :clean_gitlab_redis_cache do
-      let_it_be(:jira_service) { create(:jira_service, project: project) }
+      let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 
       before do
         jira_import.start!

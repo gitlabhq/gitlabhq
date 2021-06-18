@@ -22,7 +22,7 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver do
     end
 
     context 'when project has no Jira service' do
-      let_it_be(:jira_service) { nil }
+      let_it_be(:jira_integration) { nil }
 
       context 'when user is a maintainer' do
         before do
@@ -34,7 +34,7 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver do
     end
 
     context 'when project has Jira service' do
-      let(:jira_service) { create(:jira_service, project: project) }
+      let(:jira_integration) { create(:jira_integration, project: project) }
 
       context 'when user is a developer' do
         before do
@@ -98,6 +98,6 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver do
   end
 
   def resolve_jira_projects(args = {}, context = { current_user: user })
-    resolve(described_class, obj: jira_service, args: args, ctx: context)
+    resolve(described_class, obj: jira_integration, args: args, ctx: context)
   end
 end

@@ -6,7 +6,7 @@ RSpec.describe BulkUpdateIntegrationService do
   include JiraServiceHelper
 
   before_all do
-    stub_jira_service_test
+    stub_jira_integration_test
   end
 
   let(:excluded_attributes) { %w[id project_id group_id inherit_from_id instance template created_at updated_at] }

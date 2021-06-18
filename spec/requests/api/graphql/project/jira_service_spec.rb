@@ -7,7 +7,7 @@ RSpec.describe 'query Jira service' do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:jira_service) { create(:jira_service, project: project) }
+  let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 
   let(:query) do
     %(

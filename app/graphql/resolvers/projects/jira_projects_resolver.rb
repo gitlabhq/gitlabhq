@@ -34,16 +34,16 @@ module Resolvers
 
       private
 
-      alias_method :jira_service, :object
+      alias_method :jira_integration, :object
 
       def project
-        jira_service&.project
+        jira_integration&.project
       end
 
       def jira_projects(name:)
         args = { query: name }.compact
 
-        Jira::Requests::Projects::ListService.new(project.jira_service, args).execute
+        Jira::Requests::Projects::ListService.new(project.jira_integration, args).execute
       end
     end
   end

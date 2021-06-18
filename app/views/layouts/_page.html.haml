@@ -19,6 +19,7 @@
       = render_if_exists "layouts/header/ee_subscribable_banner"
       = render_if_exists "shared/namespace_storage_limit_alert"
       = render_if_exists "shared/new_user_signups_cap_reached_alert"
+      = yield :page_level_alert
       = yield :customize_homepage_banner
       - unless @hide_breadcrumbs
         = render "layouts/nav/breadcrumbs"

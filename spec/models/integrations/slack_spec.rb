@@ -10,7 +10,7 @@ RSpec.describe Integrations::Slack do
       stub_request(:post, "https://slack.service.url/")
     end
 
-    let_it_be(:slack_service) { create(:slack_service, branches_to_be_notified: 'all') }
+    let_it_be(:slack_integration) { create(:integrations_slack, branches_to_be_notified: 'all') }
 
     it 'uses only known events', :aggregate_failures do
       described_class::SUPPORTED_EVENTS_FOR_USAGE_LOG.each do |action|
@@ -26,7 +26,7 @@ RSpec.describe Integrations::Slack do
         it 'increases the usage data counter' do
           expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(event_name, values: user.id).and_call_original
 
-          slack_service.execute(data)
+          slack_integration.execute(data)
         end
       end
 
@@ -38,7 +38,7 @@ RSpec.describe Integrations::Slack do
         it 'does not increase the usage data counter' do
           expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event).with('i_ecosystem_slack_service_pipeline_notification', values: user.id)
 
-          slack_service.execute(data)
+          slack_integration.execute(data)
         end
       end
 
@@ -126,7 +126,7 @@ RSpec.describe Integrations::Slack do
       it 'does not increase the usage data counter' do
         expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
 
-        slack_service.execute(data)
+        slack_integration.execute(data)
       end
     end
   end

@@ -58,19 +58,25 @@ Feature.enable('geo_repository_verification')
 
 ## Repository verification
 
-Go to the **Admin Area > Geo** dashboard on the **primary** node and expand
-the **Verification information** section for that node to view automatic checksumming
-status for each data type. Successes are shown in green, pending work
-in gray, and failures in red.
+On the **primary** node:
 
-![Verification status](img/verification_status_primary_v14_0.png)
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Geo > Nodes**.
+1. Expand **Verification information** tab for that node to view automatic checksumming
+   status for repositories and wikis. Successes are shown in green, pending work
+   in gray, and failures in red.
 
-Go to the **Admin Area > Geo** dashboard on the **secondary** node and expand
-the **Verification information** section for that node to view automatic verification
-status for each data type. As with checksumming, successes are shown in
-green, pending work in gray, and failures in red.
+   ![Verification status](img/verification_status_primary_v14_0.png)
 
-![Verification status](img/verification_status_secondary_v14_0.png)
+On the **secondary** node:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Geo > Nodes**.
+1. Expand **Verification information** tab for that node to view automatic checksumming
+   status for repositories and wikis. Successes are shown in green, pending work
+   in gray, and failures in red.
+
+   ![Verification status](img/verification_status_secondary_v14_0.png)
 
 ## Using checksums to compare Geo nodes
 
@@ -92,11 +98,14 @@ data. The default and recommended re-verification interval is 7 days, though
 an interval as short as 1 day can be set. Shorter intervals reduce risk but
 increase load and vice versa.
 
-Go to the **Admin Area > Geo** dashboard on the **primary** node, and
-click the **Edit** button for the **primary** node to customize the minimum
-re-verification interval:
+On the **primary** node:
 
-![Re-verification interval](img/reverification-interval.png)
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Geo > Nodes**.
+1. Select **Edit** for the **primary** node to customize the minimum
+   re-verification interval:
+
+   ![Re-verification interval](img/reverification-interval.png)
 
 The automatic background re-verification is enabled by default, but you can
 disable if you need. Run the following commands in a Rails console on the
@@ -141,17 +150,19 @@ sudo gitlab-rake geo:verification:wiki:reset
 
 If the **primary** and **secondary** nodes have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
 
-1. Go to the **Admin Area > Overview > Projects** dashboard on the **primary** node, find the
-   project that you want to check the checksum differences and click on the
-   **Edit** button:
-   ![Projects dashboard](img/checksum-differences-admin-projects.png)
+1. On the **primary** node:
+   1. On the top bar, select **Menu >** **{admin}** **Admin**.
+   1. On the left sidebar, select **Overview > Projects**.
+   1. Find the project that you want to check the checksum differences and
+      select its name.
+   1. On the project administration page get the **Gitaly storage name**,
+      and **Gitaly relative path**.
 
-1. On the project administration page get the **Gitaly storage name**, and **Gitaly relative path**:
-   ![Project administration page](img/checksum-differences-admin-project-page.png)
+      ![Project administration page](img/checksum-differences-admin-project-page.png)
 
 1. Go to the project's repository directory on both **primary** and **secondary** nodes
    (the path is usually `/var/opt/gitlab/git-data/repositories`). Note that if `git_data_dirs`
-   is customized, check the directory layout on your server to be sure.
+   is customized, check the directory layout on your server to be sure:
 
    ```shell
    cd /var/opt/gitlab/git-data/repositories

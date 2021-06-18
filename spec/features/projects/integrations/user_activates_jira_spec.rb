@@ -65,7 +65,7 @@ RSpec.describe 'User activates Jira', :js do
     include JiraServiceHelper
 
     before do
-      stub_jira_service_test
+      stub_jira_integration_test
       visit_project_integration('Jira')
       fill_form(disable: true)
       click_save_integration
@@ -105,14 +105,14 @@ RSpec.describe 'User activates Jira', :js do
       click_save_integration
 
       expect(page).to have_content('Jira settings saved and active.')
-      expect(project.reload.jira_service.data_fields).to have_attributes(
+      expect(project.reload.jira_integration.data_fields).to have_attributes(
         jira_issue_transition_automatic: false,
         jira_issue_transition_id: '1, 2, 3'
       )
     end
 
     it 'using automatic transitions' do
-      create(:jira_service, project: project, jira_issue_transition_automatic: false, jira_issue_transition_id: '1, 2, 3')
+      create(:jira_integration, project: project, jira_issue_transition_automatic: false, jira_issue_transition_id: '1, 2, 3')
       visit_project_integration('Jira')
 
       expect(page).to have_field('Enable Jira transitions', checked: true)
@@ -123,14 +123,14 @@ RSpec.describe 'User activates Jira', :js do
       click_save_integration
 
       expect(page).to have_content('Jira settings saved and active.')
-      expect(project.reload.jira_service.data_fields).to have_attributes(
+      expect(project.reload.jira_integration.data_fields).to have_attributes(
         jira_issue_transition_automatic: true,
         jira_issue_transition_id: ''
       )
     end
 
     it 'disabling issue transitions' do
-      create(:jira_service, project: project, jira_issue_transition_automatic: true, jira_issue_transition_id: '1, 2, 3')
+      create(:jira_integration, project: project, jira_issue_transition_automatic: true, jira_issue_transition_id: '1, 2, 3')
       visit_project_integration('Jira')
 
       expect(page).to have_field('Enable Jira transitions', checked: true)
@@ -140,7 +140,7 @@ RSpec.describe 'User activates Jira', :js do
       click_save_integration
 
       expect(page).to have_content('Jira settings saved and active.')
-      expect(project.reload.jira_service.data_fields).to have_attributes(
+      expect(project.reload.jira_integration.data_fields).to have_attributes(
         jira_issue_transition_automatic: false,
         jira_issue_transition_id: ''
       )

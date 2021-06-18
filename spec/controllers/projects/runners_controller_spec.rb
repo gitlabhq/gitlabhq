@@ -111,7 +111,7 @@ RSpec.describe Projects::RunnersController do
 
       expect(response).to have_gitlab_http_status(:unauthorized)
       expect(project.shared_runners_enabled).to eq(false)
-      expect(json_response['error']).to eq('Cannot enable shared runners because parent group does not allow it')
+      expect(json_response['error']).to eq('Shared runners enabled cannot be enabled because parent group does not allow it')
     end
   end
 end

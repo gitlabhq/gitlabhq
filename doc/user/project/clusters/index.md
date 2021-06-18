@@ -12,35 +12,31 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in
 >   GitLab 11.11 for [instances](../../instance/clusters/index.md).
 
-Using the GitLab project Kubernetes integration, you can:
+You can use GitLab to manage your clusters and [benefit from the GitLab-Kubernetes integration](#benefit-from-the-gitlab-kubernetes-integration).
 
-- Use [Review Apps](../../../ci/review_apps/index.md).
-- Run [pipelines](../../../ci/pipelines/index.md).
+See the [supported cluster versions](#supported-cluster-versions) before
+you begin.
+
+## Benefit from the GitLab-Kubernetes integration
+
+Using the GitLab-Kubernetes integration, you can benefit of GitLab
+features such as:
+
+- Preview your applications with [Review Apps](../../../ci/review_apps/index.md).
+- Create GitLab CI/CD [Pipelines](../../../ci/pipelines/index.md) to build, test, and deploy to your cluster.
 - [Deploy](#deploying-to-a-kubernetes-cluster) your applications.
-- Detect and [monitor Kubernetes](#monitoring-your-kubernetes-cluster).
-- Use it with [Auto DevOps](#auto-devops).
+- Detect and [monitor](#monitoring-your-kubernetes-cluster) your clusters.
+- Use [Auto DevOps](#auto-devops) to automate the CI/CD process.
 - Use [Web terminals](#web-terminals).
 - Use [Deploy Boards](#deploy-boards).
 - Use [Canary Deployments](#canary-deployments). **(PREMIUM)**
 - Use [deployment variables](#deployment-variables).
-- Use [role-based or attribute-based access controls](add_remove_clusters.md#access-controls).
+- Use [role-based or attribute-based access controls](cluster_access.md).
 - View [Logs](#viewing-pod-logs).
 - Run serverless workloads on [Kubernetes with Knative](serverless/index.md).
+- Connect GitLab to in-cluster applications using [cluster integrations](../../clusters/integrations.md).
 
-Besides integration at the project level, Kubernetes clusters can also be
-integrated at the [group level](../../group/clusters/index.md) or
-[GitLab instance level](../../instance/clusters/index.md).
-
-To view your project level Kubernetes clusters, navigate to **Infrastructure > Kubernetes clusters**
-from your project. On this page, you can [add a new cluster](#adding-and-removing-clusters)
-and view information about your existing clusters, such as:
-
-- Nodes count.
-- Rough estimates of memory and CPU usage.
-
-## Setting up
-
-### Supported cluster versions
+## Supported cluster versions
 
 GitLab is committed to support at least two production-ready Kubernetes minor
 versions at any given time. We regularly review the versions we support, and
@@ -61,19 +57,31 @@ Kubernetes version to any supported version at any time:
 
 Some GitLab features may support versions outside the range provided here.
 
-NOTE:
-[GKE Cluster creation](add_remove_clusters.md#create-new-cluster) by GitLab is currently not supported for Kubernetes 1.19+. For these versions you can create the cluster through GCP, then [Add existing cluster](add_remove_clusters.md#add-existing-cluster). See [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331922) for more information.
+## Add and remove clusters
 
-### Adding and removing clusters
+You can create new or add existing clusters to GitLab:
 
-See [Adding and removing Kubernetes clusters](add_remove_clusters.md) for details on how
-to:
+- On the project-level, to have a cluster dedicated to a project.
+- On the [group level](../../group/clusters/index.md), to use the same cluster across multiple projects within your group.
+- On the [instance level](../../instance/clusters/index.md), to use the same cluster across multiple groups and projects. **(FREE SELF)**
 
-- Create a cluster in Google Cloud Platform (GCP) or Amazon Elastic Kubernetes Service
-  (EKS) using the GitLab UI.
-- Add an integration to an existing cluster from any Kubernetes platform.
+To create new clusters, use one of the following methods:
 
-### Multiple Kubernetes clusters
+- [Infrastructure as Code](../../infrastructure/index.md) (**recommended**).
+- [Cluster certificates](add_remove_clusters.md) (**deprecated**).
+
+You can also [add existing clusters](add_existing_cluster.md) to GitLab.
+
+## View your clusters
+
+To view your project-level Kubernetes clusters, to go **Infrastructure > Kubernetes clusters**
+from your project. On this page, you can add a new cluster
+and view information about your existing clusters, such as:
+
+- Nodes count.
+- Rough estimates of memory and CPU usage.
+
+## Multiple Kubernetes clusters
 
 > - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) to GitLab Free in 13.2.
@@ -85,7 +93,7 @@ Add another cluster, like you did the first time, and make sure to
 [set an environment scope](#setting-the-environment-scope) that
 differentiates the new cluster from the rest.
 
-#### Setting the environment scope
+### Setting the environment scope
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the
@@ -141,8 +149,8 @@ The results:
 
 ## Configuring your Kubernetes cluster
 
-After [adding a Kubernetes cluster](add_remove_clusters.md) to GitLab, read this section that covers
-important considerations for configuring Kubernetes clusters with GitLab.
+Use the [GitLab Kubernetes Agent](../../clusters/agent/index.md) to safely
+configure your clusters. Otherwise, there are [security implications](#security-implications).
 
 ### Security implications
 
@@ -171,6 +179,8 @@ explicitly provide the `KUBE_NAMESPACE` [deployment variable](#deployment-variab
 for your deployment jobs to use. Otherwise, a namespace is created for you.
 
 #### Important notes
+
+Note the following with GitLab and clusters:
 
 Be aware that manually managing resources that have been created by GitLab, like
 namespaces and service accounts, can cause unexpected errors. If this occurs, try
@@ -253,6 +263,11 @@ This list provides a generic solution, and some GitLab-specific approaches:
 
 If you see a trailing `%` on some Kubernetes versions, do not include it.
 
+## Cluster integrations
+
+See the available [cluster integrations](../../clusters/integrations.md)
+to integrate third-party applications with your clusters through GitLab.
+
 ## Cluster management project
 
 Attach a [Cluster management project](../../clusters/management_project.md)
@@ -261,14 +276,8 @@ installation, such as an Ingress controller.
 
 ## Auto DevOps
 
-Auto DevOps automatically detects, builds, tests, deploys, and monitors your
-applications.
-
-To make full use of Auto DevOps (Auto Deploy, Auto Review Apps, and
-Auto Monitoring) the Kubernetes project integration must be enabled. However,
-Kubernetes clusters can be used without Auto DevOps.
-
-[Read more about Auto DevOps](../../../topics/autodevops/index.md).
+You can use [Auto DevOps](../../../topics/autodevops/index.md) to automatically
+detect, build, test, deploy, and monitor your applications.
 
 ## Deploying to a Kubernetes cluster
 
@@ -309,7 +318,7 @@ GitLab CI/CD build environment to deployment jobs. Deployment jobs have
 | Deployment Variable        | Description |
 |----------------------------|-------------|
 | `KUBE_URL`                 | Equal to the API URL. |
-| `KUBE_TOKEN`               | The Kubernetes token of the [environment service account](add_remove_clusters.md#access-controls). Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main service account of the cluster integration. |
+| `KUBE_TOKEN`               | The Kubernetes token of the [environment service account](cluster_access.md). Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main service account of the cluster integration. |
 | `KUBE_NAMESPACE`           | The namespace associated with the project's deployment service account. In the format `<project_name>-<project_id>-<environment>`. For GitLab-managed clusters, a matching namespace is automatically created by GitLab in the cluster. If your cluster was created before GitLab 12.2, the default `KUBE_NAMESPACE` is set to `<project_name>-<project_id>`. |
 | `KUBE_CA_PEM_FILE`         | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
 | `KUBE_CA_PEM`              | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |

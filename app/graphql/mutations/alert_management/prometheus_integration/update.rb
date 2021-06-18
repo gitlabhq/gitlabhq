@@ -6,7 +6,7 @@ module Mutations
       class Update < PrometheusIntegrationBase
         graphql_name 'PrometheusIntegrationUpdate'
 
-        argument :id, Types::GlobalIDType[::PrometheusService],
+        argument :id, Types::GlobalIDType[::Integrations::Prometheus],
                  required: true,
                  description: "The ID of the integration to mutate."
 

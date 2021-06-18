@@ -200,6 +200,7 @@ export default {
 
     <template #action-buttons>
       <security-report-download-dropdown
+        :text="s__('SecurityReports|Download results')"
         :artifacts="reportArtifacts"
         :loading="isLoadingReportArtifacts"
       />
@@ -228,6 +229,7 @@ export default {
 
     <template #action-buttons>
       <security-report-download-dropdown
+        :text="s__('SecurityReports|Download results')"
         :artifacts="reportArtifacts"
         :loading="isLoadingReportArtifacts"
       />

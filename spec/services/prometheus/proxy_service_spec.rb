@@ -65,7 +65,7 @@ RSpec.describe Prometheus::ProxyService do
   end
 
   describe '#execute' do
-    let(:prometheus_adapter) { instance_double(PrometheusService) }
+    let(:prometheus_adapter) { instance_double(::Integrations::Prometheus) }
     let(:params) { ActionController::Parameters.new(query: '1').permit! }
 
     subject { described_class.new(environment, 'GET', 'query', params) }

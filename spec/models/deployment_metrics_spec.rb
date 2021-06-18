@@ -20,7 +20,7 @@ RSpec.describe DeploymentMetrics do
       end
 
       context 'with a Prometheus Service' do
-        let(:prometheus_service) { instance_double(PrometheusService, can_query?: true, configured?: true) }
+        let(:prometheus_service) { instance_double(::Integrations::Prometheus, can_query?: true, configured?: true) }
 
         before do
           allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
@@ -30,7 +30,7 @@ RSpec.describe DeploymentMetrics do
       end
 
       context 'with a Prometheus Service that cannot query' do
-        let(:prometheus_service) { instance_double(PrometheusService, configured?: true, can_query?: false) }
+        let(:prometheus_service) { instance_double(::Integrations::Prometheus, configured?: true, can_query?: false) }
 
         before do
           allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
@@ -40,7 +40,7 @@ RSpec.describe DeploymentMetrics do
       end
 
       context 'with a Prometheus Service that is not configured' do
-        let(:prometheus_service) { instance_double(PrometheusService, configured?: false, can_query?: false) }
+        let(:prometheus_service) { instance_double(::Integrations::Prometheus, configured?: false, can_query?: false) }
 
         before do
           allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
@@ -64,7 +64,7 @@ RSpec.describe DeploymentMetrics do
 
   describe '#metrics' do
     let(:deployment) { create(:deployment, :success) }
-    let(:prometheus_adapter) { instance_double(PrometheusService, can_query?: true, configured?: true) }
+    let(:prometheus_adapter) { instance_double(::Integrations::Prometheus, can_query?: true, configured?: true) }
     let(:deployment_metrics) { described_class.new(deployment.project, deployment) }
 
     subject { deployment_metrics.metrics }

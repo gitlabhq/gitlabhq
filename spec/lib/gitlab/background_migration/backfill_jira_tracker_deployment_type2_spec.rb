@@ -3,18 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillJiraTrackerDeploymentType2, :migration, schema: 20201028182809 do
-  let_it_be(:jira_service_temp) { described_class::JiraServiceTemp }
+  let_it_be(:jira_integration_temp) { described_class::JiraServiceTemp }
   let_it_be(:jira_tracker_data_temp) { described_class::JiraTrackerDataTemp }
   let_it_be(:atlassian_host) { 'https://api.atlassian.net' }
   let_it_be(:mixedcase_host) { 'https://api.AtlassiaN.nEt' }
   let_it_be(:server_host) { 'https://my.server.net' }
 
-  let(:jira_service) { jira_service_temp.create!(type: 'JiraService', active: true, category: 'issue_tracker') }
+  let(:jira_integration) { jira_integration_temp.create!(type: 'JiraService', active: true, category: 'issue_tracker') }
 
   subject { described_class.new }
 
   def create_tracker_data(options = {})
-    jira_tracker_data_temp.create!({ service_id: jira_service.id }.merge(options))
+    jira_tracker_data_temp.create!({ service_id: jira_integration.id }.merge(options))
   end
 
   describe '#perform' do

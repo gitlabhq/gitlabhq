@@ -9,11 +9,12 @@ module Gitlab
       # Example:
       #
       #   DEPRECATIONS = [
-      #     Deprecation.new(old_model_name: 'PrometheusService', new_model_name: 'Integrations::Prometheus', milestone: '14.0')
+      #     Deprecation.new(old_model_name: 'PrometheusService', new_model_name: 'Integrations::Prometheus', milestone: '14.1')
       #   ].freeze
       DEPRECATIONS = [
         # This works around an accidentally released argument named as `"EEIterationID"` in 7000489db.
-        Deprecation.new(old_model_name: 'EEIteration', new_model_name: 'Iteration', milestone: '13.3')
+        Deprecation.new(old_model_name: 'EEIteration', new_model_name: 'Iteration', milestone: '13.3'),
+        Deprecation.new(old_model_name: 'PrometheusService', new_model_name: 'Integrations::Prometheus', milestone: '14.1')
       ].freeze
 
       # Maps of the DEPRECATIONS Hash for quick access.

@@ -799,20 +799,20 @@ module API
           ::Integrations::Packagist,
           ::Integrations::PipelinesEmail,
           ::Integrations::Pivotaltracker,
+          ::Integrations::Prometheus,
           ::Integrations::Pushover,
           ::Integrations::Redmine,
           ::Integrations::Slack,
           ::Integrations::SlackSlashCommands,
           ::Integrations::Teamcity,
-          ::Integrations::Youtrack,
-          ::PrometheusService
+          ::Integrations::Youtrack
         ]
       end
 
       def self.development_service_classes
         [
           ::Integrations::MockCi,
-          ::MockMonitoringService
+          ::Integrations::MockMonitoring
         ]
       end
     end

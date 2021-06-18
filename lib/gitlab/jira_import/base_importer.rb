@@ -14,7 +14,7 @@ module Gitlab
         raise Projects::ImportService::Error, _('Unable to find Jira project to import data from.') unless @jira_project_key
 
         @project = project
-        @client = project.jira_service.client
+        @client = project.jira_integration.client
         @formatter = Gitlab::ImportFormatter.new
       end
 

@@ -9,25 +9,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab supports and automates housekeeping tasks within your current repository,
 such as compressing file revisions and removing unreachable objects.
 
-## Automatic housekeeping
+## Configure housekeeping
 
 GitLab automatically runs `git gc` and `git repack` on repositories
-after Git pushes. You can change how often this happens or turn it off in
-**Admin Area > Settings > Repository** (`/admin/application_settings/repository`).
+after Git pushes.
 
-## Manual housekeeping
+You can change how often this happens or turn it off:
 
-The housekeeping function runs `repack` or `gc` depending on the
-**Housekeeping** settings configured in **Admin Area > Settings > Repository**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Repository maintenance**.
+1. Configure the Housekeeping options.
+1. Select **Save changes**.
 
-For example in the following scenario a `git repack -d` will be executed:
+For example, in the following scenario a `git repack -d` will be executed:
 
 - Project: pushes since GC counter (`pushes_since_gc`) = `10`
 - Git GC period = `200`
 - Full repack period = `50`
 
 When the `pushes_since_gc` value is 50 a `repack -A -d --pack-kept-objects` runs, similarly when
-the `pushes_since_gc` value is 200 a `git gc` runs.
+the `pushes_since_gc` value is 200 a `git gc` runs:
 
 - `git gc` ([man page](https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-gc.html)) runs a number of housekeeping tasks,
   such as compressing file revisions (to reduce disk space and increase performance)
@@ -37,12 +39,6 @@ the `pushes_since_gc` value is 200 a `git gc` runs.
 
 Housekeeping also [removes unreferenced LFS files](../raketasks/cleanup.md#remove-unreferenced-lfs-files)
 from your project on the same schedule as the `git gc` operation, freeing up storage space for your project.
-
-To manually start the housekeeping process:
-
-1. In your project, go to **Settings > General**.
-1. Expand the **Advanced** section.
-1. Select **Run housekeeping**.
 
 ## How housekeeping handles pool repositories
 

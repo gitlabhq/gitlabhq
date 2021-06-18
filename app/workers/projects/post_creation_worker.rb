@@ -21,7 +21,7 @@ module Projects
     private
 
     def create_prometheus_service(project)
-      service = project.find_or_initialize_service(::PrometheusService.to_param)
+      service = project.find_or_initialize_service(::Integrations::Prometheus.to_param)
 
       # If the service has already been inserted in the database, that
       # means it came from a template, and there's nothing more to do.

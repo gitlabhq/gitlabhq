@@ -19,7 +19,7 @@ RSpec.describe Integrations::SlackSlashCommands do
       end
 
       let(:service) do
-        project.create_slack_slash_commands_service(
+        project.create_slack_slash_commands_integration(
           properties: { token: 'token' },
           active: true
         )
