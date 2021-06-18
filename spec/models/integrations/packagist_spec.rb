@@ -33,14 +33,14 @@ RSpec.describe Integrations::Packagist do
     let(:user)    { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:push_sample_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
-    let(:packagist_service) { described_class.create!(packagist_params) }
+    let(:packagist_integration) { described_class.create!(packagist_params) }
 
     before do
       stub_request(:post, packagist_hook_url)
     end
 
     it 'calls Packagist API' do
-      packagist_service.execute(push_sample_data)
+      packagist_integration.execute(push_sample_data)
 
       expect(a_request(:post, packagist_hook_url)).to have_been_made.once
     end

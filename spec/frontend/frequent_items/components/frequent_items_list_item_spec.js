@@ -1,3 +1,4 @@
+import { GlButton } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
@@ -18,7 +19,7 @@ describe('FrequentItemsListItemComponent', () => {
   const findAvatar = () => wrapper.find({ ref: 'frequentItemsItemAvatar' });
   const findAllTitles = () => wrapper.findAll({ ref: 'frequentItemsItemTitle' });
   const findNamespace = () => wrapper.find({ ref: 'frequentItemsItemNamespace' });
-  const findAllAnchors = () => wrapper.findAll('a');
+  const findAllButtons = () => wrapper.findAllComponents(GlButton);
   const findAllNamespace = () => wrapper.findAll({ ref: 'frequentItemsItemNamespace' });
   const findAvatarContainer = () => wrapper.findAll({ ref: 'frequentItemsItemAvatarContainer' });
   const findAllMetadataContainers = () =>
@@ -109,7 +110,7 @@ describe('FrequentItemsListItemComponent', () => {
 
     it.each`
       name                    | selector                     | expected
-      ${'anchor'}             | ${findAllAnchors}            | ${1}
+      ${'button'}             | ${findAllButtons}            | ${1}
       ${'avatar container'}   | ${findAvatarContainer}       | ${1}
       ${'metadata container'} | ${findAllMetadataContainers} | ${1}
       ${'title'}              | ${findAllTitles}             | ${1}
@@ -119,13 +120,10 @@ describe('FrequentItemsListItemComponent', () => {
     });
 
     it('tracks when item link is clicked', () => {
-      const link = wrapper.find('a');
-      // NOTE: this listener is required to prevent the click from going through and causing:
-      //   `Error: Not implemented: navigation ...`
-      link.element.addEventListener('click', (e) => {
-        e.preventDefault();
-      });
-      link.trigger('click');
+      const link = wrapper.findComponent(GlButton);
+
+      link.vm.$emit('click');
+
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_link', {
         label: 'projects_dropdown_frequent_items_list_item',
       });

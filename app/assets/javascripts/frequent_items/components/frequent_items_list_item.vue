@@ -1,5 +1,6 @@
 <script>
 /* eslint-disable vue/require-default-prop, vue/no-v-html */
+import { GlButton } from '@gitlab/ui';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import { mapVuexModuleState } from '~/lib/utils/vuex_module_mappers';
@@ -11,6 +12,7 @@ const trackingMixin = Tracking.mixin();
 export default {
   components: {
     Identicon,
+    GlButton,
   },
   mixins: [trackingMixin],
   inject: ['vuexModule'],
@@ -56,9 +58,10 @@ export default {
 
 <template>
   <li class="frequent-items-list-item-container">
-    <a
+    <gl-button
+      category="tertiary"
       :href="webUrl"
-      class="clearfix dropdown-item"
+      class="gl-text-left gl-justify-content-start!"
       @click="track('click_link', { label: `${dropdownType}_dropdown_frequent_items_list_item` })"
     >
       <div
@@ -90,6 +93,6 @@ export default {
           {{ truncatedNamespace }}
         </div>
       </div>
-    </a>
+    </gl-button>
   </li>
 </template>

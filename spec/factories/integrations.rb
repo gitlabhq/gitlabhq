@@ -173,7 +173,7 @@ FactoryBot.define do
     type { 'SlackSlashCommandsService' }
   end
 
-  factory :pipelines_email_service, class: 'Integrations::PipelinesEmail' do
+  factory :pipelines_email_integration, class: 'Integrations::PipelinesEmail' do
     project
     active { true }
     type { 'PipelinesEmailService' }

@@ -22,7 +22,7 @@ module Nav
 
       new_view_model = new_dropdown_view_model(project: project, group: group)
 
-      if new_view_model
+      if new_view_model && new_view_model.fetch(:menu_sections)&.any?
         builder.add_view(NEW_VIEW, new_view_model)
       end
 

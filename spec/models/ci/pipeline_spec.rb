@@ -2854,7 +2854,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           end
 
           it 'builds hook data once' do
-            create(:pipelines_email_service)
+            create(:pipelines_email_integration)
 
             expect(Gitlab::DataBuilder::Pipeline).to receive(:build).once.and_call_original
 

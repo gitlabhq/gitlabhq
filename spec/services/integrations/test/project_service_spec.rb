@@ -23,8 +23,8 @@ RSpec.describe Integrations::Test::ProjectService do
         expect(subject).to eq(success_result)
       end
 
-      context 'PipelinesEmailService' do
-        let(:integration) { create(:pipelines_email_service, project: project) }
+      context 'with Integrations::PipelinesEmail' do
+        let(:integration) { create(:pipelines_email_integration, project: project) }
 
         it_behaves_like 'tests for integration with pipeline data'
       end
