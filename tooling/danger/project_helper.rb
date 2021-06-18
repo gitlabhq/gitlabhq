@@ -43,7 +43,8 @@ module Tooling
         %r{\Adata/whats_new/} => :docs,
 
         %r{\A(
-          app/assets/javascripts/tracking\.js |
+          app/assets/javascripts/tracking/.*\.js |
+          spec/frontend/tracking/.*\.js |
           spec/frontend/tracking_spec\.js
         )\z}x => [:frontend, :product_intelligence],
         %r{\A(ee/)?app/(assets|views)/} => :frontend,

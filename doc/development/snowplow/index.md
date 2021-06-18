@@ -549,13 +549,13 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
    update application_settings set snowplow_collector_hostname='localhost:9090', snowplow_enabled=true, snowplow_cookie_domain='.gitlab.com';
    ```
 
-1. Update `DEFAULT_SNOWPLOW_OPTIONS` in `app/assets/javascripts/tracking.js` to remove `forceSecureTracker: true`:
+1. Update `DEFAULT_SNOWPLOW_OPTIONS` in `app/assets/javascripts/tracking/index.js` to remove `forceSecureTracker: true`:
 
    ```diff
-   diff --git a/app/assets/javascripts/tracking.js b/app/assets/javascripts/tracking.js
+   diff --git a/app/assets/javascripts/tracking/index.js b/app/assets/javascripts/tracking/index.js
    index 0a1211d0a76..3b98c8f28f2 100644
-   --- a/app/assets/javascripts/tracking.js
-   +++ b/app/assets/javascripts/tracking.js
+   --- a/app/assets/javascripts/tracking/index.js
+   +++ b/app/assets/javascripts/tracking/index.js
    @@ -7,7 +7,6 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
       appId: '',
       userFingerprint: false,

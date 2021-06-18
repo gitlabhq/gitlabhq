@@ -183,7 +183,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'lib/generators/rails/usage_metric_definition_generator.rb' | [:backend, :product_intelligence]
       'spec/lib/generators/usage_metric_definition_generator_spec.rb' | [:backend, :product_intelligence]
       'config/metrics/schema.json' | [:product_intelligence]
-      'app/assets/javascripts/tracking.js' | [:frontend, :product_intelligence]
+      'app/assets/javascripts/tracking/foo.js' | [:frontend, :product_intelligence]
+      'spec/frontend/tracking/foo.js' | [:frontend, :product_intelligence]
       'spec/frontend/tracking_spec.js' | [:frontend, :product_intelligence]
       'lib/gitlab/usage_database/foo.rb' | [:backend]
     end

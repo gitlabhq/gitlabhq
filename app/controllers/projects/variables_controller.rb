@@ -3,7 +3,7 @@
 class Projects::VariablesController < Projects::ApplicationController
   before_action :authorize_admin_build!
 
-  feature_category :continuous_integration
+  feature_category :pipeline_authoring
 
   def show
     respond_to do |format|

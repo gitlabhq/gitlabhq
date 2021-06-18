@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::Ci::VariablesController < Admin::ApplicationController
-  feature_category :continuous_integration
+  feature_category :pipeline_authoring
 
   def show
     respond_to do |format|
