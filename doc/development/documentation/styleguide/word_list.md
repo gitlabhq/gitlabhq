@@ -32,6 +32,10 @@ Instead of **and/or**, use or or rewrite the sentence to spell out both options.
 
 Try to avoid extra words when referring to an example or table in a documentation page, but if required, use **following** instead.
 
+## blacklist
+
+Do not use. Another option is **denylist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+
 ## currently
 
 Do not use when talking about the product or its features. The documentation describes the product as it is today. ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
@@ -43,6 +47,11 @@ to mean someone who is assigned the Developer role. Instead, write it out. "If y
 
 Do not use "Developer permissions." A user who is assigned the Developer role has a set of associated permissions.
 
+## disable
+
+See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance.
+Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
+
 ## easily
 
 Do not use. If the user doesn't find the process to be these things, we lose their trust.
@@ -50,6 +59,11 @@ Do not use. If the user doesn't find the process to be these things, we lose the
 ## e.g.
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
+
+## enable
+
+See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance.
+Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
 ## future tense
 
@@ -89,6 +103,18 @@ to mean someone who is assigned the Maintainer role. Instead, write it out. "If 
 
 Do not use "Maintainer permissions." A user who is assigned the Maintainer role has a set of associated permissions.
 
+## mankind
+
+Do not use. Use **people** or **humanity** instead. ([Vale](../testing.md#vale) rule: [`InclusionGender.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionGender.yml))
+
+## manpower
+
+Do not use. Use words like **workforce** or **GitLab team members**. ([Vale](../testing.md#vale) rule: [`InclusionGender.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionGender.yml))
+
+## master
+
+Do not use. Options are **primary** or **main**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+
 ## may, might
 
 **Might** means something has the probability of occurring. **May** gives permission to do something. Consider **can** instead of **may**.
@@ -96,6 +122,10 @@ Do not use "Maintainer permissions." A user who is assigned the Maintainer role 
 ## me, myself, mine
 
 Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale](../testing.md#vale) rule: [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml))
+
+## merge requests
+
+Lowercase. If you use **MR** as the acronym, spell it out on first use.
 
 ## Owner
 
@@ -127,6 +157,10 @@ Do not use "Reporter permissions." A user who is assigned the Reporter role has 
 
 Do not use roles and permissions interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 
+## sanity check
+
+Do not use. Use **check for completeness** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
+
 ## scalability
 
 Do not use when talking about increasing GitLab performance for additional users. The words scale or scaling are sometimes acceptable, but references to increasing GitLab performance for additional users should direct readers to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) page.
@@ -139,6 +173,10 @@ Do not use. If the user doesn't find the process to be these things, we lose the
 
 Instead of **and/or**, use **or** or another sensible construction. This rule also applies to other slashes, like **follow/unfollow**. Some exceptions (like **CI/CD**) are allowed.
 
+## slave
+
+Do not use. Another option is **secondary**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+
 ## subgroup
 
 Use instead of `sub-group`.
@@ -146,6 +184,12 @@ Use instead of `sub-group`.
 ## that
 
 Do not use. Example: `the file that you save` can be `the file you save`.
+
+## they
+
+Avoid the use of gender-specific pronouns, unless referring to a specific person.
+Use a singular [they](https://developers.google.com/style/pronouns#gender-neutral-pronouns) as
+a gender-neutral pronoun.
 
 ## useful
 
@@ -158,6 +202,10 @@ Do not use. Use **use** instead. It's more succinct and easier for non-native En
 ## via
 
 Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
+
+## whitelist
+
+Do not use. Another option is **allowlist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
 <!-- vale on -->
 <!-- markdownlint-enable -->

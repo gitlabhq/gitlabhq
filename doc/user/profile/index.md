@@ -98,7 +98,7 @@ To add links to other accounts:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14078) in GitLab 11.3.
 
-In the user contribution calendar graph and recent activity list, you can show contributions to private projects.
+In the user contribution calendar graph and recent activity list, you can see your [contribution actions](../../api/events.md#action-types) to private projects.
 
 To show private contributions:
 

@@ -151,11 +151,7 @@ export const currentDiffIndex = (state) =>
     state.diffFiles.findIndex((diff) => diff.file_hash === state.currentDiffFileId),
   );
 
-export const diffLines = (state) => (file, unifiedDiffComponents) => {
-  if (!unifiedDiffComponents && state.diffViewType === INLINE_DIFF_VIEW_TYPE) {
-    return null;
-  }
-
+export const diffLines = (state) => (file) => {
   return parallelizeDiffLines(
     file.highlighted_diff_lines || [],
     state.diffViewType === INLINE_DIFF_VIEW_TYPE,

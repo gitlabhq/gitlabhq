@@ -743,7 +743,7 @@ DAST can be [configured](#customizing-the-dast-settings) using CI/CD variables.
 | `DAST_SUBMIT_FIELD`                         | selector      | A selector describing the element that when clicked submits the login form, or the password form of a multi-page login process. Example: `xpath://input[@value='Login']`. [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9894) in GitLab 12.4. |
 | `DAST_FIRST_SUBMIT_FIELD`                   | selector      | A selector describing the element that when clicked submits the username form of a multi-page login process. Example: `.submit`. [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9894) in GitLab 12.4. |
 | `DAST_ZAP_CLI_OPTIONS`                      | string        | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_ZAP_LOG_CONFIGURATION`                | string        | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG` |
+| `DAST_ZAP_LOG_CONFIGURATION`                | string        | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. |
 | `DAST_AGGREGATE_VULNERABILITIES`            | boolean       | Vulnerability aggregation is set to `true` by default. To disable this feature and see each vulnerability individually set to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254043) in GitLab 14.0. |
 | `DAST_MAX_URLS_PER_VULNERABILITY`           | number        | The maximum number of URLs reported for a single vulnerability. `DAST_MAX_URLS_PER_VULNERABILITY` is set to `50` by default. To list all the URLs set to `0`. [Introduced](https://gitlab.com/gitlab-org/security-products/dast/-/merge_requests/433) in GitLab 13.12. |
 | `DAST_AUTH_REPORT`                  | boolean       | Used in combination with exporting the `gl-dast-debug-auth-report.html` artifact to aid in debugging authentication issues. |
@@ -879,6 +879,8 @@ For details on using variables, see [Overriding the DAST template](#customizing-
 Debug mode of the ZAP server can be enabled using the `DAST_ZAP_LOG_CONFIGURATION` variable.
 The following table outlines examples of values that can be set and the effect that they have on the output that is logged.
 Multiple values can be specified, separated by semicolons.
+
+For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG`.
 
 | Log configuration value                                      | Effect                                                            |
 |--------------------------------------------------            | ----------------------------------------------------------------- |

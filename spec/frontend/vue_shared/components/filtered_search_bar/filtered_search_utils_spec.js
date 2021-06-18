@@ -11,7 +11,7 @@ import {
   processFilters,
   filterToQueryObject,
   urlQueryToFilter,
-  getRecentlyUsedTokenValues,
+  getRecentlyUsedSuggestions,
   setTokenValueToRecentlyUsed,
 } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 
@@ -328,32 +328,32 @@ describe('urlQueryToFilter', () => {
   );
 });
 
-describe('getRecentlyUsedTokenValues', () => {
+describe('getRecentlyUsedSuggestions', () => {
   useLocalStorageSpy();
 
   beforeEach(() => {
     localStorage.removeItem(mockStorageKey);
   });
 
-  it('returns array containing recently used token values from provided recentTokenValuesStorageKey', () => {
+  it('returns array containing recently used token values from provided recentSuggestionsStorageKey', () => {
     setLocalStorageAvailability(true);
 
     const mockExpectedArray = [{ foo: 'bar' }];
     localStorage.setItem(mockStorageKey, JSON.stringify(mockExpectedArray));
 
-    expect(getRecentlyUsedTokenValues(mockStorageKey)).toEqual(mockExpectedArray);
+    expect(getRecentlyUsedSuggestions(mockStorageKey)).toEqual(mockExpectedArray);
   });
 
-  it('returns empty array when provided recentTokenValuesStorageKey does not have anything in localStorage', () => {
+  it('returns empty array when provided recentSuggestionsStorageKey does not have anything in localStorage', () => {
     setLocalStorageAvailability(true);
 
-    expect(getRecentlyUsedTokenValues(mockStorageKey)).toEqual([]);
+    expect(getRecentlyUsedSuggestions(mockStorageKey)).toEqual([]);
   });
 
   it('returns empty array when when access to localStorage is not available', () => {
     setLocalStorageAvailability(false);
 
-    expect(getRecentlyUsedTokenValues(mockStorageKey)).toEqual([]);
+    expect(getRecentlyUsedSuggestions(mockStorageKey)).toEqual([]);
   });
 });
 
@@ -366,7 +366,7 @@ describe('setTokenValueToRecentlyUsed', () => {
     localStorage.removeItem(mockStorageKey);
   });
 
-  it('adds provided tokenValue to localStorage for recentTokenValuesStorageKey', () => {
+  it('adds provided tokenValue to localStorage for recentSuggestionsStorageKey', () => {
     setLocalStorageAvailability(true);
 
     setTokenValueToRecentlyUsed(mockStorageKey, mockTokenValue1);

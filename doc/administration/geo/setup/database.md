@@ -735,11 +735,23 @@ For each Patroni instance on the secondary site:
    ```
 
 1. Reconfigure GitLab for the changes to take effect.
-   This is required to bootstrap PostgreSQL users and settings:
+   This is required to bootstrap PostgreSQL users and settings.
 
-   ```shell
-   gitlab-ctl reconfigure
-   ```
+   - If this is a fresh installation of Patroni:
+
+     ```shell
+     gitlab-ctl reconfigure
+     ```
+
+   - If you are configuring a Patroni standby cluster on a site that previously had a working Patroni cluster:
+
+     ```shell
+     gitlab-ctl stop patroni 
+     rm -rf /var/opt/gitlab/postgresql/data
+     /opt/gitlab/embedded/bin/patronictl -c /var/opt/gitlab/patroni/patroni.yaml remove postgresql-ha
+     gitlab-ctl reconfigure
+     gitlab-ctl start patroni
+     ```
 
 ### Migrating from repmgr to Patroni
 

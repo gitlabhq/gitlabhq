@@ -258,30 +258,3 @@ describe('mapParallel', () => {
     expect(mapped.right).toMatchObject(rightExpectation);
   });
 });
-
-describe('mapInline', () => {
-  it('should assign computed properties to the line object', () => {
-    const content = {
-      diffFile: {},
-      shouldRenderDraftRow: () => false,
-    };
-    const line = {
-      discussions: [{}],
-      discussionsExpanded: true,
-      hasForm: true,
-    };
-    const expectation = {
-      commentRowClasses: '',
-      hasDiscussions: true,
-      isContextLine: false,
-      isMatchLine: false,
-      isMetaLine: false,
-      renderDiscussion: true,
-      hasDraft: false,
-      hasCommentForm: true,
-    };
-    const mapped = utils.mapInline(content)(line);
-
-    expect(mapped).toMatchObject(expectation);
-  });
-});

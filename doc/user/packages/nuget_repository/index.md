@@ -8,6 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20050) in GitLab Premium 12.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
+> - Symbol package support [added](https://gitlab.com/gitlab-org/gitlab/-/issues/262081) in GitLab 14.1.
 
 Publish NuGet packages in your project's Package Registry. Then, install the
 packages whenever you need to use them as a dependency.
@@ -393,6 +394,24 @@ dotnet add package <package_id> \
 
 - `<package_id>` is the package ID.
 - `<package_version>` is the package version. Optional.
+
+## Symbol packages
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262081) in GitLab 14.1.
+
+If you push a `.nupkg`, symbol package files in the `.snupkg` format are uploaded automatically. You
+can also push them manually:
+
+```shell
+nuget push My.Package.snupkg -Source <source_name>
+```
+
+Consuming symbol packages is not yet guaranteed using clients such as Visual Studio or
+dotnet-symbol. The `.snupkg` files are available for download through the UI or the
+[API](../../../api/packages/nuget.md#download-a-package-file).
+
+Follow the [NuGet symbol package issue](https://gitlab.com/gitlab-org/gitlab/-/issues/262081)
+for further updates.
 
 ## Supported CLI commands
 

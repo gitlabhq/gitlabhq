@@ -6,22 +6,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Puma **(FREE SELF)**
 
-NOTE:
-Starting with GitLab 13.0, Puma
-is the default web server and Unicorn has been
-disabled by default. In GitLab 14.0, Unicorn was removed from the Linux package
-and only Puma is available.
-
 Puma is a simple, fast, multi-threaded, and highly concurrent HTTP 1.1 server for
 Ruby applications. It's the default GitLab web server since GitLab 13.0
 and has replaced Unicorn. From GitLab 14.0, Unicorn is no longer supported.
+
+NOTE:
+Starting with GitLab 13.0, Puma is the default web server and Unicorn has been disabled.
+In GitLab 14.0, Unicorn was removed from the Linux package and only Puma is available.
 
 ## Configure Puma
 
 To configure Puma:
 
 1. Determine suitable Puma worker and thread [settings](../../install/requirements.md#puma-settings).
-1. If you're swithcing from Unicorn, [convert any custom settings to Puma](#convert-unicorn-settings-to-puma).
+1. If you're switching from Unicorn, [convert any custom settings to Puma](#convert-unicorn-settings-to-puma).
 1. For multi-node deployments, configure the load balancer to use the
    [readiness check](../load_balancer.md#readiness-check).
 1. Reconfigure GitLab so the above changes take effect:
@@ -30,7 +28,7 @@ To configure Puma:
    sudo gitlab-ctl reconfigure
    ```
 
-For Helm based deployments, see the
+For Helm-based deployments, see the
 [`webservice` chart documentation](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
 
 For more details about the Puma configuration, see the
@@ -38,9 +36,11 @@ For more details about the Puma configuration, see the
 
 ## Puma Worker Killer
 
-By default, the [Puma Worker Killer](https://github.com/schneems/puma_worker_killer) will restart
-a worker if it exceeds a [memory limit](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/cluster/puma_worker_killer_initializer.rb). Additionally, rolling restarts of
-Puma workers are performed every 12 hours.
+By default:
+
+- The [Puma Worker Killer](https://github.com/schneems/puma_worker_killer) restarts a worker if it
+  exceeds a [memory limit](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/cluster/puma_worker_killer_initializer.rb).
+- Rolling restarts of Puma workers are performed every 12 hours.
 
 To change the memory limit setting:
 
@@ -80,20 +80,22 @@ To change the worker timeout:
    sudo gitlab-ctl reconfigure
    ```
 
-## Running in memory-constrained environments
+## Memory-constrained environments
 
-In a memory-constrained environment with less than 4GB of RAM available, consider disabling Puma [Clustered mode](https://github.com/puma/puma#clustered-mode).
+In a memory-constrained environment with less than 4GB of RAM available, consider disabling Puma
+[Clustered mode](https://github.com/puma/puma#clustered-mode).
 
 Configuring Puma by setting the amount of `workers` to `0` could reduce memory usage by hundreds of MB.
 For details on Puma worker and thread settings, see the [Puma requirements](../../install/requirements.md#puma-settings).
 
 Unlike in a Clustered mode, which is set up by default, only a single Puma process would serve the application.
 
-The downside of running Puma with such configuration is the reduced throughput, and it could be considered as a fair tradeoff in a memory-constraint environment.
+The downside of running Puma with such configuration is the reduced throughput, which could be
+considered as a fair tradeoff in a memory-constraint environment.
 
 When running Puma in Single mode, some features are not supported:
 
-- Phased restart will not work: [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/300665)
+- Phased restart do not work: [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/300665)
 - [Phased restart](https://gitlab.com/gitlab-org/gitlab/-/issues/300665)
 - [Puma Worker Killer](https://gitlab.com/gitlab-org/gitlab/-/issues/300664)
 
@@ -142,7 +144,8 @@ and only Puma is available.
 Puma has a multi-thread architecture which uses less memory than a multi-process
 application server like Unicorn. On GitLab.com, we saw a 40% reduction in memory
 consumption. Most Rails applications requests normally include a proportion of I/O wait time.
-During I/O wait time MRI Ruby will release the GVL (Global VM Lock) to other threads.
+
+During I/O wait time MRI Ruby releases the GVL (Global VM Lock) to other threads.
 Multi-threaded Puma can therefore still serve more requests than a single process.
 
 When switching to Puma, any Unicorn server configuration will _not_ carry over

@@ -259,8 +259,8 @@ RSpec.describe 'Merge request > Batch comments', :js do
   end
 
   def write_parallel_comment(line, **params)
-    find("td[id='#{line}']").hover
-    find(".is-over button").click
+    find("div[id='#{line}']").hover
+    find(".js-add-diff-note-button").click
 
     write_comment(selector: "form[data-line-code='#{line}']", **params)
   end

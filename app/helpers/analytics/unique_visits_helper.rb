@@ -2,6 +2,7 @@
 
 module Analytics
   module UniqueVisitsHelper
+    include Gitlab::Tracking::Helpers
     extend ActiveSupport::Concern
 
     def visitor_id
@@ -21,7 +22,7 @@ module Analytics
 
     class_methods do
       def track_unique_visits(controller_actions, target_id:)
-        after_action only: controller_actions, if: -> { request.format.html? && request.headers['DNT'] != '1' } do
+        after_action only: controller_actions, if: -> { trackable_html_request? } do
           track_visit(target_id)
         end
       end

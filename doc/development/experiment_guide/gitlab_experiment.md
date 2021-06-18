@@ -588,7 +588,7 @@ When there is no experiment data in the `window.gon.experiment` object for the g
 
 NOTE:
 We use the terms "enabled" and "disabled" here, even though it's against our
-[documentation style guide recommendations](../documentation/styleguide/index.md#avoid-ableist-language)
+[documentation style guide recommendations](../documentation/styleguide/word_list.md#enable)
 because these are the terms that the feature flag documentation uses.
 
 You may already be familiar with the concept of feature flags in GitLab, but using

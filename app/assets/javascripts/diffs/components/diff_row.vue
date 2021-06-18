@@ -210,6 +210,7 @@ export default {
 <template>
   <div :class="classNameMap" class="diff-grid-row diff-tr line_holder">
     <div
+      :id="line.left && line.left.line_code"
       data-testid="left-side"
       class="diff-grid-left left-side"
       v-bind="interopLeftAttributes"
@@ -293,7 +294,6 @@ export default {
           />
         </div>
         <div
-          :id="line.left.line_code"
           :key="line.left.line_code"
           :class="[parallelViewLeftLineType, { parallel: !inline }]"
           class="diff-td line_content with-coverage left-side"
@@ -334,6 +334,7 @@ export default {
     </div>
     <div
       v-if="!inline"
+      :id="line.right && line.right.line_code"
       data-testid="right-side"
       class="diff-grid-right right-side"
       v-bind="interopRightAttributes"
@@ -409,7 +410,6 @@ export default {
           />
         </div>
         <div
-          :id="line.right.line_code"
           :key="line.right.rich_text"
           :class="[
             line.right.type,

@@ -103,7 +103,8 @@ To enable or disable Auto DevOps at the group level:
 Even when disabled at the instance level, group owners and project maintainers
 can still enable Auto DevOps at the group and project level, respectively.
 
-1. As an administrator, go to **Admin Area > Settings > CI/CD > Continuous Integration and Deployment**.
+1. As an administrator, on the top bar, select **Menu >** **{admin}** **Admin**.
+1. Go to **Settings > CI/CD > Continuous Integration and Deployment**.
 1. Select **Default to Auto DevOps pipeline for all projects** to enable it.
 1. (Optional) You can set up the Auto DevOps [base domain](#auto-devops-base-domain),
    for Auto Deploy and Auto Review Apps to use.
@@ -222,13 +223,13 @@ The Auto DevOps base domain is required to use
 [Auto Monitoring](stages.md#auto-monitoring). You can define the base domain in
 any of the following places:
 
-- either under the cluster's settings, whether for an instance,
+- Either under the cluster's settings, whether for an instance,
   [projects](../../user/project/clusters/index.md#base-domain) or
   [groups](../../user/group/clusters/index.md#base-domain)
-- or at the project level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
-- or at the group level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
-- or as an instance-wide fallback in **Admin Area > Settings > CI/CD** under the
-  **Continuous Integration and Delivery** section
+- Or at the project level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
+- Or at the group level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
+- Or as an instance-wide fallback in **Menu >** **{admin}** **Admin >**
+  **Settings > CI/CD** under the **Continuous Integration and Delivery** section.
 
 The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of precedence
 as other environment [variables](../../ci/variables/README.md#cicd-variable-precedence).

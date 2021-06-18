@@ -8,6 +8,7 @@ module Packages
       SERVICE_VERSIONS = {
         download: %w[PackageBaseAddress/3.0.0],
         search: %w[SearchQueryService SearchQueryService/3.0.0-beta SearchQueryService/3.0.0-rc],
+        symbol: %w[SymbolPackagePublish/4.9.0],
         publish: %w[PackagePublish/2.0.0],
         metadata: %w[RegistrationsBaseUrl RegistrationsBaseUrl/3.0.0-beta RegistrationsBaseUrl/3.0.0-rc]
       }.freeze
@@ -15,13 +16,14 @@ module Packages
       SERVICE_COMMENTS = {
         download: 'Get package content (.nupkg).',
         search: 'Filter and search for packages by keyword.',
+        symbol: 'Push symbol packages.',
         publish: 'Push and delete (or unlist) packages.',
         metadata: 'Get package metadata.'
       }.freeze
 
       VERSION = '3.0.0'
 
-      PROJECT_LEVEL_SERVICES = %i[download publish].freeze
+      PROJECT_LEVEL_SERVICES = %i[download publish symbol].freeze
       GROUP_LEVEL_SERVICES = %i[search metadata].freeze
 
       def initialize(project_or_group)
@@ -63,6 +65,8 @@ module Packages
                       download_service_url
                     when :search
                       search_service_url
+                    when :symbol
+                      symbol_service_url
                     when :metadata
                       metadata_service_url
                     when :publish
@@ -123,6 +127,10 @@ module Packages
 
       def publish_service_url
         api_v4_projects_packages_nuget_path(id: @project_or_group.id)
+      end
+
+      def symbol_service_url
+        api_v4_projects_packages_nuget_symbolpackage_path(id: @project_or_group.id)
       end
     end
   end

@@ -14,10 +14,6 @@ module Gitlab
         ::Feature.enabled?(:ci_pipeline_latest, default_enabled: true)
       end
 
-      def self.pipeline_status_omit_commit_sha_in_cache_key?(project)
-        Feature.enabled?(:ci_pipeline_status_omit_commit_sha_in_cache_key, project, default_enabled: true)
-      end
-
       # NOTE: The feature flag `disallow_to_create_merge_request_pipelines_in_target_project`
       # is a safe switch to disable the feature for a particular project when something went wrong,
       # therefore it's not supposed to be enabled by default.

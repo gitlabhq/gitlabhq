@@ -92,9 +92,10 @@ RSpec.describe API::NugetProjectPackages do
 
   describe 'GET /api/v4/projects/:id/packages/nuget/download/*package_name/*package_version/*package_filename' do
     let_it_be(:package_name) { 'Dummy.Package' }
-    let_it_be(:package) { create(:nuget_package, project: project, name: package_name) }
+    let_it_be(:package) { create(:nuget_package, :with_symbol_package, project: project, name: package_name) }
 
-    let(:url) { "/projects/#{target.id}/packages/nuget/download/#{package.name}/#{package.version}/#{package.name}.#{package.version}.nupkg" }
+    let(:format) { 'nupkg' }
+    let(:url) { "/projects/#{target.id}/packages/nuget/download/#{package.name}/#{package.version}/#{package.name}.#{package.version}.#{format}" }
 
     subject { get api(url) }
 
@@ -154,50 +155,7 @@ RSpec.describe API::NugetProjectPackages do
 
     subject { put api(url), headers: headers }
 
-    context 'with valid project' do
-      where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
-        'PUBLIC'  | :developer  | true  | true  | 'process nuget workhorse authorization' | :success
-        'PUBLIC'  | :guest      | true  | true  | 'rejects nuget packages access'         | :forbidden
-        'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access'         | :unauthorized
-        'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access'         | :unauthorized
-        'PUBLIC'  | :developer  | false | true  | 'rejects nuget packages access'         | :forbidden
-        'PUBLIC'  | :guest      | false | true  | 'rejects nuget packages access'         | :forbidden
-        'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'         | :unauthorized
-        'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'         | :unauthorized
-        'PUBLIC'  | :anonymous  | false | true  | 'rejects nuget packages access'         | :unauthorized
-        'PRIVATE' | :developer  | true  | true  | 'process nuget workhorse authorization' | :success
-        'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'         | :forbidden
-        'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'         | :unauthorized
-        'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access'         | :unauthorized
-        'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access'         | :not_found
-        'PRIVATE' | :guest      | false | true  | 'rejects nuget packages access'         | :not_found
-        'PRIVATE' | :developer  | false | false | 'rejects nuget packages access'         | :unauthorized
-        'PRIVATE' | :guest      | false | false | 'rejects nuget packages access'         | :unauthorized
-        'PRIVATE' | :anonymous  | false | true  | 'rejects nuget packages access'         | :unauthorized
-      end
-
-      with_them do
-        let(:token) { user_token ? personal_access_token.token : 'wrong' }
-        let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
-        let(:headers) { user_headers.merge(workhorse_headers) }
-
-        before do
-          update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
-        end
-
-        it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
-      end
-    end
-
-    it_behaves_like 'deploy token for package uploads'
-
-    it_behaves_like 'job token for package uploads', authorize_endpoint: true do
-      let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
-    end
-
-    it_behaves_like 'rejects nuget access with unknown target id'
-
-    it_behaves_like 'rejects nuget access with invalid target id'
+    it_behaves_like 'nuget authorize upload endpoint'
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget' do
@@ -221,63 +179,42 @@ RSpec.describe API::NugetProjectPackages do
       )
     end
 
-    context 'with valid project' do
-      where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
-        'PUBLIC'  | :developer  | true  | true  | 'process nuget upload'          | :created
-        'PUBLIC'  | :guest      | true  | true  | 'rejects nuget packages access' | :forbidden
-        'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access' | :unauthorized
-        'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access' | :unauthorized
-        'PUBLIC'  | :developer  | false | true  | 'rejects nuget packages access' | :forbidden
-        'PUBLIC'  | :guest      | false | true  | 'rejects nuget packages access' | :forbidden
-        'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access' | :unauthorized
-        'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access' | :unauthorized
-        'PUBLIC'  | :anonymous  | false | true  | 'rejects nuget packages access' | :unauthorized
-        'PRIVATE' | :developer  | true  | true  | 'process nuget upload'          | :created
-        'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access' | :forbidden
-        'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access' | :unauthorized
-        'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access' | :unauthorized
-        'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access' | :not_found
-        'PRIVATE' | :guest      | false | true  | 'rejects nuget packages access' | :not_found
-        'PRIVATE' | :developer  | false | false | 'rejects nuget packages access' | :unauthorized
-        'PRIVATE' | :guest      | false | false | 'rejects nuget packages access' | :unauthorized
-        'PRIVATE' | :anonymous  | false | true  | 'rejects nuget packages access' | :unauthorized
-      end
+    it_behaves_like 'nuget upload endpoint'
+  end
 
-      with_them do
-        let(:token) { user_token ? personal_access_token.token : 'wrong' }
-        let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
-        let(:headers) { user_headers.merge(workhorse_headers) }
-        let(:snowplow_gitlab_standard_context) { { project: project, user: user, namespace: project.namespace } }
+  describe 'PUT /api/v4/projects/:id/packages/nuget/symbolpackage/authorize' do
+    include_context 'workhorse headers'
 
-        before do
-          update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
-        end
+    let(:url) { "/projects/#{target.id}/packages/nuget/symbolpackage/authorize" }
+    let(:headers) { {} }
 
-        it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
-      end
+    subject { put api(url), headers: headers }
+
+    it_behaves_like 'nuget authorize upload endpoint'
+  end
+
+  describe 'PUT /api/v4/projects/:id/packages/nuget/symbolpackage' do
+    include_context 'workhorse headers'
+
+    let_it_be(:file_name) { 'package.snupkg' }
+    let(:url) { "/projects/#{target.id}/packages/nuget/symbolpackage" }
+    let(:headers) { {} }
+    let(:params) { { package: temp_file(file_name) } }
+    let(:file_key) { :package }
+    let(:send_rewritten_field) { true }
+
+    subject do
+      workhorse_finalize(
+        api(url),
+        method: :put,
+        file_key: file_key,
+        params: params,
+        headers: headers,
+        send_rewritten_field: send_rewritten_field
+      )
     end
 
-    it_behaves_like 'deploy token for package uploads'
-
-    it_behaves_like 'job token for package uploads' do
-      let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
-    end
-
-    it_behaves_like 'rejects nuget access with unknown target id'
-
-    it_behaves_like 'rejects nuget access with invalid target id'
-
-    context 'file size above maximum limit' do
-      let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
-
-      before do
-        allow_next_instance_of(UploadedFile) do |uploaded_file|
-          allow(uploaded_file).to receive(:size).and_return(project.actual_limits.nuget_max_file_size + 1)
-        end
-      end
-
-      it_behaves_like 'returning response status', :bad_request
-    end
+    it_behaves_like 'nuget upload endpoint', symbol_package: true
   end
 
   def update_visibility_to(visibility)

@@ -2,21 +2,10 @@
 - add_to_breadcrumbs _('Kubernetes Clusters'), clusterable.index_path
 - breadcrumb_title @cluster.name
 - page_title _('Kubernetes Cluster')
-- manage_prometheus_path = edit_project_service_path(@cluster.project, 'prometheus') if @project
 - cluster_environments_path = clusterable.environments_cluster_path(@cluster)
 
 - status_path = clusterable.cluster_status_cluster_path(@cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster)
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
-  install_helm_path: clusterable.install_applications_cluster_path(@cluster, :helm),
-  install_ingress_path: clusterable.install_applications_cluster_path(@cluster, :ingress),
-  install_cert_manager_path: clusterable.install_applications_cluster_path(@cluster, :cert_manager),
-  install_crossplane_path: clusterable.install_applications_cluster_path(@cluster, :crossplane),
-  install_prometheus_path: clusterable.install_applications_cluster_path(@cluster, :prometheus),
-  install_runner_path: clusterable.install_applications_cluster_path(@cluster, :runner),
-  install_jupyter_path: clusterable.install_applications_cluster_path(@cluster, :jupyter),
-  install_knative_path: clusterable.install_applications_cluster_path(@cluster, :knative),
-  update_knative_path: clusterable.update_applications_cluster_path(@cluster, :knative),
-  install_elastic_stack_path: clusterable.install_applications_cluster_path(@cluster, :elastic_stack),
   cluster_environments_path: cluster_environments_path,
   toggle_status: @cluster.enabled? ? 'true': 'false',
   has_rbac: has_rbac_enabled?(@cluster) ? 'true': 'false',
@@ -24,15 +13,11 @@
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
   provider_type: @cluster.provider_type,
-  pre_installed_knative: @cluster.knative_pre_installed? ? 'true': 'false',
   help_path: help_page_path('user/project/clusters/index.md'),
   environments_help_path: help_page_path('ci/environments/index.md', anchor: 'create-a-static-environment'),
   clusters_help_path: help_page_path('user/project/clusters/index.md', anchor: 'deploying-to-a-kubernetes-cluster'),
   deploy_boards_help_path: help_page_path('user/project/deploy_boards.md', anchor: 'enabling-deploy-boards'),
-  cloud_run_help_path: help_page_path('user/project/clusters/add_gke_clusters.md', anchor: 'cloud-run-for-anthos'),
-  manage_prometheus_path: manage_prometheus_path,
-  cluster_id: @cluster.id,
-  cilium_help_path: help_page_path('user/clusters/applications.md', anchor: 'install-cilium-using-gitlab-cicd')} }
+  cluster_id: @cluster.id } }
 
   .js-cluster-application-notice
     .flash-container

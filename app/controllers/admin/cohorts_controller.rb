@@ -21,8 +21,6 @@ class Admin::CohortsController < Admin::ApplicationController
   end
 
   def track_cohorts_visit
-    if request.format.html? && request.headers['DNT'] != '1'
-      track_visit('i_analytics_cohorts')
-    end
+    track_visit('i_analytics_cohorts') if trackable_html_request?
   end
 end

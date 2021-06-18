@@ -162,6 +162,12 @@ FactoryBot.define do
           pkg.nuget_metadatum = build(:nuget_metadatum)
         end
       end
+
+      trait(:with_symbol_package) do
+        after :create do |package|
+          create :package_file, :snupkg, package: package, file_name: "#{package.name}.#{package.version}.snupkg"
+        end
+      end
     end
 
     factory :pypi_package do

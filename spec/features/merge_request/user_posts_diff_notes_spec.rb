@@ -10,7 +10,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
   let(:user) { project.creator }
   let(:comment_button_class) { '.add-diff-note' }
   let(:notes_holder_input_class) { 'js-temp-notes-holder' }
-  let(:notes_holder_input_xpath) { './following-sibling::*[contains(concat(" ", @class, " "), " notes_holder ")]' }
+  let(:notes_holder_input_xpath) { '..//following-sibling::*[contains(concat(" ", @class, " "), " notes_holder ")]' }
   let(:test_note_comment) { 'this is a test note!' }
 
   before do
@@ -27,7 +27,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
 
     context 'with an old line on the left and no line on the right' do
       it 'allows commenting on the left side' do
-        should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..'), 'left')
+        should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]'), 'left')
       end
 
       it 'does not allow commenting on the right side' do
@@ -67,7 +67,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
 
     context 'with a match line' do
       it 'does not allow commenting' do
-        line_holder = find('.match', match: :first).find(:xpath, '..')
+        line_holder = find('.match', match: :first)
         match_should_not_allow_commenting(line_holder)
       end
     end
@@ -81,17 +81,13 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
         wait_for_requests
       end
 
-      # The first `.js-unfold` unfolds upwards, therefore the first
-      # `.line_holder` will be an unfolded line.
-      let(:line_holder) { first('#a5cc2925ca8258af241be7e5b0381edf30266302 .line_holder') }
-
       it 'allows commenting on the left side' do
-        should_allow_commenting(line_holder, 'left')
+        should_allow_commenting(first('#a5cc2925ca8258af241be7e5b0381edf30266302 .line_holder [data-testid="left-side"]'))
       end
 
       it 'allows commenting on the right side' do
         # Automatically shifts comment box to left side.
-        should_allow_commenting(line_holder, 'right')
+        should_allow_commenting(first('#a5cc2925ca8258af241be7e5b0381edf30266302 .line_holder [data-testid="right-side"]'))
       end
     end
   end
@@ -149,7 +145,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
 
       # The first `.js-unfold` unfolds upwards, therefore the first
       # `.line_holder` will be an unfolded line.
-      let(:line_holder) { first('.line_holder[id="a5cc2925ca8258af241be7e5b0381edf30266302_1_1"]') }
+      let(:line_holder) { first('[id="a5cc2925ca8258af241be7e5b0381edf30266302_1_1"]') }
 
       it 'allows commenting' do
         should_allow_commenting line_holder

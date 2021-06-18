@@ -1966,6 +1966,23 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#tag_list' do
+    let_it_be(:build) { create(:ci_build, tag_list: ['tag']) }
+
+    context 'when tags are preloaded' do
+      it 'does not trigger queries' do
+        build_with_tags = described_class.eager_load_tags.id_in([build]).to_a.first
+
+        expect { build_with_tags.tag_list }.not_to exceed_all_query_limit(0)
+        expect(build_with_tags.tag_list).to eq(['tag'])
+      end
+    end
+
+    context 'when tags are not preloaded' do
+      it { expect(described_class.find(build.id).tag_list).to eq(['tag']) }
+    end
+  end
+
   describe '#has_tags?' do
     context 'when build has tags' do
       subject { create(:ci_build, tag_list: ['tag']) }

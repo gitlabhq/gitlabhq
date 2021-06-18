@@ -3405,9 +3405,6 @@ msgstr ""
 msgid "Amazon EKS integration allows you to provision EKS clusters from GitLab."
 msgstr ""
 
-msgid "Amazon Web Services"
-msgstr ""
-
 msgid "Amazon Web Services Logo"
 msgstr ""
 
@@ -6928,19 +6925,7 @@ msgstr ""
 msgid "ClusterApplicationsRemoved|One-click application management was removed in GitLab 14.0. Your applications are still installed in your cluster, and integrations continue working."
 msgstr ""
 
-msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
-msgstr ""
-
-msgid "ClusterIntegration|%{boldStart}Note:%{boldEnd} Requires Ingress to be installed."
-msgstr ""
-
 msgid "ClusterIntegration|%{linkStart}More information%{linkEnd}"
-msgstr ""
-
-msgid "ClusterIntegration|%{title} uninstalled successfully."
-msgstr ""
-
-msgid "ClusterIntegration|%{title} updated successfully."
 msgstr ""
 
 msgid "ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes %{code_open}cluster-admin%{code_close} privileges."
@@ -6976,12 +6961,6 @@ msgstr ""
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster’s integration"
 msgstr ""
 
-msgid "ClusterIntegration|All data not committed to GitLab will be deleted and cannot be restored."
-msgstr ""
-
-msgid "ClusterIntegration|All data will be deleted and cannot be restored."
-msgstr ""
-
 msgid "ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
@@ -7015,9 +6994,6 @@ msgstr ""
 msgid "ClusterIntegration|Any project namespaces"
 msgstr ""
 
-msgid "ClusterIntegration|Any running pipelines will be canceled."
-msgstr ""
-
 msgid "ClusterIntegration|Apply for credit"
 msgstr ""
 
@@ -7034,15 +7010,6 @@ msgid "ClusterIntegration|Base domain"
 msgstr ""
 
 msgid "ClusterIntegration|CA Certificate"
-msgstr ""
-
-msgid "ClusterIntegration|Can be safely removed. Prior to GitLab 13.2, GitLab used a remote Tiller server to manage the applications. GitLab no longer uses this server. Uninstalling this server will not affect your other applications. This row will disappear afterwards."
-msgstr ""
-
-msgid "ClusterIntegration|Cert-Manager"
-msgstr ""
-
-msgid "ClusterIntegration|Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert-Manager on your cluster will issue a certificate by %{linkStart}Let's Encrypt%{linkEnd} and ensure that certificates are valid and up-to-date."
 msgstr ""
 
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
@@ -7064,9 +7031,6 @@ msgid "ClusterIntegration|Choose the %{linkStart}subnets %{linkEnd} in your VPC 
 msgstr ""
 
 msgid "ClusterIntegration|Choose the worker node %{linkStart}instance type%{linkEnd}."
-msgstr ""
-
-msgid "ClusterIntegration|Choose which applications to install on your Kubernetes cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
@@ -7106,15 +7070,6 @@ msgid "ClusterIntegration|Copy API URL"
 msgstr ""
 
 msgid "ClusterIntegration|Copy CA Certificate"
-msgstr ""
-
-msgid "ClusterIntegration|Copy Ingress Endpoint"
-msgstr ""
-
-msgid "ClusterIntegration|Copy Jupyter Hostname"
-msgstr ""
-
-msgid "ClusterIntegration|Copy Knative Endpoint"
 msgstr ""
 
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
@@ -7165,12 +7120,6 @@ msgstr ""
 msgid "ClusterIntegration|Creating Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Crossplane"
-msgstr ""
-
-msgid "ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{codeStart}kubectl%{codeEnd} or %{linkStart}GitLab Integration%{linkEnd}. Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on."
-msgstr ""
-
 msgid "ClusterIntegration|Deletes all GitLab resources attached to this cluster during removal"
 msgstr ""
 
@@ -7186,9 +7135,6 @@ msgstr ""
 msgid "ClusterIntegration|Elastic Kubernetes Service"
 msgstr ""
 
-msgid "ClusterIntegration|Elastic Stack"
-msgstr ""
-
 msgid "ClusterIntegration|Enable Cloud Run for Anthos"
 msgstr ""
 
@@ -7202,9 +7148,6 @@ msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernet
 msgstr ""
 
 msgid "ClusterIntegration|Enable this setting if using role-based access control (RBAC)."
-msgstr ""
-
-msgid "ClusterIntegration|Enabled stack"
 msgstr ""
 
 msgid "ClusterIntegration|Enter new Service Token"
@@ -7252,16 +7195,7 @@ msgstr ""
 msgid "ClusterIntegration|GitLab Agent managed clusters"
 msgstr ""
 
-msgid "ClusterIntegration|GitLab Container Network Policies"
-msgstr ""
-
 msgid "ClusterIntegration|GitLab Integration"
-msgstr ""
-
-msgid "ClusterIntegration|GitLab Runner"
-msgstr ""
-
-msgid "ClusterIntegration|GitLab Runner connects to the repository and executes CI/CD jobs, pushing results back and deploying applications to production."
 msgstr ""
 
 msgid "ClusterIntegration|GitLab failed to authenticate."
@@ -7300,18 +7234,6 @@ msgstr ""
 msgid "ClusterIntegration|In order to view the health of your cluster, you must first enable Prometheus in the Integrations tab."
 msgstr ""
 
-msgid "ClusterIntegration|Ingress"
-msgstr ""
-
-msgid "ClusterIntegration|Ingress Endpoint"
-msgstr ""
-
-msgid "ClusterIntegration|Ingress gives you a way to route requests to services based on the request host or path, centralizing a number of services into a single entrypoint."
-msgstr ""
-
-msgid "ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{linkStart}pricing%{linkEnd}."
-msgstr ""
-
 msgid "ClusterIntegration|Instance cluster"
 msgstr ""
 
@@ -7333,37 +7255,7 @@ msgstr ""
 msgid "ClusterIntegration|Integrations allow you to use applications installed in your cluster as part of your GitLab workflow."
 msgstr ""
 
-msgid "ClusterIntegration|Issuer Email"
-msgstr ""
-
-msgid "ClusterIntegration|Issuers represent a certificate authority. You must provide an email address for your Issuer."
-msgstr ""
-
-msgid "ClusterIntegration|Jupyter Hostname"
-msgstr ""
-
-msgid "ClusterIntegration|JupyterHub"
-msgstr ""
-
-msgid "ClusterIntegration|JupyterHub, a multi-user Hub, spawns, manages, and proxies multiple instances of the single-user Jupyter notebook server. JupyterHub can be used to serve notebooks to a class of students, a corporate data science group, or a scientific research group."
-msgstr ""
-
 msgid "ClusterIntegration|Key pair name"
-msgstr ""
-
-msgid "ClusterIntegration|Knative"
-msgstr ""
-
-msgid "ClusterIntegration|Knative Domain Name:"
-msgstr ""
-
-msgid "ClusterIntegration|Knative Endpoint:"
-msgstr ""
-
-msgid "ClusterIntegration|Knative domain name was updated successfully."
-msgstr ""
-
-msgid "ClusterIntegration|Knative extends Kubernetes to provide a set of middleware components that are essential to build modern, source-centric, and container-based applications that can run anywhere: on premises, in the cloud, or even in a third-party data center."
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster is being created..."
@@ -7397,9 +7289,6 @@ msgid "ClusterIntegration|Learn more about group Kubernetes clusters"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about instance Kubernetes clusters"
-msgstr ""
-
-msgid "ClusterIntegration|Legacy Helm Tiller server"
 msgstr ""
 
 msgid "ClusterIntegration|Loading IAM Roles"
@@ -7492,9 +7381,6 @@ msgstr ""
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
 msgstr ""
 
-msgid "ClusterIntegration|Point a wildcard DNS to this generated endpoint in order to access your application after it has been deployed."
-msgstr ""
-
 msgid "ClusterIntegration|Project cluster"
 msgstr ""
 
@@ -7502,15 +7388,6 @@ msgid "ClusterIntegration|Project namespace (optional, unique)"
 msgstr ""
 
 msgid "ClusterIntegration|Project namespace prefix (optional, unique)"
-msgstr ""
-
-msgid "ClusterIntegration|Prometheus"
-msgstr ""
-
-msgid "ClusterIntegration|Prometheus is an open-source monitoring system with %{linkStart}GitLab Integration%{linkEnd} to monitor deployed applications."
-msgstr ""
-
-msgid "ClusterIntegration|Protect your clusters with GitLab Container Network Policies by enforcing how pods communicate with each other and other network endpoints. %{linkStart}Learn more about configuring Network Policies here.%{linkEnd}"
 msgstr ""
 
 msgid "ClusterIntegration|Provider details"
@@ -7549,15 +7426,6 @@ msgstr ""
 msgid "ClusterIntegration|Removes cluster from project but keeps associated resources"
 msgstr ""
 
-msgid "ClusterIntegration|Replace this with your own hostname if you want. If you do so, point hostname to Ingress IP Address from above."
-msgstr ""
-
-msgid "ClusterIntegration|Request to begin installing failed"
-msgstr ""
-
-msgid "ClusterIntegration|Request to begin uninstalling failed"
-msgstr ""
-
 msgid "ClusterIntegration|Save changes"
 msgstr ""
 
@@ -7568,9 +7436,6 @@ msgid "ClusterIntegration|Search Key Pairs"
 msgstr ""
 
 msgid "ClusterIntegration|Search VPCs"
-msgstr ""
-
-msgid "ClusterIntegration|Search domains"
 msgstr ""
 
 msgid "ClusterIntegration|Search instance types"
@@ -7621,13 +7486,7 @@ msgstr ""
 msgid "ClusterIntegration|Select a region to choose a VPC"
 msgstr ""
 
-msgid "ClusterIntegration|Select a stack to install Crossplane."
-msgstr ""
-
 msgid "ClusterIntegration|Select a zone to choose a network"
-msgstr ""
-
-msgid "ClusterIntegration|Select existing domain or use new"
 msgstr ""
 
 msgid "ClusterIntegration|Select machine type"
@@ -7672,15 +7531,6 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Something went wrong while installing %{title}"
-msgstr ""
-
-msgid "ClusterIntegration|Something went wrong while uninstalling %{title}"
-msgstr ""
-
-msgid "ClusterIntegration|Something went wrong while updating Knative domain name."
-msgstr ""
-
 msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{linkStart}Auto DevOps.%{linkEnd} The domain should have a wildcard DNS configured matching the domain. "
 msgstr ""
 
@@ -7694,24 +7544,6 @@ msgid "ClusterIntegration|The Kubernetes certificate used to authenticate to the
 msgstr ""
 
 msgid "ClusterIntegration|The URL used to access the Kubernetes API."
-msgstr ""
-
-msgid "ClusterIntegration|The associated IP and all deployed services will be deleted and cannot be restored. Uninstalling Knative will also remove Istio from your cluster. This will not effect any other applications."
-msgstr ""
-
-msgid "ClusterIntegration|The associated Tiller pod will be deleted and cannot be restored. Your other applications will remain unaffected."
-msgstr ""
-
-msgid "ClusterIntegration|The associated load balancer and IP will be deleted and cannot be restored."
-msgstr ""
-
-msgid "ClusterIntegration|The associated private key will be deleted and cannot be restored."
-msgstr ""
-
-msgid "ClusterIntegration|The elastic stack collects logs from all pods in your cluster"
-msgstr ""
-
-msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
 msgstr ""
 
 msgid "ClusterIntegration|The namespace associated with your project. This will be used for deploy boards, logs, and Web terminals."
@@ -7744,9 +7576,6 @@ msgstr ""
 msgid "ClusterIntegration|This will permanently delete the following resources:"
 msgstr ""
 
-msgid "ClusterIntegration|To access your application after deployment, point a wildcard DNS to the Knative Endpoint."
-msgstr ""
-
 msgid "ClusterIntegration|To create a cluster, first create a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}."
 msgstr ""
 
@@ -7768,19 +7597,7 @@ msgstr ""
 msgid "ClusterIntegration|Unable to Connect"
 msgstr ""
 
-msgid "ClusterIntegration|Uninstall %{appTitle}"
-msgstr ""
-
 msgid "ClusterIntegration|Unknown Error"
-msgstr ""
-
-msgid "ClusterIntegration|Update %{appTitle}"
-msgstr ""
-
-msgid "ClusterIntegration|Update failed. Please check the logs and try again."
-msgstr ""
-
-msgid "ClusterIntegration|Use %{query}"
 msgstr ""
 
 msgid "ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster."
@@ -7807,25 +7624,10 @@ msgstr ""
 msgid "ClusterIntegration|You are about to remove your cluster integration."
 msgstr ""
 
-msgid "ClusterIntegration|You are about to uninstall %{appTitle} from your cluster."
-msgstr ""
-
-msgid "ClusterIntegration|You are about to update %{appTitle} on your cluster."
-msgstr ""
-
 msgid "ClusterIntegration|You must grant access to your organization’s AWS resources in order to create a new EKS cluster. To grant access, create a provision role using the account and external ID below and provide us the ARN."
 msgstr ""
 
-msgid "ClusterIntegration|You must have an RBAC-enabled cluster to install Knative."
-msgstr ""
-
-msgid "ClusterIntegration|You must specify a domain before you can install Knative."
-msgstr ""
-
 msgid "ClusterIntegration|You should select at least two subnets"
-msgstr ""
-
-msgid "ClusterIntegration|Your Elasticsearch cluster will be re-created during this upgrade. Your logs will be re-indexed, and you will lose historical logs from hosts terminated in the last 30 days."
 msgstr ""
 
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
@@ -7841,9 +7643,6 @@ msgid "ClusterIntegration|Zone"
 msgstr ""
 
 msgid "ClusterIntegration|access to Google Kubernetes Engine"
-msgstr ""
-
-msgid "ClusterIntegration|installed via %{linkStart}Cloud Run%{linkEnd}"
 msgstr ""
 
 msgid "ClusterIntegration|meets the requirements"
@@ -9652,9 +9451,6 @@ msgid "Cron Timezone"
 msgstr ""
 
 msgid "Cron time zone"
-msgstr ""
-
-msgid "Crossplane"
 msgstr ""
 
 msgid "Crowd"
@@ -13452,9 +13248,6 @@ msgstr ""
 msgid "ExternalWikiService|https://example.com/xxx/wiki/..."
 msgstr ""
 
-msgid "Externally installed"
-msgstr ""
-
 msgid "Facebook"
 msgstr ""
 
@@ -15401,9 +15194,6 @@ msgid "Go to your snippets"
 msgstr ""
 
 msgid "Goal of the changes and what reviewers should be aware of"
-msgstr ""
-
-msgid "Google Cloud Platform"
 msgstr ""
 
 msgid "Google authentication is not %{link_start}properly configured%{link_end}. Ask your GitLab administrator if you want to use this service."
@@ -17579,9 +17369,6 @@ msgstr ""
 msgid "Insights|This project is filtered out in the insights.yml file (see the projects.only config for more information)."
 msgstr ""
 
-msgid "Install"
-msgstr ""
-
 msgid "Install GitLab Runner and ensure it's running."
 msgstr ""
 
@@ -17592,12 +17379,6 @@ msgid "Install on clusters"
 msgstr ""
 
 msgid "Installation"
-msgstr ""
-
-msgid "Installed"
-msgstr ""
-
-msgid "Installing"
 msgstr ""
 
 msgid "Instance"
@@ -19979,9 +19760,6 @@ msgstr ""
 msgid "Makes this issue confidential."
 msgstr ""
 
-msgid "Manage"
-msgstr ""
-
 msgid "Manage Web IDE features."
 msgstr ""
 
@@ -21146,9 +20924,6 @@ msgid "Metrics|e.g. req/sec"
 msgstr ""
 
 msgid "Mi"
-msgstr ""
-
-msgid "Microsoft Azure"
 msgstr ""
 
 msgid "Middleman project with Static Site Editor support"
@@ -28044,9 +27819,6 @@ msgstr ""
 msgid "Retry this job in order to create the necessary resources."
 msgstr ""
 
-msgid "Retry update"
-msgstr ""
-
 msgid "Retry verification"
 msgstr ""
 
@@ -28151,9 +27923,6 @@ msgid "Role"
 msgstr ""
 
 msgid "Rollback"
-msgstr ""
-
-msgid "Rook"
 msgstr ""
 
 msgid "Ruby"
@@ -29322,9 +29091,6 @@ msgid "Select GitLab project to link with your Slack team"
 msgstr ""
 
 msgid "Select Page"
-msgstr ""
-
-msgid "Select Stack"
 msgstr ""
 
 msgid "Select a branch"
@@ -31621,6 +31387,9 @@ msgid "Sunday"
 msgstr ""
 
 msgid "SuperSonics|Activate"
+msgstr ""
+
+msgid "SuperSonics|Activate cloud license"
 msgstr ""
 
 msgid "SuperSonics|Activate subscription"
@@ -34869,12 +34638,6 @@ msgstr ""
 msgid "Unhappy?"
 msgstr ""
 
-msgid "Uninstall"
-msgstr ""
-
-msgid "Uninstalling"
-msgstr ""
-
 msgid "Units|ms"
 msgstr ""
 
@@ -35098,9 +34861,6 @@ msgid "Updated"
 msgstr ""
 
 msgid "Updated %{updated_at} by %{updated_by}"
-msgstr ""
-
-msgid "Updated to %{linkStart}chart v%{linkEnd}"
 msgstr ""
 
 msgid "Updates"
@@ -37597,9 +37357,6 @@ msgid "You must provide a valid current password"
 msgstr ""
 
 msgid "You must provide your current password in order to change it."
-msgstr ""
-
-msgid "You must select a stack for configuring your cloud provider. Learn more about"
 msgstr ""
 
 msgid "You must solve the CAPTCHA in order to submit"

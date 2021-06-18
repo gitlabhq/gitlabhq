@@ -10,32 +10,46 @@ type: reference, howto
 GitLab encourages communication through comments, threads, and
 [code suggestions](../project/merge_requests/reviews/suggestions.md).
 
-For example, you can create a comment in the following places:
+There are two types of comments:
 
-- Issues
+- A standard comment.
+- A comment in a thread, which has to be resolved.
+
+In a comment, you can enter [Markdown](../markdown.md) and use [quick actions](../project/quick_actions.md).
+
+You can [suggest code changes](../project/merge_requests/reviews/suggestions.md) in your commit diff comment,
+which the user can accept through the user interface.
+
+## Where you can create comments
+
+You can create comments in places like:
+
+- Commit diffs
+- Commits
+- Designs
 - Epics
+- Issues
 - Merge requests
 - Snippets
-- Commits
-- Commit diffs
 
-There are standard comments, and you also have the option to create a comment
-in the form of a thread. A comment can also be [turned into a thread](#start-a-thread-by-replying-to-a-standard-comment)
-when it receives a reply.
+Each object can have as many as 5,000 comments.
 
-The comment area supports [Markdown](../markdown.md) and [quick actions](../project/quick_actions.md).
-You can [suggest code changes](../project/merge_requests/reviews/suggestions.md) in your comment,
-which the user can accept through the user interface. You can edit your own
-comment at any time, and anyone with the [Maintainer role](../permissions.md) or
+## Reply to a comment by sending email
+
+If you have ["reply by email"](../../administration/reply_by_email.md) configured,
+you can reply to comments by sending an email. 
+
+- When you reply to a standard comment, another standard comment is created.
+- When you reply to a threaded comment, it creates a reply in the thread.
+
+You can use [Markdown](../markdown.md) and [quick actions](../project/quick_actions.md) in your email replies.
+
+## Who can edit comments
+
+You can edit your own comment at any time.
+
+Anyone with the [Maintainer role](../permissions.md) or
 higher can also edit a comment made by someone else.
-
-You can also reply to a comment notification email to reply to the comment if
-[Reply by email](../../administration/reply_by_email.md) is configured for your GitLab instance. Replying to a standard comment
-creates another standard comment. Replying to a threaded comment creates a reply in the thread. Email replies support
-[Markdown](../markdown.md) and [quick actions](../project/quick_actions.md), just as if you replied from the web.
-
-NOTE:
-There is a limit of 5,000 comments for every object, for example: issue, epic, and merge request.
 
 ## Resolvable comments and threads
 

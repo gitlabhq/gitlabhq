@@ -139,24 +139,3 @@ export const mapParallel = (content) => (line) => {
     commentRowClasses: hasDiscussions(left) || hasDiscussions(right) ? '' : 'js-temp-notes-holder',
   };
 };
-
-// TODO: Delete this function when unifiedDiffComponents FF is removed
-export const mapInline = (content) => (line) => {
-  // Discussions/Comments
-  const renderCommentRow = line.hasForm || (line.discussions?.length && line.discussionsExpanded);
-
-  return {
-    ...line,
-    renderDiscussion: Boolean(line.discussions?.length),
-    isMatchLine: isMatchLine(line.type),
-    commentRowClasses: line.discussions?.length ? '' : 'js-temp-notes-holder',
-    renderCommentRow,
-    hasDraft: content.shouldRenderDraftRow(content.diffFile.file_hash, line),
-    hasCommentForm: line.hasForm,
-    isMetaLine: isMetaLine(line.type),
-    isContextLine: isContextLine(line.type),
-    hasDiscussions: hasDiscussions(line),
-    lineHref: lineHref(line),
-    lineCode: lineCode(line),
-  };
-};

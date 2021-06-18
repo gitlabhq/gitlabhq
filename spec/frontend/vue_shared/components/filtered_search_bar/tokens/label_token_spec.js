@@ -159,7 +159,7 @@ describe('LabelToken', () => {
 
       expect(baseTokenEl.exists()).toBe(true);
       expect(baseTokenEl.props()).toMatchObject({
-        tokenValues: mockLabels,
+        suggestions: mockLabels,
         fnActiveTokenValue: wrapper.vm.getActiveLabel,
       });
     });

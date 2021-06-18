@@ -1,5 +1,0 @@
-- active = params[:tab] == 'apps'
-
-%li.nav-item{ role: 'presentation' }
-  %a#cluster-apps-tab.nav-link.qa-applications{ class: active_when(active), href: clusterable.cluster_path(@cluster.id, params: {tab: 'apps'}) }
-    %span= _('Applications')

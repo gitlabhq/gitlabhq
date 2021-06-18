@@ -304,7 +304,6 @@ GitLab documentation should be clear and easy to understand. Avoid unnecessary w
 
 - Be clear, concise, and stick to the goal of the topic.
 - Write in US English with US grammar. (Tested in [`British.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/British.yml).)
-- Use [inclusive language](#inclusive-language).
 - Rewrite to avoid wordiness:
   - there is
   - there are
@@ -384,80 +383,6 @@ Exceptions to this rule include the concept of *single sign-on* and
 references to user interface elements. For example:
 
 - To sign in to product X, enter your credentials, and then select **Log in**.
-
-### Inclusive language
-
-We strive to create documentation that's inclusive. This section includes
-guidance and examples for these categories:
-
-- [Gender-specific wording](#avoid-gender-specific-wording).
-  (Tested in [`InclusionGender.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionGender.yml).)
-- [Ableist language](#avoid-ableist-language).
-  (Tested in [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml).)
-- [Cultural sensitivity](#culturally-sensitive-language).
-  (Tested in [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml).)
-
-We write our developer documentation with inclusivity and diversity in mind. This
-page is not an exhaustive reference, but describes some general guidelines and
-examples that illustrate some best practices to follow.
-
-#### Avoid gender-specific wording
-
-When possible, use gender-neutral pronouns. For example, you can use a singular
-[they](https://developers.google.com/style/pronouns#gender-neutral-pronouns) as
-a gender-neutral pronoun.
-
-Avoid the use of gender-specific pronouns, unless referring to a specific person.
-
-<!-- vale gitlab.InclusionGender = NO -->
-
-| Use                               | Avoid                           |
-|-----------------------------------|---------------------------------|
-| People, humanity                  | Mankind                         |
-| GitLab Team Members               | Manpower                        |
-| You can install; They can install | He can install; She can install |
-
-<!-- vale gitlab.InclusionGender = YES -->
-
-If you need to set up [Fake user information](#fake-user-information), use
-diverse or non-gendered names with common surnames.
-
-#### Avoid ableist language
-
-Avoid terms that are also used in negative stereotypes for different groups.
-
-<!-- vale gitlab.InclusionAbleism = NO -->
-
-| Use                    | Avoid                |
-|------------------------|----------------------|
-| Check for completeness | Sanity check         |
-| Uncertain outliers     | Crazy outliers       |
-| Slows the service      | Cripples the service |
-| Placeholder variable   | Dummy variable       |
-| Active/Inactive        | Enabled/Disabled     |
-| On/Off                 | Enabled/Disabled     |
-
-<!-- vale gitlab.InclusionAbleism = YES -->
-
-Credit: [Avoid ableist language](https://developers.google.com/style/inclusive-documentation#ableist-language)
-in the Google Developer Style Guide.
-
-#### Culturally sensitive language
-
-Avoid terms that reflect negative cultural stereotypes and history. In most
-cases, you can replace terms such as `master` and `slave` with terms that are
-more precise and functional, such as `primary` and `secondary`.
-
-<!-- vale gitlab.InclusionCultural = NO -->
-
-| Use                  | Avoid                 |
-|----------------------|-----------------------|
-| Primary / secondary  | Master / slave        |
-| Allowlist / denylist | Blacklist / whitelist |
-
-<!-- vale gitlab.InclusionCultural = YES -->
-
-For more information see the [Internet Draft specification](https://tools.ietf.org/html/draft-knodel-terminology-02).
 
 ### Fake user information
 
@@ -1511,25 +1436,6 @@ It renders on the GitLab documentation site as:
 ## Terms
 
 To maintain consistency through GitLab documentation, use these styles and terms.
-
-### Merge requests (MRs)
-
-Merge requests allow you to exchange changes you made to source code and
-collaborate with other people on the same project.
-
-- Use lowercase _merge requests_ regardless of whether referring to the feature
-  or individual merge requests.
-
-As noted in the GitLab [Writing Style Guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines),
-if you use the _MR_ acronym, expand it at least once per document page.
-Typically, the first use would be phrased as _merge request (MR)_ with subsequent
-instances being _MR_.
-
-Examples:
-
-- "We prefer GitLab merge requests".
-- "Open a merge request to fix a broken link".
-- "After you open a merge request (MR), submit your MR for review and approval".
 
 ### Describe UI elements
 

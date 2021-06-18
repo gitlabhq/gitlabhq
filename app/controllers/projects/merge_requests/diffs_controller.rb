@@ -193,7 +193,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   end
 
   def track_viewed_diffs_events
-    return if request.headers['DNT'] == '1'
+    return if dnt_enabled?
 
     Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
       .track_mr_diffs_action(merge_request: @merge_request)

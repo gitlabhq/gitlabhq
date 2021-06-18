@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { mapInline, mapParallel } from 'ee_else_ce/diffs/components/diff_row_utils';
+import { mapParallel } from 'ee_else_ce/diffs/components/diff_row_utils';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { diffViewerModes } from '~/ide/constants';
@@ -9,7 +9,6 @@ import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
 import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NoteForm from '../../notes/components/note_form.vue';
 import eventHub from '../../notes/event_hub';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -18,14 +17,10 @@ import { getDiffMode } from '../store/utils';
 import DiffDiscussions from './diff_discussions.vue';
 import DiffView from './diff_view.vue';
 import ImageDiffOverlay from './image_diff_overlay.vue';
-import InlineDiffView from './inline_diff_view.vue';
-import ParallelDiffView from './parallel_diff_view.vue';
 
 export default {
   components: {
     GlLoadingIcon,
-    InlineDiffView,
-    ParallelDiffView,
     DiffView,
     DiffViewer,
     NoteForm,
@@ -36,7 +31,7 @@ export default {
     userAvatarLink,
     DiffFileDrafts,
   },
-  mixins: [diffLineNoteFormMixin, draftCommentsMixin, glFeatureFlagsMixin()],
+  mixins: [diffLineNoteFormMixin, draftCommentsMixin],
   props: {
     diffFile: {
       type: Object,
@@ -52,7 +47,6 @@ export default {
     ...mapState('diffs', ['projectPath']),
     ...mapGetters('diffs', [
       'isInlineView',
-      'isParallelView',
       'getCommentFormForDiffFile',
       'diffLines',
       'fileLineCodequality',
@@ -86,15 +80,8 @@ export default {
       return this.getUserData;
     },
     mappedLines() {
-      if (this.glFeatures.unifiedDiffComponents) {
-        return this.diffLines(this.diffFile, true).map(mapParallel(this)) || [];
-      }
-
-      // TODO: Everything below this line can be deleted when unifiedDiffComponents FF is removed
-      if (this.isInlineView) {
-        return this.diffFile.highlighted_diff_lines.map(mapInline(this));
-      }
-      return this.diffLines(this.diffFile).map(mapParallel(this));
+      // TODO: Do this data generation when we recieve a response to save a computed property being created
+      return this.diffLines(this.diffFile).map(mapParallel(this)) || [];
     },
   },
   updated() {
@@ -126,27 +113,12 @@ export default {
 <template>
   <div class="diff-content">
     <div class="diff-viewer">
-      <template v-if="isTextFile && glFeatures.unifiedDiffComponents">
+      <template v-if="isTextFile">
         <diff-view
           :diff-file="diffFile"
           :diff-lines="mappedLines"
           :help-page-path="helpPagePath"
           :inline="isInlineView"
-        />
-        <gl-loading-icon v-if="diffFile.renderingLines" size="md" class="mt-3" />
-      </template>
-      <template v-else-if="isTextFile">
-        <inline-diff-view
-          v-if="isInlineView"
-          :diff-file="diffFile"
-          :diff-lines="mappedLines"
-          :help-page-path="helpPagePath"
-        />
-        <parallel-diff-view
-          v-else-if="isParallelView"
-          :diff-file="diffFile"
-          :diff-lines="mappedLines"
-          :help-page-path="helpPagePath"
         />
         <gl-loading-icon v-if="diffFile.renderingLines" size="md" class="mt-3" />
       </template>

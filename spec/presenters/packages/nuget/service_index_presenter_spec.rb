@@ -27,7 +27,7 @@ RSpec.describe ::Packages::Nuget::ServiceIndexPresenter do
   describe '#resources' do
     subject { presenter.resources }
 
-    shared_examples 'returning valid resources' do |resources_count: 8, include_publish_service: true|
+    shared_examples 'returning valid resources' do |resources_count: 9, include_publish_service: true|
       it 'has valid resources' do
         expect(subject.size).to eq resources_count
         subject.each do |resource|
@@ -38,10 +38,15 @@ RSpec.describe ::Packages::Nuget::ServiceIndexPresenter do
         end
       end
 
-      it "does #{'not ' unless include_publish_service}return the publish resource" do
+      it "does #{'not ' unless include_publish_service}return the publish resource", :aggregate_failures do
         services_types = subject.map { |res| res[:@type] }
 
-        described_class::SERVICE_VERSIONS[:publish].each do |publish_service_version|
+        publish_service_versions = [
+          described_class::SERVICE_VERSIONS[:publish],
+          described_class::SERVICE_VERSIONS[:symbol]
+        ].flatten
+
+        publish_service_versions.each do |publish_service_version|
           if include_publish_service
             expect(services_types).to include(publish_service_version)
           else
@@ -54,7 +59,7 @@ RSpec.describe ::Packages::Nuget::ServiceIndexPresenter do
     context 'for a group' do
       let(:target) { group }
 
-      # at the group level we don't have the publish and download service
+      # at the group level we don't have the publish, symbol, and download service
       it_behaves_like 'returning valid resources', resources_count: 6, include_publish_service: false
     end
 

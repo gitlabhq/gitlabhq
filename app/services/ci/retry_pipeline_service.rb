@@ -13,8 +13,8 @@ module Ci
 
       pipeline.ensure_scheduling_type!
 
-      pipeline.retryable_builds.preload_needs.find_each do |build|
-        next unless can?(current_user, :update_build, build)
+      builds_relation(pipeline).find_each do |build|
+        next unless can_be_retried?(build)
 
         Ci::RetryBuildService.new(project, current_user)
           .reprocess!(build)
@@ -36,5 +36,17 @@ module Ci
         .new(pipeline)
         .execute
     end
+
+    private
+
+    def builds_relation(pipeline)
+      pipeline.retryable_builds.preload_needs
+    end
+
+    def can_be_retried?(build)
+      can?(current_user, :update_build, build)
+    end
   end
 end
+
+Ci::RetryPipelineService.prepend_mod_with('Ci::RetryPipelineService')

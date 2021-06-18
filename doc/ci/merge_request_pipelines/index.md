@@ -200,7 +200,7 @@ related to using `only/except` above (or, consider moving to `rules`).
 
 In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) and later,
 you can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/README.md#switch-between-branch-pipelines-and-merge-request-pipelines).
-The pipeline switches to merge request pipelines this after a merge request is open on the branch.
+After a merge request is open on the branch, the pipeline switches to a merge request pipeline.
 
 ### Two pipelines created when pushing an invalid CI configuration file
 

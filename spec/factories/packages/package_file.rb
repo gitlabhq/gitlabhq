@@ -271,6 +271,14 @@ FactoryBot.define do
       size { 300.kilobytes }
     end
 
+    trait(:snupkg) do
+      package
+      file_fixture { 'spec/fixtures/packages/nuget/package.snupkg' }
+      file_name { 'package.snupkg' }
+      file_sha1 { '5fe852b2a6abd96c22c11fa1ff2fb19d9ce58b57' }
+      size { 300.kilobytes }
+    end
+
     trait(:gem) do
       package
       file_fixture { 'spec/fixtures/packages/rubygems/package-0.0.1.gem' }

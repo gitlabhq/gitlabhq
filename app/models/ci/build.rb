@@ -136,6 +136,7 @@ module Ci
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
     scope :eager_load_job_artifacts_archive, -> { includes(:job_artifacts_archive) }
+    scope :eager_load_tags, -> { includes(:tags) }
 
     scope :eager_load_everything, -> do
       includes(
@@ -757,6 +758,14 @@ module Ci
 
     def valid_token?(token)
       self.token && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
+    end
+
+    def tag_list
+      if tags.loaded?
+        tags.map(&:name)
+      else
+        super
+      end
     end
 
     def has_tags?
