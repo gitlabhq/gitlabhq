@@ -8,7 +8,7 @@ import createEventHub from '~/helpers/event_hub_factory';
 import initAddContextCommitsTriggers from './add_context_commits_modal';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import Diff from './diff';
-import { deprecatedCreateFlash as flash } from './flash';
+import createFlash from './flash';
 import initChangesDropdown from './init_changes_dropdown';
 import axios from './lib/utils/axios_utils';
 import {
@@ -345,7 +345,9 @@ export default class MergeRequestTabs {
       })
       .catch(() => {
         this.toggleLoading(false);
-        flash(__('An error occurred while fetching this tab.'));
+        createFlash({
+          message: __('An error occurred while fetching this tab.'),
+        });
       });
   }
 
@@ -446,7 +448,9 @@ export default class MergeRequestTabs {
       })
       .catch(() => {
         this.toggleLoading(false);
-        flash(__('An error occurred while fetching this tab.'));
+        createFlash({
+          message: __('An error occurred while fetching this tab.'),
+        });
       });
   }
 

@@ -1,6 +1,6 @@
 <script>
 import { GlSafeHtmlDirective as SafeHtml, GlModal } from '@gitlab/ui';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import { redirectTo } from '~/lib/utils/url_utility';
@@ -98,17 +98,17 @@ Once deleted, it cannot be undone or recovered.`),
           });
 
           if (error.response && error.response.status === 404) {
-            Flash(
-              sprintf(s__('Milestones|Milestone %{milestoneTitle} was not found'), {
+            createFlash({
+              message: sprintf(s__('Milestones|Milestone %{milestoneTitle} was not found'), {
                 milestoneTitle: this.milestoneTitle,
               }),
-            );
+            });
           } else {
-            Flash(
-              sprintf(s__('Milestones|Failed to delete milestone %{milestoneTitle}'), {
+            createFlash({
+              message: sprintf(s__('Milestones|Failed to delete milestone %{milestoneTitle}'), {
                 milestoneTitle: this.milestoneTitle,
               }),
-            );
+            });
           }
           throw error;
         });

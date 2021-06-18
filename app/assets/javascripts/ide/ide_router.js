@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import IdeRouter from '~/ide/ide_router_extension';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -111,14 +111,14 @@ export const createRouter = (store, defaultBranch) => {
           }
         })
         .catch((e) => {
-          flash(
-            __('Error while loading the project data. Please try again.'),
-            'alert',
-            document,
-            null,
-            false,
-            true,
-          );
+          createFlash({
+            message: __('Error while loading the project data. Please try again.'),
+            type: 'alert',
+            parent: document,
+            actionConfig: null,
+            fadeTransition: false,
+            addBodyClass: true,
+          });
           throw e;
         });
     }

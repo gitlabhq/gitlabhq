@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { joinPaths } from '~/lib/utils/url_utility';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
-import { deprecatedCreateFlash as flash } from './flash';
+import createFlash from './flash';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from './issuable/constants';
 import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
@@ -68,7 +68,9 @@ export default class Issue {
         this.createMergeRequestDropdown.checkAbilityToCreateBranch();
       }
     } else {
-      flash(issueFailMessage);
+      createFlash({
+        message: issueFailMessage,
+      });
     }
   }
 
@@ -102,6 +104,10 @@ export default class Issue {
           $container.html(data.html);
         }
       })
-      .catch(() => flash(__('Failed to load related branches')));
+      .catch(() =>
+        createFlash({
+          message: __('Failed to load related branches'),
+        }),
+      );
   }
 }

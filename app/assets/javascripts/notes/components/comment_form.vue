@@ -14,7 +14,7 @@ import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Autosave from '~/autosave';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import { statusBoxState } from '~/issuable/components/status_box.vue';
 import httpStatusCodes from '~/lib/utils/http_status';
 import {
@@ -293,7 +293,11 @@ export default {
       toggleState()
         .then(() => statusBoxState.updateStatus && statusBoxState.updateStatus())
         .then(refreshUserMergeRequestCounts)
-        .catch(() => Flash(constants.toggleStateErrorMessage[this.noteableType][this.openState]));
+        .catch(() =>
+          createFlash({
+            message: constants.toggleStateErrorMessage[this.noteableType][this.openState],
+          }),
+        );
     },
     discard(shouldClear = true) {
       // `blur` is needed to clear slash commands autocomplete cache if event fired.

@@ -8,7 +8,7 @@ import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import boardsStore from './boards/stores/boards_store';
 import CreateLabelDropdown from './create_label';
-import { deprecatedCreateFlash as flash } from './flash';
+import createFlash from './flash';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import axios from './lib/utils/axios_utils';
 import { sprintf, __ } from './locale';
@@ -148,7 +148,11 @@ export default class LabelsSelect {
               container: 'body',
             });
           })
-          .catch(() => flash(__('Error saving label update.')));
+          .catch(() =>
+            createFlash({
+              message: __('Error saving label update.'),
+            }),
+          );
       };
       initDeprecatedJQueryDropdown($dropdown, {
         showMenuAbove,
@@ -183,7 +187,11 @@ export default class LabelsSelect {
                 $dropdown.data('deprecatedJQueryDropdown').positionMenuAbove();
               }
             })
-            .catch(() => flash(__('Error fetching labels.')));
+            .catch(() =>
+              createFlash({
+                message: __('Error fetching labels.'),
+              }),
+            );
         },
         renderRow(label) {
           let colorEl;

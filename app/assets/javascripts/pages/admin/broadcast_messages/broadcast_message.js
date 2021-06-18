@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { debounce } from 'lodash';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { textColorForBackground } from '~/lib/utils/color_utils';
 import { __ } from '~/locale';
@@ -30,7 +30,11 @@ export default () => {
         .then(({ data }) => {
           $jsBroadcastMessagePreview.html(data.message);
         })
-        .catch(() => flash(__('An error occurred while rendering preview broadcast message')));
+        .catch(() =>
+          createFlash({
+            message: __('An error occurred while rendering preview broadcast message'),
+          }),
+        );
     }
   };
 

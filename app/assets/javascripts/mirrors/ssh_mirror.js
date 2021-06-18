@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { escape } from 'lodash';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
@@ -115,7 +115,9 @@ export default class SSHMirror {
         const failureMessage = response.data
           ? response.data.message
           : __('An error occurred while detecting host keys');
-        Flash(failureMessage);
+        createFlash({
+          message: failureMessage,
+        });
 
         $btnLoadSpinner.addClass('hidden');
         this.$btnDetectHostKeys.enable();

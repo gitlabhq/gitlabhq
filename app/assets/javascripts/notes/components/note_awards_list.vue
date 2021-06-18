@@ -2,7 +2,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import { __ } from '~/locale';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
-import { deprecatedCreateFlash as Flash } from '../../flash';
+import createFlash from '../../flash';
 
 export default {
   components: {
@@ -48,7 +48,11 @@ export default {
         awardName,
       };
 
-      this.toggleAwardRequest(data).catch(() => Flash(__('Something went wrong on our end.')));
+      this.toggleAwardRequest(data).catch(() =>
+        createFlash({
+          message: __('Something went wrong on our end.'),
+        }),
+      );
     },
   },
 };

@@ -3,7 +3,7 @@ import { GlTooltipDirective, GlIcon, GlButton, GlDropdownItem } from '@gitlab/ui
 import { mapActions, mapGetters } from 'vuex';
 import Api from '~/api';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
@@ -234,7 +234,11 @@ export default {
           assignee_ids: assignees.map((assignee) => assignee.id),
         })
           .then(() => this.handleAssigneeUpdate(assignees))
-          .catch(() => flash(__('Something went wrong while updating assignees')));
+          .catch(() =>
+            createFlash({
+              message: __('Something went wrong while updating assignees'),
+            }),
+          );
       }
     },
     setAwardEmoji(awardName) {

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { difference, intersection, union } from 'lodash';
-import { deprecatedCreateFlash as Flash } from './flash';
+import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 import { __ } from './locale';
 
@@ -32,7 +32,9 @@ export default {
 
   onFormSubmitFailure() {
     this.form.find('[type="submit"]').enable();
-    return new Flash(__('Issue update failed'));
+    return createFlash({
+      message: __('Issue update failed'),
+    });
   },
 
   /**

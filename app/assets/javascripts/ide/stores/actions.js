@@ -1,6 +1,6 @@
 import { escape } from 'lodash';
 import Vue from 'vue';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import {
@@ -36,16 +36,17 @@ export const createTempEntry = (
   const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
 
   if (getters.entryExists(name)) {
-    flash(
-      sprintf(__('The name "%{name}" is already taken in this directory.'), {
+    createFlash({
+      message: sprintf(__('The name "%{name}" is already taken in this directory.'), {
         name: name.split('/').pop(),
       }),
-      'alert',
-      document,
-      null,
-      false,
-      true,
-    );
+
+      type: 'alert',
+      parent: document,
+      actionConfig: null,
+      fadeTransition: false,
+      addBodyClass: true,
+    });
 
     return undefined;
   }
@@ -284,14 +285,14 @@ export const getBranchData = ({ commit, state }, { projectId, branchId, force = 
           if (e.response.status === 404) {
             reject(e);
           } else {
-            flash(
-              __('Error loading branch data. Please try again.'),
-              'alert',
-              document,
-              null,
-              false,
-              true,
-            );
+            createFlash({
+              message: __('Error loading branch data. Please try again.'),
+              type: 'alert',
+              parent: document,
+              actionConfig: null,
+              fadeTransition: false,
+              addBodyClass: true,
+            });
 
             reject(
               new Error(

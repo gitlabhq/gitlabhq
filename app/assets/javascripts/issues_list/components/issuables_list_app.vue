@@ -6,7 +6,7 @@ import {
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import { toNumber, omit } from 'lodash';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import {
   scrollToElement,
@@ -265,7 +265,9 @@ export default {
         })
         .catch(() => {
           this.loading = false;
-          return flash(__('An error occurred while loading issues'));
+          return createFlash({
+            message: __('An error occurred while loading issues'),
+          });
         });
     },
     getQueryObject() {

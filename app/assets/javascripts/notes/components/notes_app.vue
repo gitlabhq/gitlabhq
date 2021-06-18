@@ -7,7 +7,7 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import draftNote from '../../batch_comments/components/draft_note.vue';
-import { deprecatedCreateFlash as Flash } from '../../flash';
+import createFlash from '../../flash';
 import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
@@ -216,7 +216,9 @@ export default {
         .catch(() => {
           this.setLoadingState(false);
           this.setNotesFetchedState(true);
-          Flash(__('Something went wrong while fetching comments. Please try again.'));
+          createFlash({
+            message: __('Something went wrong while fetching comments. Please try again.'),
+          });
         });
     },
     initPolling() {
