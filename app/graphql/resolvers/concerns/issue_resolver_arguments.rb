@@ -11,7 +11,7 @@ module IssueResolverArguments
              description: 'IID of the issue. For example, "1".'
     argument :iids, [GraphQL::STRING_TYPE],
              required: false,
-             description: 'List of IIDs of issues. For example, ["1", "2"].'
+             description: 'List of IIDs of issues. For example, `["1", "2"]`.'
     argument :label_name, [GraphQL::STRING_TYPE, null: true],
              required: false,
              description: 'Labels applied to this issue.'

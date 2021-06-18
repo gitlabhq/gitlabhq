@@ -15,12 +15,12 @@ module Projects
 
       return unless project
 
-      create_prometheus_service(project)
+      create_prometheus_integration(project)
     end
 
     private
 
-    def create_prometheus_service(project)
+    def create_prometheus_integration(project)
       service = project.find_or_initialize_service(::Integrations::Prometheus.to_param)
 
       # If the service has already been inserted in the database, that

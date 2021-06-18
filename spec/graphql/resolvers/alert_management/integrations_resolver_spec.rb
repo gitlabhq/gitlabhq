@@ -8,11 +8,11 @@ RSpec.describe Resolvers::AlertManagement::IntegrationsResolver do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:project2) { create(:project) }
-  let_it_be(:prometheus_integration) { create(:prometheus_service, project: project) }
+  let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
   let_it_be(:active_http_integration) { create(:alert_management_http_integration, project: project) }
   let_it_be(:inactive_http_integration) { create(:alert_management_http_integration, :inactive, project: project) }
   let_it_be(:other_proj_integration) { create(:alert_management_http_integration, project: project2) }
-  let_it_be(:other_proj_prometheus_integration) { create(:prometheus_service, project: project2) }
+  let_it_be(:other_proj_prometheus_integration) { create(:prometheus_integration, project: project2) }
 
   let(:params) { {} }
 

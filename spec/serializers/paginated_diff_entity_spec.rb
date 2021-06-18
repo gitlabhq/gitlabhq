@@ -19,20 +19,16 @@ RSpec.describe PaginatedDiffEntity do
 
   subject { entity.as_json }
 
-  before do
-    stub_feature_flags(diffs_gradual_load: false)
-  end
-
   it 'exposes diff_files' do
     expect(subject[:diff_files]).to be_present
   end
 
   it 'exposes pagination data' do
     expect(subject[:pagination]).to eq(
-      current_page: 2,
-      next_page: 3,
-      next_page_href: "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}/diffs_batch.json?page=3",
-      total_pages: 7
+      current_page: nil,
+      next_page: nil,
+      next_page_href: nil,
+      total_pages: 20
     )
   end
 

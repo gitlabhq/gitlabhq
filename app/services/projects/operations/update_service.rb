@@ -105,7 +105,7 @@ module Projects
         service = project.find_or_initialize_service(::Integrations::Prometheus.to_param)
         service.assign_attributes(attrs)
 
-        { prometheus_service_attributes: service.attributes.except(*%w(id project_id created_at updated_at)) }
+        { prometheus_integration_attributes: service.attributes.except(*%w(id project_id created_at updated_at)) }
       end
 
       def incident_management_setting_params

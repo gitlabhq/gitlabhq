@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::AlertManagement::PrometheusIntegration::ResetToken do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:integration) { create(:prometheus_service, project: project) }
+  let_it_be(:integration) { create(:prometheus_integration, project: project) }
 
   let(:args) { { id: GitlabSchema.id_from_object(integration) } }
 

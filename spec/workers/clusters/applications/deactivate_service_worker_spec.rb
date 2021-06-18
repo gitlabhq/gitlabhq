@@ -4,15 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Clusters::Applications::DeactivateServiceWorker, '#perform' do
   context 'cluster exists' do
-    describe 'prometheus service' do
-      let(:service_name) { 'prometheus' }
+    describe 'prometheus integration' do
+      let(:integration_name) { 'prometheus' }
       let!(:integration) { create(:clusters_integrations_prometheus, cluster: cluster) }
 
-      context 'prometheus service exists' do
-        let!(:prometheus_service) { create(:prometheus_service, project: project, manual_configuration: false, active: true) }
+      context 'prometheus integration exists' do
+        let!(:prometheus_integration) { create(:prometheus_integration, project: project, manual_configuration: false, active: true) }
 
         before do
-          integration.delete # prometheus service before save synchronises active stated with integration existence.
+          integration.delete # prometheus integration before save synchronises active stated with integration existence.
         end
 
         context 'cluster type: group' do
@@ -20,9 +20,9 @@ RSpec.describe Clusters::Applications::DeactivateServiceWorker, '#perform' do
           let(:project) { create(:project, group: group) }
           let(:cluster) { create(:cluster_for_group, groups: [group]) }
 
-          it 'ensures Prometheus service is deactivated' do
-            expect { described_class.new.perform(cluster.id, service_name) }
-              .to change { prometheus_service.reload.active }.from(true).to(false)
+          it 'ensures Prometheus integration is deactivated' do
+            expect { described_class.new.perform(cluster.id, integration_name) }
+              .to change { prometheus_integration.reload.active }.from(true).to(false)
           end
         end
 
@@ -30,9 +30,9 @@ RSpec.describe Clusters::Applications::DeactivateServiceWorker, '#perform' do
           let(:project) { create(:project) }
           let(:cluster) { create(:cluster, projects: [project]) }
 
-          it 'ensures Prometheus service is deactivated' do
-            expect { described_class.new.perform(cluster.id, service_name) }
-              .to change { prometheus_service.reload.active }.from(true).to(false)
+          it 'ensures Prometheus integration is deactivated' do
+            expect { described_class.new.perform(cluster.id, integration_name) }
+              .to change { prometheus_integration.reload.active }.from(true).to(false)
           end
         end
 
@@ -40,20 +40,20 @@ RSpec.describe Clusters::Applications::DeactivateServiceWorker, '#perform' do
           let(:project) { create(:project) }
           let(:cluster) { create(:cluster, :instance) }
 
-          it 'ensures Prometheus service is deactivated' do
-            expect { described_class.new.perform(cluster.id, service_name) }
-              .to change { prometheus_service.reload.active }.from(true).to(false)
+          it 'ensures Prometheus integration is deactivated' do
+            expect { described_class.new.perform(cluster.id, integration_name) }
+              .to change { prometheus_integration.reload.active }.from(true).to(false)
           end
         end
       end
 
-      context 'prometheus service does not exist' do
+      context 'prometheus integration does not exist' do
         context 'cluster type: project' do
           let(:project) { create(:project) }
           let(:cluster) { create(:cluster, projects: [project]) }
 
           it 'does not raise errors' do
-            expect { described_class.new.perform(cluster.id, service_name) }.not_to raise_error
+            expect { described_class.new.perform(cluster.id, integration_name) }.not_to raise_error
           end
         end
       end

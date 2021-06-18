@@ -6,8 +6,8 @@ import {
   EDITOR_CODE_INSTANCE_FN,
   EDITOR_DIFF_INSTANCE_FN,
 } from '~/editor/constants';
-import EditorLite from '~/editor/editor_lite';
-import { EditorWebIdeExtension } from '~/editor/extensions/editor_lite_webide_ext';
+import { EditorWebIdeExtension } from '~/editor/extensions/source_editor_webide_ext';
+import SourceEditor from '~/editor/source_editor';
 import createFlash from '~/flash';
 import ModelManager from '~/ide/lib/common/model_manager';
 import { defaultDiffEditorOptions, defaultEditorOptions } from '~/ide/lib/editor_options';
@@ -216,7 +216,7 @@ export default {
   },
   mounted() {
     if (!this.globalEditor) {
-      this.globalEditor = new EditorLite();
+      this.globalEditor = new SourceEditor();
     }
     this.initEditor();
 

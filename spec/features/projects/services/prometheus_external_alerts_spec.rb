@@ -10,7 +10,7 @@ RSpec.describe 'Prometheus external alerts', :js do
 
   context 'with manual configuration' do
     before do
-      create(:prometheus_service, project: project, api_url: 'http://prometheus.example.com', manual_configuration: '1', active: true)
+      create(:prometheus_integration, project: project, api_url: 'http://prometheus.example.com', manual_configuration: '1', active: true)
     end
 
     it 'shows the Alerts section' do

@@ -10,4 +10,4 @@
 = render 'projects/settings/operations/incidents'
 = render 'projects/settings/operations/grafana_integration'
 = render_if_exists 'projects/settings/operations/status_page'
-= render 'projects/settings/operations/prometheus', service: prometheus_service if Feature.enabled?(:settings_operations_prometheus_service)
+= render 'projects/settings/operations/prometheus', service: prometheus_integration if Feature.enabled?(:settings_operations_prometheus_service)

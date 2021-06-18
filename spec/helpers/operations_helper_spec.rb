@@ -20,19 +20,19 @@ RSpec.describe OperationsHelper do
       allow(helper).to receive(:can?).with(user, :admin_operations, project) { true }
     end
 
-    context 'initial service configuration' do
-      let_it_be(:prometheus_service) { ::Integrations::Prometheus.new(project: project) }
+    context 'initial integration configuration' do
+      let_it_be(:prometheus_integration) { ::Integrations::Prometheus.new(project: project) }
 
       before do
         allow(project).to receive(:find_or_initialize_service).and_call_original
-        allow(project).to receive(:find_or_initialize_service).with('prometheus').and_return(prometheus_service)
+        allow(project).to receive(:find_or_initialize_service).with('prometheus').and_return(prometheus_integration)
       end
 
       it 'returns the correct values' do
         expect(subject).to eq(
           'alerts_setup_url' => help_page_path('operations/incident_management/integrations.md', anchor: 'configuration'),
           'alerts_usage_url' => project_alert_management_index_path(project),
-          'prometheus_form_path' => project_service_path(project, prometheus_service),
+          'prometheus_form_path' => project_service_path(project, prometheus_integration),
           'prometheus_reset_key_path' => reset_alerting_token_project_settings_operations_path(project),
           'prometheus_authorization_key' => nil,
           'prometheus_api_url' => nil,
@@ -53,15 +53,15 @@ RSpec.describe OperationsHelper do
     end
 
     context 'with external Prometheus configured' do
-      let_it_be(:prometheus_service, reload: true) do
-        create(:prometheus_service, project: project)
+      let_it_be(:prometheus_integration, reload: true) do
+        create(:prometheus_integration, project: project)
       end
 
       context 'with external Prometheus enabled' do
         it 'returns the correct values' do
           expect(subject).to include(
             'prometheus_activated' => 'true',
-            'prometheus_api_url' => prometheus_service.api_url
+            'prometheus_api_url' => prometheus_integration.api_url
           )
         end
       end
@@ -71,7 +71,7 @@ RSpec.describe OperationsHelper do
           it 'returns the correct values' do
             expect(subject).to include(
               'prometheus_activated' => 'false',
-              'prometheus_api_url' => prometheus_service.api_url
+              'prometheus_api_url' => prometheus_integration.api_url
             )
           end
         end
@@ -79,11 +79,11 @@ RSpec.describe OperationsHelper do
         let(:cluster_managed) { false }
 
         before do
-          allow(prometheus_service)
+          allow(prometheus_integration)
             .to receive(:prometheus_available?)
             .and_return(cluster_managed)
 
-          prometheus_service.update!(manual_configuration: false)
+          prometheus_integration.update!(manual_configuration: false)
         end
 
         include_examples 'Prometheus is disabled'
@@ -101,7 +101,7 @@ RSpec.describe OperationsHelper do
         it 'returns the correct values' do
           expect(subject).to include(
             'prometheus_authorization_key' => project_alerting_setting.token,
-            'prometheus_api_url' => prometheus_service.api_url
+            'prometheus_api_url' => prometheus_integration.api_url
           )
         end
       end

@@ -8,7 +8,7 @@ import { mockLintResponse, mockCiConfigPath } from '../../mock_data';
 describe('Text editor component', () => {
   let wrapper;
 
-  const MockEditorLite = {
+  const MockSourceEditor = {
     template: '<div/>',
     props: ['value', 'fileName', 'editorOptions'],
     mounted() {
@@ -26,13 +26,13 @@ describe('Text editor component', () => {
         ciConfigPath: mockCiConfigPath,
       },
       stubs: {
-        EditorLite: MockEditorLite,
+        SourceEditor: MockSourceEditor,
       },
     });
   };
 
   const findIcon = () => wrapper.findComponent(GlIcon);
-  const findEditor = () => wrapper.findComponent(MockEditorLite);
+  const findEditor = () => wrapper.findComponent(MockSourceEditor);
 
   afterEach(() => {
     wrapper.destroy();

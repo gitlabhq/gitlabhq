@@ -1,9 +1,9 @@
 <script>
 import { debounce } from 'lodash';
 import { CONTENT_UPDATE_DEBOUNCE, EDITOR_READY_EVENT } from '~/editor/constants';
-import Editor from '~/editor/editor_lite';
+import Editor from '~/editor/source_editor';
 
-function initEditorLite({ el, ...args }) {
+function initSourceEditor({ el, ...args }) {
   const editor = new Editor({
     scrollbar: {
       alwaysConsumeMouseWheel: false,
@@ -64,7 +64,7 @@ export default {
     },
   },
   mounted() {
-    this.editor = initEditorLite({
+    this.editor = initSourceEditor({
       el: this.$refs.editor,
       blobPath: this.fileName,
       blobContent: this.value,
@@ -93,7 +93,7 @@ export default {
 </script>
 <template>
   <div
-    :id="`editor-lite-${fileGlobalId}`"
+    :id="`source-editor-${fileGlobalId}`"
     ref="editor"
     data-editor-loading
     @[$options.readyEvent]="$emit($options.readyEvent)"

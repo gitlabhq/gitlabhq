@@ -16,15 +16,15 @@ const createAnchor = (href) => {
   return fragment;
 };
 
-export class EditorLiteExtension {
+export class SourceEditorExtension {
   constructor({ instance, ...options } = {}) {
     if (instance) {
       Object.assign(instance, options);
-      EditorLiteExtension.highlightLines(instance);
+      SourceEditorExtension.highlightLines(instance);
       if (instance.getEditorType && instance.getEditorType() === EDITOR_TYPE_CODE) {
-        EditorLiteExtension.setupLineLinking(instance);
+        SourceEditorExtension.setupLineLinking(instance);
       }
-      EditorLiteExtension.deferRerender(instance);
+      SourceEditorExtension.deferRerender(instance);
     } else if (Object.entries(options).length) {
       throw new Error(ERROR_INSTANCE_REQUIRED_FOR_EXTENSION);
     }
@@ -79,7 +79,7 @@ export class EditorLiteExtension {
   }
 
   static setupLineLinking(instance) {
-    instance.onMouseMove(EditorLiteExtension.onMouseMoveHandler);
+    instance.onMouseMove(SourceEditorExtension.onMouseMoveHandler);
     instance.onMouseDown((e) => {
       const isCorrectAnchor = e.target.element.classList.contains('link-anchor');
       if (!isCorrectAnchor) {

@@ -9,8 +9,8 @@ RSpec.describe IntegrationPolicy, :models do
 
   subject(:policy) { Ability.policy_for(user, integration) }
 
-  context 'when the integration is a prometheus_service' do
-    let(:integration) { create(:prometheus_service) }
+  context 'when the integration is a prometheus_integration' do
+    let(:integration) { create(:prometheus_integration) }
 
     describe 'rules' do
       it { is_expected.to be_disallowed :admin_project }

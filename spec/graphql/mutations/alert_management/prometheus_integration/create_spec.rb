@@ -19,7 +19,7 @@ RSpec.describe Mutations::AlertManagement::PrometheusIntegration::Create do
       end
 
       context 'when Prometheus Integration already exists' do
-        let_it_be(:existing_integration) { create(:prometheus_service, project: project) }
+        let_it_be(:existing_integration) { create(:prometheus_integration, project: project) }
 
         it 'returns errors' do
           expect(resolve).to eq(

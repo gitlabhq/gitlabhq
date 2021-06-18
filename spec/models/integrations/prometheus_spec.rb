@@ -10,7 +10,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
 
   let_it_be_with_reload(:project) { create(:prometheus_project) }
 
-  let(:service) { project.prometheus_service }
+  let(:integration) { project.prometheus_integration }
 
   describe "Associations" do
     it { is_expected.to belong_to :project }
@@ -22,7 +22,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       redirect_req_stub = stub_prometheus_request(prometheus_query_url('1'), status: 302, headers: { location: redirect_to })
       redirected_req_stub = stub_prometheus_request(redirect_to, body: { 'status': 'success' })
 
-      result = service.test
+      result = integration.test
 
       # result = { success: false, result: error }
       expect(result[:success]).to be_falsy
@@ -36,22 +36,22 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
   describe 'Validations' do
     context 'when manual_configuration is enabled' do
       before do
-        service.manual_configuration = true
+        integration.manual_configuration = true
       end
 
       it 'validates presence of api_url' do
-        expect(service).to validate_presence_of(:api_url)
+        expect(integration).to validate_presence_of(:api_url)
       end
     end
 
     context 'when manual configuration is disabled' do
       before do
-        service.manual_configuration = false
+        integration.manual_configuration = false
       end
 
       it 'does not validate presence of api_url' do
-        expect(service).not_to validate_presence_of(:api_url)
-        expect(service.valid?).to eq(true)
+        expect(integration).not_to validate_presence_of(:api_url)
+        expect(integration.valid?).to eq(true)
       end
 
       context 'local connections allowed' do
@@ -60,23 +60,23 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
         end
 
         it 'does not validate presence of api_url' do
-          expect(service).not_to validate_presence_of(:api_url)
-          expect(service.valid?).to eq(true)
+          expect(integration).not_to validate_presence_of(:api_url)
+          expect(integration.valid?).to eq(true)
         end
       end
     end
 
     context 'when the api_url domain points to localhost or local network' do
-      let(:domain) { Addressable::URI.parse(service.api_url).hostname }
+      let(:domain) { Addressable::URI.parse(integration.api_url).hostname }
 
       it 'cannot query' do
-        expect(service.can_query?).to be true
+        expect(integration.can_query?).to be true
 
         aggregate_failures do
           ['127.0.0.1', '192.168.2.3'].each do |url|
             allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([Addrinfo.tcp(url, 80)])
 
-            expect(service.can_query?).to be false
+            expect(integration.can_query?).to be false
           end
         end
       end
@@ -88,14 +88,14 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
           ['127.0.0.1', '192.168.2.3'].each do |url|
             allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([Addrinfo.tcp(url, 80)])
 
-            expect(service.can_query?).to be true
+            expect(integration.can_query?).to be true
           end
         end
       end
 
       context 'with self-monitoring project and internal Prometheus' do
         before do
-          service.api_url = 'http://localhost:9090'
+          integration.api_url = 'http://localhost:9090'
 
           stub_application_setting(self_monitoring_project_id: project.id)
           stub_config(prometheus: { enable: true, server_address: 'localhost:9090' })
@@ -106,19 +106,19 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
             ['127.0.0.1', '192.168.2.3'].each do |url|
               allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([Addrinfo.tcp(url, 80)])
 
-              expect(service.can_query?).to be true
+              expect(integration.can_query?).to be true
             end
           end
         end
 
         it 'does not allow self-monitoring project to connect to other local URLs' do
-          service.api_url = 'http://localhost:8000'
+          integration.api_url = 'http://localhost:8000'
 
           aggregate_failures do
             ['127.0.0.1', '192.168.2.3'].each do |url|
               allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([Addrinfo.tcp(url, 80)])
 
-              expect(service.can_query?).to be false
+              expect(integration.can_query?).to be false
             end
           end
         end
@@ -129,26 +129,26 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
   describe 'callbacks' do
     context 'after_create' do
       let(:project) { create(:project) }
-      let(:service) { build(:prometheus_service, project: project) }
+      let(:integration) { build(:prometheus_integration, project: project) }
 
-      subject(:create_service) { service.save! }
+      subject(:create_integration) { integration.save! }
 
       it 'creates default alerts' do
         expect(Prometheus::CreateDefaultAlertsWorker)
           .to receive(:perform_async)
           .with(project.id)
 
-        create_service
+        create_integration
       end
 
       context 'no project exists' do
-        let(:service) { build(:prometheus_service, :instance) }
+        let(:integration) { build(:prometheus_integration, :instance) }
 
         it 'does not create default alerts' do
           expect(Prometheus::CreateDefaultAlertsWorker)
             .not_to receive(:perform_async)
 
-          create_service
+          create_integration
         end
       end
     end
@@ -156,15 +156,15 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
 
   describe '#test' do
     before do
-      service.manual_configuration = true
+      integration.manual_configuration = true
     end
 
     let!(:req_stub) { stub_prometheus_request(prometheus_query_url('1'), body: prometheus_value_body('vector')) }
 
     context 'success' do
       it 'reads the discovery endpoint' do
-        expect(service.test[:result]).to eq('Checked API endpoint')
-        expect(service.test[:success]).to be_truthy
+        expect(integration.test[:result]).to eq('Checked API endpoint')
+        expect(integration.test[:success]).to be_truthy
         expect(req_stub).to have_been_requested.twice
       end
     end
@@ -173,7 +173,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       let!(:req_stub) { stub_prometheus_request(prometheus_query_url('1'), status: 404) }
 
       it 'fails to read the discovery endpoint' do
-        expect(service.test[:success]).to be_falsy
+        expect(integration.test[:success]).to be_falsy
         expect(req_stub).to have_been_requested
       end
     end
@@ -183,20 +183,20 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
     let(:api_url) { 'http://some_url' }
 
     before do
-      service.active = true
-      service.api_url = api_url
-      service.manual_configuration = manual_configuration
+      integration.active = true
+      integration.api_url = api_url
+      integration.manual_configuration = manual_configuration
     end
 
     context 'manual configuration is enabled' do
       let(:manual_configuration) { true }
 
       it 'calls valid?' do
-        allow(service).to receive(:valid?).and_call_original
+        allow(integration).to receive(:valid?).and_call_original
 
-        expect(service.prometheus_client).not_to be_nil
+        expect(integration.prometheus_client).not_to be_nil
 
-        expect(service).to have_received(:valid?)
+        expect(integration).to have_received(:valid?)
       end
     end
 
@@ -204,7 +204,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       let(:manual_configuration) { false }
 
       it 'no client provided' do
-        expect(service.prometheus_client).to be_nil
+        expect(integration.prometheus_client).to be_nil
       end
     end
 
@@ -219,8 +219,8 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       end
 
       it 'allows local requests' do
-        expect(service.prometheus_client).not_to be_nil
-        expect { service.prometheus_client.ping }.not_to raise_error
+        expect(integration.prometheus_client).not_to be_nil
+        expect { integration.prometheus_client.ping }.not_to raise_error
       end
     end
 
@@ -235,7 +235,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       end
 
       it 'blocks local requests' do
-        expect(service.prometheus_client).to be_nil
+        expect(integration.prometheus_client).to be_nil
       end
 
       context 'with self monitoring project and internal Prometheus URL' do
@@ -250,8 +250,8 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
         end
 
         it 'allows local requests' do
-          expect(service.prometheus_client).not_to be_nil
-          expect { service.prometheus_client.ping }.not_to raise_error
+          expect(integration.prometheus_client).not_to be_nil
+          expect { integration.prometheus_client.ping }.not_to raise_error
         end
       end
     end
@@ -278,8 +278,8 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       end
 
       def stub_iap_request
-        service.google_iap_service_account_json = Gitlab::Json.generate(google_iap_service_account)
-        service.google_iap_audience_client_id = 'IAP_CLIENT_ID.apps.googleusercontent.com'
+        integration.google_iap_service_account_json = Gitlab::Json.generate(google_iap_service_account)
+        integration.google_iap_audience_client_id = 'IAP_CLIENT_ID.apps.googleusercontent.com'
 
         stub_request(:post, 'https://oauth2.googleapis.com/token')
           .to_return(
@@ -292,9 +292,9 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       it 'includes the authorization header' do
         stub_iap_request
 
-        expect(service.prometheus_client).not_to be_nil
-        expect(service.prometheus_client.send(:options)).to have_key(:headers)
-        expect(service.prometheus_client.send(:options)[:headers]).to eq(authorization: "Bearer FOO")
+        expect(integration.prometheus_client).not_to be_nil
+        expect(integration.prometheus_client.send(:options)).to have_key(:headers)
+        expect(integration.prometheus_client.send(:options)[:headers]).to eq(authorization: "Bearer FOO")
       end
 
       context 'when passed with token_credential_uri', issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/284819' do
@@ -315,7 +315,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
             stub_iap_request
             stub_request(:any, malicious_host).to_raise('Making additional HTTP requests is forbidden!')
 
-            expect(service.prometheus_client).not_to be_nil
+            expect(integration.prometheus_client).not_to be_nil
           end
         end
       end
@@ -332,7 +332,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
         let(:cluster) { create(:cluster, projects: [project]) }
 
         it 'returns true' do
-          expect(service.prometheus_available?).to be(true)
+          expect(integration.prometheus_available?).to be(true)
         end
       end
 
@@ -343,16 +343,16 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
         let(:cluster) { create(:cluster_for_group, groups: [group]) }
 
         it 'returns true' do
-          expect(service.prometheus_available?).to be(true)
+          expect(integration.prometheus_available?).to be(true)
         end
 
         it 'avoids N+1 queries' do
-          service
+          integration
           5.times do |i|
             other_cluster = create(:cluster_for_group, groups: [group], environment_scope: i)
             create(:clusters_integrations_prometheus, cluster: other_cluster)
           end
-          expect { service.prometheus_available? }.not_to exceed_query_limit(1)
+          expect { integration.prometheus_available? }.not_to exceed_query_limit(1)
         end
       end
 
@@ -360,7 +360,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
         let(:cluster) { create(:cluster, :instance) }
 
         it 'returns true' do
-          expect(service.prometheus_available?).to be(true)
+          expect(integration.prometheus_available?).to be(true)
         end
       end
     end
@@ -370,7 +370,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       let!(:prometheus) { create(:clusters_integrations_prometheus, :disabled, cluster: cluster) }
 
       it 'returns false' do
-        expect(service.prometheus_available?).to be(false)
+        expect(integration.prometheus_available?).to be(false)
       end
     end
 
@@ -378,78 +378,78 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       let(:cluster) { create(:cluster, projects: [project]) }
 
       it 'returns false' do
-        expect(service.prometheus_available?).to be(false)
+        expect(integration.prometheus_available?).to be(false)
       end
     end
 
     context 'no clusters' do
       it 'returns false' do
-        expect(service.prometheus_available?).to be(false)
+        expect(integration.prometheus_available?).to be(false)
       end
     end
   end
 
   describe '#synchronize_service_state before_save callback' do
     context 'no clusters with prometheus are installed' do
-      context 'when service is inactive' do
+      context 'when integration is inactive' do
         before do
-          service.active = false
+          integration.active = false
         end
 
-        it 'activates service when manual_configuration is enabled' do
-          expect { service.update!(manual_configuration: true) }.to change { service.active }.from(false).to(true)
+        it 'activates integration when manual_configuration is enabled' do
+          expect { integration.update!(manual_configuration: true) }.to change { integration.active }.from(false).to(true)
         end
 
-        it 'keeps service inactive when manual_configuration is disabled' do
-          expect { service.update!(manual_configuration: false) }.not_to change { service.active }.from(false)
+        it 'keeps integration inactive when manual_configuration is disabled' do
+          expect { integration.update!(manual_configuration: false) }.not_to change { integration.active }.from(false)
         end
       end
 
-      context 'when service is active' do
+      context 'when integration is active' do
         before do
-          service.active = true
+          integration.active = true
         end
 
-        it 'keeps the service active when manual_configuration is enabled' do
-          expect { service.update!(manual_configuration: true) }.not_to change { service.active }.from(true)
+        it 'keeps the integration active when manual_configuration is enabled' do
+          expect { integration.update!(manual_configuration: true) }.not_to change { integration.active }.from(true)
         end
 
-        it 'inactivates the service when manual_configuration is disabled' do
-          expect { service.update!(manual_configuration: false) }.to change { service.active }.from(true).to(false)
+        it 'inactivates the integration when manual_configuration is disabled' do
+          expect { integration.update!(manual_configuration: false) }.to change { integration.active }.from(true).to(false)
         end
       end
     end
 
     context 'with prometheus installed in the cluster' do
       before do
-        allow(service).to receive(:prometheus_available?).and_return(true)
+        allow(integration).to receive(:prometheus_available?).and_return(true)
       end
 
-      context 'when service is inactive' do
+      context 'when integration is inactive' do
         before do
-          service.active = false
+          integration.active = false
         end
 
-        it 'activates service when manual_configuration is enabled' do
-          expect { service.update!(manual_configuration: true) }.to change { service.active }.from(false).to(true)
+        it 'activates integration when manual_configuration is enabled' do
+          expect { integration.update!(manual_configuration: true) }.to change { integration.active }.from(false).to(true)
         end
 
-        it 'activates service when manual_configuration is disabled' do
-          expect { service.update!(manual_configuration: false) }.to change { service.active }.from(false).to(true)
+        it 'activates integration when manual_configuration is disabled' do
+          expect { integration.update!(manual_configuration: false) }.to change { integration.active }.from(false).to(true)
         end
       end
 
-      context 'when service is active' do
+      context 'when integration is active' do
         before do
-          service.active = true
+          integration.active = true
         end
 
-        it 'keeps service active when manual_configuration is enabled' do
-          expect { service.update!(manual_configuration: true) }.not_to change { service.active }.from(true)
+        it 'keeps integration active when manual_configuration is enabled' do
+          expect { integration.update!(manual_configuration: true) }.not_to change { integration.active }.from(true)
         end
 
-        it 'keeps service active when manual_configuration is disabled' do
-          expect { service.update!(manual_configuration: false) }.not_to change { service.active }.from(true)
+        it 'keeps integration active when manual_configuration is disabled' do
+          expect { integration.update!(manual_configuration: false) }.not_to change { integration.active }.from(true)
         end
       end
     end
@@ -457,20 +457,20 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
 
   describe '#track_events after_commit callback' do
     before do
-      allow(service).to receive(:prometheus_available?).and_return(true)
+      allow(integration).to receive(:prometheus_available?).and_return(true)
     end
 
     context "enabling manual_configuration" do
       it "tracks enable event" do
-        service.update!(manual_configuration: false)
-        service.update!(manual_configuration: true)
+        integration.update!(manual_configuration: false)
+        integration.update!(manual_configuration: true)
 
         expect_snowplow_event(category: 'cluster:services:prometheus', action: 'enabled_manual_prometheus')
       end
 
       it "tracks disable event" do
-        service.update!(manual_configuration: true)
-        service.update!(manual_configuration: false)
+        integration.update!(manual_configuration: true)
+        integration.update!(manual_configuration: false)
 
         expect_snowplow_event(category: 'cluster:services:prometheus', action: 'disabled_manual_prometheus')
       end
@@ -479,20 +479,20 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
 
   describe '#editable?' do
     it 'is editable' do
-      expect(service.editable?).to be(true)
+      expect(integration.editable?).to be(true)
     end
 
     context 'when cluster exists with prometheus enabled' do
       let(:cluster) { create(:cluster, projects: [project]) }
 
       before do
-        service.update!(manual_configuration: false)
+        integration.update!(manual_configuration: false)
 
         create(:clusters_integrations_prometheus, cluster: cluster)
       end
 
       it 'remains editable' do
-        expect(service.editable?).to be(true)
+        expect(integration.editable?).to be(true)
       end
     end
   end
@@ -536,7 +536,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
     end
 
     it 'returns fields' do
-      expect(service.fields).to eq(expected_fields)
+      expect(integration.fields).to eq(expected_fields)
     end
   end
 end

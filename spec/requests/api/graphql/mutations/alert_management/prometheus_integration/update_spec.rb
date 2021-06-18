@@ -7,7 +7,7 @@ RSpec.describe 'Updating an existing Prometheus Integration' do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:integration) { create(:prometheus_service, project: project) }
+  let_it_be(:integration) { create(:prometheus_integration, project: project) }
 
   let(:mutation) do
     variables = {

@@ -127,38 +127,11 @@ RSpec.describe InvitesController do
               expect(flash[:notice]).to include('create an account or sign in')
             end
 
-            context 'when it is part of our invite email experiment', :experiment, :aggregate_failures do
-              let(:experience) { :control }
+            it 'is redirected to a new registration with invite email param and flash message', :aggregate_failures do
+              request
 
-              before do
-                stub_experiments(invite_signup_page_interaction: experience)
-              end
-
-              it 'sets originating_member_id session key' do
-                request
-
-                expect(session[:originating_member_id]).to eq(member.id)
-              end
-
-              context 'with control experience' do
-                it 'is redirected to a new registration with invite email param and flash message' do
-                  request
-
-                  expect(response).to redirect_to(new_user_registration_path(invite_email: member.invite_email))
-                  expect(flash[:notice]).to eq 'To accept this invitation, create an account or sign in.'
-                end
-              end
-
-              context 'with candidate experience' do
-                let(:experience) { :candidate }
-
-                it 'is redirected to a new invite registration with invite email param and no flash message' do
-                  request
-
-                  expect(response).to redirect_to(new_users_sign_up_invite_path(invite_email: member.invite_email))
-                  expect(flash[:notice]).to be_nil
-                end
-              end
+              expect(response).to redirect_to(new_user_registration_path(invite_email: member.invite_email))
+              expect(flash[:notice]).to eq 'To accept this invitation, create an account or sign in.'
             end
 
             it 'sets session keys for auto email confirmation on sign up' do

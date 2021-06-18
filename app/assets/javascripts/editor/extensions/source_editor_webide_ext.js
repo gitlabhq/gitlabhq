@@ -1,7 +1,7 @@
 import { debounce } from 'lodash';
 import { KeyCode, KeyMod, Range } from 'monaco-editor';
 import { EDITOR_TYPE_DIFF } from '~/editor/constants';
-import { EditorLiteExtension } from '~/editor/extensions/editor_lite_extension_base';
+import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import Disposable from '~/ide/lib/common/disposable';
 import { editorOptions } from '~/ide/lib/editor_options';
 import keymap from '~/ide/lib/keymap.json';
@@ -12,7 +12,7 @@ const isDiffEditorType = (instance) => {
 
 export const UPDATE_DIMENSIONS_DELAY = 200;
 
-export class EditorWebIdeExtension extends EditorLiteExtension {
+export class EditorWebIdeExtension extends SourceEditorExtension {
   constructor({ instance, modelManager, ...options } = {}) {
     super({
       instance,

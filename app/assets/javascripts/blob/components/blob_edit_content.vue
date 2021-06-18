@@ -1,6 +1,6 @@
 <script>
 import { debounce } from 'lodash';
-import { initEditorLite } from '~/blob/utils';
+import { initSourceEditor } from '~/blob/utils';
 import { SNIPPET_MEASURE_BLOBS_CONTENT } from '~/performance/constants';
 
 import eventHub from './eventhub';
@@ -36,7 +36,7 @@ export default {
     },
   },
   mounted() {
-    this.editor = initEditorLite({
+    this.editor = initSourceEditor({
       el: this.$refs.editor,
       blobPath: this.fileName,
       blobContent: this.value,

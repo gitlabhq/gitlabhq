@@ -8,7 +8,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
-import EditorLite from '~/vue_shared/components/editor_lite.vue';
+import SourceEditor from '~/vue_shared/components/source_editor.vue';
 
 jest.mock('~/flash');
 
@@ -48,7 +48,7 @@ describe('Snippet Blob Edit component', () => {
 
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findHeader = () => wrapper.find(BlobHeaderEdit);
-  const findContent = () => wrapper.find(EditorLite);
+  const findContent = () => wrapper.find(SourceEditor);
   const getLastUpdatedArgs = () => {
     const event = wrapper.emitted()['blob-updated'];
 

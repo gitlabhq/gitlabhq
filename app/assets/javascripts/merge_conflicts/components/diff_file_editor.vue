@@ -50,13 +50,13 @@ export default {
   methods: {
     ...mapActions(['setFileResolveMode', 'setPromptConfirmationState', 'updateFile']),
     loadEditor() {
-      const EditorPromise = import(/* webpackChunkName: 'EditorLite' */ '~/editor/editor_lite');
+      const EditorPromise = import(/* webpackChunkName: 'SourceEditor' */ '~/editor/source_editor');
       const DataPromise = axios.get(this.file.content_path);
 
       Promise.all([EditorPromise, DataPromise])
         .then(
           ([
-            { default: EditorLite },
+            { default: SourceEditor },
             {
               data: { content, new_path: path },
             },
@@ -66,7 +66,7 @@ export default {
             this.originalContent = content;
             this.fileLoaded = true;
 
-            this.editor = new EditorLite().createInstance({
+            this.editor = new SourceEditor().createInstance({
               el: contentEl,
               blobPath: path,
               blobContent: content,

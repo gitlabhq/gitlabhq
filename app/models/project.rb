@@ -182,7 +182,7 @@ class Project < ApplicationRecord
   has_one :packagist_integration, class_name: 'Integrations::Packagist'
   has_one :pipelines_email_integration, class_name: 'Integrations::PipelinesEmail'
   has_one :pivotaltracker_integration, class_name: 'Integrations::Pivotaltracker'
-  has_one :prometheus_service, class_name: 'Integrations::Prometheus', inverse_of: :project
+  has_one :prometheus_integration, class_name: 'Integrations::Prometheus', inverse_of: :project
   has_one :pushover_integration, class_name: 'Integrations::Pushover'
   has_one :redmine_integration, class_name: 'Integrations::Redmine'
   has_one :slack_integration, class_name: 'Integrations::Slack'
@@ -400,7 +400,7 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
   accepts_nested_attributes_for :metrics_setting, update_only: true, allow_destroy: true
   accepts_nested_attributes_for :grafana_integration, update_only: true, allow_destroy: true
-  accepts_nested_attributes_for :prometheus_service, update_only: true
+  accepts_nested_attributes_for :prometheus_integration, update_only: true
   accepts_nested_attributes_for :alerting_setting, update_only: true
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
@@ -439,7 +439,7 @@ class Project < ApplicationRecord
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
     :allow_merge_on_skipped_pipeline=, :has_confluence?, :allow_editing_commit_messages?,
     to: :project_setting
-  delegate :active?, to: :prometheus_service, allow_nil: true, prefix: true
+  delegate :active?, to: :prometheus_integration, allow_nil: true, prefix: true
 
   delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
 

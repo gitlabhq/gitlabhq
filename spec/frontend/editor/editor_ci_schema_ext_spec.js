@@ -1,8 +1,8 @@
 import { languages } from 'monaco-editor';
 import { TEST_HOST } from 'helpers/test_constants';
 import { EXTENSION_CI_SCHEMA_FILE_NAME_MATCH } from '~/editor/constants';
-import EditorLite from '~/editor/editor_lite';
-import { CiSchemaExtension } from '~/editor/extensions/editor_ci_schema_ext';
+import { CiSchemaExtension } from '~/editor/extensions/source_editor_ci_schema_ext';
+import SourceEditor from '~/editor/source_editor';
 
 const mockRef = 'AABBCCDD';
 
@@ -17,7 +17,7 @@ describe('~/editor/editor_ci_config_ext', () => {
   const createMockEditor = ({ blobPath = defaultBlobPath } = {}) => {
     setFixtures('<div id="editor"></div>');
     editorEl = document.getElementById('editor');
-    editor = new EditorLite();
+    editor = new SourceEditor();
     instance = editor.createInstance({
       el: editorEl,
       blobPath,

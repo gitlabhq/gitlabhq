@@ -4,7 +4,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import CiLint from '~/ci_lint/components/ci_lint.vue';
 import CiLintResults from '~/pipeline_editor/components/lint/ci_lint_results.vue';
 import lintCIMutation from '~/pipeline_editor/graphql/mutations/lint_ci.mutation.graphql';
-import EditorLite from '~/vue_shared/components/editor_lite.vue';
+import SourceEditor from '~/vue_shared/components/source_editor.vue';
 import { mockLintDataValid } from '../mock_data';
 
 describe('CI Lint', () => {
@@ -35,7 +35,7 @@ describe('CI Lint', () => {
     });
   };
 
-  const findEditor = () => wrapper.find(EditorLite);
+  const findEditor = () => wrapper.find(SourceEditor);
   const findAlert = () => wrapper.find(GlAlert);
   const findCiLintResults = () => wrapper.find(CiLintResults);
   const findValidateBtn = () => wrapper.find('[data-testid="ci-lint-validate"]');

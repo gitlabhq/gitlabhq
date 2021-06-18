@@ -109,7 +109,7 @@ module Gitlab
 
             service = result[:project].find_or_initialize_service('prometheus')
 
-            unless service.update(prometheus_service_attributes)
+            unless service.update(prometheus_integration_attributes)
               log_error('Could not save prometheus manual configuration for self-monitoring project. Errors: %{errors}' % { errors: service.errors.full_messages })
               return error(_('Could not save prometheus manual configuration'))
             end
@@ -156,7 +156,7 @@ module Gitlab
             ::Gitlab::Prometheus::Internal.uri
           end
 
-          def prometheus_service_attributes
+          def prometheus_integration_attributes
             {
               api_url: internal_prometheus_server_address_uri,
               manual_configuration: true,

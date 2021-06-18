@@ -9,10 +9,6 @@ RSpec.describe MergeRequestDiff do
 
   let(:diff_with_commits) { create(:merge_request).merge_request_diff }
 
-  before do
-    stub_feature_flags(diffs_gradual_load: false)
-  end
-
   describe 'validations' do
     subject { diff_with_commits }
 
@@ -460,19 +456,19 @@ RSpec.describe MergeRequestDiff do
 
       context 'when persisted files available' do
         it 'returns paginated diffs' do
-          diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
+          diffs = diff_with_commits.diffs_in_batch(0, 10, diff_options: diff_options)
 
           expect(diffs).to be_a(Gitlab::Diff::FileCollection::MergeRequestDiffBatch)
           expect(diffs.diff_files.size).to eq(10)
-          expect(diffs.pagination_data).to eq(current_page: 1,
-                                              next_page: 2,
-                                              total_pages: 2)
+          expect(diffs.pagination_data).to eq(current_page: nil,
+                                              next_page: nil,
+                                              total_pages: 20)
         end
 
         it 'sorts diff files directory first' do
           diff_with_commits.update!(sorted: false) # Mark as unsorted so it'll re-order
 
-          expect(diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options).diff_file_paths).to eq([
+          expect(diff_with_commits.diffs_in_batch(0, 10, diff_options: diff_options).diff_file_paths).to eq([
             'bar/branch-test.txt',
             'custom-highlighting/test.gitlab-custom',
             'encoding/iso8859.txt',
@@ -491,43 +487,21 @@ RSpec.describe MergeRequestDiff do
             { ignore_whitespace_change: true }
           end
 
-          it 'returns a Gitlab::Diff::FileCollection::Compare with paginated diffs' do
+          it 'returns pagination data from MergeRequestDiffBatch' do
             diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
+            file_count = diff_with_commits.merge_request_diff_files.count
 
             expect(diffs).to be_a(Gitlab::Diff::FileCollection::Compare)
             expect(diffs.diff_files.size).to eq 10
-            expect(diffs.pagination_data).to eq(current_page: 1, next_page: 2, total_pages: 2)
+            expect(diffs.pagination_data).to eq(current_page: nil, next_page: nil, total_pages: file_count)
           end
 
           it 'returns an empty MergeRequestBatch with empty pagination data when the batch is empty' do
-            diffs = diff_with_commits.diffs_in_batch(3, 10, diff_options: diff_options)
+            diffs = diff_with_commits.diffs_in_batch(30, 10, diff_options: diff_options)
 
             expect(diffs).to be_a(Gitlab::Diff::FileCollection::MergeRequestDiffBatch)
             expect(diffs.diff_files.size).to eq 0
             expect(diffs.pagination_data).to eq(current_page: nil, next_page: nil, total_pages: nil)
-          end
-
-          context 'with gradual load enabled' do
-            before do
-              stub_feature_flags(diffs_gradual_load: true)
-            end
-
-            it 'returns pagination data from MergeRequestDiffBatch' do
-              diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
-              file_count = diff_with_commits.merge_request_diff_files.count
-
-              expect(diffs).to be_a(Gitlab::Diff::FileCollection::Compare)
-              expect(diffs.diff_files.size).to eq 10
-              expect(diffs.pagination_data).to eq(current_page: nil, next_page: nil, total_pages: file_count)
-            end
-
-            it 'returns an empty MergeRequestBatch with empty pagination data when the batch is empty' do
-              diffs = diff_with_commits.diffs_in_batch(30, 10, diff_options: diff_options)
-
-              expect(diffs).to be_a(Gitlab::Diff::FileCollection::MergeRequestDiffBatch)
-              expect(diffs.diff_files.size).to eq 0
-              expect(diffs.pagination_data).to eq(current_page: nil, next_page: nil, total_pages: nil)
-            end
           end
         end
       end

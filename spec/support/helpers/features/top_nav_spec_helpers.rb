@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# These helpers help you interact within the Editor Lite (single-file editor, snippets, etc.).
+# These helpers help you interact within the Source Editor (single-file editor, snippets, etc.).
 #
 module Spec
   module Support

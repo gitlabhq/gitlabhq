@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 
 import { EDITOR_READY_EVENT } from '~/editor/constants';
-import { EditorLiteExtension } from '~/editor/extensions/editor_lite_extension_base';
+import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import TextEditor from '~/pipeline_editor/components/editor/text_editor.vue';
 import {
   mockCiConfigPath,
@@ -19,7 +19,7 @@ describe('Pipeline Editor | Text editor component', () => {
   let mockUse;
   let mockRegisterCiSchema;
 
-  const MockEditorLite = {
+  const MockSourceEditor = {
     template: '<div/>',
     props: ['value', 'fileName'],
     mounted() {
@@ -55,15 +55,15 @@ describe('Pipeline Editor | Text editor component', () => {
         [EDITOR_READY_EVENT]: editorReadyListener,
       },
       stubs: {
-        EditorLite: MockEditorLite,
+        SourceEditor: MockSourceEditor,
       },
     });
   };
 
-  const findEditor = () => wrapper.findComponent(MockEditorLite);
+  const findEditor = () => wrapper.findComponent(MockSourceEditor);
 
   beforeEach(() => {
-    EditorLiteExtension.deferRerender = jest.fn();
+    SourceEditorExtension.deferRerender = jest.fn();
   });
 
   afterEach(() => {

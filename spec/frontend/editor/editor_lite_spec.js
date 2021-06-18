@@ -2,12 +2,12 @@
 import { editor as monacoEditor, languages as monacoLanguages } from 'monaco-editor';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
-  EDITOR_LITE_INSTANCE_ERROR_NO_EL,
+  SOURCE_EDITOR_INSTANCE_ERROR_NO_EL,
   URI_PREFIX,
   EDITOR_READY_EVENT,
 } from '~/editor/constants';
-import EditorLite from '~/editor/editor_lite';
-import { EditorLiteExtension } from '~/editor/extensions/editor_lite_extension_base';
+import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
+import SourceEditor from '~/editor/source_editor';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import { joinPaths } from '~/lib/utils/url_utility';
 
@@ -25,7 +25,7 @@ describe('Base editor', () => {
     setFixtures('<div id="editor" data-editor-loading></div>');
     editorEl = document.getElementById('editor');
     defaultArguments = { el: editorEl, blobPath, blobContent, blobGlobalId };
-    editor = new EditorLite();
+    editor = new SourceEditor();
   });
 
   afterEach(() => {
@@ -49,7 +49,7 @@ describe('Base editor', () => {
     expect(editorEl.dataset.editorLoading).toBeUndefined();
   });
 
-  describe('instance of the Editor Lite', () => {
+  describe('instance of the Source Editor', () => {
     let modelSpy;
     let instanceSpy;
     const setModel = jest.fn();
@@ -58,7 +58,7 @@ describe('Base editor', () => {
       modelSpy = jest.spyOn(monacoEditor, 'createModel').mockImplementation(() => res);
     };
     const mockDecorateInstance = (decorations = {}) => {
-      jest.spyOn(EditorLite, 'convertMonacoToELInstance').mockImplementation((inst) => {
+      jest.spyOn(SourceEditor, 'convertMonacoToELInstance').mockImplementation((inst) => {
         return Object.assign(inst, decorations);
       });
     };
@@ -76,11 +76,11 @@ describe('Base editor', () => {
         mockDecorateInstance();
         expect(() => {
           editor.createInstance();
-        }).toThrow(EDITOR_LITE_INSTANCE_ERROR_NO_EL);
+        }).toThrow(SOURCE_EDITOR_INSTANCE_ERROR_NO_EL);
 
         expect(modelSpy).not.toHaveBeenCalled();
         expect(instanceSpy).not.toHaveBeenCalled();
-        expect(EditorLite.convertMonacoToELInstance).not.toHaveBeenCalled();
+        expect(SourceEditor.convertMonacoToELInstance).not.toHaveBeenCalled();
       });
 
       it('creates model to be supplied to Monaco editor', () => {
@@ -261,7 +261,7 @@ describe('Base editor', () => {
         blobPath,
       };
 
-      editor = new EditorLite();
+      editor = new SourceEditor();
       instanceSpy = jest.spyOn(monacoEditor, 'create');
     });
 
@@ -304,7 +304,7 @@ describe('Base editor', () => {
     });
 
     it('shares global editor options among all instances', () => {
-      editor = new EditorLite({
+      editor = new SourceEditor({
         readOnly: true,
       });
 
@@ -316,7 +316,7 @@ describe('Base editor', () => {
     });
 
     it('allows overriding editor options on the instance level', () => {
-      editor = new EditorLite({
+      editor = new SourceEditor({
         readOnly: true,
       });
       inst1 = editor.createInstance({
@@ -410,7 +410,7 @@ describe('Base editor', () => {
         return WithStaticMethod.computeBoo(this.base);
       }
     }
-    class WithStaticMethodExtended extends EditorLiteExtension {
+    class WithStaticMethodExtended extends SourceEditorExtension {
       static computeBoo(a) {
         return a + 1;
       }
@@ -546,7 +546,7 @@ describe('Base editor', () => {
 
       beforeEach(() => {
         editorExtensionSpy = jest
-          .spyOn(EditorLite, 'pushToImportsArray')
+          .spyOn(SourceEditor, 'pushToImportsArray')
           .mockImplementation((arr) => {
             arr.push(
               Promise.resolve({
@@ -593,7 +593,7 @@ describe('Base editor', () => {
         const useSpy = jest.fn().mockImplementation(() => {
           calls.push('use');
         });
-        jest.spyOn(EditorLite, 'convertMonacoToELInstance').mockImplementation((inst) => {
+        jest.spyOn(SourceEditor, 'convertMonacoToELInstance').mockImplementation((inst) => {
           const decoratedInstance = inst;
           decoratedInstance.use = useSpy;
           return decoratedInstance;
@@ -664,7 +664,7 @@ describe('Base editor', () => {
     it('sets default syntax highlighting theme', () => {
       const expectedTheme = themes.find((t) => t.name === DEFAULT_THEME);
 
-      editor = new EditorLite();
+      editor = new SourceEditor();
 
       expect(themeDefineSpy).toHaveBeenCalledWith(DEFAULT_THEME, expectedTheme.data);
       expect(themeSetSpy).toHaveBeenCalledWith(DEFAULT_THEME);
@@ -676,7 +676,7 @@ describe('Base editor', () => {
       expect(expectedTheme.name).not.toBe(DEFAULT_THEME);
 
       window.gon.user_color_scheme = expectedTheme.name;
-      editor = new EditorLite();
+      editor = new SourceEditor();
 
       expect(themeDefineSpy).toHaveBeenCalledWith(expectedTheme.name, expectedTheme.data);
       expect(themeSetSpy).toHaveBeenCalledWith(expectedTheme.name);
@@ -687,7 +687,7 @@ describe('Base editor', () => {
       const nonExistentTheme = { name };
 
       window.gon.user_color_scheme = nonExistentTheme.name;
-      editor = new EditorLite();
+      editor = new SourceEditor();
 
       expect(themeDefineSpy).not.toHaveBeenCalled();
       expect(themeSetSpy).toHaveBeenCalledWith(DEFAULT_THEME);

@@ -64,7 +64,6 @@ Rails.application.routes.draw do
     end
 
     resource :experience_level, only: [:show, :update]
-    resources :invites, only: [:new, :create]
 
     Gitlab.ee do
       resources :groups, only: [:new, :create]

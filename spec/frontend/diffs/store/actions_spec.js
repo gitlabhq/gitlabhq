@@ -8,7 +8,6 @@ import {
   DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
-  DIFFS_PER_PAGE,
 } from '~/diffs/constants';
 import {
   setBaseConfig,
@@ -154,16 +153,16 @@ describe('DiffsStoreActions', () => {
 
     it('should fetch batch diff files', (done) => {
       const endpointBatch = '/fetch/diffs_batch';
-      const res1 = { diff_files: [{ file_hash: 'test' }], pagination: { next_page: 2 } };
-      const res2 = { diff_files: [{ file_hash: 'test2' }], pagination: {} };
+      const res1 = { diff_files: [{ file_hash: 'test' }], pagination: { total_pages: 7 } };
+      const res2 = { diff_files: [{ file_hash: 'test2' }], pagination: { total_pages: 7 } };
       mock
         .onGet(
           mergeUrlParams(
             {
               w: '1',
               view: 'inline',
-              page: 1,
-              per_page: DIFFS_PER_PAGE,
+              page: 0,
+              per_page: 5,
             },
             endpointBatch,
           ),
@@ -174,8 +173,8 @@ describe('DiffsStoreActions', () => {
             {
               w: '1',
               view: 'inline',
-              page: 2,
-              per_page: DIFFS_PER_PAGE,
+              page: 5,
+              per_page: 7,
             },
             endpointBatch,
           ),

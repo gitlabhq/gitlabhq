@@ -88,8 +88,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
   before do
-    stub_feature_flags(diffs_gradual_load: false)
-
     project.add_maintainer(user)
     sign_in(user)
   end
@@ -486,7 +484,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         namespace_id: project.namespace.to_param,
         project_id: project,
         id: merge_request.iid,
-        page: 1,
+        page: 0,
         per_page: 20,
         format: 'json'
       }
@@ -517,7 +515,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-        let(:expected_options) { collection_arguments(current_page: 1, total_pages: 1).merge(merge_ref_head_diff: false) }
+        let(:expected_options) { collection_arguments(current_page: nil, total_pages: 20).merge(merge_ref_head_diff: false) }
       end
 
       it_behaves_like 'successful request'
@@ -557,7 +555,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
         let(:expected_options) do
-          collection_arguments(current_page: 1, total_pages: 1)
+          collection_arguments(current_page: nil, total_pages: 20)
         end
       end
 
@@ -576,18 +574,18 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-        let(:expected_options) { collection_arguments(current_page: 1, total_pages: 1) }
+        let(:expected_options) { collection_arguments(current_page: nil, total_pages: 20) }
       end
 
       it_behaves_like 'successful request'
     end
 
     context 'with smaller diff batch params' do
-      subject { go(page: 2, per_page: 5) }
+      subject { go(page: 5, per_page: 5) }
 
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-        let(:expected_options) { collection_arguments(current_page: 2, next_page: 3, total_pages: 4) }
+        let(:expected_options) { collection_arguments(current_page: nil, next_page: nil, total_pages: 20) }
       end
 
       it_behaves_like 'successful request'

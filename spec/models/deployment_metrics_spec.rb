@@ -15,35 +15,35 @@ RSpec.describe DeploymentMetrics do
     context 'when deployment is success' do
       let(:deployment) { create(:deployment, :success) }
 
-      context 'without a monitoring service' do
+      context 'without a monitoring integration' do
         it { is_expected.to be_falsy }
       end
 
-      context 'with a Prometheus Service' do
-        let(:prometheus_service) { instance_double(::Integrations::Prometheus, can_query?: true, configured?: true) }
+      context 'with a Prometheus integration' do
+        let(:prometheus_integration) { instance_double(::Integrations::Prometheus, can_query?: true, configured?: true) }
 
         before do
-          allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
+          allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_integration
         end
 
         it { is_expected.to be_truthy }
       end
 
-      context 'with a Prometheus Service that cannot query' do
-        let(:prometheus_service) { instance_double(::Integrations::Prometheus, configured?: true, can_query?: false) }
+      context 'with a Prometheus integration that cannot query' do
+        let(:prometheus_integration) { instance_double(::Integrations::Prometheus, configured?: true, can_query?: false) }
 
         before do
-          allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
+          allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_integration
         end
 
         it { is_expected.to be_falsy }
       end
 
-      context 'with a Prometheus Service that is not configured' do
-        let(:prometheus_service) { instance_double(::Integrations::Prometheus, configured?: false, can_query?: false) }
+      context 'with a Prometheus integration that is not configured' do
+        let(:prometheus_integration) { instance_double(::Integrations::Prometheus, configured?: false, can_query?: false) }
 
         before do
-          allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_service
+          allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_integration
         end
 
         it { is_expected.to be_falsy }

@@ -12,10 +12,10 @@ module Types
 
       authorize :admin_project
 
-      alias_method :prometheus_service, :object
+      alias_method :prometheus_integration, :object
 
       def name
-        prometheus_service.title
+        prometheus_integration.title
       end
 
       def type
@@ -23,15 +23,15 @@ module Types
       end
 
       def token
-        prometheus_service.project&.alerting_setting&.token
+        prometheus_integration.project&.alerting_setting&.token
       end
 
       def url
-        prometheus_service.project && notify_project_prometheus_alerts_url(prometheus_service.project, format: :json)
+        prometheus_integration.project && notify_project_prometheus_alerts_url(prometheus_integration.project, format: :json)
       end
 
       def active
-        prometheus_service.manual_configuration?
+        prometheus_integration.manual_configuration?
       end
     end
   end

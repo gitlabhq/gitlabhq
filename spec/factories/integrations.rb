@@ -27,7 +27,7 @@ FactoryBot.define do
     end
   end
 
-  factory :prometheus_service, class: 'Integrations::Prometheus' do
+  factory :prometheus_integration, class: 'Integrations::Prometheus' do
     project
     active { true }
     properties do

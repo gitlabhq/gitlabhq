@@ -17,7 +17,7 @@ RSpec.describe GitlabSchema.types['AlertManagementPrometheusIntegration'] do
       end
     end
 
-    let_it_be_with_reload(:integration) { create(:prometheus_service) }
+    let_it_be_with_reload(:integration) { create(:prometheus_integration) }
     let_it_be(:user) { create(:user, maintainer_projects: [integration.project]) }
 
     it_behaves_like 'has field with value', 'name' do
@@ -50,7 +50,7 @@ RSpec.describe GitlabSchema.types['AlertManagementPrometheusIntegration'] do
 
     describe 'a group integration' do
       let_it_be(:group) { create(:group) }
-      let_it_be(:integration) { create(:prometheus_service, project: nil, group: group) }
+      let_it_be(:integration) { create(:prometheus_integration, project: nil, group: group) }
 
       # Since it is impossible to authorize the parent here, given that the
       # project is nil, all fields should be redacted:

@@ -106,10 +106,6 @@ class ApplicationController < ActionController::Base
     redirect_back(fallback_location: default, **options)
   end
 
-  def check_if_gl_com_or_dev
-    render_404 unless ::Gitlab.dev_env_or_com?
-  end
-
   def not_found
     render_404
   end

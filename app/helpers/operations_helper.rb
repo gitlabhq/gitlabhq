@@ -3,8 +3,8 @@
 module OperationsHelper
   include Gitlab::Utils::StrongMemoize
 
-  def prometheus_service
-    strong_memoize(:prometheus_service) do
+  def prometheus_integration
+    strong_memoize(:prometheus_integration) do
       @project.find_or_initialize_service(::Integrations::Prometheus.to_param)
     end
   end
@@ -14,11 +14,11 @@ module OperationsHelper
     templates = setting.available_issue_templates.map { |t| { key: t.key, name: t.name } }
 
     {
-      'prometheus_activated' => prometheus_service.manual_configuration?.to_s,
-      'prometheus_form_path' => scoped_integration_path(prometheus_service),
+      'prometheus_activated' => prometheus_integration.manual_configuration?.to_s,
+      'prometheus_form_path' => scoped_integration_path(prometheus_integration),
       'prometheus_reset_key_path' => reset_alerting_token_project_settings_operations_path(@project),
       'prometheus_authorization_key' => @project.alerting_setting&.token,
-      'prometheus_api_url' => prometheus_service.api_url,
+      'prometheus_api_url' => prometheus_integration.api_url,
       'prometheus_url' => notify_project_prometheus_alerts_url(@project, format: :json),
       'alerts_setup_url' => help_page_path('operations/incident_management/integrations.md', anchor: 'configuration'),
       'alerts_usage_url' => project_alert_management_index_path(@project),

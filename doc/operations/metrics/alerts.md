@@ -28,7 +28,7 @@ use with Prometheus webhooks. If you have manual configuration enabled, an
 This section contains the needed **URL** and **Authorization Key**. The
 **Reset Key** button invalidates the key and generates a new one.
 
-![Prometheus service configuration of Alerts](img/prometheus_service_alerts.png)
+![Prometheus integration configuration of Alerts](img/prometheus_integration_alerts.png)
 
 To send GitLab alert notifications, copy the **URL** and **Authorization Key** into the
 [`webhook_configs`](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config)

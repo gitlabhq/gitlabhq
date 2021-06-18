@@ -1,12 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { EDITOR_READY_EVENT } from '~/editor/constants';
-import Editor from '~/editor/editor_lite';
-import EditorLite from '~/vue_shared/components/editor_lite.vue';
+import Editor from '~/editor/source_editor';
+import SourceEditor from '~/vue_shared/components/source_editor.vue';
 
-jest.mock('~/editor/editor_lite');
+jest.mock('~/editor/source_editor');
 
-describe('Editor Lite component', () => {
+describe('Source Editor component', () => {
   let wrapper;
   let mockInstance;
 
@@ -30,7 +30,7 @@ describe('Editor Lite component', () => {
     };
   });
   function createComponent(props = {}) {
-    wrapper = shallowMount(EditorLite, {
+    wrapper = shallowMount(SourceEditor, {
       propsData: {
         value,
         fileName,
@@ -73,10 +73,10 @@ describe('Editor Lite component', () => {
       createComponent({ value: undefined });
 
       expect(spy).not.toHaveBeenCalled();
-      expect(wrapper.find('[id^="editor-lite-"]').exists()).toBe(true);
+      expect(wrapper.find('[id^="source-editor-"]').exists()).toBe(true);
     });
 
-    it('initialises Editor Lite instance', () => {
+    it('initialises Source Editor instance', () => {
       const el = wrapper.find({ ref: 'editor' }).element;
       expect(createInstanceMock).toHaveBeenCalledWith({
         el,
@@ -111,7 +111,7 @@ describe('Editor Lite component', () => {
       expect(wrapper.emitted().input).toEqual([[value]]);
     });
 
-    it('emits EDITOR_READY_EVENT event when the Editor Lite is ready', async () => {
+    it('emits EDITOR_READY_EVENT event when the Source Editor is ready', async () => {
       const el = wrapper.find({ ref: 'editor' }).element;
       expect(wrapper.emitted()[EDITOR_READY_EVENT]).toBeUndefined();
 

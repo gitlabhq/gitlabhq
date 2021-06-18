@@ -8,8 +8,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import waitUsingRealTimer from 'helpers/wait_using_real_timer';
 import { exampleConfigs, exampleFiles } from 'jest/ide/lib/editorconfig/mock_data';
 import { EDITOR_CODE_INSTANCE_FN, EDITOR_DIFF_INSTANCE_FN } from '~/editor/constants';
-import EditorLite from '~/editor/editor_lite';
-import { EditorWebIdeExtension } from '~/editor/extensions/editor_lite_webide_ext';
+import { EditorWebIdeExtension } from '~/editor/extensions/source_editor_webide_ext';
+import SourceEditor from '~/editor/source_editor';
 import RepoEditor from '~/ide/components/repo_editor.vue';
 import {
   leftSidebarViews,
@@ -123,8 +123,8 @@ describe('RepoEditor', () => {
   const findPreviewTab = () => wrapper.find('[data-testid="preview-tab"]');
 
   beforeEach(() => {
-    createInstanceSpy = jest.spyOn(EditorLite.prototype, EDITOR_CODE_INSTANCE_FN);
-    createDiffInstanceSpy = jest.spyOn(EditorLite.prototype, EDITOR_DIFF_INSTANCE_FN);
+    createInstanceSpy = jest.spyOn(SourceEditor.prototype, EDITOR_CODE_INSTANCE_FN);
+    createDiffInstanceSpy = jest.spyOn(SourceEditor.prototype, EDITOR_DIFF_INSTANCE_FN);
     createModelSpy = jest.spyOn(monacoEditor, 'createModel');
     jest.spyOn(service, 'getFileData').mockResolvedValue();
     jest.spyOn(service, 'getRawFileData').mockResolvedValue();
@@ -252,7 +252,7 @@ describe('RepoEditor', () => {
     );
 
     it('installs the WebIDE extension', async () => {
-      const extensionSpy = jest.spyOn(EditorLite, 'instanceApplyExtension');
+      const extensionSpy = jest.spyOn(SourceEditor, 'instanceApplyExtension');
       await createComponent();
       expect(extensionSpy).toHaveBeenCalled();
       Reflect.ownKeys(EditorWebIdeExtension.prototype)

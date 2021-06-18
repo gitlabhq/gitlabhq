@@ -54,6 +54,14 @@ class Ability
       end
     end
 
+    def feature_flags_readable_by_user(feature_flags, user = nil, filters: {})
+      feature_flags = apply_filters_if_needed(feature_flags, user, filters)
+
+      DeclarativePolicy.user_scope do
+        feature_flags.select { |flag| allowed?(user, :read_feature_flag, flag) }
+      end
+    end
+
     def allowed?(user, ability, subject = :global, opts = {})
       if subject.is_a?(Hash)
         opts = subject

@@ -5,7 +5,7 @@ import {
   EDITOR_TYPE_CODE,
   EDITOR_TYPE_DIFF,
 } from '~/editor/constants';
-import { EditorLiteExtension } from '~/editor/extensions/editor_lite_extension_base';
+import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 
 jest.mock('~/helpers/startup_css_helper', () => {
   return {
@@ -22,7 +22,7 @@ jest.mock('~/helpers/startup_css_helper', () => {
   };
 });
 
-describe('The basis for an Editor Lite extension', () => {
+describe('The basis for an Source Editor extension', () => {
   const defaultLine = 3;
   let ext;
   let event;
@@ -63,7 +63,7 @@ describe('The basis for an Editor Lite extension', () => {
       const instance = {
         layout: jest.fn(),
       };
-      ext = new EditorLiteExtension({ instance });
+      ext = new SourceEditorExtension({ instance });
       expect(instance.layout).not.toHaveBeenCalled();
 
       // We're waiting for the waitForCSSLoaded mock to kick in
@@ -79,7 +79,7 @@ describe('The basis for an Editor Lite extension', () => {
       ${'does not fail if both instance and the options are omitted'} | ${undefined} | ${undefined}
       ${'throws if only options are passed'}                          | ${undefined} | ${defaultOptions}
     `('$description', ({ instance, options } = {}) => {
-      EditorLiteExtension.deferRerender = jest.fn();
+      SourceEditorExtension.deferRerender = jest.fn();
       const originalInstance = { ...instance };
 
       if (instance) {
@@ -88,54 +88,54 @@ describe('The basis for an Editor Lite extension', () => {
             expect(instance[prop]).toBeUndefined();
           });
           // Both instance and options are passed
-          ext = new EditorLiteExtension({ instance, ...options });
+          ext = new SourceEditorExtension({ instance, ...options });
           Object.entries(options).forEach(([prop, value]) => {
             expect(ext[prop]).toBeUndefined();
             expect(instance[prop]).toBe(value);
           });
         } else {
-          ext = new EditorLiteExtension({ instance });
+          ext = new SourceEditorExtension({ instance });
           expect(instance).toEqual(originalInstance);
         }
       } else if (options) {
         // Options are passed without instance
         expect(() => {
-          ext = new EditorLiteExtension({ ...options });
+          ext = new SourceEditorExtension({ ...options });
         }).toThrow(ERROR_INSTANCE_REQUIRED_FOR_EXTENSION);
       } else {
         // Neither options nor instance are passed
         expect(() => {
-          ext = new EditorLiteExtension();
+          ext = new SourceEditorExtension();
         }).not.toThrow();
       }
     });
 
     it('initializes the line highlighting', () => {
-      EditorLiteExtension.deferRerender = jest.fn();
-      const spy = jest.spyOn(EditorLiteExtension, 'highlightLines');
-      ext = new EditorLiteExtension({ instance: {} });
+      SourceEditorExtension.deferRerender = jest.fn();
+      const spy = jest.spyOn(SourceEditorExtension, 'highlightLines');
+      ext = new SourceEditorExtension({ instance: {} });
       expect(spy).toHaveBeenCalled();
     });
 
     it('sets up the line linking for code instance', () => {
-      EditorLiteExtension.deferRerender = jest.fn();
-      const spy = jest.spyOn(EditorLiteExtension, 'setupLineLinking');
+      SourceEditorExtension.deferRerender = jest.fn();
+      const spy = jest.spyOn(SourceEditorExtension, 'setupLineLinking');
       const instance = {
         getEditorType: jest.fn().mockReturnValue(EDITOR_TYPE_CODE),
         onMouseMove: jest.fn(),
         onMouseDown: jest.fn(),
       };
-      ext = new EditorLiteExtension({ instance });
+      ext = new SourceEditorExtension({ instance });
       expect(spy).toHaveBeenCalledWith(instance);
     });
 
     it('does not set up the line linking for diff instance', () => {
-      EditorLiteExtension.deferRerender = jest.fn();
-      const spy = jest.spyOn(EditorLiteExtension, 'setupLineLinking');
+      SourceEditorExtension.deferRerender = jest.fn();
+      const spy = jest.spyOn(SourceEditorExtension, 'setupLineLinking');
       const instance = {
         getEditorType: jest.fn().mockReturnValue(EDITOR_TYPE_DIFF),
       };
-      ext = new EditorLiteExtension({ instance });
+      ext = new SourceEditorExtension({ instance });
       expect(spy).not.toHaveBeenCalled();
     });
   });
@@ -172,7 +172,7 @@ describe('The basis for an Editor Lite extension', () => {
       ${'does not highlight if hash is incomplete 2'}    | ${'#L-'}     | ${false}     | ${null}
     `('$desc', ({ hash, shouldReveal, expectedRange } = {}) => {
       window.location.hash = hash;
-      EditorLiteExtension.highlightLines(instance);
+      SourceEditorExtension.highlightLines(instance);
       if (!shouldReveal) {
         expect(revealSpy).not.toHaveBeenCalled();
         expect(decorationsSpy).not.toHaveBeenCalled();
@@ -194,7 +194,7 @@ describe('The basis for an Editor Lite extension', () => {
       decorationsSpy.mockReturnValue('foo');
       window.location.hash = '#L10';
       expect(instance.lineDecorations).toBeUndefined();
-      EditorLiteExtension.highlightLines(instance);
+      SourceEditorExtension.highlightLines(instance);
       expect(instance.lineDecorations).toBe('foo');
     });
   });
@@ -208,7 +208,7 @@ describe('The basis for an Editor Lite extension', () => {
     };
 
     beforeEach(() => {
-      EditorLiteExtension.onMouseMoveHandler(event); // generate the anchor
+      SourceEditorExtension.onMouseMoveHandler(event); // generate the anchor
     });
 
     it.each`
@@ -216,7 +216,7 @@ describe('The basis for an Editor Lite extension', () => {
       ${'onMouseMove'} | ${instance.onMouseMove}
       ${'onMouseDown'} | ${instance.onMouseDown}
     `('sets up the $desc listener', ({ spy } = {}) => {
-      EditorLiteExtension.setupLineLinking(instance);
+      SourceEditorExtension.setupLineLinking(instance);
       expect(spy).toHaveBeenCalled();
     });
 
@@ -230,7 +230,7 @@ describe('The basis for an Editor Lite extension', () => {
         fn(event);
       });
 
-      EditorLiteExtension.setupLineLinking(instance);
+      SourceEditorExtension.setupLineLinking(instance);
       if (shouldRemove) {
         expect(instance.deltaDecorations).toHaveBeenCalledWith(instance.lineDecorations, []);
       } else {
@@ -241,7 +241,7 @@ describe('The basis for an Editor Lite extension', () => {
 
   describe('onMouseMoveHandler', () => {
     it('stops propagation for contextmenu event on the generated anchor', () => {
-      EditorLiteExtension.onMouseMoveHandler(event);
+      SourceEditorExtension.onMouseMoveHandler(event);
       const anchor = findLine(defaultLine).querySelector('a');
       const contextMenuEvent = new Event('contextmenu');
 
@@ -253,27 +253,27 @@ describe('The basis for an Editor Lite extension', () => {
 
     it('creates an anchor if it does not exist yet', () => {
       expect(findLine(defaultLine).querySelector('a')).toBe(null);
-      EditorLiteExtension.onMouseMoveHandler(event);
+      SourceEditorExtension.onMouseMoveHandler(event);
       expect(findLine(defaultLine).querySelector('a')).not.toBe(null);
     });
 
     it('does not create a new anchor if it exists', () => {
-      EditorLiteExtension.onMouseMoveHandler(event);
+      SourceEditorExtension.onMouseMoveHandler(event);
       expect(findLine(defaultLine).querySelector('a')).not.toBe(null);
 
-      EditorLiteExtension.createAnchor = jest.fn();
-      EditorLiteExtension.onMouseMoveHandler(event);
-      expect(EditorLiteExtension.createAnchor).not.toHaveBeenCalled();
+      SourceEditorExtension.createAnchor = jest.fn();
+      SourceEditorExtension.onMouseMoveHandler(event);
+      expect(SourceEditorExtension.createAnchor).not.toHaveBeenCalled();
       expect(findLine(defaultLine).querySelectorAll('a')).toHaveLength(1);
     });
 
     it('does not create a link if the event is triggered on a wrong node', () => {
       setFixtures('<div class="wrong-class">3</div>');
-      EditorLiteExtension.createAnchor = jest.fn();
+      SourceEditorExtension.createAnchor = jest.fn();
       const wrongEvent = generateEventMock({ el: document.querySelector('.wrong-class') });
 
-      EditorLiteExtension.onMouseMoveHandler(wrongEvent);
-      expect(EditorLiteExtension.createAnchor).not.toHaveBeenCalled();
+      SourceEditorExtension.onMouseMoveHandler(wrongEvent);
+      expect(SourceEditorExtension.createAnchor).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,6 +1,6 @@
-import { EditorLiteExtension } from './editor_lite_extension_base';
+import { SourceEditorExtension } from './source_editor_extension_base';
 
-export class EditorMarkdownExtension extends EditorLiteExtension {
+export class EditorMarkdownExtension extends SourceEditorExtension {
   getSelectedText(selection = this.getSelection()) {
     const { startLineNumber, endLineNumber, startColumn, endColumn } = selection;
     const valArray = this.getValue().split('\n');

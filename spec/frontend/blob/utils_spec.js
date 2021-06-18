@@ -1,10 +1,10 @@
 import * as utils from '~/blob/utils';
-import Editor from '~/editor/editor_lite';
+import Editor from '~/editor/source_editor';
 
-jest.mock('~/editor/editor_lite');
+jest.mock('~/editor/source_editor');
 
 describe('Blob utilities', () => {
-  describe('initEditorLite', () => {
+  describe('initSourceEditor', () => {
     let editorEl;
     const blobPath = 'foo.txt';
     const blobContent = 'Foo bar';
@@ -15,8 +15,8 @@ describe('Blob utilities', () => {
     });
 
     describe('Monaco editor', () => {
-      it('initializes the Editor Lite', () => {
-        utils.initEditorLite({ el: editorEl });
+      it('initializes the Source Editor', () => {
+        utils.initSourceEditor({ el: editorEl });
         expect(Editor).toHaveBeenCalledWith({
           scrollbar: {
             alwaysConsumeMouseWheel: false,
@@ -34,7 +34,7 @@ describe('Blob utilities', () => {
 
           expect(Editor.prototype.createInstance).not.toHaveBeenCalled();
 
-          utils.initEditorLite(params);
+          utils.initSourceEditor(params);
 
           expect(Editor.prototype.createInstance).toHaveBeenCalledWith(params);
         },

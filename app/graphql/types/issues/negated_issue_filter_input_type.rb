@@ -7,7 +7,7 @@ module Types
 
       argument :iids, [GraphQL::STRING_TYPE],
                 required: false,
-                description: 'List of IIDs of issues to exclude. For example, [1, 2].'
+                description: 'List of IIDs of issues to exclude. For example, `[1, 2]`.'
       argument :label_name, [GraphQL::STRING_TYPE],
                 required: false,
                 description: 'Labels not applied to this issue.'

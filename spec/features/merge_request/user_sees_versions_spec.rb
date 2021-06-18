@@ -17,8 +17,6 @@ RSpec.describe 'Merge request > User sees versions', :js do
   let!(:params) { {} }
 
   before do
-    stub_feature_flags(diffs_gradual_load: false)
-
     project.add_maintainer(user)
     sign_in(user)
     visit diffs_project_merge_request_path(project, merge_request, params)

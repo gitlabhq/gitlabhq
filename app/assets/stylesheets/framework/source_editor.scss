@@ -21,11 +21,11 @@
   }
 }
 
-[id^='editor-lite-'] {
+[id^='source-editor-'] {
   height: 500px;
 }
 
-.monaco-editor.gl-editor-lite {
+.monaco-editor.gl-source-editor {
   .margin-view-overlays {
     .line-numbers {
       @include gl-display-flex;

@@ -373,7 +373,7 @@ project:
 - irker_integration
 - packagist_integration
 - pivotaltracker_integration
-- prometheus_service
+- prometheus_integration
 - flowdock_integration
 - assembla_integration
 - asana_integration

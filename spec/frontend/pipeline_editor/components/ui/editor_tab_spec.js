@@ -6,7 +6,7 @@ import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
 const mockContent1 = 'MOCK CONTENT 1';
 const mockContent2 = 'MOCK CONTENT 2';
 
-const MockEditorLite = {
+const MockSourceEditor = {
   template: '<div>EDITOR</div>',
 };
 
@@ -48,12 +48,12 @@ describe('~/pipeline_editor/components/ui/editor_tab.vue', () => {
     wrapper = mount(EditorTab, {
       propsData: props,
       slots: {
-        default: MockEditorLite,
+        default: MockSourceEditor,
       },
     });
   };
 
-  const findSlotComponent = () => wrapper.findComponent(MockEditorLite);
+  const findSlotComponent = () => wrapper.findComponent(MockSourceEditor);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   beforeEach(() => {

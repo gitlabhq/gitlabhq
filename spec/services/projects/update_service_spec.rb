@@ -468,41 +468,41 @@ RSpec.describe Projects::UpdateService do
       end
     end
 
-    context 'when updating nested attributes for prometheus service' do
-      context 'prometheus service exists' do
-        let(:prometheus_service_attributes) do
-          attributes_for(:prometheus_service,
+    context 'when updating nested attributes for prometheus integration' do
+      context 'prometheus integration exists' do
+        let(:prometheus_integration_attributes) do
+          attributes_for(:prometheus_integration,
                          project: project,
                          properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
                         )
         end
 
-        let!(:prometheus_service) do
-          create(:prometheus_service,
+        let!(:prometheus_integration) do
+          create(:prometheus_integration,
                  project: project,
                  properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
                 )
         end
 
         it 'updates existing record' do
-          expect { update_project(project, user, prometheus_service_attributes: prometheus_service_attributes) }
-            .to change { prometheus_service.reload.api_url }
+          expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
+            .to change { prometheus_integration.reload.api_url }
             .from("http://old.prometheus.com")
             .to("http://new.prometheus.com")
         end
       end
 
-      context 'prometheus service does not exist' do
+      context 'prometheus integration does not exist' do
         context 'valid parameters' do
-          let(:prometheus_service_attributes) do
-            attributes_for(:prometheus_service,
+          let(:prometheus_integration_attributes) do
+            attributes_for(:prometheus_integration,
                            project: project,
                            properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
                           )
           end
 
           it 'creates new record' do
-            expect { update_project(project, user, prometheus_service_attributes: prometheus_service_attributes) }
+            expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
               .to change { ::Integrations::Prometheus.where(project: project).count }
               .from(0)
               .to(1)
@@ -510,15 +510,15 @@ RSpec.describe Projects::UpdateService do
         end
 
         context 'invalid parameters' do
-          let(:prometheus_service_attributes) do
-            attributes_for(:prometheus_service,
+          let(:prometheus_integration_attributes) do
+            attributes_for(:prometheus_integration,
                            project: project,
                            properties: { api_url: nil, manual_configuration: "1" }
                           )
           end
 
           it 'does not create new record' do
-            expect { update_project(project, user, prometheus_service_attributes: prometheus_service_attributes) }
+            expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
               .not_to change { ::Integrations::Prometheus.where(project: project).count }
           end
         end

@@ -6,23 +6,23 @@ import { registerLanguages } from '~/ide/utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { uuids } from '~/lib/utils/uuids';
 import {
-  EDITOR_LITE_INSTANCE_ERROR_NO_EL,
+  SOURCE_EDITOR_INSTANCE_ERROR_NO_EL,
   URI_PREFIX,
   EDITOR_READY_EVENT,
   EDITOR_TYPE_DIFF,
 } from './constants';
 import { clearDomElement } from './utils';
 
-export default class EditorLite {
+export default class SourceEditor {
   constructor(options = {}) {
     this.instances = [];
     this.options = {
-      extraEditorClassName: 'gl-editor-lite',
+      extraEditorClassName: 'gl-source-editor',
       ...defaultEditorOptions,
       ...options,
     };
 
-    EditorLite.setupMonacoTheme();
+    SourceEditor.setupMonacoTheme();
 
     registerLanguages(...languages);
   }
@@ -56,7 +56,7 @@ export default class EditorLite {
     extensionsArray.forEach((ext) => {
       const prefix = ext.includes('/') ? '' : 'editor/';
       const trimmedExt = ext.replace(/^\//, '').trim();
-      EditorLite.pushToImportsArray(promises, `~/${prefix}${trimmedExt}`);
+      SourceEditor.pushToImportsArray(promises, `~/${prefix}${trimmedExt}`);
     });
 
     return Promise.all(promises);
@@ -77,7 +77,7 @@ export default class EditorLite {
 
   static prepareInstance(el) {
     if (!el) {
-      throw new Error(EDITOR_LITE_INSTANCE_ERROR_NO_EL);
+      throw new Error(SOURCE_EDITOR_INSTANCE_ERROR_NO_EL);
     }
 
     clearDomElement(el);
@@ -88,7 +88,7 @@ export default class EditorLite {
   }
 
   static manageDefaultExtensions(instance, el, extensions) {
-    EditorLite.loadExtensions(extensions, instance)
+    SourceEditor.loadExtensions(extensions, instance)
       .then((modules) => {
         if (modules) {
           modules.forEach((module) => {
@@ -126,7 +126,7 @@ export default class EditorLite {
     const diffModel = {
       original: monacoEditor.createModel(
         blobOriginalContent,
-        EditorLite.getModelLanguage(model.uri.path),
+        SourceEditor.getModelLanguage(model.uri.path),
       ),
       modified: model,
     };
@@ -135,18 +135,18 @@ export default class EditorLite {
   }
 
   static convertMonacoToELInstance = (inst) => {
-    const editorLiteInstanceAPI = {
+    const sourceEditorInstanceAPI = {
       updateModelLanguage: (path) => {
-        return EditorLite.instanceUpdateLanguage(inst, path);
+        return SourceEditor.instanceUpdateLanguage(inst, path);
       },
       use: (exts = []) => {
-        return EditorLite.instanceApplyExtension(inst, exts);
+        return SourceEditor.instanceApplyExtension(inst, exts);
       },
     };
     const handler = {
       get(target, prop, receiver) {
-        if (Reflect.has(editorLiteInstanceAPI, prop)) {
-          return editorLiteInstanceAPI[prop];
+        if (Reflect.has(sourceEditorInstanceAPI, prop)) {
+          return sourceEditorInstanceAPI[prop];
         }
         return Reflect.get(target, prop, receiver);
       },
@@ -155,7 +155,7 @@ export default class EditorLite {
   };
 
   static instanceUpdateLanguage(inst, path) {
-    const lang = EditorLite.getModelLanguage(path);
+    const lang = SourceEditor.getModelLanguage(path);
     const model = inst.getModel();
     return monacoEditor.setModelLanguage(model, lang);
   }
@@ -163,7 +163,7 @@ export default class EditorLite {
   static instanceApplyExtension(inst, exts = []) {
     const extensions = [].concat(exts);
     extensions.forEach((extension) => {
-      EditorLite.mixIntoInstance(extension, inst);
+      SourceEditor.mixIntoInstance(extension, inst);
     });
     return inst;
   }
@@ -210,10 +210,10 @@ export default class EditorLite {
     isDiff = false,
     ...instanceOptions
   } = {}) {
-    EditorLite.prepareInstance(el);
+    SourceEditor.prepareInstance(el);
 
     const createEditorFn = isDiff ? 'createDiffEditor' : 'create';
-    const instance = EditorLite.convertMonacoToELInstance(
+    const instance = SourceEditor.convertMonacoToELInstance(
       monacoEditor[createEditorFn].call(this, el, {
         ...this.options,
         ...instanceOptions,
@@ -222,7 +222,7 @@ export default class EditorLite {
 
     let model;
     if (instanceOptions.model !== null) {
-      model = EditorLite.createEditorModel({
+      model = SourceEditor.createEditorModel({
         blobGlobalId,
         blobOriginalContent,
         blobPath,
@@ -233,11 +233,11 @@ export default class EditorLite {
     }
 
     instance.onDidDispose(() => {
-      EditorLite.instanceRemoveFromRegistry(this, instance);
-      EditorLite.instanceDisposeModels(this, instance, model);
+      SourceEditor.instanceRemoveFromRegistry(this, instance);
+      SourceEditor.instanceDisposeModels(this, instance, model);
     });
 
-    EditorLite.manageDefaultExtensions(instance, el, extensions);
+    SourceEditor.manageDefaultExtensions(instance, el, extensions);
 
     this.instances.push(instance);
     return instance;

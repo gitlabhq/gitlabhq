@@ -23,7 +23,7 @@ module Clusters
 
       after_destroy do
         run_after_commit do
-          deactivate_project_services
+          deactivate_project_integrations
         end
       end
 
@@ -32,9 +32,9 @@ module Clusters
 
         run_after_commit do
           if enabled
-            activate_project_services
+            activate_project_integrations
           else
-            deactivate_project_services
+            deactivate_project_integrations
           end
         end
       end
@@ -45,12 +45,12 @@ module Clusters
 
       private
 
-      def activate_project_services
+      def activate_project_integrations
         ::Clusters::Applications::ActivateServiceWorker
           .perform_async(cluster_id, ::Integrations::Prometheus.to_param)
       end
 
-      def deactivate_project_services
+      def deactivate_project_integrations
         ::Clusters::Applications::DeactivateServiceWorker
           .perform_async(cluster_id, ::Integrations::Prometheus.to_param)
       end

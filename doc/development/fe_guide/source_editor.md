@@ -4,9 +4,9 @@ group: Editor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Editor Lite **(FREE)**
+# Source Editor **(FREE)**
 
-**Editor Lite** provides the editing experience at GitLab. This thin wrapper around
+**Source Editor** provides the editing experience at GitLab. This thin wrapper around
 [the Monaco editor](https://microsoft.github.io/monaco-editor/) provides necessary
 helpers and abstractions, and extends Monaco [using extensions](#extensions). Multiple
 GitLab features use it, including:
@@ -17,22 +17,22 @@ GitLab features use it, including:
 - [Web Editor](../../user/project/repository/web_editor.md)
 - [Security Policies](../../user/application_security/threat_monitoring/index.md)
 
-## How to use Editor Lite
+## How to use Source Editor
 
-Editor Lite is framework-agnostic and can be used in any application, including both
-Rails and Vue. To help with integration, we have the dedicated `<editor-lite>`
-Vue component, but the integration of Editor Lite is generally straightforward:
+Source Editor is framework-agnostic and can be used in any application, including both
+Rails and Vue. To help with integration, we have the dedicated `<source-editor>`
+Vue component, but the integration of Source Editor is generally straightforward:
 
-1. Import Editor Lite:
+1. Import Source Editor:
 
    ```javascript
-   import EditorLite from '~/editor/editor_lite';
+   import SourceEditor from '~/editor/source_editor';
    ```
 
 1. Initialize global editor for the view:
 
    ```javascript
-   const editor = new EditorLite({
+   const editor = new SourceEditor({
      // Editor Options.
      // The list of all accepted options can be found at
      // https://microsoft.github.io/monaco-editor/api/enums/monaco.editor.editoroption.html
@@ -43,11 +43,11 @@ Vue component, but the integration of Editor Lite is generally straightforward:
 
    ```javascript
    editor.createInstance({
-     // Editor Lite configuration options.
+     // Source Editor configuration options.
    })
    ```
 
-An instance of Editor Lite accepts the following configuration options:
+An instance of Source Editor accepts the following configuration options:
 
 | Option | Required? | Description |
 | -------------- | ------- | ---- |
@@ -74,12 +74,12 @@ with additional functions on the instance level:
 
 1. Editor's loading state.
 
-   The loading state is built in to Editor Lite, making spinners and loaders
+   The loading state is built in to Source Editor, making spinners and loaders
    rarely needed in HTML. To benefit the built-in loading state, set the `data-editor-loading`
    property on the HTML element that should contain the editor. When bootstrapping,
-   Editor Lite shows the loader automatically.
+   Source Editor shows the loader automatically.
 
-   ![Editor Lite: loading state](img/editor_lite_loading.png)
+   ![Source Editor: loading state](img/editor_lite_loading.png)
 
 1. Update syntax highlighting if the filename changes.
 
@@ -104,21 +104,21 @@ with additional functions on the instance level:
 
 1. Performance
 
-   Even though Editor Lite itself is extremely slim, it still depends on Monaco editor,
-   which adds weight. Every time you add Editor Lite to a view, the JavaScript bundle's
+   Even though Source Editor itself is extremely slim, it still depends on Monaco editor,
+   which adds weight. Every time you add Source Editor to a view, the JavaScript bundle's
    size significantly increases, affecting your view's loading performance. We recommend
    you import the editor on demand if either:
 
    - You're uncertain if the view needs the editor.
    - The editor is a secondary element of the view.
 
-   Loading Editor Lite on demand is handled like loading any other module:
+   Loading Source Editor on demand is handled like loading any other module:
 
    ```javascript
    someActionFunction() {
-     import(/* webpackChunkName: 'EditorLite' */ '~/editor/editor_lite').
-       then(({ default: EditorLite }) => {
-         const editor = new EditorLite();
+     import(/* webpackChunkName: 'SourceEditor' */ '~/editor/source_editor').
+       then(({ default: SourceEditor }) => {
+         const editor = new SourceEditor();
          ...
        });
      ...
@@ -127,28 +127,28 @@ with additional functions on the instance level:
 
 ## Extensions
 
-Editor Lite provides a universal, extensible editing tool to the whole product,
-and doesn't depend on any particular group. Even though the Editor Lite's core is owned by
+Source Editor provides a universal, extensible editing tool to the whole product,
+and doesn't depend on any particular group. Even though the Source Editor's core is owned by
 [Create::Editor FE Team](https://about.gitlab.com/handbook/engineering/development/dev/create-editor/),
 any group can own the extensions—the main functional elements. The goal of
-Editor Lite extensions is to keep the editor's core slim and stable. Any
+Source Editor extensions is to keep the editor's core slim and stable. Any
 needed features can be added as extensions to this core. Any group can
-build and own new editing features without worrying about changes to Editor Lite
+build and own new editing features without worrying about changes to Source Editor
 breaking or overriding them.
 
 You can depend on other modules in your extensions. This organization helps keep
-the size of Editor Lite's core at bay by importing dependencies only when needed.
+the size of Source Editor's core at bay by importing dependencies only when needed.
 
-Structurally, the complete implementation of Editor Lite can be presented as this diagram:
+Structurally, the complete implementation of Source Editor can be presented as this diagram:
 
 ```mermaid
 graph TD;
-    B[Extension 1]---A[Editor Lite]
-    C[Extension 2]---A[Editor Lite]
-    D[Extension 3]---A[Editor Lite]
-    E[...]---A[Editor Lite]
-    F[Extension N]---A[Editor Lite]
-    A[Editor Lite]---Z[Monaco]
+    B[Extension 1]---A[Source Editor]
+    C[Extension 2]---A[Source Editor]
+    D[Extension 3]---A[Source Editor]
+    E[...]---A[Source Editor]
+    F[Extension N]---A[Source Editor]
+    A[Source Editor]---Z[Monaco]
 ```
 
 An extension is an ES6 module that exports a JavaScript object:
@@ -164,19 +164,19 @@ export default {
 
 ```
 
-In the extension's functions, `this` refers to the current Editor Lite instance.
+In the extension's functions, `this` refers to the current Source Editor instance.
 Using `this`, you get access to the complete instance's API, such as the
 `setPosition()` method in this particular case.
 
 ### Using an existing extension
 
-Adding an extension to Editor Lite's instance requires the following steps:
+Adding an extension to Source Editor's instance requires the following steps:
 
 ```javascript
-import EditorLite from '~/editor/editor_lite';
+import SourceEditor from '~/editor/source_editor';
 import MyExtension from '~/my_extension';
 
-const editor = new EditorLite().createInstance({
+const editor = new SourceEditor().createInstance({
   ...
 });
 editor.use(MyExtension);
@@ -184,10 +184,10 @@ editor.use(MyExtension);
 
 ### Creating an extension
 
-Let's create our first Editor Lite extension. Extensions are
+Let's create our first Source Editor extension. Extensions are
 [ES6 modules](https://hacks.mozilla.org/2015/08/es6-in-depth-modules/) exporting a
-basic `Object`, used to extend Editor Lite's features. As a test, let's
-create an extension that extends Editor Lite with a new function that, when called,
+basic `Object`, used to extend Source Editor's features. As a test, let's
+create an extension that extends Source Editor with a new function that, when called,
 outputs the editor's content in `alert`.
 
 `~/my_folder/my_fancy_extension.js:`
@@ -210,10 +210,10 @@ Now let's use our extension:
 `~/my_folder/component_bundle.js`:
 
 ```javascript
-import EditorLite from '~/editor/editor_lite';
+import SourceEditor from '~/editor/source_editor';
 import MyFancyExtension from './my_fancy_extension';
 
-const editor = new EditorLite().createInstance({
+const editor = new SourceEditor().createInstance({
   ...
 });
 editor.use(MyFancyExtension);
@@ -223,32 +223,32 @@ someButton.addEventListener('click', () => {
 });
 ```
 
-First of all, we import Editor Lite and our new extension. Then we create the
-editor and its instance. By default Editor Lite has no `throwContentAtMe` method.
+First of all, we import Source Editor and our new extension. Then we create the
+editor and its instance. By default Source Editor has no `throwContentAtMe` method.
 But the `editor.use(MyFancyExtension)` line brings that method to our instance.
 After that, we can use it any time we need it. In this case, we call it when some
 theoretical button has been clicked.
 
 This script would result in an alert containing the editor's content when `someButton` is clicked.
 
-![Editor Lite new extension's result](img/editor_lite_create_ext.png)
+![Source Editor new extension's result](img/editor_lite_create_ext.png)
 
 ### Tips
 
 1. Performance
 
-   Just like Editor Lite itself, any extension can be loaded on demand to not harm
+   Just like Source Editor itself, any extension can be loaded on demand to not harm
    loading performance of the views:
 
    ```javascript
    const EditorPromise = import(
-     /* webpackChunkName: 'EditorLite' */ '~/editor/editor_lite'
+     /* webpackChunkName: 'SourceEditor' */ '~/editor/source_editor'
    );
-   const MarkdownExtensionPromise = import('~/editor/editor_markdown_ext');
+   const MarkdownExtensionPromise = import('~/editor/source_editor_markdown_ext');
 
    Promise.all([EditorPromise, MarkdownExtensionPromise])
-     .then(([{ default: EditorLite }, { default: MarkdownExtension }]) => {
-       const editor = new EditorLite().createInstance({
+     .then(([{ default: SourceEditor }, { default: MarkdownExtension }]) => {
+       const editor = new SourceEditor().createInstance({
          ...
        });
        editor.use(MarkdownExtension);

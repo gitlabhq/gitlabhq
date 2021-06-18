@@ -2,7 +2,7 @@
 import { GlButton, GlFormCheckbox, GlIcon, GlLink, GlAlert } from '@gitlab/ui';
 import CiLintResults from '~/pipeline_editor/components/lint/ci_lint_results.vue';
 import lintCiMutation from '~/pipeline_editor/graphql/mutations/lint_ci.mutation.graphql';
-import EditorLite from '~/vue_shared/components/editor_lite.vue';
+import SourceEditor from '~/vue_shared/components/source_editor.vue';
 
 export default {
   components: {
@@ -12,7 +12,7 @@ export default {
     GlLink,
     GlAlert,
     CiLintResults,
-    EditorLite,
+    SourceEditor,
   },
   props: {
     endpoint: {
@@ -93,7 +93,7 @@ export default {
         <div class="js-file-title file-title clearfix">
           {{ __('Contents of .gitlab-ci.yml') }}
         </div>
-        <editor-lite v-model="content" file-name="*.yml" />
+        <source-editor v-model="content" file-name="*.yml" />
       </div>
     </div>
 

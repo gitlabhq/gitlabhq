@@ -1,8 +1,8 @@
 import { Range, Position } from 'monaco-editor';
-import EditorLite from '~/editor/editor_lite';
-import { EditorMarkdownExtension } from '~/editor/extensions/editor_markdown_ext';
+import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
+import SourceEditor from '~/editor/source_editor';
 
-describe('Markdown Extension for Editor Lite', () => {
+describe('Markdown Extension for Source Editor', () => {
   let editor;
   let instance;
   let editorEl;
@@ -25,7 +25,7 @@ describe('Markdown Extension for Editor Lite', () => {
   beforeEach(() => {
     setFixtures('<div id="editor" data-editor-loading></div>');
     editorEl = document.getElementById('editor');
-    editor = new EditorLite();
+    editor = new SourceEditor();
     instance = editor.createInstance({
       el: editorEl,
       blobPath: filePath,

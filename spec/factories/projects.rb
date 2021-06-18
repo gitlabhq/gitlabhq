@@ -413,7 +413,7 @@ FactoryBot.define do
 
   factory :prometheus_project, parent: :project do
     after :create do |project|
-      project.create_prometheus_service(
+      project.create_prometheus_integration(
         active: true,
         properties: {
           api_url: 'https://prometheus.example.com/',

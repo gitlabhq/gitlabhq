@@ -14,7 +14,7 @@ RSpec.describe 'projects/settings/operations/show' do
     create(:project_tracing_setting, project: project)
   end
 
-  let_it_be(:prometheus_service) { create(:prometheus_service, project: project) }
+  let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
 
   before_all do
     project.add_maintainer(user)
@@ -27,8 +27,8 @@ RSpec.describe 'projects/settings/operations/show' do
       .and_return(error_tracking_setting)
     allow(view).to receive(:tracing_setting)
       .and_return(tracing_setting)
-    allow(view).to receive(:prometheus_service)
-      .and_return(prometheus_service)
+    allow(view).to receive(:prometheus_integration)
+      .and_return(prometheus_integration)
     allow(view).to receive(:current_user).and_return(user)
   end
 

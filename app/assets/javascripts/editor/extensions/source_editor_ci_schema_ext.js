@@ -1,9 +1,9 @@
 import Api from '~/api';
 import { registerSchema } from '~/ide/utils';
 import { EXTENSION_CI_SCHEMA_FILE_NAME_MATCH } from '../constants';
-import { EditorLiteExtension } from './editor_lite_extension_base';
+import { SourceEditorExtension } from './source_editor_extension_base';
 
-export class CiSchemaExtension extends EditorLiteExtension {
+export class CiSchemaExtension extends SourceEditorExtension {
   /**
    * Registers a syntax schema to the editor based on project
    * identifier and commit.

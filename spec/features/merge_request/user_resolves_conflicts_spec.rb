@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User resolves conflicts', :js do
-  include Spec::Support::Helpers::Features::EditorLiteSpecHelpers
+  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
 
   let(:project) { create(:project, :repository) }
   let(:user) { project.creator }

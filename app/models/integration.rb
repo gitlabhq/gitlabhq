@@ -49,7 +49,7 @@ class Integration < ApplicationRecord
     hangouts_chat
     irker
     jenkins jira
-    packagist pipelines_email pivotaltracker pushover
+    packagist pipelines_email pivotaltracker prometheus pushover
     mattermost mattermost_slash_commands microsoft_teams mock_ci mock_monitoring
     redmine
     slack slack_slash_commands

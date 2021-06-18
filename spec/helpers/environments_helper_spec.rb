@@ -122,7 +122,7 @@ RSpec.describe EnvironmentsHelper do
     end
 
     context 'has_managed_prometheus' do
-      context 'without prometheus service' do
+      context 'without prometheus integration' do
         it "doesn't have managed prometheus" do
           expect(metrics_data).to include(
             'has_managed_prometheus' => 'false'
@@ -130,12 +130,12 @@ RSpec.describe EnvironmentsHelper do
         end
       end
 
-      context 'with prometheus service' do
-        let_it_be(:prometheus_service) { create(:prometheus_service, project: project) }
+      context 'with prometheus integration' do
+        let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
 
-        context 'when manual prometheus service is active' do
+        context 'when manual prometheus integration is active' do
           it "doesn't have managed prometheus" do
-            prometheus_service.update!(manual_configuration: true)
+            prometheus_integration.update!(manual_configuration: true)
 
             expect(metrics_data).to include(
               'has_managed_prometheus' => 'false'
@@ -143,9 +143,9 @@ RSpec.describe EnvironmentsHelper do
           end
         end
 
-        context 'when prometheus service is inactive' do
+        context 'when prometheus integration is inactive' do
           it "doesn't have managed prometheus" do
-            prometheus_service.update!(manual_configuration: false)
+            prometheus_integration.update!(manual_configuration: false)
 
             expect(metrics_data).to include(
               'has_managed_prometheus' => 'false'

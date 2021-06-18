@@ -63,11 +63,11 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
         application_setting.update(allow_local_requests_from_web_hooks_and_services: true)
       end
 
-      shared_examples 'has prometheus service' do |server_address|
+      shared_examples 'has prometheus integration' do |server_address|
         it do
           expect(result[:status]).to eq(:success)
 
-          prometheus = project.prometheus_service
+          prometheus = project.prometheus_integration
           expect(prometheus).not_to eq(nil)
           expect(prometheus.api_url).to eq(server_address)
           expect(prometheus.active).to eq(true)
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
         end
       end
 
-      it_behaves_like 'has prometheus service', 'http://localhost:9090'
+      it_behaves_like 'has prometheus integration', 'http://localhost:9090'
 
       it 'is idempotent' do
         result1 = subject.execute
@@ -134,7 +134,7 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
         expect(application_setting.reload.self_monitoring_project_id).to eq(project.id)
       end
 
-      it 'creates a Prometheus service' do
+      it 'creates a Prometheus integration' do
         expect(result[:status]).to eq(:success)
 
         integrations = result[:project].reload.integrations
@@ -193,12 +193,12 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
         end
       end
 
-      context 'when local requests from hooks and services are not allowed' do
+      context 'when local requests from hooks and integrations are not allowed' do
         before do
           application_setting.update(allow_local_requests_from_web_hooks_and_services: false)
         end
 
-        it_behaves_like 'has prometheus service', 'http://localhost:9090'
+        it_behaves_like 'has prometheus integration', 'http://localhost:9090'
       end
 
       context 'with non default prometheus address' do
@@ -211,18 +211,18 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
           }
         end
 
-        it_behaves_like 'has prometheus service', 'https://localhost:9090'
+        it_behaves_like 'has prometheus integration', 'https://localhost:9090'
 
         context 'with :9090 symbol' do
           let(:server_address) { :':9090' }
 
-          it_behaves_like 'has prometheus service', 'http://localhost:9090'
+          it_behaves_like 'has prometheus integration', 'http://localhost:9090'
         end
 
         context 'with 0.0.0.0:9090' do
           let(:server_address) { '0.0.0.0:9090' }
 
-          it_behaves_like 'has prometheus service', 'http://localhost:9090'
+          it_behaves_like 'has prometheus integration', 'http://localhost:9090'
         end
       end
 
@@ -233,7 +233,7 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
 
         it 'does not fail' do
           expect(result).to include(status: :success)
-          expect(project.prometheus_service).to be_nil
+          expect(project.prometheus_integration).to be_nil
         end
       end
 
@@ -244,7 +244,7 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
 
         it 'does not fail' do
           expect(result).to include(status: :success)
-          expect(project.prometheus_service).to be_nil
+          expect(project.prometheus_integration).to be_nil
         end
       end
 
@@ -258,7 +258,7 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
 
         it 'does not configure prometheus' do
           expect(result).to include(status: :success)
-          expect(project.prometheus_service).to be_nil
+          expect(project.prometheus_integration).to be_nil
         end
       end
 
@@ -267,7 +267,7 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
 
         it 'does not configure prometheus' do
           expect(result).to include(status: :success)
-          expect(project.prometheus_service).to be_nil
+          expect(project.prometheus_integration).to be_nil
         end
       end
 

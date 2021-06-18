@@ -25,7 +25,7 @@ import {
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
-const MockEditorLite = {
+const MockSourceEditor = {
   template: '<div/>',
 };
 
@@ -55,7 +55,7 @@ describe('Pipeline editor app component', () => {
         PipelineEditorHome,
         PipelineEditorTabs,
         PipelineEditorMessages,
-        EditorLite: MockEditorLite,
+        SourceEditor: MockSourceEditor,
         PipelineEditorEmptyState,
       },
       mocks: {

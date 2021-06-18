@@ -9204,9 +9204,6 @@ msgstr ""
 msgid "Create your group"
 msgstr ""
 
-msgid "Create your own profile to collaborate with your teammates in issues, merge requests, and more."
-msgstr ""
-
 msgid "Create/import your first project"
 msgstr ""
 
@@ -11735,9 +11732,6 @@ msgid "Edited %{timeago}"
 msgstr ""
 
 msgid "Editing"
-msgstr ""
-
-msgid "Editor Lite instance is required to set up an extension."
 msgstr ""
 
 msgid "Elapsed time"
@@ -18680,9 +18674,6 @@ msgid "Job|with"
 msgstr ""
 
 msgid "Join Zoom meeting"
-msgstr ""
-
-msgid "Join your team"
 msgstr ""
 
 msgid "Joined %{time_ago}"
@@ -30550,6 +30541,9 @@ msgid "Source (branch or tag)"
 msgstr ""
 
 msgid "Source Branch"
+msgstr ""
+
+msgid "Source Editor instance is required to set up an extension."
 msgstr ""
 
 msgid "Source IP"

@@ -34,7 +34,7 @@ module Resolvers
       def prometheus_integrations
         return [] unless prometheus_integrations_allowed?
 
-        Array(project.prometheus_service)
+        Array(project.prometheus_integration)
       end
 
       def http_integrations

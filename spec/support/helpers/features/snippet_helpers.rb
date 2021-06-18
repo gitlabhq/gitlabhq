@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# These helpers help you interact within the Editor Lite (single-file editor, snippets, etc.).
+# These helpers help you interact within the Source Editor (single-file editor, snippets, etc.).
 #
 module Spec
   module Support
@@ -8,7 +8,7 @@ module Spec
       module Features
         module SnippetSpecHelpers
           include ActionView::Helpers::JavaScriptHelper
-          include Spec::Support::Helpers::Features::EditorLiteSpecHelpers
+          include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
 
           def snippet_description_locator
             'snippet-description'
@@ -31,7 +31,7 @@ module Spec
           end
 
           def snippet_get_first_blob_value
-            page.find('.gl-editor-lite', match: :first)
+            page.find('.gl-source-editor', match: :first)
           end
 
           def snippet_description_value
@@ -53,7 +53,7 @@ module Spec
           end
 
           def snippet_fill_in_content(value)
-            page.within('.gl-editor-lite') do
+            page.within('.gl-source-editor') do
               el = find('.inputarea')
               el.send_keys value
             end
