@@ -3,7 +3,7 @@
  */
 import { isEqual, isFunction, omitBy } from 'lodash';
 import Visibility from 'visibilityjs';
-import { deprecatedCreateFlash as Flash } from '../../flash';
+import createFlash from '../../flash';
 import { getParameterByName } from '../../lib/utils/common_utils';
 import Poll from '../../lib/utils/poll';
 import { s__ } from '../../locale';
@@ -94,7 +94,9 @@ export default {
 
     errorCallback() {
       this.isLoading = false;
-      Flash(s__('Environments|An error occurred while fetching the environments.'));
+      createFlash({
+        message: s__('Environments|An error occurred while fetching the environments.'),
+      });
     },
 
     postAction({
@@ -109,7 +111,9 @@ export default {
           .then(() => this.fetchEnvironments())
           .catch((err) => {
             this.isLoading = false;
-            Flash(isFunction(errorMessage) ? errorMessage(err.response.data) : errorMessage);
+            createFlash({
+              message: isFunction(errorMessage) ? errorMessage(err.response.data) : errorMessage,
+            });
           });
       }
     },
@@ -163,7 +167,9 @@ export default {
           window.location.href = url.join('/');
         })
         .catch(() => {
-          Flash(errorMessage);
+          createFlash({
+            message: errorMessage,
+          });
         });
     },
 

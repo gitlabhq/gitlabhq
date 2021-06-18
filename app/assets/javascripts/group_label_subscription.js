@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { __ } from '~/locale';
 import { fixTitle, hide } from '~/tooltips';
-import { deprecatedCreateFlash as flash } from './flash';
+import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 
 const tooltipTitles = {
@@ -30,7 +30,11 @@ export default class GroupLabelSubscription {
         this.toggleSubscriptionButtons();
         this.$unsubscribeButtons.removeAttr('data-url');
       })
-      .catch(() => flash(__('There was an error when unsubscribing from this label.')));
+      .catch(() =>
+        createFlash({
+          message: __('There was an error when unsubscribing from this label.'),
+        }),
+      );
   }
 
   subscribe(event) {
@@ -45,7 +49,11 @@ export default class GroupLabelSubscription {
       .post(url)
       .then(() => GroupLabelSubscription.setNewTooltip($btn))
       .then(() => this.toggleSubscriptionButtons())
-      .catch(() => flash(__('There was an error when subscribing to this label.')));
+      .catch(() =>
+        createFlash({
+          message: __('There was an error when subscribing to this label.'),
+        }),
+      );
   }
 
   toggleSubscriptionButtons() {

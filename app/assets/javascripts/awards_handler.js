@@ -7,7 +7,7 @@ import { uniq } from 'lodash';
 import * as Emoji from '~/emoji';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { dispose, fixTitle } from '~/tooltips';
-import { deprecatedCreateFlash as flash } from './flash';
+import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { __ } from './locale';
@@ -488,7 +488,11 @@ export class AwardsHandler {
           callback();
         }
       })
-      .catch(() => flash(__('Something went wrong on our end.')));
+      .catch(() =>
+        createFlash({
+          message: __('Something went wrong on our end.'),
+        }),
+      );
   }
 
   findEmojiIcon(votesBlock, emoji) {

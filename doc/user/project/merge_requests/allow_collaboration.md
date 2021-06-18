@@ -87,7 +87,7 @@ To see the pipeline status from the merge request page of a forked project
 going back to the original project:
 
 1. Create a group containing all the upstream members.
-1. Go to the **Members** tab in the forked project and invite the newly-created
+1. Go to the **Project information > Members** page in the forked project and invite the newly-created
    group to the forked project.
 
 <!-- ## Troubleshooting

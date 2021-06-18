@@ -539,7 +539,7 @@ The `feature_flag` property does not allow the use of
 This means that the feature flag cannot be toggled only for particular
 projects, groups, or users, but instead, you can safely use [percentage of time rollout](../development/feature_flags/index.md).
 Note that since we check the feature flag on both Sidekiq client and server, rolling out a 10% of the time,
-will likely results in 1% (0.1 [from client]*0.1 [from server]) of effective jobs using replicas.
+will likely results in 1% (`0.1` `[from client]*0.1` `[from server]`) of effective jobs using replicas.
 
 Example:
 

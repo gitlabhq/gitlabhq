@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import FilesCommentButton from './files_comment_button';
@@ -77,7 +77,11 @@ export default class Diff {
     axios
       .get(link, { params })
       .then(({ data }) => $target.parent().replaceWith(data))
-      .catch(() => flash(__('An error occurred while loading diff')));
+      .catch(() =>
+        createFlash({
+          message: __('An error occurred while loading diff'),
+        }),
+      );
   }
 
   openAnchoredDiff(cb) {

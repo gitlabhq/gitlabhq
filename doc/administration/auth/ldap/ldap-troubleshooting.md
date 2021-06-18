@@ -357,8 +357,8 @@ things to check to debug the situation.
      LDAP yet and must do so first.
 - You've waited an hour or [the configured
   interval](index.md#adjusting-ldap-group-sync-schedule) for the group to
-  sync. To speed up the process, either go to the GitLab group **Settings ->
-  Members** and press **Sync now** (sync one group) or [run the group sync Rake
+  sync. To speed up the process, either go to the GitLab group **Group information > Members**
+  and press **Sync now** (sync one group) or [run the group sync Rake
   task](../../raketasks/ldap.md#run-a-group-sync) (sync all groups).
 
 If all of the above looks good, jump in to a little more advanced debugging in

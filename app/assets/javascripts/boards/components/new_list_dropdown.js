@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import store from '~/boards/stores';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -53,7 +53,9 @@ export default function initNewListDropdown() {
       data(term, callback) {
         const reqFailed = () => {
           $dropdownToggle.data('bs.dropdown').hide();
-          flash(__('Error fetching labels.'));
+          createFlash({
+            message: __('Error fetching labels.'),
+          });
         };
 
         if (store.getters.shouldUseGraphQL) {

@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
 
 import $ from 'jquery';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
@@ -79,7 +79,11 @@ MarkdownPreview.prototype.fetchMarkdownPreview = function (text, url, success) {
       };
       success(data);
     })
-    .catch(() => flash(__('An error occurred while fetching markdown preview')));
+    .catch(() =>
+      createFlash({
+        message: __('An error occurred while fetching markdown preview'),
+      }),
+    );
 };
 
 MarkdownPreview.prototype.hideReferencedUsers = function ($form) {

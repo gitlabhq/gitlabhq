@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import boardsStore from '../stores/boards_store';
 import ListAssignee from './assignee';
@@ -127,7 +127,11 @@ class List {
         moveBeforeId,
         moveAfterId,
       })
-      .catch(() => flash(__('Something went wrong while moving issues.')));
+      .catch(() =>
+        createFlash({
+          message: __('Something went wrong while moving issues.'),
+        }),
+      );
   }
 
   updateIssueLabel(issue, listFrom, moveBeforeId, moveAfterId) {
@@ -145,7 +149,11 @@ class List {
         moveBeforeId,
         moveAfterId,
       })
-      .catch(() => flash(__('Something went wrong while moving issues.')));
+      .catch(() =>
+        createFlash({
+          message: __('Something went wrong while moving issues.'),
+        }),
+      );
   }
 
   findIssue(id) {

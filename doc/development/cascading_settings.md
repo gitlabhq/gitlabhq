@@ -82,7 +82,7 @@ cascading_attr :delayed_project_removal
 - `delayed_project_removal_locked_by_ancestor?`
 - `delayed_project_removal_locked_by_application_setting?`
 - `delayed_project_removal?` (Boolean attributes only)
-- `delayed_project_removal_locked_ancestor` (Returns locked namespace settings object [namespace_id])
+- `delayed_project_removal_locked_ancestor` (Returns locked namespace settings object `[namespace_id]`)
 
 ### Attribute reader method (`delayed_project_removal`)
 
@@ -112,9 +112,9 @@ There are a few Rails view helpers, HAML partials, and JavaScript functions that
 
 ### Rails view helpers
 
-[`cascading_namespace_setting_locked?`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/helpers/namespaces_helper.rb#L86)  
+[`cascading_namespace_setting_locked?`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/helpers/namespaces_helper.rb#L86)
 
-Calls through to the [`_locked?` method](#_locked-method) to check if the setting is locked.  
+Calls through to the [`_locked?` method](#_locked-method) to check if the setting is locked.
 
 | Argument    | Description                                                                      | Type                                                                              | Required (default value) |
 |:------------|:---------------------------------------------------------------------------------|:----------------------------------------------------------------------------------|:-------------------------|
@@ -124,9 +124,9 @@ Calls through to the [`_locked?` method](#_locked-method) to check if the settin
 
 ### HAML partials
 
-[`_enforcement_checkbox.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/views/shared/namespaces/cascading_settings/_enforcement_checkbox.html.haml)  
+[`_enforcement_checkbox.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/views/shared/namespaces/cascading_settings/_enforcement_checkbox.html.haml)
 
-Renders the enforcement checkbox.  
+Renders the enforcement checkbox.
 
 | Local            | Description                                                                                                                                                                                                                                                | Type                                                                                           | Required (default value)                        |
 |:-----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------|:------------------------------------------------|
@@ -135,9 +135,9 @@ Renders the enforcement checkbox.
 | `setting_locked` | If the setting is locked by an ancestor group or admin setting. Can be calculated with [`cascading_namespace_setting_locked?`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/helpers/namespaces_helper.rb#L86). | `Boolean`                                                                                      | `true`                                          |
 | `help_text`      | Text shown below the checkbox.                                                                                                                                                                                                                             | `String`                                                                                       | `false` (Subgroups cannot change this setting.) |
 
-[`_setting_label_checkbox.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/views/shared/namespaces/cascading_settings/_setting_label_checkbox.html.haml)  
+[`_setting_label_checkbox.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/views/shared/namespaces/cascading_settings/_setting_label_checkbox.html.haml)
 
-Renders the label for a checkbox setting.  
+Renders the label for a checkbox setting.
 
 | Local                  | Description                                                                                                                                                                                                                                                | Type                                                                                           | Required (default value) |
 |:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------|:-------------------------|
@@ -147,9 +147,9 @@ Renders the label for a checkbox setting.
 | `settings_path_helper` | Lambda function that generates a path to the ancestor setting. For example, `settings_path_helper: -> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }`                                                           | `Lambda`                                                                                       | `true`                   |
 | `help_text`            | Text shown below the checkbox.                                                                                                                                                                                                                             | `String`                                                                                       | `false` (`nil`)          |
 
-[`_setting_label_fieldset.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/views/shared/namespaces/cascading_settings/_setting_label_fieldset.html.haml)  
+[`_setting_label_fieldset.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/views/shared/namespaces/cascading_settings/_setting_label_fieldset.html.haml)
 
-Renders the label for a fieldset setting.  
+Renders the label for a fieldset setting.
 
 | Local                  | Description                                                                                                                                                                                                          | Type                 | Required (default value) |
 |:-----------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------|:-------------------------|
@@ -158,13 +158,13 @@ Renders the label for a fieldset setting.
 | `settings_path_helper` | Lambda function that generates a path to the ancestor setting. For example, `-> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }`                                           | `Lambda`             | `true`                   |
 | `help_text`            | Text shown below the checkbox.                                                                                                                                                                                       | `String`             | `false` (`nil`)          |
 
-[`_lock_popovers.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/b73353e47e283a7d9c9eda5bdedb345dcfb685b6/app/views/shared/namespaces/cascading_settings/_lock_popovers.html.haml)  
+[`_lock_popovers.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/b73353e47e283a7d9c9eda5bdedb345dcfb685b6/app/views/shared/namespaces/cascading_settings/_lock_popovers.html.haml)
 
-Renders the mount element needed to initialize the JavaScript used to display the popover when hovering over the lock icon. This partial is only needed once per page.  
+Renders the mount element needed to initialize the JavaScript used to display the popover when hovering over the lock icon. This partial is only needed once per page.
 
 ### JavaScript
 
-[`initCascadingSettingsLockPopovers`](https://gitlab.com/gitlab-org/gitlab/-/blob/b73353e47e283a7d9c9eda5bdedb345dcfb685b6/app/assets/javascripts/namespaces/cascading_settings/index.js#L4)  
+[`initCascadingSettingsLockPopovers`](https://gitlab.com/gitlab-org/gitlab/-/blob/b73353e47e283a7d9c9eda5bdedb345dcfb685b6/app/assets/javascripts/namespaces/cascading_settings/index.js#L4)
 
 Initializes the JavaScript needed to display the popover when hovering over the lock icon (**{lock}**).
 This function should be imported and called in the [page-specific JavaScript](fe_guide/performance.md#page-specific-javascript).

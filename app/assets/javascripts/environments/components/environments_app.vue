@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlButton, GlModalDirective, GlTab, GlTabs } from '@gitlab/ui';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 import environmentsMixin from '../mixins/environments_mixin';
@@ -89,7 +89,9 @@ export default {
         .then((response) => this.store.setfolderContent(folder, response.data.environments))
         .then(() => this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false))
         .catch(() => {
-          Flash(s__('Environments|An error occurred while fetching the environments.'));
+          createFlash({
+            message: s__('Environments|An error occurred while fetching the environments.'),
+          });
           this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false);
         });
     },
