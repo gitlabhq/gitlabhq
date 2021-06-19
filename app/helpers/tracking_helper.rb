@@ -17,6 +17,6 @@ module TrackingHelper
 
   def tracking_enabled?
     Rails.env.production? &&
-      ::Gitlab::CurrentSettings.snowplow_enabled?
+      ::Gitlab::Tracking.enabled?
   end
 end

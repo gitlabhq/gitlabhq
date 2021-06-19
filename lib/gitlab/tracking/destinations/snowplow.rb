@@ -18,7 +18,7 @@ module Gitlab
         private
 
         def enabled?
-          Gitlab::CurrentSettings.snowplow_enabled?
+          Gitlab::Tracking.enabled?
         end
 
         def tracker

@@ -14412,8 +14412,9 @@ State of a GitLab iteration.
 | ----- | ----------- |
 | <a id="iterationstateall"></a>`all` |  |
 | <a id="iterationstateclosed"></a>`closed` |  |
+| <a id="iterationstatecurrent"></a>`current` |  |
 | <a id="iterationstateopened"></a>`opened` |  |
-| <a id="iterationstatestarted"></a>`started` |  |
+| <a id="iterationstatestarted"></a>`started` **{warning-solid}** | **Deprecated** in 14.1. Use current instead. |
 | <a id="iterationstateupcoming"></a>`upcoming` |  |
 
 ### `IterationWildcardId`
