@@ -20,6 +20,7 @@ import {
   IssuableAttributeType,
   issuableAttributesQueries,
   noAttributeId,
+  defaultEpicSort,
 } from '../constants';
 
 export default {
@@ -118,6 +119,7 @@ export default {
           fullPath: this.attrWorkspacePath,
           title: this.searchTerm,
           state: this.$options.IssuableAttributeState[this.issuableAttribute],
+          sort: this.issuableAttribute === IssuableType.Epic ? defaultEpicSort : null,
         };
       },
       update(data) {

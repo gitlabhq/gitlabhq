@@ -80,31 +80,61 @@ For an example payload, see [Example Usage Ping payload](#example-usage-ping-pay
 
 ## Disable Usage Ping
 
+NOTE:
+The method to disable Usage Ping in the GitLab configuration file does not work in
+GitLab versions 9.3 to 13.12.3. See the [troubleshooting section](#cannot-disable-usage-ping-using-the-configuration-file)
+on how to disable it.
+
+You can disable the usage ping either using the GitLab UI, or editing the GitLab
+configuration file.
+
+### Disable Usage Ping using the UI
+
 To disable Usage Ping in the GitLab UI:
 
 1. Sign in as a user with [Administrator](../../user/permissions.md) permissions.
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
-1. Clear the **Enable usage ping** checkbox and select **Save changes**.
+1. Clear the **Enable usage ping** checkbox.
+1. Select **Save changes**.
+
+### Disable Usage Ping using the configuration file
 
 To disable Usage Ping and prevent it from being configured in the future through
-the administration panel, Omnibus installs can set the following in
-[`gitlab.rb`](https://docs.gitlab.com/omnibus/settings/configuration.html#configuration-options):
+the admin area:
 
-```ruby
-gitlab_rails['usage_ping_enabled'] = false
-```
+**For installations using the Linux package:**
 
-Source installations can set the following in `gitlab.yml`:
+1. Edit `/etc/gitlab/gitlab.rb`:
 
-```yaml
-production: &base
-  # ...
-  gitlab:
-    # ...
-    usage_ping_enabled: false
-```
+   ```ruby
+   gitlab_rails['usage_ping_enabled'] = false
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+**For installations from source:**
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     # ...
+     gitlab:
+       # ...
+       usage_ping_enabled: false
+   ```
+
+1. Restart GitLab:
+
+   ```shell
+   sudo service gitlab restart
+   ```
 
 ## Usage Ping request flow
 
@@ -1577,3 +1607,86 @@ with the `ssh-add` command.
 1. Attach to your screen session: `$ screen -x 14226.mwawrzyniak_usage_ping_2021_01_22`
 1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
 1. Check the when the payload was sent: `RawUsageData.last.sent_at`
+
+## Troubleshooting
+
+### Cannot disable Usage Ping using the configuration file
+
+The method to disable Usage Ping using the GitLab configuration file does not work in
+GitLab versions 9.3.0 to 13.12.3. To disable it, you need to use the Admin Area in
+the GitLab UI instead. For more information, see
+[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/333269).
+
+GitLab functionality and application settings cannot override or circumvent
+restrictions at the network layer. If usage ping is blocked by your firewall,
+you are not impacted by this bug.
+
+#### Check if you are affected
+
+You can check if you were affected by this bug by using the Admin area or by
+checking the configuration file of your GitLab instance:
+
+- Using the Admin area:
+
+  1. On the top bar, go to the admin area (**{admin}**).
+  1. On the left sidebar, select **Settings > Metrics and profiling**.
+  1. Expand **Usage Statistics**.
+  1. Are you able to check/uncheck the checkbox to disable usage ping?
+
+     - If _yes_, your GitLab instance is not affected by this bug.
+     - If you can't check/uncheck the checkbox, you are affected by this bug.
+       Read below [how to fix this](#how-to-fix-the-cannot-disable-usage-ping-bug).
+
+- Checking your GitLab instance configuration file:
+
+  To check whether you're impacted by this bug, check your instance configuration
+  settings. The configuration file in which Usage Ping can be disabled will depend
+  on your installation and deployment method, but it will typically be one of the following:
+
+  - `/etc/gitlab/gitlab.rb` for Omnibus GitLab Linux Package and Docker.
+  - `charts.yaml` for GitLab Helm and cloud-native Kubernetes deployments.
+  - `gitlab.yml` for GitLab installations from source.
+
+  To check the relevant configuration file for strings that indicate whether
+  usage ping is disabled, you can use `grep`:
+
+  ```shell
+  # Linux package
+  grep "usage_ping_enabled'\] = false" /etc/gitlab/gitlab.rb
+
+  # Kubernetes charts
+  grep "enableUsagePing: false" values.yaml
+
+  # From source
+  grep "usage_ping_enabled'\] = false" gitlab/config.yml
+  ```
+
+  If you see any output after running the relevant command, your GitLab instance
+  may be affected by the bug. Otherwise, your instance is not affected.
+
+#### How to fix the "Cannot disable Usage Ping" bug
+
+To work around this bug, you have two options:
+
+- [Update](../../update/index.md) to GitLab 13.12.4 or newer to fix this bug.
+- If you can't update to GitLab 13.12.4 or newer, enable usage ping in the
+  configuration file, then disable usage ping in the UI. For example, if you're
+  using the Linux package:
+
+  1. Edit `/etc/gitlab/gitlab.rb`:
+
+     ```ruby
+     gitlab_rails['usage_ping_enabled'] = true
+     ```
+
+  1. Reconfigure GitLab:
+
+     ```shell
+     sudo gitlab-ctl reconfigure
+     ```
+
+  1. In GitLab, on the top bar, go to the admin area (**{admin}**).
+  1. On the left sidebar, select **Settings > Metrics and profiling**.
+  1. Expand **Usage Statistics**.
+  1. Clear the **Enable usage ping** checkbox.
+  1. Select **Save Changes**.

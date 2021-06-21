@@ -178,6 +178,26 @@ RSpec.describe ApplicationSettingsHelper do
     end
   end
 
+  describe '.valid_runner_registrars' do
+    subject { helper.valid_runner_registrars }
+
+    context 'when only admins are permitted to register runners' do
+      before do
+        stub_application_setting(valid_runner_registrars: [])
+      end
+
+      it { is_expected.to eq [] }
+    end
+
+    context 'when group and project users are permitted to register runners' do
+      before do
+        stub_application_setting(valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
+      end
+
+      it { is_expected.to eq ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES }
+    end
+  end
+
   describe '.signup_enabled?' do
     subject { helper.signup_enabled? }
 

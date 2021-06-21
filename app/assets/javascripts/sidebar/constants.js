@@ -37,6 +37,8 @@ import projectMilestonesQuery from './queries/project_milestones.query.graphql';
 
 export const ASSIGNEES_DEBOUNCE_DELAY = 250;
 
+export const defaultEpicSort = 'TITLE_ASC';
+
 export const assigneesQueries = {
   [IssuableType.Issue]: {
     query: getIssueAssignees,

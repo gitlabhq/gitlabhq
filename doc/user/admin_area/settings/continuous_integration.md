@@ -280,6 +280,45 @@ To set the maximum file size:
 1. Enter the maximum file size, in bytes.
 1. Click **Save size limits**.
 
+## Runner registration
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22225) in GitLab 14.1.
+> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it. **(FREE SELF)**
+
+GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
+
+By default, all members of a project and group are able to register runners.
+
+To change this:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. Go to **Settings > CI/CD**.
+1. Expand the **Runner registration** section.
+1. Select the desired options.
+1. Click **Save changes**.
+
+When the registration sections are hidden in the UI, members of the project or group that need to register runners must contact the administrators.
+
+This feature is currently behind a feature flag.
+To enable it:
+
+**In Omnibus installations:**
+
+1. Enter the Rails console:
+
+   ```shell
+   sudo gitlab-rails console
+   ```
+
+1. Flip the switch and enable the feature flag:
+
+   ```ruby
+   Feature.enable(:runner_registration_control)
+   ```
+
 ## Troubleshooting
 
 ### 413 Request Entity Too Large

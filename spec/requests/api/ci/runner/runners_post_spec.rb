@@ -11,8 +11,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)
+    stub_feature_flags(runner_registration_control: false)
     stub_gitlab_calls
     stub_application_setting(runners_registration_token: registration_token)
+    stub_application_setting(valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
     allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
   end
 
@@ -122,6 +124,33 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               expect(project.runners.recent.size).to eq(1)
             end
           end
+
+          context 'when valid runner registrars do not include project' do
+            before do
+              stub_application_setting(valid_runner_registrars: ['group'])
+            end
+
+            context 'when feature flag is enabled' do
+              before do
+                stub_feature_flags(runner_registration_control: true)
+              end
+
+              it 'returns 403 error' do
+                request
+
+                expect(response).to have_gitlab_http_status(:forbidden)
+              end
+            end
+
+            context 'when feature flag is disabled' do
+              it 'registers the runner' do
+                request
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(::Ci::Runner.first.active).to be true
+              end
+            end
+          end
         end
 
         context 'when group token is used' do
@@ -178,6 +207,33 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               expect(json_response['message']).to be_nil
               expect(group.runners.reload.size).to eq(3)
               expect(group.runners.recent.size).to eq(1)
+            end
+          end
+
+          context 'when valid runner registrars do not include group' do
+            before do
+              stub_application_setting(valid_runner_registrars: ['project'])
+            end
+
+            context 'when feature flag is enabled' do
+              before do
+                stub_feature_flags(runner_registration_control: true)
+              end
+
+              it 'returns 403 error' do
+                request
+
+                expect(response).to have_gitlab_http_status(:forbidden)
+              end
+            end
+
+            context 'when feature flag is disabled' do
+              it 'registers the runner' do
+                request
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(::Ci::Runner.first.active).to be true
+              end
             end
           end
         end

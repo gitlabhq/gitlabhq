@@ -38,3 +38,13 @@
         = _('Various container registry settings.')
     .settings-content
       = render 'registry'
+
+- if Feature.enabled?(:runner_registration_control)
+  %section.settings.as-runner.no-animate#js-runner-settings{ class: ('expanded' if expanded_by_default?) }
+    .settings-header
+      %h4
+        = s_('Runners|Runner registration')
+      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+        = expanded_by_default? ? 'Collapse' : 'Expand'
+    .settings-content
+      = render 'runner_registrars_form'

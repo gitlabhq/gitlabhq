@@ -372,6 +372,8 @@ class ApplicationSetting < ApplicationRecord
     end
   end
 
+  validate :check_valid_runner_registrars
+
   validate :terms_exist, if: :enforce_terms?
 
   validates :external_authorization_service_default_label,

@@ -134,6 +134,14 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to allow_value('disabled').for(:whats_new_variant) }
     it { is_expected.not_to allow_value(nil).for(:whats_new_variant) }
 
+    it { is_expected.not_to allow_value(['']).for(:valid_runner_registrars) }
+    it { is_expected.not_to allow_value(['OBVIOUSLY_WRONG']).for(:valid_runner_registrars) }
+    it { is_expected.not_to allow_value(%w(project project)).for(:valid_runner_registrars) }
+    it { is_expected.not_to allow_value([nil]).for(:valid_runner_registrars) }
+    it { is_expected.not_to allow_value(nil).for(:valid_runner_registrars) }
+    it { is_expected.to allow_value([]).for(:valid_runner_registrars) }
+    it { is_expected.to allow_value(%w(project group)).for(:valid_runner_registrars) }
+
     context 'help_page_documentation_base_url validations' do
       it { is_expected.to allow_value(nil).for(:help_page_documentation_base_url) }
       it { is_expected.to allow_value('https://docs.gitlab.com').for(:help_page_documentation_base_url) }

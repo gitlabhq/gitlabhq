@@ -1,0 +1,16 @@
+= form_for @application_setting, url: ci_cd_admin_application_settings_path(anchor: 'js-runner-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = hidden_field_tag "application_setting[valid_runner_registrars][]", nil
+      - ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES.each do |type|
+        .form-check
+          = f.check_box(:valid_runner_registrars, { multiple: true, checked: valid_runner_registrars.include?(type), class: 'form-check-input' }, type, nil)
+          = f.label :valid_runner_registrars, class: 'form-check-label' do
+            = s_("Runners|Members of the %{type} can register runners") % { type: type }
+      %span.form-text.gl-text-gray-600
+        = _('If no options are selected, only administrators can register runners.')
+        = link_to _('Learn more.'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'runner-registration'), target: '_blank', rel: 'noopener noreferrer'
+
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

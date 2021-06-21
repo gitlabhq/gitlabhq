@@ -437,6 +437,10 @@ module ApplicationSettingsHelper
     Feature.enabled?(:help_page_documentation_redirect)
   end
 
+  def valid_runner_registrars
+    Gitlab::CurrentSettings.valid_runner_registrars
+  end
+
   def signup_enabled?
     !!Gitlab::CurrentSettings.signup_enabled
   end

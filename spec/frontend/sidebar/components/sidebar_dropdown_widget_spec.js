@@ -451,8 +451,9 @@ describe('SidebarDropdownWidget', () => {
 
             expect(projectMilestonesSpy).toHaveBeenNthCalledWith(1, {
               fullPath: mockIssue.projectPath,
-              title: '',
+              sort: null,
               state: 'active',
+              title: '',
             });
           });
 
@@ -477,8 +478,9 @@ describe('SidebarDropdownWidget', () => {
 
               expect(projectMilestonesSpy).toHaveBeenNthCalledWith(2, {
                 fullPath: mockIssue.projectPath,
-                title: mockSearchTerm,
+                sort: null,
                 state: 'active',
+                title: mockSearchTerm,
               });
             });
           });

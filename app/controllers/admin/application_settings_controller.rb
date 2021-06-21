@@ -207,6 +207,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     end
 
     params[:application_setting][:import_sources]&.delete("")
+    params[:application_setting][:valid_runner_registrars]&.delete("")
     params[:application_setting][:restricted_visibility_levels]&.delete("")
 
     if params[:application_setting].key?(:required_instance_ci_template)
@@ -245,7 +246,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
       restricted_visibility_levels: [],
-      repository_storages_weighted: {}
+      repository_storages_weighted: {},
+      valid_runner_registrars: []
     ]
   end
 

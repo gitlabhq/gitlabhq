@@ -1005,6 +1005,9 @@ msgstr ""
 msgid "%{user} created an issue: %{issue_link}"
 msgstr ""
 
+msgid "%{value} is not included in the list"
+msgstr ""
+
 msgid "%{value} s"
 msgstr ""
 
@@ -16355,6 +16358,9 @@ msgstr ""
 msgid "If enabled, only protected branches will be mirrored."
 msgstr ""
 
+msgid "If no options are selected, only administrators can register runners."
+msgstr ""
+
 msgid "If the YouTube URL is https://www.youtube.com/watch?v=0t1DgySidms then the video ID is %{id}"
 msgstr ""
 
@@ -24314,6 +24320,9 @@ msgstr ""
 msgid "Please complete your profile with email address"
 msgstr ""
 
+msgid "Please contact an admin to register runners."
+msgstr ""
+
 msgid "Please contact your GitLab administrator if you think this is an error."
 msgstr ""
 
@@ -28075,6 +28084,9 @@ msgstr ""
 msgid "Runners|Maximum job timeout"
 msgstr ""
 
+msgid "Runners|Members of the %{type} can register runners"
+msgstr ""
+
 msgid "Runners|Name"
 msgstr ""
 
@@ -28121,6 +28133,9 @@ msgid "Runners|Runner is online, last contact was %{runner_contact} ago"
 msgstr ""
 
 msgid "Runners|Runner is paused, last contact was %{runner_contact} ago"
+msgstr ""
+
+msgid "Runners|Runner registration"
 msgstr ""
 
 msgid "Runners|Shared runners are available to every project in a GitLab instance. If you want a runner to build only specific projects, restrict the project in the table below. After you restrict a runner to a project, you cannot change it back to a shared runner."

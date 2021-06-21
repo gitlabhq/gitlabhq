@@ -151,7 +151,7 @@ module Projects
         branch_name: @default_branch.presence || @project.default_branch_or_main,
         commit_message: 'Initial commit',
         file_path: 'README.md',
-        file_content: "# #{@project.name}\n\n#{@project.description}"
+        file_content: experiment(:new_project_readme_content, namespace: @project.namespace).run_with(@project)
       }
 
       Files::CreateService.new(@project, current_user, commit_attrs).execute

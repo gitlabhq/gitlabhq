@@ -582,6 +582,23 @@ RSpec.describe Projects::CreateService, '#execute' do
         expect(branches.size).to eq(1)
         expect(branches.collect(&:name)).to contain_exactly('example_branch')
       end
+
+      describe 'advanced readme content', experiment: :new_project_readme_content do
+        before do
+          stub_experiments(new_project_readme_content: :advanced)
+        end
+
+        it_behaves_like 'creates README.md'
+
+        it 'includes advanced content in the README.md' do
+          content = project.repository.readme.data
+          expect(content).to include <<~MARKDOWN
+            git remote add origin #{project.http_url_to_repo}
+            git branch -M example_branch
+            git push -uf origin example_branch
+          MARKDOWN
+        end
+      end
     end
   end
 
