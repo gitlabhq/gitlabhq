@@ -125,7 +125,7 @@ RSpec.describe 'Users > User browses projects on user page', :js do
         end
 
         before do
-          Issues::CreateService.new(project: contributed_project, current_user: user, params: { title: 'Bug in old browser' }).execute
+          Issues::CreateService.new(project: contributed_project, current_user: user, params: { title: 'Bug in old browser' }, spam_params: nil).execute
           event = create(:push_event, project: contributed_project, author: user)
           create(:push_event_payload, event: event, commit_count: 3)
         end

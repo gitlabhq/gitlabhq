@@ -381,14 +381,14 @@ project:
 - microsoft_teams_integration
 - mattermost_integration
 - hangouts_chat_integration
-- unify_circuit_service
+- unify_circuit_integration
 - buildkite_integration
 - bamboo_integration
 - teamcity_integration
 - pushover_integration
 - jira_integration
 - redmine_integration
-- youtrack_service
+- youtrack_integration
 - custom_issue_tracker_integration
 - bugzilla_integration
 - ewm_integration
@@ -557,7 +557,7 @@ project:
 - alert_management_alerts
 - repository_storage_moves
 - freeze_periods
-- webex_teams_service
+- webex_teams_integration
 - build_report_results
 - vulnerability_statistic
 - vulnerability_historical_statistics

@@ -1057,6 +1057,8 @@
 
 .reports:rules:package_hunter:
   rules:
+    - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
+      when: never
     - <<: *if-default-branch-schedule-2-hourly
     - <<: *if-merge-request
       changes: ["yarn.lock"]

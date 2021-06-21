@@ -16,7 +16,6 @@ import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import {
-  API_PARAM,
   CREATED_DESC,
   i18n,
   initialPageParams,
@@ -25,7 +24,7 @@ import {
   PARAM_DUE_DATE,
   PARAM_SORT,
   PARAM_STATE,
-  RELATIVE_POSITION_DESC,
+  RELATIVE_POSITION_ASC,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -36,12 +35,12 @@ import {
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_WEIGHT,
   UPDATED_DESC,
-  URL_PARAM,
   urlSortParams,
 } from '~/issues_list/constants';
 import {
-  convertToParams,
+  convertToApiParams,
   convertToSearchQuery,
+  convertToUrlParams,
   getDueDateValue,
   getFilterTokens,
   getSortKey,
@@ -192,10 +191,10 @@ export default {
           ...this.apiFilterParams,
         };
       },
-      update: ({ project }) => project.issues.nodes,
+      update: ({ project }) => project?.issues.nodes ?? [],
       result({ data }) {
-        this.pageInfo = data.project.issues.pageInfo;
-        this.totalIssues = data.project.issues.count;
+        this.pageInfo = data.project?.issues.pageInfo ?? {};
+        this.totalIssues = data.project?.issues.count ?? 0;
         this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       },
       error(error) {
@@ -215,32 +214,30 @@ export default {
       return this.showBulkEditSidebar || !this.issues.length;
     },
     isManualOrdering() {
-      return this.sortKey === RELATIVE_POSITION_DESC;
+      return this.sortKey === RELATIVE_POSITION_ASC;
     },
     isOpenTab() {
       return this.state === IssuableStates.Opened;
     },
     apiFilterParams() {
-      return convertToParams(this.filterTokens, API_PARAM);
+      return convertToApiParams(this.filterTokens);
     },
     urlFilterParams() {
-      return convertToParams(this.filterTokens, URL_PARAM);
+      return convertToUrlParams(this.filterTokens);
     },
     searchQuery() {
       return convertToSearchQuery(this.filterTokens) || undefined;
     },
     searchTokens() {
-      let preloadedAuthors = [];
+      const preloadedAuthors = [];
 
       if (gon.current_user_id) {
-        preloadedAuthors = [
-          {
-            id: gon.current_user_id,
-            name: gon.current_user_fullname,
-            username: gon.current_username,
-            avatar_url: gon.current_user_avatar_url,
-          },
-        ];
+        preloadedAuthors.push({
+          id: gon.current_user_id,
+          name: gon.current_user_fullname,
+          username: gon.current_username,
+          avatar_url: gon.current_user_avatar_url,
+        });
       }
 
       const tokens = [
@@ -252,6 +249,7 @@ export default {
           dataType: 'user',
           unique: true,
           defaultAuthors: [],
+          operators: OPERATOR_IS_ONLY,
           fetchAuthors: this.fetchUsers,
           preloadedAuthors,
         },
@@ -280,7 +278,7 @@ export default {
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
           token: LabelToken,
-          defaultLabels: [],
+          defaultLabels: DEFAULT_NONE_ANY,
           fetchLabels: this.fetchLabels,
         },
       ];
@@ -329,6 +327,7 @@ export default {
           token: EpicToken,
           unique: true,
           idProperty: 'id',
+          useIdValue: true,
           fetchEpics: this.fetchEpics,
         });
       }
@@ -346,7 +345,7 @@ export default {
       return tokens;
     },
     showPaginationControls() {
-      return this.issues.length > 0;
+      return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
     },
     sortOptions() {
       return getSortOptions(this.hasIssueWeightsFeature, this.hasBlockedIssuesFeature);
@@ -361,22 +360,12 @@ export default {
       );
     },
     urlParams() {
-      const filterParams = {
-        ...this.urlFilterParams,
-      };
-
-      if (filterParams.epic_id) {
-        filterParams.epic_id = encodeURIComponent(filterParams.epic_id);
-      } else if (filterParams['not[epic_id]']) {
-        filterParams['not[epic_id]'] = encodeURIComponent(filterParams['not[epic_id]']);
-      }
-
       return {
         due_date: this.dueDateFilter,
         search: this.searchQuery,
+        sort: urlSortParams[this.sortKey],
         state: this.state,
-        ...urlSortParams[this.sortKey],
-        ...filterParams,
+        ...this.urlFilterParams,
       };
     },
   },
@@ -424,7 +413,10 @@ export default {
       return this.fetchWithCache(this.projectMilestonesPath, 'milestones', 'title', search, true);
     },
     fetchIterations(search) {
-      return axios.get(this.projectIterationsPath, { params: { search } });
+      const id = Number(search);
+      return !search || Number.isNaN(id)
+        ? axios.get(this.projectIterationsPath, { params: { search } })
+        : axios.get(this.projectIterationsPath, { params: { id } });
     },
     fetchUsers(search) {
       return axios.get(this.autocompleteUsersPath, { params: { search } });
@@ -471,6 +463,7 @@ export default {
       this.state = state;
     },
     handleFilter(filter) {
+      this.pageParams = initialPageParams;
       this.filterTokens = filter;
     },
     handleNextPage() {

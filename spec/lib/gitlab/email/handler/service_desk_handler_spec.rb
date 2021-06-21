@@ -50,6 +50,15 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
       it 'sends thank you email' do
         expect { receiver.execute }.to have_enqueued_job.on_queue('mailers')
       end
+
+      it 'adds metric events for incoming and reply emails' do
+        metric_transaction = double('Gitlab::Metrics::WebTransaction', increment: true, observe: true)
+        allow(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
+        expect(metric_transaction).to receive(:add_event).with(:receive_email_service_desk, anything)
+        expect(metric_transaction).to receive(:add_event).with(:service_desk_thank_you_email)
+
+        receiver.execute
+      end
     end
 
     context 'when everything is fine' do

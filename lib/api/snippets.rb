@@ -84,7 +84,8 @@ module API
 
         attrs = process_create_params(declared_params(include_missing: false))
 
-        service_response = ::Snippets::CreateService.new(project: nil, current_user: current_user, params: attrs).execute
+        spam_params = ::Spam::SpamParams.new_from_request(request: request)
+        service_response = ::Snippets::CreateService.new(project: nil, current_user: current_user, params: attrs, spam_params: spam_params).execute
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
@@ -126,7 +127,8 @@ module API
 
         attrs = process_update_params(declared_params(include_missing: false))
 
-        service_response = ::Snippets::UpdateService.new(project: nil, current_user: current_user, params: attrs).execute(snippet)
+        spam_params = ::Spam::SpamParams.new_from_request(request: request)
+        service_response = ::Snippets::UpdateService.new(project: nil, current_user: current_user, params: attrs, spam_params: spam_params).execute(snippet)
 
         snippet = service_response.payload[:snippet]
 

@@ -14,14 +14,14 @@ class Integration < ApplicationRecord
   self.table_name = 'services'
 
   INTEGRATION_NAMES = %w[
-    asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord
+    asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker datadog discord
     drone_ci emails_on_push ewm external_wiki flowdock hangouts_chat irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
     pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack
   ].freeze
 
   PROJECT_SPECIFIC_INTEGRATION_NAMES = %w[
-    datadog jenkins
+    jenkins
   ].freeze
 
   # Fake integrations to help with local development.
@@ -54,6 +54,9 @@ class Integration < ApplicationRecord
     redmine
     slack slack_slash_commands
     teamcity
+    unify_circuit
+    webex_teams
+    youtrack
   ].to_set.freeze
 
   def self.renamed?(name)

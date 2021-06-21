@@ -19,8 +19,9 @@ RSpec.describe Snippets::CreateService do
 
     let(:extra_opts) { {} }
     let(:creator) { admin }
+    let(:spam_params) { double }
 
-    subject { described_class.new(project: project, current_user: creator, params: opts).execute }
+    subject { described_class.new(project: project, current_user: creator, params: opts, spam_params: spam_params).execute }
 
     let(:snippet) { subject.payload[:snippet] }
 
@@ -299,6 +300,10 @@ RSpec.describe Snippets::CreateService do
           expect(snippet.repository.blob_at('master', 'snippetfile2.txt').data).to eq content
         end
       end
+    end
+
+    before do
+      stub_spam_services
     end
 
     context 'when ProjectSnippet' do

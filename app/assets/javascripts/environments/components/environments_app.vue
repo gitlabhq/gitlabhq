@@ -135,7 +135,7 @@ export default {
           >{{ $options.i18n.newEnvironmentButtonLabel }}</gl-button
         >
       </div>
-      <gl-tabs content-class="gl-display-none">
+      <gl-tabs :value="activeTab" content-class="gl-display-none">
         <gl-tab
           v-for="(tab, idx) in tabs"
           :key="idx"

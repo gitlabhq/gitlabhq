@@ -140,7 +140,9 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter do
   end
 
   context "youtrack project" do
-    let_it_be(:service) { create(:youtrack_service, project: project) }
+    before_all do
+      create(:youtrack_integration, project: project)
+    end
 
     before do
       project.update!(issues_enabled: false)

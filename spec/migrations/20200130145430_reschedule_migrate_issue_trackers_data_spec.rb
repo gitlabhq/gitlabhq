@@ -26,11 +26,11 @@ RSpec.describe RescheduleMigrateIssueTrackersData do
     services.create!(id: 12, type: 'BugzillaService', properties: properties, category: 'issue_tracker')
   end
 
-  let!(:youtrack_service) do
+  let!(:youtrack_integration) do
     services.create!(id: 13, type: 'YoutrackService', properties: properties, category: 'issue_tracker')
   end
 
-  let!(:youtrack_service_empty) do
+  let!(:youtrack_integration_empty) do
     services.create!(id: 14, type: 'YoutrackService', properties: '', category: 'issue_tracker')
   end
 
@@ -57,7 +57,7 @@ RSpec.describe RescheduleMigrateIssueTrackersData do
           migrate!
 
           expect(migration_name).to be_scheduled_delayed_migration(3.minutes, jira_integration.id, bugzilla_integration.id)
-          expect(migration_name).to be_scheduled_delayed_migration(6.minutes, youtrack_service.id, gitlab_service.id)
+          expect(migration_name).to be_scheduled_delayed_migration(6.minutes, youtrack_integration.id, gitlab_service.id)
           expect(BackgroundMigrationWorker.jobs.size).to eq(2)
         end
       end

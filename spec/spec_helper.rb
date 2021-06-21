@@ -190,6 +190,7 @@ RSpec.configure do |config|
   config.include RailsHelpers
   config.include SidekiqMiddleware
   config.include StubActionCableConnection, type: :channel
+  config.include StubSpamServices
 
   include StubFeatureFlags
 

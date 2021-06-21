@@ -16,25 +16,6 @@ module Mutations
 
     private
 
-    # additional_spam_params    -> hash
-    #
-    # Used from a spammable mutation's #resolve method to generate
-    # the required additional spam/CAPTCHA params which must be merged into the params
-    # passed to the constructor of a service, where they can then be used in the service
-    # to perform spam checking via SpamActionService.
-    #
-    # Also accesses the #context of the mutation's Resolver superclass to obtain the request.
-    #
-    # Example:
-    #
-    # existing_args.merge!(additional_spam_params)
-    def additional_spam_params
-      {
-        api: true,
-        request: context[:request]
-      }
-    end
-
     def spam_action_response(object)
       fields = spam_action_response_fields(object)
 

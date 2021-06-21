@@ -136,7 +136,7 @@ module Boards
     def issue_params
       params.require(:issue)
         .permit(:title, :milestone_id, :project_id)
-        .merge(board_id: params[:board_id], list_id: params[:list_id], request: request)
+        .merge(board_id: params[:board_id], list_id: params[:list_id])
     end
 
     def serializer

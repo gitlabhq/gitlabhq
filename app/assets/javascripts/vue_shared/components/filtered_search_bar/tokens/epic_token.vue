@@ -56,7 +56,7 @@ export default {
         }
 
         // Current value is a string.
-        const [groupPath, idProperty] = this.currentValue?.split('::&');
+        const [groupPath, idProperty] = this.currentValue?.split(this.$options.separator);
         return this.epics.find(
           (epic) =>
             epic.group_full_path === groupPath &&
@@ -64,6 +64,9 @@ export default {
         );
       }
       return null;
+    },
+    displayText() {
+      return `${this.activeEpic?.title}${this.$options.separator}${this.activeEpic?.iid}`;
     },
   },
   watch: {
@@ -103,8 +106,10 @@ export default {
       this.fetchEpicsBySearchTerm({ epicPath, search: data });
     }, DEBOUNCE_DELAY),
 
-    getEpicDisplayText(epic) {
-      return `${epic.title}${this.$options.separator}${epic.iid}`;
+    getValue(epic) {
+      return this.config.useIdValue
+        ? String(epic[this.idProperty])
+        : `${epic.group_full_path}${this.$options.separator}${epic[this.idProperty]}`;
     },
   },
 };
@@ -118,7 +123,7 @@ export default {
     @input="searchEpics"
   >
     <template #view="{ inputValue }">
-      {{ activeEpic ? getEpicDisplayText(activeEpic) : inputValue }}
+      {{ activeEpic ? displayText : inputValue }}
     </template>
     <template #suggestions>
       <gl-filtered-search-suggestion
@@ -131,11 +136,7 @@ export default {
       <gl-dropdown-divider v-if="defaultEpics.length" />
       <gl-loading-icon v-if="loading" />
       <template v-else>
-        <gl-filtered-search-suggestion
-          v-for="epic in epics"
-          :key="epic.id"
-          :value="`${epic.group_full_path}::&${epic[idProperty]}`"
-        >
+        <gl-filtered-search-suggestion v-for="epic in epics" :key="epic.id" :value="getValue(epic)">
           {{ epic.title }}
         </gl-filtered-search-suggestion>
       </template>

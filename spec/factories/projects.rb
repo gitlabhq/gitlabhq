@@ -402,7 +402,7 @@ FactoryBot.define do
   factory :youtrack_project, parent: :project do
     has_external_issue_tracker { true }
 
-    youtrack_service
+    youtrack_integration
   end
 
   factory :jira_project, parent: :project do

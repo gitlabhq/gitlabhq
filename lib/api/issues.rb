@@ -255,9 +255,11 @@ module API
         issue_params = convert_parameters_from_legacy_format(issue_params)
 
         begin
+          spam_params = ::Spam::SpamParams.new_from_request(request: request)
           issue = ::Issues::CreateService.new(project: user_project,
                                               current_user: current_user,
-                                              params: issue_params.merge(request: request, api: true)).execute
+                                              params: issue_params,
+                                              spam_params: spam_params).execute
 
           if issue.spam?
             render_api_error!({ error: 'Spam detected' }, 400)
@@ -294,13 +296,15 @@ module API
         issue = user_project.issues.find_by!(iid: params.delete(:issue_iid))
         authorize! :update_issue, issue
 
-        update_params = declared_params(include_missing: false).merge(request: request, api: true)
+        update_params = declared_params(include_missing: false)
 
         update_params = convert_parameters_from_legacy_format(update_params)
 
+        spam_params = ::Spam::SpamParams.new_from_request(request: request)
         issue = ::Issues::UpdateService.new(project: user_project,
                                             current_user: current_user,
-                                            params: update_params).execute(issue)
+                                            params: update_params,
+                                            spam_params: spam_params).execute(issue)
 
         render_spam_error! if issue.spam?
 

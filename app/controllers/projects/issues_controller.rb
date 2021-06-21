@@ -129,12 +129,14 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    create_params = issue_params.merge(spammable_params).merge(
+    extract_legacy_spam_params_to_headers
+    create_params = issue_params.merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
       discussion_to_resolve: params[:discussion_to_resolve]
     )
 
-    service = ::Issues::CreateService.new(project: project, current_user: current_user, params: create_params)
+    spam_params = ::Spam::SpamParams.new_from_request(request: request)
+    service = ::Issues::CreateService.new(project: project, current_user: current_user, params: create_params, spam_params: spam_params)
     @issue = service.execute
 
     create_vulnerability_issue_feedback(issue)
@@ -334,8 +336,9 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def update_service
-    update_params = issue_params.merge(spammable_params)
-    ::Issues::UpdateService.new(project: project, current_user: current_user, params: update_params)
+    extract_legacy_spam_params_to_headers
+    spam_params = ::Spam::SpamParams.new_from_request(request: request)
+    ::Issues::UpdateService.new(project: project, current_user: current_user, params: issue_params, spam_params: spam_params)
   end
 
   def finder_type

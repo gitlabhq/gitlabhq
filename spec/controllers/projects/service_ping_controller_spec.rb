@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::UsagePingController do
+RSpec.describe Projects::ServicePingController do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

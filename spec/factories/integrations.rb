@@ -97,7 +97,7 @@ FactoryBot.define do
     issue_tracker
   end
 
-  factory :youtrack_service, class: 'Integrations::Youtrack' do
+  factory :youtrack_integration, class: 'Integrations::Youtrack' do
     project
     active { true }
     issue_tracker

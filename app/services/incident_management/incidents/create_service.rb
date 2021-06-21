@@ -21,7 +21,8 @@ module IncidentManagement
             title: title,
             description: description,
             issue_type: ISSUE_TYPE
-          }
+          },
+          spam_params: nil
         ).execute
 
         return error(issue.errors.full_messages.to_sentence, issue) unless issue.valid?

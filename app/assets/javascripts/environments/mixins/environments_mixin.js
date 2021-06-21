@@ -208,6 +208,9 @@ export default {
         },
       ];
     },
+    activeTab() {
+      return this.tabs.findIndex(({ isActive }) => isActive) ?? 0;
+    },
   },
 
   /**

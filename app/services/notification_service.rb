@@ -396,6 +396,7 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.service_desk_new_note_email(issue.id, note.id, recipient).deliver_later
+      Gitlab::Metrics::BackgroundTransaction.current&.add_event(:service_desk_new_note_email)
     end
   end
 

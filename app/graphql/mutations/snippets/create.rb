@@ -49,7 +49,9 @@ module Mutations
 
         process_args_for_params!(args)
 
-        service_response = ::Snippets::CreateService.new(project: project, current_user: current_user, params: args).execute
+        spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
+        service = ::Snippets::CreateService.new(project: project, current_user: current_user, params: args, spam_params: spam_params)
+        service_response = service.execute
 
         # Only when the user is not an api user and the operation was successful
         if !api_user? && service_response.success?
@@ -80,12 +82,6 @@ module Mutations
         # We need to rename `uploaded_files` into `files` because
         # it's the expected key param
         args[:files] = args.delete(:uploaded_files)
-
-        if Feature.enabled?(:snippet_spam)
-          args.merge!(additional_spam_params)
-        else
-          args[:disable_spam_action_service] = true
-        end
 
         # Return nil to make it explicit that this method is mutating the args parameter, and that
         # the return value is not relevant and is not to be used.

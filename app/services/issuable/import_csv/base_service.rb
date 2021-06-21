@@ -68,7 +68,10 @@ module Issuable
       end
 
       def create_issuable(attributes)
-        create_issuable_class.new(project: @project, current_user: @user, params: attributes).execute
+        # NOTE: CSV imports are performed by workers, so we do not have a request context in order
+        # to create a SpamParams object to pass to the issuable create service.
+        spam_params = nil
+        create_issuable_class.new(project: @project, current_user: @user, params: attributes, spam_params: spam_params).execute
       end
 
       def email_results_to_user

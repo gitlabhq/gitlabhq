@@ -20,9 +20,7 @@ module Emails
       options = service_desk_options(email_sender, 'thank_you', @issue.external_author)
                   .merge(subject: "Re: #{subject_base}")
 
-      mail_new_thread(@issue, options).tap do
-        Gitlab::Metrics::BackgroundTransaction.current&.add_event(:service_desk_thank_you_email)
-      end
+      mail_new_thread(@issue, options)
     end
 
     def service_desk_new_note_email(issue_id, note_id, recipient)
@@ -33,9 +31,7 @@ module Emails
       options = service_desk_options(email_sender, 'new_note', recipient)
                   .merge(subject: subject_base)
 
-      mail_answer_thread(@issue, options).tap do
-        Gitlab::Metrics::BackgroundTransaction.current&.add_event(:service_desk_new_note_email)
-      end
+      mail_answer_thread(@issue, options)
     end
 
     private

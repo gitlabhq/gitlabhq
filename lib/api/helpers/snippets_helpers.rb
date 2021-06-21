@@ -72,22 +72,18 @@ module API
     end
 
     def process_create_params(args)
-      with_api_params do |api_params|
-        args[:snippet_actions] = args.delete(:files)&.map do |file|
-          file[:action] = :create
-          file.symbolize_keys
-        end
-
-        args.merge(api_params)
+      args[:snippet_actions] = args.delete(:files)&.map do |file|
+        file[:action] = :create
+        file.symbolize_keys
       end
+
+      args
     end
 
     def process_update_params(args)
-      with_api_params do |api_params|
-        args[:snippet_actions] = args.delete(:files)&.map(&:symbolize_keys)
+      args[:snippet_actions] = args.delete(:files)&.map(&:symbolize_keys)
 
-        args.merge(api_params)
-      end
+      args
     end
 
     def validate_params_for_multiple_files(snippet)

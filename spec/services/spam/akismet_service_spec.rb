@@ -59,7 +59,7 @@ RSpec.describe Spam::AkismetService do
     it_behaves_like 'no activity if Akismet is not enabled', :spam?, :check
 
     context 'if Akismet is enabled' do
-      it 'correctly transforms options for the akismet client' do
+      it 'correctly transforms options for the akismet client, including spelling of referrer key' do
         expected_check_params = {
           type: 'comment',
           text: text,

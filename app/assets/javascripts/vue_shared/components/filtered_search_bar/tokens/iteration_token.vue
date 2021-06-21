@@ -30,7 +30,6 @@ export default {
   data() {
     return {
       iterations: this.config.initialIterations || [],
-      defaultIterations: this.config.defaultIterations || DEFAULT_ITERATIONS,
       loading: true,
     };
   },
@@ -39,7 +38,10 @@ export default {
       return this.value.data;
     },
     activeIteration() {
-      return this.iterations.find((iteration) => iteration.title === this.currentValue);
+      return this.iterations.find((iteration) => iteration.id === Number(this.currentValue));
+    },
+    defaultIterations() {
+      return this.config.defaultIterations || DEFAULT_ITERATIONS;
     },
   },
   watch: {
@@ -99,8 +101,8 @@ export default {
       <template v-else>
         <gl-filtered-search-suggestion
           v-for="iteration in iterations"
-          :key="iteration.title"
-          :value="iteration.title"
+          :key="iteration.id"
+          :value="String(iteration.id)"
         >
           {{ iteration.title }}
         </gl-filtered-search-suggestion>

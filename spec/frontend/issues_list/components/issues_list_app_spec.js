@@ -21,7 +21,6 @@ import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
 import {
-  apiSortParams,
   CREATED_DESC,
   DUE_DATE_OVERDUE,
   PARAM_DUE_DATE,
@@ -148,8 +147,8 @@ describe('IssuesListApp component', () => {
         hasPreviousPage: getIssuesQueryResponse.data.project.issues.pageInfo.hasPreviousPage,
         hasNextPage: getIssuesQueryResponse.data.project.issues.pageInfo.hasNextPage,
         urlParams: {
+          sort: urlSortParams[CREATED_DESC],
           state: IssuableStates.Opened,
-          ...urlSortParams[CREATED_DESC],
         },
       });
     });
@@ -178,7 +177,7 @@ describe('IssuesListApp component', () => {
 
     describe('csv import/export component', () => {
       describe('when user is signed in', () => {
-        const search = '?search=refactor&state=opened&sort=created_date';
+        const search = '?search=refactor&sort=created_date&state=opened';
 
         beforeEach(() => {
           global.jsdom.reconfigure({ url: `${TEST_HOST}${search}` });
@@ -273,13 +272,17 @@ describe('IssuesListApp component', () => {
 
     describe('sort', () => {
       it.each(Object.keys(urlSortParams))('is set as %s from the url params', (sortKey) => {
-        global.jsdom.reconfigure({ url: setUrlParams(urlSortParams[sortKey], TEST_HOST) });
+        global.jsdom.reconfigure({
+          url: setUrlParams({ sort: urlSortParams[sortKey] }, TEST_HOST),
+        });
 
         wrapper = mountComponent();
 
         expect(findIssuableList().props()).toMatchObject({
           initialSortBy: sortKey,
-          urlParams: urlSortParams[sortKey],
+          urlParams: {
+            sort: urlSortParams[sortKey],
+          },
         });
       });
     });
@@ -640,7 +643,7 @@ describe('IssuesListApp component', () => {
     });
 
     describe('when "sort" event is emitted by IssuableList', () => {
-      it.each(Object.keys(apiSortParams))(
+      it.each(Object.keys(urlSortParams))(
         'updates to the new sort when payload is `%s`',
         async (sortKey) => {
           wrapper = mountComponent();
@@ -650,7 +653,9 @@ describe('IssuesListApp component', () => {
           jest.runOnlyPendingTimers();
           await nextTick();
 
-          expect(findIssuableList().props('urlParams')).toMatchObject(urlSortParams[sortKey]);
+          expect(findIssuableList().props('urlParams')).toMatchObject({
+            sort: urlSortParams[sortKey],
+          });
         },
       );
     });

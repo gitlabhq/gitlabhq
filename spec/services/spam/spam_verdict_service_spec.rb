@@ -14,13 +14,11 @@ RSpec.describe Spam::SpamVerdictService do
       'HTTP_REFERER' => fake_referer }
   end
 
-  let(:request) { double(:request, env: env) }
-
   let(:check_for_spam) { true }
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, author: user) }
   let(:service) do
-    described_class.new(user: user, target: issue, request: request, options: {})
+    described_class.new(user: user, target: issue, options: {})
   end
 
   let(:attribs) do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Projects::UsagePingController < Projects::ApplicationController
+class Projects::ServicePingController < Projects::ApplicationController
   before_action :authenticate_user!
 
   feature_category :usage_ping

@@ -176,14 +176,14 @@ Users are notified of the following events:
 | Event                        | Sent to             | Settings level               |
 |------------------------------|---------------------|------------------------------|
 | New SSH key added            | User                | Security email, always sent. |
-| SSH key has expired          | User                | Security email, always sent. |
+| SSH key has expired          | User                | Security email, always sent. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.12 |
 | New email added              | User                | Security email, always sent. |
 | Email changed                | User                | Security email, always sent. |
 | Password changed             | User                | Security email, always sent when user changes their own password |
 | Password changed by administrator | User           | Security email, always sent when an administrator changes the password of another user |
 | Two-factor authentication disabled | User          | Security email, always sent. |
 | New user created             | User                | Sent on user creation, except for OmniAuth (LDAP)|
-| New SAML/SCIM user provisioned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276018) in GitLab 13.8  | User            | Sent when a user is provisioned through SAML/SCIM |
+| New SAML/SCIM user provisioned | User            | Sent when a user is provisioned through SAML/SCIM. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276018) in GitLab 13.8 |
 | User added to project        | User                | Sent when user is added to project |
 | Project access level changed | User                | Sent when user project access level is changed |
 | User added to group          | User                | Sent when user is added to group |
@@ -237,10 +237,10 @@ epics:
 | Close merge request    |         |
 | Due issue              | Participants and Custom notification level with this event selected |
 | Failed pipeline        | The author of the pipeline |
-| Fixed pipeline ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1.)    | The author of the pipeline. Enabled by default. |
+| Fixed pipeline         | The author of the pipeline. Enabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1 |
 | Merge merge request    |         |
-| Merge when pipeline succeeds ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4) | Author, Participants, Watchers, Subscribers, and Custom notification level with this event selected. `Note:` Custom notification level is ignored for Author, Watchers and Subscribers   |
-| Merge request [marked as ready](../project/merge_requests/drafts.md) (introduced in [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/15332)) | Watchers and participants |
+| Merge when pipeline succeeds | Author, Participants, Watchers, Subscribers, and Custom notification level with this event selected. Custom notification level is ignored for Author, Watchers and Subscribers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4 |
+| Merge request [marked as ready](../project/merge_requests/drafts.md) | Watchers and participants. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15332) in GitLab 13.10 |
 | New comment            | Participants, Watchers, Subscribers, and Custom notification level with this event selected, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
 | New epic               |         |
 | New issue              |         |

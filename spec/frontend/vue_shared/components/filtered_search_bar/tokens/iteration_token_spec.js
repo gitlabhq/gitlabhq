@@ -7,7 +7,7 @@ import { mockIterationToken } from '../mock_data';
 jest.mock('~/flash');
 
 describe('IterationToken', () => {
-  const title = 'gitlab-org: #1';
+  const id = 123;
   let wrapper;
 
   const createComponent = ({ config = mockIterationToken, value = { data: '' } } = {}) =>
@@ -28,14 +28,14 @@ describe('IterationToken', () => {
   });
 
   it('renders iteration value', async () => {
-    wrapper = createComponent({ value: { data: title } });
+    wrapper = createComponent({ value: { data: id } });
 
     await wrapper.vm.$nextTick();
 
     const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
     expect(tokenSegments).toHaveLength(3); // `Iteration` `=` `gitlab-org: #1`
-    expect(tokenSegments.at(2).text()).toBe(title);
+    expect(tokenSegments.at(2).text()).toBe(id.toString());
   });
 
   it('fetches initial values', () => {
@@ -43,10 +43,10 @@ describe('IterationToken', () => {
 
     wrapper = createComponent({
       config: { ...mockIterationToken, fetchIterations: fetchIterationsSpy },
-      value: { data: title },
+      value: { data: id },
     });
 
-    expect(fetchIterationsSpy).toHaveBeenCalledWith(title);
+    expect(fetchIterationsSpy).toHaveBeenCalledWith(id);
   });
 
   it('fetches iterations on user input', () => {

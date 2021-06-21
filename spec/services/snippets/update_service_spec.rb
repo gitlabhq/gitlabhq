@@ -20,7 +20,9 @@ RSpec.describe Snippets::UpdateService do
     let(:extra_opts) { {} }
     let(:options) { base_opts.merge(extra_opts) }
     let(:updater) { user }
-    let(:service) { Snippets::UpdateService.new(project: project, current_user: updater, params: options) }
+    let(:spam_params) { double }
+
+    let(:service) { Snippets::UpdateService.new(project: project, current_user: updater, params: options, spam_params: spam_params) }
 
     subject { service.execute(snippet) }
 
@@ -719,6 +721,10 @@ RSpec.describe Snippets::UpdateService do
         expect(response).to be_success
         expect(blob.data).to eq content
       end
+    end
+
+    before do
+      stub_spam_services
     end
 
     context 'when Project Snippet' do
