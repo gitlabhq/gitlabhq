@@ -39,9 +39,9 @@ module QA
       end
 
       context 'when using attachments in comments', :object_storage do
-        let(:gif_file_name) { 'banana_sample.gif' }
+        let(:png_file_name) { 'testfile.png' }
         let(:file_to_attach) do
-          File.absolute_path(File.join('qa', 'fixtures', 'designs', gif_file_name))
+          File.absolute_path(File.join('qa', 'fixtures', 'designs', png_file_name))
         end
 
         before do
@@ -50,9 +50,9 @@ module QA
 
         it 'comments on an issue with an attachment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1742' do
           Page::Project::Issue::Show.perform do |show|
-            show.comment('See attached banana for scale', attachment: file_to_attach)
+            show.comment('See attached image for scale', attachment: file_to_attach)
 
-            expect(show.noteable_note_item.find("img[src$='#{gif_file_name}']")).to be_visible
+            expect(show.noteable_note_item.find("img[src$='#{png_file_name}']")).to be_visible
           end
         end
       end

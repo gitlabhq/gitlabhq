@@ -106,7 +106,7 @@ In this file, we write the actions that call mutations for handling a list of us
       .then(({ data }) => commit(types.RECEIVE_USERS_SUCCESS, data))
       .catch((error) => {
         commit(types.RECEIVE_USERS_ERROR, error)
-        createFlash('There was an error')
+        createFlash({ message: 'There was an error' })
       });
   }
 

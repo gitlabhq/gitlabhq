@@ -1,5 +1,5 @@
 <script>
-import { GlLabel, GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlLabel, GlTooltip, GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { sortBy } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
@@ -16,6 +16,7 @@ import IssueTimeEstimate from './issue_time_estimate.vue';
 
 export default {
   components: {
+    GlTooltip,
     GlLabel,
     GlLoadingIcon,
     GlIcon,
@@ -55,7 +56,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['isShowingLabels', 'issuableType']),
+    ...mapState(['isShowingLabels', 'issuableType', 'allowSubEpics']),
     ...mapGetters(['isEpicBoard']),
     cappedAssignees() {
       // e.g. maxRender is 4,
@@ -99,6 +100,9 @@ export default {
       }
       return false;
     },
+    shouldRenderEpicCountables() {
+      return this.isEpicBoard && this.item.hasIssues;
+    },
     showLabelFooter() {
       return this.isShowingLabels && this.item.labels.find(this.showLabel);
     },
@@ -114,6 +118,17 @@ export default {
         return n__(`Blocked by %d issue`, `Blocked by %d issues`, this.item.blockedByCount);
       }
       return __('Blocked issue');
+    },
+    totalEpicsCount() {
+      return this.item.descendantCounts.openedEpics + this.item.descendantCounts.closedEpics;
+    },
+    totalIssuesCount() {
+      return this.item.descendantCounts.openedIssues + this.item.descendantCounts.closedIssues;
+    },
+    totalWeight() {
+      return (
+        this.item.descendantWeightSum.openedIssues + this.item.descendantWeightSum.closedIssues
+      );
     },
   },
   methods: {
@@ -227,17 +242,71 @@ export default {
           {{ itemId }}
         </span>
         <span class="board-info-items gl-mt-3 gl-display-inline-block">
-          <issue-due-date
-            v-if="item.dueDate"
-            :date="item.dueDate"
-            :closed="item.closed || Boolean(item.closedAt)"
-          />
-          <issue-time-estimate v-if="item.timeEstimate" :estimate="item.timeEstimate" />
-          <issue-card-weight
-            v-if="validIssueWeight(item)"
-            :weight="item.weight"
-            @click="filterByWeight(item.weight)"
-          />
+          <span v-if="shouldRenderEpicCountables" data-testid="epic-countables">
+            <gl-tooltip :target="() => $refs.countBadge" data-testid="epic-countables-tooltip">
+              <p v-if="allowSubEpics" class="gl-font-weight-bold gl-m-0">
+                {{ __('Epics') }} &#8226;
+                <span class="gl-font-weight-normal"
+                  >{{
+                    sprintf(__('%{openedEpics} open, %{closedEpics} closed'), {
+                      openedEpics: item.descendantCounts.openedEpics,
+                      closedEpics: item.descendantCounts.closedEpics,
+                    })
+                  }}
+                </span>
+              </p>
+              <p class="gl-font-weight-bold gl-m-0">
+                {{ __('Issues') }} &#8226;
+                <span class="gl-font-weight-normal"
+                  >{{
+                    sprintf(__('%{openedIssues} open, %{closedIssues} closed'), {
+                      openedIssues: item.descendantCounts.openedIssues,
+                      closedIssues: item.descendantCounts.closedIssues,
+                    })
+                  }}
+                </span>
+              </p>
+              <p class="gl-font-weight-bold gl-m-0">
+                {{ __('Weight') }} &#8226;
+                <span class="gl-font-weight-normal" data-testid="epic-countables-total-weight"
+                  >{{
+                    sprintf(__('%{closedWeight} complete, %{openWeight} incomplete'), {
+                      openWeight: item.descendantWeightSum.openedIssues,
+                      closedWeight: item.descendantWeightSum.closedIssues,
+                    })
+                  }}
+                </span>
+              </p>
+            </gl-tooltip>
+
+            <span ref="countBadge" class="issue-count-badge board-card-info">
+              <span v-if="allowSubEpics" class="gl-mr-3">
+                <gl-icon name="epic" />
+                {{ totalEpicsCount }}
+              </span>
+              <span class="gl-mr-3" data-testid="epic-countables-counts-issues">
+                <gl-icon name="issues" />
+                {{ totalIssuesCount }}
+              </span>
+              <span class="gl-mr-3" data-testid="epic-countables-weight-issues">
+                <gl-icon name="weight" />
+                {{ totalWeight }}
+              </span>
+            </span>
+          </span>
+          <span v-if="!isEpicBoard">
+            <issue-due-date
+              v-if="item.dueDate"
+              :date="item.dueDate"
+              :closed="item.closed || Boolean(item.closedAt)"
+            />
+            <issue-time-estimate v-if="item.timeEstimate" :estimate="item.timeEstimate" />
+            <issue-card-weight
+              v-if="validIssueWeight(item)"
+              :weight="item.weight"
+              @click="filterByWeight(item.weight)"
+            />
+          </span>
         </span>
       </div>
       <div class="board-card-assignee gl-display-flex">

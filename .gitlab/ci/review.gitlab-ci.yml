@@ -146,7 +146,7 @@ review-stop:
 
 .allure-report-base:
   image:
-    name: ${GITLAB_DEPENDENCY_PROXY}andrcuns/allure-report-publisher:0.3.2
+    name: ${GITLAB_DEPENDENCY_PROXY}andrcuns/allure-report-publisher:0.3.4
     entrypoint: [""]
   stage: post-qa
   variables:

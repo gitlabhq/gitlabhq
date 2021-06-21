@@ -170,7 +170,7 @@ export default {
         })
         .catch(() => {
           this.loading = false;
-          createFlash(ERROR_MESSAGE);
+          createFlash({ message: ERROR_MESSAGE });
         });
     },
     formData() {

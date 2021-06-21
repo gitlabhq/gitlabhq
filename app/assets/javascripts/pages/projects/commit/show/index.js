@@ -3,7 +3,7 @@ import $ from 'jquery';
 import loadAwardsHandler from '~/awards_handler';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import Diff from '~/diff';
-import flash from '~/flash';
+import createFlash from '~/flash';
 import initChangesDropdown from '~/init_changes_dropdown';
 import initNotes from '~/init_notes';
 import axios from '~/lib/utils/axios_utils';
@@ -39,7 +39,7 @@ if (filesContainer.length) {
       new Diff();
     })
     .catch(() => {
-      flash({ message: __('An error occurred while retrieving diff files') });
+      createFlash({ message: __('An error occurred while retrieving diff files') });
     });
 } else {
   new Diff();

@@ -72,8 +72,14 @@ module QA
               testcase = example.metadata[:testcase]
               example.tms('Testcase', testcase) if testcase
 
-              issue = example.metadata.dig(:quarantine, :issue)
-              example.issue('Issue', issue) if issue
+              quarantine_issue = example.metadata.dig(:quarantine, :issue)
+              example.issue('Quarantine issue', quarantine_issue) if quarantine_issue
+
+              spec_file = example.file_path.split('/').last
+              example.issue(
+                'Failure issues',
+                "https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&search=#{spec_file}"
+              )
 
               example.add_link(name: "Job(#{Env.ci_job_name})", url: Env.ci_job_url) if Env.running_in_ci?
             end

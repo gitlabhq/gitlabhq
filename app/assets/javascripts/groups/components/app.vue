@@ -1,7 +1,6 @@
 <script>
-/* global Flash */
-
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
+import createFlash from '~/flash';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import { HIDDEN_CLASS } from '~/lib/utils/constants';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -116,7 +115,7 @@ export default {
           this.isLoading = false;
           window.scrollTo({ top: 0, behavior: 'smooth' });
 
-          Flash(COMMON_STR.FAILURE);
+          createFlash({ message: COMMON_STR.FAILURE });
         });
     },
     fetchAllGroups() {
@@ -202,7 +201,7 @@ export default {
           if (err.status === 403) {
             message = COMMON_STR.LEAVE_FORBIDDEN;
           }
-          Flash(message);
+          createFlash({ message });
           this.targetGroup.isBeingRemoved = false;
         });
     },

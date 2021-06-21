@@ -147,7 +147,7 @@ To use a custom issue template with Service Desk, in your project:
 1. Go to **Settings > General > Service Desk**.
 1. From the dropdown **Template to append to all Service Desk issues**, select your template.
 
-### Using custom email display name
+### Using a custom email display name
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7529) in GitLab 12.8.
 
@@ -160,22 +160,29 @@ To edit the custom email display name:
 1. Enter a new name in **Email display name**.
 1. Select **Save Changes**.
 
-### Using custom email address **(FREE SELF)**
+### Using a custom email address **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab Premium 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
 
-If the `service_desk_email` is configured, then you can create Service Desk
-issues by sending emails to the Service Desk email address. The default
-address has the following format:
-`project_contact+%{key}@example.com`.
+It is possible to customize the email address used by Service Desk. To do this, you must configure
+both a [custom mailbox](#configuring-a-custom-mailbox) and a
+[custom suffix](#configuring-a-custom-email-address-suffix).
 
-The `%{key}` part is used to find the project where the issue should be created. The
-`%{key}` part combines the path to the project and configurable project name suffix:
-`<project_full_path>-<project_name_suffix>`.
+#### Configuring a custom mailbox
 
-You can set the project name suffix in your project's Service Desk settings.
-It can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
+NOTE:
+On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address, so you only have to configure the 
+[custom suffix](#configuring-a-custom-email-address-suffix) in project settings.
+
+Using the `service_desk_email` configuration, you can customize the mailbox
+used by Service Desk. This allows you to have a separate email address for 
+Service Desk by also configuring a [custom suffix](#configuring-a-custom-email-address-suffix)
+in project settings.
+
+The `address` must include the `+%{key}` placeholder within the 'user' 
+portion of the address, before the `@`. This is used to identify the project 
+where the issue should be created.
 
 NOTE:
 The `service_desk_email` and `incoming_email` configurations should
@@ -183,7 +190,7 @@ always use separate mailboxes. This is important, because emails picked from
 `service_desk_email` mailbox are processed by a different worker and it would
 not recognize `incoming_email` emails.
 
-To configure a custom email address for Service Desk with IMAP, add the following snippets to your configuration file:
+To configure a custom mailbox for Service Desk with IMAP, add the following snippets to your configuration file in full:
 
 - Example for installations from source:
 
@@ -207,36 +214,22 @@ To configure a custom email address for Service Desk with IMAP, add the followin
 
   ```ruby
   gitlab_rails['service_desk_email_enabled'] = true
-
   gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@gmail.com"
-
   gitlab_rails['service_desk_email_email'] = "project_support@gmail.com"
-
   gitlab_rails['service_desk_email_password'] = "[REDACTED]"
-
   gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
-
   gitlab_rails['service_desk_email_idle_timeout'] = 60
-
   gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
-
   gitlab_rails['service_desk_email_host'] = "imap.gmail.com"
-
   gitlab_rails['service_desk_email_port'] = 993
-
   gitlab_rails['service_desk_email_ssl'] = true
-
   gitlab_rails['service_desk_email_start_tls'] = false
   ```
-
-In this case, suppose the `mygroup/myproject` project Service Desk settings has the project name
-suffix set to `support`, and a user sends an email to `project_contact+mygroup-myproject-support@example.com`.
-As a result, a new Service Desk issue is created from this email in the `mygroup/myproject` project.
 
 The configuration options are the same as for configuring
 [incoming email](../../administration/incoming_email.md#set-it-up).
 
-#### Microsoft Graph
+##### Microsoft Graph
 
 > Introduced in [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/214900)
 
@@ -247,17 +240,11 @@ Graph API instead of IMAP. Follow the [documentation in the incoming e-mail sect
 
   ```ruby
   gitlab_rails['service_desk_email_enabled'] = true
-
   gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@example.onmicrosoft.com"
-
   gitlab_rails['service_desk_email_email'] = "project_contact@example.onmicrosoft.com"
-
   gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
-
   gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
-
   gitlab_rails['service_desk_inbox_method'] = 'microsoft_graph'
-
   gitlab_rails['service_desk_inbox_options'] = {
    'tenant_id': '<YOUR-TENANT-ID>',
    'client_id': '<YOUR-CLIENT-ID>',
@@ -267,6 +254,22 @@ Graph API instead of IMAP. Follow the [documentation in the incoming e-mail sect
   ```
 
 The Microsoft Graph API is not yet supported in source installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
+
+#### Configuring a custom email address suffix
+
+You can set a custom suffix in your project's Service Desk settings once you have configured a [custom mailbox](#configuring-a-custom-mailbox).
+It can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
+
+When configured, the custom suffix creates a new Service Desk email address, consisting of the
+`service_desk_email_address` setting and a key of the format: `<project_full_path>-<custom_suffix>`
+
+For example, suppose the `mygroup/myproject` project Service Desk settings has the following configured:
+
+- Project name suffix is set to `support`.
+- Service Desk email address is configured to `contact+%{key}@example.com`.
+
+The Service Desk email address for this project is: `contact+mygroup-myproject-support@example.com`.
+The [incoming email](../../administration/incoming_email.md) address still works.
 
 ## Using Service Desk
 

@@ -90,7 +90,9 @@ export default {
     try {
       await this.contentEditor.setSerializedContent(this.content);
     } catch (e) {
-      createFlash(__('There was an error loading content in the editor'), e);
+      createFlash({ 
+        message: __('There was an error loading content in the editor'), error: e
+      });
     }
   },
   methods: {

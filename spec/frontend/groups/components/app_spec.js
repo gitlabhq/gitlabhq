@@ -1,9 +1,9 @@
-import '~/flash';
 import { GlModal, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import createFlash from '~/flash';
 import appComponent from '~/groups/components/app.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
@@ -27,6 +27,7 @@ import {
 const $toast = {
   show: jest.fn(),
 };
+jest.mock('~/flash');
 
 describe('AppComponent', () => {
   let wrapper;
@@ -123,12 +124,12 @@ describe('AppComponent', () => {
         mock.onGet('/dashboard/groups.json').reply(400);
 
         jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
-        jest.spyOn(window, 'Flash').mockImplementation(() => {});
-
         return vm.fetchGroups({}).then(() => {
           expect(vm.isLoading).toBe(false);
           expect(window.scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 });
-          expect(window.Flash).toHaveBeenCalledWith('An error occurred. Please try again.');
+          expect(createFlash).toHaveBeenCalledWith({
+            message: 'An error occurred. Please try again.',
+          });
         });
       });
     });
@@ -324,15 +325,13 @@ describe('AppComponent', () => {
         const message = 'An error occurred. Please try again.';
         jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: 500 });
         jest.spyOn(vm.store, 'removeGroup');
-        jest.spyOn(window, 'Flash').mockImplementation(() => {});
-
         vm.leaveGroup();
 
         expect(vm.targetGroup.isBeingRemoved).toBe(true);
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
         return waitForPromises().then(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
-          expect(window.Flash).toHaveBeenCalledWith(message);
+          expect(createFlash).toHaveBeenCalledWith({ message });
           expect(vm.targetGroup.isBeingRemoved).toBe(false);
         });
       });
@@ -341,15 +340,13 @@ describe('AppComponent', () => {
         const message = 'Failed to leave the group. Please make sure you are not the only owner.';
         jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: 403 });
         jest.spyOn(vm.store, 'removeGroup');
-        jest.spyOn(window, 'Flash').mockImplementation(() => {});
-
         vm.leaveGroup(childGroupItem, groupItem);
 
         expect(vm.targetGroup.isBeingRemoved).toBe(true);
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
         return waitForPromises().then(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
-          expect(window.Flash).toHaveBeenCalledWith(message);
+          expect(createFlash).toHaveBeenCalledWith({ message });
           expect(vm.targetGroup.isBeingRemoved).toBe(false);
         });
       });

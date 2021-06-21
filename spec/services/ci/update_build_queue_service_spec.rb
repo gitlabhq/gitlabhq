@@ -45,7 +45,7 @@ RSpec.describe Ci::UpdateBuildQueueService do
 
       context 'when duplicate entry exists' do
         before do
-          ::Ci::PendingBuild.create!(build: build, project: project)
+          create(:ci_pending_build, build: build, project: build.project)
         end
 
         it 'does nothing and returns build id' do
@@ -66,7 +66,7 @@ RSpec.describe Ci::UpdateBuildQueueService do
 
       context 'when pending build exists' do
         before do
-          Ci::PendingBuild.create!(build: build, project: project)
+          create(:ci_pending_build, build: build, project: build.project)
         end
 
         it 'removes pending build in a transaction' do
@@ -146,9 +146,7 @@ RSpec.describe Ci::UpdateBuildQueueService do
 
       context 'when duplicate entry exists' do
         before do
-          ::Ci::RunningBuild.create!(
-            build: build, project: project, runner: runner, runner_type: runner.runner_type
-          )
+          create(:ci_running_build, build: build, project: project, runner: runner)
         end
 
         it 'does nothing and returns build id' do
@@ -169,9 +167,7 @@ RSpec.describe Ci::UpdateBuildQueueService do
 
       context 'when shared runner build tracking entry exists' do
         before do
-          Ci::RunningBuild.create!(
-            build: build, project: project, runner: runner, runner_type: runner.runner_type
-          )
+          create(:ci_running_build, build: build, project: project, runner: runner)
         end
 
         it 'removes shared runner build' do

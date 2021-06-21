@@ -436,6 +436,9 @@ msgid_plural "%{bold_start}%{count}%{bold_end} opened merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{closedWeight} complete, %{openWeight} incomplete"
+msgstr ""
+
 msgid "%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements."
 msgstr ""
 
@@ -6350,6 +6353,9 @@ msgid "Checkout|Failed to load countries. Please try again."
 msgstr ""
 
 msgid "Checkout|Failed to load states. Please try again."
+msgstr ""
+
+msgid "Checkout|Failed to load the payment form. Please try again."
 msgstr ""
 
 msgid "Checkout|Failed to register credit card. Please try again."
@@ -31432,9 +31438,6 @@ msgid "SuperSonics|Buy subscription"
 msgstr ""
 
 msgid "SuperSonics|Cloud license"
-msgstr ""
-
-msgid "SuperSonics|Enter activation code"
 msgstr ""
 
 msgid "SuperSonics|Expires on"

@@ -1,7 +1,7 @@
-import { GlLabel, GlLoadingIcon } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlLabel, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vuex from 'vuex';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardBlockedIcon from '~/boards/components/board_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import { issuableTypes } from '~/boards/constants';
@@ -35,8 +35,14 @@ describe('Board card component', () => {
   let store;
 
   const findBoardBlockedIcon = () => wrapper.find(BoardBlockedIcon);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findEpicCountablesTotalTooltip = () => wrapper.findComponent(GlTooltip);
+  const findEpicCountables = () => wrapper.findByTestId('epic-countables');
+  const findEpicCountablesBadgeIssues = () => wrapper.findByTestId('epic-countables-counts-issues');
+  const findEpicCountablesBadgeWeight = () => wrapper.findByTestId('epic-countables-weight-issues');
+  const findEpicCountablesTotalWeight = () => wrapper.findByTestId('epic-countables-total-weight');
 
-  const createStore = () => {
+  const createStore = ({ isEpicBoard = false } = {}) => {
     store = new Vuex.Store({
       ...defaultStore,
       state: {
@@ -45,16 +51,14 @@ describe('Board card component', () => {
       },
       getters: {
         isGroupBoard: () => true,
-        isEpicBoard: () => false,
+        isEpicBoard: () => isEpicBoard,
         isProjectBoard: () => false,
       },
     });
   };
 
   const createWrapper = (props = {}) => {
-    createStore();
-
-    wrapper = mount(BoardCardInner, {
+    wrapper = mountExtended(BoardCardInner, {
       store,
       propsData: {
         list,
@@ -88,6 +92,7 @@ describe('Board card component', () => {
       weight: 1,
     };
 
+    createStore();
     createWrapper({ item: issue, list });
   });
 
@@ -414,7 +419,90 @@ describe('Board card component', () => {
         },
       });
 
-      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+  });
+
+  describe('is an epic board', () => {
+    const descendantCounts = {
+      closedEpics: 0,
+      closedIssues: 0,
+      openedEpics: 0,
+      openedIssues: 0,
+    };
+
+    const descendantWeightSum = {
+      closedIssues: 0,
+      openedIssues: 0,
+    };
+
+    beforeEach(() => {
+      createStore({ isEpicBoard: true });
+    });
+
+    it('should render if the item has issues', () => {
+      createWrapper({
+        item: {
+          ...issue,
+          descendantCounts,
+          descendantWeightSum,
+          hasIssues: true,
+        },
+      });
+
+      expect(findEpicCountables().exists()).toBe(true);
+    });
+
+    it('should not render if the item does not have issues', () => {
+      createWrapper({
+        item: {
+          ...issue,
+          descendantCounts,
+          descendantWeightSum,
+          hasIssues: false,
+        },
+      });
+
+      expect(findEpicCountablesBadgeIssues().exists()).toBe(false);
+    });
+
+    it('shows render item countBadge and weights correctly', () => {
+      createWrapper({
+        item: {
+          ...issue,
+          descendantCounts: {
+            ...descendantCounts,
+            openedIssues: 1,
+          },
+          descendantWeightSum: {
+            ...descendantWeightSum,
+            openedIssues: 2,
+          },
+          hasIssues: true,
+        },
+      });
+
+      expect(findEpicCountablesBadgeIssues().text()).toBe('1');
+      expect(findEpicCountablesBadgeWeight().text()).toBe('2');
+    });
+
+    it('renders the tooltip with the correct data', () => {
+      createWrapper({
+        item: {
+          ...issue,
+          descendantCounts,
+          descendantWeightSum: {
+            closedIssues: 10,
+            openedIssues: 5,
+          },
+          hasIssues: true,
+        },
+      });
+
+      const tooltip = findEpicCountablesTotalTooltip();
+      expect(tooltip).toBeDefined();
+
+      expect(findEpicCountablesTotalWeight().text()).toBe('10 complete, 5 incomplete');
     });
   });
 });

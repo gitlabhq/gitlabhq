@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.12.5 (2021-06-21)
+
+### Fixed (3 changes)
+
+- [Fix failing spec](gitlab-org/gitlab@7d1a9b0155195eb082f5b33ba1310deed742a7a4) ([merge request](gitlab-org/gitlab!64488))
+- [Advanced Search Settings page does not load if the ES url is unreachable](gitlab-org/gitlab@80b262f0e79f02a89724ed4e3988e686f53c959c) ([merge request](gitlab-org/gitlab!64488)) **GitLab Enterprise Edition**
+- [Fix Password expired error on git fetch via SSH for LDAP user](gitlab-org/gitlab@19a7d7a6d3cd43f1c7559c729532ad3b9dafb75c) ([merge request](gitlab-org/gitlab!64488))
+
 ## 13.12.4 (2021-06-14)
 
 ### Fixed (3 changes)

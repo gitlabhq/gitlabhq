@@ -8,7 +8,7 @@ class Admin::RunnersController < Admin::ApplicationController
     push_frontend_feature_flag(:runner_list_view_vue_ui, current_user, default_enabled: :yaml)
   end
 
-  feature_category :continuous_integration
+  feature_category :runner
 
   NUMBER_OF_RUNNERS_PER_PAGE = 30
 

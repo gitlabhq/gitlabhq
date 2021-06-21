@@ -1,4 +1,4 @@
-/* global Flash */
+/* global createFlash */
 
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
@@ -71,5 +71,9 @@ export function fetchCommitMergeRequests() {
 
       $container.html($content);
     })
-    .catch(() => Flash(s__('Commits|An error occurred while fetching merge requests data.')));
+    .catch(() =>
+      createFlash({
+        message: s__('Commits|An error occurred while fetching merge requests data.'),
+      }),
+    );
 }

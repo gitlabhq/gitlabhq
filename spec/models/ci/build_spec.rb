@@ -384,7 +384,7 @@ RSpec.describe Ci::Build do
 
       context 'when there is a queuing entry already present' do
         before do
-          ::Ci::PendingBuild.create!(build: build, project: build.project)
+          create(:ci_pending_build, build: build, project: build.project)
         end
 
         it 'does not raise an error' do
@@ -396,7 +396,7 @@ RSpec.describe Ci::Build do
       context 'when both failure scenario happen at the same time' do
         before do
           ::Ci::Build.find(build.id).update_column(:lock_version, 100)
-          ::Ci::PendingBuild.create!(build: build, project: build.project)
+          create(:ci_pending_build, build: build, project: build.project)
         end
 
         it 'raises stale object error exception' do
@@ -478,7 +478,7 @@ RSpec.describe Ci::Build do
       let(:build) { create(:ci_build, :pending) }
 
       before do
-        ::Ci::PendingBuild.create!(build: build, project: build.project)
+        create(:ci_pending_build, build: build, project: build.project)
         ::Ci::Build.find(build.id).update_column(:lock_version, 100)
       end
 

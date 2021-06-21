@@ -190,7 +190,9 @@ describe('UploadBlobModal', () => {
           });
 
           it('creates a flash error', () => {
-            expect(createFlash).toHaveBeenCalledWith('Error uploading file. Please try again.');
+            expect(createFlash).toHaveBeenCalledWith({
+              message: 'Error uploading file. Please try again.',
+            });
           });
 
           afterEach(() => {

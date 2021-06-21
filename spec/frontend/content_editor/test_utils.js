@@ -15,7 +15,7 @@ import { Editor } from '@tiptap/vue-2';
  * include in the editor
  * @returns An instance of a Tiptap’s Editor class
  */
-export const createTestEditor = ({ extensions = [] }) => {
+export const createTestEditor = ({ extensions = [] } = {}) => {
   return new Editor({
     extensions: [Document, Text, Paragraph, ...extensions],
   });

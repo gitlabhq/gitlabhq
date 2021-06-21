@@ -1,26 +1,23 @@
-import { BulletList } from '@tiptap/extension-bullet-list';
-import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
-import { Document } from '@tiptap/extension-document';
-import { Heading } from '@tiptap/extension-heading';
-import { ListItem } from '@tiptap/extension-list-item';
-import { Paragraph } from '@tiptap/extension-paragraph';
-import { Text } from '@tiptap/extension-text';
-import { Editor } from '@tiptap/vue-2';
 import { mockTracking } from 'helpers/tracking_helper';
 import {
   KEYBOARD_SHORTCUT_TRACKING_ACTION,
   INPUT_RULE_TRACKING_ACTION,
   CONTENT_EDITOR_TRACKING_LABEL,
 } from '~/content_editor/constants';
+import { tiptapExtension as BulletList } from '~/content_editor/extensions/bullet_list';
+import { tiptapExtension as CodeBlockLowlight } from '~/content_editor/extensions/code_block_highlight';
+import { tiptapExtension as Heading } from '~/content_editor/extensions/heading';
+import { tiptapExtension as ListItem } from '~/content_editor/extensions/list_item';
 import trackInputRulesAndShortcuts from '~/content_editor/services/track_input_rules_and_shortcuts';
 import { ENTER_KEY, BACKSPACE_KEY } from '~/lib/utils/keys';
+import { createTestEditor } from '../test_utils';
 
 describe('content_editor/services/track_input_rules_and_shortcuts', () => {
   let trackingSpy;
   let editor;
   let trackedExtensions;
   const HEADING_TEXT = 'Heading text';
-  const extensions = [Document, Paragraph, Text, Heading, CodeBlockLowlight, BulletList, ListItem];
+  const extensions = [Heading, CodeBlockLowlight, BulletList, ListItem];
 
   beforeEach(() => {
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
@@ -29,7 +26,7 @@ describe('content_editor/services/track_input_rules_and_shortcuts', () => {
   describe('given the heading extension is instrumented', () => {
     beforeEach(() => {
       trackedExtensions = extensions.map(trackInputRulesAndShortcuts);
-      editor = new Editor({
+      editor = createTestEditor({
         extensions: extensions.map(trackInputRulesAndShortcuts),
       });
     });

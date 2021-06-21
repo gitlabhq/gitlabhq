@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Threads **(FREE)**
+# Comments and threads **(FREE)**
 
 GitLab encourages communication through comments, threads, and
 [code suggestions](../project/merge_requests/reviews/suggestions.md).

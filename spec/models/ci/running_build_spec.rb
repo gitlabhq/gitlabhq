@@ -21,10 +21,7 @@ RSpec.describe Ci::RunningBuild do
 
     context 'when another queuing entry exists for given build' do
       before do
-        described_class.create!(build: build,
-                                project: project,
-                                runner: runner,
-                                runner_type: runner.runner_type)
+        create(:ci_running_build, build: build, project: project, runner: runner)
       end
 
       it 'returns a build id as a result' do

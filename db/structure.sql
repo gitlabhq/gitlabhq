@@ -25627,6 +25627,9 @@ ALTER TABLE ONLY geo_event_log
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT fk_289bba3222 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ci_freeze_periods
+    ADD CONSTRAINT fk_2e02bbd1a6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY notes
     ADD CONSTRAINT fk_2e82291620 FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE SET NULL;
 
@@ -26574,9 +26577,6 @@ ALTER TABLE ONLY onboarding_progresses
 
 ALTER TABLE ONLY protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_rails_2d2aba21ef FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_freeze_periods
-    ADD CONSTRAINT fk_rails_2e02bbd1a6 FOREIGN KEY (project_id) REFERENCES projects(id);
 
 ALTER TABLE ONLY issuable_severities
     ADD CONSTRAINT fk_rails_2fbb74ad6d FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
