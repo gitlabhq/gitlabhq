@@ -160,8 +160,12 @@ describe('GroupsList', () => {
           expect(findGroupsList().classes()).toContain('gl-opacity-5');
         });
 
-        it('sets loading prop of ths search box', () => {
+        it('sets loading prop of the search box', () => {
           expect(findSearchBox().props('isLoading')).toBe(true);
+        });
+
+        it('sets value prop of the search box to the search term', () => {
+          expect(findSearchBox().props('value')).toBe(mockSearchTeam);
         });
       });
 

@@ -4,7 +4,7 @@ require 'parallel'
 
 module QA
   RSpec.describe 'Create' do
-    context 'Gitaly Cluster replication queue', :orchestrated, :gitaly_cluster, :skip_live_env, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/331989', type: :investigating } do
+    context 'Gitaly Cluster replication queue', :orchestrated, :gitaly_cluster, :skip_live_env do
       let(:praefect_manager) { Service::PraefectManager.new }
       let(:project) do
         Resource::Project.fabricate! do |project|
