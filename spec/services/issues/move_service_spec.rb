@@ -38,6 +38,10 @@ RSpec.describe Issues::MoveService do
     context 'issue movable' do
       include_context 'user can move issue'
 
+      it 'creates resource state event' do
+        expect { move_service.execute(old_issue, new_project) }.to change(ResourceStateEvent.where(issue_id: old_issue), :count).by(1)
+      end
+
       context 'generic issue' do
         include_context 'issue move executed'
 
@@ -85,6 +89,10 @@ RSpec.describe Issues::MoveService do
         it 'marks issue as moved' do
           expect(old_issue.moved?).to eq true
           expect(old_issue.moved_to).to eq new_issue
+        end
+
+        it 'marks issue as closed' do
+          expect(old_issue.closed?).to eq true
         end
 
         it 'preserves create time' do

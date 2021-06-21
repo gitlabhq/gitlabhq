@@ -25,12 +25,6 @@ class Projects::ReleasesController < Projects::ApplicationController
     end
   end
 
-  def new
-    unless Feature.enabled?(:new_release_page, project, default_enabled: true)
-      redirect_to(new_project_tag_path(@project))
-    end
-  end
-
   def downloads
     redirect_to link.url
   end

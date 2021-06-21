@@ -737,6 +737,37 @@ page), use these phrases:
 | No     | `**{dotted-circle}** No` | **{dotted-circle}** No |
 | Yes    | `**{check-circle}** Yes` | **{check-circle}** Yes |
 
+### Footnotes
+
+To indicate a footnote, use the HTML tag `<sup>` with a number.
+Put the tag at the end of the sentence or term.
+
+For the footnotes below the table, use a bold number followed by a sentence.
+
+For example:
+
+```markdown
+| App name | Description                      |
+|:---------|:---------------------------------|
+| App A    | Description text. <sup>1</sup>   |
+| App B    | Description text. <sup>2</sup>   | 
+
+**1** This is the footnote.
+
+**2** This is the other footnote.
+```
+
+This text renders this output:
+
+| App name | Description                      |
+|:---------|:---------------------------------|
+| App A    | Description text. <sup>1</sup>   |
+| App B    | Description text. <sup>2</sup>   |
+
+**1** This is the footnote.
+
+**2** This is the other footnote.
+
 ## Quotes
 
 Valid for Markdown content only, not for front matter entries:

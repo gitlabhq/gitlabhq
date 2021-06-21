@@ -170,7 +170,7 @@ node, using `psql` which is installed by Omnibus GitLab.
 The database used by Praefect is now configured.
 
 If you see Praefect database errors after configuring PostgreSQL, see
-[troubleshooting steps](index.md#relation-does-not-exist-errors).
+[troubleshooting steps](troubleshooting.md#relation-does-not-exist-errors).
 
 #### PgBouncer
 
@@ -1212,7 +1212,7 @@ To migrate existing clusters:
 
    - If downtime is unacceptable:
 
-      1. Determine which Gitaly node is [the current primary](index.md#determine-primary-gitaly-node).
+      1. Determine which Gitaly node is [the current primary](troubleshooting.md#determine-primary-gitaly-node).
 
       1. Comment out the secondary Gitaly nodes from the virtual storage's configuration in `/etc/gitlab/gitlab.rb`
       on all Praefect nodes. This ensures there's only one Gitaly node configured, causing both of the election

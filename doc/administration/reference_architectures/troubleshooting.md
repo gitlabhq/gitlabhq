@@ -207,7 +207,7 @@ To make sure your configuration is correct:
 ## Troubleshooting Gitaly
 
 For troubleshooting information, see Gitaly and Gitaly Cluster
-[troubleshooting information](../gitaly/index.md).
+[troubleshooting information](../gitaly/troubleshooting.md).
 
 ## Troubleshooting the GitLab Rails application
 

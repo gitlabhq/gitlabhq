@@ -48,16 +48,6 @@ RSpec.describe ReleasesHelper do
         it 'points new_release_path to the "New Release" page' do
           expect(helper.data_for_releases_page[:new_release_path]).to eq(new_project_release_path(project))
         end
-
-        context 'when the "new_release_page" feature flag is disabled' do
-          before do
-            stub_feature_flags(new_release_page: false)
-          end
-
-          it 'points new_release_path to the "New Tag" page' do
-            expect(helper.data_for_releases_page[:new_release_path]).to eq(new_project_tag_path(project))
-          end
-        end
       end
     end
 

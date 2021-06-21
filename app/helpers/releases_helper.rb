@@ -20,11 +20,7 @@ module ReleasesHelper
       documentation_path: help_page
     }.tap do |data|
       if can?(current_user, :create_release, @project)
-        data[:new_release_path] = if Feature.enabled?(:new_release_page, @project, default_enabled: true)
-                                    new_project_release_path(@project)
-                                  else
-                                    new_project_tag_path(@project)
-                                  end
+        data[:new_release_path] = new_project_release_path(@project)
       end
     end
   end
