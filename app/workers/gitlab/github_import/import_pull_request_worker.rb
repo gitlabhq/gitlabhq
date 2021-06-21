@@ -13,6 +13,10 @@ module Gitlab
         Importer::PullRequestImporter
       end
 
+      def object_type
+        :pull_request
+      end
+
       def counter_name
         :github_importer_imported_pull_requests
       end

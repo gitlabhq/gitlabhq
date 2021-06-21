@@ -1984,6 +1984,9 @@ msgstr ""
 msgid "Add commit messages as comments to Asana tasks. %{docs_link}"
 msgstr ""
 
+msgid "Add commit messages as comments to Pivotal Tracker stories. %{docs_link}"
+msgstr ""
+
 msgid "Add deploy freeze"
 msgstr ""
 
@@ -24239,13 +24242,13 @@ msgstr ""
 msgid "Pipeline|with stages"
 msgstr ""
 
-msgid "PivotalTrackerService|Add commit messages as comments to PivotalTracker stories."
+msgid "PivotalTrackerService|Add commit messages as comments to Pivotal Tracker stories."
 msgstr ""
 
-msgid "PivotalTrackerService|Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches."
+msgid "PivotalTrackerService|Comma-separated list of branches to automatically inspect. Leave blank to include all branches."
 msgstr ""
 
-msgid "PivotalTrackerService|Pivotal Tracker API token."
+msgid "PivotalTrackerService|Pivotal Tracker API token. User must have access to the story. All comments are attributed to this user."
 msgstr ""
 
 msgid "Plain diff"
@@ -26339,10 +26342,19 @@ msgstr ""
 msgid "ProtectedBranch|Branch:"
 msgstr ""
 
+msgid "ProtectedBranch|By default, protected branches restrict who can modify the branch."
+msgstr ""
+
 msgid "ProtectedBranch|Code owner approval"
 msgstr ""
 
 msgid "ProtectedBranch|Does not apply to users allowed to push. Optional sections are not enforced."
+msgstr ""
+
+msgid "ProtectedBranch|Keep stable branches secure and force developers to use merge requests."
+msgstr ""
+
+msgid "ProtectedBranch|Learn more."
 msgstr ""
 
 msgid "ProtectedBranch|Protect"
@@ -26352,6 +26364,9 @@ msgid "ProtectedBranch|Protect a branch"
 msgstr ""
 
 msgid "ProtectedBranch|Protected branch (%{protected_branches_count})"
+msgstr ""
+
+msgid "ProtectedBranch|Protected branches"
 msgstr ""
 
 msgid "ProtectedBranch|Reject code pushes that change files listed in the CODEOWNERS file."
@@ -26367,6 +26382,9 @@ msgid "ProtectedBranch|Toggle allowed to force push"
 msgstr ""
 
 msgid "ProtectedBranch|Toggle code owner approval"
+msgstr ""
+
+msgid "ProtectedBranch|What are protected branches?"
 msgstr ""
 
 msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
@@ -26412,6 +26430,21 @@ msgid "ProtectedEnvironment|Your environment has been protected."
 msgstr ""
 
 msgid "ProtectedEnvironment|Your environment has been unprotected"
+msgstr ""
+
+msgid "ProtectedTag|By default, protected branches restrict who can modify the tag."
+msgstr ""
+
+msgid "ProtectedTag|Learn more."
+msgstr ""
+
+msgid "ProtectedTag|Limit access to creating and updating tags."
+msgstr ""
+
+msgid "ProtectedTag|Protected tags"
+msgstr ""
+
+msgid "ProtectedTag|What are protected tags?"
 msgstr ""
 
 msgid "Protip: %{linkStart}Auto DevOps%{linkEnd} uses Kubernetes clusters to deploy your code!"

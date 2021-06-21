@@ -156,7 +156,7 @@ class Member < ApplicationRecord
     distinct_members = select('DISTINCT ON (user_id, invite_email) *')
                        .order('user_id, invite_email, access_level DESC, expires_at DESC, created_at ASC')
 
-    from(distinct_members, :members)
+    unscoped.from(distinct_members, :members)
   end
 
   scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }

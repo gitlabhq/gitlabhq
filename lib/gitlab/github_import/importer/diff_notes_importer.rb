@@ -22,6 +22,10 @@ module Gitlab
           :pull_requests_comments
         end
 
+        def object_type
+          :diff_note
+        end
+
         def id_for_already_imported_cache(note)
           note.id
         end

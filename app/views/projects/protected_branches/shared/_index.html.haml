@@ -3,19 +3,16 @@
 %section.settings.no-animate#js-protected-branches-settings{ class: ('expanded' if expanded), data: { qa_selector: 'protected_branches_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      Protected branches
+      = s_("ProtectedBranch|Protected branches")
     %button.btn.gl-button.btn-default.js-settings-toggle.qa-expand-protected-branches{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Keep stable branches secure, and force developers to use merge requests. #{link_to "What are protected branches?", help_page_path("user/project/protected_branches")}
+      = s_("ProtectedBranch|Keep stable branches secure and force developers to use merge requests.")
+      = link_to s_("ProtectedBranch|What are protected branches?"), help_page_path("user/project/protected_branches")
   .settings-content
     %p
-      By default, protected branches protect your code and:
-      %ul
-        %li Allow only users with Maintainer #{link_to "permissions", help_page_path("user/permissions")} to create new protected branches.
-        %li Allow only users with Maintainer permissions to push code.
-        %li Prevent <strong>anyone</strong> from #{link_to "force-pushing", help_page_path('topics/git/git_rebase', anchor: 'force-push')} to the branch.
-        %li Prevent <strong>anyone</strong> from deleting the branch.
+      = s_("ProtectedBranch|By default, protected branches restrict who can modify the branch.")
+      = link_to s_("ProtectedBranch|Learn more."), help_page_path("user/project/protected_branches", anchor: "who-can-modify-a-protected-branch")
 
     - if can? current_user, :admin_project, @project
       = content_for :create_protected_branch

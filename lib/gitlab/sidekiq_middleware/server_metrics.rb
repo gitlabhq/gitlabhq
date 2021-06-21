@@ -74,10 +74,10 @@ module Gitlab
           @metrics[:sidekiq_elasticsearch_requests_total].increment(labels, get_elasticsearch_calls(instrumentation))
           @metrics[:sidekiq_elasticsearch_requests_duration_seconds].observe(labels, get_elasticsearch_time(instrumentation))
 
-          if ::Gitlab::Database::LoadBalancing.enable? && job[:database_chosen]
+          with_load_balancing_settings(job) do |settings|
             load_balancing_labels = {
-              database_chosen: job[:database_chosen],
-              data_consistency: job[:data_consistency]
+              load_balancing_strategy: settings['load_balancing_strategy'],
+              data_consistency: settings['worker_data_consistency']
             }
 
             @metrics[:sidekiq_load_balancing_count].increment(labels.merge(load_balancing_labels), 1)
@@ -104,6 +104,15 @@ module Gitlab
       end
 
       private
+
+      def with_load_balancing_settings(job)
+        return unless ::Gitlab::Database::LoadBalancing.enable?
+
+        keys = %w[load_balancing_strategy worker_data_consistency]
+        return unless keys.all? { |k| job.key?(k) }
+
+        yield job.slice(*keys)
+      end
 
       def get_thread_cputime
         defined?(Process::CLOCK_THREAD_CPUTIME_ID) ? Process.clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID) : 0

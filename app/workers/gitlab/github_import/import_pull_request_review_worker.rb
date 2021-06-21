@@ -15,6 +15,10 @@ module Gitlab
         Importer::PullRequestReviewImporter
       end
 
+      def object_type
+        :pull_request_review
+      end
+
       def counter_name
         :github_importer_imported_pull_request_reviews
       end

@@ -29,6 +29,10 @@ RSpec.describe ReplaceUniqueIndexOnCycleAnalyticsStages, :migration, schema: 202
       stage_record
     end
 
+    after do
+      described_class.new.up
+    end
+
     it 'removes duplicated stage records' do
       subject
 

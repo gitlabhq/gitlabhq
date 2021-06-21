@@ -13,24 +13,24 @@ further restrictions on certain branches, they can be protected.
 
 The default branch for your repository is protected by default.
 
-## Who can access a protected branch
+## Who can modify a protected branch
 
-When a branch is protected, the default behavior enforces
-these restrictions on the branch.
+When a branch is protected, the default behavior enforces these restrictions on the branch.
 
-| Action                   | Who can do it |
-|--------------------------|---------------|
-| Protect a branch         | Maintainers only. |
-| Push to the branch       | GitLab administrators and anyone with **Allowed** permission. (*) |
-| Force push to the branch | No one. |
-| Delete the branch        | No one. |
+| Action                   | Who can do it                                                     |
+|:-------------------------|:------------------------------------------------------------------|
+| Protect a branch         | Maintainers only.                                                 |
+| Push to the branch       | GitLab administrators and anyone with **Allowed** permission. (1) |
+| Force push to the branch | No one.                                                           |
+| Delete the branch        | No one.                                                           |
 
-(*) Users with the Developer role can create a project in a group,
-but might not be allowed to initially push to the [default branch](repository/branches/default.md).
+1. Users with the Developer role can create a project in a group, but might not be allowed to
+   initially push to the [default branch](repository/branches/default.md).
 
 ### Set the default branch protection level
 
-Administrators can set a default branch protection level in the [Admin Area](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
+Administrators can set a default branch protection level in the
+[Admin Area](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
 
 ## Configure a protected branch
 
@@ -176,10 +176,10 @@ When enabled, members who are can push to this branch can also force push.
 
 ## Require Code Owner approval on a protected branch **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13251) in GitLab Premium 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13251) in GitLab Premium 12.4.
+> - [In](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5 and later, users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. This means they can skip merge request approval rules.
 
-You can require at least one approval by a
-[Code Owner](code_owners.md) to a file changed by the
+You can require at least one approval by a [Code Owner](code_owners.md) to a file changed by the
 merge request.
 
 To protect a new branch and enable Code Owner's approval:
@@ -200,9 +200,6 @@ To enable Code Owner's approval on branches that are already protected:
 When enabled, all merge requests for these branches require approval
 by a Code Owner per matched rule before they can be merged.
 Additionally, direct pushes to the protected branch are denied if a rule is matched.
-
-[In](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5 and later,
-users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. Thus, they can skip merge request approval rules.
 
 ## Run pipelines on protected branches
 

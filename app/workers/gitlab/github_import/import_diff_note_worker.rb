@@ -13,6 +13,10 @@ module Gitlab
         Importer::DiffNoteImporter
       end
 
+      def object_type
+        :diff_note
+      end
+
       def counter_name
         :github_importer_imported_diff_notes
       end

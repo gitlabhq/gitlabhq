@@ -409,6 +409,55 @@ export function getWebSocketUrl(path) {
   return `${getWebSocketProtocol()}//${joinPaths(window.location.host, path)}`;
 }
 
+const splitPath = (path = '') => path.replace(/^\?/, '').split('&');
+
+export const urlParamsToArray = (path = '') =>
+  splitPath(path)
+    .filter((param) => param.length > 0)
+    .map((param) => {
+      const split = param.split('=');
+      return [decodeURI(split[0]), split[1]].join('=');
+    });
+
+export const getUrlParamsArray = () => urlParamsToArray(window.location.search);
+
+/**
+ * Accepts encoding string which includes query params being
+ * sent to URL.
+ *
+ * @param {string} path Query param string
+ *
+ * @returns {object} Query params object containing key-value pairs
+ *                   with both key and values decoded into plain string.
+ *
+ * @deprecated Please use `queryToObject(query, { gatherArrays: true });` instead. See https://gitlab.com/gitlab-org/gitlab/-/issues/328845
+ */
+export const urlParamsToObject = (path = '') =>
+  splitPath(path).reduce((dataParam, filterParam) => {
+    if (filterParam === '') {
+      return dataParam;
+    }
+
+    const data = dataParam;
+    let [key, value] = filterParam.split('=');
+    key = /%\w+/g.test(key) ? decodeURIComponent(key) : key;
+    const isArray = key.includes('[]');
+    key = key.replace('[]', '');
+    value = decodeURIComponent(value.replace(/\+/g, ' '));
+
+    if (isArray) {
+      if (!data[key]) {
+        data[key] = [];
+      }
+
+      data[key].push(value);
+    } else {
+      data[key] = value;
+    }
+
+    return data;
+  }, {});
+
 /**
  * Convert search query into an object
  *

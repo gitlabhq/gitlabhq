@@ -26,42 +26,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('urlParamsToArray', () => {
-    it('returns empty array for empty querystring', () => {
-      expect(commonUtils.urlParamsToArray('')).toEqual([]);
-    });
-
-    it('should decode params', () => {
-      expect(commonUtils.urlParamsToArray('?label_name%5B%5D=test')[0]).toBe('label_name[]=test');
-    });
-
-    it('should remove the question mark from the search params', () => {
-      const paramsArray = commonUtils.urlParamsToArray('?test=thing');
-
-      expect(paramsArray[0][0]).not.toBe('?');
-    });
-  });
-
-  describe('urlParamsToObject', () => {
-    it('parses path for label with trailing +', () => {
-      expect(commonUtils.urlParamsToObject('label_name[]=label%2B', {})).toEqual({
-        label_name: ['label+'],
-      });
-    });
-
-    it('parses path for milestone with trailing +', () => {
-      expect(commonUtils.urlParamsToObject('milestone_title=A%2B', {})).toEqual({
-        milestone_title: 'A+',
-      });
-    });
-
-    it('parses path for search terms with spaces', () => {
-      expect(commonUtils.urlParamsToObject('search=two+words', {})).toEqual({
-        search: 'two words',
-      });
-    });
-  });
-
   describe('handleLocationHash', () => {
     beforeEach(() => {
       jest.spyOn(window.document, 'getElementById');

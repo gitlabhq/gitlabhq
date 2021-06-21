@@ -22,6 +22,10 @@ module Gitlab
           :pull_requests_merged_by
         end
 
+        def object_type
+          :pull_request_merged_by
+        end
+
         def id_for_already_imported_cache(merge_request)
           merge_request.id
         end
@@ -29,6 +33,8 @@ module Gitlab
         def each_object_to_import
           project.merge_requests.with_state(:merged).find_each do |merge_request|
             next if already_imported?(merge_request)
+
+            Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 
             pull_request = client.pull_request(project.import_source, merge_request.iid)
             yield(pull_request)

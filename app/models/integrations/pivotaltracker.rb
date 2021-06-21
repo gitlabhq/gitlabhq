@@ -2,17 +2,23 @@
 
 module Integrations
   class Pivotaltracker < Integration
+    include ActionView::Helpers::UrlHelper
     API_ENDPOINT = 'https://www.pivotaltracker.com/services/v5/source_commits'
 
     prop_accessor :token, :restrict_to_branch
     validates :token, presence: true, if: :activated?
 
     def title
-      'PivotalTracker'
+      'Pivotal Tracker'
     end
 
     def description
-      s_('PivotalTrackerService|Add commit messages as comments to PivotalTracker stories.')
+      s_('PivotalTrackerService|Add commit messages as comments to Pivotal Tracker stories.')
+    end
+
+    def help
+      docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/pivotal_tracker'), target: '_blank', rel: 'noopener noreferrer'
+      s_('Add commit messages as comments to Pivotal Tracker stories. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
     def self.to_param
@@ -24,14 +30,15 @@ module Integrations
         {
           type: 'text',
           name: 'token',
-          placeholder: s_('PivotalTrackerService|Pivotal Tracker API token.'),
+          help: s_('PivotalTrackerService|Pivotal Tracker API token. User must have access to the story. All comments are attributed to this user.'),
           required: true
         },
         {
           type: 'text',
           name: 'restrict_to_branch',
-          placeholder: s_('PivotalTrackerService|Comma-separated list of branches which will be ' \
-            'automatically inspected. Leave blank to include all branches.')
+          title: 'Restrict to branch (optional)',
+          help: s_('PivotalTrackerService|Comma-separated list of branches to ' \
+            'automatically inspect. Leave blank to include all branches.')
         }
       ]
     end

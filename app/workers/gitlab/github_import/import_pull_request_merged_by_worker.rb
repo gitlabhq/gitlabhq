@@ -15,6 +15,10 @@ module Gitlab
         Importer::PullRequestMergedByImporter
       end
 
+      def object_type
+        :pull_request_merged_by
+      end
+
       def counter_name
         :github_importer_imported_pull_requests_merged_by
       end

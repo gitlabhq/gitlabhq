@@ -1,7 +1,8 @@
 <script>
 import { GlTabs, GlTab, GlBadge } from '@gitlab/ui';
 import { mapState } from 'vuex';
-import { urlParamsToObject } from '~/lib/utils/common_utils';
+// eslint-disable-next-line import/no-deprecated
+import { urlParamsToObject } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { MEMBER_TYPES } from '../constants';
 import MembersApp from './app.vue';
@@ -55,6 +56,7 @@ export default {
       },
     }),
     urlParams() {
+      // eslint-disable-next-line import/no-deprecated
       return Object.keys(urlParamsToObject(window.location.search));
     },
     activeTabIndexCalculatedFromUrlParams() {

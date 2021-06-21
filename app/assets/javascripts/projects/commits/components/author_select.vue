@@ -9,8 +9,8 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { mapState, mapActions } from 'vuex';
-import { urlParamsToObject } from '~/lib/utils/common_utils';
-import { redirectTo } from '~/lib/utils/url_utility';
+// eslint-disable-next-line import/no-deprecated
+import { redirectTo, urlParamsToObject } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 
 const tooltipMessage = __('Searching by both author and message is currently not supported.');
@@ -52,6 +52,7 @@ export default {
   },
   mounted() {
     this.fetchAuthors();
+    // eslint-disable-next-line import/no-deprecated
     const params = urlParamsToObject(window.location.search);
     const { search: searchParam, author: authorParam } = params;
     const commitsSearchInput = this.projectCommitsEl.querySelector('#commits-search');

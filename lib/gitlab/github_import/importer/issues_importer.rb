@@ -18,6 +18,10 @@ module Gitlab
           ImportIssueWorker
         end
 
+        def object_type
+          :issue
+        end
+
         def collection_method
           :issues
         end

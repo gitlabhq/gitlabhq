@@ -476,6 +476,20 @@ RSpec.describe Member do
       it { is_expected.to include @blocked_maintainer }
       it { is_expected.to include @blocked_developer }
       it { is_expected.to include @member_with_minimal_access }
+
+      context 'with where conditions' do
+        let_it_be(:example_member) { create(:group_member, invite_email: 'user@example.com') }
+
+        subject do
+          described_class
+            .default_scoped
+            .where(invite_email: 'user@example.com')
+            .distinct_on_user_with_max_access_level
+            .to_a
+        end
+
+        it { is_expected.to eq [example_member] }
+      end
     end
   end
 

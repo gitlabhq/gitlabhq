@@ -955,13 +955,15 @@ Get Pipeline-Emails service settings for a project.
 GET /projects/:id/services/pipelines-email
 ```
 
-## PivotalTracker
+## Pivotal Tracker
 
-Project Management Software (Source Commits Endpoint)
+Add commit messages as comments to Pivotal Tracker stories.
 
-### Create/Edit PivotalTracker service
+See also the [Pivotal Tracker service documentation](../user/project/integrations/pivotal_tracker.md).
 
-Set PivotalTracker service for a project.
+### Create/Edit Pivotal Tracker service
+
+Set Pivotal Tracker service for a project.
 
 ```plaintext
 PUT /projects/:id/services/pivotaltracker
@@ -971,21 +973,21 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `token` | string | true | The PivotalTracker token |
+| `token` | string | true | The Pivotal Tracker token |
 | `restrict_to_branch` | boolean | false | Comma-separated list of branches to automatically inspect. Leave blank to include all branches. |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete PivotalTracker service
+### Delete Pivotal Tracker service
 
-Delete PivotalTracker service for a project.
+Delete Pivotal Tracker service for a project.
 
 ```plaintext
 DELETE /projects/:id/services/pivotaltracker
 ```
 
-### Get PivotalTracker service settings
+### Get Pivotal Tracker service settings
 
-Get PivotalTracker service settings for a project.
+Get Pivotal Tracker service settings for a project.
 
 ```plaintext
 GET /projects/:id/services/pivotaltracker

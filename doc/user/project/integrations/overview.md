@@ -15,10 +15,8 @@ functionality to GitLab.
 You can find the available integrations under your project's
 **Settings > Integrations** page.
 
-There are more than 20 integrations to integrate with. Click on the one that you
+There are more than 20 integrations to integrate with. Select the one that you
 want to configure.
-
-![Integrations list](img/project_integrations_v13_3.png)
 
 ## Integrations listing
 
@@ -51,7 +49,7 @@ Click on the service links to see further configuration instructions and details
 | [Microsoft Teams notifications](microsoft_teams.md)       | Receive event notifications.                                                                 | **{dotted-circle}** No |
 | Packagist                                                 | Update your projects.                                                                        | **{check-circle}** Yes |
 | Pipelines emails                                          | Send the pipeline status to a list of recipients by email.                                   | **{dotted-circle}** No |
-| PivotalTracker                                            | Use PivotalTracker as the issue tracker.                                                     | **{dotted-circle}** No |
+| [Pivotal Tracker](pivotal_tracker.md)                      | Add commit messages as comments to Pivotal Tracker stories.                                                    | **{dotted-circle}** No |
 | [Prometheus](prometheus.md)                               | Monitor application metrics.                                                                 | **{dotted-circle}** No |
 | Pushover                                                  | Get real-time notifications on your device.                                                  | **{dotted-circle}** No |
 | [Redmine](redmine.md)                                     | Use Redmine as the issue tracker.                                                            | **{dotted-circle}** No |

@@ -37,4 +37,4 @@ For more information about why `gitlab` is used for the `Host`, see
 You can also use any other Docker image available on [Docker Hub](https://hub.docker.com/u/gitlab).
 
 The `gitlab` image can accept environment variables. For more details,
-see the [Omnibus documentation](../../install/README.md).
+see the [Omnibus documentation](../../install/index.md).

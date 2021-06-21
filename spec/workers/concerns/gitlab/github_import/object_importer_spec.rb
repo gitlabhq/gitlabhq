@@ -19,6 +19,10 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
         'This is a counter'
       end
 
+      def object_type
+        :dummy
+      end
+
       def representation_class
         MockRepresantation
       end
@@ -42,7 +46,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
     end)
   end
 
-  describe '#import' do
+  describe '#import', :clean_gitlab_redis_shared_state do
     let(:importer_class) { double(:importer_class, name: 'klass_name') }
     let(:importer_instance) { double(:importer_instance) }
     let(:project) { double(:project, full_path: 'foo/bar', id: 1) }
@@ -90,6 +94,11 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
       end
 
       worker.import(project, client, { 'number' => 10, 'github_id' => 1 })
+
+      expect(Gitlab::GithubImport::ObjectCounter.summary(project)).to eq({
+        'fetched' => {},
+        'imported' => { 'dummy' => 1 }
+      })
     end
 
     it 'logs error when the import fails' do

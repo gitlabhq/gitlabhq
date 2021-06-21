@@ -13,6 +13,10 @@ module Gitlab
         Importer::LfsObjectImporter
       end
 
+      def object_type
+        :lfs_object
+      end
+
       def counter_name
         :github_importer_imported_lfs_objects
       end

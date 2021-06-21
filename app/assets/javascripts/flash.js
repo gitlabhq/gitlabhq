@@ -125,34 +125,8 @@ const createFlash = function createFlash({
   return flashContainer;
 };
 
-/*
- *  Flash banner supports different types of Flash configurations
- *  along with ability to provide actionConfig which can be used to show
- *  additional action or link on banner next to message
- *
- *  @param {String} message           Flash message text
- *  @param {String} type              Type of Flash, it can be `notice`, `success`, `warning` or `alert` (default)
- *  @param {Object} parent            Reference to parent element under which Flash needs to appear
- *  @param {Object} actionConfig      Map of config to show action on banner
- *    @param {String} href            URL to which action config should point to (default: '#')
- *    @param {String} title           Title of action
- *    @param {Function} clickHandler  Method to call when action is clicked on
- *  @param {Boolean} fadeTransition   Boolean to determine whether to fade the alert out
- */
-const deprecatedCreateFlash = function deprecatedCreateFlash(
-  message,
-  type,
-  parent,
-  actionConfig,
-  fadeTransition,
-  addBodyClass,
-) {
-  return createFlash({ message, type, parent, actionConfig, fadeTransition, addBodyClass });
-};
-
 export {
   createFlash as default,
-  deprecatedCreateFlash,
   createFlashEl,
   createAction,
   hideFlash,

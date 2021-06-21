@@ -28,9 +28,9 @@ and all **secondary** nodes:
 
 1. **Optional:** [Pause replication on each **secondary** node.](../index.md#pausing-and-resuming-replication)
 1. Log into the **primary** node.
-1. [Update GitLab on the **primary** node using Omnibus's Geo-specific steps](https://docs.gitlab.com/omnibus/update/README.html#geo-deployment).
+1. [Update GitLab on the **primary** node using Omnibus](https://docs.gitlab.com/omnibus/update/#update-using-the-official-repositories).
 1. Log into each **secondary** node.
-1. [Update GitLab on each **secondary** node using Omnibus's Geo-specific steps](https://docs.gitlab.com/omnibus/update/README.html#geo-deployment).
+1. [Update GitLab on each **secondary** node using Omnibus](https://docs.gitlab.com/omnibus/update/#update-using-the-official-repositories).
 1. If you paused replication in step 1, [resume replication on each **secondary**](../index.md#pausing-and-resuming-replication)
 1. [Test](#check-status-after-updating) **primary** and **secondary** nodes, and check version in each.
 

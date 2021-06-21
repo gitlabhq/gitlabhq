@@ -13,6 +13,10 @@ module Gitlab
         Importer::IssueAndLabelLinksImporter
       end
 
+      def object_type
+        :issue
+      end
+
       def counter_name
         :github_importer_imported_issues
       end
