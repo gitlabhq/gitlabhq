@@ -4,7 +4,7 @@ import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { deprecatedCreateFlash as Flash } from '../../../flash';
+import createFlash from '../../../flash';
 import simplePoll from '../../../lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
@@ -113,7 +113,9 @@ export default {
           if (error.response && error.response.data && error.response.data.merge_error) {
             this.rebasingError = error.response.data.merge_error;
           } else {
-            Flash(__('Something went wrong. Please try again.'));
+            createFlash({
+              message: __('Something went wrong. Please try again.'),
+            });
           }
         });
     },
@@ -129,7 +131,9 @@ export default {
 
             if (res.merge_error && res.merge_error.length) {
               this.rebasingError = res.merge_error;
-              Flash(__('Something went wrong. Please try again.'));
+              createFlash({
+                message: __('Something went wrong. Please try again.'),
+              });
             }
 
             eventHub.$emit('MRWidgetRebaseSuccess');
@@ -138,7 +142,9 @@ export default {
         })
         .catch(() => {
           this.isMakingRequest = false;
-          Flash(__('Something went wrong. Please try again.'));
+          createFlash({
+            message: __('Something went wrong. Please try again.'),
+          });
           stopPolling();
         });
     },

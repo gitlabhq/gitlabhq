@@ -10,6 +10,7 @@ RSpec.describe Types::Ci::StageType do
       name
       groups
       detailedStatus
+      status
       jobs
     ]
 

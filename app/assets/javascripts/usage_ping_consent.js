@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { deprecatedCreateFlash as Flash, hideFlash } from './flash';
+import createFlash, { hideFlash } from './flash';
 import axios from './lib/utils/axios_utils';
 import { parseBoolean } from './lib/utils/common_utils';
 import { __ } from './locale';
@@ -26,7 +26,9 @@ export default () => {
       })
       .catch(() => {
         hideConsentMessage();
-        Flash(__('Something went wrong. Try again later.'));
+        createFlash({
+          message: __('Something went wrong. Try again later.'),
+        });
       });
   });
 };

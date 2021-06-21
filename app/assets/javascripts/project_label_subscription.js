@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { fixTitle } from '~/tooltips';
-import { deprecatedCreateFlash as flash } from './flash';
+import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 import { __ } from './locale';
 
@@ -60,7 +60,11 @@ export default class ProjectLabelSubscription {
           return button;
         });
       })
-      .catch(() => flash(__('There was an error subscribing to this label.')));
+      .catch(() =>
+        createFlash({
+          message: __('There was an error subscribing to this label.'),
+        }),
+      );
   }
 
   static setNewTitle($button, originalTitle, newStatus) {

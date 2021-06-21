@@ -2,7 +2,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Visibility from 'visibilityjs';
 import { getJSONFixture } from 'helpers/fixtures';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
@@ -170,7 +170,7 @@ describe('Commit pipeline status component', () => {
       });
 
       it('displays flash error message', () => {
-        expect(flash).toHaveBeenCalled();
+        expect(createFlash).toHaveBeenCalled();
       });
     });
   });

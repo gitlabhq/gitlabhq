@@ -1,7 +1,7 @@
 import Store from 'ee_else_ce/sidebar/stores/sidebar_store';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
-import { deprecatedCreateFlash as Flash } from '../flash';
+import createFlash from '../flash';
 import { visitUrl } from '../lib/utils/url_utility';
 import Service from './services/sidebar_service';
 
@@ -74,7 +74,11 @@ export default class SidebarMediator {
       .then(([restResponse, graphQlResponse]) => {
         this.processFetchedData(restResponse.data, graphQlResponse.data);
       })
-      .catch(() => new Flash(__('Error occurred when fetching sidebar data')));
+      .catch(() =>
+        createFlash({
+          message: __('Error occurred when fetching sidebar data'),
+        }),
+      );
   }
 
   processFetchedData(data) {

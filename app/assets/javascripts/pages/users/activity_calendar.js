@@ -2,7 +2,7 @@ import { select } from 'd3-selection';
 import dateFormat from 'dateformat';
 import $ from 'jquery';
 import { last } from 'lodash';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
 import { n__, s__, __ } from '~/locale';
@@ -295,7 +295,11 @@ export default class ActivityCalendar {
           responseType: 'text',
         })
         .then(({ data }) => $(this.activitiesContainer).html(data))
-        .catch(() => flash(__('An error occurred while retrieving calendar activity')));
+        .catch(() =>
+          createFlash({
+            message: __('An error occurred while retrieving calendar activity'),
+          }),
+        );
     } else {
       this.currentSelectedDate = '';
       $(this.activitiesContainer).html('');

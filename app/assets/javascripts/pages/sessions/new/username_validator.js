@@ -1,6 +1,6 @@
 import { debounce } from 'lodash';
 
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import InputValidator from '~/validators/input_validator';
@@ -50,7 +50,11 @@ export default class UsernameValidator extends InputValidator {
             usernameTaken ? unavailableMessageSelector : successMessageSelector,
           );
         })
-        .catch(() => flash(__('An error occurred while validating username')));
+        .catch(() =>
+          createFlash({
+            message: __('An error occurred while validating username'),
+          }),
+        );
     }
   }
 

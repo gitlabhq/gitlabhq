@@ -47,14 +47,8 @@ E --> F
 End users do not have direct access to Gitaly. Gitaly manages only Git repository access for GitLab.
 Other types of GitLab data aren't accessed using Gitaly.
 
-<!-- vale gitlab.FutureTense = NO -->
-
 WARNING:
-From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
-considered and customer technical support will be considered out of scope.
-[Read more about Gitaly and NFS](#nfs-deprecation-notice).
-
-<!-- vale gitlab.FutureTense = YES -->
+Engineering support for NFS for Git repositories is deprecated. Read the [deprecation notice](#nfs-deprecation-notice).
 
 ## Configure Gitaly
 
@@ -134,9 +128,8 @@ appropriately by:
 ### Moving beyond NFS
 
 WARNING:
-From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
-support for NFS for Git repositories is scheduled to be removed. Upgrade to
-Gitaly Cluster as soon as possible.
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
+unavailable from GitLab 15.0. No further enhancements are planned for this feature.
 
 [Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
 is not well suited to Git workloads which are CPU and IOPS sensitive.
@@ -360,17 +353,13 @@ The second facet presents the only real solution. For this, we developed
 
 ## NFS deprecation notice
 
-<!-- vale gitlab.FutureTense = NO -->
-
-From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
-considered and customer technical support will be considered out of scope.
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
+unavailable from GitLab 15.0. No further enhancements are planned for this feature.
 
 Additional information:
 
 - [Recommended NFS mount options and known issues with Gitaly and NFS](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 - [GitLab statement of support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs).
-
-<!-- vale gitlab.FutureTense = YES -->
 
 GitLab recommends:
 
@@ -378,4 +367,7 @@ GitLab recommends:
 - [Moving your repositories](praefect.md#migrate-to-gitaly-cluster) from NFS-based storage to Gitaly
   Cluster.
 
-We welcome your feedback on this process: raise a support ticket, or [comment on the epic](https://gitlab.com/groups/gitlab-org/-/epics/4916).
+We welcome your feedback on this process. You can:
+
+- Raise a support ticket.
+- [Comment on the epic](https://gitlab.com/groups/gitlab-org/-/epics/4916).

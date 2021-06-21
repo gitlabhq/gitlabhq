@@ -26168,9 +26168,6 @@ msgstr ""
 msgid "Promote"
 msgstr ""
 
-msgid "Promote confidential issue to a non-confidential epic"
-msgstr ""
-
 msgid "Promote issue to an epic"
 msgstr ""
 
@@ -26187,9 +26184,6 @@ msgid "PromoteMilestone|Project does not belong to a group."
 msgstr ""
 
 msgid "PromoteMilestone|Promotion failed - %{message}"
-msgstr ""
-
-msgid "Promoted confidential issue to a non-confidential epic. Information in this issue is no longer confidential as epics are public to group members."
 msgstr ""
 
 msgid "Promoted issue to an epic."

@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
@@ -76,7 +76,7 @@ describe('Logs Store actions', () => {
   });
 
   afterEach(() => {
-    flash.mockClear();
+    createFlash.mockClear();
   });
 
   describe('setInitData', () => {

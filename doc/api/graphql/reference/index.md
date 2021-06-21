@@ -7642,6 +7642,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cistagegroups"></a>`groups` | [`CiGroupConnection`](#cigroupconnection) | Group of jobs for the stage. (see [Connections](#connections)) |
 | <a id="cistagejobs"></a>`jobs` | [`CiJobConnection`](#cijobconnection) | Jobs for the stage. (see [Connections](#connections)) |
 | <a id="cistagename"></a>`name` | [`String`](#string) | Name of the stage. |
+| <a id="cistagestatus"></a>`status` | [`String`](#string) | Status of the pipeline stage. |
 
 ### `CiTemplate`
 

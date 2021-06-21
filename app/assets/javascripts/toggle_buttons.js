@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { deprecatedCreateFlash as Flash } from './flash';
+import createFlash from './flash';
 import { parseBoolean } from './lib/utils/common_utils';
 import { __ } from './locale';
 
@@ -42,7 +42,9 @@ function onToggleClicked(toggle, input, clickCallback) {
       $(input).trigger('trigger-change');
     })
     .catch(() => {
-      Flash(__('Something went wrong when toggling the button'));
+      createFlash({
+        message: __('Something went wrong when toggling the button'),
+      });
     });
 }
 

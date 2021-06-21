@@ -5,7 +5,7 @@ import { Rails } from '~/lib/utils/rails_ujs';
 import TimezoneDropdown, {
   formatTimezone,
 } from '~/pages/projects/pipeline_schedules/shared/components/timezone_dropdown';
-import { deprecatedCreateFlash as flash } from '../flash';
+import createFlash from '../flash';
 
 export default class Profile {
   constructor({ form } = {}) {
@@ -83,14 +83,21 @@ export default class Profile {
           this.updateHeaderAvatar();
         }
 
-        flash(data.message, 'notice');
+        createFlash({
+          message: data.message,
+          type: 'notice',
+        });
       })
       .then(() => {
         window.scrollTo(0, 0);
         // Enable submit button after requests ends
         self.form.find(':input[disabled]').enable();
       })
-      .catch((error) => flash(error.message));
+      .catch((error) =>
+        createFlash({
+          message: error.message,
+        }),
+      );
   }
 
   updateHeaderAvatar() {

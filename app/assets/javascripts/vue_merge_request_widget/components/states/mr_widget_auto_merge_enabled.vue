@@ -5,7 +5,7 @@ import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/s
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { deprecatedCreateFlash as Flash } from '../../../flash';
+import createFlash from '../../../flash';
 import { AUTO_MERGE_STRATEGIES } from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
@@ -109,7 +109,9 @@ export default {
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;
-          Flash(__('Something went wrong. Please try again.'));
+          createFlash({
+            message: __('Something went wrong. Please try again.'),
+          });
         });
     },
     removeSourceBranch() {
@@ -135,7 +137,9 @@ export default {
         })
         .catch(() => {
           this.isRemovingSourceBranch = false;
-          Flash(__('Something went wrong. Please try again.'));
+          createFlash({
+            message: __('Something went wrong. Please try again.'),
+          });
         });
     },
   },

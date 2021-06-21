@@ -8,7 +8,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
 import UnsolvedCaptchaError from '~/captcha/unsolved_captcha_error';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import * as urlUtils from '~/lib/utils/url_utility';
 import SnippetEditApp from '~/snippets/components/edit.vue';
 import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
@@ -319,7 +319,9 @@ describe('Snippet Edit app', () => {
           });
 
           expect(urlUtils.redirectTo).not.toHaveBeenCalled();
-          expect(Flash).toHaveBeenCalledWith(expectMessage);
+          expect(createFlash).toHaveBeenCalledWith({
+            message: expectMessage,
+          });
         },
       );
 
@@ -337,9 +339,9 @@ describe('Snippet Edit app', () => {
 
         it('should flash', () => {
           // Apollo automatically wraps the resolver's error in a NetworkError
-          expect(Flash).toHaveBeenCalledWith(
-            `Can't update snippet: Network error: ${error.message}`,
-          );
+          expect(createFlash).toHaveBeenCalledWith({
+            message: `Can't update snippet: Network error: ${error.message}`,
+          });
         });
 
         it('should console error', () => {
