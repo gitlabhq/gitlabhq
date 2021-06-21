@@ -66,8 +66,6 @@ review-deploy:
     - *base-before_script
   script:
     - check_kube_domain
-    - "ensure_namespace ${KUBE_NAMESPACE}"
-    - install_external_dns
     - download_chart
     - date
     - deploy || (display_deployment_debug && exit 1)
@@ -116,13 +114,14 @@ review-stop:
 .review-qa-base:
   extends:
     - .use-docker-in-docker
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7
+  image:
+    name: ${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}
+    entrypoint: [""]
   stage: qa
-  needs: ["review-deploy"]
+  needs: ["build-qa-image", "review-deploy"]
   variables:
-    QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
-    QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
     QA_DEBUG: "true"
+    QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
     QA_GENERATE_ALLURE_REPORT: "true"
     GITLAB_USERNAME: "root"
     GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
@@ -132,15 +131,16 @@ review-stop:
     EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
     SIGNUP_DISABLED: "true"
   before_script:
-    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
+    # Use $CI_MERGE_REQUEST_SOURCE_BRANCH_SHA so that GitLab image built in omnibus-gitlab-mirror and QA image are in sync.
+    - if [ -n "$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA" ]; then
+        git checkout -f ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA};
+      fi
     - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
-    - echo "${QA_IMAGE}"
-    - *base-before_script
-    - gem install gitlab-qa --no-document ${GITLAB_QA_VERSION:+ --version ${GITLAB_QA_VERSION}}
+    - cd qa
   artifacts:
     paths:
-      - ./qa/gitlab-qa-run-*
+      - qa/tmp
     expire_in: 7 days
     when: always
 
@@ -157,7 +157,7 @@ review-stop:
   script:
     - |
       allure-report-publisher upload gcs \
-        --results-glob="qa/gitlab-qa-run-*/**/allure-results/*" \
+        --results-glob="qa/tmp/allure-results/*" \
         --bucket="gitlab-qa-allure-reports" \
         --prefix="$ALLURE_REPORT_PATH_PREFIX/$CI_COMMIT_REF_SLUG" \
         --update-pr="comment" \
@@ -171,7 +171,7 @@ review-qa-smoke:
     - .review:rules:review-qa-smoke
   retry: 1  # This is confusing but this means "2 runs at max".
   script:
-    - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
+    - bin/test Test::Instance::Smoke "${CI_ENVIRONMENT_URL}"
 
 review-qa-all:
   extends:
@@ -181,7 +181,14 @@ review-qa-all:
   script:
     - export KNAPSACK_REPORT_PATH=knapsack/master_report.json
     - export KNAPSACK_TEST_FILE_PATTERN=qa/specs/features/**/*_spec.rb
-    - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}" -- --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec.htm --color --format documentation
+    - |
+      bin/test Test::Instance::All "${CI_ENVIRONMENT_URL}" \
+        -- \
+        --color --format documentation \
+        --format RspecJunitFormatter --out tmp/rspec.xml
+  artifacts:
+    reports:
+      junit: qa/tmp/rspec.xml
 
 review-performance:
   extends:
@@ -207,32 +214,6 @@ review-performance:
       - sitespeed-results/
     reports:
       performance: performance.json
-    expire_in: 31d
-
-parallel-spec-reports:
-  extends:
-    - .review:rules:review-qa-all
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
-  stage: post-qa
-  needs: ["review-qa-all"]
-  variables:
-    NEW_PARALLEL_SPECS_REPORT: qa/report-new.html
-    BASE_ARTIFACT_URL: "${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/qa/"
-  script:
-    - apk add --update build-base libxml2-dev libxslt-dev && rm -rf /var/cache/apk/*
-    - gem install nokogiri --no-document
-    - cd qa/gitlab-qa-run-*/gitlab-*
-    - ARTIFACT_DIRS=$(pwd |rev| awk -F / '{print $1,$2}' | rev | sed s_\ _/_)
-    - cd -
-    - '[[ -f $NEW_PARALLEL_SPECS_REPORT ]] || echo "{}" > ${NEW_PARALLEL_SPECS_REPORT}'
-    - scripts/merge-html-reports ${NEW_PARALLEL_SPECS_REPORT} ${BASE_ARTIFACT_URL}${ARTIFACT_DIRS} qa/gitlab-qa-run-*/**/rspec.htm
-  artifacts:
-    when: always
-    paths:
-      - qa/report-new.html
-      - qa/gitlab-qa-run-*
-    reports:
-      junit: qa/gitlab-qa-run-*/**/rspec-*.xml
     expire_in: 31d
 
 allure-report-qa-smoke:

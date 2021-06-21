@@ -170,66 +170,6 @@ function label_namespace() {
   kubectl label namespace "${namespace}" "${label}"
 }
 
-function install_external_dns() {
-  local namespace="${KUBE_NAMESPACE}"
-  local release="dns-gitlab-review-app-helm3"
-  local domain
-  domain=$(echo "${REVIEW_APPS_DOMAIN}" | awk -F. '{printf "%s.%s", $(NF-1), $NF}')
-  echoinfo "Installing external DNS for domain ${domain}..." true
-
-  if ! deploy_exists "${namespace}" "${release}" || previous_deploy_failed "${namespace}" "${release}" ; then
-    echoinfo "Installing external-dns Helm chart"
-    helm repo add bitnami https://charts.bitnami.com/bitnami
-    helm repo update
-
-    # Default requested: CPU => 0, memory => 0
-    helm install "${release}" bitnami/external-dns \
-      --namespace "${namespace}" \
-      --version '2.13.3' \
-      --set provider="aws" \
-      --set aws.credentials.secretKey="${REVIEW_APPS_AWS_SECRET_KEY}" \
-      --set aws.credentials.accessKey="${REVIEW_APPS_AWS_ACCESS_KEY}" \
-      --set aws.zoneType="public" \
-      --set aws.batchChangeSize=400 \
-      --set domainFilters[0]="${domain}" \
-      --set txtOwnerId="${namespace}" \
-      --set rbac.create="true" \
-      --set policy="sync" \
-      --set resources.requests.cpu=50m \
-      --set resources.limits.cpu=100m \
-      --set resources.requests.memory=100M \
-      --set resources.limits.memory=200M
-  else
-    echoinfo "The external-dns Helm chart is already successfully deployed."
-  fi
-}
-
-# This script is used to install cert-manager in the cluster
-# The installation steps are documented in
-# https://gitlab.com/gitlab-org/quality/team-tasks/snippets/1990286
-function install_certmanager() {
-  local namespace="${KUBE_NAMESPACE}"
-  local release="cert-manager-review-app-helm3"
-
-  echoinfo "Installing cert-manager..." true
-
-  if ! deploy_exists "${namespace}" "${release}" || previous_deploy_failed "${namespace}" "${release}" ; then
-    kubectl apply \
-    -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.10/deploy/manifests/00-crds.yaml
-
-    echoinfo "Installing cert-manager Helm chart"
-    helm repo add jetstack https://charts.jetstack.io
-    helm repo update
-
-    helm install "${release}" jetstack/cert-manager \
-      --namespace "${namespace}" \
-      --version v0.15.1 \
-      --set installCRDS=true
-  else
-    echoinfo "The cert-manager Helm chart is already successfully deployed."
-  fi
-}
-
 function create_application_secret() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"

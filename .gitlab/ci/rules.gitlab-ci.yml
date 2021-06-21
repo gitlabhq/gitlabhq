@@ -131,6 +131,30 @@
   - ".markdownlint.yml"
   - "scripts/lint-doc.sh"
 
+.bundler-patterns: &bundler-patterns
+  - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+
+.nodejs-patterns: &nodejs-patterns
+  - '{package.json,*/package.json,*/*/package.json}'
+
+.python-patterns: &python-patterns
+  - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
+  - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
+  - '{Pipfile,*/Pipfile,*/*/Pipfile}'
+  - '{requires.txt,*/requires.txt,*/*/requires.txt}'
+  - '{setup.py,*/setup.py,*/*/setup.py}'
+
+.dependency-patterns: &dependency-patterns
+  - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+  - '{composer.lock,*/composer.lock,*/*/composer.lock}'
+  - '{gems.locked,*/gems.locked,*/*/gems.locked}'
+  - '{go.sum,*/go.sum,*/*/go.sum}'
+  - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
+  - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
+  - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
+  - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
+  - '{conan.lock,*/conan.lock,*/*/conan.lock}'
+
 .frontend-dependency-patterns: &frontend-dependency-patterns
   - "{package.json,yarn.lock}"
   - "config/webpack.config.js"
@@ -1027,13 +1051,40 @@
     - changes: *code-backstage-qa-patterns
       allow_failure: true
 
-.reports:rules:dependency_scanning:
+.reports:rules:gemnasium-dependency_scanning:
   rules:
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/'
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/'
       when: never
     # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
+      changes: *dependency-patterns
+      allow_failure: true
+
+.reports:rules:bundler-audit-dependency_scanning:
+  rules:
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /bundler-audit/'
+      when: never
+    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    - <<: *if-default-refs
+      changes: *bundler-patterns
+      allow_failure: true
+
+.reports:rules:retire-js-dependency_scanning:
+  rules:
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /retire.js/'
+      when: never
+    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    - <<: *if-default-refs
+      changes: *nodejs-patterns
+      allow_failure: true
+
+.reports:rules:gemnasium-python-dependency_scanning:
+  rules:
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/'
+      when: never
+    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    - <<: *if-default-refs
+      changes: *python-patterns
       allow_failure: true
 
 .reports:rules:dast:

@@ -1,8 +1,0 @@
----
-name: disable_composer_callback
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64016
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333587
-milestone: '14.0'
-type: development
-group: group::package
-default_enabled: false

@@ -1006,37 +1006,4 @@ RSpec.describe Packages::Package, type: :model do
       it_behaves_like 'not enqueuing a sync worker job'
     end
   end
-
-  context 'destroying a composer package' do
-    let_it_be(:package_name) { 'composer-package-name' }
-    let_it_be(:json) { { 'name' => package_name } }
-    let_it_be(:project) { create(:project, :custom_repo, files: { 'composer.json' => json.to_json } ) }
-
-    let!(:package) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
-
-    before do
-      Gitlab::Composer::Cache.new(project: project, name: package_name).execute
-      package.composer_metadatum.reload
-    end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(disable_composer_callback: false)
-      end
-
-      it 'schedule the update job' do
-        expect(::Packages::Composer::CacheUpdateWorker).to receive(:perform_async).with(project.id, package_name, package.composer_metadatum.version_cache_sha)
-
-        package.destroy!
-      end
-    end
-
-    context 'with feature flag enabled' do
-      it 'does nothing' do
-        expect(::Packages::Composer::CacheUpdateWorker).not_to receive(:perform_async)
-
-        package.destroy!
-      end
-    end
-  end
 end

@@ -387,4 +387,11 @@ RSpec.describe GitlabSchema.types['Project'] do
     it { is_expected.to have_graphql_type(Types::Ci::TemplateType) }
     it { is_expected.to have_graphql_arguments(:name) }
   end
+
+  describe 'ci_job_token_scope field' do
+    subject { described_class.fields['ciJobTokenScope'] }
+
+    it { is_expected.to have_graphql_type(Types::Ci::JobTokenScopeType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Ci::JobTokenScopeResolver) }
+  end
 end

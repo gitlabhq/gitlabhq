@@ -116,7 +116,9 @@ You can filter by the following:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331330) in GitLab 14.1.
 
-Epics on the **Epic Boards** show a summary of their issues and weight. Hovering over the total counts will show the number of open and closed issues, as well as the completed and incomplete weight.
+Epics on an epic board show a summary of their issues and weight.
+To see the number of open and closed issues and the completed and incomplete weight,
+hover over the issues icon **{issues}** or weight icon **{weight}**.
 
 ### Move epics and lists
 

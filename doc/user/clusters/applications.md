@@ -90,7 +90,7 @@ To install applications using GitLab CI/CD:
 1. Optionally, define `.gitlab/managed-apps/<application>/values.yaml` file to
    customize values for the installed application.
 
-A GitLab CI/CD pipeline runs on the `master` branch to install the
+A GitLab CI/CD pipeline runs on the default branch to install the
 applications you have configured. In case of pipeline failure, the
 output of the [Helm Tiller](https://v2.helm.sh/docs/install/#running-tiller-locally) binary
 is saved as a [CI job artifact](../../ci/pipelines/job_artifacts.md).

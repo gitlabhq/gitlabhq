@@ -15,13 +15,15 @@ The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.
 explains how 4 of the top 6 attacks were application based. Download it to learn how to protect your
 organization.
 
-If you're using [GitLab CI/CD](../../../ci/README.md), you can analyze your source code for known
-vulnerabilities using Static Application Security Testing (SAST). GitLab checks the SAST report and
-compares the found vulnerabilities between the source and target branches.
+If you're using [GitLab CI/CD](../../../ci/README.md), you can use Static Application Security
+Testing (SAST) to check your source code for known vulnerabilities. When a pipeline completes,
+the results of the SAST analysis are processed and shown in the pipeline's Security tab. If the
+pipeline is associated with a merge request, the SAST analysis is compared with the results of
+the target branch's analysis (if available). The results of that comparison are shown in the merge
+request. **(ULTIMATE)** If the pipeline is running from the default branch, the results of the SAST
+analysis are available in the [security dashboards](../security_dashboard/index.md).
 
-Details of the vulnerabilities found are included in the merge request. **(ULTIMATE)**
-
-![SAST Widget](img/sast_v13_2.png)
+![SAST results shown in the MR widget](img/sast_results_in_mr_v14_0.png)
 
 The results are sorted by the priority of the vulnerability:
 

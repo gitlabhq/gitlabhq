@@ -74,16 +74,16 @@ gemnasium-dependency_scanning:
     - apk add jq
     # Lower execa severity based on https://gitlab.com/gitlab-org/gitlab/-/issues/223859#note_452922390
     - jq '(.vulnerabilities[] | select (.cve == "yarn.lock:execa:gemnasium:05cfa2e8-2d0c-42c1-8894-638e2f12ff3d")).severity = "Medium"' gl-dependency-scanning-report.json > temp.json && mv temp.json gl-dependency-scanning-report.json
-  rules: !reference [".reports:rules:dependency_scanning", rules]
+  rules: !reference [".reports:rules:gemnasium-dependency_scanning", rules]
 
 bundler-audit-dependency_scanning:
-  rules: !reference [".reports:rules:dependency_scanning", rules]
+  rules: !reference [".reports:rules:bundler-audit-dependency_scanning", rules]
 
 retire-js-dependency_scanning:
-  rules: !reference [".reports:rules:dependency_scanning", rules]
+  rules: !reference [".reports:rules:retire-js-dependency_scanning", rules]
 
 gemnasium-python-dependency_scanning:
-  rules: !reference [".reports:rules:dependency_scanning", rules]
+  rules: !reference [".reports:rules:gemnasium-python-dependency_scanning", rules]
 
 # Analyze dependencies for malicious behavior
 # See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter
