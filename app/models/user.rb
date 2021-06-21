@@ -1873,6 +1873,12 @@ class User < ApplicationRecord
     !!(password_expires_at && password_expires_at < Time.current)
   end
 
+  def password_expired_if_applicable?
+    return false unless allow_password_authentication?
+
+    password_expired?
+  end
+
   def can_be_deactivated?
     active? && no_recent_activity? && !internal?
   end

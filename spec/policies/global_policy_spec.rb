@@ -245,6 +245,14 @@ RSpec.describe GlobalPolicy do
       end
 
       it { is_expected.not_to be_allowed(:access_api) }
+
+      context 'when user is using ldap' do
+        before do
+          allow(current_user).to receive(:ldap_user?).and_return(true)
+        end
+
+        it { is_expected.to be_allowed(:access_api) }
+      end
     end
 
     context 'when terms are enforced' do
@@ -433,6 +441,14 @@ RSpec.describe GlobalPolicy do
       end
 
       it { is_expected.not_to be_allowed(:access_git) }
+
+      context 'when user is using ldap' do
+        before do
+          allow(current_user).to receive(:ldap_user?).and_return(true)
+        end
+
+        it { is_expected.to be_allowed(:access_git) }
+      end
     end
   end
 
@@ -517,6 +533,14 @@ RSpec.describe GlobalPolicy do
       end
 
       it { is_expected.not_to be_allowed(:use_slash_commands) }
+
+      context 'when user is using ldap' do
+        before do
+          allow(current_user).to receive(:ldap_user?).and_return(true)
+        end
+
+        it { is_expected.to be_allowed(:use_slash_commands) }
+      end
     end
   end
 

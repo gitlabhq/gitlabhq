@@ -440,6 +440,14 @@ RSpec.describe Gitlab::GitAccess do
       expect { pull_access_check }.to raise_forbidden("Your password expired. Please access GitLab from a web browser to update your password.")
     end
 
+    it 'allows ldap users with expired password to pull' do
+      project.add_maintainer(user)
+      user.update!(password_expires_at: 2.minutes.ago)
+      allow(user).to receive(:ldap_user?).and_return(true)
+
+      expect { pull_access_check }.not_to raise_error
+    end
+
     context 'when the project repository does not exist' do
       before do
         project.add_guest(user)
@@ -977,10 +985,24 @@ RSpec.describe Gitlab::GitAccess do
       end
 
       it 'disallows users with expired password to push' do
-        project.add_maintainer(user)
         user.update!(password_expires_at: 2.minutes.ago)
 
         expect { push_access_check }.to raise_forbidden("Your password expired. Please access GitLab from a web browser to update your password.")
+      end
+
+      it 'allows ldap users with expired password to push' do
+        user.update!(password_expires_at: 2.minutes.ago)
+        allow(user).to receive(:ldap_user?).and_return(true)
+
+        expect { push_access_check }.not_to raise_error
+      end
+
+      it 'disallows blocked ldap users with expired password to push' do
+        user.block
+        user.update!(password_expires_at: 2.minutes.ago)
+        allow(user).to receive(:ldap_user?).and_return(true)
+
+        expect { push_access_check }.to raise_forbidden("Your account has been blocked.")
       end
 
       it 'cleans up the files' do

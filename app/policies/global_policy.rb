@@ -16,7 +16,7 @@ class GlobalPolicy < BasePolicy
   end
 
   condition(:password_expired, scope: :user) do
-    @user&.password_expired?
+    @user&.password_expired_if_applicable?
   end
 
   condition(:project_bot, scope: :user) { @user&.project_bot? }
