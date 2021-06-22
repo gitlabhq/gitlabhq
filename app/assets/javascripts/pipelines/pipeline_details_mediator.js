@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import createFlash from '../flash';
+import createFlash from '~/flash';
 import Poll from '../lib/utils/poll';
 import { __ } from '../locale';
 import PipelineService from './services/pipeline_service';

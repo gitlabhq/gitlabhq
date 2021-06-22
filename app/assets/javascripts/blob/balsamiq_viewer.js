@@ -1,5 +1,5 @@
+import createFlash from '~/flash';
 import { __ } from '~/locale';
-import createFlash from '../flash';
 import BalsamiqViewer from './balsamiq/balsamiq_viewer';
 
 function onError() {

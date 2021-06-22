@@ -1,7 +1,7 @@
 import Store from 'ee_else_ce/sidebar/stores/sidebar_store';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
-import createFlash from '../flash';
 import { visitUrl } from '../lib/utils/url_utility';
 import Service from './services/sidebar_service';
 

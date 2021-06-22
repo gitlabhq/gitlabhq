@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import createFlash from '../flash';
+import createFlash from '~/flash';
 import axios from '../lib/utils/axios_utils';
 import { __ } from '../locale';
 import DivergenceGraph from './components/divergence_graph.vue';

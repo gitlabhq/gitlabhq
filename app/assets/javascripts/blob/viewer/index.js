@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import {
   REPO_BLOB_LOAD_VIEWER_START,
@@ -8,7 +9,6 @@ import {
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { fixTitle } from '~/tooltips';
-import createFlash from '../../flash';
 import axios from '../../lib/utils/axios_utils';
 import { handleLocationHash } from '../../lib/utils/common_utils';
 import eventHub from '../../notes/event_hub';

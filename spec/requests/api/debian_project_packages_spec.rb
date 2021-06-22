@@ -15,13 +15,13 @@ RSpec.describe API::DebianProjectPackages do
     describe 'GET projects/:id/packages/debian/dists/*distribution/Release' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/Release" }
 
-      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^TODO Release$/
+      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^Codename: fixture-distribution\n$/
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/InRelease' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/InRelease" }
 
-      it_behaves_like 'Debian repository read endpoint', 'GET request', :not_found
+      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^Codename: fixture-distribution\n$/
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/binary-:architecture/Packages' do

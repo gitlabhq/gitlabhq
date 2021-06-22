@@ -104,7 +104,8 @@ module QA
       end
 
       def find_element(name, **kwargs)
-        wait_for_requests
+        skip_finished_loading_check = kwargs.delete(:skip_finished_loading_check)
+        wait_for_requests(skip_finished_loading_check: skip_finished_loading_check)
 
         element_selector = element_selector_css(name, reject_capybara_query_keywords(kwargs))
         find(element_selector, only_capybara_query_keywords(kwargs))
@@ -196,7 +197,8 @@ module QA
 
       # replace with (..., page = self.class)
       def click_element(name, page = nil, **kwargs)
-        wait_for_requests
+        skip_finished_loading_check = kwargs.delete(:skip_finished_loading_check)
+        wait_for_requests(skip_finished_loading_check: skip_finished_loading_check)
 
         wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
         text = kwargs.delete(:text)

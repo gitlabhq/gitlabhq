@@ -2,9 +2,9 @@
 /* eslint-disable vue/no-v-html */
 import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { escape } from 'lodash';
+import createFlash from '~/flash';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import createFlash from '../../../flash';
 import simplePoll from '../../../lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';

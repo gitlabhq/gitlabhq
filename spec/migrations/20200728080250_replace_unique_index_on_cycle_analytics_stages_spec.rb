@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!('replace_unique_index_on_cycle_analytics_stages')
 
-RSpec.describe ReplaceUniqueIndexOnCycleAnalyticsStages, :migration, schema: 20200728080250 do
+RSpec.describe ReplaceUniqueIndexOnCycleAnalyticsStages, :migration, schema: 20200727142337 do
   let(:namespaces) { table(:namespaces) }
   let(:group_value_streams) { table(:analytics_cycle_analytics_group_value_streams) }
   let(:group_stages) { table(:analytics_cycle_analytics_group_stages) }
@@ -27,10 +27,6 @@ RSpec.describe ReplaceUniqueIndexOnCycleAnalyticsStages, :migration, schema: 202
       duplicated_stage_1
       duplicated_stage_2
       stage_record
-    end
-
-    after do
-      described_class.new.up
     end
 
     it 'removes duplicated stage records' do

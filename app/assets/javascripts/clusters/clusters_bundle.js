@@ -1,9 +1,9 @@
 import { GlToast } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
+import createFlash from '~/flash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import initProjectSelectDropdown from '~/project_select';
-import createFlash from '../flash';
 import Poll from '../lib/utils/poll';
 import { s__ } from '../locale';
 import PersistentUserCallout from '../persistent_user_callout';

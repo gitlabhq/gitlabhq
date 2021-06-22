@@ -1,13 +1,13 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import initUserPopovers from '~/user_popovers';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import draftNote from '../../batch_comments/components/draft_note.vue';
-import createFlash from '../../flash';
 import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';

@@ -34,6 +34,7 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
           expect(build_names).not_to include('canary')
           expect(build_names).not_to include('review')
           expect(build_names).not_to include(a_string_matching(/rollout \d+%/))
+          expect(build_names).not_to include(a_string_matching(/helm-2to3\d+%/))
         end
       end
 
@@ -190,6 +191,17 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
                 expect(build_names).not_to include(a_string_matching(/rollout \d+%/))
               end
             end
+
+            context 'when MIGRATE_HELM_2TO3=true' do
+              before do
+                create(:ci_variable, project: project, key: 'MIGRATE_HELM_2TO3', value: 'true')
+              end
+
+              it 'includes a helm-2to3:migrate and a helm-2to3:cleanup job' do
+                expect(build_names).to include('production:helm-2to3:migrate')
+                expect(build_names).to include('production:helm-2to3:cleanup')
+              end
+            end
           end
 
           context 'outside of default branch' do
@@ -207,12 +219,23 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
               expect(build_names).to include('review')
               expect(build_names).not_to include(a_string_matching(/rollout \d+%/))
             end
+
+            context 'when MIGRATE_HELM_2TO3=true' do
+              before do
+                create(:ci_variable, project: project, key: 'MIGRATE_HELM_2TO3', value: 'true')
+              end
+
+              it 'includes a helm-2to3:migrate and a helm-2to3:cleanup job' do
+                expect(build_names).to include('review:helm-2to3:migrate')
+                expect(build_names).to include('review:helm-2to3:cleanup')
+              end
+            end
           end
         end
       end
     end
 
-    describe 'build-pack detection' do
+    describe 'buildpack detection' do
       using RSpec::Parameterized::TableSyntax
 
       where(:case_name, :files, :variables, :include_build_names, :not_include_build_names) do

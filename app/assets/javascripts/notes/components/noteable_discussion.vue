@@ -2,11 +2,11 @@
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { mapActions, mapGetters } from 'vuex';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
+import createFlash from '~/flash';
 import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
 import { s__, __ } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import createFlash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';

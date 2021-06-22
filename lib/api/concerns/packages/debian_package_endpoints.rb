@@ -40,6 +40,14 @@ module API
                     .sent_through(:http_basic_auth)
             end
 
+            helpers do
+              def present_release_file
+                distribution = ::Packages::Debian::DistributionsFinder.new(project_or_group, codename_or_suite: params[:distribution]).execute.last!
+
+                present_carrierwave_file!(distribution.file)
+              end
+            end
+
             format :txt
             content_type :txt, 'text/plain'
 
@@ -65,8 +73,7 @@ module API
 
               route_setting :authentication, authenticate_non_public: true
               get 'Release' do
-                # https://gitlab.com/gitlab-org/gitlab/-/issues/5835#note_414103286
-                'TODO Release'
+                present_release_file
               end
 
               # GET {projects|groups}/:id/packages/debian/dists/*distribution/InRelease
@@ -76,7 +83,8 @@ module API
 
               route_setting :authentication, authenticate_non_public: true
               get 'InRelease' do
-                not_found!
+                # Signature to be added in 7.3 of https://gitlab.com/groups/gitlab-org/-/epics/6057#note_582697034
+                present_release_file
               end
 
               params do

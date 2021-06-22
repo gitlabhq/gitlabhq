@@ -12,12 +12,12 @@ RSpec.shared_context 'Debian repository shared context' do |container_type, can_
   let_it_be(:user, freeze: true) { create(:user) }
   let_it_be(:personal_access_token, freeze: true) { create(:personal_access_token, user: user) }
 
-  let_it_be(:private_distribution, freeze: true) { create("debian_#{container_type}_distribution", container: private_container, codename: 'existing-codename') }
+  let_it_be(:private_distribution, freeze: true) { create("debian_#{container_type}_distribution", :with_file, container: private_container, codename: 'existing-codename') }
   let_it_be(:private_component, freeze: true) { create("debian_#{container_type}_component", distribution: private_distribution, name: 'existing-component') }
   let_it_be(:private_architecture_all, freeze: true) { create("debian_#{container_type}_architecture", distribution: private_distribution, name: 'all') }
   let_it_be(:private_architecture, freeze: true) { create("debian_#{container_type}_architecture", distribution: private_distribution, name: 'existing-arch') }
 
-  let_it_be(:public_distribution, freeze: true) { create("debian_#{container_type}_distribution", container: public_container, codename: 'existing-codename') }
+  let_it_be(:public_distribution, freeze: true) { create("debian_#{container_type}_distribution", :with_file, container: public_container, codename: 'existing-codename') }
   let_it_be(:public_component, freeze: true) { create("debian_#{container_type}_component", distribution: public_distribution, name: 'existing-component') }
   let_it_be(:public_architecture_all, freeze: true) { create("debian_#{container_type}_architecture", distribution: public_distribution, name: 'all') }
   let_it_be(:public_architecture, freeze: true) { create("debian_#{container_type}_architecture", distribution: public_distribution, name: 'existing-arch') }
