@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab CI/CD script syntax
+# GitLab CI/CD script syntax **(FREE)**
 
 You can use special syntax in [`script`](README.md#script) sections to:
 

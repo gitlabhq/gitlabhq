@@ -13,7 +13,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include TaggableQueries
 
-    add_authentication_token_field :token, encrypted: -> { Feature.enabled?(:ci_runners_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
+    add_authentication_token_field :token, encrypted: :optional
 
     enum access_level: {
       not_protected: 0,

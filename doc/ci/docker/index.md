@@ -6,9 +6,9 @@ comments: false
 type: index
 ---
 
-# Docker integration
+# Docker integration **(FREE)**
 
-There are two primary ways to incorporate [Docker](https://www.docker.com) in your CI/CD workflow.
+There are two primary ways to incorporate [Docker](https://www.docker.com) into your CI/CD workflow:
 
 - **[Run your CI/CD jobs](using_docker_images.md) in Docker containers.**
 

@@ -6,7 +6,7 @@ type: reference, index
 last_update: 2019-07-03
 ---
 
-# Pipelines for merge requests
+# Pipelines for merge requests **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/15310) in GitLab 11.6.
 

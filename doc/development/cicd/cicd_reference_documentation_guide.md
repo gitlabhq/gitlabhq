@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# CI/CD YAML reference style guide
+# CI/CD YAML reference style guide **(FREE)**
 
 The CI/CD YAML reference uses a standard style to make it easier to use and update.
 

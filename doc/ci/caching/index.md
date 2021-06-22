@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, concepts, howto
 ---
 
-# Caching in GitLab CI/CD
+# Caching in GitLab CI/CD **(FREE)**
 
 A cache is one or more files that a job downloads and saves. Subsequent jobs that use
 the same cache don't have to download the files again, so they execute more quickly.

@@ -5,9 +5,10 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
     2.times do
       Gitlab::WithRequestStore.with_request_store do
         subscriber.sql(event)
+        connection = event.payload[:connection]
 
         if db_role == :primary
-          expect(described_class.db_counter_payload).to eq(
+          expected = {
             db_count: record_query ? 1 : 0,
             db_write_count: record_write_query ? 1 : 0,
             db_cached_count: record_cached_query ? 1 : 0,
@@ -19,9 +20,10 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
             db_replica_duration_s:  0.0,
             db_primary_wal_count: record_wal_query ? 1 : 0,
             db_replica_wal_count: 0
-          )
+          }
+          expected[:"db_primary_#{::Gitlab::Database.dbname(connection)}_duration_s"] = 0.002 if record_query
         elsif db_role == :replica
-          expect(described_class.db_counter_payload).to eq(
+          expected = {
             db_count: record_query ? 1 : 0,
             db_write_count: record_write_query ? 1 : 0,
             db_cached_count: record_cached_query ? 1 : 0,
@@ -33,14 +35,32 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
             db_replica_duration_s:  record_query ? 0.002 : 0,
             db_replica_wal_count: record_wal_query ? 1 : 0,
             db_primary_wal_count: 0
-          )
+          }
+          expected[:"db_replica_#{::Gitlab::Database.dbname(connection)}_duration_s"] = 0.002 if record_query
         else
-          expect(described_class.db_counter_payload).to eq(
+          expected = {
             db_count: record_query ? 1 : 0,
             db_write_count: record_write_query ? 1 : 0,
             db_cached_count: record_cached_query ? 1 : 0
-          )
+          }
         end
+
+        expect(described_class.db_counter_payload).to eq(expected)
+      end
+    end
+  end
+
+  context 'when multiple_database_metrics is disabled' do
+    before do
+      stub_feature_flags(multiple_database_metrics: false)
+    end
+
+    it 'does not include per database metrics' do
+      Gitlab::WithRequestStore.with_request_store do
+        subscriber.sql(event)
+        connection = event.payload[:connection]
+
+        expect(described_class.db_counter_payload).not_to include(:"db_replica_#{::Gitlab::Database.dbname(connection)}_duration_s")
       end
     end
   end

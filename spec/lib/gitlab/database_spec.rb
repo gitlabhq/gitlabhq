@@ -414,6 +414,23 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.dbname' do
+    it 'returns the dbname for the connection' do
+      connection = ActiveRecord::Base.connection
+
+      expect(described_class.dbname(connection)).to be_a(String)
+      expect(described_class.dbname(connection)).to eq(connection.pool.db_config.database)
+    end
+
+    context 'when the pool is a NullPool' do
+      it 'returns unknown' do
+        connection = double(:active_record_connection, pool: ActiveRecord::ConnectionAdapters::NullPool.new)
+
+        expect(described_class.dbname(connection)).to eq('unknown')
+      end
+    end
+  end
+
   describe '#true_value' do
     it 'returns correct value' do
       expect(described_class.true_value).to eq "'t'"

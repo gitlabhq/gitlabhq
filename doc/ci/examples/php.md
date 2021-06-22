@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Testing PHP projects
+# Testing PHP projects **(FREE)**
 
 This guide covers basic building instructions for PHP projects.
 

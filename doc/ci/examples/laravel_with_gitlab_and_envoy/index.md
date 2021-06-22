@@ -11,7 +11,7 @@ date: 2017-08-31
 
 <!-- vale off -->
 
-# Test and deploy Laravel applications with GitLab CI/CD and Envoy
+# Test and deploy Laravel applications with GitLab CI/CD and Envoy **(FREE)**
 
 ## Introduction
 

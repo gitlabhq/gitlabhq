@@ -333,6 +333,16 @@ module Gitlab
       end
     end
 
+    def self.dbname(ar_connection)
+      if ar_connection.respond_to?(:pool) &&
+          ar_connection.pool.respond_to?(:db_config) &&
+          ar_connection.pool.db_config.respond_to?(:database)
+        return ar_connection.pool.db_config.database
+      end
+
+      'unknown'
+    end
+
     # inside_transaction? will return true if the caller is running within a transaction. Handles special cases
     # when running inside a test environment, where tests may be wrapped in transactions
     def self.inside_transaction?

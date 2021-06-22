@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# How to enable or disable GitLab CI/CD
+# How to enable or disable GitLab CI/CD **(FREE)**
 
 To effectively use GitLab CI/CD, you need:
 

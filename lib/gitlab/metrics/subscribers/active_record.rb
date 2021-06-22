@@ -72,6 +72,14 @@ module Gitlab
               DB_LOAD_BALANCING_DURATIONS.each do |duration|
                 payload[duration] = ::Gitlab::SafeRequestStore[duration].to_f.round(3)
               end
+
+              if Feature.enabled?(:multiple_database_metrics, default_enabled: :yaml)
+                ::Gitlab::SafeRequestStore[:duration_by_database]&.each do |dbname, duration_by_role|
+                  duration_by_role.each do |db_role, duration|
+                    payload[:"db_#{db_role}_#{dbname}_duration_s"] = duration.to_f.round(3)
+                  end
+                end
+              end
             end
           end
         end
@@ -93,9 +101,18 @@ module Gitlab
             buckets ::Gitlab::Metrics::Subscribers::ActiveRecord::SQL_DURATION_BUCKET
           end
 
+          return unless ::Gitlab::SafeRequestStore.active?
+
           duration = event.duration / 1000.0
           duration_key = "db_#{db_role}_duration_s".to_sym
           ::Gitlab::SafeRequestStore[duration_key] = (::Gitlab::SafeRequestStore[duration_key].presence || 0) + duration
+
+          # Per database metrics
+          dbname = ::Gitlab::Database.dbname(event.payload[:connection])
+          ::Gitlab::SafeRequestStore[:duration_by_database] ||= {}
+          ::Gitlab::SafeRequestStore[:duration_by_database][dbname] ||= {}
+          ::Gitlab::SafeRequestStore[:duration_by_database][dbname][db_role] ||= 0
+          ::Gitlab::SafeRequestStore[:duration_by_database][dbname][db_role] += duration
         end
 
         def ignored_query?(payload)

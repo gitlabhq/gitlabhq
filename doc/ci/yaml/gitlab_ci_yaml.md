@@ -6,7 +6,7 @@ type: reference
 ---
 <!-- markdownlint-disable MD044 -->
 <!-- vale gitlab.Spelling = NO -->
-# The .gitlab-ci.yml file
+# The .gitlab-ci.yml file **(FREE)**
 <!-- vale gitlab.Spelling = YES -->
 <!-- markdownlint-enable MD044 -->
 

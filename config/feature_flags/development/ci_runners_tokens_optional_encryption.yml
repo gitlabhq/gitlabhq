@@ -1,8 +1,0 @@
----
-name: ci_runners_tokens_optional_encryption
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8638
-rollout_issue_url: 
-milestone: '11.6'
-type: development
-group: group::pipeline execution
-default_enabled: true

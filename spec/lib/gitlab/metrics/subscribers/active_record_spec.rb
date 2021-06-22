@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
   let(:env) { {} }
   let(:subscriber) { described_class.new }
-  let(:connection) { double(:connection) }
+  let(:connection) { ActiveRecord::Base.connection }
 
   describe '#transaction' do
     let(:web_transaction) { double('Gitlab::Metrics::WebTransaction') }
