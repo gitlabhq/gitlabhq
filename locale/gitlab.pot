@@ -11953,9 +11953,6 @@ msgstr ""
 msgid "Enable SSL verification"
 msgstr ""
 
-msgid "Enable Seat Link"
-msgstr ""
-
 msgid "Enable Spam Check via external API endpoint"
 msgstr ""
 
@@ -12032,9 +12029,6 @@ msgid "Enable maintenance mode"
 msgstr ""
 
 msgid "Enable mirror configuration"
-msgstr ""
-
-msgid "Enable or disable Seat Link."
 msgstr ""
 
 msgid "Enable or disable the Pseudonymizer data collection."
@@ -14096,9 +14090,6 @@ msgid "For more information, see the File Hooks documentation."
 msgstr ""
 
 msgid "For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}."
-msgstr ""
-
-msgid "For more information, see the documentation on %{link_start}disabling Seat Link%{link_end}."
 msgstr ""
 
 msgid "Forgot your password?"
@@ -28610,12 +28601,6 @@ msgstr[1] ""
 msgid "Searching by both author and message is currently not supported."
 msgstr ""
 
-msgid "Seat Link"
-msgstr ""
-
-msgid "Seat Link is disabled, and cannot be configured through this form."
-msgstr ""
-
 msgid "SeatUsage|Seat usage"
 msgstr ""
 
@@ -34004,9 +33989,6 @@ msgid "To set up SAML authentication for your group through an identity provider
 msgstr ""
 
 msgid "To set up this service:"
-msgstr ""
-
-msgid "To simplify the billing process, GitLab will collect user counts in order to prorate charges for user growth throughout the year using a quarterly reconciliation process."
 msgstr ""
 
 msgid "To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there."
