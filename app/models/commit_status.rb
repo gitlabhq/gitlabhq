@@ -7,6 +7,7 @@ class CommitStatus < ApplicationRecord
   include Presentable
   include EnumWithNil
   include BulkInsertableAssociations
+  include TaggableQueries
 
   self.table_name = 'ci_builds'
 

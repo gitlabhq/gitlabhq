@@ -12,6 +12,7 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
   let_it_be(:cousin_parent) { create(:ci_pipeline, project: project) }
   let_it_be(:cousin) { create(:ci_pipeline, project: project) }
   let_it_be(:triggered_pipeline) { create(:ci_pipeline) }
+  let_it_be(:triggered_child_pipeline) { create(:ci_pipeline) }
 
   before_all do
     create_source_pipeline(ancestor, parent)
@@ -19,19 +20,20 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
     create_source_pipeline(parent, child)
     create_source_pipeline(cousin_parent, cousin)
     create_source_pipeline(child, triggered_pipeline)
+    create_source_pipeline(triggered_pipeline, triggered_child_pipeline)
   end
 
   describe '#base_and_ancestors' do
     it 'includes the base and its ancestors' do
       relation = described_class.new(::Ci::Pipeline.where(id: parent.id),
-                                     options: { same_project: true }).base_and_ancestors
+                                     options: { project_condition: :same }).base_and_ancestors
 
       expect(relation).to contain_exactly(ancestor, parent)
     end
 
     it 'can find ancestors upto a certain level' do
       relation = described_class.new(::Ci::Pipeline.where(id: child.id),
-                                     options: { same_project: true }).base_and_ancestors(upto: ancestor.id)
+                                     options: { project_condition: :same }).base_and_ancestors(upto: ancestor.id)
 
       expect(relation).to contain_exactly(parent, child)
     end
@@ -39,7 +41,7 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
     describe 'hierarchy_order option' do
       let(:relation) do
         described_class.new(::Ci::Pipeline.where(id: child.id),
-                            options: { same_project: true }).base_and_ancestors(hierarchy_order: hierarchy_order)
+                            options: { project_condition: :same }).base_and_ancestors(hierarchy_order: hierarchy_order)
       end
 
       context ':asc' do
@@ -63,15 +65,32 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
   describe '#base_and_descendants' do
     it 'includes the base and its descendants' do
       relation = described_class.new(::Ci::Pipeline.where(id: parent.id),
-                                     options: { same_project: true }).base_and_descendants
+                                     options: { project_condition: :same }).base_and_descendants
 
       expect(relation).to contain_exactly(parent, child)
+    end
+
+    context 'when project_condition: :different' do
+      it "includes the base and other project pipelines" do
+        relation = described_class.new(::Ci::Pipeline.where(id: child.id),
+                                       options: { project_condition: :different }).base_and_descendants
+
+        expect(relation).to contain_exactly(child, triggered_pipeline, triggered_child_pipeline)
+      end
+    end
+
+    context 'when project_condition: nil' do
+      it "includes the base and its descendants with other project pipeline" do
+        relation = described_class.new(::Ci::Pipeline.where(id: parent.id)).base_and_descendants
+
+        expect(relation).to contain_exactly(parent, child, triggered_pipeline, triggered_child_pipeline)
+      end
     end
 
     context 'when with_depth is true' do
       let(:relation) do
         described_class.new(::Ci::Pipeline.where(id: ancestor.id),
-                            options: { same_project: true }).base_and_descendants(with_depth: true)
+                            options: { project_condition: :same }).base_and_descendants(with_depth: true)
       end
 
       it 'includes depth in the results' do
@@ -91,21 +110,51 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
   end
 
   describe '#all_objects' do
-    it 'includes its ancestors and descendants' do
-      relation = described_class.new(::Ci::Pipeline.where(id: parent.id),
-                                     options: { same_project: true }).all_objects
+    context 'when passing ancestors_base' do
+      let(:options) { { project_condition: project_condition } }
+      let(:ancestors_base) { ::Ci::Pipeline.where(id: child.id) }
 
-      expect(relation).to contain_exactly(ancestor, parent, child)
+      subject(:relation) { described_class.new(ancestors_base, options: options).all_objects }
+
+      context 'when project_condition: :same' do
+        let(:project_condition) { :same }
+
+        it "includes its ancestors and descendants" do
+          expect(relation).to contain_exactly(ancestor, parent, child)
+        end
+      end
+
+      context 'when project_condition: :different' do
+        let(:project_condition) { :different }
+
+        it "includes the base and other project pipelines" do
+          expect(relation).to contain_exactly(child, triggered_pipeline, triggered_child_pipeline)
+        end
+      end
     end
 
-    it 'returns all family tree' do
-      relation = described_class.new(
-        ::Ci::Pipeline.where(id: child.id),
-        described_class.new(::Ci::Pipeline.where(id: child.id), options: { same_project: true }).base_and_ancestors,
-        options: { same_project: true }
-      ).all_objects
+    context 'when passing ancestors_base and descendants_base' do
+      let(:options) { { project_condition: project_condition } }
+      let(:ancestors_base) { ::Ci::Pipeline.where(id: child.id) }
+      let(:descendants_base) { described_class.new(::Ci::Pipeline.where(id: child.id), options: options).base_and_ancestors }
 
-      expect(relation).to contain_exactly(ancestor, parent, cousin_parent, child, cousin)
+      subject(:relation) { described_class.new(ancestors_base, descendants_base, options: options).all_objects }
+
+      context 'when project_condition: :same' do
+        let(:project_condition) { :same }
+
+        it 'returns all family tree' do
+          expect(relation).to contain_exactly(ancestor, parent, cousin_parent, child, cousin)
+        end
+      end
+
+      context 'when project_condition: :different' do
+        let(:project_condition) { :different }
+
+        it "includes the base and other project pipelines" do
+          expect(relation).to contain_exactly(child, triggered_pipeline, triggered_child_pipeline)
+        end
+      end
     end
   end
 end

@@ -77,7 +77,7 @@ module Ci
         store.touch(path)
       end
 
-      pipeline.self_with_ancestors_and_descendants.each do |relative_pipeline|
+      pipeline.self_with_upstreams_and_downstreams.each do |relative_pipeline|
         store.touch(project_pipeline_path(relative_pipeline.project, relative_pipeline))
         store.touch(graphql_pipeline_path(relative_pipeline))
         store.touch(graphql_pipeline_sha_path(relative_pipeline.sha))

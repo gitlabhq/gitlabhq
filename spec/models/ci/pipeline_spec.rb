@@ -4355,16 +4355,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#base_and_ancestors' do
-    subject { pipeline.base_and_ancestors(same_project: same_project) }
+  describe '#self_and_upstreams' do
+    subject(:self_and_upstreams) { pipeline.self_and_upstreams }
 
     let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
-    let(:same_project) { false }
-
     context 'when pipeline is not child nor parent' do
       it 'returns just the pipeline itself' do
-        expect(subject).to contain_exactly(pipeline)
+        expect(self_and_upstreams).to contain_exactly(pipeline)
       end
     end
 
@@ -4378,7 +4376,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it 'returns parent and self' do
-        expect(subject).to contain_exactly(parent, pipeline)
+        expect(self_and_upstreams).to contain_exactly(parent, pipeline)
       end
     end
 
@@ -4390,7 +4388,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it 'returns self' do
-        expect(subject).to contain_exactly(pipeline)
+        expect(self_and_upstreams).to contain_exactly(pipeline)
       end
     end
 
@@ -4406,11 +4404,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it 'returns self, parent and ancestor' do
-        expect(subject).to contain_exactly(ancestor, parent, pipeline)
+        expect(self_and_upstreams).to contain_exactly(ancestor, parent, pipeline)
       end
     end
 
-    context 'when pipeline is a triggered pipeline' do
+    context 'when pipeline is a triggered pipeline from a different project' do
       let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
       let(:upstream) { create(:ci_pipeline, project: create(:project)) }
@@ -4419,18 +4417,41 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         create_source_pipeline(upstream, pipeline)
       end
 
-      context 'same_project: false' do
-        it 'returns upstream and self' do
-          expect(subject).to contain_exactly(pipeline, upstream)
-        end
+      it 'returns upstream and self' do
+        expect(self_and_upstreams).to contain_exactly(pipeline, upstream)
+      end
+    end
+  end
+
+  describe '#self_and_ancestors' do
+    subject(:self_and_ancestors) { pipeline.self_and_ancestors }
+
+    context 'when pipeline is child' do
+      let(:pipeline) { create(:ci_pipeline, :created) }
+      let(:parent) { create(:ci_pipeline) }
+      let(:sibling) { create(:ci_pipeline) }
+
+      before do
+        create_source_pipeline(parent, pipeline)
+        create_source_pipeline(parent, sibling)
       end
 
-      context 'same_project: true' do
-        let(:same_project) { true }
+      it 'returns parent and self' do
+        expect(self_and_ancestors).to contain_exactly(parent, pipeline)
+      end
+    end
 
-        it 'returns self' do
-          expect(subject).to contain_exactly(pipeline)
-        end
+    context 'when pipeline is a triggered pipeline from a different project' do
+      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+
+      let(:upstream) { create(:ci_pipeline, project: create(:project)) }
+
+      before do
+        create_source_pipeline(upstream, pipeline)
+      end
+
+      it 'returns only self' do
+        expect(self_and_ancestors).to contain_exactly(pipeline)
       end
     end
   end
@@ -4468,15 +4489,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         end
 
         context 'when the parent pipeline has a dependent upstream pipeline' do
-          let!(:upstream_bridge) do
-            create_bridge(create(:ci_pipeline, project: create(:project)), parent_pipeline, true)
-          end
+          let(:upstream_pipeline) { create(:ci_pipeline, project: create(:project)) }
+          let!(:upstream_bridge) { create_bridge(upstream_pipeline, parent_pipeline, true) }
+
+          let(:upstream_upstream_pipeline) { create(:ci_pipeline, project: create(:project)) }
+          let!(:upstream_upstream_bridge) { create_bridge(upstream_upstream_pipeline, upstream_pipeline, true) }
 
           it 'marks all source bridges as pending' do
             reset_bridge
 
             expect(bridge.reload).to be_pending
             expect(upstream_bridge.reload).to be_pending
+            expect(upstream_upstream_bridge.reload).to be_pending
           end
         end
       end

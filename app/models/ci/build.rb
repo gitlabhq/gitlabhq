@@ -11,7 +11,6 @@ module Ci
     include Importable
     include Ci::HasRef
     include IgnorableColumns
-    include TaggableQueries
 
     BuildArchivedError = Class.new(StandardError)
 
@@ -177,25 +176,6 @@ module Ci
 
     scope :with_secure_reports_from_config_options, -> (job_types) do
       joins(:metadata).where("ci_builds_metadata.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
-    end
-
-    scope :matches_tag_ids, -> (tag_ids) do
-      matcher = ::ActsAsTaggableOn::Tagging
-        .where(taggable_type: CommitStatus.name)
-        .where(context: 'tags')
-        .where('taggable_id = ci_builds.id')
-        .where.not(tag_id: tag_ids).select('1')
-
-      where("NOT EXISTS (?)", matcher)
-    end
-
-    scope :with_any_tags, -> do
-      matcher = ::ActsAsTaggableOn::Tagging
-        .where(taggable_type: CommitStatus.name)
-        .where(context: 'tags')
-        .where('taggable_id = ci_builds.id').select('1')
-
-      where("EXISTS (?)", matcher)
     end
 
     scope :queued_before, ->(time) { where(arel_table[:queued_at].lt(time)) }

@@ -42,6 +42,7 @@ fragment EpicNode on Epic {
   relationPath
   createdAt
   closedAt
+  confidential
   hasChildren
   hasIssues
   group {

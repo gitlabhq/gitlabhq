@@ -21,7 +21,7 @@ module Gitlab
         middle_table[:source_pipeline_id].eq(objects_table[:id]).and(
           middle_table[:pipeline_id].eq(cte.table[:id])
         ).and(
-          same_project_condition
+          project_condition
         )
       end
 
@@ -29,15 +29,15 @@ module Gitlab
         middle_table[:pipeline_id].eq(objects_table[:id]).and(
           middle_table[:source_pipeline_id].eq(cte.table[:id])
         ).and(
-          same_project_condition
+          project_condition
         )
       end
 
-      def same_project_condition
-        if options[:same_project]
-          middle_table[:source_project_id].eq(middle_table[:project_id])
-        else
-          Arel.sql('TRUE')
+      def project_condition
+        case options[:project_condition]
+        when :same then middle_table[:source_project_id].eq(middle_table[:project_id])
+        when :different then middle_table[:source_project_id].not_eq(middle_table[:project_id])
+        else Arel.sql('TRUE')
         end
       end
     end

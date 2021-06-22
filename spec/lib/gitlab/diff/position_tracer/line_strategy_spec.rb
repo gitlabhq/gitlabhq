@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy do
+RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_cache do
   # Douwe's diary                                    New York City, 2016-06-28
   # --------------------------------------------------------------------------
   #

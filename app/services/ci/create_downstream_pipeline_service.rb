@@ -120,7 +120,7 @@ module Ci
       return false if @bridge.triggers_child_pipeline?
 
       if Feature.enabled?(:ci_drop_cyclical_triggered_pipelines, @bridge.project, default_enabled: :yaml)
-        pipeline_checksums = @bridge.pipeline.base_and_ancestors.filter_map do |pipeline|
+        pipeline_checksums = @bridge.pipeline.self_and_upstreams.filter_map do |pipeline|
           config_checksum(pipeline) unless pipeline.child?
         end
 
@@ -131,7 +131,7 @@ module Ci
     def has_max_descendants_depth?
       return false unless @bridge.triggers_child_pipeline?
 
-      ancestors_of_new_child = @bridge.pipeline.base_and_ancestors(same_project: true)
+      ancestors_of_new_child = @bridge.pipeline.self_and_ancestors
       ancestors_of_new_child.count > MAX_DESCENDANTS_DEPTH
     end
 

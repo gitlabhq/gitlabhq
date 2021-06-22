@@ -18,7 +18,7 @@ module Sidebars
 
         override :link
         def link
-          project_clusters_path(context.project)
+          renderable_items.first.link
         end
 
         override :extra_container_html_options
