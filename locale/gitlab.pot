@@ -13568,9 +13568,6 @@ msgstr ""
 msgid "FeatureFlags|* (All Environments)"
 msgstr ""
 
-msgid "FeatureFlags|* (All environments)"
-msgstr ""
-
 msgid "FeatureFlags|API URL"
 msgstr ""
 
@@ -13650,9 +13647,6 @@ msgid "FeatureFlags|Feature flags allow you to configure your code into differen
 msgstr ""
 
 msgid "FeatureFlags|Feature flags limit reached (%{featureFlagsLimit}). Delete one or more feature flags before adding new ones."
-msgstr ""
-
-msgid "FeatureFlags|Flag is read-only"
 msgstr ""
 
 msgid "FeatureFlags|Get started with feature flags"

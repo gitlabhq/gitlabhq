@@ -134,16 +134,14 @@ module Integrations
 
     private
 
+    delegate :allow_local_requests_from_web_hooks_and_services?, to: :current_settings, private: true
+
     def self_monitoring_project?
       project && project.id == current_settings.self_monitoring_project_id
     end
 
     def internal_prometheus_url?
       api_url.present? && api_url == ::Gitlab::Prometheus::Internal.uri
-    end
-
-    def allow_local_requests_from_web_hooks_and_services?
-      current_settings.allow_local_requests_from_web_hooks_and_services?
     end
 
     def should_return_client?

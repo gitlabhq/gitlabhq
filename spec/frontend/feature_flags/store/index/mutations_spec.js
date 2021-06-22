@@ -1,4 +1,3 @@
-import { mapToScopesViewModel } from '~/feature_flags/store/helpers';
 import * as types from '~/feature_flags/store/index/mutation_types';
 import mutations from '~/feature_flags/store/index/mutations';
 import state from '~/feature_flags/store/index/state';
@@ -47,15 +46,6 @@ describe('Feature flags store Mutations', () => {
 
     it('should set hasError to false', () => {
       expect(stateCopy.hasError).toEqual(false);
-    });
-
-    it('should set featureFlags with the transformed data', () => {
-      const expected = getRequestData.feature_flags.map((flag) => ({
-        ...flag,
-        scopes: mapToScopesViewModel(flag.scopes || []),
-      }));
-
-      expect(stateCopy.featureFlags).toEqual(expected);
     });
 
     it('should set count with the given data', () => {
@@ -131,13 +121,11 @@ describe('Feature flags store Mutations', () => {
     beforeEach(() => {
       stateCopy.featureFlags = getRequestData.feature_flags.map((flag) => ({
         ...flag,
-        scopes: mapToScopesViewModel(flag.scopes || []),
       }));
       stateCopy.count = { featureFlags: 1, userLists: 0 };
 
       mutations[types.UPDATE_FEATURE_FLAG](stateCopy, {
         ...featureFlag,
-        scopes: mapToScopesViewModel(featureFlag.scopes || []),
         active: false,
       });
     });
@@ -146,7 +134,6 @@ describe('Feature flags store Mutations', () => {
       expect(stateCopy.featureFlags).toEqual([
         {
           ...featureFlag,
-          scopes: mapToScopesViewModel(featureFlag.scopes || []),
           active: false,
         },
       ]);
@@ -158,7 +145,6 @@ describe('Feature flags store Mutations', () => {
       stateCopy.featureFlags = getRequestData.feature_flags.map((flag) => ({
         ...flag,
         ...flagState,
-        scopes: mapToScopesViewModel(flag.scopes || []),
       }));
       stateCopy.count = stateCount;
 
@@ -174,7 +160,6 @@ describe('Feature flags store Mutations', () => {
       expect(stateCopy.featureFlags).toEqual([
         {
           ...featureFlag,
-          scopes: mapToScopesViewModel(featureFlag.scopes || []),
           active: false,
         },
       ]);
@@ -185,7 +170,6 @@ describe('Feature flags store Mutations', () => {
     beforeEach(() => {
       stateCopy.featureFlags = getRequestData.feature_flags.map((flag) => ({
         ...flag,
-        scopes: mapToScopesViewModel(flag.scopes || []),
       }));
       mutations[types.RECEIVE_UPDATE_FEATURE_FLAG_ERROR](stateCopy, featureFlag.id);
     });
@@ -194,7 +178,6 @@ describe('Feature flags store Mutations', () => {
       expect(stateCopy.featureFlags).toEqual([
         {
           ...featureFlag,
-          scopes: mapToScopesViewModel(featureFlag.scopes || []),
           active: false,
         },
       ]);
