@@ -4,9 +4,7 @@ group: Certify
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Reply by email
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1173) in GitLab 8.0.
+# Reply by email **(FREE SELF)**
 
 GitLab can be set up to allow users to comment on issues and merge requests by
 replying to notification emails.
@@ -34,10 +32,10 @@ addition, this "reply key" is also added to the `References` header.
 
 When you reply to the notification email, your email client:
 
-- sends the email to the `Reply-To` address it got from the notification email
-- sets the `In-Reply-To` header to the value of the `Message-ID` header from the
+- Sends the email to the `Reply-To` address it got from the notification email
+- Sets the `In-Reply-To` header to the value of the `Message-ID` header from the
   notification email
-- sets the `References` header to the value of the `Message-ID` plus the value of
+- Sets the `References` header to the value of the `Message-ID` plus the value of
   the notification email's `References` header.
 
 ### GitLab receives your reply to the notification email
@@ -45,8 +43,8 @@ When you reply to the notification email, your email client:
 When GitLab receives your reply, it looks for the "reply key" in the
 following headers, in this order:
 
-1. the `To` header
-1. the `References` header
+1. `To` header
+1. `References` header
 
 If it finds a reply key, it leaves your reply as a comment on
 the entity the notification was about (issue, merge request, commit...).

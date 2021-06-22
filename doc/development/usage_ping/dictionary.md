@@ -412,7 +412,7 @@ Count of issues created by the alert bot automatically
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180449_alert_bot_incident_issues.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
@@ -2428,7 +2428,7 @@ Count of incidents (issues where issue_type=incident)
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180447_incident_issues.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
@@ -2440,7 +2440,7 @@ Count of all issues with the label=incident
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180451_incident_labeled_issues.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
@@ -3028,7 +3028,7 @@ Count of issues created automatically on alerts from GitLab-Managed Prometheus
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180441_issues_created_from_alerts.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
@@ -3040,11 +3040,11 @@ Count of issues manually created from the GitLab UI on Sentry errors
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180434_issues_created_from_gitlab_error_tracking_ui.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.issues_created_gitlab_alerts`
 
@@ -3052,7 +3052,7 @@ Count of all issues created from GitLab alerts (bot and non-bot)
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180443_issues_created_gitlab_alerts.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
@@ -3064,7 +3064,7 @@ Count of issues created manually by non-bot users from GitLab alerts
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180445_issues_created_manually_from_alerts.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
@@ -3076,7 +3076,7 @@ Count of issues where a user have added AND removed a zoom meeting using slash c
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180438_issues_using_zoom_quick_actions.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
@@ -3088,7 +3088,7 @@ Count of issues where a user has linked a Zoom meeting
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180436_issues_with_associated_zoom_link.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
@@ -3100,7 +3100,7 @@ Count of issues where a user has embedded a Grafana chart
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180440_issues_with_embedded_grafana_charts_approx.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
@@ -4288,11 +4288,11 @@ Counts of Projects that have incident issues, regardless of status.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180453_projects_creating_incidents.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.projects_custom_issue_tracker_active`
 
@@ -5212,11 +5212,11 @@ Count of projects with alerts created in given time period
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180458_projects_with_alerts_created.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.projects_with_alerts_service_enabled`
 
@@ -5224,7 +5224,7 @@ Count of projects that have enabled the Alerts service
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180456_projects_with_alerts_service_enabled.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `removed`
 
@@ -5236,11 +5236,11 @@ Count of projects with at least 1 enabled integration
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180500_projects_with_enabled_alert_integrations.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.projects_with_error_tracking_enabled`
 
@@ -5248,7 +5248,7 @@ Count of projects that have enabled Error tracking via Sentry
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180454_projects_with_error_tracking_enabled.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
@@ -5810,49 +5810,49 @@ Tiers: `free`, `premium`, `ultimate`
 
 Cumulative count of usages of publish operation
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180502_status_page_incident_publishes.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216180502_status_page_incident_publishes.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `counts.status_page_incident_unpublishes`
 
 Cumulative count of usages of unpublish operation
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180504_status_page_incident_unpublishes.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216180504_status_page_incident_unpublishes.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `counts.status_page_issues`
 
 Issues published to a Status Page
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180507_status_page_issues.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216180507_status_page_issues.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `counts.status_page_projects`
 
 Projects with status page enabled
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180506_status_page_projects.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216180506_status_page_projects.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `counts.successful_deployments`
 
@@ -6628,11 +6628,11 @@ Count of unique users per month to take an action on an alert
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180509_incident_management_alerts_total_unique_counts.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_monthly.aggregated_metrics.incident_management_incidents_total_unique_counts`
 
@@ -6640,11 +6640,11 @@ Count of unique users per month to take an action on an incident
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180511_incident_management_incidents_total_unique_counts.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_monthly.aggregated_metrics.product_analytics_test_metrics_intersection`
 
@@ -6842,25 +6842,25 @@ Tiers: `premium`, `ultimate`
 
 Count of unique users per week to take an action on an alert
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180513_incident_management_alerts_total_unique_counts.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180513_incident_management_alerts_total_unique_counts.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_weekly.aggregated_metrics.incident_management_incidents_total_unique_counts`
 
 Count of unique users per week to take an action on an incident
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180515_incident_management_incidents_total_unique_counts.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180515_incident_management_incidents_total_unique_counts.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_weekly.aggregated_metrics.product_analytics_test_metrics_intersection`
 
@@ -11712,363 +11712,363 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_assigned_monthly`
 
-Missing description
+Count of an alert's assignments per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180533_incident_management_alert_assigned_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_assigned_weekly`
 
-Missing description
+Count of an alert's assignments per week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180532_incident_management_alert_assigned_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180532_incident_management_alert_assigned_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_status_changed_monthly`
 
-Missing description
+Count of an alert's status changes per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180530_incident_management_alert_status_changed_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_status_changed_weekly`
 
-Missing description
+Count of an alert's status changes per week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180528_incident_management_alert_status_changed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180528_incident_management_alert_status_changed_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_todo_monthly`
 
-Missing description
+Count of alerts added to the TODO list per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180537_incident_management_alert_todo_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_todo_weekly`
 
-Missing description
+Count of alerts added to the TODO list per week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180535_incident_management_alert_todo_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180535_incident_management_alert_todo_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_assigned_monthly`
 
-Missing description
+Count of an incidents's assignments per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180552_incident_management_incident_assigned_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_assigned_weekly`
 
-Missing description
+Count of an incidents's assignments per week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180550_incident_management_incident_assigned_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180550_incident_management_incident_assigned_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_change_confidential_monthly`
 
-Missing description
+Count of incidents changed to confidential per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180618_incident_management_incident_change_confidential_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_change_confidential_weekly`
 
-Missing description
+Count of incidents changed to confidential per week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180616_incident_management_incident_change_confidential_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180616_incident_management_incident_change_confidential_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_closed_monthly`
 
-Missing description
+Count of incidents closed per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180548_incident_management_incident_closed_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_closed_weekly`
 
-Missing description
+Count of incidents closed per week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180546_incident_management_incident_closed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180546_incident_management_incident_closed_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_comment_monthly`
 
-Missing description
+Count of comments per month on incidents
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180559_incident_management_incident_comment_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_comment_weekly`
 
-Missing description
+Count of comments per week on incidents
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180558_incident_management_incident_comment_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180558_incident_management_incident_comment_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_created_monthly`
 
-Missing description
+Count of incidents created per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180541_incident_management_incident_created_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_created_weekly`
 
-Missing description
+Count of incidents created per week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180539_incident_management_incident_created_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180539_incident_management_incident_created_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_published_monthly`
 
-Missing description
+Count of published incidents per month
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180607_incident_management_incident_published_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216180607_incident_management_incident_published_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_published_weekly`
 
-Missing description
+Count of published incidents per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180605_incident_management_incident_published_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_relate_monthly`
 
-Missing description
+Count of issues added per month that are related to an incident
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180611_incident_management_incident_relate_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_relate_weekly`
 
-Missing description
+Count of issues added per week that are related to an incident
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180609_incident_management_incident_relate_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180609_incident_management_incident_relate_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_reopened_monthly`
 
-Missing description
+Count of incidents reopened per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180545_incident_management_incident_reopened_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_reopened_weekly`
 
-Missing description
+Count of incidents reopened per week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180543_incident_management_incident_reopened_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180543_incident_management_incident_reopened_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_todo_monthly`
 
-Missing description
+Count of incidents added to the TODO list per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180556_incident_management_incident_todo_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_todo_weekly`
 
-Missing description
+Count of incidents added to the TODO list per week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180554_incident_management_incident_todo_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180554_incident_management_incident_todo_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_unrelate_monthly`
 
-Missing description
+Count of issues removed per month that are related to an incident
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180614_incident_management_incident_unrelate_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_unrelate_weekly`
 
-Missing description
+Count of issues removed per week that are related to an incident
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180612_incident_management_incident_unrelate_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180612_incident_management_incident_unrelate_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_zoom_meeting_monthly`
 
-Missing description
+Count of Zoom meetings about incidents per month
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216180603_incident_management_incident_zoom_meeting_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180603_incident_management_incident_zoom_meeting_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_zoom_meeting_weekly`
 
-Missing description
+Count of Zoom meetings about incidents per week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180601_incident_management_incident_zoom_meeting_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180601_incident_management_incident_zoom_meeting_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly`
 
-Missing description
+Count of total unique incidents per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180622_incident_management_total_unique_counts_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_total_unique_counts_weekly`
 
-Missing description
+Count of total unique incidents per week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180620_incident_management_total_unique_counts_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180620_incident_management_total_unique_counts_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management_alerts.incident_management_alert_create_incident_monthly`
 
@@ -12076,23 +12076,23 @@ Count of unique users per month to create an incident corresponding to an alert
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180625_incident_management_alert_create_incident_monthly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management_alerts.incident_management_alert_create_incident_weekly`
 
 Count of unique users per week to create an incident corresponding to an alert
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180623_incident_management_alert_create_incident_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180623_incident_management_alert_create_incident_weekly.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management_oncall.i_incident_management_oncall_notification_sent_monthly`
 
@@ -16972,13 +16972,13 @@ Tiers: `free`, `premium`, `ultimate`
 
 Projects where Incident SLA is enabled
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180522_projects_incident_sla_enabled.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216180522_projects_incident_sla_enabled.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.monitor.projects_with_alert_incidents`
 
@@ -16986,11 +16986,11 @@ Count of unique projects with an incident from an alert
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180520_projects_with_alert_incidents.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.monitor.projects_with_enabled_alert_integrations_histogram`
 
@@ -17012,11 +17012,11 @@ Projects where error tracking is enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180517_projects_with_error_tracking_enabled.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.monitor.projects_with_incidents`
 
@@ -17024,11 +17024,11 @@ Count of unique projects with an incident
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180518_projects_with_incidents.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.monitor.projects_with_tracing_enabled`
 
@@ -18956,11 +18956,11 @@ Count of unique projects with an incident from an alert created in the last mont
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180526_projects_with_alert_incidents.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.monitor.projects_with_error_tracking_enabled`
 
@@ -18980,11 +18980,11 @@ Count of unique projects with an incident created in the last month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180524_projects_with_incidents.yml)
 
-Group: `group::health`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.monitor.projects_with_tracing_enabled`
 

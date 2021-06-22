@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::Checks::ContainerMoved, :clean_gitlab_redis_shared_state do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
 
@@ -14,27 +14,48 @@ RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
   subject { described_class.new(repository, git_user, protocol, redirect_path) }
 
   describe '.fetch_message' do
+    let(:key) { "redirect_namespace:#{user.id}:#{project.repository.gl_repository}" }
+    let(:legacy_key) { "redirect_namespace:#{user.id}:#{project.id}" }
+
     context 'with a redirect message queue' do
       before do
         subject.add_message
       end
 
       it 'returns the redirect message' do
-        expect(described_class.fetch_message(user.id, project.id)).to eq(subject.message)
+        expect(described_class.fetch_message(user, project.repository)).to eq(subject.message)
       end
 
       it 'deletes the redirect message from redis' do
-        expect(Gitlab::Redis::SharedState.with { |redis| redis.get("redirect_namespace:#{user.id}:#{project.id}") }).not_to be_nil
+        expect(Gitlab::Redis::SharedState.with { |redis| redis.get(key) }).not_to be_nil
 
-        described_class.fetch_message(user.id, project.id)
+        described_class.fetch_message(user, project.repository)
 
-        expect(Gitlab::Redis::SharedState.with { |redis| redis.get("redirect_namespace:#{user.id}:#{project.id}") }).to be_nil
+        expect(Gitlab::Redis::SharedState.with { |redis| redis.get(key) }).to be_nil
+      end
+
+      context 'with a message in the legacy key' do
+        before do
+          Gitlab::Redis::SharedState.with do |redis|
+            redis.set(legacy_key, 'legacy message')
+          end
+        end
+
+        it 'returns and deletes the legacy message' do
+          expect(Gitlab::Redis::SharedState.with { |redis| redis.get(key) }).not_to be_nil
+          expect(Gitlab::Redis::SharedState.with { |redis| redis.get(legacy_key) }).not_to be_nil
+
+          expect(described_class.fetch_message(user, project.repository)).to eq('legacy message')
+
+          expect(Gitlab::Redis::SharedState.with { |redis| redis.get(key) }).to be_nil
+          expect(Gitlab::Redis::SharedState.with { |redis| redis.get(legacy_key) }).to be_nil
+        end
       end
     end
 
     context 'with no redirect message queue' do
       it 'returns nil' do
-        expect(described_class.fetch_message(1, 2)).to be_nil
+        expect(described_class.fetch_message(user, project.repository)).to be_nil
       end
     end
   end
@@ -58,7 +79,7 @@ RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
       shared_examples 'returns redirect message' do
         it do
           message = <<~MSG
-            Project '#{redirect_path}' was moved to '#{project.full_path}'.
+            #{container_label} '#{redirect_path}' was moved to '#{repository.container.full_path}'.
 
             Please update your Git remote:
 
@@ -86,6 +107,7 @@ RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
 
     context 'with project' do
       it_behaves_like 'errors per protocol' do
+        let(:container_label) { 'Project' }
         let(:http_url_to_repo) { project.http_url_to_repo }
         let(:ssh_url_to_repo) { project.ssh_url_to_repo }
       end
@@ -95,6 +117,7 @@ RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
       let(:repository) { project.wiki.repository }
 
       it_behaves_like 'errors per protocol' do
+        let(:container_label) { 'Project wiki' }
         let(:http_url_to_repo) { project.wiki.http_url_to_repo }
         let(:ssh_url_to_repo) { project.wiki.ssh_url_to_repo }
       end
@@ -106,6 +129,7 @@ RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
       let(:repository) { snippet.repository }
 
       it_behaves_like 'errors per protocol' do
+        let(:container_label) { 'Project snippet' }
         let(:http_url_to_repo) { snippet.http_url_to_repo }
         let(:ssh_url_to_repo) { snippet.ssh_url_to_repo }
       end
@@ -116,8 +140,10 @@ RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
 
       let(:repository) { snippet.repository }
 
-      it 'returns nil' do
-        expect(subject.add_message).to be_nil
+      it_behaves_like 'errors per protocol' do
+        let(:container_label) { 'Personal snippet' }
+        let(:http_url_to_repo) { snippet.http_url_to_repo }
+        let(:ssh_url_to_repo) { snippet.ssh_url_to_repo }
       end
     end
   end

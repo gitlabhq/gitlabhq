@@ -1927,6 +1927,9 @@ msgstr ""
 msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
 msgstr ""
 
+msgid "Add a horizontal rule"
+msgstr ""
+
 msgid "Add a line"
 msgstr ""
 

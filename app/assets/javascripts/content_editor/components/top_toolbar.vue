@@ -123,5 +123,14 @@ export default {
       :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
+    <toolbar-button
+      data-testid="horizontal-rule"
+      content-type="horizontalRule"
+      icon-name="dash"
+      editor-command="setHorizontalRule"
+      :label="__('Add a horizontal rule')"
+      :tiptap-editor="contentEditor.tiptapEditor"
+      @execute="trackToolbarControlExecution"
+    />
   </div>
 </template>

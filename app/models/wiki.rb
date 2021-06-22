@@ -7,6 +7,8 @@ class Wiki
   include Gitlab::Utils::StrongMemoize
   include GlobalID::Identification
 
+  extend ActiveModel::Naming
+
   MARKUPS = { # rubocop:disable Style/MultilineIfModifier
     'Markdown' => :markdown,
     'RDoc'     => :rdoc,

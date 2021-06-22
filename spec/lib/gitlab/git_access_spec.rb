@@ -265,7 +265,7 @@ RSpec.describe Gitlab::GitAccess do
     it 'enqueues a redirected message for pushing' do
       push_access_check
 
-      expect(Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)).not_to be_nil
+      expect(Gitlab::Checks::ContainerMoved.fetch_message(user, project.repository)).not_to be_nil
     end
 
     it 'allows push and pull access' do

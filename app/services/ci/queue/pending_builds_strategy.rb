@@ -26,7 +26,8 @@ module Ci
           # this returns builds that are ordered by number of running builds
           # we prefer projects that don't use shared runners at all
           relation
-            .joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_pending_builds.project_id=project_builds.project_id")
+            .with(running_builds_for_shared_runners_cte.to_arel)
+            .joins("LEFT JOIN project_builds ON ci_pending_builds.project_id = project_builds.project_id")
             .order(Arel.sql('COALESCE(project_builds.running_builds, 0) ASC'), 'ci_pending_builds.build_id ASC')
         end
       end
@@ -53,11 +54,14 @@ module Ci
 
       private
 
-      def running_builds_for_shared_runners
-        ::Ci::RunningBuild
+      def running_builds_for_shared_runners_cte
+        running_builds = ::Ci::RunningBuild
           .instance_type
           .group(:project_id)
           .select(:project_id, 'COUNT(*) AS running_builds')
+
+        ::Gitlab::SQL::CTE
+          .new(:project_builds, running_builds, materialized: true)
       end
       # rubocop:enable CodeReuse/ActiveRecord
     end

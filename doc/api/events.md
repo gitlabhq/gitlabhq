@@ -10,20 +10,52 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ### Action Types
 
-Available action types for the `action` parameter are:
+Available types for the `action` parameter, and the resources that might be affected:
 
 - `approved`
-- `created`
-- `updated`
+  - Merge request
 - `closed`
-- `reopened`
-- `pushed`
-- `commented`
-- `merged`
-- `joined`
-- `left`
+  - Epic
+  - Issue
+  - Merge request
+  - Milestone
+- `commented` on any `Noteable` record.
+  - Alert
+  - Commit
+  - Design
+  - Issue
+  - Merge request
+  - Snippet
+- `created`
+  - Design
+  - Epic
+  - Issue
+  - Merge request
+  - Milestone
+  - Project
+  - Wiki page
 - `destroyed`
+  - Design
+  - Milestone
+  - Wiki page
 - `expired`
+  - Project membership
+- `joined`
+  - Project membership
+- `left`
+  - Project membership
+- `merged`
+  - Merge request
+- `pushed` commits to (or deleted commits from) a repository, individually or in bulk.
+  - Project
+- `reopened`
+  - Epic
+  - Issue
+  - Merge request
+  - Milestone
+- `updated`
+  - Design
+  - Wiki page
 
 Note that these options are in lower case.
 

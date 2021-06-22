@@ -5,8 +5,8 @@ require 'fileutils'
 module Tasks
   module Gitlab
     module Assets
-      FOSS_ASSET_FOLDERS = %w[app/assets app/views fixtures/emojis vendor/assets/javascripts].freeze
-      EE_ASSET_FOLDERS = %w[ee/app/assets ee/app/views].freeze
+      FOSS_ASSET_FOLDERS = %w[app/assets fixtures/emojis vendor/assets/javascripts].freeze
+      EE_ASSET_FOLDERS = %w[ee/app/assets].freeze
       JS_ASSET_PATTERNS = %w[*.js config/**/*.js].freeze
       JS_ASSET_FILES = %w[package.json yarn.lock].freeze
       MASTER_MD5_HASH_FILE = 'master-assets-hash.txt'

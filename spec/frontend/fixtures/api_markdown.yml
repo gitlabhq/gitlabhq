@@ -10,6 +10,8 @@
   markdown: '`code`'
 - name: strike
   markdown: '~~del~~'
+- name: horizontal_rule
+  markdown: '---'
 - name: link
   markdown: '[GitLab](https://gitlab.com)'
 - name: code_block

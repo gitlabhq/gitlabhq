@@ -51,6 +51,7 @@ FactoryBot.define do
 
     trait :unauthenticated do
       author_id { -1 }
+      author_name { 'An unauthenticated user' }
       details do
         {
           custom_message: 'Custom action',

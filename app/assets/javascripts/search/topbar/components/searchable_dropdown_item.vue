@@ -1,5 +1,5 @@
 <script>
-import { GlDropdownItem, GlAvatar } from '@gitlab/ui';
+import { GlDropdownItem, GlAvatar, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 
@@ -8,6 +8,9 @@ export default {
   components: {
     GlDropdownItem,
     GlAvatar,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     item: {
@@ -62,8 +65,7 @@ export default {
         :size="32"
       />
       <div class="gl-display-flex gl-flex-direction-column">
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <span data-testid="item-title" v-html="highlightedItemName">{{ item[name] }}</span>
+        <span v-safe-html="highlightedItemName" data-testid="item-title"></span>
         <span class="gl-font-sm gl-text-gray-700" data-testid="item-namespace">{{
           truncatedNamespace
         }}</span>

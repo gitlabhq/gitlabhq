@@ -1176,59 +1176,68 @@ RSpec.describe API::Internal::Base do
       allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(user)
     end
 
-    context 'with Project' do
-      it 'executes PostReceiveService' do
-        message = <<~MESSAGE.strip
-          To create a merge request for #{branch_name}, visit:
-            http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}
-        MESSAGE
+    shared_examples 'runs post-receive hooks' do
+      let(:gl_repository) { container.repository.gl_repository }
+      let(:messages) { [] }
 
+      it 'executes PostReceiveService' do
         subject
 
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq({
-          'messages' => [{ 'message' => message, 'type' => 'basic' }],
+          'messages' => messages,
           'reference_counter_decreased' => true
         })
       end
 
+      it 'tries to notify that the container has moved' do
+        expect(Gitlab::Checks::ContainerMoved).to receive(:fetch_message).with(user, container.repository)
+
+        subject
+      end
+
       it_behaves_like 'storing arguments in the application context' do
-        let(:expected_params) { { user: user.username, project: project.full_path } }
+        let(:expected_params) { expected_context }
+      end
+    end
+
+    context 'with Project' do
+      it_behaves_like 'runs post-receive hooks' do
+        let(:container) { project }
+        let(:expected_context) { { user: user.username, project: project.full_path } }
+
+        let(:messages) do
+          [
+            {
+              'message' => <<~MESSAGE.strip,
+                To create a merge request for #{branch_name}, visit:
+                  http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}
+              MESSAGE
+              'type' => 'basic'
+            }
+          ]
+        end
       end
     end
 
     context 'with PersonalSnippet' do
-      let(:gl_repository) { "snippet-#{personal_snippet.id}" }
-
-      it 'executes PostReceiveService' do
-        subject
-
-        expect(json_response).to eq({
-          'messages' => [],
-          'reference_counter_decreased' => true
-        })
-      end
-
-      it_behaves_like 'storing arguments in the application context' do
-        let(:expected_params) { { user: key.user.username } }
-        let(:gl_repository) { "snippet-#{personal_snippet.id}" }
+      it_behaves_like 'runs post-receive hooks' do
+        let(:container) { personal_snippet }
+        let(:expected_context) { { user: key.user.username } }
       end
     end
 
     context 'with ProjectSnippet' do
-      let(:gl_repository) { "snippet-#{project_snippet.id}" }
-
-      it 'executes PostReceiveService' do
-        subject
-
-        expect(json_response).to eq({
-          'messages' => [],
-          'reference_counter_decreased' => true
-        })
+      it_behaves_like 'runs post-receive hooks' do
+        let(:container) { project_snippet }
+        let(:expected_context) { { user: key.user.username, project: project_snippet.project.full_path } }
       end
+    end
 
-      it_behaves_like 'storing arguments in the application context' do
-        let(:expected_params) { { user: key.user.username, project: project_snippet.project.full_path } }
-        let(:gl_repository) { "snippet-#{project_snippet.id}" }
+    context 'with ProjectWiki' do
+      it_behaves_like 'runs post-receive hooks' do
+        let(:container) { project.wiki }
+        let(:expected_context) { { user: key.user.username, project: project.full_path } }
       end
     end
 
@@ -1236,7 +1245,7 @@ RSpec.describe API::Internal::Base do
       it 'does not try to notify that project moved' do
         allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(nil)
 
-        expect(Gitlab::Checks::ProjectMoved).not_to receive(:fetch_message)
+        expect(Gitlab::Checks::ContainerMoved).not_to receive(:fetch_message)
 
         subject
 
@@ -1244,33 +1253,17 @@ RSpec.describe API::Internal::Base do
       end
     end
 
-    context 'when project is nil' do
-      context 'with Project' do
-        let(:gl_repository) { 'project-foo' }
+    context 'when container is nil' do
+      let(:gl_repository) { 'project-foo' }
 
-        it 'does not try to notify that project moved' do
-          allow(Gitlab::GlRepository).to receive(:parse).and_return([nil, nil, Gitlab::GlRepository::PROJECT])
+      it 'does not try to notify that project moved' do
+        allow(Gitlab::GlRepository).to receive(:parse).and_return([nil, nil, Gitlab::GlRepository::PROJECT])
 
-          expect(Gitlab::Checks::ProjectMoved).not_to receive(:fetch_message)
+        expect(Gitlab::Checks::ContainerMoved).not_to receive(:fetch_message)
 
-          subject
+        subject
 
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      context 'with PersonalSnippet' do
-        let(:gl_repository) { "snippet-#{personal_snippet.id}" }
-
-        it 'does not try to notify that project moved' do
-          allow(Gitlab::GlRepository).to receive(:parse).and_return([personal_snippet, nil, Gitlab::GlRepository::SNIPPET])
-
-          expect(Gitlab::Checks::ProjectMoved).not_to receive(:fetch_message)
-
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
