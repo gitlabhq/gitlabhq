@@ -13,7 +13,7 @@ module Gitlab
       # author - An instance of `Gitlab::GithubImport::Representation::User`
       # exists - Boolean that indicates the user exists in the GitLab database.
       def initialize(text, author, exists = false)
-        @text = text
+        @text = text.to_s
         @author = author
         @exists = exists
       end

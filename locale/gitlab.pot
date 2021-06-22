@@ -15376,9 +15376,6 @@ msgstr ""
 msgid "Group navigation"
 msgstr ""
 
-msgid "Group overview"
-msgstr ""
-
 msgid "Group overview content"
 msgstr ""
 
@@ -25262,9 +25259,6 @@ msgstr ""
 msgid "Project description (optional)"
 msgstr ""
 
-msgid "Project details"
-msgstr ""
-
 msgid "Project does not exist or you don't have permission to perform this action"
 msgstr ""
 
@@ -25311,9 +25305,6 @@ msgid "Project navigation"
 msgstr ""
 
 msgid "Project order will not be saved as local storage is not available."
-msgstr ""
-
-msgid "Project overview"
 msgstr ""
 
 msgid "Project path"
@@ -31069,9 +31060,6 @@ msgid "Subgroup milestone"
 msgstr ""
 
 msgid "Subgroup navigation"
-msgstr ""
-
-msgid "Subgroup overview"
 msgstr ""
 
 msgid "SubgroupCreationLevel|Allowed to create subgroups"

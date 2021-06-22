@@ -71,7 +71,7 @@ configure cluster:
 ### Setting the environment scope
 
 [Environment
-scopes](../project/clusters/index.md#setting-the-environment-scope)
+scopes](../project/clusters/multiple_kubernetes_clusters.md#setting-the-environment-scope)
 are usable when associating multiple clusters to the same management
 project.
 

@@ -434,28 +434,74 @@ RSpec.describe Projects::TransferService do
   end
 
   describe 'refreshing project authorizations' do
+    let(:old_group) { create(:group) }
+    let!(:project) { create(:project, namespace: old_group) }
+    let(:member_of_old_group) { create(:user) }
     let(:group) { create(:group) }
-    let(:owner) { project.namespace.owner }
-    let(:group_member) { create(:user) }
+    let(:member_of_new_group) { create(:user) }
 
     before do
-      group.add_user(owner, GroupMember::MAINTAINER)
-      group.add_user(group_member, GroupMember::DEVELOPER)
+      old_group.add_developer(member_of_old_group)
+      group.add_maintainer(member_of_new_group)
+
+      # Add the executing user as owner in both groups, so that
+      # transfer can be executed.
+      old_group.add_owner(user)
+      group.add_owner(user)
     end
 
-    it 'refreshes the permissions of the old and new namespace' do
-      execute_transfer
-
-      expect(group_member.authorized_projects).to include(project)
-      expect(owner.authorized_projects).to include(project)
-    end
-
-    it 'only schedules a single job for every user' do
-      expect_next_instance_of(UserProjectAccessChangedService, [owner.id, group_member.id]) do |service|
-        expect(service).to receive(:execute).once.and_call_original
+    context 'when the feature flag `specialized_worker_for_project_transfer_auth_recalculation` is enabled' do
+      before do
+        stub_feature_flags(specialized_worker_for_project_transfer_auth_recalculation: true)
       end
 
-      execute_transfer
+      it 'calls AuthorizedProjectUpdate::ProjectRecalculateWorker to update project authorizations' do
+        expect(AuthorizedProjectUpdate::ProjectRecalculateWorker)
+          .to receive(:perform_async).with(project.id)
+
+        execute_transfer
+      end
+
+      it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
+        user_ids = [user.id, member_of_old_group.id, member_of_new_group.id].map { |id| [id] }
+
+        expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
+          receive(:bulk_perform_in)
+            .with(1.hour,
+                  user_ids,
+                  batch_delay: 30.seconds, batch_size: 100)
+        )
+
+        subject
+      end
+
+      it 'refreshes the permissions of the members of the old and new namespace', :sidekiq_inline do
+        expect { execute_transfer }
+          .to change { member_of_old_group.authorized_projects.include?(project) }.from(true).to(false)
+          .and change { member_of_new_group.authorized_projects.include?(project) }.from(false).to(true)
+      end
+    end
+
+    context 'when the feature flag `specialized_worker_for_project_transfer_auth_recalculation` is disabled' do
+      before do
+        stub_feature_flags(specialized_worker_for_project_transfer_auth_recalculation: false)
+      end
+
+      it 'calls UserProjectAccessChangedService to update project authorizations' do
+        user_ids = [user.id, member_of_old_group.id, member_of_new_group.id]
+
+        expect_next_instance_of(UserProjectAccessChangedService, user_ids) do |service|
+          expect(service).to receive(:execute)
+        end
+
+        execute_transfer
+      end
+
+      it 'refreshes the permissions of the members of the old and new namespace' do
+        expect { execute_transfer }
+          .to change { member_of_old_group.authorized_projects.include?(project) }.from(true).to(false)
+          .and change { member_of_new_group.authorized_projects.include?(project) }.from(false).to(true)
+      end
     end
   end
 

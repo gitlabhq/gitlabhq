@@ -8,8 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 GitLab has an advanced log system where everything is logged, so you
 can analyze your instance using various system log files. In addition to
-system log files, GitLab Enterprise Edition provides Audit Events.
-Find more about them [in Audit Events documentation](audit_events.md).
+system log files, GitLab Enterprise Edition provides [Audit Events](audit_events.md).
 
 System log files are typically plain text in a standard log file format.
 This guide talks about how to read and use these system log files.
@@ -30,45 +29,48 @@ The logs for a given service may be managed and rotated by:
 - `logrotate` and `svlogd`
 - Or not at all
 
-The table below includes information about what is responsible for managing and rotating logs for
+The following table includes information about what's responsible for managing and rotating logs for
 the included services. Logs
 [managed by `svlogd`](https://docs.gitlab.com/omnibus/settings/logs.html#runit-logs)
 are written to a file called `current`. The `logrotate` service built into GitLab
 [manages all logs](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate)
 except those captured by `runit`.
 
-| Log Type                                        | Managed by logrotate | Managed by svlogd/runit |
-| ----------------------------------------------- | -------------------- | ----------------------- |
-| [Alertmanager Logs](#alertmanager-logs)         | N                    | Y                       |
-| [Crond Logs](#crond-logs)                       | N                    | Y                       |
-| [Gitaly](#gitaly-logs)                          | Y                    | Y                       |
-| [GitLab Exporter For Omnibus](#gitlab-exporter) | N                    | Y                       |
-| [GitLab Pages Logs](#pages-logs)                | Y                    | Y                       |
-| GitLab Rails                                    | Y                    | N                       |
-| [GitLab Shell Logs](#gitlab-shelllog)           | Y                    | N                       |
-| [Grafana Logs](#grafana-logs)                   | N                    | Y                       |
-| [LogRotate Logs](#logrotate-logs)               | N                    | Y                       |
-| [Mailroom](#mail_room_jsonlog-default)          | Y                    | Y                       |
-| [NGINX](#nginx-logs)                            | Y                    | Y                       |
-| [PostgreSQL Logs](#postgresql-logs)             | N                    | Y                       |
-| [Prometheus Logs](#prometheus-logs)             | N                    | Y                       |
-| [Puma](#puma-logs)                              | Y                    | Y                       |
-| [Redis Logs](#redis-logs)                       | N                    | Y                       |
-| [Registry Logs](#registry-logs)                 | N                    | Y                       |
-| [Workhorse Logs](#workhorse-logs)               | Y                    | Y                       |
+| Log type                                        | Managed by logrotate   | Managed by svlogd/runit |
+|-------------------------------------------------|------------------------|-------------------------|
+| [Alertmanager Logs](#alertmanager-logs)         | **{dotted-circle}** No | **{check-circle}** Yes  |
+| [Crond Logs](#crond-logs)                       | **{dotted-circle}** No | **{check-circle}** Yes  |
+| [Gitaly](#gitaly-logs)                          | **{check-circle}** Yes | **{check-circle}** Yes  |
+| [GitLab Exporter for Omnibus](#gitlab-exporter) | **{dotted-circle}** No | **{check-circle}** Yes  |
+| [GitLab Pages Logs](#pages-logs)                | **{check-circle}** Yes | **{check-circle}** Yes  |
+| GitLab Rails                                    | **{check-circle}** Yes | **{dotted-circle}** No  |
+| [GitLab Shell Logs](#gitlab-shelllog)           | **{check-circle}** Yes | **{dotted-circle}** No  |
+| [Grafana Logs](#grafana-logs)                   | **{dotted-circle}** No | **{check-circle}** Yes  |
+| [LogRotate Logs](#logrotate-logs)               | **{dotted-circle}** No | **{check-circle}** Yes  |
+| [Mailroom](#mail_room_jsonlog-default)          | **{check-circle}** Yes | **{check-circle}** Yes  |
+| [NGINX](#nginx-logs)                            | **{check-circle}** Yes | **{check-circle}** Yes  |
+| [PostgreSQL Logs](#postgresql-logs)             | **{dotted-circle}** No | **{check-circle}** Yes  |
+| [Prometheus Logs](#prometheus-logs)             | **{dotted-circle}** No | **{check-circle}** Yes  |
+| [Puma](#puma-logs)                              | **{check-circle}** Yes | **{check-circle}** Yes  |
+| [Redis Logs](#redis-logs)                       | **{dotted-circle}** No | **{check-circle}** Yes  |
+| [Registry Logs](#registry-logs)                 | **{dotted-circle}** No | **{check-circle}** Yes  |
+| [Workhorse Logs](#workhorse-logs)               | **{check-circle}** Yes | **{check-circle}** Yes  |
 
 ## `production_json.log`
 
-This file lives in `/var/log/gitlab/gitlab-rails/production_json.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/production_json.log` for
-installations from source. When GitLab is running in an environment
-other than production, the corresponding log file is shown here.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/production_json.log`
+- Installations from source: `/home/git/gitlab/log/production_json.log`
+
+When GitLab is running in an environment other than production,
+the corresponding log file is shown here.
 
 It contains a structured log for Rails controller requests received from
-GitLab, thanks to [Lograge](https://github.com/roidrage/lograge/). Note that
-requests from the API are logged to a separate file in `api_json.log`.
+GitLab, thanks to [Lograge](https://github.com/roidrage/lograge/).
+Requests from the API are logged to a separate file in `api_json.log`.
 
-Each line contains a JSON line that can be ingested by services like Elasticsearch and Splunk.
+Each line contains JSON that can be ingested by services like Elasticsearch and Splunk.
 Line breaks were added to examples for legibility:
 
 ```json
@@ -103,39 +105,39 @@ This example was a GET request for a specific
 issue. Each line also contains performance data, with times in
 seconds:
 
-1. `duration_s`: total time taken to retrieve the request
-1. `queue_duration_s`: total time that the request was queued inside GitLab Workhorse
-1. `view_duration_s`: total time taken inside the Rails views
-1. `db_duration_s`: total time to retrieve data from PostgreSQL
-1. `cpu_s`: total time spent on CPU
-1. `gitaly_duration_s`: total time taken by Gitaly calls
-1. `gitaly_calls`: total number of calls made to Gitaly
-1. `redis_calls`: total number of calls made to Redis
-1. `redis_duration_s`: total time to retrieve data from Redis
-1. `redis_read_bytes`: total bytes read from Redis
-1. `redis_write_bytes`: total bytes written to Redis
-1. `redis_<instance>_calls`: total number of calls made to a Redis instance
-1. `redis_<instance>_duration_s`: total time to retrieve data from a Redis instance
-1. `redis_<instance>_read_bytes`: total bytes read from a Redis instance
-1. `redis_<instance>_write_bytes`: total bytes written to a Redis instance
+- `duration_s`: Total time to retrieve the request
+- `queue_duration_s`: Total time the request was queued inside GitLab Workhorse
+- `view_duration_s`: Total time inside the Rails views
+- `db_duration_s`: Total time to retrieve data from PostgreSQL
+- `cpu_s`: Total time spent on CPU
+- `gitaly_duration_s`: Total time by Gitaly calls
+- `gitaly_calls`: Total number of calls made to Gitaly
+- `redis_calls`: Total number of calls made to Redis
+- `redis_duration_s`: Total time to retrieve data from Redis
+- `redis_read_bytes`: Total bytes read from Redis
+- `redis_write_bytes`: Total bytes written to Redis
+- `redis_<instance>_calls`: Total number of calls made to a Redis instance
+- `redis_<instance>_duration_s`: Total time to retrieve data from a Redis instance
+- `redis_<instance>_read_bytes`: Total bytes read from a Redis instance
+- `redis_<instance>_write_bytes`: Total bytes written to a Redis instance
 
-User clone and fetch activity using HTTP transport appears in this log as `action: git_upload_pack`.
+User clone and fetch activity using HTTP transport appears in the log as `action: git_upload_pack`.
 
 In addition, the log contains the originating IP address,
 (`remote_ip`), the user's ID (`user_id`), and username (`username`).
 
-Some endpoints such as `/search` may make requests to Elasticsearch if using
+Some endpoints (such as `/search`) may make requests to Elasticsearch if using
 [Advanced Search](../user/search/advanced_search.md). These
 additionally log `elasticsearch_calls` and `elasticsearch_call_duration_s`,
 which correspond to:
 
-1. `elasticsearch_calls`: total number of calls to Elasticsearch
-1. `elasticsearch_duration_s`: total time taken by Elasticsearch calls
-1. `elasticsearch_timed_out_count`: total number of calls to Elasticsearch that
+- `elasticsearch_calls`: Total number of calls to Elasticsearch
+- `elasticsearch_duration_s`: Total time taken by Elasticsearch calls
+- `elasticsearch_timed_out_count`: Total number of calls to Elasticsearch that
    timed out and therefore returned partial results
 
-ActionCable connection and subscription events are also logged to this file and they follow the same
-format above. The `method`, `path`, and `format` fields are not applicable, and are always empty.
+ActionCable connection and subscription events are also logged to this file and they follow the
+previous format. The `method`, `path`, and `format` fields are not applicable, and are always empty.
 The ActionCable connection or channel class is used as the `controller`.
 
 ```json
@@ -206,10 +208,13 @@ Starting with GitLab 12.5, if an error occurs, an
 
 ## `production.log`
 
-This file lives in `/var/log/gitlab/gitlab-rails/production.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/production.log` for
-installations from source. (When GitLab is running in an environment
-other than production, the corresponding log file is shown here.)
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/production.log`
+- Installations from source: `/home/git/gitlab/log/production.log`
+
+When GitLab is running in an environment other than production,
+the corresponding log file is shown here.
 
 It contains information about all performed requests. You can see the
 URL and type of request, IP address, and what parts of code were
@@ -244,9 +249,10 @@ The request was processed by `Projects::TreeController`.
 
 > Introduced in GitLab 10.0.
 
-This file lives in
-`/var/log/gitlab/gitlab-rails/api_json.log` for Omnibus GitLab packages, or in
-`/home/git/gitlab/log/api_json.log` for installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/api_json.log`
+- Installations from source: `/home/git/gitlab/log/api_json.log`
 
 It helps you see requests made directly to the API. For example:
 
@@ -274,24 +280,25 @@ It helps you see requests made directly to the API. For example:
 ```
 
 This entry shows an internal endpoint accessed to check whether an
-associated SSH key can download the project in question via a `git fetch` or
+associated SSH key can download the project in question by using a `git fetch` or
 `git clone`. In this example, we see:
 
-1. `duration`: total time in milliseconds taken to retrieve the request
-1. `queue_duration`: total time in milliseconds that the request was queued inside GitLab Workhorse
-1. `method`: The HTTP method used to make the request
-1. `path`: The relative path of the query
-1. `params`: Key-value pairs passed in a query string or HTTP body. Sensitive parameters (such as passwords and tokens) are filtered out.
-1. `ua`: The User-Agent of the requester
+- `duration`: Total time in milliseconds to retrieve the request
+- `queue_duration`: Total time in milliseconds the request was queued inside GitLab Workhorse
+- `method`: The HTTP method used to make the request
+- `path`: The relative path of the query
+- `params`: Key-value pairs passed in a query string or HTTP body (sensitive parameters, such as passwords and tokens, are filtered out)
+- `ua`: The User-Agent of the requester
 
 ## `application.log`
 
-This file lives in `/var/log/gitlab/gitlab-rails/application.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/application.log` for
-installations from source.
+Depending on your installation method, this file is located at:
 
-It helps you discover events happening in your instance such as user creation,
-project removing and so on. For example:
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/application.log`
+- Installations from source: `/home/git/gitlab/log/application.log`
+
+It helps you discover events happening in your instance such as user creation
+and project removal. For example:
 
 ```plaintext
 October 06, 2014 11:56: User "Administrator" (admin@example.com) was created
@@ -305,11 +312,12 @@ October 07, 2014 11:25: Project "project133" was removed
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22812) in GitLab 12.7.
 
-This file lives in `/var/log/gitlab/gitlab-rails/application_json.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/application_json.log` for
-installations from source.
+Depending on your installation method, this file is located at:
 
-It contains the JSON version of the logs in `application.log` like the example below:
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/application_json.log`
+- Installations from source: `/home/git/gitlab/log/application_json.log`
+
+It contains the JSON version of the logs in `application.log`, like this example:
 
 ```json
 {
@@ -328,11 +336,14 @@ It contains the JSON version of the logs in `application.log` like the example b
 
 ## `integrations_json.log`
 
-This file lives in `/var/log/gitlab/gitlab-rails/integrations_json.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/integrations_json.log` for
-installations from source.
+Depending on your installation method, this file is located at:
 
-It contains information about [integrations](../user/project/integrations/overview.md) activities such as Jira, Asana, and Irker services. It uses JSON format like the example below:
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/integrations_json.log`
+- Installations from source: `/home/git/gitlab/log/integrations_json.log`
+
+It contains information about [integration](../user/project/integrations/overview.md)
+activities, such as Jira, Asana, and Irker services. It uses JSON format,
+like this example:
 
 ```json
 {
@@ -360,16 +371,16 @@ It contains information about [integrations](../user/project/integrations/overvi
 
 > Introduced in GitLab 11.6.
 
-This file lives in
-`/var/log/gitlab/gitlab-rails/kubernetes.log` for Omnibus GitLab
-packages or in `/home/git/gitlab/log/kubernetes.log` for
-installations from source.
+Depending on your installation method, this file is located at:
 
-It logs information related to the Kubernetes Integration including errors
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/kubernetes.log`
+- Installations from source: `/home/git/gitlab/log/kubernetes.log`
+
+It logs information related to the Kubernetes Integration, including errors
 during installing cluster applications on your managed Kubernetes
 clusters.
 
-Each line contains a JSON line that can be ingested by services like Elasticsearch and Splunk.
+Each line contains JSON that can be ingested by services like Elasticsearch and Splunk.
 Line breaks have been added to the following example for clarity:
 
 ```json
@@ -399,9 +410,10 @@ Line breaks have been added to the following example for clarity:
 
 ## `git_json.log`
 
-This file lives in `/var/log/gitlab/gitlab-rails/git_json.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/git_json.log` for
-installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/git_json.log`
+- Installations from source: `/home/git/gitlab/log/git_json.log`
 
 After GitLab version 12.2, this file was renamed from `githost.log` to
 `git_json.log` and stored in JSON format.
@@ -425,14 +437,15 @@ only. For example:
 
 NOTE:
 GitLab Free tracks a small number of different audit events.
-[GitLab Premium](https://about.gitlab.com/pricing/) tracks many more.
+GitLab Premium tracks many more.
 
-This file lives in `/var/log/gitlab/gitlab-rails/audit_json.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/audit_json.log` for
-installations from source.
+Depending on your installation method, this file is located at:
 
-Changes to group or project settings and memberships (`target_details`) are logged to this file.
-For example:
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/audit_json.log`
+- Installations from source: `/home/git/gitlab/log/audit_json.log`
+
+Changes to group or project settings and memberships (`target_details`)
+are logged to this file. For example:
 
 ```json
 {
@@ -454,15 +467,17 @@ For example:
 ## Sidekiq Logs
 
 NOTE:
-In Omnibus GitLab `12.10` or earlier, the Sidekiq log lives in `/var/log/gitlab/gitlab-rails/sidekiq.log`.
+In Omnibus GitLab `12.10` or earlier, the Sidekiq log is at `/var/log/gitlab/gitlab-rails/sidekiq.log`.
 
-For Omnibus installations, some Sidekiq logs reside in `/var/log/gitlab/sidekiq/current` and as follows.
+For Omnibus GitLab installations, some Sidekiq logs are in `/var/log/gitlab/sidekiq/current`
+and as follows.
 
 ### `sidekiq.log`
 
-This file lives in `/var/log/gitlab/sidekiq/current` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq.log` for
-installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/sidekiq/current`
+- Installations from source: `/home/git/gitlab/log/sidekiq.log`
 
 GitLab uses background jobs for processing tasks which can take a long
 time. All information about processing these jobs are written down to
@@ -473,7 +488,7 @@ this file. For example:
 2014-06-10T18:18:26Z 14299 TID-55uqo INFO: Booting Sidekiq 3.0.0 with redis options {:url=>"redis://localhost:6379/0", :namespace=>"sidekiq"}
 ```
 
-Instead of the format above, you can opt to generate JSON logs for
+Instead of the previous format, you can opt to generate JSON logs for
 Sidekiq. For example:
 
 ```json
@@ -506,7 +521,7 @@ For Omnibus GitLab installations, add the configuration option:
 sidekiq['log_format'] = 'json'
 ```
 
-For source installations, edit the `gitlab.yml` and set the Sidekiq
+For installations from source, edit the `gitlab.yml` and set the Sidekiq
 `log_format` configuration option:
 
 ```yaml
@@ -519,9 +534,10 @@ For source installations, edit the `gitlab.yml` and set the Sidekiq
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26586) in GitLab 12.9.
 
-This file lives in `/var/log/gitlab/gitlab-rails/sidekiq_client.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq_client.log` for
-installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/sidekiq_client.log`
+- Installations from source: `/home/git/gitlab/log/sidekiq_client.log`
 
 This file contains logging information about jobs before Sidekiq starts
 processing them, such as before being enqueued.
@@ -532,11 +548,15 @@ you've configured this for Sidekiq as mentioned above.
 
 ## `gitlab-shell.log`
 
-GitLab Shell is used by GitLab for executing Git commands and provide SSH access to Git repositories.
+GitLab Shell is used by GitLab for executing Git commands and provide SSH
+access to Git repositories.
 
 ### For GitLab versions 12.10 and up
 
-For GitLab version 12.10 and later, there are 2 `gitlab-shell.log` files. Information containing `git-{upload-pack,receive-pack}` requests lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log`. Information about hooks to GitLab Shell from Gitaly lives in `/var/log/gitlab/gitaly/gitlab-shell.log`.
+For GitLab version 12.10 and later, there are two `gitlab-shell.log` files.
+Information containing `git-{upload-pack,receive-pack}` requests is at
+`/var/log/gitlab/gitlab-shell/gitlab-shell.log`. Information about hooks to
+GitLab Shell from Gitaly is at `/var/log/gitlab/gitaly/gitlab-shell.log`.
 
 Example log entries for `/var/log/gitlab/gitlab-shell/gitlab-shell.log`:
 
@@ -589,7 +609,11 @@ Example log entries for `/var/log/gitlab/gitaly/gitlab-shell.log`:
 
 ### For GitLab versions 12.5 through 12.9
 
-For GitLab 12.5 to 12.9, this file lives in `/var/log/gitlab/gitaly/gitlab-shell.log` for Omnibus GitLab packages or in `/home/git/gitaly/gitlab-shell.log` for installations from source.
+For GitLab 12.5 to 12.9, depending on your installation method, this
+file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitaly/gitlab-shell.log`
+- Installation from source: `/home/git/gitaly/gitlab-shell.log`
 
 Example log entries:
 
@@ -608,7 +632,7 @@ Example log entries:
 
 ### For GitLab 12.5 and earlier
 
-For GitLab 12.5 and earlier, the file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log`.
+For GitLab 12.5 and earlier, the file is at `/var/log/gitlab/gitlab-shell/gitlab-shell.log`.
 
 Example log entries:
 
@@ -617,51 +641,64 @@ I, [2015-02-13T06:17:00.671315 #9291]  INFO -- : Adding project root/example.git
 I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory and symlinking global hooks directory for /var/opt/gitlab/git-data/repositories/root/example.git.
 ```
 
-User clone/fetch activity using SSH transport appears in this log as `executing git command <gitaly-upload-pack...`.
+User clone/fetch activity using SSH transport appears in this log as
+`executing git command <gitaly-upload-pack...`.
 
 ## Gitaly Logs
 
-This file lives in `/var/log/gitlab/gitaly/current` and is produced by [runit](http://smarden.org/runit/). `runit` is packaged with Omnibus GitLab and a brief explanation of its purpose is available [in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/architecture/#runit). [Log files are rotated](http://smarden.org/runit/svlogd.8.html), renamed in Unix timestamp format, and `gzip`-compressed (like `@1584057562.s`).
+This file is in `/var/log/gitlab/gitaly/current` and is produced by [runit](http://smarden.org/runit/).
+`runit` is packaged with Omnibus GitLab and a brief explanation of its purpose
+is available [in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/architecture/#runit).
+[Log files are rotated](http://smarden.org/runit/svlogd.8.html), renamed in
+Unix timestamp format, and `gzip`-compressed (like `@1584057562.s`).
 
 ### `grpc.log`
 
-This file lives in `/var/log/gitlab/gitlab-rails/grpc.log` for Omnibus GitLab packages. Native [gRPC](https://grpc.io/) logging used by Gitaly.
+This file is at `/var/log/gitlab/gitlab-rails/grpc.log` for Omnibus GitLab
+packages. Native [gRPC](https://grpc.io/) logging used by Gitaly.
 
 ### `gitaly_ruby_json.log`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2678) in GitLab 13.6.
 
-This file lives in `/var/log/gitlab/gitaly/gitaly_ruby_json.log` and is produced by [`gitaly-ruby`](gitaly/reference.md#gitaly-ruby). It contains an access log of gRPC calls made by Gitaly to `gitaly-ruby`.
+This file is at `/var/log/gitlab/gitaly/gitaly_ruby_json.log` and is
+produced by [`gitaly-ruby`](gitaly/reference.md#gitaly-ruby). It contains an
+access log of gRPC calls made by Gitaly to `gitaly-ruby`.
 
 ## Puma Logs
 
 ### `puma_stdout.log`
 
-This file lives in `/var/log/gitlab/puma/puma_stdout.log` for
-Omnibus GitLab packages, and `/home/git/gitlab/log/puma_stdout.log` for
-installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/puma/puma_stdout.log`
+- Installations from source: `/home/git/gitlab/log/puma_stdout.log`
 
 ### `puma_stderr.log`
 
-This file lives in `/var/log/gitlab/puma/puma_stderr.log` for
-Omnibus GitLab packages, or in `/home/git/gitlab/log/puma_stderr.log` for
-installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/puma/puma_stderr.log`
+- Installations from source: `/home/git/gitlab/log/puma_stderr.log`
 
 ## `repocheck.log`
 
-This file lives in `/var/log/gitlab/gitlab-rails/repocheck.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/repocheck.log` for
-installations from source.
+Depending on your installation method, this file is located at:
 
-It logs information whenever a [repository check is run](repository_checks.md) on a project.
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/repocheck.log`
+- Installations from source: `/home/git/gitlab/log/repocheck.log`
+
+It logs information whenever a [repository check is run](repository_checks.md)
+on a project.
 
 ## `importer.log`
 
 > Introduced in GitLab 11.3.
 
-This file lives in `/var/log/gitlab/gitlab-rails/importer.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/importer.log` for
-installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/importer.log`
+- Installations from source: `/home/git/gitlab/log/importer.log`
 
 It logs the progress of the import process.
 
@@ -669,9 +706,10 @@ It logs the progress of the import process.
 
 > Introduced in GitLab 13.1.
 
-This file lives in `/var/log/gitlab/gitlab-rails/exporter.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/exporter.log` for
-installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/exporter.log`
+- Installations from source: `/home/git/gitlab/log/exporter.log`
 
 It logs the progress of the export process.
 
@@ -679,10 +717,10 @@ It logs the progress of the export process.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 13.7.
 
-This file's location depends on how you installed GitLab:
+Depending on your installation method, this file is located at:
 
-- For Omnibus GitLab packages: `/var/log/gitlab/gitlab-rails/features_json.log`
-- For installations from source: `/home/git/gitlab/log/features_json.log`
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/features_json.log`
+- Installations from source: `/home/git/gitlab/log/features_json.log`
 
 The modification events from [Feature flags in development of GitLab](../development/feature_flags/index.md)
 are recorded in this file. For example:
@@ -704,27 +742,29 @@ are recorded in this file. For example:
 
 > Introduced in GitLab 12.0.
 
-This file lives in `/var/log/gitlab/gitlab-rails/auth.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/auth.log` for
-installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/auth.log`
+- Installations from source: `/home/git/gitlab/log/auth.log`
 
 This log records:
 
 - Information whenever [Rack Attack](../security/rack_attack.md) registers an abusive request.
 - Requests over the [Rate Limit](../user/admin_area/settings/rate_limits_on_raw_endpoints.md) on raw endpoints.
 - [Protected paths](../user/admin_area/settings/protected_paths.md) abusive requests.
-- In GitLab versions [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/29239) and greater,
+- In GitLab versions [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/29239) and later,
   user ID and username, if available.
 
 ## `graphql_json.log`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 12.0.
 
-This file lives in `/var/log/gitlab/gitlab-rails/graphql_json.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/graphql_json.log` for
-installations from source.
+Depending on your installation method, this file is located at:
 
-GraphQL queries are recorded in that file. For example:
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/graphql_json.log`
+- Installations from source: `/home/git/gitlab/log/graphql_json.log`
+
+GraphQL queries are recorded in the file. For example:
 
 ```json
 {"query_string":"query IntrospectionQuery{__schema {queryType { name },mutationType { name }}}...(etc)","variables":{"a":1,"b":2},"complexity":181,"depth":1,"duration_s":7}
@@ -734,24 +774,26 @@ GraphQL queries are recorded in that file. For example:
 
 > Introduced in GitLab 12.3.
 
-This file lives in `/var/log/gitlab/gitlab-rails/migrations.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/migrations.log` for
-installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/migrations.log`
+- Installations from source: `/home/git/gitlab/log/migrations.log`
 
 ## `mail_room_json.log` (default)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19186) in GitLab 12.6.
 
-This file lives in `/var/log/gitlab/mailroom/current` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/mail_room_json.log` for
-installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/mailroom/current`
+- Installations from source: `/home/git/gitlab/log/mail_room_json.log`
 
 This structured log file records internal activity in the `mail_room` gem.
 Its name and path are configurable, so the name and path may not match the above.
 
-## Reconfigure Logs
+## Reconfigure logs
 
-Reconfigure log files live in `/var/log/gitlab/reconfigure` for Omnibus GitLab
+Reconfigure log files are in `/var/log/gitlab/reconfigure` for Omnibus GitLab
 packages. Installations from source don't have reconfigure logs. A reconfigure log
 is populated whenever `gitlab-ctl reconfigure` is run manually or as part of an upgrade.
 
@@ -763,46 +805,47 @@ was initiated, such as `1509705644.log`
 If Prometheus metrics and the Sidekiq Exporter are both enabled, Sidekiq
 starts a Web server and listen to the defined port (default:
 `8082`). By default, Sidekiq Exporter access logs are disabled but can
-be enabled:
+be enabled based on your installation method:
 
-- For Omnibus GitLab installations, using the `sidekiq['exporter_log_enabled'] = true`
-  option in `/etc/gitlab/gitlab.rb`.
-- For installations from source, using the `sidekiq_exporter.log_enabled` option
-  in `gitlab.yml`.
+- Omnibus GitLab: Use the `sidekiq['exporter_log_enabled'] = true`
+  option in `/etc/gitlab/gitlab.rb`
+- Installations from source: Use the `sidekiq_exporter.log_enabled` option
+  in `gitlab.yml`
 
-When enabled, access logs are generated in
-`/var/log/gitlab/gitlab-rails/sidekiq_exporter.log` for Omnibus GitLab
-packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
-installations from source.
+When enabled, depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/sidekiq_exporter.log`
+- Installations from source: `/home/git/gitlab/log/sidekiq_exporter.log`
 
 If Prometheus metrics and the Web Exporter are both enabled, Puma
 starts a Web server and listen to the defined port (default: `8083`), and access logs
-are generated:
+are generated in a location based on your installation method:
 
-- For Omnibus GitLab packages, in `/var/log/gitlab/gitlab-rails/web_exporter.log`.
-- For installations from source, in `/home/git/gitlab/log/web_exporter.log`.
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/web_exporter.log`
+- Installations from source: `/home/git/gitlab/log/web_exporter.log`
 
 ## `database_load_balancing.log` **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15442) in GitLab 12.3.
 
 Contains details of GitLab [Database Load Balancing](database_load_balancing.md).
-It's stored at:
+Depending on your installation method, this file is located at:
 
-- `/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab packages.
-- `/home/git/gitlab/log/database_load_balancing.log` for installations from source.
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/database_load_balancing.log`
+- Installations from source: `/home/git/gitlab/log/database_load_balancing.log`
 
 ## `elasticsearch.log` **(PREMIUM SELF)**
 
 > Introduced in GitLab 12.6.
 
 This file logs information related to the Elasticsearch Integration, including
-errors during indexing or searching Elasticsearch. It's stored at:
+errors during indexing or searching Elasticsearch. Depending on your installation
+method, this file is located at:
 
-- `/var/log/gitlab/gitlab-rails/elasticsearch.log` for Omnibus GitLab packages.
-- `/home/git/gitlab/log/elasticsearch.log` for installations from source.
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/elasticsearch.log`
+- Installations from source: `/home/git/gitlab/log/elasticsearch.log`
 
-Each line contains a JSON line that can be ingested by services like Elasticsearch and Splunk.
+Each line contains JSON that can be ingested by services like Elasticsearch and Splunk.
 Line breaks have been added to the following example line for clarity:
 
 ```json
@@ -825,12 +868,13 @@ Line breaks have been added to the following example line for clarity:
 
 This file logs the information about exceptions being tracked by
 `Gitlab::ErrorTracking`, which provides a standard and consistent way of
-[processing rescued exceptions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/logging.md#exception-handling). This file is stored in:
+[processing rescued exceptions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/logging.md#exception-handling).
+Depending on your installation method, this file is located at:
 
-- `/var/log/gitlab/gitlab-rails/exceptions_json.log` for Omnibus GitLab packages.
-- `/home/git/gitlab/log/exceptions_json.log` for installations from source.
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/exceptions_json.log`
+- Installations from source: `/home/git/gitlab/log/exceptions_json.log`
 
-Each line contains a JSON line that can be ingested by Elasticsearch. For example:
+Each line contains JSON that can be ingested by Elasticsearch. For example:
 
 ```json
 {
@@ -853,9 +897,10 @@ Each line contains a JSON line that can be ingested by Elasticsearch. For exampl
 
 > Introduced in GitLab 13.0.
 
-This file lives in `/var/log/gitlab/gitlab-rails/service_measurement.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/service_measurement.log` for
-installations from source.
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/service_measurement.log`
+- Installations from source: `/home/git/gitlab/log/service_measurement.log`
 
 It contains only a single structured log with measurements for each service execution.
 It contains measurements such as the number of SQL calls, `execution_time`, `gc_stats`, and `memory usage`.
@@ -870,9 +915,12 @@ For example:
 
 > Introduced in 9.5.
 
-Geo stores structured log messages in a `geo.log` file. For Omnibus installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
+Geo stores structured log messages in a `geo.log` file. For Omnibus GitLab
+installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
 
-This file contains information about when Geo attempts to sync repositories and files. Each line in the file contains a separate JSON entry that can be ingested into. For example, Elasticsearch or Splunk.
+This file contains information about when Geo attempts to sync repositories
+and files. Each line in the file contains a separate JSON entry that can be
+ingested into (for example, Elasticsearch or Splunk).
 
 For example:
 
@@ -886,10 +934,10 @@ This message shows that Geo detected that a repository update was needed for pro
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/commit/7f637e2af7006dc2b1b2649d9affc0b86cfb33c4) in GitLab 11.12.
 
-This file is stored in:
+Depending on your installation method, this file is located at:
 
-- `/var/log/gitlab/gitlab-rails/update_mirror_service_json.log` for Omnibus GitLab installations.
-- `/home/git/gitlab/log/update_mirror_service_json.log` for installations from source.
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/update_mirror_service_json.log`
+- Installations from source: `/home/git/gitlab/log/update_mirror_service_json.log`
 
 This file contains information about LFS errors that occurred during project mirroring.
 While we work to move other project mirroring errors into this log, the [general log](#productionlog)
@@ -909,20 +957,20 @@ can be used.
 
 ## Registry Logs
 
-For Omnibus installations, Container Registry logs reside in `/var/log/gitlab/registry/current`.
+For Omnibus GitLab installations, Container Registry logs are in `/var/log/gitlab/registry/current`.
 
 ## NGINX Logs
 
-For Omnibus installations, NGINX logs reside in:
+For Omnibus GitLab installations, NGINX logs are in:
 
-- `/var/log/gitlab/nginx/gitlab_access.log` contains a log of requests made to GitLab.
-- `/var/log/gitlab/nginx/gitlab_error.log` contains a log of NGINX errors for GitLab.
-- `/var/log/gitlab/nginx/gitlab_pages_access.log` contains a log of requests made to Pages static sites.
-- `/var/log/gitlab/nginx/gitlab_pages_error.log` contains a log of NGINX errors for Pages static sites.
-- `/var/log/gitlab/nginx/gitlab_registry_access.log` contains a log of requests made to the Container Registry.
-- `/var/log/gitlab/nginx/gitlab_registry_error.log` contains a log of NGINX errors for the Container Registry.
-- `/var/log/gitlab/nginx/gitlab_mattermost_access.log` contains a log of requests made to Mattermost.
-- `/var/log/gitlab/nginx/gitlab_mattermost_error.log` contains a log of NGINX errors for Mattermost.
+- `/var/log/gitlab/nginx/gitlab_access.log`: A log of requests made to GitLab
+- `/var/log/gitlab/nginx/gitlab_error.log`: A log of NGINX errors for GitLab
+- `/var/log/gitlab/nginx/gitlab_pages_access.log`: A log of requests made to Pages static sites
+- `/var/log/gitlab/nginx/gitlab_pages_error.log`: A log of NGINX errors for Pages static sites
+- `/var/log/gitlab/nginx/gitlab_registry_access.log`: A log of requests made to the Container Registry
+- `/var/log/gitlab/nginx/gitlab_registry_error.log`: A log of NGINX errors for the Container Registry
+- `/var/log/gitlab/nginx/gitlab_mattermost_access.log`: A log of requests made to Mattermost
+- `/var/log/gitlab/nginx/gitlab_mattermost_error.log`: A log of NGINX errors for Mattermost
 
 Below is the default GitLab NGINX access log format:
 
@@ -932,7 +980,7 @@ $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$
 
 ## Pages Logs
 
-For Omnibus installations, Pages logs reside in `/var/log/gitlab/gitlab-pages/current`.
+For Omnibus GitLab installations, Pages logs are in `/var/log/gitlab/gitlab-pages/current`.
 
 For example:
 
@@ -961,66 +1009,68 @@ For example:
 
 ## Mattermost Logs
 
-For Omnibus GitLab installations, Mattermost logs reside in `/var/log/gitlab/mattermost/mattermost.log`.
+For Omnibus GitLab installations, Mattermost logs are in `/var/log/gitlab/mattermost/mattermost.log`.
 
 ## Workhorse Logs
 
-For Omnibus GitLab installations, Workhorse logs reside in `/var/log/gitlab/gitlab-workhorse/`.
+For Omnibus GitLab installations, Workhorse logs are in `/var/log/gitlab/gitlab-workhorse/`.
 
 ## PostgreSQL Logs
 
-For Omnibus GitLab installations, PostgreSQL logs reside in `/var/log/gitlab/postgresql/`.
+For Omnibus GitLab installations, PostgreSQL logs are in `/var/log/gitlab/postgresql/`.
 
 ## Prometheus Logs
 
-For Omnibus GitLab installations, Prometheus logs reside in `/var/log/gitlab/prometheus/`.
+For Omnibus GitLab installations, Prometheus logs are in `/var/log/gitlab/prometheus/`.
 
 ## Redis Logs
 
-For Omnibus GitLab installations, Redis logs reside in `/var/log/gitlab/redis/`.
+For Omnibus GitLab installations, Redis logs are in `/var/log/gitlab/redis/`.
 
 ## Alertmanager Logs
 
-For Omnibus GitLab installations, Alertmanager logs reside in `/var/log/gitlab/alertmanager/`.
+For Omnibus GitLab installations, Alertmanager logs are in `/var/log/gitlab/alertmanager/`.
 
 <!-- vale gitlab.Spelling = NO -->
 
 ## Crond Logs
 
-For Omnibus GitLab installations, crond logs reside in `/var/log/gitlab/crond/`.
+For Omnibus GitLab installations, crond logs are in `/var/log/gitlab/crond/`.
 
 <!-- vale gitlab.Spelling = YES -->
 
 ## Grafana Logs
 
-For Omnibus GitLab installations, Grafana logs reside in `/var/log/gitlab/grafana/`.
+For Omnibus GitLab installations, Grafana logs are in `/var/log/gitlab/grafana/`.
 
 ## LogRotate Logs
 
-For Omnibus GitLab installations, `logrotate` logs reside in `/var/log/gitlab/logrotate/`.
+For Omnibus GitLab installations, `logrotate` logs are in `/var/log/gitlab/logrotate/`.
 
 ## GitLab Monitor Logs
 
-For Omnibus GitLab installations, GitLab Monitor logs reside in `/var/log/gitlab/gitlab-monitor/`.
+For Omnibus GitLab installations, GitLab Monitor logs are in `/var/log/gitlab/gitlab-monitor/`.
 
 ## GitLab Exporter
 
-For Omnibus GitLab installations, GitLab Exporter logs reside in `/var/log/gitlab/gitlab-exporter/`.
+For Omnibus GitLab installations, GitLab Exporter logs are in `/var/log/gitlab/gitlab-exporter/`.
 
 ## GitLab Kubernetes Agent Server
 
-For Omnibus GitLab installations, GitLab Kubernetes Agent Server logs reside
+For Omnibus GitLab installations, GitLab Kubernetes Agent Server logs are
 in `/var/log/gitlab/gitlab-kas/`.
 
 ## Performance bar stats
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48149) in GitLab 13.7.
 
-This file lives in `/var/log/gitlab/gitlab-rails/performance_bar_json.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/performance_bar_json.log` for
-installations from source.
+Depending on your installation method, this file is located at:
 
-Performance bar statistics (currently only duration of SQL queries) are recorded in that file. For example:
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/performance_bar_json.log`
+- Installations from source: `/home/git/gitlab/log/performance_bar_json.log`
+
+Performance bar statistics (currently only duration of SQL queries) are recorded
+in that file. For example:
 
 ```json
 {"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","method_path":"app/models/ci/pipeline.rb:each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"count":2,"type": "sql"}

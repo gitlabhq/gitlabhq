@@ -224,7 +224,7 @@ The Auto DevOps base domain is required to use
 any of the following places:
 
 - Either under the cluster's settings, whether for an instance,
-  [projects](../../user/project/clusters/index.md#base-domain) or
+  [projects](../../user/project/clusters/gitlab_managed_clusters.md#base-domain) or
   [groups](../../user/group/clusters/index.md#base-domain)
 - Or at the project level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
 - Or at the group level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
@@ -263,7 +263,7 @@ See [Auto DevOps requirements for Amazon ECS](requirements.md#auto-devops-requir
 
 When using Auto DevOps, you can deploy different environments to
 different Kubernetes clusters, due to the 1:1 connection
-[existing between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters).
+[existing between them](../../user/project/clusters/multiple_kubernetes_clusters.md).
 
 The [Deploy Job template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
 used by Auto DevOps currently defines 3 environment names:

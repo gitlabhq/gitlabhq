@@ -628,7 +628,7 @@ Integrations that are responsible for deployment configuration can define their 
 variables that are set in the build environment. These variables are only defined
 for [deployment jobs](../environments/index.md).
 
-For example, the [Kubernetes integration](../../user/project/clusters/index.md#deployment-variables)
+For example, the [Kubernetes integration](../../user/project/clusters/deploy_to_cluster.md#deployment-variables)
 defines deployment variables that you can use with the integration.
 
 The [documentation for each integration](../../user/project/integrations/overview.md)

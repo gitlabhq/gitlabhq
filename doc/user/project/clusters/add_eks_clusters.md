@@ -164,7 +164,7 @@ When you create a new cluster, you have the following settings:
 | Setting                 | Description |
 | ----------------------- |------------ |
 | Kubernetes cluster name | Your cluster's name. |
-| Environment scope       | The [associated environment](index.md#setting-the-environment-scope). |
+| Environment scope       | The [associated environment](multiple_kubernetes_clusters.md#setting-the-environment-scope). |
 | Service role            | The **EKS IAM role** (**role A**). |
 | Kubernetes version      | The [Kubernetes version](index.md#supported-cluster-versions) for your cluster. |
 | Key pair name           | The [key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) that you can use to connect to your worker nodes. |

@@ -250,7 +250,7 @@ such as after merging a merge request, the Review App is also deleted.
 Review apps are deployed using the
 [auto-deploy-app](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) chart with
 Helm, which you can [customize](customize.md#custom-helm-chart). The application deploys
-into the [Kubernetes namespace](../../user/project/clusters/index.md#deployment-variables)
+into the [Kubernetes namespace](../../user/project/clusters/deploy_to_cluster.md#deployment-variables)
 for the environment.
 
 In GitLab 11.4 and later, [local Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
@@ -366,7 +366,7 @@ commands. This is an easy way to
 
 Helm uses the [auto-deploy-app](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app)
 chart to deploy the application into the
-[Kubernetes namespace](../../user/project/clusters/index.md#deployment-variables)
+[Kubernetes namespace](../../user/project/clusters/deploy_to_cluster.md#deployment-variables)
 for the environment.
 
 In GitLab 11.4 and later, a

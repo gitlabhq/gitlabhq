@@ -68,17 +68,6 @@ RSpec.describe 'Edit Project Settings' do
         expect(page).not_to have_selector('.shortcuts-issues')
         expect(page).not_to have_selector('.shortcuts-labels')
       end
-
-      context 'when feature flag :sidebar_refactor is disabled' do
-        it 'hides issues tab and show labels tab' do
-          stub_feature_flags(sidebar_refactor: false)
-
-          visit project_path(project)
-
-          expect(page).not_to have_selector('.shortcuts-issues')
-          expect(page).to have_selector('.shortcuts-labels')
-        end
-      end
     end
 
     context "pipelines subtabs" do

@@ -12,7 +12,6 @@ module Sidebars
 
           add_item(list_menu_item)
           add_item(boards_menu_item)
-          add_item(labels_menu_item)
           add_item(service_desk_menu_item)
           add_item(milestones_menu_item)
 
@@ -94,19 +93,6 @@ module Sidebars
             link: project_boards_path(context.project),
             active_routes: { controller: :boards },
             item_id: :boards
-          )
-        end
-
-        def labels_menu_item
-          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
-            return ::Sidebars::NilMenuItem.new(item_id: :labels)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Labels'),
-            link: project_labels_path(context.project),
-            active_routes: { controller: :labels },
-            item_id: :labels
           )
         end
 

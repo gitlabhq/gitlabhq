@@ -23,7 +23,6 @@ module Sidebars
         add_menu(Sidebars::Projects::Menus::RepositoryMenu.new(context))
         add_menu(Sidebars::Projects::Menus::IssuesMenu.new(context))
         add_menu(Sidebars::Projects::Menus::ExternalIssueTrackerMenu.new(context))
-        add_menu(Sidebars::Projects::Menus::LabelsMenu.new(context))
         add_menu(Sidebars::Projects::Menus::MergeRequestsMenu.new(context))
         add_menu(Sidebars::Projects::Menus::CiCdMenu.new(context))
         add_menu(Sidebars::Projects::Menus::SecurityComplianceMenu.new(context))
@@ -35,7 +34,6 @@ module Sidebars
         add_menu(confluence_or_wiki_menu)
         add_menu(Sidebars::Projects::Menus::ExternalWikiMenu.new(context))
         add_menu(Sidebars::Projects::Menus::SnippetsMenu.new(context))
-        add_menu(Sidebars::Projects::Menus::MembersMenu.new(context))
         add_menu(Sidebars::Projects::Menus::SettingsMenu.new(context))
       end
 

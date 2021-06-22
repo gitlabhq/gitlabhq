@@ -77,20 +77,6 @@ RSpec.describe 'User uses shortcuts', :js do
       expect(page).to have_active_navigation(project.name)
     end
 
-    context 'when feature flag :sidebar_refactor is disabled' do
-      it 'redirects to the details page' do
-        stub_feature_flags(sidebar_refactor: false)
-
-        visit project_issues_path(project)
-
-        find('body').native.send_key('g')
-        find('body').native.send_key('p')
-
-        expect(page).to have_active_navigation('Project')
-        expect(page).to have_active_sub_navigation('Details')
-      end
-    end
-
     it 'redirects to the activity page' do
       find('body').native.send_key('g')
       find('body').native.send_key('v')
@@ -195,36 +181,6 @@ RSpec.describe 'User uses shortcuts', :js do
 
       expect(page).to have_active_navigation('Monitor')
       expect(page).to have_active_sub_navigation('Metrics')
-    end
-
-    context 'when feature flag :sidebar_refactor is disabled' do
-      before do
-        stub_feature_flags(sidebar_refactor: false)
-      end
-
-      it 'redirects to the Operations page' do
-        find('body').native.send_key('g')
-        find('body').native.send_key('l')
-
-        expect(page).to have_active_navigation('Operations')
-        expect(page).to have_active_sub_navigation('Metrics')
-      end
-
-      it 'redirects to the Kubernetes page with active Operations' do
-        find('body').native.send_key('g')
-        find('body').native.send_key('k')
-
-        expect(page).to have_active_navigation('Operations')
-        expect(page).to have_active_sub_navigation('Kubernetes')
-      end
-
-      it 'redirects to the Environments page' do
-        find('body').native.send_key('g')
-        find('body').native.send_key('e')
-
-        expect(page).to have_active_navigation('Operations')
-        expect(page).to have_active_sub_navigation('Environments')
-      end
     end
   end
 

@@ -20,7 +20,7 @@ The following steps are recommended to install and use Container Network Securit
 1. Install and configure an Ingress node:
 
    - [Install the Ingress node via CI/CD (Cluster Management Project)](../../../../clusters/applications.md#install-ingress-using-gitlab-cicd).
-   - Navigate to the Kubernetes page and enter the [DNS address for the external endpoint](../../index.md#base-domain)
+   - Navigate to the Kubernetes page and enter the [DNS address for the external endpoint](../../gitlab_managed_clusters.md#base-domain)
      into the **Base domain** field on the **Details** tab. Save the changes to the Kubernetes
      cluster.
 
@@ -120,7 +120,7 @@ traffic that you want to allow in the node.
 Occasionally, your CI/CD pipeline may fail or have trouble connecting to the cluster. Here are some
 initial troubleshooting steps that resolve the most common problems:
 
-1. [Clear the cluster cache](../../index.md#clearing-the-cluster-cache).
+1. [Clear the cluster cache](../../gitlab_managed_clusters.md#clearing-the-cluster-cache).
 1. If things still aren't working, a more assertive set of actions may help get things back into a
    good state:
 

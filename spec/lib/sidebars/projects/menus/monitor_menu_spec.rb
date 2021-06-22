@@ -41,27 +41,11 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
     it 'returns "Monitor"' do
       expect(subject.title).to eq 'Monitor'
     end
-
-    context 'when feature flag :sidebar_refactor is disabled' do
-      it 'returns "Operations"' do
-        stub_feature_flags(sidebar_refactor: false)
-
-        expect(subject.title).to eq 'Operations'
-      end
-    end
   end
 
   describe '#extra_container_html_options' do
     it 'returns "shortcuts-monitor"' do
       expect(subject.extra_container_html_options).to eq(class: 'shortcuts-monitor')
-    end
-
-    context 'when feature flag :sidebar_refactor is disabled' do
-      it 'returns "shortcuts-operations"' do
-        stub_feature_flags(sidebar_refactor: false)
-
-        expect(subject.extra_container_html_options).to eq(class: 'shortcuts-operations')
-      end
     end
   end
 
@@ -128,76 +112,6 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
       let(:item_id) { :incidents }
 
       it_behaves_like 'access rights checks'
-    end
-
-    describe 'Serverless' do
-      let(:item_id) { :serverless }
-
-      specify { is_expected.to be_nil }
-
-      context 'when feature flag :sidebar_refactor is disabled' do
-        before do
-          stub_feature_flags(sidebar_refactor: false)
-        end
-
-        it_behaves_like 'access rights checks'
-      end
-    end
-
-    describe 'Terraform' do
-      let(:item_id) { :terraform }
-
-      specify { is_expected.to be_nil }
-
-      context 'when feature flag :sidebar_refactor is disabled' do
-        before do
-          stub_feature_flags(sidebar_refactor: false)
-        end
-
-        it_behaves_like 'access rights checks'
-      end
-    end
-
-    describe 'Kubernetes' do
-      let(:item_id) { :kubernetes }
-
-      specify { is_expected.to be_nil }
-
-      context 'when feature flag :sidebar_refactor is disabled' do
-        before do
-          stub_feature_flags(sidebar_refactor: false)
-        end
-
-        it_behaves_like 'access rights checks'
-      end
-    end
-
-    describe 'Environments' do
-      let(:item_id) { :environments }
-
-      specify { is_expected.to be_nil }
-
-      context 'when feature flag :sidebar_refactor is disabled' do
-        before do
-          stub_feature_flags(sidebar_refactor: false)
-        end
-
-        it_behaves_like 'access rights checks'
-      end
-    end
-
-    describe 'Feature Flags' do
-      let(:item_id) { :feature_flags }
-
-      specify { is_expected.to be_nil }
-
-      context 'when feature flag :sidebar_refactor is disabled' do
-        before do
-          stub_feature_flags(sidebar_refactor: false)
-        end
-
-        it_behaves_like 'access rights checks'
-      end
     end
 
     describe 'Product Analytics' do

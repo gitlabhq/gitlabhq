@@ -45,11 +45,7 @@ module GroupsHelper
   end
 
   def group_information_title(group)
-    if Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
-      group.subgroup? ? _('Subgroup information') : _('Group information')
-    else
-      group.subgroup? ? _('Subgroup overview') : _('Group overview')
-    end
+    group.subgroup? ? _('Subgroup information') : _('Group information')
   end
 
   def group_container_registry_nav?

@@ -188,7 +188,7 @@ Parameters:
 | ---------------------------------------------------- | ------- | -------- | ----------------------------------------------------------------------------------------------------- |
 | `id`                                                 | integer or string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                                                 |
 | `name`                                               | string  | yes      | The name of the cluster                                                                               |
-| `domain`                                             | string  | no       | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster                       |
+| `domain`                                             | string  | no       | The [base domain](../user/project/clusters/gitlab_managed_clusters.md#base-domain) of the cluster                       |
 | `management_project_id`                              | integer | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster            |
 | `enabled`                                            | boolean | no       | Determines if cluster is active or not, defaults to `true`                                            |
 | `managed`                                            | boolean | no       | Determines if GitLab manages namespaces and service accounts for this cluster. Defaults to `true` |
@@ -286,7 +286,7 @@ Parameters:
 | `id`                                        | integer or string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                                      |
 | `cluster_id`                                | integer | yes      | The ID of the cluster                                                                      |
 | `name`                                      | string  | no       | The name of the cluster                                                                    |
-| `domain`                                    | string  | no       | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster            |
+| `domain`                                    | string  | no       | The [base domain](../user/project/clusters/gitlab_managed_clusters.md#base-domain) of the cluster            |
 | `management_project_id`                     | integer | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster |
 | `enabled`                                   | boolean | no       | Determines if cluster is active or not                                                     |
 | `managed`                                   | boolean | no       | Determines if GitLab manages namespaces and service accounts for this cluster          |

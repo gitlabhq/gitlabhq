@@ -1,6 +1,6 @@
 ---
-stage: Monitor
-group: Monitor
+stage: Configure
+group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -12,29 +12,28 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in
 >   GitLab 11.11 for [instances](../../instance/clusters/index.md).
 
-You can use GitLab to manage your clusters and [benefit from the GitLab-Kubernetes integration](#benefit-from-the-gitlab-kubernetes-integration).
+We offer extensive integrations to help you connect and manage your Kubernetes clusters from GitLab.
 
-See the [supported cluster versions](#supported-cluster-versions) before
-you begin.
+Read through this document to get started.
+
+## Clusters infrastructure
+
+Use [Infrastructure as Code](../../infrastructure) to create and manage your clusters with the GitLab integration with Terraform.
 
 ## Benefit from the GitLab-Kubernetes integration
 
 Using the GitLab-Kubernetes integration, you can benefit of GitLab
 features such as:
 
-- Preview your applications with [Review Apps](../../../ci/review_apps/index.md).
-- Create GitLab CI/CD [Pipelines](../../../ci/pipelines/index.md) to build, test, and deploy to your cluster.
-- [Deploy](#deploying-to-a-kubernetes-cluster) your applications.
-- Detect and [monitor](#monitoring-your-kubernetes-cluster) your clusters.
+- Create [CI/CD Pipelines](../../../ci/pipelines/index.md) to build, test, and deploy to your cluster.
 - Use [Auto DevOps](#auto-devops) to automate the CI/CD process.
-- Use [Web terminals](#web-terminals).
-- Use [Deploy Boards](#deploy-boards).
-- Use [Canary Deployments](#canary-deployments). **(PREMIUM)**
-- Use [deployment variables](#deployment-variables).
 - Use [role-based or attribute-based access controls](cluster_access.md).
-- View [Logs](#viewing-pod-logs).
 - Run serverless workloads on [Kubernetes with Knative](serverless/index.md).
 - Connect GitLab to in-cluster applications using [cluster integrations](../../clusters/integrations.md).
+- Use [Deploy Boards](../deploy_boards.md) to see the health and status of each CI [environment](../../../ci/environments/index.md) running on your Kubernetes cluster.
+- Use [Canary deployments](../canary_deployments.md) to update only a portion of your fleet with the latest version of your application.
+- View your [Kubernetes podlogs](kubernetes_pod_logs.md) directly in GitLab.
+- Connect to your cluster through GitLab [web terminals](deploy_to_cluster.md#web-terminals-for-kubernetes-clusters).
 
 ## Supported cluster versions
 
@@ -81,72 +80,6 @@ and view information about your existing clusters, such as:
 - Nodes count.
 - Rough estimates of memory and CPU usage.
 
-## Multiple Kubernetes clusters
-
-> - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) to GitLab Free in 13.2.
-
-You can associate more than one Kubernetes cluster to your
-project. That way you can have different clusters for different environments,
-like development, staging, production, and so on.
-Add another cluster, like you did the first time, and make sure to
-[set an environment scope](#setting-the-environment-scope) that
-differentiates the new cluster from the rest.
-
-### Setting the environment scope
-
-When adding more than one Kubernetes cluster to your project, you need to differentiate
-them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the
-[environment-specific CI/CD variables](../../../ci/variables/README.md#limit-the-environment-scope-of-a-cicd-variable) work.
-
-The default environment scope is `*`, which means all jobs, regardless of their
-environment, use that cluster. Each scope can be used only by a single cluster
-in a project, and a validation error occurs if otherwise. Also, jobs that don't
-have an environment keyword set can't access any cluster.
-
-For example, let's say the following Kubernetes clusters exist in a project:
-
-| Cluster     | Environment scope |
-| ----------- | ----------------- |
-| Development | `*`               |
-| Production  | `production`      |
-
-And the following environments are set in
-[`.gitlab-ci.yml`](../../../ci/yaml/README.md):
-
-```yaml
-stages:
-  - test
-  - deploy
-
-test:
-  stage: test
-  script: sh test
-
-deploy to staging:
-  stage: deploy
-  script: make deploy
-  environment:
-    name: staging
-    url: https://staging.example.com/
-
-deploy to production:
-  stage: deploy
-  script: make deploy
-  environment:
-    name: production
-    url: https://example.com/
-```
-
-The results:
-
-- The Development cluster details are available in the `deploy to staging`
-  job.
-- The production cluster details are available in the `deploy to production`
-  job.
-- No cluster details are available in the `test` job because it doesn't
-  define any environment.
-
 ## Configuring your Kubernetes cluster
 
 Use the [GitLab Kubernetes Agent](../../clusters/agent/index.md) to safely
@@ -163,105 +96,10 @@ functionalities needed to successfully build and deploy a containerized
 application. Bear in mind that the same credentials are used for all the
 applications running on the cluster.
 
-### GitLab-managed clusters
+## Multiple Kubernetes clusters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 11.5.
-> - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26565) in GitLab 11.11.
-
-You can choose to allow GitLab to manage your cluster for you. If your cluster
-is managed by GitLab, resources for your projects are automatically created. See
-the [Access controls](add_remove_clusters.md#access-controls) section for
-details about the created resources.
-
-If you choose to manage your own cluster, project-specific resources aren't created
-automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md), you must
-explicitly provide the `KUBE_NAMESPACE` [deployment variable](#deployment-variables)
-for your deployment jobs to use. Otherwise, a namespace is created for you.
-
-#### Important notes
-
-Note the following with GitLab and clusters:
-
-Be aware that manually managing resources that have been created by GitLab, like
-namespaces and service accounts, can cause unexpected errors. If this occurs, try
-[clearing the cluster cache](#clearing-the-cluster-cache).
-
-#### Clearing the cluster cache
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31759) in GitLab 12.6.
-
-If you allow GitLab to manage your cluster, GitLab stores a cached
-version of the namespaces and service accounts it creates for your projects. If you
-modify these resources in your cluster manually, this cache can fall out of sync with
-your cluster. This can cause deployment jobs to fail.
-
-To clear the cache:
-
-1. Navigate to your project's **Infrastructure > Kubernetes clusters** page, and select your cluster.
-1. Expand the **Advanced settings** section.
-1. Click **Clear cluster cache**.
-
-### Base domain
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
-
-Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an deployment variable.
-If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain is used for the different
-stages. For example, Auto Review Apps and Auto Deploy.
-
-The domain should have a wildcard DNS configured to the Ingress IP address.
-You can either:
-
-- Create an `A` record that points to the Ingress IP address with your domain provider.
-- Enter a wildcard DNS address using a service such as `nip.io` or `xip.io`. For example, `192.168.1.1.xip.io`.
-
-To determine the external Ingress IP address, or external Ingress hostname:
-
-- *If the cluster is on GKE*:
-  1. Click the **Google Kubernetes Engine** link in the **Advanced settings**,
-     or go directly to the [Google Kubernetes Engine dashboard](https://console.cloud.google.com/kubernetes/).
-  1. Select the proper project and cluster.
-  1. Click **Connect**
-  1. Execute the `gcloud` command in a local terminal or using the **Cloud Shell**.
-
-- *If the cluster is not on GKE*: Follow the specific instructions for your
-  Kubernetes provider to configure `kubectl` with the right credentials.
-  The output of the following examples show the external endpoint of your
-  cluster. This information can then be used to set up DNS entries and forwarding
-  rules that allow external access to your deployed applications.
-
-Depending an your Ingress, the external IP address can be retrieved in various ways.
-This list provides a generic solution, and some GitLab-specific approaches:
-
-- In general, you can list the IP addresses of all load balancers by running:
-
-  ```shell
-  kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalancer.ingress)]}{.status.loadBalancer.ingress[*].ip} '
-  ```
-
-- If you installed Ingress using the **Applications**, run:
-
-  ```shell
-  kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-  ```
-
-- Some Kubernetes clusters return a hostname instead, like
-  [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
-
-  ```shell
-  kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
-  ```
-
-  If you use EKS, an [Elastic Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/)
-  is also created, which incurs additional AWS costs.
-
-- Istio/Knative uses a different command. Run:
-
-  ```shell
-  kubectl get svc --namespace=istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
-  ```
-
-If you see a trailing `%` on some Kubernetes versions, do not include it.
+See how to associate [multiple Kubernetes clusters](multiple_kubernetes_clusters.md)
+with your GitLab project.
 
 ## Cluster integrations
 
@@ -274,6 +112,10 @@ Attach a [Cluster management project](../../clusters/management_project.md)
 to your cluster to manage shared resources requiring `cluster-admin` privileges for
 installation, such as an Ingress controller.
 
+## GitLab-managed clusters
+
+See how to allow [GitLab to manage your cluster for you](gitlab_managed_clusters.md).
+
 ## Auto DevOps
 
 You can use [Auto DevOps](../../../topics/autodevops/index.md) to automatically
@@ -281,167 +123,7 @@ detect, build, test, deploy, and monitor your applications.
 
 ## Deploying to a Kubernetes cluster
 
-A Kubernetes cluster can be the destination for a deployment job. If
-
-- The cluster is integrated with GitLab, special
-  [deployment variables](#deployment-variables) are made available to your job
-  and configuration is not required. You can immediately begin interacting with
-  the cluster from your jobs using tools such as `kubectl` or `helm`.
-- You don't use the GitLab cluster integration, you can still deploy to your
-  cluster. However, you must configure Kubernetes tools yourself
-  using [CI/CD variables](../../../ci/variables/README.md#custom-cicd-variables)
-  before you can interact with the cluster from your jobs.
-
-### Deployment variables
-
-Deployment variables require a valid [Deploy Token](../deploy_tokens/index.md) named
-[`gitlab-deploy-token`](../deploy_tokens/index.md#gitlab-deploy-token), and the
-following command in your deployment job script, for Kubernetes to access the registry:
-
-- Using Kubernetes 1.18+:
-
-  ```shell
-  kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run=client | kubectl apply -f -
-  ```
-
-- Using Kubernetes <1.18:
-
-  ```shell
-  kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl apply -f -
-  ```
-
-The Kubernetes cluster integration exposes these
-[deployment variables](../../../ci/variables/README.md#deployment-variables) in the
-GitLab CI/CD build environment to deployment jobs. Deployment jobs have
-[defined a target environment](../../../ci/environments/index.md).
-
-| Deployment Variable        | Description |
-|----------------------------|-------------|
-| `KUBE_URL`                 | Equal to the API URL. |
-| `KUBE_TOKEN`               | The Kubernetes token of the [environment service account](cluster_access.md). Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main service account of the cluster integration. |
-| `KUBE_NAMESPACE`           | The namespace associated with the project's deployment service account. In the format `<project_name>-<project_id>-<environment>`. For GitLab-managed clusters, a matching namespace is automatically created by GitLab in the cluster. If your cluster was created before GitLab 12.2, the default `KUBE_NAMESPACE` is set to `<project_name>-<project_id>`. |
-| `KUBE_CA_PEM_FILE`         | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
-| `KUBE_CA_PEM`              | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
-| `KUBECONFIG`               | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This configuration also embeds the same token defined in `KUBE_TOKEN` so you likely need only this variable. This variable name is also automatically picked up by `kubectl` so you don't need to reference it explicitly if using `kubectl`. |
-| `KUBE_INGRESS_BASE_DOMAIN` | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](#base-domain) for more information. |
-
-### Custom namespace
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
-> - An option to use project-wide namespaces [was added](https://gitlab.com/gitlab-org/gitlab/-/issues/38054) in GitLab 13.5.
-
-The Kubernetes integration provides a `KUBECONFIG` with an auto-generated namespace
-to deployment jobs. It defaults to using project-environment specific namespaces
-of the form `<prefix>-<environment>`, where `<prefix>` is of the form
-`<project_name>-<project_id>`. To learn more, read [Deployment variables](#deployment-variables).
-
-You can customize the deployment namespace in a few ways:
-
-- You can choose between a **namespace per [environment](../../../ci/environments/index.md)**
-  or a **namespace per project**. A namespace per environment is the default and recommended
-  setting, as it prevents the mixing of resources between production and non-production environments.
-- When using a project-level cluster, you can additionally customize the namespace prefix.
-  When using namespace-per-environment, the deployment namespace is `<prefix>-<environment>`,
-  but otherwise just `<prefix>`.
-- For **non-managed** clusters, the auto-generated namespace is set in the `KUBECONFIG`,
-  but the user is responsible for ensuring its existence. You can fully customize
-  this value using
-  [`environment:kubernetes:namespace`](../../../ci/environments/index.md#configure-kubernetes-deployments)
-  in `.gitlab-ci.yml`.
-
-When you customize the namespace, existing environments remain linked to their current
-namespaces until you [clear the cluster cache](#clearing-the-cluster-cache).
-
-#### Protecting credentials
-
-By default, anyone who can create a deployment job can access any CI/CD variable in
-an environment's deployment job. This includes `KUBECONFIG`, which gives access to
-any secret available to the associated service account in your cluster.
-To keep your production credentials safe, consider using
-[protected environments](../../../ci/environments/protected_environments.md),
-combined with *one* of the following:
-
-- A GitLab-managed cluster and namespace per environment.
-- An environment-scoped cluster per protected environment. The same cluster
-  can be added multiple times with multiple restricted service accounts.
-
-### Integrations
-
-#### Canary Deployments
-
-Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
-and visualize your canary deployments right inside the Deploy Board, without
-the need to leave GitLab.
-
-[Read more about Canary Deployments](../canary_deployments.md)
-
-#### Deploy Boards
-
-GitLab Deploy Boards offer a consolidated view of the current health and
-status of each CI [environment](../../../ci/environments/index.md) running on Kubernetes.
-They display the status of the pods in the deployment. Developers and other
-teammates can view the progress and status of a rollout, pod by pod, in the
-workflow they already use without any need to access Kubernetes.
-
-[Read more about Deploy Boards](../deploy_boards.md)
-
-#### Viewing pod logs
-
-GitLab enables you to view the logs of running pods in connected Kubernetes
-clusters. By displaying the logs directly in GitLab, developers can avoid having
-to manage console tools or jump to a different interface.
-
-[Read more about Kubernetes logs](kubernetes_pod_logs.md)
-
-#### Web terminals
-
-> Introduced in GitLab 8.15.
-
-When enabled, the Kubernetes integration adds [web terminal](../../../ci/environments/index.md#web-terminals)
-support to your [environments](../../../ci/environments/index.md). This is based
-on the `exec` functionality found in Docker and Kubernetes, so you get a new
-shell session in your existing containers. To use this integration, you
-should deploy to Kubernetes using the deployment variables above, ensuring any
-deployments, replica sets, and pods are annotated with:
-
-- `app.gitlab.com/env: $CI_ENVIRONMENT_SLUG`
-- `app.gitlab.com/app: $CI_PROJECT_PATH_SLUG`
-
-`$CI_ENVIRONMENT_SLUG` and `$CI_PROJECT_PATH_SLUG` are the values of
-the CI/CD variables.
-
-You must be the project owner or have `maintainer` permissions to use terminals.
-Support is limited to the first container in the first pod of your environment.
-
-### Troubleshooting
-
-Before the deployment jobs starts, GitLab creates the following specifically for
-the deployment job:
-
-- A namespace.
-- A service account.
-
-However, sometimes GitLab can not create them. In such instances, your job can fail with the message:
-
-```plaintext
-This job failed because the necessary resources were not successfully created.
-```
-
-To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs.md#kuberneteslog).
-
-Reasons for failure include:
-
-- The token you gave GitLab does not have [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
-  privileges required by GitLab.
-- Missing `KUBECONFIG` or `KUBE_TOKEN` deployment variables. To be passed to your job, they must have a matching
-  [`environment:name`](../../../ci/environments/index.md). If your job has no
-  `environment:name` set, the Kubernetes credentials are not passed to it.
-
-NOTE:
-Project-level clusters upgraded from GitLab 12.0 or older may be configured
-in a way that causes this error. Ensure you deselect the
-[GitLab-managed cluster](#gitlab-managed-clusters) option if you want to manage
-namespaces and service accounts yourself.
+See how to [deploy to your Kubernetes cluster](deploy_to_cluster.md) from GitLab.
 
 ## Monitoring your Kubernetes cluster
 

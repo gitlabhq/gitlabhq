@@ -112,9 +112,8 @@ module Sidebars
             return ::Sidebars::NilMenuItem.new(item_id: :monitor)
           end
 
-          title = Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ? _('Monitor') : _('Operations')
           ::Sidebars::MenuItem.new(
-            title: title,
+            title: _('Monitor'),
             link: project_settings_operations_path(context.project),
             active_routes: { path: 'operations#show' },
             item_id: :monitor
@@ -136,7 +135,6 @@ module Sidebars
 
         def packages_and_registries_menu_item
           if !Gitlab.config.registry.enabled ||
-            Feature.disabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ||
             !can?(context.current_user, :destroy_container_image, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :packages_and_registries)
           end

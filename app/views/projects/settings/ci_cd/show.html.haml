@@ -75,9 +75,6 @@
   .settings-content
     = render 'projects/triggers/index'
 
-- if settings_container_registry_expiration_policy_available?(@project)
-  = render 'projects/registry/settings/index'
-
 = render_if_exists 'projects/settings/ci_cd/auto_rollback', expanded: expanded
 
 - if can?(current_user, :create_freeze_period, @project)

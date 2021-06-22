@@ -39,33 +39,22 @@ RSpec.describe Sidebars::Projects::Menus::DeploymentsMenu do
       end
     end
 
-    shared_examples 'feature flag :sidebar_refactor disabled' do
-      before do
-        stub_feature_flags(sidebar_refactor: false)
-      end
-
-      specify { is_expected.to be_nil }
-    end
-
     describe 'Feature Flags' do
       let(:item_id) { :feature_flags }
 
       it_behaves_like 'access rights checks'
-      it_behaves_like 'feature flag :sidebar_refactor disabled'
     end
 
     describe 'Environments' do
       let(:item_id) { :environments }
 
       it_behaves_like 'access rights checks'
-      it_behaves_like 'feature flag :sidebar_refactor disabled'
     end
 
     describe 'Releases' do
       let(:item_id) { :releases }
 
       it_behaves_like 'access rights checks'
-      it_behaves_like 'feature flag :sidebar_refactor disabled'
     end
   end
 end

@@ -69,7 +69,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    **Sign in with Google** button.
 1. Choose your cluster's settings:
    - **Kubernetes cluster name** - The name you wish to give the cluster.
-   - **Environment scope** - The [associated environment](index.md#setting-the-environment-scope) to this cluster.
+   - **Environment scope** - The [associated environment](multiple_kubernetes_clusters.md#setting-the-environment-scope) to this cluster.
    - **Google Cloud Platform project** - Choose the project you created in your GCP
      console to host the Kubernetes cluster. Learn more about
      [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
@@ -81,7 +81,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - **Enable Cloud Run for Anthos** - Check this if you want to use Cloud Run for Anthos for this cluster.
      See the [Cloud Run for Anthos section](#cloud-run-for-anthos) for more information.
    - **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster.
-     See the [Managed clusters section](index.md#gitlab-managed-clusters) for more information.
+     See the [Managed clusters section](gitlab_managed_clusters.md) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After a couple of minutes, your cluster is ready.

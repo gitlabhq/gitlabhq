@@ -160,7 +160,7 @@ Parameters:
 | Attribute                                            | Type    | Required | Description                                                                                           |
 | ---------------------------------------------------- | ------- | -------- | ----------------------------------------------------------------------------------------------------- |
 | `name`                                               | string  | yes      | The name of the cluster                                                                               |
-| `domain`                                             | string  | no       | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster                       |
+| `domain`                                             | string  | no       | The [base domain](../user/project/clusters/gitlab_managed_clusters.md#base-domain) of the cluster                       |
 | `environment_scope`                                  | string  | no       | The associated environment to the cluster. Defaults to `*`                                            |
 | `management_project_id`                              | integer | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster            |
 | `enabled`                                            | boolean | no       | Determines if cluster is active or not, defaults to `true`                                            |
@@ -228,7 +228,7 @@ Parameters:
 | ------------------------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------ |
 | `cluster_id`                                | integer | yes      | The ID of the cluster                                                                      |
 | `name`                                      | string  | no       | The name of the cluster                                                                    |
-| `domain`                                    | string  | no       | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster            |
+| `domain`                                    | string  | no       | The [base domain](../user/project/clusters/gitlab_managed_clusters.md#base-domain) of the cluster            |
 | `environment_scope`                         | string  | no       | The associated environment to the cluster                                                  |
 | `management_project_id`                     | integer | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster |
 | `enabled`                                   | boolean | no       | Determines if cluster is active or not                                                     |

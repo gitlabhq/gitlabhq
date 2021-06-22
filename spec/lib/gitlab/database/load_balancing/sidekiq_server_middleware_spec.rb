@@ -156,20 +156,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
             expect(job['load_balancing_strategy']).to eq('retry_primary')
           end
         end
-
-        context 'replica selection mechanism feature flag rollout' do
-          before do
-            stub_feature_flags(sidekiq_load_balancing_rotate_up_to_date_replica: false)
-          end
-
-          it 'uses different implementation' do
-            expect(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer, :host, :caught_up?).and_return(false)
-
-            expect do
-              process_job(job)
-            end.to raise_error(Sidekiq::JobRetry::Skip)
-          end
-        end
       end
     end
 
