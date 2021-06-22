@@ -228,6 +228,14 @@ module Gitlab
 
         raise UnsupportedFormatError
       end
+
+      def render_in(_view_context)
+        to_s
+      end
+
+      def format
+        :json
+      end
     end
 
     class LimitedEncoder

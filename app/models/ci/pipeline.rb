@@ -610,8 +610,6 @@ module Ci
     # rubocop: enable CodeReuse/ServiceClass
 
     def lazy_ref_commit
-      return unless ::Gitlab::Ci::Features.pipeline_latest?
-
       BatchLoader.for(ref).batch do |refs, loader|
         next unless project.repository_exists?
 
@@ -623,11 +621,6 @@ module Ci
 
     def latest?
       return false unless git_ref && commit.present?
-
-      unless ::Gitlab::Ci::Features.pipeline_latest?
-        return project.commit(git_ref) == commit
-      end
-
       return false if lazy_ref_commit.nil?
 
       lazy_ref_commit.id == commit.id

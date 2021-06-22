@@ -10,10 +10,6 @@ module Gitlab
         ::Feature.enabled?(:ci_artifacts_exclude, default_enabled: true)
       end
 
-      def self.pipeline_latest?
-        ::Feature.enabled?(:ci_pipeline_latest, default_enabled: true)
-      end
-
       # NOTE: The feature flag `disallow_to_create_merge_request_pipelines_in_target_project`
       # is a safe switch to disable the feature for a particular project when something went wrong,
       # therefore it's not supposed to be enabled by default.

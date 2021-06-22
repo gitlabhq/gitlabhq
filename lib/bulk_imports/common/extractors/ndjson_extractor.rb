@@ -7,6 +7,8 @@ module BulkImports
         include Gitlab::ImportExport::CommandLineUtil
         include Gitlab::Utils::StrongMemoize
 
+        FILE_SIZE_LIMIT = 5.gigabytes
+        ALLOWED_CONTENT_TYPES = %w(application/gzip application/octet-stream).freeze
         EXPORT_DOWNLOAD_URL_PATH = "/%{resource}/%{full_path}/export_relations/download?relation=%{relation}"
 
         def initialize(relation:)
@@ -39,7 +41,9 @@ module BulkImports
             configuration: context.configuration,
             relative_url: relative_resource_url(context),
             dir: tmp_dir,
-            filename: filename
+            filename: filename,
+            file_size_limit: FILE_SIZE_LIMIT,
+            allowed_content_types: ALLOWED_CONTENT_TYPES
           )
         end
 

@@ -9,6 +9,10 @@ module BulkImports
         pipeline: BulkImports::Groups::Pipelines::GroupPipeline,
         stage: 0
       },
+      avatar: {
+        pipeline: BulkImports::Groups::Pipelines::GroupAvatarPipeline,
+        stage: 1
+      },
       subgroups: {
         pipeline: BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline,
         stage: 1

@@ -1071,7 +1071,7 @@ Ensure you comply with the [Changelog entries guide](../changelog.md).
 
 ### 9. Ask for a Product Intelligence Review
 
-On GitLab.com, we have DangerBot setup to monitor Product Intelligence related files and DangerBot recommends a [Product Intelligence review](product_intelligence_review.md). Mention `@gitlab-org/growth/product_intelligence/engineers` in your MR for a review.
+On GitLab.com, we have DangerBot set up to monitor Product Intelligence related files and DangerBot recommends a [Product Intelligence review](review_guidelines.md). Mention `@gitlab-org/growth/product_intelligence/engineers` in your MR for a review.
 
 ### 10. Verify your metric
 

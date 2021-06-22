@@ -22,6 +22,7 @@ The following resources are migrated to the target instance:
   - description
   - attributes
   - subgroups
+  - avatar ([Introduced in 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/322904))
 - Group Labels ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429))
   - title
   - description

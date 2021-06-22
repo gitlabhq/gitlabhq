@@ -1551,32 +1551,40 @@ The following example creates four paths of execution:
 ```yaml
 linux:build:
   stage: build
+  script: echo "Building linux..."
 
 mac:build:
   stage: build
+  script: echo "Building mac..."
 
 lint:
   stage: test
   needs: []
+  script: echo "Linting..."
 
 linux:rspec:
   stage: test
   needs: ["linux:build"]
+  script: echo "Running rspec on linux..."
 
 linux:rubocop:
   stage: test
   needs: ["linux:build"]
+  script: echo "Running rubocop on linux..."
 
 mac:rspec:
   stage: test
   needs: ["mac:build"]
+  script: echo "Running rspec on mac..."
 
 mac:rubocop:
   stage: test
   needs: ["mac:build"]
+  script: echo "Running rubocop on mac..."
 
 production:
   stage: deploy
+  script: echo "Running production..."
 ```
 
 #### Requirements and limitations

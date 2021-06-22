@@ -44,108 +44,16 @@ RSpec.describe API::Helpers::Caching, :use_clean_rails_redis_caching do
       }
     end
 
-    context "single object" do
+    context 'single object' do
       let_it_be(:presentable) { create(:todo, project: project) }
 
-      it { is_expected.to be_a(Gitlab::Json::PrecompiledJson) }
-
-      it "uses the presenter" do
-        expect(presenter).to receive(:represent).with(presentable, project: project)
-
-        subject
-      end
-
-      it "is valid JSON" do
-        parsed = Gitlab::Json.parse(subject.to_s)
-
-        expect(parsed).to be_a(Hash)
-        expect(parsed["id"]).to eq(presentable.id)
-      end
-
-      it "fetches from the cache" do
-        expect(instance.cache).to receive(:fetch).with("#{presentable.cache_key}:#{user.cache_key}", expires_in: described_class::DEFAULT_EXPIRY).once
-
-        subject
-      end
-
-      context "when a cache context is supplied" do
-        before do
-          kwargs[:cache_context] = -> (todo) { todo.project.cache_key }
-        end
-
-        it "uses the context to augment the cache key" do
-          expect(instance.cache).to receive(:fetch).with("#{presentable.cache_key}:#{project.cache_key}", expires_in: described_class::DEFAULT_EXPIRY).once
-
-          subject
-        end
-      end
-
-      context "when expires_in is supplied" do
-        it "sets the expiry when accessing the cache" do
-          kwargs[:expires_in] = 7.days
-
-          expect(instance.cache).to receive(:fetch).with("#{presentable.cache_key}:#{user.cache_key}", expires_in: 7.days).once
-
-          subject
-        end
-      end
+      it_behaves_like 'object cache helper'
     end
 
-    context "for a collection of objects" do
+    context 'collection of objects' do
       let_it_be(:presentable) { Array.new(5).map { create(:todo, project: project) } }
 
-      it { is_expected.to be_an(Gitlab::Json::PrecompiledJson) }
-
-      it "uses the presenter" do
-        presentable.each do |todo|
-          expect(presenter).to receive(:represent).with(todo, project: project)
-        end
-
-        subject
-      end
-
-      it "is valid JSON" do
-        parsed = Gitlab::Json.parse(subject.to_s)
-
-        expect(parsed).to be_an(Array)
-
-        presentable.each_with_index do |todo, i|
-          expect(parsed[i]["id"]).to eq(todo.id)
-        end
-      end
-
-      it "fetches from the cache" do
-        keys = presentable.map { |todo| "#{todo.cache_key}:#{user.cache_key}" }
-
-        expect(instance.cache).to receive(:fetch_multi).with(*keys, expires_in: described_class::DEFAULT_EXPIRY).once.and_call_original
-
-        subject
-      end
-
-      context "when a cache context is supplied" do
-        before do
-          kwargs[:cache_context] = -> (todo) { todo.project.cache_key }
-        end
-
-        it "uses the context to augment the cache key" do
-          keys = presentable.map { |todo| "#{todo.cache_key}:#{project.cache_key}" }
-
-          expect(instance.cache).to receive(:fetch_multi).with(*keys, expires_in: described_class::DEFAULT_EXPIRY).once.and_call_original
-
-          subject
-        end
-      end
-
-      context "expires_in is supplied" do
-        it "sets the expiry when accessing the cache" do
-          keys = presentable.map { |todo| "#{todo.cache_key}:#{user.cache_key}" }
-          kwargs[:expires_in] = 7.days
-
-          expect(instance.cache).to receive(:fetch_multi).with(*keys, expires_in: 7.days).once.and_call_original
-
-          subject
-        end
-      end
+      it_behaves_like 'collection cache helper'
     end
   end
 

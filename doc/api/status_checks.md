@@ -161,18 +161,18 @@ To enable it:
 
 ```ruby
 # For the instance
-Feature.enable(:ff_compliance_approval_gates)
+Feature.enable(:ff_external_status_checks)
 # For a single project
-Feature.enable(:ff_compliance_approval_gates, Project.find(<project id>))
+Feature.enable(:ff_external_status_checks, Project.find(<project id>))
 ```
 
 To disable it:
 
 ```ruby
 # For the instance
-Feature.disable(:ff_compliance_approval_gates)
+Feature.disable(:ff_external_status_checks)
 # For a single project
-Feature.disable(:ff_compliance_approval_gates, Project.find(<project id>))
+Feature.disable(:ff_external_status_checks, Project.find(<project id>))
 ```
 
 ## Related links

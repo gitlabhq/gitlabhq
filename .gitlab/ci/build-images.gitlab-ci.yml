@@ -1,43 +1,48 @@
-# This image is used by the `review-qa-*` jobs. The image name is also passed to the downstream `omnibus-gitlab-mirror` pipeline
-# triggered by `package-and-qa` so that it doesn't have to rebuild it a second time. The downstream `omnibus-gitlab-mirror` pipeline
-# itself passes the image name to the `gitlab-qa-mirror` pipeline so that it can use it instead of inferring an end-to-end image
-# from the GitLab image built by the downstream `omnibus-gitlab-mirror` pipeline.
+.base-image-build:
+  extends: .use-kaniko
+  script:
+    # With .git/hooks/post-checkout in place, Git tries to pull LFS objects, but the image doesn't have Git LFS, and we actually don't care about it for this specific so we just remove the file.
+    # Without removing the file, the error is as follows: "This repository is configured for Git LFS but 'git-lfs' was not found on your path. If you no longer wish to use Git LFS, remove this hook by deleting .git/hooks/post-checkout."
+    - rm .git/hooks/post-checkout
+    - if [ -n "$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA" ]; then
+        echo "Checking out \$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA ($CI_MERGE_REQUEST_SOURCE_BRANCH_SHA) instead of \$CI_COMMIT_SHA (merge result commit $CI_COMMIT_SHA) so that GitLab image built in omnibus-gitlab-mirror and QA image are in sync.";
+        git checkout -f ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA};
+      else
+        echo "Building the image from \$CI_COMMIT_SHA ($CI_COMMIT_SHA) for this non-merge result pipeline.";
+      fi;
+    - echo "See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#with-pipeline-for-merged-results for more details.";
+  retry: 2
+
+# This image is used by:
+# - The `review-qa-*` jobs
+# - The downstream `omnibus-gitlab-mirror` pipeline triggered by `package-and-qa` so that it doesn't have to rebuild it again.
+#   The downstream `omnibus-gitlab-mirror` pipeline itself passes the image name to the `gitlab-qa-mirror` pipeline so that
+#   it can use it instead of inferring an end-to-end imag from the GitLab image built by the downstream `omnibus-gitlab-mirror` pipeline.
 # See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#testing-code-in-merge-requests for more details.
 build-qa-image:
   extends:
-    - .use-kaniko
+    - .base-image-build
     - .build-images:rules:build-qa-image
   stage: build-images
   needs: []
   variables:
     QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
   script:
-    # With .git/hooks/post-checkout in place, Git tries to pull LFS objects, but the image doesn't have Git LFS, and we actually don't care about it for this specific so we just remove the file.
-    # Without removing the file, the error is as follows: "This repository is configured for Git LFS but 'git-lfs' was not found on your path. If you no longer wish to use Git LFS, remove this hook by deleting .git/hooks/post-checkout."
-    - rm .git/hooks/post-checkout
-    # Use $CI_MERGE_REQUEST_SOURCE_BRANCH_SHA so that GitLab image built in omnibus-gitlab-mirror and QA image are in sync.
-    # This falls back to $CI_COMMIT_SHA (the default checked out commit) for the non-merged result pipelines.
-    # See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#with-pipeline-for-merged-results.
-    - if [ -n "$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA" ]; then
-        git checkout -f ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA};
-      fi
+    - !reference [.base-image-build, script]
     - /kaniko/executor --context=${CI_PROJECT_DIR} --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile --destination=${QA_IMAGE} --cache=true
-  retry: 2
 
 # This image is used by:
 # - The `CNG` pipelines (via the `review-build-cng` job): https://gitlab.com/gitlab-org/build/CNG/-/blob/cfc67136d711e1c8c409bf8e57427a644393da2f/.gitlab-ci.yml#L335
 # - The `omnibus-gitlab` pipelines (via the `package-and-qa` job): https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/dfd1ad475868fc84e91ab7b5706aa03e46dc3a86/.gitlab-ci.yml#L130
 build-assets-image:
   extends:
-    - .use-kaniko
+    - .base-image-build
     - .build-images:rules:build-assets-image
   stage: build-images
   needs: ["compile-production-assets"]
-  variables:
-    GIT_DEPTH: "1"
   script:
+    - !reference [.base-image-build, script]
     # TODO: Change the image tag to be the MD5 of assets files and skip image building if the image exists
     # We'll also need to pass GITLAB_ASSETS_TAG to the trigerred omnibus-gitlab pipeline similarly to how we do it for trigerred CNG pipelines
     # https://gitlab.com/gitlab-org/gitlab/issues/208389
     - run_timed_command "scripts/build_assets_image"
-  retry: 2
