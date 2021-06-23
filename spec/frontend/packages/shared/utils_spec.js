@@ -40,6 +40,7 @@ describe('Packages shared utils', () => {
       ${'pypi'}     | ${'PyPI'}
       ${'rubygems'} | ${'RubyGems'}
       ${'composer'} | ${'Composer'}
+      ${'debian'}   | ${'Debian'}
       ${'foo'}      | ${null}
     `(`package type`, ({ packageType, expectedResult }) => {
       it(`${packageType} should show as ${expectedResult}`, () => {

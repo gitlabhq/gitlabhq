@@ -5,12 +5,16 @@ require 'spec_helper'
 RSpec.describe MergeRequests::PushOptionsHandlerService do
   include ProjectForksHelper
 
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:parent_group) { create(:group, :public) }
+  let_it_be(:child_group) { create(:group, :public, parent: parent_group) }
+  let_it_be(:project) { create(:project, :public, :repository, group: child_group) }
   let_it_be(:user1) { create(:user, developer_projects: [project]) }
   let_it_be(:user2) { create(:user, developer_projects: [project]) }
   let_it_be(:user3) { create(:user, developer_projects: [project]) }
   let_it_be(:forked_project) { fork_project(project, user1, repository: true) }
-  let_it_be(:milestone) { create(:milestone, project: project, title: '1.0') }
+  let_it_be(:parent_group_milestone) { create(:milestone, group: parent_group, title: 'ParentGroupMilestone1.0') }
+  let_it_be(:child_group_milestone) { create(:milestone, group: child_group, title: 'ChildGroupMilestone1.0') }
+  let_it_be(:project_milestone) { create(:milestone, project: project, title: 'ProjectMilestone1.0') }
 
   let(:service) { described_class.new(project: project, current_user: user1, changes: changes, push_options: push_options) }
   let(:source_branch) { 'fix' }
@@ -527,8 +531,8 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
 
   describe '`milestone` push option' do
     context 'with a valid milestone' do
-      let(:expected_milestone) { milestone.title }
-      let(:push_options) { { milestone: milestone.title } }
+      let(:expected_milestone) { project_milestone.title }
+      let(:push_options) { { milestone: project_milestone.title } }
 
       context 'with a new branch' do
         let(:changes) { new_branch_changes }
@@ -542,7 +546,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
         end
 
         context 'when coupled with the `create` push option' do
-          let(:push_options) { { create: true, milestone: milestone.title } }
+          let(:push_options) { { create: true, milestone: project_milestone.title } }
 
           it_behaves_like 'a service that can create a merge request'
           it_behaves_like 'a service that can set the milestone of a merge request'
@@ -561,7 +565,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
         end
 
         context 'when coupled with the `create` push option' do
-          let(:push_options) { { create: true, milestone: milestone.title } }
+          let(:push_options) { { create: true, milestone: project_milestone.title } }
 
           it_behaves_like 'a service that can create a merge request'
           it_behaves_like 'a service that can set the milestone of a merge request'
@@ -586,6 +590,26 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       let(:push_options) { { create: true, milestone: 'invalid_milestone' } }
 
       it_behaves_like 'a service that can set the milestone of a merge request'
+    end
+
+    context 'with an ancestor milestone' do
+      let(:changes) { existing_branch_changes }
+
+      context 'with immediate parent milestone' do
+        let(:push_options) { { create: true, milestone: child_group_milestone.title } }
+        let(:expected_milestone) { child_group_milestone.title }
+
+        it_behaves_like 'a service that can create a merge request'
+        it_behaves_like 'a service that can set the milestone of a merge request'
+      end
+
+      context 'with multi-level ancestor milestone' do
+        let(:push_options) { { create: true, milestone: parent_group_milestone.title } }
+        let(:expected_milestone) { parent_group_milestone.title }
+
+        it_behaves_like 'a service that can create a merge request'
+        it_behaves_like 'a service that can set the milestone of a merge request'
+      end
     end
   end
 

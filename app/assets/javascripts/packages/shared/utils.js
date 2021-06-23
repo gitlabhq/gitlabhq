@@ -25,6 +25,8 @@ export const getPackageTypeLabel = (packageType) => {
       return s__('PackageRegistry|Composer');
     case PackageType.GENERIC:
       return s__('PackageRegistry|Generic');
+    case PackageType.DEBIAN:
+      return s__('PackageRegistry|Debian');
     default:
       return null;
   }

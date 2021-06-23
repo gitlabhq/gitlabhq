@@ -653,7 +653,7 @@ Example response:
 
 ## CI minute provisioning
 
-The CI Minute endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
+The CI Minute endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
 to apply additional packs of CI minutes, for personal namespaces or top-level groups within GitLab.com.
 
 ### Creating an additional pack
@@ -693,6 +693,39 @@ Example response:
   "purchase_xid": "46952fe69bebc1a4de10b2b4ff439d0c"
 }
 ```
+
+### Moving additional packs
+
+Use a PATCH to move additional packs from one namespace to another.
+
+```plaintext
+PATCH /namespaces/:id/minutes/move/:target_id
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `id` | string | yes | The ID of the namespace to transfer packs from |
+| `target_id`  | string | yes | The ID of the target namespace to transfer the packs to |
+
+Example request:
+
+```shell
+curl --request PATCH \
+  --url http://localhost:3000/api/v4/namespaces/123/minutes/move/321 \
+  --header 'PRIVATE-TOKEN: <admin access token>'
+```
+
+Example response:
+
+```json
+{
+  "message": "202 Accepted"
+}
+```
+
+### Known consumers
+
+- CustomersDot
 
 ## Upcoming reconciliations
 

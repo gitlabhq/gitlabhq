@@ -43,7 +43,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-border-solid gl-border-gray-100 gl-border-1">
+  <div class="gl-border-solid gl-border-gray-100 gl-border-1 gl-border-t-none!">
     <source-editor
       ref="editor"
       :file-name="ciConfigPath"

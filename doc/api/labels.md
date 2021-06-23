@@ -4,7 +4,9 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Labels API
+# Labels API **(FREE)**
+
+Interact with [labels](../user/project/labels.md) using the REST API.
 
 NOTE:
 The `description_html` - was added to response JSON in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413).

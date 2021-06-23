@@ -803,29 +803,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             end
 
             context 'when a runner supports this feature' do
-              it 'exposes excluded paths when the feature is enabled' do
-                stub_feature_flags(ci_artifacts_exclude: true)
-
+              it 'exposes excluded paths' do
                 request_job info: { features: { artifacts_exclude: true } }
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(json_response.dig('artifacts').first).to include('exclude' => ['cde'])
               end
-
-              it 'does not expose excluded paths when the feature is disabled' do
-                stub_feature_flags(ci_artifacts_exclude: false)
-
-                request_job info: { features: { artifacts_exclude: true } }
-
-                expect(response).to have_gitlab_http_status(:created)
-                expect(json_response.dig('artifacts').first).not_to have_key('exclude')
-              end
             end
 
             context 'when a runner does not support this feature' do
               it 'does not expose the build at all' do
-                stub_feature_flags(ci_artifacts_exclude: true)
-
                 request_job
 
                 expect(response).to have_gitlab_http_status(:no_content)

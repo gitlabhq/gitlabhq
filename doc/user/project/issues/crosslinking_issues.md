@@ -4,9 +4,9 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Crosslinking issues
+# Crosslinking issues **(FREE)**
 
-There are several ways to mention an issue or make issues appear in each other's
+There are several ways to mention an issue or make [issues](index.md) appear in each other's
 [Linked issues](related_issues.md) section.
 
 For more information on GitLab Issues, read the [issues documentation](index.md).

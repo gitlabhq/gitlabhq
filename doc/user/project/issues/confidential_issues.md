@@ -4,11 +4,9 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Confidential issues
+# Confidential issues **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3282) in GitLab 8.6.
-
-Confidential issues are issues visible only to members of a project with
+Confidential issues are [issues](index.md) visible only to members of a project with
 [sufficient permissions](#permissions-and-access-to-confidential-issues).
 Confidential issues can be used by open source projects and companies alike to
 keep security vulnerabilities private or prevent surprises from leaking out.

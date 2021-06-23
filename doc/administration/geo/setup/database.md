@@ -515,13 +515,21 @@ For instructions about how to set up Patroni on the primary site, see the
 
 In a Geo secondary site, the main PostgreSQL database is a read-only replica of the primary site’s PostgreSQL database.
 
-If you are currently using `repmgr` on your Geo primary site, see [these instructions](#migrating-from-repmgr-to-patroni) for migrating from `repmgr` to Patroni.
+If you are currently using `repmgr` on your Geo primary site, see [these instructions](#migrating-from-repmgr-to-patroni) 
+for migrating from `repmgr` to Patroni.
 
-A production-ready and secure setup requires at least three Consul nodes, three
-Patroni nodes, one internal load-balancing node on the primary site, and a similar
-configuration for the secondary site. The internal load balancer provides a single
-endpoint for connecting to the Patroni cluster's leader whenever a new leader is
-elected. Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni) and other database best practices.
+A production-ready and secure setup requires at least:
+
+- 3 Consul nodes _(primary and secondary sites)_
+- 2 Patroni nodes _(primary and secondary sites)_
+- 1 PgBouncer node _(primary and secondary sites)_
+- 1 internal load-balancer _(primary site only)_
+
+The internal load balancer provides a single endpoint for connecting to the Patroni cluster's leader whenever a new leader is
+elected, and it is required for enabling cascading replication from the secondary sites. 
+
+Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni) 
+and other database best practices.
 
 ##### Step 1. Configure Patroni permanent replication slot on the primary site
 
@@ -781,17 +789,17 @@ by following the same instructions above.
 Secondary sites use a separate PostgreSQL installation as a tracking database to
 keep track of replication status and automatically recover from potential replication issues.
 Omnibus automatically configures a tracking database when `roles(['geo_secondary_role'])` is set.
-If you want to run this database in a highly available configuration, follow the instructions below.
 
-A production-ready and secure setup requires at least three Consul nodes, three
-Patroni nodes on the secondary site secondary site. Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni) and other database best practices.
+If you want to run this database in a highly available configuration, don't use the `geo_secondary_role` above. 
+Instead, follow the instructions below.
+
+A production-ready and secure setup requires at least three Consul nodes, two
+Patroni nodes and one PgBouncer node on the secondary site.
+
+Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni) 
+and other database best practices.
 
 #### Step 1. Configure a PgBouncer node on the secondary site
-
-A production-ready and highly available configuration requires at least
-three Consul nodes, three PgBouncer nodes, and one internal load-balancing node.
-The internal load balancer provides a single endpoint for connecting to the
-PgBouncer cluster. For more information, see [High Availability with Omnibus GitLab](../../postgresql/replication_and_failover.md).
 
 Follow the minimal configuration for the PgBouncer node for the tracking database:
 

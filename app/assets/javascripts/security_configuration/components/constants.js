@@ -34,8 +34,8 @@ export const DAST_CONFIG_HELP_PATH = helpPagePath('user/application_security/das
 });
 
 export const DAST_PROFILES_NAME = __('DAST Scans');
-export const DAST_PROFILES_DESCRIPTION = __(
-  'Saved scan settings and target site settings which are reusable.',
+export const DAST_PROFILES_DESCRIPTION = s__(
+  'SecurityConfiguration|Manage profiles for use by DAST scans.',
 );
 export const DAST_PROFILES_HELP_PATH = helpPagePath('user/application_security/dast/index');
 export const DAST_PROFILES_CONFIG_TEXT = s__('SecurityConfiguration|Manage scans');

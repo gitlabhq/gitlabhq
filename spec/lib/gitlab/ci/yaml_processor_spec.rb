@@ -1648,8 +1648,6 @@ module Gitlab
         end
 
         it 'populates a build options with complete artifacts configuration' do
-          stub_feature_flags(ci_artifacts_exclude: true)
-
           config = <<~YAML
             test:
               script: echo "Hello World"

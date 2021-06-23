@@ -113,6 +113,32 @@ To complete the deletion of the status check you must select the
 **Remove status check** button. This **permanently** deletes
 the status check and it **will not** be recoverable.
 
+## Status checks widget
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327634) in GitLab 14.1.
+> - The [external status checks](#external-status-checks) feature must be [enabled](#enable-or-disable-status-checks) to see the status checks widget.
+
+The status checks widget displays in merge requests and shows the status of external
+status checks:
+
+![Status checks widget](img/status_checks_widget_passed_v14_0.png)
+
+An organization might have a policy that does not allow merging merge requests if
+external status checks do not pass. However, the details in the widget are for informational
+purposes only. GitLab does not prevent merging of merge requests that fail status checks.
+
+While GitLab waits for a response from the external status check, the widget shows
+the status checks as `pending`:
+
+![Status checks widget pending](img/status_checks_widget_pending_v14_0.png)
+
+After GitLab [receives a response](../../../api/status_checks.md#set-approval-status-of-an-external-status-check)
+from the external status check, the widget updates accordingly.
+
+NOTE:
+GitLab cannot guarantee that the external status checks are properly processed by
+the related external service.
+
 ## Troubleshooting
 
 ### Duplicate value errors
@@ -148,6 +174,19 @@ Unable to fetch branches list, please close the form and try again
 An unexpected response was received from the branches retrieval API.
 As suggested, you should close the form and reopen again or refresh the page. This error should be temporary, although
 if it persists please check the [GitLab status page](https://status.gitlab.com/) to see if there is a wider outage.
+
+### Failed to load status checks
+
+```plaintext
+Failed to load status checks
+```
+
+An unexpected response was received from the external status checks API.
+You should:
+
+- Refresh the page in case this error is temporary.
+- Check the [GitLab status page](https://status.gitlab.com/) if the problem persists,
+  to see if there is a wider outage.
 
 ## Enable or disable status checks **(ULTIMATE SELF)**
 

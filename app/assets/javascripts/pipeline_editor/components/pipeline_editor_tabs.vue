@@ -16,6 +16,7 @@ import {
 } from '../constants';
 import getAppStatus from '../graphql/queries/client/app_status.graphql';
 import CiConfigMergedPreview from './editor/ci_config_merged_preview.vue';
+import CiEditorHeader from './editor/ci_editor_header.vue';
 import TextEditor from './editor/text_editor.vue';
 import CiLint from './lint/ci_lint.vue';
 import EditorTab from './ui/editor_tab.vue';
@@ -49,6 +50,7 @@ export default {
   },
   components: {
     CiConfigMergedPreview,
+    CiEditorHeader,
     CiLint,
     EditorTab,
     GlAlert,
@@ -107,6 +109,7 @@ export default {
       data-testid="editor-tab"
       @click="setCurrentTab($options.tabConstants.CREATE_TAB)"
     >
+      <ci-editor-header />
       <text-editor :value="ciFileContent" v-on="$listeners" />
     </editor-tab>
     <editor-tab

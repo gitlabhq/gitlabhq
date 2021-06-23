@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import allReleasesQuery from 'shared_queries/releases/all_releases.query.graphql';
 import createFlash from '~/flash';
 import { historyPushState } from '~/lib/utils/common_utils';
 import ReleasesIndexApolloClientApp from '~/releases/components/app_index_apollo_client.vue';
@@ -12,7 +13,6 @@ import ReleasesEmptyState from '~/releases/components/releases_empty_state.vue';
 import ReleasesPaginationApolloClient from '~/releases/components/releases_pagination_apollo_client.vue';
 import ReleasesSortApolloClient from '~/releases/components/releases_sort_apollo_client.vue';
 import { PAGE_SIZE, CREATED_ASC, DEFAULT_SORT } from '~/releases/constants';
-import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
 
 Vue.use(VueApollo);
 

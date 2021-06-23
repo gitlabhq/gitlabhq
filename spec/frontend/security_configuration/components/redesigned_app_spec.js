@@ -23,6 +23,7 @@ import {
 } from '~/vue_shared/security_reports/constants';
 
 const upgradePath = '/upgrade';
+const gitlabCiHistoryPath = 'test/historyPath';
 
 describe('redesigned App component', () => {
   let wrapper;
@@ -52,8 +53,28 @@ describe('redesigned App component', () => {
   const findTabs = () => wrapper.findAllComponents(GlTab);
   const findByTestId = (id) => wrapper.findByTestId(id);
   const findFeatureCards = () => wrapper.findAllComponents(FeatureCard);
-  const findComplianceViewHistoryLink = () => findByTestId('compliance-view-history-link');
-  const findSecurityViewHistoryLink = () => findByTestId('security-view-history-link');
+  const findLink = ({ href, text, container = wrapper }) => {
+    const selector = `a[href="${href}"]`;
+    const link = container.find(selector);
+
+    if (link.exists() && link.text() === text) {
+      return link;
+    }
+
+    return wrapper.find(`${selector} does not exist`);
+  };
+  const findSecurityViewHistoryLink = () =>
+    findLink({
+      href: gitlabCiHistoryPath,
+      text: i18n.configurationHistory,
+      container: findByTestId('security-testing-tab'),
+    });
+  const findComplianceViewHistoryLink = () =>
+    findLink({
+      href: gitlabCiHistoryPath,
+      text: i18n.configurationHistory,
+      container: findByTestId('compliance-testing-tab'),
+    });
   const findUpgradeBanner = () => wrapper.findComponent(UpgradeBanner);
 
   const securityFeaturesMock = [
@@ -117,6 +138,10 @@ describe('redesigned App component', () => {
       expect(cards).toHaveLength(2);
       expect(cards.at(0).props()).toEqual({ feature: securityFeaturesMock[0] });
       expect(cards.at(1).props()).toEqual({ feature: complianceFeaturesMock[0] });
+    });
+
+    it('renders a basic description', () => {
+      expect(wrapper.text()).toContain(i18n.description);
     });
 
     it('should not show latest pipeline link when latestPipelinePath is not defined', () => {
@@ -193,9 +218,8 @@ describe('redesigned App component', () => {
     it('should show latest pipeline info on the security tab  with correct link when latestPipelinePath is defined', () => {
       const latestPipelineInfoSecurity = findByTestId('latest-pipeline-info-security');
 
-      expect(latestPipelineInfoSecurity.exists()).toBe(true);
       expect(latestPipelineInfoSecurity.text()).toMatchInterpolatedText(
-        i18n.securityTestingDescription,
+        i18n.latestPipelineDescription,
       );
       expect(latestPipelineInfoSecurity.find('a').attributes('href')).toBe('test/path');
     });
@@ -203,9 +227,8 @@ describe('redesigned App component', () => {
     it('should show latest pipeline info on the compliance tab  with correct link when latestPipelinePath is defined', () => {
       const latestPipelineInfoCompliance = findByTestId('latest-pipeline-info-compliance');
 
-      expect(latestPipelineInfoCompliance.exists()).toBe(true);
       expect(latestPipelineInfoCompliance.text()).toMatchInterpolatedText(
-        i18n.securityTestingDescription,
+        i18n.latestPipelineDescription,
       );
       expect(latestPipelineInfoCompliance.find('a').attributes('href')).toBe('test/path');
     });
@@ -217,7 +240,7 @@ describe('redesigned App component', () => {
         augmentedSecurityFeatures: securityFeaturesMock,
         augmentedComplianceFeatures: complianceFeaturesMock,
         gitlabCiPresent: true,
-        gitlabCiHistoryPath: 'test/historyPath',
+        gitlabCiHistoryPath,
       });
     });
 

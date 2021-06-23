@@ -4,9 +4,9 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issues Statistics API
+# Issues statistics API **(FREE)**
 
-Every API call to issues_statistics must be authenticated.
+Every API call to the [issues](../user/project/issues/index.md) statistics API must be authenticated.
 
 If a user is not a member of a project and the project is private, a `GET`
 request on that project results in a `404` status code.

@@ -143,51 +143,22 @@ RSpec.describe Gitlab::Ci::Config::Entry::Artifacts do
     end
 
     describe 'excluded artifacts' do
-      context 'when configuration is valid and the feature is enabled' do
-        before do
-          stub_feature_flags(ci_artifacts_exclude: true)
-        end
+      context 'when configuration is valid' do
+        let(:config) { { untracked: true, exclude: ['some/directory/'] } }
 
-        context 'when configuration is valid' do
-          let(:config) { { untracked: true, exclude: ['some/directory/'] } }
-
-          it 'correctly parses the configuration' do
-            expect(entry).to be_valid
-            expect(entry.value).to eq config
-          end
-        end
-
-        context 'when configuration is not valid' do
-          let(:config) { { untracked: true, exclude: 1234 } }
-
-          it 'returns an error' do
-            expect(entry).not_to be_valid
-            expect(entry.errors)
-              .to include 'artifacts exclude should be an array of strings'
-          end
+        it 'correctly parses the configuration' do
+          expect(entry).to be_valid
+          expect(entry.value).to eq config
         end
       end
 
-      context 'when artifacts/exclude feature is disabled' do
-        before do
-          stub_feature_flags(ci_artifacts_exclude: false)
-        end
+      context 'when configuration is not valid' do
+        let(:config) { { untracked: true, exclude: 1234 } }
 
-        context 'when configuration has been provided' do
-          let(:config) { { untracked: true, exclude: ['some/directory/'] } }
-
-          it 'returns an error' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include 'artifacts exclude feature is disabled'
-          end
-        end
-
-        context 'when configuration is not present' do
-          let(:config) { { untracked: true } }
-
-          it 'is a valid configuration' do
-            expect(entry).to be_valid
-          end
+        it 'returns an error' do
+          expect(entry).not_to be_valid
+          expect(entry.errors)
+            .to include 'artifacts exclude should be an array of strings'
         end
       end
     end

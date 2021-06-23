@@ -82,7 +82,7 @@ module Ci
         expire_in: artifacts[:expire_in]
       }
 
-      if artifacts.dig(:exclude).present? && ::Gitlab::Ci::Features.artifacts_exclude_enabled?
+      if artifacts.dig(:exclude).present?
         archive.merge(exclude: artifacts[:exclude])
       else
         archive

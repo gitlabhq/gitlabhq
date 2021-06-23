@@ -8,12 +8,15 @@ import UpgradeBanner from './upgrade_banner.vue';
 
 export const i18n = {
   compliance: s__('SecurityConfiguration|Compliance'),
+  configurationHistory: s__('SecurityConfiguration|Configuration history'),
   securityTesting: s__('SecurityConfiguration|Security testing'),
-  securityTestingDescription: s__(
+  latestPipelineDescription: s__(
     `SecurityConfiguration|The status of the tools only applies to the
-      default branch and is based on the %{linkStart}latest pipeline%{linkEnd}.
-      Once you've enabled a scan for the default branch, any subsequent feature
-      branch you create will include the scan.`,
+     default branch and is based on the %{linkStart}latest pipeline%{linkEnd}.`,
+  ),
+  description: s__(
+    `SecurityConfiguration|Once you've enabled a scan for the default branch,
+     any subsequent feature branch you create will include the scan.`,
   ),
   securityConfiguration: __('Security Configuration'),
 };
@@ -84,16 +87,19 @@ export default {
       <gl-tab data-testid="security-testing-tab" :title="$options.i18n.securityTesting">
         <section-layout :heading="$options.i18n.securityTesting">
           <template #description>
-            <p
-              v-if="latestPipelinePath"
-              data-testid="latest-pipeline-info-security"
-              class="gl-line-height-20"
-            >
-              <gl-sprintf :message="$options.i18n.securityTestingDescription">
-                <template #link="{ content }">
-                  <gl-link :href="latestPipelinePath">{{ content }}</gl-link>
-                </template>
-              </gl-sprintf>
+            <p>
+              <span data-testid="latest-pipeline-info-security">
+                <gl-sprintf
+                  v-if="latestPipelinePath"
+                  :message="$options.i18n.latestPipelineDescription"
+                >
+                  <template #link="{ content }">
+                    <gl-link :href="latestPipelinePath">{{ content }}</gl-link>
+                  </template>
+                </gl-sprintf>
+              </span>
+
+              {{ $options.i18n.description }}
             </p>
             <p v-if="canViewCiHistory">
               <gl-link data-testid="security-view-history-link" :href="gitlabCiHistoryPath">{{
@@ -115,16 +121,19 @@ export default {
       <gl-tab data-testid="compliance-testing-tab" :title="$options.i18n.compliance">
         <section-layout :heading="$options.i18n.compliance">
           <template #description>
-            <p
-              v-if="latestPipelinePath"
-              class="gl-line-height-20"
-              data-testid="latest-pipeline-info-compliance"
-            >
-              <gl-sprintf :message="$options.i18n.securityTestingDescription">
-                <template #link="{ content }">
-                  <gl-link :href="latestPipelinePath">{{ content }}</gl-link>
-                </template>
-              </gl-sprintf>
+            <p>
+              <span data-testid="latest-pipeline-info-compliance">
+                <gl-sprintf
+                  v-if="latestPipelinePath"
+                  :message="$options.i18n.latestPipelineDescription"
+                >
+                  <template #link="{ content }">
+                    <gl-link :href="latestPipelinePath">{{ content }}</gl-link>
+                  </template>
+                </gl-sprintf>
+              </span>
+
+              {{ $options.i18n.description }}
             </p>
             <p v-if="canViewCiHistory">
               <gl-link data-testid="compliance-view-history-link" :href="gitlabCiHistoryPath">{{

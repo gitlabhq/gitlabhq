@@ -4,16 +4,16 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Group Issue Boards API
+# Group issue boards API **(FREE)**
 
-Every API call to group boards must be authenticated.
+Every API call to [group issue boards](../user/project/issue_board.md#group-issue-boards) must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET`
 request results in `404` status code.
 
 ## List all group issue boards in a group
 
-Lists Issue Boards in the given group.
+Lists issue boards in the given group.
 
 ```plaintext
 GET /groups/:id/boards

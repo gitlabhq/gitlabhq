@@ -4,11 +4,9 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Group milestones API
+# Group milestones API **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12819) in GitLab 9.5.
-
-This page describes the group milestones API.
+Use the group [milestones](../user/project/milestones/index.md) using the REST API.
 There's a separate [project milestones API](milestones.md) page.
 
 ## List group milestones

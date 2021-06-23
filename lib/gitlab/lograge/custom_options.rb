@@ -25,7 +25,6 @@ module Gitlab
         ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
 
         payload[:queue_duration_s] = event.payload[:queue_duration_s] if event.payload[:queue_duration_s]
-        payload[:response] = event.payload[:response] if event.payload[:response]
         payload[:etag_route] = event.payload[:etag_route] if event.payload[:etag_route]
         payload[Labkit::Correlation::CorrelationId::LOG_KEY] = event.payload[Labkit::Correlation::CorrelationId::LOG_KEY] || Labkit::Correlation::CorrelationId.current_id
 

@@ -929,8 +929,7 @@ module Ci
     end
 
     def supports_artifacts_exclude?
-      options&.dig(:artifacts, :exclude)&.any? &&
-        Gitlab::Ci::Features.artifacts_exclude_enabled?
+      options&.dig(:artifacts, :exclude)&.any?
     end
 
     def multi_build_steps?

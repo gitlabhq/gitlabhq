@@ -4,13 +4,13 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# To dos API
+# GitLab To-Do List API **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3188) in GitLab 8.10.
+Interact with [to-do items](../user/todos.md) using the REST API.
 
-## Get a list of to dos
+## Get a list of to-do items
 
-Returns a list of [to-do items](../user/todos.md). When no filter is applied, it
+Returns a list of to-do items. When no filter is applied, it
 returns all pending to-do items for the current user. Different filters allow the
 user to refine the request.
 
@@ -26,7 +26,7 @@ Parameters:
 | `author_id` | integer | no | The ID of an author |
 | `project_id` | integer | no | The ID of a project |
 | `group_id` | integer | no | The ID of a group |
-| `state` | string | no | The state of the to do. Can be either `pending` or `done` |
+| `state` | string | no | The state of the to-do item. Can be either `pending` or `done` |
 | `type` | string | no | The type of to-do item. Can be either `Issue`, `MergeRequest`, `DesignManagement::Design` or `AlertManagement::Alert` |
 
 ```shell
@@ -190,8 +190,8 @@ Example Response:
 
 ## Mark a to-do item as done
 
-Marks a single pending to do given by its ID for the current user as done. The
-to do marked as done is returned in the response.
+Marks a single pending to-do item given by its ID for the current user as done. The
+to-do item marked as done is returned in the response.
 
 ```plaintext
 POST /todos/:id/mark_as_done
@@ -287,9 +287,9 @@ Example Response:
 }
 ```
 
-## Mark all to dos as done
+## Mark all to-do items as done
 
-Marks all pending to dos for the current user as done. It returns the HTTP status code `204` with an empty response.
+Marks all pending to-do items for the current user as done. It returns the HTTP status code `204` with an empty response.
 
 ```plaintext
 POST /todos/mark_as_done

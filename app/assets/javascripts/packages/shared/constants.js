@@ -9,6 +9,7 @@ export const PackageType = {
   COMPOSER: 'composer',
   RUBYGEMS: 'rubygems',
   GENERIC: 'generic',
+  DEBIAN: 'debian',
 };
 
 // we want this separated from the main dictionary to avoid it being pulled in the search of package

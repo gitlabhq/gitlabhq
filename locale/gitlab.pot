@@ -5579,6 +5579,9 @@ msgstr ""
 msgid "Browse files"
 msgstr ""
 
+msgid "Browse templates"
+msgstr ""
+
 msgid "BuildArtifacts|An error occurred while fetching the artifacts"
 msgstr ""
 
@@ -23204,6 +23207,9 @@ msgstr ""
 msgid "PackageRegistry|Created by commit %{link} on branch %{branch}"
 msgstr ""
 
+msgid "PackageRegistry|Debian"
+msgstr ""
+
 msgid "PackageRegistry|Delete Package File"
 msgstr ""
 
@@ -28303,9 +28309,6 @@ msgstr ""
 msgid "Save space and find images in the container Registry. remove unneeded tags and keep only the ones you want. %{linkStart}How does cleanup work?%{linkEnd}"
 msgstr ""
 
-msgid "Saved scan settings and target site settings which are reusable."
-msgstr ""
-
 msgid "Saving"
 msgstr ""
 
@@ -28697,6 +28700,9 @@ msgstr ""
 msgid "SecurityConfiguration|Configuration guide"
 msgstr ""
 
+msgid "SecurityConfiguration|Configuration history"
+msgstr ""
+
 msgid "SecurityConfiguration|Configure"
 msgstr ""
 
@@ -28745,6 +28751,9 @@ msgstr ""
 msgid "SecurityConfiguration|Manage"
 msgstr ""
 
+msgid "SecurityConfiguration|Manage profiles for use by DAST scans."
+msgstr ""
+
 msgid "SecurityConfiguration|Manage scans"
 msgstr ""
 
@@ -28752,6 +28761,9 @@ msgid "SecurityConfiguration|More information"
 msgstr ""
 
 msgid "SecurityConfiguration|Not enabled"
+msgstr ""
+
+msgid "SecurityConfiguration|Once you've enabled a scan for the default branch, any subsequent feature branch you create will include the scan."
 msgstr ""
 
 msgid "SecurityConfiguration|Runtime security metrics for application environments."
@@ -28778,7 +28790,7 @@ msgstr ""
 msgid "SecurityConfiguration|Testing & Compliance"
 msgstr ""
 
-msgid "SecurityConfiguration|The status of the tools only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}. Once you've enabled a scan for the default branch, any subsequent feature branch you create will include the scan."
+msgid "SecurityConfiguration|The status of the tools only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}."
 msgstr ""
 
 msgid "SecurityConfiguration|Upgrade or start a free trial"

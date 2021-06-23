@@ -4,7 +4,7 @@ group: Product Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Usage Ping Guide
+# Usage Ping Guide **(FREE SELF)**
 
 > Introduced in GitLab Ultimate 11.2, more statistics.
 
@@ -37,7 +37,7 @@ and sales teams understand how GitLab is used. For example, the data helps to:
 Usage Ping information is not anonymous. It's linked to the instance's hostname. However, it does
 not contain project names, usernames, or any other specific data.
 
-Sending a Usage Ping payload is optional and can be [disabled](#disable-usage-ping) on any instance.
+Sending a Usage Ping payload is optional and can be [disabled](#disable-usage-ping) on any self-managed instance.
 When Usage Ping is enabled, GitLab gathers data from the other instances
 and can show your instance's usage statistics to your users.
 
@@ -66,7 +66,7 @@ We use the following terminology to describe the Usage Ping components:
 - Usage Ping does not track frontend events things like page views, link clicks, or user sessions, and only focuses on aggregated backend events.
 - Because of these limitations we recommend instrumenting your products with Snowplow for more detailed analytics on GitLab.com and use Usage Ping to track aggregated backend events on self-managed.
 
-## Usage Ping payload
+## View the Usage Ping payload **(FREE SELF)**
 
 You can view the exact JSON payload sent to GitLab Inc. in the administration panel. To view the payload:
 
@@ -78,7 +78,7 @@ You can view the exact JSON payload sent to GitLab Inc. in the administration pa
 
 For an example payload, see [Example Usage Ping payload](#example-usage-ping-payload).
 
-## Disable Usage Ping
+## Disable Usage Ping **(FREE SELF)**
 
 NOTE:
 The method to disable Usage Ping in the GitLab configuration file does not work in

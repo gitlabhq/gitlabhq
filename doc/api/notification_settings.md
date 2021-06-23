@@ -4,22 +4,20 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Notification settings API
+# Notification settings API **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5632) in GitLab 8.12.
+Change [notification settings](../user/profile/notifications.md) using the REST API.
 
 ## Valid notification levels
 
 The notification levels are defined in the `NotificationSetting.level` model enumeration. Currently, these levels are recognized:
 
-```plaintext
-disabled
-participating
-watch
-global
-mention
-custom
-```
+- `disabled`
+- `participating`
+- `watch`
+- `global`
+- `mention`
+- `custom`
 
 If the `custom` level is used, specific email events can be controlled. Available events are returned by `NotificationSetting.email_events`. Currently, these events are recognized:
 

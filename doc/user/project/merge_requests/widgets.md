@@ -62,3 +62,9 @@ merge request widget takes you directly to the pages changed, making it easier a
 faster to preview proposed modifications.
 
 [Read more about Review Apps](../../../ci/review_apps/index.md).
+
+## External status checks **(ULTIMATE)**
+
+If you have configured [external status checks](status_checks.md) you can
+see the status of these checks in merge requests
+[in a specific widget](status_checks.md#status-checks-widget).

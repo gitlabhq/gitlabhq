@@ -4493,26 +4493,12 @@ RSpec.describe Ci::Build do
       it { is_expected.to include(:upload_multiple_artifacts) }
     end
 
-    context 'when artifacts exclude is defined and the is feature enabled' do
+    context 'when artifacts exclude is defined' do
       let(:options) do
         { artifacts: { exclude: %w[something] } }
       end
 
-      context 'when a feature flag is enabled' do
-        before do
-          stub_feature_flags(ci_artifacts_exclude: true)
-        end
-
-        it { is_expected.to include(:artifacts_exclude) }
-      end
-
-      context 'when a feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_artifacts_exclude: false)
-        end
-
-        it { is_expected.not_to include(:artifacts_exclude) }
-      end
+      it { is_expected.to include(:artifacts_exclude) }
     end
   end
 

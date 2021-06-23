@@ -1,0 +1,105 @@
+# This query is identical to
+# `app/assets/javascripts/releases/graphql/queries/all_releases.query.graphql`.
+# These two queries should be kept in sync.
+query allReleases(
+  $fullPath: ID!
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+  $sort: ReleaseSort
+) {
+  project(fullPath: $fullPath) {
+    __typename
+    releases(first: $first, last: $last, before: $before, after: $after, sort: $sort) {
+      __typename
+      nodes {
+        __typename
+        name
+        tagName
+        tagPath
+        descriptionHtml
+        releasedAt
+        createdAt
+        upcomingRelease
+        assets {
+          __typename
+          count
+          sources {
+            __typename
+            nodes {
+              __typename
+              format
+              url
+            }
+          }
+          links {
+            __typename
+            nodes {
+              __typename
+              id
+              name
+              url
+              directAssetUrl
+              linkType
+              external
+            }
+          }
+        }
+        evidences {
+          __typename
+          nodes {
+            __typename
+            filepath
+            collectedAt
+            sha
+          }
+        }
+        links {
+          __typename
+          editUrl
+          selfUrl
+          openedIssuesUrl
+          closedIssuesUrl
+          openedMergeRequestsUrl
+          mergedMergeRequestsUrl
+          closedMergeRequestsUrl
+        }
+        commit {
+          __typename
+          sha
+          webUrl
+          title
+        }
+        author {
+          __typename
+          webUrl
+          avatarUrl
+          username
+        }
+        milestones {
+          __typename
+          nodes {
+            __typename
+            id
+            title
+            description
+            webPath
+            stats {
+              __typename
+              totalIssuesCount
+              closedIssuesCount
+            }
+          }
+        }
+      }
+      pageInfo {
+        __typename
+        startCursor
+        hasPreviousPage
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}

@@ -4,7 +4,9 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Projects API
+# Projects API **(FREE)**
+
+Interact with [projects](../user/project/index.md) using the REST API.
 
 ## Project visibility level
 

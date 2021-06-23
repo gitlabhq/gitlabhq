@@ -97,4 +97,42 @@ RSpec.describe ReleasesHelper do
       end
     end
   end
+
+  describe 'startup queries' do
+    describe 'use_startup_query_for_index_page?' do
+      it 'allows startup queries for non-paginated requests' do
+        allow(helper).to receive(:params).and_return({ unrelated_query_param: 'value' })
+
+        expect(helper.use_startup_query_for_index_page?).to be(true)
+      end
+
+      it 'disallows startup queries for requests paginated with a "before" cursor' do
+        allow(helper).to receive(:params).and_return({ unrelated_query_param: 'value', before: 'cursor' })
+
+        expect(helper.use_startup_query_for_index_page?).to be(false)
+      end
+
+      it 'disallows startup queries for requests paginated with an "after" cursor' do
+        allow(helper).to receive(:params).and_return({ unrelated_query_param: 'value', after: 'cursor' })
+
+        expect(helper.use_startup_query_for_index_page?).to be(false)
+      end
+    end
+
+    describe '#index_page_startup_query_variables' do
+      let_it_be(:project) { build(:project, namespace: create(:group)) }
+
+      before do
+        helper.instance_variable_set(:@project, project)
+      end
+
+      it 'returns the correct GraphQL variables for the startup query' do
+        expect(helper.index_page_startup_query_variables).to eq({
+          fullPath: project.full_path,
+          sort: 'RELEASED_AT_DESC',
+          first: 1
+        })
+      end
+    end
+  end
 end

@@ -6,9 +6,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Time Tracking
-
-> Introduced in GitLab 8.14.
+# Time Tracking **(FREE)**
 
 Time Tracking allows you to track estimates and time spent on issues and merge
 requests within GitLab.

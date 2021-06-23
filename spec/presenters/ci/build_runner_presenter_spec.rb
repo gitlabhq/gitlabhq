@@ -44,29 +44,13 @@ RSpec.describe Ci::BuildRunnerPresenter do
           create(:ci_build, options: { artifacts: { paths: %w[abc], exclude: %w[cde] } })
         end
 
-        context 'when the feature is enabled' do
-          before do
-            stub_feature_flags(ci_artifacts_exclude: true)
-          end
-
-          it 'includes the list of excluded paths' do
-            expect(presenter.artifacts.first).to include(
-              artifact_type: :archive,
-              artifact_format: :zip,
-              paths: %w[abc],
-              exclude: %w[cde]
-            )
-          end
-        end
-
-        context 'when the feature is disabled' do
-          before do
-            stub_feature_flags(ci_artifacts_exclude: false)
-          end
-
-          it 'does not include the list of excluded paths' do
-            expect(presenter.artifacts.first).not_to have_key(:exclude)
-          end
+        it 'includes the list of excluded paths' do
+          expect(presenter.artifacts.first).to include(
+            artifact_type: :archive,
+            artifact_format: :zip,
+            paths: %w[abc],
+            exclude: %w[cde]
+          )
         end
       end
 

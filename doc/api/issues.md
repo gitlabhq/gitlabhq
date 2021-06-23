@@ -4,7 +4,9 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issues API
+# Issues API **(FREE)**
+
+Interact with [GitLab Issues](../user/project/issues/index.md) using the REST API.
 
 If a user is not a member of a private project, a `GET`
 request on that project results in a `404` status code.
