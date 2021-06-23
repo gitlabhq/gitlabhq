@@ -6,9 +6,10 @@ import {
   prepareTokens,
 } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 import {
-  PARAM_KEY_SEARCH,
   PARAM_KEY_STATUS,
   PARAM_KEY_RUNNER_TYPE,
+  PARAM_KEY_TAG,
+  PARAM_KEY_SEARCH,
   PARAM_KEY_SORT,
   PARAM_KEY_PAGE,
   PARAM_KEY_AFTER,
@@ -40,7 +41,7 @@ export const fromUrlQueryToSearch = (query = window.location.search) => {
   return {
     filters: prepareTokens(
       urlQueryToFilter(query, {
-        filterNamesAllowList: [PARAM_KEY_STATUS, PARAM_KEY_RUNNER_TYPE],
+        filterNamesAllowList: [PARAM_KEY_STATUS, PARAM_KEY_RUNNER_TYPE, PARAM_KEY_TAG],
         filteredSearchTermKey: PARAM_KEY_SEARCH,
         legacySpacesDecode: false,
       }),
@@ -56,14 +57,18 @@ export const fromSearchToUrl = (
 ) => {
   const filterParams = {
     // Defaults
-    [PARAM_KEY_SEARCH]: null,
     [PARAM_KEY_STATUS]: [],
     [PARAM_KEY_RUNNER_TYPE]: [],
+    [PARAM_KEY_TAG]: [],
     // Current filters
     ...filterToQueryObject(processFilters(filters), {
       filteredSearchTermKey: PARAM_KEY_SEARCH,
     }),
   };
+
+  if (!filterParams[PARAM_KEY_SEARCH]) {
+    filterParams[PARAM_KEY_SEARCH] = null;
+  }
 
   const isDefaultSort = sort !== DEFAULT_SORT;
   const isFirstPage = pagination?.page === 1;
@@ -87,11 +92,11 @@ export const fromSearchToVariables = ({ filters = [], sort = null, pagination = 
 
   variables.search = queryObj[PARAM_KEY_SEARCH];
 
-  // TODO Get more than one value when GraphQL API supports OR for "status"
+  // TODO Get more than one value when GraphQL API supports OR for "status" or "runner_type"
   [variables.status] = queryObj[PARAM_KEY_STATUS] || [];
-
-  // TODO Get more than one value when GraphQL API supports OR for "runner type"
   [variables.type] = queryObj[PARAM_KEY_RUNNER_TYPE] || [];
+
+  variables.tagList = queryObj[PARAM_KEY_TAG];
 
   if (sort) {
     variables.sort = sort;

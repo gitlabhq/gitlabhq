@@ -30,6 +30,10 @@ module API
       params :optional_params_ee do
       end
 
+      params :optional_update_params do
+        optional :prevent_sharing_groups_outside_hierarchy, type: Boolean, desc: 'Prevent sharing groups within this namespace with any groups outside the namespace. Only available on top-level groups.'
+      end
+
       params :optional_update_params_ee do
       end
 

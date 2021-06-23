@@ -87,6 +87,7 @@ module QA
     autoload :CiVariable, 'qa/resource/ci_variable'
     autoload :Runner, 'qa/resource/runner'
     autoload :PersonalAccessToken, 'qa/resource/personal_access_token'
+    autoload :PersonalAccessTokenCache, 'qa/resource/personal_access_token_cache'
     autoload :ProjectAccessToken, 'qa/resource/project_access_token'
     autoload :User, 'qa/resource/user'
     autoload :ProjectMilestone, 'qa/resource/project_milestone'

@@ -41,6 +41,11 @@ module NamespaceSettings
         settings_params.delete(:prevent_sharing_groups_outside_hierarchy)
         group.namespace_settings.errors.add(:prevent_sharing_groups_outside_hierarchy, _('can only be changed by a group admin.'))
       end
+
+      unless group.root?
+        settings_params.delete(:prevent_sharing_groups_outside_hierarchy)
+        group.namespace_settings.errors.add(:prevent_sharing_groups_outside_hierarchy, _('only available on top-level groups.'))
+      end
     end
   end
 end

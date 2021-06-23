@@ -99,6 +99,37 @@ describe('search_params.js', () => {
       },
     },
     {
+      name: 'a tag',
+      urlQuery: '?tag[]=tag-1',
+      search: {
+        filters: [{ type: 'tag', value: { data: 'tag-1', operator: '=' } }],
+        pagination: { page: 1 },
+        sort: 'CREATED_DESC',
+      },
+      graphqlVariables: {
+        tagList: ['tag-1'],
+        first: 20,
+        sort: 'CREATED_DESC',
+      },
+    },
+    {
+      name: 'two tags',
+      urlQuery: '?tag[]=tag-1&tag[]=tag-2',
+      search: {
+        filters: [
+          { type: 'tag', value: { data: 'tag-1', operator: '=' } },
+          { type: 'tag', value: { data: 'tag-2', operator: '=' } },
+        ],
+        pagination: { page: 1 },
+        sort: 'CREATED_DESC',
+      },
+      graphqlVariables: {
+        tagList: ['tag-1', 'tag-2'],
+        first: 20,
+        sort: 'CREATED_DESC',
+      },
+    },
+    {
       name: 'the next page',
       urlQuery: '?page=2&after=AFTER_CURSOR',
       search: { filters: [], pagination: { page: 2, after: 'AFTER_CURSOR' }, sort: 'CREATED_DESC' },
@@ -115,14 +146,15 @@ describe('search_params.js', () => {
       graphqlVariables: { sort: 'CREATED_DESC', before: 'BEFORE_CURSOR', last: RUNNER_PAGE_SIZE },
     },
     {
-      name:
-        'the next page filtered by multiple status, a single instance type and a non default sort',
+      name: 'the next page filtered by a status, an instance type, tags and a non default sort',
       urlQuery:
-        '?status[]=ACTIVE&runner_type[]=INSTANCE_TYPE&sort=CREATED_ASC&page=2&after=AFTER_CURSOR',
+        '?status[]=ACTIVE&runner_type[]=INSTANCE_TYPE&tag[]=tag-1&tag[]=tag-2&sort=CREATED_ASC&page=2&after=AFTER_CURSOR',
       search: {
         filters: [
           { type: 'status', value: { data: 'ACTIVE', operator: '=' } },
           { type: 'runner_type', value: { data: 'INSTANCE_TYPE', operator: '=' } },
+          { type: 'tag', value: { data: 'tag-1', operator: '=' } },
+          { type: 'tag', value: { data: 'tag-2', operator: '=' } },
         ],
         pagination: { page: 2, after: 'AFTER_CURSOR' },
         sort: 'CREATED_ASC',
@@ -130,6 +162,7 @@ describe('search_params.js', () => {
       graphqlVariables: {
         status: 'ACTIVE',
         type: 'INSTANCE_TYPE',
+        tagList: ['tag-1', 'tag-2'],
         sort: 'CREATED_ASC',
         after: 'AFTER_CURSOR',
         first: RUNNER_PAGE_SIZE,

@@ -535,6 +535,7 @@ Example response:
       "expires_at": null
     }
   ],
+  "prevent_sharing_groups_outside_hierarchy": false,
   "projects": [ // Deprecated and will be removed in API v5
     {
       "id": 7,
@@ -672,6 +673,8 @@ Example response:
   ]
 }
 ```
+
+The `prevent_sharing_groups_outside_hierarchy` attribute is present only on top-level groups.
 
 Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
 the `shared_runners_minutes_limit` and `extra_shared_runners_minutes_limit` parameters:
@@ -851,31 +854,32 @@ Updates the project group. Only available to group owners and administrators.
 PUT /groups/:id
 ```
 
-| Attribute                            | Type    | Required | Description |
-| ------------------------------------ | ------- | -------- | ----------- |
-| `id`                                 | integer | yes      | The ID of the group. |
-| `name`                               | string  | no       | The name of the group. |
-| `path`                               | string  | no       | The path of the group. |
-| `description`                        | string  | no       | The description of the group. |
-| `membership_lock`                    | boolean | no       | **(PREMIUM)** Prevent adding new members to project membership within this group. |
-| `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |
-| `visibility`                         | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
-| `require_two_factor_authentication`  | boolean | no       | Require all users in this group to setup Two-factor authentication. |
-| `two_factor_grace_period`            | integer | no       | Time before Two-factor authentication is enforced (in hours). |
-| `project_creation_level`             | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (Maintainers), or `developer` (Developers + Maintainers). |
-| `auto_devops_enabled`                | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `subgroup_creation_level`            | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (Maintainers). |
-| `emails_disabled`                    | boolean | no       | Disable email notifications |
-| `avatar`                             | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
-| `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned |
-| `lfs_enabled` (optional)             | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
-| `request_access_enabled`             | boolean | no       | Allow users to request member access. |
-| `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
-| `file_template_project_id`           | integer | no       | **(PREMIUM)** The ID of a project to load custom file templates from. |
-| `shared_runners_minutes_limit`       | integer | no       | **(PREMIUM SELF)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
-| `extra_shared_runners_minutes_limit` | integer | no       | **(PREMIUM SELF)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
-| `prevent_forking_outside_group`      | boolean | no       | **(PREMIUM)** When enabled, users can **not** fork projects from this group to external namespaces
-| `shared_runners_setting`             | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
+| Attribute                                  | Type    | Required | Description |
+| ------------------------------------------ | ------- | -------- | ----------- |
+| `id`                                       | integer | yes      | The ID of the group. |
+| `name`                                     | string  | no       | The name of the group. |
+| `path`                                     | string  | no       | The path of the group. |
+| `description`                              | string  | no       | The description of the group. |
+| `membership_lock`                          | boolean | no       | **(PREMIUM)** Prevent adding new members to project membership within this group. |
+| `share_with_group_lock`                    | boolean | no       | Prevent sharing a project with another group within this group. |
+| `visibility`                               | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
+| `require_two_factor_authentication`        | boolean | no       | Require all users in this group to setup Two-factor authentication. |
+| `two_factor_grace_period`                  | integer | no       | Time before Two-factor authentication is enforced (in hours). |
+| `project_creation_level`                   | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (Maintainers), or `developer` (Developers + Maintainers). |
+| `auto_devops_enabled`                      | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
+| `subgroup_creation_level`                  | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (Maintainers). |
+| `emails_disabled`                          | boolean | no       | Disable email notifications |
+| `avatar`                                   | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
+| `mentions_disabled`                        | boolean | no       | Disable the capability of a group from getting mentioned |
+| `lfs_enabled` (optional)                   | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
+| `request_access_enabled`                   | boolean | no       | Allow users to request member access. |
+| `default_branch_protection`                | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
+| `file_template_project_id`                 | integer | no       | **(PREMIUM)** The ID of a project to load custom file templates from. |
+| `shared_runners_minutes_limit`             | integer | no       | **(PREMIUM SELF)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
+| `extra_shared_runners_minutes_limit`       | integer | no       | **(PREMIUM SELF)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
+| `prevent_forking_outside_group`            | boolean | no       | **(PREMIUM)** When enabled, users can **not** fork projects from this group to external namespaces
+| `shared_runners_setting`                   | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
+| `prevent_sharing_groups_outside_hierarchy` | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/index.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -910,6 +914,7 @@ Example response:
   "file_template_project_id": 1,
   "parent_id": null,
   "created_at": "2020-01-15T12:36:29.590Z",
+  "prevent_sharing_groups_outside_hierarchy": false,
   "projects": [ // Deprecated and will be removed in API v5
     {
       "id": 9,
@@ -953,6 +958,8 @@ Example response:
   ]
 }
 ```
+
+The `prevent_sharing_groups_outside_hierarchy` attribute is present in the response only for top-level groups.
 
 ### Disable the results limit **(FREE SELF)**
 

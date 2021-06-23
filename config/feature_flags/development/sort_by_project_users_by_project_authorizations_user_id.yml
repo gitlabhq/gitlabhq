@@ -1,0 +1,8 @@
+---
+name: sort_by_project_users_by_project_authorizations_user_id
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64528
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334167
+milestone: '14.1'
+type: development
+group: group::optimize
+default_enabled: false

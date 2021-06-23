@@ -1,5 +1,5 @@
 import { GlBadge } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import RunnerTags from '~/runner/components/runner_tags.vue';
 
 describe('RunnerTags', () => {
@@ -9,7 +9,7 @@ describe('RunnerTags', () => {
   const findBadgesAt = (i = 0) => wrapper.findAllComponents(GlBadge).at(i);
 
   const createComponent = ({ props = {} } = {}) => {
-    wrapper = shallowMount(RunnerTags, {
+    wrapper = mount(RunnerTags, {
       propsData: {
         tagList: ['tag1', 'tag2'],
         ...props,
@@ -43,14 +43,6 @@ describe('RunnerTags', () => {
     });
 
     expect(findBadge().props('size')).toBe('sm');
-  });
-
-  it('Displays tags with a variant', () => {
-    createComponent({
-      props: { variant: 'warning' },
-    });
-
-    expect(findBadge().props('variant')).toBe('warning');
   });
 
   it('Is empty when there are no tags', () => {

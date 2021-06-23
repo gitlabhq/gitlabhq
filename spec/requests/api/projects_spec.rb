@@ -2464,6 +2464,14 @@ RSpec.describe API::Projects do
 
   describe 'GET /projects/:id/users' do
     shared_examples_for 'project users response' do
+      let(:reporter_1) { create(:user) }
+      let(:reporter_2) { create(:user) }
+
+      before do
+        project.add_reporter(reporter_1)
+        project.add_reporter(reporter_2)
+      end
+
       it 'returns the project users' do
         get api("/projects/#{project.id}/users", current_user)
 
@@ -2472,12 +2480,15 @@ RSpec.describe API::Projects do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.size).to eq(1)
+        expect(json_response.size).to eq(3)
 
         first_user = json_response.first
         expect(first_user['username']).to eq(user.username)
         expect(first_user['name']).to eq(user.name)
         expect(first_user.keys).to include(*%w[name username id state avatar_url web_url])
+
+        ids = json_response.map { |raw_user| raw_user['id'] }
+        expect(ids).to eq([user.id, reporter_1.id, reporter_2.id])
       end
     end
 
@@ -2490,9 +2501,26 @@ RSpec.describe API::Projects do
 
     context 'when authenticated' do
       context 'valid request' do
-        it_behaves_like 'project users response' do
-          let(:project) { project4 }
-          let(:current_user) { user4 }
+        context 'when sort_by_project_authorizations_user_id FF is off' do
+          before do
+            stub_feature_flags(sort_by_project_users_by_project_authorizations_user_id: false)
+          end
+
+          it_behaves_like 'project users response' do
+            let(:project) { project4 }
+            let(:current_user) { user4 }
+          end
+        end
+
+        context 'when sort_by_project_authorizations_user_id FF is on' do
+          before do
+            stub_feature_flags(sort_by_project_users_by_project_authorizations_user_id: true)
+          end
+
+          it_behaves_like 'project users response' do
+            let(:project) { project4 }
+            let(:current_user) { user4 }
+          end
         end
       end
 

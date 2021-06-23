@@ -64,7 +64,7 @@ describe('RunnerListApp', () => {
   };
 
   const setQuery = (query) => {
-    window.location.href = `${TEST_HOST}/admin/runners/${query}`;
+    window.location.href = `${TEST_HOST}/admin/runners?${query}`;
     window.location.search = query;
   };
 
@@ -119,7 +119,7 @@ describe('RunnerListApp', () => {
 
   describe('when a filter is preselected', () => {
     beforeEach(async () => {
-      window.location.search = `?status[]=${STATUS_ACTIVE}&runner_type[]=${INSTANCE_TYPE}`;
+      setQuery(`?status[]=${STATUS_ACTIVE}&runner_type[]=${INSTANCE_TYPE}&tag[]=tag1`);
 
       createComponentWithApollo();
       await waitForPromises();
@@ -130,6 +130,7 @@ describe('RunnerListApp', () => {
         filters: [
           { type: 'status', value: { data: STATUS_ACTIVE, operator: '=' } },
           { type: 'runner_type', value: { data: INSTANCE_TYPE, operator: '=' } },
+          { type: 'tag', value: { data: 'tag1', operator: '=' } },
         ],
         sort: 'CREATED_DESC',
         pagination: { page: 1 },
@@ -140,6 +141,7 @@ describe('RunnerListApp', () => {
       expect(mockRunnersQuery).toHaveBeenLastCalledWith({
         status: STATUS_ACTIVE,
         type: INSTANCE_TYPE,
+        tagList: ['tag1'],
         sort: DEFAULT_SORT,
         first: RUNNER_PAGE_SIZE,
       });
@@ -157,7 +159,7 @@ describe('RunnerListApp', () => {
     it('updates the browser url', () => {
       expect(updateHistory).toHaveBeenLastCalledWith({
         title: expect.any(String),
-        url: 'http://test.host/admin/runners/?status[]=ACTIVE&sort=CREATED_ASC',
+        url: 'http://test.host/admin/runners?status[]=ACTIVE&sort=CREATED_ASC',
       });
     });
 

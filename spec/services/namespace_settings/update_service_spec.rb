@@ -106,6 +106,22 @@ RSpec.describe NamespaceSettings::UpdateService do
           expect(group.namespace_settings.errors.messages[:prevent_sharing_groups_outside_hierarchy]).to include('can only be changed by a group admin.')
         end
       end
+
+      context 'with a subgroup' do
+        let(:subgroup) { create(:group, parent: group) }
+
+        before do
+          group.add_owner(user)
+        end
+
+        it 'does not change settings' do
+          service = described_class.new(user, subgroup, settings)
+
+          expect { service.execute }.not_to change { group.namespace_settings.prevent_sharing_groups_outside_hierarchy }
+
+          expect(subgroup.namespace_settings.errors.messages[:prevent_sharing_groups_outside_hierarchy]).to include('only available on top-level groups.')
+        end
+      end
     end
   end
 end

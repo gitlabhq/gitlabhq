@@ -608,6 +608,10 @@ module API
         users = users.search(params[:search]) if params[:search].present?
         users = users.where_not_in(params[:skip_users]) if params[:skip_users].present?
 
+        if Feature.enabled?(:sort_by_project_users_by_project_authorizations_user_id, user_project, default_enabled: :yaml)
+          users = users.order('project_authorizations.user_id' => :asc) # rubocop: disable CodeReuse/ActiveRecord
+        end
+
         present paginate(users), with: Entities::UserBasic
       end
 

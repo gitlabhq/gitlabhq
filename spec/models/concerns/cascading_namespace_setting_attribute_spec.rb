@@ -17,18 +17,6 @@ RSpec.describe NamespaceSetting, 'CascadingNamespaceSettingAttribute' do
   describe '#delayed_project_removal' do
     subject(:delayed_project_removal) { subgroup_settings.delayed_project_removal }
 
-    context 'when the feature is disabled' do
-      before do
-        stub_feature_flags(cascading_namespace_settings: false)
-
-        group_settings.update!(delayed_project_removal: true)
-      end
-
-      it 'does not cascade' do
-        expect(delayed_project_removal).to eq(nil)
-      end
-    end
-
     context 'when there is no parent' do
       context 'and the value is not nil' do
         before do
@@ -190,16 +178,6 @@ RSpec.describe NamespaceSetting, 'CascadingNamespaceSettingAttribute' do
       it 'does not return a locked namespace' do
         expect(subgroup_settings.delayed_project_removal_locked_ancestor).to be_nil
       end
-    end
-
-    context 'when the feature is disabled' do
-      before do
-        stub_feature_flags(cascading_namespace_settings: false)
-
-        group_settings.update!(delayed_project_removal: true)
-      end
-
-      it_behaves_like 'not locked'
     end
 
     context 'when attribute is locked by self' do

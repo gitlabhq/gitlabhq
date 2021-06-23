@@ -195,26 +195,6 @@ RSpec.describe NamespacesHelper do
     end
   end
 
-  describe '#cascading_namespace_settings_enabled?' do
-    subject { helper.cascading_namespace_settings_enabled? }
-
-    context 'when `cascading_namespace_settings` feature flag is enabled' do
-      it 'returns `true`' do
-        expect(subject).to be(true)
-      end
-    end
-
-    context 'when `cascading_namespace_settings` feature flag is disabled' do
-      before do
-        stub_feature_flags(cascading_namespace_settings: false)
-      end
-
-      it 'returns `false`' do
-        expect(subject).to be(false)
-      end
-    end
-  end
-
   describe '#cascading_namespace_settings_popover_data' do
     attribute = :delayed_project_removal
 

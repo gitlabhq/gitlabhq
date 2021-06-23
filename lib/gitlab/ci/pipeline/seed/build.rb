@@ -222,3 +222,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::Pipeline::Seed::Build.prepend_mod_with('Gitlab::Ci::Pipeline::Seed::Build')

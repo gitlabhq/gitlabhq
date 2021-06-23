@@ -215,6 +215,7 @@ module API
         optional :name, type: String, desc: 'The name of the group'
         optional :path, type: String, desc: 'The path of the group'
         use :optional_params
+        use :optional_update_params
         use :optional_update_params_ee
       end
       put ':id' do

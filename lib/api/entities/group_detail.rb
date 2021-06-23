@@ -7,6 +7,7 @@ module API
         SharedGroupWithGroup.represent(group.shared_with_group_links.public_or_visible_to_user(group, options[:current_user]))
       end
       expose :runners_token, if: lambda { |group, options| options[:user_can_admin_group] }
+      expose :prevent_sharing_groups_outside_hierarchy, if: ->(group) { group.root? }
 
       expose :projects, using: Entities::Project do |group, options|
         projects = GroupProjectsFinder.new(

@@ -490,6 +490,7 @@ RSpec.describe API::Groups do
         expect(json_response['visibility']).to eq(Gitlab::VisibilityLevel.string_level(group1.visibility_level))
         expect(json_response['avatar_url']).to eq(group1.avatar_url(only_path: false))
         expect(json_response['share_with_group_lock']).to eq(group1.share_with_group_lock)
+        expect(json_response['prevent_sharing_groups_outside_hierarchy']).to eq(group2.namespace_settings.prevent_sharing_groups_outside_hierarchy)
         expect(json_response['require_two_factor_authentication']).to eq(group1.require_two_factor_authentication)
         expect(json_response['two_factor_grace_period']).to eq(group1.two_factor_grace_period)
         expect(json_response['auto_devops_enabled']).to eq(group1.auto_devops_enabled)
@@ -700,6 +701,7 @@ RSpec.describe API::Groups do
           project_creation_level: "noone",
           subgroup_creation_level: "maintainer",
           default_branch_protection: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
+          prevent_sharing_groups_outside_hierarchy: true,
           avatar: fixture_file_upload(file_path)
         }
 
@@ -724,6 +726,7 @@ RSpec.describe API::Groups do
         expect(json_response['shared_projects'].length).to eq(0)
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
         expect(json_response['avatar_url']).to end_with('dk.png')
+        expect(json_response['prevent_sharing_groups_outside_hierarchy']).to eq(true)
       end
 
       context 'updating the `default_branch_protection` attribute' do
@@ -793,6 +796,15 @@ RSpec.describe API::Groups do
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']['visibility_level']).to contain_exactly('private is not allowed since there are sub-groups with higher visibility.')
+        end
+
+        it 'does not update prevent_sharing_groups_outside_hierarchy' do
+          put api("/groups/#{subgroup.id}", user3), params: { description: 'it works', prevent_sharing_groups_outside_hierarchy: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.keys).not_to include('prevent_sharing_groups_outside_hierarchy')
+          expect(subgroup.reload.prevent_sharing_groups_outside_hierarchy).to eq(false)
+          expect(json_response['description']).to eq('it works')
         end
       end
     end
