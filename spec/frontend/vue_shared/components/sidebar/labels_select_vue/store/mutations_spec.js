@@ -153,7 +153,16 @@ describe('LabelsSelect Mutations', () => {
   });
 
   describe(`${types.UPDATE_SELECTED_LABELS}`, () => {
-    const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
+    let labels;
+
+    beforeEach(() => {
+      labels = [
+        { id: 1, title: 'scoped::test', set: true },
+        { id: 2, set: false, title: 'scoped::one' },
+        { id: 3, title: '' },
+        { id: 4, title: '' },
+      ];
+    });
 
     it('updates `state.labels` to include `touched` and `set` props based on provided `labels` param', () => {
       const updatedLabelIds = [2];
@@ -167,6 +176,24 @@ describe('LabelsSelect Mutations', () => {
           expect(label.touched).toBe(true);
           expect(label.set).toBe(true);
         }
+      });
+    });
+
+    describe('when label is scoped', () => {
+      it('unsets the currently selected scoped label and sets the current label', () => {
+        const state = {
+          labels,
+        };
+        mutations[types.UPDATE_SELECTED_LABELS](state, {
+          labels: [{ id: 2, title: 'scoped::one' }],
+        });
+
+        expect(state.labels).toEqual([
+          { id: 1, title: 'scoped::test', set: false },
+          { id: 2, set: true, title: 'scoped::one', touched: true },
+          { id: 3, title: '' },
+          { id: 4, title: '' },
+        ]);
       });
     });
   });

@@ -233,15 +233,7 @@ If your rules match both branch pipelines and merge request pipelines,
 #### `workflow:rules:variables`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294232) in GitLab 13.11.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/300997) in GitLab 13.12.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-workflowrulesvariables). **(FREE SELF)**
-
-There can be
-[risks when disabling released features](../../user/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/300997) in GitLab 14.1.
 
 You can use [`variables`](#variables) in `workflow:rules:` to define variables for specific pipeline conditions.
 
@@ -293,25 +285,6 @@ When the branch is something else:
 
 - job1's `DEPLOY_VARIABLE` is `job1-default-deploy`.
 - job2's `DEPLOY_VARIABLE` is `default-deploy`.
-
-##### Enable or disable workflow:rules:variables **(FREE SELF)**
-
-workflow:rules:variables is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_workflow_rules_variables)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_workflow_rules_variables)
-```
 
 #### `workflow:rules` templates
 

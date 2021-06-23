@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'redis'
-
 module Gitlab
   module Instrumentation
     module RedisInterceptor
@@ -98,8 +96,4 @@ module Gitlab
       end
     end
   end
-end
-
-class ::Redis::Client
-  prepend ::Gitlab::Instrumentation::RedisInterceptor
 end

@@ -95,8 +95,6 @@ renaming. For example
 class RenameUsersUpdatedAtToUpdatedAtTimestamp < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
-  DOWNTIME = false
-
   disable_ddl_transaction!
 
   def up
@@ -290,8 +288,6 @@ any remaining rows. For example:
 ```ruby
 class MigrateRemainingIssuesClosedAt < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
-
-  DOWNTIME = false
 
   disable_ddl_transaction!
 

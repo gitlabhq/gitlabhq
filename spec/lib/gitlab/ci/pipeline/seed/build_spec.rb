@@ -250,19 +250,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
                { key: 'VAR4', value: 'new var pipeline 4', public: true }]
             )
           end
-
-          context 'when FF ci_workflow_rules_variables is disabled' do
-            before do
-              stub_feature_flags(ci_workflow_rules_variables: false)
-            end
-
-            it 'returns existing yaml variables' do
-              expect(subject[:yaml_variables]).to match_array(
-                [{ key: 'VAR2', value: 'var 2', public: true },
-                 { key: 'VAR3', value: 'var 3', public: true }]
-              )
-            end
-          end
         end
 
         context 'when root_variables_inheritance is false' do

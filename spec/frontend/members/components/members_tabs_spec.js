@@ -1,9 +1,14 @@
+import { GlTabs } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MembersApp from '~/members/components/app.vue';
 import MembersTabs from '~/members/components/members_tabs.vue';
-import { MEMBER_TYPES } from '~/members/constants';
+import {
+  MEMBER_TYPES,
+  TAB_QUERY_PARAM_VALUES,
+  ACTIVE_TAB_QUERY_PARAM_NAME,
+} from '~/members/constants';
 import { pagination } from '../mock_data';
 
 describe('MembersTabs', () => {
@@ -93,6 +98,18 @@ describe('MembersTabs', () => {
     wrapper.destroy();
   });
 
+  it('renders `GlTabs` with `syncActiveTabWithQueryParams` and `queryParamName` props set', async () => {
+    await createComponent();
+
+    const glTabsComponent = wrapper.findComponent(GlTabs);
+
+    expect(glTabsComponent.exists()).toBe(true);
+    expect(glTabsComponent.props()).toMatchObject({
+      syncActiveTabWithQueryParams: true,
+      queryParamName: ACTIVE_TAB_QUERY_PARAM_NAME,
+    });
+  });
+
   describe('when tabs have a count', () => {
     it('renders tabs with count', async () => {
       await createComponent();
@@ -106,7 +123,7 @@ describe('MembersTabs', () => {
       expect(findActiveTab().text()).toContain('Members');
     });
 
-    it('renders `MembersApp` and passes `namespace` prop', async () => {
+    it('renders `MembersApp` and passes `namespace` and `tabQueryParamValue` props', async () => {
       await createComponent();
 
       const membersApps = wrapper.findAllComponents(MembersApp).wrappers;
@@ -115,6 +132,10 @@ describe('MembersTabs', () => {
       expect(membersApps[1].props('namespace')).toBe(MEMBER_TYPES.group);
       expect(membersApps[2].props('namespace')).toBe(MEMBER_TYPES.invite);
       expect(membersApps[3].props('namespace')).toBe(MEMBER_TYPES.accessRequest);
+
+      expect(membersApps[1].props('tabQueryParamValue')).toBe(TAB_QUERY_PARAM_VALUES.group);
+      expect(membersApps[2].props('tabQueryParamValue')).toBe(TAB_QUERY_PARAM_VALUES.invite);
+      expect(membersApps[3].props('tabQueryParamValue')).toBe(TAB_QUERY_PARAM_VALUES.accessRequest);
     });
   });
 
@@ -127,56 +148,16 @@ describe('MembersTabs', () => {
       expect(findTabByText('Invited')).toBeUndefined();
       expect(findTabByText('Access requests')).toBeUndefined();
     });
-  });
 
-  describe('when url param matches `filteredSearchBar.searchParam`', () => {
-    beforeEach(() => {
-      window.location.search = '?search_groups=foo+bar';
-    });
-
-    const expectGroupsTabActive = () => {
-      expect(findActiveTab().text()).toContain('Groups');
-    };
-
-    describe('when tab has a count', () => {
-      it('sets tab that corresponds to search param as active tab', async () => {
-        await createComponent();
-
-        expectGroupsTabActive();
+    describe('when url param matches `filteredSearchBar.searchParam`', () => {
+      beforeEach(() => {
+        window.location.search = '?search_groups=foo+bar';
       });
-    });
 
-    describe('when tab does not have a count', () => {
-      it('sets tab that corresponds to search param as active tab', async () => {
+      it('shows tab that corresponds to search param', async () => {
         await createComponent({ totalItems: 0 });
 
-        expectGroupsTabActive();
-      });
-    });
-  });
-
-  describe('when url param matches `pagination.paramName`', () => {
-    beforeEach(() => {
-      window.location.search = '?invited_page=2';
-    });
-
-    const expectInvitedTabActive = () => {
-      expect(findActiveTab().text()).toContain('Invited');
-    };
-
-    describe('when tab has a count', () => {
-      it('sets tab that corresponds to pagination param as active tab', async () => {
-        await createComponent();
-
-        expectInvitedTabActive();
-      });
-    });
-
-    describe('when tab does not have a count', () => {
-      it('sets tab that corresponds to pagination param as active tab', async () => {
-        await createComponent({ totalItems: 0 });
-
-        expectInvitedTabActive();
+        expect(findTabByText('Groups')).not.toBeUndefined();
       });
     });
   });

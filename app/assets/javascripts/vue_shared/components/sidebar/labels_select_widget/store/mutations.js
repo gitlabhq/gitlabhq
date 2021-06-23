@@ -1,3 +1,4 @@
+import { isScopedLabel, scopedLabelKey } from '~/lib/utils/common_utils';
 import { DropdownVariant } from '../constants';
 import * as types from './mutation_types';
 
@@ -54,6 +55,17 @@ export default {
     if (candidateLabel) {
       candidateLabel.touched = true;
       candidateLabel.set = !candidateLabel.set;
+    }
+
+    if (isScopedLabel(candidateLabel)) {
+      const scopedBase = scopedLabelKey(candidateLabel);
+      const currentActiveScopedLabel = state.labels.find(
+        ({ title }) => title.indexOf(scopedBase) === 0 && title !== candidateLabel.title,
+      );
+
+      if (currentActiveScopedLabel) {
+        currentActiveScopedLabel.set = false;
+      }
     }
   },
 };

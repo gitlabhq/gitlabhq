@@ -89,6 +89,12 @@ export const MEMBER_TYPES = {
   accessRequest: 'accessRequest',
 };
 
+export const TAB_QUERY_PARAM_VALUES = {
+  group: 'groups',
+  invite: 'invited',
+  accessRequest: 'access_requests',
+};
+
 export const DAYS_TO_EXPIRE_SOON = 7;
 
 export const LEAVE_MODAL_ID = 'member-leave-modal';
@@ -97,7 +103,8 @@ export const REMOVE_GROUP_LINK_MODAL_ID = 'remove-group-link-modal-id';
 
 export const SEARCH_TOKEN_TYPE = 'filtered-search-term';
 
-export const SORT_PARAM = 'sort';
+export const SORT_QUERY_PARAM_NAME = 'sort';
+export const ACTIVE_TAB_QUERY_PARAM_NAME = 'tab';
 
 export const MEMBER_ACCESS_LEVEL_PROPERTY_NAME = 'access_level';
 

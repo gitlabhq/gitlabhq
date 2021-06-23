@@ -203,18 +203,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
 
         expect(rspec_variables['VAR1']).to eq('overridden var 1')
       end
-
-      context 'when the FF ci_workflow_rules_variables is disabled' do
-        before do
-          stub_feature_flags(ci_workflow_rules_variables: false)
-        end
-
-        it 'sends root variable' do
-          run_chain
-
-          expect(rspec_variables['VAR1']).to eq('var 1')
-        end
-      end
     end
 
     context 'N+1 queries' do

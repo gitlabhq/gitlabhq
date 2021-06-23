@@ -15,8 +15,8 @@ module Gitlab
         TRANSACTION_DURATION_BUCKET = [0.1, 0.25, 1].freeze
 
         DB_LOAD_BALANCING_COUNTERS = %i{
-          db_replica_count db_replica_cached_count db_replica_wal_count
-          db_primary_count db_primary_cached_count db_primary_wal_count
+          db_replica_count db_replica_cached_count db_replica_wal_count db_replica_wal_cached_count
+          db_primary_count db_primary_cached_count db_primary_wal_count db_primary_wal_cached_count
         }.freeze
         DB_LOAD_BALANCING_DURATIONS = %i{db_primary_duration_s db_replica_duration_s}.freeze
 
@@ -91,9 +91,14 @@ module Gitlab
         end
 
         def increment_db_role_counters(db_role, payload)
+          cached = cached_query?(payload)
           increment("db_#{db_role}_count".to_sym)
-          increment("db_#{db_role}_cached_count".to_sym) if cached_query?(payload)
-          increment("db_#{db_role}_wal_count".to_sym) if !cached_query?(payload) && wal_command?(payload)
+          increment("db_#{db_role}_cached_count".to_sym) if cached
+
+          if wal_command?(payload)
+            increment("db_#{db_role}_wal_count".to_sym)
+            increment("db_#{db_role}_wal_cached_count".to_sym) if cached
+          end
         end
 
         def observe_db_role_duration(db_role, event)

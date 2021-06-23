@@ -133,7 +133,9 @@ RSpec.describe Gitlab::InstrumentationHelper do
                                    db_primary_count: 0,
                                    db_primary_cached_count: 0,
                                    db_primary_wal_count: 0,
-                                   db_replica_wal_count: 0)
+                                   db_replica_wal_count: 0,
+                                   db_primary_wal_cached_count: 0,
+                                   db_replica_wal_cached_count: 0)
       end
     end
 
@@ -150,7 +152,9 @@ RSpec.describe Gitlab::InstrumentationHelper do
                                    db_primary_count: 0,
                                    db_primary_cached_count: 0,
                                    db_primary_wal_count: 0,
-                                   db_replica_wal_count: 0)
+                                   db_replica_wal_count: 0,
+                                   db_primary_wal_cached_count: 0,
+                                   db_replica_wal_cached_count: 0)
       end
     end
   end

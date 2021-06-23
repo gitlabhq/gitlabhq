@@ -96,9 +96,9 @@ You can learn more about these metrics in our [analytics definitions](../../anal
 
 ## How the stages are measured
 
-Value Stream Analytics measures each stage from its start event to its stop event.
+Value Stream Analytics measures each stage from its start event to its end event.
 For example, a stage might start when one label is added to an issue, and end when another label is added.
-Value Stream Analytics excludes work in progress, meaning it ignores any items that have not reached the stop event.
+Value Stream Analytics excludes work in progress, meaning it ignores any items that have not reached the end event.
 
 Each stage of Value Stream Analytics is further described in the table below.
 

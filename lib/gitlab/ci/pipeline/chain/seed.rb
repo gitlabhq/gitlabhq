@@ -10,10 +10,7 @@ module Gitlab
 
           def perform!
             raise ArgumentError, 'missing YAML processor result' unless @command.yaml_processor_result
-
-            if ::Feature.enabled?(:ci_workflow_rules_variables, pipeline.project, default_enabled: :yaml)
-              raise ArgumentError, 'missing workflow rules result' unless @command.workflow_rules_result
-            end
+            raise ArgumentError, 'missing workflow rules result' unless @command.workflow_rules_result
 
             # Allocate next IID. This operation must be outside of transactions of pipeline creations.
             pipeline.ensure_project_iid!
@@ -51,13 +48,9 @@ module Gitlab
           end
 
           def root_variables
-            if ::Feature.enabled?(:ci_workflow_rules_variables, pipeline.project, default_enabled: :yaml)
-              ::Gitlab::Ci::Variables::Helpers.merge_variables(
-                @command.yaml_processor_result.root_variables, @command.workflow_rules_result.variables
-              )
-            else
-              @command.yaml_processor_result.root_variables
-            end
+            ::Gitlab::Ci::Variables::Helpers.merge_variables(
+              @command.yaml_processor_result.root_variables, @command.workflow_rules_result.variables
+            )
           end
         end
       end
