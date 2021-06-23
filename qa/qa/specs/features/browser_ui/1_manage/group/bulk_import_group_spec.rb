@@ -36,7 +36,7 @@ module QA
       end
 
       let(:imported_group) do
-        Resource::Group.new.tap do |group|
+        Resource::Group.init do |group|
           group.api_client = api_client
           group.sandbox = sandbox
           group.path = source_group.path
@@ -44,7 +44,7 @@ module QA
       end
 
       let(:imported_subgroup) do
-        Resource::Group.new.tap do |group|
+        Resource::Group.init do |group|
           group.api_client = api_client
           group.sandbox = imported_group
           group.path = subgroup.path

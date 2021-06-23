@@ -25,7 +25,7 @@ module QA
       end
 
       def self.default
-        Resource::User.new.tap do |user|
+        Resource::User.init do |user|
           user.username = Runtime::User.ldap_user? ? Runtime::User.ldap_username : Runtime::User.username
           user.password = Runtime::User.ldap_user? ? Runtime::User.ldap_password : Runtime::User.password
         end

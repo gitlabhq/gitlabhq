@@ -8,7 +8,7 @@ module QA
 
         access_token = Resource::PersonalAccessToken.fabricate!.token
 
-        user = Resource::User.new.tap do |user|
+        user = Resource::User.init do |user|
           user.username = Runtime::User.username
           user.password = access_token
         end

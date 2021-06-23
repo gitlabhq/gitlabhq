@@ -50,7 +50,7 @@ module QA
 
               stages:
                 - deploy
-              
+
               deploy:
                 stage: deploy
                 script:
@@ -72,7 +72,7 @@ module QA
 
               stages:
                 - install
-              
+
               install:
                 stage: install
                 script:
@@ -120,7 +120,7 @@ module QA
       end
 
       let(:package) do
-        Resource::Package.new.tap do |package|
+        Resource::Package.init do |package|
           package.name = "@#{registry_scope}/#{project.name}"
           package.project = project
         end

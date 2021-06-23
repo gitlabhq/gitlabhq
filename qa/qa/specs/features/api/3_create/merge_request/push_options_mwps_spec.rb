@@ -64,7 +64,7 @@ module QA
 
         merge_request = Resource::MergeRequest.fabricate_via_api! do |mr|
           mr.project = project
-          mr.id = merge_request[:iid]
+          mr.iid = merge_request[:iid]
         end
 
         expect(merge_request.state).to eq('opened')
@@ -109,7 +109,7 @@ module QA
         merge_request = Support::Waiter.wait_until(sleep_interval: 5) do
           mr = Resource::MergeRequest.fabricate_via_api! do |mr|
             mr.project = project
-            mr.id = merge_request[:iid]
+            mr.iid = merge_request[:iid]
           end
 
           next unless mr.state == 'merged'

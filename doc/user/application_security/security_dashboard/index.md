@@ -76,7 +76,7 @@ CSV file containing details of the resources scanned.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285477) in GitLab 13.11, date range slider to visualize data between given dates.
 
 A project's Security Dashboard displays a chart with the total number of vulnerabilities
-over time. It updates daily with up to 365 days of historical data. By default,
+over time with up to 365 days of historical data. Data is refreshed daily at 1:15am GMT. By default,
 it shows statistics for all vulnerability severities.
 
 To access the dashboard, from your project's home page go to **Security & Compliance > Security Dashboard**.

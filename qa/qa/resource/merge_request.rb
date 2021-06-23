@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
 require 'securerandom'
-require 'active_support/core_ext/object/blank'
 
 module QA
   module Resource
     class MergeRequest < Base
       attr_accessor :approval_rules,
-                    :id,
-                    :title,
-                    :description,
                     :source_branch,
-                    :target_branch,
                     :target_new_branch,
                     :assignee,
                     :milestone,
@@ -22,9 +17,12 @@ module QA
                   :wait_for_merge,
                   :template
 
-      attribute :merge_when_pipeline_succeeds
-      attribute :merge_status
-      attribute :state
+      attributes :iid,
+                 :title,
+                 :description,
+                 :merge_when_pipeline_succeeds,
+                 :merge_status,
+                 :state
 
       attribute :project do
         Project.fabricate! do |resource|
@@ -32,11 +30,15 @@ module QA
         end
       end
 
+      attribute :target_branch do
+        project.default_branch
+      end
+
       attribute :target do
         Repository::ProjectPush.fabricate! do |resource|
           resource.project = project
           resource.branch_name = target_branch
-          resource.new_branch = @target_new_branch
+          resource.new_branch = target_new_branch
           resource.remote_branch = target_branch
         end
       end
@@ -62,7 +64,6 @@ module QA
         @labels = []
         @file_name = "added_file-#{SecureRandom.hex(8)}.txt"
         @file_content = "File Added"
-        @target_branch = project.default_branch
         @target_new_branch = true
         @no_preparation = false
         @wait_for_merge = true
@@ -89,21 +90,19 @@ module QA
       end
 
       def fabricate_via_api!
-        raise ResourceNotFoundError unless id
-
         resource_web_url(api_get)
-      rescue ResourceNotFoundError
+      rescue ResourceNotFoundError, NoValueError # rescue if iid not populated
         populate_target_and_source_if_required
 
         super
       end
 
       def api_merge_path
-        "/projects/#{project.id}/merge_requests/#{id}/merge"
+        "/projects/#{project.id}/merge_requests/#{iid}/merge"
       end
 
       def api_get_path
-        "/projects/#{project.id}/merge_requests/#{id}"
+        "/projects/#{project.id}/merge_requests/#{iid}"
       end
 
       def api_post_path
@@ -112,18 +111,22 @@ module QA
 
       def api_post_body
         {
-          description: @description,
-          source_branch: @source_branch,
-          target_branch: @target_branch,
-          title: @title
+          description: description,
+          source_branch: source_branch,
+          target_branch: target_branch,
+          title: title
         }
+      end
+
+      def api_comments_path
+        "#{api_get_path}/notes"
       end
 
       def merge_via_api!
         Support::Waiter.wait_until(sleep_interval: 1) do
-          QA::Runtime::Logger.debug("Waiting until merge request with id '#{id}' can be merged")
+          QA::Runtime::Logger.debug("Waiting until merge request with id '#{iid}' can be merged")
 
-          reload!.api_resource[:merge_status] == 'can_be_merged'
+          reload!.merge_status == 'can_be_merged'
         end
 
         Support::Retrier.retry_on_exception do
@@ -141,12 +144,12 @@ module QA
         end
       end
 
-      def reload!
-        # Refabricate so that we can return a new object with updated attributes
-        self.class.fabricate_via_api! do |resource|
-          resource.project = project
-          resource.id = api_resource[:iid]
-        end
+      # Get MR comments
+      #
+      # @return [Array]
+      def comments
+        response = get(Runtime::API::Request.new(api_client, api_comments_path).url)
+        parse_body(response)
       end
 
       private
@@ -158,8 +161,6 @@ module QA
       end
 
       def populate_target_and_source_if_required
-        @target_branch ||= project.default_branch
-
         populate(:target, :source) unless @no_preparation
       end
     end

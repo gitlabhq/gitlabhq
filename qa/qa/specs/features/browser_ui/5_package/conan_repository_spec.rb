@@ -12,7 +12,7 @@ module QA
       end
 
       let(:package) do
-        Resource::Package.new.tap do |package|
+        Resource::Package.init do |package|
           package.name = 'conantest'
           package.project = project
         end

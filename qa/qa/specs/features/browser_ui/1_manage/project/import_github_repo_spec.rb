@@ -105,9 +105,15 @@ module QA
 
       def verify_merge_requests_import
         merge_requests = imported_project.merge_requests
+        merge_request = Resource::MergeRequest.init do |mr|
+          mr.project = imported_project
+          mr.iid = merge_requests.first[:iid]
+          mr.api_client = api_client
+        end.reload!
+        mr_comments = merge_request.comments.map { |comment| comment[:body] } # rubocop:disable Rails/Pluck
 
         expect(merge_requests.length).to eq(1)
-        expect(merge_requests.first).to include(
+        expect(merge_request.api_resource).to include(
           title: 'Improve readme',
           state: 'opened',
           target_branch: 'main',
@@ -116,6 +122,13 @@ module QA
           description: <<~DSC.strip
             *Created by: gitlab-qa-github*\n\nThis improves the README file a bit.\r\n\r\nTODO:\r\n\r\n \r\n\r\n- [ ] Do foo\r\n- [ ]  Make bar\r\n  - [ ]  Think about baz
           DSC
+        )
+        expect(mr_comments).to eq(
+          [
+            "*Created by: gitlab-qa-github*\n\n[PR comment by @sliaquat] Nice work! ",
+            "*Created by: gitlab-qa-github*\n\n[Single diff comment] Nice addition",
+            "*Created by: gitlab-qa-github*\n\n[Single diff comment] Good riddance"
+          ]
         )
       end
     end

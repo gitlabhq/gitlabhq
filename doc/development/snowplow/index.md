@@ -58,7 +58,7 @@ To enable Snowplow tracking on a self-managed instance:
 
 1. Expand **Snowplow**.
 
-1. Select **Enable snowplow tracking** and enter your Snowplow configuration information. For example:
+1. Select **Enable Snowplow tracking** and enter your Snowplow configuration information. For example:
 
    | Name               | Value                         |
    |--------------------|-------------------------------|

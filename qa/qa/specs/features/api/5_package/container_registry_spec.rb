@@ -17,8 +17,8 @@ module QA
       end
 
       let(:registry) do
-        Resource::RegistryRepository.new.tap do |repository|
-          repository.name = "#{project.path_with_namespace}"
+        Resource::RegistryRepository.init do |repository|
+          repository.name = project.path_with_namespace
           repository.project = project
           repository.tag_name = 'master'
         end

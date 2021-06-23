@@ -14,7 +14,7 @@ module QA
       end
 
       let(:package) do
-        Resource::Package.new.tap do |package|
+        Resource::Package.init do |package|
           package.name = "dotnetcore-#{SecureRandom.hex(8)}"
           package.project = project
         end

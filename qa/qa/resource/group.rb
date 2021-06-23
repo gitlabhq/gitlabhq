@@ -3,7 +3,7 @@
 module QA
   module Resource
     class Group < GroupBase
-      attr_accessor :description
+      attributes :require_two_factor_authentication, :description
 
       attribute :full_path do
         determine_full_path
@@ -14,8 +14,6 @@ module QA
           sandbox.api_client = api_client
         end
       end
-
-      attribute :require_two_factor_authentication
 
       def initialize
         @path = Runtime::Namespace.name

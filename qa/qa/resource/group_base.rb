@@ -9,17 +9,17 @@ module QA
 
       attr_accessor :path
 
-      attribute :id
-      attribute :runners_token
-      attribute :name
-      attribute :full_path
+      attributes :id,
+                 :runners_token,
+                 :name,
+                 :full_path
 
       # Get group labels
       #
       # @return [Array<QA::Resource::GroupLabel>]
       def labels
         parse_body(api_get_from("#{api_get_path}/labels")).map do |label|
-          GroupLabel.new.tap do |resource|
+          GroupLabel.init do |resource|
             resource.api_client = api_client
             resource.group = self
             resource.id = label[:id]
