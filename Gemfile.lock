@@ -1263,7 +1263,7 @@ GEM
       activesupport (>= 3)
       attr_required (>= 0.0.5)
       httpclient (>= 2.4)
-    sys-filesystem (1.1.6)
+    sys-filesystem (1.1.9)
       ffi
     sysexits (1.2.0)
     temple (0.8.2)

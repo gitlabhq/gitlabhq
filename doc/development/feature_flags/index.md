@@ -364,6 +364,8 @@ Feature.enabled?(:feature_flag, group)
 Feature.enabled?(:feature_flag, user)
 ```
 
+Please see [Feature flag controls](controls.md#process) for more details on working with feature flags.
+
 #### Selectively disable by actor
 
 By default you cannot selectively disable a feature flag by actor.
@@ -461,7 +463,7 @@ Feature.remove(:feature_flag_name)
   - **Exception:** database migrations **should** have a changelog entry.
 - Any change related to a feature flag itself (flag removal, default-on setting) **should** have a changelog entry.
   Use the flowchart to determine the changelog entry type.
-  
+
   ```mermaid
   graph LR
       A[flag: default off] -->|'added' / 'changed'| B(flag: default on)
@@ -470,7 +472,7 @@ Feature.remove(:feature_flag_name)
       A -->|'added' / 'changed'| C
       A -->|no changelog| D
   ```
-  
+
 - Any change behind a feature flag that is **enabled** by default **should** have a changelog entry.
 
 ## Feature flags in tests

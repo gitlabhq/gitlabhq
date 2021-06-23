@@ -1027,7 +1027,6 @@
   rules:
     - if: '$CODE_QUALITY_DISABLED'
       when: never
-    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
       changes: *code-backstage-patterns
       allow_failure: true
@@ -1036,7 +1035,6 @@
   rules:
     - if: '$SAST_DISABLED || $GITLAB_FEATURES !~ /\bsast\b/'
       when: never
-    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
       allow_failure: true
@@ -1047,7 +1045,6 @@
       when: never
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'  # The Secret-Detection template already has a `secret_detection_default_branch` job
       when: never
-    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - changes: *code-backstage-qa-patterns
       allow_failure: true
 
@@ -1055,7 +1052,6 @@
   rules:
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/'
       when: never
-    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
       changes: *dependency-patterns
       allow_failure: true
@@ -1064,7 +1060,6 @@
   rules:
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /bundler-audit/'
       when: never
-    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
       changes: *bundler-patterns
       allow_failure: true
@@ -1073,7 +1068,6 @@
   rules:
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /retire.js/'
       when: never
-    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
       changes: *nodejs-patterns
       allow_failure: true
@@ -1082,7 +1076,6 @@
   rules:
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/'
       when: never
-    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
       changes: *python-patterns
       allow_failure: true
