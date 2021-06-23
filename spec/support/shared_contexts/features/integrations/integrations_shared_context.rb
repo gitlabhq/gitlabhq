@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Integration.available_services_names.each do |service|
+Integration.available_integration_names.each do |service|
   RSpec.shared_context service do
     include JiraServiceHelper if service == 'jira'
 
@@ -49,12 +49,12 @@ Integration.available_services_names.each do |service|
       stub_jira_integration_test if service == 'jira'
     end
 
-    def initialize_service(service, attrs = {})
-      service_item = project.find_or_initialize_service(service)
-      service_item.attributes = attrs
-      service_item.properties = service_attrs
-      service_item.save!
-      service_item
+    def initialize_integration(integration, attrs = {})
+      record = project.find_or_initialize_integration(integration)
+      record.attributes = attrs
+      record.properties = service_attrs
+      record.save!
+      record
     end
 
     private
@@ -66,7 +66,7 @@ Integration.available_services_names.each do |service|
       return unless licensed_feature
 
       stub_licensed_features(licensed_feature => true)
-      project.clear_memoization(:disabled_services)
+      project.clear_memoization(:disabled_integrations)
     end
   end
 end

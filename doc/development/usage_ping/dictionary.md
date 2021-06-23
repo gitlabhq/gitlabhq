@@ -17330,6 +17330,18 @@ Status: `data_available`
 
 Tiers: `ultimate`
 
+### `usage_activity_by_stage.secure.running_container_scanning_scans`
+
+Counts running container scanning jobs
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210618124854_running_container_scanning_scans.yml)
+
+Group: `group::container security`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
 ### `usage_activity_by_stage.secure.sast_scans`
 
 Counts sast jobs
@@ -19425,6 +19437,30 @@ Monthly number of users running Dependency Scanning Scans
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216183828_dependency_scanning_scans.yml)
 
 Group: `group::composition analysis`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
+### `usage_activity_by_stage_monthly.secure.running_container_scanning_pipeline`
+
+Pipelines containing a Running Container Scanning job
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210618125224_running_container_scanning_pipeline.yml)
+
+Group: `group::container security`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
+### `usage_activity_by_stage_monthly.secure.running_container_scanning_scans`
+
+Counts running container scanning jobs
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210618101233_running_container_scanning_scans.yml)
+
+Group: `group::container security`
 
 Status: `data_available`
 

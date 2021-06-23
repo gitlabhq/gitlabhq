@@ -6,10 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Incoming email **(FREE SELF)**
 
-GitLab has several features based on receiving incoming emails:
+GitLab has several features based on receiving incoming email messages:
 
 - [Reply by Email](reply_by_email.md): allow GitLab users to comment on issues
-  and merge requests by replying to notification emails.
+  and merge requests by replying to notification email.
 - [New issue by email](../user/project/issues/managing_issues.md#new-issue-via-email):
   allow GitLab users to create a new issue by sending an email to a
   user-specific email address.
@@ -22,9 +22,9 @@ GitLab has several features based on receiving incoming emails:
 ## Requirements
 
 We recommend using an email address that receives **only** messages that are intended for
-the GitLab instance. Any incoming emails not intended for GitLab receive a reject notice.
+the GitLab instance. Any incoming email messages not intended for GitLab receive a reject notice.
 
-Handling incoming emails requires an [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)-enabled
+Handling incoming email messages requires an [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)-enabled
 email account. GitLab requires one of the following three strategies:
 
 - Email sub-addressing (recommended)
@@ -53,7 +53,7 @@ leaving a catch-all available for other purposes beyond GitLab.
 ### Catch-all mailbox
 
 A [catch-all mailbox](https://en.wikipedia.org/wiki/Catch-all) for a domain
-receives all emails addressed to the domain that do not match any addresses that
+receives all email messages addressed to the domain that do not match any addresses that
 exist on the mail server.
 
 As of GitLab 11.7, catch-all mailboxes support the same features as
@@ -68,7 +68,7 @@ this method only supports replies, and not the other features of [incoming email
 
 ## Set it up
 
-If you want to use Gmail / Google Apps for incoming emails, make sure you have
+If you want to use Gmail / Google Apps for incoming email, make sure you have
 [IMAP access enabled](https://support.google.com/mail/answer/7126229)
 and [allowed less secure apps to access the account](https://support.google.com/accounts/answer/6010255)
 or [turn-on 2-step validation](https://support.google.com/accounts/answer/185839)

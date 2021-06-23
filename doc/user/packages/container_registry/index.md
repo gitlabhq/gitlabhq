@@ -332,6 +332,36 @@ If you forget to set the service alias, the `docker:19.03.12` image is unable to
 error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker on 192.168.0.1:53: no such host
 ```
 
+### Using a Docker-in-Docker image with Dependency Proxy 
+
+To use your own Docker images with Dependency Proxy, follow these steps
+in addition to the steps in the
+[Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker) section:
+
+1. Update the `image` and `service` to point to your registry.
+1. Add a service [alias](../../../ci/yaml/README.md#servicesalias).
+
+Below is an example of what your `.gitlab-ci.yml` should look like:
+
+```yaml
+build:
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/group/project/docker:19.03.12
+  services:
+    - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:18.09.7-dind
+      alias: docker
+  stage: build
+  script:
+    - docker build -t my-docker-image .
+    - docker run my-docker-image /script/to/run/tests
+```
+
+If you forget to set the service alias, the `docker:19.03.12` image is unable to find the
+`dind` service, and an error like the following is thrown:
+
+```plaintext
+error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker on 192.168.0.1:53: no such host
+```
+
 ## Delete images
 
 You can delete images from your Container Registry in multiple ways.

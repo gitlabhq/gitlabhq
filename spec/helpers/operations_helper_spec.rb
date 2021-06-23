@@ -24,8 +24,8 @@ RSpec.describe OperationsHelper do
       let_it_be(:prometheus_integration) { ::Integrations::Prometheus.new(project: project) }
 
       before do
-        allow(project).to receive(:find_or_initialize_service).and_call_original
-        allow(project).to receive(:find_or_initialize_service).with('prometheus').and_return(prometheus_integration)
+        allow(project).to receive(:find_or_initialize_integration).and_call_original
+        allow(project).to receive(:find_or_initialize_integration).with('prometheus').and_return(prometheus_integration)
       end
 
       it 'returns the correct values' do

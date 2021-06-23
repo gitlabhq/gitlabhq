@@ -140,10 +140,10 @@ RSpec.describe Integration do
   end
 
   describe "Test Button" do
-    let(:service) { build(:service, project: project) }
+    let(:integration) { build(:service, project: project) }
 
     describe '#can_test?' do
-      subject { service.can_test? }
+      subject { integration.can_test? }
 
       context 'when repository is not empty' do
         let(:project) { build(:project, :repository) }
@@ -158,9 +158,9 @@ RSpec.describe Integration do
       end
 
       context 'when instance-level service' do
-        Integration.available_services_types.each do |service_type|
-          let(:service) do
-            described_class.send(:integration_type_to_model, service_type).new(instance: true)
+        Integration.available_integration_types.each do |type|
+          let(:integration) do
+            described_class.send(:integration_type_to_model, type).new(instance: true)
           end
 
           it { is_expected.to be_falsey }
@@ -168,9 +168,9 @@ RSpec.describe Integration do
       end
 
       context 'when group-level service' do
-        Integration.available_services_types.each do |service_type|
-          let(:service) do
-            described_class.send(:integration_type_to_model, service_type).new(group_id: group.id)
+        Integration.available_integration_types.each do |type|
+          let(:integration) do
+            described_class.send(:integration_type_to_model, type).new(group_id: group.id)
           end
 
           it { is_expected.to be_falsey }
@@ -185,9 +185,9 @@ RSpec.describe Integration do
         let(:project) { build(:project, :repository) }
 
         it 'test runs execute' do
-          expect(service).to receive(:execute).with(data)
+          expect(integration).to receive(:execute).with(data)
 
-          service.test(data)
+          integration.test(data)
         end
       end
 
@@ -195,9 +195,9 @@ RSpec.describe Integration do
         let(:project) { build(:project) }
 
         it 'test runs execute' do
-          expect(service).to receive(:execute).with(data)
+          expect(integration).to receive(:execute).with(data)
 
-          service.test(data)
+          integration.test(data)
         end
       end
     end
@@ -251,11 +251,13 @@ RSpec.describe Integration do
   describe '.find_or_initialize_all_non_project_specific' do
     shared_examples 'service instances' do
       it 'returns the available service instances' do
-        expect(Integration.find_or_initialize_all_non_project_specific(Integration.for_instance).map(&:to_param)).to match_array(Integration.available_services_names(include_project_specific: false))
+        expect(Integration.find_or_initialize_all_non_project_specific(Integration.for_instance).map(&:to_param))
+          .to match_array(Integration.available_integration_names(include_project_specific: false))
       end
 
       it 'does not create service instances' do
-        expect { Integration.find_or_initialize_all_non_project_specific(Integration.for_instance) }.not_to change { Integration.count }
+        expect { Integration.find_or_initialize_all_non_project_specific(Integration.for_instance) }
+          .not_to change(Integration, :count)
       end
     end
 
@@ -264,7 +266,7 @@ RSpec.describe Integration do
     context 'with all existing instances' do
       before do
         Integration.insert_all(
-          Integration.available_services_types(include_project_specific: false).map { |type| { instance: true, type: type } }
+          Integration.available_integration_types(include_project_specific: false).map { |type| { instance: true, type: type } }
         )
       end
 
@@ -292,13 +294,15 @@ RSpec.describe Integration do
   describe 'template' do
     shared_examples 'retrieves service templates' do
       it 'returns the available service templates' do
-        expect(Integration.find_or_create_templates.pluck(:type)).to match_array(Integration.available_services_types(include_project_specific: false))
+        expect(Integration.find_or_create_templates.pluck(:type)).to match_array(Integration.available_integration_types(include_project_specific: false))
       end
     end
 
     describe '.find_or_create_templates' do
       it 'creates service templates' do
-        expect { Integration.find_or_create_templates }.to change { Integration.count }.from(0).to(Integration.available_services_names(include_project_specific: false).size)
+        total = Integration.available_integration_names(include_project_specific: false).size
+
+        expect { Integration.find_or_create_templates }.to change(Integration, :count).from(0).to(total)
       end
 
       it_behaves_like 'retrieves service templates'
@@ -306,7 +310,7 @@ RSpec.describe Integration do
       context 'with all existing templates' do
         before do
           Integration.insert_all(
-            Integration.available_services_types(include_project_specific: false).map { |type| { template: true, type: type } }
+            Integration.available_integration_types(include_project_specific: false).map { |type| { template: true, type: type } }
           )
         end
 
@@ -332,7 +336,9 @@ RSpec.describe Integration do
         end
 
         it 'creates the rest of the service templates' do
-          expect { Integration.find_or_create_templates }.to change { Integration.count }.from(1).to(Integration.available_services_names(include_project_specific: false).size)
+          total = Integration.available_integration_names(include_project_specific: false).size
+
+          expect { Integration.find_or_create_templates }.to change(Integration, :count).from(1).to(total)
         end
 
         it_behaves_like 'retrieves service templates'
@@ -461,13 +467,15 @@ RSpec.describe Integration do
 
       describe 'is prefilled for projects pushover service' do
         it "has all fields prefilled" do
-          service = project.find_or_initialize_service('pushover')
+          integration = project.find_or_initialize_integration('pushover')
 
-          expect(service.template).to eq(false)
-          expect(service.device).to eq('MyDevice')
-          expect(service.sound).to eq('mic')
-          expect(service.priority).to eq(4)
-          expect(service.api_key).to eq('123456789')
+          expect(integration).to have_attributes(
+            template: eq(false),
+            device: eq('MyDevice'),
+            sound: eq('mic'),
+            priority: eq(4),
+            api_key: eq('123456789')
+          )
         end
       end
     end
@@ -896,37 +904,37 @@ RSpec.describe Integration do
     end
   end
 
-  describe '.available_services_names' do
+  describe '.available_integration_names' do
     it 'calls the right methods' do
-      expect(described_class).to receive(:services_names).and_call_original
-      expect(described_class).to receive(:dev_services_names).and_call_original
-      expect(described_class).to receive(:project_specific_services_names).and_call_original
+      expect(described_class).to receive(:integration_names).and_call_original
+      expect(described_class).to receive(:dev_integration_names).and_call_original
+      expect(described_class).to receive(:project_specific_integration_names).and_call_original
 
-      described_class.available_services_names
+      described_class.available_integration_names
     end
 
-    it 'does not call project_specific_services_names with include_project_specific false' do
-      expect(described_class).to receive(:services_names).and_call_original
-      expect(described_class).to receive(:dev_services_names).and_call_original
-      expect(described_class).not_to receive(:project_specific_services_names)
+    it 'does not call project_specific_integration_names with include_project_specific false' do
+      expect(described_class).to receive(:integration_names).and_call_original
+      expect(described_class).to receive(:dev_integration_names).and_call_original
+      expect(described_class).not_to receive(:project_specific_integration_names)
 
-      described_class.available_services_names(include_project_specific: false)
+      described_class.available_integration_names(include_project_specific: false)
     end
 
     it 'does not call dev_services_names with include_dev false' do
-      expect(described_class).to receive(:services_names).and_call_original
-      expect(described_class).not_to receive(:dev_services_names)
-      expect(described_class).to receive(:project_specific_services_names).and_call_original
+      expect(described_class).to receive(:integration_names).and_call_original
+      expect(described_class).not_to receive(:dev_integration_names)
+      expect(described_class).to receive(:project_specific_integration_names).and_call_original
 
-      described_class.available_services_names(include_dev: false)
+      described_class.available_integration_names(include_dev: false)
     end
 
-    it { expect(described_class.available_services_names).to include('jenkins') }
+    it { expect(described_class.available_integration_names).to include('jenkins') }
   end
 
-  describe '.project_specific_services_names' do
+  describe '.project_specific_integration_names' do
     it do
-      expect(described_class.project_specific_services_names)
+      expect(described_class.project_specific_integration_names)
         .to include(*described_class::PROJECT_SPECIFIC_INTEGRATION_NAMES)
     end
   end

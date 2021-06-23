@@ -120,8 +120,6 @@ module Integrations
     end
 
     def execute(data)
-      return if project.disabled_services.include?(to_param)
-
       object_kind = data[:object_kind]
       object_kind = 'job' if object_kind == 'build'
       return unless supported_events.include?(object_kind)

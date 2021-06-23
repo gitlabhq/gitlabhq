@@ -108,9 +108,9 @@ class Integration < ApplicationRecord
   scope :by_active_flag, -> (flag) { where(active: flag) }
   scope :inherit_from_id, -> (id) { where(inherit_from_id: id) }
   scope :inherit, -> { where.not(inherit_from_id: nil) }
-  scope :for_group, -> (group) { where(group_id: group, type: available_services_types(include_project_specific: false)) }
-  scope :for_template, -> { where(template: true, type: available_services_types(include_project_specific: false)) }
-  scope :for_instance, -> { where(instance: true, type: available_services_types(include_project_specific: false)) }
+  scope :for_group, -> (group) { where(group_id: group, type: available_integration_types(include_project_specific: false)) }
+  scope :for_template, -> { where(template: true, type: available_integration_types(include_project_specific: false)) }
+  scope :for_instance, -> { where(instance: true, type: available_integration_types(include_project_specific: false)) }
 
   scope :push_hooks, -> { where(push_events: true, active: true) }
   scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
@@ -217,7 +217,7 @@ class Integration < ApplicationRecord
   private_class_method :create_nonexistent_templates
 
   def self.find_or_initialize_non_project_specific_integration(name, instance: false, group_id: nil)
-    return unless name.in?(available_services_names(include_project_specific: false))
+    return unless name.in?(available_integration_names(include_project_specific: false))
 
     integration_name_to_model(name).find_or_initialize_by(instance: instance, group_id: group_id)
   end
@@ -238,19 +238,19 @@ class Integration < ApplicationRecord
   def self.nonexistent_services_types_for(scope)
     # Using #map instead of #pluck to save one query count. This is because
     # ActiveRecord loaded the object here, so we don't need to query again later.
-    available_services_types(include_project_specific: false) - scope.map(&:type)
+    available_integration_types(include_project_specific: false) - scope.map(&:type)
   end
   private_class_method :nonexistent_services_types_for
 
-  # Returns a list of available service names.
+  # Returns a list of available integration names.
   # Example: ["asana", ...]
   # @deprecated
-  def self.available_services_names(include_project_specific: true, include_dev: true)
-    service_names = services_names
-    service_names += project_specific_services_names if include_project_specific
-    service_names += dev_services_names if include_dev
+  def self.available_integration_names(include_project_specific: true, include_dev: true)
+    names = integration_names
+    names += project_specific_integration_names if include_project_specific
+    names += dev_integration_names if include_dev
 
-    service_names.sort_by(&:downcase)
+    names.sort_by(&:downcase)
   end
 
   def self.integration_names
@@ -261,21 +261,21 @@ class Integration < ApplicationRecord
     integration_names
   end
 
-  def self.dev_services_names
+  def self.dev_integration_names
     return [] unless Rails.env.development?
 
     DEV_INTEGRATION_NAMES
   end
 
-  def self.project_specific_services_names
+  def self.project_specific_integration_names
     PROJECT_SPECIFIC_INTEGRATION_NAMES
   end
 
-  # Returns a list of available service types.
+  # Returns a list of available integration types.
   # Example: ["AsanaService", ...]
-  def self.available_services_types(include_project_specific: true, include_dev: true)
-    available_services_names(include_project_specific: include_project_specific, include_dev: include_dev).map do |service_name|
-      integration_name_to_type(service_name)
+  def self.available_integration_types(include_project_specific: true, include_dev: true)
+    available_integration_names(include_project_specific: include_project_specific, include_dev: include_dev).map do
+      integration_name_to_type(_1)
     end
   end
 

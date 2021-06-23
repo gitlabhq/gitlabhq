@@ -6,7 +6,7 @@ import LinksInner from '~/pipelines/components/graph_shared/links_inner.vue';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import JobPill from '~/pipelines/components/pipeline_graph/job_pill.vue';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
-import StagePill from '~/pipelines/components/pipeline_graph/stage_pill.vue';
+import StageName from '~/pipelines/components/pipeline_graph/stage_name.vue';
 import { pipelineData, singleStageData } from './mock_data';
 
 describe('pipeline graph component', () => {
@@ -35,11 +35,9 @@ describe('pipeline graph component', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findAllJobPills = () => wrapper.findAll(JobPill);
-  const findAllStageBackgroundElements = () => wrapper.findAll('[data-testid="stage-background"]');
-  const findAllStagePills = () => wrapper.findAllComponents(StagePill);
+  const findAllStageNames = () => wrapper.findAllComponents(StageName);
   const findLinksLayer = () => wrapper.findComponent(LinksLayer);
   const findPipelineGraph = () => wrapper.find('[data-testid="graph-container"]');
-  const findStageBackgroundElementAt = (index) => findAllStageBackgroundElements().at(index);
 
   afterEach(() => {
     wrapper.destroy();
@@ -67,10 +65,10 @@ describe('pipeline graph component', () => {
       wrapper = createComponent({ pipelineData: singleStageData });
     });
 
-    it('renders the right number of stage pills', () => {
+    it('renders the right number of stage titles', () => {
       const expectedStagesLength = singleStageData.stages.length;
 
-      expect(findAllStagePills()).toHaveLength(expectedStagesLength);
+      expect(findAllStageNames()).toHaveLength(expectedStagesLength);
     });
 
     it('renders the right number of job pills', () => {
@@ -81,20 +79,6 @@ describe('pipeline graph component', () => {
 
       expect(findAllJobPills()).toHaveLength(expectedJobsLength);
     });
-
-    describe('rounds corner', () => {
-      it.each`
-        cssClass                       | expectedState
-        ${'gl-rounded-bottom-left-6'}  | ${true}
-        ${'gl-rounded-top-left-6'}     | ${true}
-        ${'gl-rounded-top-right-6'}    | ${true}
-        ${'gl-rounded-bottom-right-6'} | ${true}
-      `('$cssClass should be $expectedState on the only element', ({ cssClass, expectedState }) => {
-        const classes = findStageBackgroundElementAt(0).classes();
-
-        expect(classes.includes(cssClass)).toBe(expectedState);
-      });
-    });
   });
 
   describe('with multiple stages and jobs', () => {
@@ -102,10 +86,10 @@ describe('pipeline graph component', () => {
       wrapper = createComponent();
     });
 
-    it('renders the right number of stage pills', () => {
+    it('renders the right number of stage titles', () => {
       const expectedStagesLength = pipelineData.stages.length;
 
-      expect(findAllStagePills()).toHaveLength(expectedStagesLength);
+      expect(findAllStageNames()).toHaveLength(expectedStagesLength);
     });
 
     it('renders the right number of job pills', () => {
@@ -115,35 +99,6 @@ describe('pipeline graph component', () => {
       }, 0);
 
       expect(findAllJobPills()).toHaveLength(expectedJobsLength);
-    });
-
-    describe('rounds corner', () => {
-      it.each`
-        cssClass                       | expectedState
-        ${'gl-rounded-bottom-left-6'}  | ${true}
-        ${'gl-rounded-top-left-6'}     | ${true}
-        ${'gl-rounded-top-right-6'}    | ${false}
-        ${'gl-rounded-bottom-right-6'} | ${false}
-      `(
-        '$cssClass should be $expectedState on the first element',
-        ({ cssClass, expectedState }) => {
-          const classes = findStageBackgroundElementAt(0).classes();
-
-          expect(classes.includes(cssClass)).toBe(expectedState);
-        },
-      );
-
-      it.each`
-        cssClass                       | expectedState
-        ${'gl-rounded-bottom-left-6'}  | ${false}
-        ${'gl-rounded-top-left-6'}     | ${false}
-        ${'gl-rounded-top-right-6'}    | ${true}
-        ${'gl-rounded-bottom-right-6'} | ${true}
-      `('$cssClass should be $expectedState on the last element', ({ cssClass, expectedState }) => {
-        const classes = findStageBackgroundElementAt(pipelineData.stages.length - 1).classes();
-
-        expect(classes.includes(cssClass)).toBe(expectedState);
-      });
     });
   });
 });

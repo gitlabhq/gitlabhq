@@ -1,4 +1,5 @@
 <script>
+import { capitalize, escape } from 'lodash';
 import tooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 
 export default {
@@ -10,26 +11,18 @@ export default {
       type: String,
       required: true,
     },
-    isEmpty: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
-    emptyClass() {
-      return this.isEmpty ? 'gl-bg-gray-200' : 'gl-bg-gray-600';
+    formattedTitle() {
+      return capitalize(escape(this.stageName));
     },
   },
 };
 </script>
 <template>
   <tooltip-on-truncate :title="stageName" truncate-target="child" placement="top">
-    <div
-      class="gl-px-5 gl-py-2 gl-text-white gl-text-center gl-text-truncate gl-rounded-pill gl-w-20"
-      :class="emptyClass"
-    >
-      {{ stageName }}
+    <div class="gl-py-2 gl-text-truncate gl-font-weight-bold gl-w-20">
+      {{ formattedTitle }}
     </div>
   </tooltip-on-truncate>
 </template>

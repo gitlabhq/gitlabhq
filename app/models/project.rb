@@ -550,7 +550,7 @@ class Project < ApplicationRecord
   scope :with_namespace, -> { includes(:namespace) }
   scope :with_import_state, -> { includes(:import_state) }
   scope :include_project_feature, -> { includes(:project_feature) }
-  scope :with_service, ->(service) { joins(service).eager_load(service) }
+  scope :with_integration, ->(integration) { joins(integration).eager_load(integration) }
   scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
   scope :with_container_registry, -> { where(container_registry_enabled: true) }
   scope :inside_path, ->(path) do
@@ -1398,22 +1398,22 @@ class Project < ApplicationRecord
     @external_wiki ||= integrations.external_wikis.first
   end
 
-  def find_or_initialize_services
-    available_services_names = Integration.available_services_names - disabled_services
-
-    available_services_names.map do |service_name|
-      find_or_initialize_service(service_name)
-    end.sort_by(&:title)
+  def find_or_initialize_integrations
+    Integration
+      .available_integration_names
+      .difference(disabled_integrations)
+      .map { find_or_initialize_integration(_1) }
+      .sort_by(&:title)
   end
 
-  def disabled_services
+  def disabled_integrations
     []
   end
 
-  def find_or_initialize_service(name)
-    return if disabled_services.include?(name)
+  def find_or_initialize_integration(name)
+    return if disabled_integrations.include?(name)
 
-    find_service(integrations, name) || build_from_instance_or_template(name) || build_service(name)
+    find_integration(integrations, name) || build_from_instance_or_template(name) || build_integration(name)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -2659,19 +2659,19 @@ class Project < ApplicationRecord
     project_feature.update!(container_registry_access_level: access_level)
   end
 
-  def find_service(services, name)
-    services.find { |service| service.to_param == name }
+  def find_integration(integrations, name)
+    integrations.find { _1.to_param == name }
   end
 
   def build_from_instance_or_template(name)
-    instance = find_service(services_instances, name)
+    instance = find_integration(services_instances, name)
     return Integration.build_from_integration(instance, project_id: id) if instance
 
-    template = find_service(services_templates, name)
+    template = find_integration(services_templates, name)
     return Integration.build_from_integration(template, project_id: id) if template
   end
 
-  def build_service(name)
+  def build_integration(name)
     Integration.integration_name_to_model(name).new(project_id: id)
   end
 

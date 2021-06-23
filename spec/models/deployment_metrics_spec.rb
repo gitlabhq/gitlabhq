@@ -23,7 +23,7 @@ RSpec.describe DeploymentMetrics do
         let(:prometheus_integration) { instance_double(::Integrations::Prometheus, can_query?: true, configured?: true) }
 
         before do
-          allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_integration
+          allow(deployment.project).to receive(:find_or_initialize_integration).with('prometheus').and_return prometheus_integration
         end
 
         it { is_expected.to be_truthy }
@@ -33,7 +33,7 @@ RSpec.describe DeploymentMetrics do
         let(:prometheus_integration) { instance_double(::Integrations::Prometheus, configured?: true, can_query?: false) }
 
         before do
-          allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_integration
+          allow(deployment.project).to receive(:find_or_initialize_integration).with('prometheus').and_return prometheus_integration
         end
 
         it { is_expected.to be_falsy }
@@ -43,7 +43,7 @@ RSpec.describe DeploymentMetrics do
         let(:prometheus_integration) { instance_double(::Integrations::Prometheus, configured?: false, can_query?: false) }
 
         before do
-          allow(deployment.project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_integration
+          allow(deployment.project).to receive(:find_or_initialize_integration).with('prometheus').and_return prometheus_integration
         end
 
         it { is_expected.to be_falsy }

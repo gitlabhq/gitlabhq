@@ -84,7 +84,7 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def integration
-    @integration ||= @project.find_or_initialize_service(params[:id])
+    @integration ||= @project.find_or_initialize_integration(params[:id])
   end
   alias_method :service, :integration
 

@@ -15,6 +15,8 @@ RSpec.describe API::GroupAvatar do
         get api(avatar_path(group))
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['Content-Disposition'])
+          .to eq(%(attachment; filename="dk.png"; filename*=UTF-8''dk.png))
       end
 
       context 'when the group does not have avatar' do
@@ -24,6 +26,8 @@ RSpec.describe API::GroupAvatar do
           get api(avatar_path(group))
 
           expect(response).to have_gitlab_http_status(:not_found)
+          expect(response.body)
+            .to eq(%({"message":"404 Avatar Not Found"}))
         end
       end
 

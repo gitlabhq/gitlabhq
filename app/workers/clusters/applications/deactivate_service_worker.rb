@@ -15,7 +15,7 @@ module Clusters
         raise cluster_missing_error(integration_name) unless cluster
 
         integration = ::Project.integration_association_name(integration_name).to_sym
-        cluster.all_projects.with_service(integration).find_each do |project|
+        cluster.all_projects.with_integration(integration).find_each do |project|
           project.public_send(integration).update!(active: false) # rubocop:disable GitlabSecurity/PublicSend
         end
       end

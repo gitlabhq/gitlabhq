@@ -77,8 +77,8 @@ module API
         present services, with: Entities::ProjectServiceBasic
       end
 
-      SERVICES.each do |service_slug, settings|
-        desc "Set #{service_slug} service for project"
+      SERVICES.each do |slug, settings|
+        desc "Set #{slug} service for project"
         params do
           settings.each do |setting|
             if setting[:required]
@@ -88,12 +88,12 @@ module API
             end
           end
         end
-        put ":id/services/#{service_slug}" do
-          service = user_project.find_or_initialize_service(service_slug.underscore)
-          service_params = declared_params(include_missing: false).merge(active: true)
+        put ":id/services/#{slug}" do
+          integration = user_project.find_or_initialize_integration(slug.underscore)
+          params = declared_params(include_missing: false).merge(active: true)
 
-          if service.update(service_params)
-            present service, with: Entities::ProjectService
+          if integration.update(params)
+            present integration, with: Entities::ProjectService
           else
             render_api_error!('400 Bad Request', 400)
           end
@@ -102,19 +102,15 @@ module API
 
       desc "Delete a service for project"
       params do
-        requires :service_slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
+        requires :slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
       end
-      delete ":id/services/:service_slug" do
-        service = user_project.find_or_initialize_service(params[:service_slug].underscore)
+      delete ":id/services/:slug" do
+        integration = user_project.find_or_initialize_integration(params[:slug].underscore)
 
-        destroy_conditionally!(service) do
-          attrs = service_attributes(service).inject({}) do |hash, key|
-            hash.merge!(key => nil)
-          end
+        destroy_conditionally!(integration) do
+          attrs = service_attributes(integration).index_with { nil }.merge(active: false)
 
-          unless service.update(attrs.merge(active: false))
-            render_api_error!('400 Bad Request', 400)
-          end
+          render_api_error!('400 Bad Request', 400) unless integration.update(attrs)
         end
       end
 
@@ -122,10 +118,10 @@ module API
         success Entities::ProjectService
       end
       params do
-        requires :service_slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
+        requires :slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
       end
-      get ":id/services/:service_slug" do
-        integration = user_project.find_or_initialize_service(params[:service_slug].underscore)
+      get ":id/services/:slug" do
+        integration = user_project.find_or_initialize_integration(params[:slug].underscore)
 
         not_found!('Service') unless integration&.persisted?
 

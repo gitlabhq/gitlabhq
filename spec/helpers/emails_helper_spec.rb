@@ -238,16 +238,16 @@ RSpec.describe EmailsHelper do
       it 'returns the default header logo' do
         create :appearance, header_logo: nil
 
-        expect(header_logo).to eq(
-          %{<img alt="GitLab" src="/images/mailers/gitlab_header_logo.gif" width="55" height="50" />}
+        expect(header_logo).to match(
+          %r{<img alt="GitLab" src="/images/mailers/gitlab_header_logo\.(?:gif|png)" width="\d+" height="\d+" />}
         )
       end
     end
 
     context 'there is no brand item' do
       it 'returns the default header logo' do
-        expect(header_logo).to eq(
-          %{<img alt="GitLab" src="/images/mailers/gitlab_header_logo.gif" width="55" height="50" />}
+        expect(header_logo).to match(
+          %r{<img alt="GitLab" src="/images/mailers/gitlab_header_logo\.(?:gif|png)" width="\d+" height="\d+" />}
         )
       end
     end

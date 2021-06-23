@@ -745,7 +745,7 @@ You can create a new package each time the `master` branch is updated.
    <repositories>
      <repository>
        <id>gitlab-maven</id>
-       <url>$env{CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+       <url>${env.CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
      </repository>
    </repositories>
    <distributionManagement>

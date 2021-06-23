@@ -21,15 +21,15 @@ module Projects
     private
 
     def create_prometheus_integration(project)
-      service = project.find_or_initialize_service(::Integrations::Prometheus.to_param)
+      integration = project.find_or_initialize_integration(::Integrations::Prometheus.to_param)
 
       # If the service has already been inserted in the database, that
       # means it came from a template, and there's nothing more to do.
-      return if service.persisted?
+      return if integration.persisted?
 
-      return unless service.prometheus_available?
+      return unless integration.prometheus_available?
 
-      service.save!
+      integration.save!
     rescue ActiveRecord::RecordInvalid => e
       Gitlab::ErrorTracking.track_exception(e, extra: { project_id: project.id })
     end

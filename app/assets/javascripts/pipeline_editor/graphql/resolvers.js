@@ -1,20 +1,9 @@
 import produce from 'immer';
-import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import getCurrentBranchQuery from './queries/client/current_branch.graphql';
 import getLastCommitBranchQuery from './queries/client/last_commit_branch.query.graphql';
 
 export const resolvers = {
-  Query: {
-    blobContent(_, { projectPath, path, ref }) {
-      return {
-        __typename: 'BlobContent',
-        rawData: Api.getRawFile(projectPath, path, { ref }).then(({ data }) => {
-          return data;
-        }),
-      };
-    },
-  },
   Mutation: {
     lintCI: (_, { endpoint, content, dry_run }) => {
       return axios.post(endpoint, { content, dry_run }).then(({ data }) => ({

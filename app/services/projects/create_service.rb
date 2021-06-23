@@ -193,14 +193,14 @@ module Projects
 
     # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/326665
     def create_prometheus_integration
-      service = @project.find_or_initialize_service(::Integrations::Prometheus.to_param)
+      integration = @project.find_or_initialize_integration(::Integrations::Prometheus.to_param)
 
       # If the service has already been inserted in the database, that
       # means it came from a template, and there's nothing more to do.
-      return if service.persisted?
+      return if integration.persisted?
 
-      if service.prometheus_available?
-        service.save!
+      if integration.prometheus_available?
+        integration.save!
       else
         @project.prometheus_integration = nil
       end

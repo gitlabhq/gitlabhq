@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Prometheus::Adapter do
       let(:prometheus_integration) { double(:prometheus_integration, can_query?: true) }
 
       before do
-        allow(project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_integration
+        allow(project).to receive(:find_or_initialize_integration).with('prometheus').and_return prometheus_integration
       end
 
       it 'return prometheus integration as prometheus adapter' do
@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Prometheus::Adapter do
       let(:prometheus_integration) { double(:prometheus_integration, can_query?: false) }
 
       before do
-        allow(project).to receive(:find_or_initialize_service).with('prometheus').and_return prometheus_integration
+        allow(project).to receive(:find_or_initialize_integration).with('prometheus').and_return prometheus_integration
       end
 
       context 'with cluster with prometheus disabled' do

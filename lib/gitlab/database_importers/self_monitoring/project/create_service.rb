@@ -107,10 +107,10 @@ module Gitlab
             return success(result) unless prometheus_enabled?
             return success(result) unless prometheus_server_address.present?
 
-            service = result[:project].find_or_initialize_service('prometheus')
+            prometheus = result[:project].find_or_initialize_integration('prometheus')
 
-            unless service.update(prometheus_integration_attributes)
-              log_error('Could not save prometheus manual configuration for self-monitoring project. Errors: %{errors}' % { errors: service.errors.full_messages })
+            unless prometheus.update(prometheus_integration_attributes)
+              log_error('Could not save prometheus manual configuration for self-monitoring project. Errors: %{errors}' % { errors: prometheus.errors.full_messages })
               return error(_('Could not save prometheus manual configuration'))
             end
 

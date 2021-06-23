@@ -24,11 +24,11 @@ RSpec.describe API::Services do
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
-    context 'project with services' do
+    context 'with integrations' do
       let!(:active_integration) { create(:emails_on_push_integration, project: project, active: true) }
       let!(:integration) { create(:custom_issue_tracker_integration, project: project, active: false) }
 
-      it "returns a list of all active services" do
+      it "returns a list of all active integrations" do
         get api("/projects/#{project.id}/services", user)
 
         aggregate_failures 'expect successful response with all active services' do
@@ -42,7 +42,7 @@ RSpec.describe API::Services do
     end
   end
 
-  Integration.available_services_names.each do |service|
+  Integration.available_integration_names.each do |service|
     describe "PUT /projects/:id/services/#{service.dasherize}" do
       include_context service
 
@@ -99,7 +99,7 @@ RSpec.describe API::Services do
       include_context service
 
       before do
-        initialize_service(service)
+        initialize_integration(service)
       end
 
       it "deletes #{service}" do
@@ -114,7 +114,7 @@ RSpec.describe API::Services do
     describe "GET /projects/:id/services/#{service.dasherize}" do
       include_context service
 
-      let!(:initialized_service) { initialize_service(service, active: true) }
+      let!(:initialized_service) { initialize_integration(service, active: true) }
 
       let_it_be(:project2) do
         create(:project, creator_id: user.id, namespace: user.namespace)
@@ -141,7 +141,7 @@ RSpec.describe API::Services do
         expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
       end
 
-      it "returns all properties of inactive service #{service}" do
+      it "returns all properties of inactive integration #{service}" do
         deactive_service!
 
         get api("/projects/#{project.id}/services/#{dashed_service}", user)
@@ -151,16 +151,16 @@ RSpec.describe API::Services do
         expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
       end
 
-      it "returns not found if service does not exist" do
+      it "returns not found if integration does not exist" do
         get api("/projects/#{project2.id}/services/#{dashed_service}", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Service Not Found')
       end
 
-      it "returns not found if service exists but is in `Project#disabled_services`" do
+      it "returns not found if service exists but is in `Project#disabled_integrations`" do
         expect_next_found_instance_of(Project) do |project|
-          expect(project).to receive(:disabled_services).at_least(:once).and_return([service])
+          expect(project).to receive(:disabled_integrations).at_least(:once).and_return([service])
         end
 
         get api("/projects/#{project.id}/services/#{dashed_service}", user)

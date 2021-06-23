@@ -14,7 +14,7 @@ export default {
       type: Number,
       required: true,
     },
-    isHighlighted: {
+    isHovered: {
       type: Boolean,
       required: false,
       default: false,
@@ -42,7 +42,7 @@ export default {
     jobPillClasses() {
       return [
         { 'gl-opacity-3': this.isFadedOut },
-        this.isHighlighted ? 'gl-shadow-blue-200-x0-y0-b4-s2' : 'gl-inset-border-2-green-400',
+        { 'gl-bg-gray-50 gl-inset-border-1-gray-200': this.isHovered },
       ];
     },
   },
@@ -57,15 +57,17 @@ export default {
 };
 </script>
 <template>
-  <tooltip-on-truncate :title="jobName" truncate-target="child" placement="top">
-    <div
-      :id="id"
-      class="gl-w-15 gl-bg-white gl-text-center gl-text-truncate gl-rounded-pill gl-mb-3 gl-px-5 gl-py-2 gl-relative gl-z-index-1 gl-transition-duration-slow gl-transition-timing-function-ease"
-      :class="jobPillClasses"
-      @mouseover="onMouseEnter"
-      @mouseleave="onMouseLeave"
-    >
-      {{ jobName }}
-    </div>
-  </tooltip-on-truncate>
+  <div class="gl-w-full">
+    <tooltip-on-truncate :title="jobName" truncate-target="child" placement="top">
+      <div
+        :id="id"
+        class="gl-bg-white gl-inset-border-1-gray-100 gl-text-center gl-text-truncate gl-rounded-6 gl-mb-3 gl-px-5 gl-py-3 gl-relative gl-z-index-1 gl-transition-duration-slow gl-transition-timing-function-ease"
+        :class="jobPillClasses"
+        @mouseover="onMouseEnter"
+        @mouseleave="onMouseLeave"
+      >
+        {{ jobName }}
+      </div>
+    </tooltip-on-truncate>
+  </div>
 </template>
