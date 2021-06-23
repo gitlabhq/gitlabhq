@@ -28,5 +28,6 @@
         = render "layouts/flash", extra_flash_class: 'limit-container-width'
         = yield :before_content
         = yield
+    = yield :after_content
 
 = render "layouts/nav/top_nav_responsive", class: 'layout-page content-wrapper-margin'

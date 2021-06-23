@@ -1,5 +1,6 @@
 import { GlDrawer } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { MountingPortal } from 'portal-vue';
 import Vuex from 'vuex';
 import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdown_widget.vue';
 import { stubComponent } from 'helpers/stub_component';
@@ -88,6 +89,14 @@ describe('BoardContentSidebar', () => {
 
   it('confirms we render GlDrawer', () => {
     expect(wrapper.findComponent(GlDrawer).exists()).toBe(true);
+  });
+
+  it('confirms we render MountingPortal', () => {
+    expect(wrapper.find(MountingPortal).props()).toMatchObject({
+      mountTo: '#js-right-sidebar-portal',
+      append: true,
+      name: 'board-content-sidebar',
+    });
   });
 
   it('does not render GlDrawer when isSidebarOpen is false', () => {

@@ -8,6 +8,10 @@ module QA
         include Page::Component::Select2
         include Page::Component::VisibilitySetting
 
+        include Layout::Flash
+        include Page::Component::Import::Selection
+        include Page::Component::Import::Gitlab
+
         view 'app/views/projects/_new_project_fields.html.haml' do
           element :initialize_with_readme_checkbox
           element :project_namespace_select

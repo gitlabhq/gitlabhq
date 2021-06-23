@@ -70,6 +70,8 @@ module QA
       end
 
       def fabricate!
+        return fabricate_large_merge_request if Runtime::Scenario.large_setup?
+
         populate_target_and_source_if_required
 
         project.visit!
@@ -90,6 +92,8 @@ module QA
       end
 
       def fabricate_via_api!
+        return fabricate_large_merge_request if Runtime::Scenario.large_setup?
+
         resource_web_url(api_get)
       rescue ResourceNotFoundError, NoValueError # rescue if iid not populated
         populate_target_and_source_if_required
@@ -142,6 +146,15 @@ module QA
 
           result
         end
+      end
+
+      def fabricate_large_merge_request
+        @project = Resource::ImportProject.fabricate_via_browser_ui!
+        # Setting the name here, since otherwise some tests will look for an existing file in
+        # the proejct without ever knowing what is in it.
+        @file_name = "LICENSE"
+        visit("#{project.web_url}/-/merge_requests/1")
+        current_url
       end
 
       # Get MR comments

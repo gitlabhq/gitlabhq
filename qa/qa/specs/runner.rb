@@ -65,6 +65,8 @@ module QA
           args.push(DEFAULT_TEST_PATH_ARGS) unless options.any? { |opt| opt =~ %r{/features/} }
         end
 
+        Runtime::Scenario.define(:large_setup?, args.flatten.include?('can_use_large_setup'))
+
         if Runtime::Scenario.attributes[:parallel]
           ParallelRunner.run(args.flatten)
         elsif Runtime::Scenario.attributes[:loop]

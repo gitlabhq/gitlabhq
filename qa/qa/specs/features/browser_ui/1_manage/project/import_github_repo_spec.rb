@@ -61,19 +61,17 @@ module QA
       def verify_labels_import
         labels = imported_project.labels.map { |label| label.slice(:name, :color) }
 
-        expect(labels).to eq(
-          [
-            { name: 'bug', color: '#d73a4a' },
-            { name: 'custom new label', color: '#fc8f91' },
-            { name: 'documentation', color: '#0075ca' },
-            { name: 'duplicate', color: '#cfd3d7' },
-            { name: 'enhancement', color: '#a2eeef' },
-            { name: 'good first issue', color: '#7057ff' },
-            { name: 'help wanted', color: '#008672' },
-            { name: 'invalid', color: '#e4e669' },
-            { name: 'question', color: '#d876e3' },
-            { name: 'wontfix', color: '#ffffff' }
-          ]
+        expect(labels).to include(
+          { name: 'bug', color: '#d73a4a' },
+          { name: 'custom new label', color: '#fc8f91' },
+          { name: 'documentation', color: '#0075ca' },
+          { name: 'duplicate', color: '#cfd3d7' },
+          { name: 'enhancement', color: '#a2eeef' },
+          { name: 'good first issue', color: '#7057ff' },
+          { name: 'help wanted', color: '#008672' },
+          { name: 'invalid', color: '#e4e669' },
+          { name: 'question', color: '#d876e3' },
+          { name: 'wontfix', color: '#ffffff' }
         )
       end
 

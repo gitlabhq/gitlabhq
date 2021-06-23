@@ -7,7 +7,7 @@
       = _("Import project from")
     .import-buttons
       - if gitlab_project_import_enabled?
-        .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
+        .import_gitlab_project.has-tooltip{ data: { container: 'body', qa_selector: 'gitlab_import_button' } }
           = link_to new_import_gitlab_project_path, class: 'gl-button btn-default btn btn_import_gitlab_project', **tracking_attrs(track_label, 'click_button', 'gitlab_export') do
             .gl-button-icon
               = sprite_icon('tanuki')

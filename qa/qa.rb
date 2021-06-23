@@ -107,6 +107,7 @@ module QA
     autoload :RegistryRepository, 'qa/resource/registry_repository'
     autoload :Package, 'qa/resource/package'
     autoload :PipelineSchedules, 'qa/resource/pipeline_schedules'
+    autoload :ImportProject, 'qa/resource/import_project'
 
     module KubernetesCluster
       autoload :Base, 'qa/resource/kubernetes_cluster/base'
@@ -529,6 +530,11 @@ module QA
       autoload :AccessTokens, 'qa/page/component/access_tokens'
       autoload :CommitModal, 'qa/page/component/commit_modal'
       autoload :VisibilitySetting, 'qa/page/component/visibility_setting'
+
+      module Import
+        autoload :Gitlab, 'qa/page/component/import/gitlab'
+        autoload :Selection, 'qa/page/component/import/selection'
+      end
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'

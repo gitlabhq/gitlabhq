@@ -17715,7 +17715,8 @@ CREATE SEQUENCE saml_providers_id_seq
 ALTER SEQUENCE saml_providers_id_seq OWNED BY saml_providers.id;
 
 CREATE TABLE schema_migrations (
-    version character varying NOT NULL
+    version character varying NOT NULL,
+    finished_at timestamp with time zone DEFAULT now()
 );
 
 CREATE TABLE scim_identities (
