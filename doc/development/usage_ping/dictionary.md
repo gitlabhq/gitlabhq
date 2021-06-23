@@ -17378,6 +17378,18 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `usage_activity_by_stage.secure.user_api_fuzzing_scans`
+
+Number of users who have run a API Fuzzing scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210607044126_user_api_fuzzing_scans.yml)
+
+Group: `category::fuzz testing`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
 ### `usage_activity_by_stage.secure.user_container_scanning_jobs`
 
 Distinct count per user of Container Scanning jobs run
@@ -17385,6 +17397,18 @@ Distinct count per user of Container Scanning jobs run
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175501_user_container_scanning_jobs.yml)
 
 Group: `group::container security`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
+### `usage_activity_by_stage.secure.user_container_scanning_scans`
+
+Number of users who have run a Container Scanning scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210607043902_user_container_scanning_scans.yml)
+
+Group: `group::composition analysis`
 
 Status: `data_available`
 
@@ -17402,6 +17426,18 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `usage_activity_by_stage.secure.user_coverage_fuzzing_scans`
+
+Number of users who have run a Coverage Fuzzing scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210607044040_user_coverage_fuzzing_scans.yml)
+
+Group: `category::fuzz testing`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
 ### `usage_activity_by_stage.secure.user_dast_jobs`
 
 Count of DAST jobs
@@ -17414,11 +17450,35 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `usage_activity_by_stage.secure.user_dast_scans`
+
+Number of users who have run a DAST scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210607043109_user_dast_scans.yml)
+
+Group: `group::dynamic analysis`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
 ### `usage_activity_by_stage.secure.user_dependency_scanning_jobs`
 
 Total number of users running Dependency Scanning jobs
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175216_user_dependency_scanning_jobs.yml)
+
+Group: `group::composition analysis`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
+### `usage_activity_by_stage.secure.user_dependency_scanning_scans`
+
+Number of users who have run a Dependency Scanning scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210607043819_user_dependency_scanning_scans.yml)
 
 Group: `group::composition analysis`
 
@@ -17462,6 +17522,18 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `usage_activity_by_stage.secure.user_sast_scans`
+
+Number of users who have run a SAST scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210607043741_user_sast_scans.yml)
+
+Group: `group::static analysis`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
 ### `usage_activity_by_stage.secure.user_secret_detection_jobs`
 
 Count of Secret Detection Jobs
@@ -17473,6 +17545,18 @@ Group: `group::static analysis`
 Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
+
+### `usage_activity_by_stage.secure.user_secret_detection_scans`
+
+Number of users who have run a Secret Detection scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210607043957_user_secret_detection_scans.yml)
+
+Group: `group::static analysis`
+
+Status: `data_available`
+
+Tiers: `ultimate`
 
 ### `usage_activity_by_stage.secure.user_unique_users_all_secure_scanners`
 
@@ -19418,6 +19502,18 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `usage_activity_by_stage_monthly.secure.user_api_fuzzing_scans`
+
+Number of users who have run a API Fuzzing scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210607043622_user_api_fuzzing_scans.yml)
+
+Group: `category::fuzz testing`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
 ### `usage_activity_by_stage_monthly.secure.user_container_scanning_jobs`
 
 Distinct count per user of Container Scanning jobs run monthly
@@ -19425,6 +19521,18 @@ Distinct count per user of Container Scanning jobs run monthly
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175505_user_container_scanning_jobs.yml)
 
 Group: `group::container security`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
+### `usage_activity_by_stage_monthly.secure.user_container_scanning_scans`
+
+Number of users who have run a Container Scanning scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210607043336_user_container_scanning_scans.yml)
+
+Group: `group::composition analysis`
 
 Status: `data_available`
 
@@ -19442,6 +19550,18 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `usage_activity_by_stage_monthly.secure.user_coverage_fuzzing_scans`
+
+Number of users who have run a Coverage Fuzzing scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210607043509_user_coverage_fuzzing_scans.yml)
+
+Group: `category::fuzz testing`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
 ### `usage_activity_by_stage_monthly.secure.user_dast_jobs`
 
 Users who run a DAST job
@@ -19454,11 +19574,35 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `usage_activity_by_stage_monthly.secure.user_dast_scans`
+
+Number of users who have run a DAST scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210607041718_user_dast_scans.yml)
+
+Group: `group::dynamic analysis`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
 ### `usage_activity_by_stage_monthly.secure.user_dependency_scanning_jobs`
 
 Monthly number of users creating Dependency Scanning jobs
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175222_user_dependency_scanning_jobs.yml)
+
+Group: `group::composition analysis`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
+### `usage_activity_by_stage_monthly.secure.user_dependency_scanning_scans`
+
+Number of users who have run a Dependency Scanning scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210607043301_user_dependency_scanning_scans.yml)
 
 Group: `group::composition analysis`
 
@@ -19502,6 +19646,18 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `usage_activity_by_stage_monthly.secure.user_sast_scans`
+
+Number of users who have run a SAST scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210607043218_user_sast_scans.yml)
+
+Group: `group::static analysis`
+
+Status: `data_available`
+
+Tiers: `ultimate`
+
 ### `usage_activity_by_stage_monthly.secure.user_secret_detection_jobs`
 
 Users who run a Secret Detection job
@@ -19513,6 +19669,18 @@ Group: `group::static analysis`
 Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
+
+### `usage_activity_by_stage_monthly.secure.user_secret_detection_scans`
+
+Number of users who have run a Secret Detection scan
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210607043410_user_secret_detection_scans.yml)
+
+Group: `group::static analysis`
+
+Status: `data_available`
+
+Tiers: `ultimate`
 
 ### `usage_activity_by_stage_monthly.secure.user_unique_users_all_secure_scanners`
 

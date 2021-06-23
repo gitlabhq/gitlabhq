@@ -36,7 +36,7 @@ module Banzai
       protected
 
       def process_link(link_attr, node)
-        process_link_attr(link_attr)
+        process_link_attr(link_attr, node)
         remove_unsafe_links({ node: node }, remove_invalid_links: false)
       end
 
@@ -44,12 +44,25 @@ module Banzai
         !context[:wiki].nil?
       end
 
-      def process_link_attr(html_attr)
+      def process_link_attr(html_attr, node)
         return if html_attr.blank?
 
-        html_attr.value = apply_rewrite_rules(html_attr.value)
+        rewritten_value = apply_rewrite_rules(html_attr.value)
+
+        if html_attr.value != rewritten_value
+          preserve_original_link(html_attr, node)
+        end
+
+        html_attr.value = rewritten_value
       rescue URI::Error, Addressable::URI::InvalidURIError
         # noop
+      end
+
+      def preserve_original_link(html_attr, node)
+        return if html_attr.blank?
+        return if node.value?('data-canonical-src')
+
+        node.set_attribute('data-canonical-src', html_attr.value)
       end
 
       def apply_rewrite_rules(link_string)

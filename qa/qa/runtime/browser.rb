@@ -89,8 +89,8 @@ module QA
             # Chrome won't work properly in a Docker container in sandbox mode
             options.add_argument("no-sandbox")
 
-            # Run headless by default unless CHROME_HEADLESS is false
-            if QA::Runtime::Env.chrome_headless?
+            # Run headless by default unless WEBDRIVER_HEADLESS is false
+            if QA::Runtime::Env.webdriver_headless?
               options.add_argument("headless")
 
               # Chrome documentation says this flag is needed for now

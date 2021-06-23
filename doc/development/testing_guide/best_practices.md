@@ -513,14 +513,14 @@ Finished in 34.51 seconds (files took 0.76702 seconds to load)
 
 #### Run `:js` spec in a visible browser
 
-Run the spec with `CHROME_HEADLESS=0`, like this:
+Run the spec with `WEBDRIVER_HEADLESS=0`, like this:
 
 ```shell
-CHROME_HEADLESS=0 bin/rspec some_spec.rb
+WEBDRIVER_HEADLESS=0 bin/rspec some_spec.rb
 ```
 
 The test completes quickly, but this gives you an idea of what's happening.
-Using `live_debug` with `CHROME_HEADLESS=0` pauses the open browser, and does not
+Using `live_debug` with `WEBDRIVER_HEADLESS=0` pauses the open browser, and does not
 open the page again. This can be used to debug and inspect elements.
 
 You can also add `byebug` or `binding.pry` to pause execution and [step through](../pry_debugging.md#stepping)

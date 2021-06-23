@@ -1,0 +1,161 @@
+- title: Streamlined top navigation menu
+  body: |
+   GitLab 14.0 introduces an all-new, streamlined top navigation menu to help you get where you're going faster and with fewer clicks. This new, consolidated menu offers the combined functionality of the previous Projects, Groups, and More menus. It gives you access to your projects, groups, and instance-level features with a single click. Additionally, all-new responsive views improve the navigation experience on smaller screens.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://gitlab.com/gitlab-org/gitlab/-/issues/332635
+  image_url: https://about.gitlab.com/images/14_0/consolidated-top-nav.png
+  published_at: 2021-06-22
+  release: 14.0
+- title: Sidebar navigation redesign
+  body: |
+   GitLab is big. And it's getting bigger. As we've introduced new features and categories, navigating the densely-packed left sidebar has become less intuitive.
+
+   In GitLab 14.0 we've redesigned and restructured the left sidebar for improved usability, consistency, and discoverability. We've moved some links to features around, split up features in the **Operations** menu into three distinct menus, improved visual contrast, and optimized spacing so all the menu items can fit comfortably on a smaller screen. These changes are intended to better match your mental model of the DevOps lifecycle, and provide a more predictable and consistent experience while navigating within your projects and groups.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://gitlab.com/gitlab-org/gitlab/-/issues/332635
+  image_url: https://about.gitlab.com/images/14_0/redesigned-left-sidebar.png
+  published_at: 2021-06-22
+  release: 14.0
+- title: Merge request reviews in VS Code
+  body: |
+    As a developer, you often spend a majority of your time working in your local development environment. When you're assigned a merge request for review, this requires you to leave your editor and perform that review inside of GitLab. While performing your review inside GitLab, you might also need to use your local editor to gain more context on the proposed changes.
+
+    [GitLab Workflow](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) version `3.21.0` for Visual Studio Code (VS Code) now supports the complete merge request review process, including threads. Select the GitLab icon in VS Code to open the [sidebar](https://gitlab.com/gitlab-org/gitlab-vscode-extension#sidebar-details) to display **Merge requests I'm reviewing**. Select a merge request overview to view the complete details and discussions of the merge request.
+
+    The sidebar also contains a list of all the changed files in the merge request. Selecting files opens a diff comparison for you to review the changes in VS Code. While viewing the diff, you can read feedback left on the files, and create new comments by selecting a line number and creating your comment. All comments and feedback you provide in VS Code are available in the GitLab web interface, making it easy for you to perform your reviews in VS Code, and other users to participate in GitLab.
+
+    We're really excited about bringing the complete merge request review process to you inside of VS Code. Let us know what you think by [opening an issue](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/new?issue%5Bmilestone_id%5D=) for GitLab Workflow.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md
+  image_url: https://img.youtube.com/vi/F5ypjlOZ4-0/hqdefault.jpg
+  published_at: 2021-06-22
+  release: 14.0
+- title: Track usage of Code Owners
+  body: |
+    Code Owners are an important piece of the code review process in GitLab. When code owners are clearly identified, contributors can see who should review contributions to a file or repository. The Code Owners feature can also be used to establish a merge request approval process. Now, you can track which teams across your organization are using the Code Owners feature in their development workflow.
+
+    If you would like to drive adoption of Code Owners, sort the DevOps Adoption table by the Code Owners column to find teams that haven't yet adopted the feature so you can easily identify which teams need help getting started. Alternatively, find teams that have successfully configured Code Owners and get tips and feedback. The DevOps Adoption table is available at [the group level](https://docs.gitlab.com/ee/user/group/devops_adoption/) and [the instance level](https://docs.gitlab.com/ee/user/admin_area/analytics/dev_ops_report.html#devops-adoption).
+  stage: Manage
+  self-managed: true
+  gitlab-com: true
+  packages: [Ultimate]
+  url: https://docs.gitlab.com/ee/user/admin_area/analytics/dev_ops_report#devops-adoption
+  image_url: https://about.gitlab.com/images/14_0/codeownersadoption.png
+  published_at: 2021-06-22
+  release: 14.0
+- title: Set pronouns on GitLab user profiles
+  body: |
+    Pronouns have been added to GitLab user profiles. The pronouns appear next to user names in the **Profile** tab. You can:
+
+    - Decide whether or not to add pronouns to your profile.
+    - Self-identify and enter whatever pronouns you prefer, without selecting from a predefined list.
+
+    Besides being more inclusive, GitLab wants help people use the correct pronouns when replying to comments to respect people's identity.
+  stage: Manage
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/profile/#add-your-gender-pronouns
+  image_url: https://about.gitlab.com/images/14_0/pronouns.png
+  published_at: 2021-06-22
+  release: 14.0
+- title: Container Scanning Integration with Trivy
+  body: |
+    Container scanning in GitLab now uses the Trivy engine by default. This change provides customers with more timely vulnerability intelligence updates, more accurate results, and support for a larger number of operating systems. Users who run container scanning with default settings are switched seamlessly and automatically to the new engine in GitLab 14.0. Users who customize the variables in their container scanning job should review our [migration guide](https://docs.gitlab.com/ee/user/application_security/container_scanning/#change-scanners) and make any necessary updates.
+  stage: Protect
+  self-managed: true
+  gitlab-com: true
+  packages: [Ultimate]
+  url: https://docs.gitlab.com/ee/user/application_security/container_scanning
+  image_url: https://about.gitlab.com/images/14_0/trivy_scanning_engine.png
+  published_at: 2021-06-22
+  release: 14.0
+- title: Aggregate identical DAST vulnerabilities into a single vulnerability
+  body: |
+    In GitLab 13.12 and earlier, all DAST vulnerabilities found in a scan were listed individually for each URL the vulnerability was found on. This could create many vulnerabilities when the fix was a single file or configuration change. For example: an issue with a server header sent with every HTTP response would be reported on every page on the site, rather than reported as a single issue with multiple occurrences.
+
+    To reduce the overhead of managing vulnerabilities, GitLab combines identical vulnerabilities found on multiple pages into a single reported vulnerability in the DAST report. The vulnerability details include a list of all the URLs where the vulnerability was found, rather than individual vulnerabilities being created in the vulnerability list and dashboard for each page.
+
+    This new reporting functionality will not retroactively combine vulnerabilities found in previous scans. It only applies to scans performed in GitLab 14.0 and later.
+  stage: Secure
+  self-managed: true
+  gitlab-com: true
+  packages: [Ultimate]
+  url: https://docs.gitlab.com/ee/user/application_security/dast/#reports
+  image_url: https://about.gitlab.com/images/14_0/dast_aggregated_urls.png
+  published_at: 2021-06-22
+  release: 14.0
+- title: Epic Boards
+  body: |
+    Epic Boards align teams and organizations by communicating the status of epics continuously. Previous versions of GitLab required you to view and sort epics in a list to view the overall status. Keeping epics up to date meant making most changes through an epic's detail page. Epic Boards enable you to visualize and refine all of your epics in one place, using a customizable, drag-and-drop interface that is easy for any teammate to understand and collaborate.
+
+    Epic Boards are also a game-changer for managing and visualizing ideal epic workflows, such as authoring workflow states (Draft, Writing, Done), DevOps workflow states (such as Planned, In Development, and In Production), or any other mutually exclusive states you might model with scoped labels. Visualizing workflows with an Epic Board empowers you to increase predictability and efficiency.
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  packages: [Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/group/epics/epic_boards.html
+  image_url: https://about.gitlab.com/images/14_0/epic-boards.png
+  published_at: 2021-06-22
+  release: 14.0
+- title: Edit wiki pages with the WYSIWYG Markdown editor
+  body: |
+    Editing wiki content could be so much easier! Many GitLab wikis use Markdown formatting, and for some users, Markdown is a barrier to efficient collaboration. In this release, you now have access to a rich, modern Markdown editing experience in your wiki, so you can edit with confidence.
+
+    Instant feedback and visual editing tools help make wiki editing more intuitive, and remove barriers to collaboration. GitLab saves the changes as Markdown when you're done, so users who want to edit the Markdown directly can do so. You can even type Markdown into the new editor and it will automatically format the text as you type.
+
+    GitLab 14.0 introduces the [Content Editor](https://gitlab.com/groups/gitlab-org/-/epics/5401) into the Wiki with support for most of the basic Markdown content types like headers, bold and italic text, lists, code blocks, and links. [Full support](https://gitlab.com/groups/gitlab-org/-/epics/5438) for the entire [GitLab Flavored Markdown specification](https://docs.gitlab.com/ee/user/markdown.html) will arrive in upcoming releases. We also plan to make the Content Editor available in other areas of GitLab in the future. We welcome input on this early MVC in [this feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/332629).
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/project/wiki/#content-editor
+  image_url: https://about.gitlab.com/images/14_0/wiki-content-editor-demo.gif
+  published_at: 2021-06-22
+  release: 14.0
+- title: Change an issue's type
+  body: |
+    In some cases, you may wish to change an issue's type. For example, you may want to escalate an issue to an [incident](https://docs.gitlab.com/ee/operations/incident_management/index.html) to ensure that your team handles the problem properly. To change an issue's type, edit the issue and select an issue type from the **Issue type** selector menu.
+  stage: Monitor
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#change-the-issue-type
+  image_url: https://about.gitlab.com/images/14_0/change_type_on_issues.png
+  published_at: 2021-06-22
+  release: 14.0
+- title: Prepopulate the CI/CD pipeline editor with an initial template
+  body: |
+    The pipeline editor in GitLab is your one-stop shop when interacting with CI/CD pipelines. Previously, when writing your first pipeline with the editor, you were presented with a blank configuration. While perfectly useful for experienced pipeline authors, it was a bit of a leap for those just starting out.
+
+    In this release, if a project does not have a pipeline configured, the editor preloads a template showing an example 3-stage pipeline. You can save and run this pipeline right away to see it in action in your project. On top of that, it also has comments that help you understand the syntax, and tips and hints to help you start customizing the template to match your needs. It is now much easier to get your first green pipeline!
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/ci/pipeline_editor/
+  image_url: https://about.gitlab.com/images/14_0/template.png
+  published_at: 2021-06-22
+  release: 14.0
+- title: Terraform module registry built into GitLab
+  body: |
+    Terraform modules play a central role in building standard infrastructure components throughout an organization. Up to GitLab 13.12, GitLab users had to use either a third-party Terraform module registry, local modules, or Git-based modules. While these options work well, they do not help with the distribution of the modules and they lack proper versioning support, which introduces risks for module users. GitLab 14.0 extends our [Infrastructure-as-Code offerings](https://docs.gitlab.com/ee/user/infrastructure/) with a Terraform module registry. Now, you can use the Terraform module registry built into GitLab to discover Terraform modules with semantic versioning support for upgrades and maintenance. Moreover, you can publish modules easily using GitLab CI/CD.
+    
+    While following Terraform's best practices, we recommend developing each Terraform module in a dedicated GitLab project. To simplify the transition to the registry, users can host and publish multiple modules from a single GitLab repository. You can learn more about publishing and consuming a new module [in our documentation](https://docs.gitlab.com/ee/user/packages/terraform_module_registry/index.html).
+  stage: Configure
+  self-managed: true
+  gitlab-com: true
+  packages: [Free, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/packages/terraform_module_registry/index.html
+  image_url: https://about.gitlab.com/images/14_0/terraform-module-registry.png
+  published_at: 2021-06-22
+  release: 14.0

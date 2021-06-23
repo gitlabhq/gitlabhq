@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'active_support/deprecation'
 require 'gitlab/qa'
 require 'uri'
 
@@ -64,9 +65,13 @@ module QA
         ENV['QA_LOG_PATH'] || $stdout
       end
 
-      # set to 'false' to have Chrome run visibly instead of headless
-      def chrome_headless?
-        enabled?(ENV['CHROME_HEADLESS'])
+      # set to 'false' to have the browser run visibly instead of headless
+      def webdriver_headless?
+        if ENV.key?('CHROME_HEADLESS')
+          ActiveSupport::Deprecation.warn("CHROME_HEADLESS is deprecated. Use WEBDRIVER_HEADLESS instead.")
+        end
+
+        enabled?(ENV['WEBDRIVER_HEADLESS']) || enabled?(ENV['CHROME_HEADLESS'])
       end
 
       # set to 'true' to have Chrome use a fixed profile directory

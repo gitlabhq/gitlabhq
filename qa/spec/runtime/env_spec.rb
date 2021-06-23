@@ -54,10 +54,15 @@ RSpec.describe QA::Runtime::Env do
       default: false
   end
 
-  describe '.chrome_headless?' do
+  describe '.webdriver_headless?' do
+    before do
+      # We need to set this because we have a fallback for CHROME_HEADLESS
+      stub_env('CHROME_HEADLESS', 'false')
+    end
+
     it_behaves_like 'boolean method',
-      method: :chrome_headless?,
-      env_key: 'CHROME_HEADLESS',
+      method: :webdriver_headless?,
+      env_key: 'WEBDRIVER_HEADLESS',
       default: true
   end
 

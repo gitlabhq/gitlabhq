@@ -42,6 +42,12 @@ RSpec.describe Banzai::Filter::UploadLinkFilter do
   let(:upload_path) { '/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg' }
   let(:relative_path) { "/#{project.full_path}#{upload_path}" }
 
+  it 'preserves original url in data-canonical-src attribute' do
+    doc = filter(link(upload_path))
+
+    expect(doc.at_css('a')['data-canonical-src']).to eq(upload_path)
+  end
+
   context 'to a project upload' do
     context 'with an absolute URL' do
       let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }

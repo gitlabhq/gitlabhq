@@ -199,7 +199,7 @@ RSpec.describe Emails::ServiceDesk do
         let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "a new comment with [file](#{upload_path})") }
 
         let(:template_content) { 'some text %{ NOTE_TEXT  }' }
-        let(:expected_body) { %Q(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-link="true" class="gfm">file</a>) }
+        let(:expected_body) { %Q(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">file</a>) }
 
         it_behaves_like 'handle template content', 'new_note'
       end

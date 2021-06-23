@@ -135,7 +135,7 @@ starting GitLab. For example:
 ENABLE_BULLET=true bundle exec rails s
 ```
 
-Bullet logs query problems to both the Rails log as well as the Chrome
+Bullet logs query problems to both the Rails log as well as the browser
 console.
 
 As a follow up to finding `N+1` queries with Bullet, consider writing a [QueryRecoder test](query_recorder.md) to prevent a regression.
