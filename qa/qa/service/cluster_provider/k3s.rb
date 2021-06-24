@@ -9,7 +9,7 @@ module QA
         end
 
         def setup
-          @k3s = Service::DockerRun::K3s.init do |k3s|
+          @k3s = Service::DockerRun::K3s.new.tap do |k3s|
             k3s.remove!
             k3s.register!
 

@@ -7,14 +7,9 @@ module Gitlab
   module Metrics
     module Dashboard
       class Finder
-        # Dashboards that should not be part of the list of all dashboards
-        # displayed on the metrics dashboard page.
-        PREDEFINED_DASHBOARD_EXCLUSION_LIST = [
-          # This dashboard is only useful in the self monitoring project.
-          ::Metrics::Dashboard::SelfMonitoringDashboardService,
-
-          # This dashboard is displayed on the K8s cluster settings health page.
-          ::Metrics::Dashboard::ClusterDashboardService
+        PREDEFINED_DASHBOARD_LIST = [
+          ::Metrics::Dashboard::PodDashboardService,
+          ::Metrics::Dashboard::SystemDashboardService
         ].freeze
 
         class << self
@@ -90,11 +85,7 @@ module Gitlab
               return [self_monitoring_service]
             end
 
-            predefined_dashboard_services
-          end
-
-          def predefined_dashboard_services
-            ::Metrics::Dashboard::PredefinedDashboardService.descendants - PREDEFINED_DASHBOARD_EXCLUSION_LIST
+            PREDEFINED_DASHBOARD_LIST
           end
 
           def system_service

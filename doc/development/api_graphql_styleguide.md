@@ -674,26 +674,24 @@ support for the former argument style, remove the `Deprecation`:
 DEPRECATIONS = [].freeze
 ```
 
-During the deprecation period the API accepts these values for the argument:
-
-Formatted as either:
+During the deprecation period the API will accept either of these formats for the argument value:
 
 - `"gid://gitlab/PrometheusService/1"`
 - `"gid://gitlab/Integrations::Prometheus/1"`
 
-And query signatures recognizes the type under the old and new type names, accepting either:
+The API will also accept these types in the query signature for the argument:
 
 - `PrometheusServiceID`
 - `IntegrationsPrometheusID`
 
 NOTE:
-Although queries that use the old name (`PrometheusServiceID` in this example) would be
-considered valid and executable by the API, validator tools would consider them invalid.
+Although queries that use the old type (`PrometheusServiceID` in this example) will be 
+considered valid and executable by the API, validator tools will consider them to be invalid.
 This is because we are deprecating using a bespoke method outside of the
 [`@deprecated` directive](https://spec.graphql.org/June2018/#sec--deprecated), so validators are not
 aware of the support.
 
-The documentation mentions that the old Global ID style is now deprecated.
+The documentation will mention that the old Global ID style is now deprecated.
 
 See also [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
 

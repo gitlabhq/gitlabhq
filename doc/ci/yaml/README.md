@@ -1336,7 +1336,7 @@ pipeline based on branch names or pipeline types.
   | `external`               | When you use CI services other than GitLab. |
   | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
   | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../merge_request_pipelines/index.md), [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md), and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md). |
-  | `pipelines`              | For [multi-project pipelines](../multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../multi_project_pipelines.md#triggering-multi-project-pipelines-through-api), or the [`trigger`](#trigger) keyword. |
+  | `pipelines`              | For [multi-project pipelines](../multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](#trigger) keyword. |
   | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
@@ -3561,13 +3561,13 @@ deploystacks: [vultr, data]
 Use `trigger` to define a downstream pipeline trigger. When GitLab starts a `trigger` job,
 a downstream pipeline is created.
 
-Jobs with `trigger` can only use a [limited set of keywords](../multi_project_pipelines.md#limitations).
+Jobs with `trigger` can only use a [limited set of keywords](../multi_project_pipelines.md#create-multi-project-pipelines-in-your-gitlab-ciyml-file).
 For example, you can't run commands with [`script`](#script), [`before_script`](#before_script),
 or [`after_script`](#after_script).
 
 You can use this keyword to create two different types of downstream pipelines:
 
-- [Multi-project pipelines](../multi_project_pipelines.md#creating-multi-project-pipelines-from-gitlab-ciyml)
+- [Multi-project pipelines](../multi_project_pipelines.md#create-multi-project-pipelines-in-your-gitlab-ciyml-file)
 - [Child pipelines](../parent_child_pipelines.md)
 
 [In GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) and later, you can
@@ -3642,7 +3642,7 @@ trigger_job:
     include: path/to/child-pipeline.yml
 ```
 
-Similar to [multi-project pipelines](../multi_project_pipelines.md#mirroring-status-from-triggered-pipeline),
+Similar to [multi-project pipelines](../multi_project_pipelines.md#mirror-status-of-a-triggered-pipeline-in-the-trigger-job),
 it's possible to mirror the status from a triggered pipeline:
 
 ```yaml

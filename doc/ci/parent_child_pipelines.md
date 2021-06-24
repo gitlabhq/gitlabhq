@@ -85,7 +85,7 @@ microservice_a:
 
 The maximum number of entries that are accepted for `trigger:include:` is three.
 
-Similar to [multi-project pipelines](multi_project_pipelines.md#mirroring-status-from-triggered-pipeline),
+Similar to [multi-project pipelines](multi_project_pipelines.md#mirror-status-of-a-triggered-pipeline-in-the-trigger-job),
 we can set the parent pipeline to depend on the status of the child pipeline upon completion:
 
 ```yaml
@@ -185,5 +185,8 @@ For an overview, see [Nested Dynamic Pipelines](https://youtu.be/C5j3ju9je2M).
 
 ## Pass CI/CD variables to a child pipeline
 
-You can [pass CI/CD variables to a downstream pipeline](multi_project_pipelines.md#passing-cicd-variables-to-a-downstream-pipeline)
-the same way as for multi-project pipelines.
+You can pass CI/CD variables to a downstream pipeline using the same methods as
+multi-project pipelines:
+
+- [By using the `variable` keyword](multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword).
+- [By using variable inheritance](multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-variable-inheritance).
