@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Types::GlobalIDType do
-  include ::Gitlab::Graphql::Laziness
   include GraphqlHelpers
   include GlobalIDDeprecationHelpers
 

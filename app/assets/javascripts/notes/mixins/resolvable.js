@@ -48,7 +48,6 @@ export default {
           const msg = __('Something went wrong while resolving this discussion. Please try again.');
           createFlash({
             message: msg,
-            type: 'alert',
             parent: this.$el,
           });
         });

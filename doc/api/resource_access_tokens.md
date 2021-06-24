@@ -38,7 +38,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
       "id" : 42,
       "active" : true,
       "created_at" : "2021-01-20T22:11:48.151Z",
-      "revoked" : false
+      "revoked" : false,
+      "access_level": 40
    }
 ]
 ```
@@ -80,7 +81,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
    "user_id" : 166,
    "id" : 58,
    "expires_at" : "2021-01-31",
-   "token" : "D4y...Wzr"
+   "token" : "D4y...Wzr",
+   "access_level": 40
 }
 ```
 

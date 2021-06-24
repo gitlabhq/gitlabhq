@@ -9,6 +9,7 @@ import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import { sortMilestonesByDueDate } from '~/milestones/milestone_utils';
 
 import { DEFAULT_MILESTONES } from '~/vue_shared/components/filtered_search_bar/constants';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
@@ -21,6 +22,7 @@ import {
 } from '../mock_data';
 
 jest.mock('~/flash');
+jest.mock('~/milestones/milestone_utils');
 
 const defaultStubs = {
   Portal: true,
@@ -112,6 +114,7 @@ describe('MilestoneToken', () => {
 
         return waitForPromises().then(() => {
           expect(wrapper.vm.milestones).toEqual(mockMilestones);
+          expect(sortMilestonesByDueDate).toHaveBeenCalled();
         });
       });
 

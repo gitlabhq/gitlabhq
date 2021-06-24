@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownDivider, GlFormInputGroup, GlButton } from '@gitlab/ui';
+import { GlDropdown, GlDropdownDivider, GlButton, GlFormInputGroup } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarLinkButton from '~/content_editor/components/toolbar_link_button.vue';
 import { tiptapExtension as Link } from '~/content_editor/extensions/link';
@@ -15,9 +15,6 @@ describe('content_editor/components/toolbar_link_button', () => {
     wrapper = mountExtended(ToolbarLinkButton, {
       propsData: {
         tiptapEditor: editor,
-      },
-      stubs: {
-        GlFormInputGroup,
       },
     });
   };
@@ -45,9 +42,8 @@ describe('content_editor/components/toolbar_link_button', () => {
   });
 
   describe('when there is an active link', () => {
-    beforeEach(() => {
-      jest.spyOn(editor, 'isActive');
-      editor.isActive.mockReturnValueOnce(true);
+    beforeEach(async () => {
+      jest.spyOn(editor, 'isActive').mockReturnValueOnce(true);
       buildWrapper();
     });
 
@@ -78,8 +74,34 @@ describe('content_editor/components/toolbar_link_button', () => {
 
       expect(commands.focus).toHaveBeenCalled();
       expect(commands.unsetLink).toHaveBeenCalled();
-      expect(commands.setLink).toHaveBeenCalledWith({ href: 'https://example' });
+      expect(commands.setLink).toHaveBeenCalledWith({
+        href: 'https://example',
+        'data-canonical-src': 'https://example',
+      });
       expect(commands.run).toHaveBeenCalled();
+    });
+
+    describe('on selection update', () => {
+      it('updates link input box with canonical-src if present', async () => {
+        jest.spyOn(editor, 'getAttributes').mockReturnValueOnce({
+          'data-canonical-src': 'uploads/my-file.zip',
+          href: '/username/my-project/uploads/abcdefgh133535/my-file.zip',
+        });
+
+        await editor.emit('selectionUpdate', { editor });
+
+        expect(findLinkURLInput().element.value).toEqual('uploads/my-file.zip');
+      });
+
+      it('updates link input box with link href otherwise', async () => {
+        jest.spyOn(editor, 'getAttributes').mockReturnValueOnce({
+          href: 'https://gitlab.com',
+        });
+
+        await editor.emit('selectionUpdate', { editor });
+
+        expect(findLinkURLInput().element.value).toEqual('https://gitlab.com');
+      });
     });
   });
 
@@ -106,7 +128,10 @@ describe('content_editor/components/toolbar_link_button', () => {
       await findApplyLinkButton().trigger('click');
 
       expect(commands.focus).toHaveBeenCalled();
-      expect(commands.setLink).toHaveBeenCalledWith({ href: 'https://example' });
+      expect(commands.setLink).toHaveBeenCalledWith({
+        href: 'https://example',
+        'data-canonical-src': 'https://example',
+      });
       expect(commands.run).toHaveBeenCalled();
     });
   });

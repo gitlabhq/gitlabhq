@@ -39,7 +39,6 @@ describe('IncidentsSettingsService', () => {
       return service.updateSettings({}).then(() => {
         expect(createFlash).toHaveBeenCalledWith({
           message: expect.stringContaining(ERROR_MSG),
-          type: 'alert',
         });
       });
     });

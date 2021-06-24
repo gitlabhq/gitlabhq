@@ -628,7 +628,6 @@ export default class Notes {
       message: __(
         'Your comment could not be submitted! Please check your network connection and try again.',
       ),
-      type: 'alert',
       parent: formParentTimeline.get(0),
     });
   }

@@ -38,6 +38,7 @@ RSpec.describe API::ResourceAccessTokens do
 
           expect(api_get_token["name"]).to eq(token.name)
           expect(api_get_token["scopes"]).to eq(token.scopes)
+          expect(api_get_token["access_level"]).to eq(project.team.max_member_access(token.user.id))
           expect(api_get_token["expires_at"]).to eq(token.expires_at.to_date.iso8601)
           expect(api_get_token).not_to have_key('token')
         end

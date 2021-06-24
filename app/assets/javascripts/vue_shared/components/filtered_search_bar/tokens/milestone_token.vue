@@ -9,6 +9,7 @@ import { debounce } from 'lodash';
 
 import createFlash from '~/flash';
 import { __ } from '~/locale';
+import { sortMilestonesByDueDate } from '~/milestones/milestone_utils';
 
 import { DEFAULT_MILESTONES, DEBOUNCE_DELAY } from '../constants';
 import { stripQuotes } from '../filtered_search_utils';
@@ -63,7 +64,7 @@ export default {
       this.config
         .fetchMilestones(searchTerm)
         .then(({ data }) => {
-          this.milestones = data;
+          this.milestones = data.sort(sortMilestonesByDueDate);
         })
         .catch(() => createFlash({ message: __('There was a problem fetching milestones.') }))
         .finally(() => {

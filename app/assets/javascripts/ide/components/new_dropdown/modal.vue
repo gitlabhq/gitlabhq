@@ -61,9 +61,6 @@ export default {
             message: sprintf(s__('The name "%{name}" is already taken in this directory.'), {
               name: this.entryName,
             }),
-            type: 'alert',
-            parent: document,
-            actionConfig: null,
             fadeTransition: false,
             addBodyClass: true,
           });

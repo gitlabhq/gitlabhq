@@ -40,10 +40,6 @@ export const createTempEntry = (
       message: sprintf(__('The name "%{name}" is already taken in this directory.'), {
         name: name.split('/').pop(),
       }),
-
-      type: 'alert',
-      parent: document,
-      actionConfig: null,
       fadeTransition: false,
       addBodyClass: true,
     });
@@ -287,9 +283,6 @@ export const getBranchData = ({ commit, state }, { projectId, branchId, force = 
           } else {
             createFlash({
               message: __('Error loading branch data. Please try again.'),
-              type: 'alert',
-              parent: document,
-              actionConfig: null,
               fadeTransition: false,
               addBodyClass: true,
             });

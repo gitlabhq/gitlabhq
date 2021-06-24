@@ -43,14 +43,22 @@ export default {
   },
   mounted() {
     this.tiptapEditor.on('selectionUpdate', ({ editor }) => {
-      const { href } = editor.getAttributes(linkContentType);
+      const { 'data-canonical-src': canonicalSrc, href } = editor.getAttributes(linkContentType);
 
-      this.linkHref = href;
+      this.linkHref = canonicalSrc || href;
     });
   },
   methods: {
     updateLink() {
-      this.tiptapEditor.chain().focus().unsetLink().setLink({ href: this.linkHref }).run();
+      this.tiptapEditor
+        .chain()
+        .focus()
+        .unsetLink()
+        .setLink({
+          href: this.linkHref,
+          'data-canonical-src': this.linkHref,
+        })
+        .run();
 
       this.$emit('execute', { contentType: linkContentType });
     },

@@ -145,9 +145,6 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
       if (!data.short_id) {
         createFlash({
           message: data.message,
-          type: 'alert',
-          parent: document,
-          actionConfig: null,
           fadeTransition: false,
           addBodyClass: true,
         });

@@ -222,7 +222,6 @@ export default {
           );
           createFlash({
             message: msg,
-            type: 'alert',
             parent: this.$el,
           });
           this.$refs.noteForm.note = noteText;

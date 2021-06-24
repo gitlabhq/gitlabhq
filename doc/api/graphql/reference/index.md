@@ -7589,7 +7589,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cijobrefpath"></a>`refPath` | [`String`](#string) | Path to the ref. |
 | <a id="cijobretryable"></a>`retryable` | [`Boolean!`](#boolean) | Indicates the job can be retried. |
 | <a id="cijobscheduledat"></a>`scheduledAt` | [`Time`](#time) | Schedule for the build. |
-| <a id="cijobschedulingtype"></a>`schedulingType` | [`String`](#string) | Type of pipeline scheduling. Value is `dag` if the pipeline uses the `needs` keyword, and `stage` otherwise. |
+| <a id="cijobschedulingtype"></a>`schedulingType` | [`String`](#string) | Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise. |
 | <a id="cijobshortsha"></a>`shortSha` | [`String!`](#string) | Short SHA1 ID of the commit. |
 | <a id="cijobstage"></a>`stage` | [`CiStage`](#cistage) | Stage of the job. |
 | <a id="cijobstartedat"></a>`startedAt` | [`Time`](#time) | When the job was started. |

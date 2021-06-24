@@ -68,6 +68,7 @@ RSpec.describe 'Project > Settings > Access Tokens', :js do
       expect(active_project_access_tokens).to have_text('In')
       expect(active_project_access_tokens).to have_text('api')
       expect(active_project_access_tokens).to have_text('read_api')
+      expect(active_project_access_tokens).to have_text('Maintainer')
       expect(created_project_access_token).not_to be_empty
     end
 

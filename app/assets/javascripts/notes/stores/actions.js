@@ -381,7 +381,6 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       .catch(() => {
         createFlash({
           message: __('Something went wrong while adding your award. Please try again.'),
-          type: 'alert',
           parent: noteData.flashContainer,
         });
       })
@@ -423,7 +422,6 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
         });
         createFlash({
           message: errorMsg,
-          type: 'alert',
           parent: noteData.flashContainer,
         });
         return { ...data, hasFlash: true };
@@ -627,7 +625,6 @@ export const submitSuggestion = (
 
       createFlash({
         message: __(flashMessage),
-        type: 'alert',
         parent: flashContainer,
       });
     })
@@ -664,7 +661,6 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { flashContai
 
       createFlash({
         message: __(flashMessage),
-        type: 'alert',
         parent: flashContainer,
       });
     })

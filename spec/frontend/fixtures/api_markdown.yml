@@ -14,6 +14,18 @@
   markdown: '---'
 - name: link
   markdown: '[GitLab](https://gitlab.com)'
+- name: attachment_link
+  context: project_wiki
+  markdown: '[test-file](test-file.zip)'
+- name: attachment_link
+  context: project
+  markdown: '[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)'
+- name: attachment_link
+  context: group_wiki
+  markdown: '[test-file](test-file.zip)'
+- name: attachment_link
+  context: group
+  markdown: '[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)'
 - name: code_block
   markdown: |-
     ```javascript

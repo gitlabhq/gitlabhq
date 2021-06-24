@@ -36,9 +36,6 @@ export const getMergeRequestsForBranch = (
     .catch((e) => {
       createFlash({
         message: __(`Error fetching merge requests for ${branchId}`),
-        type: 'alert',
-        parent: document,
-        actionConfig: null,
         fadeTransition: false,
         addBodyClass: true,
       });

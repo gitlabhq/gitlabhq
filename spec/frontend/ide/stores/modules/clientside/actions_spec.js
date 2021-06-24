@@ -5,7 +5,7 @@ import * as actions from '~/ide/stores/modules/clientside/actions';
 import axios from '~/lib/utils/axios_utils';
 
 const TEST_PROJECT_URL = `${TEST_HOST}/lorem/ipsum`;
-const TEST_USAGE_URL = `${TEST_PROJECT_URL}/usage_ping/web_ide_clientside_preview`;
+const TEST_USAGE_URL = `${TEST_PROJECT_URL}/service_ping/web_ide_clientside_preview`;
 
 describe('IDE store module clientside actions', () => {
   let rootGetters;

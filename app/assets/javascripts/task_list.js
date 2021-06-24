@@ -24,7 +24,6 @@ export default class TaskList {
 
         return createFlash({
           message: errorMessages || __('Update failed'),
-          type: 'alert',
         });
       };
 

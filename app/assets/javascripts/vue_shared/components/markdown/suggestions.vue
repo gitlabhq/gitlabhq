@@ -81,7 +81,6 @@ export default {
       if (this.lineType === 'old') {
         createFlash({
           message: __('Unable to apply suggestions to a deleted line.'),
-          type: 'alert',
           parent: this.$el,
         });
       }

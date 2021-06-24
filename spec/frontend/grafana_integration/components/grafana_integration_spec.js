@@ -114,7 +114,6 @@ describe('grafana integration component', () => {
           .then(() =>
             expect(createFlash).toHaveBeenCalledWith({
               message: `There was an error saving your changes. ${message}`,
-              type: 'alert',
             }),
           );
       });

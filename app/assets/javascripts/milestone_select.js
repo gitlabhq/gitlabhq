@@ -7,6 +7,7 @@ import { template, escape } from 'lodash';
 import Api from '~/api';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { __, sprintf } from '~/locale';
+import { sortMilestonesByDueDate } from '~/milestones/milestone_utils';
 import boardsStore, {
   boardStoreIssueSet,
   boardStoreIssueDelete,
@@ -93,21 +94,7 @@ export default class MilestoneSelect {
                   // Public API includes `title` instead of `name`.
                   name: m.title,
                 }))
-                .sort((mA, mB) => {
-                  const dueDateA = mA.due_date ? parsePikadayDate(mA.due_date) : null;
-                  const dueDateB = mB.due_date ? parsePikadayDate(mB.due_date) : null;
-
-                  // Move all expired milestones to the bottom.
-                  if (mA.expired) return 1;
-                  if (mB.expired) return -1;
-
-                  // Move milestones without due dates just above expired milestones.
-                  if (!dueDateA) return 1;
-                  if (!dueDateB) return -1;
-
-                  // Sort by due date in ascending order.
-                  return dueDateA - dueDateB;
-                }),
+                .sort(sortMilestonesByDueDate),
             )
             .then((data) => {
               const extraOptions = [];

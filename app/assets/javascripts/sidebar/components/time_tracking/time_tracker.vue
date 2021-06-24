@@ -108,7 +108,7 @@ export default {
   },
   computed: {
     isTimeTrackingInfoLoading() {
-      return this.$apollo?.queries.issuableTimeTracking.loading ?? false;
+      return this.$apollo?.queries.issuableTimeTracking?.loading ?? false;
     },
     timeEstimate() {
       return this.timeTracking?.timeEstimate || 0;

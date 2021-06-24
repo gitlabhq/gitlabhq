@@ -48,7 +48,6 @@ export const receiveSettingsError = ({ commit }, { response = {} }) => {
 
   createFlash({
     message: `${__('There was an error saving your changes.')} ${message}`,
-    type: 'alert',
   });
   commit(types.UPDATE_SETTINGS_LOADING, false);
 };

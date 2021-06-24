@@ -8055,9 +8055,6 @@ msgstr ""
 msgid "ComplianceFrameworks|Add framework"
 msgstr ""
 
-msgid "ComplianceFrameworks|All"
-msgstr ""
-
 msgid "ComplianceFrameworks|Combines with the CI configuration at runtime."
 msgstr ""
 
@@ -8092,9 +8089,6 @@ msgid "ComplianceFrameworks|Invalid format: it should follow the format [PATH].y
 msgstr ""
 
 msgid "ComplianceFrameworks|Once a compliance framework is added it will appear here."
-msgstr ""
-
-msgid "ComplianceFrameworks|Regulated"
 msgstr ""
 
 msgid "ComplianceFrameworks|There are no compliance frameworks set up yet"

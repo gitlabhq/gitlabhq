@@ -320,7 +320,6 @@ export default {
               const msg = __('Something went wrong while editing your comment. Please try again.');
               createFlash({
                 message: msg,
-                type: 'alert',
                 parent: this.$el,
               });
               this.recoverNoteContent(noteText);

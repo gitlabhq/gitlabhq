@@ -54,9 +54,13 @@ module Projects
       end
 
       def set_index_vars
+        # Loading project members so that we can fetch access level of the bot
+        # user in the project without multiple queries.
+        @project.project_members.load
+
         @scopes = Gitlab::Auth.resource_bot_scopes
-        @active_project_access_tokens = finder(state: 'active').execute
-        @inactive_project_access_tokens = finder(state: 'inactive', sort: 'expires_at_asc').execute
+        @active_project_access_tokens = finder(state: 'active').execute.preload_users
+        @inactive_project_access_tokens = finder(state: 'inactive', sort: 'expires_at_asc').execute.preload_users
         @new_project_access_token = PersonalAccessToken.redis_getdel(key_identity)
       end
 

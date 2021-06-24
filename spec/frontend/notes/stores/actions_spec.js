@@ -927,7 +927,6 @@ describe('Actions Notes Store', () => {
             expect(resp.hasFlash).toBe(true);
             expect(createFlash).toHaveBeenCalledWith({
               message: 'Your comment could not be submitted because something went wrong',
-              type: 'alert',
               parent: flashContainer,
             });
           })
@@ -1011,7 +1010,6 @@ describe('Actions Notes Store', () => {
         expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
         expect(createFlash).toHaveBeenCalledWith({
           message: TEST_ERROR_MESSAGE,
-          type: 'alert',
           parent: flashContainer,
         });
       });
@@ -1030,7 +1028,6 @@ describe('Actions Notes Store', () => {
         expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
         expect(createFlash).toHaveBeenCalledWith({
           message: 'Something went wrong while applying the suggestion. Please try again.',
-          type: 'alert',
           parent: flashContainer,
         });
       });
@@ -1104,7 +1101,6 @@ describe('Actions Notes Store', () => {
         expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
         expect(createFlash).toHaveBeenCalledWith({
           message: TEST_ERROR_MESSAGE,
-          type: 'alert',
           parent: flashContainer,
         });
       });
@@ -1127,7 +1123,6 @@ describe('Actions Notes Store', () => {
         expect(createFlash).toHaveBeenCalledWith({
           message:
             'Something went wrong while applying the batch of suggestions. Please try again.',
-          type: 'alert',
           parent: flashContainer,
         });
       });

@@ -3,11 +3,15 @@ import { loadMarkdownApiExamples, loadMarkdownApiResult } from './markdown_proce
 
 describe('markdown processing', () => {
   // Ensure we generate same markdown that was provided to Markdown API.
-  it.each(loadMarkdownApiExamples())('correctly handles %s', async (testName, markdown) => {
-    const { html } = loadMarkdownApiResult(testName);
-    const contentEditor = createContentEditor({ renderMarkdown: () => html });
-    await contentEditor.setSerializedContent(markdown);
+  it.each(loadMarkdownApiExamples())(
+    'correctly handles %s (context: %s)',
+    async (name, context, markdown) => {
+      const testName = context ? `${context}_${name}` : name;
+      const { html, body } = loadMarkdownApiResult(testName);
+      const contentEditor = createContentEditor({ renderMarkdown: () => html || body });
+      await contentEditor.setSerializedContent(markdown);
 
-    expect(contentEditor.getSerializedContent()).toBe(markdown);
-  });
+      expect(contentEditor.getSerializedContent()).toBe(markdown);
+    },
+  );
 });
