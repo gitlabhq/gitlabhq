@@ -22830,6 +22830,8 @@ CREATE UNIQUE INDEX index_ci_builds_on_token ON ci_builds USING btree (token);
 
 CREATE UNIQUE INDEX index_ci_builds_on_token_encrypted ON ci_builds USING btree (token_encrypted) WHERE (token_encrypted IS NOT NULL);
 
+CREATE UNIQUE INDEX index_ci_builds_on_token_partial ON ci_builds USING btree (token) WHERE (token IS NOT NULL);
+
 CREATE INDEX index_ci_builds_on_updated_at ON ci_builds USING btree (updated_at);
 
 CREATE INDEX index_ci_builds_on_upstream_pipeline_id ON ci_builds USING btree (upstream_pipeline_id) WHERE (upstream_pipeline_id IS NOT NULL);

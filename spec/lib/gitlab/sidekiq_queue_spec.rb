@@ -31,7 +31,7 @@ RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues do
 
       context 'when the queue is not processed in time' do
         before do
-          allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(1, 2, 12)
+          allow(sidekiq_queue).to receive(:monotonic_time).and_return(1, 2, 12)
         end
 
         it 'returns a non-completion flag, the number of jobs deleted, and the remaining queue size' do

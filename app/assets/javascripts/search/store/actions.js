@@ -6,7 +6,7 @@ import * as types from './mutation_types';
 
 export const fetchGroups = ({ commit }, search) => {
   commit(types.REQUEST_GROUPS);
-  Api.groups(search)
+  Api.groups(search, { order_by: 'similarity' })
     .then((data) => {
       commit(types.RECEIVE_GROUPS_SUCCESS, data);
     })
