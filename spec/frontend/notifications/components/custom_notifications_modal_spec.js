@@ -177,11 +177,8 @@ describe('CustomNotificationsModal', () => {
 
         await waitForPromises();
 
-        expect(
-          mockToastShow,
-        ).toHaveBeenCalledWith(
+        expect(mockToastShow).toHaveBeenCalledWith(
           'An error occurred while loading the notification settings. Please try again.',
-          { type: 'error' },
         );
       });
     });
@@ -255,11 +252,8 @@ describe('CustomNotificationsModal', () => {
 
         await waitForPromises();
 
-        expect(
-          mockToastShow,
-        ).toHaveBeenCalledWith(
+        expect(mockToastShow).toHaveBeenCalledWith(
           'An error occurred while updating the notification settings. Please try again.',
-          { type: 'error' },
         );
       });
     });

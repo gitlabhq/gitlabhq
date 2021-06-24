@@ -321,9 +321,7 @@ describe('Settings Form', () => {
         await waitForPromises();
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE, {
-          type: 'success',
-        });
+        expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE);
       });
 
       describe('when submit fails', () => {
@@ -339,9 +337,7 @@ describe('Settings Form', () => {
             await waitForPromises();
             await wrapper.vm.$nextTick();
 
-            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('foo', {
-              type: 'error',
-            });
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('foo');
           });
         });
 
@@ -355,9 +351,7 @@ describe('Settings Form', () => {
             await waitForPromises();
             await wrapper.vm.$nextTick();
 
-            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_ERROR_MESSAGE, {
-              type: 'error',
-            });
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_ERROR_MESSAGE);
           });
 
           it('parses the error messages', async () => {

@@ -908,13 +908,12 @@
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@29.38.1":
-  version "29.38.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-29.38.1.tgz#93ab2ad7cb8008b3050599b452b626c109630e97"
-  integrity sha512-5sKdbZI9Q9S7KW3/ybN40tFS/KInm76cog8O0SMe2Ne026ZZ18CAHEMvkfoVXTN3XMkWZnMlk92s8f/WqM5//A==
+"@gitlab/ui@30.0.0":
+  version "30.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-30.0.0.tgz#1f7c4bb2dfa1a987f5673f865384ebcbbe3d7a3e"
+  integrity sha512-+o8t4TVm8MOV6llX6zq9HKuggRWKuPDZfbmjptNJA0CwW3IGPV/WcgFuSozHW8x2lxE0ZfrD7vMwI0dfTwghwQ==
   dependencies:
     "@babel/standalone" "^7.0.0"
-    "@gitlab/vue-toasted" "^1.3.0"
     bootstrap-vue "2.18.1"
     copy-to-clipboard "^3.0.8"
     dompurify "^2.2.9"
@@ -931,11 +930,6 @@
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.6.1.tgz#0d8f3ff9f51b05f7c80b9a107727703d48997e4e"
   integrity sha512-vY8K1igwZFoEOmU0h4E7XTLlilsQ4ylPr27O01UsSe6ZTKi6oEMREsRAEpNIUgRlxUARCsf+Opp4pgSFzFkFcw==
-
-"@gitlab/vue-toasted@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/vue-toasted/-/vue-toasted-1.3.0.tgz#f21550d4ce406ee5f99447a02abf36250ecc922d"
-  integrity sha512-xexu7YbbIkQS5FDqPaewrOTQ4/myth5VyU8+hWZ+Tj1e5CuAlDNha3dHbvwyLW8/2flm/2mfslFNPAX2DRe8ZQ==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"

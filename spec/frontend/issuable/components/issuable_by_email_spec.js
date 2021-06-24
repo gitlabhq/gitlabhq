@@ -154,10 +154,7 @@ describe('IssuableByEmail', () => {
 
         await clickResetEmail();
 
-        expect(mockToastShow).toHaveBeenCalledWith(
-          'There was an error when reseting email token.',
-          { type: 'error' },
-        );
+        expect(mockToastShow).toHaveBeenCalledWith('There was an error when reseting email token.');
         expect(findFormInputGroup().props('value')).toBe('user@gitlab.com');
       });
     });

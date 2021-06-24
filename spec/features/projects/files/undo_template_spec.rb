@@ -47,11 +47,11 @@ end
 
 def check_undo_button_display
   expect(page).to have_content('template applied')
-  expect(page).to have_css('.toasted-container')
+  expect(page).to have_css('.b-toaster')
 end
 
 def check_content_reverted(template_content)
-  find('.toasted-container a', text: 'Undo').click
+  find('.b-toaster a', text: 'Undo').click
   expect(page).not_to have_content(template_content)
   expect(page).to have_css('.template-type-selector .dropdown-toggle-text')
 end

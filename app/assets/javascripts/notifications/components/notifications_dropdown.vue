@@ -104,7 +104,7 @@ export default {
         this.selectedNotificationLevel = level;
         this.openNotificationsModal();
       } catch (error) {
-        this.$toast.show(this.$options.i18n.updateNotificationLevelErrorMessage, { type: 'error' });
+        this.$toast.show(this.$options.i18n.updateNotificationLevelErrorMessage);
       } finally {
         this.isLoading = false;
       }

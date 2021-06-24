@@ -11,7 +11,7 @@ exports[`TerraformInstallation renders all the messages 1`] = `
   <code-instruction-stub
     copytext="Copy Terraform Command"
     instruction="module \\"Test/system-22\\" {
-  source = \\"foo/Test/system-22\\"
+  source = \\"bar.dev/foo/Test/system-22\\"
   version = \\"0.1\\"
 }"
     label="Copy and paste into your Terraform configuration, insert the variables, and run Terraform init:"
@@ -28,7 +28,7 @@ exports[`TerraformInstallation renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy Terraform Setup Command"
-    instruction="credentials \\"gitlab.com\\" {
+    instruction="credentials \\"bar.dev\\" {
   token = \\"<TOKEN>\\"
 }"
     label="To authorize access to the Terraform registry:"

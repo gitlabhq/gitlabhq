@@ -23,6 +23,7 @@ gitlab:
         memory: 1500M
     persistence:
       size: 10G
+      storageClass: ssd
   gitlab-exporter:
     enabled: false
   mailroom:

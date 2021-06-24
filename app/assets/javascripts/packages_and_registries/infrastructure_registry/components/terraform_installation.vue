@@ -12,16 +12,16 @@ export default {
     GlSprintf,
   },
   computed: {
-    ...mapState(['packageEntity', 'terraformHelpPath', 'projectPath']),
+    ...mapState(['packageEntity', 'terraformHelpPath', 'gitlabHost', 'projectPath']),
     provisionInstructions() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `module "${this.packageEntity.name}" {
-  source = "${this.projectPath}/${this.packageEntity.name}"
+  source = "${this.gitlabHost}/${this.projectPath}/${this.packageEntity.name}"
   version = "${this.packageEntity.version}"
 }`;
     },
     registrySetup() {
-      return `credentials "gitlab.com" {
+      return `credentials "${this.gitlabHost}" {
   token = "<TOKEN>"
 }`;
     },

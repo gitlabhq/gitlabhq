@@ -145,7 +145,7 @@ export default class FileTemplateMediator {
             text: __('Undo'),
             onClick: (e, toastObj) => {
               self.restoreFromCache();
-              toastObj.goAway(0);
+              toastObj.hide();
             },
           },
         });

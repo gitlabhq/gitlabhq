@@ -390,16 +390,15 @@ class Event < ApplicationRecord
       read_snippet: %i[personal_snippet_note? project_snippet_note?],
       read_milestone: %i[milestone?],
       read_wiki: %i[wiki_page?],
-      read_design: %i[design_note? design?]
+      read_design: %i[design_note? design?],
+      read_note: %i[note?]
     }
   end
 
   private
 
   def permission_object
-    if note?
-      note_target
-    elsif target_id.present?
+    if target_id.present?
       target
     else
       project

@@ -17027,6 +17027,9 @@ msgstr ""
 msgid "InProductMarketing|you may %{unsubscribe_link} at any time."
 msgstr ""
 
+msgid "Inactive"
+msgstr ""
+
 msgid "Incident"
 msgstr ""
 
@@ -26890,6 +26893,9 @@ msgstr ""
 msgid "Related Issues"
 msgstr ""
 
+msgid "Related feature flags"
+msgstr ""
+
 msgid "Related issues"
 msgstr ""
 
@@ -32857,6 +32863,9 @@ msgid "There was an error importing the Jira project."
 msgstr ""
 
 msgid "There was an error loading merge request approval settings."
+msgstr ""
+
+msgid "There was an error loading related feature flags"
 msgstr ""
 
 msgid "There was an error loading users activity calendar."

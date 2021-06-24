@@ -73,7 +73,7 @@ export default {
 
         this.events = this.buildEvents(events);
       } catch (error) {
-        this.$toast.show(this.$options.i18n.loadNotificationLevelErrorMessage, { type: 'error' });
+        this.$toast.show(this.$options.i18n.loadNotificationLevelErrorMessage);
       } finally {
         this.isLoading = false;
       }
@@ -93,7 +93,7 @@ export default {
 
         this.events = this.buildEvents(events);
       } catch (error) {
-        this.$toast.show(this.$options.i18n.updateNotificationLevelErrorMessage, { type: 'error' });
+        this.$toast.show(this.$options.i18n.updateNotificationLevelErrorMessage);
       }
     },
   },

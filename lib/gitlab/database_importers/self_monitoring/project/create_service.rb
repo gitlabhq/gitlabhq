@@ -118,7 +118,8 @@ module Gitlab
           end
 
           def track_event(result)
-            ::Gitlab::Tracking.event("self_monitoring", "project_created")
+            project = result[:project]
+            ::Gitlab::Tracking.event("self_monitoring", "project_created", project: project, namespace: project.namespace)
 
             success(result)
           end

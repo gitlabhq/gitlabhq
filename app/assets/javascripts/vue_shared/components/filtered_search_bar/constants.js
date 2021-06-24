@@ -10,8 +10,11 @@ export const FILTER_CURRENT = 'Current';
 export const OPERATOR_IS = '=';
 export const OPERATOR_IS_TEXT = __('is');
 export const OPERATOR_IS_NOT = '!=';
+export const OPERATOR_IS_NOT_TEXT = __('is not');
 
 export const OPERATOR_IS_ONLY = [{ value: OPERATOR_IS, description: OPERATOR_IS_TEXT }];
+export const OPERATOR_IS_NOT_ONLY = [{ value: OPERATOR_IS_NOT, description: OPERATOR_IS_NOT_TEXT }];
+export const OPERATOR_IS_AND_IS_NOT = [...OPERATOR_IS_ONLY, ...OPERATOR_IS_NOT_ONLY];
 
 export const DEFAULT_LABEL_NONE = { value: FILTER_NONE, text: __(FILTER_NONE) };
 export const DEFAULT_LABEL_ANY = { value: FILTER_ANY, text: __(FILTER_ANY) };

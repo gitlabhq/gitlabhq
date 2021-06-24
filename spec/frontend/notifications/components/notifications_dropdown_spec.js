@@ -242,11 +242,8 @@ describe('NotificationsDropdown', () => {
       await clickDropdownItemAt(1);
 
       expect(wrapper.vm.selectedNotificationLevel).toBe('global');
-      expect(
-        mockToastShow,
-      ).toHaveBeenCalledWith(
+      expect(mockToastShow).toHaveBeenCalledWith(
         'An error occurred while updating the notification settings. Please try again.',
-        { type: 'error' },
       );
     });
 

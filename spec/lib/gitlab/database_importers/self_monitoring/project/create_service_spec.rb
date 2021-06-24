@@ -86,10 +86,10 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
       end
 
       it "tracks successful install" do
-        expect(::Gitlab::Tracking).to receive(:event).twice
-        expect(::Gitlab::Tracking).to receive(:event).with('self_monitoring', 'project_created')
+        expect(::Gitlab::Tracking).to receive(:event).with("instance_administrators_group", "group_created", namespace: project.namespace)
+        expect(::Gitlab::Tracking).to receive(:event).with('self_monitoring', 'project_created', project: project, namespace: project.namespace)
 
-        result
+        subject.execute
       end
 
       it 'creates group' do

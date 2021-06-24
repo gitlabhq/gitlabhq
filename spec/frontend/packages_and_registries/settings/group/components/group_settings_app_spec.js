@@ -244,9 +244,7 @@ describe('Group Settings App', () => {
 
         await waitForPromises();
 
-        expect(show).toHaveBeenCalledWith(SUCCESS_UPDATING_SETTINGS, {
-          type: 'success',
-        });
+        expect(show).toHaveBeenCalledWith(SUCCESS_UPDATING_SETTINGS);
       });
 
       it('has an optimistic response', async () => {
