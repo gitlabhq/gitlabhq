@@ -31,7 +31,7 @@ sent to the primary (unless necessary), the primary (`db3`) hardly has any load.
 
 ## Requirements
 
-For load balancing to work you will need at least PostgreSQL 11 or newer,
+For load balancing to work, you need at least PostgreSQL 11 or newer,
 [**MySQL is not supported**](../install/requirements.md#database). You also need to make sure that you have
 at least 1 secondary in [hot standby](https://www.postgresql.org/docs/11/hot-standby.html) mode.
 
@@ -42,7 +42,7 @@ you should put a load balancer in front of every database, and have GitLab conne
 to those load balancers.
 
 For example, say you have a primary (`db1.gitlab.com`) and two secondaries,
-`db2.gitlab.com` and `db3.gitlab.com`. For this setup you will need to have 3
+`db2.gitlab.com` and `db3.gitlab.com`. For this setup, you need to have 3
 load balancers, one for every host. For example:
 
 - `primary.gitlab.com` forwards to `db1.gitlab.com`
@@ -56,7 +56,7 @@ means forwarding should now happen as follows:
 - `secondary1.gitlab.com` forwards to `db1.gitlab.com`
 - `secondary2.gitlab.com` forwards to `db3.gitlab.com`
 
-GitLab does not take care of this for you, so you will need to do so yourself.
+GitLab does not take care of this for you, so you need to do so yourself.
 
 Finally, load balancing requires that GitLab can connect to all hosts using the
 same credentials and port as configured in the
@@ -72,7 +72,7 @@ different ports or credentials for different hosts is not supported.
 ## Enabling load balancing
 
 For the environment in which you want to use load balancing, you'll need to add
-the following. This will balance the load between `host1.example.com` and
+the following. This balances the load between `host1.example.com` and
 `host2.example.com`.
 
 **In Omnibus installations:**
@@ -176,15 +176,15 @@ The following options can be set:
 | `disconnect_timeout` | The time in seconds after which an old connection is closed, after the list of hosts was updated. | 120       |
 | `use_tcp`            | Lookup DNS resources using TCP instead of UDP                                                     | false     |
 
-If `record_type` is set to `SRV`, GitLab will continue to use a round-robin algorithm
-and will ignore the `weight` and `priority` in the record. Since SRV records usually
-return hostnames instead of IPs, GitLab will look for the IPs of returned hostnames
+If `record_type` is set to `SRV`, then GitLab continues to use round-robin algorithm
+and ignores the `weight` and `priority` in the record. Since SRV records usually
+return hostnames instead of IPs, GitLab needs to look for the IPs of returned hostnames
 in the additional section of the SRV response. If no IP is found for a hostname, GitLab
-will query the configured `nameserver` for ANY record for each such hostname looking for A or AAAA
+needs to query the configured `nameserver` for ANY record for each such hostname looking for A or AAAA
 records, eventually dropping this hostname from rotation if it can't resolve its IP.
 
 The `interval` value specifies the _minimum_ time between checks. If the A
-record has a TTL greater than this value, then service discovery will honor said
+record has a TTL greater than this value, then service discovery honors said
 TTL. For example, if the TTL of the A record is 90 seconds, then service
 discovery waits at least 90 seconds before checking the A record again.
 

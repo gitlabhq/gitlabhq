@@ -24290,6 +24290,9 @@ msgstr ""
 msgid "Please complete your profile with email address"
 msgstr ""
 
+msgid "Please confirm your email address"
+msgstr ""
+
 msgid "Please contact an admin to register runners."
 msgstr ""
 
@@ -33893,6 +33896,9 @@ msgid "To connect GitHub repositories, you first need to authorize GitLab to acc
 msgstr ""
 
 msgid "To connect an SVN repository, check out %{svn_link}."
+msgstr ""
+
+msgid "To continue, you need to select the link in the confirmation email we sent to verify your email address. If you didn't get our email, select %{strongStart}Resend confirmation email.%{strongEnd}"
 msgstr ""
 
 msgid "To define internal users, first enable new users set to external"

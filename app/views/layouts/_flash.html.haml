@@ -4,6 +4,8 @@
   - flash.each do |key, value|
     - if key == 'toast' && value
       .js-toast-message{ data: { message: value } }
+    - elsif value == I18n.t('devise.failure.unconfirmed')
+      = render 'shared/confirm_your_email_alert'
     - elsif value
       %div{ class: "flash-#{key} mb-2" }
         = sprite_icon(icons[key], css_class: 'align-middle mr-1') unless icons[key].nil?
