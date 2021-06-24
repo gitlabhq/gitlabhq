@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.0.1 (2021-06-24)
+
+### Fixed (3 changes)
+
+- [Remove add button from Devops Adoption](gitlab-org/gitlab@1c60bdf5daf64f10f001eeb5134f08a53a148d90) ([merge request](gitlab-org/gitlab!64764)) **GitLab Enterprise Edition**
+- [DevOps Adoption - ensure displayNamespaceId is included](gitlab-org/gitlab@9eb7cd5212cfc19f4cd6578c8e4afc7b4da27eab) ([merge request](gitlab-org/gitlab!64764)) **GitLab Enterprise Edition**
+- [Add Helm-2to3.gitlab-ci.yml to Auto DevOps](gitlab-org/gitlab@61ac7f46b06fcf151be62407dc0837a44843800e) ([merge request](gitlab-org/gitlab!64764))
+
 ## 14.0.0 (2021-06-21)
 
 ### Added (116 changes)
