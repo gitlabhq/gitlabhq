@@ -81,6 +81,7 @@ RSpec.describe API::SystemHooks do
       expect(json_response['push_events']).to be false
       expect(json_response['tag_push_events']).to be false
       expect(json_response['merge_requests_events']).to be false
+      expect(json_response['repository_update_events']).to be true
     end
 
     it 'sets explicit values for events' do
@@ -92,7 +93,8 @@ RSpec.describe API::SystemHooks do
           enable_ssl_verification: false,
           push_events: true,
           tag_push_events: true,
-          merge_requests_events: true
+          merge_requests_events: true,
+          repository_update_events: false
         }
 
       expect(response).to have_gitlab_http_status(:created)
@@ -100,6 +102,7 @@ RSpec.describe API::SystemHooks do
       expect(json_response['push_events']).to be true
       expect(json_response['tag_push_events']).to be true
       expect(json_response['merge_requests_events']).to be true
+      expect(json_response['repository_update_events']).to be false
     end
   end
 

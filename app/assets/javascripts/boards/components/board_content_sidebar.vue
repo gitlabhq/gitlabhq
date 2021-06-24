@@ -79,7 +79,7 @@ export default {
       v-if="showSidebar"
       v-bind="$attrs"
       :open="isSidebarOpen"
-      class="gl-absolute"
+      class="boards-sidebar gl-absolute"
       @close="handleClose"
     >
       <template #header>{{ __('Issue details') }}</template>
