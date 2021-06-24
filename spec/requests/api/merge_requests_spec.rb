@@ -1190,8 +1190,6 @@ RSpec.describe API::MergeRequests do
       expect(json_response['work_in_progress']).to be false
       expect(json_response['merge_when_pipeline_succeeds']).to be_falsy
       expect(json_response['merge_status']).to eq('can_be_merged')
-      expect(json_response['should_close_merge_request']).to be_falsy
-      expect(json_response['force_close_merge_request']).to be_falsy
       expect(json_response['changes_count']).to eq(merge_request.merge_request_diff.real_size)
       expect(json_response['merge_error']).to eq(merge_request.merge_error)
       expect(json_response['user']['can_merge']).to be_truthy

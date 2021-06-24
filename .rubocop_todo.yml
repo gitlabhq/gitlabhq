@@ -440,7 +440,7 @@ Rails/ApplicationController:
     - 'app/controllers/health_controller.rb'
     - 'app/controllers/metrics_controller.rb'
     - 'ee/app/controllers/oauth/geo_auth_controller.rb'
-    - 'ee/spec/helpers/ee/services_helper_spec.rb'
+    - 'ee/spec/helpers/ee/integrations_helper_spec.rb'
     - 'lib/gitlab/base_doorkeeper_controller.rb'
     - 'lib/gitlab/request_forgery_protection.rb'
     - 'spec/controllers/concerns/continue_params_spec.rb'

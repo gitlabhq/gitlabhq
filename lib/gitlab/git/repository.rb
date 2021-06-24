@@ -370,6 +370,20 @@ module Gitlab
         end
       end
 
+      # List blobs reachable via a set of revisions. Supports the
+      # pseudo-revisions `--not` and `--all`. Uses the minimum of
+      # GitalyClient.medium_timeout and dynamic timeout if the dynamic
+      # timeout is set, otherwise it'll always use the medium timeout.
+      def blobs(revisions, dynamic_timeout: nil)
+        revisions = revisions.reject { |rev| rev.blank? || rev == ::Gitlab::Git::BLANK_SHA }
+
+        return [] if revisions.blank?
+
+        wrapped_gitaly_errors do
+          gitaly_blob_client.list_blobs(revisions, limit: REV_LIST_COMMIT_LIMIT, dynamic_timeout: dynamic_timeout)
+        end
+      end
+
       def count_commits(options)
         options = process_count_commits_options(options.dup)
 

@@ -15,14 +15,15 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
 
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
+    let_it_be(:sha) { nil }
 
     subject(:response) do
       resolve(described_class,
-              args: { project_path: project.full_path, content: content },
+              args: { project_path: project.full_path, content: content, sha: sha },
               ctx:  { current_user: user })
     end
 
-    context 'with a valid .gitlab-ci.yml' do
+    shared_examples 'a valid config file' do
       let(:fake_result) do
         ::Gitlab::Ci::Lint::Result.new(
           merged_yaml: content,
@@ -37,9 +38,22 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
       end
 
       it 'lints the ci config file and returns the merged yaml file' do
-        expect(response[:merged_yaml]).to eq(content)
         expect(response[:status]).to eq(:valid)
+        expect(response[:merged_yaml]).to eq(content)
         expect(response[:errors]).to be_empty
+        expect(::Gitlab::Ci::Lint).to have_received(:new).with(current_user: user, project: project, sha: sha)
+      end
+    end
+
+    context 'with a valid .gitlab-ci.yml' do
+      context 'with a sha' do
+        let(:sha) { '1231231' }
+
+        it_behaves_like 'a valid config file'
+      end
+
+      context 'without a sha' do
+        it_behaves_like 'a valid config file'
       end
     end
 

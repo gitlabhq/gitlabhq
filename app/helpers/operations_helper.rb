@@ -2,6 +2,7 @@
 
 module OperationsHelper
   include Gitlab::Utils::StrongMemoize
+  include IntegrationsHelper
 
   def prometheus_integration
     strong_memoize(:prometheus_integration) do

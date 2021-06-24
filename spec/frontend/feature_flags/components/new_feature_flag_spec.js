@@ -81,8 +81,6 @@ describe('New feature flag form', () => {
       rolloutUserIds: '',
     };
     expect(wrapper.vm.scopes).toEqual([defaultScope]);
-
-    expect(wrapper.find(Form).props('scopes')).toContainEqual(defaultScope);
   });
 
   it('has an all users strategy by default', () => {

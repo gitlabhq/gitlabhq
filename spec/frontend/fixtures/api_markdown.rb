@@ -12,10 +12,8 @@ RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request do
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, :repository, group: group) }
 
-  let_it_be(:group_wiki) { create(:group_wiki, user: user) }
   let_it_be(:project_wiki) { create(:project_wiki, user: user) }
 
-  let(:group_wiki_page) { create(:wiki_page, wiki: group_wiki) }
   let(:project_wiki_page) { create(:wiki_page, wiki: project_wiki) }
 
   fixture_subdir = 'api/markdown'
@@ -28,7 +26,6 @@ RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request do
   end
 
   before do
-    stub_group_wikis(true)
     sign_in(user)
   end
 
@@ -55,8 +52,6 @@ RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request do
                     "/groups/#{group.full_path}/preview_markdown"
                   when 'project_wiki'
                     "/#{project.full_path}/-/wikis/#{project_wiki_page.slug}/preview_markdown"
-                  when 'group_wiki'
-                    "/groups/#{group.full_path}/-/wikis/#{group_wiki_page.slug}/preview_markdown"
                   else
                     api "/markdown"
                   end

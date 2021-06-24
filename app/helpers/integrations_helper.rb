@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module ServicesHelper
-  def service_event_description(event)
+module IntegrationsHelper
+  def integration_event_description(event)
     case event
     when "push", "push_events"
       s_("ProjectService|Trigger event for pushes to the repository.")
@@ -30,7 +30,7 @@ module ServicesHelper
     end
   end
 
-  def service_event_field_name(event)
+  def integration_event_field_name(event)
     event = event.pluralize if %w[merge_request issue confidential_issue].include?(event)
     "#{event}_events"
   end
@@ -96,8 +96,8 @@ module ServicesHelper
       enable_comments: integration.comment_on_event_enabled.to_s,
       comment_detail: integration.comment_detail,
       learn_more_path: integrations_help_page_path,
-      trigger_events: trigger_events_for_service(integration),
-      fields: fields_for_service(integration),
+      trigger_events: trigger_events_for_integration(integration),
+      fields: fields_for_integration(integration),
       inherit_from_id: integration.inherit_from_id,
       integration_level: integration_level(integration),
       editable: integration.editable?.to_s,
@@ -119,14 +119,6 @@ module ServicesHelper
     {
       integrations: integrations.map { |i| serialize_integration(i) }.to_json
     }
-  end
-
-  def trigger_events_for_service(integration)
-    ServiceEventSerializer.new(service: integration).represent(integration.configurable_events).to_json
-  end
-
-  def fields_for_service(integration)
-    ServiceFieldSerializer.new(service: integration).represent(integration.global_fields).to_json
   end
 
   def integrations_help_page_path
@@ -151,6 +143,14 @@ module ServicesHelper
   extend self
 
   private
+
+  def trigger_events_for_integration(integration)
+    ServiceEventSerializer.new(service: integration).represent(integration.configurable_events).to_json
+  end
+
+  def fields_for_integration(integration)
+    ServiceFieldSerializer.new(service: integration).represent(integration.global_fields).to_json
+  end
 
   def integration_level(integration)
     if integration.instance_level?
@@ -178,8 +178,8 @@ module ServicesHelper
   end
 end
 
-ServicesHelper.prepend_mod_with('ServicesHelper')
+IntegrationsHelper.prepend_mod_with('IntegrationsHelper')
 
-# The methods in `EE::ServicesHelper` should be available as both instance and
+# The methods in `EE::IntegrationsHelper` should be available as both instance and
 # class methods.
-ServicesHelper.extend_mod_with('ServicesHelper')
+IntegrationsHelper.extend_mod_with('IntegrationsHelper')

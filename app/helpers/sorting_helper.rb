@@ -168,19 +168,6 @@ module SortingHelper
     }
   end
 
-  def member_sort_options_hash
-    {
-      sort_value_access_level_asc  => sort_title_access_level_asc,
-      sort_value_access_level_desc => sort_title_access_level_desc,
-      sort_value_last_joined       => sort_title_last_joined,
-      sort_value_name              => sort_title_name_asc,
-      sort_value_name_desc         => sort_title_name_desc,
-      sort_value_oldest_joined     => sort_title_oldest_joined,
-      sort_value_oldest_signin     => sort_title_oldest_signin,
-      sort_value_recently_signin   => sort_title_recently_signin
-    }
-  end
-
   def sortable_item(item, path, sorted_by)
     link_to item, path, class: sorted_by == item ? 'is-active' : ''
   end

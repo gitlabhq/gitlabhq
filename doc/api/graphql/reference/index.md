@@ -52,6 +52,7 @@ Returns [`CiConfig`](#ciconfig).
 | <a id="queryciconfigcontent"></a>`content` | [`String!`](#string) | Contents of `.gitlab-ci.yml`. |
 | <a id="queryciconfigdryrun"></a>`dryRun` | [`Boolean`](#boolean) | Run pipeline creation simulation, or only do static check. |
 | <a id="queryciconfigprojectpath"></a>`projectPath` | [`ID!`](#id) | The project of the CI config. |
+| <a id="queryciconfigsha"></a>`sha` | [`String`](#string) | Sha for the pipeline. |
 
 ### `Query.containerRepository`
 

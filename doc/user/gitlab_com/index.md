@@ -118,8 +118,8 @@ the related documentation.
 GitLab.com has the following [account limits](../admin_area/settings/account_and_limit_settings.md)
 enabled. If a setting is not listed, it is set to the default value.
 
-If you are near or over the repository size limit, you can
-[reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md).
+If you are near or over the repository size limit, you can either
+[reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md) or [purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
 
 | Setting                       | GitLab.com | Default |
 |-------------------------------|------------|---------|

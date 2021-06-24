@@ -87,6 +87,10 @@ $tabs-holder-z-index: 250;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
   background: var(--white, $white);
+
+  > .mr-widget-border-top:first-of-type {
+    border-top: 0;
+  }
 }
 
 .mr-widget-body,

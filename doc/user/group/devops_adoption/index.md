@@ -87,7 +87,3 @@ To add a sub-group to your Group DevOps Adoption report:
 
 The sub-group data might not appear immediately, because GitLab requires around a minute to collect
 the data.
-
-Please note that the sub-group data might not appear immediately,
-because GitLab requires a few moments to collect the data.
-Generally the data will be visible in less than one minute.

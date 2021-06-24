@@ -107,7 +107,10 @@ module Gitlab
           batch_counter = 0
 
           model_class.each_batch(of: batch_size) do |relation, index|
-            start_id, end_id = relation.pluck(Arel.sql("MIN(#{primary_column_name}), MAX(#{primary_column_name})")).first
+            max = relation.arel_table[primary_column_name].maximum
+            min = relation.arel_table[primary_column_name].minimum
+
+            start_id, end_id = relation.pluck(min, max).first
 
             # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
             # the same time, which is not helpful in most cases where we wish to

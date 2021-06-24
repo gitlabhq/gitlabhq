@@ -137,7 +137,7 @@ describe('Group Settings App', () => {
       href: PACKAGES_DOCS_PATH,
       target: '_blank',
     });
-    expect(findLink().text()).toBe('More Information');
+    expect(findLink().text()).toBe('Learn more.');
   });
 
   it('calls the graphql API with the proper variables', () => {

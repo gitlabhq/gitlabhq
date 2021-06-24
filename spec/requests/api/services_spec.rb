@@ -338,4 +338,26 @@ RSpec.describe API::Services do
       expect(response).to have_gitlab_http_status(:ok)
     end
   end
+
+  describe 'Pipelines Email Integration' do
+    let(:service_name) { 'pipelines-email' }
+
+    context 'notify_only_broken_pipelines property was saved as a string' do
+      before do
+        project.create_pipelines_email_integration(
+          active: false,
+          properties: {
+            "notify_only_broken_pipelines": "true",
+            "branches_to_be_notified": "default"
+          }
+        )
+      end
+
+      it 'returns boolean values for notify_only_broken_pipelines' do
+        get api("/projects/#{project.id}/services/#{service_name}", user)
+
+        expect(json_response['properties']['notify_only_broken_pipelines']).to eq(true)
+      end
+    end
+  end
 end

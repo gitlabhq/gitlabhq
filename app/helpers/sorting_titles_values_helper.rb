@@ -2,14 +2,6 @@
 
 module SortingTitlesValuesHelper
   # Titles.
-  def sort_title_access_level_asc
-    s_('SortOptions|Access level, ascending')
-  end
-
-  def sort_title_access_level_desc
-    s_('SortOptions|Access level, descending')
-  end
-
   def sort_title_created_date
     s_('SortOptions|Created date')
   end
@@ -40,10 +32,6 @@ module SortingTitlesValuesHelper
 
   def sort_title_largest_repo
     s_('SortOptions|Largest repository')
-  end
-
-  def sort_title_last_joined
-    s_('SortOptions|Last joined')
   end
 
   def sort_title_latest_activity
@@ -80,10 +68,6 @@ module SortingTitlesValuesHelper
 
   def sort_title_oldest_created
     s_('SortOptions|Oldest created')
-  end
-
-  def sort_title_oldest_joined
-    s_('SortOptions|Oldest joined')
   end
 
   def sort_title_oldest_signin
@@ -167,14 +151,6 @@ module SortingTitlesValuesHelper
   end
 
   # Values.
-  def sort_value_access_level_asc
-    'access_level_asc'
-  end
-
-  def sort_value_access_level_desc
-    'access_level_desc'
-  end
-
   def sort_value_created_date
     'created_date'
   end
@@ -205,10 +181,6 @@ module SortingTitlesValuesHelper
 
   def sort_value_largest_repo
     'storage_size_desc'
-  end
-
-  def sort_value_last_joined
-    'last_joined'
   end
 
   def sort_value_latest_activity
@@ -245,10 +217,6 @@ module SortingTitlesValuesHelper
 
   def sort_value_oldest_signin
     'oldest_sign_in'
-  end
-
-  def sort_value_oldest_joined
-    'oldest_joined'
   end
 
   def sort_value_oldest_updated

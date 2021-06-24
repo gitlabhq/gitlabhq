@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe PostReceive do
   include AfterNextHelpers
-  include ServicesHelper
 
   let(:changes) { "123456 789012 refs/heads/tést\n654321 210987 refs/tags/tag" }
   let(:wrongly_encoded_changes) { changes.encode("ISO-8859-1").force_encoding("UTF-8") }
@@ -234,7 +233,7 @@ RSpec.describe PostReceive do
         end
 
         it 'calls Git::ProcessRefChangesService' do
-          expect_execution_of(Git::ProcessRefChangesService)
+          expect(Git::ProcessRefChangesService).to get_executed
 
           perform
         end
@@ -269,7 +268,7 @@ RSpec.describe PostReceive do
           allow(Gitlab::DataBuilder::Repository).to receive(:update).and_return(fake_hook_data)
           # silence hooks so we can isolate
           allow_next(Key).to receive(:post_create_hook).and_return(true)
-          expect_execution_of(Git::ProcessRefChangesService)
+          expect(Git::ProcessRefChangesService).to get_executed
         end
 
         it 'calls SystemHooksService' do

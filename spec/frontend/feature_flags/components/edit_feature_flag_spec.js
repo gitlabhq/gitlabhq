@@ -115,7 +115,7 @@ describe('Edit feature flag form', () => {
     });
 
     it('should set the version of the form from the feature flag', () => {
-      expect(wrapper.find(Form).props('version')).toBe(LEGACY_FLAG);
+      expect(wrapper.find(Form).attributes('version')).toBe(LEGACY_FLAG);
 
       mock.resetHandlers();
 
@@ -136,7 +136,7 @@ describe('Edit feature flag form', () => {
       factory();
 
       return axios.waitForAll().then(() => {
-        expect(wrapper.find(Form).props('version')).toBe(NEW_VERSION_FLAG);
+        expect(wrapper.find(Form).attributes('version')).toBe(NEW_VERSION_FLAG);
       });
     });
 

@@ -6,7 +6,7 @@ module API
     #
     # The data structures inside this model are returned using class methods,
     # allowing EE to extend them where necessary.
-    module ServicesHelpers
+    module IntegrationsHelpers
       def self.chat_notification_settings
         [
           {
@@ -159,7 +159,7 @@ module API
         ].freeze
       end
 
-      def self.services
+      def self.integrations
         {
           'asana' => [
             {
@@ -772,7 +772,7 @@ module API
         }
       end
 
-      def self.service_classes
+      def self.integration_classes
         [
           ::Integrations::Asana,
           ::Integrations::Assembla,
@@ -809,7 +809,7 @@ module API
         ]
       end
 
-      def self.development_service_classes
+      def self.development_integration_classes
         [
           ::Integrations::MockCi,
           ::Integrations::MockMonitoring
@@ -819,4 +819,4 @@ module API
   end
 end
 
-API::Helpers::ServicesHelpers.prepend_mod_with('API::Helpers::ServicesHelpers')
+API::Helpers::IntegrationsHelpers.prepend_mod_with('API::Helpers::IntegrationsHelpers')

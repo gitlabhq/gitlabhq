@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe ::JiraConnect::SyncDeploymentsWorker do
   include AfterNextHelpers
-  include ServicesHelper
 
   describe '#perform' do
     let_it_be(:deployment) { create(:deployment) }

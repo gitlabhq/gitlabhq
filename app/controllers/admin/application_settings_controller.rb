@@ -2,7 +2,7 @@
 
 class Admin::ApplicationSettingsController < Admin::ApplicationController
   include InternalRedirect
-  include ServicesHelper
+  include IntegrationsHelper
 
   # NOTE: Use @application_setting in this controller when you need to access
   # application_settings after it has been modified. This is because the

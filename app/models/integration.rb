@@ -165,9 +165,13 @@ class Integration < ApplicationRecord
 
     args.each do |arg|
       class_eval <<~RUBY, __FILE__, __LINE__ + 1
+        def #{arg}
+          Gitlab::Utils.to_boolean(properties['#{arg}'])
+        end
+
         def #{arg}?
           # '!!' is used because nil or empty string is converted to nil
-          !!ActiveRecord::Type::Boolean.new.cast(#{arg})
+          !!#{arg}
         end
       RUBY
     end
@@ -178,7 +182,7 @@ class Integration < ApplicationRecord
   end
 
   def self.event_names
-    self.supported_events.map { |event| ServicesHelper.service_event_field_name(event) }
+    self.supported_events.map { |event| IntegrationsHelper.integration_event_field_name(event) }
   end
 
   def self.supported_event_actions
@@ -194,7 +198,7 @@ class Integration < ApplicationRecord
   end
 
   def self.event_description(event)
-    ServicesHelper.service_event_description(event)
+    IntegrationsHelper.integration_event_description(event)
   end
 
   def self.find_or_create_templates
