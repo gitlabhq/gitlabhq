@@ -21,7 +21,7 @@ Prerequisite:
 
 To add a user to a project:
 
-1. Go to your project and select **Members**.
+1. Go to your project and select **Project information > Members**.
 1. On the **Invite member** tab, under **GitLab member or Email address**, type the username or email address.
    In GitLab 13.11 and later, you can [replace this form with a modal window](#add-a-member-modal-window).
 1. Select a [role](../../permissions.md). 
@@ -52,7 +52,7 @@ Prerequisite:
 
 To add groups to a project:
 
-1. Go to your project and select **Members**.
+1. Go to your project and select **Project information > Members**.
 1. On the **Invite group** tab, under **Select a group to invite**, choose a group.
 1. Select the highest max [role](../../permissions.md) for users in the group. 
 1. Optional. Choose an expiration date. On that date, the user can no longer access the project.
@@ -75,7 +75,7 @@ Prerequisite:
 
 To import users:
 
-1. Go to your project and select **Members**.
+1. Go to your project and select **Project information > Members**.
 1. On the **Invite member** tab, at the bottom of the panel, select **Import**.
 1. Select the project. You can view only the projects for which you're a maintainer.
 1. Select **Import project members**.
@@ -113,7 +113,7 @@ Prerequisite:
 
 To remove a member from a project:
 
-1. Go to your project and select **Members**.
+1. Go to your project and select **Project information > Members**.
 1. Next to the project member you want to remove, select **Remove member** **{remove}**.
 1. Optional. In the confirmation box, select the **Also unassign this user from related issues and merge requests** checkbox.
 1. Select **Remove member**.
@@ -128,7 +128,7 @@ You can filter and sort members in a project.
 
 ### Display inherited members
 
-1. Go to your project and select **Members**.
+1. Go to your project and select **Project information > Members**.
 1. In the **Filter members** box, select `Membership` `=` `Inherited`.
 1. Press Enter.
 
@@ -136,7 +136,7 @@ You can filter and sort members in a project.
 
 ### Display direct members
 
-1. Go to your project and select **Members**.
+1. Go to your project and select **Project information > Members**.
 1. In the **Filter members** box, select `Membership` `=` `Direct`.
 1. Press Enter.
 
@@ -205,7 +205,7 @@ This feature might not be available to you. Check the **version history** note a
 In GitLab 13.11, you can optionally replace the form to add a member with a modal window.
 To add a member after enabling this feature:
 
-1. Go to your project and select **Members**.
+1. Go to your project and select **Project information > Members**.
 1. Select **Invite members**.
 1. Enter an email address and select a role.
 1. Optional. Select an **Access expiration date**.

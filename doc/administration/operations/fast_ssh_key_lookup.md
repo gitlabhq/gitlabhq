@@ -104,11 +104,13 @@ In the case of lookup failures (which are common), the `authorized_keys`
 file is still scanned. So Git SSH performance would still be slow for many
 users as long as a large file exists.
 
-You can disable any more writes to the `authorized_keys` file by unchecking
-`Write to "authorized_keys" file` in the **Admin Area > Settings > Network > Performance optimization** of your GitLab
-installation.
+To disable any more writes to the `authorized_keys` file:
 
-![Write to authorized keys setting](img/write_to_authorized_keys_setting.png)
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Network**.
+1. Expand **Performance optimization**.
+1. Clear the **Write to "authorized_keys" file** checkbox.
+1. Select **Save changes**.
 
 Again, confirm that SSH is working by removing your user's SSH key in the UI,
 adding a new one, and attempting to pull a repository.

@@ -53,17 +53,16 @@ helpful:
   you can create an Auditor user and then share the credentials with those users
   to which you want to grant access.
 
-## Adding an Auditor user
+## Add an Auditor user
 
-To create a new Auditor user:
+To create an Auditor user:
 
-1. Create a new user or edit an existing one by navigating to
-   **Admin Area > Users**. The option of the access level is located in
-   the 'Access' section.
-
-   ![Admin Area Form](img/auditor_access_form.png)
-
-1. Select **Save changes** or **Create user** for the changes to take effect.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Create a new user or edit an existing one, and in the **Access** section
+   select Auditor.
+1. Select **Create user** or **Save changes** if you created a new user or
+   edited an existing one respectively.
 
 To revoke Auditor permissions from a user, make them a regular user by
 following the previous steps.

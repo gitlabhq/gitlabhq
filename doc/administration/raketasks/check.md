@@ -207,8 +207,7 @@ above.
 ### Dangling commits
 
 `gitlab:git:fsck` can find dangling commits. To fix them, try
-[manually triggering housekeeping](../housekeeping.md#manual-housekeeping)
-for the affected project(s).
+[enabling housekeeping](../housekeeping.md).
 
 If the issue persists, try triggering `gc` via the
 [Rails Console](../operations/rails_console.md#starting-a-rails-console-session):

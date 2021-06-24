@@ -27,7 +27,7 @@ This is where the group sharing feature can be of use.
 
 To share 'Project Acme' with the 'Engineering' group:
 
-1. For 'Project Acme' use the left navigation menu to go to **Members**.
+1. For 'Project Acme' use the left navigation menu to go to **Project information > Members**.
 1. Select the **Invite group** tab.
 1. Add the 'Engineering' group with the maximum access level of your choice.
 1. Optionally, select an expiring date.
@@ -59,7 +59,7 @@ In GitLab 13.11, you can optionally replace the sharing form with a modal window
 To share a project after enabling this feature:
 
 1. Go to your project's page.
-1. In the left sidebar, go to **Members**, and then select **Invite a group**.
+1. In the left sidebar, go to **Project information > Members**, and then select **Invite a group**.
 1. Select a group, and select a **Max role**.
 1. (Optional) Select an **Access expiration date**.
 1. Select **Invite**.

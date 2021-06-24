@@ -1,0 +1,151 @@
+# This is a pre-release of a Helm 2to3 migration template to facilitate
+# the migration of Auto DevOps releases to Helm 3.
+#
+# To use, set the CI variable MIGRATE_HELM_2TO3 to "true".
+# For more details, go to https://docs.gitlab.com/ee/topics/autodevops/upgrading_auto_deploy_dependencies.html#helm-v3
+
+.helm-2to3-migrate:
+  image: registry.gitlab.com/gitlab-org/cluster-integration/helm-install-image/releases/helm-2to3-2.17.0-3.5.3-kube-1.16.15-alpine-3.12
+  # NOTE: We use the deploy stage because:
+  #   - It exists in all versions of Auto DevOps.
+  #   - It is _empty_.
+  #   - It precedes any Kubernetes deployments.
+  # Users on older versions of GitLab can include this template without adjusting their stages.
+  stage: deploy
+  needs: []
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - helm-2-release-backups/
+  before_script:
+    - mkdir helm-2-release-backups
+    - apk add jq
+    - export TILLER_NAMESPACE=$KUBE_NAMESPACE
+    - export HELM_HOST="localhost:44134"
+    - nohup tiller -listen "${HELM_HOST}" >tiller.log 2>&1 &
+    - helm2 init --client-only
+  script:
+    # check for releases
+    - releases=$(helm2 ls --output json | jq -r '.Releases[].Name')
+    # back up entire namespace if the user opts into it
+    - |
+      if [[ -n "$releases" && -n "$BACKUP_HELM2_RELEASES" ]]; then
+        echo "Backing up releases"
+        kubectl get configmap -n "$KUBE_NAMESPACE" -l "OWNER=TILLER" -o yaml > "helm-2-release-backups/$KUBE_NAMESPACE.yaml"
+      fi
+    # adopt manifests from each release
+    - |
+      for release in $releases; do
+        chart=$(helm2 ls "^$release\$" --output json | jq -r '.Releases[0].Chart')
+        echo "Adopting Helm v2 manifests from $release"
+        # some resource kinds must be listed explicitly https://github.com/kubernetes/kubernetes/issues/42885
+        for name in $(kubectl -n "$KUBE_NAMESPACE" get all,ingress,daemonset -o name -l chart="$chart"); do
+          kubectl annotate --overwrite "$name" meta.helm.sh/release-name="$release"
+          kubectl annotate --overwrite "$name" meta.helm.sh/release-namespace="$KUBE_NAMESPACE"
+          kubectl label --overwrite "$name" app.kubernetes.io/managed-by=Helm
+        done
+      done
+    # migrate each release
+    - |
+      for release in $releases; do
+        echo "Migrating release: $release"
+        helm3 2to3 convert --ignore-already-migrated --release-storage configmaps --tiller-out-cluster --tiller-ns "$TILLER_NAMESPACE" "$release"
+      done
+
+.helm-2to3-cleanup:
+  image: registry.gitlab.com/gitlab-org/cluster-integration/helm-install-image/releases/helm-2to3-2.17.0-3.5.3-kube-1.16.15-alpine-3.12
+  stage: cleanup
+  environment:
+    action: prepare
+  before_script:
+    - export TILLER_NAMESPACE=$KUBE_NAMESPACE
+    - export HELM_HOST="localhost:44134"
+    - nohup tiller -listen "${HELM_HOST}" >tiller.log 2>&1 &
+    - helm2 init --client-only
+  script:
+    - helm3 2to3 cleanup --skip-confirmation --release-storage configmaps --tiller-out-cluster --tiller-ns "$TILLER_NAMESPACE"
+
+.review:
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+  rules:
+    - if: '$MIGRATE_HELM_2TO3 != "true"'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: never
+    - if: '$REVIEW_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+      when: manual
+
+review:helm-2to3:migrate:
+  extends: [.review, .helm-2to3-migrate]
+
+review:helm-2to3:cleanup:
+  extends: [.review, .helm-2to3-cleanup]
+  rules:
+    - if: '$MIGRATE_HELM_2TO3 != "true" && $CLEANUP_HELM_2TO3 == null'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: never
+    - if: '$REVIEW_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+      when: manual
+
+.staging:
+  environment:
+    name: staging
+  rules:
+    - if: '$MIGRATE_HELM_2TO3 != "true"'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
+      when: never
+    - if: '$STAGING_ENABLED'
+      when: manual
+
+staging:helm-2to3:migrate:
+  extends: [.staging, .helm-2to3-migrate]
+
+staging:helm-2to3:cleanup:
+  extends: [.staging, .helm-2to3-cleanup]
+  rules:
+    - if: '$MIGRATE_HELM_2TO3 != "true" && $CLEANUP_HELM_2TO3 == null'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
+      when: never
+    - if: '$STAGING_ENABLED'
+      when: manual
+
+.production:
+  environment:
+    name: production
+  rules:
+    - if: '$MIGRATE_HELM_2TO3 != "true"'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: manual
+
+production:helm-2to3:migrate:
+  extends: [.production, .helm-2to3-migrate]
+
+production:helm-2to3:cleanup:
+  extends: [.production, .helm-2to3-cleanup]
+  rules:
+    - if: '$MIGRATE_HELM_2TO3 != "true" && $CLEANUP_HELM_2TO3 == null'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: manual

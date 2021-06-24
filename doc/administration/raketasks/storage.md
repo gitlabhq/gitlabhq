@@ -107,12 +107,15 @@ to project IDs 50 to 100 in an Omnibus GitLab installation:
 sudo gitlab-rake gitlab:storage:migrate_to_hashed ID_FROM=50 ID_TO=100
 ```
 
-You can monitor the progress in the **Admin Area > Monitoring > Background Jobs** page.
-There is a specific queue you can watch to see how long it will take to finish:
-`hashed_storage:hashed_storage_project_migrate`.
+To monitor the progress in GitLab:
 
-After it reaches zero, you can confirm every project has been migrated by running the commands above.
-If you find it necessary, you can run this migration script again to schedule missing projects.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Monitoring > Background Jobs**.
+1. Watch how long the `hashed_storage:hashed_storage_project_migrate` queue
+   will take to finish. After it reaches zero, you can confirm every project
+   has been migrated by running the commands above.
+
+If you find it necessary, you can run the previous migration script again to schedule missing projects.
 
 Any error or warning is logged in Sidekiq's log file.
 
@@ -120,7 +123,7 @@ If [Geo](../geo/index.md) is enabled, each project that is successfully migrated
 generates an event to replicate the changes on any **secondary** nodes.
 
 You only need the `gitlab:storage:migrate_to_hashed` Rake task to migrate your repositories, but there are
-[additional commands(#list-projects-and-attachments) to help you inspect projects and attachments in both legacy and hashed storage.
+[additional commands](#list-projects-and-attachments) to help you inspect projects and attachments in both legacy and hashed storage.
 
 ## Rollback from hashed storage to legacy storage
 

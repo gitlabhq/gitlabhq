@@ -49,7 +49,7 @@ For the bot:
 
 API calls made with a project access token are associated with the corresponding bot user.
 
-These bot users are included in a project's **Members** list but cannot be modified. Also, a bot
+These bot users are included in a project's **Project information > Members** list but cannot be modified. Also, a bot
 user cannot be added to any other project.
 
 - The username is set to `project_{project_id}_bot` for the first access token, such as `project_123_bot`.

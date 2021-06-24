@@ -79,7 +79,7 @@ You can give a user access to all projects in a group.
 1. On the top bar, select **Menu > Groups**.
 1. Select **Your Groups**.
 1. Find your group and select it.
-1. From the left sidebar, select **Members**.
+1. From the left sidebar, select **Group information > Members**.
 1. Fill in the fields.
    - The role applies to all projects in the group. [Learn more about permissions](../permissions.md).
    - On the **Access expiration date**, the user can no longer access projects in the group.
@@ -118,11 +118,11 @@ You can change the owner of a group. Each group must always have at least one
 member with the [Owner role](../permissions.md#group-members-permissions).
 
 - As an administrator:
-  1. Go to the group and from the left menu, select **Members**.
+  1. Go to the group and from the left menu, select **Group information > Members**.
   1. Give a different member the **Owner** role.
   1. Refresh the page. You can now remove the **Owner** role from the original owner.
 - As the current group's owner:
-  1. Go to the group and from the left menu, select **Members**.
+  1. Go to the group and from the left menu, select **Group information > Members**.
   1. Give a different member the **Owner** role.
   1. Have the new owner sign in and remove the **Owner** role from you.
 
@@ -138,7 +138,7 @@ Prerequisites:
 To remove a member from a group:
 
 1. Go to the group.
-1. From the left menu, select **Members**.
+1. From the left menu, select **Group information > Members**.
 1. Next to the member you want to remove, select **Delete**.
 1. Optional. On the **Remove member** confirmation box, select the
   **Also unassign this user from linked issues and merge requests** checkbox.
@@ -156,7 +156,7 @@ To find members in a group, you can sort, filter, or search.
 
 Filter a group to find members. By default, all members in the group and subgroups are displayed.
 
-1. Go to the group and select **Members**.
+1. Go to the group and select **Group information > Members**.
 1. Above the list of members, in the **Filter members** box, enter filter criteria.
    - To view members in the group only, select **Membership = Direct**.
    - To view members of the group and its subgroups, select **Membership = Inherited**.
@@ -166,7 +166,7 @@ Filter a group to find members. By default, all members in the group and subgrou
 
 You can search for members by name, username, or email.
 
-1. Go to the group and select **Members**.
+1. Go to the group and select **Group information > Members**.
 1. Above the list of members, in the **Filter members** box, enter search criteria.
 1. To the right of the **Filter members** box, select the magnifying glass (**{search}**).
 
@@ -174,7 +174,7 @@ You can search for members by name, username, or email.
 
 You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in**.
 
-1. Go to the group and select **Members**.
+1. Go to the group and select **Group information > Members**.
 1. Above the list of members, on the top right, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
@@ -273,7 +273,7 @@ To share a given group, for example, `Frontend` with another group, for example,
 `Engineering`:
 
 1. Go to the `Frontend` group.
-1. From the left menu, select **Members**.
+1. From the left menu, select **Group information > Members**.
 1. Select the **Invite group** tab.
 1. In the **Select a group to invite** list, select `Engineering`.
 1. For the **Max role**, select a [role](../permissions.md).
@@ -297,7 +297,7 @@ In GitLab 13.11, you can optionally replace the sharing form with a modal window
 To share a group after enabling this feature:
 
 1. Go to your group's page.
-1. In the left sidebar, go to **Members**, and then select **Invite a group**.
+1. In the left sidebar, go to **Group information > Members**, and then select **Invite a group**.
 1. Select a group, and select a **Max role**.
 1. (Optional) Select an **Access expiration date**.
 1. Select **Invite**.
@@ -341,7 +341,7 @@ To create group links via filter:
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
-1. Go to your group's **Members** page.
+1. Go to your group's **Group information > Members** page.
 1. In the row for the user you are editing, select the pencil (**{pencil}**) icon.
 1. Select the brown **Edit permissions** button in the modal.
 

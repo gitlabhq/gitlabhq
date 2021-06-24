@@ -211,13 +211,13 @@ After you ensure that you are using OSI-approved licenses for your projects, you
 
 ###### Screenshot 1: License overview
 
-On the left sidebar, select **Project Information > Details**. Take a screenshot that includes a view of the license you've chosen for your project.
+On the left sidebar, select **Project information > Details**. Take a screenshot that includes a view of the license you've chosen for your project.
 
 ![License overview](img/license-overview.png)
 
 ###### Screenshot 2: License file
 
-Navigate to one of the license files that you uploaded. You can usually find the license file by selecting **Project Information > Details** and scanning the page for the license.
+Navigate to one of the license files that you uploaded. You can usually find the license file by selecting **Project information > Details** and scanning the page for the license.
 Make sure the screenshot includes the title of the license.
 
 ![License file](img/license-file.png)
