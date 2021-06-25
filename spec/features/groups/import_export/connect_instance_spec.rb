@@ -24,6 +24,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
       pat = 'demo-pat'
       stub_path = 'stub-group'
       total = 37
+
       stub_request(:get, "%{url}/api/v4/groups?page=1&per_page=20&top_level_only=true&min_access_level=50&search=" % { url: source_url }).to_return(
         body: [{
           id: 2595438,
@@ -32,7 +33,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
           path: stub_path,
           full_name: 'Stub',
           full_path: stub_path
-          }].to_json,
+        }].to_json,
         headers: {
           'Content-Type' => 'application/json',
           'X-Next-Page' => 2,
@@ -42,6 +43,10 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
           'X-Total-Pages' => 2
         }
       )
+
+      allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+        allow(client).to receive(:validate_instance_version!).and_return(true)
+      end
 
       expect(page).to have_content 'Import groups from another instance of GitLab'
       expect(page).to have_content 'Not all related objects are migrated'
@@ -53,6 +58,8 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
 
       expect(page).to have_content 'Showing 1-1 of %{total} groups from %{url}' % { url: source_url, total: total }
       expect(page).to have_content stub_path
+
+      wait_for_all_requests
     end
   end
 

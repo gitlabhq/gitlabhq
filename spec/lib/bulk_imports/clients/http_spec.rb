@@ -8,7 +8,15 @@ RSpec.describe BulkImports::Clients::HTTP do
   let(:uri) { 'http://gitlab.example' }
   let(:token) { 'token' }
   let(:resource) { 'resource' }
+  let(:version) { "#{BulkImport::MINIMUM_GITLAB_MAJOR_VERSION}.0.0" }
   let(:response_double) { double(code: 200, success?: true, parsed_response: {}) }
+  let(:version_response) { double(code: 200, success?: true, parsed_response: { 'version' => version }) }
+
+  before do
+    allow(Gitlab::HTTP).to receive(:get)
+      .with('http://gitlab.example:80/api/v4/version', anything)
+      .and_return(version_response)
+  end
 
   subject { described_class.new(uri: uri, token: token) }
 
@@ -21,20 +29,20 @@ RSpec.describe BulkImports::Clients::HTTP do
 
     context 'error handling' do
       context 'when error occurred' do
-        it 'raises ConnectionError' do
+        it 'raises BulkImports::Error' do
           allow(Gitlab::HTTP).to receive(method).and_raise(Errno::ECONNREFUSED)
 
-          expect { subject.public_send(method, resource) }.to raise_exception(described_class::ConnectionError)
+          expect { subject.public_send(method, resource) }.to raise_exception(BulkImports::Error)
         end
       end
 
       context 'when response is not success' do
-        it 'raises ConnectionError' do
+        it 'raises BulkImports::Error' do
           response_double = double(code: 503, success?: false)
 
           allow(Gitlab::HTTP).to receive(method).and_return(response_double)
 
-          expect { subject.public_send(method, resource) }.to raise_exception(described_class::ConnectionError)
+          expect { subject.public_send(method, resource) }.to raise_exception(BulkImports::Error)
         end
       end
     end
@@ -165,6 +173,14 @@ RSpec.describe BulkImports::Clients::HTTP do
       expect(Gitlab::HTTP).to receive(:get).with(*expected_args).and_return(response_double)
 
       subject.stream(resource)
+    end
+  end
+
+  context 'when source instance is incompatible' do
+    let(:version) { '13.0.0' }
+
+    it 'raises an error' do
+      expect { subject.get(resource) }.to raise_error(::BulkImports::Error, "Unsupported GitLab Version. Minimum Supported Gitlab Version #{BulkImport::MINIMUM_GITLAB_MAJOR_VERSION}.")
     end
   end
 end

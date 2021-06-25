@@ -7,14 +7,13 @@ module BulkImports
       DEFAULT_PAGE = 1
       DEFAULT_PER_PAGE = 30
 
-      ConnectionError = Class.new(StandardError)
-
       def initialize(uri:, token:, page: DEFAULT_PAGE, per_page: DEFAULT_PER_PAGE, api_version: API_VERSION)
         @uri = URI.parse(uri)
         @token = token&.strip
         @page = page
         @per_page = per_page
         @api_version = api_version
+        @compatible_instance_version = false
       end
 
       def get(resource, query = {})
@@ -53,10 +52,28 @@ module BulkImports
         Gitlab::Utils.append_path(api_url, resource)
       end
 
+      def validate_instance_version!
+        return if @compatible_instance_version
+
+        response = with_error_handling do
+          Gitlab::HTTP.get(resource_url(:version), default_options)
+        end
+
+        version = Gitlab::VersionInfo.parse(response.parsed_response['version'])
+
+        if version.major < BulkImport::MINIMUM_GITLAB_MAJOR_VERSION
+          raise ::BulkImports::Error.unsupported_gitlab_version
+        else
+          @compatible_instance_version = true
+        end
+      end
+
       private
 
       # rubocop:disable GitlabSecurity/PublicSend
       def request(method, resource, options = {}, &block)
+        validate_instance_version!
+
         with_error_handling do
           Gitlab::HTTP.public_send(
             method,
@@ -96,11 +113,11 @@ module BulkImports
       def with_error_handling
         response = yield
 
-        raise ConnectionError, "Error #{response.code}" unless response.success?
+        raise(::BulkImports::Error, "Error #{response.code}") unless response.success?
 
         response
       rescue *Gitlab::HTTP::HTTP_ERRORS => e
-        raise ConnectionError, e
+        raise(::BulkImports::Error, e)
       end
 
       def base_uri

@@ -4,6 +4,8 @@
 # projects to a GitLab instance. It associates the import with the responsible
 # user.
 class BulkImport < ApplicationRecord
+  MINIMUM_GITLAB_MAJOR_VERSION = 14
+
   belongs_to :user, optional: false
 
   has_one :configuration, class_name: 'BulkImports::Configuration'

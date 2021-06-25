@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe API::ProjectPackages do
-  let(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
+
+  let(:user) { create(:user) }
   let!(:package1) { create(:npm_package, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1") }
   let(:package_url) { "/projects/#{project.id}/packages/#{package1.id}" }
   let!(:package2) { create(:nuget_package, project: project, version: '2.0.4') }
@@ -69,6 +70,20 @@ RSpec.describe API::ProjectPackages do
             subject
 
             expect(json_response).to include(a_hash_including('_links' => a_hash_including('web_path' => include('infrastructure_registry'))))
+          end
+        end
+
+        context 'in nested group' do
+          let_it_be(:nested_project) { create(:project, :public, :in_subgroup) }
+          let_it_be(:nested_terraform_module_package) { create(:terraform_module_package, project: nested_project) }
+
+          let(:params) { { package_type: :terraform_module } }
+          let(:url) { "/projects/#{nested_project.id}/packages" }
+
+          it 'returns the nested terraform module package with the correct web_path' do
+            subject
+
+            expect(json_response).to include(a_hash_including('_links' => a_hash_including('web_path' => include(nested_project.namespace.full_path))))
           end
         end
       end

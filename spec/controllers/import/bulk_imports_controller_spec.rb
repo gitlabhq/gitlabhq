@@ -149,7 +149,7 @@ RSpec.describe Import::BulkImportsController do
         context 'when connection error occurs' do
           before do
             allow(controller).to receive(:client).and_return(client)
-            allow(client).to receive(:get).and_raise(BulkImports::Clients::HTTP::ConnectionError)
+            allow(client).to receive(:get).and_raise(BulkImports::Error)
           end
 
           it 'returns 422' do

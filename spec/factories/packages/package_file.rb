@@ -205,6 +205,7 @@ FactoryBot.define do
       package { association(:helm_package, without_package_files: true) }
       file_name { "#{package.name}-#{package.version}.tgz" }
       file_fixture { "spec/fixtures/packages/helm/rook-ceph-v1.5.8.tgz" }
+      file_sha256 { 'fd2b2fa0329e80a2a602c2bb3b40608bcd6ee5cf96cf46fd0d2800a4c129c9db' }
 
       transient do
         without_loaded_metadatum { false }
