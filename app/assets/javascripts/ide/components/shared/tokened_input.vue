@@ -82,7 +82,7 @@ export default {
             <div class="value-container rounded">
               <div class="value">{{ token.label }}</div>
               <div class="remove-token inverted">
-                <gl-icon :size="10" name="close" use-deprecated-sizes />
+                <gl-icon :size="16" name="close" />
               </div>
             </div>
           </button>

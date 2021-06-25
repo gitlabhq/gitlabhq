@@ -17,6 +17,10 @@ export default {
       required: false,
       default: '',
     },
+    issuableId: {
+      type: String,
+      required: true,
+    },
     issuableIid: {
       type: String,
       required: true,
@@ -60,6 +64,7 @@ export default {
   <div class="block">
     <issuable-time-tracker
       :full-path="fullPath"
+      :issuable-id="issuableId"
       :issuable-iid="issuableIid"
       :limit-to-hours="limitToHours"
     />

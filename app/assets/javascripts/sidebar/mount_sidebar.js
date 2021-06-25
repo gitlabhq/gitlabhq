@@ -391,7 +391,7 @@ function mountSubscriptionsComponent() {
 
 function mountTimeTrackingComponent() {
   const el = document.getElementById('issuable-time-tracker');
-  const { iid, fullPath, issuableType, timeTrackingLimitToHours } = getSidebarOptions();
+  const { id, iid, fullPath, issuableType, timeTrackingLimitToHours } = getSidebarOptions();
 
   if (!el) return;
 
@@ -404,6 +404,7 @@ function mountTimeTrackingComponent() {
       createElement(SidebarTimeTracking, {
         props: {
           fullPath,
+          issuableId: id.toString(),
           issuableIid: iid.toString(),
           limitToHours: timeTrackingLimitToHours,
         },

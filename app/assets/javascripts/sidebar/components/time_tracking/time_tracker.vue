@@ -31,7 +31,11 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  inject: ['issuableType'],
+  inject: {
+    issuableType: {
+      default: null,
+    },
+  },
   props: {
     limitToHours: {
       type: Boolean,
@@ -39,6 +43,11 @@ export default {
       required: false,
     },
     fullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    issuableId: {
       type: String,
       required: false,
       default: '',
@@ -83,15 +92,18 @@ export default {
         return timeTrackingQueries[this.issuableType].query;
       },
       skip() {
-        // We don't fetch info via GraphQL in following cases
-        // 1. Time tracking info was provided via prop
-        // 2. issuableIid and fullPath are not provided.
-        if (!this.initialTimeTracking) {
-          return false;
-        } else if (this.issuableIid && this.fullPath) {
-          return false;
+        // Skip the query if either of the conditions are true
+        // 1. issuableType is not provided
+        // 2. Time tracking info was provided via prop
+        // 3. issuableIid and fullPath are not provided
+        if (!this.issuableType || !timeTrackingQueries[this.issuableType]) {
+          return true;
+        } else if (this.initialTimeTracking) {
+          return true;
+        } else if (!this.issuableIid || !this.fullPath) {
+          return true;
         }
-        return true;
+        return false;
       },
       variables() {
         return {
@@ -146,7 +158,7 @@ export default {
     isTimeReportSupported() {
       return (
         [IssuableType.Issue, IssuableType.MergeRequest].includes(this.issuableType) &&
-        this.issuableIid
+        this.issuableId
       );
     },
   },
@@ -240,7 +252,7 @@ export default {
           :title="__('Time tracking report')"
           :hide-footer="true"
         >
-          <time-tracking-report :limit-to-hours="limitToHours" :issuable-iid="issuableIid" />
+          <time-tracking-report :limit-to-hours="limitToHours" :issuable-id="issuableId" />
         </gl-modal>
       </template>
       <transition name="help-state-toggle">
