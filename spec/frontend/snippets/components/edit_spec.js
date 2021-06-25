@@ -7,7 +7,6 @@ import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
-import UnsolvedCaptchaError from '~/captcha/unsolved_captcha_error';
 import createFlash from '~/flash';
 import * as urlUtils from '~/lib/utils/url_utility';
 import SnippetEditApp from '~/snippets/components/edit.vue';
@@ -29,7 +28,6 @@ jest.mock('~/flash');
 
 const TEST_UPLOADED_FILES = ['foo/bar.txt', 'alpha/beta.js'];
 const TEST_API_ERROR = new Error('TEST_API_ERROR');
-const TEST_CAPTCHA_ERROR = new UnsolvedCaptchaError();
 const TEST_MUTATION_ERROR = 'Test mutation error';
 const TEST_ACTIONS = {
   NO_CONTENT: merge({}, testEntries.created.diff, { content: '' }),
@@ -325,10 +323,10 @@ describe('Snippet Edit app', () => {
         },
       );
 
-      describe.each([TEST_API_ERROR, TEST_CAPTCHA_ERROR])('with apollo network error', (error) => {
+      describe('with apollo network error', () => {
         beforeEach(async () => {
           jest.spyOn(console, 'error').mockImplementation();
-          mutateSpy.mockRejectedValue(error);
+          mutateSpy.mockRejectedValue(TEST_API_ERROR);
 
           await createComponentAndSubmit();
         });
@@ -340,7 +338,7 @@ describe('Snippet Edit app', () => {
         it('should flash', () => {
           // Apollo automatically wraps the resolver's error in a NetworkError
           expect(createFlash).toHaveBeenCalledWith({
-            message: `Can't update snippet: Network error: ${error.message}`,
+            message: `Can't update snippet: Network error: ${TEST_API_ERROR.message}`,
           });
         });
 
@@ -350,7 +348,7 @@ describe('Snippet Edit app', () => {
           // eslint-disable-next-line no-console
           expect(console.error).toHaveBeenCalledWith(
             '[gitlab] unexpected error while updating snippet',
-            expect.objectContaining({ message: `Network error: ${error.message}` }),
+            expect.objectContaining({ message: `Network error: ${TEST_API_ERROR.message}` }),
           );
         });
       });

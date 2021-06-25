@@ -82,13 +82,7 @@ export default {
     data-qa-selector="changed_file_icon_content"
     :data-qa-title="tooltipTitle"
   >
-    <gl-icon
-      v-if="showIcon"
-      :name="changedIcon"
-      :size="size"
-      :class="changedIconClass"
-      use-deprecated-sizes
-    />
+    <gl-icon v-if="showIcon" :name="changedIcon" :size="size" :class="changedIconClass" />
   </span>
 </template>
 
