@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlModalDirective } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlModalDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { sprintf, __ } from '~/locale';
 import getRefMixin from '../mixins/get_ref';
@@ -9,8 +9,10 @@ export default {
   i18n: {
     replace: __('Replace'),
     replacePrimaryBtnText: __('Replace file'),
+    delete: __('Delete'),
   },
   components: {
+    GlButtonGroup,
     GlButton,
     UploadBlobModal,
   },
@@ -48,7 +50,7 @@ export default {
     replaceModalId() {
       return uniqueId('replace-modal');
     },
-    title() {
+    replaceModalTitle() {
       return sprintf(__('Replace %{name}'), { name: this.name });
     },
   },
@@ -57,13 +59,16 @@ export default {
 
 <template>
   <div class="gl-mr-3">
-    <gl-button v-gl-modal="replaceModalId">
-      {{ $options.i18n.replace }}
-    </gl-button>
+    <gl-button-group>
+      <gl-button v-gl-modal="replaceModalId">
+        {{ $options.i18n.replace }}
+      </gl-button>
+      <gl-button>{{ $options.i18n.delete }}</gl-button>
+    </gl-button-group>
     <upload-blob-modal
       :modal-id="replaceModalId"
-      :modal-title="title"
-      :commit-message="title"
+      :modal-title="replaceModalTitle"
+      :commit-message="replaceModalTitle"
       :target-branch="targetBranch || ref"
       :original-branch="originalBranch || ref"
       :can-push-code="canPushCode"

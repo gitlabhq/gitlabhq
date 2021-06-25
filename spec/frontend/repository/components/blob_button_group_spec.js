@@ -1,5 +1,8 @@
+import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import BlobReplace from '~/repository/components/blob_replace.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+
+import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 
 const DEFAULT_PROPS = {
@@ -14,17 +17,20 @@ const DEFAULT_INJECT = {
   originalBranch: 'master',
 };
 
-describe('BlobReplace component', () => {
+describe('BlobButtonGroup component', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(BlobReplace, {
+    wrapper = shallowMount(BlobButtonGroup, {
       propsData: {
         ...DEFAULT_PROPS,
         ...props,
       },
       provide: {
         ...DEFAULT_INJECT,
+      },
+      directives: {
+        GlModal: createMockDirective(),
       },
     });
   };
@@ -34,6 +40,7 @@ describe('BlobReplace component', () => {
   });
 
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
+  const findReplaceButton = () => wrapper.findAll(GlButton).at(0);
 
   it('renders component', () => {
     createComponent();
@@ -43,6 +50,28 @@ describe('BlobReplace component', () => {
     expect(wrapper.props()).toMatchObject({
       name,
       path,
+    });
+  });
+
+  describe('buttons', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders both the replace and delete button', () => {
+      expect(wrapper.findAll(GlButton)).toHaveLength(2);
+    });
+
+    it('renders the buttons in the correct order', () => {
+      expect(wrapper.findAll(GlButton).at(0).text()).toBe('Replace');
+      expect(wrapper.findAll(GlButton).at(1).text()).toBe('Delete');
+    });
+
+    it('triggers the UploadBlobModal from the replace button', () => {
+      const { value } = getBinding(findReplaceButton().element, 'gl-modal');
+      const modalId = findUploadBlobModal().props('modalId');
+
+      expect(modalId).toEqual(value);
     });
   });
 

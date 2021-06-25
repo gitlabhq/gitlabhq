@@ -3,9 +3,9 @@ import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
+import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import BlobEdit from '~/repository/components/blob_edit.vue';
-import BlobReplace from '~/repository/components/blob_replace.vue';
 
 let wrapper;
 const simpleMockData = {
@@ -80,7 +80,7 @@ describe('Blob content viewer component', () => {
   const findBlobHeader = () => wrapper.findComponent(BlobHeader);
   const findBlobEdit = () => wrapper.findComponent(BlobEdit);
   const findBlobContent = () => wrapper.findComponent(BlobContent);
-  const findBlobReplace = () => wrapper.findComponent(BlobReplace);
+  const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
 
   afterEach(() => {
     wrapper.destroy();
@@ -200,7 +200,7 @@ describe('Blob content viewer component', () => {
       });
     });
 
-    describe('BlobReplace', () => {
+    describe('BlobButtonGroup', () => {
       const { name, path } = simpleMockData;
 
       it('renders component', async () => {
@@ -210,13 +210,13 @@ describe('Blob content viewer component', () => {
           mockData: { blobInfo: simpleMockData },
           stubs: {
             BlobContent: true,
-            BlobReplace: true,
+            BlobButtonGroup: true,
           },
         });
 
         await nextTick();
 
-        expect(findBlobReplace().props()).toMatchObject({
+        expect(findBlobButtonGroup().props()).toMatchObject({
           name,
           path,
         });
@@ -235,7 +235,7 @@ describe('Blob content viewer component', () => {
 
         await nextTick();
 
-        expect(findBlobReplace().exists()).toBe(false);
+        expect(findBlobButtonGroup().exists()).toBe(false);
       });
     });
   });

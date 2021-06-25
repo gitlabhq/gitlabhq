@@ -34,7 +34,7 @@ RSpec.describe 'Database schema' do
     compliance_management_frameworks: %w[group_id],
     commit_user_mentions: %w[commit_id],
     deploy_keys_projects: %w[deploy_key_id],
-    deployments: %w[deployable_id environment_id user_id],
+    deployments: %w[deployable_id user_id],
     draft_notes: %w[discussion_id commit_id],
     epics: %w[updated_by_id last_edited_by_id state_id],
     events: %w[target_id],

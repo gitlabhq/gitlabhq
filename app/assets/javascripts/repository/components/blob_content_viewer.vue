@@ -7,14 +7,14 @@ import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constant
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
+import BlobButtonGroup from './blob_button_group.vue';
 import BlobEdit from './blob_edit.vue';
-import BlobReplace from './blob_replace.vue';
 
 export default {
   components: {
     BlobHeader,
     BlobEdit,
-    BlobReplace,
+    BlobButtonGroup,
     BlobContent,
     GlLoadingIcon,
   },
@@ -132,7 +132,7 @@ export default {
       >
         <template #actions>
           <blob-edit :edit-path="blobInfo.editBlobPath" :web-ide-path="blobInfo.ideEditPath" />
-          <blob-replace
+          <blob-button-group
             v-if="isLoggedIn"
             :path="path"
             :name="blobInfo.name"

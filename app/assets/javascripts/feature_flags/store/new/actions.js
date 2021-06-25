@@ -1,7 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { NEW_VERSION_FLAG } from '../../constants';
-import { mapFromScopesViewModel, mapStrategiesToRails } from '../helpers';
+import { mapStrategiesToRails } from '../helpers';
 import * as types from './mutation_types';
 
 /**
@@ -17,12 +16,7 @@ export const createFeatureFlag = ({ state, dispatch }, params) => {
   dispatch('requestCreateFeatureFlag');
 
   return axios
-    .post(
-      state.endpoint,
-      params.version === NEW_VERSION_FLAG
-        ? mapStrategiesToRails(params)
-        : mapFromScopesViewModel(params),
-    )
+    .post(state.endpoint, mapStrategiesToRails(params))
     .then(() => {
       dispatch('receiveCreateFeatureFlagSuccess');
       visitUrl(state.path);
