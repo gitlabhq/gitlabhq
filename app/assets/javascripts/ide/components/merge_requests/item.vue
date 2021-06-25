@@ -41,7 +41,7 @@ export default {
 <template>
   <a :href="mergeRequestHref" class="btn-link d-flex align-items-center">
     <span class="d-flex gl-mr-3 ide-search-list-current-icon">
-      <gl-icon v-if="isActive" :size="18" name="mobile-issue-close" use-deprecated-sizes />
+      <gl-icon v-if="isActive" :size="16" name="mobile-issue-close" />
     </span>
     <span>
       <strong> {{ item.title }} </strong>

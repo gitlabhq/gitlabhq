@@ -1,6 +1,7 @@
 query getAlert($iid: String!, $fullPath: ID!) {
   project(fullPath: $fullPath) {
     issue(iid: $iid) {
+      id
       alertManagementAlert {
         iid
         title
