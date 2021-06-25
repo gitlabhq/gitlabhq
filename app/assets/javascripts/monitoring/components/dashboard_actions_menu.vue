@@ -138,10 +138,10 @@ export default {
 </script>
 
 <template>
-  <!-- 
+  <!--
     This component should be replaced with a variant developed
     as part of https://gitlab.com/gitlab-org/gitlab-ui/-/issues/936
-    The variant will create a dropdown with an icon, no text and no caret    
+    The variant will create a dropdown with an icon, no text and no caret
   -->
   <gl-dropdown
     v-gl-tooltip
@@ -177,20 +177,22 @@ export default {
             @formValidation="setFormValidity"
           />
         </form>
-        <div slot="modal-footer">
-          <gl-button @click="hideAddMetricModal">
-            {{ __('Cancel') }}
-          </gl-button>
-          <gl-button
-            v-track-event="getAddMetricTrackingOptions()"
-            data-testid="add-metric-modal-submit-button"
-            :disabled="!customMetricsFormIsValid"
-            variant="success"
-            @click="submitCustomMetricsForm"
-          >
-            {{ __('Save changes') }}
-          </gl-button>
-        </div>
+        <template #modal-footer>
+          <div>
+            <gl-button @click="hideAddMetricModal">
+              {{ __('Cancel') }}
+            </gl-button>
+            <gl-button
+              v-track-event="getAddMetricTrackingOptions()"
+              data-testid="add-metric-modal-submit-button"
+              :disabled="!customMetricsFormIsValid"
+              variant="success"
+              @click="submitCustomMetricsForm"
+            >
+              {{ __('Save changes') }}
+            </gl-button>
+          </div>
+        </template>
       </gl-modal>
     </template>
 

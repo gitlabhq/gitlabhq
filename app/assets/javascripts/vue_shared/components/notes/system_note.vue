@@ -111,7 +111,7 @@ export default {
       <div class="note-header">
         <note-header :author="note.author" :created-at="note.created_at" :note-id="note.id">
           <span v-safe-html="actionTextHtml"></span>
-          <template v-if="canSeeDescriptionVersion" slot="extra-controls">
+          <template v-if="canSeeDescriptionVersion" #extra-controls>
             &middot;
             <gl-button
               variant="link"

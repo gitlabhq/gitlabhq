@@ -85,10 +85,6 @@
   padding-bottom: $gl-spacing-scale-8;
 }
 
-.gl-pt-11 {
-  padding-top: $gl-spacing-scale-11;
-}
-
 .gl-transition-property-stroke-opacity {
   transition-property: stroke-opacity;
 }
@@ -121,6 +117,20 @@
   }
 }
 
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1462
+.gl-md-mt-11 {
+  @media (min-width: $breakpoint-md) {
+    margin-top: $gl-spacing-scale-11;
+  }
+}
+
+// Same as above
+.gl-md-pt-11 {
+  @media (min-width: $breakpoint-md) {
+    padding-top: $gl-spacing-scale-11;
+  }
+}
+
 // This is used to help prevent issues with margin collapsing.
 // See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Model/Mastering_margin_collapsing.
 .gl-force-block-formatting-context::after {
@@ -142,6 +152,13 @@
   }
 }
 
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1463
+.gl-xs-mt-6 {
+  @media (max-width: $breakpoint-sm) {
+    margin-top: $gl-spacing-scale-6;
+  }
+}
+
 // Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1165
 .gl-xs-mb-4 {
   @media (max-width: $breakpoint-sm) {
@@ -153,6 +170,13 @@
 .gl-xs-mb-4\! {
   @media (max-width: $breakpoint-sm) {
     margin-bottom: $gl-spacing-scale-4 !important;
+  }
+}
+
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1463
+.gl-xs-pt-6 {
+  @media (max-width: $breakpoint-sm) {
+    padding-top: $gl-spacing-scale-6;
   }
 }
 

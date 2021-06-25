@@ -702,6 +702,7 @@ dast:
     DAST_AUTH_REPORT: "true"
   artifacts:
     paths: [gl-dast-debug-auth-report.html]
+    when: always
 ```
 
 ### Available CI/CD variables

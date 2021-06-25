@@ -71,9 +71,7 @@ module API
           .new(user_project, params[:package_id]).execute
 
         destroy_conditionally!(package) do |package|
-          if package.destroy
-            package.sync_maven_metadata(current_user)
-          end
+          ::Packages::DestroyPackageService.new(container: package, current_user: current_user).execute
         end
       end
     end

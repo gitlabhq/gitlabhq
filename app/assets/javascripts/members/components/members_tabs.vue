@@ -116,7 +116,7 @@ export default {
         :title-link-attributes="tab.attrs"
         :query-param-value="tab.queryParamValue"
       >
-        <template slot="title">
+        <template #title>
           <span>{{ tab.title }}</span>
           <gl-badge size="sm" class="gl-tab-counter-badge">{{ getTabCount(tab) }}</gl-badge>
         </template>

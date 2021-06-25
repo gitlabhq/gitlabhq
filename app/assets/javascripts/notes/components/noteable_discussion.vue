@@ -265,7 +265,9 @@ export default {
               @startReplying="showReplyForm"
               @deleteNote="deleteNoteHandler"
             >
-              <slot slot="avatar-badge" name="avatar-badge"></slot>
+              <template #avatar-badge>
+                <slot name="avatar-badge"></slot>
+              </template>
               <template #footer="{ showReplies }">
                 <draft-note
                   v-if="showDraft(discussion.reply_id)"

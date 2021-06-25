@@ -74,6 +74,8 @@ export default {
     @hidden="syncHide"
   >
     <slot></slot>
-    <slot slot="modal-footer" name="modal-footer" :ok="ok" :cancel="cancel"></slot>
+    <template #modal-footer>
+      <slot name="modal-footer" :ok="ok" :cancel="cancel"></slot>
+    </template>
   </gl-modal>
 </template>

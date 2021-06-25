@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { merge } from 'lodash';
 import { nextTick } from 'vue';
 import FrequentItemsApp from '~/frequent_items/components/app.vue';
 import { FREQUENT_ITEMS_PROJECTS } from '~/frequent_items/constants';
@@ -82,7 +83,9 @@ describe('~/nav/components/top_nav_container_view.vue', () => {
     it('renders frequent items app', () => {
       expect(findFrequentItemsApp()).toEqual({
         vuexModule: DEFAULT_PROPS.frequentItemsVuexModule,
-        props: expect.objectContaining(TEST_OTHER_PROPS),
+        props: expect.objectContaining(
+          merge({ currentItem: { lastAccessedOn: Date.now() } }, TEST_OTHER_PROPS),
+        ),
         attributes: expect.objectContaining(EXTRA_ATTRS),
       });
     });

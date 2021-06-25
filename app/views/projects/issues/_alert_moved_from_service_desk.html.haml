@@ -2,9 +2,10 @@
 - service_desk_link_url = help_page_path('user/project/service_desk')
 - service_desk_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: service_desk_link_url }
 
-.hide.gl-alert.gl-alert-warning.js-alert-moved-from-service-desk-warning.gl-mt-5{ role: 'alert' }
-  = sprite_icon('warning', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-  %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-    = sprite_icon('close', css_class: 'gl-icon')
+= render 'shared/global_alert',
+  variant: :warning,
+  is_contained: true,
+  close_button_class: 'js-close',
+  alert_class: 'hide js-alert-moved-from-service-desk-warning gl-mt-5' do
   .gl-alert-body.gl-mr-3
     = s_('This project does not have %{service_desk_link_start}Service Desk%{service_desk_link_end} enabled, so the user who created the issue will no longer receive email notifications about new activity.').html_safe % { service_desk_link_start: service_desk_link_start, service_desk_link_end: '</a>'.html_safe }

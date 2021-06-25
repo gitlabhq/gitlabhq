@@ -2,20 +2,22 @@
 
 exports[`Resizable Chart Container renders the component 1`] = `
 <div>
-  <div
-    class="slot"
-  >
-    <span
-      class="width"
+  <template>
+    <div
+      class="slot"
     >
-      0
-    </span>
-     
-    <span
-      class="height"
-    >
-      0
-    </span>
-  </div>
+      <span
+        class="width"
+      >
+        0
+      </span>
+       
+      <span
+        class="height"
+      >
+        0
+      </span>
+    </div>
+  </template>
 </div>
 `;

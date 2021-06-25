@@ -171,7 +171,7 @@ export default {
 
 <template>
   <gl-dropdown v-bind="$attrs" class="milestone-combobox" @shown="focusSearchBox">
-    <template slot="button-content">
+    <template #button-content>
       <span data-testid="milestone-combobox-button-content" class="gl-flex-grow-1 text-muted">{{
         selectedMilestonesLabel
       }}</span>

@@ -155,7 +155,7 @@ describe('ForkForm component', () => {
   describe('forks namespaces', () => {
     beforeEach(() => {
       mockGetRequest({ namespaces: MOCK_NAMESPACES_RESPONSE });
-      createComponent();
+      createFullComponent();
     });
 
     it('make GET request from endpoint', async () => {

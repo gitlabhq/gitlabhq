@@ -301,7 +301,7 @@ export default {
               :state="form.fields.namespace.state"
               required
             >
-              <template slot="first">
+              <template #first>
                 <option :value="null" disabled>{{ s__('ForkProject|Select a namespace') }}</option>
               </template>
               <option v-for="namespace in namespaces" :key="namespace.id" :value="namespace">

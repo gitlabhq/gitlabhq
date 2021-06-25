@@ -23,6 +23,9 @@ const createComponent = ({
         <button class="js-issuable-save">Submit issuable</button>
       `,
     },
+    stubs: {
+      MarkdownField,
+    },
   });
 };
 

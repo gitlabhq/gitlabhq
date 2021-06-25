@@ -342,13 +342,13 @@ do this:
 The Code Quality report artifact JSON file must contain an array of objects
 with the following properties:
 
-| Name                   | Description                                                                            |
-| ---------------------- | -------------------------------------------------------------------------------------- |
-| `description`          | A description of the code quality violation.                                           |
-| `fingerprint`          | A unique fingerprint to identify the code quality violation. For example, an MD5 hash. |
-| `severity`             | A severity string (can be `info`, `minor`, `major`, `critical`, or `blocker`).                          |
-| `location.path`        | The relative path to the file containing the code quality violation.                   |
-| `location.lines.begin` | The line on which the code quality violation occurred.                                 |
+| Name                   | Description                                                                               |
+| ---------------------- | ----------------------------------------------------------------------------------------- |
+| `description`          | A description of the code quality violation.                                              |
+| `fingerprint`          | A unique fingerprint to identify the code quality violation. For example, an MD5 hash.    |
+| `severity`             | A severity string (can be `info`, `minor`, `major`, `critical`, or `blocker`).            |
+| `location.path`        | The relative path to the file containing the code quality violation.                      |
+| `location.lines.begin` or `location.positions.begin.line` | The line on which the code quality violation occurred. |
 
 Example:
 

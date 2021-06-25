@@ -8,7 +8,10 @@ class ServiceDeskSetting < ApplicationRecord
   validate :valid_issue_template
   validate :valid_project_key
   validates :outgoing_name, length: { maximum: 255 }, allow_blank: true
-  validates :project_key, length: { maximum: 255 }, allow_blank: true, format: { with: /\A[a-z0-9_]+\z/ }
+  validates :project_key,
+            length: { maximum: 255 },
+            allow_blank: true,
+            format: { with: /\A[a-z0-9_]+\z/, message: -> (setting, data) { _("can contain only lowercase letters, digits, and '_'.") } }
 
   scope :with_project_key, ->(key) { where(project_key: key) }
 

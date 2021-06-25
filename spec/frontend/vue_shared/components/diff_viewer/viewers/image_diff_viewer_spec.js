@@ -121,7 +121,9 @@ describe('ImageDiffViewer', () => {
           :new-size="newSize"
           :old-size="oldSize"
         >
-          <span slot="image-overlay" class="overlay">test</span>
+          <template #image-overlay>
+            <span class="overlay">test</span>
+          </template>
         </image-diff-viewer>
       `),
     }).$mount();

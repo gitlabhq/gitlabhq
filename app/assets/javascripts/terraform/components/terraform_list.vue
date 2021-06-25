@@ -98,7 +98,7 @@ export default {
   <section>
     <gl-tabs>
       <gl-tab>
-        <template slot="title">
+        <template #title>
           <p class="gl-m-0">
             {{ s__('Terraform|States') }}
             <gl-badge v-if="statesCount">{{ statesCount }}</gl-badge>

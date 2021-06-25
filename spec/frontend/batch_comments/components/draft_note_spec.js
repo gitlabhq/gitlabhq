@@ -1,5 +1,6 @@
 import { getByRole } from '@testing-library/dom';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { stubComponent } from 'helpers/stub_component';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { createStore } from '~/batch_comments/stores';
 import NoteableNote from '~/notes/components/noteable_note.vue';
@@ -7,6 +8,14 @@ import '~/behaviors/markdown/render_gfm';
 import { createDraft } from '../mock_data';
 
 const localVue = createLocalVue();
+
+const NoteableNoteStub = stubComponent(NoteableNote, {
+  template: `
+    <div>
+      <slot name="note-header-info">Test</slot>
+    </div>
+  `,
+});
 
 describe('Batch comments draft note component', () => {
   let store;
@@ -26,6 +35,9 @@ describe('Batch comments draft note component', () => {
       store,
       propsData,
       localVue,
+      stubs: {
+        NoteableNote: NoteableNoteStub,
+      },
     });
 
     jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation();

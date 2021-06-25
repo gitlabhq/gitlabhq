@@ -37898,6 +37898,9 @@ msgstr ""
 msgid "can contain only letters of the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'"
 msgstr ""
 
+msgid "can contain only lowercase letters, digits, and '_'."
+msgstr ""
+
 msgid "can only be changed by a group admin."
 msgstr ""
 

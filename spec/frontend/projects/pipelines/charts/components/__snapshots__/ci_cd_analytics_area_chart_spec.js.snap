@@ -21,11 +21,7 @@ exports[`CiCdAnalyticsAreaChart matches the snapshot 1`] = `
       option="[object Object]"
       thresholds=""
       width="0"
-    >
-      <template />
-       
-      <template />
-    </glareachart-stub>
+    />
   </div>
 </div>
 `;

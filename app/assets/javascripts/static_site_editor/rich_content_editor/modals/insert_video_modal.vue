@@ -81,11 +81,13 @@ export default {
       :invalid-feedback="urlError"
     >
       <gl-form-input id="video-modal-url-input" ref="urlInput" v-model="url" />
-      <gl-sprintf slot="description" :message="description" class="text-gl-muted">
-        <template #id>
-          <strong>{{ __('0t1DgySidms') }}</strong>
-        </template>
-      </gl-sprintf>
+      <template #description>
+        <gl-sprintf :message="description" class="text-gl-muted">
+          <template #id>
+            <strong>{{ __('0t1DgySidms') }}</strong>
+          </template>
+        </gl-sprintf>
+      </template>
     </gl-form-group>
   </gl-modal>
 </template>

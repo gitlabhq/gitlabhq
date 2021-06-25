@@ -796,8 +796,14 @@ svg {
 .gl-display-flex {
   display: flex;
 }
+.gl-display-block {
+  display: block;
+}
 .gl-align-items-center {
   align-items: center;
+}
+.gl-w-full {
+  width: 100%;
 }
 .gl-p-2 {
   padding: 0.25rem;

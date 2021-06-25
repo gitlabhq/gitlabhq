@@ -629,11 +629,9 @@ export default {
               input-id="squash-message-edit"
               squash
             >
-              <commit-message-dropdown
-                slot="header"
-                v-model="squashCommitMessage"
-                :commits="commits"
-              />
+              <template #header>
+                <commit-message-dropdown v-model="squashCommitMessage" :commits="commits" />
+              </template>
             </commit-edit>
             <commit-edit
               v-if="shouldShowMergeEdit"
@@ -641,14 +639,16 @@ export default {
               :label="__('Merge commit message')"
               input-id="merge-message-edit"
             >
-              <label slot="checkbox">
-                <input
-                  id="include-description"
-                  type="checkbox"
-                  @change="updateMergeCommitMessage($event.target.checked)"
-                />
-                {{ __('Include merge request description') }}
-              </label>
+              <template #checkbox>
+                <label>
+                  <input
+                    id="include-description"
+                    type="checkbox"
+                    @change="updateMergeCommitMessage($event.target.checked)"
+                  />
+                  {{ __('Include merge request description') }}
+                </label>
+              </template>
             </commit-edit>
           </ul>
         </commits-header>
