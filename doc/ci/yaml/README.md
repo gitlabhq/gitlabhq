@@ -2368,7 +2368,7 @@ rspec:
 
 **Related topics**:
 
-- See the [common `cache` use cases](../caching/index.md#common-use-cases) for more
+- See the [common `cache` use cases](../caching/index.md#common-use-cases-for-caches) for more
   `cache:paths` examples.
 
 #### `cache:key`
@@ -2414,10 +2414,10 @@ cache-job:
 
 **Related topics**:
 
-- You can specify a [fallback cache key](../caching/index.md#fallback-cache-key)
+- You can specify a [fallback cache key](../caching/index.md#use-a-fallback-cache-key)
   to use if the specified `cache:key` is not found.
 - You can [use multiple cache keys](../caching/index.md#use-multiple-caches) in a single job.
-- See the [common `cache` use cases](../caching/index.md#common-use-cases) for more
+- See the [common `cache` use cases](../caching/index.md#common-use-cases-for-caches) for more
   `cache:key` examples.
 
 ##### `cache:key:files`
@@ -3561,13 +3561,13 @@ deploystacks: [vultr, data]
 Use `trigger` to define a downstream pipeline trigger. When GitLab starts a `trigger` job,
 a downstream pipeline is created.
 
-Jobs with `trigger` can only use a [limited set of keywords](../multi_project_pipelines.md#create-multi-project-pipelines-in-your-gitlab-ciyml-file).
+Jobs with `trigger` can only use a [limited set of keywords](../multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
 For example, you can't run commands with [`script`](#script), [`before_script`](#before_script),
 or [`after_script`](#after_script).
 
 You can use this keyword to create two different types of downstream pipelines:
 
-- [Multi-project pipelines](../multi_project_pipelines.md#create-multi-project-pipelines-in-your-gitlab-ciyml-file)
+- [Multi-project pipelines](../multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file)
 - [Child pipelines](../parent_child_pipelines.md)
 
 [In GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) and later, you can

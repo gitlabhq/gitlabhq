@@ -25,24 +25,28 @@ with a [microservices architecture](https://about.gitlab.com/blog/2016/08/16/tre
 Learn more in the [Cross-project Pipeline Triggering and Visualization demo](https://about.gitlab.com/learn/)
 at GitLab@learn, in the Continuous Integration section.
 
-If you trigger a pipeline in a downstream private project, the name of the project
-and the status of the pipeline is visible in the upstream project's pipelines page.
-Make sure that there are no confidentiality problems if you have a public project
-that can trigger downstream pipelines in a private project.
+If you trigger a pipeline in a downstream private project, on the upstream project's pipelines page,
+you can view:
+
+- The name of the project.
+- The status of the pipeline.
+
+If you have a public project that can trigger downstream pipelines in a private project,
+make sure there are no confidentiality problems.
 
 ## Create multi-project pipelines
 
 To create multi-project pipelines, you can:
 
-- [Use the CI/CD configuration syntax](#create-multi-project-pipelines-in-your-gitlab-ciyml-file).
+- [Define them in your `.gitlab-ci.yml` file](#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
 - [Use the API](#create-multi-project-pipelines-by-using-the-api).
 
-### Create multi-project pipelines in your `.gitlab-ci.yml` file
+### Define multi-project pipelines in your `.gitlab-ci.yml` file
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
 When you create a multi-project pipeline in your `.gitlab-ci.yml` file,
-you create what is called a "trigger job". For example:
+you create what is called a *trigger job*. For example:
 
 ```yaml
 rspec:
@@ -71,6 +75,8 @@ The user that creates the upstream pipeline must be able to create pipelines in 
 downstream project (`my/deployment`) too. If the downstream project is not found,
 or the user does not have [permission](../user/permissions.md) to create a pipeline there,
 the `staging` job is marked as _failed_.
+
+#### Trigger job configuration keywords
 
 Trigger jobs can use only a limited set of the GitLab CI/CD [configuration keywords](yaml/README.md).
 The keywords available for use in trigger jobs are:
@@ -177,35 +183,35 @@ In the upstream pipeline:
 1. Save the `.env` file as a `dotenv` report.
 1. Trigger the downstream pipeline.
 
-```yaml
-build_vars:
-  stage: build
-  script:
-    - echo "BUILD_VERSION=hello" >> build.env
-  artifacts:
-    reports:
-      dotenv: build.env
+   ```yaml
+   build_vars:
+     stage: build
+     script:
+       - echo "BUILD_VERSION=hello" >> build.env
+     artifacts:
+       reports:
+         dotenv: build.env
 
-deploy:
-  stage: deploy
-  trigger: my/downstream_project
-```
+   deploy:
+     stage: deploy
+     trigger: my/downstream_project
+   ```
 
-Set the `test` job in the downstream pipeline to inherit the variables from the `build_vars`
-job in the upstream project with `needs:`. The `test` job inherits the variables in the
-`dotenv` report and it can access `BUILD_VERSION` in the script:
+1. Set the `test` job in the downstream pipeline to inherit the variables from the `build_vars`
+   job in the upstream project with `needs:`. The `test` job inherits the variables in the
+   `dotenv` report and it can access `BUILD_VERSION` in the script:
 
-```yaml
-test:
-  stage: test
-  script:
-    - echo $BUILD_VERSION
-  needs:
-    - project: my/upstream_project
-      job: build_vars
-      ref: master
-      artifacts: true
-```
+   ```yaml
+   test:
+     stage: test
+     script:
+       - echo $BUILD_VERSION
+     needs:
+       - project: my/upstream_project
+         job: build_vars
+         ref: master
+         artifacts: true
+   ```
 
 #### Use `rules` or `only`/`except` with multi-project pipelines
 
@@ -239,7 +245,7 @@ You can mirror the pipeline status from an upstream pipeline to a bridge job by
 using the `needs:pipeline` keyword. The latest pipeline status from the default branch is
 replicated to the bridge job.
 
-Example:
+For example:
 
 ```yaml
 upstream_bridge:
@@ -261,7 +267,7 @@ outbound connections for upstream and downstream pipeline dependencies.
 
 When using:
 
-- CI/CD Variables or [`rules`](yaml/README.md#rulesif) to control job behavior, the value of
+- CI/CD variables or [`rules`](yaml/README.md#rulesif) to control job behavior, the value of
   the [`$CI_PIPELINE_SOURCE` predefined variable](variables/predefined_variables.md) is
   `pipeline` for multi-project pipeline triggered through the API with `CI_JOB_TOKEN`.
 - [`only/except`](yaml/README.md#only--except) to control job behavior, use the
@@ -272,21 +278,28 @@ When using:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab Premium 12.8.
 
 You can trigger a pipeline in your project whenever a pipeline finishes for a new
-tag in a different project:
+tag in a different project.
 
-1. Go to the project's **Settings > CI/CD** page, and expand the **Pipeline subscriptions** section.
+Prerequisites:
+
+- The upstream project must be [public](../public_access/public_access.md).
+- The user must have the [Developer role](../user/permissions.md#project-members-permissions)
+  in the upstream project.
+
+To trigger the pipeline when the upstream project is rebuilt:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD** page.
+1. Expand the **Pipeline subscriptions** section.
 1. Enter the project you want to subscribe to, in the format `<namespace>/<project>`.
    For example, if the project is `https://gitlab.com/gitlab-org/gitlab`, use `gitlab-org/gitlab`.
-1. Click subscribe.
+1. Select **Subscribe**.
 
 Any pipelines that complete successfully for new tags in the subscribed project
 now trigger a pipeline on the current project's default branch. The maximum
 number of upstream pipeline subscriptions is 2 by default, for both the upstream and
-downstream projects. This [application limit](../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) can be changed on self-managed instances by a GitLab administrator.
-
-The upstream project needs to be [public](../public_access/public_access.md)
-and the user must have the [developer role](../user/permissions.md#project-members-permissions)
-in the upstream project.
+downstream projects. On self-managed instances, an administrator can change this
+[limit](../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project).
 
 ## Multi-project pipeline visualization **(PREMIUM)**
 
@@ -295,7 +308,7 @@ When you configure GitLab CI/CD for your project, you can visualize the stages o
 
 ![Multi-project pipeline graph](img/multi_project_pipeline_graph.png)
 
-In the Merge Request Widget, multi-project pipeline mini-graphs are displayed.
+In the merge request, on the **Pipelines** tab, multi-project pipeline mini-graphs are displayed.
 They expand and are shown adjacent to each other when hovering (or tapping on touchscreen devices).
 
 ![Multi-project mini graph](img/multi_pipeline_mini_graph.gif)
