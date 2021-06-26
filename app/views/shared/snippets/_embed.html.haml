@@ -4,12 +4,12 @@
       = external_snippet_icon('doc-text')
 
       %strong.file-title-name
-        %a.gitlab-embedded-snippets-title{ href: url_for(only_path: false, overwrite_params: nil) }
+        %a.gitlab-embedded-snippets-title{ href: url_for(only_path: false, overwrite_params: nil), target: '_blank', rel: 'noopener noreferrer' }
           = blob.name
 
       %small
         = number_to_human_size(blob.size)
-      %a.gitlab-logo-wrapper{ href: url_for(only_path: false, overwrite_params: nil), title: 'view on gitlab' }
+      %a.gitlab-logo-wrapper{ href: url_for(only_path: false, overwrite_params: nil), title: 'View on GitLab', target: '_blank', rel: 'noopener noreferrer' }
         %img.gitlab-logo{ src: image_url('ext_snippet_icons/logo.svg'), alt: "GitLab logo" }
 
     .file-actions.d-none.d-sm-block
