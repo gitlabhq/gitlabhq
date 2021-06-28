@@ -172,7 +172,7 @@ module SearchHelper
   # Autocomplete results for internal help pages
   def help_autocomplete
     [
-      { category: "Help", label: _("API Help"),           url: help_page_path("api/README") },
+      { category: "Help", label: _("API Help"),           url: help_page_path("api/index") },
       { category: "Help", label: _("Markdown Help"),      url: help_page_path("user/markdown") },
       { category: "Help", label: _("Permissions Help"),   url: help_page_path("user/permissions") },
       { category: "Help", label: _("Public Access Help"), url: help_page_path("public_access/public_access") },

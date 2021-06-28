@@ -165,6 +165,6 @@ version of your application.
 ## Further reading
 
 - [GitLab Auto deploy](../../topics/autodevops/stages.md#auto-deploy)
-- [GitLab CI/CD variables](../../ci/variables/README.md)
+- [GitLab CI/CD variables](../../ci/variables/index.md)
 - [Environments and deployments](../../ci/environments/index.md)
 - [Kubernetes deploy example](https://gitlab.com/gitlab-examples/kubernetes-deploy)

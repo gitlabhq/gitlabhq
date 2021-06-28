@@ -21,7 +21,7 @@ GET /projects/:id/statistics
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `id`      | integer / string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer / string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 
 Example response:
 

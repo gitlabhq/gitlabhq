@@ -20,14 +20,14 @@ Publish generic files, like release binaries, in your project's Package Registry
 
 ## Authenticate to the Package Registry
 
-To authenticate to the Package Registry, you need either a [personal access token](../../../api/README.md#personalproject-access-tokens),
-[CI/CD job token](../../../api/README.md#gitlab-cicd-job-token), or [deploy token](../../project/deploy_tokens/index.md).
+To authenticate to the Package Registry, you need either a [personal access token](../../../api/index.md#personalproject-access-tokens),
+[CI/CD job token](../../../api/index.md#gitlab-cicd-job-token), or [deploy token](../../project/deploy_tokens/index.md).
 
 In addition to the standard API authentication mechanisms, the generic package
 API allows authentication with HTTP Basic authentication for use with tools that
 do not support the other available mechanisms. The `user-id` is not checked and
-may be any value, and the `password` must be either a [personal access token](../../../api/README.md#personalproject-access-tokens),
-a [CI/CD job token](../../../api/README.md#gitlab-cicd-job-token), or a [deploy token](../../project/deploy_tokens/index.md).
+may be any value, and the `password` must be either a [personal access token](../../../api/index.md#personalproject-access-tokens),
+a [CI/CD job token](../../../api/index.md#gitlab-cicd-job-token), or a [deploy token](../../project/deploy_tokens/index.md).
 
 ## Publish a package file
 
@@ -37,7 +37,7 @@ If a package with the same name, version, and filename already exists, it is als
 
 Prerequisites:
 
-- You need to [authenticate with the API](../../../api/README.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
+- You need to [authenticate with the API](../../../api/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
 
 ```plaintext
 PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?status=:status
@@ -45,7 +45,7 @@ PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?sta
 
 | Attribute          | Type            | Required | Description                                                                                                                      |
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/README.md#namespaced-path-encoding).                                              |
+| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/index.md#namespaced-path-encoding).                                              |
 | `package_name`     | string          | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
 | `package_version`  | string          | yes      | The package version. The following regex validates this: `\A(\.?[\w\+-]+\.?)+\z`. You can test your version strings on [Rubular](https://rubular.com/r/aNCV0wG5K14uq8).
 | `file_name`        | string          | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
@@ -77,7 +77,7 @@ If multiple packages have the same name, version, and filename, then the most re
 
 Prerequisites:
 
-- You need to [authenticate with the API](../../../api/README.md#authentication). If authenticating with a deploy token, it must be configured with the `read_package_registry` and/or `write_package_registry` scope.
+- You need to [authenticate with the API](../../../api/index.md#authentication). If authenticating with a deploy token, it must be configured with the `read_package_registry` and/or `write_package_registry` scope.
 
 ```plaintext
 GET /projects/:id/packages/generic/:package_name/:package_version/:file_name
@@ -85,7 +85,7 @@ GET /projects/:id/packages/generic/:package_name/:package_version/:file_name
 
 | Attribute          | Type            | Required | Description                                                                         |
 | -------------------| --------------- | ---------| ------------------------------------------------------------------------------------|
-| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/README.md#namespaced-path-encoding). |
+| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/index.md#namespaced-path-encoding). |
 | `package_name`     | string          | yes      | The package name.                                                                   |
 | `package_version`  | string          | yes      | The package version.                                                                |
 | `file_name`        | string          | yes      | The filename.                                                                      |
@@ -108,7 +108,7 @@ curl --user "user:<your_access_token>" \
 
 ## Publish a generic package by using CI/CD
 
-To work with generic packages in [GitLab CI/CD](../../../ci/README.md), you can use
+To work with generic packages in [GitLab CI/CD](../../../ci/index.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token in your commands.
 
 For example:

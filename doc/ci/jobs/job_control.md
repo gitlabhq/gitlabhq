@@ -263,7 +263,7 @@ Other commonly used variables for `if` clauses:
   branch. Use when you want to have the same configuration in multiple
   projects with different default branches.
 - `if: '$CI_COMMIT_BRANCH =~ /regex-expression/'`: If the commit branch matches a regular expression.
-- `if: '$CUSTOM_VARIABLE !~ /regex-expression/'`: If the [custom variable](../variables/README.md#custom-cicd-variables)
+- `if: '$CUSTOM_VARIABLE !~ /regex-expression/'`: If the [custom variable](../variables/index.md#custom-cicd-variables)
   `CUSTOM_VARIABLE` does **not** match a regular expression.
 - `if: '$CUSTOM_VARIABLE == "value1"'`: If the custom variable `CUSTOM_VARIABLE` is
   exactly `value1`.

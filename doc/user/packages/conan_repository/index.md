@@ -269,7 +269,7 @@ conan upload Hello/0.1@mycompany/beta --all
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11678) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
 
-To work with Conan commands in [GitLab CI/CD](../../../ci/README.md), you can
+To work with Conan commands in [GitLab CI/CD](../../../ci/index.md), you can
 use `CI_JOB_TOKEN` in place of the personal access token in your commands.
 
 You can provide the `CONAN_LOGIN_USERNAME` and `CONAN_PASSWORD` with each Conan

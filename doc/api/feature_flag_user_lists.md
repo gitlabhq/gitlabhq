@@ -15,7 +15,7 @@ Users with Developer or higher [permissions](../user/permissions.md) can access 
 
 NOTE:
 `GET` requests return twenty results at a time because the API results
-are [paginated](README.md#pagination). You can change this value.
+are [paginated](index.md#pagination). You can change this value.
 
 ## List all feature flag user lists for a project
 
@@ -27,7 +27,7 @@ GET /projects/:id/feature_flags_user_lists
 
 | Attribute | Type           | Required | Description                                                                      |
 | --------- | -------------- | -------- | -------------------------------------------------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `search`  | string         | no       | Return user lists matching the search criteria.                                  |
 
 ```shell
@@ -69,7 +69,7 @@ POST /projects/:id/feature_flags_user_lists
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).       |
 | `name`              | string           | yes        | The name of the feature flag. |
 | `user_xids`         | string           | yes        | A comma separated list of user IDs. |
 
@@ -109,7 +109,7 @@ GET /projects/:id/feature_flags_user_lists/:iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).       |
 | `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list.                               |
 
 ```shell
@@ -140,7 +140,7 @@ PUT /projects/:id/feature_flags_user_lists/:iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).       |
 | `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list.                               |
 | `name`              | string           | no         | The name of the feature flag.                                                          |
 | `user_xids`         | string           | no         | A comma separated list of user IDs.                                                    |
@@ -181,7 +181,7 @@ DELETE /projects/:id/feature_flags_user_lists/:iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).       |
 | `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list                                |
 
 ```shell

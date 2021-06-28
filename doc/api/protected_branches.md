@@ -30,7 +30,7 @@ GET /projects/:id/protected_branches
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `search` | string | no | Name or part of the name of protected branches to be searched for |
 
 ```shell
@@ -124,7 +124,7 @@ GET /projects/:id/protected_branches/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the branch or wildcard |
 
 ```shell
@@ -199,7 +199,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`                            | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                            | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`                          | string         | yes | The name of the branch or wildcard |
 | `push_access_level`             | string         | no  | Access levels allowed to push (defaults: `40`, Maintainer role) |
 | `merge_access_level`            | string         | no  | Access levels allowed to merge (defaults: `40`, Maintainer role) |
@@ -399,7 +399,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the branch |
 
 ## Require code owner approvals for a single branch
@@ -416,6 +416,6 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitl
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the branch |
 | `code_owner_approval_required`  | boolean        | no  | **(PREMIUM)** Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). (defaults: false)|

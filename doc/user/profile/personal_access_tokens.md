@@ -12,15 +12,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Token lifetime limits](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) added in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
 > - [Additional notifications for expiring tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/214721) added in GitLab 13.3.
 
-If you're unable to use [OAuth2](../../api/oauth2.md), you can use a personal access token to authenticate with the [GitLab API](../../api/README.md#personalproject-access-tokens). You can also use a personal access token with Git to authenticate over HTTP.
+If you're unable to use [OAuth2](../../api/oauth2.md), you can use a personal access token to authenticate with the [GitLab API](../../api/index.md#personalproject-access-tokens). You can also use a personal access token with Git to authenticate over HTTP.
 
 In both cases, you authenticate with a personal access token in place of your password.
 
 Personal access tokens are required when [Two-Factor Authentication (2FA)](account/two_factor_authentication.md) is enabled.
 
-For examples of how you can use a personal access token to authenticate with the API, see the [API documentation](../../api/README.md#personalproject-access-tokens).
+For examples of how you can use a personal access token to authenticate with the API, see the [API documentation](../../api/index.md#personalproject-access-tokens).
 
-Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/README.md#impersonation-tokens).
+Alternately, GitLab administrators can use the API to create [impersonation tokens](../../api/index.md#impersonation-tokens).
 Use impersonation tokens to automate authentication as a specific user.
 
 ## Create a personal access token

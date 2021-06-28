@@ -21,7 +21,7 @@ GET /projects/:id/releases/:tag_name/assets/links
 
 | Attribute     | Type           | Required | Description                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag associated with the Release. |
 
 Example request:
@@ -61,7 +61,7 @@ GET /projects/:id/releases/:tag_name/assets/links/:link_id
 
 | Attribute     | Type           | Required | Description                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag associated with the Release. |
 | `link_id`    | integer         | yes      | The ID of the link. |
 
@@ -93,7 +93,7 @@ POST /projects/:id/releases/:tag_name/assets/links
 
 | Attribute     | Type           | Required | Description                                                                                                      |
 | ------------- | -------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                              |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).                              |
 | `tag_name`    | string         | yes      | The tag associated with the Release.                                                                             |
 | `name`        | string         | yes      | The name of the link. Link names must be unique within the release.                                              |
 | `url`         | string         | yes      | The URL of the link. Link URLs must be unique within the release.                                                |
@@ -134,7 +134,7 @@ PUT /projects/:id/releases/:tag_name/assets/links/:link_id
 
 | Attribute     | Type           | Required | Description                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag associated with the Release. |
 | `link_id`     | integer         | yes      | The ID of the link. |
 | `name`        | string         | no | The name of the link. |
@@ -175,7 +175,7 @@ DELETE /projects/:id/releases/:tag_name/assets/links/:link_id
 
 | Attribute     | Type           | Required | Description                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag associated with the Release. |
 | `link_id`    | integer         | yes      | The ID of the link. |
 

@@ -741,7 +741,7 @@ GET /geo_nodes/current/failures
 | `type`         | string  | no | Type of failed objects (`repository`/`wiki`) |
 | `failure_type` | string | no | Type of failures (`sync`/`checksum_mismatch`/`verification`) |
 
-This endpoint uses [Pagination](README.md#pagination).
+This endpoint uses [Pagination](index.md#pagination).
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_nodes/current/failures"

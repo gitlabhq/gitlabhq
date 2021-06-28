@@ -867,10 +867,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.7.tgz#1ee6f838cc4410a1d797770934df91d90df8179e"
   integrity sha512-c6ySRK/Ma7lxwpIVbSAF3P+xiTLrNTGTLRx4/pHK111AdFxwgUwrYF6aVZFXvmG65jHOJHoa0eQQ21RW6rm0Rg==
 
-"@gitlab/eslint-plugin@8.4.0":
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-8.4.0.tgz#094fa4d41676a71146f82e1b19257a7ceabefd88"
-  integrity sha512-VE/c1yIMrj2igJWAALQtAKpnXL8fN5wJ1uKteZfi8xYbWouoUK6hizXSPrrEUWiM2FqcBI4Igcpz2JlJzDlAnA==
+"@gitlab/eslint-plugin@9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-9.0.0.tgz#0c872428e3237e0dbd2cbbe74317fc3786cefdf9"
+  integrity sha512-TaKLzaAFQbsJJIbetLTARkJNapIWuis8RyOp/arbVS5Fl8IjBK8m3hPmqIc5CwOz9qK8o5eSW1MA9clU/dLY3w==
   dependencies:
     babel-eslint "^10.0.3"
     eslint-config-airbnb-base "^14.2.1"
@@ -898,10 +898,10 @@
     stylelint-declaration-strict-value "1.7.7"
     stylelint-scss "3.18.0"
 
-"@gitlab/svgs@1.199.0":
-  version "1.199.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.199.0.tgz#0512a854018defc4e286b8ecb2143958bb535146"
-  integrity sha512-c/6SrvnQzkb4mfDzlHSnl/1zqUkqFZjkJmNHEb0E29l6XDLg3LQaUEMxSVGWIpW1D1RXG3zcGs845W12/WhciQ==
+"@gitlab/svgs@1.201.0":
+  version "1.201.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.201.0.tgz#5b390ae497331ae18e3a913cc5557b03c1d91ca9"
+  integrity sha512-Tv5lAfgiWgSBepZ0bak+kPq7q1uhtNRkD3Ih9LAAPY70XWDKej3Yv3L5joGEn/Xny2vt8Z+EHXqGE/BRblsEQw==
 
 "@gitlab/tributejs@1.0.0":
   version "1.0.0"

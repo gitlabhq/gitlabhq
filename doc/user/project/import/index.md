@@ -49,7 +49,7 @@ When migrating to GitLab.com, you must create users manually unless [SCIM](../..
 will be used. Creating users with the API is limited to self-managed instances as it requires
 administrator access.
 
-To migrate all data from self-managed to GitLab.com, you can leverage the [API](../../../api/README.md).
+To migrate all data from self-managed to GitLab.com, you can leverage the [API](../../../api/index.md).
 Migrate the assets in this order:
 
 1. [Groups](../../../api/groups.md)

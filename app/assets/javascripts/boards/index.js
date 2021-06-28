@@ -306,9 +306,11 @@ export default () => {
   // eslint-disable-next-line no-new, @gitlab/no-runtime-template-compiler
   new Vue({
     el: document.getElementById('js-add-list'),
-    data: {
-      filters: boardsStore.state.filters,
-      ...getMilestoneTitle($boardApp),
+    data() {
+      return {
+        filters: boardsStore.state.filters,
+        ...getMilestoneTitle($boardApp),
+      };
     },
     mounted() {
       initNewListDropdown();

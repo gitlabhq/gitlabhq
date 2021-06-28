@@ -13,9 +13,11 @@ import deleteProjectModal from './components/delete_project_modal.vue';
 
   const deleteModal = new Vue({
     el: deleteProjectModalEl,
-    data: {
-      deleteProjectUrl: '',
-      projectName: '',
+    data() {
+      return {
+        deleteProjectUrl: '',
+        projectName: '',
+      };
     },
     mounted() {
       const deleteProjectButtons = document.querySelectorAll('.delete-project-button');

@@ -17,14 +17,6 @@ settings:
     webpack:
       config: './config/webpack.config.js'
 rules:
-  # BEGIN Disallow deprecated slot syntax
-  # TODO: Remove once
-  # https://gitlab.com/gitlab-org/frontend/eslint-plugin/-/issues/31 is closed
-  # and consumed by GitLab.
-  vue/no-deprecated-scope-attribute: error
-  vue/no-deprecated-slot-attribute: error
-  vue/no-deprecated-slot-scope-attribute: error
-  # END Disallow deprecated slot syntax
   import/no-commonjs: error
   import/no-default-export: off
   no-underscore-dangle:

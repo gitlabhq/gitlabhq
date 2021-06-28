@@ -1,3 +1,4 @@
+<!-- eslint-disable-next-line vue/no-deprecated-functional-template -->
 <template functional>
   <footer class="form-actions d-flex justify-content-between">
     <div><slot name="prepend"></slot></div>

@@ -27,7 +27,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description                                                                   |
 | --------- | -------------- | -------- | ----------------------------------------------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 
 Example request:
 
@@ -96,7 +96,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description                                                                   |
 | ------------ | -------------- | -------- | ----------------------------------------------------------------------------- |
-| `id`         | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `id`         | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `cluster_id` | integer        | yes      | The ID of the cluster                                                         |
 
 Example request:
@@ -165,7 +165,7 @@ Parameters:
 
 | Attribute                                            | Type           | Required | Description                                                                                         |
 | ---------------------------------------------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------- |
-| `id`                                                 | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding)                       |
+| `id`                                                 | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)                       |
 | `name`                                               | string         | yes      | The name of the cluster                                                                             |
 | `domain`                                             | string         | no       | The [base domain](../user/group/clusters/index.md#base-domain) of the cluster                       |
 | `management_project_id`                              | integer        | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster          |
@@ -236,7 +236,7 @@ Parameters:
 
 | Attribute                                 | Type           | Required | Description                                                                                |
 | ----------------------------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------ |
-| `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding)              |
+| `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)              |
 | `cluster_id`                              | integer        | yes      | The ID of the cluster                                                                      |
 | `name`                                    | string         | no       | The name of the cluster                                                                    |
 | `domain`                                  | string         | no       | The [base domain](../user/group/clusters/index.md#base-domain) of the cluster              |
@@ -321,7 +321,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description                                                                   |
 | ------------ | -------------- | -------- | ----------------------------------------------------------------------------- |
-| `id`         | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `id`         | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `cluster_id` | integer        | yes      | The ID of the cluster                                                         |
 
 Example request:

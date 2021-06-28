@@ -16,7 +16,7 @@ export default class Group {
       if (groupName.value === '') {
         groupName.addEventListener('keyup', this.updateHandler);
 
-        groupName.addEventListener('blur', this.updateGroupPathSlugHandler);
+        groupName.addEventListener('keyup', this.updateGroupPathSlugHandler);
       }
     });
 

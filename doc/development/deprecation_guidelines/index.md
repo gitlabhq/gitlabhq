@@ -31,7 +31,7 @@ Deprecations should be announced via [release posts](https://about.gitlab.com/ha
 Generally, feature or configuration can be removed/changed only on major release.
 It also should be [deprecated in advance](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
 
-For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../../api/README.md#compatibility-guidelines) guidelines.
+For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../../api/index.md#compatibility-guidelines) guidelines.
 
 For configuration removals, see the [Omnibus deprecation policy](https://docs.gitlab.com/omnibus/package-information/deprecation_policy.html).
 

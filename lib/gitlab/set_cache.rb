@@ -10,12 +10,12 @@ module Gitlab
       @expires_in = expires_in
     end
 
-    def cache_key(key)
+    # NOTE Remove as part of https://gitlab.com/gitlab-org/gitlab/-/issues/331319
+    def old_cache_key(key)
       "#{key}:set"
     end
 
-    # NOTE Remove as part of https://gitlab.com/gitlab-org/gitlab/-/issues/331319
-    def new_cache_key(key)
+    def cache_key(key)
       "#{cache_namespace}:#{key}:set"
     end
 
@@ -25,7 +25,7 @@ module Gitlab
 
       with do |redis|
         keys_to_expire = keys.map { |key| cache_key(key) }
-        keys_to_expire += keys.map { |key| new_cache_key(key) } # NOTE Remove as part of #331319
+        keys_to_expire += keys.map { |key| old_cache_key(key) } # NOTE Remove as part of #331319
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
           redis.unlink(*keys_to_expire)

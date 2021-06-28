@@ -20,7 +20,7 @@ GET projects/:id/access_tokens
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"
@@ -56,7 +56,7 @@ POST projects/:id/access_tokens
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `name` | String | yes | The name of the project access token  |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#limiting-scopes-of-a-project-access-token) |
 | `expires_at` | Date | no | The token expires at midnight UTC on that date |
@@ -98,7 +98,7 @@ DELETE projects/:id/access_tokens/:token_id
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `token_id` | integer or string | yes | The ID of the project access token |
 
 ```shell

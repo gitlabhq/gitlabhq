@@ -1,6 +1,6 @@
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/sast/
 #
-# Configure SAST with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html).
+# Configure SAST with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/sast/index.html#available-variables
 
 variables:

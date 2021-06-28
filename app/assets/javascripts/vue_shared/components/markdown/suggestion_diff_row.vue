@@ -1,7 +1,11 @@
 <script>
-/* eslint-disable vue/no-v-html */
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+
 export default {
   name: 'SuggestionDiffRow',
+  directives: {
+    SafeHtml,
+  },
   props: {
     line: {
       type: Object,
@@ -32,7 +36,7 @@ export default {
       :class="[{ 'd-table-cell': displayAsCell }, lineType]"
       data-testid="suggestion-diff-content"
     >
-      <span v-if="line.rich_text" class="line" v-html="line.rich_text"></span>
+      <span v-if="line.rich_text" v-safe-html="line.rich_text" class="line"></span>
       <span v-else-if="line.text" class="line">{{ line.text }}</span>
       <span v-else class="line"></span>
     </td>

@@ -15346,7 +15346,7 @@ msgstr ""
 msgid "Group overview content"
 msgstr ""
 
-msgid "Group path is already taken. Suggestions: "
+msgid "Group path is already taken. We've suggested one that is available."
 msgstr ""
 
 msgid "Group path is available."

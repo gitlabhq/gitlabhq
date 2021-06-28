@@ -4,6 +4,7 @@ import { mapActions, mapGetters } from 'vuex';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import createFlash from '~/flash';
 import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -85,7 +86,7 @@ export default {
       return this.getUserData;
     },
     isLoggedIn() {
-      return Boolean(gon.current_user_id);
+      return isLoggedIn();
     },
     autosaveKey() {
       return getDiscussionReplyKey(this.firstNote.noteable_type, this.discussion.id);

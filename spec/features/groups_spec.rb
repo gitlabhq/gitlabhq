@@ -90,7 +90,7 @@ RSpec.describe 'Group' do
         fill_in 'group_path', with: user.username
         wait_for_requests
 
-        expect(page).to have_content('Group path is already taken')
+        expect(page).to have_content("Group path is already taken. We've suggested one that is available.")
       end
 
       it 'does not break after an invalid form submit' do
@@ -257,7 +257,7 @@ RSpec.describe 'Group' do
         fill_in 'Group URL', with: subgroup.path
         wait_for_requests
 
-        expect(page).to have_content('Group path is already taken')
+        expect(page).to have_content("Group path is already taken. We've suggested one that is available.")
       end
     end
   end

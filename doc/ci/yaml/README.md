@@ -1122,7 +1122,7 @@ Use `rules:if` clauses to specify when to add a job to a pipeline:
 - If no `if` statements are true, do not add the job to the pipeline.
 
 `if:` clauses are evaluated based on the values of [predefined CI/CD variables](../variables/predefined_variables.md)
-or [custom CI/CD variables](../variables/README.md#custom-cicd-variables).
+or [custom CI/CD variables](../variables/index.md#custom-cicd-variables).
 
 **Keyword type**: Job-specific and pipeline-specific. You can use it as part of a job
 to configure the job behavior, or with [`workflow`](#workflow) to configure the pipeline behavior.
@@ -1149,7 +1149,7 @@ job:
   defined for the job, which defaults to `on_success` if not defined.
 - You can define `when` once per rule, or once at the job-level, which applies to
   all rules. You can't mix `when` at the job-level with `when` in rules.
-- Unlike variables in [`script`](../variables/README.md#use-cicd-variables-in-job-scripts)
+- Unlike variables in [`script`](../variables/index.md#use-cicd-variables-in-job-scripts)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
 
 **Related topics**:
@@ -1402,7 +1402,7 @@ job2:
 #### `only:variables` / `except:variables`
 
 Use the `only:variables` or `except:variables` keywords to control when to add jobs
-to a pipeline, based on the status of [CI/CD variables](../variables/README.md).
+to a pipeline, based on the status of [CI/CD variables](../variables/index.md).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2303,7 +2303,7 @@ see [Deployment tier of environments](../environments/index.md#deployment-tier-o
 
 #### Dynamic environments
 
-Use CI/CD [variables](../variables/README.md) to dynamically name environments.
+Use CI/CD [variables](../variables/index.md) to dynamically name environments.
 
 For example:
 
@@ -2318,7 +2318,7 @@ deploy as review app:
 
 The `deploy as review app` job is marked as a deployment to dynamically
 create the `review/$CI_COMMIT_REF_NAME` environment. `$CI_COMMIT_REF_NAME`
-is a [CI/CD variable](../variables/README.md) set by the runner. The
+is a [CI/CD variable](../variables/index.md) set by the runner. The
 `$CI_ENVIRONMENT_SLUG` variable is based on the environment name, but suitable
 for inclusion in URLs. If the `deploy as review app` job runs in a branch named
 `pow`, this environment would be accessible with a URL like `https://review-pow.example.com/`.
@@ -2384,7 +2384,7 @@ no `cache:key` share the `default` cache.
 **Possible inputs**:
 
 - A string.
-- A [predefined variables](../variables/README.md).
+- A [predefined variables](../variables/index.md).
 - A combination of both.
 
 **Example of `cache:key`**:
@@ -2469,7 +2469,7 @@ Use `cache:key:prefix` to combine a prefix with the SHA computed for [`cache:key
 **Possible inputs**:
 
 - A string
-- A [predefined variables](../variables/README.md)
+- A [predefined variables](../variables/index.md)
 - A combination of both.
 
 **Example of `cache:key:prefix`**:
@@ -2830,7 +2830,7 @@ Note the following:
 
 Use the `name` directive to define the name of the created artifacts
 archive. You can specify a unique name for every archive. The `artifacts:name`
-variable can make use of any of the [predefined variables](../variables/README.md).
+variable can make use of any of the [predefined variables](../variables/index.md).
 The default name is `artifacts`, which becomes `artifacts.zip` when you download it.
 
 To create an archive with a name of the current job:
@@ -3426,7 +3426,7 @@ test:
 ```
 
 Every parallel job has a `CI_NODE_INDEX` and `CI_NODE_TOTAL`
-[predefined CI/CD variable](../variables/README.md#predefined-cicd-variables) set.
+[predefined CI/CD variable](../variables/index.md#predefined-cicd-variables) set.
 
 Different languages and test suites have different methods to enable parallelization.
 For example, use [Semaphore Test Boosters](https://github.com/renderedtext/test-boosters)
@@ -3465,7 +3465,7 @@ There can be from 2 to 50 jobs.
 Jobs can only run in parallel if there are multiple runners, or a single runner is
 [configured to run multiple jobs concurrently](#use-your-own-runners).
 
-Every job gets the same `CI_NODE_TOTAL` [CI/CD variable](../variables/README.md#predefined-cicd-variables) value, and a unique `CI_NODE_INDEX` value.
+Every job gets the same `CI_NODE_TOTAL` [CI/CD variable](../variables/index.md#predefined-cicd-variables) value, and a unique `CI_NODE_INDEX` value.
 
 ```yaml
 deploystacks:
@@ -3981,7 +3981,7 @@ release:
 ```
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a
-[custom variable in the UI](../variables/README.md#custom-cicd-variables),
+[custom variable in the UI](../variables/index.md#custom-cicd-variables),
 either as a `file`, which requires the path to the certificate, or as a variable,
 which requires the text representation of the certificate.
 
@@ -4383,12 +4383,12 @@ karma:
 
 > Introduced in GitLab Runner v0.5.0.
 
-[CI/CD variables](../variables/README.md) are configurable values that are passed to jobs.
+[CI/CD variables](../variables/index.md) are configurable values that are passed to jobs.
 They can be set globally and per-job.
 
 There are two types of variables.
 
-- [Custom variables](../variables/README.md#custom-cicd-variables):
+- [Custom variables](../variables/index.md#custom-cicd-variables):
   You can define their values in the `.gitlab-ci.yml` file, in the GitLab UI,
   or by using the API. You can also input variables in the GitLab UI when
   [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
@@ -4424,7 +4424,7 @@ meaning it applies to all jobs. If you define a variable in a job, it's availabl
 to that job only.
 
 If a variable of the same name is defined globally and for a specific job, the
-[job-specific variable overrides the global variable](../variables/README.md#cicd-variable-precedence).
+[job-specific variable overrides the global variable](../variables/index.md#cicd-variable-precedence).
 
 All YAML-defined variables are also set to any linked
 [Docker service containers](../services/index.md).
@@ -4449,7 +4449,7 @@ You cannot set job-level variables to be pre-filled when you run a pipeline manu
 
 ### Configure runner behavior with variables
 
-You can use [CI/CD variables](../variables/README.md) to configure how the runner processes Git requests:
+You can use [CI/CD variables](../variables/index.md) to configure how the runner processes Git requests:
 
 - [`GIT_STRATEGY`](../runners/configure_runners.md#git-strategy)
 - [`GIT_SUBMODULE_STRATEGY`](../runners/configure_runners.md#git-submodule-strategy)

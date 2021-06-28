@@ -109,9 +109,11 @@ describe('ImageDiffViewer', () => {
       components: {
         imageDiffViewer,
       },
-      data: {
-        ...allProps,
-        diffMode: 'renamed',
+      data() {
+        return {
+          ...allProps,
+          diffMode: 'renamed',
+        };
       },
       ...compileToFunctions(`
         <image-diff-viewer

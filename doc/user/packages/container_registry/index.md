@@ -210,7 +210,7 @@ build:
     - docker push $CI_REGISTRY/group/project/image:latest
 ```
 
-You can also make use of [other CI/CD variables](../../../ci/variables/README.md) to avoid hard-coding:
+You can also make use of [other CI/CD variables](../../../ci/variables/index.md) to avoid hard-coding:
 
 ```yaml
 build:
@@ -818,7 +818,7 @@ these steps:
    the tags' names will be in the `list_o_tags.out` file:
 
    ```shell
-   # Get a list of all tags in a certain container repository while considering [pagination](../../../api/README.md#pagination)
+   # Get a list of all tags in a certain container repository while considering [pagination](../../../api/index.md#pagination)
    echo -n "" > list_o_tags.out; for i in {1..N}; do curl --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
    ```
 

@@ -17,7 +17,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/context_commits
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `id` (required) - The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The internal ID of the merge request
 
 ```json
@@ -49,7 +49,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/context_commits
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `id` (required) - The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The internal ID of the merge request
 
 ```plaintext
@@ -88,7 +88,7 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/context_commits
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `id` (required) - The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The internal ID of the merge request
 
 | Attribute                  | Type    | Required | Description                                                                     |

@@ -7,11 +7,11 @@ type: reference
 
 # Predefined variables reference **(FREE)**
 
-Predefined [CI/CD variables](README.md) are available in every GitLab CI/CD pipeline.
+Predefined [CI/CD variables](index.md) are available in every GitLab CI/CD pipeline.
 
 Some variables are only available with more recent versions of [GitLab Runner](https://docs.gitlab.com/runner/).
 
-You can [output the values of all variables available for a job](README.md#list-all-environment-variables)
+You can [output the values of all variables available for a job](index.md#list-all-environment-variables)
 with a `script` command.
 
 There are also [Kubernetes-specific deployment variables](../../user/project/clusters/deploy_to_cluster.md#deployment-variables).
@@ -39,7 +39,7 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_CONCURRENT_ID`                       | all    | 11.10  | The unique ID of build execution in a single executor. |
 | `CI_CONCURRENT_PROJECT_ID`               | all    | 11.10  | The unique ID of build execution in a single executor and project. |
 | `CI_CONFIG_PATH`                         | 9.4    | 0.5    | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. |
-| `CI_DEBUG_TRACE`                         | all    | 1.7    | `true` if [debug logging (tracing)](README.md#debug-logging) is enabled. |
+| `CI_DEBUG_TRACE`                         | all    | 1.7    | `true` if [debug logging (tracing)](index.md#debug-logging) is enabled. |
 | `CI_DEFAULT_BRANCH`                      | 12.4   | all    | The name of the project's default branch. |
 | `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` | 13.7   | all    | The image prefix for pulling images through the Dependency Proxy. |
 | `CI_DEPENDENCY_PROXY_PASSWORD`           | 13.7   | all    | The password to pull images through the Dependency Proxy. |
@@ -62,7 +62,7 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_JOB_NAME`                            | 9.0    | 0.5    | The name of the job. |
 | `CI_JOB_STAGE`                           | 9.0    | 0.5    | The name of the job's stage. |
 | `CI_JOB_STATUS`                          | all    | 13.5   | The status of the job as each runner stage is executed. Use with [`after_script`](../yaml/README.md#after_script). Can be `success`, `failed`, or `canceled`. |
-| `CI_JOB_TOKEN`                           | 9.0    | 1.2    | A token to authenticate with [certain API endpoints](../../api/README.md#gitlab-cicd-job-token). The token is valid as long as the job is running. |
+| `CI_JOB_TOKEN`                           | 9.0    | 1.2    | A token to authenticate with [certain API endpoints](../../api/index.md#gitlab-cicd-job-token). The token is valid as long as the job is running. |
 | `CI_JOB_URL`                             | 11.1   | 0.5    | The job details URL. |
 | `CI_JOB_STARTED_AT`                      | 13.10  | all    | The UTC datetime when a job started, in [ISO 8601](https://tools.ietf.org/html/rfc3339#appendix-A) format. |
 | `CI_KUBERNETES_ACTIVE`                   | 13.0   | all    | Only available if the pipeline has a Kubernetes cluster available for deployments. `true` when available. |

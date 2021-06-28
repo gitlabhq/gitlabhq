@@ -46,7 +46,7 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 - Organizing and prioritizing with [Issue Boards](project/issue_board.md).
 - Reviewing code in [Merge Requests](project/merge_requests/index.md) with live-preview changes per
   branch with [Review Apps](../ci/review_apps/index.md).
-- Building, testing, and deploying with built-in [Continuous Integration](../ci/README.md).
+- Building, testing, and deploying with built-in [Continuous Integration](../ci/index.md).
 - Deploying personal and professional static websites with [GitLab Pages](project/pages/index.md).
 - Integrating with Docker by using [GitLab Container Registry](packages/container_registry/index.md).
 - Tracking the development lifecycle by using [GitLab Value Stream Analytics](analytics/value_stream_analytics.md).
@@ -164,7 +164,7 @@ you have quick access to. You can also gather feedback on them through
 
 ## GitLab CI/CD
 
-Use built-in [GitLab CI/CD](../ci/README.md) to test, build, and deploy your applications
+Use built-in [GitLab CI/CD](../ci/index.md) to test, build, and deploy your applications
 directly from GitLab. No third-party integrations needed.
 
 ## Features behind feature flags
@@ -189,7 +189,7 @@ POST request with data to the webhook URL.
 
 ## API
 
-Automate GitLab via [API](../api/README.md).
+Automate GitLab via [API](../api/index.md).
 
 ## Git and GitLab
 

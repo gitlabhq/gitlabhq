@@ -16,7 +16,7 @@ vulnerable. You can then take action to protect your application.
 
 ## Overview
 
-If you're using [GitLab CI/CD](../../../ci/README.md), you can use dependency scanning to analyze
+If you're using [GitLab CI/CD](../../../ci/index.md), you can use dependency scanning to analyze
 your dependencies for known vulnerabilities. GitLab scans all dependencies, including transitive
 dependencies (also known as nested dependencies). You can take advantage of dependency scanning by
 either:
@@ -217,7 +217,7 @@ variables:
       -----END CERTIFICATE-----
 ```
 
-The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/README.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
 ### Using private Maven repositories
 

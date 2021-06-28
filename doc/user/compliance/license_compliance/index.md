@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5483) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 
-If you're using [GitLab CI/CD](../../../ci/README.md), you can use License Compliance to search your
+If you're using [GitLab CI/CD](../../../ci/index.md), you can use License Compliance to search your
 project's dependencies for their licenses. You can then decide whether to allow or deny the use of
 each license. For example, if your application uses an external (open source) library whose license
 is incompatible with yours, then you can deny the use of that license.
@@ -370,7 +370,7 @@ source "https://gems.example.com"
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
 specifying a [`BUNDLE_SSL_CA_CERT`](https://bundler.io/v2.0/man/bundle-config.1.html)
-[variable](../../../ci/variables/README.md#custom-cicd-variables)
+[variable](../../../ci/variables/index.md#custom-cicd-variables)
 in the job definition.
 
 ### Configuring Cargo projects
@@ -394,7 +394,7 @@ To supply a custom root certificate to complete TLS verification, do one of the 
 
 - Use the `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
 - Specify a [`CARGO_HTTP_CAINFO`](https://doc.rust-lang.org/cargo/reference/environment-variables.html)
-  [variable](../../../ci/variables/README.md#custom-cicd-variables)
+  [variable](../../../ci/variables/index.md#custom-cicd-variables)
   in the job definition.
 
 ### Configuring Composer projects
@@ -427,7 +427,7 @@ For example:
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
 specifying a [`COMPOSER_CAFILE`](https://getcomposer.org/doc/03-cli.md#composer-cafile)
-[variable](../../../ci/variables/README.md#custom-cicd-variables)
+[variable](../../../ci/variables/index.md#custom-cicd-variables)
 in the job definition.
 
 ### Configuring Conan projects
@@ -490,7 +490,7 @@ example:
 }
 ```
 
-If credentials are required to authenticate then you can configure a [protected CI/CD variable](../../../ci/variables/README.md#protect-a-cicd-variable)
+If credentials are required to authenticate then you can configure a [protected CI/CD variable](../../../ci/variables/index.md#protect-a-cicd-variable)
 following the naming convention described in the [`CONAN_LOGIN_USERNAME` documentation](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name).
 
 #### Custom root certificates for Conan

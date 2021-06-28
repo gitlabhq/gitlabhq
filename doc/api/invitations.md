@@ -37,7 +37,7 @@ POST /projects/:id/invitations
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `email` | string | yes | The email of the new member or multiple emails separated by commas |
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
@@ -84,7 +84,7 @@ GET /projects/:id/invitations
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `page`    | integer | no   | Page to retrieve                      |
 | `per_page`| integer | no   | Number of member invitations to return per page |
 | `query`   | string  | no   | A query string to search for invited members by invite email. Query text must match email address exactly. When empty, returns all invitations. |
@@ -121,7 +121,7 @@ PUT /projects/:id/invitations/:email
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `email`   | string | yes    | The email address to which the invitation was previously sent. |
 | `access_level` | integer | no | A valid access level (defaults: `30`, developer access level). |
 | `expires_at` | string | no | A date string in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`). |
@@ -151,7 +151,7 @@ DELETE /projects/:id/invitations/:email
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `email`   | string | yes    | The email address to which the invitation was previously sent |
 
 ```shell

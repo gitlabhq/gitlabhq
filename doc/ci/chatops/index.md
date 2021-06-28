@@ -25,7 +25,7 @@ with the following arguments:
 - A `<job name>` to execute.
 - The `<job arguments>`.
 
-ChatOps passes the following [CI/CD variables](../variables/README.md#predefined-cicd-variables)
+ChatOps passes the following [CI/CD variables](../variables/index.md#predefined-cicd-variables)
 to the job:
 
 - `CHAT_INPUT` contains any additional arguments.
@@ -55,9 +55,9 @@ functions available. Consider these best practices when creating ChatOps jobs:
 - ChatOps provides limited support for access control. If the user triggering the
   slash command has [Developer access or above](../../user/permissions.md#project-members-permissions)
   in the project, the job runs. The job itself can use existing
-  [CI/CD variables](../variables/README.md#predefined-cicd-variables) like
+  [CI/CD variables](../variables/index.md#predefined-cicd-variables) like
   `GITLAB_USER_ID` to perform additional rights validation, but
-  these variables can be [overridden](../variables/README.md#cicd-variable-precedence).
+  these variables can be [overridden](../variables/index.md#cicd-variable-precedence).
 
 ### Controlling the ChatOps reply
 

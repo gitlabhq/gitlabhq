@@ -22,7 +22,7 @@ GET /projects/:id/wikis
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `with_content`      | boolean    | no      | Include pages' content  |
 
 ```shell
@@ -63,7 +63,7 @@ GET /projects/:id/wikis/:slug
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `slug` | string  | yes       | URLencoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name`  |
 
 ```shell
@@ -91,7 +91,7 @@ POST /projects/:id/wikis
 
 | Attribute     | Type    | Required | Description                  |
 | ------------- | ------- | -------- | ---------------------------- |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `content`       | string  | yes      | The content of the wiki page |
 | `title`        | string  | yes      | The title of the wiki page        |
 | `format` | string  | no       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc` and `org` |
@@ -122,7 +122,7 @@ PUT /projects/:id/wikis/:slug
 
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `content`       | string  | yes if `title` is not provided     | The content of the wiki page |
 | `title`        | string  | yes if `content` is not provided      | The title of the wiki page        |
 | `format` | string  | no       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc` and `org` |
@@ -154,7 +154,7 @@ DELETE /projects/:id/wikis/:slug
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `slug` | string  | yes       | URL-encoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name` |
 
 ```shell
@@ -174,7 +174,7 @@ POST /projects/:id/wikis/attachments
 
 | Attribute     | Type    | Required | Description                  |
 | ------------- | ------- | -------- | ---------------------------- |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `file` | string | yes | The attachment to be uploaded |
 | `branch` | string | no | The name of the branch. Defaults to the wiki repository default branch |
 

@@ -364,7 +364,7 @@ kubectl create secret generic my-secrets -n "$KUBE_NAMESPACE" --from-literal MY_
 
 #### Part of deployment job
 
-You can extend your `.gitlab-ci.yml` to create the secrets during deployment using the [CI/CD variables](../../../../ci/variables/README.md)
+You can extend your `.gitlab-ci.yml` to create the secrets during deployment using the [CI/CD variables](../../../../ci/variables/index.md)
 stored securely under your GitLab project.
 
 ```yaml

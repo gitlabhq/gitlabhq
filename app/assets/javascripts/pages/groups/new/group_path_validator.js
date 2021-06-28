@@ -12,7 +12,6 @@ const parentIdSelector = 'group_parent_id';
 const successMessageSelector = '.validation-success';
 const pendingMessageSelector = '.validation-pending';
 const unavailableMessageSelector = '.validation-error';
-const suggestionsMessageSelector = '.gl-path-suggestions';
 const inputGroupSelector = '.input-group';
 
 export default class GroupPathValidator extends InputValidator {
@@ -57,7 +56,9 @@ export default class GroupPathValidator extends InputValidator {
           );
 
           if (data.exists) {
-            GroupPathValidator.showSuggestions(inputDomElement, data.suggests);
+            const [suggestedSlug] = data.suggests;
+            const targetDomElement = document.querySelector('.js-autofill-group-path');
+            targetDomElement.value = suggestedSlug;
           }
         })
         .catch(() =>
@@ -66,14 +67,6 @@ export default class GroupPathValidator extends InputValidator {
           }),
         );
     }
-  }
-
-  static showSuggestions(inputDomElement, suggestions) {
-    const messageElement = inputDomElement.parentElement.parentElement.querySelector(
-      suggestionsMessageSelector,
-    );
-    const textSuggestions = suggestions && suggestions.length > 0 ? suggestions.join(', ') : 'none';
-    messageElement.textContent = textSuggestions;
   }
 
   static setMessageVisibility(inputDomElement, messageSelector, isVisible = true) {

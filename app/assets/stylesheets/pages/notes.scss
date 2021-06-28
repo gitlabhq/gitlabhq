@@ -763,6 +763,7 @@ $system-note-svg-size: 16px;
 .note-button.add-diff-note {
   @include btn-comment-icon;
   opacity: 0;
+  will-change: opacity;
 
   &[disabled] {
     background: $white;

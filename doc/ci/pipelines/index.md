@@ -75,7 +75,7 @@ You can also configure specific aspects of your pipelines through the GitLab UI.
 
 - [Pipeline settings](settings.md) for each project.
 - [Pipeline schedules](schedules.md).
-- [Custom CI/CD variables](../variables/README.md#custom-cicd-variables).
+- [Custom CI/CD variables](../variables/index.md#custom-cicd-variables).
 
 ### Ref Specs for Runners
 
@@ -125,7 +125,7 @@ you can filter the pipeline list by:
 
 ### Run a pipeline manually
 
-Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/README.md).
+Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/index.md).
 
 You might do this if the results of a pipeline (for example, a code build) are required outside the normal
 operation of the pipeline.
@@ -136,7 +136,7 @@ To execute a pipeline manually:
 1. Select the **Run pipeline** button.
 1. On the **Run pipeline** page:
     1. Select the branch or tag to run the pipeline for in the **Run for branch name or tag** field.
-    1. Enter any [environment variables](../variables/README.md) required for the pipeline run.
+    1. Enter any [environment variables](../variables/index.md) required for the pipeline run.
        You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
     1. Click the **Run pipeline** button.
 
@@ -148,7 +148,7 @@ The pipeline now executes the jobs as configured.
 
 You can use the [`value` and `description`](../yaml/README.md#prefill-variables-in-manual-pipelines)
 keywords to define
-[pipeline-level (global) variables](../variables/README.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
+[pipeline-level (global) variables](../variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually.
 
 In pipelines triggered manually, the **Run pipelines** page displays all top-level variables

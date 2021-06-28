@@ -18,7 +18,7 @@ To better understand the GitLab Jenkins integration, watch the following video:
 
 Use the Jenkins integration with GitLab when:
 
-- You plan to migrate your CI from Jenkins to [GitLab CI/CD](../ci/README.md) in the future, but
+- You plan to migrate your CI from Jenkins to [GitLab CI/CD](../ci/index.md) in the future, but
 need an interim solution.
 - You're invested in [Jenkins Plugins](https://plugins.jenkins.io/) and choose to keep using Jenkins
 to build your apps.

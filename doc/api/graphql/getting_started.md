@@ -141,7 +141,7 @@ More about queries:
 Authorization uses the same engine as the GitLab application (and GitLab.com).
 If you've signed in to GitLab and use GraphiQL, all queries are performed as
 you, the signed in user. For more information, read the
-[GitLab API documentation](../README.md#authentication).
+[GitLab API documentation](../index.md#authentication).
 
 ### Mutations
 

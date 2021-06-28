@@ -28,8 +28,7 @@
         title: _('Please choose a group URL with no special characters.'),
         "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
     %p.validation-error.gl-field-error.field-validation.hide
-      = _('Group path is already taken. Suggestions: ')
-      %span.gl-path-suggestions
+      = _("Group path is already taken. We've suggested one that is available.")
     %p.validation-success.gl-field-success.field-validation.hide= _('Group path is available.')
     %p.validation-pending.gl-field-error-ignore.field-validation.hide= _('Checking group URL availability...')
 

@@ -195,8 +195,8 @@ As of June 22, 2020 the [value is set](../../gitlab_com/index.md#gitlab-cicd) to
 
 ## Protect CI/CD variables by default
 
-To set all new [CI/CD variables](../../../ci/variables/README.md) as
-[protected](../../../ci/variables/README.md#protect-a-cicd-variable) by default:
+To set all new [CI/CD variables](../../../ci/variables/index.md) as
+[protected](../../../ci/variables/index.md#protect-a-cicd-variable) by default:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.

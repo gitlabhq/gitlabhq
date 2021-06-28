@@ -23,7 +23,7 @@ GET /projects/:id/packages
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, or `golang`. (_Introduced in GitLab 12.9_)
@@ -69,7 +69,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, because the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](index.md#pagination).
 
 Although you can filter packages by status, working with packages that have a `processing` status
 can result in malformed data or broken packages.
@@ -87,7 +87,7 @@ GET /groups/:id/packages
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the group](README.md#namespaced-path-encoding). |
+| `id`      | integer/string | yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding). |
 | `exclude_subgroups` | boolean | false | If the parameter is included as true, packages from projects from subgroups are not listed. Default is `false`. |
 | `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
@@ -164,7 +164,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, because the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](index.md#pagination).
 
 The `_links` object contains the following properties:
 
@@ -186,7 +186,7 @@ GET /projects/:id/packages/:package_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`      | integer/string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
@@ -268,7 +268,7 @@ GET /projects/:id/packages/:package_id/package_files
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
@@ -327,7 +327,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, because the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](index.md#pagination).
 
 ## Delete a project package
 
@@ -341,7 +341,7 @@ DELETE /projects/:id/packages/:package_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
@@ -369,7 +369,7 @@ DELETE /projects/:id/packages/:package_id/package_files/:package_file_id
 
 | Attribute         | Type           | Required | Description |
 | ----------------- | -------------- | -------- | ----------- |
-| `id`              | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`              | integer/string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `package_id`      | integer        | yes | ID of a package. |
 | `package_file_id` | integer        | yes | ID of a package file. |
 

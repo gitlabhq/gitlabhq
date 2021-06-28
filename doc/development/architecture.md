@@ -35,7 +35,7 @@ Kubernetes platform. The largest known GitLab instance is on GitLab.com, which i
 
 A typical installation uses NGINX or Apache as a web server to proxy through
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) and into the [Puma](https://puma.io)
-application server. GitLab serves web pages and the [GitLab API](../api/README.md) using the Puma
+application server. GitLab serves web pages and the [GitLab API](../api/index.md) using the Puma
 application server. It uses Sidekiq as a job queue which, in turn, uses Redis as a non-persistent
 database backend for job information, metadata, and incoming jobs.
 

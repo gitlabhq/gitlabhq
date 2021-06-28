@@ -13,7 +13,7 @@ random inputs to an instrumented version of your application in an effort to cau
 behavior, such as a crash. Such behavior indicates a bug that you should address.
 
 We recommend that you use fuzz testing in addition to the other security scanners in [GitLab Secure](../index.md)
-and your own test processes. If you're using [GitLab CI/CD](../../../ci/README.md),
+and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
 you can run your coverage-guided fuzz tests as part your CI/CD workflow. You can take advantage of
 coverage-guided fuzzing by including the CI job in your existing `.gitlab-ci.yml` file.
 

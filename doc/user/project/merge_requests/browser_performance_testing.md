@@ -10,7 +10,7 @@ type: reference, howto
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3507) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
 
 If your application offers a web interface and you're using
-[GitLab CI/CD](../../../ci/README.md), you can quickly determine the rendering performance
+[GitLab CI/CD](../../../ci/index.md), you can quickly determine the rendering performance
 impact of pending code changes in the browser.
 
 NOTE:

@@ -28,7 +28,7 @@ To ensure data integrity, snippets are put in a temporary read-only state for th
 duration of the move. During this time, users receive a `The repository is temporarily
 read-only. Please try again later.` message if they try to push new commits.
 
-This API requires you to [authenticate yourself](README.md#authentication) as an administrator.
+This API requires you to [authenticate yourself](index.md#authentication) as an administrator.
 
 For other repository types see:
 
@@ -42,7 +42,7 @@ GET /snippet_repository_storage_moves
 ```
 
 By default, `GET` requests return 20 results at a time because the API results
-are [paginated](README.md#pagination).
+are [paginated](index.md#pagination).
 
 Example request:
 
@@ -84,7 +84,7 @@ GET /snippets/:snippet_id/repository_storage_moves
 ```
 
 By default, `GET` requests return 20 results at a time because the API results
-are [paginated](README.md#pagination).
+are [paginated](index.md#pagination).
 
 Supported attributes:
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332588', type: :investigating } do
     describe 'Merge request creation from fork' do
       # TODO: Please add this back to :smoke suite as soon as https://gitlab.com/gitlab-org/gitlab/-/issues/332588 is addressed
       it 'can merge feature branch fork to mainline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1701' do

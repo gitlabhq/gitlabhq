@@ -366,7 +366,7 @@ Support for disabling 2FA is limited, depending on your subscription level. For 
 
 When 2FA is enabled, you can no longer use your normal account password to
 authenticate with Git over HTTPS on the command line or when using
-the [GitLab API](../../../api/README.md). You must use a
+the [GitLab API](../../../api/index.md). You must use a
 [personal access token](../personal_access_tokens.md) instead.
 
 ## Recovery options

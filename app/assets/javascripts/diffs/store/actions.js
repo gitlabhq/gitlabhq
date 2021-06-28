@@ -235,6 +235,8 @@ export const setHighlightedRow = ({ commit }, lineCode) => {
   const fileHash = lineCode.split('_')[0];
   commit(types.SET_HIGHLIGHTED_ROW, lineCode);
   commit(types.VIEW_DIFF_FILE, fileHash);
+
+  handleLocationHash();
 };
 
 // This is adding line discussions to the actual lines in the diff tree

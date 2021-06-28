@@ -43,7 +43,7 @@ GET /projects/:id/members
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `query`   | string | no     | A query string to search for members |
 | `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
 
@@ -104,7 +104,7 @@ GET /projects/:id/members/all
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `query`   | string | no     | A query string to search for members |
 | `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
 
@@ -169,7 +169,7 @@ GET /projects/:id/members/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
@@ -208,7 +208,7 @@ GET /projects/:id/members/all/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
@@ -244,7 +244,7 @@ This API endpoint works on top-level groups only. It does not work on subgroups.
 NOTE:
 Unlike other API endpoints, billable members is updated once per day at 12:00 UTC.
 
-This function takes [pagination](README.md#pagination) parameters `page` and `per_page` to restrict the list of users.
+This function takes [pagination](index.md#pagination) parameters `page` and `per_page` to restrict the list of users.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262875) in GitLab 13.7, the `search` and
 `sort` parameters allow you to search for billable group members by name and sort the results,
@@ -256,7 +256,7 @@ GET /groups/:id/billable_members
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `search`  | string         | no  | A query string to search for group members by name, username, or email. |
 | `sort`    | string         | no  | A query string containing parameters that specify the sort attribute and order. See supported values below.|
 
@@ -333,7 +333,7 @@ This API endpoint works on top-level groups only. It does not work on subgroups.
 
 This API endpoint requires permission to admin memberships for the group.
 
-This API endpoint takes [pagination](README.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
+This API endpoint takes [pagination](index.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
 
 ```plaintext
 GET /groups/:id/billable_members/:user_id/memberships
@@ -341,7 +341,7 @@ GET /groups/:id/billable_members/:user_id/memberships
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer        | yes | The user ID of the billable member |
 
 ```shell
@@ -393,7 +393,7 @@ DELETE /groups/:id/billable_members/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
@@ -411,7 +411,7 @@ POST /projects/:id/members
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer/string | yes | The user ID of the new member or multiple IDs separated by commas |
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
@@ -452,7 +452,7 @@ PUT /projects/:id/members/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
@@ -492,7 +492,7 @@ POST /groups/:id/members/:user_id/override
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
@@ -529,7 +529,7 @@ DELETE /groups/:id/members/:user_id/override
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
@@ -564,7 +564,7 @@ DELETE /projects/:id/members/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 | `skip_subresources` | boolean | false   | Whether the deletion of direct memberships of the removed member in subgroups and projects should be skipped. Default is `false`. |
 | `unassign_issuables` | boolean | false   | Whether the removed member should be unassigned from any issues or merge requests inside a given group or project. Default is `false`. |

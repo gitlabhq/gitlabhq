@@ -14,7 +14,7 @@ This API is in an alpha stage and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases.
 
-Every API call to vulnerabilities must be [authenticated](README.md#authentication).
+Every API call to vulnerabilities must be [authenticated](index.md#authentication).
 
 Vulnerability permissions inherit permissions from their project. If a project is
 private, and a user isn't a member of the project to which the vulnerability
@@ -24,7 +24,7 @@ belongs, requests to that project returns a `404 Not Found` status code.
 
 API results are paginated, and `GET` requests return 20 results at a time by default.
 
-Read more on [pagination](README.md#pagination).
+Read more on [pagination](index.md#pagination).
 
 ## List project vulnerabilities
 
@@ -40,7 +40,7 @@ GET /projects/:id/vulnerabilities
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                 |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                                                            |
+| `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                                                            |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/vulnerabilities"
@@ -117,7 +117,7 @@ POST /projects/:id/vulnerabilities?finding_id=<your_finding_id>
 
 | Attribute           | Type              | Required   | Description                                                                                                                  |
 | ------------------- | ----------------- | ---------- | -----------------------------------------------------------------------------------------------------------------------------|
-| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) which the authenticated user is a member of  |
+| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) which the authenticated user is a member of  |
 | `finding_id`        | integer or string | yes        | The ID of a Vulnerability Finding to create the new Vulnerability from |
 
 The other attributes of a newly created Vulnerability are populated from

@@ -35,12 +35,12 @@ A unique trigger token can be obtained when [adding a new trigger](#adding-a-new
 WARNING:
 Passing plain text tokens in public projects is a security issue. Potential
 attackers can impersonate the user that exposed their trigger token publicly in
-their `.gitlab-ci.yml` file. Use [CI/CD variables](../variables/README.md)
+their `.gitlab-ci.yml` file. Use [CI/CD variables](../variables/index.md)
 to protect trigger tokens.
 
 ### CI job token
 
-You can use the `CI_JOB_TOKEN` [CI/CD variable](../variables/README.md#predefined-cicd-variables) (used to authenticate
+You can use the `CI_JOB_TOKEN` [CI/CD variable](../variables/index.md#predefined-cicd-variables) (used to authenticate
 with the [GitLab Container Registry](../../user/packages/container_registry/index.md)) in the following cases.
 
 #### When used with multi-project pipelines
@@ -192,7 +192,7 @@ source repository. Be sure to URL-encode `ref` if it contains slashes.
 
 If you trigger a pipeline by using a webhook, you can access the webhook payload with
 the `TRIGGER_PAYLOAD` [predefined CI/CD variable](../variables/predefined_variables.md).
-The payload is exposed as a [file-type variable](../variables/README.md#cicd-variable-types),
+The payload is exposed as a [file-type variable](../variables/index.md#cicd-variable-types),
 so you can access the data with `cat $TRIGGER_PAYLOAD` or a similar command.
 
 ## Making use of trigger variables
@@ -255,7 +255,7 @@ curl --request POST \
   "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
 ```
 
-Trigger variables have the [highest priority](../variables/README.md#cicd-variable-precedence)
+Trigger variables have the [highest priority](../variables/index.md#cicd-variable-precedence)
 of all types of variables.
 
 ## Using cron to trigger nightly pipelines

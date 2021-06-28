@@ -29,9 +29,6 @@ export default {
     LogAdvancedFilters,
     LogControlButtons,
   },
-  filters: {
-    formatDate,
-  },
   props: {
     environmentName: {
       type: String,
@@ -114,6 +111,7 @@ export default {
       const { scrollTop = 0, clientHeight = 0, scrollHeight = 0 } = target;
       this.scrollDownButtonDisabled = scrollTop + clientHeight === scrollHeight;
     }, 200),
+    formatDate,
   },
 };
 </script>
@@ -229,8 +227,8 @@ export default {
 
     <div ref="logFooter" class="py-2 px-3 text-white bg-secondary-900">
       <gl-sprintf :message="s__('Environments|Logs from %{start} to %{end}.')">
-        <template #start>{{ timeRange.current.start | formatDate }}</template>
-        <template #end>{{ timeRange.current.end | formatDate }}</template>
+        <template #start>{{ formatDate(timeRange.current.start) }}</template>
+        <template #end>{{ formatDate(timeRange.current.end) }}</template>
       </gl-sprintf>
       <gl-sprintf
         v-if="!logs.isComplete"

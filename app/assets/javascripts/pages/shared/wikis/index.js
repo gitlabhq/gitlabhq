@@ -27,8 +27,10 @@ const createModalVueApp = () => {
     // eslint-disable-next-line no-new
     new Vue({
       el: deleteWikiModalWrapperEl,
-      data: {
-        deleteWikiUrl: '',
+      data() {
+        return {
+          deleteWikiUrl: '',
+        };
       },
       render(createElement) {
         return createElement(deleteWikiModal, {

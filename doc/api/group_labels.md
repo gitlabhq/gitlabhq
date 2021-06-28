@@ -25,7 +25,7 @@ GET /groups/:id/labels
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                  |
 | ---------     | ----           | -------- | -----------                                                                                                                                                                  |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user.                                                               |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user.                                                               |
 | `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. _([Introduced in GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31543))_ |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 | `include_descendant_groups` | boolean | no | Include descendant groups. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259024) in GitLab 13.6 |
@@ -77,7 +77,7 @@ GET /groups/:id/labels/:label_id
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                  |
 | ---------     | ----           | -------- | -----------                                                                                                                                                                  |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user.                                                               |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user.                                                               |
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 | `include_descendant_groups` | boolean | no | Include descendant groups. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259024) in GitLab 13.6 |
@@ -114,7 +114,7 @@ POST /groups/:id/labels
 
 | Attribute     | Type    | Required | Description                  |
 | ------------- | ------- | -------- | ---------------------------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`        | string  | yes      | The name of the label        |
 | `color`       | string  | yes      | The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description` | string  | no       | The description of the label, |
@@ -152,7 +152,7 @@ PUT /groups/:id/labels/:label_id
 
 | Attribute     | Type    | Required | Description                  |
 | ------------- | ------- | -------- | ---------------------------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 | `new_name`    | string  | no      | The new name of the label        |
 | `color`       | string  | no      | The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
@@ -193,7 +193,7 @@ DELETE /groups/:id/labels/:label_id
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 
 ```shell
@@ -214,7 +214,7 @@ POST /groups/:id/labels/:label_id/subscribe
 
 | Attribute  | Type              | Required | Description                          |
 | ---------- | ----------------- | -------- | ------------------------------------ |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `label_id` | integer or string | yes      | The ID or title of a group's label. |
 
 ```shell
@@ -250,7 +250,7 @@ POST /groups/:id/labels/:label_id/unsubscribe
 
 | Attribute  | Type              | Required | Description                          |
 | ---------- | ----------------- | -------- | ------------------------------------ |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `label_id` | integer or string | yes      | The ID or title of a group's label. |
 
 ```shell

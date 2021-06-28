@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # REST API resources **(FREE)**
 
-Available resources for the [GitLab REST API](README.md) can be grouped in the following contexts:
+Available resources for the [GitLab REST API](index.md) can be grouped in the following contexts:
 
 - [Projects](#project-resources).
 - [Groups](#group-resources).

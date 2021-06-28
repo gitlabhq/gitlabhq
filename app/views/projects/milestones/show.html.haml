@@ -12,19 +12,17 @@
 = render_if_exists 'shared/milestones/burndown', milestone: @milestone, project: @project
 
 - if can?(current_user, :read_issue, @project) && @milestone.total_issues_count == 0
-  .gl-alert.gl-alert-info.gl-mt-3.gl-mb-5{ data: { testid: 'no-issues-alert' } }
-    .gl-alert-container
-      = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-      .gl-alert-content
-        .gl-alert-body
-          %span= _('Assign some issues to this milestone.')
-- elsif @milestone.complete? && @milestone.active?
-  .gl-alert.gl-alert-success.gl-mt-3.gl-mb-5{ data: { testid: 'all-issues-closed-alert' } }
-    .gl-alert-container
-      = sprite_icon('check-circle', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-      .gl-alert-content
-        .gl-alert-body
-          %span= _('All issues for this milestone are closed. You may close this milestone now.')
+  = render 'shared/global_alert',
+    variant: :info,
+    dismissible: false,
+    is_contained: true,
+    alert_data: { testid: 'no-issues-alert' },
+    alert_class: 'gl-mt-3 gl-mb-5' do
+    .gl-alert-body
+      = _('Assign some issues to this milestone.')
+- else
+  = render 'shared/milestones/milestone_complete_alert', milestone: @milestone do
+    = _('All issues for this milestone are closed. You may close this milestone now.')
 
 = render 'shared/milestones/tabs', milestone: @milestone
 = render 'shared/milestones/sidebar', milestone: @milestone, project: @project, affix_offset: 153

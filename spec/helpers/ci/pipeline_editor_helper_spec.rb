@@ -41,7 +41,7 @@ RSpec.describe Ci::PipelineEditorHelper do
         expect(pipeline_editor_data).to eq({
           "ci-config-path": project.ci_config_path_or_default,
           "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
-          "ci-help-page-path" => help_page_path('ci/README'),
+          "ci-help-page-path" => help_page_path('ci/index'),
           "commit-sha" => project.commit.sha,
           "default-branch" => project.default_branch,
           "empty-state-illustration-path" => 'foo',
@@ -68,7 +68,7 @@ RSpec.describe Ci::PipelineEditorHelper do
         expect(pipeline_editor_data).to eq({
           "ci-config-path": project.ci_config_path_or_default,
           "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
-          "ci-help-page-path" => help_page_path('ci/README'),
+          "ci-help-page-path" => help_page_path('ci/index'),
           "commit-sha" => '',
           "default-branch" => project.default_branch,
           "empty-state-illustration-path" => 'foo',

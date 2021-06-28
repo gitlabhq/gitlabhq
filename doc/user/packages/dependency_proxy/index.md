@@ -123,7 +123,7 @@ Proxy manually without including the port:
 docker pull gitlab.example.com:443/my-group/dependency_proxy/containers/alpine:latest
 ```
 
-You can also use [custom CI/CD variables](../../../ci/variables/README.md#custom-cicd-variables) to store and access your personal access token or other valid credentials.
+You can also use [custom CI/CD variables](../../../ci/variables/index.md#custom-cicd-variables) to store and access your personal access token or other valid credentials.
 
 ### Store a Docker image in Dependency Proxy cache
 
@@ -180,7 +180,7 @@ Watch how to [use the Dependency Proxy to help avoid Docker Hub rate limits](htt
 
 In November 2020, Docker introduced
 [rate limits on pull requests from Docker Hub](https://docs.docker.com/docker-hub/download-rate-limit/).
-If your GitLab [CI/CD configuration](../../../ci/README.md) uses
+If your GitLab [CI/CD configuration](../../../ci/index.md) uses
 an image from Docker Hub, each time a job runs, it may count as a pull request.
 To help get around this limit, you can pull your image from the Dependency Proxy cache instead.
 

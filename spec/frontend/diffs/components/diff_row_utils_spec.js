@@ -11,24 +11,21 @@ const LINE_CODE = 'abc123';
 
 describe('isHighlighted', () => {
   it('should return true if line is highlighted', () => {
-    const state = { diffs: { highlightedRow: LINE_CODE } };
     const line = { line_code: LINE_CODE };
     const isCommented = false;
-    expect(utils.isHighlighted(state, line, isCommented)).toBe(true);
+    expect(utils.isHighlighted(LINE_CODE, line, isCommented)).toBe(true);
   });
 
   it('should return false if line is not highlighted', () => {
-    const state = { diffs: { highlightedRow: 'xxx' } };
     const line = { line_code: LINE_CODE };
     const isCommented = false;
-    expect(utils.isHighlighted(state, line, isCommented)).toBe(false);
+    expect(utils.isHighlighted('xxx', line, isCommented)).toBe(false);
   });
 
   it('should return true if isCommented is true', () => {
-    const state = { diffs: { highlightedRow: 'xxx' } };
     const line = { line_code: LINE_CODE };
     const isCommented = true;
-    expect(utils.isHighlighted(state, line, isCommented)).toBe(true);
+    expect(utils.isHighlighted('xxx', line, isCommented)).toBe(true);
   });
 });
 
@@ -143,19 +140,14 @@ describe('addCommentTooltip', () => {
     'Commenting on symbolic links that replace or are replaced by files is currently not supported.';
   const brokenRealTooltip =
     'Commenting on files that replace or are replaced by symbolic links is currently not supported.';
-  const commentTooltip = 'Add a comment to this line';
   const dragTooltip = 'Add a comment to this line or drag for multiple lines';
 
   it('should return default tooltip', () => {
     expect(utils.addCommentTooltip()).toBeUndefined();
   });
 
-  it('should return comment tooltip', () => {
-    expect(utils.addCommentTooltip({})).toEqual(commentTooltip);
-  });
-
   it('should return drag comment tooltip when dragging is enabled', () => {
-    expect(utils.addCommentTooltip({}, true)).toEqual(dragTooltip);
+    expect(utils.addCommentTooltip({})).toEqual(dragTooltip);
   });
 
   it('should return broken symlink tooltip', () => {

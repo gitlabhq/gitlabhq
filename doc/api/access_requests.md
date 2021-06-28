@@ -33,7 +33,7 @@ GET /projects/:id/access_requests
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 
 Example request:
 
@@ -76,7 +76,7 @@ POST /projects/:id/access_requests
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 
 Example request:
 
@@ -109,7 +109,7 @@ PUT /projects/:id/access_requests/:user_id/approve
 
 | Attribute      | Type           | Required | Description |
 | -------------- | -------------- | -------- | ----------- |
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id`      | integer        | yes      | The user ID of the access requester                                                                             |
 | `access_level` | integer        | no       | A valid access level (defaults: `30`, developer access level)                                                   |
 
@@ -144,7 +144,7 @@ DELETE /projects/:id/access_requests/:user_id
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer        | yes      | The user ID of the access requester                                                                             |
 
 Example request:

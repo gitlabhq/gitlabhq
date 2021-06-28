@@ -28,7 +28,7 @@ describe('DiffView', () => {
     };
     const diffs = {
       actions: { showCommentForm },
-      getters: { commitId: () => 'abc123' },
+      getters: { commitId: () => 'abc123', fileLineCoverage: () => ({}) },
       namespaced: true,
     };
     const notes = {
@@ -84,7 +84,7 @@ describe('DiffView', () => {
     it('sets `dragStart` onStartDragging', () => {
       const wrapper = createWrapper({ diffLines: [{}] });
 
-      wrapper.findComponent(DiffRow).vm.$emit('startdragging', { test: true });
+      wrapper.findComponent(DiffRow).vm.$emit('startdragging', { line: { test: true } });
       expect(wrapper.vm.dragStart).toEqual({ test: true });
     });
 
@@ -92,7 +92,7 @@ describe('DiffView', () => {
       const wrapper = createWrapper({ diffLines: [{}] });
       const diffRow = getDiffRow(wrapper);
 
-      diffRow.$emit('startdragging', { chunk: 0 });
+      diffRow.$emit('startdragging', { line: { chunk: 0 } });
       diffRow.$emit('enterdragging', { chunk: 1 });
 
       expect(setSelectedCommentPosition).not.toHaveBeenCalled();
@@ -109,7 +109,7 @@ describe('DiffView', () => {
         const wrapper = createWrapper({ diffLines: [{}] });
         const diffRow = getDiffRow(wrapper);
 
-        diffRow.$emit('startdragging', { chunk: 1, index: start });
+        diffRow.$emit('startdragging', { line: { chunk: 1, index: start } });
         diffRow.$emit('enterdragging', { chunk: 1, index: end });
 
         const arg = setSelectedCommentPosition.mock.calls[0][1];
@@ -122,7 +122,7 @@ describe('DiffView', () => {
       const wrapper = createWrapper({ diffLines: [{}] });
       const diffRow = getDiffRow(wrapper);
 
-      diffRow.$emit('startdragging', { test: true });
+      diffRow.$emit('startdragging', { line: { test: true } });
       expect(wrapper.vm.dragStart).toEqual({ test: true });
 
       diffRow.$emit('stopdragging');

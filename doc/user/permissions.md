@@ -59,7 +59,7 @@ The following table lists project permissions available for each role:
 | View wiki pages                                   | ✓       | ✓          | ✓           | ✓        | ✓      |
 | See a list of jobs                                | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | See a job log                                     | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
-| See a job with [debug logging](../ci/variables/README.md#debug-logging) |         |            | ✓           | ✓        | ✓      |
+| See a job with [debug logging](../ci/variables/index.md#debug-logging) |         |            | ✓           | ✓        | ✓      |
 | Download and browse job artifacts                 | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | Create confidential issue                         | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Create new issue                                  | ✓       | ✓          | ✓           | ✓        | ✓      |

@@ -15,7 +15,7 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
 
     shared_examples 'cache_key examples' do
       it 'includes the namespace' do
-        is_expected.to eq("foo:#{namespace}:set")
+        is_expected.to eq("#{gitlab_cache_namespace}:foo:#{namespace}:set")
       end
 
       context 'with a given namespace' do
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
         let(:cache) { described_class.new(repository, extra_namespace: extra_namespace) }
 
         it 'includes the full namespace' do
-          is_expected.to eq("foo:#{namespace}:#{extra_namespace}:set")
+          is_expected.to eq("#{gitlab_cache_namespace}:foo:#{namespace}:#{extra_namespace}:set")
         end
       end
     end
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
       write_cache
 
       redis_keys = Gitlab::Redis::Cache.with { |redis| redis.scan(0, match: "*") }.last
-      expect(redis_keys).to include("branch_names:#{namespace}:set")
+      expect(redis_keys).to include("#{gitlab_cache_namespace}:branch_names:#{namespace}:set")
       expect(cache.fetch('branch_names')).to contain_exactly('main')
     end
 
@@ -95,8 +95,8 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
         expect(cache.read(:foo)).to be_empty
       end
 
-      it 'expires the new key format' do
-        expect_any_instance_of(Redis).to receive(:unlink).with(cache.cache_key(:foo), cache.new_cache_key(:foo)) # rubocop:disable RSpec/AnyInstanceOf
+      it 'expires the old key format' do
+        expect_any_instance_of(Redis).to receive(:unlink).with(cache.cache_key(:foo), cache.old_cache_key(:foo)) # rubocop:disable RSpec/AnyInstanceOf
 
         subject
       end

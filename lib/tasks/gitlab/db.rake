@@ -101,57 +101,16 @@ namespace :gitlab do
       Rake::Task[task_name].reenable
     end
 
-    desc 'This dumps GitLab specific database details - it runs after db:structure:dump'
-    task :dump_custom_structure do |task_name|
-      Gitlab::Database::CustomStructure.new.dump
-
-      # Allow this task to be called multiple times, as happens when running db:migrate:redo
-      Rake::Task[task_name].reenable
-    end
-
-    desc 'This loads GitLab specific database details - runs after db:structure:dump'
-    task :load_custom_structure do
-      configuration = Rails.application.config_for(:database)
-
-      ENV['PGHOST']     = configuration['host']          if configuration['host']
-      ENV['PGPORT']     = configuration['port'].to_s     if configuration['port']
-      ENV['PGPASSWORD'] = configuration['password'].to_s if configuration['password']
-      ENV['PGUSER']     = configuration['username'].to_s if configuration['username']
-
-      command = 'psql'
-      dump_filepath = Gitlab::Database::CustomStructure.custom_dump_filepath.to_path
-      args = ['-v', 'ON_ERROR_STOP=1', '-q', '-X', '-f', dump_filepath, configuration['database']]
-
-      unless Kernel.system(command, *args)
-        raise "failed to execute:\n#{command} #{args.join(' ')}\n\n" \
-          "Please ensure `#{command}` is installed in your PATH and has proper permissions.\n\n"
-      end
-    end
-
     # Inform Rake that custom tasks should be run every time rake db:structure:dump is run
     #
     # Rails 6.1 deprecates db:structure:dump in favor of db:schema:dump
     Rake::Task['db:structure:dump'].enhance do
       Rake::Task['gitlab:db:clean_structure_sql'].invoke
-      Rake::Task['gitlab:db:dump_custom_structure'].invoke
     end
 
     # Inform Rake that custom tasks should be run every time rake db:schema:dump is run
     Rake::Task['db:schema:dump'].enhance do
       Rake::Task['gitlab:db:clean_structure_sql'].invoke
-      Rake::Task['gitlab:db:dump_custom_structure'].invoke
-    end
-
-    # Inform Rake that custom tasks should be run every time rake db:structure:load is run
-    #
-    # Rails 6.1 deprecates db:structure:load in favor of db:schema:load
-    Rake::Task['db:structure:load'].enhance do
-      Rake::Task['gitlab:db:load_custom_structure'].invoke
-    end
-
-    # Inform Rake that custom tasks should be run every time rake db:schema:load is run
-    Rake::Task['db:schema:load'].enhance do
-      Rake::Task['gitlab:db:load_custom_structure'].invoke
     end
 
     desc 'Create missing dynamic database partitions'

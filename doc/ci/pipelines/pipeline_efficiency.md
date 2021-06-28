@@ -100,7 +100,7 @@ representation of pipeline health.
 
 Instance administrators have access to additional [performance metrics and self-monitoring](../../administration/monitoring/index.md).
 
-You can fetch specific pipeline health metrics from the [API](../../api/README.md).
+You can fetch specific pipeline health metrics from the [API](../../api/index.md).
 External monitoring tools can poll the API and verify pipeline health or collect
 metrics for long term SLA analytics.
 

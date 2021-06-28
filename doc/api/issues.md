@@ -16,7 +16,7 @@ request on that project results in a `404` status code.
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
 
-Read more on [pagination](README.md#pagination).
+Read more on [pagination](index.md#pagination).
 
 WARNING:
 The `reference` attribute in responses is deprecated in favor of `references`.
@@ -268,7 +268,7 @@ GET /groups/:id/issues?state=opened
 | `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                 |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user                 |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                 |
 | `issue_type`        | string           | no         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. _(Introduced in [GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/260375))_ |
 | `iteration_id` **(PREMIUM)** | integer | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
@@ -472,7 +472,7 @@ GET /projects/:id/issues?state=opened
 | `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user               |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user               |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                              |
 | `issue_type`        | string           | no         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. _(Introduced in [GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/260375))_ |
 | `iteration_id` **(PREMIUM)** | integer | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
@@ -824,7 +824,7 @@ GET /projects/:id/issues/:issue_iid
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -992,7 +992,7 @@ POST /projects/:id/issues
 | `due_date`                                | string         | no       | The due date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11` |
 | `epic_id` **(PREMIUM)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
 | `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal in API version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
-| `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires administrator or project owner rights) |
 | `issue_type`                              | string         | no       | The type of issue. One of `issue`, `incident`, or `test_case`. Default is `issue`. |
 | `labels`                                  | string         | no       | Comma-separated label names for an issue  |
@@ -1162,7 +1162,7 @@ PUT /projects/:id/issues/:issue_iid
 | `due_date`     | string  | no       | The due date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11`                                           |
 | `epic_id` **(PREMIUM)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
 | `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal in API version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
-| `id`           | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`           | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid`    | integer | yes      | The internal ID of a project's issue                                                                       |
 | `issue_type`   | string  | no       | Updates the type of issue. One of `issue`, `incident`, or `test_case`. |
 | `labels`       | string  | no       | Comma-separated label names for an issue. Set to an empty string to unassign all labels.                   |
@@ -1309,7 +1309,7 @@ DELETE /projects/:id/issues/:issue_iid
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -1328,7 +1328,7 @@ PUT /projects/:id/issues/:issue_iid/reorder
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of the project's issue |
 | `move_after_id` | integer | no | The ID of a project's issue that should be placed after this issue |
 | `move_before_id` | integer | no | The ID of a project's issue that should be placed before this issue |
@@ -1352,7 +1352,7 @@ POST /projects/:id/issues/:issue_iid/move
 
 | Attribute       | Type    | Required | Description                          |
 |-----------------|---------|----------|--------------------------------------|
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid`     | integer | yes      | The internal ID of a project's issue |
 | `to_project_id` | integer | yes      | The ID of the new project            |
 
@@ -1498,7 +1498,7 @@ POST /projects/:id/issues/:issue_iid/subscribe
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -1643,7 +1643,7 @@ POST /projects/:id/issues/:issue_iid/unsubscribe
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -1716,7 +1716,7 @@ POST /projects/:id/issues/:issue_iid/todo
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -1840,7 +1840,7 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description |
 | :---------- | :------------- | :------- | :---------- |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid` | integer        | yes      | The internal ID of a project's issue |
 | `body`      | String         | yes      | The content of a note. Must contain `/promote` at the start of a new line. |
 
@@ -1891,7 +1891,7 @@ POST /projects/:id/issues/:issue_iid/time_estimate
 | Attribute   | Type    | Required | Description                              |
 |-------------|---------|----------|------------------------------------------|
 | `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
 
 ```shell
@@ -1919,7 +1919,7 @@ POST /projects/:id/issues/:issue_iid/reset_time_estimate
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -1948,7 +1948,7 @@ POST /projects/:id/issues/:issue_iid/add_spent_time
 | Attribute   | Type    | Required | Description                              |
 |-------------|---------|----------|------------------------------------------|
 | `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
 
 ```shell
@@ -1976,7 +1976,7 @@ POST /projects/:id/issues/:issue_iid/reset_spent_time
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -2005,7 +2005,7 @@ GET /projects/:id/issues/:issue_iid/time_stats
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -2036,7 +2036,7 @@ GET /projects/:id/issues/:issue_iid/related_merge_requests
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -2196,7 +2196,7 @@ GET /projects/:id/issues/:issue_iid/closed_by
 
 | Attribute   | Type           | Required | Description                        |
 | ----------- | ---------------| -------- | ---------------------------------- |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid` | integer        | yes      | The internal ID of a project issue |
 
 ```shell
@@ -2273,7 +2273,7 @@ GET /projects/:id/issues/:issue_iid/participants
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -2317,7 +2317,7 @@ GET /projects/:id/issues/:issue_iid/user_agent_detail
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -2349,7 +2349,7 @@ POST /projects/:id/issues/:issue_iid/metric_images
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 | `file` | file | yes      | The image file to be uploaded |
 | `url` | string | no      | The URL to view more metric information |
@@ -2381,7 +2381,7 @@ GET /projects/:id/issues/:issue_iid/metric_images
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
@@ -2419,7 +2419,7 @@ DELETE /projects/:id/issues/:issue_iid/metric_images/:image_id
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 | `image_id` | integer | yes      | The ID of the image |
 

@@ -8,7 +8,7 @@
   .settings-content
     - if ci_variable_protected_by_default?
       %p.settings-message.text-center
-        - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('ci/variables/README', anchor: 'protect-a-cicd-variable') }
+        - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('ci/variables/index', anchor: 'protect-a-cicd-variable') }
         = s_('Environment variables on this GitLab instance are configured to be %{link_start}protected%{link_end} by default.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
     #js-instance-variables{ data: { endpoint: admin_ci_variables_path, group: 'true', maskable_regex: ci_variable_maskable_regex, protected_by_default: ci_variable_protected_by_default?.to_s} }
 

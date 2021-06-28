@@ -35,6 +35,6 @@ In order to isolate and only display relevant metrics for a given environment,
 GitLab needs a method to detect which labels are associated. To do that,
 GitLab uses the defined queries and fills in the environment specific variables.
 Typically this involves looking for the
-[`$CI_ENVIRONMENT_SLUG`](../../../../ci/variables/README.md#predefined-cicd-variables),
+[`$CI_ENVIRONMENT_SLUG`](../../../../ci/variables/index.md#predefined-cicd-variables),
 but may also include other information such as the project's Kubernetes namespace.
 Each search query is defined in the [exporter specific documentation](#exporters).

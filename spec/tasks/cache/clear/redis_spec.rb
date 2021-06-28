@@ -36,8 +36,6 @@ RSpec.describe 'clearing redis cache', :clean_gitlab_redis_cache, :silence_stdou
       let(:cache) { Gitlab::RepositorySetCache.new(repository) }
 
       before do
-        pending "Enable as part of https://gitlab.com/gitlab-org/gitlab/-/issues/331319"
-
         cache.write(:foo, [:bar])
       end
 

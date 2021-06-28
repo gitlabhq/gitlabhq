@@ -18,7 +18,7 @@ GET /projects/:id/pipeline_schedules
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `scope`   | string  | no       | The scope of pipeline schedules, one of: `active`, `inactive` |
 
 ```shell
@@ -59,7 +59,7 @@ GET /projects/:id/pipeline_schedules/:pipeline_schedule_id
 
 | Attribute    | Type    | required | Description              |
 |--------------|---------|----------|--------------------------|
-| `id`         | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`         | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `pipeline_schedule_id` | integer | yes      | The pipeline schedule ID           |
 
 ```shell
@@ -111,7 +111,7 @@ POST /projects/:id/pipeline_schedules
 
 | Attribute       | Type           | required | Description                                                                                                             |
 |-----------------|----------------|----------|-------------------------------------------------------------------------------------------------------------------------|
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.        |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.        |
 | `description`   | string         | yes      | The description of the pipeline schedule.                                                                               |
 | `ref`           | string         | yes      | The branch or tag name that is triggered.                                                                               |
 | `cron`          | string         | yes      | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`.                                      |
@@ -157,7 +157,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 
 | Attribute              | Type           | required | Description                                                                                                      |
 |------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `pipeline_schedule_id` | integer        | yes      | The pipeline schedule ID.                                                                                        |
 | `description`          | string         | no       | The description of the pipeline schedule.                                                                        |
 | `ref`                  | string         | no       | The branch or tag name that is triggered.                                                                        |
@@ -208,7 +208,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership
 
 | Attribute     | Type    | required | Description              |
 |---------------|---------|----------|--------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `pipeline_schedule_id`  | integer | yes      | The pipeline schedule ID           |
 
 ```shell
@@ -253,7 +253,7 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id
 
 | Attribute      | Type    | required | Description              |
 |----------------|---------|----------|--------------------------|
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `pipeline_schedule_id`   | integer | yes      | The pipeline schedule ID           |
 
 ```shell
@@ -301,7 +301,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play
 
 | Attribute              | Type           | required   | Description                                                                                                     |
 | ----------------       | ---------      | ---------- | --------------------------                                                                                      |
-| `id`                   | integer/string | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                   | integer/string | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `pipeline_schedule_id` | integer        | yes        | The pipeline schedule ID                                                                                        |
 
 Example request:
@@ -330,7 +330,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
 
 | Attribute              | Type           | required | Description              |
 |------------------------|----------------|----------|--------------------------|
-| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `pipeline_schedule_id` | integer        | yes      | The pipeline schedule ID |
 | `key`                  | string         | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
 | `value`                | string         | yes      | The `value` of a variable |
@@ -359,7 +359,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 
 | Attribute              | Type           | required | Description              |
 |------------------------|----------------|----------|--------------------------|
-| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `pipeline_schedule_id` | integer        | yes      | The pipeline schedule ID |
 | `key`                  | string         | yes      | The `key` of a variable   |
 | `value`                | string         | yes      | The `value` of a variable |
@@ -389,7 +389,7 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 
 | Attribute              | Type           | required | Description              |
 |------------------------|----------------|----------|--------------------------|
-| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user      |
 | `pipeline_schedule_id` | integer        | yes      | The pipeline schedule ID |
 | `key`                  | string         | yes      | The `key` of a variable |
 

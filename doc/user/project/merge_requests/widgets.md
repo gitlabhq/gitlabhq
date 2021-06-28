@@ -14,7 +14,7 @@ and the services you configure for your project.
 
 ## Pipeline information
 
-If you've set up [GitLab CI/CD](../../../ci/README.md) in your project,
+If you've set up [GitLab CI/CD](../../../ci/index.md) in your project,
 a [merge request](index.md) displays pipeline information in the widgets area
 of the **Overview** tab:
 

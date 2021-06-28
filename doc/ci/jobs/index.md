@@ -157,9 +157,9 @@ additional variables. To access this page, click on the **name** of the manual j
 the pipeline view, *not* the play (**{play}**) button.
 
 This is useful when you want to alter the execution of a job that uses
-[custom CI/CD variables](../variables/README.md#custom-cicd-variables).
+[custom CI/CD variables](../variables/index.md#custom-cicd-variables).
 Add a variable name (key) and value here to override the value defined in
-[the UI or `.gitlab-ci.yml`](../variables/README.md#custom-cicd-variables),
+[the UI or `.gitlab-ci.yml`](../variables/index.md#custom-cicd-variables),
 for a single run of the manual job.
 
 ![Manual job variables](img/manual_job_variables_v13_10.png)

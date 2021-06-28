@@ -37,7 +37,7 @@ fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `star
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
 
-Read more on [pagination](README.md#pagination).
+Read more on [pagination](index.md#pagination).
 
 WARNING:
 > `reference` attribute in response is deprecated in favour of `references`.
@@ -60,7 +60,7 @@ GET /groups/:id/epics?state=opened
 
 | Attribute           | Type             | Required   | Description                                                                                                                 |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user               |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user               |
 | `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                 |
 | `labels`            | string           | no         | Return epics matching a comma separated list of labels names. Label names from the epic group or a parent group can be used |
 | `with_labels_details` | boolean        | no         | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Available in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) and later |
@@ -190,7 +190,7 @@ GET /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user                |
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
@@ -263,7 +263,7 @@ POST /groups/:id/epics
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user                |
 | `title`             | string           | yes        | The title of the epic |
 | `labels`            | string           | no         | The comma separated list of labels |
 | `description`       | string           | no         | The description of the epic. Limited to 1,048,576 characters.  |
@@ -345,7 +345,7 @@ PUT /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user                |
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic  |
 | `title`             | string           | no         | The title of an epic |
 | `description`       | string           | no         | The description of an epic. Limited to 1,048,576 characters.  |
@@ -420,7 +420,7 @@ DELETE /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user                |
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
@@ -439,7 +439,7 @@ POST /groups/:id/epics/:epic_iid/todo
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes   | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes   | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user  |
 | `epic_iid` | integer | yes          | The internal ID of a group's epic |
 
 ```shell

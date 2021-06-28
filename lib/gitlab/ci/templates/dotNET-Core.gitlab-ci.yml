@@ -30,14 +30,6 @@ variables:
   # NOTE: Please edit this path so it matches the structure of your project!
   SOURCE_CODE_PATH: '*/*/'
 
-# ### Define stage list
-#
-# In this example there are only two stages.
-# Initially, the project will be built and then tested.
-stages:
-  - build
-  - test
-
 # ### Define global cache rule
 #
 # Before building the project, all dependencies (e.g. third-party NuGet packages)

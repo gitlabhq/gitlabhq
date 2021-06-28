@@ -35,7 +35,7 @@ documentation for your package type:
 
 ## Use GitLab CI/CD to build packages
 
-To use [GitLab CI/CD](../../../ci/README.md) to build packages, you can
+To use [GitLab CI/CD](../../../ci/index.md) to build packages, you can
 authenticate with the [`CI_JOB_TOKEN` predefined variable](../../../ci/variables/predefined_variables.md).
 
 CI/CD templates, which you can use to get started, are in [this repository](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).

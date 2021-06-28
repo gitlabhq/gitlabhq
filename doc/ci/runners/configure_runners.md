@@ -230,7 +230,7 @@ Example 2:
 
 ## Configure runner behavior with variables
 
-You can use [CI/CD variables](../variables/README.md) to configure runner Git behavior
+You can use [CI/CD variables](../variables/index.md) to configure runner Git behavior
 globally or for individual jobs:
 
 - [`GIT_STRATEGY`](#git-strategy)

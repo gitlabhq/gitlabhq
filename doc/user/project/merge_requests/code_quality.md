@@ -10,7 +10,7 @@ type: reference, howto
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1984) in GitLab 9.3.
 > - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) in 13.2.
 
-Ensuring your project's code stays simple, readable and easy to contribute to can be problematic. With the help of [GitLab CI/CD](../../../ci/README.md), you can analyze your
+Ensuring your project's code stays simple, readable and easy to contribute to can be problematic. With the help of [GitLab CI/CD](../../../ci/index.md), you can analyze your
 source code quality using GitLab Code Quality.
 
 Code Quality:
@@ -262,13 +262,13 @@ was chosen as an operational decision by the runner team, instead of exposing `d
 ### Disabling the code quality job
 
 The `code_quality` job doesn't run if the `$CODE_QUALITY_DISABLED` CI/CD variable
-is present. Please refer to the CI/CD variables [documentation](../../../ci/variables/README.md)
+is present. Please refer to the CI/CD variables [documentation](../../../ci/variables/index.md)
 to learn more about how to define one.
 
 To disable the `code_quality` job, add `CODE_QUALITY_DISABLED` as a custom CI/CD variable.
 This can be done:
 
-- For [the whole project](../../../ci/variables/README.md#custom-cicd-variables).
+- For [the whole project](../../../ci/variables/index.md#custom-cicd-variables).
 - For a single pipeline run:
 
   1. Go to **CI/CD > Pipelines**

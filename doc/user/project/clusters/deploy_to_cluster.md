@@ -14,7 +14,7 @@ A Kubernetes cluster can be the destination for a deployment job. If
   the cluster from your jobs using tools such as `kubectl` or `helm`.
 - You don't use the GitLab cluster integration, you can still deploy to your
   cluster. However, you must configure Kubernetes tools yourself
-  using [CI/CD variables](../../../ci/variables/README.md#custom-cicd-variables)
+  using [CI/CD variables](../../../ci/variables/index.md#custom-cicd-variables)
   before you can interact with the cluster from your jobs.
 
 ## Deployment variables
@@ -36,7 +36,7 @@ following command in your deployment job script, for Kubernetes to access the re
   ```
 
 The Kubernetes cluster integration exposes these
-[deployment variables](../../../ci/variables/README.md#deployment-variables) in the
+[deployment variables](../../../ci/variables/index.md#deployment-variables) in the
 GitLab CI/CD build environment to deployment jobs. Deployment jobs have
 [defined a target environment](../../../ci/environments/index.md).
 

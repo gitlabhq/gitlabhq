@@ -160,7 +160,7 @@ You can impersonate a user in the following ways:
   1. In the left sidebar, select **Overview > Users**.
   1. From the list of users, select a user.
   1. Select **Impersonate**.
-- With the API, using [impersonation tokens](../../api/README.md#impersonation-tokens).
+- With the API, using [impersonation tokens](../../api/index.md#impersonation-tokens).
 
 All impersonation activities are [captured with audit events](../../administration/audit_events.md#impersonation-data).
 

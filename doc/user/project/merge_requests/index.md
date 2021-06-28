@@ -33,7 +33,7 @@ important parts of the merge request:
   [merge request widgets area](widgets.md) reports results from pipelines and tests.
 - **Commits**: Contains a list of commits added to this merge request. For more
   information, read [Commits tab in merge requests](commits.md).
-- **Pipelines**: If configured, contains a list of recent [GitLab CI/CD](../../../ci/README.md)
+- **Pipelines**: If configured, contains a list of recent [GitLab CI/CD](../../../ci/index.md)
   pipelines and their status.
 - **Changes**: Contains the diffs of files changed by this merge request. You can
   [configure the display](changes.md).

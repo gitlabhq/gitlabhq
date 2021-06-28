@@ -393,14 +393,14 @@ For GitLab Runner to function, you _must_ specify the following:
 - `runnerRegistrationToken`: The registration token for adding new runners to GitLab.
   This must be [retrieved from your GitLab instance](../../ci/runners/index.md).
 
-These values can be specified using [CI/CD variables](../../ci/variables/README.md):
+These values can be specified using [CI/CD variables](../../ci/variables/index.md):
 
 - `GITLAB_RUNNER_GITLAB_URL` is used for `gitlabUrl`.
 - `GITLAB_RUNNER_REGISTRATION_TOKEN` is used for `runnerRegistrationToken`
 
 The methods of specifying these values are mutually exclusive. Either specify variables `GITLAB_RUNNER_REGISTRATION_TOKEN` and `GITLAB_RUNNER_TOKEN` as CI variables (recommended) or provide values for `runnerRegistrationToken:` and `runnerToken:` in `.gitlab/managed-apps/gitlab-runner/values.yaml`. If you choose to use CI variables, comment out or remove `runnerRegistrationToken:` and `runnerToken:` from `.gitlab/managed-apps/gitlab-runner/values`.
 
-The runner registration token allows connection to a project by a runner and therefore should be treated as a secret to prevent malicious use and code exfiltration through a runner. For this reason, we recommend that you specify the runner registration token as a [protected variable](../../ci/variables/README.md#protect-a-cicd-variable) and [masked variable](../../ci/variables/README.md#mask-a-cicd-variable) and do not commit them to the Git repository in the `values.yaml` file.
+The runner registration token allows connection to a project by a runner and therefore should be treated as a secret to prevent malicious use and code exfiltration through a runner. For this reason, we recommend that you specify the runner registration token as a [protected variable](../../ci/variables/index.md#protect-a-cicd-variable) and [masked variable](../../ci/variables/index.md#mask-a-cicd-variable) and do not commit them to the Git repository in the `values.yaml` file.
 
 You can customize the installation of GitLab Runner by defining
 `.gitlab/managed-apps/gitlab-runner/values.yaml` file in your cluster
@@ -762,7 +762,7 @@ Set:
 - "Redirect URI" to `http://<JupyterHub Host>/hub/oauth_callback`.
 - "Scope" to `api read_repository write_repository`.
 
-In addition, the following variables must be specified using [CI/CD variables](../../ci/variables/README.md):
+In addition, the following variables must be specified using [CI/CD variables](../../ci/variables/index.md):
 
 - `JUPYTERHUB_PROXY_SECRET_TOKEN` - Secure string used for signing communications
   from the hub. Read [`proxy.secretToken`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference/reference.html#proxy-secrettoken).

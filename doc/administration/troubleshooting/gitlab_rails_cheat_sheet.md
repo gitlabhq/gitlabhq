@@ -557,7 +557,7 @@ User.billable.count
 ::HistoricalData.max_historical_user_count
 ```
 
-Using cURL and jq (up to a max 100, see the [pagination docs](../../api/README.md#pagination)):
+Using cURL and jq (up to a max 100, see the [pagination docs](../../api/index.md#pagination)):
 
 ```shell
 curl --silent --header "Private-Token: ********************" \

@@ -146,7 +146,7 @@ repository or by specifying a project CI/CD variable:
   file in it, Auto DevOps detects the chart and uses it instead of the
   [default chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app), enabling
   you to control exactly how your application is deployed.
-- **Project variable** - Create a [project CI/CD variable](../../ci/variables/README.md)
+- **Project variable** - Create a [project CI/CD variable](../../ci/variables/index.md)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart to use, or create two project
   variables: `AUTO_DEVOPS_CHART_REPOSITORY` with the URL of a custom chart repository,
   and `AUTO_DEVOPS_CHART` with the path to the chart.
@@ -181,7 +181,7 @@ list of options.
 ## Custom Helm chart per environment
 
 You can specify the use of a custom Helm chart per environment by scoping the CI/CD variable
-to the desired environment. See [Limit environment scope of CI/CD variables](../../ci/variables/README.md#limit-the-environment-scope-of-a-cicd-variable).
+to the desired environment. See [Limit environment scope of CI/CD variables](../../ci/variables/index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ## Customizing `.gitlab-ci.yml`
 
@@ -387,7 +387,7 @@ applications.
 
 NOTE:
 After you set up your replica variables using a
-[project CI/CD variable](../../ci/variables/README.md),
+[project CI/CD variable](../../ci/variables/index.md),
 you can scale your application by redeploying it.
 
 WARNING:
@@ -406,7 +406,7 @@ The following table lists CI/CD variables related to the database.
 | `POSTGRES_ENABLED`                      | Whether PostgreSQL is enabled. Defaults to `true`. Set to `false` to disable the automatic deployment of PostgreSQL. |
 | `POSTGRES_USER`                         | The PostgreSQL user. Defaults to `user`. Set it to use a custom username. |
 | `POSTGRES_PASSWORD`                     | The PostgreSQL password. Defaults to `testing-password`. Set it to use a custom password. |
-| `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-cicd-variables). Set it to use a custom database name. |
+| `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/index.md#predefined-cicd-variables). Set it to use a custom database name. |
 | `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.16` for tests and deployments as of GitLab 13.0 (previously `9.6.2`). If `AUTO_DEVOPS_POSTGRES_CHANNEL` is set to `1`, deployments uses the default version `9.6.2`. |
 
 ### Disable jobs

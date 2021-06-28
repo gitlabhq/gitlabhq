@@ -5,6 +5,7 @@ import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
 import createFlash from '~/flash';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
 import BlobButtonGroup from './blob_button_group.vue';
@@ -90,7 +91,7 @@ export default {
   },
   computed: {
     isLoggedIn() {
-      return Boolean(gon.current_user_id);
+      return isLoggedIn();
     },
     isLoading() {
       return this.$apollo.queries.project.loading;

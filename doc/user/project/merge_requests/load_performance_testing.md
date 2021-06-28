@@ -10,7 +10,7 @@ type: reference, howto
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10683) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
 With Load Performance Testing, you can test the impact of any pending code changes
-to your application's backend in [GitLab CI/CD](../../../ci/README.md).
+to your application's backend in [GitLab CI/CD](../../../ci/index.md).
 
 GitLab uses [k6](https://k6.io/), a free and open source
 tool, for measuring the system performance of applications under

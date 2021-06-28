@@ -100,6 +100,18 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+          member do
+            post :resume
+            post :pause
+          end
+
+          collection do
+            post :toggle_shared_runners
+            post :toggle_group_runners
+          end
+        end
+
         namespace :settings do
           resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
             post :reset_cache
@@ -523,18 +535,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :runners, only: [:index, :edit, :update, :destroy, :show] do # rubocop: disable Cop/PutProjectRoutesUnderScope
-        member do
-          post :resume # rubocop:todo Cop/PutProjectRoutesUnderScope
-          post :pause # rubocop:todo Cop/PutProjectRoutesUnderScope
-        end
-
-        collection do
-          post :toggle_shared_runners # rubocop:todo Cop/PutProjectRoutesUnderScope
-          post :toggle_group_runners # rubocop:todo Cop/PutProjectRoutesUnderScope
-        end
-      end
-
       resources :runner_projects, only: [:create, :destroy] # rubocop: disable Cop/PutProjectRoutesUnderScope
       resources :badges, only: [:index] do # rubocop: disable Cop/PutProjectRoutesUnderScope
         collection do
@@ -596,7 +596,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :tracing,
                                             :serverless, :clusters, :audit_events, :wikis, :merge_requests,
                                             :vulnerability_feedback, :security, :dependencies, :issues,
-                                            :pipelines, :pipeline_schedules, :snippets)
+                                            :pipelines, :pipeline_schedules, :runners, :snippets)
     end
 
     # rubocop: disable Cop/PutProjectRoutesUnderScope

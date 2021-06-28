@@ -10,7 +10,7 @@ type: reference, howto
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/249811) in GitLab 13.5.
 
-With the help of [GitLab CI/CD](../../../ci/README.md), you can collect the test
+With the help of [GitLab CI/CD](../../../ci/index.md), you can collect the test
 coverage information of your favorite testing or coverage-analysis tool, and visualize
 this information inside the file diff view of your merge requests (MRs). This will allow you
 to see which lines are covered by tests, and which lines still require coverage, before the

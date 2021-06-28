@@ -412,7 +412,7 @@ repositories {
 - The `PROJECT_ID` is your project ID, which you can view on your project's home page.
 - Replace `gitlab.example.com` with your domain name.
 - For retrieving artifacts, use either the
-  [URL-encoded](../../../api/README.md#namespaced-path-encoding) path of the project
+  [URL-encoded](../../../api/index.md#namespaced-path-encoding) path of the project
   (like `group%2Fproject`) or the project's ID (like `42`). However, only the
   project's ID can be used for publishing.
 
@@ -471,7 +471,7 @@ repositories {
 - For `PROJECT_ID`, use your project ID, which you can view on your project's home page.
 - Replace `gitlab.example.com` with your domain name.
 - For retrieving artifacts, use either the
-  [URL-encoded](../../../api/README.md#namespaced-path-encoding) path of the group
+  [URL-encoded](../../../api/index.md#namespaced-path-encoding) path of the group
   (like `group%2Fsubgroup`) or the group's ID (like `12`).
 
 ### Instance-level Maven endpoint
@@ -530,7 +530,7 @@ repositories {
 - The `PROJECT_ID` is your project ID, which you can view on your project's home page.
 - Replace `gitlab.example.com` with your domain name.
 - For retrieving artifacts, use either the
-  [URL-encoded](../../../api/README.md#namespaced-path-encoding) path of the project
+  [URL-encoded](../../../api/index.md#namespaced-path-encoding) path of the project
   (like `group%2Fproject`) or the project's ID (like `42`). However, only the
   project's ID can be used for publishing.
 

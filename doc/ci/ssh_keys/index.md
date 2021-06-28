@@ -28,7 +28,7 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 ## How it works
 
 1. Create a new SSH key pair locally with [`ssh-keygen`](https://linux.die.net/man/1/ssh-keygen)
-1. Add the private key as a [variable](../variables/README.md) to
+1. Add the private key as a [variable](../variables/index.md) to
    your project
 1. Run the [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) during job to load
    the private key.
@@ -38,7 +38,7 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 
 In the following example, the `ssh-add -` command does not display the value of
 `$SSH_PRIVATE_KEY` in the job log, though it could be exposed if you enable
-[debug logging](../variables/README.md#debug-logging). You might also want to
+[debug logging](../variables/index.md#debug-logging). You might also want to
 check the [visibility of your pipelines](../pipelines/settings.md#visibility-of-pipelines).
 
 ## SSH keys when using the Docker executor
@@ -52,7 +52,7 @@ to access it. This is where an SSH key pair comes in handy.
    **Do not** add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
 
-1. Create a new [CI/CD variable](../variables/README.md).
+1. Create a new [CI/CD variable](../variables/index.md).
    As **Key** enter the name `SSH_PRIVATE_KEY` and in the **Value** field paste
    the content of your _private_ key that you created earlier.
 
@@ -160,7 +160,7 @@ ssh-keyscan example.com
 ssh-keyscan 1.2.3.4
 ```
 
-Create a new [CI/CD variable](../variables/README.md) with
+Create a new [CI/CD variable](../variables/index.md) with
 `SSH_KNOWN_HOSTS` as "Key", and as a "Value" add the output of `ssh-keyscan`.
 
 If you need to connect to multiple servers, all the server host keys

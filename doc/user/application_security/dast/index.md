@@ -550,7 +550,7 @@ you periodically confirm the scanner's authentication is still working, as this 
 time due to authentication changes to the application.
 
 Create masked CI/CD variables to pass the credentials that DAST uses.
-To create masked variables for the username and password, see [Create a custom variable in the UI](../../../ci/variables/README.md#custom-cicd-variables).
+To create masked variables for the username and password, see [Create a custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables).
 The key of the username variable must be `DAST_USERNAME`,
 and the key of the password variable must be `DAST_PASSWORD`.
 

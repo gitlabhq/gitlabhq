@@ -7,7 +7,7 @@ type: reference
 
 # Where variables can be used
 
-As it's described in the [CI/CD variables](README.md) docs, you can
+As it's described in the [CI/CD variables](index.md) docs, you can
 define many different variables. Some of them can be used for all GitLab CI/CD
 features, but some of them are more or less limited.
 

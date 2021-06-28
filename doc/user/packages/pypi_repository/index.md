@@ -204,7 +204,7 @@ Your project ID is on your project's home page.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202012) in GitLab 13.4.
 
-To work with PyPI commands within [GitLab CI/CD](../../../ci/README.md), you
+To work with PyPI commands within [GitLab CI/CD](../../../ci/index.md), you
 can use `CI_JOB_TOKEN` instead of a personal access token or deploy token.
 
 For example:

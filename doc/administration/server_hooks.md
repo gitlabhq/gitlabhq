@@ -34,7 +34,7 @@ Note the following about server hooks:
   administrators are able to complete these tasks. If you don't have file system access, see
   possible alternatives such as:
   - [Webhooks](../user/project/integrations/webhooks.md).
-  - [GitLab CI/CD](../ci/README.md).
+  - [GitLab CI/CD](../ci/index.md).
   - [Push Rules](../push_rules/push_rules.md), for a user-configurable Git hook
     interface.
 - Server hooks aren't replicated to [Geo](geo/index.md) secondary nodes.

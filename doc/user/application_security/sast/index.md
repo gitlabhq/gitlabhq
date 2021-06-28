@@ -15,7 +15,7 @@ The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.
 explains how 4 of the top 6 attacks were application based. Download it to learn how to protect your
 organization.
 
-If you're using [GitLab CI/CD](../../../ci/README.md), you can use Static Application Security
+If you're using [GitLab CI/CD](../../../ci/index.md), you can use Static Application Security
 Testing (SAST) to check your source code for known vulnerabilities. When a pipeline completes,
 the results of the SAST analysis are processed and shown in the pipeline's Security tab. If the
 pipeline is associated with a merge request, the SAST analysis is compared with the results of
@@ -465,7 +465,7 @@ variables:
       -----END CERTIFICATE-----
 ```
 
-The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/README.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
 #### Docker images
 
@@ -521,7 +521,7 @@ Some analyzers can be customized with CI/CD variables.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18193) in GitLab Ultimate 12.5.
 
 In addition to the aforementioned SAST configuration CI/CD variables,
-all [custom variables](../../../ci/variables/README.md#custom-cicd-variables) are propagated
+all [custom variables](../../../ci/variables/index.md#custom-cicd-variables) are propagated
 to the underlying SAST analyzer images if
 [the SAST vendored template](#configuration) is used.
 

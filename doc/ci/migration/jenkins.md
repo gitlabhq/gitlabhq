@@ -199,7 +199,7 @@ GitLab takes advantage of our connected ecosystem to automatically pull these ki
 your Merge Requests, pipeline details pages, and other locations. You may find that you actually don't
 need to configure anything to have these appear.
 
-If they aren't working as expected, or if you'd like to see what's available, our [CI feature index](../README.md#feature-set) has the full list
+If they aren't working as expected, or if you'd like to see what's available, our [CI feature index](../index.md#feature-set) has the full list
 of bundled features and links to the documentation for each.
 
 ### Templates
@@ -304,8 +304,8 @@ my_job:
 #### `environment`
 
 In GitLab, we use the [`variables` keyword](../yaml/README.md#variables) to define different variables at runtime.
-These can also be set up through the GitLab UI, under CI/CD settings. See also our [general documentation on variables](../variables/README.md),
-including the section on [protected variables](../variables/README.md#protect-a-cicd-variable) which can be used
+These can also be set up through the GitLab UI, under CI/CD settings. See also our [general documentation on variables](../variables/index.md),
+including the section on [protected variables](../variables/index.md#protect-a-cicd-variable) which can be used
 to limit access to certain variables to certain environments or runners:
 
 ```yaml

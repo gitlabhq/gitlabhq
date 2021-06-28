@@ -2,7 +2,7 @@
 
 - if ci_variable_protected_by_default?
   %p.settings-message.text-center
-    - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('ci/variables/README', anchor: 'protect-a-cicd-variable') }
+    - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('ci/variables/index', anchor: 'protect-a-cicd-variable') }
     = s_('Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
 
 - is_group = !@group.nil?
@@ -16,8 +16,8 @@
   aws_tip_deploy_link: help_page_path('ci/cloud_deployment/index.md', anchor: 'deploy-your-application-to-the-aws-elastic-container-service-ecs'),
   aws_tip_commands_link: help_page_path('ci/cloud_deployment/index.md', anchor: 'run-aws-commands-from-gitlab-cicd'),
   aws_tip_learn_link: help_page_path('ci/cloud_deployment/index.md', anchor: 'aws'),
-  protected_environment_variables_link: help_page_path('ci/variables/README', anchor: 'protect-a-cicd-variable'),
-  masked_environment_variables_link: help_page_path('ci/variables/README', anchor: 'mask-a-cicd-variable'),
+  protected_environment_variables_link: help_page_path('ci/variables/index', anchor: 'protect-a-cicd-variable'),
+  masked_environment_variables_link: help_page_path('ci/variables/index', anchor: 'mask-a-cicd-variable'),
 } }
 
 - if !@group && @project.group
