@@ -849,7 +849,7 @@ Another issue that can result in this error is when the correct information is b
 These errors all come from a similar place, the SAML certificate. SAML requests
 need to be validated using a fingerprint, a certificate or a validator.
 
-For this you need take the following into account:
+For this you need to take the following into account:
 
 - If a fingerprint is used, it must be the SHA1 fingerprint
 - If no certificate is provided in the settings, a fingerprint or fingerprint
