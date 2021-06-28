@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.failed_deployments
 description: Total failed deployments
 product_section: ops

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.wiki_pages_create
 description: Count of all Wiki pages created
 product_section: dev

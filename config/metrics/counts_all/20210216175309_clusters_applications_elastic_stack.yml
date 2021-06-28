@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.clusters_applications_elastic_stack
 description: Total GitLab Managed clusters with GitLab Managed App:Elastic Stack installed
 product_section: ops

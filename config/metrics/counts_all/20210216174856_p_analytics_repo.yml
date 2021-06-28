@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: analytics_unique_visits.p_analytics_repo
 description: Unique visitors to /:group/:project/-/graphs/master/charts
 product_section: dev

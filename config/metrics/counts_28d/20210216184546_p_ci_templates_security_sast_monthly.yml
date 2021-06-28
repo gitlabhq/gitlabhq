@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.ci_templates.p_ci_templates_security_sast_monthly
 description: ''
 product_section: ''

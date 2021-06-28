@@ -106,7 +106,7 @@ sudo apt install acl
 
 ### Add SSH key
 
-Let's suppose we want to deploy our app to the production server from a private repository on GitLab. First, we need to [generate a new SSH key pair **with no passphrase**](../../../ssh/README.md) for the deployer user.
+Let's suppose we want to deploy our app to the production server from a private repository on GitLab. First, we need to [generate a new SSH key pair **with no passphrase**](../../../ssh/index.md) for the deployer user.
 
 After that, we need to copy the private key, which will be used to connect to our server as the deployer user with SSH, to be able to automate our deployment process:
 
@@ -530,7 +530,7 @@ That's a lot to take in, isn't it? Let's run through it step by step.
 
 #### Image and Services
 
-[Runners](../../runners/README.md) run the script defined by `.gitlab-ci.yml`.
+[Runners](../../runners/index.md) run the script defined by `.gitlab-ci.yml`.
 The `image` keyword tells the runners which image to use.
 The `services` keyword defines additional images [that are linked to the main image](../../services/index.md).
 Here we use the container image we created before as our main image and also use MySQL 5.7 as a service.

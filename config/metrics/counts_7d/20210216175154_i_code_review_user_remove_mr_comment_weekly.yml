@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.code_review.i_code_review_user_remove_mr_comment_weekly
 description: Count of unique users per month who removed a comment on a MR
 product_section: dev

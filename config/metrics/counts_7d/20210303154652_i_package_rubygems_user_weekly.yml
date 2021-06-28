@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.user_packages.i_package_rubygems_user_weekly
 description: A weekly count of distinct RubyGems packages published by a user
 product_section: ops

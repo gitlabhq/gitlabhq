@@ -133,7 +133,7 @@ The [Least Privilege Container Builds with Kaniko on GitLab](https://www.youtube
 video is a walkthrough of the [Kaniko Docker Build](https://gitlab.com/guided-explorations/containers/kaniko-docker-build)
 Guided Exploration project pipeline. It was tested on:
 
-- [GitLab.com shared runners](../runners/README.md)
+- [GitLab.com shared runners](../runners/index.md)
 - [The Kubernetes runner executor](https://docs.gitlab.com/runner/executors/kubernetes.html)
 
 The example can be copied to your own group or instance for testing. More details

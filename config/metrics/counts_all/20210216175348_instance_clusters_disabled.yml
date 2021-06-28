@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.configure.instance_clusters_disabled
 description: Total GitLab Managed disabled clusters attached to the instance
 product_section: ops

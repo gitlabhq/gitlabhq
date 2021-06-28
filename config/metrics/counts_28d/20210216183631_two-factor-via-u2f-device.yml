@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.manage.user_auth_by_provider.two-factor-via-u2f-device
 description: Number of unique user logins using two factor via a U2F device
 product_section: dev

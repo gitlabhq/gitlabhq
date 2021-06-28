@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: container_registry_enabled
 description: A count of projects where the container registry is enabled
 product_section: ops

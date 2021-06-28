@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.web_ide_views
 description: Count of views of the Web IDE
 product_section: dev

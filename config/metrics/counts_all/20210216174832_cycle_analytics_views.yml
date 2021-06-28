@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.cycle_analytics_views
 description: Total visits to VSA (both group- and project-level) all time
 product_section: dev

@@ -43,7 +43,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Adjust your instance's timezone](timezone.md): Customize the default time zone of GitLab.
 - [System hooks](../system_hooks/system_hooks.md): Notifications when users, projects and keys are changed.
-- [Security](../security/README.md): Learn what you can do to further secure your GitLab instance.
+- [Security](../security/index.md): Learn what you can do to further secure your GitLab instance.
 - [Usage statistics, version check, and usage ping](../user/admin_area/settings/usage_statistics.md): Enable or disable information about your instance to be sent to GitLab, Inc.
 - [Global user settings](user_settings.md): Configure instance-wide user permissions.
 - [Polling](polling.md): Configure how often the GitLab UI polls for updates.
@@ -122,7 +122,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Libravatar](libravatar.md): Use Libravatar instead of Gravatar for user avatars.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
-- [Authentication and Authorization](auth/README.md): Configure external authentication with LDAP, SAML, CAS, and additional providers.
+- [Authentication and Authorization](auth/index.md): Configure external authentication with LDAP, SAML, CAS, and additional providers.
   - [Sync LDAP](auth/ldap/index.md)
   - [Kerberos authentication](../integration/kerberos.md)
   - See also other [authentication](../topics/authentication/index.md#gitlab-administrators) topics (for example, enforcing 2FA).
@@ -241,7 +241,7 @@ who are aware of the risks.
 - [GitLab Rails console commands](troubleshooting/gitlab_rails_cheat_sheet.md) (for Support Engineers)
 - [Troubleshooting SSL](troubleshooting/ssl.md)
 - Related links:
-  - [GitLab Developer Documentation](../development/README.md)
+  - [GitLab Developer Documentation](../development/index.md)
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/ch-testing-with-openssl.html)
   - [`strace` zine](https://wizardzines.com/zines/strace/)

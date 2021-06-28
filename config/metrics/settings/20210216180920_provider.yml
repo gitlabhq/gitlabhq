@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: object_store.packages.object_store.provider
 description: What Object Storage provider has been configured for Packages
 product_section: enablement

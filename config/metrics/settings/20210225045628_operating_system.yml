@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: settings.operating_system
 description: Information about the operating system running GitLab
 product_section: enablement

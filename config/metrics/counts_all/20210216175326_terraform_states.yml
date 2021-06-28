@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.terraform_states
 description: Count of GitLab Managed Terraform States
 product_section: ops

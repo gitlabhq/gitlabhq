@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_weekly
 description: Count of WAU modifying a design on an issue
 product_section: dev

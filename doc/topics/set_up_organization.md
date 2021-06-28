@@ -12,5 +12,5 @@ and give everyone access to the projects they need.
 - [Members](../user/project/members/index.md)
 - [Groups](../user/group/index.md)
 - [User account options](../user/profile/index.md)
-- [SSH keys](../ssh/README.md)
+- [SSH keys](../ssh/index.md)
 - [GitLab.com settings](../user/gitlab_com/index.md)

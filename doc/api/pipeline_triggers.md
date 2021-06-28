@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Pipeline triggers API **(FREE)**
 
-You can read more about [triggering pipelines through the API](../ci/triggers/README.md).
+You can read more about [triggering pipelines through the API](../ci/triggers/index.md).
 
 ## List project triggers
 

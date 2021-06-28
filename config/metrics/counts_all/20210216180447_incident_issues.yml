@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.incident_issues
 description: Count of incidents (issues where issue_type=incident)
 product_section: ops

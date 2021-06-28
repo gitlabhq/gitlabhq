@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.package_events_i_package_maven_push_package
 description: A count of Maven packages that have been published
 product_section: ops

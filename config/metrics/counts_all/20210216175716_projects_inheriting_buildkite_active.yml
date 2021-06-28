@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_inheriting_buildkite_active
 description: Count of active projects inheriting integrations for Buildkite
 product_section: dev

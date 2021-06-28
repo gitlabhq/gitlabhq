@@ -1192,7 +1192,7 @@ decrypt those columns, preventing access to the following items:
 - [Kubernetes / GCP integration](../user/project/clusters/index.md)
 - [Custom Pages domains](../user/project/pages/custom_domains_ssl_tls_certification/index.md)
 - [Project error tracking](../operations/error_tracking.md)
-- [Runner authentication](../ci/runners/README.md)
+- [Runner authentication](../ci/runners/index.md)
 - [Project mirroring](../user/project/repository/repository_mirroring.md)
 - [Web hooks](../user/project/integrations/webhooks.md)
 

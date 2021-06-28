@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_discord_active
 description: Count of groups with active integrations for Discord
 product_section: dev

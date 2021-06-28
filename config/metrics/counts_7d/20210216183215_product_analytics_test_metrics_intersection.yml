@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts_weekly.aggregated_metrics.product_analytics_test_metrics_intersection
 description: This was test metric used for purpose of assuring correct implementation of aggregated metrics feature
 product_section: growth

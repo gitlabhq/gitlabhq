@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: analytics_unique_visits.i_analytics_dev_ops_score
 description: Unique visitors to /-/instance_statistics/dev_ops_score
 product_section: dev

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_inheriting_webex_teams_active
 description: Count of active projects inheriting integrations for Webex Teams
 product_section: dev

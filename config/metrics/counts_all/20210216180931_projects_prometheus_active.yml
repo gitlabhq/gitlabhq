@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_prometheus_active
 description: Count of projects with active integrations for Prometheus
 product_section: ops

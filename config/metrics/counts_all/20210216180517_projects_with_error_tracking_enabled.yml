@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.monitor.projects_with_error_tracking_enabled
 description: Projects where error tracking is enabled
 product_section: ops

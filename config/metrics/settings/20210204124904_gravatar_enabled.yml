@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: gravatar_enabled
 description: Whether gravatar is enabled
 product_section: dev

@@ -10,30 +10,30 @@ RSpec.describe HamlLint::Linter::DocumentationLinks do
 
   shared_examples 'link validation rules' do |link_pattern|
     context 'when link_to points to the existing file path' do
-      let(:haml) { "= link_to 'Description', #{link_pattern}('README.md')" }
+      let(:haml) { "= link_to 'Description', #{link_pattern}('index.md')" }
 
       it { is_expected.not_to report_lint }
     end
 
     context 'when link_to points to the existing file with valid anchor' do
-      let(:haml) { "= link_to 'Description', #{link_pattern}('README.md', anchor: 'overview'), target: '_blank'" }
+      let(:haml) { "= link_to 'Description', #{link_pattern}('index.md', anchor: 'overview'), target: '_blank'" }
 
       it { is_expected.not_to report_lint }
     end
 
     context 'when link_to points to the existing file path without .md extension' do
-      let(:haml) { "= link_to 'Description', #{link_pattern}('README')" }
+      let(:haml) { "= link_to 'Description', #{link_pattern}('index')" }
 
       it { is_expected.not_to report_lint }
     end
 
     context 'when anchor is not correct' do
-      let(:haml) { "= link_to 'Description', #{link_pattern}('README.md', anchor: 'wrong')" }
+      let(:haml) { "= link_to 'Description', #{link_pattern}('index.md', anchor: 'wrong')" }
 
       it { is_expected.to report_lint }
 
       context "when #{link_pattern} has multiple options" do
-        let(:haml) { "= link_to 'Description', #{link_pattern}('README.md', key: :value, anchor: 'wrong')" }
+        let(:haml) { "= link_to 'Description', #{link_pattern}('index.md', key: :value, anchor: 'wrong')" }
 
         it { is_expected.to report_lint }
       end
@@ -58,7 +58,7 @@ RSpec.describe HamlLint::Linter::DocumentationLinks do
     end
 
     context 'when anchor belongs to a different element' do
-      let(:haml) { "= link_to 'Description', #{link_pattern}('README.md'), target: (anchor: 'blank')" }
+      let(:haml) { "= link_to 'Description', #{link_pattern}('index.md'), target: (anchor: 'blank')" }
 
       it { is_expected.not_to report_lint }
     end
@@ -82,7 +82,7 @@ RSpec.describe HamlLint::Linter::DocumentationLinks do
     end
 
     context 'when the second link is invalid' do
-      let(:haml) { ".data-form{ data: { url: #{link_pattern}('README.md'), wrong_url: #{link_pattern}('wrong.md') } }" }
+      let(:haml) { ".data-form{ data: { url: #{link_pattern}('index.md'), wrong_url: #{link_pattern}('wrong.md') } }" }
 
       it { is_expected.to report_lint }
     end

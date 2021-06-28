@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.incident_management.incident_management_incident_created_weekly
 description: Count of unique users creating incidents  per week
 product_section: ops

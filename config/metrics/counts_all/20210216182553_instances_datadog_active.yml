@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.instances_datadog_active
 description: Count of active instance-level integrations for Datadog
 product_section: dev

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.all_searches
 description: Total Searches for All Basic Search and Advanced Search in self-managed
   and SaaS

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: container_registry_server.vendor
 description: Identifies if a user is using an external container registry and what type
 product_section: ops

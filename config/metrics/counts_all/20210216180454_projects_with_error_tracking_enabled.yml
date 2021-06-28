@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_with_error_tracking_enabled
 description: Count of projects that have enabled Error tracking via Sentry
 product_section: ops

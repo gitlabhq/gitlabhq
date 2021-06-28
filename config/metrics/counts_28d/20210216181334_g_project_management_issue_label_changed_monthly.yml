@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_label_changed_monthly
 description: Count of MAU changing an issue's label
 product_section: dev

@@ -9,7 +9,7 @@ type: reference
 
 Customize and configure your self-managed GitLab installation.
 
-- [Authentication](auth/README.md)
+- [Authentication](auth/index.md)
 - [Configuration](../user/admin_area/index.md)
 - [Repository storage](repository_storage_paths.md)
 - [Geo](geo/index.md)

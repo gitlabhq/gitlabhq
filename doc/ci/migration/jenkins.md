@@ -17,7 +17,7 @@ that were able to quickly complete this migration:
 
 1. Start by reading the GitLab CI/CD [Quick Start Guide](../quick_start/index.md) and [important product differences](#important-product-differences).
 1. Learn the importance of [managing the organizational transition](#managing-the-organizational-transition).
-1. [Add runners](../runners/README.md) to your GitLab instance.
+1. [Add runners](../runners/index.md) to your GitLab instance.
 1. Educate and enable your developers to independently perform the following steps in their projects:
    1. Review the [Quick Start Guide](../quick_start/index.md) and [Pipeline Configuration Reference](../yaml/README.md).
    1. Use the [Jenkins Wrapper](#jenkinsfile-wrapper) to temporarily maintain fragile Jenkins jobs.
@@ -77,8 +77,8 @@ There are some high level differences between the products worth mentioning:
   - on push
   - on [schedule](../pipelines/schedules.md)
   - from the [GitLab UI](../pipelines/index.md#run-a-pipeline-manually)
-  - by [API call](../triggers/README.md)
-  - by [webhook](../triggers/README.md#triggering-a-pipeline-from-a-webhook)
+  - by [API call](../triggers/index.md)
+  - by [webhook](../triggers/index.md#triggering-a-pipeline-from-a-webhook)
   - by [ChatOps](../chatops/index.md)
 
 - You can control which jobs run in which cases, depending on how they are triggered,
@@ -122,7 +122,7 @@ There are some high level differences between the products worth mentioning:
 ## Agents vs. runners
 
 Both Jenkins agents and GitLab runners are the hosts that run jobs. To convert the
-Jenkins agent, simply uninstall it and then [install and register the runner](../runners/README.md).
+Jenkins agent, simply uninstall it and then [install and register the runner](../runners/index.md).
 Runners do not require much overhead, so you can size them similarly to the Jenkins
 agents you were using.
 
@@ -137,7 +137,7 @@ There are some important differences in the way runners work in comparison to ag
   Use autoscaling to provision runners only when needed, and scale down when not needed.
   This is similar to ephemeral agents in Jenkins.
 
-If you are using `gitlab.com`, you can take advantage of our [shared runner fleet](../runners/README.md)
+If you are using `gitlab.com`, you can take advantage of our [shared runner fleet](../runners/index.md)
 to run jobs without provisioning your own runners. We are investigating making them
 [available for self-managed instances](https://gitlab.com/groups/gitlab-org/-/epics/835)
 as well.
@@ -227,7 +227,7 @@ and is meant to be a mapping of concepts there to concepts in GitLab.
 
 #### `agent`
 
-The agent section is used to define how a pipeline executes. For GitLab, we use [runners](../runners/README.md)
+The agent section is used to define how a pipeline executes. For GitLab, we use [runners](../runners/index.md)
 to provide this capability. You can configure your own runners in Kubernetes or on any host, or take advantage
 of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users).
 We also support using [tags](../runners/configure_runners.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) to direct different jobs

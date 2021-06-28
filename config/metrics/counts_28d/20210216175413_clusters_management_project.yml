@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.configure.clusters_management_project
 name: "count_distinct_user_id_from_management_project_clusters"
 description: Number of Kubernetes clusters with clusters management project being set

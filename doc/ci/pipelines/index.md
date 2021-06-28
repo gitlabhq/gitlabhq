@@ -20,7 +20,7 @@ Pipelines comprise:
 - Jobs, which define *what* to do. For example, jobs that compile or test code.
 - Stages, which define *when* to run the jobs. For example, stages that run tests after stages that compile the code.
 
-Jobs are executed by [runners](../runners/README.md). Multiple jobs in the same stage are executed in parallel,
+Jobs are executed by [runners](../runners/index.md). Multiple jobs in the same stage are executed in parallel,
 if there are enough concurrent runners.
 
 If *all* jobs in a stage succeed, the pipeline moves on to the next stage.
@@ -441,5 +441,5 @@ GitLab provides API endpoints to:
 - Perform basic functions. For more information, see [Pipelines API](../../api/pipelines.md).
 - Maintain pipeline schedules. For more information, see [Pipeline schedules API](../../api/pipeline_schedules.md).
 - Trigger pipeline runs. For more information, see:
-  - [Triggering pipelines through the API](../triggers/README.md).
+  - [Triggering pipelines through the API](../triggers/index.md).
   - [Pipeline triggers API](../../api/pipeline_triggers.md).

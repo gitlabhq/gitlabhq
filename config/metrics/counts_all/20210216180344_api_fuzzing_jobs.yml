@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.api_fuzzing_jobs
 description: Count of API Fuzzing jobs run by job name
 product_section: sec

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: topology
 description: Topology data
 product_section: enablement

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.in_product_marketing_email_team_2_cta_clicked
 name: "count_clicks_on_the_third_email_of_the_team_track_for_in_product_marketing_emails"
 description: Total clicks on the team track's third email

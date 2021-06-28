@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.quickactions.i_quickactions_unassign_specific_weekly
 description: Count of WAU using the `/unassign @user1` quick action on Merge Requests
 product_section: dev

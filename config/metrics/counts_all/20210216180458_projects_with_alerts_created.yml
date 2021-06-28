@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_with_alerts_created
 description: Count of projects with alerts created in given time period
 product_section: ops

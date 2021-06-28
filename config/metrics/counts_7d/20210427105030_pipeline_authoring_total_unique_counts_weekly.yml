@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.pipeline_authoring.pipeline_authoring_total_unique_counts_weekly
 name: "0"
 description:

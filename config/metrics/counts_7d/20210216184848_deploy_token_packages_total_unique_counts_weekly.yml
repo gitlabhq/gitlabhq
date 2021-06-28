@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_weekly
 description: A weekly count of packages published to the registry using a deploy token
 product_section: ops

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.issues_created_from_gitlab_error_tracking_ui
 description: Count of issues manually created from the GitLab UI on Sentry errors
 product_section: ops

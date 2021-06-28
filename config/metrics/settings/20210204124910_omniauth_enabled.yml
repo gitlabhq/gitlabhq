@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: omniauth_enabled
 description: Whether OmniAuth is enabled
 product_section: growth

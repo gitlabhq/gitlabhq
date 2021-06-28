@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_inheriting_hangouts_chat_active
 description: Count of active groups inheriting integrations for Hangouts Chat
 product_section: dev

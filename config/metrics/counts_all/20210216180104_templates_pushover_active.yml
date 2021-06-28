@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.templates_pushover_active
 description: Count of active service templates for Pushover
 product_section: dev

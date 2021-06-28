@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.auto_devops_disabled
 description: Projects with Auto DevOps template disabled
 product_section: ops

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: object_store.artifacts.object_store.direct_upload
 description: Whether Direct Upload for Object Storage is enabled for Artifacts
 product_section: enablement

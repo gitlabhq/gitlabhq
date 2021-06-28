@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.monitor.projects_with_incidents
 description: Count of unique projects with an incident
 product_section: ops

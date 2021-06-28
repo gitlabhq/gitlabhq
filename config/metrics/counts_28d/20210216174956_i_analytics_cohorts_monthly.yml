@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.analytics.i_analytics_cohorts_monthly
 description:
 product_section: fulfillment

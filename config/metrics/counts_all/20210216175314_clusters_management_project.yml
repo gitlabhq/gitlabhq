@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.clusters_management_project
 description: Total GitLab Managed clusters with defined cluster management project
 product_section: ops

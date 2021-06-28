@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.web_ide_commits
 description: Count of commits made from the Web IDE
 product_section: dev

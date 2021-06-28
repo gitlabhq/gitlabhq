@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.project_imports.gitea
 description: Count of projects imported from Gitea
 product_section: dev

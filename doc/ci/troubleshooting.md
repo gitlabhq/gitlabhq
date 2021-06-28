@@ -52,8 +52,8 @@ and check if their values are what you expect.
 The [complete `gitlab-ci.yml` reference](yaml/README.md) contains a full list of
 every keyword you may need to use to configure your pipelines.
 
-You can also look at a large number of pipeline configuration [examples](examples/README.md)
-and [templates](examples/README.md#cicd-templates).
+You can also look at a large number of pipeline configuration [examples](examples/index.md)
+and [templates](examples/index.md#cicd-templates).
 
 ### Documentation for pipeline types
 

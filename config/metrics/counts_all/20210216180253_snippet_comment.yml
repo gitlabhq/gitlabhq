@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.snippet_comment
 description: Count of comments on Snippets
 product_section: dev

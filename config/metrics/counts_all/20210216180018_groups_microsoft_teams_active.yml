@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_microsoft_teams_active
 description: Count of groups with active integrations for Microsoft Teams
 product_section: dev

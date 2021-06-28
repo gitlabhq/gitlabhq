@@ -85,6 +85,26 @@ RSpec.describe 'Query.runner(id)' do
 
   describe 'for active runner' do
     it_behaves_like 'runner details fetch', :active_runner
+
+    context 'when tagList is not requested' do
+      let(:query) do
+        wrap_fields(query_graphql_path(query_path, 'id'))
+      end
+
+      let(:query_path) do
+        [
+          [:runner, { id: active_runner.to_global_id.to_s }]
+        ]
+      end
+
+      it 'does not retrieve tagList' do
+        post_graphql(query, current_user: user)
+
+        runner_data = graphql_data_at(:runner)
+        expect(runner_data).not_to be_nil
+        expect(runner_data).not_to include('tagList')
+      end
+    end
   end
 
   describe 'for inactive runner' do

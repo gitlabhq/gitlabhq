@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.manage.project_imports.bitbucket_server
 description: Count of projects imported from Bitbucket Server
 product_section: dev

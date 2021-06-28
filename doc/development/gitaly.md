@@ -235,7 +235,7 @@ changes to embed a new SHA in the `Gemfile.lock` file.
 
 ---
 
-[Return to Development documentation](README.md)
+[Return to Development documentation](index.md)
 
 ## Wrapping RPCs in Feature Flags
 

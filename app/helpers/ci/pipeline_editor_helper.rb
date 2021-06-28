@@ -12,7 +12,7 @@ module Ci
       commit_sha = project.commit ? project.commit.sha : ''
       {
         "ci-config-path": project.ci_config_path_or_default,
-        "ci-examples-help-page-path" => help_page_path('ci/examples/README'),
+        "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
         "ci-help-page-path" => help_page_path('ci/README'),
         "commit-sha" => commit_sha,
         "default-branch" => project.default_branch,
@@ -26,7 +26,7 @@ module Ci
         "project-path" => project.path,
         "project-full-path" => project.full_path,
         "project-namespace" => project.namespace.full_path,
-        "runner-help-page-path" => help_page_path('ci/runners/README'),
+        "runner-help-page-path" => help_page_path('ci/runners/index'),
         "total-branches" => project.repository.branches.length,
         "yml-help-page-path" => help_page_path('ci/yaml/README')
       }

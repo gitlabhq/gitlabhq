@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.ci_triggers
 description: Total configured Triggers in project
 product_section: ops

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: installation_type
 description: The installation method used to install GitLab (Omnibus, Helm, etc)
 product_section: enablement

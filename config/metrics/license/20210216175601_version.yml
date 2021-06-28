@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: version
 description: Version of GitLab instance
 product_section: enablement

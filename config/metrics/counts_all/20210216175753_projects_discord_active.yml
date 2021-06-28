@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_discord_active
 description: Count of projects with active integrations for Discord
 product_section: dev

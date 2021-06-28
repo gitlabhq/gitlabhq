@@ -88,7 +88,7 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
    [OpenShift docs](https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/kubernetes_deployments.html#kubernetes-deployments-vs-deployment-configurations)
    and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/-/issues/4584).
 
-1. [Configure GitLab Runner](../../ci/runners/README.md) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+1. [Configure GitLab Runner](../../ci/runners/index.md) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
    [`kubernetes`](https://docs.gitlab.com/runner/executors/kubernetes.html) executor.
 1. Configure the [Kubernetes integration](clusters/index.md) in your project for the
    cluster. The Kubernetes namespace is of particular note as you need it

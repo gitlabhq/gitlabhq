@@ -7,7 +7,7 @@ type: index, concepts, howto
 
 # Development guide for GitLab CI/CD templates
 
-This document explains how to develop [GitLab CI/CD templates](../../ci/examples/README.md).
+This document explains how to develop [GitLab CI/CD templates](../../ci/examples/index.md).
 
 ## Requirements for CI/CD templates
 

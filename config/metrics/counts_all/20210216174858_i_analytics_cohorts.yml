@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: analytics_unique_visits.i_analytics_cohorts
 description: Unique visitors to /-/instance_statistics/cohorts
 product_section: dev

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.compliance.g_compliance_dashboard_monthly
 description: ''
 product_section: ''

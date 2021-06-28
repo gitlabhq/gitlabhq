@@ -31,7 +31,7 @@ If you are new to GitLab development (or web development in general), see the
 some potentially easy issues.
 
 To start developing GitLab, download the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit)
-and see the [Development section](../../README.md) for the required guidelines.
+and see the [Development section](../../index.md) for the required guidelines.
 
 ## Merge request guidelines
 

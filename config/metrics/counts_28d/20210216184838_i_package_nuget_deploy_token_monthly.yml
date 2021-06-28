@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_nuget_deploy_token_monthly
 description: A monthly count of NuGet packages published to the registry using a deploy token
 product_section: ops

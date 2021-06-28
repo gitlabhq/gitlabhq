@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.commit_comment
 description: Count of total unique commit comments. Does not include MR diff comments
 product_section: dev

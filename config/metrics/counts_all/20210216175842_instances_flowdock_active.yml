@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.instances_flowdock_active
 description: Count of active instance-level integrations for Flowdock
 product_section: dev

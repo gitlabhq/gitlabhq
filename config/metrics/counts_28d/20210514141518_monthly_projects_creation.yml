@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts_monthly.projects
 description: 'Count number of projects created monthly'
 product_section: dev

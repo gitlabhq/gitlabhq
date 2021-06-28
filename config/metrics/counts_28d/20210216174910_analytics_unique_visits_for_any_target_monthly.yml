@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: analytics_unique_visits.analytics_unique_visits_for_any_target_monthly
 description: Unique visitors to any analytics feature by month
 product_section: dev

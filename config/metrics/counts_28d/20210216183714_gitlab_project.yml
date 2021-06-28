@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.manage.projects_imported.gitlab_project
 description: ''
 product_section: ''

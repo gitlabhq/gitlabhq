@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.templates_pipelines_email_active
 description: Count of active service templates for Pipeline Emails
 product_section: dev

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.instances_pipelines_email_active
 description: Count of active instance-level integrations for Pipeline Emails
 product_section: dev

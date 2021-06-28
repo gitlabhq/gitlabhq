@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.monitor.operations_dashboard_users_with_projects_added
 description: Active users with projects on operations dashboard
 product_section: ops

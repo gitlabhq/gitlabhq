@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_mock_monitoring_active
 description: Count of projects with active integrations for Mock Monitoring
 product_section: dev

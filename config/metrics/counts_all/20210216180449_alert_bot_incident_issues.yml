@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.alert_bot_incident_issues
 description: Count of issues created by the alert bot automatically
 product_section: ops

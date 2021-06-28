@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.ci_runners_group_type_active
 name: "count_active_group_ci_runners"
 description: Total active instance Runners

@@ -224,7 +224,7 @@ This feature is being re-evaluated in favor of a different
 We recommend that users who haven't yet implemented this feature wait for
 the new solution.
 
-You can set a [CI/CD template](../../../ci/examples/README.md#cicd-templates)
+You can set a [CI/CD template](../../../ci/examples/index.md#cicd-templates)
 as a required pipeline configuration for all projects on a GitLab instance. You can
 use a template from:
 

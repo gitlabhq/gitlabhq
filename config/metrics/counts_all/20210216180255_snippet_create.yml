@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.snippet_create
 description: Count of newly created Snippets
 product_section: dev

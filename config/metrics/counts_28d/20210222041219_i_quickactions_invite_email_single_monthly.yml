@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.quickactions.i_quickactions_invite_email_single_monthly
 description: Unique users using the /invite_email quick action to add a single email participant to an issue within 28 days
 product_section: dev

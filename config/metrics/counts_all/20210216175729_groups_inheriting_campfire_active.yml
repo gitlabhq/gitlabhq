@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_inheriting_campfire_active
 description: Count of active groups inheriting integrations for Campfire
 product_section: dev

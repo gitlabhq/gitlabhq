@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.package_events_i_package_rubygems_pull_package
 description: Total count of pull RubyGems packages events
 product_section: ops

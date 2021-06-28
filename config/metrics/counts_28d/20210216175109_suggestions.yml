@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.create.suggestions
 description: Count of unique users per month who create suggestions in merge request comments
 product_section: dev

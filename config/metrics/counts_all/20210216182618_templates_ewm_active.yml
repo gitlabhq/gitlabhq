@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.templates_ewm_active
 description: Count of active service templates for EWM
 product_section: dev

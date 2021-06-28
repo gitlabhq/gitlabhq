@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.project_imports.gitlab_project
 description: Count of projects imported using Project Import/Export
 product_section: dev

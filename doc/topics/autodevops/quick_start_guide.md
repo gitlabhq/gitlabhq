@@ -14,7 +14,7 @@ to create a Kubernetes cluster manually using the Google Cloud Platform console.
 You are creating and deploying a simple application that you create from a GitLab template.
 
 These instructions also work for a self-managed GitLab instance;
-ensure your own [runners are configured](../../ci/runners/README.md) and
+ensure your own [runners are configured](../../ci/runners/index.md) and
 [Google OAuth is enabled](../../integration/google.md).
 
 ## Configure your Google account

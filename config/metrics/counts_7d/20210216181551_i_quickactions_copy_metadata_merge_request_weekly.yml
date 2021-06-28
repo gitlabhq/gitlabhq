@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.quickactions.i_quickactions_copy_metadata_merge_request_weekly
 description: Count of WAU using the `/copy_metadata` quick action on a Merge Request
 product_section: dev

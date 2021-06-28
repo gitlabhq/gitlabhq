@@ -14,7 +14,7 @@ In this guide, you begin by creating an ECS cluster manually using the AWS conso
 deploy a simple application that you create from a GitLab template.
 
 These instructions work for both SaaS and self-managed GitLab instances.
-Ensure your own [runners are configured](../../runners/README.md).
+Ensure your own [runners are configured](../../runners/index.md).
 
 ## Prerequisites
 

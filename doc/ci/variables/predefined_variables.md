@@ -73,8 +73,8 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_PAGES_URL`                           | 11.8   | all    | The URL for a GitLab Pages site. Always a subdomain of `CI_PAGES_DOMAIN`. |
 | `CI_PIPELINE_ID`                         | 8.10   | all    | The instance-level ID of the current pipeline. This ID is unique across all projects on the GitLab instance. |
 | `CI_PIPELINE_IID`                        | 11.0   | all    | The project-level IID (internal ID) of the current pipeline. This ID is unique only within the current project. |
-| `CI_PIPELINE_SOURCE`                     | 10.0   | all    | How the pipeline was triggered. Can be `push`, `web`, `schedule`, `api`, `external`, `chat`, `webide`, `merge_request_event`, `external_pull_request_event`, `parent_pipeline`, [`trigger`, or `pipeline`](../triggers/README.md#authentication-tokens). |
-| `CI_PIPELINE_TRIGGERED`                  | all    | all    | `true` if the job was [triggered](../triggers/README.md). |
+| `CI_PIPELINE_SOURCE`                     | 10.0   | all    | How the pipeline was triggered. Can be `push`, `web`, `schedule`, `api`, `external`, `chat`, `webide`, `merge_request_event`, `external_pull_request_event`, `parent_pipeline`, [`trigger`, or `pipeline`](../triggers/index.md#authentication-tokens). |
+| `CI_PIPELINE_TRIGGERED`                  | all    | all    | `true` if the job was [triggered](../triggers/index.md). |
 | `CI_PIPELINE_URL`                        | 11.1   | 0.5    | The URL for the pipeline details. |
 | `CI_PIPELINE_CREATED_AT`                 | 13.10  | all    | The UTC datetime when the pipeline was created, in [ISO 8601](https://tools.ietf.org/html/rfc3339#appendix-A) format. |
 | `CI_PROJECT_CONFIG_PATH`                 | 13.8 to 13.12 | all    | [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/322807) in GitLab 14.0. Use `CI_CONFIG_PATH`. |
@@ -119,7 +119,7 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `GITLAB_USER_ID`                         | 8.12   | all    | The ID of the user who started the job. |
 | `GITLAB_USER_LOGIN`                      | 10.0   | all    | The username of the user who started the job. |
 | `GITLAB_USER_NAME`                       | 10.0   | all    | The name of the user who started the job. |
-| `TRIGGER_PAYLOAD`                        | 13.9   | all    | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/README.md#using-webhook-payload-in-the-triggered-pipeline). |
+| `TRIGGER_PAYLOAD`                        | 13.9   | all    | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/index.md#using-webhook-payload-in-the-triggered-pipeline). |
 
 ## Predefined variables for merge request pipelines
 
@@ -130,6 +130,7 @@ These variables are available when:
 
 | Variable                               | GitLab | Runner | Description |
 |----------------------------------------|--------|--------|-------------|
+| `CI_MERGE_REQUEST_APPROVED`            | 14.1   | all    | Approval status of the merge request. `true` when [merge request approvals](../../user/project/merge_requests/approvals/index.md) is available and the merge request has been approved. |
 | `CI_MERGE_REQUEST_ASSIGNEES`           | 11.9   | all    | Comma-separated list of usernames of assignees for the merge request. |
 | `CI_MERGE_REQUEST_ID`                  | 11.6   | all    | The instance-level ID of the merge request. This is a unique ID across all projects on GitLab. |
 | `CI_MERGE_REQUEST_IID`                 | 11.6   | all    | The project-level IID (internal ID) of the merge request. This ID is unique for the current project. |

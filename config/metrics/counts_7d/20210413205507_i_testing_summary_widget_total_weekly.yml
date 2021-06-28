@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.testing.i_testing_summary_widget_total_weekly
 description: Unique users that expand the test summary merge request widget by week
 product_section: ops

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.clusters_applications_cert_managers
 description: Total GitLab Managed clusters with GitLab Managed App:Cert Manager installed
 product_section: ops

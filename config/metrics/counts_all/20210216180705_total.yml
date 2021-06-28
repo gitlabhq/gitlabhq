@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.projects_imported.total
 description: Total count of all projects imported with import_source NOT NULL
 product_section: dev

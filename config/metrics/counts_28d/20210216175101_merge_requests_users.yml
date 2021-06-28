@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.create.merge_requests_users
 description: Monthly count of the number of merge request users
 product_section: dev

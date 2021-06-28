@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.instances_bamboo_active
 description: Count of active instance-level integrations for Bamboo CI
 product_section: dev

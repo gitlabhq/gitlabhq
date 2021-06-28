@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_monthly
 description: Count of pipelines using the stable Auto Deploy template
 product_section: ops

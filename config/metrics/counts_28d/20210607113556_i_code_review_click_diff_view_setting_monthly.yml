@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.code_review.i_code_review_click_diff_view_setting_monthly
 description: Count of users clicking diff view setting
 product_section: dev

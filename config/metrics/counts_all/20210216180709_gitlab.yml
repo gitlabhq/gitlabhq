@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.projects_imported.gitlab
 description: 'Distinct count of users that imported projects from GitLab.com'
 product_section: dev

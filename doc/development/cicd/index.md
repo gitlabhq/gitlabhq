@@ -61,7 +61,7 @@ successfully or fail. Each status transition for job within a pipeline triggers 
 looks for the next jobs to be transitioned towards completion. While doing that, `ProcessPipelineService`
 updates the status of jobs, stages and the overall pipeline.
 
-On the right side of the diagram we have a list of [runners](../../ci/runners/README.md)
+On the right side of the diagram we have a list of [runners](../../ci/runners/index.md)
 connected to the GitLab instance. These can be shared runners, group runners, or project-specific runners.
 The communication between runners and the Rails server occurs through a set of API endpoints, grouped as
 the `Runner API Gateway`.

@@ -389,12 +389,14 @@ module Gitlab
       # * +logger+ - [Gitlab::JsonLogger]
       # * +env+ - [Hash] custom environment hash, see the example with `DISABLE_LOCK_RETRIES`
       def with_lock_retries(*args, **kwargs, &block)
+        raise_on_exhaustion = !!kwargs.delete(:raise_on_exhaustion)
         merged_args = {
           klass: self.class,
           logger: Gitlab::BackgroundMigration::Logger
         }.merge(kwargs)
 
-        Gitlab::Database::WithLockRetries.new(**merged_args).run(&block)
+        Gitlab::Database::WithLockRetries.new(**merged_args)
+          .run(raise_on_exhaustion: raise_on_exhaustion, &block)
       end
 
       def true_value
@@ -1612,6 +1614,13 @@ into similar problems in the future (e.g. when new tables are created).
         MSG
 
         raise
+      end
+
+      def rename_constraint(table_name, old_name, new_name)
+        execute <<~SQL
+          ALTER TABLE #{quote_table_name(table_name)}
+          RENAME CONSTRAINT #{quote_column_name(old_name)} TO #{quote_column_name(new_name)}
+        SQL
       end
 
       private

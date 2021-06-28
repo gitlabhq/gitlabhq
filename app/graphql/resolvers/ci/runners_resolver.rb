@@ -3,6 +3,8 @@
 module Resolvers
   module Ci
     class RunnersResolver < BaseResolver
+      include LooksAhead
+
       type Types::Ci::RunnerType.connection_type, null: true
 
       argument :status, ::Types::Ci::RunnerStatusEnum,
@@ -25,10 +27,11 @@ module Resolvers
                required: false,
                description: 'Sort order of results.'
 
-      def resolve(**args)
-        ::Ci::RunnersFinder
-          .new(current_user: current_user, params: runners_finder_params(args))
-          .execute
+      def resolve_with_lookahead(**args)
+        apply_lookahead(
+          ::Ci::RunnersFinder
+            .new(current_user: current_user, params: runners_finder_params(args))
+            .execute)
       end
 
       private
@@ -39,7 +42,10 @@ module Resolvers
           type_type: params[:type],
           tag_name: params[:tag_list],
           search: params[:search],
-          sort: params[:sort]&.to_s
+          sort: params[:sort]&.to_s,
+          preload: {
+            tag_name: node_selection&.selects?(:tag_list)
+          }
         }.compact
       end
     end

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.code_review.i_code_review_mr_single_file_diffs_weekly
 description: Count of unique merge requests per week with diffs viewed file
   by file

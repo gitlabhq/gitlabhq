@@ -1181,7 +1181,7 @@ Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLink
 
 <pre class="highlight"><code>- This is an [inline-style link](https://www.google.com)
 - This is a [link to a repository file in the same directory](index.md)
-- This is a [relative link to a readme one directory higher](../README.md)
+- This is a [relative link to a readme one directory higher](../index.md)
 - This is a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
 Using header ID anchors:
@@ -1204,7 +1204,7 @@ Some text to show that the reference links can follow later.
 
 - This is an [inline-style link](https://www.google.com)
 - This is a [link to a repository file in the same directory](index.md)
-- This is a [relative link to a README one directory higher](../README.md)
+- This is a [relative link to a README one directory higher](../index.md)
 - This is a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
 Using header ID anchors:

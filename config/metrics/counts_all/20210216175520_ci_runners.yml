@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.ci_runners
 description: Total configured Runners in project
 product_section: ops

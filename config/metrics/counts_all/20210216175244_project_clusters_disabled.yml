@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.project_clusters_disabled
 description: Total GitLab Managed disabled clusters previously attached to projects
 product_section: ops

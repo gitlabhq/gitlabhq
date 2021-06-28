@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.dast_on_demand_pipelines
 description: ''
 product_section: ''

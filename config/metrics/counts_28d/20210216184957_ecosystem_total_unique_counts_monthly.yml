@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly
 description: Number of users performing actions on Jira issues by month
 product_section: dev

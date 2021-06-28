@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.clusters_applications_jupyter
 description: Total GitLab Managed clusters with GitLab Managed App:Jupyter installed
 product_section: ops

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: gitlab_shared_runners_enabled
 description: Whether shared runners is enabled
 product_section: ops

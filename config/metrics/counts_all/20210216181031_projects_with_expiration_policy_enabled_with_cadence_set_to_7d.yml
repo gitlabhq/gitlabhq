@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_with_expiration_policy_enabled_with_cadence_set_to_7d
 description: A count of projects with the cleanup policy set to run every 7 days
 product_section: ops

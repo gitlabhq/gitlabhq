@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.pool_repositories
 description: Count of unique object pool repositories for fork deduplication
 product_section: dev

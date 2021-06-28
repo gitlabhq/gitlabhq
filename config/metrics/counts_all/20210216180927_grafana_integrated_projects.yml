@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.grafana_integrated_projects
 description: Total Grafana integrations attached to projects
 product_section: ops

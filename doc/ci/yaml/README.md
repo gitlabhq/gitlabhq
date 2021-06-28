@@ -14,7 +14,7 @@ type: reference
 This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
 
 - For a quick introduction to GitLab CI/CD, follow the [quick start guide](../quick_start/index.md).
-- For a collection of examples, see [GitLab CI/CD Examples](../examples/README.md).
+- For a collection of examples, see [GitLab CI/CD Examples](../examples/index.md).
 - To view a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
@@ -369,7 +369,7 @@ workflow:
     - ...                # Previously defined workflow rules here
 ```
 
-[Triggered pipelines](../triggers/README.md) that run on a branch have a `$CI_COMMIT_BRANCH`
+[Triggered pipelines](../triggers/index.md) that run on a branch have a `$CI_COMMIT_BRANCH`
 set and could be blocked by a similar rule. Triggered pipelines have a pipeline source
 of `trigger` or `pipeline`, so `&& $CI_PIPELINE_SOURCE == "push"` ensures the rule
 does not block triggered pipelines.
@@ -1340,7 +1340,7 @@ pipeline based on branch names or pipeline types.
   | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
-  | `triggers`               | For pipelines created by using a [trigger token](../triggers/README.md#trigger-token). |
+  | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#trigger-token). |
   | `web`                    | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **CI/CD > Pipelines** section. |
 
 **Example of `only:refs` and `except:refs`**:
@@ -3722,7 +3722,7 @@ with a trigger token.
 
 The trigger token is different than the [`trigger`](#trigger) keyword.
 
-[Read more in the triggers documentation.](../triggers/README.md)
+[Read more in the triggers documentation.](../triggers/index.md)
 
 ### `interruptible`
 

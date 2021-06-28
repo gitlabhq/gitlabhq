@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_with_expiration_policy_enabled_with_keep_n_set_to_100
 description: A count of projects with the cleanup policy set to keep 100 tags
 product_section: ops

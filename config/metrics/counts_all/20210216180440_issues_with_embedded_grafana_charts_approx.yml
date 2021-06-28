@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.issues_with_embedded_grafana_charts_approx
 description: Count of issues where a user has embedded a Grafana chart
 product_section: ops

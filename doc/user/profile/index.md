@@ -280,6 +280,6 @@ Without the `config.extend_remember_period` flag, you would be forced to sign in
 - [Receive emails for sign-ins from unknown IP addresses or devices](unknown_sign_in_notification.md)
 - Manage applications that can [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
-- Manage [SSH keys](../../ssh/README.md) to access your account via SSH
+- Manage [SSH keys](../../ssh/index.md) to access your account via SSH
 - Change your [syntax highlighting theme](preferences.md#syntax-highlighting-theme)
 - [View your active sessions](active_sessions.md) and revoke any of them if necessary

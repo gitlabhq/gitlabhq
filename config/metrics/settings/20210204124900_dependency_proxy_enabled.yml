@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: dependency_proxy_enabled
 description: A count of projects where the dependency proxy is enabled
 product_section: ops

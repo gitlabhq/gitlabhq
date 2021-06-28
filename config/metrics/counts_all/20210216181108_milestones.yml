@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.milestones
 description: Count of milestones created 
 product_section: dev

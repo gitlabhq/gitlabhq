@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_inheriting_bugzilla_active
 description: Count of active groups inheriting integrations for Bugzilla
 product_section: dev

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.ci_runners_group_type_active_online
 name: "count_group_active_online_ci_runners"
 description: Total active and online group Runners

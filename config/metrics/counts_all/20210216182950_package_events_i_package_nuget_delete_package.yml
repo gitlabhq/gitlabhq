@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.package_events_i_package_nuget_delete_package
 description: A count of NuGet packages that have been deleted
 product_section: ops

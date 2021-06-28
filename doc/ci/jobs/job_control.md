@@ -225,7 +225,7 @@ check the value of the `$CI_PIPELINE_SOURCE` variable:
 | `pipeline`                    | For [multi-project pipelines](../multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](../yaml/README.md#trigger) keyword. |
 | `push`                        | For pipelines triggered by a `git push` event, including for branches and tags.                                                                                                                                                  |
 | `schedule`                    | For [scheduled pipelines](../pipelines/schedules.md).                                                                                                                                                                            |
-| `trigger`                     | For pipelines created by using a [trigger token](../triggers/README.md#trigger-token).                                                                                                                                           |
+| `trigger`                     | For pipelines created by using a [trigger token](../triggers/index.md#trigger-token).                                                                                                                                           |
 | `web`                         | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **CI/CD > Pipelines** section.                                                                                                       |
 | `webide`                      | For pipelines created by using the [WebIDE](../../user/project/web_ide/index.md).                                                                                                                                                |
 
@@ -306,7 +306,7 @@ to control when to add jobs to pipelines.
 In the following example, `job` runs only for:
 
 - Git tags
-- [Triggers](../triggers/README.md#trigger-token)
+- [Triggers](../triggers/index.md#trigger-token)
 - [Scheduled pipelines](../pipelines/schedules.md)
 
 ```yaml

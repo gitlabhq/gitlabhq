@@ -14,7 +14,7 @@ There are two tokens to take into account when connecting a runner with GitLab.
 
 | Token | Description |
 | ----- | ----------- |
-| Registration token   | Token used to [register the runner](https://docs.gitlab.com/runner/register/). It can be [obtained through GitLab](../ci/runners/README.md). |
+| Registration token   | Token used to [register the runner](https://docs.gitlab.com/runner/register/). It can be [obtained through GitLab](../ci/runners/index.md). |
 | Authentication token | Token used to authenticate the runner with the GitLab instance. It is obtained either automatically when [registering a runner](https://docs.gitlab.com/runner/register/), or manually when [registering the runner via the Runner API](#register-a-new-runner). |
 
 Here's an example of how the two tokens are used in runner registration:

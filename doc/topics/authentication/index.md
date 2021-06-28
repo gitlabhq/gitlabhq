@@ -10,7 +10,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 ## GitLab users
 
-- [SSH](../../ssh/README.md)
+- [SSH](../../ssh/index.md)
 - [Two-Factor Authentication (2FA)](../../user/profile/account/two_factor_authentication.md#two-factor-authentication)
 - [Why do I keep getting signed out?](../../user/profile/index.md#why-do-i-keep-getting-signed-out)
 - **Articles:**

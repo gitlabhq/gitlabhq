@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.release.releases
 description: Unique users creating release tags
 product_section: ops

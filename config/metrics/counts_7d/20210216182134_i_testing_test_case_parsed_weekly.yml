@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.testing.i_testing_test_case_parsed_weekly
 description: Internal Tracking to count number of unit tests parsed for planning of
   future code testing features. Data available [here](https://app.periscopedata.com/app/gitlab/788674/Verify:Testing-Group-Metrics?widget=10454394&udv=0)

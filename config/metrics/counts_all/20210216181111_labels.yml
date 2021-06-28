@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.labels
 description: Count of Labels
 product_section: dev

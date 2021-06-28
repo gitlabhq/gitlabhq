@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.protected_branches_except_default
 description: Count of branches that have been protected and are not the default branch
 product_section: dev

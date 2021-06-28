@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: object_store.artifacts.object_store.provider
 description: What Object Storage provider has been configured for Artifacts
 product_section: enablement

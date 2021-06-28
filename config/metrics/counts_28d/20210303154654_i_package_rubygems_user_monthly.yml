@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.user_packages.i_package_rubygems_user_monthly
 description: Distinct user count of RubyGems packages published in recent 28 days
 product_section: ops

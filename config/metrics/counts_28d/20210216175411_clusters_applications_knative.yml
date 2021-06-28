@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.configure.clusters_applications_knative
 description: Total GitLab Managed clusters with Knative enabled
 product_section: ops

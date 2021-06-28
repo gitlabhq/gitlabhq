@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.verify.ci_builds
 description: Unique count of builds in project
 product_section: ops

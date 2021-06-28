@@ -73,7 +73,7 @@ GitLab CI/CD supports numerous configuration options:
 | [Custom path for `.gitlab-ci.yml`](pipelines/settings.md#custom-cicd-configuration-file) | Define a custom path for the CI/CD configuration file.                                   |
 | [Git submodules for CI/CD](git_submodules.md)                                           | Configure jobs for using Git submodules.                                                  |
 | [SSH keys for CI/CD](ssh_keys/index.md)                                                | Using SSH keys in your CI pipelines.                                                      |
-| [Pipeline triggers](triggers/README.md)                                                 | Trigger pipelines through the API.                                                        |
+| [Pipeline triggers](triggers/index.md)                                                 | Trigger pipelines through the API.                                                        |
 | [Pipelines for Merge Requests](merge_request_pipelines/index.md)                        | Design a pipeline structure for running a pipeline in merge requests.                     |
 | [Integrate with Kubernetes clusters](../user/project/clusters/index.md)                 | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
 | [Optimize GitLab and GitLab Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories.                                   |
@@ -123,7 +123,7 @@ Its feature set is listed on the table below according to DevOps stages.
 ## Examples
 
 Find example project code and tutorials for using GitLab CI/CD with a variety of app frameworks, languages, and platforms
-on the [CI Examples](examples/README.md) page.
+on the [CI Examples](examples/index.md) page.
 
 ## Administration **(FREE SELF)**
 

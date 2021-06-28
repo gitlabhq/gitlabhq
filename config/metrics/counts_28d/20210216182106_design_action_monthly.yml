@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.source_code.design_action_monthly
 description: Count of total design actions (upload, delete, comment, reply)
 product_section: dev

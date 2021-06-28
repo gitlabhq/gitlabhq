@@ -1495,7 +1495,7 @@ elements:
 
 ## GitLab versions
 
-GitLab product documentation pages (not including [Contributor and Development](../../README.md)
+GitLab product documentation pages (not including [Contributor and Development](../../index.md)
 pages in the `/development` directory) can include version information to help
 users be aware of recent improvements or additions.
 

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.feature_flags
 description: Number of feature flag toggles
 product_section: ops

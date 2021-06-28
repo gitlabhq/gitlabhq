@@ -391,7 +391,7 @@ For GitLab Runner to function, you _must_ specify the following:
 - `gitlabUrl`: The GitLab server full URL (for example, `https://gitlab.example.com`)
   to register the Runner against.
 - `runnerRegistrationToken`: The registration token for adding new runners to GitLab.
-  This must be [retrieved from your GitLab instance](../../ci/runners/README.md).
+  This must be [retrieved from your GitLab instance](../../ci/runners/index.md).
 
 These values can be specified using [CI/CD variables](../../ci/variables/README.md):
 

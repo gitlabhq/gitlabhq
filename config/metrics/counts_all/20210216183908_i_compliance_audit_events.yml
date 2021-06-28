@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: compliance_unique_visits.i_compliance_audit_events
 description: ''
 product_section: ''

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: gitaly.filesystems
 description: ''
 product_section: ''

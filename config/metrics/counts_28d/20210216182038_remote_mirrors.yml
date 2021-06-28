@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.create.remote_mirrors
 description: Count of users creating projects with remote mirrors. Includes both push and pull mirrors.
 product_section: dev

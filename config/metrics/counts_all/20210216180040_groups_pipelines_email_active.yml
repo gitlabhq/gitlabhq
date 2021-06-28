@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_pipelines_email_active
 description: Count of groups with active integrations for Pipeline Emails
 product_section: dev

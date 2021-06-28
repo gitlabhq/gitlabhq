@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.bulk_imports.gitlab_v1
 description: Count of imports using GitLab Migration
 product_section: dev

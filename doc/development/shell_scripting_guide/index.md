@@ -127,4 +127,4 @@ for code review.
 
 ---
 
-[Return to Development documentation](../README.md).
+[Return to Development documentation](../index.md).

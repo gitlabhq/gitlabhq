@@ -7,12 +7,29 @@ RSpec.describe Ci::RunnersFinder do
     let_it_be(:admin) { create(:user, :admin) }
 
     describe '#execute' do
-      context 'with empty params' do
-        it 'returns all runners' do
-          runner1 = create :ci_runner, active: true
-          runner2 = create :ci_runner, active: false
+      context 'with 2 runners' do
+        let_it_be(:runner1) { create(:ci_runner, active: true) }
+        let_it_be(:runner2) { create(:ci_runner, active: false) }
 
-          expect(described_class.new(current_user: admin, params: {}).execute).to match_array [runner1, runner2]
+        context 'with empty params' do
+          it 'returns all runners' do
+            expect(Ci::Runner).to receive(:with_tags).and_call_original
+            expect(described_class.new(current_user: admin, params: {}).execute).to match_array [runner1, runner2]
+          end
+        end
+
+        context 'with preload param set to :tag_name true' do
+          it 'requests tags' do
+            expect(Ci::Runner).to receive(:with_tags).and_call_original
+            expect(described_class.new(current_user: admin, params: { preload: { tag_name: true } }).execute).to match_array [runner1, runner2]
+          end
+        end
+
+        context 'with preload param set to :tag_name false' do
+          it 'does not request tags' do
+            expect(Ci::Runner).not_to receive(:with_tags)
+            expect(described_class.new(current_user: admin, params: { preload: { tag_name: false } }).execute).to match_array [runner1, runner2]
+          end
         end
       end
 

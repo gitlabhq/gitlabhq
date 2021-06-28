@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.issues_with_associated_zoom_link
 description: Count of issues where a user has linked a Zoom meeting
 product_section: ops

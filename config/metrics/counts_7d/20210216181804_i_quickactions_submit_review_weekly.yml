@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.quickactions.i_quickactions_submit_review_weekly
 description: Count of WAU using the `/submit_review` quick action on Merge Requests
 product_section: dev

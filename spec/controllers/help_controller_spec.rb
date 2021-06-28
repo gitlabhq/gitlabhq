@@ -150,11 +150,11 @@ RSpec.describe HelpController do
     context 'for Markdown formats' do
       subject { get :show, params: { path: path }, format: :md }
 
-      let(:path) { 'ssh/README' }
+      let(:path) { 'ssh/index' }
 
       context 'when requested file exists' do
         before do
-          expect_file_read(File.join(Rails.root, 'doc/ssh/README.md'), content: fixture_file('blockquote_fence_after.md'))
+          expect_file_read(File.join(Rails.root, 'doc/ssh/index.md'), content: fixture_file('blockquote_fence_after.md'))
 
           subject
         end
@@ -265,7 +265,7 @@ RSpec.describe HelpController do
       it 'always renders not found' do
         get :show,
             params: {
-              path: 'ssh/README'
+              path: 'ssh/index'
             },
             format: :foo
         expect(response).to be_not_found

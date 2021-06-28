@@ -33,7 +33,7 @@ heavily influenced by the:
 - The ["critical path"](#directed-acyclic-graphs-dag-visualization), which represents
   the minimum and maximum pipeline duration.
 
-Additional points to pay attention relate to [GitLab Runners](../runners/README.md):
+Additional points to pay attention relate to [GitLab Runners](../runners/index.md):
 
 - Availability of the runners and the resources they are provisioned with.
 - Build dependencies and their installation time.
@@ -62,7 +62,7 @@ It's important to understand and document the pipeline workflows, and discuss po
 actions and changes. Refactoring pipelines may need careful interaction between teams
 in the DevSecOps lifecycle.
 
-Pipeline analysis can help identify issues with cost efficiency. For example, [runners](../runners/README.md)
+Pipeline analysis can help identify issues with cost efficiency. For example, [runners](../runners/index.md)
 hosted with a paid cloud service may be provisioned with:
 
 - More resources than needed for CI/CD pipelines, wasting money.

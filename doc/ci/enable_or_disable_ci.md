@@ -11,7 +11,7 @@ To effectively use GitLab CI/CD, you need:
 
 - A valid [`.gitlab-ci.yml`](yaml/README.md) file present at the root directory
   of your project.
-- A [runner](runners/README.md) properly set up.
+- A [runner](runners/index.md) properly set up.
 
 You can read our [quick start guide](quick_start/index.md) to get you started.
 

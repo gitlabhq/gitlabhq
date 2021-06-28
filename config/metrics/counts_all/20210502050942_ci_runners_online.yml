@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.ci_runners_online
 name: "counts_online_runners"
 description: Total online Runners

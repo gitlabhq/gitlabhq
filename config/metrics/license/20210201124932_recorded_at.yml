@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: recorded_at
 description: When the Usage Ping computation was started
 product_section: growth

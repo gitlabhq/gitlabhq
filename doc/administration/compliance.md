@@ -10,7 +10,7 @@ You can configure the following GitLab features to help ensure that your GitLab
 instance meets common compliance standards. Click a feature name for additional
 documentation.
 
-The [security features](../security/README.md) in GitLab may also help you meet
+The [security features](../security/index.md) in GitLab may also help you meet
 relevant compliance standards.
 
 | Feature  | GitLab tier | GitLab SaaS | Product level |

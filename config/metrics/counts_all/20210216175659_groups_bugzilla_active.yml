@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_bugzilla_active
 description: Count of groups with active integrations for Bugzilla
 product_section: dev

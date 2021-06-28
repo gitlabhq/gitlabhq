@@ -828,6 +828,11 @@ production: &base
         #
         sync_ssh_keys: false
 
+        # Retry ldap search connection if got empty results with specified response code(s)
+        #
+        #   Ex. [80]
+        # retry_empty_result_with_codes: []
+
         # LDAP attributes that GitLab will use to create an account for the LDAP user.
         # The specified attribute can either be the attribute name as a string (e.g. 'mail'),
         # or an array of attribute names to try in order (e.g. ['mail', 'email']).

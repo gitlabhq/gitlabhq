@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.issues_created_from_alerts
 description: Count of issues created automatically on alerts from GitLab-Managed Prometheus
 product_section: ops

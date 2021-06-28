@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_container_deploy_token_weekly
 description: A weekly count of container images published to the registry using a deploy token
 product_section: ops

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.issues_created_manually_from_alerts
 description: Count of issues created manually by non-bot users from GitLab alerts
 product_section: ops

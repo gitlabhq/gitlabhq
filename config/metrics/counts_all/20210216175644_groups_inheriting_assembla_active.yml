@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_inheriting_assembla_active
 description: Count of active groups inheriting integrations for Assembla
 product_section: dev

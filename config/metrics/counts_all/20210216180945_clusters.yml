@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.monitor.clusters
 description: Users creating clusters.
 product_section: ops

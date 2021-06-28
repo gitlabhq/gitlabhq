@@ -125,7 +125,7 @@ When you add a member to a group, that member is also added to all subgroups.
 Permission level is inherited from the group's parent. This model allows access to
 subgroups if you have membership in one of its parents.
 
-Jobs for pipelines in subgroups can use [runners](../../../ci/runners/README.md) registered to the parent group(s).
+Jobs for pipelines in subgroups can use [runners](../../../ci/runners/index.md) registered to the parent group(s).
 This means secrets configured for the parent group are available to subgroup jobs.
 
 In addition, maintainers of projects that belong to subgroups can see the details of runners registered to parent group(s).

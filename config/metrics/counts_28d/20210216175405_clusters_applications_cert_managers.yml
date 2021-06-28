@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.configure.clusters_applications_cert_managers
 description: Total GitLab Managed clusters with Cert Manager enabled
 product_section: ops

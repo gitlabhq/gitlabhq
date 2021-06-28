@@ -210,7 +210,7 @@ comments: false
 ---
 ```
 
-We're hiding comments only in main index pages, such as [the main documentation index](../../README.md),
+We're hiding comments only in main index pages, such as [the main documentation index](../../index.md),
 since its content is too broad to comment on. Before omitting Disqus, you must
 check with a technical writer.
 

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_unify_circuit_active
 description: Count of projects with active integrations for Unifiy Circuit
 product_section: dev

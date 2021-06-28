@@ -61,7 +61,7 @@ Before proceeding with the Pages configuration, make sure that:
    Pages artifacts.
 1. (Optional) You have a **wildcard certificate** for the Pages domain if you
    decide to serve Pages (`*.example.io`) under HTTPS.
-1. (Optional but recommended) You have configured and enabled the [shared runners](../../ci/runners/README.md)
+1. (Optional but recommended) You have configured and enabled the [shared runners](../../ci/runners/index.md)
    so that your users don't have to bring their own.
 
 ### DNS configuration

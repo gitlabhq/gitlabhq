@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: signup_enabled
 description: Whether public signup is enabled
 product_section: dev

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.pages_domains
 description: Total GitLab Pages domains
 product_section: ops

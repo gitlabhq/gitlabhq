@@ -115,11 +115,11 @@ each page should have a metadata tag called `type`. It can be one or more of the
 following:
 
 - `index`: It consists mostly of a list of links to other pages.
-  [Example page](../../README.md).
+  [Example page](../../index.md).
 - `concepts`: The background or context of a subject.
   [Example page](../../topics/autodevops/index.md).
 - `howto`: Specific use case instructions.
-  [Example page](../../ssh/README.md).
+  [Example page](../../ssh/index.md).
 - `tutorial`: Learn a process/concept by doing.
   [Example page](../../gitlab-basics/start-using-git.md).
 - `reference`: A collection of information used as a reference to use a feature
@@ -395,7 +395,7 @@ This is preferred over static paths, as the helper also works on instances insta
 ### GitLab `/help` tests
 
 Several [RSpec tests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/features/help_pages_spec.rb)
-are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../README.md) works correctly from `/help`.
+are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../index.md) works correctly from `/help`.
 For example, [GitLab.com's `/help`](https://gitlab.com/help).
 
 ## Docs site architecture

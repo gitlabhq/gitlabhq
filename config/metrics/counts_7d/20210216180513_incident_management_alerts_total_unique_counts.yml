@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts_weekly.aggregated_metrics.incident_management_alerts_total_unique_counts
 description: Count of unique users per week to take an action on an alert
 product_section: ops

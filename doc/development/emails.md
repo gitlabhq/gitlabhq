@@ -141,4 +141,4 @@ Please note that `path/to/project` is used in GitLab as the handler for the Serv
 
 ---
 
-[Return to Development documentation](README.md)
+[Return to Development documentation](index.md)

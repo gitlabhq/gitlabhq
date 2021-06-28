@@ -154,7 +154,7 @@ To use CI/CD to authenticate, you can use:
   docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   ```
 
-- A [CI job token](../../../ci/triggers/README.md#ci-job-token).
+- A [CI job token](../../../ci/triggers/index.md#ci-job-token).
 
   ```shell
   docker login -u $CI_JOB_USER -p $CI_JOB_TOKEN $CI_REGISTRY

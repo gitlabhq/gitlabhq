@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.create.deploy_keys
 description: Count of users creating deploy keys.
 product_section: dev

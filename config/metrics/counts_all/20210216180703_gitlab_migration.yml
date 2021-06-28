@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.group_imports.gitlab_migration
 description: Count of groups imported using GitLab Migration
 product_section: dev

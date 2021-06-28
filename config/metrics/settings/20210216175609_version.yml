@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: database.version
 description: The version of the PostgreSQL database.
 product_section: enablement

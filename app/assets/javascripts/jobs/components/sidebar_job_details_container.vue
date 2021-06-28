@@ -46,7 +46,7 @@ export default {
       return timeIntervalInWords(this.job.queued);
     },
     runnerHelpUrl() {
-      return helpPagePath('ci/runners/README.html', {
+      return helpPagePath('ci/runners/index.html', {
         anchor: 'set-maximum-job-timeout-for-a-runner',
       });
     },

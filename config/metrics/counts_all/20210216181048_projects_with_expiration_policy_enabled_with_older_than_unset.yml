@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_with_expiration_policy_enabled_with_older_than_unset
 description: A count of projects with the cleanup policy with the number of tags to delete unset
 product_section: ops

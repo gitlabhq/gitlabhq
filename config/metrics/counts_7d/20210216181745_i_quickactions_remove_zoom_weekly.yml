@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.quickactions.i_quickactions_remove_zoom_weekly
 description: Count of WAU using the `/remove_zoom` quick action 
 product_section: dev

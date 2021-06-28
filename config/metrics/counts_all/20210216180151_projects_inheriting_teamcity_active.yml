@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_inheriting_teamcity_active
 description: Count of active projects inheriting integrations for Teamcity CI
 product_section: dev

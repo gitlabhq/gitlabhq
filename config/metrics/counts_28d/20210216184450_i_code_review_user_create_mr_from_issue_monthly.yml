@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.code_review.i_code_review_user_create_mr_from_issue_monthly
 description: Count of unique users per month who create a merge request from an issue
 product_stage: create

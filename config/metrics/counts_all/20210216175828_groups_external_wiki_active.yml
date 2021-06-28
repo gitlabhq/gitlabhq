@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_external_wiki_active
 description: Count of groups with active integrations for External Wiki
 product_section: dev

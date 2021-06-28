@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: search_unique_visits.i_search_total
 description: Calculated unique users to perform Basic or Advanced searches by week
 product_section: enablement

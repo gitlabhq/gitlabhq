@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.groups
 description: Number of users who are group members.
 product_section: dev

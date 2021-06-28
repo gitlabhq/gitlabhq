@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.incident_management.incident_management_incident_closed_monthly
 description: Count of users closing incidents per month
 product_section: ops

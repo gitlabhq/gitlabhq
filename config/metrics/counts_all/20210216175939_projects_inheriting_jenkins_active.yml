@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_inheriting_jenkins_active
 description: Count of active projects inheriting integrations for Jenkins
 product_section: dev

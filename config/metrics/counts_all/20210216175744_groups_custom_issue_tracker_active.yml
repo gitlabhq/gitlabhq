@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_custom_issue_tracker_active
 description: Count of groups with active integrations for a Custom Issue Tracker
 product_section: dev

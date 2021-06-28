@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: gitlab_pages.version
 description: The version number of GitLab Pages
 product_section: growth

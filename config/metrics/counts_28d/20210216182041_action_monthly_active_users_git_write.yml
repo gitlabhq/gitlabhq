@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.create.action_monthly_active_users_git_write
 description: Aggregated value for wiki, design, and project repo Git write actions
 product_section: dev

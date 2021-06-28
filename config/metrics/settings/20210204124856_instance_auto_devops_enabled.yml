@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: instance_auto_devops_enabled
 description: Whether auto DevOps is enabled
 product_section: ops

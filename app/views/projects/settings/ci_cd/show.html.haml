@@ -41,7 +41,7 @@
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
-      = link_to s_('How do I configure runners?'), help_page_path('ci/runners/README'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to s_('How do I configure runners?'), help_page_path('ci/runners/index'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'projects/runners/index'
 
@@ -71,7 +71,7 @@
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _("Trigger a pipeline for a branch or tag by generating a trigger token and using it with an API call. The token impersonates a user's project access and permissions.")
-      = link_to _('Learn more.'), help_page_path('ci/triggers/README'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('ci/triggers/index'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'projects/triggers/index'
 
