@@ -29,7 +29,7 @@ RSpec.describe MergeRequestDiffEntity do
       expect(subject).to include(
         :version_index, :created_at, :commits_count,
         :latest, :short_commit_sha, :version_path,
-        :compare_path, :state
+        :compare_path
       )
     end
   end

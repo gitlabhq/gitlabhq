@@ -31554,6 +31554,9 @@ msgstr ""
 msgid "Symbolic link"
 msgstr ""
 
+msgid "Sync LDAP"
+msgstr ""
+
 msgid "Sync now"
 msgstr ""
 
@@ -31561,6 +31564,9 @@ msgid "Synced"
 msgstr ""
 
 msgid "Synchronization settings"
+msgstr ""
+
+msgid "Synchronize LDAP"
 msgstr ""
 
 msgid "Syncing…"
@@ -36217,6 +36223,9 @@ msgstr ""
 msgid "Warning: Displaying this diagram might cause performance issues on this page."
 msgstr ""
 
+msgid "Warning: Synchronizing LDAP removes direct members' access."
+msgstr ""
+
 msgid "We are currently unable to fetch data for the pipeline header."
 msgstr ""
 
@@ -37937,7 +37946,7 @@ msgstr ""
 msgid "cannot be enabled unless all domains have TLS certificates"
 msgstr ""
 
-msgid "cannot be enabled until a valid credit credit is on file"
+msgid "cannot be enabled until a valid credit card is on file"
 msgstr ""
 
 msgid "cannot be modified"

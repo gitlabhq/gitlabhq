@@ -41,6 +41,19 @@ def message_for_feature_flag_missing_group!(feature_flag:, mr_group_label:)
   end
 end
 
+def message_for_global_rollout(feature_flag)
+  return unless feature_flag.default_enabled == true
+
+  message = <<~SUGGEST_COMMENT
+  You're about to [release the feature with the feature flag](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md#optional-release-the-feature-with-the-feature-flag).
+  This process can only be done **after** the [global rollout on production](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md#global-rollout-on-production).
+  Please make sure in [the rollout issue](#{feature_flag.rollout_issue_url}) that the preliminary steps have already been done. Otherwise, changing the YAML definition might not have the desired effect.
+  SUGGEST_COMMENT
+
+  mr_line = feature_flag.raw.lines.find_index { |l| l.include?('default_enabled:') }
+  markdown(message, file: feature_flag.path, line: mr_line.succ)
+end
+
 def message_for_feature_flag_with_group!(feature_flag:, mr_group_label:)
   return if feature_flag.group_match_mr_label?(mr_group_label)
 
@@ -63,6 +76,10 @@ end
 
 feature_flag.feature_flag_files(change_type: :added).each do |feature_flag|
   check_feature_flag_yaml(feature_flag)
+end
+
+feature_flag.feature_flag_files(change_type: :modified).each do |feature_flag|
+  message_for_global_rollout(feature_flag)
 end
 
 if helper.security_mr? && feature_flag_file_added?

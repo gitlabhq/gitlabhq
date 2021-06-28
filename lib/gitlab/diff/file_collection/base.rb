@@ -85,6 +85,10 @@ module Gitlab
           # No-op
         end
 
+        def overflow?
+          raw_diff_files.overflow?
+        end
+
         private
 
         def empty_pagination_data

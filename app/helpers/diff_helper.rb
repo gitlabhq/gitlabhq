@@ -190,10 +190,8 @@ module DiffHelper
   end
 
   def render_overflow_warning?(diffs_collection)
-    diff_files = diffs_collection.raw_diff_files
-
-    diff_files.overflow?.tap do |overflown|
-      log_overflow_limits(diff_files)
+    diffs_collection.overflow?.tap do |overflown|
+      log_overflow_limits(diff_files: diffs_collection.raw_diff_files, collection_overflow: overflown)
     end
   end
 
@@ -285,12 +283,12 @@ module DiffHelper
     conflicts_service.conflicts.files.index_by(&:our_path)
   end
 
-  def log_overflow_limits(diff_files)
+  def log_overflow_limits(diff_files:, collection_overflow:)
     if diff_files.any?(&:too_large?)
       Gitlab::Metrics.add_event(:diffs_overflow_single_file_limits)
     end
 
-    Gitlab::Metrics.add_event(:diffs_overflow_collection_limits) if diff_files.overflow?
+    Gitlab::Metrics.add_event(:diffs_overflow_collection_limits) if collection_overflow
     Gitlab::Metrics.add_event(:diffs_overflow_max_bytes_limits) if diff_files.overflow_max_bytes?
     Gitlab::Metrics.add_event(:diffs_overflow_max_files_limits) if diff_files.overflow_max_files?
     Gitlab::Metrics.add_event(:diffs_overflow_max_lines_limits) if diff_files.overflow_max_lines?

@@ -48,6 +48,10 @@ module Gitlab
           @merge_request_diff.real_size
         end
 
+        def overflow?
+          @merge_request_diff.overflow?
+        end
+
         private
 
         def highlight_cache

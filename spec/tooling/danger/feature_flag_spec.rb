@@ -87,7 +87,11 @@ RSpec.describe Tooling::Danger::FeatureFlag do
     let(:feature_flag_path) { 'config/feature_flags/development/entry.yml' }
     let(:group) { 'group::source code' }
     let(:raw_yaml) do
-      YAML.dump('group' => group)
+      YAML.dump(
+        'group' => group,
+        'default_enabled' => true,
+        'rollout_issue_url' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/1'
+      )
     end
 
     subject(:found) { described_class.new(feature_flag_path) }
@@ -106,6 +110,18 @@ RSpec.describe Tooling::Danger::FeatureFlag do
     describe '#group' do
       it 'returns the group found in the YAML' do
         expect(found.group).to eq(group)
+      end
+    end
+
+    describe '#default_enabled' do
+      it 'returns the default_enabled found in the YAML' do
+        expect(found.default_enabled).to eq(true)
+      end
+    end
+
+    describe '#rollout_issue_url' do
+      it 'returns the rollout_issue_url found in the YAML' do
+        expect(found.rollout_issue_url).to eq('https://gitlab.com/gitlab-org/gitlab/-/issues/1')
       end
     end
 

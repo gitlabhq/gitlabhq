@@ -16,7 +16,6 @@ class MergeRequestDiffEntity < Grape::Entity
   end
 
   expose :created_at
-  expose :state
   expose :commits_count
 
   expose :latest?, as: :latest

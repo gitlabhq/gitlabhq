@@ -29,6 +29,14 @@ module Tooling
           @group ||= yaml['group']
         end
 
+        def default_enabled
+          @default_enabled ||= yaml['default_enabled']
+        end
+
+        def rollout_issue_url
+          @rollout_issue_url ||= yaml['rollout_issue_url']
+        end
+
         def group_match_mr_label?(mr_group_label)
           mr_group_label == group
         end

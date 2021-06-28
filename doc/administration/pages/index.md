@@ -693,22 +693,13 @@ database encryption. Proceed with caution.
    gitlab_pages['access_control'] = true
    ```
 
+1. Configure [the object storage and migrate pages data to it](#using-object-storage).
+
 1. [Reconfigure the **GitLab server**](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the
    changes to take effect. The `gitlab-secrets.json` file is now updated with the
    new configuration.
 
 1. Set up a new server. This becomes the **Pages server**.
-
-1. Create an [NFS share](../nfs.md)
-   on the **Pages server** and configure this share to
-   allow access from your main **GitLab server**.
-   Note that the example there is more general and
-   shares several sub-directories from `/home` to several `/nfs/home` mount points.
-   For our Pages-specific example here, we instead share only the
-   default GitLab Pages folder `/var/opt/gitlab/gitlab-rails/shared/pages`
-   from the **Pages server** and we mount it to `/mnt/pages`
-   on the **GitLab server**.
-   Therefore, omit "Step 4" there.
 
 1. On the **Pages server**, install Omnibus GitLab and modify `/etc/gitlab/gitlab.rb`
    to include:
@@ -728,7 +719,7 @@ database encryption. Proceed with caution.
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the **GitLab server**
-   to the **Pages server**, for example via the NFS share.
+   to the **Pages server**.
 
    ```shell
    # On the GitLab server
@@ -746,7 +737,6 @@ database encryption. Proceed with caution.
    pages_external_url "http://<pages_server_URL>"
    gitlab_pages['enable'] = false
    pages_nginx['enable'] = false
-   gitlab_rails['pages_path'] = "/mnt/pages"
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
@@ -1323,6 +1313,24 @@ To enable disk access:
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+### `httprange: new resource 403`
+
+If you see an error similar to:
+
+```plaintext
+{"error":"httprange: new resource 403: \"403 Forbidden\"","host":"root.pages.example.com","level":"error","msg":"vfs.Root","path":"/pages1/","time":"2021-06-10T08:45:19Z"}
+```
+
+And you run pages on the separate server syncing files via NFS, it may mean that
+the shared pages directory is mounted on a different path on the main GitLab server and the
+GitLab Pages server.
+
+In that case, it's highly recommended you to configure
+[object storage and migrate any existing pages data to it](#using-object-storage).
+
+Alternatively, you can mount the GitLab Pages shared directory to the same path on
+both servers.
 
 ### GitLab Pages doesn't work after upgrading to GitLab 14.0 or above
 

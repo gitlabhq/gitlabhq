@@ -293,23 +293,22 @@ RSpec.describe DiffHelper do
   describe '#render_overflow_warning?' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::MergeRequestDiff, raw_diff_files: diff_files) }
+    let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::MergeRequestDiff, raw_diff_files: diff_files, overflow?: false) }
     let(:diff_files) { Gitlab::Git::DiffCollection.new(files) }
     let(:safe_file) { { too_large: false, diff: '' } }
     let(:large_file) { { too_large: true, diff: '' } }
     let(:files) { [safe_file, safe_file] }
 
-    before do
-      allow(diff_files).to receive(:overflow?).and_return(false)
-      allow(diff_files).to receive(:overflow_max_bytes?).and_return(false)
-      allow(diff_files).to receive(:overflow_max_files?).and_return(false)
-      allow(diff_files).to receive(:overflow_max_lines?).and_return(false)
-      allow(diff_files).to receive(:collapsed_safe_bytes?).and_return(false)
-      allow(diff_files).to receive(:collapsed_safe_files?).and_return(false)
-      allow(diff_files).to receive(:collapsed_safe_lines?).and_return(false)
-    end
-
     context 'when no limits are hit' do
+      before do
+        allow(diff_files).to receive(:overflow_max_bytes?).and_return(false)
+        allow(diff_files).to receive(:overflow_max_files?).and_return(false)
+        allow(diff_files).to receive(:overflow_max_lines?).and_return(false)
+        allow(diff_files).to receive(:collapsed_safe_bytes?).and_return(false)
+        allow(diff_files).to receive(:collapsed_safe_files?).and_return(false)
+        allow(diff_files).to receive(:collapsed_safe_lines?).and_return(false)
+      end
+
       it 'returns false and does not log any overflow events' do
         expect(Gitlab::Metrics).not_to receive(:add_event).with(:diffs_overflow_collection_limits)
         expect(Gitlab::Metrics).not_to receive(:add_event).with(:diffs_overflow_single_file_limits)
@@ -343,7 +342,7 @@ RSpec.describe DiffHelper do
 
     context 'when the file collection has an overflow' do
       before do
-        allow(diff_files).to receive(:overflow?).and_return(true)
+        allow(diffs_collection).to receive(:overflow?).and_return(true)
       end
 
       it 'returns true and only logs all the correct collection overflow event' do
