@@ -842,20 +842,6 @@ RSpec.shared_examples 'Pipeline Processing Service' do
       expect(all_builds.manual).to contain_exactly(linux_build)
       expect(all_builds.skipped).to contain_exactly(deploy)
     end
-
-    context 'when FF ci_fix_pipeline_status_for_dag_needs_manual is disabled' do
-      before do
-        stub_feature_flags(ci_fix_pipeline_status_for_dag_needs_manual: false)
-      end
-
-      it 'makes deploy DAG to be waiting for optional manual to finish' do
-        expect(process_pipeline).to be_truthy
-
-        expect(stages).to eq(%w(skipped created))
-        expect(all_builds.manual).to contain_exactly(linux_build)
-        expect(all_builds.created).to contain_exactly(deploy)
-      end
-    end
   end
 
   context 'when a bridge job has parallel:matrix config', :sidekiq_inline do

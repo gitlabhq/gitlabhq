@@ -118,15 +118,15 @@ module Gitlab
       def debian_architecture_regex
         # See official parser: https://git.dpkg.org/cgit/dpkg/dpkg.git/tree/lib/dpkg/arch.c?id=9e0c88ec09475f4d1addde9cdba1ad7849720356#n43
         # But we limit to lower case
-        @debian_architecture_regex ||= %r{\A[a-z0-9][-a-z0-9]*\z}.freeze
+        @debian_architecture_regex ||= %r{\A#{::Packages::Debian::ARCHITECTURE_REGEX}\z}.freeze
       end
 
       def debian_distribution_regex
-        @debian_distribution_regex ||= %r{\A[a-z0-9][a-z0-9\.-]*\z}i.freeze
+        @debian_distribution_regex ||= %r{\A#{::Packages::Debian::DISTRIBUTION_REGEX}\z}i.freeze
       end
 
       def debian_component_regex
-        @debian_component_regex ||= %r{#{debian_distribution_regex}}.freeze
+        @debian_component_regex ||= %r{\A#{::Packages::Debian::COMPONENT_REGEX}\z}.freeze
       end
 
       def helm_channel_regex

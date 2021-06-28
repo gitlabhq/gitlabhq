@@ -1,3 +1,8 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Workflows/Branch-Pipelines.gitlab-ci.yml
+
 # Read more on when to use this template at
 # https://docs.gitlab.com/ee/ci/yaml/#workflowrules
 

@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
 
   describe 'initialize' do
     it 'memoizes pagination_data' do
-      expect(subject.pagination_data).to eq(current_page: nil, next_page: nil, total_pages: 20)
+      expect(subject.pagination_data).to eq(total_pages: 20)
     end
   end
 

@@ -12,10 +12,7 @@ export default (server) => {
     return {
       ...result,
       pagination: withValues(pagination, {
-        current_page: null,
-        next_page: null,
         total_pages: 1,
-        next_page_href: null,
       }),
     };
   });

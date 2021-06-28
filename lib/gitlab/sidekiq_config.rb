@@ -103,6 +103,21 @@ module Gitlab
         queues_for_sidekiq_queues_yml != config_queues
       end
 
+      # Returns a hash of worker class name => mapped queue name
+      def worker_queue_mappings
+        workers
+          .reject { |worker| worker.klass.is_a?(Gitlab::SidekiqConfig::DummyWorker) }
+          .to_h { |worker| [worker.klass.to_s, ::Gitlab::SidekiqConfig::WorkerRouter.global.route(worker.klass)] }
+      end
+
+      # Like worker_queue_mappings, but only for the queues running in
+      # the current Sidekiq process
+      def current_worker_queue_mappings
+        worker_queue_mappings
+          .select { |worker, queue| Sidekiq.options[:queues].include?(queue) }
+          .to_h
+      end
+
       private
 
       def find_workers(root, ee:)

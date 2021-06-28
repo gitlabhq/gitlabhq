@@ -472,8 +472,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         diff_view: :inline,
         merge_ref_head_diff: nil,
         pagination_data: {
-          current_page: nil,
-          next_page: nil,
           total_pages: nil
         }.merge(pagination_data)
       }
@@ -515,7 +513,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-        let(:expected_options) { collection_arguments(current_page: nil, total_pages: 20).merge(merge_ref_head_diff: false) }
+        let(:expected_options) { collection_arguments(total_pages: 20).merge(merge_ref_head_diff: false) }
       end
 
       it_behaves_like 'successful request'
@@ -555,7 +553,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
         let(:expected_options) do
-          collection_arguments(current_page: nil, total_pages: 20)
+          collection_arguments(total_pages: 20)
         end
       end
 
@@ -574,7 +572,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-        let(:expected_options) { collection_arguments(current_page: nil, total_pages: 20) }
+        let(:expected_options) { collection_arguments(total_pages: 20) }
       end
 
       it_behaves_like 'successful request'
@@ -585,7 +583,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-        let(:expected_options) { collection_arguments(current_page: nil, next_page: nil, total_pages: 20) }
+        let(:expected_options) { collection_arguments(total_pages: 20) }
       end
 
       it_behaves_like 'successful request'

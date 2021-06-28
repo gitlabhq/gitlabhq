@@ -7,25 +7,18 @@ namespace :gitlab do
     end
 
     namespace :migrate_jobs do
-      def mappings
-        ::Gitlab::SidekiqConfig
-          .workers
-          .reject { |worker| worker.klass.is_a?(Gitlab::SidekiqConfig::DummyWorker) }
-          .to_h { |worker| [worker.klass.to_s, ::Gitlab::SidekiqConfig::WorkerRouter.global.route(worker.klass)] }
-      end
-
       desc 'GitLab | Sidekiq | Migrate jobs in the scheduled set to new queue names'
       task schedule: :environment do
         ::Gitlab::SidekiqMigrateJobs
           .new('schedule', logger: Logger.new($stdout))
-          .execute(mappings)
+          .execute(::Gitlab::SidekiqConfig.worker_queue_mappings)
       end
 
       desc 'GitLab | Sidekiq | Migrate jobs in the retry set to new queue names'
       task retry: :environment do
         ::Gitlab::SidekiqMigrateJobs
           .new('retry', logger: Logger.new($stdout))
-          .execute(mappings)
+          .execute(::Gitlab::SidekiqConfig.worker_queue_mappings)
       end
     end
 

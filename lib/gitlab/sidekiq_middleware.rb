@@ -12,7 +12,13 @@ module Gitlab
         # Size limiter should be placed at the top
         chain.add ::Gitlab::SidekiqMiddleware::SizeLimiter::Server
         chain.add ::Gitlab::SidekiqMiddleware::Monitor
-        chain.add ::Gitlab::SidekiqMiddleware::ServerMetrics if metrics
+
+        if metrics
+          chain.add ::Gitlab::SidekiqMiddleware::ServerMetrics
+
+          ::Gitlab::SidekiqMiddleware::ServerMetrics.initialize_process_metrics
+        end
+
         chain.add ::Gitlab::SidekiqMiddleware::ArgumentsLogger if arguments_logger
         chain.add ::Gitlab::SidekiqMiddleware::MemoryKiller if memory_killer
         chain.add ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware

@@ -24,12 +24,7 @@ RSpec.describe PaginatedDiffEntity do
   end
 
   it 'exposes pagination data' do
-    expect(subject[:pagination]).to eq(
-      current_page: nil,
-      next_page: nil,
-      next_page_href: nil,
-      total_pages: 20
-    )
+    expect(subject[:pagination]).to eq(total_pages: 20)
   end
 
   context 'when there are conflicts' do

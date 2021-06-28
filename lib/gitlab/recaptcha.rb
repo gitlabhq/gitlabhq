@@ -24,3 +24,6 @@ module Gitlab
     end
   end
 end
+
+# call prepend_mod to ensure JH-specific module run even though there is no corresponding EE-specific module
+Gitlab::Recaptcha.prepend_mod

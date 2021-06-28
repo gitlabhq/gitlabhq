@@ -122,4 +122,43 @@ RSpec.describe Gitlab::SidekiqConfig do
       expect(described_class.sidekiq_queues_yml_outdated?).to be(false)
     end
   end
+
+  describe '.worker_queue_mappings' do
+    it 'returns the worker class => queue mappings based on the current routing configuration' do
+      test_routes = [
+        ['urgency=high', 'default'],
+        ['*', nil]
+      ]
+
+      allow(::Gitlab::SidekiqConfig::WorkerRouter)
+        .to receive(:global).and_return(::Gitlab::SidekiqConfig::WorkerRouter.new(test_routes))
+
+      expect(described_class.worker_queue_mappings).to include('MergeWorker' => 'default',
+                                                               'BuildFinishedWorker' => 'default',
+                                                               'BackgroundMigrationWorker' => 'background_migration',
+                                                               'AdminEmailWorker' => 'cronjob:admin_email')
+    end
+  end
+
+  describe '.current_worker_queue_mappings' do
+    it 'returns worker queue mappings that have queues in the current Sidekiq options' do
+      test_routes = [
+        ['urgency=high', 'default'],
+        ['*', nil]
+      ]
+
+      allow(::Gitlab::SidekiqConfig::WorkerRouter)
+        .to receive(:global).and_return(::Gitlab::SidekiqConfig::WorkerRouter.new(test_routes))
+
+      allow(Sidekiq).to receive(:options).and_return(queues: %w[default background_migration])
+
+      mappings = described_class.current_worker_queue_mappings
+
+      expect(mappings).to include('MergeWorker' => 'default',
+                                  'BuildFinishedWorker' => 'default',
+                                  'BackgroundMigrationWorker' => 'background_migration')
+
+      expect(mappings).not_to include('AdminEmailWorker' => 'cronjob:admin_email')
+    end
+  end
 end

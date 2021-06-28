@@ -8,11 +8,77 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
     context "with mocked prometheus" do
       include_context 'server metrics with mocked prometheus'
 
-      describe '#initialize' do
+      describe '.initialize_process_metrics' do
         it 'sets concurrency metrics' do
           expect(concurrency_metric).to receive(:set).with({}, Sidekiq.options[:concurrency].to_i)
 
-          subject
+          described_class.initialize_process_metrics
+        end
+
+        it 'initializes sidekiq_jobs_completion_seconds for the workers in the current Sidekiq process' do
+          allow(Gitlab::SidekiqConfig)
+            .to receive(:current_worker_queue_mappings)
+                  .and_return('MergeWorker' => 'merge', 'BuildFinishedWorker' => 'default')
+
+          expect(completion_seconds_metric)
+            .to receive(:get).with(queue: 'merge',
+                                   worker: 'MergeWorker',
+                                   urgency: 'high',
+                                   external_dependencies: 'no',
+                                   feature_category: 'source_code_management',
+                                   boundary: '',
+                                   job_status: 'done')
+
+          expect(completion_seconds_metric)
+            .to receive(:get).with(queue: 'merge',
+                                   worker: 'MergeWorker',
+                                   urgency: 'high',
+                                   external_dependencies: 'no',
+                                   feature_category: 'source_code_management',
+                                   boundary: '',
+                                   job_status: 'fail')
+
+          expect(completion_seconds_metric)
+            .to receive(:get).with(queue: 'default',
+                                   worker: 'BuildFinishedWorker',
+                                   urgency: 'high',
+                                   external_dependencies: 'no',
+                                   feature_category: 'continuous_integration',
+                                   boundary: 'cpu',
+                                   job_status: 'done')
+
+          expect(completion_seconds_metric)
+            .to receive(:get).with(queue: 'default',
+                                   worker: 'BuildFinishedWorker',
+                                   urgency: 'high',
+                                   external_dependencies: 'no',
+                                   feature_category: 'continuous_integration',
+                                   boundary: 'cpu',
+                                   job_status: 'fail')
+
+          described_class.initialize_process_metrics
+        end
+
+        context 'when the sidekiq_job_completion_metric_initialize feature flag is disabled' do
+          before do
+            stub_feature_flags(sidekiq_job_completion_metric_initialize: false)
+          end
+
+          it 'sets the concurrency metric' do
+            expect(concurrency_metric).to receive(:set).with({}, Sidekiq.options[:concurrency].to_i)
+
+            described_class.initialize_process_metrics
+          end
+
+          it 'does not initialize sidekiq_jobs_completion_seconds' do
+            allow(Gitlab::SidekiqConfig)
+              .to receive(:current_worker_queue_mappings)
+                    .and_return('MergeWorker' => 'merge', 'BuildFinishedWorker' => 'default')
+
+            expect(completion_seconds_metric).not_to receive(:get)
+
+            described_class.initialize_process_metrics
+          end
         end
       end
 
@@ -43,6 +109,26 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           expect(elasticsearch_seconds_metric).to receive(:observe).with(labels_with_job_status, elasticsearch_duration)
           expect(redis_requests_total).to receive(:increment).with(labels_with_job_status, redis_calls)
           expect(elasticsearch_requests_total).to receive(:increment).with(labels_with_job_status, elasticsearch_calls)
+
+          subject.call(worker, job, :test) { nil }
+        end
+
+        it 'sets sidekiq_jobs_completion_seconds values that are compatible with those from .initialize_process_metrics' do
+          label_validator = Prometheus::Client::LabelSetValidator.new([:le])
+
+          allow(Gitlab::SidekiqConfig)
+            .to receive(:current_worker_queue_mappings)
+                  .and_return('MergeWorker' => 'merge', 'BuildFinishedWorker' => 'default')
+
+          allow(completion_seconds_metric).to receive(:get) do |labels|
+            expect { label_validator.validate(labels) }.not_to raise_error
+          end
+
+          allow(completion_seconds_metric).to receive(:observe) do |labels, _duration|
+            expect { label_validator.validate(labels) }.not_to raise_error
+          end
+
+          described_class.initialize_process_metrics
 
           subject.call(worker, job, :test) { nil }
         end

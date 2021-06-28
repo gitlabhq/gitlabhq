@@ -88,11 +88,7 @@ module Gitlab
         private
 
         def empty_pagination_data
-          {
-            current_page: nil,
-            next_page: nil,
-            total_pages: nil
-          }
+          { total_pages: nil }
         end
 
         def diff_stats_collection

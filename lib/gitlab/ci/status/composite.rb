@@ -95,11 +95,7 @@ module Gitlab
         end
 
         def any_skipped_or_ignored?
-          if ::Feature.enabled?(:ci_fix_pipeline_status_for_dag_needs_manual, @project, default_enabled: :yaml)
-            any_of?(:skipped) || any_of?(:ignored)
-          else
-            any_of?(:skipped)
-          end
+          any_of?(:skipped) || any_of?(:ignored)
         end
 
         def consume_all_statuses(all_statuses)

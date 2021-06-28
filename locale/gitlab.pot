@@ -28658,6 +28658,9 @@ msgstr ""
 msgid "SecurityConfiguration|%{featureName} merge request creation mutation failed"
 msgstr ""
 
+msgid "SecurityConfiguration|%{scanType} configuration code snippet"
+msgstr ""
+
 msgid "SecurityConfiguration|An error occurred while creating the merge request."
 msgstr ""
 
@@ -28671,9 +28674,6 @@ msgid "SecurityConfiguration|Available with Ultimate"
 msgstr ""
 
 msgid "SecurityConfiguration|By default, all analyzers are applied in order to cover all languages across your project, and only run if the language is detected in the Merge Request."
-msgstr ""
-
-msgid "SecurityConfiguration|Code snippet for the %{scanType} configuration"
 msgstr ""
 
 msgid "SecurityConfiguration|Compliance"

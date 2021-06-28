@@ -21,8 +21,6 @@ module Gitlab
           @paginated_collection = load_paginated_collection(batch_page, batch_size, diff_options)
 
           @pagination_data = {
-            current_page: nil,
-            next_page: nil,
             total_pages: @paginated_collection.blank? ? nil : relation.size
           }
         end
