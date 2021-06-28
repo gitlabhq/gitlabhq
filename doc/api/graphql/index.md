@@ -99,7 +99,6 @@ The process is as follows:
    [GraphQL API Reference](reference/index.md) and in introspection queries.
 1. Removals are announced at least one release prior in the [Deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations)
    section of the release post (at or prior to `X.11` and `X.5` releases).
-   release post (at or prior to `X.11` and `X.5` releases).
 1. Items meeting criteria are removed in `X.0` or `X.6` and added to:
 
    - The [Removals](https://about.gitlab.com/handbook/marketing/blog/release-posts/#removals) section of the Release Post.

@@ -3,6 +3,32 @@
 require 'spec_helper'
 
 RSpec.describe 'devise/sessions/new' do
+  describe 'marketing text' do
+    subject { render(template: 'devise/sessions/new', layout: 'layouts/devise') }
+
+    before do
+      stub_devise
+      disable_captcha
+      allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+    end
+
+    it 'when flash is anything it renders marketing text' do
+      flash[:notice] = "You can't do that"
+
+      subject
+
+      expect(rendered).to have_content('A complete DevOps platform')
+    end
+
+    it 'when flash notice is devise confirmed message it hides marketing text' do
+      flash[:notice] = t(:confirmed, scope: [:devise, :confirmations])
+
+      subject
+
+      expect(rendered).not_to have_content('A complete DevOps platform')
+    end
+  end
+
   describe 'ldap' do
     include LdapHelpers
 

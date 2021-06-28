@@ -17,25 +17,26 @@
                 = current_appearance&.title.presence || "GitLab"
           .row.mb-3
             .col-sm-7.order-12.order-sm-1.brand-holder
-              = brand_image
-              - if current_appearance&.description?
-                = brand_text
-              - else
-                %h3.mt-sm-0
-                  = _('A complete DevOps platform')
+              - unless recently_confirmed_com?
+                = brand_image
+                - if current_appearance&.description?
+                  = brand_text
+                - else
+                  %h3.gl-sm-mt-0
+                    = _('A complete DevOps platform')
 
-                %p
-                  = _('GitLab is a single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security.')
+                  %p
+                    = _('GitLab is a single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security.')
 
-                %p
-                  = _('This is a self-managed instance of GitLab.')
+                  %p
+                    = _('This is a self-managed instance of GitLab.')
 
               - if Gitlab::CurrentSettings.sign_in_text.present?
                 = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
 
               = render_if_exists 'layouts/devise_help_text'
 
-            .col-sm-5.order-1.order-sm-12.new-session-forms-container
+            .col-sm-5.order-1.new-session-forms-container{ class: recently_confirmed_com? ? 'order-sm-first' : 'order-sm-12' }
               = yield
 
       = render 'devise/shared/footer', footer_message: footer_message
