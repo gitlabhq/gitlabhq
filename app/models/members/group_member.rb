@@ -32,10 +32,6 @@ class GroupMember < Member
     Gitlab::Access.options_with_owner
   end
 
-  def self.access_levels
-    Gitlab::Access.sym_options_with_owner
-  end
-
   def self.pluck_user_ids
     pluck(:user_id)
   end

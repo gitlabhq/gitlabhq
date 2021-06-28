@@ -21,7 +21,7 @@ module Members
     def validate_invites!
       super
 
-      # we need the below due to add_users hitting Member#parse_users_list and ignoring invalid emails
+      # we need the below due to add_users hitting Members::CreatorService.parse_users_list and ignoring invalid emails
       # ideally we wouldn't need this, but we can't really change the add_users method
       valid, invalid = invites.partition { |email| Member.valid_email?(email) }
       @invites = valid

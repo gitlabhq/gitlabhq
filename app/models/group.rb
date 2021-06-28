@@ -296,7 +296,7 @@ class Group < Namespace
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
-    GroupMember.add_users(
+    Members::Groups::CreatorService.add_users( # rubocop:todo CodeReuse/ServiceClass
       self,
       users,
       access_level,
@@ -306,14 +306,13 @@ class Group < Namespace
   end
 
   def add_user(user, access_level, current_user: nil, expires_at: nil, ldap: false)
-    GroupMember.add_user(
-      self,
-      user,
-      access_level,
-      current_user: current_user,
-      expires_at: expires_at,
-      ldap: ldap
-    )
+    Members::Groups::CreatorService.new(self, # rubocop:todo CodeReuse/ServiceClass
+                                        user,
+                                        access_level,
+                                        current_user: current_user,
+                                        expires_at: expires_at,
+                                        ldap: ldap)
+                                   .execute
   end
 
   def add_guest(user, current_user = nil)

@@ -282,6 +282,7 @@ namespace :gitlab do
 
     def puts_time(msg)
       progress.puts "#{Time.now} -- #{msg}"
+      Gitlab::BackupLogger.info(message: "#{Rainbow.uncolor(msg)}")
     end
 
     def progress

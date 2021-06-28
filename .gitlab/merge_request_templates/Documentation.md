@@ -33,6 +33,7 @@ Documentation-related MRs should be reviewed by a Technical Writer for a non-blo
     - [ ] The headings should be something you'd do a Google search for. Instead of `Default behavior`, say something like `Default behavior when you close an issue`.
     - [ ] The headings (other than the page title) should be active. Instead of `Configuring GDK`, say something like `Configure GDK`.
     - [ ] Any task steps should be written as a numbered list.
+    - If the content still needs to be edited for topic types, you can create a follow-up issue with the ~"docs-technical-debt" label.
 - [ ] Review by assigned maintainer, who can always request/require the above reviews. Maintainer's review can occur before or after a technical writer review.
 - [ ] Ensure a release milestone is set.
 

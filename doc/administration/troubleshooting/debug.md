@@ -119,7 +119,7 @@ an SMTP server, but you're not seeing mail delivered. Here's how to check the se
    irb(main):003:0> Notify.test_email('youremail@email.com', 'Hello World', 'This is a test message').deliver_now
    ```
 
-   If you do not receive an e-mail and/or see an error message, then check
+   If you do not receive an email and/or see an error message, then check
    your mail server settings.
 
 ## Advanced Issues

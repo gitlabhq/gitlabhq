@@ -42,10 +42,6 @@ module Gitlab
           end
         end
 
-        def metrics_params
-          super.merge(project: project&.full_path)
-        end
-
         def metrics_event
           :receive_email_service_desk
         end

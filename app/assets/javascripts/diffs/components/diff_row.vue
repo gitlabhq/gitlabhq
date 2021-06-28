@@ -155,6 +155,7 @@ export default {
 };
 </script>
 
+<!-- eslint-disable-next-line vue/no-deprecated-functional-template -->
 <template functional>
   <div :class="$options.classNameMap(props)" class="diff-grid-row diff-tr line_holder">
     <div

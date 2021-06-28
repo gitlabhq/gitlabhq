@@ -60,6 +60,10 @@ Do not use. If the user doesn't find the process to be these things, we lose the
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
 
+## email
+
+Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**.
+
 ## enable
 
 See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance.

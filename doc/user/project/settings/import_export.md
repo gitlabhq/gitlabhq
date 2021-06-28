@@ -156,7 +156,7 @@ To export a project and its data, follow these steps:
 
    ![Export button](img/import_export_export_button.png)
 
-1. Once the export is generated, you should receive an e-mail with a link to
+1. Once the export is generated, you should receive an email with a link to
    download the file:
 
    ![Email download link](img/import_export_mail_link.png)

@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
       it 'adds metric events for incoming and reply emails' do
         metric_transaction = double('Gitlab::Metrics::WebTransaction', increment: true, observe: true)
         allow(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
-        expect(metric_transaction).to receive(:add_event).with(:receive_email_service_desk, anything)
+        expect(metric_transaction).to receive(:add_event).with(:receive_email_service_desk, { handler: 'Gitlab::Email::Handler::ServiceDeskHandler' })
         expect(metric_transaction).to receive(:add_event).with(:service_desk_thank_you_email)
 
         receiver.execute

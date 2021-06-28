@@ -209,6 +209,23 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
             expect { run_rake_task("gitlab:backup:#{task}:create") }.to output(/Dumping /).to_stdout_from_any_process
           end
         end
+
+        it 'logs the progress to log file' do
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping database ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "[SKIPPED]")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ...")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "done").exactly(7).times
+
+          task_list.each do |task|
+            run_rake_task("gitlab:backup:#{task}:create")
+          end
+        end
       end
     end
 

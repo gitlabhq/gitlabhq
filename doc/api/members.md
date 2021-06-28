@@ -262,16 +262,18 @@ GET /groups/:id/billable_members
 
 The supported values for the `sort` attribute are:
 
-| Value               | Description              |
-| ------------------- | ------------------------ |
-| `access_level_asc`  | Access level, ascending  |
-| `access_level_desc` | Access level, descending |
-| `last_joined`       | Last joined              |
-| `name_asc`          | Name, ascending          |
-| `name_desc`         | Name, descending         |
-| `oldest_joined`     | Oldest joined            |
-| `oldest_sign_in`    | Oldest sign in           |
-| `recent_sign_in`    | Recent sign in           |
+| Value                   | Description                  |
+| ----------------------- | ---------------------------- |
+| `access_level_asc`      | Access level, ascending      |
+| `access_level_desc`     | Access level, descending     |
+| `last_joined`           | Last joined                  |
+| `name_asc`              | Name, ascending              |
+| `name_desc`             | Name, descending             |
+| `oldest_joined`         | Oldest joined                |
+| `oldest_sign_in`        | Oldest sign in               |
+| `recent_sign_in`        | Recent sign in               |
+| `last_activity_on_asc`  | Last active date, ascending  |
+| `last_activity_on_desc` | Last active date, descending |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/billable_members"

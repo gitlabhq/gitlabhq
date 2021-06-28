@@ -67,7 +67,7 @@ The following changes are needed to enable Shibboleth:
    your users appear to be authenticated by Shibboleth and Apache, but GitLab
    rejects their account with a URI that contains "e-mail is invalid" then your
    Shibboleth Identity Provider or Attribute Authority may be asserting multiple
-   e-mail addresses. In this instance, you might consider setting the
+   email addresses. In this instance, you might consider setting the
    `multi_values` argument to `first`.
 
    The file should look like this:

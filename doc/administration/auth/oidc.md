@@ -231,7 +231,7 @@ standard Azure B2C user flows [do not send the OpenID `email` claim](https://git
 other words, they do not work with the [`allow_single_sign_on` or `auto_link_user`
 parameters](../../integration/omniauth.md#initial-omniauth-configuration).
 With a standard Azure B2C policy, GitLab cannot create a new account or
-link to an existing one with an e-mail address.
+link to an existing one with an email address.
 
 Carefully follow the instructions for [creating a custom policy](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy).
 
@@ -330,7 +330,7 @@ gitlab_rails['omniauth_providers'] = [
 the respective client IDs in the XML policy files.
 
 - Add `https://jwt.ms` as a redirect URI to the app, and use the [custom policy tester](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#test-the-custom-policy).
-Make sure the payload includes `email` that matches the user's e-mail access.
+Make sure the payload includes `email` that matches the user's email access.
 
 - After you enable the custom policy, users might see "Invalid username or password" after they try to sign in. This might be a configuration
 issue with the `IdentityExperienceFramework` app. See [this Microsoft comment](https://docs.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy.html?childToView=122370#comment-122370)

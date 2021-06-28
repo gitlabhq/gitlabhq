@@ -234,7 +234,7 @@ The configuration options are the same as for configuring
 > Introduced in [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/214900)
 
 Service Desk can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
-Graph API instead of IMAP. Follow the [documentation in the incoming e-mail section for setting up an OAuth2 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).
+Graph API instead of IMAP. Follow the [documentation in the incoming email section for setting up an OAuth2 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).
 
 - Example for Omnibus GitLab installations:
 

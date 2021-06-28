@@ -231,7 +231,7 @@ _In GitLab 11.7, we updated the format of the generated email address.
 However the older format is still supported, allowing existing aliases
 or contacts to continue working._
 
-### Adding patches when creating a merge request via e-mail
+### Adding patches when creating a merge request via email
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22723) in GitLab 11.5.
 

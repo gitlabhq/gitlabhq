@@ -60,7 +60,7 @@ might be slightly different. Follow the
    sudo certbot certonly -a manual -d example.com --email your@email.com
    ```
 
-   Alternatively, you can register without adding an e-mail account,
+   Alternatively, you can register without adding an email account,
    but you aren't notified about the certificate expiration's date:
 
    ```shell

@@ -392,10 +392,10 @@ end
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/251234) in GitLab 13.5.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/220333) in GitLab 14.1
+> - Showing related feature flags in issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220333) in GitLab 14.1.
 
 You can link related issues to a feature flag. In the **Linked issues** section,
 click the `+` button and input the issue reference number or the full URL of the issue.
-The issue(s) will then appear in the related feautre flag and vice versa.
+The issues then appear in the related feature flag and the other way round.
 
 This feature is similar to the [linked issues](../user/project/issues/related_issues.md) feature.
