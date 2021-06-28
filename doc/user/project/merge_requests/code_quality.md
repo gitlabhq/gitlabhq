@@ -111,7 +111,7 @@ include:
 
 The above example creates a `code_quality` job in your CI/CD pipeline which
 scans your source code for code quality issues. The report is saved as a
-[Code Quality report artifact](../../../ci/yaml/README.md#artifactsreportscodequality)
+[Code Quality report artifact](../../../ci/yaml/index.md#artifactsreportscodequality)
 that you can later download and analyze.
 
 It's also possible to override the URL to the Code Quality image by
@@ -282,7 +282,7 @@ run on [pipelines for merge requests](../../../ci/merge_request_pipelines/index.
 
 If pipelines for merge requests is enabled, the `code_quality:rules` must be redefined.
 
-The template has these [`rules`](../../../ci/yaml/README.md#rules) for the `code quality` job:
+The template has these [`rules`](../../../ci/yaml/index.md#rules) for the `code quality` job:
 
 ```yaml
 code_quality:
@@ -292,7 +292,7 @@ code_quality:
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
 ```
 
-If you are using merge request pipelines, your `rules` (or [`workflow: rules`](../../../ci/yaml/README.md#workflow))
+If you are using merge request pipelines, your `rules` (or [`workflow: rules`](../../../ci/yaml/index.md#workflow))
 might look like this example:
 
 ```yaml
@@ -334,7 +334,7 @@ do this:
 
 1. Define a job in your `.gitlab-ci.yml` file that generates the
    [Code Quality report
-   artifact](../../../ci/yaml/README.md#artifactsreportscodequality).
+   artifact](../../../ci/yaml/index.md#artifactsreportscodequality).
 1. Configure your tool to generate the Code Quality report artifact as a JSON
    file that implements a subset of the [Code Climate
    spec](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types).
@@ -535,7 +535,7 @@ This can be due to multiple reasons:
 - Your pipeline is not set to run the code quality job on your target branch. If there is no report generated from the target branch, your MR branch reports have nothing to compare to.
 - If no [degradation or error is detected](https://docs.codeclimate.com/docs/maintainability#section-checks),
   nothing is displayed.
-- The [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in) CI/CD
+- The [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in) CI/CD
   setting can cause the Code Quality artifact(s) to expire faster than desired.
 - The widgets use the pipeline of the latest commit to the target branch. If commits are made to the default branch that do not run the code quality job, this may cause the merge request widget to have no base report for comparison.
 - If you use the [`REPORT_STDOUT` environment variable](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables), no report file is generated and nothing displays in the merge request.

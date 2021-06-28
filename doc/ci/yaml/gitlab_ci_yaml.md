@@ -13,7 +13,7 @@ type: reference
 To use GitLab CI/CD, you need:
 
 - Application code hosted in a Git repository.
-- A file called [`.gitlab-ci.yml`](README.md) in the root of your repository, which
+- A file called [`.gitlab-ci.yml`](index.md) in the root of your repository, which
   contains the CI/CD configuration.
 
 In the `.gitlab-ci.yml` file, you can define:
@@ -27,7 +27,7 @@ In the `.gitlab-ci.yml` file, you can define:
 
 The scripts are grouped into **jobs**, and jobs run as part of a larger
 **pipeline**. You can group multiple independent jobs into **stages** that run in a defined order.
-The CI/CD configuration needs at least one job that is [not hidden](README.md#hide-jobs).
+The CI/CD configuration needs at least one job that is [not hidden](index.md#hide-jobs).
 
 You should organize your jobs in a sequence that suits your application and is in accordance with
 the tests you wish to perform. To [visualize](../pipeline_editor/index.md#visualize-ci-configuration) the process, imagine
@@ -89,4 +89,4 @@ If anything goes wrong, you can
 
 ![rollback button](img/rollback.png)
 
-[View the full syntax for the `.gitlab-ci.yml` file](README.md).
+[View the full syntax for the `.gitlab-ci.yml` file](index.md).

@@ -18,7 +18,7 @@ From the pipeline editor page you can:
 - Select the branch to work from. [Introduced in GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/326189), disabled by default.
 - [Validate](#validate-ci-configuration) your configuration syntax while editing the file.
 - Do a deeper [lint](#lint-ci-configuration) of your configuration, that verifies it with any configuration
-  added with the [`include`](../yaml/README.md#include) keyword.
+  added with the [`include`](../yaml/index.md#include) keyword.
 - See a [visualization](#visualize-ci-configuration) of the current configuration.
 - View an [expanded](#view-expanded-configuration) version of your configuration.
 - [Commit](#commit-changes-to-ci-configuration) the changes to a specific branch.
@@ -58,7 +58,7 @@ reflected in the CI lint. It displays the same results as the existing [CI Lint 
 
 To view a visualization of your `gitlab-ci.yml` configuration, in your project,
 go to **CI/CD > Editor**, and then select the **Visualize** tab. The
-visualization shows all stages and jobs. Any [`needs`](../yaml/README.md#needs)
+visualization shows all stages and jobs. Any [`needs`](../yaml/index.md#needs)
 relationships are displayed as lines connecting jobs together, showing the
 hierarchy of execution:
 
@@ -80,10 +80,10 @@ To view the fully expanded CI/CD configuration as one combined file, go to the
 pipeline editor's **View merged YAML** tab. This tab displays an expanded configuration
 where:
 
-- Configuration imported with [`include`](../yaml/README.md#include) is copied into the view.
-- Jobs that use [`extends`](../yaml/README.md#extends) display with the
-  [extended configuration merged into the job](../yaml/README.md#merge-details).
-- YAML anchors are [replaced with the linked configuration](../yaml/README.md#anchors).
+- Configuration imported with [`include`](../yaml/index.md#include) is copied into the view.
+- Jobs that use [`extends`](../yaml/index.md#extends) display with the
+  [extended configuration merged into the job](../yaml/index.md#merge-details).
+- YAML anchors are [replaced with the linked configuration](../yaml/index.md#anchors).
 
 ## Commit changes to CI configuration
 

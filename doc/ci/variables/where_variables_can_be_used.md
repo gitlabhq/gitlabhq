@@ -149,7 +149,7 @@ In the case of `after_script` scripts, they can:
 - Not use variables defined in `before_script` and `script`.
 
 These restrictions exist because `after_script` scripts are executed in a
-[separated shell context](../yaml/README.md#after_script).
+[separated shell context](../yaml/index.md#after_script).
 
 ## Persisted variables
 

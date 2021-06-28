@@ -9,7 +9,7 @@ type: reference
 
 In GitLab, there is an API endpoint available to work with GitLab CI/CD YMLs. For more
 information on CI/CD pipeline configuration in GitLab, see the
-[configuration reference documentation](../../ci/yaml/README.md).
+[configuration reference documentation](../../ci/yaml/index.md).
 
 ## List GitLab CI YAML templates
 

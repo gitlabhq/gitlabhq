@@ -26,7 +26,7 @@ depending on which trigger method is used.
 | `pipeline`                  | Using the `trigger:` keyword in the CI/CD configuration file, or using the trigger API with `$CI_JOB_TOKEN`. |
 | `trigger`                   | Using the trigger API using a generated trigger token |
 
-This also applies when using the `pipelines` or `triggers` keywords with the legacy [`only/except` basic syntax](../yaml/README.md#only--except).
+This also applies when using the `pipelines` or `triggers` keywords with the legacy [`only/except` basic syntax](../yaml/index.md#only--except).
 
 ### Trigger token
 
@@ -218,7 +218,7 @@ Using trigger variables can be proven useful for a variety of reasons:
   a certain variable is present.
 
 Consider the following `.gitlab-ci.yml` where we set three
-[stages](../yaml/README.md#stages) and the `upload_package` job is run only
+[stages](../yaml/index.md#stages) and the `upload_package` job is run only
 when all jobs from the test and build stages pass. When the `UPLOAD_TO_S3`
 variable is non-zero, `make upload` is run.
 

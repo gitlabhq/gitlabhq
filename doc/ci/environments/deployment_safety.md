@@ -35,7 +35,7 @@ Pipeline jobs in GitLab CI/CD run in parallel, so it's possible that two deploym
 jobs in two different pipelines attempt to deploy to the same environment at the same
 time. This is not desired behavior as deployments should happen sequentially.
 
-You can ensure only one deployment job runs at a time with the [`resource_group` keyword](../yaml/README.md#resource_group) in your `.gitlab-ci.yml`.
+You can ensure only one deployment job runs at a time with the [`resource_group` keyword](../yaml/index.md#resource_group) in your `.gitlab-ci.yml`.
 
 For example:
 
@@ -59,7 +59,7 @@ The improved pipeline flow **after** using the resource group:
 1. `deploy` job in Pipeline-A finishes.
 1. `deploy` job in Pipeline-B starts running.
 
-For more information, see [`resource_group` keyword in `.gitlab-ci.yml`](../yaml/README.md#resource_group).
+For more information, see [`resource_group` keyword in `.gitlab-ci.yml`](../yaml/index.md#resource_group).
 
 ## Skip outdated deployment jobs
 

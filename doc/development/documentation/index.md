@@ -123,7 +123,7 @@ following:
 - `tutorial`: Learn a process/concept by doing.
   [Example page](../../gitlab-basics/start-using-git.md).
 - `reference`: A collection of information used as a reference to use a feature
-  or a functionality. [Example page](../../ci/yaml/README.md).
+  or a functionality. [Example page](../../ci/yaml/index.md).
 
 ### Redirection metadata
 
@@ -475,10 +475,10 @@ If you want to know the in-depth details, here's what's really happening:
 
 The following GitLab features are used among others:
 
-- [Manual actions](../../ci/yaml/README.md#whenmanual)
+- [Manual actions](../../ci/yaml/index.md#whenmanual)
 - [Multi project pipelines](../../ci/multi_project_pipelines.md)
 - [Review Apps](../../ci/review_apps/index.md)
-- [Artifacts](../../ci/yaml/README.md#artifacts)
+- [Artifacts](../../ci/yaml/index.md#artifacts)
 - [Specific runner](../../ci/runners/runners_scope.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
 - [Pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
 

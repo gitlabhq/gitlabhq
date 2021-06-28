@@ -59,7 +59,7 @@ To enable container scanning in your pipeline, you need the following:
 
 How you enable container scanning depends on your GitLab version:
 
-- GitLab 11.9 and later: [Include](../../../ci/yaml/README.md#includetemplate) the
+- GitLab 11.9 and later: [Include](../../../ci/yaml/index.md#includetemplate) the
   [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
   that comes with your GitLab installation.
 - GitLab versions earlier than 11.9: Copy and use the job from the
@@ -73,8 +73,8 @@ Other changes:
   [`centos:centos8`](https://hub.docker.com/_/centos)
   as the new base. It also removes the use of the [start.sh](https://gitlab.com/gitlab-org/security-products/analyzers/klar/-/merge_requests/77)
   script and instead executes the analyzer by default. Any customizations made to the
-  `container_scanning` job's [`before_script`](../../../ci/yaml/README.md#before_script)
-  and [`after_script`](../../../ci/yaml/README.md#after_script)
+  `container_scanning` job's [`before_script`](../../../ci/yaml/index.md#before_script)
+  and [`after_script`](../../../ci/yaml/index.md#after_script)
   blocks may not work with the new version. To roll back to the previous [`alpine:3.11.3`](https://hub.docker.com/_/alpine)-based
   Docker image, you can specify the major version through the [`CS_MAJOR_VERSION`](#available-cicd-variables)
   variable.
@@ -101,7 +101,7 @@ The included template:
   (see [requirements](#requirements)) and scans it for possible vulnerabilities.
 
 GitLab saves the results as a
-[Container Scanning report artifact](../../../ci/yaml/README.md#artifactsreportscontainer_scanning)
+[Container Scanning report artifact](../../../ci/yaml/index.md#artifactsreportscontainer_scanning)
 that you can download and analyze later. When downloading, you always receive the most-recent
 artifact.
 
@@ -130,12 +130,12 @@ include:
 
 There may be cases where you want to customize how GitLab scans your containers. For example, you
 may want to enable more verbose output, access a Docker registry that requires
-authentication, and more. To change such settings, use the [`variables`](../../../ci/yaml/README.md#variables)
+authentication, and more. To change such settings, use the [`variables`](../../../ci/yaml/index.md#variables)
 parameter in your `.gitlab-ci.yml` to set [CI/CD variables](#available-cicd-variables).
 The variables you set in your `.gitlab-ci.yml` overwrite those in
 `Container-Scanning.gitlab-ci.yml`.
 
-This example [includes](../../../ci/yaml/README.md#include) the container scanning template and
+This example [includes](../../../ci/yaml/index.md#include) the container scanning template and
 enables verbose output for the analyzer:
 
 ```yaml
@@ -190,8 +190,8 @@ container_scanning:
 ```
 
 WARNING:
-GitLab 13.0 and later doesn't support [`only` and `except`](../../../ci/yaml/README.md#only--except).
-When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules)
+GitLab 13.0 and later doesn't support [`only` and `except`](../../../ci/yaml/index.md#only--except).
+When overriding the template, you must use [`rules`](../../../ci/yaml/index.md#rules)
 instead.
 
 ### Change scanners

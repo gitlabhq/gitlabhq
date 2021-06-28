@@ -108,7 +108,7 @@ example of such a transfer:
 
 ### Using the official GitLab template
 
-GitLab provides a [vendored template](../../../ci/yaml/README.md#includetemplate)
+GitLab provides a [vendored template](../../../ci/yaml/index.md#includetemplate)
 to ease this process.
 
 This template should be used in a new, empty project, with a `gitlab-ci.yml` file containing:

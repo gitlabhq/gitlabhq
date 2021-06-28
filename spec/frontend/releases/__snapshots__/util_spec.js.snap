@@ -212,24 +212,28 @@ Object {
       "count": undefined,
       "links": Array [
         Object {
+          "directAssetPath": "/binaries/awesome-app-3",
           "id": "gid://gitlab/Releases::Link/13",
           "linkType": "image",
           "name": "Image",
           "url": "https://example.com/image",
         },
         Object {
+          "directAssetPath": "/binaries/awesome-app-2",
           "id": "gid://gitlab/Releases::Link/12",
           "linkType": "package",
           "name": "Package",
           "url": "https://example.com/package",
         },
         Object {
+          "directAssetPath": "/binaries/awesome-app-1",
           "id": "gid://gitlab/Releases::Link/11",
           "linkType": "runbook",
           "name": "Runbook",
           "url": "http://localhost/releases-namespace/releases-project/runbook",
         },
         Object {
+          "directAssetPath": "/binaries/linux-amd64",
           "id": "gid://gitlab/Releases::Link/10",
           "linkType": "other",
           "name": "linux-amd64 binaries",

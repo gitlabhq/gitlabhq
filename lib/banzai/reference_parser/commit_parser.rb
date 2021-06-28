@@ -5,7 +5,7 @@ module Banzai
     class CommitParser < BaseParser
       self.reference_type = :commit
 
-      def referenced_by(nodes)
+      def referenced_by(nodes, options = {})
         commit_ids = commit_ids_per_project(nodes)
         projects = find_projects_for_hash_keys(commit_ids)
 

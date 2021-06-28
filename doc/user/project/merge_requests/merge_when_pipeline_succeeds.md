@@ -67,8 +67,8 @@ You should be careful to configure CI/CD so that pipelines run for every merge r
 ### Limitations
 
 When this setting is enabled, a merge request is prevented from being merged if there
-is no pipeline. This may conflict with some use cases where [`only/except`](../../../ci/yaml/README.md#only--except)
-or [`rules`](../../../ci/yaml/README.md#rules) are used and they don't generate any pipelines.
+is no pipeline. This may conflict with some use cases where [`only/except`](../../../ci/yaml/index.md#only--except)
+or [`rules`](../../../ci/yaml/index.md#rules) are used and they don't generate any pipelines.
 
 You should ensure that [there is always a pipeline](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54226)
 and that it's successful.
@@ -101,7 +101,7 @@ for details on avoiding two pipelines for a single merge request.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211482) in GitLab 13.1.
 
-When the **Pipelines must succeed** checkbox is checked, [skipped pipelines](../../../ci/yaml/README.md#skip-pipeline) prevent
+When the **Pipelines must succeed** checkbox is checked, [skipped pipelines](../../../ci/yaml/index.md#skip-pipeline) prevent
 merge requests from being merged. To change this behavior:
 
 1. Navigate to your project's **Settings > General** page.

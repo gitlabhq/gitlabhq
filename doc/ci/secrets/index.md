@@ -14,7 +14,7 @@ sensitive information can be items like API tokens, database credentials, or pri
 Secrets are sourced from your secrets provider.
 
 Unlike CI/CD variables, which are always presented to a job, secrets must be explicitly
-required by a job. Read [GitLab CI/CD pipeline configuration reference](../yaml/README.md#secrets)
+required by a job. Read [GitLab CI/CD pipeline configuration reference](../yaml/index.md#secrets)
 for more information about the syntax.
 
 GitLab has selected [Vault by HashiCorp](https://www.vaultproject.io) as the
@@ -117,7 +117,7 @@ The path to this file is stored in a CI/CD variable named `DATABASE_PASSWORD`,
 similar to [variables of type `file`](../variables/index.md#cicd-variable-types).
 
 For more information about the supported syntax, read the
-[`.gitlab-ci.yml` reference](../yaml/README.md#secretsvault).
+[`.gitlab-ci.yml` reference](../yaml/index.md#secretsvault).
 
 ## Configure Vault server roles
 

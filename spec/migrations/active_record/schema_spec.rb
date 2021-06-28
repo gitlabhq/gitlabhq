@@ -7,10 +7,10 @@ require 'spec_helper'
 
 RSpec.describe ActiveRecord::Schema, schema: :latest do
   let(:all_migrations) do
-    migrations_paths = %w[db/migrate db/post_migrate]
-      .map { |path| Rails.root.join(*path, '*') }
+    migrations_directories = %w[db/migrate db/post_migrate].map { |path| Rails.root.join(path).to_s }
+    migrations_paths = migrations_directories.map { |path| File.join(path, '*') }
 
-    migrations = Dir[*migrations_paths]
+    migrations = Dir[*migrations_paths] - migrations_directories
     migrations.map { |migration| File.basename(migration).split('_').first.to_i }.sort
   end
 

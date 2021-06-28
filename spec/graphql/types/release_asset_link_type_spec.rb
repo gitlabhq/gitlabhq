@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['ReleaseAssetLink'] do
 
   it 'has the expected fields' do
     expected_fields = %w[
-      id name url external link_type direct_asset_url
+      id name url external link_type direct_asset_url direct_asset_path
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

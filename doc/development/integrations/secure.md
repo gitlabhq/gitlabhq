@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Security scanner integration
 
 Integrating a security scanner into GitLab consists of providing end users
-with a [CI job definition](../../ci/yaml/README.md)
+with a [CI job definition](../../ci/yaml/index.md)
 they can add to their CI configuration files to scan their GitLab projects.
 This CI job should then output its results in a GitLab-specified format. These results are then
 automatically presented in various places in GitLab, such as the Pipeline view, Merge Request
@@ -23,7 +23,7 @@ scanner, as well as requirements and guidelines for the Docker image.
 
 This section describes several important fields to add to the security scanner's job
 definition file. Full documentation on these and other available fields can be viewed
-in the [CI documentation](../../ci/yaml/README.md#image).
+in the [CI documentation](../../ci/yaml/index.md#image).
 
 ### Name
 
@@ -34,41 +34,41 @@ For instance, the dependency scanning job based on the "MySec" scanner would be 
 
 ### Image
 
-The [`image`](../../ci/yaml/README.md#image) keyword is used to specify
+The [`image`](../../ci/yaml/index.md#image) keyword is used to specify
 the [Docker image](../../ci/docker/using_docker_images.md#what-is-an-image)
 containing the security scanner.
 
 ### Script
 
-The [`script`](../../ci/yaml/README.md#script) keyword
+The [`script`](../../ci/yaml/index.md#script) keyword
 is used to specify the commands to run the scanner.
 Because the `script` entry can't be left empty, it must be set to the command that performs the scan.
 It is not possible to rely on the predefined `ENTRYPOINT` and `CMD` of the Docker image
 to perform the scan automatically, without passing any command.
 
-The [`before_script`](../../ci/yaml/README.md#before_script)
+The [`before_script`](../../ci/yaml/index.md#before_script)
 should not be used in the job definition because users may rely on this to prepare their projects before performing the scan.
 For instance, it is common practice to use `before_script` to install system libraries
 a particular project needs before performing SAST or Dependency Scanning.
 
-Similarly, [`after_script`](../../ci/yaml/README.md#after_script)
+Similarly, [`after_script`](../../ci/yaml/index.md#after_script)
 should not be used in the job definition, because it may be overridden by users.
 
 ### Stage
 
 For consistency, scanning jobs should belong to the `test` stage when possible.
-The [`stage`](../../ci/yaml/README.md#stage) keyword can be omitted because `test` is the default value.
+The [`stage`](../../ci/yaml/index.md#stage) keyword can be omitted because `test` is the default value.
 
 ### Fail-safe
 
 To be aligned with the [GitLab Security paradigm](https://about.gitlab.com/direction/secure/#security-paradigm),
 scanning jobs should not block the pipeline when they fail,
-so the [`allow_failure`](../../ci/yaml/README.md#allow_failure) parameter should be set to `true`.
+so the [`allow_failure`](../../ci/yaml/index.md#allow_failure) parameter should be set to `true`.
 
 ### Artifacts
 
 Scanning jobs must declare a report that corresponds to the type of scanning they perform,
-using the [`artifacts:reports`](../../ci/yaml/README.md#artifactsreports) keyword.
+using the [`artifacts:reports`](../../ci/yaml/index.md#artifactsreports) keyword.
 Valid reports are: `dependency_scanning`, `container_scanning`, `dast`, `api_fuzzing`, `coverage_fuzzing`, and `sast`.
 
 For example, here is the definition of a SAST job that generates a file named `gl-sast-report.json`,
@@ -209,7 +209,7 @@ It is recommended to name the output file after the type of scanning, and to use
 Since all Secure reports are JSON files, it is recommended to use `.json` as a file extension.
 For instance, a suggested filename for a Dependency Scanning report is `gl-dependency-scanning.json`.
 
-The [`artifacts:reports`](../../ci/yaml/README.md#artifactsreports) keyword
+The [`artifacts:reports`](../../ci/yaml/index.md#artifactsreports) keyword
 of the job definition must be consistent with the file path where the Security report is written.
 For instance, if a Dependency Scanning analyzer writes its report to the CI project directory,
 and if this report filename is `depscan.json`,

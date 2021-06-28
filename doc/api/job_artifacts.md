@@ -28,7 +28,7 @@ Example request using the `PRIVATE-TOKEN` header:
 curl --output artifacts.zip --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts"
 ```
 
-To use this in a [`script` definition](../ci/yaml/README.md#script) inside
+To use this in a [`script` definition](../ci/yaml/index.md#script) inside
 `.gitlab-ci.yml` **(PREMIUM)**, you can use either:
 
 - The `JOB-TOKEN` header with the GitLab-provided `CI_JOB_TOKEN` variable.
@@ -93,7 +93,7 @@ Example request using the `PRIVATE-TOKEN` header:
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test"
 ```
 
-To use this in a [`script` definition](../ci/yaml/README.md#script) inside
+To use this in a [`script` definition](../ci/yaml/index.md#script) inside
 `.gitlab-ci.yml` **(PREMIUM)**, you can use either:
 
 - The `JOB-TOKEN` header with the GitLab-provided `CI_JOB_TOKEN` variable.

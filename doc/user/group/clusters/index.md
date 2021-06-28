@@ -122,7 +122,7 @@ For example, if your project has the following Kubernetes clusters:
 | Test       | `test`              | Group     |
 | Development| `*`                 | Group     |
 
-And the following environments are set in [`.gitlab-ci.yml`](../../../ci/yaml/README.md):
+And the following environments are set in [`.gitlab-ci.yml`](../../../ci/yaml/index.md):
 
 ```yaml
 stages:

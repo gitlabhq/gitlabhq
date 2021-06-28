@@ -78,17 +78,17 @@ the `staging` job is marked as _failed_.
 
 #### Trigger job configuration keywords
 
-Trigger jobs can use only a limited set of the GitLab CI/CD [configuration keywords](yaml/README.md).
+Trigger jobs can use only a limited set of the GitLab CI/CD [configuration keywords](yaml/index.md).
 The keywords available for use in trigger jobs are:
 
-- [`trigger`](yaml/README.md#trigger)
-- [`stage`](yaml/README.md#stage)
-- [`allow_failure`](yaml/README.md#allow_failure)
-- [`rules`](yaml/README.md#rules)
-- [`only` and `except`](yaml/README.md#only--except)
-- [`when`](yaml/README.md#when) (only with a value of `on_success`, `on_failure`, or `always`)
-- [`extends`](yaml/README.md#extends)
-- [`needs`](yaml/README.md#needs)
+- [`trigger`](yaml/index.md#trigger)
+- [`stage`](yaml/index.md#stage)
+- [`allow_failure`](yaml/index.md#allow_failure)
+- [`rules`](yaml/index.md#rules)
+- [`only` and `except`](yaml/index.md#only--except)
+- [`when`](yaml/index.md#when) (only with a value of `on_success`, `on_failure`, or `always`)
+- [`extends`](yaml/index.md#extends)
+- [`needs`](yaml/index.md#needs)
 
 #### Specify a downstream pipeline branch
 
@@ -175,7 +175,7 @@ the ones defined in the upstream project take precedence.
 
 #### Pass CI/CD variables to a downstream pipeline by using variable inheritance
 
-You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](variables/index.md#pass-an-environment-variable-to-another-job) and [cross project artifact downloads](yaml/README.md#cross-project-artifact-downloads-with-needs).
+You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](variables/index.md#pass-an-environment-variable-to-another-job) and [cross project artifact downloads](yaml/index.md#cross-project-artifact-downloads-with-needs).
 
 In the upstream pipeline:
 
@@ -215,14 +215,14 @@ In the upstream pipeline:
 
 #### Use `rules` or `only`/`except` with multi-project pipelines
 
-You can use CI/CD variables or the [`rules`](yaml/README.md#rulesif) keyword to
+You can use CI/CD variables or the [`rules`](yaml/index.md#rulesif) keyword to
 [control job behavior](jobs/job_control.md) for multi-project pipelines. When a
-downstream pipeline is triggered with the [`trigger`](yaml/README.md#trigger) keyword,
+downstream pipeline is triggered with the [`trigger`](yaml/index.md#trigger) keyword,
 the value of the [`$CI_PIPELINE_SOURCE` predefined variable](variables/predefined_variables.md)
 is `pipeline` for all its jobs.
 
-If you use [`only/except`](yaml/README.md#only--except) to control job behavior, use the
-[`pipelines`](yaml/README.md#onlyrefs--exceptrefs) keyword.
+If you use [`only/except`](yaml/index.md#only--except) to control job behavior, use the
+[`pipelines`](yaml/index.md#onlyrefs--exceptrefs) keyword.
 
 #### Mirror status of a triggered pipeline in the trigger job
 
@@ -267,10 +267,10 @@ outbound connections for upstream and downstream pipeline dependencies.
 
 When using:
 
-- CI/CD variables or [`rules`](yaml/README.md#rulesif) to control job behavior, the value of
+- CI/CD variables or [`rules`](yaml/index.md#rulesif) to control job behavior, the value of
   the [`$CI_PIPELINE_SOURCE` predefined variable](variables/predefined_variables.md) is
   `pipeline` for multi-project pipeline triggered through the API with `CI_JOB_TOKEN`.
-- [`only/except`](yaml/README.md#only--except) to control job behavior, use the
+- [`only/except`](yaml/index.md#only--except) to control job behavior, use the
   `pipelines` keyword.
 
 ## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**

@@ -577,7 +577,7 @@ don't work because a fresh Docker daemon is started with the service.
 
 ### Option 1: Run `docker login`
 
-In [`before_script`](../yaml/README.md#before_script), run `docker
+In [`before_script`](../yaml/index.md#before_script), run `docker
 login`:
 
 ```yaml
@@ -682,10 +682,10 @@ There are multiple ways to define this authentication:
 
 - In [`pre_build_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
   in the runner configuration file.
-- In [`before_script`](../yaml/README.md#before_script).
-- In [`script`](../yaml/README.md#script).
+- In [`before_script`](../yaml/index.md#before_script).
+- In [`script`](../yaml/index.md#script).
 
-The following example shows [`before_script`](../yaml/README.md#before_script).
+The following example shows [`before_script`](../yaml/index.md#before_script).
 The same commands apply for any solution you implement.
 
 ```yaml
@@ -798,7 +798,7 @@ which can be avoided if a different driver is used, for example `overlay2`.
 ### Use the OverlayFS driver per project
 
 You can enable the driver for each project individually by using the `DOCKER_DRIVER`
-[CI/CD variable](../yaml/README.md#variables) in `.gitlab-ci.yml`:
+[CI/CD variable](../yaml/index.md#variables) in `.gitlab-ci.yml`:
 
 ```yaml
 variables:

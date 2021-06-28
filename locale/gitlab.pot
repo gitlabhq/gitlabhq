@@ -35661,6 +35661,9 @@ msgstr ""
 msgid "ValueStreamAnalyticsStage|We don't have enough data to show this stage."
 msgstr ""
 
+msgid "ValueStreamAnalytics|%{stageCount} items"
+msgstr ""
+
 msgid "ValueStreamAnalytics|%{value}M"
 msgstr ""
 

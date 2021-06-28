@@ -2,6 +2,8 @@
 
 module Gitlab
   module Database
+    CI_DATABASE_NAME = 'ci'
+
     # This constant is used when renaming tables concurrently.
     # If you plan to rename a table using the `rename_table_safely` method, add your table here one milestone before the rename.
     # Example:
@@ -66,6 +68,14 @@ module Gitlab
         # Match config/initializers/database_config.rb
         hash[:pool] ||= default_pool_size
       end
+    end
+
+    def self.has_config?(database_name)
+      Gitlab::Application.config.database_configuration[Rails.env].include?(database_name.to_s)
+    end
+
+    def self.ci_database?(name)
+      name == CI_DATABASE_NAME
     end
 
     def self.username

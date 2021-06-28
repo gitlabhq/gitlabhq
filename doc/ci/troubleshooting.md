@@ -49,7 +49,7 @@ and check if their values are what you expect.
 
 ## GitLab CI/CD documentation
 
-The [complete `gitlab-ci.yml` reference](yaml/README.md) contains a full list of
+The [complete `gitlab-ci.yml` reference](yaml/index.md) contains a full list of
 every keyword you may need to use to configure your pipelines.
 
 You can also look at a large number of pipeline configuration [examples](examples/index.md)
@@ -105,7 +105,7 @@ If a pipeline does not seem to run at all, with no error message, it may also be
 due to `rules` or `only/except` configuration, or the `workflow: rules` keyword.
 
 If you are converting from `only/except` to the `rules` keyword, you should check
-the [`rules` configuration details](yaml/README.md#rules) carefully. The behavior
+the [`rules` configuration details](yaml/index.md#rules) carefully. The behavior
 of `only/except` and `rules` is different and can cause unexpected behavior when migrating
 between the two.
 
@@ -123,8 +123,8 @@ This is usually caused by the `rules` configuration, and there are several ways 
 
 #### A job is not in the pipeline
 
-GitLab determines if a job is added to a pipeline based on the [`only/except`](yaml/README.md#only--except)
-or [`rules`](yaml/README.md#rules) defined for the job. If it didn't run, it's probably
+GitLab determines if a job is added to a pipeline based on the [`only/except`](yaml/index.md#only--except)
+or [`rules`](yaml/index.md#rules) defined for the job. If it didn't run, it's probably
 not evaluating as you expect.
 
 #### No pipeline or the wrong type of pipeline runs
@@ -141,7 +141,7 @@ be checked to make sure the jobs are added to the correct pipeline type. For
 example, if a merge request pipeline did not run, the jobs may have been added to
 a branch pipeline instead.
 
-It's also possible that your [`workflow: rules`](yaml/README.md#workflow) configuration
+It's also possible that your [`workflow: rules`](yaml/index.md#workflow) configuration
 blocked the pipeline, or allowed the wrong pipeline type.
 
 ### A job runs unexpectedly
@@ -150,8 +150,8 @@ A common reason a job is added to a pipeline unexpectedly is because the `change
 keyword always evaluates to true in certain cases. For example, `changes` is always
 true in certain pipeline types, including scheduled pipelines and pipelines for tags.
 
-The `changes` keyword is used in combination with [`only/except`](yaml/README.md#onlychanges--exceptchanges)
-or [`rules`](yaml/README.md#ruleschanges)). It's recommended to use `changes` with
+The `changes` keyword is used in combination with [`only/except`](yaml/index.md#onlychanges--exceptchanges)
+or [`rules`](yaml/index.md#ruleschanges)). It's recommended to use `changes` with
 `rules` or `only/except` configuration that ensures the job is only added to branch
 pipelines or merge request pipelines.
 
@@ -249,17 +249,17 @@ If the merge train pipeline was canceled before the merge request was merged, wi
 
 Pipeline configuration warnings are shown when you:
 
-- [Validate configuration with the CI Lint tool](yaml/README.md).
+- [Validate configuration with the CI Lint tool](yaml/index.md).
 - [Manually run a pipeline](pipelines/index.md#run-a-pipeline-manually).
 
 ### "Job may allow multiple pipelines to run for a single action" warning
 
-When you use [`rules`](yaml/README.md#rules) with a `when:` clause without an `if:`
+When you use [`rules`](yaml/index.md#rules) with a `when:` clause without an `if:`
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
 a branch that has an open merge request associated with it.
 
 To [prevent duplicate pipelines](jobs/job_control.md#avoid-duplicate-pipelines), use
-[`workflow: rules`](yaml/README.md#workflow) or rewrite your rules to control
+[`workflow: rules`](yaml/index.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
 ### Console workaround if job using resource_group gets stuck

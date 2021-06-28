@@ -11,7 +11,7 @@ A cache is one or more files that a job downloads and saves. Subsequent jobs tha
 the same cache don't have to download the files again, so they execute more quickly.
 
 To learn how to define the cache in your `.gitlab-ci.yml` file,
-see the [`cache` reference](../yaml/README.md#cache).
+see the [`cache` reference](../yaml/index.md#cache).
 
 ## How cache is different from artifacts
 
@@ -38,8 +38,8 @@ can't link to files outside it.
 - Subsequent jobs in later stages of the same pipeline can use artifacts.
 - Different projects cannot share artifacts.
 
-Artifacts expire after 30 days unless you define an [expiration time](../yaml/README.md#artifactsexpire_in).
-Use [dependencies](../yaml/README.md#dependencies) to control which jobs fetch the artifacts.
+Artifacts expire after 30 days unless you define an [expiration time](../yaml/index.md#artifactsexpire_in).
+Use [dependencies](../yaml/index.md#dependencies) to control which jobs fetch the artifacts.
 
 ## Good caching practices
 
@@ -48,7 +48,7 @@ To ensure maximum availability of the cache, do one or more of the following:
 - [Tag your runners](../runners/configure_runners.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) and use the tag on jobs
   that share the cache.
 - [Use runners that are only available to a particular project](../runners/runners_scope.md#prevent-a-specific-runner-from-being-enabled-for-other-projects).
-- [Use a `key`](../yaml/README.md#cachekey) that fits your workflow. For example,
+- [Use a `key`](../yaml/index.md#cachekey) that fits your workflow. For example,
   you can configure a different cache for each branch.
 
 For runners to work with caches efficiently, you must do one of the following:
@@ -97,7 +97,7 @@ the fallback cache is fetched every time a cache is not found.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1534) in GitLab Runner 13.4.
 
 You can use the `$CI_COMMIT_REF_SLUG` [predefined variable](../variables/predefined_variables.md)
-to specify your [`cache:key`](../yaml/README.md#cachekey). For example, if your
+to specify your [`cache:key`](../yaml/index.md#cachekey). For example, if your
 `$CI_COMMIT_REF_SLUG` is `test`, you can set a job to download cache that's tagged with `test`.
 
 If a cache with this tag is not found, you can use `CACHE_FALLBACK_KEY` to
@@ -134,7 +134,7 @@ job:
 ## Inherit global configuration, but override specific settings per job
 
 You can override cache settings without overwriting the global cache by using
-[anchors](../yaml/README.md#anchors). For example, if you want to override the
+[anchors](../yaml/index.md#anchors). For example, if you want to override the
 `policy` for one job:
 
 ```yaml
@@ -154,7 +154,7 @@ job:
     policy: pull
 ```
 
-For more information, see [`cache: policy`](../yaml/README.md#cachepolicy).
+For more information, see [`cache: policy`](../yaml/index.md#cachepolicy).
 
 ## Common use cases for caches
 
@@ -212,7 +212,7 @@ cache:
 If your project uses [npm](https://www.npmjs.com/) to install Node.js
 dependencies, the following example defines `cache` globally so that all jobs inherit it.
 By default, npm stores cache data in the home folder (`~/.npm`). However, you
-[can't cache things outside of the project directory](../yaml/README.md#cachepaths).
+[can't cache things outside of the project directory](../yaml/index.md#cachepaths).
 Instead, tell npm to use `./.npm`, and cache it per-branch:
 
 ```yaml
@@ -392,7 +392,7 @@ test:
 Caching is an optimization, but it isn't guaranteed to always work. You might need
 to regenerate cached files in each job that needs them.
 
-After you define a [cache in `.gitlab-ci.yml`](../yaml/README.md#cache),
+After you define a [cache in `.gitlab-ci.yml`](../yaml/index.md#cache),
 the availability of the cache depends on:
 
 - The runner's executor type.
@@ -489,7 +489,7 @@ machines, it is a safe default.
 
 ## Clearing the cache
 
-Runners use [cache](../yaml/README.md#cache) to speed up the execution
+Runners use [cache](../yaml/index.md#cache) to speed up the execution
 of your jobs by reusing existing data. This can sometimes lead to
 inconsistent behavior.
 

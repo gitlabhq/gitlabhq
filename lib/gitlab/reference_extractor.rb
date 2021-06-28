@@ -24,8 +24,8 @@ module Gitlab
       super(text, context.merge(project: project))
     end
 
-    def references(type)
-      refs = super(type, project, current_user)
+    def references(type, ids_only: false)
+      refs = super(type, project, current_user, ids_only: ids_only)
       @stateful_not_visible_counter += refs[:not_visible].count
 
       refs[:visible]
@@ -40,6 +40,12 @@ module Gitlab
     REFERABLES.each do |type|
       define_method(type.to_s.pluralize) do
         @references[type] ||= references(type)
+      end
+
+      if %w(mentioned_user mentioned_group mentioned_project).include?(type.to_s)
+        define_method("#{type}_ids") do
+          @references[type] ||= references(type, ids_only: true)
+        end
       end
     end
 

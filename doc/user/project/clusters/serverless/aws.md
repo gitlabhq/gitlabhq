@@ -381,7 +381,7 @@ control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
 
 ### Crafting the `.gitlab-ci.yml` file
 
-In a [`.gitlab-ci.yml`](../../../../ci/yaml/README.md) file in the root of your project,
+In a [`.gitlab-ci.yml`](../../../../ci/yaml/index.md) file in the root of your project,
 add the following and replace `<S3_bucket_name>` with the name of the S3 bucket where you
 want to store your package:
 

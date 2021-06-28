@@ -169,13 +169,13 @@ GitLab CI tags are not the same as Git tags. GitLab CI tags are associated with 
 Git tags are associated with commits.
 
 By tagging a runner for the types of jobs it can handle, you can make sure
-shared runners will [only run the jobs they are equipped to run](../yaml/README.md#tags).
+shared runners will [only run the jobs they are equipped to run](../yaml/index.md#tags).
 
 For instance, at GitLab we have runners tagged with `rails` if they contain
 the appropriate dependencies to run Rails test suites.
 
 When you [register a runner](https://docs.gitlab.com/runner/register/), its default behavior is to **only pick**
-[tagged jobs](../yaml/README.md#tags).
+[tagged jobs](../yaml/index.md#tags).
 To change this, you must have the [Owner role](../../user/permissions.md#project-members-permissions) for the project.
 
 To make a runner pick untagged jobs:
@@ -250,7 +250,7 @@ You can also use variables to configure how many times a runner
 > - `GIT_STRATEGY=none` requires GitLab Runner v1.7+.
 
 You can set the `GIT_STRATEGY` used to fetch the repository content, either
-globally or per-job in the [`variables`](../yaml/README.md#variables) section:
+globally or per-job in the [`variables`](../yaml/index.md#variables) section:
 
 ```yaml
 variables:
@@ -281,7 +281,7 @@ The `kubernetes` executor always clones into an temporary directory.
 A Git strategy of `none` also re-uses the local working copy, but skips all Git
 operations normally done by GitLab. GitLab Runner pre-clone scripts are also skipped,
 if present. This strategy could mean you need to add `fetch` and `checkout` commands
-to [your `.gitlab-ci.yml` script](../yaml/README.md#script).
+to [your `.gitlab-ci.yml` script](../yaml/index.md#script).
 
 It can be used for jobs that operate exclusively on artifacts, like a deployment job.
 Git repository data may be present, but it's likely out of date. You should only
@@ -293,7 +293,7 @@ rely on files brought into the local working copy from cache or artifacts.
 
 The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how Git
 submodules are included when fetching the code before a build. You can set them
-globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
 There are three possible values: `none`, `normal`, and `recursive`:
 
@@ -332,7 +332,7 @@ For this feature to work correctly, the submodules must be configured
 The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
 `clone` or `fetch` to specify whether a `git checkout` should be run. If not
 specified, it defaults to true. You can set them globally or per-job in the
-[`variables`](../yaml/README.md#variables) section.
+[`variables`](../yaml/index.md#variables) section.
 
 If set to `false`, the runner:
 
@@ -360,7 +360,7 @@ script:
 
 The `GIT_CLEAN_FLAGS` variable is used to control the default behavior of
 `git clean` after checking out the sources. You can set it globally or per-job in the
-[`variables`](../yaml/README.md#variables) section.
+[`variables`](../yaml/index.md#variables) section.
 
 `GIT_CLEAN_FLAGS` accepts all possible options of the [`git clean`](https://git-scm.com/docs/git-clean)
 command.
@@ -386,7 +386,7 @@ script:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4142) in GitLab Runner 13.1.
 
 The `GIT_FETCH_EXTRA_FLAGS` variable is used to control the behavior of
-`git fetch`. You can set it globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+`git fetch`. You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
 `GIT_FETCH_EXTRA_FLAGS` accepts all options of the [`git fetch`](https://git-scm.com/docs/git-fetch) command. However, `GIT_FETCH_EXTRA_FLAGS` flags are appended after the default flags that can't be modified.
 
@@ -450,7 +450,7 @@ variables:
   GIT_DEPTH: "3"
 ```
 
-You can set it globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
 ### Custom build directories
 
@@ -559,7 +559,7 @@ variables:
   GET_SOURCES_ATTEMPTS: 3
 ```
 
-You can set them globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+You can set them globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
 ## System calls not available on GitLab.com shared runners
 

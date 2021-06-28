@@ -67,9 +67,9 @@ Pipelines can be configured in many different ways:
 Pipelines and their component jobs and stages are defined in the CI/CD pipeline configuration file for each project.
 
 - [Jobs](../jobs/index.md) are the basic configuration component.
-- Stages are defined by using the [`stages`](../yaml/README.md#stages) keyword.
+- Stages are defined by using the [`stages`](../yaml/index.md#stages) keyword.
 
-For a list of configuration options in the CI pipeline file, see the [GitLab CI/CD Pipeline Configuration Reference](../yaml/README.md).
+For a list of configuration options in the CI pipeline file, see the [GitLab CI/CD Pipeline Configuration Reference](../yaml/index.md).
 
 You can also configure specific aspects of your pipelines through the GitLab UI. For example:
 
@@ -146,7 +146,7 @@ The pipeline now executes the jobs as configured.
 
 > [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) GitLab 13.7.
 
-You can use the [`value` and `description`](../yaml/README.md#prefill-variables-in-manual-pipelines)
+You can use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual-pipelines)
 keywords to define
 [pipeline-level (global) variables](../variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually.
@@ -200,7 +200,7 @@ For each `var` or `file_var`, a key and value are required.
 
 ### Add manual interaction to your pipeline
 
-Manual actions, configured using the [`when:manual`](../yaml/README.md#whenmanual) keyword,
+Manual actions, configured using the [`when:manual`](../yaml/index.md#whenmanual) keyword,
 allow you to require manual interaction before moving forward in the pipeline.
 
 You can do this straight from the pipeline graph. Just click the play button
@@ -347,7 +347,7 @@ You can group the jobs by:
   ![jobs grouped by stage](img/pipelines_graph_stage_view_v13_12.png)
 
 - [Job dependencies](#view-job-dependencies-in-the-pipeline-graph), which arranges
-  jobs based on their [`needs`](../yaml/README.md#needs) dependencies.
+  jobs based on their [`needs`](../yaml/index.md#needs) dependencies.
 
 [Multi-project pipeline graphs](../multi_project_pipelines.md#multi-project-pipeline-visualization) help
 you visualize the entire pipeline, including all cross-project inter-dependencies. **(PREMIUM)**
@@ -365,7 +365,7 @@ This in-development feature might not be available for your use. There can be
 [risks when enabling features still in development](../../user/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
-You can arrange jobs in the pipeline graph based on their [`needs`](../yaml/README.md#needs)
+You can arrange jobs in the pipeline graph based on their [`needs`](../yaml/index.md#needs)
 dependencies.
 
 Jobs in the leftmost column run first, and jobs that depend on them are grouped in the next columns.

@@ -35,7 +35,7 @@ For example, let's say the following Kubernetes clusters exist in a project:
 | Production  | `production`      |
 
 And the following environments are set in
-[`.gitlab-ci.yml`](../../../ci/yaml/README.md):
+[`.gitlab-ci.yml`](../../../ci/yaml/index.md):
 
 ```yaml
 stages:

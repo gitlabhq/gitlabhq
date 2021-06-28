@@ -40,7 +40,7 @@ Have a look at some of our most popular topics:
 |:-------------------------------------------------------------------------------------------|:------------|
 | [Two-factor authentication](user/profile/account/two_factor_authentication.md)             | Improve the security of your GitLab account. |
 | [GitLab groups](user/group/index.md)                                                       | Manage projects together. |
-| [GitLab CI/CD pipeline configuration reference](ci/yaml/README.md)                         | Available configuration options for `.gitlab-ci.yml` files. |
+| [GitLab CI/CD pipeline configuration reference](ci/yaml/index.md)                         | Available configuration options for `.gitlab-ci.yml` files. |
 | [Activate GitLab EE with a license](user/admin_area/license.md)                            | Activate GitLab Enterprise Edition functionality with a license. |
 | [Back up and restore GitLab](raketasks/backup_restore.md)                                  | Rake tasks for backing up and restoring GitLab self-managed instances. |
 | [GitLab release and maintenance policy](policy/maintenance.md)                             | Policies for version naming and cadence, and also upgrade recommendations. |

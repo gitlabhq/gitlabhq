@@ -165,6 +165,7 @@ const createReleaseLink = async ({ state, link }) => {
         name: link.name,
         url: link.url,
         linkType: link.linkType.toUpperCase(),
+        directAssetPath: link.directAssetPath,
       },
     },
   });

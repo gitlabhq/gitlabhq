@@ -11,7 +11,7 @@ Pipeline configuration begins with jobs. Jobs are the most fundamental element o
 Jobs are:
 
 - Defined with constraints stating under what conditions they should be executed.
-- Top-level elements with an arbitrary name and must contain at least the [`script`](../yaml/README.md#script) clause.
+- Top-level elements with an arbitrary name and must contain at least the [`script`](../yaml/index.md#script) clause.
 - Not limited in how many can be defined.
 
 For example:
@@ -101,7 +101,7 @@ jobs. Click to expand them.
 
 ![Grouped pipelines](img/pipelines_grouped.png)
 
-To create a group of jobs, in the [CI/CD pipeline configuration file](../yaml/README.md),
+To create a group of jobs, in the [CI/CD pipeline configuration file](../yaml/index.md),
 separate each job name with a number and one of the following:
 
 - A slash (`/`), for example, `test 1/3`, `test 2/3`, `test 3/3`.
@@ -168,7 +168,7 @@ for a single run of the manual job.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21767) in GitLab 11.4.
 
-When you do not want to run a job immediately, you can use the [`when:delayed`](../yaml/README.md#whendelayed) keyword to
+When you do not want to run a job immediately, you can use the [`when:delayed`](../yaml/index.md#whendelayed) keyword to
 delay a job's execution for a certain period.
 
 This is especially useful for timed incremental rollout where new code is rolled out gradually.

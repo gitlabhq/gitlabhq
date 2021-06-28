@@ -112,7 +112,7 @@ environments is configured.
 1. Push branch, and create a merge request that contains the [issue closing pattern](../project/issues/managing_issues.md#closing-issues-automatically)
    in its description at 14:00 (stop of **Code** stage and start of **Test** and
    **Review** stages).
-1. The CI starts running your scripts defined in [`.gitlab-ci.yml`](../../ci/yaml/README.md) and
+1. The CI starts running your scripts defined in [`.gitlab-ci.yml`](../../ci/yaml/index.md) and
    takes 5 minutes (stop of **Test** stage).
 1. Review merge request, ensure that everything is okay, and then merge the merge
    request at 19:00 (stop of **Review** stage and start of **Staging** stage).

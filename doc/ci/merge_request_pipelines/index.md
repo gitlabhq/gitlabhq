@@ -39,13 +39,13 @@ To enable pipelines for merge requests:
 
 ## Configure pipelines for merge requests
 
-To configure pipelines for merge requests, you must configure your [CI/CD configuration file](../yaml/README.md).
+To configure pipelines for merge requests, you must configure your [CI/CD configuration file](../yaml/index.md).
 To do this, you can use [`rules`](#use-rules-to-run-pipelines-for-merge-requests) or [`only/except`](#use-only-or-except-to-run-pipelines-for-merge-requests).
 
 ### Use `rules` to run pipelines for merge requests
 
 GitLab recommends that you use the `rules` keyword, which is available in
-[`workflow:rules` templates](../yaml/README.md#workflowrules-templates).
+[`workflow:rules` templates](../yaml/index.md#workflowrules-templates).
 
 ### Use `only` or `except` to run pipelines for merge requests
 
@@ -138,7 +138,7 @@ Instead, use the
 [`$CI_COMMIT_REF_NAME` predefined environment
 variable](../variables/predefined_variables.md) in
 combination with
-[`only:variables`](../yaml/README.md#onlyvariables--exceptvariables) to
+[`only:variables`](../yaml/index.md#onlyvariables--exceptvariables) to
 accomplish this behavior:
 
 ```yaml
@@ -199,7 +199,7 @@ If you are seeing two pipelines when using `only/except`, please see the caveats
 related to using `only/except` above (or, consider moving to `rules`).
 
 In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) and later,
-you can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/README.md#switch-between-branch-pipelines-and-merge-request-pipelines).
+you can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/index.md#switch-between-branch-pipelines-and-merge-request-pipelines).
 After a merge request is open on the branch, the pipeline switches to a merge request pipeline.
 
 ### Two pipelines created when pushing an invalid CI configuration file

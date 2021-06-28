@@ -91,7 +91,7 @@ Keyword description and main details.
 
 ### YAML reference style example
 
-See the [`only:changes` / `except:changes`](../../ci/yaml/README.md#onlychanges--exceptchanges)
+See the [`only:changes` / `except:changes`](../../ci/yaml/index.md#onlychanges--exceptchanges)
 documentation for an example of the YAML reference style. The following example is a
 shortened version of that documentation's Markdown:
 

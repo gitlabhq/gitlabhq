@@ -591,12 +591,6 @@ with the Fog library that GitLab uses. Symptoms include an error in `production.
 411 Length Required
 ```
 
-### Incremental logging is required for CI to use object storage
-
-If you configure GitLab to use object storage for CI logs and artifacts,
-you can avoid [local disk usage for job logs](job_logs.md#data-flow) by enabling
-[beta incremental logging](job_logs.md#incremental-logging-architecture).
-
 ### Proxy Download
 
 Clients can download files in object storage by receiving a pre-signed, time-limited URL,

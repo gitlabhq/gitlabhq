@@ -91,7 +91,7 @@ path to point to your ECR image.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207962) in GitLab 12.9.
 > - The `Deploy-ECS.gitlab-ci.yml` template was [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/220821) to `AWS/Deploy-ECS.gitlab-ci.yml` in GitLab 13.2.
 
-GitLab provides a series of [CI templates that you can include in your project](../yaml/README.md#include).
+GitLab provides a series of [CI templates that you can include in your project](../yaml/index.md#include).
 To automate deployments of your application to your [Amazon Elastic Container Service](https://aws.amazon.com/ecs/) (AWS ECS)
 cluster, you can `include` the `AWS/Deploy-ECS.gitlab-ci.yml` template in your `.gitlab-ci.yml` file.
 
@@ -231,7 +231,7 @@ pass three JSON input objects, based on existing templates:
 
    - [Template for the _Create stack_ step on AWS](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html).
    - Template for the _Push to S3_ step. Note that `source` is where a preceding `build` job built
-     your application, exporting the build through [`artifacts:paths`](../yaml/README.md#artifactspaths):
+     your application, exporting the build through [`artifacts:paths`](../yaml/index.md#artifactspaths):
 
      ```json
      {

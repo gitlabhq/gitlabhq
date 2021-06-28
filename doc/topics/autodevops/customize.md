@@ -187,11 +187,11 @@ to the desired environment. See [Limit environment scope of CI/CD variables](../
 
 Auto DevOps is completely customizable because the
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
-is just an implementation of a [`.gitlab-ci.yml`](../../ci/yaml/README.md) file,
+is just an implementation of a [`.gitlab-ci.yml`](../../ci/yaml/index.md) file,
 and uses only features available to any implementation of `.gitlab-ci.yml`.
 
 To modify the CI/CD pipeline used by Auto DevOps,
-[`include` the template](../../ci/yaml/README.md#includetemplate), and customize
+[`include` the template](../../ci/yaml/index.md#includetemplate), and customize
 it as needed by adding a `.gitlab-ci.yml` file to the root of your repository
 containing the following:
 
@@ -202,7 +202,7 @@ include:
 
 Add your changes, and your additions are merged with the
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
-using the behavior described for [`include`](../../ci/yaml/README.md#include).
+using the behavior described for [`include`](../../ci/yaml/index.md#include).
 
 If you need to specifically remove a part of the file, you can also copy and paste the contents of the
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
@@ -254,13 +254,13 @@ include:
 See the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) for information on available jobs.
 
 WARNING:
-Auto DevOps templates using the [`only`](../../ci/yaml/README.md#only--except) or
-[`except`](../../ci/yaml/README.md#only--except) syntax have switched
-to the [`rules`](../../ci/yaml/README.md#rules) syntax, starting in
+Auto DevOps templates using the [`only`](../../ci/yaml/index.md#only--except) or
+[`except`](../../ci/yaml/index.md#only--except) syntax have switched
+to the [`rules`](../../ci/yaml/index.md#rules) syntax, starting in
 [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213336).
 If your `.gitlab-ci.yml` extends these Auto DevOps templates and override the `only` or
 `except` keywords, you must migrate your templates to use the
-[`rules`](../../ci/yaml/README.md#rules) syntax after the
+[`rules`](../../ci/yaml/index.md#rules) syntax after the
 base template is migrated to use the `rules` syntax.
 For users who cannot migrate just yet, you can alternatively pin your templates to
 the [GitLab 12.10 based templates](https://gitlab.com/gitlab-org/auto-devops-v12-10).

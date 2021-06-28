@@ -37,7 +37,7 @@ This example shows how to run [pa11y](https://pa11y.org/)
 on your code with GitLab CI/CD using the [GitLab Accessibility Docker image](https://gitlab.com/gitlab-org/ci-cd/accessibility).
 
 For GitLab 12.9 and later, to define the `a11y` job, you must
-[include](../../../ci/yaml/README.md#includetemplate) the
+[include](../../../ci/yaml/index.md#includetemplate) the
 [`Accessibility.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
 included with your GitLab installation, as shown below.
 

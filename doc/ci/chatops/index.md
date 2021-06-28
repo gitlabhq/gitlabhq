@@ -32,7 +32,7 @@ to the job:
 - `CHAT_CHANNEL` is set to the name of channel the action was triggered in.
 
 When executed, ChatOps looks up the specified job name and attempts to match it
-to a corresponding job in [`.gitlab-ci.yml`](../yaml/README.md). If a matching job
+to a corresponding job in [`.gitlab-ci.yml`](../yaml/index.md). If a matching job
 is found on the default branch, a pipeline containing only that job is scheduled. After the
 job completes:
 

@@ -73,7 +73,7 @@ Make sure each variable is defined for the [scope you want to use it in](where_v
 
 ### Create a custom CI/CD variable in the `.gitlab-ci.yml` file
 
-To create a custom variable in the [`.gitlab-ci.yml`](../yaml/README.md#variables) file,
+To create a custom variable in the [`.gitlab-ci.yml`](../yaml/index.md#variables) file,
 define the variable and value with `variables` keyword.
 
 You can use the `variables` keyword in a job or at the top level of the `.gitlab-ci.yml` file.
@@ -119,7 +119,7 @@ script:
   - 'eval "$LS_CMD"'  # Executes 'ls -al $TMP_DIR'
 ```
 
-Use the [`value` and `description`](../yaml/README.md#prefill-variables-in-manual-pipelines)
+Use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual-pipelines)
 keywords to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 for [manually-triggered pipelines](../pipelines/index.md#run-a-pipeline-manually).
 
@@ -493,13 +493,13 @@ These variables cannot be used as CI/CD variables to configure a pipeline, but
 they can be used in job scripts.
 
 1. In the job script, save the variable as a `.env` file.
-1. Save the `.env` file as an [`artifacts:reports:dotenv`](../yaml/README.md#artifactsreportsdotenv)
+1. Save the `.env` file as an [`artifacts:reports:dotenv`](../yaml/index.md#artifactsreportsdotenv)
 artifact.
-1. Set a job in a later stage to receive the artifact by using the [`dependencies`](../yaml/README.md#dependencies)
-   or the [`needs`](../yaml/README.md#artifact-downloads-with-needs) keywords.
+1. Set a job in a later stage to receive the artifact by using the [`dependencies`](../yaml/index.md#dependencies)
+   or the [`needs`](../yaml/index.md#artifact-downloads-with-needs) keywords.
 1. The later job can then [use the variable in scripts](#use-cicd-variables-in-job-scripts).
 
-For example, with the [`dependencies`](../yaml/README.md#dependencies) keyword:
+For example, with the [`dependencies`](../yaml/index.md#dependencies) keyword:
 
 ```yaml
 build:
@@ -518,7 +518,7 @@ deploy:
     - build
 ```
 
-For example, with the [`needs`](../yaml/README.md#artifact-downloads-with-needs) keyword:
+For example, with the [`needs`](../yaml/index.md#artifact-downloads-with-needs) keyword:
 
 ```yaml
 build:

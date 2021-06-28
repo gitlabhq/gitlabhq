@@ -7,7 +7,7 @@ type: reference
 
 # GitLab CI/CD script syntax **(FREE)**
 
-You can use special syntax in [`script`](README.md#script) sections to:
+You can use special syntax in [`script`](index.md#script) sections to:
 
 - [Split long commands](#split-long-commands) into multiline commands.
 - [Use color codes](#add-color-codes-to-script-output) to make job logs easier to review.

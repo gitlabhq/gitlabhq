@@ -129,7 +129,7 @@ All jobs are permitted to fail by default. This means that if they fail it do no
 
 If you want to prevent vulnerabilities from being merged, you should do this by adding [Security Approvals in Merge Requests](#security-approvals-in-merge-requests) which prevents unknown, high or critical findings from being merged without an approval from a specific group of people that you choose.
 
-We do not recommend changing the job [`allow_failure` setting](../../ci/yaml/README.md#allow_failure) as that fails the entire pipeline.
+We do not recommend changing the job [`allow_failure` setting](../../ci/yaml/index.md#allow_failure) as that fails the entire pipeline.
 
 ### JSON Artifact
 
@@ -357,7 +357,7 @@ You can do it quickly by following the hyperlink given to run a new pipeline.
 
 ### Getting error message `sast job: stage parameter should be [some stage name here]`
 
-When [including](../../ci/yaml/README.md#includetemplate) a `.gitlab-ci.yml` template
+When [including](../../ci/yaml/index.md#includetemplate) a `.gitlab-ci.yml` template
 like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml),
 the following error may occur, depending on your GitLab CI/CD configuration:
 
@@ -410,7 +410,7 @@ This provides useful information to investigate further.
 
 ### Getting error message `sast job: config key may not be used with 'rules': only/except`
 
-When [including](../../ci/yaml/README.md#includetemplate) a `.gitlab-ci.yml` template
+When [including](../../ci/yaml/index.md#includetemplate) a `.gitlab-ci.yml` template
 like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml),
 the following error may occur, depending on your GitLab CI/CD configuration:
 
@@ -421,7 +421,7 @@ Found errors in your .gitlab-ci.yml:
 ```
 
 This error appears when the included job's `rules` configuration has been [overridden](sast/index.md#overriding-sast-jobs)
-with [the deprecated `only` or `except` syntax.](../../ci/yaml/README.md#only--except)
+with [the deprecated `only` or `except` syntax.](../../ci/yaml/index.md#only--except)
 To fix this issue, you must either:
 
 - [Transition your `only/except` syntax to `rules`](#transitioning-your-onlyexcept-syntax-to-rules).
@@ -432,8 +432,8 @@ To fix this issue, you must either:
 #### Transitioning your `only/except` syntax to `rules`
 
 When overriding the template to control job execution, previous instances of
-[`only` or `except`](../../ci/yaml/README.md#only--except) are no longer compatible
-and must be transitioned to [the `rules` syntax](../../ci/yaml/README.md#rules).
+[`only` or `except`](../../ci/yaml/index.md#only--except) are no longer compatible
+and must be transitioned to [the `rules` syntax](../../ci/yaml/index.md#rules).
 
 If your override is aimed at limiting jobs to only run on `master`, the previous syntax
 would look similar to:
@@ -489,11 +489,11 @@ spotbugs-sast:
     - if: $CI_COMMIT_TAG == null
 ```
 
-[Learn more on the usage of `rules`](../../ci/yaml/README.md#rules).
+[Learn more on the usage of `rules`](../../ci/yaml/index.md#rules).
 
 #### Pin your templates to the deprecated versions
 
-To ensure the latest support, we **strongly** recommend that you migrate to [`rules`](../../ci/yaml/README.md#rules).
+To ensure the latest support, we **strongly** recommend that you migrate to [`rules`](../../ci/yaml/index.md#rules).
 
 If you're unable to immediately update your CI configuration, there are several workarounds that
 involve pinning to the previous template versions, for example:

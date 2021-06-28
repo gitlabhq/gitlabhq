@@ -78,12 +78,31 @@ RSpec.describe Banzai::ReferenceParser::BaseParser do
 
   describe '#referenced_by' do
     context 'when references_relation is implemented' do
-      it 'returns a collection of objects' do
-        links = Nokogiri::HTML.fragment("<a data-foo='#{user.id}'></a>")
-          .children
+      context 'and ids_only is set to false' do
+        it 'returns a collection of objects' do
+          links = Nokogiri::HTML.fragment("<a data-foo='#{user.id}'></a>")
+                    .children
 
-        expect(subject).to receive(:references_relation).and_return(User)
-        expect(subject.referenced_by(links)).to eq([user])
+          expect(subject).to receive(:references_relation).and_return(User)
+          expect(subject.referenced_by(links)).to eq([user])
+        end
+      end
+
+      context 'and ids_only is set to true' do
+        it 'returns a collection of id values without performing a db query' do
+          links = Nokogiri::HTML.fragment("<a data-foo='1'></a><a data-foo='2'></a>").children
+
+          expect(subject).not_to receive(:references_relation)
+          expect(subject.referenced_by(links, ids_only: true)).to eq(%w(1 2))
+        end
+
+        context 'and the html fragment does not contain any attributes' do
+          it 'returns an empty array' do
+            links = Nokogiri::HTML.fragment("no links").children
+
+            expect(subject.referenced_by(links, ids_only: true)).to eq([])
+          end
+        end
       end
     end
 
@@ -188,7 +207,7 @@ RSpec.describe Banzai::ReferenceParser::BaseParser do
       dummy = Class.new(described_class) do
         self.reference_type = :test
 
-        def gather_references(nodes)
+        def gather_references(nodes, ids_only: false)
           nodes
         end
       end
@@ -222,7 +241,7 @@ RSpec.describe Banzai::ReferenceParser::BaseParser do
           nodes.select { |n| n.id > 5 }
         end
 
-        def referenced_by(nodes)
+        def referenced_by(nodes, ids_only: false)
           nodes.map(&:id)
         end
       end

@@ -15,7 +15,7 @@ As pipelines grow more complex, a few related problems start to emerge:
   job in next stage begins, causes arbitrary waits, slowing things down.
 - Configuration for the single global pipeline becomes very long and complicated,
   making it hard to manage.
-- Imports with [`include`](yaml/README.md#include) increase the complexity of the configuration, and create the potential
+- Imports with [`include`](yaml/index.md#include) increase the complexity of the configuration, and create the potential
   for namespace collisions where jobs are unintentionally duplicated.
 - Pipeline UX can become unwieldy with so many jobs and stages to work with.
 
@@ -38,12 +38,12 @@ set of concurrently running child pipelines, but within the same project:
 
 Child pipelines work well with other GitLab CI/CD features:
 
-- Use [`rules: changes`](yaml/README.md#ruleschanges) to trigger pipelines only when
+- Use [`rules: changes`](yaml/index.md#ruleschanges) to trigger pipelines only when
   certain files change. This is useful for monorepos, for example.
 - Since the parent pipeline in `.gitlab-ci.yml` and the child pipeline run as normal
   pipelines, they can have their own behaviors and sequencing in relation to triggers.
 
-See the [`trigger:`](yaml/README.md#trigger) keyword documentation for full details on how to
+See the [`trigger:`](yaml/index.md#trigger) keyword documentation for full details on how to
 include the child pipeline configuration.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -51,7 +51,7 @@ For an overview, see [Parent-Child Pipelines feature demo](https://youtu.be/n8Kp
 
 ## Examples
 
-The simplest case is [triggering a child pipeline](yaml/README.md#trigger) using a
+The simplest case is [triggering a child pipeline](yaml/index.md#trigger) using a
 local YAML file to define the pipeline configuration. In this case, the parent pipeline
 triggers the child pipeline, and continues without waiting:
 
@@ -72,7 +72,7 @@ microservice_a:
 ```
 
 In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) and later,
-you can use [`include:file`](yaml/README.md#includefile) to trigger child pipelines
+you can use [`include:file`](yaml/index.md#includefile) to trigger child pipelines
 with a configuration file in a different project:
 
 ```yaml
@@ -148,7 +148,7 @@ microservice_a:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35632) in GitLab 12.9.
 
 Instead of running a child pipeline from a static YAML file, you can define a job that runs
-your own script to generate a YAML file, which is then [used to trigger a child pipeline](yaml/README.md#trigger-child-pipeline-with-generated-configuration-file).
+your own script to generate a YAML file, which is then [used to trigger a child pipeline](yaml/index.md#trigger-child-pipeline-with-generated-configuration-file).
 
 This technique can be very powerful in generating pipelines targeting content that changed or to
 build a matrix of targets and architectures.

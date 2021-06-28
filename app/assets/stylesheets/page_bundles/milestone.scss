@@ -65,15 +65,32 @@ $status-box-line-height: 26px;
     line-height: $line-height-base;
     padding: 14px 16px;
     display: flex;
+    justify-content: space-between;
 
     .title {
       flex: 1;
       flex-grow: 2;
     }
 
-    .counter {
-      flex: 0;
-      padding-left: 16px;
+    .issuable-count-weight {
+      white-space: nowrap;
+
+      .counter,
+      .weight {
+        color: var(--gray-500, $gray-500);
+        font-weight: $gl-font-weight-bold;
+      }
+    }
+
+    &.text-white {
+      .issuable-count-weight svg {
+        fill: $white;
+      }
+
+      .issuable-count-weight .counter,
+      .weight {
+        color: var(--white, $white);
+      }
     }
   }
 }

@@ -41,6 +41,45 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.has_config?' do
+    context 'two tier database config' do
+      before do
+        allow(Gitlab::Application).to receive_message_chain(:config, :database_configuration, :[]).with(Rails.env)
+          .and_return({ "adapter" => "postgresql", "database" => "gitlabhq_test" })
+      end
+
+      it 'returns false for primary' do
+        expect(described_class.has_config?(:primary)).to eq(false)
+      end
+
+      it 'returns false for ci' do
+        expect(described_class.has_config?(:ci)).to eq(false)
+      end
+    end
+
+    context 'three tier database config' do
+      before do
+        allow(Gitlab::Application).to receive_message_chain(:config, :database_configuration, :[]).with(Rails.env)
+          .and_return({
+            "primary" => { "adapter" => "postgresql", "database" => "gitlabhq_test" },
+            "ci" => { "adapter" => "postgresql", "database" => "gitlabhq_test_ci" }
+          })
+      end
+
+      it 'returns true for primary' do
+        expect(described_class.has_config?(:primary)).to eq(true)
+      end
+
+      it 'returns true for ci' do
+        expect(described_class.has_config?(:ci)).to eq(true)
+      end
+
+      it 'returns false for non-existent' do
+        expect(described_class.has_config?(:nonexistent)).to eq(false)
+      end
+    end
+  end
+
   describe '.adapter_name' do
     it 'returns the name of the adapter' do
       expect(described_class.adapter_name).to be_an_instance_of(String)

@@ -7,6 +7,8 @@ describe('SentryConfig options', () => {
   const gitlabUrl = 'gitlabUrl';
   const environment = 'test';
   const revision = 'revision';
+  const featureCategory = 'my_feature_category';
+
   let indexReturnValue;
 
   beforeEach(() => {
@@ -16,6 +18,7 @@ describe('SentryConfig options', () => {
       current_user_id: currentUserId,
       gitlab_url: gitlabUrl,
       revision,
+      feature_category: featureCategory,
     };
 
     process.env.HEAD_COMMIT_SHA = revision;
@@ -34,6 +37,7 @@ describe('SentryConfig options', () => {
       release: revision,
       tags: {
         revision,
+        feature_category: featureCategory,
       },
     });
   });

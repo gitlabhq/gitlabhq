@@ -18,7 +18,7 @@ is also available on YouTube.
 Auto DevOps builds on top of GitLab CI/CD to create an automatic pipeline
 based on your project contents. When Auto DevOps is enabled for a
 project, the user does not need to explicitly include any pipeline configuration
-through a [`.gitlab-ci.yml` file](../ci/yaml/README.md).
+through a [`.gitlab-ci.yml` file](../ci/yaml/index.md).
 
 In the absence of a `.gitlab-ci.yml` file, the [Auto DevOps CI
 template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)

@@ -162,7 +162,7 @@ To configure SAST for a project you can:
 
 ### Configure SAST manually
 
-For GitLab 11.9 and later, to enable SAST you must [include](../../../ci/yaml/README.md#includetemplate)
+For GitLab 11.9 and later, to enable SAST you must [include](../../../ci/yaml/index.md#includetemplate)
 the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
 provided as a part of your GitLab installation. For GitLab versions earlier than 11.9, you
 can copy and use the job as defined that template.
@@ -178,7 +178,7 @@ The included template creates SAST jobs in your CI/CD pipeline and scans
 your project's source code for possible vulnerabilities.
 
 The results are saved as a
-[SAST report artifact](../../../ci/yaml/README.md#artifactsreportssast)
+[SAST report artifact](../../../ci/yaml/index.md#artifactsreportssast)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest SAST artifact available.
 
@@ -206,7 +206,7 @@ page:
 
 The SAST settings can be changed through [CI/CD variables](#available-cicd-variables)
 by using the
-[`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
+[`variables`](../../../ci/yaml/index.md#variables) parameter in `.gitlab-ci.yml`.
 In the following example, we include the SAST template and at the same time we
 set the `SAST_GOSEC_LEVEL` variable to `2`:
 
@@ -218,14 +218,14 @@ variables:
   SAST_GOSEC_LEVEL: 2
 ```
 
-Because the template is [evaluated before](../../../ci/yaml/README.md#include)
+Because the template is [evaluated before](../../../ci/yaml/index.md#include)
 the pipeline configuration, the last mention of the variable takes precedence.
 
 ### Overriding SAST jobs
 
 WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#only--except)
-is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/index.md#only--except)
+is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/index.md#rules) instead.
 
 To override a job definition, (for example, change properties like `variables` or `dependencies`),
 declare a job with the same name as the SAST job to override. Place this new job after the template
@@ -556,7 +556,7 @@ The SAST tool emits a JSON report file. For more information, see the
 [schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json).
 
 The JSON report file can be downloaded from the CI pipelines page, or the
-pipelines tab on merge requests by [setting `artifacts: paths`](../../../ci/yaml/README.md#artifactspaths) to `gl-sast-report.json`. For more information see [Downloading artifacts](../../../ci/pipelines/job_artifacts.md).
+pipelines tab on merge requests by [setting `artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`. For more information see [Downloading artifacts](../../../ci/pipelines/job_artifacts.md).
 
 Here's an example SAST report:
 
@@ -765,7 +765,7 @@ uses the `rules:exists` parameter. For performance reasons, a maximum number of 
 against the given glob pattern. If the number of matches exceeds the maximum, the `rules:exists`
 parameter returns `true`. Depending on the number of files in your repository, a SAST job might be
 triggered even if the scanner doesn't support your project. For more details about this issue, see
-the [`rules:exists` documentation](../../../ci/yaml/README.md#rulesexists).
+the [`rules:exists` documentation](../../../ci/yaml/index.md#rulesexists).
 
 ### SpotBugs UTF-8 unmappable character errors
 
@@ -791,7 +791,7 @@ For Maven builds, add the following to your `pom.xml` file:
 
 ### Flawfinder encoding error
 
-This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, convert all source code in your project to UTF-8 character encoding. This can be done with [`cvt2utf`](https://github.com/x1angli/cvt2utf) or [`iconv`](https://www.gnu.org/software/libiconv/documentation/libiconv-1.13/iconv.1.html) either over the entire project or per job using the [`before_script`](../../../ci/yaml/README.md#before_script) feature.
+This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, convert all source code in your project to UTF-8 character encoding. This can be done with [`cvt2utf`](https://github.com/x1angli/cvt2utf) or [`iconv`](https://www.gnu.org/software/libiconv/documentation/libiconv-1.13/iconv.1.html) either over the entire project or per job using the [`before_script`](../../../ci/yaml/index.md#before_script) feature.
 
 ### Semgrep slowness, unexpected results, or other errors
 

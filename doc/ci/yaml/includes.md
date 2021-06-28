@@ -7,8 +7,8 @@ type: reference
 
 # GitLab CI/CD include examples **(FREE)**
 
-In addition to the [`includes` examples](README.md#include) listed in the
-[GitLab CI YAML reference](README.md), this page lists more variations of `include`
+In addition to the [`includes` examples](index.md#include) listed in the
+[GitLab CI YAML reference](index.md), this page lists more variations of `include`
 usage.
 
 ## Single string or array of multiple values

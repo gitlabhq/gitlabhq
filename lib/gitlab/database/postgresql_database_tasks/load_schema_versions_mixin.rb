@@ -6,9 +6,14 @@ module Gitlab
       module LoadSchemaVersionsMixin
         extend ActiveSupport::Concern
 
-        def structure_load(*args)
-          super(*args)
-          Gitlab::Database::SchemaVersionFiles.load_all
+        def structure_load(...)
+          result = super(...)
+
+          if ActiveRecord::Base.configurations.primary?(connection.pool.db_config.name)
+            Gitlab::Database::SchemaVersionFiles.load_all
+          else
+            result
+          end
         end
       end
     end

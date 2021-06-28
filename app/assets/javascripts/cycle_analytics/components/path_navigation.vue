@@ -7,6 +7,7 @@ import {
 } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import { OVERVIEW_STAGE_ID } from '../constants';
+import FormattedStageCount from './formatted_stage_count.vue';
 
 export default {
   name: 'PathNavigation',
@@ -14,6 +15,7 @@ export default {
     GlPath,
     GlSkeletonLoading,
     GlPopover,
+    FormattedStageCount,
   },
   directives: {
     SafeHtml,
@@ -88,10 +90,7 @@ export default {
               {{ s__('ValueStreamEvent|Items in stage') }}
             </div>
             <div class="gl-pb-4 gl-font-weight-bold">
-              <template v-if="hasStageCount(pathItem)">{{
-                n__('%d item', '%d items', pathItem.stageCount)
-              }}</template>
-              <template v-else>-</template>
+              <formatted-stage-count :stage-count="pathItem.stageCount" />
             </div>
           </div>
         </div>

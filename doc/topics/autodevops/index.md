@@ -63,7 +63,7 @@ Since [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/issues/26655),
 Auto DevOps runs on pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build)
 exists.
 
-If a [CI/CD configuration file](../../ci/yaml/README.md) is present in the
+If a [CI/CD configuration file](../../ci/yaml/index.md) is present in the
 project, it isn't changed and won't be affected by Auto DevOps.
 
 ### At the project level

@@ -273,12 +273,12 @@ test:
   for maintenance or updates.
 - The Windows shared runner virtual machine instances do not use the
   GitLab Docker executor. This means that you can't specify
-  [`image`](../../ci/yaml/README.md#image) or [`services`](../../ci/yaml/README.md#services) in
+  [`image`](../../ci/yaml/index.md#image) or [`services`](../../ci/yaml/index.md#services) in
   your pipeline configuration.
 - For the beta release, we have included a set of software packages in
   the base VM image. If your CI job requires additional software that's
   not included in this list, then you must add installation
-  commands to [`before_script`](../../ci/yaml/README.md#before_script) or [`script`](../../ci/yaml/README.md#script) to install the required
+  commands to [`before_script`](../../ci/yaml/index.md#before_script) or [`script`](../../ci/yaml/index.md#script) to install the required
   software. Note that each job runs on a new VM instance, so the
   installation of additional software packages needs to be repeated for
   each job in your pipeline.

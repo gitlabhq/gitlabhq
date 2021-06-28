@@ -52,14 +52,14 @@ is installed on.
 ### Using variables
 
 You can pass any number of arbitrary variables. They are available in
-GitLab CI/CD so that they can be used in your [`.gitlab-ci.yml` file](../../ci/yaml/README.md).
+GitLab CI/CD so that they can be used in your [`.gitlab-ci.yml` file](../../ci/yaml/index.md).
 
 ![Scheduled pipeline variables](img/pipeline_schedule_variables.png)
 
 ### Using `rules`
 
 To configure a job to be executed only when the pipeline has been
-scheduled, use the [`rules`](../yaml/README.md#rules) keyword.
+scheduled, use the [`rules`](../yaml/index.md#rules) keyword.
 
 In this example, `make world` runs in scheduled pipelines, and `make build`
 runs in branch and tag pipelines:

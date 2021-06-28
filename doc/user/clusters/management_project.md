@@ -58,7 +58,7 @@ To select a cluster management project to use:
 ### Configuring your pipeline
 
 After designating a project as the management project for the cluster,
-write a [`.gitlab-ci.yml`](../../ci/yaml/README.md) in that project. For example:
+write a [`.gitlab-ci.yml`](../../ci/yaml/index.md) in that project. For example:
 
 ```yaml
 configure cluster:
@@ -87,7 +87,7 @@ to a management project:
 | Production  | `production`      |
 
 The following environments set in
-[`.gitlab-ci.yml`](../../ci/yaml/README.md) deploy to the
+[`.gitlab-ci.yml`](../../ci/yaml/index.md) deploy to the
 Development, Staging, and Production cluster respectively.
 
 ```yaml

@@ -134,7 +134,7 @@ To configure API fuzzing in GitLab with an OpenAPI Specification:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
 
-1. [Include](../../../ci/yaml/README.md#includetemplate)
+1. [Include](../../../ci/yaml/index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
 
@@ -200,7 +200,7 @@ To configure API fuzzing to use a HAR file:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
 
-1. [Include](../../../ci/yaml/README.md#includetemplate)
+1. [Include](../../../ci/yaml/index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
 
@@ -271,7 +271,7 @@ To configure API fuzzing to use a Postman Collection file:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
 
-1. [Include](../../../ci/yaml/README.md#includetemplate)
+1. [Include](../../../ci/yaml/index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
 

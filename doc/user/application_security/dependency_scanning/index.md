@@ -55,7 +55,7 @@ is **not** `19.03.0`. See [troubleshooting information](#error-response-from-dae
 
 ## Supported languages and package managers
 
-GitLab relies on [`rules`](../../../ci/yaml/README.md#rules) to start relevant analyzers depending on the languages detected in the repository.
+GitLab relies on [`rules`](../../../ci/yaml/index.md#rules) to start relevant analyzers depending on the languages detected in the repository.
 The current detection logic limits the maximum search depth to two levels. For example, the `gemnasium-dependency_scanning` job is enabled if a repository contains either a `Gemfile` or `api/Gemfile` file, but not if the only supported dependency file is `api/client/Gemfile`.
 
 The following languages and dependency managers are supported:
@@ -90,7 +90,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 ## Configuration
 
 To enable dependency scanning for GitLab 11.9 and later, you must
-[include](../../../ci/yaml/README.md#includetemplate) the
+[include](../../../ci/yaml/index.md#includetemplate) the
 [`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
 that is provided as a part of your GitLab installation.
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
@@ -106,14 +106,14 @@ include:
 The included template creates dependency scanning jobs in your CI/CD
 pipeline and scans your project's source code for possible vulnerabilities.
 The results are saved as a
-[dependency scanning report artifact](../../../ci/yaml/README.md#artifactsreportsdependency_scanning)
+[dependency scanning report artifact](../../../ci/yaml/index.md#artifactsreportsdependency_scanning)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest dependency scanning artifact available.
 
 ### Customizing the dependency scanning settings
 
 The dependency scanning settings can be changed through [CI/CD variables](#available-cicd-variables) by using the
-[`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
+[`variables`](../../../ci/yaml/index.md#variables) parameter in `.gitlab-ci.yml`.
 For example:
 
 ```yaml
@@ -124,14 +124,14 @@ variables:
   SECURE_LOG_LEVEL: error
 ```
 
-Because template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
+Because template is [evaluated before](../../../ci/yaml/index.md#include) the pipeline
 configuration, the last mention of the variable takes precedence.
 
 ### Overriding dependency scanning jobs
 
 WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#only--except)
-is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/index.md#only--except)
+is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/index.md#rules) instead.
 
 To override a job definition (for example, to change properties like `variables` or `dependencies`),
 declare a new job with the same name as the one to override. Place this new job after the template
@@ -596,7 +596,7 @@ Generally, the approach is the following:
 1. Define a dedicated converter job in your `.gitlab-ci.yml` file.
    Use a suitable Docker image, script, or both to facilitate the conversion.
 1. Let that job upload the converted, supported file as an artifact.
-1. Add [`dependencies: [<your-converter-job>]`](../../../ci/yaml/README.md#dependencies)
+1. Add [`dependencies: [<your-converter-job>]`](../../../ci/yaml/index.md#dependencies)
    to your `dependency_scanning` job to make use of the converted definitions files.
 
 For example, the currently unsupported `poetry.lock` file can be
@@ -643,7 +643,7 @@ For information on this, see the [general Application Security troubleshooting s
 ### Limitation when using rules:exists
 
 The [dependency scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
-uses the [`rules:exists`](../../../ci/yaml/README.md#rulesexists)
+uses the [`rules:exists`](../../../ci/yaml/index.md#rulesexists)
 syntax. This directive is limited to 10000 checks and always returns `true` after reaching this
 number. Because of this, and depending on the number of files in your repository, a dependency
 scanning job might be triggered even if the scanner doesn't support your project.

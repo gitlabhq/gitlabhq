@@ -85,7 +85,7 @@ the body generation is limited to these body types:
 
 Follow these steps to configure DAST API in GitLab with an OpenAPI specification:
 
-1. To use DAST API, you must [include](../../../ci/yaml/README.md#includetemplate)
+1. To use DAST API, you must [include](../../../ci/yaml/index.md#includetemplate)
    the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
    that's provided as part of your GitLab installation. Add the following to your
    `.gitlab-ci.yml` file:
@@ -184,7 +184,7 @@ cookies. We recommend that you review the HAR file contents before adding them t
 Follow these steps to configure DAST API to use a HAR file that provides information about the
 target API to test:
 
-1. To use DAST API, you must [include](../../../ci/yaml/README.md#includetemplate)
+1. To use DAST API, you must [include](../../../ci/yaml/index.md#includetemplate)
    the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
    that's provided as part of your GitLab installation. To do so, add the following to your
    `.gitlab-ci.yml` file:
@@ -284,7 +284,7 @@ them to a repository.
 Follow these steps to configure DAST API to use a Postman Collection file that provides
 information about the target API to test:
 
-1. To use DAST API, you must [include](../../../ci/yaml/README.md#includetemplate)
+1. To use DAST API, you must [include](../../../ci/yaml/index.md#includetemplate)
    the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
    that's provided as part of your GitLab installation. To do so, add the following to your
    `.gitlab-ci.yml` file:

@@ -142,7 +142,7 @@ The pipeline starts when the commit is committed.
 - You can also use [CI/CD configuration visualization](../pipeline_editor/index.md#visualize-ci-configuration) to
   view a graphical representation of your `.gitlab-ci.yml` file.
 - For the complete `.gitlab-ci.yml` syntax, see
-  [the `.gitlab-ci.yml` reference topic](../yaml/README.md).
+  [the `.gitlab-ci.yml` reference topic](../yaml/index.md).
 
 ### View the status of your pipeline and jobs
 

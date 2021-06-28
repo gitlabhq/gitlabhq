@@ -5,7 +5,7 @@ module Banzai
     class ExternalIssueParser < BaseParser
       self.reference_type = :external_issue
 
-      def referenced_by(nodes)
+      def referenced_by(nodes, options = {})
         issue_ids = issue_ids_per_project(nodes)
         projects = find_projects_for_hash_keys(issue_ids)
         issues = []

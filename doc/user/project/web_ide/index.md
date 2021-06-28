@@ -331,7 +331,7 @@ The [File Sync](#file-syncing-to-web-terminal) feature is supported on Kubernete
 
 In order to enable the Web IDE terminals you need to create the file
 `.gitlab/.gitlab-webide.yml` inside the repository's root. This
-file is fairly similar to the [CI configuration file](../../../ci/yaml/README.md)
+file is fairly similar to the [CI configuration file](../../../ci/yaml/index.md)
 syntax but with some restrictions:
 
 - No global blocks (such as `before_script` or `after_script`) can be defined.

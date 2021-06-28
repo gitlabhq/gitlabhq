@@ -9,6 +9,7 @@ fragment ReleaseForEditing on Release {
         name
         url
         linkType
+        directAssetPath
       }
     }
   }

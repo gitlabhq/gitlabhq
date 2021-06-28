@@ -1,8 +1,10 @@
 - if cookies[:hide_project_limit_message].blank? && !current_user.hide_project_limit && !current_user.can_create_project? && current_user.projects_limit > 0
-  .project-limit-message.gl-alert.gl-alert-warning.gl-display-none.gl-sm-display-block
-    = _("You won't be able to create new projects because you have reached your project limit.")
-
-    .float-right
-      = link_to _("Don't show again"), profile_path(user: {hide_project_limit: true}), method: :put, class: 'alert-link'
-      |
-      = link_to _('Remind later'), '#', class: 'hide-project-limit-message alert-link'
+  = render 'shared/global_alert',
+    variant: :warning,
+    dismissible: false,
+    alert_class: 'project-limit-message' do
+    .gl-alert-body
+      = _("You won't be able to create new projects because you have reached your project limit.")
+    .gl-alert-actions
+      = link_to _('Remind later'), '#', class: 'alert-link hide-project-limit-message btn gl-button btn-confirm'
+      = link_to _("Don't show again"), profile_path(user: {hide_project_limit: true}), method: :put, class: 'alert-link btn gl-button btn-default gl-ml-3'

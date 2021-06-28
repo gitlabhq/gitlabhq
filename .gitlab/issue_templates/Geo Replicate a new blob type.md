@@ -34,6 +34,10 @@ There are three main sections below. It is a good idea to structure your merge r
 
 It is also a good idea to first open a proof-of-concept merge request. It can be helpful for working out kinks and getting initial support and feedback from the Geo team. As an example, see the [Proof of Concept to replicate Pipeline Artifacts](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56423).
 
+You can look into the following examples of MRs for implementing replication/verification for a new blob type:
+- [Add db changes](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60935) and [add verification for MR diffs using SSF](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63309)
+- [Verify Terraform state versions](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58800)
+
 ### Modify database schemas to prepare to add Geo support for Cool Widgets
 
 You might do this section in its own merge request, but it is not required.
@@ -339,6 +343,7 @@ That's all of the required database changes.
   module Geo
     class CoolWidgetReplicator < Gitlab::Geo::Replicator
       include ::Geo::BlobReplicatorStrategy
+      extend ::Gitlab::Utils::Override
 
       def self.model
         ::CoolWidget
@@ -426,7 +431,7 @@ That's all of the required database changes.
 
   FactoryBot.define do
     factory :geo_cool_widget_registry, class: 'Geo::CoolWidgetRegistry' do
-      cool_widget
+      cool_widget # This association should have data, like a file or repository
       state { Geo::CoolWidgetRegistry.state_value(:pending) }
 
       trait :synced do
@@ -736,7 +741,10 @@ Individual Cool Widget replication and verification data should now be available
   module Geo
     class CoolWidgetReplicator < Gitlab::Geo::Replicator
       ...
+      # REMOVE THIS LINE IF IT IS NO LONGER NEEDED
+      extend ::Gitlab::Utils::Override
 
+      ...
       # REMOVE THIS METHOD
       def self.replication_enabled_by_default?
         false

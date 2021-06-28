@@ -79,7 +79,7 @@ To create a new release through the GitLab UI:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19298) in GitLab 12.7.
 
-You can [create a release directly from the GitLab CI pipeline](../../../ci/yaml/README.md#release)
+You can [create a release directly from the GitLab CI pipeline](../../../ci/yaml/index.md#release)
 by using a `release` node in the job definition.
 
 The release is created only if the job processes without error. If the Rails API returns an error
@@ -428,14 +428,14 @@ Evidence collection snapshots are visible on the Releases page, along with the t
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.
 
-When you create a release, if [job artifacts](../../../ci/yaml/README.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
+When you create a release, if [job artifacts](../../../ci/yaml/index.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
 
 Although job artifacts normally expire, artifacts included in release evidence do not expire.
 
 To enable job artifact collection you need to specify both:
 
-1. [`artifacts:paths`](../../../ci/yaml/README.md#artifactspaths)
-1. [`artifacts:reports`](../../../ci/yaml/README.md#artifactsreports)
+1. [`artifacts:paths`](../../../ci/yaml/index.md#artifactspaths)
+1. [`artifacts:reports`](../../../ci/yaml/index.md#artifactsreports)
 
 ```yaml
 ruby:
@@ -455,7 +455,7 @@ release evidence.
 
 If you [schedule release evidence collection](#schedule-release-evidence-collection),
 some artifacts may already be expired by the time of evidence collection. To avoid this you can use
-the [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in)
+the [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in)
 keyword. Learn more in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
 
 ### Schedule release evidence collection

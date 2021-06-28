@@ -14,12 +14,12 @@ which itself includes files under
 for easier maintenance.
 
 We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/#dogfooding)
-GitLab [CI/CD features and best-practices](../ci/yaml/README.md)
+GitLab [CI/CD features and best-practices](../ci/yaml/index.md)
 as much as possible.
 
 ## Overview
 
-Pipelines for the GitLab project are created using the [`workflow:rules` keyword](../ci/yaml/README.md#workflow)
+Pipelines for the GitLab project are created using the [`workflow:rules` keyword](../ci/yaml/index.md#workflow)
 feature of the GitLab CI/CD.
 
 Pipelines are always created for the following scenarios:
@@ -49,7 +49,7 @@ depending on the changes made in the MR:
 - [Frontend-only MR pipeline](#frontend-only-mr-pipeline): This is typically created for an MR that only changes frontend code.
 - [QA-only MR pipeline](#qa-only-mr-pipeline): This is typically created for an MR that only changes end to end tests related code.
 
-We use the [`rules:`](../ci/yaml/README.md#rules) and [`needs:`](../ci/yaml/README.md#needs) keywords extensively
+We use the [`rules:`](../ci/yaml/index.md#rules) and [`needs:`](../ci/yaml/index.md#needs) keywords extensively
 to determine the jobs that need to be run in a pipeline. Note that an MR that includes multiple types of changes would
 have a pipelines that include jobs from multiple types (e.g. a combination of docs-only and code-only pipelines).
 
@@ -537,7 +537,7 @@ the `gitlab-org/gitlab-foss` project.
 
 ### Interruptible pipelines
 
-By default, all jobs are [interruptible](../ci/yaml/README.md#interruptible), except the
+By default, all jobs are [interruptible](../ci/yaml/index.md#interruptible), except the
 `dont-interrupt-me` job which runs automatically on `main`, and is `manual`
 otherwise.
 
@@ -717,13 +717,13 @@ each pipeline includes default variables defined in
 
 ### Common job definitions
 
-Most of the jobs [extend from a few CI definitions](../ci/yaml/README.md#extends)
+Most of the jobs [extend from a few CI definitions](../ci/yaml/index.md#extends)
 defined in [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml)
-that are scoped to a single [configuration keyword](../ci/yaml/README.md#job-keywords).
+that are scoped to a single [configuration keyword](../ci/yaml/index.md#job-keywords).
 
 | Job definitions  | Description |
 |------------------|-------------|
-| `.default-retry` | Allows a job to [retry](../ci/yaml/README.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
+| `.default-retry` | Allows a job to [retry](../ci/yaml/index.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
 | `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (e.g. tests). |
 | `.setup-test-env-cache` | Allows a job to use a default `cache` definition suitable for setting up test environment for subsequent Ruby/Rails tasks. |
 | `.rails-cache` | Allows a job to use a default `cache` definition suitable for Ruby/Rails tasks. |
@@ -742,16 +742,16 @@ that are scoped to a single [configuration keyword](../ci/yaml/README.md#job-key
 
 ### `rules`, `if:` conditions and `changes:` patterns
 
-We're using the [`rules` keyword](../ci/yaml/README.md#rules) extensively.
+We're using the [`rules` keyword](../ci/yaml/index.md#rules) extensively.
 
 All `rules` definitions are defined in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml),
-then included in individual jobs via [`extends`](../ci/yaml/README.md#extends).
+then included in individual jobs via [`extends`](../ci/yaml/index.md#extends).
 
 The `rules` definitions are composed of `if:` conditions and `changes:` patterns,
 which are also defined in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml)
-and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anchors)
+and included in `rules` definitions via [YAML anchors](../ci/yaml/index.md#anchors)
 
 #### `if:` conditions
 
