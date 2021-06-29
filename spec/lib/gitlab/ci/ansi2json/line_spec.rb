@@ -76,30 +76,25 @@ RSpec.describe Gitlab::Ci::Ansi2json::Line do
   end
 
   describe '#set_section_duration' do
-    shared_examples 'set_section_duration' do
-      it 'sets and formats the section_duration' do
-        subject.set_section_duration(75)
+    using RSpec::Parameterized::TableSyntax
 
-        expect(subject.section_duration).to eq('01:15')
-      end
+    where(:duration, :result) do
+      nil                                         | '00:00'
+      'string'                                    | '00:00'
+      0.seconds                                   | '00:00'
+      7.seconds                                   | '00:07'
+      75                                          | '01:15'
+      1.minute + 15.seconds                       | '01:15'
+      13.hours + 14.minutes + 15.seconds          | '13:14:15'
+      1.day + 13.hours + 14.minutes + 15.seconds  | '37:14:15'
     end
 
-    context 'with default timezone' do
-      it_behaves_like 'set_section_duration'
-    end
+    with_them do
+      it do
+        subject.set_section_duration(duration)
 
-    context 'with a timezone carrying minutes offset' do
-      before do
-        # The actual call by does use Time.at(...).utc that the following
-        # rubocop rule (Rails/TimeZone) suggests, but for this specific
-        # test's purposes we needed to mock at the Time.at call point.
-
-        # rubocop:disable Rails/TimeZone
-        allow(Time).to receive(:at).with(75).and_return(Time.at(75, in: '+05:30'))
-        # rubocop:enable Rails/TimeZone
+        expect(subject.section_duration).to eq(result)
       end
-
-      it_behaves_like 'set_section_duration'
     end
   end
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::Nuget::PackageMetadataPresenter do
   include_context 'with expected presenters dependency groups'
 
-  let_it_be(:package) { create(:nuget_package, :with_metadatum) }
+  let_it_be(:package) { create(:nuget_package, :with_symbol_package, :with_metadatum) }
   let_it_be(:tag1) { create(:packages_tag, name: 'tag1', package: package) }
   let_it_be(:tag2) { create(:packages_tag, name: 'tag2', package: package) }
   let_it_be(:presenter) { described_class.new(package) }
@@ -19,7 +19,7 @@ RSpec.describe Packages::Nuget::PackageMetadataPresenter do
   end
 
   describe '#archive_url' do
-    let_it_be(:expected_suffix) { "/api/v4/projects/#{package.project_id}/packages/nuget/download/#{package.name}/#{package.version}/#{package.package_files.last.file_name}" }
+    let_it_be(:expected_suffix) { "/api/v4/projects/#{package.project_id}/packages/nuget/download/#{package.name}/#{package.version}/#{package.package_files.with_format('nupkg').last.file_name}" }
 
     subject { presenter.archive_url }
 

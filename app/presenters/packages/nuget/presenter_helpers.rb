@@ -8,6 +8,7 @@ module Packages
       BLANK_STRING = ''
       PACKAGE_DEPENDENCY_GROUP = 'PackageDependencyGroup'
       PACKAGE_DEPENDENCY = 'PackageDependency'
+      NUGET_PACKAGE_FORMAT = 'nupkg'
 
       private
 
@@ -31,7 +32,7 @@ module Packages
             id: package.project_id,
             package_name: package.name,
             package_version: package.version,
-            package_filename: package.package_files.last&.file_name
+            package_filename: package.package_files.with_format(NUGET_PACKAGE_FORMAT).last&.file_name
           },
           true
         )
