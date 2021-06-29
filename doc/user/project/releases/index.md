@@ -14,8 +14,11 @@ To introduce a checkpoint in your source code history, you can assign a
 However, in most cases, your users need more than just the raw source code.
 They need compiled objects or other assets output by your CI/CD system.
 
-A GitLab *Release* is a snapshot of the source, build output, artifacts, and other metadata
-associated with a released version of your code.
+A GitLab Release can be:
+
+- A snapshot of the source code of your repository.
+- [Generic packages](../../packages/generic_packages/index.md) created from job artifacts.
+- Other metadata associated with a released version of your code.
 
 You can create a GitLab release on any branch. When you create a release:
 
@@ -273,14 +276,28 @@ Release note descriptions are unrelated. Description supports [Markdown](../../m
 A release contains the following types of assets:
 
 - [Source code](#source-code)
-- [Permanent links to release assets](#permanent-links-to-release-assets)
+- [Link](#links)
 
 #### Source code
 
 GitLab automatically generates `zip`, `tar.gz`, `tar.bz2`, and `tar`
 archived source code from the given Git tag. These are read-only assets.
 
-#### Permanent links to release assets
+#### Links
+
+A link is any URL which can point to whatever you like: documentation, built
+binaries, or other related materials. These can be both internal or external
+links from your GitLab instance.
+Each link as an asset has the following attributes:
+
+| Attribute   | Description                            | Required |
+| ----        | -----------                            | ---      |
+| `name`      | The name of the link.                  | Yes      |
+| `url`       | The URL to download a file.            | Yes      |
+| `filepath`  | The redirect link to the `url`. See [this section](#permanent-links-to-release-assets) for more information. | No       |
+| `link_type` | The content kind of what users can download via `url`. See [this section](#link-types) for more information. | No       |
+
+##### Permanent links to release assets
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27300) in GitLab 12.9.
 
@@ -288,20 +305,6 @@ The assets associated with a release are accessible through a permanent URL.
 GitLab always redirects this URL to the actual asset
 location, so even if the assets move to a different location, you can continue
 to use the same URL. This is defined during [link creation](../../../api/releases/links.md#create-a-link) or [updating](../../../api/releases/links.md#update-a-link).
-
-Each asset has a `name`, a `url` of the *actual* asset location, and optionally,
-`filepath` and `link_type` parameters.
-
-A `filepath` creates a URL pointing to the asset for the Release.
-
-The `link_type` parameter accepts one of the following four values:
-
-- `runbook`
-- `package`
-- `image`
-- `other` (default)
-
-This field has no effect on the URL and it's only used for visual purposes in the Releases page of your project.
 
 The format of the URL is:
 
@@ -329,13 +332,104 @@ https://gitlab.com/gitlab-org/gitlab-runner/releases/v11.9.0-rc2/downloads/binar
 
 The physical location of the asset can change at any time and the direct link remains unchanged.
 
-### Links
+##### Link Types
 
-A link is any URL which can point to whatever you like: documentation, built
-binaries, or other related materials. These can be both internal or external
-links from your GitLab instance.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207257) in GitLab 13.1.
 
 The four types of links are "Runbook," "Package," "Image," and "Other."
+The `link_type` parameter accepts one of the following four values:
+
+- `runbook`
+- `package`
+- `image`
+- `other` (default)
+
+This field has no effect on the URL and it's only used for visual purposes in the Releases page of your project.
+
+##### Use a generic package for attaching binaries
+
+You can use [generic packages](../../packages/generic_packages/index.md)
+to store any artifacts from a release or tag pipeline,
+that can also be used for attaching binary files to an individual release entry.
+You basically need to:
+
+1. [Push the artifacts to the Generic Package Registry](../../packages/generic_packages/index.md#publish-a-package-file).
+1. [Attach the package link to the release](#links).
+
+The following example generates release assets, publishes them
+as a generic package, and then creates a release:
+
+```yaml
+stages:
+  - build
+  - upload
+  - release
+
+variables:
+  # Package version can only contain numbers (0-9), and dots (.).
+  # Must be in the format of X.Y.Z, i.e. should match /\A\d+\.\d+\.\d+\z/ regular expresion.
+  # See https://docs.gitlab.com/ee/user/packages/generic_packages/#publish-a-package-file
+  PACKAGE_VERSION: "1.2.3"
+  DARWIN_AMD64_BINARY: "myawesomerelease-darwin-amd64-${PACKAGE_VERSION}"
+  LINUX_AMD64_BINARY: "myawesomerelease-linux-amd64-${PACKAGE_VERSION}"
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/myawesomerelease/${PACKAGE_VERSION}"
+
+build:
+  stage: build
+  image: alpine:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - mkdir bin
+    - echo "Mock binary for ${DARWIN_AMD64_BINARY}" > bin/${DARWIN_AMD64_BINARY}
+    - echo "Mock binary for ${LINUX_AMD64_BINARY}" > bin/${LINUX_AMD64_BINARY}
+  artifacts:
+    paths:
+      - bin/
+
+upload:
+  stage: upload
+  image: curlimages/curl:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${DARWIN_AMD64_BINARY} ${PACKAGE_REGISTRY_URL}/${DARWIN_AMD64_BINARY}
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${LINUX_AMD64_BINARY} ${PACKAGE_REGISTRY_URL}/${LINUX_AMD64_BINARY}
+
+release:
+  # Caution, as of 2021-02-02 these assets links require a login, see:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/299384
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - |
+      release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
+        --assets-link "{\"name\":\"${DARWIN_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${DARWIN_AMD64_BINARY}\"}" \
+        --assets-link "{\"name\":\"${LINUX_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_AMD64_BINARY}\"}"
+```
+
+PowerShell users may need to escape the double quote `"` inside a JSON
+string with a `` ` `` (back tick) for `--assets-link` and `ConvertTo-Json`
+before passing on to the `release-cli`.
+For example:
+
+```yaml
+release:
+  script:
+    - $env:asset = "{`"name`":`"MyFooAsset`",`"url`":`"https://gitlab.com/upack/artifacts/download/$env:UPACK_GROUP/$env:UPACK_NAME/$($env:GitVersion_SemVer)?contentOnly=zip`"}"
+    - $env:assetjson = $env:asset | ConvertTo-Json
+    - release-cli create --name $CI_COMMIT_TAG --description "Release $CI_COMMIT_TAG" --ref $CI_COMMIT_TAG --tag-name $CI_COMMIT_TAG --assets-link=$env:assetjson
+```
+
+NOTE:
+Directly attaching [job artifacts](../../../ci/pipelines/job_artifacts.md)
+links to a release is not recommended, because artifacts are ephemeral and
+are used to pass data in the same pipeline. This means there's a risk that
+they could either expire or someone might manually delete them.
 
 ## Release evidence
 

@@ -23,7 +23,7 @@ tasks in a secure and cloud-native way. It enables:
 - [CI/CD Tunnel](ci_cd_tunnel.md) that enables users to access Kubernetes clusters from GitLab CI/CD jobs even if there is no network connectivity between GitLab Runner and a cluster.
 
 Many more features are planned. Please review [our roadmap](https://gitlab.com/groups/gitlab-org/-/epics/3329)
-and [our development documentation](../../../development/agent/index.md).
+and [our development documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/doc).
 
 ## GitLab Agent GitOps workflow
 

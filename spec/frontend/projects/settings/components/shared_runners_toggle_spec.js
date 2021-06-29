@@ -1,6 +1,8 @@
 import { GlAlert, GlToggle, GlTooltip } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAxiosAdapter from 'axios-mock-adapter';
+import CcValidationRequiredAlert from 'ee_component/billings/components/cc_validation_required_alert.vue';
+import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import SharedRunnersToggleComponent from '~/projects/settings/components/shared_runners_toggle.vue';
@@ -20,6 +22,7 @@ describe('projects/settings/components/shared_runners', () => {
         isDisabledAndUnoverridable: false,
         isLoading: false,
         updatePath: TEST_UPDATE_PATH,
+        isCreditCardValidationRequired: false,
         ...props,
       },
     });
@@ -28,6 +31,7 @@ describe('projects/settings/components/shared_runners', () => {
   const findErrorAlert = () => wrapper.find(GlAlert);
   const findSharedRunnersToggle = () => wrapper.find(GlToggle);
   const findToggleTooltip = () => wrapper.find(GlTooltip);
+  const findCcValidationRequiredAlert = () => wrapper.findComponent(CcValidationRequiredAlert);
   const getToggleValue = () => findSharedRunnersToggle().props('value');
   const isToggleLoading = () => findSharedRunnersToggle().props('isLoading');
   const isToggleDisabled = () => findSharedRunnersToggle().props('disabled');
@@ -151,6 +155,42 @@ describe('projects/settings/components/shared_runners', () => {
 
         expect(findErrorAlert().text()).toBe('An error occurred while updating the configuration.');
         expect(getToggleValue()).toBe(false); // toggle value should not change
+      });
+    });
+  });
+
+  describe('with credit card validation required and shared runners DISABLED', () => {
+    beforeEach(() => {
+      window.gon = {
+        subscriptions_url: TEST_HOST,
+        payment_form_url: TEST_HOST,
+      };
+
+      createComponent({
+        isCreditCardValidationRequired: true,
+        isEnabled: false,
+      });
+    });
+
+    it('toggle should not be visible', () => {
+      expect(findSharedRunnersToggle().exists()).toBe(false);
+    });
+
+    it('credit card validation component should exist', () => {
+      expect(findCcValidationRequiredAlert().exists()).toBe(true);
+      expect(findCcValidationRequiredAlert().text()).toBe(
+        SharedRunnersToggleComponent.i18n.REQUIRES_VALIDATION_TEXT,
+      );
+    });
+
+    describe('when credit card is validated', () => {
+      it('should show the toggle button', async () => {
+        findCcValidationRequiredAlert().vm.$emit('verifiedCreditCard');
+        await waitForPromises();
+
+        expect(findSharedRunnersToggle().exists()).toBe(true);
+        expect(getToggleValue()).toBe(false);
+        expect(isToggleDisabled()).toBe(false);
       });
     });
   });

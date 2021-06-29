@@ -1234,7 +1234,7 @@ class User < ApplicationRecord
   end
 
   def matches_identity?(provider, extern_uid)
-    identities.where(provider: provider, extern_uid: extern_uid).exists?
+    identities.with_extern_uid(provider, extern_uid).exists?
   end
 
   def project_deploy_keys

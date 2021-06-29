@@ -107,7 +107,7 @@ update-storybook-yarn-cache:
     - run_timed_command "gem install knapsack --no-document"
     - run_timed_command "scripts/gitaly-test-spawn"
     - source ./scripts/rspec_helpers.sh
-    - rspec_paralellized_job "--tag frontend_fixture"
+    - rspec_paralellized_job
   artifacts:
     name: frontend-fixtures
     expire_in: 31d

@@ -2,11 +2,11 @@
 %section.settings.as-third-party-offers.no-animate#js-third-party-offers-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      = _('Third party offers')
+      = _('Third-party offers')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _('Control the display of third party offers.')
+      = _('Control whether to display third-party offers in GitLab.')
   .settings-content
     = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-third-party-offers-settings'), html: { class: 'fieldset-form', id: 'third-party-offers-settings' } do |f|
       = form_errors(@application_setting) if expanded
@@ -15,6 +15,6 @@
         .form-group
           .form-check
             = f.check_box :hide_third_party_offers, class: 'form-check-input'
-            = f.label :hide_third_party_offers, _('Do not display offers from third parties within GitLab'), class: 'form-check-label'
+            = f.label :hide_third_party_offers, _('Do not display offers from third parties'), class: 'form-check-label'
 
       = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

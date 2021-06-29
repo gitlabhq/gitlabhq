@@ -76,9 +76,6 @@ require_relative '../tooling/quality/test_level'
 quality_level = Quality::TestLevel.new
 
 RSpec.configure do |config|
-  config.filter_run focus: true
-  config.run_all_when_everything_filtered = true
-
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures = false
   config.fixture_path = Rails.root
@@ -113,6 +110,8 @@ RSpec.configure do |config|
   end
 
   unless ENV['CI']
+    config.filter_run focus: true
+    config.run_all_when_everything_filtered = true
     # Re-run failures locally with `--only-failures`
     config.example_status_persistence_file_path = './spec/examples.txt'
   end

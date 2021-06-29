@@ -6,11 +6,16 @@
 = form_errors(issuable)
 
 - if @conflict
-  .gl-alert.gl-alert-danger.gl-mb-5
-    Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
-    Please check out
-    = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project, issuable]), target: "_blank", rel: 'noopener noreferrer'
-    and make sure your changes will not unintentionally remove theirs
+  = render 'shared/global_alert',
+    variant: :danger,
+    dismissible: false,
+    is_contained: true,
+    alert_class: 'gl-mb-5' do
+    .gl-alert-body
+      Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
+      Please check out
+      = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project, issuable]), target: "_blank", rel: 'noopener noreferrer'
+      and make sure your changes will not unintentionally remove theirs
 
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 

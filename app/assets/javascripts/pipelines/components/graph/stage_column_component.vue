@@ -79,21 +79,6 @@ export default {
     columnSpacingClass() {
       return this.isStageView ? 'gl-px-6' : 'gl-px-9';
     },
-    /*
-      currentGroups and filteredGroups are part of
-      a test to hunt down a bug
-      (see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57142).
-
-      They should be removed when the bug is rectified.
-    */
-    currentGroups() {
-      return this.glFeatures.pipelineFilterJobs ? this.filteredGroups : this.groups;
-    },
-    filteredGroups() {
-      return this.groups.map((group) => {
-        return { ...group, jobs: group.jobs.filter(Boolean) };
-      });
-    },
     formattedTitle() {
       return capitalize(escape(this.name));
     },
@@ -156,7 +141,7 @@ export default {
     </template>
     <template #jobs>
       <div
-        v-for="group in currentGroups"
+        v-for="group in groups"
         :id="groupId(group)"
         :key="getGroupId(group)"
         data-testid="stage-column-group"

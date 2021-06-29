@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RunnersHelper do
+  let_it_be(:user, refind: true) { create(:user) }
+
+  before do
+    allow(helper).to receive(:current_user).and_return(user)
+  end
+
   describe '#runner_status_icon', :clean_gitlab_redis_cache do
     it "returns - not contacted yet" do
       runner = create(:ci_runner)
@@ -90,28 +96,28 @@ RSpec.describe Ci::RunnersHelper do
 
     context 'when project has runners' do
       it 'returns the correct value for is_enabled' do
-        data = toggle_shared_runners_settings_data(project_with_runners)
+        data = helper.toggle_shared_runners_settings_data(project_with_runners)
         expect(data[:is_enabled]).to eq("true")
       end
     end
 
     context 'when project does not have runners' do
       it 'returns the correct value for is_enabled' do
-        data = toggle_shared_runners_settings_data(project_without_runners)
+        data = helper.toggle_shared_runners_settings_data(project_without_runners)
         expect(data[:is_enabled]).to eq("false")
       end
     end
 
     context 'for all projects' do
       it 'returns the update path for toggling the shared runners setting' do
-        data = toggle_shared_runners_settings_data(project_with_runners)
+        data = helper.toggle_shared_runners_settings_data(project_with_runners)
         expect(data[:update_path]).to eq(toggle_shared_runners_project_runners_path(project_with_runners))
       end
 
       it 'returns false for is_disabled_and_unoverridable when project has no group' do
         project = create(:project)
 
-        data = toggle_shared_runners_settings_data(project)
+        data = helper.toggle_shared_runners_settings_data(project)
         expect(data[:is_disabled_and_unoverridable]).to eq("false")
       end
 
@@ -129,7 +135,7 @@ RSpec.describe Ci::RunnersHelper do
           project = create(:project, group: group)
           allow(group).to receive(:shared_runners_setting).and_return(shared_runners_setting)
 
-          data = toggle_shared_runners_settings_data(project)
+          data = helper.toggle_shared_runners_settings_data(project)
           expect(data[:is_disabled_and_unoverridable]).to eq(is_disabled_and_unoverridable)
         end
       end

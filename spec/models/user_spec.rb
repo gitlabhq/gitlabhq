@@ -2813,6 +2813,14 @@ RSpec.describe User do
       end
     end
 
+    describe '#matches_identity?' do
+      it 'finds the identity when the DN is formatted differently' do
+        user = create(:omniauth_user, provider: 'ldapmain', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com')
+
+        expect(user.matches_identity?('ldapmain', 'uid=John Smith, ou=People, dc=example, dc=com')).to eq(true)
+      end
+    end
+
     describe '#ldap_block' do
       let(:user) { create(:omniauth_user, provider: 'ldapmain', name: 'John Smith') }
 
