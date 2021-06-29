@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlCard, GlSprintf } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlCard, GlSprintf } from '@gitlab/ui';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
@@ -7,6 +7,7 @@ import { HELLO_WORLD_TEMPLATE_KEY } from '../../constants';
 
 export default {
   components: {
+    GlAvatar,
     GlButton,
     GlCard,
     GlSprintf,
@@ -109,11 +110,12 @@ export default {
           class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-border-b-solid gl-border-b-1 gl-border-b-gray-100 gl-pb-3 gl-pt-3"
         >
           <div class="gl-display-flex gl-flex-direction-row gl-align-items-center">
-            <img
-              width="64"
-              height="64"
+            <gl-avatar
               :src="template.logo"
-              class="gl-mr-6"
+              :size="64"
+              class="gl-mr-6 gl-bg-white dark-mode-override"
+              shape="rect"
+              :alt="template.name"
               data-testid="template-logo"
             />
             <div class="gl-flex-direction-row">

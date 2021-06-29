@@ -17477,6 +17477,7 @@ CREATE TABLE requirements (
     title_html text,
     description text,
     description_html text,
+    issue_id bigint,
     CONSTRAINT check_785ae25b9d CHECK ((char_length(description) <= 10000))
 );
 
@@ -24504,6 +24505,8 @@ CREATE INDEX index_requirements_on_author_id ON requirements USING btree (author
 
 CREATE INDEX index_requirements_on_created_at ON requirements USING btree (created_at);
 
+CREATE UNIQUE INDEX index_requirements_on_issue_id ON requirements USING btree (issue_id);
+
 CREATE INDEX index_requirements_on_project_id ON requirements USING btree (project_id);
 
 CREATE UNIQUE INDEX index_requirements_on_project_id_and_iid ON requirements USING btree (project_id, iid) WHERE (project_id IS NOT NULL);
@@ -25827,6 +25830,9 @@ ALTER TABLE ONLY experiment_subjects
 
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT fk_8483f3258f FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY requirements
+    ADD CONSTRAINT fk_85044baef0 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_pipelines
     ADD CONSTRAINT fk_86635dbd80 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

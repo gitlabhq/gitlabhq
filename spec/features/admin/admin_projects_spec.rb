@@ -52,6 +52,8 @@ RSpec.describe "Admin::Projects" do
   end
 
   describe "GET /admin/projects/:namespace_id/:id" do
+    let!(:access_request) { create(:project_member, :access_request, project: project) }
+
     before do
       expect(project).to be_persisted
 
@@ -66,6 +68,15 @@ RSpec.describe "Admin::Projects" do
       expect(page).to have_content(project.full_name)
       expect(page).to have_content(project.creator.name)
       expect(page).to have_content(project.id)
+    end
+
+    context 'when project has open access requests' do
+      it 'shows access requests with link to manage access' do
+        page.within '[data-testid="access-requests"]' do
+          expect(page).to have_content access_request.user.name
+          expect(page).to have_link 'Manage access', href: project_project_members_path(project, tab: 'access_requests')
+        end
+      end
     end
   end
 

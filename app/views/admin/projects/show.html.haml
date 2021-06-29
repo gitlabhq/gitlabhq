@@ -180,10 +180,7 @@
           %strong= @group.name
           = _('group members')
           %span.badge.badge-pill= @group_members.size
-          .float-right
-            = link_to admin_group_path(@group), class: 'btn btn-default gl-button btn-sm' do
-              = sprite_icon('pencil-square', css_class: 'gl-icon')
-              = _('Manage access')
+          = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
         %ul.content-list.members-list
           = render partial: 'shared/members/member',
                    collection: @group_members, as: :member,
@@ -194,17 +191,14 @@
         .card-footer
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
-    = render 'shared/members/requests', membership_source: @project, group: @group, requesters: @requesters, force_mobile_view: true
+    = render 'shared/members/requests', membership_source: @project, group: @group, requesters: @requesters
 
     .card
       .card-header
         %strong= @project.name
         = _('project members')
         %span.badge.badge-pill= @project.users.size
-        .float-right
-          = link_to project_project_members_path(@project), class: 'btn btn-default gl-button btn-sm' do
-            = sprite_icon('pencil-square', css_class: 'gl-icon')
-            = _('Manage access')
+        = render 'shared/members/manage_access_button', path: project_project_members_path(@project)
       %ul.content-list.project_members.members-list
         = render partial: 'shared/members/member',
                  collection: @project_members, as: :member,

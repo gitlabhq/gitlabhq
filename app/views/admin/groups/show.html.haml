@@ -128,10 +128,7 @@
       .card-header
         = html_escape(_("%{group_name} group members")) % { group_name: "<strong>#{html_escape(@group.name)}</strong>".html_safe }
         %span.badge.badge-pill= @group.users_count
-        .float-right
-          = link_to group_group_members_path(@group), class: 'btn btn-default gl-button btn-sm' do
-            = sprite_icon('pencil-square', css_class: 'gl-icon')
-            = _('Manage access')
+        = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
       %ul.content-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member',
                  collection: @members, as: :member,

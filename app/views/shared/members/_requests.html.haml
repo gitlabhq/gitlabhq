@@ -1,20 +1,20 @@
 - membership_source = local_assigns.fetch(:membership_source)
 - requesters = local_assigns.fetch(:requesters)
-- force_mobile_view = local_assigns.fetch(:force_mobile_view, false)
 - group = local_assigns.fetch(:group)
 - current_user_is_group_owner = group && group.has_owner?(current_user)
 
 - return if requesters.empty?
 
-.card.gl-mt-3{ class: ('card-mobile' if force_mobile_view ) }
+.card.gl-mt-3{ data: { testid: 'access-requests' } }
   .card-header
     = _("Users requesting access to")
     %strong= membership_source.name
     %span.badge.badge-pill= requesters.size
+    = render 'shared/members/manage_access_button', path: membership_source.is_a?(Project) ? project_project_members_path(@project, tab: 'access_requests') : group_group_members_path(@group, tab: 'access_requests')
   %ul.content-list.members-list
     = render partial: 'shared/members/member',
              collection: requesters, as: :member,
              locals: { membership_source: membership_source,
                        group: group,
-                       force_mobile_view: force_mobile_view,
+                       show_controls: false,
                        current_user_is_group_owner: current_user_is_group_owner }

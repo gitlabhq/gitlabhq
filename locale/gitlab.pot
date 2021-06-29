@@ -22111,9 +22111,6 @@ msgstr ""
 msgid "No repository"
 msgstr ""
 
-msgid "No required pipeline"
-msgstr ""
-
 msgid "No runner executable"
 msgstr ""
 
